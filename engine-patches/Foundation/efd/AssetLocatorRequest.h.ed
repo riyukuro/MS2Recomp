@@ -1,0 +1,7 @@
+35a
+#if defined(EE_MS2_ALOCR_DTOR_FORCE)
+    // MS2: the exe's scalar deleting dtor (0x1420d0f20) inlines this implicit dtor where cl 19.16 calls it;
+    // the units that emit it define EE_MS2_ALOCR_DTOR_FORCE (engine/units-gb.json)
+    __forceinline virtual ~AssetLocatorRequest() = default;
+#endif
+.

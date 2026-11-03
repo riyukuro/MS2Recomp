@@ -234,7 +234,6 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14042cb90(CStringW strKey, const float& f);
 CStringW FUN_1419021b0(unsigned int, unsigned int);                           // "have/need"
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
-int FUN_1407181d0(const CString& str);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 

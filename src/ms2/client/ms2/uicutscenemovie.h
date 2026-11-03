@@ -11,26 +11,8 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/uivideocontents.h"
-
-// The AS clip bound to "m_exit" (the skip button); class unknown (an AS* wrapper with at least 14 slots).
-class Unk_ASExitButton : public CPtred
-{
-public:
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3(int nVisible);                 // slot 3: SetVisible?
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13(const CString& strLabel);     // slot 13: gotoAndPlay("show"/"hide")?
-};
 
 class UICutSceneMovie : public UIVideoContents
 {
@@ -76,7 +58,7 @@ private:
     int m_bPlayPending;                 // +0x7c play requested before the movie was loaded
     bool m_bSoundFaded;                 // +0x80
     int m_nCutSceneId;                  // +0x84 sent to the server when the user skips
-    MS2Ptr<Unk_ASExitButton> m_pExit;   // +0x88 "m_exit"
+    MS2Ptr<ASButton> m_pExit;           // +0x88 "m_exit"
     int m_nSceneId;                     // +0x98
     CString m_strScenePath;             // +0xa0
 };

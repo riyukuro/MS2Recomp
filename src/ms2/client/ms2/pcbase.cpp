@@ -280,11 +280,7 @@ struct Unk_PCBaseFallDamage
 void FUN_140710590(COutPacket& kPacket);                            // send
 void FUN_1401fc710(unsigned char* payload, COutputStream& stream);   // encode
 // A physics ray query (physxhelper.h's Unk_RayCastInfo; 0x68).
-class Unk_PCBasePhysX : public CPhysXHelper
-{
-public:
-    int FUN_14168a450(efd::Point3& kPos, float* pfHeight, float fRange);                                // ground probe
-};
+class Unk_PCBasePhysX : public CPhysXHelper { };   // C3: the ground probe is CPhysXHelper::FUN_14168a450
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 float FUN_14028d380(float fValue);                                  // percent (x100)
 int IsPercentStat(int nType);                                       // stat kind: 0 = 32-bit value
@@ -688,7 +684,7 @@ class Unk_UpperActor;
 class UIUpperHpBar
 {
 public:
-    void FUN_141b4c510(Unk_UpperActor* pActor, int nId);
+    void FUN_141b4c510(PCBase* pActor, int nId);
 };
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
 
@@ -2887,7 +2883,7 @@ void PCBase::vfunc_112(void* p, int n)
     }
     UIUpperHpBar* pUpper = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d);
     if (pUpper != 0)
-        pUpper->FUN_141b4c510(reinterpret_cast<Unk_UpperActor*>(this), n);
+        pUpper->FUN_141b4c510(this, n);
     MS2Ptr<Unk_PCBaseComp_a58> spBar = vfunc_80();
     if (spBar.get() != 0) {
         if (spBar->FUN_141992160() == 0 && pLocal != 0)

@@ -49,7 +49,8 @@ int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
 int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
 
-bool FUN_1405c7ba0(const Unk_GeRange* pRange);                          // is set
+struct Unk_MergeRange;
+bool FUN_1405c7ba0(const Unk_MergeRange* pRange);                          // is set
 int FUN_1413b1d60(class Unk_140165cf0*, char const*, void*);   // C3: was FUN_1413b1d60
 class Unk_ImNullableInt   // C3: member view for the former free stand-ins
 {
@@ -132,21 +133,21 @@ Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* 
     pNew->m_pParent = pWhere;
     if (pWhere == pHead->m_pHead)
     {
-        *FUN_14139f960(pHead) = pNew;
-        *FUN_14139eee0(pHead) = pNew;
-        *FUN_14139f8e0(pHead) = pNew;
+        reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Root()) = pNew;
+        reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<std::pair<CStringA const, int>>>*)pHead)->_Lmost()) = pNew;
+        reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Rmost()) = pNew;
     }
     else if (bLeft)
     {
         pWhere->m_pLeft = pNew;
-        if (pWhere == *FUN_14139eee0(pHead))
-            *FUN_14139eee0(pHead) = pNew;
+        if (pWhere == reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<std::pair<CStringA const, int>>>*)pHead)->_Lmost()))
+            reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<std::pair<CStringA const, int>>>*)pHead)->_Lmost()) = pNew;
     }
     else
     {
         pWhere->m_pRight = pNew;
-        if (pWhere == *FUN_14139f8e0(pHead))
-            *FUN_14139f8e0(pHead) = pNew;
+        if (pWhere == reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Rmost()))
+            reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Rmost()) = pNew;
     }
     for (Unk_GeNode* pCur = pNew; pCur->m_pParent->m_cColor == 0; )
     {
@@ -165,11 +166,11 @@ Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* 
                 if (pCur == pCur->m_pParent->m_pRight)
                 {
                     pCur = pCur->m_pParent;
-                    FUN_14139eff0(pHead, pCur);
+                    ((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Lrotate((std::_Tree_node<long, void*>*)(pCur));
                 }
                 pCur->m_pParent->m_cColor = 1;
                 pCur->m_pParent->m_pParent->m_cColor = 0;
-                FUN_14139faa0(pHead, pCur->m_pParent->m_pParent);
+                ((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Rrotate((std::_Tree_node<long, void*>*)(pCur->m_pParent->m_pParent));
             }
         }
         else
@@ -187,16 +188,16 @@ Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* 
                 if (pCur == pCur->m_pParent->m_pLeft)
                 {
                     pCur = pCur->m_pParent;
-                    FUN_14139faa0(pHead, pCur);
+                    ((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Rrotate((std::_Tree_node<long, void*>*)(pCur));
                 }
                 pCur->m_pParent->m_cColor = 1;
                 pCur->m_pParent->m_pParent->m_cColor = 0;
-                FUN_14139eff0(pHead, pCur->m_pParent->m_pParent);
+                ((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Lrotate((std::_Tree_node<long, void*>*)(pCur->m_pParent->m_pParent));
             }
         }
     }
-    (*FUN_14139f960(pHead))->m_cColor = 1;
-    FUN_141397130(pOut, pNew, FUN_141395550(pHead));
+    reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Root())->m_cColor = 1;
+    FUN_141397130(pOut, pNew, std::addressof(*(std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>*)pHead));
     return pOut;
 }
 
@@ -243,7 +244,7 @@ void* FUN_1413a4810(void* pIter)
 // @0x1413a4830
 void* FUN_1413a4830(void* pIter)
 {
-    return FUN_141398a90(pIter);
+    return (void*)&**(std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>>*)pIter;
 }
 
 // @0x1413a4b50
@@ -269,7 +270,7 @@ unsigned __int64 FUN_1413a5140(void* pMap)
 // @0x1413a5160
 void* FUN_1413a5160(void* pNode)
 {
-    return FUN_141395500(pNode);
+    return std::addressof(*(std::pair<CGuideManager::Occurrence const, int>*)pNode);
 }
 
 // @0x1413a5180
@@ -460,7 +461,7 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413a5bb0
 int CGuideConditionTrigger::vfunc_3()
 {
-    if (FUN_1405c7ba0(&m_range))
+    if (FUN_1405c7ba0((const Unk_MergeRange*)&m_range))
         return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
     return FUN_1413a55a0(((class CGuideManager*)FUN_1409331e0())->CheckTrigger((CGuideManager::TriggerType)m_n28, m_a, m_b) != 0);
 }

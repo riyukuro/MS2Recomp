@@ -5,6 +5,7 @@
 // wrappers in the range stay unrecovered. Names of the value internals are invented from their use.
 // MS2-UNIT: unit_14092cb30
 // MS2-RANGE: 0x14092cb30-0x14092f420 .text$mn
+// MS2-RANGE: 0x142c9cb90-0x142c9cba5 .text$yd
 // MS2-PIN: memmove_s 0x14092f2d0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\nxa.cpp"
 #include "ms2/placeholder/ms2stdafx.h"

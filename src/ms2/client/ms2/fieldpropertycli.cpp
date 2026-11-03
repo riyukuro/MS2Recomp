@@ -31,6 +31,7 @@
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // clang-cl: assert.h hides it under NDEBUG
 #endif
 #include <atlbase.h>
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<egf::Entity>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 #include "ms2/commonfiles/os.h"
 
@@ -38,11 +39,6 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 struct Unk_Handle {                 // 16 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
     ~Unk_Handle();
     void* m_a; void* m_p;
-};
-struct Unk_EntRef {                 // entity reference built from the handle's entity (0x1408a7ed0), released at 0x1408a8720
-    Unk_EntRef(void* p);
-    ~Unk_EntRef();
-    void* m_p;
 };
 struct Unk_Rec24 { char b[24]; };
 struct Unk_MapIt { void* p; };                   // map iterator scratch
@@ -55,6 +51,10 @@ protected:
     PropertyResult SetPropertyValueUnsafe(unsigned id, const void* pValue, unsigned type);     // 0x14212f160
 };
 }
+// The entity reference built from the handle's entity.
+template <> efd::SmartPointer<egf::Entity>::SmartPointer(const efd::SmartPointer<egf::Entity>& ptr);   // 0x1408a7ed0
+template <> efd::SmartPointer<egf::Entity>::~SmartPointer();                                         // 0x1408a8720
+template <> egf::Entity* efd::SmartPointer<egf::Entity>::operator->() const;                         // 0x1408a9280
 struct Unk_EntityAccess : egf::Entity {
     egf::PropertyResult Get(unsigned id, void* p, unsigned t) const { return GetPropertyValueUnsafe(id, p, t); }
     egf::PropertyResult Set(unsigned id, const void* p, unsigned t) { return SetPropertyValueUnsafe(id, p, t); }
@@ -103,7 +103,6 @@ bool FUN_1409f2130(Unk_Handle* h, int n);
 void* FUN_1409f2190(Unk_Handle* h);
 void* FUN_140b285a0(void* p);
 void* FUN_140b285b0(void* p);
-void* FUN_1408a9280(Unk_EntRef* r);
 Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
 void FUN_140b27ec0(void* ent, unsigned id, void* p);
 void FUN_140b27f00(void* ent, unsigned id, void* p);
@@ -204,15 +203,15 @@ void FieldPropertyAmbientLightCli::vfunc_4()
     Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x169ea355);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
-    Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));
+    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(FUN_1409f2190(&h)));
     if (m_bFlag)
     {
         m_bCached = true;
         m_fCached = 0;
-        FUN_140b27ec0(FUN_1408a9280(&ent), 0xb086f4a8, &m_vecOld);
+        FUN_140b27ec0(ent.operator->(), 0xb086f4a8, &m_vecOld);
         return;
     }
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xb086f4a8, m_color.ToColor());
+    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0xb086f4a8, m_color.ToColor());
 }
 
 // @0x140b27a80
@@ -224,16 +223,16 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
     Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x628f2cf9);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
-    Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));
+    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(FUN_1409f2190(&h)));
     if (m_bFlag)
     {
         m_bCached = true;
         m_fCached = 0;
-        FUN_140b27ec0(FUN_1408a9280(&ent), 0x2d8cf386, &m_vecOld);
+        FUN_140b27ec0(ent.operator->(), 0x2d8cf386, &m_vecOld);
         return;
     }
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0x2d8cf386, m_color1.ToColor());
-    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xc3f0329e, m_color1.ToColor());
+    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0x2d8cf386, m_color1.ToColor());
+    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0xc3f0329e, m_color1.ToColor());
 }
 
 // @0x140b27c60

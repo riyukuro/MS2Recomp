@@ -132,8 +132,6 @@
 // MS2-PIN: ?Define@?$Value@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Constants@Common@@QEAAPEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBDAEBV45@@Z 0x1402c0280
 // MS2-PIN: ?Define@?$Values@H@Constants@Common@@QEAA_NPEBDPEAV?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@@Z 0x1402c06b0
 // MS2-PIN: ?Define@?$Values@I@Constants@Common@@QEAA_NPEBDPEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x1402c0a80
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@UUnk_ConstColor@@V?$CElementTraits@UUnk_ConstColor@@@ATL@@@ATL@@AEAA_N_K@Z 0x1402c12b0
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@UUnk_ConstColor@@@ATL@@SAXPEAUUnk_ConstColor@@0_K@Z 0x1402c26b0
 // MS2-PIN: ??$Unk_SocketFormat@PEBD_N_NI@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBQEBDAEB_N2AEBI@Z 0x1402bae00
 // MS2-PIN: ??0?$Values@UUnk_ConstColor@@@Constants@Common@@QEAA@XZ 0x1402bcd90
 // MS2-PIN: ?Define@?$Value@M@Constants@Common@@QEAAPEAMPEBDAEBM@Z 0x1402bfe90
@@ -545,6 +543,9 @@ bool Constants::Lookup(const CString& key, float* out)
 }
 CString FUN_1407185b0(const CString& s);
 CStringW FUN_140718650(const CString& s);
+// The parsers as defined (unit_1407186f0_stringconversionhelpers.cpp).
+void* FUN_140718770(void* ret, const CStringA& s);
+void* FUN_140718830(void* ret, const CStringA& s);
 namespace Common {
 efd::Point3 FUN_140db9570(const CString& s);
 
@@ -555,7 +556,7 @@ bool Constants::Lookup(const CString& key, Unk_ConstColor* out)
     if (values.Lookup(key, s))
     {
         unsigned c;
-        *out = *(Unk_ConstColor*)FUN_140718770(&c, s);
+        *out = *(Unk_ConstColor*)FUN_140718770((void*)&c, s);
         return true;
     }
     return false;
@@ -578,7 +579,7 @@ bool Constants::Lookup(const CString& key, MS2Tick* out)
     if (values.Lookup(key, s))
     {
         unsigned t;
-        *out = *(MS2Tick*)FUN_140718830(&t, s);
+        *out = *(MS2Tick*)FUN_140718830((void*)&t, s);
         return true;
     }
     return false;
@@ -1587,3 +1588,7 @@ template size_t ATL::CAtlArray<unsigned long, ATL::CElementTraits<unsigned long>
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a590-0x142c9a5b0 .text$yd
 // MS2-PIN: ?get@Unk_ConstCacheRef@@QEBAPEAVCCacheData@@XZ 0x1402be5b0 ; manual: LoadFiles
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@KV?$CElementTraits@K@ATL@@@ATL@@AEAA_N_K@Z 0x1402c12b0 ; gp1: by its exe callers
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@UUnk_ConstColor@@V?$CElementTraits@UUnk_ConstColor@@@ATL@@@ATL@@AEAA_N_K@Z 0x1402c1930 ; gp1: by its exe callers
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@K@ATL@@SAXPEAK0_K@Z 0x1402c26b0 ; gp1: by its exe callers
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@UUnk_ConstColor@@@ATL@@SAXPEAUUnk_ConstColor@@0_K@Z 0x1402c27b0 ; gp1: by its exe callers

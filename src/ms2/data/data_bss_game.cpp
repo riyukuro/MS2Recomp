@@ -90,7 +90,6 @@ class CCrashManager *Unk_CrashSingleton::s_instance;                            
 bool DAT_143aac548;                                             // 0x143aac548
 template<> GFxManager* SingletonClass<GFxManager>::ms_pSingleton{};                                // 0x143aaccf8
 long g_lUniqueSeq;                                              // 0x143aacf78
-__crt_locale_pointers* DAT_143aad168;                           // 0x143aad168
 bool DAT_143aad1e0;                                             // 0x143aad1e0
 alignas(16) unsigned char DAT_143aad2d0[0x800];                 // 0x143aad2d0
 alignas(16) unsigned char DAT_143aadad0[0x800];                 // 0x143aadad0

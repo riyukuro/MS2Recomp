@@ -503,7 +503,6 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
 }
 
 // @0x140f59ad0
-// MS2-FUNCTIONAL: behaviour-reviewed, same calls/args as the exe; only the RM_NOT_FOUND temp slots / evaluation order differ
 void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nUnk)
 {
     MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
@@ -580,8 +579,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
             if (aLocked[i] >= 0)
             {
                 Unk_RemakeStat stat(2, MS2Ptr<CItem>(spItem), false);
-                int lockValue;
-                if (stat.FUN_140619290(aLocked[i], reinterpret_cast<int&>(lockOpt), lockValue))
+                if (stat.FUN_140619290(aLocked[i], lockOpt.m_v, lockOpt.m_4))
                     option.m_options.FUN_140b9b410(lockOpt);
             }
             else

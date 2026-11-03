@@ -9,6 +9,8 @@ class HardwareInstancingService : public efd::ISystemService, public egf::IPrope
 public:
     virtual ~HardwareInstancingService();
     void FUN_1413d7d10(const egf::EntityID&);
+    int FUN_1413d7e30();                    // the grid instance count
+    unsigned FUN_1413d7eb0();               // the group instance count
 private:
     unsigned char unknown30[0x80];
 };

@@ -16,9 +16,13 @@ inline SetItemEffectInfo::SetItemEffectInfo() : m_nEffect(0)
 {
 }
 
+struct Unk_CMISSlot { Unk_CMISSlot(void* pId); Unk_CMISSlot(const Unk_CMISSlot&); ~Unk_CMISSlot(); void* m_vtbl; void* m_p; };   // as in cubemapinformationservice_3.cpp
+
 void Unk_CMISDriveTail12()
 {
     { ecr::SceneGraphAddedMessage m; }
     { SetItemEffectInfo e; }
     { ATL::CAtlArray<Unk_CMISElem388*> a; ATL::CAtlArray<Unk_CMISElem3a8*> b; ATL::CAtlArray<Unk_CMISElem458*> c; }
+    { ATL::CAtlArray<Unk_CMISSlot> d; }
 }
+// MS2-PIN: ??1?$CAtlArray@UUnk_CMISSlot@@V?$CElementTraits@UUnk_CMISSlot@@@ATL@@@ATL@@QEAA@XZ 0x141123410 ; gp1: FUN_1410c8e40's aNear dtor

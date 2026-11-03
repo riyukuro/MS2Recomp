@@ -4,28 +4,10 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 class CItem;
-class Unk_DropList;
-class Unk_DropText;
-class Unk_DropButton;
-class Unk_DropInput;
-// The owning pointer has a same-type assignment COMDAT in this unit.
-template <class T> class Unk_DropPtr {
-public:
-    Unk_DropPtr();
-    Unk_DropPtr(T*);
-    Unk_DropPtr(const Unk_DropPtr&);
-    ~Unk_DropPtr();
-    Unk_DropPtr& operator=(T*);
-    Unk_DropPtr& operator=(const Unk_DropPtr&);
-    bool operator==(T*) const;
-    T* get() const;
-    T* operator->() const;
-private:
-    void AddRef() const;
-    void Release();
-    void* m_00;
-    T* m_p;
-};
+class ASTileList;
+class ASTextField;
+class ASButton;
+class ASTextInput;
 // Intrusive handle whose COMDATs are instantiated in this unit (T = ASMDragTarget); the template name is unknown.
 template <class T> class Unk_DropHandle {
 public:
@@ -66,7 +48,6 @@ public:
     void OnClickDropOrTestButton(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140c3b7d0(int item, int box);
     int GetItemId();
-    Unk_DropPtr<Unk_DropList> FUN_140ba4b70(const CString&);
     template <class T> Unk_DropHandle<T> GetDropChild(const CString&);
 private:
     MS2_LAYOUT_FRIEND;
@@ -74,11 +55,11 @@ private:
     MS2Ptr<CItem> m_item;
     ATL::CAtlArray<MS2Ptr<CItem>> m_items;
     int m_box;
-    Unk_DropPtr<Unk_DropList> m_list;
-    Unk_DropPtr<Unk_DropText> m_name;
-    Unk_DropPtr<Unk_DropButton> m_test;
-    Unk_DropPtr<Unk_DropButton> m_drop;
-    Unk_DropPtr<Unk_DropInput> m_count;
+    MS2Ptr<ASTileList> m_list;
+    MS2Ptr<ASTextField> m_name;
+    MS2Ptr<ASButton> m_test;
+    MS2Ptr<ASButton> m_drop;
+    MS2Ptr<ASTextInput> m_count;
 };
 MS2_CHECK_SIZE(UIItemDropInfoDialog, 0x208);
 MS2_CHECK_OFFSET(UIItemDropInfoDialog, m_slot, 0x178);

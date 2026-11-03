@@ -72,11 +72,39 @@ class Unk_CameraTargetEntity; class Unk_BossObject; Unk_CameraTargetEntity* FUN_
 // The exe's map value assign / dtor (0x140aac1c0, 0x140aac2b0, 0x140aac150) are older inline forms of
 // CComPtr::operator= / ~CComPtrBase than the ATL we compile against: the assign releases and addrefs in place
 // and hands back the CComPtr itself.
-template<> inline ATL::CComPtrBase<Unk_RtePlayer>::~CComPtrBase() throw()
+// The exe's ~CComPtrBase has no throw(), so it is implicitly noexcept and gets the terminate EH frame. A member
+// specialization keeps the primary's throw(), so the whole class is specialized here with the members this unit uses.
+template<> class ATL::CComPtrBase<Unk_RtePlayer>
 {
-    if (p)
-        p->Release();
-}
+protected:
+    CComPtrBase() throw()
+    {
+        p = NULL;
+    }
+    CComPtrBase(Unk_RtePlayer* lp) throw()
+    {
+        p = lp;
+        if (p != NULL)
+            p->AddRef();
+    }
+public:
+    typedef Unk_RtePlayer _PtrClass;
+    ~CComPtrBase()
+    {
+        if (p)
+            p->Release();
+    }
+    operator Unk_RtePlayer*() const throw()
+    {
+        return p;
+    }
+    _NoAddRefReleaseOnCComPtr<Unk_RtePlayer>* operator->() const throw()
+    {
+        ATLASSERT(p!=NULL);
+        return (_NoAddRefReleaseOnCComPtr<Unk_RtePlayer>*)p;
+    }
+    Unk_RtePlayer* p;
+};
 template<> inline Unk_UpperNpc* ATL::CComPtr<Unk_UpperNpc>::operator=(const ATL::CComPtr<Unk_UpperNpc>& lp) throw()
 {
     if (p != lp.p)

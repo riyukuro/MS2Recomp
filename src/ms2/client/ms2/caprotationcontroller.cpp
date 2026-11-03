@@ -136,13 +136,9 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float Unk_Acos(float fCos);                                     // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
-void FUN_142084020(Unk_EfdMatrix3* p, float fY, float fX, float fZ);   // efd::Matrix3::FromEulerAnglesYXZ
-void FUN_14209bc90(void* pQuat, float fAngle, const Vector3* pAxis);   // efd::Quaternion::FromAngleAxis
-void FUN_140a34450(const void* pQuat, Unk_EfdMatrix3* pMat);   // efd::Quaternion::ToRotation
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
                    float fRadius, Vector3* pHit);       // ray / sphere hit
 void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
-NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
 void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assignment
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
@@ -315,9 +311,9 @@ void CCapRotationController::vfunc_31()
                 kAxis.FUN_140968990();
                 float fAngle = SafeAcos(m_kDragDir.FUN_140a00f20(kDelta));
                 efd::Quaternion kQuat;
-                FUN_14209bc90(&kQuat, fAngle, &kAxis);
+                kQuat.FromAngleAxis(fAngle, *(const efd::Point3*)&kAxis);
                 Unk_EfdMatrix3 kRot;
-                FUN_140a34450(&kQuat, &kRot);
+                kQuat.ToRotation(*(efd::Matrix3*)&kRot);
                 kRot = kRot.FUN_140a33480(m_kInitRot);
                 Vector3 kEuler;
                 kRot.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
@@ -367,7 +363,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
             FUN_140968990(&kUp);
             Unk_NiMatrix3 kFix;
-            FUN_142084020(&kFix, 1.5707964f, 3.1415927f, 0.0f);
+            ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
             kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
             Unk_NiMatrix3 kRot(Unk_NiMatrix3(kN, kSide, kUp).FUN_140a33480(kFix));
@@ -542,8 +538,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {
         NiAVObjectPtr spNode(*it);
-        alignas(8) char kTmp[sizeof(NiTransform)];
-        spNode.operator->()->SetLocalTransform(*FUN_140a33de0(((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform()), kTmp, &kDelta));
+        spNode.operator->()->SetLocalTransform(((class NiAVObject*)(spNode.operator->()))->GetLocalTransform() * kDelta);
     }
     m_spPart->FUN_141200100(kEuler);
     pData->m_aEuler[0] = kEuler;

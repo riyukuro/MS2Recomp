@@ -7,6 +7,7 @@
 // MS2-UNIT: ?\ugcmapoptions.cpp
 // MS2-RANGE: 0x1408b3260-0x1408b9860 .text$mn
 #define MS2_THIS_FILE ""
+#define MS2_CUBE_POSITION_POINT
 #include "ms2/placeholder/ms2stdafx.h"
 #include <io.h>
 #include <egf/Entity.h>
@@ -395,14 +396,12 @@ int NoticeCubeInfo::GetN20() const
 
 // ---- Cube ----------------------------------------------------------------------------------------------------------
 
-// MS2-FUNCTIONAL: cube.h types position as a trivial Unk_Int3 (the exe calls the zeroing Unk_CubePoint ctor 0x1408850a0); typing
-// it Unk_CubePoint makes the by-value position args in cubemapinformationservice_3 / uitriggereditordialog / actionkeyobject slice.
 // @0x1408b4a00
 Cube::Cube() : entity(0)
 {
     entity = 0;
     item = new CubeItemInfo;
-    position = Unk_Int3(0, 0, -1);
+    (Unk_Int3&)position = Unk_Int3(0, 0, -1);
     field44 = 0;
     field48 = 0;
     field50 = 0;
@@ -532,7 +531,7 @@ MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);
 Vector3 Cube::FUN_1408b5370()
 {
     Vector3 kOffset;
-    return FUN_1408a15b0(position, kOffset);
+    return FUN_1408a15b0((Unk_Int3&)position, kOffset);
 }
 MS2_REPLACE_METHOD(0x1408B5370, Cube, FUN_1408b5370, 82, 0xC52D8A9F);
 

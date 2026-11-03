@@ -11,6 +11,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimessagebox.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/gfxui/uimsg.h"
 #include <shellapi.h>
 #include <vector>
 #include "uimessagebox.h"
@@ -173,16 +174,6 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_25();                                    // gotoAndStop the top layer
 };
-// UIMsg (ASData + the message type, 0x50): ctor 0x1422e44d0, dtor 0x140c30570.
-class Unk_MessageBoxMsg : public ASData
-{
-public:
-    Unk_MessageBoxMsg(int nType);
-    virtual ~Unk_MessageBoxMsg();
-    int m_nType;                                                // +0x48
-};
-MS2_CHECK_SIZE(Unk_MessageBoxMsg, 0x50);
-
 class Unk_MessageBoxKeys : public CInputKeyHandler   // C3: the key tests are CInputKeyHandler's
 {
 };
@@ -221,8 +212,6 @@ UICashShopDialog* FUN_140b04f80(int nId);
 class CGuildManager;
 class Unk_MessageBoxSocket : public CNetworkService
 {
-public:
-    void FUN_1415382c0();
 };
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void FUN_1416a0e70();
@@ -247,17 +236,14 @@ template <class T> inline T* Unk_MessageBoxDialog(int nId)
     }
     return 0;
 }
-class UILoginDialog : public UIDialog { public: void FUN_1419e2310(int n); };
-class UIItemRemakeScrollDialog : public UIDialog { public: void FUN_140f59ad0(__int64 nUid, int n); };
+class UILoginDialog : public UIDialog { public: bool FUN_1419e2310(int n); };
+class UIItemRemakeScrollDialog : public UIDialog { public: void FUN_140f59ad0(unsigned __int64 nUid, int n); };
 class Unk_MessageBoxGuideDialog : public UICartoonDialog { public: };
 class UICartoonDialog* FUN_140ff7030(int);   // C3: was FUN_140ff7030
 class CWebBrowserService;
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CPartyManager;
-class Unk_MessageBoxItemLock { };
 class CItemLockManager { public: int SendRequestItemLockMode3(); };   // C3: member view (unit_1406125d0.h)
-extern Unk_MessageBoxItemLock* DAT_143aaf308;
-inline Unk_MessageBoxItemLock* FUN_140535310() { return DAT_143aaf308; }
 CFeatureManager* FUN_140166410();
 class Unk_MessageBoxShutdown { public: int FUN_1402c4c90(int nId); };
 class Unk_MessageBoxContents { public: void* m_0; Unk_MessageBoxShutdown m_shutdown; };
@@ -272,12 +258,12 @@ class Unk_MessageBoxTradeDialog : public UITradeDialogEx { };
 Unk_MessageBoxTradeDialog* FUN_14140e820(int nId);
 void FUN_141404930(__int64 nUid);
 void FUN_141425fc0(__int64, int, void*);   // C3: was FUN_141425fc0
-void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool& bOut);
+void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pOut);
 void FUN_140961010(int nId, int nA, int nB, const CStringW& strArg);
 int FUN_141276a30(const CStringW& strName, CStringW& strError);  // validate a character name
 bool RequestCoupleEmotion(__int64, int);   // C3: was FUN_140b845a0
-void FUN_140d1bd60(MS2Ptr<CItem> spItem, int n);
-void FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
+int UseItem(MS2Ptr<CItem> spItem, int n);
+bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
 class Unk_MessageBoxPortal;
 size_t FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& arr);   // CAtlArray::GetCount
@@ -564,9 +550,9 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         m_data->FUN_141a03390(this);
         if (IMessageListener* pListener = m_data->FUN_141a02cc0())
         {
-            Unk_MessageBoxMsg msg(2002);
+            UIMsg msg(2002);
             msg.AddWString(m_data->GetExtra());
-            pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+            pListener->OnMessage(this, &msg);
             return 1;
         }
     }
@@ -726,7 +712,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         CStringW strMsg;
         CStringW strExtra;
         bool bExtra = false;
-        FUN_1409e4950(spItem, strExtra, bExtra);
+        FUN_1409e4950(spItem, strExtra, &bExtra);
         if (bExtra == true && strExtra.GetLength() > 0)
         {
             strMsg.Append(strExtra);
@@ -866,10 +852,10 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
         IMessageListener* pListener = m_data->FUN_141a02cc0();
         if (pListener)
         {
-            Unk_MessageBoxMsg msg(0);
+            UIMsg msg(0);
             msg.AddInt(nButton);
             msg.AddWString(strTag);
-            bHandled = pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+            bHandled = pListener->OnMessage(this, &msg);
         }
         int bConsumed = FUN_1419f97a0(nButton, nBoxId, strTag, extra);
         if (strTag == s_143af3bf8 && bHandled == 0 && m_closing == 0)
@@ -919,11 +905,11 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
             CStringW strGroup = groups.GetAt(pos);
             if (strTag.Find(strGroup) != -1)
             {
-                Unk_MessageBoxMsg msg(0x7d1);
+                UIMsg msg(0x7d1);
                 msg.AddWString(strGroup);
                 msg.AddInt(nButton);
                 msg.AddValue(extra);
-                pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+                pListener->OnMessage(this, &msg);
             }
         }
     }
@@ -1570,7 +1556,7 @@ int UIMessageBox::FUN_1419fc810(int nButton)
     {
         __int64 nUid = m_data->FUN_141a02c00();
         int bAsk = 0;
-        m_data->FUN_140be25f0(0, bAsk);
+        m_data->GetArg(0, bAsk);
         if (bAsk != 0)
         {
             {
@@ -1610,7 +1596,7 @@ MS2_REPLACE_METHOD(0x1419FC810, UIMessageBox, FUN_1419fc810, 1112, 0xC18E5FC1);
 int UIMessageBox::HandleAlreadyReconnectButton(int nButton)
 {
     if (nButton == 0)
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->FUN_1415382c0();
+        FUN_140714f90()->ConnectToConfiguredServer();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FCC70, UIMessageBox, HandleAlreadyReconnectButton, 43, 0x23E8BDFB);
@@ -1698,7 +1684,7 @@ int UIMessageBox::HandleItemlockConfirmButton(int nButton)
     if (m_data == 0)
         return 1;
     if (nButton == 0)
-        reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode3();
+        TSingleton<CItemLockManager>::GetInstance()->SendRequestItemLockMode3();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FD0D0, UIMessageBox, HandleItemlockConfirmButton, 78, 0x7F02717F);
@@ -1913,7 +1899,7 @@ int UIMessageBox::HandleUseBindFuncItemButton(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        FUN_140d1bd60(spItem, 1);
+        UseItem(spItem, 1);
     }
     return 1;
 }

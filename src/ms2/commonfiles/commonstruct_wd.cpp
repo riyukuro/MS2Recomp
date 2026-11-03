@@ -14,6 +14,7 @@
 #include "ms2/commonfiles/itemoptiondata.h"
 #include "ms2/placeholder/itemremakeoption.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/packetlogqueue.h"
 // The STL instances behind the slice's tree/vector views (C3: the calls go to their members).
 typedef std::map<int, int> MapII;
 typedef MapII::_Mybase TreeII;
@@ -36,17 +37,17 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
         std::_Xlength_error("map/set<T> too long");
     }
     {
-        Unk_TNode* node = FUN_140276fe0(tree, newnode, FUN_14027c160(val));
+        Unk_TNode* node = (Unk_TNode*)FUN_140276fe0((__int64)tree, (__int64)newnode, FUN_14027c160(val));
         h->size = h->size + 1;
         node->parent = where;
         if (where == h->head) {
             *(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Root() = node;
-            *FUN_140288630(h) = node;
+            *(Unk_TNode**)reinterpret_cast<ATL::CAtlArray<Unk_CommonPacketLogEntry>*>(h)->GetData() = node;
             *(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost() = node;
         } else if (addleft) {
             where->left = node;
-            if (where == *FUN_140288630(h))
-                *FUN_140288630(h) = node;
+            if (where == *(Unk_TNode**)reinterpret_cast<ATL::CAtlArray<Unk_CommonPacketLogEntry>*>(h)->GetData())
+                *(Unk_TNode**)reinterpret_cast<ATL::CAtlArray<Unk_CommonPacketLogEntry>*>(h)->GetData() = node;
         } else {
             where->right = node;
             if (where == *(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost())
@@ -89,7 +90,7 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
             }
         }
         (*(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Root())->color = 1;
-        FUN_14027d010(out, node, FUN_14027b570(h));
+        FUN_14027d010(out, (__int64)node, FUN_14027b570((__int64)h));
         return (i64)out;
     }
 }
@@ -199,29 +200,29 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
         if (TreeII::_Multi) {
             bool yes = true;
             Unk_TIter t;
-            FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), &yes);
+            FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
             return out;
         } else {
             Unk_TIter where, b;
-            FUN_14027d010(&where, wherenode, FUN_14027b570(h));
+            FUN_14027d010(&where, (__int64)wherenode, FUN_14027b570((__int64)h));
             if (!addleft)
                 ;
-            else if (FUN_14027ee20(&where, FUN_14028a130(tree, &b))) {
+            else if (FUN_14027ee20((Unk_It*)&where, (Unk_It*)FUN_14028a130(tree, &b))) {
                 bool yes = true;
                 Unk_TIter t;
-                FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, true, wherenode, FUN_14027c160(val), newnode), &yes);
+                FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, true, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
                 return out;
             } else
                 --*reinterpret_cast<MapII::iterator*>(&where);
             if (WD_LT(WD_KEY(where.node), WD_KFN())) {
                 bool yes = true;
                 Unk_TIter t;
-                FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), &yes);
+                FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
                 return out;
             } else {
                 FUN_1402876f0(tree, newnode);
                 bool no = false;
-                FUN_140274b10(out, &where, &no);
+                FUN_140274b10((__int64*)out, (__int64)&where, (__int64)&no);
                 return out;
             }
         }
@@ -340,7 +341,7 @@ i64 FUN_14027a320(i64 first, i64 last, i64 dest, Unk_StlTag)
     while (first != last) {
         last = last - 0x10;
         dest = dest - 0x10;
-        FUN_14027e950(dest, FUN_14027c400(last));
+        FUN_14027e950((Unk_Ref16*)dest, (Unk_Ref16*)FUN_14027c400(last));
     }
     return dest;
 }
@@ -355,7 +356,7 @@ void FUN_14027a390(i64 first, i64 last, i64 dest)
 i64 FUN_14027a3e0(i64 first, i64 last, i64 dest, Unk_StlTag)
 {
     for (; first != last; dest += 0x10, first += 0x10)
-        FUN_14027e950(dest, FUN_14027c400(first));
+        FUN_14027e950((Unk_Ref16*)dest, (Unk_Ref16*)FUN_14027c400(first));
     return dest;
 }
 // @0x14027a450
@@ -421,17 +422,17 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     bool found;
     char pad;
     FUN_14028af20(tree, &lb, key);
-    if (FUN_14027ee20(&lb, FUN_14028a910(tree, &end)) != 0 ||
+    if (FUN_14027ee20((Unk_It*)&lb, (Unk_It*)FUN_14028a910(tree, &end)) != 0 ||
         reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), *(const int*)(FUN_1402885e0(tree, lb.node))) != 0) {
         ins = true;
         Unk_TNode* hint = lb.node;
         void* vt = FUN_140162f80(&pad);
-        FUN_140274d10(out, FUN_14027be90(tree, &res, hint, &std::piecewise_construct,
-                                         FUN_14027c240(&tup, FUN_14027c1f0(key)), vt), &ins);
+        FUN_140274d10((__int64*)out, FUN_14027be90((__int64)tree, (__int64)&res, (__int64)hint, (__int64)&std::piecewise_construct,
+                                         FUN_14027c240((__int64)&tup, FUN_14027c1f0(key)), (__int64)vt), (__int64)&ins);
         return out;
     } else {
         found = false;
-        FUN_140274b10(out, &lb, &found);
+        FUN_140274b10((__int64*)out, (__int64)&lb, (__int64)&found);
         return out;
     }
 }
@@ -555,7 +556,7 @@ i64 FUN_14027ade0(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutA bo(dest, al);
     for (; first != last; first += 0x8)
-        FUN_140277690(&bo, first);
+        FUN_140277690((__int64)&bo, first);
     return (i64)reinterpret_cast<std::_Uninitialized_backout_al<CString*, std::allocator<CString>>*>(&bo)->_Release();
 }
 
@@ -565,7 +566,7 @@ i64 FUN_14027ae70(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutB bo(dest, al);
     for (; first != last; first += 0x30)
-        FUN_1402776f0(&bo, first);
+        FUN_1402776f0((__int64)&bo, first);
     return (i64)reinterpret_cast<std::_Uninitialized_backout_al<ItemEntity*, std::allocator<ItemEntity>>*>(&bo)->_Release();
 }
 
@@ -575,7 +576,7 @@ i64 FUN_14027af00(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutC bo(dest, al);
     for (; first != last; first += 0x8)
-        FUN_140277750(&bo, first);
+        FUN_140277750((__int64)&bo, first);
     return (i64)reinterpret_cast<std::_Uninitialized_backout_al<PIng*, std::allocator<PIng>>*>(&bo)->_Release();
 }
 
@@ -585,7 +586,7 @@ i64 FUN_14027af90(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutD bo(dest, al);
     for (; first != last; first += 0x10)
-        FUN_1402777b0(&bo, first);
+        FUN_1402777b0((__int64)&bo, first);
     return (i64)reinterpret_cast<std::_Uninitialized_backout_al<MS2Ptr<CPtred>*, std::allocator<MS2Ptr<CPtred>>>*>(&bo)->_Release();
 }
 
@@ -595,6 +596,6 @@ i64 FUN_14027b020(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutE bo(dest, al);
     for (; first != last; first += 0x10)
-        FUN_140277810(&bo, first);
+        FUN_140277810((__int64)&bo, first);
     return (i64)reinterpret_cast<std::_Uninitialized_backout_al<PLog*, std::allocator<PLog>>*>(&bo)->_Release();
 }

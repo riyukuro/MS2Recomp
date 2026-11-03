@@ -14,6 +14,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit
 
 // Scoped lock helper (ctor 0x1401b4ec0, dtor 0x1401b5120).
 class Unk_1401b4ec0 {
@@ -49,11 +50,11 @@ ItemEntity::ItemEntity(ItemAble& source) {
 }
 // @0x14026ad60
 void ItemEntity::vfunc_1(CStringW text) {
-    Unk_UIntArr values;
+    ArrU values;
     FUN_140274fc0(text, &values, L",");
-    if (reinterpret_cast<ArrU&>(values).GetCount() >= 1) m_itemId = reinterpret_cast<ArrU&>(values)[0];
-    if (reinterpret_cast<ArrU&>(values).GetCount() >= 2) m_rank = reinterpret_cast<ArrU&>(values)[1];
-    if (reinterpret_cast<ArrU&>(values).GetCount() >= 3) m_count = reinterpret_cast<ArrU&>(values)[2];
+    if (values.GetCount() >= 1) m_itemId = values[0];
+    if (values.GetCount() >= 2) m_rank = values[1];
+    if (values.GetCount() >= 3) m_count = values[2];
 }
 // @0x14026ae40
 void ItemEntity::vfunc_2(void* xml) {
@@ -191,16 +192,16 @@ CIngredientContainer::~CIngredientContainer() { reinterpret_cast<VIng&>(m_items)
 // @0x14026b9d0
 void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
     Unk_StrVec parts;
-    FUN_140275180(text, &parts, L",");
+    FUN_140275180(const_cast<CStringW&>(text), &parts, L",");
     if (reinterpret_cast<VStr&>(parts).size() != 3) return;
     Unk_IngRef ref(new CIngredientInfo());
     {
         Unk_StrVec sub;
         FUN_140275080(*parts.FUN_14027f1c0(0), &sub, ":");
-        if (reinterpret_cast<VStr&>(sub).size() > 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
+        if (reinterpret_cast<VStr&>(sub).size() > 0) ref->m_a = FUN_1407181d0(*sub.FUN_14027f1c0(0));
         if (reinterpret_cast<VStr&>(sub).size() > 1) ref->m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*sub.FUN_14027f1c0(1));
     }
-    ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
+    ref->m_c = FUN_1407181d0(*parts.FUN_14027f1c0(2));
     if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
 }
 // @0x14026bbf0
@@ -459,7 +460,7 @@ Unk_ShopLifeRef NpcShopItemLife::Clone() {
 }
 // @0x14026ebc0
 bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
-    FUN_1402767f0(xml, "itemLifeType", m_type);
+    FUN_1402767f0(xml, "itemLifeType", (unsigned*)&m_type);
     if (m_type == 0) return 0;
     switch (m_type) {
     case 1:
@@ -471,13 +472,13 @@ bool NpcShopItemLife::FUN_14026ebc0(void* xml) {
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         break;
     case 2: {
-        Unk_IntArr parts;
+        ArrI parts;
         CString text;
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
-        FUN_140177de0(text, &parts, "-");
-        if (reinterpret_cast<ArrI&>(parts).GetCount() == 6) {
-            m_time = CMsTime(reinterpret_cast<ArrI&>(parts)[0], reinterpret_cast<ArrI&>(parts)[1], reinterpret_cast<ArrI&>(parts)[2],
-                             reinterpret_cast<ArrI&>(parts)[3], reinterpret_cast<ArrI&>(parts)[4], reinterpret_cast<ArrI&>(parts)[5]);
+        XmlSplit(text, parts, "-");
+        if (parts.GetCount() == 6) {
+            m_time = CMsTime(parts[0], parts[1], parts[2],
+                             parts[3], parts[4], parts[5]);
         } else {
             return 0;
         }
@@ -571,7 +572,7 @@ __int64 NpcShopItemLife::FUN_14026f170() {
 ItemDropItemLife::ItemDropItemLife() : m_type(0), m_value(0), m_time() {}
 // @0x14026f290
 bool ItemDropItemLife::FUN_14026f290(void* xml) {
-    FUN_1402767f0(xml, "itemLifeType", m_type);
+    FUN_1402767f0(xml, "itemLifeType", (unsigned*)&m_type);
     if (m_type == 0) return 0;
     switch (m_type) {
     case 1:
@@ -583,13 +584,13 @@ bool ItemDropItemLife::FUN_14026f290(void* xml) {
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeValue", (unsigned&)m_value);
         break;
     case 2: {
-        Unk_IntArr parts;
+        ArrI parts;
         CString text;
         XmlGetAttr((class TiXmlElement*)(xml), "itemLifeDateTime", text);
-        FUN_140177de0(text, &parts, "-");
-        if (reinterpret_cast<ArrI&>(parts).GetCount() == 6) {
-            m_time = CMsTime(reinterpret_cast<ArrI&>(parts)[0], reinterpret_cast<ArrI&>(parts)[1], reinterpret_cast<ArrI&>(parts)[2],
-                             reinterpret_cast<ArrI&>(parts)[3], reinterpret_cast<ArrI&>(parts)[4], reinterpret_cast<ArrI&>(parts)[5]);
+        XmlSplit(text, parts, "-");
+        if (parts.GetCount() == 6) {
+            m_time = CMsTime(parts[0], parts[1], parts[2],
+                             parts[3], parts[4], parts[5]);
         } else {
             return 0;
         }

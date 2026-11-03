@@ -66,6 +66,10 @@
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/client/ms2/uiwebbrowser.h"   // C3: FUN_140c43790 returns UIWebBrowser*
+#include "ms2/client/ms2/ms2lightservice.h"   // C3: MS2LightService::ScaleLightIntensity
+#include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get
+#include <NiFixedString.h>   // C3: DAT_143ae53c0
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <string.h>
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
@@ -108,14 +112,12 @@ public:
 };
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
-bool FUN_1407cce10(const Scaleform::GFx::Value* p);                 // the value is a display object
 
 CStringW BlockFormat(int nStringId);                              // a string table text
-void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // equal
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
-UIDamageEffect* FUN_140ac55a0(eUIClassID nId);
+UIDamageEffect* FUN_140ac55a0(int nId);
 class Unk_GsInputSvc : public CInstrumentManager { };   // reloads the sound settings
 Unk_GsInputSvc* FUN_140c8dac0();
 
@@ -213,7 +215,7 @@ int CGameOptionInterface::vfunc_5(const char* pszName, void* pArg, int nArg)
     if (CBaseOption::vfunc_5(pszName, pArg, nArg))
         return 1;
     if (_stricmp("onResetUILayout", pszName) == 0)
-        FUN_140d73aa0(BlockFormat(0x852), 1, this, CStringW(L"resetSwfLayout"));
+        FUN_140d73aa0(BlockFormat(0x852), 1, (IMessageListener*)this, CStringW(L"resetSwfLayout"));
     return 0;
 }
 MS2_REPLACE_METHOD(0x141255A40, CGameOptionInterface, vfunc_5, 256, 0xA70A78FA);
@@ -228,7 +230,7 @@ int CGameOptionInterface::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();
-            if (FUN_1403b3c40(strTag, L"resetSwfLayout"))
+            if (strTag == L"resetSwfLayout")
                 FUN_140b632f0()->FUN_1422d21b0();
         }
         FUN_14151f200();
@@ -374,7 +376,7 @@ void CGameOptionInterface::vfunc_10()
     FUN_14125bd20(&m_flag, m_flag.m_b);
     FUN_14125bb60(TSingleton<CGameOption>::GetInstance()->FUN_140e09150(), &m_state);
     FUN_14125bd00(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), &m_flag);
-    UIDamageEffect* pEffect = FUN_140ac55a0((eUIClassID)0x4e3c);
+    UIDamageEffect* pEffect = FUN_140ac55a0(0x4e3c);
     if (pEffect != 0)
         pEffect->FUN_141910b30((float)TSingleton<CGameOption>::GetInstance()->FUN_140e09150()->m_n0c);
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
@@ -679,7 +681,7 @@ MS2Ptr<ASMovieClip> Unk_GsDialog::FUN_1412587a0(CString name, int nIndex)
     if (m_root.IsNull())
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
-    if (FUN_1407cce10(&child))
+    if (child.IsDisplayObject())
     {
         MS2Ptr<ASMovieClip> sp = FUN_1409b40c0(m_nId, child);
         if (static_cast<ASMovieClip*>(sp) != 0)
@@ -1080,11 +1082,9 @@ void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszK
 class Unk_GsMyPC : public MyPC
 {
 public:
-    void FUN_141530720(unsigned char nVisit, CStringW strPassword, bool bNotify);   // set the house visit permission
 };
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
 class Unk_SingletonObj1* FUN_1401d3200();                                              // the game constants
-int* FUN_1402056b0(char* pValue);                                   // an int constant
 
 // The damage-form enum strings of the battle block.
 CString Name_140219790(int nForm);                                   // giveDamage / takeDamage value -> text
@@ -1465,7 +1465,7 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
         else
         {
             int nLevel = (unsigned short)pPlayer->vfunc_78();
-            if (abs(nLevel - spNpc->GetLevel()) > *FUN_1402056b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0xcf88))
+            if (abs(nLevel - spNpc->GetLevel()) > *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xcf88)->Get())
                 return 0;
             *pnType = 0;
             return 1;
@@ -1826,10 +1826,9 @@ class Unk_GsPostEffectMgr : public ApplyEffect
 {
 public:
 };
-Unk_GsPostEffectMgr* FUN_1409a8b00();
 PostProcessingService* FUN_1409a8b20();
-void FUN_1409a5850(void* pDst, const void* pSrc, int nSize);
-extern char DAT_143ae53c0;
+bool FUN_1409a5850(NiFixedString& str, const bool* pb, unsigned int n);
+extern NiFixedString DAT_143ae53c0;
 // The renderer's display mode list (see gameoption.cpp).
 struct Unk_GsRawMode
 {
@@ -1856,7 +1855,7 @@ public:
     char m_pad[0xd0];
     bool m_bd0;                                                 // +0xd0
 };
-Unk_GsApp* FUN_140aadf80();
+void* FUN_140aadf80();
 ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 // The network service's callbacks (slot 65 takes the hide-others level).
@@ -1878,9 +1877,8 @@ public:
     virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64();
     virtual void vfunc_65(int nOptimalHide);
 };
-Unk_GsNetCallbacks* FUN_140d86260();
+void* FUN_140d86260();
 // MS2LightService's scene light scale (a member past ecr::LightService).
-void FUN_1414c0820(ecr::LightService* pService, float fScale);
 // GetService<T>: the framework's service manager, asked for system service T (instance 0x141264100 -> 0x141264120).
 Unk_ServiceManager* FUN_1413f9850();
 template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }
@@ -2074,12 +2072,12 @@ MS2_REPLACE(0x14125E1F0, FUN_14125e1f0, 254, 0xE1E58952);
 void FUN_14125e300(Unk_GraphicState* p, int b)
 {
     p->m_bHdr = b != 0;
-    bool bOk = FUN_1409a8b00()->SetSoftParticlesOption(p->m_bHdr, 0);
+    bool bOk = TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesOption(p->m_bHdr, 0);
     ecr::LightService* pService = GetService<ecr::LightService>();
     float fScale = 1.1f;
     if (p->m_bHdr && bOk)
         fScale = 1.0f;
-    FUN_1414c0820(pService, fScale);
+    static_cast<MS2LightService*>(pService)->ScaleLightIntensity(fScale);
 }
 MS2_REPLACE(0x14125E300, FUN_14125e300, 161, 0xABBDCCC4);
 
@@ -2096,7 +2094,7 @@ void FUN_14125e3b0(Unk_GraphicState* p, int b)
         if (pStep != 0 && pStep->GetActive())
             FUN_1409a8b20()->FUN_1416a37a0(0xc, true);
         char cOff = 0;
-        FUN_1409a5850(&DAT_143ae53c0, &cOff, 1);
+        FUN_1409a5850(DAT_143ae53c0, (const bool*)&cOff, 1);
     }
 }
 MS2_REPLACE(0x14125E3B0, FUN_14125e3b0, 249, 0x8F21A58B);
@@ -2115,7 +2113,7 @@ void FUN_14125e4c0(Unk_GraphicState* p, int b)
     if (p->m_b1b != (b != 0))
     {
         p->m_b1b = p->m_b15;
-        FUN_1409a8b00()->SetSoftParticlesEnabled(p->m_b1b);
+        TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesEnabled(p->m_b1b);
     }
     if (p->m_b1a != (b != 0))
     {
@@ -2234,8 +2232,8 @@ void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx)
                     bApplied = FUN_14125e7e0(p, pMode->m_nFormat, nWidth, nHeight);
                     if (bApplied)
                     {
-                        FUN_140aadf80()->FUN_1412642e0(bFullWindow);
-                        FUN_140aadf80()->FUN_141b91010(bWindowed, nWidth, nHeight);
+                        ((Unk_GsApp*)FUN_140aadf80())->FUN_1412642e0(bFullWindow);
+                        ((Unk_GsApp*)FUN_140aadf80())->FUN_141b91010(bWindowed, nWidth, nHeight);
                         p->m_nWidth = nWidth;
                         p->m_nHeight = nHeight;
                         TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
@@ -2244,8 +2242,8 @@ void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx)
             }
             if (!bApplied && FUN_14125e820(p, 0x400, 0x300))
             {
-                FUN_140aadf80()->FUN_1412642e0(bFullWindow);
-                FUN_140aadf80()->FUN_141b91010(bWindowed, 0x400, 0x300);
+                ((Unk_GsApp*)FUN_140aadf80())->FUN_1412642e0(bFullWindow);
+                ((Unk_GsApp*)FUN_140aadf80())->FUN_141b91010(bWindowed, 0x400, 0x300);
             }
             static_cast<MS2SceneGraphService*>(FUN_1413f98b0())->ClearAllCachedShaders();
         }
@@ -2370,7 +2368,7 @@ void FUN_14125ef90(Unk_GraphicState2* p)
     }
     int nMode = p->m_nOptimalHide == 1 ? 1 : 0;
     ((class COptimizer*)FUN_1409f7c90())->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, nMode);
-    FUN_140d86260()->vfunc_65(p->m_nOptimalHide);
+    ((Unk_GsNetCallbacks*)FUN_140d86260())->vfunc_65(p->m_nOptimalHide);
 }
 MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
 
@@ -2403,8 +2401,9 @@ struct Unk_GsConnect
     Unk_GsIdArray m_charList;                                   // +0x38 (CAtlArray, 0x20 bytes)
 };
 CStringA FUN_140719530(unsigned __int64 nId);
-unsigned __int64 FUN_1404082e0(const CString& str);
-CString FUN_1402bad60(const char* szFormat, const int* pn);    // format one int
+template <class T> T XmlConvert(const CString& str);
+template <> unsigned __int64 XmlConvert<unsigned __int64>(const CString& str);   // C3: was FUN_1404082e0
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& a);   // C3: was FUN_1402bad60
 // The auto looting block (Unk_GoAutoLoot).
 struct Unk_GsAutoLoot
 {
@@ -2522,7 +2521,7 @@ void FUN_14125f2c0(Unk_GpState* p)
     p->m_bVibration = false;
     p->m_fSensitivityH = 0.25f;
     p->m_fSensitivityV = 0.25f;
-    p->m_nLStickSensitivity = *FUN_1402056b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0xe5b0);
+    p->m_nLStickSensitivity = *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xe5b0)->Get();
 }
 MS2_REPLACE(0x14125F2C0, FUN_14125f2c0, 105, 0x15717390);
 
@@ -2936,7 +2935,7 @@ MS2_REPLACE(0x141260A30, FUN_141260a30, 109, 0x5FC78FF4);
 // @0x141260ab0
 void FUN_141260ab0(Unk_GsConnect* p, int nChannel)
 {
-    p->m_strChannel = FUN_1402bad60("{0}", &nChannel);
+    p->m_strChannel = Unk_SocketFormat<int>("{0}", nChannel);
     TiXmlDocument* pDoc = TSingleton<CGameOption>::GetInstance()->FUN_1412442e0();
     WriteGameOptionString(pDoc, "connect", "Channel", p->m_strChannel);
     TSingleton<CGameOption>::GetInstance()->WriteGameAndAccountFiles();
@@ -3318,15 +3317,15 @@ class Unk_140acd6e0 : public ASDisplayObject {};                // the button wr
 // The UIs the agreement updates.
 class UIGameMenuDialog { public: void FUN_1419394a0(bool b); void FUN_141939320(bool b); };   // C3: unit-local view
 class Unk_GsUiAgreeIcon : public UIGameMenuDialog { public: };   // 0x4e28
-Unk_GsUiAgreeIcon* FUN_140938b90(int nUiId);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // a message box
+UIGameMenuDialog* FUN_140938b90(int nUiId);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
 CStringW GetStringCommonByKey(const CStringW& str);                      // string table text by key
 CStringW FUN_140298ea0(CStringW str);                             // string table text by key
                                      // 0x4f7c
 UIHomeMenuDialog* FUN_140ef49b0(int nUiId);
            // 0x4e6a
-UIWebBrowserBase* FUN_140c43790(int nUiId);
+UIWebBrowser* FUN_140c43790(int nUiId);
 // The house service (cube map information) behind its smart pointer (see uirealestatesell.cpp).
 class CubeMapInformationService   // C3: unit-local view
 {
@@ -3336,19 +3335,20 @@ public:
 };
 class Unk_HoService : public CubeMapInformationService { public: };
 struct Unk_EntityAppFramework;
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator!=(CubeMapInformationService* pObject) const;   // 0x140c2b790
 class Unk_HoServicePtr
 {
 public:
-    Unk_HoServicePtr(Unk_HoService* p);                             // 0x1401cd0b0
-    ~Unk_HoServicePtr();                                            // 0x1401cd150
-    bool FUN_140c2b790(int n);                                      // != null
     bool FUN_140ef4cb0(int n);                                      // == null
     Unk_HoService* m_p;
 };
-Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // C3: was Unk_HoService*
 extern __int64 DAT_143ab2820;                                       // my account id
-void FUN_140d73bc0(int nStringId, int a2, int a3, CStringW strTag);  // system message box by string id
+void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strTag);  // system message box by string id
 void FUN_14151f200();
 
 class CPersonalInfoAgreement
@@ -3498,7 +3498,7 @@ void CPersonalInfoAgreement::FUN_141262090()
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
         return;
     bool bShow = !HasGroupAgreement(0);
-    Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pIcon = FUN_140938b90(0x4e28);
     if (pIcon != 0)
         pIcon->FUN_1419394a0(bShow);
     UISystemMenuDialog* pMenu = Unk_GsFindUI<UISystemMenuDialog>((eUIClassID)0x4e21);
@@ -3524,15 +3524,15 @@ void CPersonalInfoAgreement::FUN_141262180()
     bool bShow = !HasGroupAgreement(1);
     if (pPC->HasNoHome() != 0)
         bShow = false;
-    Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
+    UIGameMenuDialog* pIcon = FUN_140938b90(0x4e28);
     if (pIcon != 0)
         pIcon->FUN_141939320(bShow);
     if (!bShow)
         return;
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
-    if (spService.FUN_140c2b790(0))
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spService) != (CubeMapInformationService*)0)
     {
-        bool bMyHouse = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3180() == DAT_143ab2820;
+        bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
         if (bMyHouse)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
@@ -3567,10 +3567,10 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (pPC->HasNoHome() != 0)
         return;
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
-    if (spService.FUN_140ef4cb0(0))
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (reinterpret_cast<Unk_HoServicePtr&>(spService).FUN_140ef4cb0(0))
         return;
-    bool bMyHouse = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3180() == DAT_143ab2820;
+    bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
     if (!bMyHouse)
         return;
     if (m_bAnswered)
@@ -3604,8 +3604,8 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     if (nResult == 0)
     {
         m_bAnswered = true;
-        pPC->FUN_141530720(0, CStringW(L""), true);
-        Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
+        pPC->FUN_141530720((Unk_MyPCHouseSetting)0, CStringW(L""), true);
+        UIGameMenuDialog* pIcon = FUN_140938b90(0x4e28);
         if (pIcon != 0)
             pIcon->FUN_141939320(false);
     }
@@ -3621,8 +3621,8 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     else
     {
         m_bAnswered = true;
-        pPC->FUN_141530720(2, CStringW(L""), true);
-        Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
+        pPC->FUN_141530720((Unk_MyPCHouseSetting)2, CStringW(L""), true);
+        UIGameMenuDialog* pIcon = FUN_140938b90(0x4e28);
         if (pIcon != 0)
             pIcon->FUN_141939320(false);
     }
@@ -3659,7 +3659,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
         if (pPC != 0)
         {
             m_bAnswered = true;
-            pPC->FUN_141530720(1, CStringW(strPassword), false);
+            pPC->FUN_141530720((Unk_MyPCHouseSetting)1, CStringW(strPassword), false);
         }
         FUN_14151f200();
     }
@@ -3695,11 +3695,11 @@ public:
 private:
     void* m_pad[0x90 / sizeof(void*)];
 };
-TiXmlElement* FUN_14081b310(TiXmlDocument* pDoc);               // RootElement
+class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 TiXmlElement* FUN_140165cf0(TiXmlElement* pElem, const char* pszName);  // FirstChildElement
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_1408732e0(TiXmlElement* pElem, const char* pszName, __int64* pn);
-int FUN_140873320(TiXmlElement* pElem, const char* pszName, unsigned __int64* pn);
+int XmlGetAttr(TiXmlElement* pElem, const char* pszName, __int64& n);   // C3: was FUN_1408732e0
+int XmlGetAttr(TiXmlElement* pElem, const char* pszName, unsigned __int64& n);   // C3: was FUN_140873320
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const __int64& nValue);
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const unsigned __int64& nValue);
@@ -3709,7 +3709,7 @@ CString FUN_140390ea0(const wchar_t* psz, int nCodePage);       // a wide string
 // @0x141262f40
 void WriteGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool bValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3733,7 +3733,7 @@ MS2_REPLACE(0x141262F40, WriteGameOptionBool, 326, 0x3B08BE16);
 // @0x141263090
 void WriteGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int nValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3757,7 +3757,7 @@ MS2_REPLACE(0x141263090, WriteGameOptionInt, 244, 0xB61D45E2);
 // @0x141263190
 void WriteGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float fValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3781,7 +3781,7 @@ MS2_REPLACE(0x141263190, WriteGameOptionFloat, 253, 0xE0441726);
 // @0x1412632a0
 void WriteGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CString& strValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3805,7 +3805,7 @@ MS2_REPLACE(0x1412632A0, WriteGameOptionString, 265, 0x33BA8204);
 // @0x1412633b0
 void WriteGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, const CStringW& strValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3829,7 +3829,7 @@ MS2_REPLACE(0x1412633B0, WriteGameOptionStringW, 391, 0x6A3756CD);
 // @0x141263540
 void WriteGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64 nValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3853,7 +3853,7 @@ MS2_REPLACE(0x141263540, WriteGameOptionInt64, 244, 0x6403AA0D);
 // @0x141263640
 void WriteGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64 nValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3877,7 +3877,7 @@ MS2_REPLACE(0x141263640, WriteGameOptionUInt64, 244, 0xDA07D754);
 // @0x141263740
 void WriteGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned nValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -3901,7 +3901,7 @@ MS2_REPLACE(0x141263740, WriteGameOptionUInt, 244, 0x4A2D9A5C);
 // @0x141263840
 int ReadGameOptionBool(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, bool* pbValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pSection;
     if (pRoot != 0 && (pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0)
     {
@@ -3922,7 +3922,7 @@ MS2_REPLACE(0x141263840, ReadGameOptionBool, 237, 0x3A837688);
 // @0x141263940
 int ReadGameOptionInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, int* pnValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey, pnValue) != 0)
         return 1;
@@ -3933,7 +3933,7 @@ MS2_REPLACE(0x141263940, ReadGameOptionInt, 114, 0xEE6BB2B0);
 // @0x1412639c0
 int ReadGameOptionUInt(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned* pnValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && XmlGetAttr((class TiXmlElement*)(pElem), pszKey, *(unsigned int*)(pnValue)) == 0)
         return 1;
@@ -3944,7 +3944,7 @@ MS2_REPLACE(0x1412639C0, ReadGameOptionUInt, 113, 0x607BE37F);
 // @0x141263a40
 int ReadGameOptionFloat(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, float* pfValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0)
     {
@@ -3962,7 +3962,7 @@ MS2_REPLACE(0x141263A40, ReadGameOptionFloat, 138, 0xF8EF9F96);
 // @0x141263ad0
 int ReadGameOptionString(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CString* pstrValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey) != 0)
     {
@@ -3976,7 +3976,7 @@ MS2_REPLACE(0x141263AD0, ReadGameOptionString, 138, 0x5B5595A6);
 // @0x141263b60
 int ReadGameOptionStringW(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, CStringW* pstrValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
     if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && pElem->Attribute(pszKey) != 0)
     {
@@ -3990,9 +3990,9 @@ MS2_REPLACE(0x141263B60, ReadGameOptionStringW, 189, 0x405B97F8);
 // @0x141263c30
 int ReadGameOptionInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, __int64* pnValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
-    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && FUN_1408732e0(pElem, pszKey, pnValue) != 0)
+    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && XmlGetAttr(pElem, pszKey, *pnValue) != 0)
         return 1;
     return 0;
 }
@@ -4001,9 +4001,9 @@ MS2_REPLACE(0x141263C30, ReadGameOptionInt64, 113, 0xD30995A9);
 // @0x141263cb0
 int ReadGameOptionUInt64(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey, unsigned __int64* pnValue)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     TiXmlElement* pElem;
-    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && FUN_140873320(pElem, pszKey, pnValue) != 0)
+    if (pRoot != 0 && (pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection))) != 0 && XmlGetAttr(pElem, pszKey, *pnValue) != 0)
         return 1;
     return 0;
 }
@@ -4012,7 +4012,7 @@ MS2_REPLACE(0x141263CB0, ReadGameOptionUInt64, 113, 0x8F7453E9);
 // @0x141263d30
 void FUN_141263d30(TiXmlDocument* pDoc, const char* pszSection, const char* pszKey)
 {
-    TiXmlElement* pRoot = FUN_14081b310(pDoc);
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(DocRootElement(pDoc));
     if (pRoot != 0)
     {
         TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszSection));
@@ -4030,7 +4030,7 @@ void FUN_141263f00(CString& str, Unk_GsIdArray* pArr, const char* pszTokens)
     CString strToken = str.Tokenize(pszTokens, nPos);
     while (!strToken.IsEmpty())
     {
-        ((ATL::CAtlArray<__int64>*)pArr)->Add(FUN_1404082e0(strToken));
+        ((ATL::CAtlArray<__int64>*)pArr)->Add(XmlConvert<unsigned __int64>(strToken));
         strToken = str.Tokenize(pszTokens, nPos);
     }
 }

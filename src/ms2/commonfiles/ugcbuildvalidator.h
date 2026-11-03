@@ -14,12 +14,7 @@
 
 class Unk_Service6100017;
 
-// Cube grid point: Unk_Int3 whose default constructor zeroes it (0x1408850a0).
-struct Unk_CubePoint : public Unk_Int3
-{
-    // @0x1408850a0
-    Unk_CubePoint() { x = 0; y = 0; z = 0; }
-};
+// Unk_CubePoint (the cube grid point) is in cube.h.
 
 class CUGCBuildValidator
 {

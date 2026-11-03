@@ -48,13 +48,13 @@ public:
     T* operator->() const { return m_p; }
 private:
     void AddRef() const { if (m_p) AddRefImpl(0); }
-    static void Reference(T* p) { p->FUN_14015b020(); }
+    static void Reference(T* p) { CPtred::AddRefPtred(p); }
     void AddRefImpl(void*) const { Reference(m_p); }
     void Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
     void ReleaseImpl(void*) {
-        if (m_p->FUN_140159bc0() == 0) {
+        if (CPtred::ReleasePtred(m_p) == 0) {
             Reference(m_p);
-            m_p->FUN_140159ba0();
+            CPtred::DeletePtred(m_p);
         }
     }
     void* m_unused;
@@ -67,7 +67,6 @@ struct Unk_ReportData {
     Unk_ReportData();
     ~Unk_ReportData();
     void FUN_140200f80();
-    void FUN_140201180(COutPacket&);
     int type; int reason;
     CStringW name; CStringW target; CStringW itemName;
     __int64 m_20; int m_28; int m_2c; CStringW content;
@@ -126,9 +125,6 @@ public:
     int FUN_140eddc90();
     int FUN_140eddd60(int index);
     CStringW FUN_140edddd0();
-    void FUN_14015b020();
-    int FUN_140159bc0();
-    void FUN_140159ba0();
     int m_itemKind;
 private:
     MS2_LAYOUT_FRIEND;

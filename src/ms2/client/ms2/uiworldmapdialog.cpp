@@ -482,7 +482,6 @@ int UIWorldMapDialog::vfunc_54(void* pCfg)
 MS2_REPLACE_METHOD(0x141B551C0, UIWorldMapDialog, vfunc_54, 308, 0xBC07D643);
 
 // @0x141b55300
-// MS2-FUNCTIONAL: onClickMissionRewardPrev/Next pass the PopInt temporary to GetPrev/NextRound through mov ecx; mov edx,ecx where the exe loads edx directly (4 bytes; everything else equal)
 int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     MyPC* pPlayer = static_cast<MyPC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
@@ -716,7 +715,8 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetPrevRound(data.PopInt());
+            int nArg = data.PopInt();
+            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetPrevRound(nArg);
             if (nRound != 0)
                 FUN_141b5cc40(nRound);
         }
@@ -726,7 +726,8 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetNextRound(data.PopInt());
+            int nArg = data.PopInt();
+            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetNextRound(nArg);
             if (nRound != 0)
                 FUN_141b5cc40(nRound);
         }

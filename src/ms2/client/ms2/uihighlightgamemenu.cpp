@@ -31,6 +31,8 @@
 #include "ms2/placeholder/header_statics_a.h"
 
 #include "ms2/ms2recover.h"
+#include "ms2/ms2format.h"  // C3: StringFormat<CString>
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail, Unk_MailPtr<CMailInfo>
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/commonfiles/featuremanager.h"
@@ -49,6 +51,7 @@
 #include "ms2/commonfiles/timeutil.h"  // C3: GetServerTime
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/inventory.h"  // C3: Unk_Inventory (was Unk_HlDb members)
+#include "ms2/client/ms2/statpointmanager.h"  // C3: CStatPointManager::GetRemaining
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // The key-input controller singleton of this unit.
@@ -74,37 +77,36 @@ class MyPC   // C3: member view (the real header pulls in the PC tree)
 {
 public:
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
+    int FUN_14152e970(int nId);                              // the free skill points of nId
 };
 
 class CItem;
-CItem* FUN_14052cd70(MS2Ptr<CItem>* p);
 int UseItem(MS2Ptr<CItem> spItem, int n);                  // 0x140d1bd60
 
 // The item / record tables (DAT_143ab2a90) and their callees.
-class Unk_HlDb
-{
-};
-extern Unk_HlDb DAT_143ab2a90;
-extern char DAT_143ab2ee0[];
-extern P DAT_143abd628;
+extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
+extern CUserMail g_143ab2ee0;   // C3: was extern char DAT_143ab2ee0[]
 
 class Unk_HlAS : public AScript
 {
 public:
 };
 void FUN_140614800(Scaleform::GFx::Value* v);               // ~Value
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
-CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
 CStringW GetStringCommonByKey(const CStringW& str);
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: was NotifySystem*
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 
-class Unk_HlItemSys { public: void FUN_1419cae20(void* pListener); void FUN_1419caeb0(void* pListener); };
+class Unk_ItemEventSystem { public: void FUN_1419cae20(UIItemEventListener* pListener); void FUN_1419caeb0(UIItemEventListener* pListener); };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
-P FUN_1403ed2d0();
+class WorldService   // C3: member view
+{
+public:
+    static WorldService* GetInstance();
+    void* FUN_141bd0cc0();
+};
 // reference-counted stat-point record at player+0x1120 (copy, release)
 class Unk_HlRef
 {
@@ -205,7 +207,6 @@ public:
     char m_pad_08[0x1120 - 8];
     Unk_HlRef m_statRef;                                   // +0x1120
 };
-P FUN_141bd0cc0(P pWorld);
 int FUN_1418dd0d0();
 
 // The menu table (see uigamepadmenudialog.cpp) and the inventory / socket dialogs.
@@ -241,46 +242,42 @@ P FUN_140ba7c60(MS2Ptr<AScript>* p);
 // item handles / records
 
 // the player
-int FUN_141654730(P);                                      // job code
-int FUN_140644b80(P, int);
-class JobTable;
-unsigned FUN_14152e970(P, int);
-P FUN_1401c0db0();
-unsigned FUN_14067a8d0(P, unsigned short);
-P FUN_1416546d0(P);
-unsigned FUN_140639b40(P, int);
+class JobSystemCli;
+class PC   // C3: member view
+{
+public:
+    JobSystemCli* FUN_1416546d0();
+    int FUN_141654700();
+    int FUN_141654730();                                    // job code
+    struct Unk_PCEquipSet* FUN_1416561a0();
+};
+class JobTable   // C3: member view
+{
+public:
+    int GetJobRank(int nJob);
+};
+class JobSystem   // C3: member view
+{
+public:
+    int GetUsedPoint(int nId);
+};
+class CLua   // C3: member view
+{
+public:
+    int CalcAvailableSkillPoint(unsigned short nLevel);
+};
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class CGameOption;
-unsigned FUN_140caa1a0(P);
 
 // lists, arrays, item records
-P FUN_1416561a0(P);
-P FUN_1408e5180(void*);
-void FUN_1408e4ea0(void*);
-int FUN_141654700(P);
-unsigned __int64 FUN_1408e57c0(P);
-void FUN_1408e4be0(void*, P);
-// A 16-byte list entry copied out of the array (ctor 0x1408e4be0, dtor 0x1408e4ea0).
-struct Unk_HlEntry
-{
-    Unk_HlEntry(P pSrc);                                // 0x1408e4be0
-    ~Unk_HlEntry();                                     // 0x1408e4ea0
-    void* m_p[2];
-};
-int FUN_1408e48b0(void*);
-P FUN_1408e3700(void*);
-unsigned int FUN_1408e3520(void*);
 class Unk_CommandArgs   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1408d1f60(unsigned int, int);
 };
 void AddMinutes(class CMsTime&, int);   // C3: was FUN_14086a880
-int FUN_140691130(P);
-int FUN_140690370(P);
-int FUN_140408410(void*, int*);
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410
 
-P FUN_14015b020(P p);
 void FUN_140159b70(unsigned nHr);
 
 // ---- tiny in-unit helpers ---------------------------------------------------------------------------------------------
@@ -288,7 +285,7 @@ void FUN_140159b70(unsigned nHr);
 // @0x140c24ef0
 P FUN_140c24ef0()
 {
-    return DAT_143abd628;
+    return TSingleton<UIBottomCenterAlignManager>::s_instance;
 }
 
 // @0x140c25190
@@ -300,7 +297,7 @@ int FUN_140c25190()
 // @0x140c25e30
 void FUN_140c25e30(P p)
 {
-    FUN_14015b020(p);
+    CPtred::AddRefPtred((CPtred*)p);
 }
 
 // @0x140c25e50
@@ -480,17 +477,17 @@ UIHighlightGameMenu::UIHighlightGameMenu()
     m_actions.SetAt("skillbook", &UIHighlightGameMenu::FUN_140c234d0);
     m_actions.SetAt("inven", &UIHighlightGameMenu::FUN_140c231b0);
     m_actions.SetAt("mail", &UIHighlightGameMenu::FUN_140c235d0);
-    if (FUN_140166410()->IsRegionNA())
+    if (((CFeatureManager*)FUN_140166410())->IsRegionNA())
         m_actions.SetAt("enchantscroll", &UIHighlightGameMenu::FUN_140c237a0);
     m_actions.SetAt("gemstone", &UIHighlightGameMenu::FUN_140c23f10);
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameStart"),
+    ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameStart"),
         Delegate<void(NotifyObject*)>(this, &UIHighlightGameMenu::FUN_140c24470));
 }
 
 // @0x140c22550
 UIHighlightGameMenu::~UIHighlightGameMenu()
 {
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameStart"),
+    ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameStart"),
         Delegate<void(NotifyObject*)>(this, &UIHighlightGameMenu::FUN_140c24470));
 }
 
@@ -510,7 +507,7 @@ void UIHighlightGameMenu::vfunc_67()
 void UIHighlightGameMenu::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_HlItemSys*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140c22f50();
 }
 
@@ -532,8 +529,8 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp(szMethod, "enchantscroll") == 0)
     {
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5d680(m_nScrollItem);
-        if (FUN_14052cd70(&spItem) != 0)
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nScrollItem);
+        if (spItem.get() != 0)
         {
             UseItem(spItem, 0);
             UIDialog* pInv = reinterpret_cast<UIDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
@@ -591,7 +588,7 @@ void UIHighlightGameMenu::vfunc_72()
 // @0x140c22b30
 void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    CStringW strKey = FUN_1402a5170(L"s_highlightgamemenu_{0}", pArgs->FUN_1422b8d30());
+    CStringW strKey = StringFormat(L"s_highlightgamemenu_{0}", pArgs->FUN_1422b8d30());
     ASTooltip tip(1, 2);
     int nOk = tip.ApplyTextTooltip(GetStringCommonByKey(strKey));
     if (nOk != 0)
@@ -599,7 +596,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         tip.SetTooltipAlign(1);
         tip.SetOnDelay(0);
         tip.SetOffDelay(0);
-        FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+        *pRetVal = tip.FUN_1422bb870();
     }
 }
 
@@ -607,7 +604,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 void UIHighlightGameMenu::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class Unk_HlItemSys*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
 }
 
 // @0x140c22d00
@@ -667,7 +664,7 @@ void UIHighlightGameMenu::FUN_140c22f50()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
     if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0xe558)->Get())
@@ -696,11 +693,11 @@ void UIHighlightGameMenu::FUN_140c22f50()
 // @0x140c231b0
 int UIHighlightGameMenu::FUN_140c231b0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > bag;
-    reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(0, bag);
+    g_143ab2a90.FUN_140a60880(0, bag);
     CMsTime limit(GetServerTime());
     AddMinutes(limit, 0xfffffff6);
     for (unsigned __int64 i = 0; i < bag.GetCount(); ++i)
@@ -708,12 +705,12 @@ int UIHighlightGameMenu::FUN_140c231b0()
         MS2Ptr<CItem> item = bag[i];
         if (item->GetCreationTime() < limit.Get())
             continue;
-        if (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a65770(item.get()) != 0)
+        if (g_143ab2a90.FUN_140a65770(item.get()) != 0)
             continue;
         MS2Ptr<CItemData> rec((CItemData*)item->FUN_140527840());
         if (!rec)
             continue;
-        if (rec->limit.IsJobRecommended(FUN_141654700(pPc)) == 0)
+        if (rec->limit.IsJobRecommended(((PC*)pPc)->FUN_141654700()) == 0)
             continue;
         MS2Ptr<CItem> worn = ((MyPC*)pPc)->FUN_14152e2f0(item);
         if (!worn)
@@ -727,18 +724,18 @@ int UIHighlightGameMenu::FUN_140c231b0()
 // @0x140c234d0
 int UIHighlightGameMenu::FUN_140c234d0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    int nMax = FUN_140644b80(TSingleton<JobTable>::GetInstance(), FUN_141654730(pPc));
+    int nMax = TSingleton<JobTable>::GetInstance()->GetJobRank(((PC*)pPc)->FUN_141654730());
     for (int i = 1; i <= nMax; i++)
     {
-        if (FUN_14152e970(pPc, i) <= 0)
+        if ((unsigned)((MyPC*)pPc)->FUN_14152e970(i) <= 0)
             continue;
         if (i == 1)
         {
-            unsigned nNeed = FUN_14067a8d0(FUN_1401c0db0(), pPc->vfunc_78());
-            unsigned nUsed = FUN_140639b40(FUN_1416546d0(pPc), i);
+            unsigned nNeed = ((CLua*)FUN_1401c0db0())->CalcAvailableSkillPoint(pPc->vfunc_78());
+            unsigned nUsed = ((JobSystem*)((PC*)pPc)->FUN_1416546d0())->GetUsedPoint(i);
             if (nUsed >= nNeed)
                 continue;
         }
@@ -750,16 +747,16 @@ int UIHighlightGameMenu::FUN_140c234d0()
 // @0x140c235d0
 int UIHighlightGameMenu::FUN_140c235d0()
 {
-    if (FUN_1408e3520(DAT_143ab2ee0) > 0)
+    if ((unsigned)g_143ab2ee0.FUN_1408e3520() > 0)
         return true;
-    if (FUN_1408e48b0(DAT_143ab2ee0) != 0)
+    if (g_143ab2ee0.FUN_1408e48b0() != 0)
     {
-        P pArr = FUN_1408e3700(DAT_143ab2ee0);
-        for (unsigned __int64 i = 0; i < FUN_1408e57c0(pArr); ++i)
+        CUserMail::MailArray* pArr = &g_143ab2ee0.FUN_1408e3700();
+        for (unsigned __int64 i = 0; i < pArr->GetCount(); ++i)
         {
-            Unk_HlEntry kEntry(FUN_140c24ea0((__int64*)pArr, i));
-            if (FUN_140690370(FUN_1408e5180(&kEntry)) >= 100 && FUN_140690370(FUN_1408e5180(&kEntry)) < 0x71
-                && FUN_140691130(FUN_1408e5180(&kEntry)) == 0)
+            CUserMail::MailPtr kEntry(*(CUserMail::MailPtr*)FUN_140c24ea0((__int64*)pArr, i));
+            if (kEntry.operator->()->FUN_140690370() >= 100 && kEntry.operator->()->FUN_140690370() < 0x71
+                && kEntry.operator->()->FUN_140691130() == 0)
                 return true;
         }
     }
@@ -769,10 +766,10 @@ int UIHighlightGameMenu::FUN_140c235d0()
 // @0x140c236f0
 int UIHighlightGameMenu::FUN_140c236f0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    bool bPoint = FUN_140caa1a0(pPc->FUN_140c25130().FUN_140c24af0()) > 0;
+    bool bPoint = (unsigned)((CStatPointManager*)pPc->FUN_140c25130().FUN_140c24af0())->GetRemaining() > 0;
     if (bPoint)
         return true;
     return false;
@@ -781,7 +778,7 @@ int UIHighlightGameMenu::FUN_140c236f0()
 // @0x140c237a0
 int UIHighlightGameMenu::FUN_140c237a0()
 {
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     m_nScrollItem = 0;
@@ -793,7 +790,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
     MS2Ptr<CItem> scroll(0);
     for (unsigned __int64 i = 0; i < ids.GetCount(); ++i)
     {
-        MS2Ptr<CItem> found = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5e2e0(ids[i]);
+        MS2Ptr<CItem> found = g_143ab2a90.FUN_140a5e2e0(ids[i]);
         if (found.get() != 0)
         {
             scroll = found;
@@ -807,14 +804,14 @@ int UIHighlightGameMenu::FUN_140c237a0()
         return false;
     if (rec->function.name != L"EnchantScroll")
         return false;
-    int nKind = rec->function.parameter.FUN_1408d1f60(0, 0);
+    int nKind = reinterpret_cast<Unk_CommandArgs&>(rec->function.parameter).FUN_1408d1f60(0, 0);
     MS2Ptr<CEnchantScrollData> ench = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(nKind);
     if (ench.IsNull())
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(0, items);
+    g_143ab2a90.FUN_140a60880(0, items);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
-    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 0);
+    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 0);
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
@@ -834,7 +831,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
         if (it->GetRarity() != 3)
             continue;
         int nId = data->GetEquipSubtype();
-        if (FUN_140408410(&ench->m_slots, &nId) == -1)
+        if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(ench->m_slots), nId) == -1)
             continue;
         if (TSingleton<CItemEnchantLimitTable>::GetInstance()->FUN_14058df90(it.get()) == 0)
             continue;
@@ -859,13 +856,13 @@ int UIHighlightGameMenu::FUN_140c23f10()
         if (!bSocket)
             return false;
     }
-    Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
+    Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
     m_bitsGem.FUN_140c260a0(0, false);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
-    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 0);
-    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 1);
+    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 0);
+    ((CEquipment*)((PC*)pPc)->FUN_1416561a0())->CollectShownItemsInLayer(list, 1);
     if (FUN_140c25330(&list) == 0)
     {
         unsigned nMask = 0;
@@ -885,7 +882,7 @@ int UIHighlightGameMenu::FUN_140c23f10()
         if (nMask != 0)
         {
             ATL::CAtlArray<MS2Ptr<CItem> > gems;
-            reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(6, gems);
+            g_143ab2a90.FUN_140a60880(6, gems);
             for (unsigned __int64 k = 0; k < gems.GetCount(); ++k)
             {
                 MS2Ptr<CItem> g = gems[k];

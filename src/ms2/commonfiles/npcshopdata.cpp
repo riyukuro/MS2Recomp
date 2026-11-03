@@ -38,7 +38,6 @@
 // MS2-PIN: ??$forward@AEBU?$less@_J@std@@@std@@YAAEBU?$less@_J@0@AEBU10@@Z 0x1406ed360 ; prop
 // MS2-PIN: ??$forward@V?$tuple@AEB_J@std@@@std@@YA$$QEAV?$tuple@AEB_J@0@AEAV10@@Z 0x1406ed3d0 ; prop
 // MS2-PIN: ??$move@AEAV?$tuple@AEB_J@std@@@std@@YA$$QEAV?$tuple@AEB_J@0@AEAV10@@Z 0x1406ed5c0 ; prop
-// MS2-PIN: ??0?$CRBMap@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@_K@Z 0x1406edb40 ; prop
 // MS2-PIN: ??0?$CRBMap@IV?$Unk_SocketPtr@V?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@_JV?$CElementTraits@_J@ATL@@@ATL@@@@@3@@ATL@@QEAA@_K@Z 0x1406edb70 ; prop
 // MS2-PIN: ??0?$CRBMap@IV?$MS2Ptr@VCNpcShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopData@@@@@3@@ATL@@QEAA@_K@Z 0x1406edbd0 ; prop
 // MS2-PIN: ??0?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEAA@_K@Z 0x1406edc00 ; prop
@@ -2452,4 +2451,5 @@ MS2_REPLACE_METHOD(0x1406f24b0, CNpcShopMeratItemSvr, vfunc_3, 14, 0x828204CF);
 // MS2-PIN: ??1CPair@?$CRBTree@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@IEAA@XZ 0x1406ef8d0 ; destroys s_beautyShops (atexit 0x142c9b960 -> CRBMap dtor 0x1406eee70 chain)
 // MS2-PIN: ??1?$MS2Ptr@VCBeautyShopData@@@@QEAA@XZ 0x1406ef070 ; s_beautyShops lookup 0x1406e4ef0 and CPair dtor 0x1406ef8d0 call it
 // MS2-PIN: ??C?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@@@QEBAPEAV?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@XZ 0x1406f24d0
-
+// MS2-PIN: ??0?$CRBMap@IV?$MS2Ptr@VCBeautyShopData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBeautyShopData@@@@@3@@ATL@@QEAA@_K@Z 0x1406edba0 ; gp1: by its exe callers
+// MS2-PIN: ??0?$CRBMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@_K@Z 0x1406edb40 ; gp1: by its exe callers

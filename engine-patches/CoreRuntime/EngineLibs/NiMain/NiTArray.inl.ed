@@ -1,3 +1,46 @@
+201a
+
+//----------------------------------------------------------------------------------------
+// MS2: the exe's ctors of some TUs (NiTexturingProperty) inline a SetAt that loads m_pBase again at each use,
+// after the m_usSize/m_usESize stores, where cl 19.16 loads it once; those TUs define the switch
+// (engine/units-gb.json) and call this. Same body as SetAt, m_pBase read as volatile.
+#if defined(EE_MS2_NITARRAY_SETAT_RELOAD)
+template <class T, class TAlloc> inline
+void NiTArray<T, TAlloc>::MS2SetAtReload(unsigned int uiIndex, const T& element)
+{
+    EE_ASSERT(uiIndex < m_usMaxSize);
+    unsigned short usIndex = (unsigned short)(uiIndex & 0xFFFF);
+
+    if (usIndex >= m_usSize)
+    {
+        m_usSize = usIndex+1;
+        if (element != T(0))
+        {
+            m_usESize++;
+        }
+    }
+    else
+    {
+        if (element != T(0))
+        {
+            if ((*(T* volatile*)&m_pBase)[usIndex] == T(0))
+            {
+                m_usESize++;
+            }
+        }
+        else
+        {
+            if ((*(T* volatile*)&m_pBase)[usIndex] != T(0))
+            {
+                m_usESize--;
+            }
+        }
+    }
+
+    (*(T* volatile*)&m_pBase)[usIndex] = element;
+}
+#endif
+.
 74c
 template <class T, class TAlloc> EE_MS2_NITARRAY_SETSIZE_INLINE
 .

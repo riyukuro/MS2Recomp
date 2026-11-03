@@ -89,7 +89,6 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@UItemEntity@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@UItemEntity@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@UItemEntity@@@@@std@@@2@XZ 0x140bce480 ; prop
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VASItemSlot@@@@@2@XZ 0x140bce5d0 ; unique
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VUICashAttendGifList@@@@V?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@2@XZ 0x140bce650 ; unique
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUICashAttendGifList@@@@V?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VUICashAttendGifList@@@@XZ 0x140bceef0 ; unique
 // MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@AEAAXXZ 0x140bcf360 ; unique
 // MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@QEAAXXZ 0x140bcfb70 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICashAttendDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bcfc70 ; unique
@@ -734,3 +733,5 @@ template<> Delegate<void(CInPacket&)>::DelegateImplBase::~DelegateImplBase() {}
 
 // @0x140bcbe10
 template<> Delegate<void(GameEventVariable*)>::DelegateImplBase::~DelegateImplBase() {}
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUICashAttendGifList@@@@V?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VUICashAttendGifList@@@@XZ 0x140bcef10 ; gp1: by its exe callers
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VUnk_CadCheck@@@@XZ 0x140bceef0 ; gp1: by its exe callers

@@ -95,14 +95,14 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The notify centre (FUN_140939a10), the listener hubs.
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_MiItemEvents
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* p);                 // register
     void FUN_1419caeb0(UIItemEventListener* p);                 // unregister
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-class Unk_MiEntityEvents
+class Unk_UpperEvents
 {
 public:
     void FUN_1419308c0(UIEntityEventListener* p);
@@ -115,7 +115,6 @@ class Unk_MiPc : public MyPC
 {
 public:
     MS2Ptr<CStatPointManager> FUN_140c25130();                  // the stat point manager
-    CStringW* FUN_141656d90();                                  // the memo of the player
 };
 class CEquipItem : public CPtred { public: MS2Ptr<CItem> GetItem(); };   // ?\equipitem.cpp, only the member this unit calls
 
@@ -144,7 +143,7 @@ public:
     void FUN_14187fb30();
 };
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-int FUN_14028d260(float f);
+__int64 FUN_14028d260(float f);
 int MinutesToSeconds(int n);
 int HoursToSeconds(int n);
 
@@ -158,16 +157,15 @@ void FUN_141a5d0a0(int n)
 }
 
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
-void FUN_1408377d0(ATL::CAtlArray<void*>* pOut);                // the stat keys shown
-void FUN_1408377d0(ATL::CAtlArray<int>& ids);
+void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& ids);   // the stat keys shown
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned nColor);
-unsigned __int64 FUN_1409eecc0(ATL::CAtlArray<void*>* pArr);                 // count
-int* FUN_1409eec00(ATL::CAtlArray<void*>* pArr, __int64 nIndex);   // element
+enum Unk_StatType { };
+typedef ATL::CAtlArray<Unk_StatType, ATL::CDefaultElementTraits<Unk_StatType> > Unk_MiStatArray;   // C3: was FUN_1409eecc0 / FUN_1409eec00
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);               // a copy of the item
-void* FUN_140c544d0(void* pBind);                                // its bag
+class DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pBind);   // its bag (DragSlotBag cast)
    // the tab bar
 class Unk_MiNtMgr
 {
@@ -179,11 +177,11 @@ class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
    // string of (id, symbol)
 class Unk_IntTriple { public: int Sum(); };
 class Unk_MiScore : public Unk_IntTriple {};                     // the trophy points
-class Unk_MiTrophy { public: Unk_MiScore* FUN_140938ad0(); };
+struct Unk_AchieveTab;   // achievemanager.h
+class CAchieveManager { public: Unk_AchieveTab* GetTally(); };   // C3: member view (achievemanager.h), the trophy points
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 unsigned __int64 FUN_140837770(int nId, unsigned nCount);
 void FUN_1418bee30(ASObj* pObj, int n);
-class Unk_MiItemEvent { public: CItem* FUN_140526a50(); };       // the item event (the item pointer at +0x40)
 class Unk_MiProxyObj : public CProxyGameObject { };
 class Unk_MiEntityRef
 {
@@ -248,10 +246,10 @@ int UIMyInfoDialog::vfunc_65()
 // @0x141a58630
 void UIMyInfoDialog::vfunc_67()
 {
-    ((class Unk_MiItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
-    ((class Unk_MiEntityEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(static_cast<UIEntityEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
@@ -304,10 +302,10 @@ void UIMyInfoDialog::OnLoadInit()
 void UIMyInfoDialog::OnLoadComplete()
 {
     UIPCInfoDialog::OnLoadComplete();
-    ((class Unk_MiItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     TSingleton<UIDialogEventDispatcher>::GetInstance()->FUN_141928050(static_cast<UIDialogEventListener*>(this));
-    ((class Unk_MiEntityEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
@@ -523,7 +521,7 @@ void UIMyInfoDialog::vfunc_22(void* p)
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0)
-        pAvatar->FUN_1418bbc70(static_cast<Unk_MiItemEvent*>(p)->FUN_140526a50());
+        pAvatar->FUN_1418bbc70((CItem*)((CItem*)p)->GetItemUid());
 }
 
 // @0x141a59d80
@@ -698,7 +696,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
     if (spBox.get() != 0)
     {
-        spBox->SetInput(0, *static_cast<Unk_MiPc*>(pPc)->FUN_141656d90(), 0x14, 0, 0);
+        spBox->SetInput(0, static_cast<PC*>(static_cast<Unk_MiPc*>(pPc))->FUN_141656d90(), 0x14, 0, 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -793,7 +791,7 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    m_30->Invoke("setTrophy", ((class Unk_MiTrophy*)FUN_1406c7600())->FUN_140938ad0()->Sum());
+    m_30->Invoke("setTrophy", ((Unk_MiScore*)((CAchieveManager*)FUN_1406c7600())->GetTally())->Sum());
 }
 
 // @0x141a5af10
@@ -809,10 +807,10 @@ void UIMyInfoDialog::vfunc_91(int nStat)
     if (vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
-    FUN_1408377d0(&aStats);
-    if (nStat < 0 || (int)FUN_1409eecc0(&aStats) <= nStat)
+    FUN_1408377d0(*(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>*)&aStats);
+    if (nStat < 0 || (int)((Unk_MiStatArray*)&aStats)->GetCount() <= nStat)
         return;
-    int* pStat = FUN_1409eec00(&aStats, nStat);
+    int* pStat = (int*)&(*(Unk_MiStatArray*)&aStats)[nStat];
     static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestAdd(*pStat, 1);
     m_250 = 0;
 }
@@ -830,10 +828,10 @@ void UIMyInfoDialog::FUN_141a5b080(int nStat)
     if (vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
-    FUN_1408377d0(&aStats);
-    if (nStat < 0 || (int)FUN_1409eecc0(&aStats) <= nStat)
+    FUN_1408377d0(*(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>*)&aStats);
+    if (nStat < 0 || (int)((Unk_MiStatArray*)&aStats)->GetCount() <= nStat)
         return;
-    int nKey = *FUN_1409eec00(&aStats, nStat);
+    int nKey = *(int*)&(*(Unk_MiStatArray*)&aStats)[nStat];
     unsigned nTotal = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey)) + m_250;
     unsigned nRemaining = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
     if (nRemaining <= m_250 || ((struct Unk_MiConsts*)FUN_1401d3200())->m_aStatCap[nKey] <= nTotal)
@@ -944,24 +942,24 @@ void UIMyInfoDialog::FUN_141a5b6c0()
             {
                 strRemain = FUN_14062b4f0(CStringW(L"s_item_word_d"), &nDays);
                 if (nHours == 0 && nMinutes == 0)
-                    m_274 = FUN_14028d260((float)nSeconds);
+                    m_274 = (int)FUN_14028d260((float)nSeconds);
                 else
-                    m_274 = nHours > 0 ? FUN_14028d260((float)HoursToSeconds(nHours)) : FUN_14028d260((float)MinutesToSeconds(nMinutes));
+                    m_274 = nHours > 0 ? (int)FUN_14028d260((float)HoursToSeconds(nHours)) : (int)FUN_14028d260((float)MinutesToSeconds(nMinutes));
             }
             else if (nHours > 0)
             {
                 strRemain = FUN_14062b4f0(CStringW(L"s_item_word_h"), &nHours);
-                m_274 = nMinutes > 0 ? FUN_14028d260((float)MinutesToSeconds(nMinutes)) : FUN_14028d260((float)nSeconds);
+                m_274 = nMinutes > 0 ? (int)FUN_14028d260((float)MinutesToSeconds(nMinutes)) : (int)FUN_14028d260((float)nSeconds);
             }
             else if (nMinutes > 0)
             {
                 strRemain = FUN_14062b4f0(CStringW(L"s_item_word_m"), &nMinutes);
-                m_274 = FUN_14028d260((float)nSeconds);
+                m_274 = (int)FUN_14028d260((float)nSeconds);
             }
             else
             {
                 strRemain = GetStringCommonByKey(L"s_item_word_s_shortly");
-                m_274 = FUN_14028d260((float)nSeconds);
+                m_274 = (int)FUN_14028d260((float)nSeconds);
             }
             strPeriod = FUN_1405c2690(CStringW(L"s_char_info_codi_tab_period_fmt"), strRemain);
             if (m_274 == 0)
@@ -1004,7 +1002,7 @@ void UIMyInfoDialog::FUN_141a5bed0()
         m_278 = kTitle->IsActive();
         if ((m_30.get() ? true : false) && m_nTab == 3)
         {
-            void* pBag = FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_strEquipBag));
+            void* pBag = FUN_140c544d0((NotifyContext::BindData*)Unk_NotifyContext::FUN_1422c8e90(m_strEquipBag));
             if (pBag != 0)
                 ((class DragSlotBag*)(void*)(pBag))->FUN_1422cca90();
         }
@@ -1096,7 +1094,7 @@ bool UIMyInfoDialog::FUN_141a5c640(int nButton, const CMsgBoxData& kData)
     if (nButton == 0)
     {
         int nTab = kData.FUN_141a02e50(0, m_nTab);
-        if ((m_30.get() ? true : false) && nTab != m_nTab && (m_spInfo.get() ? true : false) && m_spInfo->m_mapEquip2.IsEmpty() == true)
+        if ((m_30.get() ? true : false) && nTab != m_nTab && (m_spInfo.operator PCInfo*() ? true : false) && m_spInfo->m_mapEquip2.IsEmpty() == true)
         {
             MS2Ptr<ASMovieClip> spTab = m_30->FUN_140be23c0<ASMovieClip>("m_tab");
             if (spTab.get() != 0)
@@ -1123,7 +1121,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
     if (m_spInfo->FUN_140dba1c0() == 0)
         return;
     ATL::CAtlArray<int> aStats;
-    FUN_1408377d0(aStats);
+    FUN_1408377d0((ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>&)aStats);
     unsigned nRemain = 0;
     unsigned nUsed = 0;
     nRemain = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
@@ -1181,10 +1179,10 @@ void UIMyInfoDialog::FUN_141a5cf30(int nStat)
     if ((unsigned)m_250 <= 0)
         return;
     ATL::CAtlArray<void*> aStats;
-    FUN_1408377d0(&aStats);
-    if (FUN_1409eecc0(&aStats) < (unsigned __int64)nStat)
+    FUN_1408377d0(*(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>*)&aStats);
+    if (((Unk_MiStatArray*)&aStats)->GetCount() < (unsigned __int64)nStat)
         return;
-    int* pStat = FUN_1409eec00(&aStats, nStat);
+    int* pStat = (int*)&(*(Unk_MiStatArray*)&aStats)[nStat];
     static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestAdd(*pStat, m_250);
     m_250 = 0;
     m_254 = true;

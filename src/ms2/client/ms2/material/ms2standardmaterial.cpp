@@ -848,7 +848,6 @@ bool MS2StandardMaterial::HandleFinalVertexOutputs(Context& kContext, NiStandard
 MS2_REPLACE_METHOD(0x142750010, MS2StandardMaterial, HandleFinalVertexOutputs, 961, 0xC45FCA5E);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: block layout and register allocation differ (exe 3972 bytes); same light fragment
 // @0x1427503e0
 bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightType eType, unsigned int uiLightByType,
     NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNorm, NiMaterialResource* pkViewVector,
@@ -856,7 +855,7 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
     NiMaterialResource*& pkSpecularAccum, NiMaterialResource*& pkLightSpecular, bool bSpecular,
     NiMaterialResource* pkShadow, NiMaterialResource* pkHairTangent)
 {
-    const char* pcLightNode;
+    const char* pcLightNode = "Light";
     switch (m_eMaterialType)
     {
         case 0:
@@ -870,9 +869,6 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
             break;
         case 3:
             pcLightNode = "MS2CharacterHairLight";
-            break;
-        default:
-            pcLightNode = "Light";
             break;
     }
 
@@ -968,9 +964,10 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
     kContext.m_spConfigurator->AddBinding(pkLightDiffuse,
         pkLightNode->GetInputResourceByVariableName("LightDiffuse"));
 
-    pkLightSpecular = AddOutputObject(kContext.m_spUniforms, NiShaderConstantMap::SCM_OBJ_SPECULAR, eObjType,
-        uiLightByType, pcVariableModifier);
-    kContext.m_spConfigurator->AddBinding(pkLightSpecular,
+    NiMaterialResource* pkSpecular = AddOutputObject(kContext.m_spUniforms, NiShaderConstantMap::SCM_OBJ_SPECULAR,
+        eObjType, uiLightByType, pcVariableModifier);
+    pkLightSpecular = pkSpecular;
+    kContext.m_spConfigurator->AddBinding(pkSpecular,
         pkLightNode->GetInputResourceByVariableName("LightSpecular"));
 
     NiMaterialResource* pkLightPos = AddOutputObject(kContext.m_spUniforms,
@@ -997,9 +994,16 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
     {
         pkLightDir = AddOutputObject(kContext.m_spUniforms, NiShaderConstantMap::SCM_OBJ_WORLDDIRECTION, eObjType,
             uiLightByType, pcVariableModifier);
-        kContext.m_spConfigurator->AddBinding(
-            (eType == LIGHT_DIR && (unsigned int)(m_eMaterialType - 1) <= 2) ? pkCharacterLightDir : pkLightDir,
-            pkLightNode->GetInputResourceByVariableName("LightDirection"));
+        if (eType == LIGHT_DIR && (unsigned int)(m_eMaterialType - 1) <= 2)
+        {
+            kContext.m_spConfigurator->AddBinding(pkCharacterLightDir,
+                pkLightNode->GetInputResourceByVariableName("LightDirection"));
+        }
+        else
+        {
+            kContext.m_spConfigurator->AddBinding(pkLightDir,
+                pkLightNode->GetInputResourceByVariableName("LightDirection"));
+        }
     }
 
     NiMaterialResource* pkSpotAttenuation = NULL;
@@ -1029,13 +1033,15 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
         pkSpecularAccum = pkLightNode->GetOutputResourceByVariableName("SpecularAccumOut");
 
     // rim light
-    if (m_eMaterialType >= 1 && m_eMaterialType <= 3)
+    if (m_eMaterialType > 0 && m_eMaterialType <= 3)
     {
-        kContext.m_spConfigurator->AddBinding(
-            AddOutputAttribute(kContext.m_spUniforms, "FresnelBoost", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT),
+        NiMaterialResource* pkFresnelBoost = AddOutputAttribute(kContext.m_spUniforms, "FresnelBoost",
+            NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+        kContext.m_spConfigurator->AddBinding(pkFresnelBoost,
             pkLightNode->GetInputResourceByVariableName("FresnelBoostIn"));
-        kContext.m_spConfigurator->AddBinding(
-            AddOutputAttribute(kContext.m_spUniforms, "FresnelExponent", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT),
+        NiMaterialResource* pkFresnelExponent = AddOutputAttribute(kContext.m_spUniforms, "FresnelExponent",
+            NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+        kContext.m_spConfigurator->AddBinding(pkFresnelExponent,
             pkLightNode->GetInputResourceByVariableName("FresnelExponentIn"));
         kContext.m_spConfigurator->AddBinding(pkRimLightDir,
             pkLightNode->GetInputResourceByVariableName("RimLightDirIn"));
@@ -1062,30 +1068,30 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
         pkSkinNode->GetInputResourceByVariableName("LightDiffuse"));
     kContext.m_spConfigurator->AddBinding(pkLightPos, pkSkinNode->GetInputResourceByVariableName("LightPos"));
 
-    if (eType == LIGHT_DIR)
+    if (eType != LIGHT_DIR)
+    {
+        kContext.m_spConfigurator->AddBinding(pkAttenuation,
+            pkSkinNode->GetInputResourceByVariableName("LightAttenuation"));
+    }
+    else
     {
         kContext.m_spConfigurator->AddBinding(pkCharacterLightDir,
             pkSkinNode->GetInputResourceByVariableName("LightDirection"));
     }
-    else
+    if (eType == LIGHT_SPOT)
     {
-        kContext.m_spConfigurator->AddBinding(pkAttenuation,
-            pkSkinNode->GetInputResourceByVariableName("LightAttenuation"));
-        if (eType == LIGHT_SPOT)
-        {
-            kContext.m_spConfigurator->AddBinding(pkLightDir,
-                pkSkinNode->GetInputResourceByVariableName("LightDirection"));
-            kContext.m_spConfigurator->AddBinding(pkSpotAttenuation,
-                pkSkinNode->GetInputResourceByVariableName("LightSpotAttenuation"));
-        }
+        kContext.m_spConfigurator->AddBinding(pkLightDir,
+            pkSkinNode->GetInputResourceByVariableName("LightDirection"));
+        kContext.m_spConfigurator->AddBinding(pkSpotAttenuation,
+            pkSkinNode->GetInputResourceByVariableName("LightSpotAttenuation"));
     }
 
-    kContext.m_spConfigurator->AddBinding(
-        AddOutputGlobal(kContext.m_spUniforms, "gakSSSColor", NiShaderAttributeDesc::ATTRIB_TYPE_POINT3),
-        pkSkinNode->GetInputResourceByVariableName("SSSColor"));
-    kContext.m_spConfigurator->AddBinding(
-        AddOutputGlobal(kContext.m_spUniforms, "gkSSSPower", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT),
-        pkSkinNode->GetInputResourceByVariableName("SSSPower"));
+    NiMaterialResource* pkSSSColor = AddOutputGlobal(kContext.m_spUniforms, "gakSSSColor",
+        NiShaderAttributeDesc::ATTRIB_TYPE_POINT3);
+    kContext.m_spConfigurator->AddBinding(pkSSSColor, pkSkinNode->GetInputResourceByVariableName("SSSColor"));
+    NiMaterialResource* pkSSSPower = AddOutputGlobal(kContext.m_spUniforms, "gkSSSPower",
+        NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+    kContext.m_spConfigurator->AddBinding(pkSSSPower, pkSkinNode->GetInputResourceByVariableName("SSSPower"));
 
     pkDiffuseAccum = pkSkinNode->GetOutputResourceByVariableName("DiffuseAccumOut");
     return true;

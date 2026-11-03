@@ -104,6 +104,9 @@ static CStringW s_strChangeInvalidCharName(L"changeInvalidCharName");
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker::FUN_140225210
+#include "ms2/commonfiles/gameeventuservalue.h"   // C3: GameEventUserValue
+#include <set>
+#include "ms2/commonfiles/itemgift.h"   // C3: ItemEntity
 
 // @0x1401115d0
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -150,23 +153,14 @@ extern bool DAT_143ab2946;
 extern unsigned short DAT_143ab2944;                    // the highest character level
 extern bool DAT_143ab2942;
 extern __int64 DAT_143ab2828;                           // the last picked character id
-class Unk_InventoryCharacters
-{
-public:
-    void FUN_1403416e0();                               // clear
-    void FUN_1404bfb40(const unsigned __int64* pnId);   // erase
-    struct InsertRet { void* it; bool bNew; };
-    InsertRet FUN_1416da690(const unsigned __int64* pnId);   // insert (std::set::insert: returns the pair)
-};
-extern Unk_InventoryCharacters DAT_143ab2a30;           // ids of the characters of the account
-class Unk_GmEvtKey;
-extern Unk_GmEvtKey DAT_143ab2fc0;
+extern std::set<unsigned __int64> DAT_143ab2a30;        // ids of the characters of the account
+extern GameEventUserValue DAT_143ab2fc0;
 
-class Unk_UeBag;   // the m_charlist child (uiunlimitedenchantdialog binds the MS2Ptr<Unk_UeBag> members)
-template <> MS2Ptr<Unk_UeBag>::~MS2Ptr();                           // 0x140acd710
-template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::get() const;              // 0x140acd9d0
-template <> MS2Ptr<Unk_UeBag>::operator Unk_UeBag*() const;         // 0x140acd9d0 (folded with get)
-template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::operator->() const;       // 0x140acd9f0
+class ASTileList;   // the m_charlist child
+template <> MS2Ptr<ASTileList>::~MS2Ptr();                           // 0x140acd710
+template <> ASTileList* MS2Ptr<ASTileList>::get() const;              // 0x140acd9d0
+template <> MS2Ptr<ASTileList>::operator ASTileList*() const;         // 0x140acd9d0 (folded with get)
+template <> ASTileList* MS2Ptr<ASTileList>::operator->() const;       // 0x140acd9f0
 class Unk_ClMovie : public AScript {};
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 CString FUN_1412756c0(__int64 nBase, __int64 nId);         // the cache file name of a character
@@ -297,15 +291,13 @@ class Unk_GmEvtKey
 {
 public:
     bool FUN_140482280(int nKey, const bool& bValue);
-    __int64 FUN_140be8f80(int nKind, int nId, __int64* pnZero);     // the burning level-up event was received
     __int64 FUN_140c5af20(int nKind, int nId, __int64* pnZero);     // the burning level-up event was finished
 };
 // The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
 class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
 struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
 struct Unk_ClRewardList { char m_p[0x10]; unsigned __int64 FUN_1404110e0(); Unk_ClRewardEntry* FUN_1403e8aa0(); };   // FUN_1404110e0: the count at +8 (a qword: the exe tests rax)
-struct Unk_ClRewardIter { Unk_ClRewardIter(); void* m_p; Unk_ClRewardEntry* FUN_140bfe440(); };   // the vector iterator: begin() returns it through a hidden pointer, FUN_140bfe440 is its operator->
-struct Unk_ClRewardList2 { char m_p[0x1c]; bool FUN_140c0e9f0(); Unk_ClRewardIter FUN_14028a200(); };
+struct Unk_ClRewardList2 { char m_p[0x1c]; };   // std::vector<ItemEntity> at +0
 class Unk_ClBurnEvent : public CPtred
 {
 public:
@@ -907,7 +899,7 @@ bool UICharacterListDialog::FUN_1418ed650()
     if (!((class CGameRule*)FUN_1401c0d90())->FUN_14047bb90())
         return false;
     bool bValue = false;
-    if (DAT_143ab2fc0.FUN_140482280(900, bValue))
+    if (reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140482280(900, bValue))
         return false;
     return true;
 }
@@ -922,7 +914,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     nMode = packet.ReadUInt8();
     if (nMode == 3)
     {
-        DAT_143ab2a30.FUN_1403416e0();
+        DAT_143ab2a30.clear();
         m_1a8.clear();
         FUN_1418ee370();
     }
@@ -1127,7 +1119,7 @@ void UICharacterListDialog::ReadCharacters(int nCount, CInPacket& packet)
             spCharacter->FUN_1418ea040(CCharacterInfo::FUN_1418ea080());
             m_1a8.push_back(spCharacter);
             unsigned __int64 nId = spCharacter->FUN_1418e9cb0();
-            DAT_143ab2a30.FUN_1416da690(&nId);
+            DAT_143ab2a30.insert(static_cast<unsigned __int64&&>(nId));
         }
     }
 }
@@ -1135,7 +1127,7 @@ void UICharacterListDialog::ReadCharacters(int nCount, CInPacket& packet)
 // @0x1418ee8f0
 int UICharacterListDialog::EraseCharacter(unsigned __int64 nId)
 {
-    DAT_143ab2a30.FUN_1404bfb40(&nId);
+    DAT_143ab2a30.erase(nId);
     if (m_1a8.empty())
         return -1;
     int nIndex = 0;
@@ -1372,7 +1364,7 @@ void UICharacterListDialog::RefreshLobby()
     if (m_30 == 0)
         return;
     SortCharacters();
-    if (MS2Ptr<Unk_UeBag> list = m_30->FUN_140accef0<Unk_UeBag>("m_charlist"))
+    if (MS2Ptr<ASTileList> list = m_30->FUN_140accef0<ASTileList>("m_charlist"))
     {
         reinterpret_cast<ASObj*>(list.operator->())->FUN_1407cb9c0("maxRow", DAT_1439f4a88);
         int nSelect = 0;
@@ -2029,7 +2021,7 @@ void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nCharId = DAT_143ab2fc0.FUN_140c5af20(2000, spEvent->m_18, &nZero);
+        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, &nZero);
         if (nCharId != nId)
             continue;
         AttachBurningLevelupIcon(nId);
@@ -2054,11 +2046,11 @@ void UICharacterListDialog::FUN_1418ef700()
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nDone = DAT_143ab2fc0.FUN_140be8f80(0x7d1, spEvent->m_18, &nZero);
+        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, spEvent->m_18, nZero);
         if (nDone != 0)
             continue;
         __int64 nZero2 = 0;
-        __int64 nCharId = DAT_143ab2fc0.FUN_140c5af20(2000, spEvent->m_18, &nZero2);
+        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, &nZero2);
         if (nCharId == 0)
             continue;
         AttachBurningLevelupIcon(nCharId);
@@ -2079,18 +2071,18 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
         if (*it == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nDone = DAT_143ab2fc0.FUN_140be8f80(0x7d1, (*it)->m_18, &nZero);
+        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, (*it)->m_18, nZero);
         if (nDone != 0)
             continue;
         if ((*it)->m_8c > 0 && (*it)->m_90.FUN_1404110e0())
         {
             __int64 nZero2 = 0;
-            __int64 nDone2 = DAT_143ab2fc0.FUN_140be8f80(0x7d4, (*it)->m_18, &nZero2);
+            __int64 nDone2 = DAT_143ab2fc0.GetValue<__int64>(0x7d4, (*it)->m_18, nZero2);
             if (nDone2 != 0)
                 continue;
         }
         __int64 nZero3 = 0;
-        __int64 nCharId = DAT_143ab2fc0.FUN_140c5af20(2000, (*it)->m_18, &nZero3);
+        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, (*it)->m_18, &nZero3);
         if (nCharId != 0)
             continue;
         if (!((BurningLevelupContext*)(*it).operator->())->HasTarget(spCharacter->FUN_1418e9d70()->m_3c))
@@ -2208,12 +2200,12 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
         spFirst->m_nCount = spItem->GetCount();
         spFirst->m_48 = 0x411;
     }
-    if (!spEvent->m_70.FUN_140c0e9f0())
+    if (!reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).empty())
     {
         spSecond.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
-        spItem->FUN_140523c40((&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_0(), (&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_1(), 0);
-        spItem->SetCountClamped((&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_2());
+        spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_1(), 0);
+        spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_2());
         spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spSecond->m_spItem = spItem;
         spSecond->m_nCount = spItem->GetCount();
@@ -2389,7 +2381,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 int nIndex = data.PopUInt();
-                if (MS2Ptr<Unk_UeBag> list = m_30->FUN_140accef0<Unk_UeBag>("m_charlist"))
+                if (MS2Ptr<ASTileList> list = m_30->FUN_140accef0<ASTileList>("m_charlist"))
                 {
                     int nNext = nIndex + 1;
                     Scaleform::GFx::Value result = reinterpret_cast<ASObj*>(list.operator->())->FUN_1409ba0d0("swapIndex", nIndex, nNext);
@@ -2411,7 +2403,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 int nIndex = data.PopUInt();
                 if (nIndex == 0)
                     return 1;
-                if (MS2Ptr<Unk_UeBag> list = m_30->FUN_140accef0<Unk_UeBag>("m_charlist"))
+                if (MS2Ptr<ASTileList> list = m_30->FUN_140accef0<ASTileList>("m_charlist"))
                 {
                     int nPrev = nIndex - 1;
                     Scaleform::GFx::Value result = reinterpret_cast<ASObj*>(list.operator->())->FUN_1409ba0d0("swapIndex", nIndex, nPrev);

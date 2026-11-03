@@ -6,3 +6,29 @@
     if (!pkD3D9)  // MS2: null device guard (exe 0x1427f6a30)
         return;
 .
+768a
+#endif
+.
+767a
+#if defined(EE_MS2_NITARRAY_SETAT_RELOAD)
+    // MS2: the exe's ctor (0x1427f6a30) inlines FillAdapterInformation with the m_pBase-reloading
+    // SetAt (NiTArray.inl); the out-of-line FillAdapterInformation (0x1427f7750) keeps the stock one
+    EE_ASSERT(pkD3D9);
+    if (pkD3D9)
+    {
+        m_uiAdapterCount = pkD3D9->GetAdapterCount();
+        m_kAdapterList.SetSize(m_uiAdapterCount);
+
+        unsigned int ui;
+        for (ui = 0; ui < m_uiAdapterCount; ui++)
+        {
+            NiDX9AdapterDesc* pAdapter = NiNew NiDX9AdapterDesc(pkD3D9, ui,
+                kFormats);
+            EE_ASSERT(pAdapter);
+
+            if (pAdapter)
+                m_kAdapterList.MS2SetAtReload(ui, pAdapter);
+        }
+    }
+#else
+.

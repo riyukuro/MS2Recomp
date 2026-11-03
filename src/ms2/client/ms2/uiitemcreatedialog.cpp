@@ -24,6 +24,20 @@
 #include "uiitemcreatedialog.h"
 
 #include <direct.h>
+// The exe links _mkdir statically (0x1420b1a80): redeclare it without dllimport
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winconsistent-dllimport"
+#else
+#pragma warning(push)
+#pragma warning(disable : 4273)  // inconsistent dll linkage: intended
+#endif
+extern "C" int __cdecl _mkdir(const char* _Path);
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#else
+#pragma warning(pop)
+#endif
 #include <utility>
 #include <vector>
 
@@ -1106,7 +1120,6 @@ void Unk_ItemOptionSimulator::FUN_1419b8730()
 MS2_REPLACE_METHOD(0x1419b8730, Unk_ItemOptionSimulator, FUN_1419b8730, 218, 0x43485A38);
 
 // Write the collected rolls: <ms2><item id name rank><constant|static|random><stat>..</stat><special>..</special>..
-// MS2-FUNCTIONAL: exe statically links _mkdir (call 0x1420b1a80), build imports it
 // @0x1419b8810
 void Unk_ItemOptionSimulator::FUN_1419b8810()
 {

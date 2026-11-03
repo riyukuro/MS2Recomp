@@ -32,7 +32,6 @@
 
 // Unit-local declarations, pending recovery of the quest data and AS wrapper units.
 class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
-class Unk_QuestDebugCheck : public ASButton { };
 CString FUN_140bc6280(const char*, const char*, const char*, const int&, const char*);
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
@@ -62,13 +61,13 @@ MS2_CHECK_OFFSET(Unk_QuestDebugCond, codes, 0x98);
 MS2_CHECK_OFFSET(Unk_QuestDebugCond, targets, 0x118);
 MS2Ptr<CQuestData> FUN_14074bc40(int);
 int FUN_14074b030(CQuestData*);
-CStringW FUN_1416e4df0(unsigned int);
-CStringW FUN_1416e5900(unsigned int, int);
+CStringW FUN_1416e4df0(int);
+CStringW FUN_1416e5900(int, bool);
 CStringW FUN_1416e7fb0(int);
 CStringW FUN_1401aa6a0(int);
 CStringW GetStringCommon(int);
-unsigned __int64 FUN_140761ba0(unsigned int, int);
-unsigned __int64 FUN_140761cc0(unsigned int, int);
+__int64 FUN_140761ba0(int, int);
+__int64 FUN_140761cc0(int, int);
 void FUN_1416e5890(int, ATL::CAtlArray<CStringW>&);
 int FUN_1416e6100(int, int);
 class Unk_QuestDebugState
@@ -80,7 +79,7 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_QuestDebugDesc { };
 class Unk_QuestDebugMap : public ATL::CAtlMap<CString, CString, ATL::CStringElementTraitsI<CString>> {};
 void FUN_140761f00(const CStringW&, int);
-CStringW FUN_140ba7890(const wchar_t*, const unsigned __int64&);
+CStringW FUN_140ba7890(const wchar_t*, const __int64&);
 extern template CStringW StringFormat<CStringW, unsigned int>(const wchar_t*, const CStringW&, const unsigned int&);
 extern template CStringW StringFormat<unsigned int>(const wchar_t*, const unsigned int&);
 CString FUN_140513200(const char*, const unsigned int&);
@@ -437,7 +436,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     int maxLevel = 0;
     if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchLevelMax")) maxLevel = _wtoi(input->GetText());
     unsigned int standard = 0;
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
     // The count formatter is a separate unrecovered COMDAT; its call and two array arguments are retained below.
     if (MS2Ptr<ASTextField> text = GetChild<ASTextField>("m_count")) {
         ATL::CAtlArray<MS2Ptr<CQuestData>> available, completed;
@@ -451,10 +450,10 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         text->SetTextW(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkProgress")) progress = check->FUN_1422ce0e0();
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkComplete")) complete = check->FUN_1422ce0e0();
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkExceptLocking")) exceptLocking = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkProgress")) progress = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkComplete")) complete = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkExceptLocking")) exceptLocking = check->FUN_1422ce0e0();
     CStringW filter = FUN_141a966a0(0);
     std::vector<MS2Ptr<CQuestData>> quests;
     if (chapter) {
@@ -473,7 +472,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             unsigned int id = FUN_14074b030(quest.operator->());
             CStringW name, idText;
             idText.Format(L"%d", id);
-            name = FUN_1416e5900(id, 0);
+            name = FUN_1416e5900(id, false);
             if (!FUN_141a96960(id, name, idText, filter)) continue;
             if (progress || complete) {
                 int keep = 0;
@@ -504,7 +503,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             if (!search && chapter && chapter != quest->m_28) continue;
             ++count;
             unsigned int id = FUN_14074b030(quest.operator->());
-            CStringW name = FUN_1416e5900(id, 0);
+            CStringW name = FUN_1416e5900(id, false);
             ASObj data(2);
             data.FUN_1409c0d20("id", id);
             data.FUN_1407cb9c0("standardLv", quest->m_level);
@@ -529,7 +528,7 @@ MS2_REPLACE_METHOD(0x141A95310, UIQuestDebugDialog, FUN_141a95310, 4998, 0x217DF
 CStringW UIQuestDebugDialog::FUN_141a966a0(unsigned int mode)
 {
     unsigned int checked = 0;
-    if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkFilter")) checked = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkFilter")) checked = check->FUN_1422ce0e0();
     CStringW text;
     if (checked == mode) {
         if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchInput")) text = input->GetText();

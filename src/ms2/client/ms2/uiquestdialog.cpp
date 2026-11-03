@@ -78,6 +78,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"  // C3: the FUN_14028dfa0<...> wrappers
+#include "ms2/placeholder/blockformat.h"  // C3: BlockFormat<int>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdlib.h>
@@ -220,7 +222,6 @@ int FUN_14074b030(CQuestData* pData);                           // the quest id
 int FUN_14074b070(CQuestData* pData);                           // the repeat kind
 int FUN_14074b050(CQuestData* pData);                           // the quest type
 int FUN_14074b1c0(CQuestData* pData, int nKind);
-CStringW FUN_1408116a0(int nId, const int& nArg);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent
 __int64 FUN_141aa4980(CQuest* pQuest);                          // when the quest was completed
 bool FUN_14074b090(CQuestData* pData);
@@ -233,13 +234,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 CStringW GetStringCommon(int nStringId);                          // common string by id
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);      // common string by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_14062b4f0(CStringW strKey, const int* p);
-CStringW FUN_1409e8970(CStringW strKey, const int& a, const int& b);
-CStringW FUN_140938ae0(CStringW strKey, const int* p);
-CStringW FUN_1409e9890(CStringW strKey, const int* p, const int* q);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strTitle, const int* pnLevel);
-CStringW FUN_1409e8ca0(CStringW strKey, const int* a, const int* b, const int* c, const int* d, const int* e);
 CStringW FUN_1416e4df0(int nQuestId);                           // the quest name
 CStringW FUN_1416e5450(unsigned nQuestId);                      // the quest's end text
 CStringW FUN_1416e57d0(int nQuestId, int nCondition);
@@ -807,7 +801,7 @@ void UIQuestDialog::SelectQuest(int nQuestId)
         ASObj info(2);
         info.FUN_1409c0d20("id", nQuestId);
         info.FUN_1407cbb20("title", QuestTitle(nQuestId));
-        info.FUN_1407cbb20("level", FUN_1408116a0(0x459, spData->m_level));
+        info.FUN_1407cbb20("level", BlockFormat(0x459, spData->m_level));
         info.FUN_1407cb9c0("hideReward", 0);
         info.FUN_1407cbbe0("main", FUN_14074b050(spData.operator->()) == 0);
         if (GetSubTabFilter() == 0)
@@ -1047,8 +1041,8 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
     {
         if (pQuest->GetData()->m_fields.GetCount() > 0)
         {
-            int nField = pQuest->GetData()->m_fields[0];
-            strResult += FUN_140938ae0(CStringW(L"s_quest_field_quest_link"), &nField);
+            unsigned nField = pQuest->GetData()->m_fields[0];
+            strResult += FUN_14028dfa0(CStringW(L"s_quest_field_quest_link"), nField);
         }
     }
     if (FUN_14074b090(pQuest->GetData().operator->()))
@@ -1064,9 +1058,9 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
             int nHour = time.GetHour();
             int nMinute = time.GetMinute();
             if (pQuest->FUN_1407447c0() != 0)
-                strEnd = FUN_1409e8ca0(CStringW(L"s_quest_dialog_end_time_expired"), &nYear, &nMonth, &nDay, &nHour, &nMinute);
+                strEnd = FUN_14028dfa0(CStringW(L"s_quest_dialog_end_time_expired"), nYear, nMonth, nDay, nHour, nMinute);
             else
-                strEnd = FUN_1409e8ca0(CStringW(L"s_quest_dialog_end_time"), &nYear, &nMonth, &nDay, &nHour, &nMinute);
+                strEnd = FUN_14028dfa0(CStringW(L"s_quest_dialog_end_time"), nYear, nMonth, nDay, nHour, nMinute);
             strResult = strEnd;
             strResult += L"\n";
         }
@@ -1105,11 +1099,11 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
             nMap = spData->m_320.m_4;
         CStringW strText;
         if (nMap == 0)
-            strText = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_invalid_field"), &spData->m_2e8);
+            strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable_invalid_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
         else if (nMap == reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd3060())
-            strText = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_current_field"), &spData->m_2e8);
+            strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable_current_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
         else
-            strText = FUN_1409e9890(CStringW(L"s_quest_desc_beginable"), &nMap, &spData->m_2e8);
+            strText = FUN_14028dfa0(CStringW(L"s_quest_desc_beginable"), reinterpret_cast<const unsigned&>(nMap), reinterpret_cast<const unsigned&>(spData->m_2e8));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strText);
         return strText;
     }
@@ -1135,7 +1129,7 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
                 strRequire += L", ";
             strRequire += strAlternative;
         }
-        return FUN_1405c2690(CStringW(L"s_quest_desc_require"), strRequire);
+        return FUN_14028dfa0(CStringW(L"s_quest_desc_require"), strRequire);
     }
 }
 
@@ -1158,8 +1152,8 @@ CStringW UIQuestDialog::LevelRange(int nChapter)
             nMax = nLevel;
     }
     if (nMin == nMax)
-        return FUN_14062b4f0(CStringW(L"s_quest_list_level_equal"), &nMin);
-    return FUN_1409e8970(CStringW(L"s_quest_list_level"), nMin, nMax);
+        return FUN_14028dfa0(CStringW(L"s_quest_list_level_equal"), nMin);
+    return FUN_14028dfa0(CStringW(L"s_quest_list_level"), nMin, nMax);
 }
 
 // The quest text record (a counted object; the quest name sits at +0x28).
@@ -1204,7 +1198,7 @@ CStringW UIQuestDialog::QuestListLabel(unsigned nQuestId)
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (!spData)
         return L"";
-    return FUN_140bfa7f0(CStringW(L"s_quest_list_quest_name"), QuestTitle(nQuestId), &spData->m_level);
+    return FUN_14028dfa0(CStringW(L"s_quest_list_quest_name"), QuestTitle(nQuestId), spData->m_level);
 }
 
 // @0x141a9e390
@@ -1358,8 +1352,6 @@ __int64 FUN_140761c00(int nQuestId, int nKind);                 // guild exp
 __int64 FUN_140761d20(int nQuestId, int nKind);                 // guild fund
 int FUN_140761ea0(int nQuestId, int nKind);                     // fame point
 int FUN_140761c60(int nQuestId, int nKind);                     // guild coin
-CStringW FUN_140ba7890(const wchar_t* pszFormat, const __int64* pn);
-CStringW FUN_14042cb90(CStringW strKey, const float& v);
     // the exp a level needs
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 float FUN_14028aed0(float f);                                   // floor
@@ -1378,7 +1370,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
     __int64 nExp = FUN_140761ba0(nQuestId, 1);
     ASObj reward(2);
     reward.FUN_1409c1180("meso", FUN_140761cc0(nQuestId, 1));
-    reward.FUN_1407cbb20("exp", FUN_140ba7890(L"{0}", &nExp));
+    reward.FUN_1407cbb20("exp", StringFormat(L"{0}", nExp));
     reward.FUN_1409c1180("karma", FUN_140761d80(nQuestId, 1));
     reward.FUN_1409c1180("lu", FUN_140761de0(nQuestId, 1));
     reward.FUN_1409c1180("guildExp", FUN_140761c00(nQuestId, 1));
@@ -1392,7 +1384,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
             float fRate = ((float)nExp / (float)nNeed) * 100.0f;
             fRate = FUN_14028aed0(fRate * 100.0f + 0.5f) / 100.0f;
             if (0.0f < fRate)
-                reward.FUN_1407cbb20("expRate", FUN_14042cb90(CStringW(L"s_quest_reward_exp_percent"), fRate));
+                reward.FUN_1407cbb20("expRate", FUN_14028dfa0(CStringW(L"s_quest_reward_exp_percent"), fRate));
         }
     }
     ASArray items(2);

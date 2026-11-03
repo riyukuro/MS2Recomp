@@ -11,6 +11,8 @@
 #include "motioncontroller.h"
 
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/commonfiles/logstring.h"
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -412,60 +414,16 @@ bool CMoveMotionController::vfunc_5(double fTime)
     return true;
 }
 
-// ---- debug log of four floats (a template instantiation of the logger's argument packing) ----
-struct Unk_LogArg
-{
-    int m_a[4];
-};
-MS2_CHECK_SIZE(Unk_LogArg, 0x10);
-Unk_LogArg FUN_14027c920(float fValue);                             // formats one float
-u64* FUN_140163e80(u64* pSlot);                                     // empty argument slot
-u64* FUN_140274c80(u64* pSlot, const float* pValue);                // slot bound to a value
-u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d, u64 e, u64 f, u64 g, u64 h, u64 i, u64 j, u64 k, u64 l, u64 m, u64 n, u64 o); // joins all fifteen argument-type slots
-u64 FUN_140163e50(void* pOut, u64 kJoined, Unk_LogArg* pFirst);
-void FUN_1406530d0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, u64 kArgs);
-
+// ---- debug log of four floats (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0) ----
 // @0x1414894f0
-// MS2-FUNCTIONAL: template instantiation glue; the argument packing temporaries are laid out differently.
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                    const float* pA, const float* pB, const float* pC, const float* pD)
 {
-    Unk_LogArg kArg0 = FUN_14027c920(*pA);
-    Unk_LogArg kArg1 = FUN_14027c920(*pB);
-    Unk_LogArg kArg2 = FUN_14027c920(*pC);
-    Unk_LogArg kArg3 = FUN_14027c920(*pD);
-    u64 aSlot[4];
-    u64 aInit[11];
-    u64* pInit0 = FUN_140163e80(&aInit[0]);
-    u64* pInit1 = FUN_140163e80(&aInit[1]);
-    u64* pInit2 = FUN_140163e80(&aInit[2]);
-    u64* pInit3 = FUN_140163e80(&aInit[3]);
-    u64* pInit4 = FUN_140163e80(&aInit[4]);
-    u64* pInit5 = FUN_140163e80(&aInit[5]);
-    u64* pInit6 = FUN_140163e80(&aInit[6]);
-    u64* pInit7 = FUN_140163e80(&aInit[7]);
-    u64* pInit8 = FUN_140163e80(&aInit[8]);
-    u64* pInit9 = FUN_140163e80(&aInit[9]);
-    u64* pInit10 = FUN_140163e80(&aInit[10]);
-    u64* pBoundD = FUN_140274c80(&aSlot[3], pD);
-    u64* pBoundC = FUN_140274c80(&aSlot[2], pC);
-    u64* pBoundB = FUN_140274c80(&aSlot[1], pB);
-    u64* pBoundA = FUN_140274c80(&aSlot[0], pA);
-    u64 q0 = *pInit0;
-    u64 q1 = *pInit1;
-    u64 q2 = *pInit2;
-    u64 q3 = *pInit3;
-    u64 q4 = *pInit4;
-    u64 q5 = *pInit5;
-    u64 q6 = *pInit6;
-    u64 q7 = *pInit7;
-    u64 q8 = *pInit8;
-    u64 q9 = *pInit9;
-    u64 q10 = *pInit10;
-    u64 kJoined = FUN_14016d660(*pBoundA, *pBoundB, *pBoundC, *pBoundD, q10, q9, q8, q7, q6, q5, q4, q3, q2, q1, q0);
-    char aOut[24];
-    u64 kArgs = FUN_140163e50(aOut, kJoined, &kArg0);
-    FUN_1406530d0(pLog, nLevel, nCategory, pszFormat, kArgs);
+    const fmt::internal::ArgArray<4>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pA),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pB),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pC),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pD)};
+    ((CLogString*)pLog)->FUN_1406530d0(nLevel, nCategory, pszFormat, fmt::ArgList(fmt::internal::make_type(*pA, *pB, *pC, *pD), args));
 }
 
 // @0x141489960

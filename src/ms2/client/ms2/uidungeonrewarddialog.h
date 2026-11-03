@@ -30,14 +30,6 @@ public:
 private: void* m_0; T* m_p;
 };
 struct ItemEntity;
-class Unk_RewardItemIter {
-public: bool operator!=(const Unk_RewardItemIter&) const; Unk_RewardItemIter& operator++(); ItemEntity& operator*() const;
-private: ItemEntity* m_p;
-};
-class Unk_RewardItemVec {
-public: Unk_RewardItemIter FUN_140419db0(); Unk_RewardItemIter FUN_14041a4e0();
-private: void* m_0; void* m_8; void* m_10;
-};
 class DungeonRewardInfo {
 public: DungeonRewardInfo(); ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
  __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); int FUN_14026cd70(int); bool FUN_14026ce30();
@@ -48,7 +40,7 @@ private:
  void* m_18;
  void* m_20;
 public:
- Unk_RewardItemVec m_28;
+ std::vector<ItemEntity> m_28;
 };
 MS2_CHECK_SIZE(DungeonRewardInfo,0x40);
 class Unk_RewardLabels {

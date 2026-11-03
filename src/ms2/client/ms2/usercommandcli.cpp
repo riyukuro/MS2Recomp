@@ -130,7 +130,7 @@ CString FUN_14071a5b0(const CString&,const CString&);
 CStringW FUN_14061ad70(const CStringW&,const wchar_t*);
 CStringW FUN_1401d0080(const CStringW&,const CStringW&);
 CString FUN_14038f6d0(const CString&,const wchar_t*);
-CString FUN_1402bad60(const char*,const int*);   // StringFormat<int> (a second copy)
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 class CFileSystem { public: int FUN_1403974b0(TiXmlDocument*,const char*,int,bool,bool); };   // C3: member view
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString;
@@ -273,7 +273,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-void* FUN_141264060(int);class UIUpperHudDialog   // C3: member view for the former free stand-ins
+class UIUpperHudDialog   // C3: member view for the former free stand-ins
 {
 public:
     bool ToggleVersionText();
@@ -282,8 +282,8 @@ public:
 };
 
 extern int DAT_143ab5b00;
-extern void* DAT_143ad8960;
-extern void* DAT_143ad8968;
+class CGFxLanguage;
+class CScriptTable;
 extern int g_physXItem;   // 0x143ad8968 (DAT_143ad8968 is mapped to 0x143acce38)
 class PCBase { public: void FUN_14166ef10(const CString&,int,int,bool); };   // C3: member view
 void* FUN_141371b30();class CScriptTable   // C3: member view for the former free stand-ins
@@ -556,7 +556,7 @@ struct Unk_DamageTest {
 MS2_CHECK_OFFSET(Unk_DamageTest, m_2c0, 0x2c0);
 MS2_CHECK_OFFSET(Unk_DamageTest, m_2c4, 0x2c4);
 UIMessengerBrowser * FUN_140a3ab70(int);  // C3: the definition's signature
-void FUN_1402be3c0(void*,const int*);
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Set
 class UIDamageText   // C3: member view for the former free stand-ins
 {
 public:
@@ -591,7 +591,7 @@ CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
 class Unk_HsInfo : public CPtred { };
 namespace HideAndSeek { class Info { public: int FUN_14050a6a0(); }; }   // C3: member view
-class PC { public: MS2Ptr<Unk_HsInfo> FUN_141664200(); struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: member view
+class PC { public: MS2Ptr<Unk_HsInfo> GetHideAndSeekInfo(); struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: member view
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -633,7 +633,8 @@ extern bool DAT_143ae9750;
 #include "ms2/client/ms2/uiguideeventarrow.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/fishingmanager.h"
-#include "ms2/client/ms2/terrainexportscheduler.h"  // Unk_TESMapList
+#include "ms2/client/ms2/terrainexportscheduler.h"
+#include "ms2/commonfiles/fielddata.h"  // CFieldData::FUN_140374090 (the field list)
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/questdatatable.h"  // C3: GetQuestIdsByChapter
@@ -653,7 +654,8 @@ class UISmartRecommendNotifyDialog : public UIObject {public:
     void FUN_14134dc50(int);   // C3: was free FUN_14134dc50
 };
 int FUN_1408a0d30(int,Unk_UGCGroup&,int);
-void* FUN_140961690(int);
+template <class T> T* Unk_GetUI(int nUiId);   // C3: was FUN_140961690
+template <class T> T* Unk_GsFindUI(eUIClassID nId);   // C3: was FUN_141264060
 class UIRealEstateDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -662,7 +664,7 @@ public:
 CStringW FUN_141b720b0(int,__int64);
 void* FUN_140764020();
 void FUN_140746fe0(CQuestManagerCommon *, int);  // C3: the definition's signature
-extern int DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 class SkillDataTableCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -1158,9 +1160,9 @@ int CUserCommandCli::SetUgcMapBackground(Unk_CommandArgs& args) {
     COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x33); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet); return 1;
 }
 // @0x141366c00
-int CUserCommandCli::SetNoticeSpeed(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNoticeSpeed(args.FUN_1408d2280(0,0)); return 1; }
+int CUserCommandCli::SetNoticeSpeed(Unk_CommandArgs& args) { void* dialog=Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNoticeSpeed(args.FUN_1408d2280(0,0)); return 1; }
 // @0x141366c60
-int CUserCommandCli::SetEventBoardText(Unk_CommandArgs& args) { void* dialog=FUN_141264060(0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNotice(args.FUN_1408d2330()); return 1; }
+int CUserCommandCli::SetEventBoardText(Unk_CommandArgs& args) { void* dialog=Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe); if(dialog) ((class UIUpperHudDialog*)(void*)(dialog))->SetNotice(args.FUN_1408d2330()); return 1; }
 // @0x141366cd0
 int CUserCommandCli::SetUgcMapBalance(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=2) return 0;
@@ -1301,7 +1303,7 @@ int CUserCommandCli::ExportDefaultKeyXml(Unk_CommandArgs& args) {
             }
         }
     }
-    CString fileName=FUN_1402bad60("DefaultKey_{0}.xml",&priority);
+    CString fileName=Unk_SocketFormat("DefaultKey_{0}.xml",priority);
     doc.SaveFile(FUN_14071a5b0("Table/Default",fileName));
     return 1;
 }
@@ -1325,12 +1327,12 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
     CStringW extra2=args.FUN_1408d21c0(2,L"");
     if(!extra1.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra1);
     if(!extra2.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra2);
-    Unk_TESMapList list;
-    list.FUN_140374090();
-    Unk_TESMapList* range=&list;
-    for(Unk_TESMapRecord* it=range->FUN_140704520(),*end=range->FUN_140704540(); it!=end; ++it) {
-        Unk_TESMapRecord& rec=*it;
-        unsigned mapId=FUN_140300710(&rec)->id;
+    std::vector<MS2Ptr<CFieldData> > list;
+    CFieldData::FUN_140374090(list);
+    std::vector<MS2Ptr<CFieldData> >* range=&list;
+    for(MS2Ptr<CFieldData>* it=range->_Unchecked_begin(),*end=range->_Unchecked_end(); it!=end; ++it) {
+        MS2Ptr<CFieldData>& rec=*it;
+        unsigned mapId=rec.operator->()->m_nFieldID;
         CStringW idText=StringFormat(L"{0}",mapId);
         CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
         FUN_140841420(name);
@@ -1342,10 +1344,10 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
             return 1;
         }
     }
-    Unk_TESMapList* range2=&list;
-    for(Unk_TESMapRecord* it=range2->FUN_140704520(),*end=range2->FUN_140704540(); it!=end; ++it) {
-        Unk_TESMapRecord& rec=*it;
-        unsigned mapId=FUN_140300710(&rec)->id;
+    std::vector<MS2Ptr<CFieldData> >* range2=&list;
+    for(MS2Ptr<CFieldData>* it=range2->_Unchecked_begin(),*end=range2->_Unchecked_end(); it!=end; ++it) {
+        MS2Ptr<CFieldData>& rec=*it;
+        unsigned mapId=rec.operator->()->m_nFieldID;
         CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
         FUN_140841420(name);
         if(FUN_14083fec0(CStringW(name),CStringW(query))==-1) continue;
@@ -1423,7 +1425,7 @@ int CUserCommandCli::ShowCodeName(Unk_CommandArgs& args) {
 }
 // @0x141368c20
 int CUserCommandCli::ToggleUpperVersionText(Unk_CommandArgs&) {
-    void* dialog=FUN_141264060(0x4ebe);
+    void* dialog=Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
     if(dialog==0) return 1;
     bool shown=((class UIUpperHudDialog*)(void*)(dialog))->ToggleVersionText();
     CStringW message;
@@ -1890,7 +1892,7 @@ int CUserCommandCli::DumpChatLog(Unk_CommandArgs&) {
 // @0x14136bf50
 int CUserCommandCli::SetNoWaitRoomExit(Unk_CommandArgs&) {
     int one=1;
-    FUN_1402be3c0((char*)((struct Unk_CommandToggle*)FUN_1401d3200())+0xcfe0,&one);
+    ((Common::Constants::Value<int>*)((char*)((struct Unk_CommandToggle*)FUN_1401d3200())+0xcfe0))->Set(one);
     FUN_1412751b0(StringFormat(L"OnNoWaitRoomExit"),20);
     return 1;
 }
@@ -2021,7 +2023,7 @@ int CUserCommandCli::ConfirmLeaveGuild(Unk_CommandArgs&) {
 int CUserCommandCli::InviteToPartyByName(Unk_CommandArgs& args) {
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(!actor) return 1;
-    MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->FUN_141664200();
+    MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->GetHideAndSeekInfo();
     if((bool)spInfo.get() && ((HideAndSeek::Info*)spInfo.operator->())->FUN_14050a6a0()) return 1;
     if(args.FUN_1408d2380()==1) {
         ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode1(args.FUN_1408d21c0(0,L""));
@@ -2032,7 +2034,7 @@ int CUserCommandCli::InviteToPartyByName(Unk_CommandArgs& args) {
 int CUserCommandCli::LeaveParty(Unk_CommandArgs&) {
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(!actor) return 1;
-    MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->FUN_141664200();
+    MS2Ptr<Unk_HsInfo> spInfo=((PC*)actor)->GetHideAndSeekInfo();
     if((bool)spInfo.get() && ((HideAndSeek::Info*)spInfo.operator->())->FUN_14050a6a0()) return 1;
     ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->SendPartyMode3();
     return 1;
@@ -2170,7 +2172,7 @@ int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
             return 1;
         }
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e76));
-        void* dialog=FUN_140961690(0x4e76);
+        void* dialog=Unk_GetUI<UIRealEstateDialog>(0x4e76);
         if(dialog) ((class UIRealEstateDialog*)(void*)(dialog))->FUN_141ab4000(group, field);
         FUN_1412751b0(StringFormat(L"OpenContract {0} {1}",field,group),20);
     } else {
@@ -2200,7 +2202,7 @@ int CUserCommandCli::FUN_14136d970(Unk_CommandArgs& args) {
 // @0x14136d9c0
 int CUserCommandCli::FUN_14136d9c0(Unk_CommandArgs& args) {
     int v=args.FUN_1408d20b0(0,0)!=0;
-    ((Unk_Inventory*)&DAT_143ab2a90)->FUN_140a66fa0(v);
+    g_143ab2a90.FUN_140a66fa0(v);
     return 1;
 }
 // @0x14136da20
@@ -2295,7 +2297,7 @@ TUserCommandInfo::TUserCommandInfo() : chatType(27),stringId(0) {}
 // @0x141371280
 UIObject* Unk_CommandUIRef::FUN_141371280() { return object; }
 // @0x141371b20
-void* FUN_141371b20() { return DAT_143ad8960; }
+void* FUN_141371b20() { return TSingleton<CGFxLanguage>::s_instance; }
 // @0x141371b30
-void* FUN_141371b30() { return DAT_143ad8968; }
+void* FUN_141371b30() { return TSingleton<CScriptTable>::s_instance; }
 MS2_EMIT_CRT_MEMMOVE_S();

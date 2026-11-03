@@ -83,9 +83,7 @@
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HIU?$less@H@std@@V?$allocator@U?$pair@$$CBHI@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141013bf0 ; unique
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HIU?$less@H@std@@V?$allocator@U?$pair@$$CBHI@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141013c60 ; unique
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z 0x141013d00 ; prop
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHU?$pair@HV?$MS2Ptr@VUnk_140acd6e0@@@@@std@@@std@@@std@@@std@@@std@@QEAA@XZ 0x141013d40 ; order
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z 0x141013da0 ; prop
-// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x141013e20 ; order
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z 0x141013e40 ; prop
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHU?$pair@HV?$MS2Ptr@VUnk_140acd6e0@@@@@std@@@std@@@std@@@std@@QEAA@XZ 0x141013ea0 ; prop
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@QEAA@XZ 0x141013ed0 ; prop
@@ -1273,3 +1271,7 @@ int UIPlayInstrumentDialog::vfunc_48()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cab1a0-0x142cab2e0 .text$yd
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHU?$pair@HV?$MS2Ptr@VUnk_140acd6e0@@@@@std@@@std@@@std@@@std@@@std@@QEAA@XZ 0x141013ce0 ; gp1: by its exe callers
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHK@std@@@std@@@std@@@std@@QEAA@XZ 0x141013d40 ; gp1: by its exe callers
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHU?$pair@HV?$MS2Ptr@VUnk_140acd6e0@@@@@std@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x141013e20 ; gp1: by its exe callers
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHK@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x141013e80 ; gp1: by its exe callers

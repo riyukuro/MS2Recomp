@@ -62,6 +62,7 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/placeholder/uipopupmenu.h"
 #include "ms2/placeholder/mentoringdatatable.h"
 #include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/placeholder/wcformat.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -96,7 +97,6 @@ Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
-CStringW FUN_1409e9890(CStringW strFormat, const int& a, const int& b);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
 class Unk_MentorScript : public AScript
@@ -141,7 +141,7 @@ void ASMentoringMentorPage::Refresh()
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
     int nMentor = TSingleton<CMentoringManager>::GetInstance()->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMentorDailyRewardCoin();
-    m_coin->SetTextW(FUN_1409e9890(L"s_mentoring_coin_info", nMentor, nReward));
+    m_coin->SetTextW(FUN_14028dfa0(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentor), reinterpret_cast<const unsigned&>(nReward)));
 }
 
 // @0x140c716e0
@@ -288,9 +288,8 @@ public:
 };
 class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160): start/end of the registration period.
-class Unk_MentorIdArray;
-class Unk_MentorSchedule : public CGameEventValueMentoring { public: void FUN_140424ed0(Unk_MentorIdArray& ids); };
-class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
+class Unk_RuMentoring : public CGameEventValueMentoring { };
+class Unk_RuManager { public: Unk_RuMentoring* GetMentoring(); };
 
 template <class A1, class A2, class A3, class A4, class A5, class A6, class A7> CStringW FUN_14028dfa0(CStringW strFormat, const A1& a1, const A2& a2, const A3& a3, const A4& a4, const A5& a5, const A6& a6, const A7& a7);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
@@ -335,8 +334,8 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     {
         Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0) return 1;
-        CMsTime tStart(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetBeginTime());
-        CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
+        CMsTime tStart(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetBeginTime());
+        CMsTime tEnd(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetEndTime());
         int nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay;
         nEndDay = tEnd.GetDay();
         nEndMonth = tEnd.GetMonth();
@@ -442,17 +441,6 @@ public:
 };
 class Unk_MentorQuestGlobal { public: void* m_0; void* m_8; Unk_MentorQuestState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
-// A CAtlArray<int> of quest ids.
-class Unk_MentorIdArray
-{
-public:
-    Unk_MentorIdArray();                    // 0x140181d30
-    ~Unk_MentorIdArray();                   // 0x140183460
-    size_t FUN_140186270() const;           // the count
-    int* FUN_140184510(size_t n);           // element
-private:
-    void* m_pad[4];
-};
 // The tab control of the mission swf.
 class Unk_MentorTab : public AScript { };      // the "m_tab" ASButtonBar
 // The page script (a movie clip root) with the children it hands out.
@@ -460,7 +448,7 @@ class Unk_MentorMissionScript : public AScript
 {
 public:
 };
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 int FUN_140718170(const CString& str);
 template <class A1> CStringW FUN_14028dfa0(CStringW strKey, const A1& a1);
 CStringW FUN_1416e5350(int nQuest, int n);
@@ -626,11 +614,11 @@ void UIMentoringMissionPage::vfunc_o178_11(void* p)
 int UIMentoringMissionPage::vfunc_8()
 {
     int nCount = 0;
-    Unk_MentorIdArray ids;
-    FUN_140c74850(ids, -1);
-    for (size_t i = 0; i < ids.FUN_140186270(); i++)
+    ATL::CAtlArray<unsigned> ids;
+    FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), -1);
+    for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->IsQuestComplete(*ids.FUN_140184510(i)) != 0) nCount++;
+        if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->IsQuestComplete(ids[i]) != 0) nCount++;
     }
     return nCount;
 }
@@ -639,11 +627,11 @@ int UIMentoringMissionPage::vfunc_8()
 int UIMentoringMissionPage::vfunc_10(int nDay)
 {
     int nCount = 0;
-    Unk_MentorIdArray ids;
-    FUN_140c74850(ids, nDay);
-    for (size_t i = 0; i < ids.FUN_140186270(); i++)
+    ATL::CAtlArray<unsigned> ids;
+    FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), nDay);
+    for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->IsQuestComplete(*ids.FUN_140184510(i)) != 0) nCount++;
+        if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->IsQuestComplete(ids[i]) != 0) nCount++;
     }
     return nCount;
 }
@@ -673,11 +661,11 @@ void UIMentoringMissionPage::FUN_140c74450(int nDay)
     if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140bc7280<ASScrollingList>("m_missionList"))
     {
         spList->FUN_1422dd1d0();
-        Unk_MentorIdArray ids;
-        FUN_140c74850(ids, nDay);
-        for (size_t i = 0; i < ids.FUN_140186270(); i++)
+        ATL::CAtlArray<unsigned> ids;
+        FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), nDay);
+        for (size_t i = 0; i < ids.GetCount(); i++)
         {
-            Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(*ids.FUN_140184510(i));
+            Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
             if (spInst.IsNull()) continue;
             ASObj obj(2);
             FUN_140c74170(obj, spInst.get());
@@ -698,11 +686,11 @@ int UIMentoringMissionPage::FUN_140c74660()
 // @0x140c74720
 __int64 UIMentoringMissionPage::FUN_140c74720()
 {
-    Unk_MentorIdArray ids;
-    FUN_140c74850(ids, -1);
-    for (size_t i = 0; i < ids.FUN_140186270(); i++)
+    ATL::CAtlArray<unsigned> ids;
+    FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), -1);
+    for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(*ids.FUN_140184510(i));
+        Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
         if (spInst.get() != 0) return (&spInst->m_progress)->vfunc_4();
     }
     return 0;
@@ -711,11 +699,11 @@ __int64 UIMentoringMissionPage::FUN_140c74720()
 // @0x140c74850
 void UIMentoringMissionPage::FUN_140c74850(Unk_MentorIdArray& ids, int nDay)
 {
-    Unk_MentorIdArray all;
-    reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->FUN_140424ed0(all);
-    for (size_t i = 0; i < all.FUN_140186270(); i++)
+    ATL::CAtlArray<unsigned> all;
+    reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetIds(all);
+    for (size_t i = 0; i < all.GetCount(); i++)
     {
-        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(*all.FUN_140184510(i));
+        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(all[i]);
         if (!spQuest) continue;
         if (nDay != -1 && reinterpret_cast<Unk_MentorQuest*>(spQuest.operator->())->m_nDay != nDay) continue;
         reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&ids)->Add((unsigned int)FUN_14074b030((class CQuestData*)(spQuest.operator->())));
@@ -746,7 +734,7 @@ int UIMentoringPage::vfunc_1()
     if (m_owner->FUN_1422dba00().IsNull()) return 0;
     Scaleform::GFx::Value tab = m_owner->FUN_1422dba00()->GetMember("m_currentTab");
     if (tab.IsNull()) return 0;
-    m_script = FUN_140acca70(m_owner->FUN_1422db730(), tab);
+    m_script = Unk_ASCreate<ASUIComponent>(m_owner->FUN_1422db730(), tab);
     return 1;
 }
 

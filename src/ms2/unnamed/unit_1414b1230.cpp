@@ -27,17 +27,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 
 // ---- unit-local views of exe objects ----
 
-// The option table "-key:value" -> value: a CAtlMap-shaped hash table (0x48 bytes; ctor 0x1401635e0, dtor 0x140164300).
-class Unk_CmdArgMap
-{
-public:
-    Unk_CmdArgMap(int nBins, float fOptimal, float fLow, float fHigh, int nBlock);   // 0x1401635e0
-    ~Unk_CmdArgMap();                                                                // 0x140164300
-    void FUN_14016a190(const char* szKey, const CString& strValue);                  // set an option
-    bool FUN_140939f50(const char* szKey, CString& strValue);                        // look an option up
-private:
-    __int64 m_raw[9];
-};
+// The option table "-key:value" -> value (ctor 0x1401635e0, dtor 0x140164300).
+typedef ATL::CAtlMap<CString, CString, ATL::CStringElementTraitsI<CString>> Unk_CmdArgMap;
 MS2_CHECK_SIZE(Unk_CmdArgMap, 0x48);
 
 // The one byte bitset of the parser flags (commonfiles\bitset.inl: operator[] line 152, Set line 243). Same code as
@@ -61,7 +52,6 @@ struct Unk_CmdBitset
 MS2_CHECK_SIZE(Unk_CmdBitset, 1);
 
 // ---- out-of-unit callees ----
-CString* FUN_140164930(ATL::CAtlArray<CString>* p, size_t nIndex);              // element
 int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);   // split
@@ -70,7 +60,7 @@ Unk_LaunchOptions* FUN_1406aeee0();
 int FUN_1406c34c0();                                                            // the Nexon platform is on
 class CFeatureManager { public: static void SetServerTypeName(CString strEnv); };   // C3: member view;                                             // "-env" / the default "Dev"
 void FUN_140651190(CString strLocale);                                          // "-locale"
-int FUN_140718170(CString& strValue);                                           // a number or an enum name
+int FUN_140718170(const CString& strValue);                                         // a number or an enum name
 bool FUN_140718390(const CString& strValue);                                 // a bool
 class CFilePreload { public: static void FUN_141210ca0(bool bValue); };   // C3: member view;                                       // "-preloadAll"
 void FUN_140650e70(CString strLanguage);                                        // "-language"
@@ -170,8 +160,8 @@ void FUN_1414b13f0(int nIndex, CString strArg)
         FUN_14028c3e0(strArg, tokens, ":", 2);
         if (tokens.GetCount() >= 2)
         {
-            reinterpret_cast<Unk_LaunchOptions*>(FUN_1406aeee0())->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
-            g_args.FUN_14016a190((const char*)*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
+            reinterpret_cast<Unk_LaunchOptions*>(FUN_1406aeee0())->FUN_1406aef60(tokens[0], tokens[1]);
+            g_args.SetAt((const char*)tokens[0], tokens[1]);
         }
     }
     else
@@ -192,7 +182,7 @@ void FUN_1414b13f0(int nIndex, CString strArg)
 bool FUN_1414b1580(CString strKey)
 {
     CString strValue;
-    return g_args.FUN_140939f50(strKey, strValue);
+    return g_args.Lookup(strKey, strValue);
 }
 
 // @0x1414b15f0
@@ -228,8 +218,8 @@ int FUN_1414b1770(CString strArg)
     int nCount = (int)tokens.GetCount();
     if (nCount == 2)
     {
-        g_strServerAddr = *FUN_140164930(&tokens, 0);
-        g_nPort = atoi(*FUN_140164930(&tokens, 1));
+        g_strServerAddr = tokens[0];
+        g_nPort = atoi(tokens[1]);
         g_bPortSet = 1;
     }
     g_bits.FUN_140c79bc0(3).FUN_1414b2270(true);
@@ -259,13 +249,13 @@ void FUN_1414b1980()
             Unk_SplitImplA(strArg, &tokens, ":");
             if (tokens.GetCount() >= 2)
             {
-                if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/passport") == 0)
+                if ((tokens[0]).CompareNoCase("/passport") == 0)
                     FUN_1414b15f0(CString(strArg));
-                else if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/sid") == 0)
+                else if ((tokens[0]).CompareNoCase("/sid") == 0)
                     FUN_1414b16b0(CString(strArg));
-                else if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/nexonsn") == 0)
+                else if ((tokens[0]).CompareNoCase("/nexonsn") == 0)
                     FUN_1414b18c0(CString(strArg));
-                else if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/arg") == 0)
+                else if ((tokens[0]).CompareNoCase("/arg") == 0)
                 {
                     CString strAll(strArg);
                     for (int j = i + 1; j < __argc; j++)
@@ -325,29 +315,29 @@ int FUN_1414b1c40(CString strArg)
 void FUN_1414b1f10()
 {
     CString strValue;
-    if (g_args.FUN_140939f50("-env", strValue))
+    if (g_args.Lookup("-env", strValue))
         CFeatureManager::SetServerTypeName(CString(strValue));
-    if (g_args.FUN_140939f50("-locale", strValue))
+    if (g_args.Lookup("-locale", strValue))
         FUN_140651190(CString(strValue));
-    if (g_args.FUN_140939f50("-ip", strValue))
+    if (g_args.Lookup("-ip", strValue))
         g_strServerAddr = strValue;
-    if (g_args.FUN_140939f50("-port", strValue))
+    if (g_args.Lookup("-port", strValue))
         g_nPort = atoi(strValue);
-    if (g_args.FUN_140939f50("-id", strValue))
+    if (g_args.Lookup("-id", strValue))
         DAT_143af37a0 = strValue;
-    if (g_args.FUN_140939f50("-ignorePack", strValue))
+    if (g_args.Lookup("-ignorePack", strValue))
         g_nIgnorePack = FUN_140718170(strValue);
-    if (g_args.FUN_140939f50("-preloadAll", strValue))
+    if (g_args.Lookup("-preloadAll", strValue))
         CFilePreload::FUN_141210ca0(FUN_140718390(strValue));
-    if (g_args.FUN_140939f50("-logLevel", strValue))
+    if (g_args.Lookup("-logLevel", strValue))
         g_nLogLevel = FUN_140718170(strValue);
-    if (g_args.FUN_140939f50("-language", strValue))
+    if (g_args.Lookup("-language", strValue))
     {
         FUN_140650e70(CString(strValue));
         FUN_140650b50(CString(strValue));
         g_bLanguageSet = 1;
     }
-    if (g_args.FUN_140939f50("-voice", strValue))
+    if (g_args.Lookup("-voice", strValue))
         FUN_140650b50(CString(strValue));
 }
 

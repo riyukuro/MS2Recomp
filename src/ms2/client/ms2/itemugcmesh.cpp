@@ -163,8 +163,12 @@ int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex);
 void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale);
 NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName);
-void FUN_1412014f0(Unk_PickTarget* pPart, const Vector3& kOffset);   // equipmodel.cpp: stores the offset
-void FUN_141201620(Unk_PickTarget* pPart, const Vector3& kEuler);    // equipmodel.cpp: stores the euler
+class CEquipModel;                                                  // equipmodel.cpp: the real type of Unk_PickTarget
+void FUN_1412014f0(CEquipModel* pPart, void* pOffset);              // stores the offset
+void FUN_141201620(CEquipModel* pPart, void* pEuler);               // stores the euler
+void* FUN_141200ab0(CEquipModel* pPart);                            // the part's model facts
+std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pPart);         // the part's node set
+void FUN_141201cb0(CEquipModel* pPart, std::set<NiAVObjectPtr>& kOut);   // copies the node set of the part
 bool FUN_141427d60(NiAVObject* pObj);                               // the object is a mesh-type leaf
 int FUN_140f02bc0();
 extern char DAT_142f10fe4[];                                        // name tails of the model files
@@ -253,8 +257,8 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
     int nIndex = 0;
     FUN_141421740(strFirst, &nIndex);
     CString strMapped(strSuffix);
-    std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)aParts[0]->FUN_141200ab0())->m_names.find(strSuffix);
-    if (it != ((Unk_UgcPartInfo*)aParts[0]->FUN_141200ab0())->m_names.end())
+    std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)aParts[0].operator->()))->m_names.find(strSuffix);
+    if (it != ((Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)aParts[0].operator->()))->m_names.end())
         strMapped = it->second;
     CString strOut;
     strOut = strFirst.Left(nIndex);
@@ -377,9 +381,9 @@ void FUN_141422840(Unk_PickTarget* pPart, Vector3 kPos, Vector3 kEuler, float fS
         return;
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 0, fScale);
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 1, fScale);
-    FUN_1412014f0(pPart, kPos);
-    FUN_141201620(pPart, kEuler);
-    FUN_141422b30(pPart, pPart->FUN_141201c90(), kPos, kEuler, fScale);
+    FUN_1412014f0((CEquipModel*)pPart, &kPos);
+    FUN_141201620((CEquipModel*)pPart, &kEuler);
+    FUN_141422b30(pPart, *FUN_141201c90((CEquipModel*)pPart), kPos, kEuler, fScale);
 }
 
 // @0x141422950 - transform -> euler angles in degrees
@@ -400,9 +404,9 @@ void FUN_141422a00(Unk_PickTarget* pPart, Vector3 kPos, const NiMatrix3& kRot, f
     FUN_141422950(kRot, &kEuler);
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 0, fScale);
     FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 1, fScale);
-    FUN_1412014f0(pPart, kPos);
-    FUN_141201620(pPart, kEuler);
-    FUN_141422b30(pPart, pPart->FUN_141201c90(), kPos, kEuler, fScale);
+    FUN_1412014f0((CEquipModel*)pPart, &kPos);
+    FUN_141201620((CEquipModel*)pPart, &kEuler);
+    FUN_141422b30(pPart, *FUN_141201c90((CEquipModel*)pPart), kPos, kEuler, fScale);
 }
 
 
@@ -415,7 +419,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     MS2Ptr<CEquipItem> spItem = pPart->FUN_141200a40();
     if (spItem.IsNull())
         return;
-    Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)pPart->FUN_141200ab0();
+    Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)pPart);
     if (pInfo == 0)
         return;
     efd::Point3 kShift = (const efd::Point3&)kPos;
@@ -851,7 +855,7 @@ int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, 
     *pbEmpty = 1;
     for (size_t i = 0; i < aParts.GetCount(); i++)
     {
-        std::set<NiAVObjectPtr>& kSet = aParts[i]->FUN_141201c90();
+        std::set<NiAVObjectPtr>& kSet = *FUN_141201c90((CEquipModel*)aParts[i].operator->());
         std::set<NiAVObjectPtr>& rSet = kSet;
         std::set<NiAVObjectPtr>::iterator itEnd = rSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = rSet.begin(); it != itEnd; ++it)
@@ -1157,7 +1161,7 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
         {
             MS2Ptr<Unk_PickTarget> spPart = aParts[j];
             std::set<NiAVObjectPtr> kNodes;
-            spPart->FUN_141201cb0(kNodes);
+            FUN_141201cb0((CEquipModel*)spPart.operator->(), kNodes);
             std::set<NiAVObjectPtr>& rNodes = kNodes;
             std::set<NiAVObjectPtr>::iterator itEnd = rNodes.end();
             for (std::set<NiAVObjectPtr>::iterator it = rNodes.begin(); it != itEnd; ++it)
@@ -1302,6 +1306,12 @@ bool FUN_140552a70(void* pLess, void* pKey, void* pNode);
 // The smart pointer layout these raw helpers touch: the held object pointer is the second field.
 struct Unk_UmPtrView { void* m_0; void* m_p; };
 
+// The std::map<CStringA, CStringA> and std::set<NiAVObjectPtr> types of the exe's folded helpers.
+typedef std::_Tree_comp_alloc<std::_Tmap_traits<CStringA, CStringA, std::less<CStringA>, std::allocator<std::pair<const CStringA, CStringA>>, 0>> Unk_UmStrMapCA;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<const CStringA, CStringA>>> Unk_UmStrMapVal;
+typedef std::_Tree_const_iterator<Unk_UmStrMapVal> Unk_UmStrMapCIt;
+typedef std::_Tree_iterator<Unk_UmStrMapVal> Unk_UmStrMapIt;
+
 // @0x141427370
 void* FUN_141427370(void* pDst, void* pSrc)     // raw move of the held pointer (tail of a smart pointer)
 {
@@ -1343,7 +1353,7 @@ char* FUN_1414277a0(void* pNode)                // MS2-FUNCTIONAL: raw payload a
 // @0x141427780
 void FUN_141427780(void* pNode)                 // MS2-FUNCTIONAL: raw node release
 {
-    FUN_141428560(FUN_1414277a0(pNode));
+    **(Unk_UmStrMapIt*)FUN_1414277a0(pNode);
 }
 
 struct Unk_UmU16Array { unsigned short* m_aT; unsigned m_nAllocSize; unsigned m_nSize; };
@@ -1410,13 +1420,13 @@ bool FUN_141427ff0(void* pFilter, unsigned short nId)      // MS2-FUNCTIONAL: ra
 // @0x141428240
 bool FUN_141428240(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness test
 {
-    return FUN_1412095f0(pSet) == 0;
+    return ((std::set<efd::SmartPointer<NiAVObject>>*)pSet)->size() == 0;
 }
 
 // @0x141428280
 void* FUN_141428280(void* pSet, void* pOut) noexcept     // raw end iterator (std::set::end, noexcept)
 {
-    void** pHead = FUN_140553e80(pSet);
+    void** pHead = (void**)&((Unk_UmStrMapCA*)pSet)->_Get_data();
     FUN_1405408b0(pOut, *pHead, FUN_141427210(pHead));
     return pOut;
 }
@@ -1429,8 +1439,8 @@ void* FUN_1414282e0(void* pSet, void** pOut, void* pKey)   // MS2-FUNCTIONAL: ra
     void* itEnd;
     void* itEnd2;
     void* itCopy;
-    void** pRes = (void**)(FUN_1405411b0(&itFound, FUN_141428280(pSet, &itEnd)) ||
-        FUN_140552a70(FUN_140554040(pSet), pKey, FUN_1405541f0(pSet, itFound))
+    void** pRes = (void**)(((Unk_UmStrMapCIt*)&itFound)->operator==(*(Unk_UmStrMapCIt*)FUN_141428280(pSet, &itEnd)) ||
+        ((Unk_UmStrMapCA*)pSet)->_Getcomp()(*(CStringA*)pKey, *(CStringA*)FUN_1405541f0(pSet, itFound))
         ? FUN_141428280(pSet, &itEnd2) : (itCopy = itFound, &itCopy));
     struct It { void* p; };
     *(It*)pOut = *(It*)pRes;
@@ -1440,7 +1450,7 @@ void* FUN_1414282e0(void* pSet, void** pOut, void* pKey)   // MS2-FUNCTIONAL: ra
 // @0x141428500
 void* FUN_141428500(void* pSet, void* pOut, void* pKey) // MS2-FUNCTIONAL: raw lower_bound (iterator(_Lbound(key), _Get_scary()))
 {
-    FUN_1405408b0(pOut, FUN_141427160(pSet, pKey), FUN_141427210(FUN_140553e80(pSet)));
+    FUN_1405408b0(pOut, FUN_141427160(pSet, pKey), FUN_141427210(&((Unk_UmStrMapCA*)pSet)->_Get_data()));
     return pOut;
 }
 

@@ -3090,3 +3090,4 @@ void QuestDataTable::CheckInit()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9bcc0-0x142c9bd80 .text$yd
+// MS2-PIN: ??1GroupPickData@CQuestData@@UEAA@XZ 0x140758b90 ; gp1: by its exe callers

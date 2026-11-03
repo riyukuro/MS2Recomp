@@ -17,6 +17,7 @@
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ridee.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ridee.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -254,7 +255,6 @@ class Unk_RideeClock : public CMainSystem
 public:
 };
 int FUN_141472bc0();
-unsigned int FUN_140869420();                                       // GetTickCountMs2
 
 class Unk_RideeCamera : public CameraMgr
 {
@@ -316,7 +316,6 @@ bool FUN_14028d470(float a, float b);
 
 // The physics body of an actor and its controller hit report.
 class Unk_RideeBody;
-Unk_RideeBody* FUN_14166d220(PCBase* pActor);
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
@@ -502,14 +501,14 @@ int Ridee::vfunc_10()
         {
             m_pRider->vfunc_59(0x21, 0, 0, 0);
             NiPoint3 kPos = m_pRider->vfunc_18();
-            Unk_EntRef spEntity(((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(m_pRider)))->FUN_141240f20()->GetEntity());
+            Unk_EntRef spEntity(((class GameObjectController*)(class Unk_RideeBody*)(m_pRider->GetPhysicsBody()))->FUN_141240f20()->GetEntity());
             if (spEntity != 0)
             {
                 MS2Ptr<Unk_RideeFieldObj> spObj = ((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4f10(spEntity.FUN_1408a9090());
                 if (spObj.get())
                 {
                     kPos.z = ((CBreakableObject*)spObj.operator->())->GetPtPos().z + ((CBreakableObject*)spObj.operator->())->GetPtSize().z + 10.0f;
-                    ((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(this)))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
+                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
                     egf::EntityID kId(s_kNoEntity);
                     NiPoint3 kAt = g_kCubeGuideZero;
                     m_pRider->FUN_141678240(kId, kAt);
@@ -517,12 +516,12 @@ int Ridee::vfunc_10()
                 }
                 else
                 {
-                    ((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(this)))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
+                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
                 }
             }
             kPos.z += 25.0f;
             vfunc_19(static_cast<const efd::Point3&>(kPos));
-            ((class GameObjectController*)(class Unk_RideeBody*)(::FUN_14166d220(m_pRider)))->FUN_141240f20()->FUN_140cfaf30();
+            ((class GameObjectController*)(class Unk_RideeBody*)(m_pRider->GetPhysicsBody()))->FUN_141240f20()->FUN_140cfaf30();
             m_pRider->FUN_141678290(s_kNoEntity, g_kCubeGuideZero);
             vfunc_24(0);
         }
@@ -801,9 +800,9 @@ void Ridee::FUN_141705b60(double fTime)
     {
         FUN_141676b50(0);
         const unsigned int nInterval = 5000;
-        if (FUN_140869420() - m_nD44 > nInterval)
+        if (GetTickCountMs2() - m_nD44 > nInterval)
         {
-            m_nD44 = FUN_140869420();
+            m_nD44 = GetTickCountMs2();
             FUN_141275260(0x48, 1, 0);
             FUN_141276180(s_strNoticeEp, "");
         }

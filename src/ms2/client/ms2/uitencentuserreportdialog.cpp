@@ -10,6 +10,7 @@
 #include "ms2/placeholder/gfxmanager.h"
 #include "uitencentuserreportdialog.h"
 #include "ms2/placeholder/coutpacket.h"
+void FUN_140201180(unsigned char* payload, COutputStream& stream);   // C3: the report payload serializer (unit_1401f9eb0.h)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdarg.h>
@@ -319,7 +320,7 @@ void UITencentUserReportDialog::SendRequestReport()
         break;
     }
     COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
-    m_data.FUN_140201180(packet);
+    FUN_140201180((unsigned char*)&m_data, packet);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140EDC010, UITencentUserReportDialog, SendRequestReport, 449, 0x6FD06EBB);

@@ -649,7 +649,6 @@ int UIGuildDialog::vfunc_13()
 }
 MS2_REPLACE_METHOD(0x141962620, UIGuildDialog, vfunc_13, 37, 0x68944FB7);
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe (the early methods share one result variable there); stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x1419634e0
 int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -659,25 +658,27 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141969040(data.FUN_1422b8f40());
+        {
+            CStringW strCategory = data.FUN_1422b8f40();
+            FUN_141969040(strCategory);
+        }
         return 1;
     }
-    if (_stricmp("onClickInviteMember", szMethod) == 0)
+    else if (_stricmp("onClickInviteMember", szMethod) == 0)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x3da), static_cast<IMessageListener*>(this), CStringW(L"addMember"));
-        if (spBox.get() != 0)
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x3da), static_cast<IMessageListener*>(this), CStringW(L"addMember")))
         {
-            spBox->SetInput(2, CStringW(L""), 0, 0, 0);
+            spBox->SetInput(2, L"", 0, 0, 0);
             FUN_140d73c60(spBox);
         }
         return 1;
     }
-    if (_stricmp("onClickEnterHouse", szMethod) == 0)
+    else if (_stricmp("onClickEnterHouse", szMethod) == 0)
     {
         CGuildManager::GetInstance()->FUN_1413ba4b0();
         return 1;
     }
-    if (_stricmp("onClickDonate", szMethod) == 0)
+    else if (_stricmp("onClickDonate", szMethod) == 0)
     {
         if (FUN_140ba28d0(&m_30, 0))
             return 1;
@@ -685,15 +686,14 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
         if (spMe == 0)
             return 0;
-        int nHouseLevel = CGuildManager::GetInstance()->GetGuildLevel();
-        Unk_PayloadPtr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(nHouseLevel);
+        Unk_PayloadPtr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(CGuildManager::GetInstance()->GetGuildLevel());
         if (spProperty == 0)
             return 0;
         int nCount = spMe->FUN_1404cb3e0();
         int nMax = spProperty->f30;
         if (nCount >= nMax)
         {
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_guild_err_donateMax")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_guild_err_donateMax"), 0, 0, CStringW(L""));
             return 1;
         }
         CStringW strText = FUN_14028dfa0<CStringW, int, int>(L"s_guild_ui_donate_popup", FUN_140763e10(nDonate), nCount, nMax);
@@ -701,7 +701,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         m_30->FUN_141979f30("showDonatePopup", nCount, nMax, strText);
         return 1;
     }
-    if (_stricmp("onDonate", szMethod) == 0)
+    else if (_stricmp("onDonate", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -716,7 +716,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         CGuildManager::GetInstance()->SendGuildMode15();
         return 1;
     }
-    if (_stricmp("OnClickOpenMayview", szMethod) == 0)
+    else if (_stricmp("OnClickOpenMayview", szMethod) == 0)
     {
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
         {
@@ -731,26 +731,27 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             OpenRankPage();
         return 1;
     }
-    if (_stricmp("OnClickCreateGuild", szMethod) == 0)
+    else if (_stricmp("OnClickCreateGuild", szMethod) == 0)
     {
         int nAction = 7;
-        BlockPtr spBlock = CBlockManager::GetInstance()->FindBlockedAction(nAction);
-        if (spBlock.get() != 0)
         {
-            FUN_140a2ff20(spBlock, nAction, 0);
-            return 0;
+            BlockPtr spBlock = CBlockManager::GetInstance()->FindBlockedAction(nAction);
+            if (spBlock.get() != 0)
+            {
+                FUN_140a2ff20(spBlock, nAction, 0);
+                return 0;
+            }
         }
         int nMin = *FUN_1401d3200()->GuildNameLengthMin.Get();
         int nMax = *FUN_1401d3200()->GuildNameLengthMax.Get();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_14028dee0<int, int, int>(0x3db, *FUN_1401d3200()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild"));
-        if (spBox.get() != 0)
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_14028dee0<int, int, int>(0x3db, *FUN_1401d3200()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild")))
         {
-            spBox->SetInput(0, CStringW(L""), nMax, 0, 0);
+            spBox->SetInput(0, L"", nMax, 0, 0);
             FUN_140d73c60(spBox);
         }
         return 1;
     }
-    if (_stricmp("OnSend", szMethod) == 0)
+    else if (_stricmp("OnSend", szMethod) == 0)
     {
         if (FUN_141974ed0())
             FUN_140d73aa0(BlockFormat(0x238), 1, static_cast<IMessageListener*>(this), CStringW(L"sendMail"));
@@ -758,15 +759,14 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             FUN_141275260(0x244, 1, 1);
         return 1;
     }
-    if (_stricmp("OnChangeMark", szMethod) == 0)
+    else if (_stricmp("OnChangeMark", szMethod) == 0)
     {
         CUgcManager::GetInstance()->FUN_14187ffe0();
         return 1;
     }
-    if (_stricmp("OnChangeNotify", szMethod) == 0)
+    else if (_stricmp("OnChangeNotify", szMethod) == 0)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xb, BlockFormat(0x3dc), static_cast<IMessageListener*>(this), CStringW(L"changeNotify"));
-        if (spBox.get() != 0)
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xb, BlockFormat(0x3dc), static_cast<IMessageListener*>(this), CStringW(L"changeNotify")))
         {
             CStringW strNotice = CGuildManager::GetInstance()->GetNotice();
             spBox->SetInput(0, strNotice, 300, 1, 0x14);
@@ -774,7 +774,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("OnChangePropensity", szMethod) == 0)
+    else if (_stricmp("OnChangePropensity", szMethod) == 0)
     {
         unsigned nPropensity = CGuildManager::GetInstance()->GetPropensity();
         PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -784,7 +784,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         m_30->Invoke("showPropensity", (int)nPropensity, 2, FUN_14028d780((unsigned char)nGrade));
         return 1;
     }
-    if (_stricmp("OnOpenGuildRank", szMethod) == 0)
+    else if (_stricmp("OnOpenGuildRank", szMethod) == 0)
     {
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
         {
@@ -799,17 +799,17 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             OpenRealtimeRankPage();
         return 1;
     }
-    if (_stricmp("onBreakGuild", szMethod) == 0)
+    else if (_stricmp("onBreakGuild", szMethod) == 0)
     {
         FUN_140d73aa0(BlockFormat(0x3df), 1, static_cast<IMessageListener*>(this), CStringW(L"breakGuild"));
         return 1;
     }
-    if (_stricmp("onLeaveGuild", szMethod) == 0)
+    else if (_stricmp("onLeaveGuild", szMethod) == 0)
     {
         FUN_140d73aa0(BlockFormat(0x3e0), 1, static_cast<IMessageListener*>(this), CStringW(L"leaveGuild"));
         return 1;
     }
-    if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0)
+    else if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -827,7 +827,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("OnClickMemoButton", szMethod) == 0)
+    else if (_stricmp("OnClickMemoButton", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -841,13 +841,12 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_140298ea0(CStringW(L"s_guild_ui_memo")), static_cast<IMessageListener*>(this), CStringW(L"changeMemo"));
             if (spBox.get() != 0)
             {
-                spBox->SetInput(0, CStringW(L""), 0x14, 0, 0);
+                spBox->SetInput(0, L"", 0x14, 0, 0);
                 FUN_140d73c60(spBox);
             }
         }
-        return 0;
     }
-    if (_stricmp("onChangeMaster", szMethod) == 0)
+    else if (_stricmp("onChangeMaster", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -873,7 +872,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("onChangeMemberGrade", szMethod) == 0)
+    else if (_stricmp("onChangeMemberGrade", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -889,7 +888,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("onExpelMember", szMethod) == 0)
+    else if (_stricmp("onExpelMember", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -915,7 +914,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("onChageGradeError", szMethod) == 0)
+    else if (_stricmp("onChageGradeError", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -929,9 +928,8 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (strText.GetLength() > 0)
                 FUN_1412751f0(strText, 1, 1);
         }
-        return 0;
     }
-    if (_stricmp("OnChangeGrade", szMethod) == 0)
+    else if (_stricmp("OnChangeGrade", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -944,43 +942,44 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 Scaleform::GFx::Value vGrade;
                 vGrades.GetElement(i, &vGrade);
                 MS2Ptr<AScript> spGrade = FUN_1409e7dc0(m_28, vGrade);
-                if (spGrade.get() == 0)
-                    continue;
-                CStringW strGradeName = spGrade->GetWString("gradeName");
-                Scaleform::GFx::Value vAuth = spGrade->GetMember("gradeAuth");
-                int nAuth = vAuth.GetInt();
-                Unk_PayloadPtr<CGuildGrade> spOld = CGuildManager::GetInstance()->GetGrade(i);
-                if (spOld == 0)
-                    continue;
-                if (spOld->name == strGradeName && spOld->permissions == nAuth)
-                    continue;
-                CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get();
-                if (pChecker != 0)
+                if (spGrade.get() != 0)
                 {
-                    CStringW strBan;
-                    if (pChecker->CheckGuildGradeName(strGradeName, strBan) != 0)
-                    {
-                        if (!strBan.IsEmpty())
-                        {
-                            if (!strErrors.IsEmpty())
-                                strErrors.Append(L"\n");
-                            CStringW strLine;
-                            strLine = FormatStringId<CStringW, CStringW>(0x423, CGuildManager::GetInstance()->GetGradeName(i), strBan);
-                            strErrors.Append(strLine);
-                        }
+                    CStringW strGradeName = spGrade->GetWString("gradeName");
+                    Scaleform::GFx::Value vAuth = spGrade->GetMember("gradeAuth");
+                    int nAuth = vAuth.GetInt();
+                    Unk_PayloadPtr<CGuildGrade> spOld = CGuildManager::GetInstance()->GetGrade(i);
+                    if (spOld == 0)
                         continue;
+                    if (spOld->name == strGradeName && spOld->permissions == nAuth)
+                        continue;
+                    CBanTextChecker* pChecker;
+                    CBanTextChecker* pCheckerCopy = pChecker = CommonString::GetInstance()->GetChecker().get();
+                    if (pChecker != 0)
+                    {
+                        CStringW strBan;
+                        if (pChecker->CheckGuildGradeName(strGradeName, strBan) != 0)
+                        {
+                            if (!strBan.IsEmpty())
+                            {
+                                if (!strErrors.IsEmpty())
+                                    strErrors.Append(L"\n");
+                                CStringW strLine;
+                                strLine = FormatStringId<CStringW, CStringW>(0x423, CGuildManager::GetInstance()->GetGradeName(i), strBan);
+                                strErrors.Append(strLine);
+                            }
+                            continue;
+                        }
                     }
+                    CGuildGrade grade;
+                    grade.FUN_1404c70f0(spOld->grade, CStringW(strGradeName), nAuth);
+                    CGuildManager::GetInstance()->SendGuildMode67(i, grade);
                 }
-                CGuildGrade grade;
-                grade.FUN_1404c70f0(spOld->grade, CStringW(strGradeName), nAuth);
-                CGuildManager::GetInstance()->SendGuildMode67(i, grade);
             }
             if (!strErrors.IsEmpty())
                 FUN_140d73aa0(FormatStringId<CStringW>(0x422, strErrors), 0, 0, CStringW(L""));
         }
-        return 0;
     }
-    if (_stricmp("OnViewPvpRank", szMethod) == 0)
+    else if (_stricmp("OnViewPvpRank", szMethod) == 0)
     {
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
         {
@@ -995,7 +994,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             OpenPvpRankPage();
         return 1;
     }
-    if (_stricmp("OnRegistPVP", szMethod) == 0)
+    else if (_stricmp("OnRegistPVP", szMethod) == 0)
     {
         if (CInputKeyHandler::GetInstance()->IsDebugMode() == true)
         {
@@ -1035,8 +1034,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 continue;
             if (spMember->f158 != 0)
                 continue;
-            int nLevel = spMember->data.f1c;
-            if (nLevel < CFeatureManager::GetInstance()->FUN_14036dc60())
+            if (spMember->data.f1c < CFeatureManager::GetInstance()->FUN_14036dc60())
                 continue;
             nCount++;
         }
@@ -1054,7 +1052,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("OnUnregistPVP", szMethod) == 0)
+    else if (_stricmp("OnUnregistPVP", szMethod) == 0)
     {
         CStringW strMe = reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30();
         if (CGuildManager::GetInstance()->HasMemberPermission(CStringW(strMe), 0x100) == 0)
@@ -1065,7 +1063,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         FUN_140d73aa0(BlockFormat(0x3f1), 1, static_cast<IMessageListener*>(this), CStringW(L"unregistPvP"));
         return 1;
     }
-    if (_stricmp("OnJoinPVP", szMethod) == 0)
+    else if (_stricmp("OnJoinPVP", szMethod) == 0)
     {
         if (CGuildManager::GetInstance()->FUN_14197dfb0() == 0)
             FUN_141974930();
@@ -1073,7 +1071,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             CGuildManager::GetInstance()->SendPVPMode3();
         return 1;
     }
-    if (_stricmp("OnChangedInformArenaMatching", szMethod) == 0)
+    else if (_stricmp("OnChangedInformArenaMatching", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1084,7 +1082,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("OnGuildSkillUse", szMethod) == 0)
+    else if (_stricmp("OnGuildSkillUse", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1109,14 +1107,14 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974ba0));
                 spBox->Append<int>(nSkillId);
                 spBox->FUN_141a01800(2);
-                spBox->SetCheckbox0(GetStringCommonByKey(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
+                spBox->SetCheckbox0(GetStringCommonByKey(L"s_guild_ui_skill_use_skill_term_agree"), 0);
                 spBox->SetAgreement(false);
                 FUN_140d73c60(spBox);
             }
         }
         return 1;
     }
-    if (_stricmp("OnGuildMemberSkillUse", szMethod) == 0)
+    else if (_stricmp("OnGuildMemberSkillUse", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1137,7 +1135,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("OnGuildSkillUpgrade", szMethod) == 0 || _stricmp("OnGuildMemberSkillUpgrade", szMethod) == 0)
+    else if (_stricmp("OnGuildSkillUpgrade", szMethod) == 0 || _stricmp("OnGuildMemberSkillUpgrade", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1163,9 +1161,8 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             spBox->Append<int>(nSkillId);
             FUN_140d73c60(spBox);
         }
-        return 0;
     }
-    if (_stricmp("onEventOpen", szMethod) == 0)
+    else if (_stricmp("onEventOpen", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1173,9 +1170,8 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             int nEventId = data.PopInt();
             CGuildManager::GetInstance()->FUN_1413ba080(nEventId);
         }
-        return 0;
     }
-    if (_stricmp("onEventJoin", szMethod) == 0)
+    else if (_stricmp("onEventJoin", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1183,14 +1179,13 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             int nEventId = data.PopInt();
             CGuildManager::GetInstance()->SendGuildMode100(nEventId);
         }
-        return 0;
     }
-    if (_stricmp("OpenUpgradePopup", szMethod) == 0)
+    else if (_stricmp("OpenUpgradePopup", szMethod) == 0)
     {
         CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4f2e);
         return 1;
     }
-    if (_stricmp("OnUpgradeNpc", szMethod) == 0)
+    else if (_stricmp("OnUpgradeNpc", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1211,7 +1206,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("onGiftGuildItem", szMethod) == 0)
+    else if (_stricmp("onGiftGuildItem", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
@@ -1226,12 +1221,12 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (_stricmp("RequestStorageHistory", szMethod) == 0)
+    else if (_stricmp("RequestStorageHistory", szMethod) == 0)
     {
         CGuildManager::GetInstance()->SendGuildMode112();
         return 1;
     }
-    if (_stricmp("onOpenDungeonDialog", szMethod) == 0)
+    else if (_stricmp("onOpenDungeonDialog", szMethod) == 0)
     {
         CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ebd);
         Unk_GdDungeonDialog* pDialog = static_cast<Unk_GdDungeonDialog*>(Unk_GetUI<UIDungeonRoomDialog>(0x4ebd));
@@ -1244,7 +1239,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         return 1;
     }
-    if (FUN_1419681b0(szMethod, pArgs, nArgs))
+    else if (FUN_1419681b0(szMethod, pArgs, nArgs))
         return 1;
     return 0;
 }

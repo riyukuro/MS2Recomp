@@ -1058,6 +1058,7 @@ void StateSkill::EndOfSequence(NiActorManager* pkManager, unsigned int eSequence
         return;
     if (m_nRepeat > 0)
         return;
+    if (m_nRepeat == 0) {}     // empty test: the exe keeps only its this load (the compare value is not recoverable)
     if (eSequenceID == pkManager->GetTargetAnimation())
     {
         m_b116 = true;

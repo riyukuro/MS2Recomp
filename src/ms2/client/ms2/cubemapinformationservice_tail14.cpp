@@ -8,9 +8,6 @@
 // Not an original file.
 // MS2-UNIT: unit_14112cdec
 // MS2-RANGE: 0x14112cdec-0x14112fa90 .text$mn
-// MS2-PIN: ??0Unk_CMISQueue@@QEAA@XZ 0x14111e640
-// MS2-PIN: ??0Unk_CMISQueueBase@@QEAA@XZ 0x1411225a0
-// MS2-PIN: ??0Unk_CMISQueueMember@@QEAA@XZ 0x140ae79e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2layout.h"
@@ -1007,16 +1004,10 @@ CCubeMotionManager* FUN_14112dd30()
     return DAT_143acf6c8 ? GetCubeMotionManager() : new CCubeMotionManager;
 }
 
-// the lazily created async send queue: a 0x18-byte object whose implicit ctor runs a base ctor and a member ctor
-struct Unk_CMISQueueBase : efd::MemObject
+// the lazily created async send queue; its implicit ctor (0x14111e640) is paired in cubemapinformationservice_tail6.cpp
+struct Unk_CMISQueue : efd::MemObject, Unk_CMISMapUIntInt
 {
-    Unk_CMISQueueBase();                                        // 0x1411225a0
-    u64 m_n0, m_n8;
-};
-struct Unk_CMISQueueMember { Unk_CMISQueueMember(); };          // 0x140ae79e0
-struct Unk_CMISQueue : Unk_CMISQueueBase
-{
-    Unk_CMISQueueMember m_mem;                                  // +0x10
+    efd::AtomicRefCount m_mem;                                  // +0x10
 };
 
 // @0x14112e1b0

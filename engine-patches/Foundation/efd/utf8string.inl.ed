@@ -110,9 +110,48 @@ TREE::_Pairii TREE::_Eqrange<efd::utf8string>(const efd::utf8string& _Keyval) \
     } \
     return (_Pairii(iterator(_Lonode, _STD addressof(_My_data)), iterator(_Hinode, _STD addressof(_My_data)))); \
 }
+// MS2: and map<utf8string, ..>::find (const) is inlined whole into its caller, both compares included. _Lbound
+// keeps the 14.16 body and stays out of line for the TU's other lookups (operator[]), as when find shared it.
+#define EE_MS2_FIND(TREE) \
+template<> template<> __declspec(noinline) inline \
+TREE::_Nodeptr TREE::_Lbound<efd::utf8string>(const efd::utf8string& _Keyval) const \
+{ \
+    _Nodeptr _Wherenode = this->_Get_data()._Myhead; \
+    _Nodeptr _Pnode = _Wherenode->_Parent; \
+    while (!_Pnode->_Isnil) \
+    { \
+        if (this->_Getcomp()(this->_Key(_Pnode), _Keyval)) \
+            _Pnode = _Pnode->_Right; \
+        else \
+        { \
+            _Wherenode = _Pnode; \
+            _Pnode = _Pnode->_Left; \
+        } \
+    } \
+    return (_Wherenode); \
+} \
+template<> inline \
+TREE::const_iterator TREE::find(const efd::utf8string& _Keyval) const \
+{ \
+    _Nodeptr _Wherenode = this->_Get_data()._Myhead; \
+    _Nodeptr _Pnode = _Wherenode->_Parent; \
+    while (!_Pnode->_Isnil) \
+    { \
+        if (efd::MS2InlineUtf8Less(this->_Key(_Pnode), _Keyval)) \
+            _Pnode = _Pnode->_Right; \
+        else \
+        { \
+            _Wherenode = _Pnode; \
+            _Pnode = _Pnode->_Left; \
+        } \
+    } \
+    const_iterator _Where(_Wherenode, _STD addressof(this->_Get_data())); \
+    return (_Where == end() || efd::MS2InlineUtf8Less(_Keyval, this->_Key(_Where._Ptr)) ? end() : _Where); \
+}
 #else
 #define EE_MS2_INSERT_NOHINT(TREE, VALTY, NODETY)
 #define EE_MS2_EQRANGE(TREE)
+#define EE_MS2_FIND(TREE)
 #endif
 .
 653c

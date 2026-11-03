@@ -391,6 +391,21 @@ CommonString* FUN_14025e7d0();   // the CommonString instance
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/packethandlermanager.h"
+#include <direct.h>
+// The exe links _mkdir statically (0x1420b1a80): redeclare it without dllimport
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winconsistent-dllimport"
+#else
+#pragma warning(push)
+#pragma warning(disable : 4273)  // inconsistent dll linkage: intended
+#endif
+extern "C" int __cdecl _mkdir(const char* _Path);
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#else
+#pragma warning(pop)
+#endif
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
@@ -548,6 +563,7 @@ public:
 MS2Ptr<Unk_MsgEmotionKeywords> FUN_140347050(int nEmotionId);
 
 GFxManager* FUN_14025e7a0();
+void* FUN_140d86260();   // C3: was GetClientPlatform
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
@@ -577,6 +593,12 @@ struct Unk_MsgCommunityFlags {
     bool m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6, m_b7;
 };
 #define MSG_COMMUNITY_FLAGS(p) ((Unk_MsgCommunityFlags*)(p))
+struct Unk_BuddySettings;
+class Unk_BuddyOptions
+{
+public:
+    Unk_BuddySettings& GetSettings();   // C3: was Unk_MbGameOption::FUN_140ae6540
+};
 
 // @0x141a08af0
 UIMessenger::UIMessenger(UIMessengerBrowser* pBrowser, const TiXmlDocument& doc, CStringW strName, int bFirst)
@@ -1357,7 +1379,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
-            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b0 = 0;
+            MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(CGameOption::GetInstance())->GetSettings())->m_b0 = 0;
             CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -1378,7 +1400,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
-            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b1 = 0;
+            MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(CGameOption::GetInstance())->GetSettings())->m_b1 = 0;
             CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -1399,7 +1421,7 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).IsCheckbox0Checked())
         {
-            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b2 = 0;
+            MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(CGameOption::GetInstance())->GetSettings())->m_b2 = 0;
             CGameOption::GetInstance()->SaveGameSettings();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -2204,7 +2226,7 @@ void UIMessenger::vfunc_93()
         m_nTargetSelectedIndex = m_subject->GetSelectedIndex();
         const int& nType = FUN_141a14580(m_nTargetSelectedIndex);
         if (!m_pBrowser->FUN_141a264c0(nType) && (nType == 0x10 || nType == 0xb || nType == 0xc))
-            GetClientPlatform()->vfunc_43(2, false, 1000);
+            ((IClientPlatform*)FUN_140d86260())->vfunc_43(2, false, 1000);
         FUN_141a15890();
     }
 }
@@ -2613,30 +2635,28 @@ struct Unk_1407a5820
 void FUN_1407a5960(Unk_1407a5820& extra, CInputStream& in);
 
 // The inventory item events.
-class Unk_MbItemEvents;
-Unk_MbItemEvents* FUN_140a6a840();
-void FUN_1419cae20(Unk_MbItemEvents* pEvents, UIItemEventListener* pListener);   // add a listener
-void FUN_1419caeb0(Unk_MbItemEvents* pEvents, UIItemEventListener* pListener);   // remove it
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was Unk_MbItemEvents*
+class Unk_ItemEventSystem
+{
+public:
+    void FUN_1419cae20(UIItemEventListener* pListener);   // add a listener
+    void FUN_1419caeb0(UIItemEventListener* pListener);   // remove it
+};
 
    // 2: drop, 1: replaced
    // the user is blinded
-BlindManager* FUN_1409c1730();
-CFeatureManager* FUN_140166410();
+class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was BlindManager*
+class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 
 // The game options: the community switches and the chat balloon switches.
 class Unk_MbBalloons { public: int FUN_14125c820(int nType); };   // the balloon shows the chat type
-class Unk_MbGameOption
-{
-public:
-    Unk_CommunityStateB* FUN_140ae6540();
-};
 
                // UITalkManager: a talk is running
-UITalkManager* FUN_140967100();
+class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };   // C3: was FUN_140967100
                // ClientLogManager::Flush
 class Unk_MbConfig { public: char m_pad_00[0x60]; CString m_strRoot; };   // +0x60 the client root
-Unk_MbConfig* FUN_1401d31f0();
-UIWhisperNotifyDialog* FUN_140e88970(int nUiId);                    // Unk_GetUI<UIWhisperNotifyDialog>
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: was Unk_MbConfig*
+template <class T> T* Unk_SptGetUI(int nUiId);   // C3: was FUN_140e88970
 CLogString* GetLogString();
 
 extern MessengerData::ScreenSetting DAT_143adda48;                 // messengerdata.cpp: the shared screen look
@@ -2738,7 +2758,7 @@ int UIMessengerBrowser::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_1419cae20(FUN_140a6a840(), this);
+    ((Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
     return 1;
 }
 
@@ -2756,7 +2776,7 @@ void UIMessengerBrowser::vfunc_67()
         }
     }
     m_windows.RemoveAll();
-    FUN_1419caeb0(FUN_140a6a840(), this);
+    ((Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
 }
 
 // @0x141a21c50
@@ -2863,7 +2883,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     if (strText.IsEmpty())
         return;
-    if (FUN_1409c1730()->IsBlocked(0, strName))
+    if (((BlindManager*)FUN_1409c1730())->IsBlocked(0, strName))
         return;
     if (nType == 5)
     {
@@ -2877,7 +2897,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (nType == 3)
     {
-        if (MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b7)
+        if (MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_b7)
         {
             // the whisper block option: answer with the block notice
             Unk_CommandChat chat;
@@ -2893,7 +2913,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
             if (pWindow != 0)
                 pWindow->vfunc_87(strText, strWindow);
         }
-        UIWhisperNotifyDialog* pNotify = FUN_140e88970(0x4e5e);
+        UIWhisperNotifyDialog* pNotify = Unk_SptGetUI<UIWhisperNotifyDialog>(0x4e5e);
         if (pNotify != 0)
             pNotify->FUN_141b51e30(nCharId, strText, strWindow);
         FUN_141276180(s_strWhisperSound, "");
@@ -2958,7 +2978,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     CStringW strHtml;
     if (nType == 0x19)
     {
-        if (!FUN_140166410()->FUN_14036d570(0x104))
+        if (!((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104))
             return;
         Unk_1407a5820 extra;
         FUN_1407a5960(extra, packet);
@@ -3625,7 +3645,7 @@ bool UIMessengerBrowser::FUN_141a26480()
 // @0x141a264c0
 bool UIMessengerBrowser::FUN_141a264c0(int nType)
 {
-    if (nType == 0x10 && !FUN_140166410()->FUN_14036d570(0x19))
+    if (nType == 0x10 && !((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x19))
         return true;
     if (m_hiddenTypes.find(nType) != m_hiddenTypes.end())
         return true;
@@ -3661,13 +3681,12 @@ void UIMessengerBrowser::FUN_141a26600()
     }
 }
 
-// MS2-FUNCTIONAL: exe statically links _mkdir/fopen/fwrite/fclose, build imports them
 // @0x141a26680
 void UIMessengerBrowser::FUN_141a26680()
 {
     CString strDir;
-    strDir.Format("%s%s", (const char*)FUN_14016a5c0(FUN_1401d31f0()->m_strRoot, 0), "../Debug/");
-    if (!efd::File::DefaultDirectoryExistsFunc(strDir))
+    strDir.Format("%s%s", (const char*)FUN_14016a5c0(((Unk_MbConfig*)FUN_1401d31f0())->m_strRoot, 0), "../Debug/");
+    if (!efd::File::DirectoryExists(strDir))
         _mkdir(strDir);
     __time64_t nNow;
     _time64(&nNow);
@@ -3680,7 +3699,7 @@ void UIMessengerBrowser::FUN_141a26680()
     int nYear = time.GetYear();
     CString strFile = Unk_SocketFormat("ChatLog{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}.txt", nYear, nMonth, nDay,
                                        nHour, nMinute, nSecond);
-    CString strPath = FUN_140cc2a00(CString("../Debug/"), strFile);
+    CString strPath = FUN_140cc2a00("../Debug/", strFile);
     FILE* pFile = fopen(strPath, "w");
     if (pFile != 0)
     {
@@ -3691,8 +3710,7 @@ void UIMessengerBrowser::FUN_141a26680()
             CStringW strLine;
             strLine.Format(L"user=[%s] chat=[%s]", (const wchar_t*)report.m_strName, (const wchar_t*)report.m_strMsg);
             CString strBytes = FUN_14016a600(strLine, 0);
-            size_t nLength = strBytes.GetLength();
-            fwrite((const char*)strBytes, nLength, 1, pFile);
+            fwrite((const char*)strBytes, strBytes.GetLength(), 1, pFile);
             fwrite("\n", 1, 1, pFile);
         }
         fclose(pFile);
@@ -3762,7 +3780,7 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     PCBase* pSpeaker = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
     if (pSpeaker == 0)
         return 0;
-    if (pSpeaker == pMe && FUN_140967100()->GetTalking())
+    if (pSpeaker == pMe && ((UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())
         return 1;
     int bShow = reinterpret_cast<Unk_MbBalloons*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->FUN_14125c820(nType);
     CStringW strBalloon;
@@ -4215,7 +4233,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
     return 0;
 }
 
-CClubClientManager* FUN_140e0d900(); template <> void MS2Ptr<CClubCli>::AddRef() const; template <> void MS2Ptr<CClubCli>::Release(); // clubcli.cpp (CPtred at +0xd8)
+class Unk_ClubManager* FUN_140e0d900(); template <> void MS2Ptr<CClubCli>::AddRef() const; template <> void MS2Ptr<CClubCli>::Release(); // clubcli.cpp (CPtred at +0xd8); C3: FUN_140e0d900 was CClubClientManager*
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item table record
 
 // @0x141a10660
@@ -4237,7 +4255,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
         {
             int nItemId = pMe->FUN_1416639e0();
             MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-            if (FUN_140166410()->FUN_14036d570(0x104) && (spData.get() ? true : false)
+            if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104) && (spData.get() ? true : false)
                 && (spData->function.name == L"WeddingChat"))
                 nType = 0x19;
             Unk_CommandChat chat;
@@ -4352,7 +4370,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x1a:
         if (!strText.IsEmpty() && nClubId != 0)
         {
-            MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
+            MS2Ptr<CClubCli> spClub = ((CClubClientManager*)FUN_140e0d900())->GetClub(nClubId);
             if (spClub.get() != 0)
             {
                 Unk_CommandChat chat;
@@ -4411,7 +4429,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         strMsg = strMsg.Trim();
         if (strMsg.IsEmpty())
             return 0;
-        nClubId = FUN_140e0d900()->GetClubIdByName(CStringW(strClub));
+        nClubId = ((CClubClientManager*)FUN_140e0d900())->GetClubIdByName(CStringW(strClub));
         if (nClubId == 0)
         {
             FUN_1412751f0(GetStringCommon(0x50), 1, 1);
@@ -4473,7 +4491,7 @@ int FUN_1403bb850();                                                // the chann
 // @0x141a12380
 bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
-    if (nType == 0x10 && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b0)
+    if (nType == 0x10 && MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_b0)
     {
         MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pMe == 0)
@@ -4488,35 +4506,35 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, 1, -1, 1);
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
+            spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
         }
     }
-    if (nType == 0xb && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b1)
+    if (nType == 0xb && MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_b1)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, BlockFormat<unsigned>(0xaa2, FUN_1403bb830()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
+            spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
         }
     }
-    if (nType == 0xc && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b2)
+    if (nType == 0xc && MSG_COMMUNITY_FLAGS(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_b2)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, BlockFormat<unsigned>(0xaa3, FUN_1403bb850()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
+            spBox->SetCheckbox0Enabled(((CFeatureManager*)FUN_140166410())->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -4814,7 +4832,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
     }
     else if (_stricmp("moveToWeddingHall", strMethod) == 0)
     {
-        if (!FUN_140166410()->FUN_14036d570(0x104))
+        if (!((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104))
             return;
         CStringW strId = pArgs->FUN_1422b8f40();
         CStringW strA = pArgs->FUN_1422b8f40();

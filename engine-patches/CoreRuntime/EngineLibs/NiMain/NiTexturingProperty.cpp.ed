@@ -1,0 +1,11 @@
+106a
+#if defined(EE_MS2_NITARRAY_SETAT_RELOAD)
+#undef SetAt
+#endif
+.
+27a
+#if defined(EE_MS2_NITARRAY_SETAT_RELOAD)
+// MS2: the exe's three ctors inline the m_pBase-reloading SetAt, the rest of the TU the stock one (NiTArray.inl)
+#define SetAt MS2SetAtReload
+#endif
+.

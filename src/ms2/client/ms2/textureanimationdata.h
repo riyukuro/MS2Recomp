@@ -142,7 +142,7 @@ typedef NiPointer<TextureLayer> TextureLayerPtr;
 class TextureLayerManager : public LayerManager
 {
 public:
-    TextureLayerManager();                                  // 0x141bf48f0
+    // implicit ctor 0x141bf48f0 (WorldService value-initialises the object: rep stosb before the ctor call)
     virtual NiPointer<Layer> vfunc_18(NiAVObject* pObject);     // 18 0x14184b230 a TextureLayer for the node's texturing property
 };
 MS2_CHECK_SIZE(TextureLayerManager, 0x20);

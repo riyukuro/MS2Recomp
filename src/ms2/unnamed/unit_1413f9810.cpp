@@ -50,19 +50,9 @@ class Unk_AnimSvc;
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 class EntityWorldManager;
 struct Unk_NHFramework { void* m_0; void* m_svc; }; // object at reinterpret_cast<Unk_NHFramework*>(TSingleton<CMainSystem>::GetInstance()); +8 holds the service manager pointer
-class Unk_NHSvc;                                                          // service returned from the framework (FUN_14098c5b0)
 
-// smart pointer to a framework service (ctor 0x14098c7d0, dtor 0x14098cc60)
-class Unk_NHSvcPtr
-{
-public:
-    Unk_NHSvcPtr(Unk_NHSvc* p);                                           // 0x14098c7d0
-    ~Unk_NHSvcPtr();                                                      // 0x14098cc60
-    Unk_NHSvc* FUN_14098d0e0() const;                                     // operator->
-    void* FUN_14098d090() const;                                           // operator bool (returns the pointer)
-private:
-    void* m_p;
-};
+// The service 0x06100009 (hardware instancing), held through efd::SmartPointer (as alphaanimation.cpp).
+class Unk_HwService : public efd::ISystemService { };
 
 // Depth-first walker over a scene graph (0x30 bytes: the base ctor 0x14098c730 fills up to +0x2c; unrecovered class,
 // see nifanimationservice.cpp).
@@ -79,9 +69,6 @@ typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_Nod
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // effect object configured by FUN_1413f9ba0 (only the members used here)
-struct Unk_NHXform { float m_f[10]; };
-MS2_CHECK_SIZE(Unk_NHXform, 0x28);
-class Unk_NHPt3 { public: Unk_NHPt3(float x, float y, float z); float x, y, z; };       // 0x14097f250
 class Unk_NHEffect
 {
 public:
@@ -91,15 +78,12 @@ public:
     virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25(); virtual void s26(); virtual void s27();
     virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31(); virtual void s32();
     virtual void vfunc_33();                                              // 0x108
-    void FUN_140aacbb0(const Unk_NHXform& x);
-    void FUN_140aacc00(const Unk_NHPt3& p);
 };
 
 // ---- externs (unrecovered exe code; names are the exe addresses) ---------------------------------------------------------
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // the object at +8 of the main system; returns its service manager
-void FUN_140a33240(Unk_NHXform* out, const void* pSrc);
 extern char DAT_143a09600;
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 class HardwareInstancingService   // C3: member view for the former free stand-ins
 {
 public:
@@ -245,11 +229,10 @@ MS2_REPLACE(0x1413F9B70, FUN_1413f9b70, 32, 0x15F69FD7);
 void FUN_1413f9ba0(Unk_NHEffect* pEffect)
 {
     if (pEffect != 0) {
-        Unk_NHXform kXform;
-        FUN_140a33240(&kXform, &DAT_143a09600);
-        pEffect->FUN_140aacbb0(kXform);
+        NiMatrix3 kXform(*reinterpret_cast<const efd::Matrix3*>(&DAT_143a09600));
+        reinterpret_cast<NiAVObject*>(pEffect)->SetWorldRotate(kXform);
         reinterpret_cast<NiAVObject*>(pEffect)->SetWorldScale(1.0f);
-        pEffect->FUN_140aacc00(Unk_NHPt3(0.0f, 0.0f, 0.0f));
+        reinterpret_cast<NiAVObject*>(pEffect)->SetWorldTranslate(NiPoint3(0.0f, 0.0f, 0.0f));
         pEffect->vfunc_33();
     }
 }
@@ -258,9 +241,9 @@ MS2_REPLACE(0x1413F9BA0, FUN_1413f9ba0, 151, 0xA4EE9233);
 // @0x1413f9c40
 void FUN_1413f9c40(bool bFlag)
 {
-    Unk_NHSvcPtr spSvc(((class Unk_NHSvc*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&egf::g_bapiContext))));
-    if (spSvc.FUN_14098d090() != 0)
-        ((class HardwareInstancingService*)(class Unk_NHSvc*)(spSvc.FUN_14098d0e0()))->FUN_1413d6ab0(bFlag);
+    efd::SmartPointer<Unk_HwService> spSvc(FUN_14098c5b0((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    if ((Unk_HwService*)spSvc != 0)
+        ((class HardwareInstancingService*)(spSvc.operator->()))->FUN_1413d6ab0(bFlag);
 }
 MS2_REPLACE(0x1413F9C40, FUN_1413f9c40, 97, 0x864DB9EB);
 

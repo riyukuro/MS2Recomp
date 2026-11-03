@@ -1272,6 +1272,13 @@ void GFxManager::FUN_1422b27e0(bool b)
 MS2_REPLACE_METHOD(0x1422B27E0, GFxManager, FUN_1422b27e0, 26, 0xBB8E686C);
 
 
+// The exe's RefCountNTSImplCore deleting dtor (0x1422b49f0) is the vector one (??_E): some TU of the image allocates
+// an array of them. Its caller is not known, so this emits the same COMDAT.
+Scaleform::RefCountNTSImplCore* GfxManagerNewNTSArray(UPInt n)
+{
+    return new Scaleform::RefCountNTSImplCore[n];
+}
+
 // COMDATs the auto pairing cannot place (look-alike copies).
 // MS2-PIN: ??0?$SmartPointer@VGFxRenderer@@@efd@@QEAA@PEAVGFxRenderer@@@Z 0x1422b2fd0
 // MS2-PIN: ??0?$SmartPointer@VGFxSoundFMOD@@@efd@@QEAA@PEAVGFxSoundFMOD@@@Z 0x1422b3010
@@ -1279,8 +1286,7 @@ MS2_REPLACE_METHOD(0x1422B27E0, GFxManager, FUN_1422b27e0, 26, 0xBB8E686C);
 // MS2-PIN: ??0?$SmartPointer@VNiGFxLocalizeManager@@@efd@@QEAA@PEAVNiGFxLocalizeManager@@@Z 0x1422b3090
 // MS2-PIN: ??0?$SmartPointer@VUnk_NotifyContext@@@efd@@QEAA@PEAVUnk_NotifyContext@@@Z 0x1422b30d0
 // MS2-PIN: ??1ParserExpat@XML@GFx@Scaleform@@UEAA@XZ 0x1422b3fb0
-// MS2-FUNCTIONAL ??_GRefCountNTSImplCore@Scaleform@@UEAAPEAXI@Z: the exe's copy is the vector deleting destructor (??_E, emitted because some TU deletes an array of them); with flag bit 2 clear it runs the same dtor and sized delete as this ??_G
-// MS2-PIN: ??_GRefCountNTSImplCore@Scaleform@@UEAAPEAXI@Z 0x1422b49f0
+// MS2-PIN: ??_ERefCountNTSImplCore@Scaleform@@UEAAPEAXI@Z 0x1422b49f0
 // MS2-PIN: ??_GParseControl@GFx@Scaleform@@UEAAPEAXI@Z 0x1422b4ec0
 // MS2-PIN: ??_GParser@XML@GFx@Scaleform@@UEAAPEAXI@Z 0x1422b4f20
 // MS2-PIN: ??_GParserExpat@XML@GFx@Scaleform@@UEAAPEAXI@Z 0x1422b4f80

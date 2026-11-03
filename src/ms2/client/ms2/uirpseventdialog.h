@@ -2,10 +2,10 @@
 // Header name assumed; FUN names and member names follow addresses when unknown.
 #pragma once
 #include "ms2/placeholder/uidialog.h"
+#include <atlcoll.h>
 class CInPacket;
 class GameEventVariable;
-class Unk_RpsEvent;
-class Unk_RpsInts;
+class RpsContext;
 class UIRpsEventDialog : public UIDialog {
 public:
     UIRpsEventDialog();
@@ -20,9 +20,9 @@ public:
     virtual int OnMessage(UISwfEntity*, UIMsg*);
     virtual int vfunc_48();
     CString FUN_140e83120(int);
-    void FUN_140e83200(Unk_RpsInts&);
+    void FUN_140e83200(ATL::CAtlArray<int>&);
     int FUN_140e832d0();
-    void FUN_140e83370(MS2Ptr<Unk_RpsEvent>);
+    void FUN_140e83370(MS2Ptr<RpsContext>);
     void FUN_140e83a30();
     void RefreshBannerButton();
     void FUN_140e83fa0(int);

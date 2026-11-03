@@ -29,9 +29,7 @@ static CString s_itemCount("itemCount");
 // Unit-local declarations; Unk names and member names are invented.
 class CItemData;
 // C3: CItem is the real class (citem.h)
-class Unk_DropText : public ASDisplayObject { public: };
-class Unk_DropInput : public ASDisplayObject { public: };
-class Unk_DropButton : public ASButton { public: };
+#include "ms2/placeholder/astilelist.h"   // C3: the m_list child
 template <class T> Unk_DropHandle<T> MakeDropChild(int id, const Scaleform::GFx::Value& v) {
     Unk_DropHandle<T> h(new T(v, id));
     return h;
@@ -81,12 +79,7 @@ public:
     virtual void vfunc_24(bool);
     virtual void vfunc_25(const Scaleform::GFx::Value&);
 };
-class Unk_ASBinding {
-public:
-    Unk_DropPtr<Unk_DropButton> FUN_140bbe640(const CString&, Unk_DropPtr<Unk_DropButton>&);
-    Unk_DropPtr<Unk_DropText> FUN_140beaf20(const CString&, Unk_DropPtr<Unk_DropText>&);
-    Unk_DropPtr<Unk_DropInput> FUN_140bbe940(const CString&, Unk_DropPtr<Unk_DropInput>&);
-};
+template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString& strName);   // C3: was FUN_140ba4b70
 class WorldService { public: static WorldService* GetInstance(); void* FUN_141bd0cc0(); };   // C3: member view
 class ASTooltip : public AScript {
 public: ASTooltip(void*, int, int); virtual ~ASTooltip(); int FUN_1409e0d40(CItem*);
@@ -140,20 +133,30 @@ MS2_CHECK_SIZE(ASObj, 0x40);
 MS2_CHECK_SIZE(ASDataProvider, 0x40);
 CStringW FUN_1409eb450(int);
 
-// Unk_DropPtr<T> members whose COMDATs are first instantiated in this unit (the others are declared only).
+class Unk_CoupleInput;
+// MS2Ptr<T> members whose COMDATs are first instantiated in this unit (the others are declared only).
 #define MS2_DROPPTR_ASSIGN(T) \
-    template <> Unk_DropPtr<T>& Unk_DropPtr<T>::operator=(T* p) { \
-        Unk_DropPtr temp(p); \
+    template <> MS2Ptr<T>& MS2Ptr<T>::AssignRaw(T* p) { \
+        MS2Ptr temp(p); \
         T* old = m_p; \
         m_p = temp.m_p; \
         temp.m_p = old; \
         return *this; \
     }
-MS2_DROPPTR_ASSIGN(Unk_DropButton)
-MS2_DROPPTR_ASSIGN(Unk_DropText)
-MS2_DROPPTR_ASSIGN(Unk_DropList)
-template <> Unk_DropPtr<Unk_DropList>::Unk_DropPtr() : m_p(0) {}
-template <> Unk_DropPtr<Unk_DropList>& Unk_DropPtr<Unk_DropList>::operator=(const Unk_DropPtr& o) {
+class Unk_PetButton;
+// The button temp is the exe's MS2Ptr<Unk_PetButton> ctor / dtor.
+template <> MS2Ptr<ASButton>& MS2Ptr<ASButton>::AssignRaw(ASButton* p) {
+    MS2Ptr<Unk_PetButton> temp(reinterpret_cast<Unk_PetButton*>(p));
+    ASButton* old = m_p;
+    m_p = reinterpret_cast<ASButton*>(temp.m_p);
+    temp.m_p = reinterpret_cast<Unk_PetButton*>(old);
+    return *this;
+}
+MS2_DROPPTR_ASSIGN(ASTextField)
+MS2_DROPPTR_ASSIGN(ASTileList)
+// inline: the ms2ptr_impl.h units instantiate the same two COMDATs.
+template <> inline MS2Ptr<ASTileList>::MS2Ptr() : m_p(0) {}
+template <> inline MS2Ptr<ASTileList>& MS2Ptr<ASTileList>::operator=(const MS2Ptr& o) {
     o.AddRef();
     Release();
     m_p = o.m_p;
@@ -170,30 +173,30 @@ MS2_REPLACE_METHOD(0x140C3A0F0, UIItemDropInfoDialog, GetTypeName, 61, 0x3F9626B
 // @0x140c3a140
 void UIItemDropInfoDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();
-    m_list = FUN_140ba4b70("m_list");
+    m_list = GetChild<ASTileList>("m_list");
     if (m_list == NULL) vfunc_67();
     do {
-        reinterpret_cast<Unk_ASBinding*>(m_30.operator->())->FUN_140bbe640("m_dropMode", m_drop);
+        m_30->FUN_140bbe640("m_dropMode", m_drop);
         if (m_drop == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(44), __FUNCTION__));
     } while (0);
     do {
-        reinterpret_cast<Unk_ASBinding*>(m_30.operator->())->FUN_140bbe640("m_testMode", m_test);
+        m_30->FUN_140bbe640("m_testMode", m_test);
         if (m_test == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(45), __FUNCTION__));
     } while (0);
     do {
-        reinterpret_cast<Unk_ASBinding*>(m_30.operator->())->FUN_140beaf20("m_itemName", m_name);
+        m_30->FUN_140beaf20("m_itemName", m_name);
         if (m_name == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(46), __FUNCTION__));
     } while (0);
     do {
-        reinterpret_cast<Unk_ASBinding*>(m_30.operator->())->FUN_140bbe940("m_dropCount", m_count);
+        m_30->FUN_140bbe940("m_dropCount", m_count);
         if (m_count == NULL)
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(47), __FUNCTION__));
     } while (0);
-    m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.get());
-    m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.get());
+    m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.operator ASButton*());
+    m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.operator ASButton*());
     FUN_140c3ad20();
     FUN_140c3af70();
 }
@@ -203,11 +206,11 @@ void UIItemDropInfoDialog::vfunc_26() {
     UIDialog::vfunc_26();
     FUN_141415600(m_slot);
     m_item.AssignRaw(0);
-    m_list = NULL;
-    m_drop = NULL;
-    m_test = NULL;
-    m_name = NULL;
-    m_count = NULL;
+    m_list.AssignRaw(NULL);
+    m_drop.AssignRaw(NULL);
+    m_test.AssignRaw(NULL);
+    m_name.AssignRaw(NULL);
+    reinterpret_cast<MS2Ptr<Unk_CoupleInput>&>(m_count).AssignRaw(NULL);   // the exe calls the twin at 0x140bf1810
     m_items.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x140C3AAE0, UIItemDropInfoDialog, vfunc_26, 188, 0xAC8F9059);
@@ -234,7 +237,7 @@ void UIItemDropInfoDialog::FUN_140c3ad20() {
     if (m_name.get()) {
         CStringW name = FUN_141425950(m_item->FUN_1405276c0());
         CStringW label = FUN_14183e9c0(name, m_item->GetRarity());
-        ((ASTextField*)m_name.operator->())->SetTextHTMLW(label);
+        m_name->SetTextHTMLW(label);
     }
 }
 MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, FUN_140c3ad20, 578, 0x5553B0EC);
@@ -265,8 +268,8 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
         array.PushValue(obj.FUN_1422bb870());
         m_items.Add(item);
     }
-    m_list->vfunc_25(array.FUN_1422bb870());
-    m_list->vfunc_24(1);
+    reinterpret_cast<Unk_DropList*>(m_list.operator->())->vfunc_25(array.FUN_1422bb870());
+    reinterpret_cast<Unk_DropList*>(m_list.operator->())->vfunc_24(1);
 }
 MS2_REPLACE_METHOD(0x140C3AF70, UIItemDropInfoDialog, FUN_140c3af70, 1646, 0x97FF2445);
 // @0x140c3b5f0
@@ -277,14 +280,14 @@ MS2_REPLACE_METHOD(0x140C3B5F0, UIItemDropInfoDialog, GetStringById, 71, 0xFC4CF
 // @0x140c3b640
 int UIItemDropInfoDialog::GetDropCount() {
     if (m_count == NULL) return 1;
-    return (std::max)(FUN_1407181a0(reinterpret_cast<ASTextInput*>(m_count.operator->())->GetText()),1);
+    return (std::max)(FUN_1407181a0(m_count->GetText()),1);
 }
 MS2_REPLACE_METHOD(0x140C3B640, UIItemDropInfoDialog, GetDropCount, 163, 0xA12099C5);
 // @0x140c3b6f0
 void UIItemDropInfoDialog::OnClickDropOrTestButton(const Scaleform::GFx::FunctionHandler::Params& params) {
     int count = GetDropCount();
-    if (params.pUserData == m_test.get()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1} 0 t",reinterpret_cast<const unsigned&>(m_box),count));
-    else if (params.pUserData == m_drop.get()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1}",reinterpret_cast<const unsigned&>(m_box),count));
+    if (params.pUserData == m_test.operator ASButton*()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1} 0 t",reinterpret_cast<const unsigned&>(m_box),count));
+    else if (params.pUserData == m_drop.operator ASButton*()) CUserCommandCli::SendCommand(StringFormat(L"DropBox {0} {1}",reinterpret_cast<const unsigned&>(m_box),count));
 }
 MS2_REPLACE_METHOD(0x140C3B6F0, UIItemDropInfoDialog, OnClickDropOrTestButton, 217, 0x7CE52B06);
 // @0x140c3b7d0

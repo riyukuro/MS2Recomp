@@ -56,11 +56,20 @@ std::string* FUN_142305710(void* self, std::string* out)
 struct CppParamBase { void* vptr; char pad[0x18]; };
 struct CppIntParam : CppParamBase { int m_value; };
 typedef bool (*AssignIntFn)(const std::type_info&, void*, const void*);
-extern AssignIntFn DAT_143b0dc90;                 // CryptoPP::g_pAssignIntToInteger
+namespace CryptoPP   // C3: member view of the CryptoPP names this unit calls
+{
+extern AssignIntFn g_pAssignIntToInteger;
+void UnalignedDeallocate(void* p);
+class NameValuePairs { public: static void ThrowIfTypeMismatch(const char* name, const std::type_info& stored, const std::type_info& retrieving); };
+class Integer
+{
+public:
+    Integer& operator=(const Integer& t);
+};
+}
 extern const std::type_info DAT_143a57d68;        // typeid(int)
 extern const std::type_info DAT_143aa1220;        // typeid(T) of the first instantiation
 extern const std::type_info DAT_143aa7a80;        // typeid(T) of the second instantiation
-void FUN_140390ef0(const char* name, const std::type_info& t1, const std::type_info& t2);   // ThrowIfTypeMismatch
 void FUN_14038dff0(void* dst, const void* src);   // AlgorithmParametersBase copy ctor
 extern char DAT_14311ee90[];                      // vftable of the first instantiation
 extern char DAT_14312dbf8[];                      // vftable of the second instantiation
@@ -68,9 +77,9 @@ extern char DAT_14312dbf8[];                      // vftable of the second insta
 // @0x142311c70
 void FUN_142311c70(CppIntParam* self, const char* name, const std::type_info& valueType, void* pValue)
 {
-    if (!(DAT_143b0dc90 != 0 && DAT_143aa1220 == DAT_143a57d68 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
+    if (!(CryptoPP::g_pAssignIntToInteger != 0 && DAT_143aa1220 == DAT_143a57d68 && CryptoPP::g_pAssignIntToInteger(valueType, pValue, &self->m_value)))
     {
-        FUN_140390ef0(name, DAT_143aa1220, valueType);
+        CryptoPP::NameValuePairs::ThrowIfTypeMismatch(name, DAT_143aa1220, valueType);
         *(int*)pValue = self->m_value;
     }
 }
@@ -78,9 +87,9 @@ void FUN_142311c70(CppIntParam* self, const char* name, const std::type_info& va
 // @0x14235df70
 void FUN_14235df70(CppIntParam* self, const char* name, const std::type_info& valueType, void* pValue)
 {
-    if (!(DAT_143b0dc90 != 0 && DAT_143aa7a80 == DAT_143a57d68 && DAT_143b0dc90(valueType, pValue, &self->m_value)))
+    if (!(CryptoPP::g_pAssignIntToInteger != 0 && DAT_143aa7a80 == DAT_143a57d68 && CryptoPP::g_pAssignIntToInteger(valueType, pValue, &self->m_value)))
     {
-        FUN_140390ef0(name, DAT_143aa7a80, valueType);
+        CryptoPP::NameValuePairs::ThrowIfTypeMismatch(name, DAT_143aa7a80, valueType);
         *(int*)pValue = self->m_value;
     }
 }
@@ -234,7 +243,6 @@ CppAssignHelper* FUN_142372f20(CppAssignHelper* self, char* pObject, const CppNa
 }
 
 // CryptoPP::Integer, as far as DL_PrivateKeyImpl<...>::GenerateRandom needs it: ASN1Object vptr + SecBlock + sign
-void FUN_142308be0(void* p);   // CryptoPP::UnalignedDeallocate
 struct CppInteger
 {
     void* vptr;
@@ -246,7 +254,7 @@ struct CppInteger
     {
         for (size_t i = 0; i < m_size; ++i)
             m_ptr[i] = 0;
-        FUN_142308be0(m_ptr);
+        CryptoPP::UnalignedDeallocate(m_ptr);
     }
 };
 CppInteger* FUN_14235a970(CppInteger* out, void* rng, const CppInteger* min, const CppInteger* max, int type, const CppInteger* equiv, const CppInteger* mod); // Integer(rng, min, max, type, equiv, mod)
@@ -472,7 +480,6 @@ std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
 }
 
 CppInteger* FUN_142359280(CppInteger* out, const char* str);                            // Integer(const char*)
-CppInteger* FUN_14235c230(CppInteger* self, const CppInteger* t);                       // Integer::operator=
 
 static bool CppIsIntegerTextChar(char c)
 {
@@ -512,7 +519,7 @@ std::istream& FUN_14235c2d0(std::istream& in, CppInteger& a)
     str[length - 1] = '\0';
     CppInteger value;
     FUN_142359280(&value, str);
-    FUN_14235c230(&a, &value);
+    *(CryptoPP::Integer*)&a = *(const CryptoPP::Integer*)&value;
     for (size_t i = 0; i < cap; ++i)
         str[i] = 0;
     CryptoPP::UnalignedDeallocate(str);

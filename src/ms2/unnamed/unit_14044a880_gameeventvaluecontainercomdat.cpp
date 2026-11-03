@@ -293,6 +293,7 @@ template class ATL::CAtlArray<unsigned>;
 template class ATL::CAtlList<MS2Ptr<Unk_DayItemContext> >;
 template class ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropContext> >;
 template class ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropListContext> >;
+template void ATL::CAtlList<unsigned>::RemoveAt(POSITION);   // Unk_GameEventValueIdLists::Remove's list
 template class ATL::CAtlMap<CStringW, Unk_FieldTimeSpan, ATL::CStringElementTraits<CStringW> >;
 template class ATL::CAtlMap<unsigned, bool>;
 template class ATL::CAtlMap<unsigned, __int64>;
@@ -333,3 +334,4 @@ void Unk_GameEventValueConstructTimed(void* p)
     new (p) T(0, CMsTime());
 }
 template void Unk_GameEventValueConstructTimed<CGameEventValueIDIPEvent::IDIPEventContext>(void*);
+// MS2-PIN: ?RemoveAt@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140456d60 ; gp1: called by Unk_GameEventValueIdLists::Remove (0x1404243c0)

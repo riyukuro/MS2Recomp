@@ -29,6 +29,7 @@ pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode3@C
 pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode4@CCashMarketMan@@QEAAXHHH@Z 0x140b063b0: already attributed (tag), ignored
 pin already attributed	client/ms2/cashinventorybag.cpp: MS2-PIN ?SendCashMode7@CCashMarketMan@@QEAAXHHHH@Z 0x140b064c0: already attributed (tag), ignored
 pin already attributed	client/ms2/clonepc.cpp: MS2-PIN ??R?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEBAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z 0x14108bae0: already attributed (tag), ignored
+pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?FUN_14114d9b0@@YAXPEAUUnk_CMISStr@@PEBD@Z 0x14114d9b0: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@PEAX@2@@Z 0x14114a370: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@@Z 0x14114a450: already attributed (tag), ignored
 pin already attributed	client/ms2/cubemapinformationservice_tail.cpp: MS2-PIN ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@2@@Z 0x14114a990: already attributed (tag), ignored
@@ -1135,12 +1136,8 @@ pin names no function	client/ms2/charactermeshmerger.cpp: MS2-PIN ??$addressof@$
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISIntList@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISPt3@@QEAA@AEBUUnk_StreamPoint@@@Z: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??1Unk_CMISIntList@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/cubemapinformationservice_tail14.cpp: MS2-PIN ??0Unk_CMISQueueBase@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/cubemapinformationservice_tail14.cpp: MS2-PIN ??0Unk_CMISQueueMember@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@@std@@@std@@$00@std@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$_Tree@V?$_Tmap_traits@HV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@U?$less@H@2@V?$CustomAllocator@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ: no such function in the obj
@@ -1523,7 +1520,6 @@ pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z: no such function in the obj
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z: no such function in the obj
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@1@@Z: no such function in the obj
-pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@std@@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ??0?$map@HIU?$less@H@std@@V?$allocator@U?$pair@$$CBHI@std@@@2@@std@@QEAA@XZ: no such function in the obj
@@ -1668,31 +1664,15 @@ pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsC_IWeb@@QE
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsC_Liftable@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsC_TargetBox@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsC_TargetGuide@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsD_EffectCtx@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsD_EffectRef@@QEAA@AEBU0@@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsD_EffectRef@@QEAA@PEAUUnk_WsD_EffectCtx@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsD_PcHolder@@QEAA@AEBV0@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsD_WarFog@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsF_Com@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsF_EntRef@@QEAA@AEBU0@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsF_Guid@@QEAA@AEBU0@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsF_Weak@@QEAA@H@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsG_RegionRef@@QEAA@AEBUUnk_WsV930@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsG_ZoneRef@@QEAA@$$QEAVUnk_WsG_ZoneTemp@@@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsH_Ref3a0@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_BoundBox@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_BoundCylinder@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_BoundSphere@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_CameraSetup@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_CameraTarget@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_MapMetaMgr@@QEAA@VEntityID@egf@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_NodePtr@@QEAA@PEAVUnk_WsI_NiNode@@@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_PhysParams@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsI_Visible@@QEAA@VEntityID@egf@@PEAXHH@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsK_Box@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsK_Obb@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsK_Pose@@QEAA@_N@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsK_Vec3@@QEAA@MMM@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsME_WireframeNew@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsR980@@QEAA@AEBUUnk_WsV980@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsR980@@QEAA@H@Z: no such function in the obj
@@ -1703,39 +1683,23 @@ pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsA_PcRef@@Q
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsA_PendingPc@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsA_UrnId@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsB_ActorList@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsD_EffectRef@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsD_MountPtr@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsD_PcHolder@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsF_Com@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsF_EntRef@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsF_ItemHandle@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsF_ItemInfoRef@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsF_Weak@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsG_RegionRef@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsG_ZoneRef@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsG_ZoneTemp@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsH_Ref3a0@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsI_PhysParams@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsK_Box@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsK_Obb@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsK_Pose@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??1Unk_WsME_Functor@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??4Unk_WsA_GoFieldRef@@QEAAAEAV0@PEAVUnk_WsD_FieldObj@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??8Unk_WsD_PcHolder@@QEBA_NPEAX@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??8Unk_WsI_MetaRef@@QEBA_NPEAUUnk_WsElem@@@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??BUnk_WsG_Ptr350@@QEBAPEAXXZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??BUnk_WsG_Ptr510@@QEBAPEAXXZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??BUnk_WsG_Ptr678@@QEBAPEAVUnk_WsG_Ticker@@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??BUnk_WsG_RegionRef@@QEBAPEAVUnk_WsG_Region@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsD_MountPtr@@QEBAPEAUUnk_WsD_MountRec@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsD_PcHolder@@QEBAPEAVUnk_WsD_FadeObj@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsG_HiderPtr@@QEBAPEAVUnk_WsG_Task@@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsG_RegionRef@@QEBAPEAVUnk_WsG_Region@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsG_ShowerPtr@@QEBAPEAVUnk_WsG_Task@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ??CUnk_WsG_ZoneRef@@QEBAPEAVUnk_WsG_Zone@@XZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ?FUN_140a17e10@Unk_WsG_Camera@@QEAA?AUVector3@@XZ: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ?FUN_141bc2800@Unk_WsA_FieldLookup@@QEAA?AUUnk_WsA_FieldRef@@H@Z: no such function in the obj
-pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ?FUN_141bc2800@Unk_WsI_PortalLookup@@QEAA?AUUnk_WsI_PortalRef@@H@Z: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ?get@Unk_WsG_Ptr3a0@@QEBAPEAXXZ: no such function in the obj
 pin names no function	client/ms2/worldservice_1.cpp: MS2-PIN ?get@Unk_WsG_Ptr4b0@@QEBAPEAXXZ: no such function in the obj
 pin names no function	client/ms2/worldservice_2.cpp: MS2-PIN ??$_Emplace_back_with_unused_capacity@AEAV?$MS2Ptr@VCLiftableTargetBox@@@@@?$vector@V?$MS2Ptr@VCLiftableTargetBox@@@@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@AEAAXAEAV?$MS2Ptr@VCLiftableTargetBox@@@@@Z: no such function in the obj
@@ -2022,7 +1986,6 @@ pin names no function	unnamed/unit_1415f9410.cpp: MS2-PIN ?FUN_1415fb750@@YA_NPE
 pin outside MS2-RANGEs	client/ms2/alphacomponent.cpp: MS2-PIN ?MS2HasAnyFlag@NiAVObject@@QEBA_NG@Z 0x14098dba0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISFlags3@@QEAA@XZ 0x140b68e60: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ?AssignRaw@?$MS2Ptr@VCube@@@@QEAAAEAV1@PEAVCube@@@Z 0x140965090: outside the unit's MS2-RANGEs, ignored
-pin outside MS2-RANGEs	client/ms2/cubemapinformationservice_tail14.cpp: MS2-PIN ??0Unk_CMISQueue@@QEAA@XZ 0x14111e640: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/guildmanager.cpp: MS2-PIN ??0?$MS2Ptr@VCGuildMember@@@@QEAA@$$QEAV0@@Z 0x1404ec580: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/guildmanager.cpp: MS2-PIN ??0?$MS2Ptr@VCGuildMember@@@@QEAA@AEBV0@@Z 0x1404ec5b0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/guildmanager.cpp: MS2-PIN ??0?$MS2Ptr@VCGuildMember@@@@QEAA@H@Z 0x1404ec5f0: outside the unit's MS2-RANGEs, ignored
@@ -2060,6 +2023,8 @@ pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ??C?$Unk_Scrip
 pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ?IsNull@?$Unk_ScriptPtr@VCTalkScript@@@@QEBA_NXZ 0x14085a420: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/uinpcpreviewdialog.cpp: MS2-PIN ?get@?$Unk_ScriptPtr@VCCinematicDistractor@@@@QEBAPEAVCCinematicDistractor@@XZ 0x14078f390: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/uiplayinstrumentdialog.cpp: MS2-PIN ?Clone@CAtlStringMgr@ATL@@UEAAPEAUIAtlStringMgr@2@XZ 0x14103c770: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VGameObjectEffectNifCtx@@@@QEAA@AEBV0@@Z 0x141bf1170: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VGameObjectEffectNifCtx@@@@QEAA@PEAVGameObjectEffectNifCtx@@@Z 0x141bf11b0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_WsC_TargetGuide@@@@QEAA@AEBV0@@Z 0x141bf15b0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_WsD_TipObj@@@@QEAA@AEBV0@@Z 0x141bf1870: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/worldservice_1.cpp: MS2-PIN ??0Unk_WsC_TagPtr@@QEAA@AEBU0@@Z 0x141bf1230: outside the unit's MS2-RANGEs, ignored
@@ -2119,6 +2084,7 @@ pin outside MS2-RANGEs	unnamed/unit_1407a4f20_packetserializers.cpp: MS2-PIN ??F
 pin outside MS2-RANGEs	unnamed/unit_1407a4f20_packetserializers.cpp: MS2-PIN ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@2@XZ 0x140703fd0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	unnamed/unit_1407a4f20_packetserializers.cpp: MS2-PIN ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@XZ 0x140703ff0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	unnamed/unit_1407a4f20_packetserializers.cpp: MS2-PIN ?_Max@?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@SAPEAU?$_Tree_node@IPEAX@2@PEAU32@@Z 0x1407041e0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	unnamed/unit_140d1ae30_itemfunctiondispatch.cpp: MS2-PIN ?GetUInt@CXmlData@@QEAAIAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBH@Z 0x14054c530: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	unnamed/unit_1413a9df0.cpp: MS2-PIN ?GcFmtBool@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_N@Z 0x14136f150: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	unnamed/unit_1413a9df0.cpp: MS2-PIN ?GcFmtId@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH@Z 0x140292a70: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	unnamed/unit_1413a9df0.cpp: MS2-PIN ?GcFmtIntInt@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1@Z 0x1406e7810: outside the unit's MS2-RANGEs, ignored

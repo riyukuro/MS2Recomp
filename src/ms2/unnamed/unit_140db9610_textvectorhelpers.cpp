@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x140db9610-0x140db9e30 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140db9610.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point2.h>
 #include <efd/Point3.h>
 #include <atlcoll.h>
 #include <stdarg.h>
@@ -40,13 +41,11 @@ struct Unk_DbFloat4                                                             
 
 // ---- exe callees ----
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
-CStringA& FUN_140164930(CAtlArray<CStringA>& arr, size_t i);
 int FUN_140718170(const CStringA& kText);                                       // parses an int
 float FUN_140718450(const CStringA& kText);                                     // parses a float
-CStringA FUN_14028ef00(Unk_DbVec3 kVec);                                             // Point3 formatter
+CStringA FUN_14028ef00(efd::Point3 kVec);                                            // Point3 formatter
 CStringW FUN_14028efb0(Unk_DbVec3 kVec);                                             // Point3 formatter (wide)
-extern unsigned long long* FUN_14029dcd0();                                     // CRT scanf options
-extern Unk_DbEfdPt2 DAT_143b02320;                                                 // default Point2
+#define DAT_143b02320 (*(const Unk_DbEfdPt2*)&efd::Point2::ZERO)    // C3: was extern Unk_DbEfdPt2 DAT_143b02320
 #define DAT_143b01a60 (*(Unk_DbEfdPt3*)&efd::Point3::ZERO)          // C3: was extern Unk_DbEfdPt3 DAT_143b01a60
 extern const char DAT_142e36e3c[];                                              // token delimiter (",")
 extern const char DAT_142e36e40[];                                              // token delimiter (",")
@@ -80,10 +79,10 @@ Unk_DbInt4 FUN_140db9760(const CStringA& kText)
     CAtlArray<CStringA> arrParts;
     if (FUN_14028c3e0(kText, arrParts, DAT_142e36e3c, 4) == 0)
         return Unk_DbInt4(0, 0, 0, 0);
-    kRes.a = FUN_140718170(FUN_140164930(arrParts, 0));
-    kRes.b = FUN_140718170(FUN_140164930(arrParts, 1));
-    kRes.c = FUN_140718170(FUN_140164930(arrParts, 2));
-    kRes.d = FUN_140718170(FUN_140164930(arrParts, 3));
+    kRes.a = FUN_140718170(arrParts[0]);
+    kRes.b = FUN_140718170(arrParts[1]);
+    kRes.c = FUN_140718170(arrParts[2]);
+    kRes.d = FUN_140718170(arrParts[3]);
     return kRes;
 }
 
@@ -94,10 +93,10 @@ Unk_DbFloat4 FUN_140db98a0(const CStringA& kText)
     CAtlArray<CStringA> arrParts;
     if (FUN_14028c3e0(kText, arrParts, DAT_142e36e40, 4) == 0)
         return Unk_DbFloat4(0, 0, 0, 0);
-    kRes.x = FUN_140718450(FUN_140164930(arrParts, 0));
-    kRes.y = FUN_140718450(FUN_140164930(arrParts, 1));
-    kRes.z = FUN_140718450(FUN_140164930(arrParts, 2));
-    kRes.w = FUN_140718450(FUN_140164930(arrParts, 3));
+    kRes.x = FUN_140718450(arrParts[0]);
+    kRes.y = FUN_140718450(arrParts[1]);
+    kRes.z = FUN_140718450(arrParts[2]);
+    kRes.w = FUN_140718450(arrParts[3]);
     return kRes;
 }
 
@@ -120,7 +119,7 @@ CStringA FUN_140db9aa0(const Unk_DbFloat4& kVec)
 // @0x140db9b70
 CStringA FUN_140db9b70(Unk_DbVec3 kVec)
 {
-    return FUN_14028ef00(kVec);
+    return FUN_14028ef00(*(efd::Point3*)&kVec);
 }
 
 // @0x140db9bd0
@@ -149,7 +148,7 @@ int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...)
 {
     va_list args;
     va_start(args, pszFormat);
-    int nRes = __stdio_common_vsscanf(*FUN_14029dcd0() | 1, pszBuf, nCount, pszFormat, 0, args);
+    int nRes = __stdio_common_vsscanf(*__local_stdio_scanf_options() | 1, pszBuf, nCount, pszFormat, 0, args);
     va_end(args);
     return nRes;
 }

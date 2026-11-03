@@ -46,6 +46,8 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/client/ms2/uirenderview.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/ssquickentry.h"
+#include "ms2/placeholder/cskillsettable.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/ms2inputservice.h"
@@ -117,28 +119,9 @@ class SkillSlot* FUN_141761e60(class DragSlot*);   // C3: was FUN_141761e60
 void FUN_1417634a0(const CString& strName);                             // drop the slot bar
 void FUN_1417633f0(const CString& strName, int nCount);                 // create the slot bar
 
-// The shortkey binding of one slot (0x18 bytes, ctor 0x141253e20).
-struct Unk_MpSlotData
-{
-    Unk_MpSlotData();
-    int m_0;
-    __int64 m_8;
-    int m_10;
-};
 
 // The skill set of the player.
-struct Unk_MpSkillSet { char m_pad_00[0x18]; int m_18; int m_1c; int m_20; };
-class Unk_MpSkillSetPtr
-{
-public:
-    Unk_MpSkillSetPtr(const Unk_MpSkillSetPtr& o);                      // 0x14176ca20
-    ~Unk_MpSkillSetPtr();                                               // 0x14080a3e0
-    Unk_MpSkillSet* get() const;                                        // 0x140932d80
-    Unk_MpSkillSet* operator->() const;                                 // 0x14080a4b0
-    void* m_0;
-    Unk_MpSkillSet* m_p;
-};
-class Unk_MpSkillOwner { public: Unk_MpSkillSetPtr FUN_141768380(); };
+class Unk_MpSkillOwner { public: MS2Ptr<CSkillSet> FUN_141768380(); };
 
 // The key table.
 class Unk_MpKeyPages { public: int FUN_1414370a0(); };
@@ -159,12 +142,12 @@ public:
     int FUN_14142c940(__int64, int);
     void LoadKeySetting(CString);
     CStringW FUN_141431820(int);
+    bool GetQuickSlotEntry(unsigned nSlot, Unk_SsQuickEntry& entry);
+    void ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet);
 };
 class Unk_MpKeyTable
 {
 public:
-    bool FUN_14142e030(int nSlot, Unk_MpSlotData& data);
-    void FUN_14142e8c0(Unk_MpSkillSetPtr sp);
     int FUN_1419f4760();
     char m_pad_00[0x1a0];
     Unk_MpKeyPages m_1a0;                                               // +0x1a0 the pages
@@ -279,34 +262,22 @@ MS2_CHECK_SIZE(UIAvatarRidee, 0xd8);
 class RideOffActionRidingUI { public: RideOffActionRidingUI(int n); char m_pad_00[0x28]; };   // C3: view (rideonaction.h needs MS2_THIS_FILE)
 
 // The ridee controller of the player ("remove" / "create" messages).
-struct Unk_MpRideeKey { Unk_MpRideeKey(); int m_0, m_4, m_8; };
 class Unk_MpRideeCtl : public Unk_PCCubeCraft
 {
-public:
-    Unk_MpRideeKey FUN_1410aa520();
 };
 struct Unk_MpWeaponRow { char m_pad_00[0x18]; __int64 m_18; };
-class Unk_MpWeaponPtr
-{
-public:
-    Unk_MpWeaponPtr(void* p);                                           // 0x140884fb0
-    ~Unk_MpWeaponPtr();                                                 // 0x140885120
-    Unk_MpWeaponRow* FUN_140885330();                                   // get
-    Unk_MpWeaponRow* FUN_140885350();                                   // operator->
-    void* m_0;
-    void* m_p;
-};
-class Unk_MpPhys { public: void* FUN_1410b8ab0(Unk_MpRideeKey key); };
-class Unk_MpPhysRef
-{
-public:
-    Unk_MpPhysRef(void* p);                                             // CComPtrBase
-    ~Unk_MpPhysRef();                                                   // 0x1401cd150
-    void* FUN_140885310();                                              // get
-    void* m_p;
-};
+class Cube;
+template <> MS2Ptr<Cube>::MS2Ptr(Cube* p);                              // 0x140884fb0
+template <> MS2Ptr<Cube>::~MS2Ptr();                                    // 0x140885120
+template <> MS2Ptr<Cube>::operator Cube*() const;                       // 0x140885330
+template <> Cube* MS2Ptr<Cube>::operator->() const;                     // 0x140885350
+class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view (cubemapinformationservice_3.h)
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;        // 0x140885310
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-extern char DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
 // The actor state of the player.
 class JobSystem   // C3: member view (jobsystem.h needs MS2_THIS_FILE)
@@ -333,7 +304,7 @@ class Unk_MpWorld : public WorldService { public: Unk_MpPC* FUN_141bd0cc0();};
 class AdditionalCustomCli : public Unk_AsBuff
 {
 public:
-    AdditionalCustomCli(Unk_MpPC* pOwner, int nKey, int nId, int nLevel, int n);   // 0x14096b490
+    AdditionalCustomCli(PCBase* pOwner, int nKey, int nId, unsigned int nLevel, unsigned int n);   // 0x14096b490
     __int64 m_28[10];
 };
 MS2_CHECK_SIZE(AdditionalCustomCli, 0x78);
@@ -391,7 +362,6 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW BlockFormat(int nId);
 int FUN_141276180(const CString& a, const CString& b);
 CStringW FUN_14093b970(int nId);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
 
 // The localized-string formatter (see partyvotecli.cpp): the (CStringW, float) instance is this unit's COMDAT.
@@ -627,14 +597,14 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
                     {
-                        Unk_MpPhysRef phys(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-                        if (phys.FUN_140885310() != 0)
+                        efd::SmartPointer<Unk_Service6100017> phys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+                        if (phys.operator Unk_Service6100017*() != 0)
                         {
-                            Unk_MpWeaponPtr weapon(reinterpret_cast<Unk_MpPhys*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(phys).operator->())->FUN_1410b8ab0(pCtl->FUN_1410aa520()));
-                            if (weapon.FUN_140885330() != 0)
+                            MS2Ptr<Cube> weapon(reinterpret_cast<CubeMapInformationService*>(phys.operator->())->GetCubeAtPoint(pCtl->GetPtCell()));
+                            if (weapon.operator Cube*() != 0)
                             {
                                 if (Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()))
-                                    pPc->FUN_14152f140(weapon.FUN_140885350()->m_18);
+                                    pPc->FUN_14152f140(reinterpret_cast<Unk_MpWeaponRow*>(weapon.operator->())->m_18);
                             }
                         }
                     }
@@ -980,7 +950,7 @@ void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
         {
             pAchieve->m_18 = fPercent;
             int nPercent = (int)fPercent;
-            CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(((CAchieve*)(Unk_MpAchieve*)(pAchieve))->GetId()), nPercent);
+            CStringW strMessage = FUN_14028dfa0<CStringW, int>(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(((CAchieve*)(Unk_MpAchieve*)(pAchieve))->GetId()), nPercent);
             AppendMessage(strMessage, "achieve");
         }
     }
@@ -1030,7 +1000,7 @@ void UIMainPlayerInfo::FUN_1419f1200(int nId, int nLevel)
     if (pPc == 0)
         return;
     FUN_1419f1370(nId);
-    MS2Ptr<Unk_AsBuff> spBuff(new AdditionalCustomCli(pPc, FUN_1419f3400(nId), nId, nLevel, 1));
+    MS2Ptr<Unk_AsBuff> spBuff(new AdditionalCustomCli((PCBase*)pPc, FUN_1419f3400(nId), nId, nLevel, 1));
     if ((bool)spBuff.get() && ((class AdditionalCli*)(class Unk_AsBuff*)(spBuff.operator->()))->IsValid())
         AddBuffEffect(spBuff);
     FUN_1419f37f0(5);
@@ -1151,13 +1121,13 @@ void UIMainPlayerInfo::FUN_1419f19c0()
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    Unk_MpSkillSetPtr spSet = ((Unk_MpSkillOwner*)((MyPC*)(Unk_MpPC*)(pPc))->FUN_141523bc0())->FUN_141768380();
+    MS2Ptr<CSkillSet> spSet = ((Unk_MpSkillOwner*)((MyPC*)(Unk_MpPC*)(pPc))->FUN_141523bc0())->FUN_141768380();
     if (spSet.get() != 0)
     {
-        ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142e8c0(spSet);
-        if (spSet->m_20 == 0)
+        ((CKeyTable*)FUN_1409331f0())->ApplySkillSetToQuickSlots(spSet);
+        if (spSet->m_nSlotLock == 0)
         {
-            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", spSet->m_18, spSet->m_1c);
+            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", reinterpret_cast<const int&>(spSet->m_nId), spSet->m_nVersion);
             ((CKeyTable*)FUN_1409331f0())->LoadKeySetting(strName);
         }
     }
@@ -1291,19 +1261,19 @@ void UIMainPlayerInfo::FUN_1419f2560(bool bForce)
         Unk_MpSlot* pSlot = FUN_1419f2930(nSlot);
         if (pSlot == 0)
             continue;
-        Unk_MpSlotData data;
-        if (!((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142e030(nSlot, data))
+        Unk_SsQuickEntry data;
+        if (!((CKeyTable*)FUN_1409331f0())->GetQuickSlotEntry(nSlot, data))
         {
             pSlot->vfunc_11();
             pSlot->vfunc_10();
             continue;
         }
-        if (!bForce && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetSkillId() == data.m_0 && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetItemUid() == data.m_8 && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetItemId() == data.m_10)
+        if (!bForce && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetSkillId() == data.m_nSkillId && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetItemUid() == data.m_nItemUid && ((SkillSlot*)(Unk_MpSlot*)(pSlot))->GetItemId() == data.m_nItemId)
             continue;
         pSlot->vfunc_11();
-        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetSkillId(data.m_0);
-        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetItemUid(data.m_8);
-        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetItemId(data.m_10);
+        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetSkillId(data.m_nSkillId);
+        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetItemUid(data.m_nItemUid);
+        ((SkillSlot*)(Unk_MpSlot*)(pSlot))->SetItemId(data.m_nItemId);
         pSlot->vfunc_10();
     }
 }

@@ -469,7 +469,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
     int option = pData->PopInt();
     CString valueText = pData->FUN_1422b8d30();
     valueText.Replace(",", "");
-    int value = FUN_1407181d0(&valueText);
+    int value = FUN_1407181d0(valueText);
     if (uid == 0)
         return;
     MS2Ptr<CItem> item = FUN_1419bef70(uid);

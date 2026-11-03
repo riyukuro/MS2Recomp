@@ -83,6 +83,14 @@ static CString s_sortNames6[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/os.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxPhysics.h>
+#pragma pop_macro("max")
+#pragma pop_macro("min")
+#include "ms2/client/ms2/physxhelper.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -384,8 +392,6 @@ public:
     Unk_GsObjRef FUN_141bc2800(int nId);
     int FUN_141bda9f0();
 };
-class Unk_GsPhysics;
-int FUN_14168a310(Unk_GsPhysics* pPhysics, const Vector3& kFrom, Vector3* pHit, void* pInfo, float fRange, __int64 n, int nMask);
 class Unk_GsGround : public CubeMapInformationService { };
 
 CameraMgr* FUN_1409478c0();
@@ -671,7 +677,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
         Unk_GsObjRef ref = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_b0);
         if (((void*)((MS2Ptr<CPortal>*)(Unk_GsObjRef*)&(ref))->get()) != 0) {
             Vector3 kHit;
-            if (FUN_14168a310(((class Unk_GsPhysics*)FUN_1409f7ca0()), ref.FUN_140965960()->FUN_14169d2f0(), &kHit, 0, 0.0f, 0, 0) != 0) {
+            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ref.FUN_140965960()->FUN_14169d2f0(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
                 bMoved = 1;
@@ -686,7 +692,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
             kDir.FUN_140968990();
             kDir.z = 0.0f;
             Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(kDir.FUN_14097fc90(100.0f));
-            if (FUN_14168a310(((class Unk_GsPhysics*)FUN_1409f7ca0()), kFrom, &kHit, 0, 0.0f, 0, 0) != 0) {
+            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kFrom, kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
             }

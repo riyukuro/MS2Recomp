@@ -85,6 +85,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/itembreakmanager.h"
 #include "ms2/commonfiles/jobsystem.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/placeholder/asmousecursor.h"
 #include "ms2/client/ms2/instrumentmanager.h"
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/client/ms2/uimyinfodialog.h"
@@ -193,27 +195,6 @@ public:
 };
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
-// The gamepad HUD.
-class Unk_IsPadHud
-{
-public:
-    void FUN_1422cee50(int n);
-};
-class Unk_IsPadHudPtr
-{
-public:
-    ~Unk_IsPadHudPtr();                                   // 0x140a58400
-    void* FUN_140a58470() const;                          // non-null test
-    Unk_IsPadHud* FUN_140a584a0() const;                  // operator->
-    void* m_p0;
-    void* m_p8;
-};
-class Unk_IsUiScale
-{
-public:
-    Unk_IsPadHudPtr FUN_1422b0370(int nDialogId);
-};
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // The names of the inventory tabs / item kinds.
 
@@ -228,7 +209,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
-void FUN_141276180(const CString& strA, const CString& strB);
+int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d73bc0(int nId, int nType, void* p, CStringW strTag);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* p, CStringW strTag);
@@ -242,18 +223,6 @@ CStringW FUN_1413fa9b0(const CStringW& str);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140710590(COutPacket& packet);                   // send the packet
 
-// The GFx value wrapper used for the cooldown calls (AScript-like, 0x48 bytes).
-class Unk_IsScript
-{
-public:
-    Unk_IsScript(const Scaleform::GFx::Value& v, int nMovie);   // 0x1422ba780
-    ~Unk_IsScript();
-    Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);
-    Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);
-private:
-    void* m_pad[8];
-};
-MS2_CHECK_SIZE(Unk_IsScript, 0x40);   // AScript (ascript.h)
 
 // Slots of other units.
 namespace NotifyContext { class BindData; }
@@ -307,8 +276,7 @@ int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
 UIPlayInstrumentDialog* FUN_140d0c040(int nId);
-UIItemMergeRevertDialog* FUN_140d274e0(int nId);
-UIItemExtractionScrollDialog* FUN_140d27300(int nId);
+template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d274e0/FUN_140d27300
 UIBlackMarketDialog* FUN_140a22f10(int nId);
 static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint);
 static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax);
@@ -339,7 +307,7 @@ void FUN_141425fc0(__int64, int, void*);   // C3: was FUN_141425fc0
 static void FUN_14140d200(__int64 nUid, int nCount, int nMax);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName);
 CNetworkService* FUN_140714f90();
-void FUN_1419f8920(MS2Ptr<CItem> spItem, int nCount);     // sell without a box
+void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount);     // sell without a box
 static int FUN_14140d350(CItem* pItem);
 
 // The right click mode (FUN_14140d3e0).
@@ -971,9 +939,9 @@ int InvenSlot::vfunc_14()
     case 2:
         if (FUN_14140be60(spItem) != 0)
         {
-            Unk_IsPadHudPtr spHud = ((class Unk_IsUiScale*)FUN_14025e7a0())->FUN_1422b0370(6);
-            if (spHud.FUN_140a58470() != 0)
-                spHud.FUN_140a584a0()->FUN_1422cee50(0);
+            MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+            if (spHud.operator ASMouseCursor*() != 0)
+                spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)0);
         }
         break;
     case 3:
@@ -1060,7 +1028,7 @@ int InvenSlot::vfunc_14()
     case 18:
     {
         UIItemExtractionScrollDialog* pScroll;
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8f) && (pScroll = FUN_140d27300(0x4f49)) != 0)
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8f) && (pScroll = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49)) != 0)
             pScroll->FUN_140e4a920(m_nItemUid);
         break;
     }
@@ -1130,7 +1098,7 @@ int InvenSlot::vfunc_14()
     }
     case 17:
     {
-        UIItemMergeRevertDialog* pRevert = FUN_140d274e0(0x4f3d);
+        UIItemMergeRevertDialog* pRevert = GetItemUseDialog<UIItemMergeRevertDialog>(0x4f3d);
         if (pRevert != 0)
         {
             int nError = pRevert->FUN_140e4d330(spItem.get());
@@ -1567,9 +1535,9 @@ int InvenSlot::vfunc_0(void* p)
     int nMode = FUN_14140d3e0(spItem, 1);
     if (nMode == 2)
     {
-        Unk_IsPadHudPtr spHud = ((class Unk_IsUiScale*)FUN_14025e7a0())->FUN_1422b0370(6);
-        if (spHud.FUN_140a58470() != 0)
-            spHud.FUN_140a584a0()->FUN_1422cee50(8);
+        MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+        if (spHud.operator ASMouseCursor*() != 0)
+            spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)8);
     }
     if (spItem->FUN_140527840()->function.name == L"ItemExchangeScroll")
     {
@@ -1794,8 +1762,8 @@ int InvenSlot::MatchSearchName(CStringW strSearch)
     }
     if (m_value18.IsObject())
     {
-        Unk_IsScript script(m_value18, 2);
-        reinterpret_cast<AScript&>(script).Invoke(s_strUpdateIconSearchOn, bFound);
+        AScript script(m_value18, 2);
+        script.Invoke(s_strUpdateIconSearchOn, bFound);
     }
     if (bFound != false)
         return m_nIndex;
@@ -2076,7 +2044,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
         {
             if (bHint == 0)
                 return 17;
-            UIItemMergeRevertDialog* pRevert = FUN_140d274e0(0x4f3d);
+            UIItemMergeRevertDialog* pRevert = GetItemUseDialog<UIItemMergeRevertDialog>(0x4f3d);
             if (pRevert != 0 && pRevert->FUN_140e4d330(spItem.get()) == 0)
                 return 17;
         }

@@ -371,13 +371,13 @@ unsigned FUN_140557640(Unk_IngTable*, CString*);
 
 // helpers of other units
 bool FUN_14026aeb0(const ItemEntity&, const ItemEntity&);
-void FUN_140274fc0(const CStringW&, Unk_UIntArr*, const wchar_t*);
-void FUN_140275180(const CStringW&, Unk_StrVec*, const wchar_t*);
-void FUN_140275080(CString&, Unk_StrVec*, const char*);
-int FUN_1407181d0(CString*);
+void FUN_140274fc0(CStringW&, void*, const wchar_t*);
+void FUN_140275180(CStringW&, void*, const wchar_t*);
+void FUN_140275080(CString&, void*, const char*);
+unsigned FUN_1407181d0(const CString&);
 void FUN_140177de0(CString&, Unk_IntArr*, const char*);
 void FUN_1408733e0(void*, const char*, CString&);
-void FUN_1402767f0(void*, const char*, int&);
+int FUN_1402767f0(void*, const char*, unsigned*);
 void FUN_1408730a0(void*, const char*, bool&);
 void FUN_140873220(void*, const char*, unsigned int&);
 void FUN_1408731e0(void*, const char*, int&);

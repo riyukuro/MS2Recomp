@@ -7,6 +7,7 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+// MS2-PIN: ??0Unk_CMISQueue@@QEAA@XZ 0x14111e640
 // Byte-identical MS2Ptr ctors: the copy ctors differ only in the AddRef they call (0x14112fa90/faf0/fb20), the default
 // ctors not at all, so the look-alike guess would pick their owners by name order.
 // MS2-PIN: ??0?$MS2Ptr@VFittingDollData@@@@QEAA@AEBV0@@Z 0x14111e680 ; mt11: copy ctor, AddRef 0x14112fa90; callers FUN_1410bc3d0/FUN_1410cb4c0 copy MS2Ptr<FittingDollData>
@@ -26,6 +27,9 @@
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
 #include "hook/ms2hook.h"
 #include <efd/MessageService.h>
+#include <efd/MemObject.h>
+#include <efd/RefCount.h>
+#include <efd/StdContainers.h>
 #include <egf/EntityChangeMessage.h>
 #include <ecr/CoreRuntimeMessages.h>
 #include <NiTransform.h>
@@ -44,6 +48,12 @@ typedef efd::vector<Cube*> Unk_CMISCubePtrVec;
 // actionkeyobject.cpp's owner-id table: the CU constructs one first (_Construct/_Buyheadnode sit in this slice, the rest
 // of the family in actionkeyobject's range)
 typedef std::map<__int64, Unk_PayloadPtr<CubeOwner> > Unk_CMISOwnerById;
+// the lazily created async send queue (cubemapinformationservice_tail14.cpp creates it): its implicit ctor (0x14111e640)
+// runs the map ctor (0x1411225a0) and the ref count ctor (0x140ae79e0); the map's dtor (0x141125630) gives it an EH frame
+struct Unk_CMISQueue : efd::MemObject, Unk_CMISMapUIntInt
+{
+    efd::AtomicRefCount m_mem;                                  // +0x10
+};
 
 // operator[] with a temporary key: the exe's try_emplace(key_type&&) copies
 template <class M> void Unk_CMISDriveIndexRv3(M& m)
@@ -139,6 +149,7 @@ void Unk_CMISDriveTail6()
     { MS2Ptr<FittingDollData> a; MS2Ptr<FittingDollData> b(a); }
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
+    { Unk_CMISQueue q; }                                                                        // the async queue's implicit ctor 0x14111e640
 }
 
 // -----------------------------------------------------------------------------------------------------------
@@ -147,8 +158,6 @@ void Unk_CMISDriveTail6()
 // ambiguity the generic MS2Ptr/Unk_PayloadPtr/TSingleton instantiations suffer from).
 // -----------------------------------------------------------------------------------------------------------
 
-void FUN_1411225a0(void* pThis);      // 0x1411225a0: async queue ctor
-void FUN_140ae79e0(void* pThis);      // 0x140ae79e0: async queue aux ctor
 void FUN_14112fe10(struct Unk_Obj8* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> link
 void FUN_14112faf0(void* pThis);      // MS2Ptr<CFunctionCubeObject> link
 void FUN_14112fb20(void* pThis);      // MS2Ptr<AutomaticCreateCubeInfo> AddRef
@@ -161,14 +170,6 @@ void FUN_140fac7f0(void* pThis);
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
 extern char DAT_142eb3950;            // TSingleton<CubeMapInformationService> vtable
 extern void* DAT_143ab3908;           // TSingleton<CubeMapInformationService>::ms_pInstance
-
-// @0x14111e640
-void* FUN_14111e640(void* pThis)
-{
-    FUN_1411225a0(pThis);
-    FUN_140ae79e0((char*)pThis + 0x10);
-    return pThis;
-}
 
 // @0x14111e6e0
 void* FUN_14111e6e0(void* pThis, void* pUnused)

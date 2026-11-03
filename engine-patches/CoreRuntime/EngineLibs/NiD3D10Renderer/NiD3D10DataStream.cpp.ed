@@ -1,0 +1,7 @@
+57a
+#if defined(EE_MS2_D3D10DS_DTOR_FORCE)
+// MS2: the exe's scalar deleting dtor (0x142852d30) inlines this dtor and Deallocate where cl 19.16 calls it;
+// the unit defines EE_MS2_D3D10DS_DTOR_FORCE (engine/units-gb.json)
+__forceinline
+#endif
+.

@@ -63,11 +63,8 @@ public:
 class CObjectShadow : public NiRefObject
 {
 public:
-    CObjectShadow(GameObject* pOwner, int nLodHi, int nLodLo, float fSize, float fAlpha);   // 0x14160fc90
-    void FUN_14160fe10(bool bValue);                                // 0x14160fe10
-    void FUN_14160fe50(bool bNear);                                 // 0x14160fe50
+    CObjectShadow(void* pOwner, int nLodHi, int nLodLo, float fSize, float fAlpha);   // 0x14160fc90 (the owner GameObject)
     void FUN_14160feb0(int nActive, const efd::Point3& kPos, const efd::Point3& kDir, float fTime, bool bForce);
-    void FUN_1416105c0();                                           // 0x1416105c0
     bool FUN_14109a720();                                           // 0x14109a720
     bool FUN_141192820();                                           // 0x141192820 the dirty flag
     bool FUN_141192830();                                           // 0x141192830 the enabled flag
@@ -82,6 +79,9 @@ private:
     char m_pad_34[0x58 - 0x34];
 };
 MS2_CHECK_SIZE(CObjectShadow, 0x58);
+void FUN_14160fe10(CObjectShadow* self, bool v);   // unit_14160fb10
+void FUN_14160fe50(CObjectShadow* self, bool v);
+void FUN_1416105c0(CObjectShadow* self);
 
 // The shadow quality settings (?\gameoption.cpp keeps the full view).
 
@@ -292,15 +292,15 @@ int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarit
 // @0x14118d1c0
 int CDropItem::FUN_14118d1c0(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>& kOwners)
 {
-    m_owners.FUN_1407b7110(&kOwners);
+    m_owners.AddTailList(&kOwners);
     return FUN_14118cb90(nObjectId, nItemId, nAmount, nRarity, nOwnerObjId);
 }
 
 // @0x14118d230
-int CDropItem::InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners)
+int CDropItem::InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, __int64 nOwner)
 {
-    if (pOwners)
-        m_owners.FUN_1407b7090(pOwners);
+    if (nOwner)
+        m_owners.AddTail(nOwner);
     return FUN_14118cb90(nObjectId, nItemId, nAmount, nRarity, nOwnerObjId);
 }
 
@@ -354,8 +354,8 @@ void CDropItem::vfunc_32(bool bForce)
 {
     if (m_spShadow)
     {
-        m_spShadow->FUN_14160fe50(FUN_140f4a450() < 200000.0f);
-        m_spShadow->FUN_1416105c0();
+        FUN_14160fe50(m_spShadow.operator->(), FUN_140f4a450() < 200000.0f);
+        FUN_1416105c0(m_spShadow.operator->());
         bool bMoved = m_spShadow->FUN_14109a720();
         bool bDirty = m_spShadow->FUN_141192820();
         if (bMoved || bForce || bDirty)
@@ -481,7 +481,7 @@ void CDropItem::FUN_14118d9a0(int nState)
         }
         if (m_nFadeTime == 0 && (CObjectShadow*)m_spShadow != 0)
         {
-            m_spShadow->FUN_14160fe10(true);
+            FUN_14160fe10(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
         vfunc_19(reinterpret_cast<efd::Point3&>(kSelf));
@@ -774,7 +774,7 @@ int CDropItem::IsOwnedByLocalPlayer()
 // @0x141190080
 int CDropItem::IsOwner(unsigned __int64 nUid)
 {
-    if (m_owners.FUN_1407b72d0(nUid, 0))
+    if (m_owners.Find(nUid, 0))
         return 1;
     return 0;
 }
@@ -1026,7 +1026,7 @@ void CDropItem::FUN_141190b70(int nPickerId)
         vfunc_23(0);
         if (m_spShadow)
         {
-            m_spShadow->FUN_14160fe10(true);
+            FUN_14160fe10(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
     }
@@ -1059,10 +1059,10 @@ int CDropItem::GetDropKind() { return m_nDropKind; }
 // @0x1411910e0
 unsigned __int64 CDropItem::GetFirstOwner()
 {
-    if (!m_owners.FUN_1408f32a0())
+    if (!m_owners.GetCount())
         return 0;
-    void* pPos = m_owners.FUN_1407b75d0();
-    unsigned __int64 nUid = *m_owners.FUN_1408f31c0(pPos);
+    POSITION pPos = m_owners.GetHeadPosition();
+    unsigned __int64 nUid = m_owners.GetAt(pPos);
     return nUid;
 }
 
@@ -1118,8 +1118,8 @@ void CDropItem::vfunc_49()
     CGraphicOptionTable* pCfg = TSingleton<CGraphicOptionTable>::GetInstance();
     int nLodHi = pCfg->GetShadowOption(4);
     int nLodLo = pCfg->GetShadowOptionOffset(4);
-    m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo, fScale, fBias);
-    m_spShadow->FUN_14160fe10(false);
+    m_spShadow = NiNew CObjectShadow((void*)static_cast<GameObject*>(this), nLodHi, nLodLo, fScale, fBias);
+    FUN_14160fe10(m_spShadow.operator->(), false);
 }
 
 // @0x1411914d0
@@ -1131,7 +1131,7 @@ void CDropItem::vfunc_53(float fTime)
         vfunc_23(0);
         if (m_spShadow)
         {
-            m_spShadow->FUN_14160fe10(true);
+            FUN_14160fe10(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
     }

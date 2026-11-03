@@ -172,9 +172,7 @@ public:
     Unk_NtMountSeatPtr FUN_141657730();
     Unk_NtTeamPtr FUN_140967420();
 };
-Unk_NtSeatSub* FUN_14165ca20(PC* pPc);
-CStringW* FUN_141656be0(PC* pPc);                       // guild name
-CStringW FUN_141b720b0(int nTitle, PC* pPc);
+CStringW FUN_141b720b0(int nTitle, __int64 nPc);
 class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
 class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
 class Unk_RideeData : public CPtred { };
@@ -379,7 +377,7 @@ NiPoint3 UINameTag::Entity::vfunc_10()
 {
     if (PC* pPc = dynamic_cast<PC*>(FUN_140f49330()))
     {
-        if (Unk_NtSeatSub* pSeat = FUN_14165ca20(pPc))
+        if (Unk_NtSeatSub* pSeat = (Unk_NtSeatSub*)pPc->FUN_14165ca20())
         {
             NiPoint3 base = UIHudEntity::Entity::vfunc_10();
             NiPoint3 pos(((CBreakableObject*)pSeat)->GetPtPos());
@@ -512,10 +510,10 @@ void UINameTag::Entity::FUN_141a5ff60()
         if (pPc != 0)
         {
             strGuild = L"";
-            if (FUN_141656be0(pPc)->GetLength() > 0)
-                strGuild = StringFormat(L"<{0}>", *FUN_141656be0(pPc));
+            if (pPc->FUN_141656be0().GetLength() > 0)
+                strGuild = StringFormat(L"<{0}>", pPc->FUN_141656be0());
             if (((class PC*)(class PC*)(pPc))->FUN_141661c50() != 0)
-                strName = StringFormat(L"{0} {1}", FUN_141b720b0(((class PC*)(class PC*)(pPc))->FUN_141661c50(), pPc), strName);
+                strName = StringFormat(L"{0} {1}", FUN_141b720b0(((class PC*)(class PC*)(pPc))->FUN_141661c50(), (__int64)pPc), strName);
             bool bSymbol = false;
             if (Unk_NtSymbolRec* pRec = reinterpret_cast<Unk_NtSymbolRec*>(WorldService::GetInstance()->FindFieldProperty(5)))
             {

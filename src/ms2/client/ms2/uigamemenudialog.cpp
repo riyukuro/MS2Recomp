@@ -101,6 +101,8 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/gameeventuservaluemanager.h"  // C3: GameEventUserValueManager::RegisterListener/UnregisterListener
+#include "ms2/commonfiles/jobsystem.h"  // C3: JobSystem::GetSkills
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x140113840
 
@@ -292,20 +294,7 @@ MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_period, 0x40);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strTip, 0x48);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strCaption, 0x60);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_nOpenUi, 0x68);
-class Unk_GmMenuRef                             // = Unk_GuideMenuRef
-{
-public:
-    Unk_GmMenuRef() {}
-    // Move-only owner (exe 0x140cf8e30 steals m_8 and nulls the source; the dtor 0x140c1ccf0 releases it). Without
-    // this the implicit bitwise copy released the same entry twice.
-    Unk_GmMenuRef(Unk_GmMenuRef&& o) : m_0(o.m_0), m_8(o.m_8) { o.m_8 = 0; }   // 0x140cf8e30
-    ~Unk_GmMenuRef();                           // 0x140c1ccf0
-    void* FUN_140c1cd90() const;                // the entry pointer (null: none)
-    Unk_GmMenuEntry* FUN_140c1cda0() const;
-    void* m_0;
-    void* m_8;                                  // the entry (null: no such menu)
-};
-MS2_CHECK_SIZE(Unk_GmMenuRef, 0x10);
+typedef MS2Ptr<CGameMenuDef> Unk_GmMenuRef;    // the menu entry (Unk_GmMenuEntry view of CGameMenuDef)
 class Unk_GmNodeRef;
 class Unk_GmNodeArr                             // CAtlArray<Unk_GmNodeRef>
 {
@@ -349,20 +338,12 @@ public:
 class Unk_GmMenuTable : public CGameMenuTable
 {
 public:
-    Unk_GmMenuRef FUN_140cf7470(CString strName);
-    Unk_GmMenuRef FUN_140cf7590(int nId);
-    Unk_GmMenuRef FUN_140cf7690(int nId);
     Unk_GmNodeRef FUN_140cf77a0(int nId, int nLang);
 };
-class Unk_GmGridRef
-{
-public:
-    Unk_GmGridRef(void* p);                     // 0x1401cd0b0
-    ~Unk_GmGridRef();                           // 0x1401cd150
-    void* FUN_140885310();
-    Unk_GmGrid* FUN_1401cd1a0();
-    void* m_p;
-};
+class Unk_GmGridRef;
+class Unk_Service6100017;
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
 class Unk_GmTargetRef
 {
@@ -383,17 +364,6 @@ public:
     void* m_p;
 };
 class Unk_GmStatusInfo : public CPtred { public: char m_pad_18[0x6c - 0x18]; int m_6c; };
-class Unk_GmIdEntry { public: Unk_GmIdEntry(const Unk_GmIdEntry& o); ~Unk_GmIdEntry(); void* m_vt; void* m_p; };   // the smart pointer of an id entry (copy ctor 0x14063dd20); the exe iterates the list with add rax, 0x10 (0x141938700)
-MS2_CHECK_SIZE(Unk_GmIdEntry, 0x10);
-class Unk_GmIdList
-{
-public:
-    Unk_GmIdList();
-    ~Unk_GmIdList();
-    Unk_GmIdEntry* begin();
-    Unk_GmIdEntry* end();
-    void* m_0; void* m_8; void* m_10;
-};
 class Unk_GmQuestRow { public: char m_pad_0[0x18]; int m_18; int m_1c; unsigned short m_20; };
 class Unk_GmQuestIface { public: virtual void vfunc_0(); virtual int vfunc_1(); virtual void vfunc_2(); virtual int vfunc_3(); };
 class Unk_GmQuest : public CPtred, public Unk_GmQuestIface {};
@@ -597,7 +567,7 @@ class Unk_GmUtilHolder;
 extern __int64 DAT_143ab2820;
 extern int DAT_143ab2900;
 extern Unk_Inventory DAT_143ab2a90;
-extern CUserMail DAT_143ab2ee0;
+extern CUserMail g_143ab2ee0;
 extern Unk_GmEvtKey DAT_143ab2fc0;
 extern Unk_GmQuestRec DAT_143ab3010;
 extern Unk_GmEvtKey DAT_143ab3308;
@@ -632,7 +602,6 @@ class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void* FUN_1409670e0();
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 void* FUN_140d86260();   // C3: was FUN_140d86260
-void* FUN_14140ea30();
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
@@ -651,7 +620,6 @@ public:
     MS2Ptr<TimeRunEventContext> GetTimeRunEvent();   // 0x14047d6c0
 };
 bool FUN_14028d470(float, float);
-CStringW FUN_14042cb90(CStringW strFmt, const float* pArg);
 enum Unk_SubJobCode : int;
 class CChangeJobTable { public: int GetStartQuestId(Unk_SubJobCode eJob); };   // C3: the real member (local view, was FUN_1401d6d70)
 int FUN_1401e0800(unsigned short nLevel);
@@ -690,7 +658,6 @@ int FUN_140930e10();
 bool FUN_1409301c0();
 bool FUN_140930b70();
 bool FUN_1409312f0();
-__int64 FUN_1410d4940(void*);
 class CCashMarketMan   // C3: member view for the former free stand-ins
 {
 public:
@@ -717,6 +684,7 @@ class CTradeManagerEx   // C3: member view for the former free stand-ins
 public:
     int FUN_14185d8b0();
 };
+template<> CTradeManagerEx* TSingleton<CTradeManagerEx>::GetInstance();   // its unit defines s_instance
 class JobSystemCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -797,7 +765,6 @@ class UIAttendGiftDialog   // C3: member view for the former free stand-ins
 public:
     int FUN_14102ccd0();
 };
-void FUN_141924680(void*);
 class UIHomeInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -826,10 +793,10 @@ class UIRenderView* FUN_141a90540(int, int, class GameObject*, float);   // C3: 
 // ---- exe functions: grid / map service ----
 
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-void FUN_1401cd150(Unk_GmGridRef*);
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
+    unsigned __int64 FUN_1410d4940();
     __int64 FUN_1410c3180();
     bool FUN_1410c35c0();
     bool FUN_1410c3600(int);
@@ -847,14 +814,11 @@ public:
     void SendRequestHome(int);
     int FUN_14152e970(int);
 };
-void FUN_1406395c0(void*, Unk_GmIdList* pOut, int, bool);
-class JobSkill   // C3: member view for the former free stand-ins
+class UISkillBookTreeDialog
 {
 public:
-    int GetJobLevel();
+    static bool CanUpgrade(JobSkillPtr spSkill, int nLevel);   // takes the pointer by value (the callee destroys it)
 };
-void* FUN_14063ed30(Unk_GmIdEntry*);
-bool FUN_140ecf630(Unk_GmIdEntry ptr, int);                   // takes the pointer by value (the callee destroys it)
 struct Unk_GmStatusView { MS2Ptr<Unk_GmStatusInfo> FUN_141707750(); };   // member (this=rcx, hidden return=rdx)
 int FUN_1418dd0c0();
 int FUN_1418dd110();
@@ -1022,15 +986,15 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nPos = strName.Find("_event", 0);
         if (nPos != -1)
             strName = strName.Mid(0, nPos);
-        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7470(CString(strName));
-        if (ref.FUN_140c1cd90()) {
-            if (!((TFunctor<void, EmptyParam>*)(Unk_GmAction*)&(ref.FUN_140c1cda0()->m_action))->IsNull()) {
-                ref.FUN_140c1cda0()->m_action.FUN_14098d150();
-            } else if (ref.FUN_140c1cda0()->m_nOpenUi != 0) {
-                TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(ref.FUN_140c1cda0()->m_nOpenUi));
+        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByName(CString(strName));
+        if (ref.get()) {
+            if (!((TFunctor<void, EmptyParam>*)(Unk_GmAction*)&(((Unk_GmMenuEntry*)ref.operator->())->m_action))->IsNull()) {
+                ((Unk_GmMenuEntry*)ref.operator->())->m_action.FUN_14098d150();
+            } else if (((Unk_GmMenuEntry*)ref.operator->())->m_nOpenUi != 0) {
+                TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(((Unk_GmMenuEntry*)ref.operator->())->m_nOpenUi));
             }
-            if (ref.FUN_140c1cda0()->m_18 < 0x41)
-                reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1f, ref.FUN_140c1cda0()->m_18, 0);
+            if (((Unk_GmMenuEntry*)ref.operator->())->m_18 < 0x41)
+                reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1f, ((Unk_GmMenuEntry*)ref.operator->())->m_18, 0);
             return 1;
         }
     }
@@ -1202,14 +1166,14 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     } else if (strName.Find("mushking", 0) != -1) {
         FUN_14193e0e0(pRetVal);
     } else {
-        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7470(CString(strName));
-        if (ref.FUN_140c1cd90()) {
-            CStringW strTip(ref.FUN_140c1cda0()->m_strTip);
+        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByName(CString(strName));
+        if (ref.get()) {
+            CStringW strTip(((Unk_GmMenuEntry*)ref.operator->())->m_strTip);
             if (MS2Ptr<Unk_GmItem> item = FindMenuItem(strName)) {
                 if (((ASMovieClip*)(Unk_GmCtl*)(FUN_140bc0530(&item)))->FUN_1422c2030() == 0)
-                    strTip = ref.FUN_140c1cda0()->m_strTipOff;
+                    strTip = ((Unk_GmMenuEntry*)ref.operator->())->m_strTipOff;
             }
-            FUN_14193dd90(pRetVal, ref.FUN_140c1cda0()->m_18, strTip, ref.FUN_140c1cda0()->m_58);
+            FUN_14193dd90(pRetVal, ((Unk_GmMenuEntry*)ref.operator->())->m_18, strTip, ((Unk_GmMenuEntry*)ref.operator->())->m_58);
         }
     }
 }
@@ -1277,9 +1241,9 @@ void UIGameMenuDialog::FUN_141937ed0()
         m_30->Invoke("initContract", nContract == 0);
     if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
         int nShown = 0;
-        Unk_GmGridRef grid(((void*)FUN_1401cd040(&DAT_143b059e8)));
-        if ((grid.FUN_140885310() ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410d2f10() != 0 &&
-            !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3180() != DAT_143ab2820)
+        efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
+        if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 &&
+            !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820)
             nShown = 1;
         else
             nShown = reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd30a0()->m_5c;
@@ -1371,10 +1335,14 @@ void UIGameMenuDialog::FUN_141938700()
     if (pPc == NULL)
         return;
     int bHas = 0;
-    Unk_GmIdList list;
-    FUN_1406395c0(((void*)((class PC*)(class PCBase*)(pPc))->FUN_1416546d0()), &list, 0, true);
-    for (Unk_GmIdEntry& e : list) {
-        if (FUN_140ecf630(e, ((class MyPC*)(class PCBase*)(pPc))->FUN_14152e970(((class JobSkill*)(void*)(FUN_14063ed30(&e)))->GetJobLevel()))) {
+    std::vector<JobSkillPtr> list;
+    ((JobSystem*)((class PC*)(class PCBase*)(pPc))->FUN_1416546d0())->GetSkills(list, 0, true);
+    std::vector<JobSkillPtr>& kRange = list;   // the exe walks the raw element range (add rax, 0x10)
+    JobSkillPtr* pIt = kRange._Unchecked_begin();
+    JobSkillPtr* pEnd = kRange._Unchecked_end();
+    for (; pIt != pEnd; ++pIt) {
+        JobSkillPtr& e = *pIt;
+        if (UISkillBookTreeDialog::CanUpgrade(e, ((class MyPC*)(class PCBase*)(pPc))->FUN_14152e970(e->GetJobLevel()))) {
             bHas = 1;
             break;
         }
@@ -1429,7 +1397,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
     if (nId == 0x4e2d) {
         nCount = DAT_143ab2a90.FUN_140a616e0();
     } else if (nId == 0x4e49) {
-        nCount = DAT_143ab2ee0.FUN_1408e34e0();
+        nCount = g_143ab2ee0.FUN_1408e34e0();
     } else if (nId == 0x4e4d) {
         nCount = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5070();
     } else if (nId == 0x4e73) {
@@ -1513,7 +1481,7 @@ void UIGameMenuDialog::FUN_1419391c0()
 {
     int nCount = 0;
     if (!FUN_1409301c0()) {
-        if (FUN_1410d4940(FUN_1409670e0()) > 0)
+        if ((__int64)((CubeMapInformationService*)FUN_1409670e0())->FUN_1410d4940() > 0)
             nCount = 1;
     }
     int nKey = FindTopMenuId(0x16);
@@ -1744,20 +1712,20 @@ void UIGameMenuDialog::FUN_14193a140()
 int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
 {
     {
-        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7690(nId);
-        if (ref.FUN_140c1cd90()) {
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(ref.FUN_140c1cda0()->m_period))->FUN_140c1d130() && ref.FUN_140c1cda0()->m_period.FUN_140c1cdc0() == 0)
+        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->Find(nId);
+        if (ref.get()) {
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_period))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_period.FUN_140c1cdc0() == 0)
                 return 0;
-            CStringW strTip = static_cast<GFxManager*>(((void*)FUN_14025e7a0()))->Localize(ref.FUN_140c1cda0()->m_strCaption);
-            if (IsChildMenu(nId) != 0 && ref.FUN_140c1cda0()->m_58 != 0) {
-                CStringW strExtra = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(ref.FUN_140c1cda0()->m_58, 0);
+            CStringW strTip = static_cast<GFxManager*>(((void*)FUN_14025e7a0()))->Localize(((Unk_GmMenuEntry*)ref.operator->())->m_strCaption);
+            if (IsChildMenu(nId) != 0 && ((Unk_GmMenuEntry*)ref.operator->())->m_58 != 0) {
+                CStringW strExtra = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(((Unk_GmMenuEntry*)ref.operator->())->m_58, 0);
                 if (strExtra.GetLength() > 0)
                     strTip += StringFormat<CStringW>(L" [{0}]", strExtra);
             }
             CString strName = FUN_14193afc0(nId);
             pObj->FUN_1407cba60("name", CString(strName));
             pObj->FUN_1407cba60("layerName", CString(strName));
-            pObj->FUN_1407cb9c0("isBig", ref.FUN_140c1cda0()->m_28);
+            pObj->FUN_1407cb9c0("isBig", ((Unk_GmMenuEntry*)ref.operator->())->m_28);
             int nEnabled = 1;
             if (m_enabled.Lookup(reinterpret_cast<const EMenuKey&>(nId), nEnabled))
                 pObj->FUN_1407cb9c0("enabled", nEnabled);
@@ -1792,7 +1760,7 @@ void UIGameMenuDialog::UnloadRenderTarget()
 // @0x14193ac40
 void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
 {
-    bool bSkip = FUN_14193fb70(((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7590(nId));
+    bool bSkip = FUN_14193fb70(((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByUiId(nId));
     if (bSkip)
         return;
     if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
@@ -1809,10 +1777,10 @@ void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
 CString UIGameMenuDialog::GetMenuName(int nId)
 {
     {
-        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7590(nId);
-        if (ref.FUN_140c1cd90() != 0) {
-            CString strName(ref.FUN_140c1cda0()->m_strName);
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(ref.FUN_140c1cda0()->m_eventPeriod))->FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
+        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByUiId(nId);
+        if (ref.get() != 0) {
+            CString strName(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod.FUN_140c1cdc0() != 0)
                 strName += "_event";
             return strName;
         }
@@ -1824,10 +1792,10 @@ CString UIGameMenuDialog::GetMenuName(int nId)
 CString UIGameMenuDialog::FUN_14193afc0(int nId)
 {
     {
-        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7690(nId);
-        if (ref.FUN_140c1cd90() != 0) {
-            CString strName(ref.FUN_140c1cda0()->m_strName);
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(ref.FUN_140c1cda0()->m_eventPeriod))->FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
+        Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->Find(nId);
+        if (ref.get() != 0) {
+            CString strName(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod.FUN_140c1cdc0() != 0)
                 strName += "_event";
             return strName;
         }
@@ -1920,7 +1888,7 @@ void UIGameMenuDialog::FUN_14193b5b0()
 // @0x14193b630
 void UIGameMenuDialog::FUN_14193b630()
 {
-    if (((class CTradeManagerEx*)(void*)(FUN_14140ea30()))->FUN_14185d8b0() == 0)
+    if (TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d8b0() == 0)
         return;
     TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ec1);
 }
@@ -1949,9 +1917,9 @@ void UIGameMenuDialog::FUN_14193b750()
         return;
     }
     int nShown = 0;
-    Unk_GmGridRef grid(((void*)FUN_1401cd040(&DAT_143b059e8)));
-    if ((grid.FUN_140885310() ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c35c0() == 0 &&
-        ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3180() != DAT_143ab2820) {
+    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
+    if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
+        ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820) {
         nShown = 1;
     } else {
         nShown = reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd30a0()->m_5c;
@@ -1959,8 +1927,8 @@ void UIGameMenuDialog::FUN_14193b750()
     if (nShown == 0) {
         if (FUN_14193e9c0() != 0)
             return;
-        if ((grid.FUN_140885310() ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c35c0() == 0 &&
-            ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3180() == DAT_143ab2820)
+        if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
+            ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820)
             FUN_141275260(0x870, 1, 0);
         else
             FUN_141275260(0x86f, 1, 0);
@@ -2085,7 +2053,7 @@ void UIGameMenuDialog::FUN_14193c3c0()
         } else if (((class UILevelUpPackageDialog*)(void*)(pDlg))->FUN_140ea4b70() == 0) {
             FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_quest_scroll_package_use_item_warn"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem)), 1, 1);
         } else {
-            ::FUN_141924680(pDlg);
+            ((UIDialog*)pDlg)->FUN_141924680();
         }
     }
 }
@@ -2153,7 +2121,7 @@ void UIGameMenuDialog::FUN_14193c800()
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_event_mission_timerun_invalid")), 1, 1);
             return;
         }
-        ::FUN_141924680(pDlg);
+        ((UIDialog*)pDlg)->FUN_141924680();
     }
 }
 
@@ -2431,10 +2399,10 @@ void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
     }
     if (spItem == NULL)
         return;
-    Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf7690(nId);
+    Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->Find(nId);
     if (FUN_14193fc00(&ref, 0))
         return;
-    CString strLayer(ref.FUN_140c1cda0()->m_strName);
+    CString strLayer(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
     if (bEvent)
         strLayer += "_event";
     FUN_140bc0530(&spItem)->FUN_1407cba60("layerName", CString(strLayer));
@@ -2493,11 +2461,11 @@ void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
     float nTimeExp = ((class CGameRule*)(class Unk_GmEvtMgr*)(((class Unk_GmEvtMgr*)FUN_1401c0d90())))->FUN_14047d5c0();
     if (FUN_14028d470(nKillExp, 0) == 0) {
         strText += L"\n";
-        strText += FUN_14042cb90(CStringW(L"s_maple_survival_event_buff_improve_kill_exp"), &nKillExp);
+        strText += FUN_14028dfa0<float>(CStringW(L"s_maple_survival_event_buff_improve_kill_exp"), nKillExp);
     }
     if (FUN_14028d470(nTimeExp, 0) == 0) {
         strText += L"\n";
-        strText += FUN_14042cb90(CStringW(L"s_maple_survival_event_buff_improve_time_exp"), &nTimeExp);
+        strText += FUN_14028dfa0<float>(CStringW(L"s_maple_survival_event_buff_improve_time_exp"), nTimeExp);
     }
     ASTooltip tip(1, 2);
     if (tip.ApplyTextTooltip(strText) != 0)
@@ -2570,27 +2538,27 @@ int UIGameMenuDialog::FUN_14193e940(int nField)
 // @0x14193e9c0
 bool UIGameMenuDialog::FUN_14193e9c0()
 {
-    Unk_GmGridRef grid(((void*)FUN_1401cd040(&DAT_143b059e8)));
-    if (FUN_140ef4cb0(grid, 0) != 0)
+    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
+    if (FUN_140ef4cb0(*(Unk_GmGridRef*)&grid, 0) != 0)
         return false;
-    bool bField = ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3180() == DAT_143ab2820;
+    bool bField = ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820;
     void* pDlg1;
-    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3650() == 0 && bField && (pDlg1 = ((void*)FUN_140bbea00(0x4ed8))) != 0) {
+    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3650() == 0 && bField && (pDlg1 = ((void*)FUN_140bbea00(0x4ed8))) != 0) {
         ((class UIHomeInfoDialog*)(void*)(pDlg1))->FUN_1412c7600();
         return true;
     }
     void* pDlg2;
-    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3600(1) != 0 && bField && (pDlg2 = ((void*)FUN_140ef49b0(0x4f7c))) != 0) {
+    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3600(1) != 0 && bField && (pDlg2 = ((void*)FUN_140ef49b0(0x4f7c))) != 0) {
         ((class UIHomeMenuDialog*)(void*)(pDlg2))->FUN_140c29710();
         return true;
     }
     void* pDlg3;
-    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3600(3) != 0 && bField && (pDlg3 = ((void*)FUN_140ef49b0(0x4f7c))) != 0) {
+    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3600(3) != 0 && bField && (pDlg3 = ((void*)FUN_140ef49b0(0x4f7c))) != 0) {
         ((class UIHomeMenuDialog*)(void*)(pDlg3))->FUN_140c29980();
         return true;
     }
     void* pDlg4;
-    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.FUN_1401cd1a0()))->FUN_1410c3600(2) != 0 && bField && (pDlg4 = ((void*)FUN_140bbea00(0x4ed8))) != 0) {
+    if (((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3600(2) != 0 && bField && (pDlg4 = ((void*)FUN_140bbea00(0x4ed8))) != 0) {
         ((class UIHomeInfoDialog*)(void*)(pDlg4))->FUN_1412c7600();
         return true;
     }
@@ -2654,7 +2622,7 @@ Scaleform::GFx::Value ASDialog::FUN_14193f350(const char* szMethod, bool a1, int
 // @0x14193fb70
 bool FUN_14193fb70(const Unk_GmMenuRef& r)
 {
-    return r.m_8 == 0;
+    return *((void* const*)&r + 1) == 0;
 }
 
 // @0x14193fba0
@@ -2672,7 +2640,7 @@ bool FUN_14193fbd0(Unk_GmTargetRef* p)
 // @0x14193fc00
 bool FUN_14193fc00(Unk_GmMenuRef* p, void* pOther)
 {
-    return p->m_8 == pOther;
+    return *((void**)p + 1) == pOther;
 }
 
 MS2_REPLACE_METHOD(0x141936630, UIGameMenuDialog, GetTypeName, 61, 0x7CDA45B8);

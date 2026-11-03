@@ -493,14 +493,13 @@ void FUN_1408572b0()
 }
 
 // @0x1408564b0
-// MS2-FUNCTIONAL: body matches; the exe's dtor tail on the guard-held path (falls off the end) carries no EH-state nops between the three dtors
 TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
 {
     CheckValid();
     TalkPtr result(0);
     TalkIdMapPtr talks(0);
     Unk_LockGuard guard(s_lock);
-    if (guard) {} else
+    if (guard) { __assume(0); } else
     {
         BOOL bChanged = FALSE;
         for (unsigned i = 0; i < s_questFiles.GetCount(); i++)
@@ -528,10 +527,6 @@ TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
         talks->Lookup(nTalkId, result);
         return result;
     }
-    // the exe falls off the end here (guard held: rax and the return slot are left unset)
-#ifdef __clang__
-    return result;
-#endif
 }
 
 // @0x140855ed0

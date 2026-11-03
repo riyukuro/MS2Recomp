@@ -43,6 +43,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uirenderview.h"
+#include "ms2/client/ms2/uimodelview.h"  // C3: Unk_ModelViewCamera::ApplyRideeCamera
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
@@ -54,15 +55,10 @@ static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
-class Unk_PetBoxText : public ASLabel { };
 class Unk_PetBoxButton : public ASButton { };
 class Unk_PetBoxCheck : public ASButton { };
-// ASMovieClip with the extra child lookups / setters the dialog uses
-class Unk_PetBoxClip : public ASMovieClip
-{
-public:
-    MS2Ptr<Unk_PetBoxText> FUN_140c436d0(const CString&);
-};
+// ASMovieClip with the extra setters the dialog uses
+class Unk_PetBoxClip : public ASMovieClip { };
 // the AS root (m_30) with the check box lookup
 class Unk_PetBoxRoot : public AScript
 {
@@ -133,7 +129,6 @@ MS2_CHECK_SIZE(Unk_PetBoxVector, 12);
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();
-    void FUN_141b48670();
     Unk_PetBoxVector eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
@@ -343,7 +338,7 @@ void UIItemPetBoxDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp, void* b,
         return;
     m_cards[idx].m_avatar->vfunc_28(a, tp, b, c);
     Unk_PetBoxCameraData data;
-    data.FUN_141b48670();
+    reinterpret_cast<Unk_ModelViewCamera*>(&data)->ApplyRideeCamera();
     data.f1c = 300.0f;
     data.target += actor->vfunc_18();
     data.eye += data.target;
@@ -540,7 +535,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
         if (slot == 0)
             return;
-        MS2Ptr<Unk_PetBoxText> name = static_cast<Unk_PetBoxClip*>(single.operator->())->FUN_140c436d0("m_itemName");
+        MS2Ptr<ASLabel> name = single->FUN_140c436d0<ASLabel>("m_itemName");
         if (name == 0)
             return;
         ItemEntity& e = PETBOX_ITEMS.FUN_140be9400(0);
@@ -603,7 +598,6 @@ void UIItemPetBoxDialog::FUN_140e504e0()
     }
 }
 
-CString FUN_140c43630(const char* pszFormat, const unsigned __int64& nArg);
 // @0x140e511f0
 void UIItemPetBoxDialog::FUN_140e511f0()
 {
@@ -645,7 +639,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
         size_t count = (std::min)(cap, n);
         for (size_t i = 0; i < count; ++i) {
             size_t k = i + 1;
-            CString nm = FUN_140c43630("m_petCard{0}", k);
+            CString nm = Unk_SocketFormat("m_petCard{0}", k);
             MS2Ptr<ASMovieClip> card = movie->FUN_1409b4560(nm);
             if (card == 0)
                 continue;

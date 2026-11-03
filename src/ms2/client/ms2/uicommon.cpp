@@ -155,6 +155,9 @@ extern CStringW DAT_143af1bc8;
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/client/ms2/serverlisttable.h"
+#include "ms2/client/ms2/uiregionlistdialog.h"   // C3: UIRegionListDialog::FUN_140e807c0
+#include "ms2/client/ms2/uiupperhuddialog.h"     // C3: UIWebBrowserBase::FUN_14135ec00
+#include "ms2/placeholder/cwebbrowserservice.h"  // C3: CWebBrowserService::FUN_141b794e0
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
@@ -177,7 +180,7 @@ extern __int64 DAT_143ab28f0;
 extern int DAT_143ab0248;                                           // client region (2 = the global build)
 extern int DAT_1439f4a7c;
 extern CStringW DAT_143af1c18;
-extern int DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 
 // ---- out-of-unit types and callees ----
 class MyPC;
@@ -209,7 +212,6 @@ CStringW FUN_140763a90(const wchar_t* szFormat, const CStringW& a0, const int& a
 CString FUN_140298360(const char* szPrefix, const CString& str);
 void FUN_141275260(int nStrId, int a, int b);                       // system message by string id
 void FUN_1412751f0(const CStringW& strText, int a, int b);
-void FUN_14135ec00(void* pBrowser, const CString& strUrl, bool b);
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 
 // The wide-string formatter with a leading string id (0x14028dee0), instantiated here for <CStringW, CString>.
@@ -225,16 +227,13 @@ public:
     int FUN_1410c3100();
     int FUN_1410c3000();
     int FUN_1410c3650();
+    int FUN_1410b9d80(__int64 nUid);
     int CountCubesByItemId(int nItemId);
     int CountCubesByItemIdAndOwner(int nItemId, __int64 nRank);
     int FUN_1410d2f10();
     bool FUN_1410c35c0();
 };
-class Unk_UcCubeSvc : public CubeMapInformationService
-{
-public:
-    __int64 FUN_1410b9d80(__int64 nUid);
-};
+class Unk_UcCubeSvc : public CubeMapInformationService {};
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
 public:
@@ -402,7 +401,7 @@ int FUN_1418fd330(__int64 nOwner)
         return 0;
     }
     int nValue = 0;
-    Unk_UcGridRef grid(((class Unk_UcCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_UcGridRef grid(((class Unk_UcCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext))));
     if ((grid.FUN_140885310() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410c35c0())
     {
         nValue = 1;
@@ -519,18 +518,9 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_UcGuildObj, m_nGuildId, 0x20);
 MS2_CHECK_OFFSET(Unk_UcGuildObj, m_nPlotZ, 0x60);
-class Unk_UcGuildRef                                                // counted guild reference
-{
-public:
-    ~Unk_UcGuildRef();                                              // 0x1404eead0
-    Unk_UcGuildObj* FUN_1404f0b80();
-    __int64 FUN_1404f0ab0();                                        // the record, tested for null
-    void* m_pad_00; void* m_pad_08;
-};
 class Unk_UcGuildSvc                                                // the guild service: the guild record sits at +8
 {
 public:
-    Unk_UcGuildRef FUN_1413b6200(__int64 nId);
     void* m_pad_00;
     CGuildInfo m_info;
 };
@@ -571,10 +561,10 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
     }
     else if (nType == 3)
     {
-        Unk_UcGuildRef guild = reinterpret_cast<Unk_UcGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413b6200(nId);
-        if (guild.FUN_1404f0ab0() != 0)
+        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FUN_1413b6200(nId);
+        if (guild.get() != 0)
         {
-            pPC->SendRequestMoveFieldMode2(0, 0, 0, guild.FUN_1404f0b80()->m_nGuildId, CStringW(L""));
+            pPC->SendRequestMoveFieldMode2(0, 0, 0, reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nGuildId, CStringW(L""));
             return 1;
         }
     }
@@ -743,7 +733,7 @@ void FUN_1418fe220(const CString& strUrl)
         return;
     void* pBrowser = ((void*)FUN_140c43790(0x4e6a));
     if (pBrowser != 0)
-        FUN_14135ec00(pBrowser, strUrl, true);
+        ((UIWebBrowserBase*)pBrowser)->FUN_14135ec00(strUrl, true);
 }
 MS2_REPLACE(0x1418fe220, FUN_1418fe220, 75, 0xC9CFD09F);
 
@@ -1318,7 +1308,6 @@ public:
     int GetBookId();
 };
 class CWebBrowserService;
-void FUN_141b794e0(void* pSvc, CString& strOut, const char* szPath);
 
 // @0x141900510
 // Current amount and cap of a currency; false for the currencies without a display.
@@ -1465,7 +1454,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     else if (nKind == 3)
     {
         CString strUrl;
-        FUN_141b794e0(reinterpret_cast<void*>(TSingleton<CWebBrowserService>::GetInstance()), strUrl, ((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.FUN_140298f80());
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, ((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.FUN_140298f80());
         FUN_1418fe1c0(strUrl);
         return false;
     }
@@ -1510,15 +1499,6 @@ public:
     CString m_strIcon;                                              // +0x28
 };
 MS2_CHECK_OFFSET(Unk_UcServerRec, m_strIcon, 0x28);
-class Unk_UcServerRef                                               // counted reference to a server record
-{
-public:
-    ~Unk_UcServerRef();                                             // 0x1417520e0
-    __int64 FUN_141752200();
-    Unk_UcServerRec* FUN_141752210();
-    void* m_pad_00; void* m_pad_08;
-};
-class Unk_UcServerSvc { public: Unk_UcServerRef FUN_141751bf0(int nServerId); };
 class Unk_UcRegionRec
 {
 public:
@@ -1528,15 +1508,6 @@ public:
     CString m_strEmblem;                                            // +0x18
 };
 MS2_CHECK_OFFSET(Unk_UcRegionRec, m_strEmblem, 0x18);
-class Unk_UcRegionRef                                               // counted reference to a region record
-{
-public:
-    ~Unk_UcRegionRef();                                             // 0x140e815e0
-    __int64 FUN_140e816d0();
-    Unk_UcRegionRec* FUN_140e816e0();
-    void* m_pad_00; void* m_pad_08;
-};
-class Unk_UcRegionDlg { public: Unk_UcRegionRef FUN_140e807c0(); };
 class UIRegionListDialog* FUN_1418f6130(int);   // C3: was FUN_1418f6130
 
 // ---- the game and combat controllers touched by the key blocks ----
@@ -1557,26 +1528,26 @@ bool FUN_141900750(ASObj* pObj)
         bShowChannel = true;
         CStringW strName;
         CStringW strIcon;
-        Unk_UcServerRef ref = reinterpret_cast<Unk_UcServerSvc*>(TSingleton<CServerListTable>::GetInstance())->FUN_141751bf0(((class UIServerListDialog*)(class Unk_UcServerDlg*)(pServerDlg))->GetServerId());
-        if (ref.FUN_141752200() != 0)
+        CServerListTable::InfoPtr ref = TSingleton<CServerListTable>::GetInstance()->GetServer(((class UIServerListDialog*)(class Unk_UcServerDlg*)(pServerDlg))->GetServerId());
+        if (ref.get() != 0)
         {
-            strName = ref.FUN_141752210()->m_strName;
-            strIcon = ref.FUN_141752210()->m_strIcon;
+            strName = reinterpret_cast<Unk_UcServerRec*>(ref.operator->())->m_strName;
+            strIcon = reinterpret_cast<Unk_UcServerRec*>(ref.operator->())->m_strIcon;
         }
         if (bShowChannel)
             strName.Append(StringFormat<int>(L" <font size='15'>| CH.{0}</font>", nChannel));
         pObj->FUN_1407cbb20("name", strName);
         pObj->FUN_1407cbb20("iconPath", strIcon);
     }
-    Unk_UcRegionDlg* pRegionDlg = ((class Unk_UcRegionDlg*)FUN_1418f6130(0x4eef));
+    UIRegionListDialog* pRegionDlg = FUN_1418f6130(0x4eef);
     if (pRegionDlg != 0)
     {
-        Unk_UcRegionRef region = pRegionDlg->FUN_140e807c0();
-        if (region.FUN_140e816d0() != 0)
+        Unk_RlPtr region = pRegionDlg->FUN_140e807c0();
+        if (region.get() != 0)
         {
-            pObj->FUN_1407cbb20("regionName", region.FUN_140e816e0()->m_strName);
+            pObj->FUN_1407cbb20("regionName", reinterpret_cast<Unk_UcRegionRec*>(region.operator->())->m_strName);
             CString strPath("./Data/Resource/Image/Emblem/Server/");
-            strPath.Append(region.FUN_140e816e0()->m_strEmblem);
+            strPath.Append(reinterpret_cast<Unk_UcRegionRec*>(region.operator->())->m_strEmblem);
             pObj->FUN_1407cba60("regionIconPath", strPath);
         }
     }
@@ -1944,7 +1915,7 @@ int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
         if (spStock.get() != 0)
             return ((class CUGCMapItem*)(class Unk_UcStockEntry*)(spStock.operator->()))->FUN_140dfc350();
         if (nMode == 1 || nMode == 3)
-            return ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9d80(nUid);
+            return ((class CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9d80(nUid);
     }
     else if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasCubeTextureMesh())
     {
@@ -2109,7 +2080,6 @@ int FUN_141902970(MS2Ptr<UIDialog> pDlg)
     return 0;
 }
 
-int FUN_141adcbb0(Unk_UcUiMgr* pMgr, int (*pred)(MS2Ptr<UIDialog>));
 int FUN_141a8a760();
 UIMessageBox* FUN_14151f890();
 
@@ -2117,7 +2087,7 @@ UIMessageBox* FUN_14151f890();
 // A modal dialog or message box blocks the player.
 int FUN_141902a50()
 {
-    if (FUN_141adcbb0(reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance()), FUN_141902970) != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141902970) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -2154,14 +2124,14 @@ int FUN_141902ac0(__int64 nId, int nType)
     }
     else if (nType == 3)
     {
-        Unk_UcGuildRef guild = reinterpret_cast<Unk_UcGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413b6200(nId);
-        if (guild.FUN_1404f0ab0() != 0)
+        MS2Ptr<CGuildMember> guild = TSingleton<CGuildManager>::GetInstance()->FUN_1413b6200(nId);
+        if (guild.get() != 0)
         {
-            if (nX != guild.FUN_1404f0b80()->m_nPlotX)
+            if (nX != reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nPlotX)
                 return 0;
-            if (nY != guild.FUN_1404f0b80()->m_nPlotY)
+            if (nY != reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nPlotY)
                 return 0;
-            if (nZ != guild.FUN_1404f0b80()->m_nPlotZ)
+            if (nZ != reinterpret_cast<Unk_UcGuildObj*>(guild.operator->())->m_nPlotZ)
                 return 0;
             return 1;
         }

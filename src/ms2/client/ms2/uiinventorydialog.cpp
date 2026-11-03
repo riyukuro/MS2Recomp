@@ -392,9 +392,9 @@ public:
 // Message boxes, notices and strings.
 struct Unk_InvPoint { float x, y; };
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_InvPoint offLeft, Unk_InvPoint offRight);
-void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW tag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -406,8 +406,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0
 #ifdef __clang__
 CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b (ATL operator+)
 #endif
@@ -991,7 +990,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             if (FUN_14199d980() != 0)
             {
                 CStringW strMsg = FUN_14028dee0(0x266, (__int64)g_143ab2a90.FUN_140a5d0f0(), strArg, 6);
-                FUN_140d73aa0(CStringW(strMsg), 1, this, CStringW(L"expandSlot"));
+                FUN_140d73aa0(CStringW(strMsg), 1, (IMessageListener*)this, CStringW(L"expandSlot"));
             }
             else
             {

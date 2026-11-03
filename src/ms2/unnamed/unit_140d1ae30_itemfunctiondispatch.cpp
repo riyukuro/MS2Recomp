@@ -8,6 +8,7 @@
 // MS2-RANGE: 0x140d1ae30-0x140d2a7e0 .text$mn
 // MS2-RANGE: 0x142ca49f0-0x142ca4bc0 .text$yd
 // MS2-PIN: memmove_s 0x140d2a6c0
+// MS2-PIN: ?GetUInt@CXmlData@@QEAAIAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBH@Z 0x14054c530
 // MS2-PIN: ??$GetItemUseDialog@VUIInteriorBuildDialog@@@@YAPEAVUIInteriorBuildDialog@@H@Z 0x140d27120
 // MS2-PIN: ??$GetItemUseDialog@VUIItemBillBoardDialog@@@@YAPEAVUIItemBillBoardDialog@@H@Z 0x140d271c0
 // MS2-PIN: ??$GetItemUseDialog@VUIItemBlueprintCreateDialog@@@@YAPEAVUIItemBlueprintCreateDialog@@H@Z 0x140d27260
@@ -1783,7 +1784,6 @@ WeddingProxy* WeddingManager::FUN_140d295d0()
 }
 
 // The massive event portal item: open a portal (wedding party or event field) where none is.
-// MS2-FUNCTIONAL: op-identical; "fieldID" goes through the second GetInt COMDAT 0x14054c530 and "maxCount" through 0x1403d8110, which needs a second CXmlData getter in cxmldata.h
 // @0x140d20710
 int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1854,7 +1854,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     CStringW strKey = bWedding ? L"s_msg_item_open_massive_open_wedding" : L"s_msg_item_open_massive_open";
     int nFieldDefault = 0;
-    int nFieldId = spItem->FUN_140527840()->function.xml.GetInt(L"fieldID", nFieldDefault);
+    int nFieldId = spItem->FUN_140527840()->function.xml.GetUInt(L"fieldID", nFieldDefault);
     unsigned long nTickDefault = 60000;
     unsigned long nDuration = spItem->FUN_140527840()->function.xml.GetULong(L"portalDurationTick", nTickDefault);
     int nMaxDefault = 1;

@@ -4,7 +4,7 @@
 #include <atlcoll.h>
 #include "ms2/placeholder/questdata.h"
 #include "ms2/placeholder/ascorelist.h"
-class Unk_QuestDebugCheck;
+class ASCheckBox;
 class Unk_QuestDebugDesc;
 template<class T> class Unk_QuestDebugPtr
 {
@@ -55,7 +55,7 @@ public:
     int FUN_141a96960(int, CStringW&, CStringW&, const CStringW&);
     int FUN_141a96c30(int, MS2Ptr<CQuestData>);
     // Unrecovered child-binding helpers; this is the original UISwfEntity subobject.
-    Unk_QuestDebugPtr<Unk_QuestDebugCheck> FUN_140e52670(const CString&);
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString&);
     Unk_QuestDebugPtr<Unk_QuestDebugDesc> FUN_140c26f60(const CString&);
     virtual int vfunc_48() { return 20043; }
 private:

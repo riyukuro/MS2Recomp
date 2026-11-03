@@ -201,7 +201,6 @@ int FUN_141276180(const CString& strSound, const CString& strArg);   // play a u
 CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text
 CStringW GetStringCommon(int nStringId);                    // string table text by id
 bool FUN_140614800(const Scaleform::GFx::Value& fn);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);    // has the AS object been released
 MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName);   // the AS function of an AS object
 Scaleform::GFx::Value FUN_1422bb3c0(AScript* pFn);
 
@@ -257,11 +256,10 @@ MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (d
 class LapenshardSlot* FUN_140a6fef0(class DragSlot*);   // C3: was FUN_140a6fef0
 bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue);
 bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue);
-void FUN_1414049c0(void* p, int nSkillId);
+void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId);
 CString FUN_140719190(int n);
 CString FUN_140719530(unsigned __int64 n);
 bool FUN_14028d780(unsigned char n);
-bool FUN_140534e50(const MS2Ptr<CItem>& sp);
 int FUN_14053feb0(int nItemId);
 void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
 void FUN_140d73bc0(int nNoticeId, int a, void* pListener, CStringW str);
@@ -385,7 +383,7 @@ void SkillSlot::vfunc_6(void* p)
     int nValue = 0;
     if (m_kKeys.Lookup(m_nIndex, nValue))
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(*static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719530(nValue));
-    FUN_1414049c0(p, GetSkillId());
+    FUN_1414049c0((ATL::CAtlArray<CString>*)p, GetSkillId());
 }
 
 // @0x14175cb90
@@ -724,7 +722,7 @@ int SkillSlot::vfunc_21()
 void SkillSlot::vfunc_9()
 {
     m_spRoot.AssignRaw(new AScript(m_value18, 2));
-    if (FUN_140ba28d0(&m_spRoot, 0) && m_spRoot->IsUndefinedOrNull())
+    if (m_spRoot.operator==(0) && m_spRoot->IsUndefinedOrNull())
         return;
     {
         CString strName("startIconTween");
@@ -772,7 +770,7 @@ int SkillSlot::vfunc_0(void* p)
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     int nSkillId = GetEffectiveSkillId();
-    if (FUN_140534e50(spItem) && m_nItemId != 0)
+    if (spItem.operator!() && m_nItemId != 0)
     {
         int nRarity = FUN_14053feb0(m_nItemId);
         ASTooltip tip(static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())), 0x40, 2);
@@ -966,7 +964,7 @@ void SkillSlot::FUN_14175f200()
 // @0x14175f280
 void SkillSlot::FUN_14175f280(unsigned nFlags)
 {
-    if (FUN_140ba28d0(&m_spRoot, 0))
+    if (m_spRoot.operator==(0))
         return;
     ASArray arr(2);
     ASObj obj(2);
@@ -1018,7 +1016,7 @@ void SkillSlot::FUN_14175f280(unsigned nFlags)
 // @0x14175f510
 void SkillSlot::FUN_14175f510()
 {
-    if (FUN_140ba28d0(&m_spRoot, 0))
+    if (m_spRoot.operator==(0))
         return;
     int nDisabled = FUN_141760c00();
     bool bChanged = false;
@@ -1108,7 +1106,7 @@ MS2Ptr<CItem> SkillSlot::vfunc_25()
     {
         if (m_nItemUid != 0)
             spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
-        if (FUN_140534e50(spItem))
+        if (spItem.operator!())
             spItem = g_143ab2a90.FUN_140a5e2e0(m_nItemId);
     }
     else if (nSkillId != 0)
@@ -1133,7 +1131,7 @@ CStringW SkillSlot::FUN_14175fe60()
 {
     CStringW str(L"");
     MS2Ptr<CItem> spItem = vfunc_25();
-    if (FUN_140534e50(spItem) && m_nItemId != 0)
+    if (spItem.operator!() && m_nItemId != 0)
     {
         str = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_nItemId);
     }
@@ -1343,7 +1341,7 @@ int SkillSlot::FUN_141760c00()
     if (m_nItemId != 0)
     {
         MS2Ptr<CItem> spItem = vfunc_25();
-        if (FUN_140534e50(spItem))
+        if (spItem.operator!())
         {
             Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
             if (spData.FUN_140203c60() && (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetStringTag() == 0xd9)

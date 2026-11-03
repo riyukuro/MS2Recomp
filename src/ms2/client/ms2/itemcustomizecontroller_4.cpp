@@ -15,15 +15,16 @@
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #include <NiPoint2.h>
+#include <NiFixedString.h>
+#include <NiRenderObject.h>
+#include <NiDX9Renderer.h>     // C3: ms_RTTI
+#include <efd/Point2.h>
 
 // ---- out-of-unit callees ----
 void FUN_140159b70(long hr);            // AtlThrow
 
 class NiCamera;
 struct Unk_PickXY { float x, y; };      // cursor position
-extern Unk_PickXY DAT_143b02320;        // initial value of the cursor position
-extern char DAT_143d6eb58;              // NiRTTI of the renderer class
-extern char DAT_143afa7d0;              // NiRTTI of the model-part node class
 
 class CMeshUVPicker : public efd::MemObject
 {
@@ -44,33 +45,27 @@ struct Unk_PickRenderer
     char m_pad[0x850];
     bool m_bFlag;                                                       // +0x850
 };
-class NiRenderer   // C3: member view for the former free stand-ins
-{
-public:
-    static class NiRenderer* GetRenderer();
-};
 class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class Ni3DRenderView   // C3: member view for the former free stand-ins
 {
 public:
     class NiCamera* GetCamera() const;
 };
-Unk_PickRenderer* FUN_14098d8d0(char* pRtti, void* pObj);               // checked cast
-NiRenderObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);
-struct Unk_PickItemData { bool FUN_14053cfd0() const; };
-class CItem : public CPtred { public: Unk_PickItemData* FUN_140527840(); };                         // item -> item data
+class CItemData { public: bool FUN_14053cfd0(); };   // C3: member view (itemdata.h)
+class CItem : public CPtred { public: CItemData* FUN_140527840(); };                         // item -> item data
 class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
-// Scene-graph walker (56 bytes): ctor 0x14098cb80, dtor 0x14098cf00.
-struct Unk_PickSceneIter
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class, see nifanimationservice.cpp).
+class Unk_NodeQueue
 {
-    Unk_PickSceneIter(void* pRoot);
-    ~Unk_PickSceneIter();
-    NiAVObject* FUN_14098e0d0(bool bDescend);
-    void* m_a[6];
+public:
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
+    NiAVObject* Next(bool bDescend);                // 0x14098e0d0
+private:
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-bool FUN_140998dc0(const void* pName, const char* psz);                 // name == psz
 
 void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut);
 
@@ -213,10 +208,10 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     m_spMesh.FUN_141418a00(0);
     if (pMesh == 0)
         return 0;
-    Unk_PickXY xy = DAT_143b02320;
+    Unk_PickXY xy = reinterpret_cast<const Unk_PickXY&>(efd::Point2::ZERO);
     if (((struct Unk_PickApp*)FUN_140aadf80())->GetCursorClientPos(&xy.x, &xy.y) == 0)
         return 0;
-    Unk_PickRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, ((void*)NiRenderer::GetRenderer()));
+    Unk_PickRenderer* pRenderer = (Unk_PickRenderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer())));
     if (pRenderer == 0)
         return 0;
     if (pRenderer->IsFlag())
@@ -240,14 +235,14 @@ void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 {
     if (pObject == 0)
         return;
-    Unk_PickSceneIter it(FUN_141b6efc0(reinterpret_cast<GameObject*>(pObject)->FUN_14123c410()));
+    Unk_NodeQueue it(FUN_141b6efc0(reinterpret_cast<GameObject*>(pObject)->FUN_14123c410()));
     NiAVObject* pNode;
-    while ((pNode = it.FUN_14098e0d0(true)) != 0)
+    while ((pNode = it.Next(true)) != 0)
     {
-        const void* pName = ((void const*)&((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName());
-        if (FUN_140998dc0(pName, "FA_Skin") || FUN_140998dc0(pName, "FA_EA"))
+        const NiFixedString& kName = ((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName();
+        if (kName == "FA_Skin" || kName == "FA_EA")
         {
-            NiRenderObject* pPart = FUN_14098d8d0(&DAT_143afa7d0, pNode);
+            NiRenderObject* pPart = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
             if (pPart != 0)
                 pOut->Add(pPart);
         }

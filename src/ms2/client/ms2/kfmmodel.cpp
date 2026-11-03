@@ -145,7 +145,7 @@ void FUN_1409f76f0(void* p, void* node);   void FUN_1409fabf0(void* p, void* v);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 void FUN_140194470(void* dst, const void* src);
-bool FUN_140a33ff0(const NiPoint3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
+bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* v);
 void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
@@ -263,7 +263,9 @@ void FUN_141441ec0(efd::AssetID* p, const char* pszUrn, unsigned char nMult, efd
 }
 namespace ecr { class SceneGraphService; }
 ecr::SceneGraphService* GetSceneGraphService();
-void* FUN_1414f1e70(void* p, egf::EntityID id, int n);   void* FUN_1409613d0(void* p);
+void* FUN_1414f1e70(void* p, egf::EntityID id, int n);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);
 void FUN_1401bf970(void* out, void* p);   bool FUN_1401b5240(void* sp, int n);   void FUN_1401b50d0(void* sp);
 void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd::utf8string* pVal);
 void* FUN_1413f9b70(const egf::EntityID& id);   void* FUN_1409995d0(void* p);   void* FUN_1409995c0();
@@ -362,7 +364,7 @@ void CKfmModel::vfunc_5()
 int CKfmModel::vfunc_6()
 {
     m_nState = 1;
-    if (!m_str38.IsEmpty() && FUN_1409613d0(FUN_141200820((class CEquipModel*)(this))) != 0) {
+    if (!m_str38.IsEmpty() && efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)FUN_141200820((class CEquipModel*)(this))) != 0) {
         efd::AssetID kId((const char*)m_str38, 0, efd::AssetID::NEVER_CACHE);
         efd::vector<egmAnimation::KFMCache::KFMCacheHandle> kHandles;
         if (FUN_141b6f910()->Cache(kId, (egmAnimation::KFMCache::IKFMCacheRequestData*)0, g_catKfm, kHandles) == 0)
@@ -710,7 +712,7 @@ void CKfmModel::vfunc_22(float f)
 // @0x14143f9f0
 void CKfmModel::vfunc_24(const NiPoint3& p)
 {
-    if (!FUN_140a33ff0(p))
+    if (!Unk_IsFinite(*(const efd::Point3*)&p))
         return;
     m_pos48 = p;
     if (m_spEntity.operator egf::Entity*() != 0)
@@ -720,7 +722,7 @@ void CKfmModel::vfunc_24(const NiPoint3& p)
 // @0x14143fa80
 void CKfmModel::vfunc_26(const NiPoint3& p)
 {
-    if (!FUN_140a33ff0(p))
+    if (!Unk_IsFinite(*(const efd::Point3*)&p))
         return;
     m_pos54 = p;
     if (m_spEntity.operator egf::Entity*() != 0)

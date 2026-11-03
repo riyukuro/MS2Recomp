@@ -144,6 +144,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/uidialog.h"
+#include "ms2/gfxui/uimsg.h"   // C3: UIMsg
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include <efd/AssetID.h>
@@ -324,13 +325,6 @@ template <class T> T* Unk_FcDialog(int nId)
     return 0;
 }
 
-// The UI message sent to the swf entity registered for an event id (UIMsg: 0x50 bytes; dtor 0x140c30570).
-struct Unk_FcUIMsg
-{
-    Unk_FcUIMsg();                                                  // 0x1422e4490
-    ~Unk_FcUIMsg();                                                 // 0x140c30570
-    void* m_apPad[10];                                              // 0x50 bytes (no char buffer: the exe frame has no GS cookie)
-};
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1070,10 +1064,10 @@ void CFunctionCubeObject::OpenCubeSubScene()
     UISwfEntity* pEntry = ((class UISwfEntity*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e20(0x620001f));
     if (pEntry != 0)
     {
-        Unk_FcUIMsg kMsg;
-        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddString("setCubeID");
-        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddString((const char*)m_strId);
-        pEntry->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
+        UIMsg kMsg;
+        ((class ASData*)(&kMsg))->AddString("setCubeID");
+        ((class ASData*)(&kMsg))->AddString((const char*)m_strId);
+        pEntry->OnMessage(0, &kMsg);
     }
     ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001f);
 }
@@ -1428,12 +1422,12 @@ class Unk_FcEntMgr   // EntityWorldManager view
 public:
     Unk_EntRef FUN_1411cec80(const efd::utf8string& kClass, egf::EntityID kId, bool bMaster);   // create an entity
 };
-unsigned char FUN_140de8e30(Unk_FcAnimName* pName, const char* psz);                         // names are equal
+bool FUN_140de8e30(const efd::utf8string& kName, const char* psz);                           // names are equal
 
 // @0x14122e000
 bool FUN_14122e000(const Unk_FcAnimName& kName, const char* psz)
 {
-    return FUN_140de8e30(const_cast<Unk_FcAnimName*>(&kName), psz) == 0 ? 1 : 0;
+    return FUN_140de8e30(reinterpret_cast<const efd::utf8string&>(kName), psz) == 0 ? 1 : 0;
 }
 struct Unk_FcAnimRow
 {
@@ -1757,7 +1751,6 @@ class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
 extern char DAT_143ab2a90;
 void* FUN_1401c0d90();
-const CStringW& FUN_140a50020(Unk_FcCellStr* p);
 class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
 {
 public:
@@ -1942,9 +1935,9 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110()));
     if (pRow == 0)
         return 0;
-    if (m_obj.m_strOwner != FUN_140a50020(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner))
+    if (m_obj.m_strOwner != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
         return 0;
-    if (reinterpret_cast<CGameRule*>(FUN_1401c0d90())->HasTermTag(FUN_140a50020(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)) == 0)
+    if (reinterpret_cast<CGameRule*>(FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get()) == 0)
         return 0;
     if (FUN_14122c340() != 0)
     {
@@ -2013,7 +2006,7 @@ int CNurturingCubeObject::FUN_14122c340()
 int CNurturingCubeObject::FUN_14122c410()
 {
     int nNpc = 0;
-    m_obj.m_mapNpc.FUN_1405b9580(m_nLevel, &nNpc);
+    reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(m_nLevel, reinterpret_cast<unsigned int&>(nNpc));
     return nNpc;
 }
 
@@ -2132,7 +2125,7 @@ void CNurturingCubeObject::FUN_14122cbc0(unsigned short nLevel, Unk_EntRef ent)
     m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
     m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
     int nNpc = 0;
-    if (m_obj.m_mapNpc.FUN_1405b9580(nLevel, &nNpc))
+    if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
     {
         m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
         int nId = DAT_1439f706c;
@@ -2158,7 +2151,7 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
         m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
         m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
         int nNpc = 0;
-        if (m_obj.m_mapNpc.FUN_1405b9580(nLevel, &nNpc))
+        if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
         {
             if (((CubeSpawnObject*)m_spPet) != 0)
             {
@@ -2266,8 +2259,7 @@ public:
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
-struct Unk_FcCountMap { char m_pad[0x48]; };
-extern Unk_FcCountMap DAT_143ab3150;                                // item id -> count
+extern ATL::CAtlMap<int, int> g_143ab3150;                          // item id -> count
 template <class T> T* GetUIDialog(int nId);                         // the dialog of class T (C3: was FUN_140faf160)
 class UIMasteryDialog   // C3: member view for the former free stand-ins
 {
@@ -2533,8 +2525,8 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     pActor->vfunc_59(0x37, spData.get(), 0x90, 0);
                     int nItemId = reinterpret_cast<Unk_FcHmInfo*>(kInfo.operator->())->m_nItemId;
                     int nOld = 0;
-                    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_FcCountMap*)(&DAT_143ab3150))->Lookup(nItemId, nOld);
-                    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_FcCountMap*)(&DAT_143ab3150))->SetAt(nItemId, nOld + nCount);
+                    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(&g_143ab3150))->Lookup(nItemId, nOld);
+                    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(&g_143ab3150))->SetAt(nItemId, nOld + nCount);
                     MS2Ptr<CMasteryReceipe> kItem = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Find(nItemId);
                     if (kItem.get() != 0)
                     {

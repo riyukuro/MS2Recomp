@@ -55,6 +55,16 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cubeiteminfo.h"
+#include "ms2/placeholder/cugcmanager.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxPhysics.h>
+#pragma pop_macro("max")
+#pragma pop_macro("min")
+#include "ms2/client/ms2/physxhelper.h"
+#include <egmAnimation/AnimationService.h>
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/cubecraft_1_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
@@ -129,7 +139,6 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-void FUN_1418845a0(void*, CubeItemInfo*, egf::EntityID);
 void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
 void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 NiAVObject* FUN_141b6efc0(egf::Entity*);
@@ -150,16 +159,7 @@ public:
 };
 int FUN_1408a18d0(__int64);
 
-struct Unk_RayHit { private: void* m_pad[9]; public: float m_fHeight; private: int m_n4c; void* m_pad_50[3]; };   // the 0x68 raycast info (ctor 0x140ad4440)
-MS2_CHECK_SIZE(Unk_RayHit, 0x68);
-void FUN_140ad4440(Unk_RayHit*);
-class CPhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-class CPhysXHelper   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_14168a310(struct Vector3 const&, struct Vector3&, struct Unk_RayCastInfo*, float, struct Vector3*, int);
-};
 Unk_Int3 FUN_1408a1430(Vector3);
 
 class Unk_CubeGridSvc : public CubeMapInformationService {
@@ -170,7 +170,7 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
 void FUN_140a51340(CEffectDummy* pDummy, const NiPoint3& v);   // CEffectDummy::SetTranslate, seen taking the converted point
 Unk_AnimSvc* FUN_1410a68d0();
-struct Unk_CcSvcCell { void* m_spManager; };              // SmartPointer<ServiceManager> at +0
+struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
 Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell);
 CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 CStringW GetStringCommon(int);
@@ -226,9 +226,7 @@ public:
 };
 void FUN_1409f7320(efd::Matrix3*);
 #include "ms2/client/ms2/gameobject.h"
-void* FUN_1409982c0(void*);
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
-void* FUN_1401cd190(void*);
 // The reference-counted service interfaces the lookups below call through (slots 1/2 AddRef/Release, 5 the typed
 // query, 14 the service by id).
 class Unk_CcSvcIf
@@ -652,13 +650,12 @@ void CConstructionGuideObject::FUN_1410a2440()
     if (m_bLocal && (m_spModel ? true : false))
     {
         Vector3 kHit;
-        Unk_RayHit kInfo;
-        FUN_140ad4440(&kInfo);
+        Unk_RayCastInfo kInfo;
         NiPoint3 kPos = vfunc_18();
         kPos.z = kPos.z - 200.0f;
-        if (((class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a310(*(struct Vector3 const*)(&kPos), *(struct Vector3*)(&kHit), (struct Unk_RayCastInfo*)(&kInfo), 0.0f, 0, 0) != 0)
+        if (((class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->RayCastFixedDirection(*(struct Vector3 const*)(&kPos), *(struct Vector3*)(&kHit), (struct Unk_RayCastInfo*)(&kInfo), 0.0f, 0, 0) != 0)
         {
-            FUN_1410a7800(m_spModel.operator->(), 0.0f, 0.0f, -(kInfo.m_fHeight + 100.0f));
+            FUN_1410a7800(m_spModel.operator->(), 0.0f, 0.0f, -(kInfo.m_hitDist + 100.0f));
             m_spModel->UpdateProperties();
             m_spModel->UpdateEffects();
             m_spModel->Update(0.0f, true);
@@ -727,7 +724,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
             CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
-                FUN_1418845a0(((void*)FUN_14052d220()), ((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
+                ((CUgcManager*)FUN_14052d220())->FUN_1418845a0(((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
             }
             m_spGuide->vfunc_15(m_spItem.get());
         }
@@ -1499,13 +1496,13 @@ void* FUN_1410a6880(Unk_CcSvcIf* pSvc)
 // @0x1410a68d0
 Unk_AnimSvc* FUN_1410a68d0()
 {
-    return (Unk_AnimSvc*)FUN_1409982c0(((void*)FUN_1413f9850()));
+    return (Unk_AnimSvc*)((efd::ServiceManager*)FUN_1413f9850())->GetSystemServiceAs<egmAnimation::AnimationService>();
 }
 
 // @0x1410a68f0
 Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell)
 {
-    return (Unk_AnimSvc*)FUN_1410a6920((Unk_CcSvcIf*)FUN_1401cd190(&pCell->m_spManager));
+    return (Unk_AnimSvc*)FUN_1410a6920((Unk_CcSvcIf*)pCell->m_spManager.operator->());
 }
 
 // @0x1410a6920

@@ -144,6 +144,9 @@ template<> size_t ATL::CAtlArray<unsigned>::GetCount() const throw();
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/commonfiles/famegradedata.h"
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/placeholder/effectquery.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 
 
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -232,30 +235,7 @@ public:
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // Unit-local stand-ins for exe systems reached only from here.
-class StampEventContext   // C3: member view (real class not in this TU)
-{
-public:
-    int HasStamp(int);
-};
-class Unk_QmGameEvent {
-public:
-};
-// 16-byte handle returned by the game-event manager (ptr at +8).
-class Unk_QmGameEventRef {
-public:
-    ~Unk_QmGameEventRef();                      // 0x1403e5510
-    bool IsNull() const;                        // 0x1403e84c0
-    Unk_QmGameEvent* Get() const;               // 0x1403e8cd0
-private:
-    void* m_0;
-    void* m_p;
-};
-class Unk_GmEvtKey;
-extern Unk_GmEvtKey DAT_143ab2fc0;
-class Unk_QmGameEventMgr {
-public:
-    Unk_QmGameEventRef FUN_14047ca40(const Unk_GmEvtKey& key);
-};
+extern GameEventUserValue DAT_143ab2fc0;
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 struct Unk_QmFieldHandle;
 class Unk_QmWorld {
@@ -353,17 +333,6 @@ struct Unk_QmXform {
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_QmXform, 0x34);
-struct Unk_QmEffectRequest {                                            // Unk_EffectTarget (effectparam.h)
-    Unk_QmEffectRequest();                                              // 0x140a52ef0
-    ~Unk_QmEffectRequest();                                             // 0x1405a89e0
-    CString m_strName;
-    int m_nKind;
-    int m_0c;
-    void* m_10;
-    Unk_QmXform* m_pXform;                                              // +0x18
-    char m_pad_20[0x70 - 0x20];
-};
-MS2_CHECK_SIZE(Unk_QmEffectRequest, 0x70);
 class Unk_QmEffectService { public:  };
 class Unk_QmEffectCfg {
 public:
@@ -625,9 +594,9 @@ int CQuestManager::vfunc_1(int questId, int flag)
             }
         } else if (FUN_14074b050(data.operator->()) == 5) {
             if (data->m_350.m_value == 2) {
-                Unk_QmGameEventRef event = ((class Unk_QmGameEventMgr*)FUN_1401c0d90())->FUN_14047ca40(DAT_143ab2fc0);
+                MS2Ptr<StampEventContext> event = ((CGameRule*)FUN_1401c0d90())->FUN_14047ca40(*(Unk_AttendTable*)&DAT_143ab2fc0);
                 if (event.IsNull()) return 0;
-                if (((StampEventContext*)(Unk_QmGameEvent*)(event.Get()))->HasStamp(questId) == 0) return 0;
+                if (event->HasStamp(questId) == 0) return 0;
             }
         } else if (FUN_14074b050(data.operator->()) == 9) {
             if (FUN_14074b070(data.operator->()) == 2) {
@@ -1188,11 +1157,11 @@ void CQuestManager::OnQuest(CInPacket& packet)
         xform.m_translate.FUN_14097faa0(target->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
         ((efd::Matrix3*)(Unk_EfdMatrix3*)&(xform.m_rotate))->FromEulerAnglesXYZ((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f, (target->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
-        Unk_QmEffectRequest request;
+        NoticeMessage request;
         request.m_strName = ((class Unk_QmEffectCfg*)FUN_1401d31f0())->m_portalEffect;
-        request.m_nKind = 0;
-        request.m_pXform = &xform;
-        ((CEffectService*)(Unk_QmEffectService*)(reinterpret_cast<Unk_QmEffectService*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_QmEffectRequest*)&(request));
+        request.m_nObject = 0;
+        request.m_p18 = &xform;
+        ((CEffectService*)(Unk_QmEffectService*)(reinterpret_cast<Unk_QmEffectService*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)&(request));
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1a, 0, 0);
         m_field178 = 1;
     } else if (mode == 0x1e) {

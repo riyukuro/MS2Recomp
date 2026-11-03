@@ -1,0 +1,3 @@
+21a
+namespace efd { typedef efd::map<efd::utf8string, efd::UInt8>::_Mybase MS2MetricsKeyTree; } EE_MS2_FIND(efd::MS2MetricsKeyTree) /* MS2: see utf8string.inl */
+.

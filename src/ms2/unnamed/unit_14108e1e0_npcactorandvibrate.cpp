@@ -111,6 +111,7 @@
 #include "ms2/client/ms2/dpsmetersystem.h"
 #include "ms2/client/ms2/additionalcli.h"
 #include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/placeholder/gostate.h"
 #include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -878,7 +879,7 @@ int CNpc::vfunc_128()
 
 // The index of a value in an array (-1: none).
 // @0x141099bd0
-static int FUN_141099bd0(const ATL::CAtlArray<int>& arr, const int& nValue)
+static int FUN_141099bd0(const ATL::CAtlArray<Unk_RequireState>& arr, const int& nValue)
 {
     for (int i = 0; i < (int)arr.GetCount(); i++) {
         if (arr[i] == nValue)
@@ -889,71 +890,63 @@ static int FUN_141099bd0(const ATL::CAtlArray<int>& arr, const int& nValue)
 
 // Applies a sync block of the npc: the animation (or a jump arc), the position / rotation / velocity, then the state
 // change when the state serial moved on.
-// MS2-FUNCTIONAL: written from the decompile
 // @0x1410918e0
 void CNpc::FUN_1410918e0(CByteBuffer& buf)
 {
     if (m_unk_b4 == 0)
         return;
-    CInputStream& in = buf;
     CString strAnim;
-    unsigned char nFlags = in.ReadUInt8();
+    unsigned char nFlags = buf.ReadUInt8();
     int bRotate = (nFlags & 1) == 1;
     int bEmotion = (nFlags & 2) == 2;
-    Vector3 ptPos = in.ReadVector3Short();
-    efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(ptPos);
-    float fRotZ = in.ReadShortDiv10();
-    Vector3 ptVel = in.ReadVector3Short();
-    efd::Point3 kVel = reinterpret_cast<const efd::Point3&>(ptVel);
-    float fSpeed = in.ReadShortDivScaled(100);
+    Vector3 ptPos = buf.ReadVector3Short();
+    float fRotZ = buf.ReadShortDiv10();
+    Vector3 ptVel = buf.ReadVector3Short();
+    float fSpeed = buf.ReadShortDivScaled(100);
     int nOwnerActor = 0;
     if (FUN_141092ff0())
-        nOwnerActor = in.ReadInt32();
-    int nState = in.ReadUInt8();
-    m_nDE8 = in.ReadInt16();
-    unsigned nSerial = (unsigned short)in.ReadInt16();
+        nOwnerActor = buf.ReadInt32();
+    int nState = buf.ReadUInt8();
+    m_nDE8 = buf.ReadInt16();
+    unsigned nSerial = (unsigned short)buf.ReadInt16();
     if ((short)m_nDE8 == -2) {
         strAnim = "Jump_A";
     } else if ((short)m_nDE8 == -3) {
         strAnim = "Jump_B";
     } else {
-        egf::EntityID kId;
-        efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460(kId));
-        if (spManager != 0) {
-            int nSeq = (short)m_nDE8;
-            NiSequenceData* pSeq = spManager->GetSequenceData(nSeq);
+        efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460());
+        if (spManager) {
+            NiSequenceData* pSeq = spManager->GetSequenceData((short)m_nDE8);
             if (pSeq != NULL)
                 strAnim = (const char*)pSeq->GetName();
         }
     }
-    kPos.z = kPos.z + 4.0f;
+    ptPos.z = ptPos.z + 4.0f;
     bool bPlace = true;
     if (!strAnim.IsEmpty()) {
         if ((short)m_nDE8 == -2 || (short)m_nDE8 == -3) {
-            if (in.ReadUInt8() == 0) {
-                Vector3 ptTo = in.ReadVector3();
-                efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
-                kTo.z = kTo.z + 2.0f;
-                m_unkDB0.Set(kPos, kTo, strAnim);
-                PlayAnimation(efd::utf8string((const char*)strAnim), fSpeed, true, false);
+            if (buf.ReadUInt8()) {
+                Vector3 ptFrom = buf.ReadVector3();
+                Vector3 ptTo = buf.ReadVector3();
+                float fWidth = buf.ReadFloat();
+                float fScale = buf.ReadFloat();
+                ptTo.z = ptTo.z + 2.0f;
+                m_unkDB0.Set(reinterpret_cast<const efd::Point3&>(ptFrom), reinterpret_cast<const efd::Point3&>(ptTo), fWidth, fScale, strAnim);
             } else {
-                Vector3 ptFrom = in.ReadVector3();
-                Vector3 ptTo = in.ReadVector3();
-                float fWidth = in.ReadFloat();
-                float fScale = in.ReadFloat();
-                efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
-                kTo.z = kTo.z + 2.0f;
-                m_unkDB0.Set(reinterpret_cast<const efd::Point3&>(ptFrom), kTo, fWidth, fScale, strAnim);
+                Vector3 ptTo = buf.ReadVector3();
+                ptTo.z = ptTo.z + 2.0f;
+                m_unkDB0.Set(reinterpret_cast<efd::Point3&>(ptPos), reinterpret_cast<const efd::Point3&>(ptTo), strAnim);
+                PlayAnimation((const char*)strAnim, fSpeed, true, false);
             }
         } else {
             if (strAnim.Find("Run_", 0) == 0) {
                 float fRunSpeed = GetNpcData()->m_model.m_fAniSpeed * vfunc_97();
                 fSpeed = fRunSpeed;
-                float fDist = (static_cast<const efd::Point3&>(vfunc_18()) - kPos).Length();
+                float fDist = (static_cast<const efd::Point3&>(vfunc_18()) - reinterpret_cast<efd::Point3&>(ptPos)).Length();
                 if (30.0f < fDist) {
-                    efd::Point3 kAhead = kPos + kVel * 0.3f;
+                    efd::Point3 kAhead = reinterpret_cast<efd::Point3&>(ptPos) + reinterpret_cast<efd::Point3&>(ptVel) * 0.3f;
                     float fFromSelf = (kAhead - static_cast<const efd::Point3&>(vfunc_18())).Length();
-                    float fFromPos = (kAhead - kPos).Length();
+                    float fFromPos = (kAhead - reinterpret_cast<efd::Point3&>(ptPos)).Length();
                     float fRatio = fFromSelf / fFromPos;
                     if (fRatio < 2.0f) {
                         float fMax = 1.2f;
@@ -962,7 +955,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
                         fScale = std::max(fMin, fScale);
                         if (1.03f < fScale || fScale < 0.97f) {
                             fSpeed = fSpeed * fRatio;
-                            kVel *= fScale;
+                            reinterpret_cast<efd::Point3&>(ptVel) *= fScale;
                             bPlace = false;
                         }
                     }
@@ -970,7 +963,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             }
             if (reinterpret_cast<AdditionalCliList*>(FUN_1416749a0())->FUN_1409709b0() == 0 && nState != 0x11) {
                 FUN_141092d40(CString(strAnim));
-                PlayAnimation(efd::utf8string((const char*)strAnim), fSpeed, false, false);
+                PlayAnimation((const char*)strAnim, fSpeed, false, false);
             }
         }
     }
@@ -978,21 +971,21 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     FUN_14166ce70(bEmotion);
     if (!reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving() && m_pD60 == NULL) {
         if (GetCurStateId() == 0xd)
-            kPos.z = static_cast<const efd::Point3&>(vfunc_18()).z;
-        if (!bPlace)
-            FUN_14166d260();
+            ptPos.z = static_cast<const efd::Point3&>(vfunc_18()).z;
+        if (bPlace)
+            vfunc_19(reinterpret_cast<efd::Point3&>(ptPos));
         else
-            vfunc_19(kPos);
+            FUN_14166d260();
         SetTargetYaw(fRotZ);
         if (bRotate)
             vfunc_21(efd::Point3(0.0f, 0.0f, fRotZ));
     }
-    m_posD40 = kVel;
+    m_posD40 = reinterpret_cast<efd::Point3&>(ptVel);
     if (nSerial == (unsigned)m_nDAC)
         return;
     m_nDAC = nSerial;
     if (nState == 0x11) {
-        int nSpawn = in.ReadInt32();
+        int nSpawn = buf.ReadInt32();
         if (nSpawn != 0 && GetCurStateId() != nState) {
             MS2Ptr<StateSpawnData> spData(new StateSpawnData);
             if (WorldService::GetInstance()->FUN_141bcfff0(nSpawn,
@@ -1005,8 +998,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         int nTalking = reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->GetTalking();
         if (FUN_14166cc80() == 0x49 && nTalking == 0) {
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
-                CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());
-                if (pQuest->IsPortalSummonRequestActive() != 0) {
+                if (reinterpret_cast<CQuestManager*>(FUN_140764020())->IsPortalSummonRequestActive() != 0) {
                     Vector3 ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->GetTargetObjectPosition();
                     if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
                         LookAtPoint(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
@@ -1034,18 +1026,18 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
         }
     } else if (nState == 0xd) {
         MS2Ptr<StateHitData> spData(new StateHitData);
-        spData->m_f1c = in.ReadFloat();
-        spData->m_f24 = in.ReadFloat();
-        spData->m_f28 = in.ReadFloat();
-        spData->m_n2c = in.ReadUInt8() != 0;
-        PlayAnimation(efd::utf8string((const char*)strAnim), fSpeed, true, false);
+        spData->m_f1c = buf.ReadFloat();
+        spData->m_f24 = buf.ReadFloat();
+        spData->m_f28 = buf.ReadFloat();
+        spData->m_n2c = buf.ReadUInt8() != 0;
+        PlayAnimation((const char*)strAnim, fSpeed, true, false);
         vfunc_59(nState, spData.get(), 0, 1);
         return;
     } else if (nState == 0x12 || reinterpret_cast<AdditionalCliList*>(FUN_1416749a0())->FUN_1409709b0() != 0) {
         return;
     }
-    ATL::CAtlArray<int> aSkip;
-    int nNone = 0;
+    ATL::CAtlArray<Unk_RequireState> aSkip;
+    Unk_RequireState nNone = gosNone;
     aSkip.Add(nNone);
     if (FUN_141099bd0(aSkip, nState) == -1)
         vfunc_59(nState, 0, 0, 0);

@@ -1,0 +1,26 @@
+177a
+#endif
+.
+176a
+#if defined(EE_MS2_NIDSR_SUBMESH_INLINE)
+    {
+        // MS2: the exe's BindRegionToSubmesh (0x141e0e520) inlines SetSubmeshCount(uiSubmeshIdx + 1)
+        // where cl 19.16 calls it; the out-of-line copy below stays (engine/units-gb.json)
+        NiUInt32 uiSubmeshCount = uiSubmeshIdx + 1;
+        NiUInt32 uiPriorCount = m_uiSubmeshToRegionIndexMapCount;
+        if (uiSubmeshCount != uiPriorCount)
+        {
+            m_uiSubmeshToRegionIndexMapCount = (NiUInt16) uiSubmeshCount;
+            m_puiSubmeshToRegionIndexMap = (NiUInt16*)
+                NiRealloc(m_puiSubmeshToRegionIndexMap,
+                sizeof(NiUInt16)*m_uiSubmeshToRegionIndexMapCount);
+            EE_ASSERT(m_puiSubmeshToRegionIndexMap);
+        }
+
+        for (NiUInt32 ui = uiPriorCount; ui < uiSubmeshCount; ui++)
+        {
+            m_puiSubmeshToRegionIndexMap[ui] = 0xFFFF;
+        }
+    }
+#else
+.

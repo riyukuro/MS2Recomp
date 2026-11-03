@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/blackmarketitemoption.h"
 #include "ms2/placeholder/specialnpcinfo.h"
+#include "ms2/client/ms2/gameeventcli.h"   // EventIconInfo (WorldMapManager::m_c8's value)
 
 // The exe's MS2Ptr<Unk_WsK_Rank> reaches its CPtred through a helper (a down-adjust by -0x18 with a null test), not the
 // inline upcast of ms2ptr_impl.h.
@@ -53,6 +54,8 @@ template class std::map<unsigned __int64, Unk_WsV2e8>;
 template class std::set<unsigned __int64>;
 template class std::map<unsigned __int64, Unk_WsPod8>;
 template class std::map<unsigned, Unk_WsV980g>;
+typedef std::_Tree<std::_Tmap_traits<unsigned, MS2Ptr<EventIconInfo>, std::less<unsigned>, std::allocator<std::pair<const unsigned, MS2Ptr<EventIconInfo> > >, false> > Unk_WsEventIconTree;
+template Unk_WsEventIconTree::size_type Unk_WsEventIconTree::erase(const unsigned&);   // WorldMapManager::RemoveEventIconInfo
 template class std::map<unsigned __int64, Unk_WsV990>;
 template class std::vector<Unk_WsV9a0>;
 template class std::vector<Unk_WsVa00>;
@@ -266,3 +269,4 @@ void Unk_WsAnchorGlue()
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_WsVa00@@V?$allocator@UUnk_WsVa00@@@std@@@std@@AEAAXPEAUUnk_WsVa00@@00U?$integral_constant@_N$0A@@2@@Z 0x141bb7040
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_WsVa18@@V?$allocator@UUnk_WsVa18@@@std@@@std@@AEAAXPEAUUnk_WsVa18@@00U?$integral_constant@_N$00@2@@Z 0x141bb7000
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_WsVa18@@V?$allocator@UUnk_WsVa18@@@std@@@std@@AEAAXPEAUUnk_WsVa18@@00U?$integral_constant@_N$0A@@2@@Z 0x141bb7040
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VEventIconInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@3@$0A@@std@@@std@@QEAA_KAEBI@Z 0x141bb85f0 ; gp1: called by WorldMapManager::RemoveEventIconInfo (0x141b9a360)

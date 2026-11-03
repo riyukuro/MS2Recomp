@@ -125,6 +125,7 @@ extern __int64 DAT_143ab2898;                                       // wallet: m
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/client/ms2/fielddatacli.h"
 
 template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
 class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
@@ -161,18 +162,9 @@ public:
     __int64 FUN_141662830();                                        // time of the last bank use
     __int64 FUN_141662870();                                        // time of the last doctor use
 };
-class Unk_HiMapPtr
-{
-public:
-    ~Unk_HiMapPtr();                                                // 0x1408850f0
-private:
-    void* m_pad_00;
-    void* m_p;
-};
 class Unk_HiWorld
 {
 public:
-    Unk_HiMapPtr FUN_141bd30a0();                                   // current map data
 };
 
 // The constant table (cooldowns of the bank and the doctor).
@@ -373,8 +365,8 @@ void UIHomeInfoDialog::FUN_1412c5690()
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    Unk_HiMapPtr spMap = reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<MS2Ptr<class CFieldDataCli>*>(&spMap)->operator==(0))
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    if (spMap.operator==(0))
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {

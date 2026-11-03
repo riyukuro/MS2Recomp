@@ -14,23 +14,6 @@ class CItem;
 class ItemDropEffect;
 class Unk_WsC_GameObj;
 
-// The owner uid set of a drop (a hash set; ctor 0x1407b5060(p, 10), dtor 0x1407b5a30).
-class Unk_DropOwners
-{
-public:
-    Unk_DropOwners(int nBuckets);                                           // 0x1407b5060
-    ~Unk_DropOwners();                                                      // 0x1407b5a30
-    void FUN_1407b7110(const ATL::CAtlList<__int64>* pOwners);              // replace the content
-    void FUN_1407b7090(const ATL::CAtlList<__int64>* pOwners);              // add to the content
-    void* FUN_1407b72d0(unsigned __int64 nUid, void* pOut);                 // lookup (0 when absent)
-    unsigned __int64 FUN_1408f32a0() const;                                 // count (GetCount)
-    void* FUN_1407b75d0();                                                  // first position
-    unsigned __int64* FUN_1408f31c0(void* pPos);                            // the uid at a position
-private:
-    unsigned char m_data[0x30];
-};
-MS2_CHECK_SIZE(Unk_DropOwners, 0x30);
-
 // The item shown by a drop is created by name of its drop effect; MS2Ptr<ItemDropEffect> plus its +8 test helpers.
 typedef MS2Ptr<ItemDropEffect> Unk_DropEffectPtr;
 
@@ -55,7 +38,7 @@ public:
 
     int FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId);                 // build the item and its model
     int FUN_14118d1c0(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>& kOwners);   // set the owners, init
-    int InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, const ATL::CAtlList<__int64>* pOwners);   // add the owners, init
+    int InitWithOwners(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId, __int64 nOwner);   // add one owner, init
     void FUN_14118d720(NiAVObject* pRoot);                                      // the "Item_Icon:0" texture of the item
     void FUN_14118d9a0(int nState);                                         // enter a state
     void FUN_14118fe60(int nValue);                                         // 0x14118fe60 m_n28c
@@ -105,7 +88,7 @@ public:
     float m_fElapsed;                   // +0x144 time in the state
     float m_fSpawnTime;                 // +0x148
     __int64 m_n64Meso;                  // +0x150 the meso amount of a meso drop
-    Unk_DropOwners m_owners;            // +0x158
+    ATL::CAtlList<__int64> m_owners;    // +0x158 the owner uids (ctor 0x1407b5060(p, 10), dtor 0x1407b5a30)
     int m_n188;                         // +0x188
     int m_nOwnerObjId;                  // +0x18c
     int m_nNpcType;                     // +0x190

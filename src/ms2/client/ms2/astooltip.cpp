@@ -1098,7 +1098,7 @@ MS2_REPLACE_METHOD(0x1409C8DF0, ASTooltip, FUN_1409c8df0, 883, 0x730BDFE3);
 // The option block of the item tooltip ("itemStatus"): the option rows per kind, the socket and additional-effect rows,
 // the enchant and unlimited-enchant rows and the enchant / pet exp gauges. Merge items show their merge ranges instead.
 // @0x1409c9170
-// MS2-FUNCTIONAL: /Od frame is 0x80 larger (temporaries placed differently); same calls and control flow
+// MS2-FUNCTIONAL: /Od frame is 0x70 larger. CStringW results passed to StringFormat get a 2-slot rax chain where the exe passes the temp by lea; same calls and control flow
 void ASTooltip::FUN_1409c9170(CItem* pItem)
 {
     if (pItem == 0)
@@ -1134,77 +1134,30 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
         Unk_EnchantMap& mapStats = spOption->GetStatMap(nKind);
         Unk_SocketSpecialMap& mapSpecials = spOption->GetSpecialMap(nKind);
         Unk_OptionTextMap mapTexts(10);
-        if (bPet == 0 || nKind != 2)
+        if (bPet != 0 && nKind == 2)
+        {
+            spOption->FUN_1405cb900(nKind, mapTexts);
+        }
+        else
         {
             unsigned nOrder = 0;
             for (POSITION pos = mapStats.GetStartPosition(); pos != 0; mapStats.GetNext(pos))
             {
                 int nStat = mapStats.GetKeyAt(pos);
-                mapTexts.SetAt(nOrder, GetStatName(nStat));
-                nOrder++;
+                mapTexts.SetAt(nOrder++, GetStatName(nStat));
             }
             for (POSITION pos = mapSpecials.GetStartPosition(); pos != 0; mapSpecials.GetNext(pos))
             {
                 Unk_SocketSpecialStat eSpecial = mapSpecials.GetKeyAt(pos);
-                mapTexts.SetAt(nOrder, FUN_14081d380(eSpecial));
-                nOrder++;
+                mapTexts.SetAt(nOrder++, FUN_14081d380(eSpecial));
             }
-        }
-        else
-        {
-            spOption->FUN_1405cb900(nKind, mapTexts);
         }
         int nRow = 0;
         int nTexts = (int)mapTexts.GetCount();
         for (POSITION pos = mapTexts.GetHeadPosition(); pos != 0; mapTexts.GetNext(pos))
         {
             int nStat = FindStatByName(mapTexts.GetValueAt(pos));
-            if (nStat == -1)
-            {
-                Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)FUN_14081d260(mapTexts.GetValueAt(pos));
-                if (eSpecial == 0)
-                    continue;
-                Unk_SocketSpecialMap::CPair* pPair = mapSpecials.Lookup(eSpecial);
-                if (pPair == 0)
-                    continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
-                if (!spBase)
-                    continue;
-                CStringW strValue;
-                CStringW strRow;
-                if (i == 0 && bPet != 0 && spPet.get() != 0)
-                {
-                    CStringW strBase;
-                    CStringW strMax;
-                    CStringW strRate;
-                    if (spBase->HasValue())
-                    {
-                        int nValue = spBase->GetValue();
-                        float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
-                        float fBase = (float)nValue;
-                        float fMax = fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
-                        nValue = (int)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
-                        strValue = FUN_140631830(eSpecial, nValue, pItem->FUN_140527840());
-                        int nRaw = spBase->GetValue();
-                        strBase = StringFormat(L"{0:0.1f}", nRaw);
-                        strMax = StringFormat(L"{0:0.1f}", fMax);
-                        strRate = StringFormat(L"{0:0.1f}", fRate);
-                    }
-                    if (FUN_1409c56f0(strRow, MS2Ptr<CItem>(pItem), eSpecial, nKind, spBase, strValue))
-                    {
-                        strKind.Append(strRow);
-                        strKind.Append(FUN_14028dfa0(CStringW(L"s_tooltip_itemoption_stat_row_pet_constant_desc"), strBase, strMax, strRate));
-                    }
-                }
-                else
-                {
-                    strValue = FUN_140631830(eSpecial, spBase->GetValue(), pItem->FUN_140527840());
-                    if (FUN_1409c56f0(strRow, MS2Ptr<CItem>(pItem), eSpecial, nKind, spBase, strValue))
-                        strKind.Append(strRow);
-                }
-                nRow++;
-            }
-            else
+            if (nStat != -1)
             {
                 Unk_EnchantMap::CPair* pPair = mapStats.Lookup(nStat);
                 if (pPair == 0)
@@ -1227,10 +1180,10 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     if (spBase->HasValue())
                     {
                         __int64 nValue = spBase->GetValue();
-                        float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
+                        float fRate = (float)floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
-                        nValue = (__int64)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
+                        nValue += fRate * (float)(pItem->FUN_140528c20() - 1);
                         strValue = FUN_140631720(nStat, (int)nValue, false);
                         strBase = FUN_1409e0900(spBase->GetValue());
                         strMax = FUN_1409e0900((int)nMax);
@@ -1239,7 +1192,8 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     if (FUN_1409c5210(strRow, MS2Ptr<CItem>(pItem), nStat, nKind, spBase, strValue))
                     {
                         strKind.Append(strRow);
-                        strKind.Append(FUN_14028dfa0(CStringW(L"s_tooltip_itemoption_stat_row_pet_constant_desc"), strBase, strMax, strRate));
+                        CStringW strDesc = FUN_14028dfa0(CStringW(L"s_tooltip_itemoption_stat_row_pet_constant_desc"), strBase, strMax, strRate);
+                        strKind.Append(strDesc);
                     }
                 }
                 else
@@ -1249,6 +1203,54 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                         strKind.Append(strRow);
                 }
                 nRow++;
+                continue;
+            }
+            {
+                Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)FUN_14081d260(mapTexts.GetValueAt(pos));
+                if (eSpecial != 0)
+                {
+                    Unk_SocketSpecialMap::CPair* pPair = mapSpecials.Lookup(eSpecial);
+                    if (pPair == 0)
+                        continue;
+                    Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                    if (!spBase)
+                        continue;
+                    CStringW strValue;
+                    CStringW strRow;
+                    if (i == 0 && bPet != 0 && spPet.get() != 0)
+                    {
+                        CStringW strBase;
+                        CStringW strMax;
+                        CStringW strRate;
+                        if (spBase->HasValue())
+                        {
+                            int nValue = spBase->GetValue();
+                            float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
+                            float fBase = (float)nValue;
+                            float fMax = fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
+                            nValue += fRate * (float)(pItem->FUN_140528c20() - 1);
+                            strValue = FUN_140631830(eSpecial, nValue, pItem->FUN_140527840());
+                            int nRaw = spBase->GetValue();
+                            strBase = StringFormat(L"{0:0.1f}", nRaw);
+                            strMax = StringFormat(L"{0:0.1f}", fMax);
+                            strRate = StringFormat(L"{0:0.1f}", fRate);
+                        }
+                        if (FUN_1409c56f0(strRow, MS2Ptr<CItem>(pItem), eSpecial, nKind, spBase, strValue))
+                        {
+                            strKind.Append(strRow);
+                            CStringW strDesc = FUN_14028dfa0(CStringW(L"s_tooltip_itemoption_stat_row_pet_constant_desc"), strBase, strMax, strRate);
+                            strKind.Append(strDesc);
+                        }
+                    }
+                    else
+                    {
+                        strValue = FUN_140631830(eSpecial, spBase->GetValue(), pItem->FUN_140527840());
+                        if (FUN_1409c56f0(strRow, MS2Ptr<CItem>(pItem), eSpecial, nKind, spBase, strValue))
+                            strKind.Append(strRow);
+                    }
+                    nRow++;
+                    continue;
+                }
             }
         }
     }

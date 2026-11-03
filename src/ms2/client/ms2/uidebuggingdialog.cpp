@@ -22,6 +22,7 @@
 #include "ms2/client/ms2/windowservice.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <NiRenderObject.h>
@@ -42,41 +43,7 @@ public:
 };
 MS2_CHECK_SIZE(CMeshUVPicker, 0x98);
 
-// The record of an npc row (CNpcData); only the speed fields are read here.
-struct Unk_DbgNpcRec : public CPtred
-{
-    char m_pad_18[0x5c - 0x18];
-    float m_fAniSpeed;                                                  // +0x5c
-    char m_pad_60[0xd0 - 0x60];
-    float m_fWalkSpeed;                                                 // +0xd0
-    float m_fRunSpeed;                                                  // +0xd4
-};
-// The npc's data handle as FUN_141093270 returns it (16 bytes).
-class Unk_DbgNpcDataPtr
-{
-public:
-    ~Unk_DbgNpcDataPtr();                                               // 0x1406d5390 release
-    Unk_DbgNpcRec* operator->() const;                                  // 0x140965990
-    void* m_pad_00;
-    void* m_p;
-};
-// The record handle converted from it (16 bytes).
-class Unk_DbgRecPtr
-{
-public:
-    Unk_DbgRecPtr(const Unk_DbgNpcDataPtr& src);                        // 0x1406cf850
-    ~Unk_DbgRecPtr();                                                   // 0x14035e5b0 release
-    bool operator!() const;                                             // 0x14035e9b0
-    Unk_DbgNpcRec* get() const;                                         // 0x140729ad0
-    Unk_DbgNpcRec* operator->() const;                                  // 0x14035eb90
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_DbgNpc : public CNpc
-{
-public:
-    Unk_DbgNpcDataPtr FUN_141093270();                                  // the npc's data record handle
-};
+class Unk_DbgNpc : public CNpc { };
 // The marker effect request: a NoticeMessage (placeholder/effectquery.h), 0x70 bytes. The ctor 0x140a52ef0 fills all of
 // it and SetActor 0x140a53190 writes +0x54 (a 16-byte stand-in was overrun, rt1 stackovf.py); only the name and the type
 // are used here.
@@ -109,7 +76,6 @@ class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-PCBase* FUN_140a7b650(void* pEntry);
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, symbols-manual rows shared with util.cpp).
 class Unk_NodeQueue
 {
@@ -125,17 +91,8 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 void* FUN_140876480(void* pOut, int nCat);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCat);
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow text -> CStringW
-// The model table entry the npc's data record names (state names and the like).
-struct Unk_DbgModelSet
-{
-    ~Unk_DbgModelSet();                                                 // 0x1408a8900
-    char m_p[0x20];
-};
-class Unk_DbgModelTable
-{
-public:
-    Unk_DbgModelSet FUN_141206030(const egf::EntityID& kKey);           // the npc's model set
-};
+// The animation service view that returns the npc model name.
+struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };   // C3: as equipmodel.cpp defines it
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 float FUN_14028d3a0(float fValue);                                       // table value of a speed
@@ -261,10 +218,10 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                 {
                     if (bFound)
                         break;
-                    Unk_DbgNpc* pNpc = static_cast<Unk_DbgNpc*>(FUN_140a7b650(((void*)&((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
+                    Unk_DbgNpc* pNpc = static_cast<Unk_DbgNpc*>((CNpc*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)));
                     if (pNpc == 0)
                         continue;
-                    Unk_DbgRecPtr spData = pNpc->FUN_141093270();
+                    MS2Ptr<CNpcData> spData = pNpc->GetNpcData();
                     if (!spData)
                         continue;
                     ecr::SceneGraphService* pSceneSvc = FUN_1413f98b0();
@@ -325,10 +282,10 @@ void UIDebuggingDialog::vfunc_72()
         Unk_DbgNpc* pNpc = reinterpret_cast<Unk_DbgNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nTargetId));
         if (pNpc != 0)
         {
-            Unk_DbgModelSet kModel = reinterpret_cast<Unk_DbgModelTable*>(FUN_141b6f910())->FUN_141206030(pNpc->FUN_14123c460());
+            efd::utf8string kModel = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(pNpc->FUN_14123c460());
             CStringW strNpcName = pNpc->vfunc_77().GetLength() == 0 ? L"Noname" : (LPCWSTR)pNpc->vfunc_77();
             FUN_141286050("m_npcName", strNpcName);
-            FUN_141286050("m_aniName", FUN_14016a730(((efd::utf8string*)(struct Unk_DbgModelSet*)(&kModel))->c_str(), 0));
+            FUN_141286050("m_aniName", FUN_14016a730(kModel.c_str(), 0));
             CStringW strState;
             strState.Format(L"%d", pNpc->GetCurStateId());
             FUN_141286050("m_state", strState);
@@ -338,9 +295,9 @@ void UIDebuggingDialog::vfunc_72()
             FUN_141286050("m_aniSpeedCondition", FUN_14016a730(pNpc->FUN_1416713e0(), 0));
             FUN_141286050("m_aniSpeedExpression", FUN_14016a730(pNpc->FUN_141671430(), 0));
             CStringW strMoveSpeed;
-            strMoveSpeed.Format(L"%.1f/%.1f", (double)pNpc->vfunc_95(), (double)FUN_14028d3a0(pNpc->FUN_141093270()->m_fRunSpeed));
+            strMoveSpeed.Format(L"%.1f/%.1f", (double)pNpc->vfunc_95(), (double)FUN_14028d3a0(pNpc->GetNpcData()->m_fRunSpeed));
             FUN_141286050("m_moveSpeedS", strMoveSpeed);
-            Unk_DbgRecPtr spData = pNpc->FUN_141093270();
+            MS2Ptr<CNpcData> spData = pNpc->GetNpcData();
             if (spData.get() != 0)
             {
                 float fBase = spData->m_fRunSpeed;
@@ -359,7 +316,7 @@ void UIDebuggingDialog::vfunc_72()
                 FUN_141286050("m_moveSpeedPercent", strPercent);
                 strPercent.Format(L"%.1f%%", (double)(pNpc->FUN_1416713c0() * 100.0f));
                 FUN_141286050("m_aniSpeedPercent", strPercent);
-                strPercent.Format(L"%.1f", (double)spData->m_fAniSpeed);
+                strPercent.Format(L"%.1f", (double)spData->m_model.m_fAniSpeed);
                 FUN_141286050("m_aniSpeed", strPercent);
                 FUN_141286050("m_aniSpeedFix", L"false");
             }

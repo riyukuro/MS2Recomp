@@ -80,26 +80,8 @@ class CMsgBoxData : public CPtred
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
-class Unk_GachaDropTable { public: void FUN_1402ea4c0(int, std::vector<class Unk_GachaDrop>&); };
-// ItemDropResult (0x70 bytes, owned by commonfiles\dungeonmatch.cpp): polymorphic drop entry, item id / rank / count.
-class Unk_GachaDrop
-{
-public:
-    Unk_GachaDrop(const Unk_GachaDrop&);            // 0x1402fbe10 is the move cast, the copy ctor lives in dungeonmatch
-    Unk_GachaDrop(Unk_GachaDrop&&);
-    Unk_GachaDrop& operator=(Unk_GachaDrop&&);
-    ~Unk_GachaDrop();                               // 0x1402ffb40
-    virtual unsigned vfunc_0();
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();
-    __int64 m_08, m_10, m_18, m_20, m_28, m_30, m_38;
-    bool m_40;
-    bool m_bShow;                                   // +0x41
-    short m_42;
-    int m_44;
-    __int64 m_48, m_50, m_58, m_60, m_68;
-};
-MS2_CHECK_SIZE(Unk_GachaDrop, 0x70);
+// The drop entries (commonfiles\itemdroptable.h).
+typedef ItemDropResult Unk_GachaDrop;
 class Unk_GachaItems : public Unk_ItemVec
 {
 public:
@@ -296,7 +278,7 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     const size_t nSlots = 0x23;
     const size_t nBags = 3;
     std::vector<Unk_GachaDrop> drops;
-    reinterpret_cast<Unk_GachaDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(gacha->m_nIndividualDropBoxID, drops);
+    TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(gacha->m_nIndividualDropBoxID, drops);
     std::vector<MS2Ptr<CItem> > items;
     ATL::CAtlArray<MS2Ptr<CItem> > bags[3];
     std::vector<Unk_GachaDrop> filtered;
@@ -305,9 +287,9 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     std::vector<Unk_GachaDrop>::const_iterator itEnd = rDrops.end();
     for (std::vector<Unk_GachaDrop>::const_iterator it = rDrops.begin(); it != itEnd; ++it) {
         Unk_GachaDrop& d = const_cast<Unk_GachaDrop&>(*it);
-        if (!d.m_bShow)
+        if (!d.m_showIconOnGachaUI)
             continue;
-        MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_0());
+        MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_o18_0());
         if (data == 0)
             continue;
         if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
@@ -323,8 +305,8 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         size_t idx = k % filtered.size();
         Unk_GachaDrop& d = filtered[idx];
         MS2Ptr<CItem> item(new CItem);
-        if (item->FUN_14052b130(d.vfunc_0(), d.vfunc_1(), 0) != 0) {
-            item->SetCountClamped(d.vfunc_2());
+        if (item->FUN_14052b130(d.vfunc_o18_0(), d.vfunc_o18_1(), 0) != 0) {
+            item->SetCountClamped(d.vfunc_o18_2());
             items.push_back(item);
         }
     }
@@ -539,9 +521,9 @@ GachaBoxDataPtr UIItemGachaBoxDialog::FUN_140c43110()
 // @0x140c43260
 static bool FUN_140c43260(Unk_GachaDrop a, Unk_GachaDrop b)
 {
-    if (a.vfunc_1() == b.vfunc_1())
+    if (a.vfunc_o18_1() == b.vfunc_o18_1())
         return false;
-    return a.vfunc_1() > b.vfunc_1();
+    return a.vfunc_o18_1() > b.vfunc_o18_1();
 }
 
 // @0x140c43580

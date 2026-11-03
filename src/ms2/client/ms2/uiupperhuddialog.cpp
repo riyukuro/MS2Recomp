@@ -54,6 +54,9 @@
 #include <NiGlobalConstantEntry.h>
 #include <NiNode.h>
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/asslider.h"   // C3: ASSlider (was Unk_HudSlider members)
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/client/ms2/pcbase.h"
@@ -131,11 +134,8 @@ static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);                 
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> HudClickDelegate;
 
-class Unk_HudButton : public ASDisplayObject
+class Unk_HudButton : public ASButton
 {
-public:
-    void FUN_1422ce240(const HudClickDelegate& onClick, int nFlags);            // click callback
-    void FUN_1422c1fe0(int bOn);                                               // toggled state
 };
 
 class Unk_HudInput : public ASDisplayObject
@@ -174,30 +174,12 @@ class Unk_HudNotifyFlag : public NotifyObject { public: unsigned char m_bFlag; }
 class Unk_HudNotifyMoney : public NotifyObject { public: char m_pad_18[0x10]; __int64 m_nAmount; };   // +0x28 token money
 
 // The local player and the game event manager.
-class Unk_HudEnvPtr;
-class Unk_HudPlayerMgr { public: PCBase* FUN_141bd0cc0(); Unk_HudEnvPtr FUN_141bd30a0(); };
-int FUN_141658f30(PCBase* pPc);                                                 // pc level
+class Unk_HudPlayerMgr { public: PCBase* FUN_141bd0cc0(); };
 class Unk_HudEventMgr : public CGameRule {};
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 
 // The maids.
-class Unk_HudMaidRec : public CPtred
-{
-public:
-    char m_pad_18[8];
-    __int64 m_20;                                                               // +0x20 key
-    char m_pad_28[0x24];
-    int m_4c;                                                                   // +0x4c state
-};
-class Unk_HudMaidList
-{
-public:
-    void* FUN_1412dd700();                                                      // head position
-    MS2Ptr<Unk_HudMaidRec>& FUN_1412dd780(void* pos);
-    void FUN_1412dd720(void*& pos);                                             // next
-};
-class Unk_HudMaidOwner;
 int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // Misc.
@@ -223,15 +205,14 @@ CStringW GetStringCommon(int nId);                                              
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 CStringW FUN_140f48210(int nHour, int nMinute);                                 // the clock text
 CStringW FUN_1409404f0(__int64 n);                                              // the number as text
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                         // has the AS object been released
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);                         // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);
 
 std::vector<__int64>* FUN_140930580();                                          // the merat amounts by kind
-bool FUN_140930200(unsigned int nIndex);
+unsigned char FUN_140930200(int nIndex);
 CStringW FUN_1418fe590();
-CStringW FUN_1418fe5d0(unsigned int nIndex);
+CStringW FUN_1418fe5d0(int nIndex);
 __int64 FUN_140930250();
 __int64 FUN_140930240();
 __int64 FUN_140930ae0();
@@ -481,7 +462,7 @@ void UIUpperHudDialog::vfunc_oa0_14(void* a1, int a2)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3d))
         return;
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == 0)
         return;
     FUN_140cfee80(FUN_1422dbc00(), "maratText", FUN_1409404f0(reinterpret_cast<__int64>(a1)));
     m_30->Invoke("arrangePos");
@@ -746,16 +727,16 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
     if (m_30 == 0)
         return;
     int nReady = 0;
-    Unk_HudMaidList* pList = ((class Unk_HudMaidList*)((class CUserMaidManager*)(class Unk_HudMaidOwner*)(reinterpret_cast<Unk_HudMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance())))->GetMaidMap());
-    for (void* pos = pList->FUN_1412dd700(); pos; pList->FUN_1412dd720(pos))
+    CUserMaidManager::MaidMap* pList = TSingleton<CUserMaidManager>::GetInstance()->GetMaidMap();
+    for (POSITION pos = pList->GetHeadPosition(); pos; pList->GetNext(pos))
     {
-        MS2Ptr<Unk_HudMaidRec> spMaid = pList->FUN_1412dd780(pos);
+        MS2Ptr<CMaid> spMaid = pList->GetValueAt(pos);
         if (spMaid.IsNull())
             continue;
-        if (spMaid->m_4c <= 0)
+        if (spMaid->m_n4c <= 0)
             continue;
         MS2Ptr<CManufacture> spItem(0);
-        if (TSingleton<CManufactureManager>::GetInstance()->Lookup(spMaid->m_20, spItem))
+        if (TSingleton<CManufactureManager>::GetInstance()->Lookup(spMaid->m_nId, spItem))
         {
             MS2Ptr<CMaidRecipe> spInfo = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spItem->FUN_1409eedf0());
             if (spInfo)
@@ -782,7 +763,7 @@ void UIUpperHudDialog::FUN_141358020(bool bForce)
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    int nHot = ((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_140477640(FUN_141658f30(pPc));
+    int nHot = ((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_140477640(static_cast<PC*>(pPc)->FUN_141658f30());
     if (bForce || m_nHotTime != nHot)
     {
         MS2Ptr<ASMovieClip> spHot = m_30->FUN_1409b4560("m_effectHotTime");
@@ -923,7 +904,7 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
         MS2Ptr<SAHotTimeEventContext> spHot = list.GetAt(pos);
         if (spHot == 0)
             continue;
-        if (spHot->m_30 != 0 && FUN_141658f30(pPc) == 0)
+        if (spHot->m_30 != 0 && static_cast<PC*>(pPc)->FUN_141658f30() == 0)
             continue;
         if (spHot->m_28.IsEmpty())
             continue;
@@ -966,12 +947,12 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     strList.Append(StringFormat<CStringW, CStringW>(strLine, strName, strValue));
     for (size_t i = 0; i < nCount; i++)
     {
-        if (FUN_140930200((unsigned int)i) == true)
+        if (FUN_140930200((int)i) == true)
             continue;
         __int64 nAmount = (*pMerat)[i];
         if (nAmount == 0)
             continue;
-        CStringW strItemName = FUN_1418fe5d0((unsigned int)i);
+        CStringW strItemName = FUN_1418fe5d0((int)i);
         CStringW strItemValue = StringFormat<CStringW>(strFormat, FUN_1409404f0(nAmount));
         strList.Append(StringFormat<CStringW, CStringW>(strLine, strItemName, strItemValue));
     }
@@ -1241,8 +1222,6 @@ const char* FUN_14135bb70(Unk_HudUrlCfg* pCfg);
 
 class ASDialog : public ASDisplayObject
 {
-public:
-    float FUN_1422c1110();                                                      // y
 };
 
 // The slot 24 call on the TPtr of vfunc_25.
@@ -1381,7 +1360,7 @@ public:
 
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
-void FUN_1411781e0(const NiFixedString& kName, const NiPoint2* pk, int n);
+void FUN_1411781e0(void* pName, void* pk, int n);
 extern NiFixedString DAT_143ae5348;
 extern NiFixedString DAT_143ae5350;
 extern NiFixedString DAT_143ae5358;
@@ -1488,15 +1467,6 @@ public:
     Unk_HudColor3 m_glowColor;                                                     // +0x17c
     char m_pad_188[0x74];
     char m_bGlow;                                                               // +0x1fc
-};
-class Unk_HudEnvPtr
-{
-public:
-    ~Unk_HudEnvPtr();                                                           // 0x1408850f0
-    Unk_HudEnvData* FUN_140885340() const;                                      // operator->
-private:
-    void* m_unk;
-    Unk_HudEnvData* m_p;
 };
 Unk_HudColor3 FUN_140a56db0(float r, float g, float b);
 
@@ -1888,9 +1858,9 @@ void UIVisualEffectDialog::FUN_14135d490(bool bOn)
 // @0x14135d4f0
 void UIVisualEffectDialog::SetGlowEnabled(bool bOn)
 {
-    Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<Unk_HudEnvData*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spEnv).get()) != 0)
-        spEnv.FUN_140885340()->m_bGlow = bOn;
+    MS2Ptr<CFieldDataCli> spEnv = WorldService::GetInstance()->FUN_141bd30a0();
+    if (reinterpret_cast<Unk_HudEnvData*>(spEnv.get()) != 0)
+        reinterpret_cast<Unk_HudEnvData*>(spEnv.operator->())->m_bGlow = bOn;
     reinterpret_cast<Unk_HudRenderOpt*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bOutGlow = bOn;
     reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->ApplyOuterGlowOption();
 }
@@ -1898,10 +1868,10 @@ void UIVisualEffectDialog::SetGlowEnabled(bool bOn)
 // @0x14135d580
 void UIVisualEffectDialog::SetGlowColor(float fRed, float fGreen, float fBlue)
 {
-    Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<Unk_HudEnvData*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spEnv).get()) != 0)
+    MS2Ptr<CFieldDataCli> spEnv = WorldService::GetInstance()->FUN_141bd30a0();
+    if (reinterpret_cast<Unk_HudEnvData*>(spEnv.get()) != 0)
     {
-        spEnv.FUN_140885340()->m_glowColor = FUN_140a56db0(fRed, fGreen, fBlue);
+        reinterpret_cast<Unk_HudEnvData*>(spEnv.operator->())->m_glowColor = FUN_140a56db0(fRed, fGreen, fBlue);
     }
 }
 
@@ -1921,7 +1891,7 @@ void UIVisualEffectDialog::FUN_14135d660(float fValue)
 void UIVisualEffectDialog::SetNearFarRange(float fNear, float fFar)
 {
     NiPoint2 kRange(fNear, fFar);
-    FUN_1411781e0(DAT_143ae53b0, &kRange, 1);
+    FUN_1411781e0((void*)&DAT_143ae53b0, &kRange, 1);
     FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae53b8), &fNear, 1);
 }
 

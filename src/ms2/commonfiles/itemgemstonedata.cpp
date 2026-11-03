@@ -174,7 +174,7 @@ int CItemGemStoneUpgradeTable::Load()
                         Unk_StrVec tokens;
                         FUN_140275080(strValue, &tokens, ":");
                         if (tokens.FUN_14028b4c0() > 0)
-                            nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
+                            nId = FUN_1407181d0(*tokens.FUN_14027f1c0(0));
                         if (tokens.FUN_14028b4c0() > 1)
                             nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
                     }

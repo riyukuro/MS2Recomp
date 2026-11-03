@@ -10,6 +10,7 @@
 #include "ms2/placeholder/cptred.h"
 
 int FUN_1407181a0(const CStringW& str);    // a wide string as an int
+int FUN_140718200(const CStringW& str);    // a wide string as an unsigned int (packetlogger.cpp)
 unsigned long FUN_1407182c0(const CStringW& str);   // a wide string as an unsigned long
 
 class CXmlData : public CPtred
@@ -38,6 +39,15 @@ public:
         if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strKey, strValue))
             return nDefault;
         return FUN_1407181a0(strValue);
+    }
+    // The value as an unsigned int, nDefault when the key is missing. The same shape as GetInt, but it converts with
+    // FUN_140718200 (COMDAT 0x14054c530: unit_140d1ae30's OpenMassive "fieldID").
+    unsigned int GetUInt(const CStringW& strKey, const int& nDefault)
+    {
+        CStringW strValue;
+        if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strKey, strValue))
+            return nDefault;
+        return FUN_140718200(strValue);
     }
     // The value as an unsigned long, nDefault when the key is missing (COMDAT 0x140d26970 in unit_140d1ae30).
     unsigned long GetULong(const CStringW& strKey, const unsigned long& nDefault)

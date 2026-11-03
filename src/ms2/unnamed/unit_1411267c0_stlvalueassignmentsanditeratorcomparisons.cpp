@@ -44,12 +44,12 @@ void FUN_14114c3a0(Unk_ContA* pThis);
 
 Unk_ContA& Unk_ContA::Assign(const Unk_ContA& o)
 {
-    if (this != FUN_141117200(o))
+    if (this != (const void*)std::addressof(reinterpret_cast<const std::_Tree_val<std::_Tree_simple_types<std::pair<const int, Unk_CMISMarkRec>>>&>(o)))
     {
         if (0)
             FUN_14114c3a0(this);
-        FUN_141135960(this, (void*)&reinterpret_cast<const Unk_CMISEntVec&>(o)._Getal());
-        reinterpret_cast<Unk_CMISEntVec*>(this)->assign((egf::EntityPtr*)*FUN_141148f90(o), (egf::EntityPtr*)*FUN_141149110(o));
+        reinterpret_cast<Unk_CMISEntVec*>(this)->_Copy_alloc(reinterpret_cast<const Unk_CMISEntVec&>(o)._Getal());
+        reinterpret_cast<Unk_CMISEntVec*>(this)->assign(reinterpret_cast<const Unk_CMISEntVec&>(o)._Myfirst(), reinterpret_cast<const Unk_CMISEntVec&>(o)._Mylast());
     }
     return *this;
 }
@@ -82,12 +82,12 @@ void FUN_14114c470(Unk_ContB* pThis);
 
 Unk_ContB& Unk_ContB::Assign(const Unk_ContB& o)
 {
-    if (this != FUN_141117210(o))
+    if (this != (const void*)std::addressof(reinterpret_cast<const std::_Tree_val<std::_Tree_simple_types<std::pair<const int, Unk_Int3>>>&>(o)))
     {
         if (0)
             FUN_14114c470(this);
-        FUN_141135990(this, FUN_141145180(o));
-        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->assign((egf::EntityID*)*FUN_141148fd0(o), (egf::EntityID*)*FUN_141149150(o));
+        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->_Copy_alloc(*(const Unk_CMISEntityIdVec::allocator_type*)&const_cast<Unk_CMISMapUid&>(reinterpret_cast<const Unk_CMISMapUid&>(o))._Getcomp());
+        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->assign(reinterpret_cast<const Unk_CMISEntityIdVec&>(o)._Myfirst(), reinterpret_cast<const Unk_CMISEntityIdVec&>(o)._Mylast());
     }
     return *this;
 }
@@ -102,7 +102,7 @@ public:
     // @0x1411269e0
     Unk_Row38& operator=(const Unk_Row38& o)
     {
-        FUN_1404efd80(this, &o);
+        CPtred::operator=(o);
         m_18 = o.m_18;
         m_1c = o.m_1c;
         m_20 = o.m_20;

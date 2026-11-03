@@ -93,7 +93,7 @@ class UIServerListDialog : public UIDialog
 public:
     bool FUN_141ad3260(int, const CMsgBoxData&);
     void FUN_141ad2380();
-    unsigned FUN_141ad1010();
+    int GetServerId();
 };
 void* FUN_14136f520(int);   // C3: was FUN_14136f520
 class Unk_CharSelectDialog : public UICharacterListDialog
@@ -114,10 +114,9 @@ extern unsigned char DAT_1430e3b20;
 
 // Reconnect (same as CSceneStateMove::OnUpdate)
 CString FUN_14016a600(const wchar_t*, int);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
-void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
+int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned);
 
 // Notify registry (as uidtattendpopup.cpp)
 typedef Delegate<void(NotifyObject*)> Unk_NotifyDelegate;
@@ -164,8 +163,8 @@ public:
     class Unk_PatchTextFilter* FUN_140a87690();
 };
 CStringW FUN_14083d340(CStringW);
-void FUN_141275400(CStringW&, int);
-void FUN_1412753b0(CStringW&, int, int);
+void FUN_141275400(const CStringW&, int);
+void FUN_1412753b0(const CStringW&, int, int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 int FUN_1406516b0();
 CStringW GetStringCommon(int);
@@ -177,8 +176,9 @@ void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 
 class Unk_LobbyChar;
-void FUN_1413fb630(void*, efd::vector<unsigned long long>&);
-void* FUN_140a53610(void*);
+namespace egf { class Entity; }
+class NiMesh;
+void FUN_1413fb630(egf::Entity*, efd::vector<NiMesh*>*);
 #include "ms2/placeholder/notifygameeventchanged.h"
 struct Unk_Settings { char m_pad[0xe258]; unsigned m_nLobbyMap; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -207,7 +207,7 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class NiPick
 {
 public:
-    class Record;
+    class Record { public: NiAVObject* GetAVObject(); };
     class Results
     {
     public:
@@ -232,7 +232,6 @@ public:
     void FUN_140aed720(Unk_140ae7ce0*);
     Unk_QueryResult FUN_140af0850(float fX, float fY, bool b1, bool b2, bool b3, void* p);   // pick at the cursor (cameramode.h)
 };
-class Unk_QueryRow { public: void* FUN_140a17cb0(); };
 
 // ---- the game-option block (OnEnter) ----
 struct Unk_C9B8B0 { void* m_0; void* m_8; };
@@ -284,14 +283,14 @@ int LobbyFieldTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
         if (pRoot == 0)
             return 0;
         CString strKey("key");
         CString strJobCode("jobCode");
         CString strSelectMap("selectMap");
         CString strCreateMap("createMap");
-        for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0;
+        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0;
              pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling(strKey))))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
@@ -599,7 +598,7 @@ void CSceneStateMulti::FUN_14174ebc0()
     {
         UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
         if (pList)
-            DAT_143ab2830 = pList->FUN_141ad1010();
+            DAT_143ab2830 = (unsigned)pList->GetServerId();
     }
     else if (m_nMode == 1)
     {
@@ -676,18 +675,18 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
     Unk_FieldMgr* pMgr = ((class Unk_FieldMgr*)WorldService::GetInstance());
     for (unsigned iRow = 0; iRow < reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetSize(); iRow++)
     {
-        Unk_QueryRow* pRow = reinterpret_cast<Unk_QueryRow*>(reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetAt(iRow));
+        NiPick::Record* pRow = reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetAt(iRow);
         for (POSITION pos = pMgr->m_actors.GetHeadPosition(); pos != 0; pMgr->m_actors.GetNext(pos))
         {
             Unk_LobbyActor* pActor = pMgr->m_actors.GetValueAt(pos);
-            Unk_LobbyChar* pChar = static_cast<Unk_LobbyChar*>(FUN_140a53610(pActor));
+            Unk_LobbyChar* pChar = reinterpret_cast<Unk_LobbyChar*>(efd::DynamicCast<MyPC>(reinterpret_cast<GameObject*>(pActor)));
             if (pChar == 0)
                 continue;
             efd::vector<unsigned long long> ids;
-            FUN_1413fb630(((void*)(reinterpret_cast<GameObject*>(pActor)->FUN_14123c410())), ids);
+            FUN_1413fb630(((egf::Entity*)(reinterpret_cast<GameObject*>(pActor)->FUN_14123c410())), (efd::vector<NiMesh*>*)&ids);
             for (unsigned iId = 0; iId < ids.size(); iId++)
             {
-                if ((long long)pRow->FUN_140a17cb0() == (long long)ids.at(iId))
+                if ((long long)pRow->GetAVObject() == (long long)ids.at(iId))
                     return pChar;
             }
         }

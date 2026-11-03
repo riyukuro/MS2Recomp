@@ -19,6 +19,7 @@ using Scaleform::Array;
 using Scaleform::Ptr;
 using Scaleform::UByte;
 using Scaleform::UInt16;
+using Scaleform::UInt32;
 using Scaleform::SysFile;
 using Scaleform::GFx::URLBuilder;
 using Scaleform::GFx::Loader;
@@ -29,7 +30,6 @@ using Scaleform::GFx::Translator;
 namespace Alg = Scaleform::Alg;
 
 // @0x1422f8c70
-// MS2-FUNCTIONAL: exe keeps an extra local layout (frame 0xb8 vs 0xa8) and 12 more callees in the file read; no source form found yet.
 ConfigParser::ConfigParser(const char* pfilename)
 {
     Pos = 0;
@@ -41,7 +41,7 @@ ConfigParser::ConfigParser(const char* pfilename)
     if (ParentPath.CompareNoCase(pfilename) == 0)
         ParentPath = "";
 
-    SysFile file(String(pfilename), 0x21, 0x1b6);
+    SysFile file(pfilename, 0x21, 0x1b6);
     if (file.IsValid())
     {
         int flen = 0;
@@ -56,23 +56,49 @@ ConfigParser::ConfigParser(const char* pfilename)
             {
                 prefix16++;
                 int numChars = (flen / 2) - 1;
-                UInt16* chars = (UInt16*)SF_ALLOC(numChars * 2, Stat_Default_Mem);
-                Buffer.Resize(numChars);
-                for (int i = 0; i < numChars; i++)
-                    chars[i] = Alg::ByteUtil::LEToSystem(prefix16[i]);
-                Buffer.SetString((const wchar_t*)chars, numChars);
-                SF_FREE(chars);
+                if (sizeof(wchar_t) == 2)
+                {
+                    UInt16* chars = (UInt16*)SF_ALLOC(numChars * 2, Stat_Default_Mem);
+                    Buffer.Resize(numChars);
+                    for (int i = 0; i < numChars; i++)
+                        chars[i] = Alg::ByteUtil::LEToSystem(prefix16[i]);
+                    Buffer.SetString((const wchar_t*)chars, numChars);
+                    SF_FREE(chars);
+                }
+                else if (sizeof(wchar_t) == 4)
+                {
+                    // a 4-byte wchar_t takes each UTF-16 unit widened
+                    UInt32* chars = (UInt32*)SF_ALLOC(numChars * 4, Stat_Default_Mem);
+                    Buffer.Resize(numChars);
+                    for (int i = 0; i < numChars; i++)
+                        chars[i] = Alg::ByteUtil::LEToSystem(prefix16[i]);
+                    Buffer.SetString((const wchar_t*)chars, numChars);
+                    SF_FREE(chars);
+                }
             }
             else if (prefix16[0] == Alg::ByteUtil::BEToSystem((UInt16)0xFEFF))
             {
                 prefix16++;
                 int numChars = (flen / 2) - 1;
-                UInt16* chars = (UInt16*)SF_ALLOC(numChars * 2, Stat_Default_Mem);
-                Buffer.Resize(numChars);
-                for (int i = 0; i < numChars; i++)
-                    chars[i] = Alg::ByteUtil::BEToSystem(prefix16[i]);
-                Buffer.SetString((const wchar_t*)chars, numChars);
-                SF_FREE(chars);
+                if (sizeof(wchar_t) == 2)
+                {
+                    UInt16* chars = (UInt16*)SF_ALLOC(numChars * 2, Stat_Default_Mem);
+                    Buffer.Resize(numChars);
+                    for (int i = 0; i < numChars; i++)
+                        chars[i] = Alg::ByteUtil::BEToSystem(prefix16[i]);
+                    Buffer.SetString((const wchar_t*)chars, numChars);
+                    SF_FREE(chars);
+                }
+                else if (sizeof(wchar_t) == 4)
+                {
+                    // a 4-byte wchar_t takes each UTF-16 unit widened
+                    UInt32* chars = (UInt32*)SF_ALLOC(numChars * 4, Stat_Default_Mem);
+                    Buffer.Resize(numChars);
+                    for (int i = 0; i < numChars; i++)
+                        chars[i] = Alg::ByteUtil::BEToSystem(prefix16[i]);
+                    Buffer.SetString((const wchar_t*)chars, numChars);
+                    SF_FREE(chars);
+                }
             }
             else if (flen > 2 && td[0] == 0xEF && td[1] == 0xBB && td[2] == 0xBF)
             {

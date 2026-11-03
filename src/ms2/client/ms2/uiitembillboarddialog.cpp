@@ -27,16 +27,20 @@
 // MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@_N@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@1AEB_N@Z 0x140c34530
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemBillBoardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIItemBillBoardDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z 0x140c35240
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemBillBoardDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemBillBoardDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140c352e0
-// MS2-PIN: ??8?$MS2Ptr@VUnk_WsPtred298@@@@QEBA_NPEAVUnk_WsPtred298@@@Z 0x140c35390
+// MS2-PIN: ??8?$MS2Ptr@VCInteractObject@@@@QEBA_NPEAVCInteractObject@@@Z 0x140c35390
 // MS2-PIN: ??D?$MS2Ptr@VAScript@@@@QEBAAEAVAScript@@XZ 0x140c353d0
 // MS2-PIN: ?vfunc_48@UIItemBillBoardDialog@@UEAAHXZ 0x140c354e0
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIItemBillBoardDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140c35670
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitembillboarddialog.cpp"
+#define NOMINMAX                        // NxPhysics (interactobject.h)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitembillboarddialog.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/fielddatacli.h"   // CFieldDataCli (WorldService::FUN_141bd30a0)
 #include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/interactobject.h"   // CInteractObject (the FUN_141bc5f10 array)
+#include "ms2/client/ms2/portal.h"           // CPortal (the FUN_141bc2c90 array)
+#include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/commonfiles/ugcmappackageinfo.h"
@@ -136,12 +140,6 @@ __int64 FUN_141a02ed0(const CMsgBoxData* pData, int a, int b);
 extern Unk_Inventory g_143ab2a90;
 
 // The local player and the placement checks (see reactor.cpp).
-class PCBase   // C3: member view for the former free stand-ins
-{
-public:
-    int GetCurStateId();
-    int FUN_1416769d0();
-};
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -422,7 +420,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     float fRange = 230.0f;                                      // set but never read in the exe
-    ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
+    ATL::CAtlArray<MS2Ptr<CInteractObject> > arrNear;
     WorldService::GetInstance()->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
     int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
@@ -431,8 +429,8 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     FUN_1408a15b0(cell, ptCenter);
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i) {
-        MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
-        if (spObj == (Unk_WsPtred298*)0)
+        MS2Ptr<CInteractObject> spObj = arrNear[i];
+        if (spObj == (CInteractObject*)0)
             continue;
         {
             float fDist = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0().FUN_140965c40(ptCenter).FUN_140967ac0();
@@ -443,7 +441,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         }
     }
 
-    ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
+    ATL::CAtlArray<MS2Ptr<CPortal> > arrField;
     WorldService::GetInstance()->FUN_141bc2c90(ptCenter, &arrField);
     if (arrField.GetCount() > 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);

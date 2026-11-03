@@ -38,10 +38,6 @@ void* FUN_14027f270(struct Unk_Ref16* pRef);                    // the raw point
 // The list of entry references (CAtlList-like, 0x30 bytes).
 struct Unk_UlgList { __int64 m_data[6]; };
 void* FUN_140281940(Unk_UlgList* pList);                        // head position
-void* FUN_140281af0(Unk_UlgList* pList, void** ppPos);          // advance the position
-Unk_PplRef* FUN_140281540(Unk_UlgList* pList, void* pos);       // the entry at the position
-void FUN_140284f90(Unk_UlgList* pList, void* pos);              // remove the entry at the position
-void FUN_1402805b0(Unk_UlgList* pList, Unk_PplRef* pRef);       // append
 
 // The real types behind the stand-ins: the bucket list and the map.
 class CUserLimitHistory;
@@ -62,6 +58,8 @@ MS2_CHECK_SIZE(Unk_UlgBucket, 0x10);
 bool FUN_14027eca0(struct Unk_Ref16*, void*);   // C3: was FUN_14027eca0
 void* FUN_14027f260(struct Unk_Ref16* pRef);                    // the raw pointer
 Unk_UlgList* FUN_14027f2d0(Unk_UlgBucket* pRef);                // the object
+void FUN_1402805b0(Unk_UlgList* pList, Unk_PplRef* pRef);       // append
+void FUN_140284f90(Unk_UlgList* pList, void* pos);              // remove the entry at the position
 void FUN_140280740(Unk_UlgBucket* pDst, const MS2SvrNewTag& tag);   // assign a fresh bucket
 
 // The map from key to bucket (CAtlMap-like, 0x30 bytes).
@@ -115,8 +113,8 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
         while (posIn != 0)
         {
             void* posInCur = posIn;
-            FUN_140281af0(FUN_14027f2d0(&bucket), &posIn);
-            Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), posInCur));
+            reinterpret_cast<Unk_UlgHistList*>(FUN_14027f2d0(&bucket))->GetNext(reinterpret_cast<POSITION&>(posIn));
+            Unk_PplRef ref(reinterpret_cast<const Unk_PplRef&>(reinterpret_cast<Unk_UlgHistList*>(FUN_14027f2d0(&bucket))->GetAt(reinterpret_cast<POSITION>(posInCur))));
             if (FUN_14027ed60((struct Unk_Ref16*)(&ref), 0) != 0)
             {
                 FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
@@ -155,9 +153,9 @@ int CUserLimitGroup::FUN_1402697c0(__int64 nKey)
     reinterpret_cast<const Unk_UlgHistMap*>(&m_map)->Lookup(nKey, reinterpret_cast<TPtrValue<Unk_UlgHistList>&>(bucket));
     if (FUN_14027f260((struct Unk_Ref16*)&bucket) != 0)
     {
-        for (void* pos = FUN_140281940(FUN_14027f2d0(&bucket)); pos != 0; FUN_140281af0(FUN_14027f2d0(&bucket), &pos))
+        for (void* pos = FUN_140281940(FUN_14027f2d0(&bucket)); pos != 0; reinterpret_cast<Unk_UlgHistList*>(FUN_14027f2d0(&bucket))->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
-            Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), pos));
+            Unk_PplRef ref(reinterpret_cast<const Unk_PplRef&>(reinterpret_cast<Unk_UlgHistList*>(FUN_14027f2d0(&bucket))->GetAt(reinterpret_cast<POSITION>(pos))));
             if (FUN_14027f270((struct Unk_Ref16*)&ref) != 0)
                 nTotal = nTotal + ((Unk_UlgEntry*)reinterpret_cast<MS2Ptr<CPtred>*>(&ref)->operator CPtred*())->m_nCount;
         }

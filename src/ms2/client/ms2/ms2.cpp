@@ -441,9 +441,10 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 
 // Stand-ins for unrecovered singletons MS2 drives.
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class Unk_Ms2SceneState { public: void FUN_1417e25a0(int nScene); };
 CNetworkService* FUN_140714f90();
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
+int FUN_1414a5910(char* pOptimizer);   // C3: the frame time limit (COptimizer)
+class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 class Unk_Ms2PhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_1414a2a10();                                           // TSingleton delete of FUN_1409f7ca0()
@@ -457,10 +458,10 @@ public:
     bool FUN_1406af0a0();
 };
 ecr::RenderService* FUN_1413f9890();
-NiCullingProcess* FUN_141753990();                              // the shadow culling process factory
+class ShadowCullingProcess* FUN_141753990();                    // the shadow culling process factory (unit_141753550.cpp)
 void MS2ExcludeFromShadows(NiAVObject* pkObject);               // excludes an object from the shadow casters
 extern void (*DAT_143afbfc8)(NiAVObject*);
-extern const NiFixedString DAT_143ae5290, DAT_143ae5298, DAT_143ae52a0;   // the dir / point / spot shadow materials
+extern NiFixedString DAT_143ae5290, DAT_143ae5298, DAT_143ae52a0;   // the dir / point / spot shadow materials
 extern char DAT_143afc8d0, DAT_143afc898, DAT_143afc8e8, DAT_143afc900, DAT_143afcb90, DAT_143afcba8, DAT_143b08a3c;
 extern int DAT_143ab0248;                                       // the service locale
 CString FUN_14028dc80(int nId);                                 // a string table text
@@ -722,7 +723,7 @@ void MS2::MessageLoop()
             }
         } else {
             Tick();
-            int nFrameTime = ((class COptimizer*)FUN_1409f7c90())->FUN_1414a5910();
+            int nFrameTime = FUN_1414a5910((char*)FUN_1409f7c90());
             if (nFrameTime) {
                 DWORD dwNow = GetTickCountMs2();
                 int nElapsed = dwNow - m_uiLastTickTime;
@@ -856,8 +857,8 @@ void MS2::Shutdown()
 {
     if (((class Unk_Ms2Window*)FUN_140aadf80()) && ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef())
         KillTimer(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 1000);
-    if (reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance()))
-        reinterpret_cast<Unk_Ms2SceneState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0);
+    if (TSingleton<CStateService>::GetInstance())
+        TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0);
     if (CrashManagerCli::GetInstance())
         CrashManagerCli::GetInstance()->FUN_1401ce420();
     if (m_spServiceManager) {
@@ -1126,7 +1127,7 @@ efd::AsyncResult MS2::OnInit()
     NiMaterial* pkDirMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5290);
     NiMaterial* pkPointMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5298);
     NiMaterial* pkSpotMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae52a0);
-    NiShadowManager::SetShadowRenderCullingProcessFactory(FUN_141753990);
+    NiShadowManager::SetShadowRenderCullingProcessFactory((NiCullingProcess* (*)())FUN_141753990);
     NiShadowManager::SetShadowVisitorFactory(MS2ShadowVisitor::CreateMS2ShadowVisitor);
     NiShadowManager::SetShadowRenderClickValidatorFactory(MS2ShadowClickValidator::CreateMS2ShadowClickValidator);
     DAT_143afbfc8 = MS2ExcludeFromShadows;
@@ -1205,7 +1206,7 @@ extern int (*DAT_143b023c8)(size_t);
 extern void (*DAT_143b15f88)();
 extern int (*DAT_143b15f90)(size_t);
 extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;                // 0x143ac2bd0
-extern Unk_Inventory g_kInventory;                              // 0x143ab2a90 (unit_1406125d0.h has its own view of DAT_143ab2a90)
+extern Unk_Inventory g_143ab2a90;                               // 0x143ab2a90 (unit_1406125d0.h has its own view of DAT_143ab2a90)
 void FUN_14092f2c0(int n);
 int FUN_1414b1230();                                            // the single-instance / mutex check
 bool FUN_140d86270();                                           // the client platform init
@@ -1518,10 +1519,11 @@ struct Unk_PlatformErrorTable
 {
     Unk_PlatformErrorTable();                                   // 0x140c79890
     ~Unk_PlatformErrorTable();                                  // 0x140c79b50
-    CStringW FUN_140c7a360(const int& nIndex);                  // the error text of an index
     void* m_pad[9];
 };
 MS2_CHECK_SIZE(Unk_PlatformErrorTable, 0x48);
+enum ERawString { };   // C3: enum view (rawstring.h)
+class RawString { public: CStringW Get(const ERawString& code); };   // C3: member view (rawstring.h), the error text of a code
 
 // A "{0}"-style wide text formatter (0x10 bytes).
 class Unk_TextFormat
@@ -1604,7 +1606,7 @@ BOOL CGameApp::InitInstance()
         if (FUN_1406c34c0() != 0)
             FUN_141b6fcf0(g_143ac2fe0, L"", 0);
         else
-            FUN_141b6fcf0(kErrors.FUN_140c7a360(1), L"", 0);
+            FUN_141b6fcf0(((RawString*)&kErrors)->Get((ERawString)1), L"", 0);
         return FALSE;
     }
     FUN_141b6de20();
@@ -1614,16 +1616,16 @@ BOOL CGameApp::InitInstance()
     DAT_143b15f90 = FUN_141b6db40;
     AfxEnableControlContainer();
     Unk_SingletonCreator<CLogString>::CreateInstance();
-    TSingleton<CLogString>::GetInstance()->Init(CStringW(L"client"));
+    GetLogString()->Init(CStringW(L"client"));
     if (DAT_1439f7de4 > 0)
-        TSingleton<CLogString>::GetInstance()->SetFileLevel(DAT_1439f7de4);
+        GetLogString()->SetFileLevel(DAT_1439f7de4);
     else
-        TSingleton<CLogString>::GetInstance()->SetFileLevel(11);
-    TSingleton<CLogString>::GetInstance()->SetDebugLevel(11);
-    Unk_GameLog(TSingleton<CLogString>::GetInstance(), 0, 0, 1, L"==============================");
-    Unk_GameLog(TSingleton<CLogString>::GetInstance(), 0, 0, 1, L"Game Start: [build={0}] [tick={1}]", FUN_14028dbd0(),
+        GetLogString()->SetFileLevel(11);
+    GetLogString()->SetDebugLevel(11);
+    Unk_GameLog(GetLogString(), 0, 0, 1, L"==============================");
+    Unk_GameLog(GetLogString(), 0, 0, 1, L"Game Start: [build={0}] [tick={1}]", FUN_14028dbd0(),
                 GetTickCountMs2());
-    if (!TSingleton<CLogString>::GetInstance()->Start(0, THREAD_PRIORITY_LOWEST, 0, 0, 0))
+    if (!GetLogString()->Start(0, THREAD_PRIORITY_LOWEST, 0, 0, 0))
         throw Exception(CString("LogString thread failed"));
     Unk_SingletonCreator<ClientLogManager>::CreateInstance();
     m_profiler.FUN_1402e12c0("StartUp");
@@ -1631,7 +1633,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(11), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(11), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CrashManagerCli>::CreateInstance();
@@ -1723,7 +1725,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFileSystem>::CreateInstance();
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(g_nIgnorePack > 0, g_nIgnorePack) == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x29), L"", 0);
         return FALSE;
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403981d0())
@@ -1755,7 +1757,7 @@ BOOL CGameApp::InitInstance()
     TSingleton<Client::Constants>::GetInstance()->Load();
     Unk_SingletonCreator<CommonResource>::CreateInstance();
     ((class CommonResource*)(class CommonResource*)(TSingleton<CommonResource>::GetInstance()))->Load();
-    g_kInventory.FUN_140a5c8e0();
+    g_143ab2a90.FUN_140a5c8e0();
     Unk_SingletonCreator<CGraphicOptionTable>::CreateInstance();
     Unk_SingletonCreator<CGameOption>::CreateInstance();
     ((class COptimizer*)(class COptimizer*)(TSingleton<COptimizer>::GetInstance()))->LoadOptimization();
@@ -1895,7 +1897,7 @@ BOOL CGameApp::InitInstance()
     if (!TSingleton<CLuaClient>::GetInstance()->vfunc_1())
     {
         AfxMessageBox("error lua function");
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x33), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x33), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CContentShutdownManager>::CreateInstance();
@@ -1939,33 +1941,33 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
     if (!TSingleton<CDirWatcher>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x34), L"", 0);
         return FALSE;
     }
     if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
-            FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x35), L"", 0);
+            FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x35), L"", 0);
             return FALSE;
         }
     }
     Unk_SingletonCreator<CUgcDownloadDown>::CreateInstance();
     if (!TSingleton<CUgcDownloadDown>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CUgcDownloadLoad>::CreateInstance();
     if (!TSingleton<CUgcDownloadLoad>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CAsyncImageLoader>::CreateInstance();
     if (!TSingleton<CAsyncImageLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x37), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x37), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CBigDataLogSystem>::CreateInstance();
@@ -2294,8 +2296,8 @@ BOOL CGameApp::InitInstance()
     FUN_1414a3c70();
     GetClientPlatform()->vfunc_69();
     GetClientPlatform()->vfunc_70();
-    if (TSingleton<CLogString>::GetInstance())
-        TSingleton<CLogString>::GetInstance()->StopThread();
+    if (GetLogString())
+        GetLogString()->StopThread();
     FUN_1414a1e70();
     FUN_1414a48d0();
     FUN_1414a4870();

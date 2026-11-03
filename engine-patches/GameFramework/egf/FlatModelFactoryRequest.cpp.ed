@@ -5,3 +5,6 @@
     bool isReload,
     bool studioFlag)
 .
+25c
+    : AssetLoadRequest(), m_studioFlag0x68(false)  // MS2: the exe clears the studio flag
+.

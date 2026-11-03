@@ -5,6 +5,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "terrainexportscheduler.h"
 #include "ms2/client/ms2/worldservice.h"  // C3: WorldService::FUN_141bd3060
+#include "ms2/commonfiles/fielddata.h"  // CFieldData::FUN_140374090 (the field list)
 #include "hook/ms2hook.h"
 
 // @0x14183e270
@@ -16,16 +17,16 @@ void TerrainExportScheduler::FUN_14183e2c0(unsigned char select)
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     m_maps.RemoveAll();
     m_cur = 0;
-    Unk_TESMapList list;
-    list.FUN_140374090();
+    std::vector<MS2Ptr<CFieldData> > list;
+    CFieldData::FUN_140374090(list);
     int curId = WorldService::GetInstance()->FUN_141bd3060();
     int index = 0;
-    Unk_TESMapList* range = &list;
-    Unk_TESMapRecord* it = range->FUN_140704520();
-    Unk_TESMapRecord* end = range->FUN_140704540();
+    std::vector<MS2Ptr<CFieldData> >* range = &list;
+    MS2Ptr<CFieldData>* it = range->_Unchecked_begin();
+    MS2Ptr<CFieldData>* end = range->_Unchecked_end();
     for (; it != end; ++it) {
-        Unk_TESMapRecord& rec = *it;
-        int id = FUN_140300710(&rec)->id;
+        MS2Ptr<CFieldData>& rec = *it;
+        int id = rec.operator->()->m_nFieldID;
         reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&m_maps)->Add((unsigned int)id);
         if (select != 0 && curId == id)
             m_cur = index;

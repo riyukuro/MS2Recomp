@@ -150,14 +150,14 @@ class ASSlot : public ASObj { public:
 class Unk_AttendTable { public:
     bool FUN_140482280(int nKind,const bool& nDefault);
     int FUN_1409617d0(int nKind,unsigned nId,const int& nDefault);
-    MS2Ptr<CItem> FUN_140a5e2e0(unsigned nId);
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
     void* m_pad_38; void* m_pad_40; void* m_pad_48;
 };
 class GameEventUserValue;
 extern GameEventUserValue DAT_143ab2fc0;    // the event user values
-extern Unk_AttendTable g_attendItems;       // 0x143ab2a90
+class Unk_Inventory { public: MS2Ptr<CItem> FUN_140a5e2e0(int nId); };   // C3: inventory.h view
+extern Unk_Inventory g_143ab2a90;   // C3: was g_attendItems (Unk_AttendTable)
 class Unk_AttendUIMgr { public:
     virtual void p0();virtual void p1();virtual void p2();virtual void p3();virtual void p4();virtual void p5();virtual void p6();virtual void p7();
     virtual void p8();virtual void p9();virtual void p10();virtual void p11();virtual void p12();virtual void p13();virtual void p14();virtual void p15();
@@ -464,7 +464,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
             int remain=m_selected->FUN_140ce38c0()-m_selected->FUN_140ce3920();
             __int64 couponUid=0;
             if(m_selected->FUN_140ce3900()!=0) {
-                MS2Ptr<CItem> found=g_attendItems.FUN_140a5e2e0(m_selected->FUN_140ce3900());
+                MS2Ptr<CItem> found=g_143ab2a90.FUN_140a5e2e0(m_selected->FUN_140ce3900());
                 if(found.get()!=0) couponUid=found->GetItemUid();
             }
             CStringW text=LocalizedMentorFormat(strKey,*(const unsigned*)&remain,m_selected->FUN_140ce38e0());

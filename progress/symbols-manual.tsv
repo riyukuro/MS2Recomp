@@ -3291,7 +3291,7 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?Read@CSkillBookTreeTabConfig@@QEAAXPEAVCInputStream@@@Z	14026a860	func
 ?Write@CSkillBookTreeTabConfig@@QEAAXPEAVCOutputStream@@@Z	14026a6e0	func
 ?DAT_143ab2a90@@3VUnk_SkillInventory@@A	143ab2a90	data
-?g_args@@3VUnk_CmdArgMap@@A	143ae0930	data
+?g_args@@3V?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraitsI@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CDefaultCharTraits@D@2@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@A	143ae0930	data
 ?g_bits@@3UUnk_CmdBitset@@A	143ae0901	data
 ?g_strServerAddr@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ae0928	data
 ?g_strNexonSn@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ae0920	data
@@ -16951,7 +16951,7 @@ DAT_14313b9c8	14313b9c8	data
 ?FUN_140073c80@@YA_JUcri_any@@ZZ	140073c80	func
 ?FUN_14007ba60@@YA_JUcri_any@@ZZ	14007ba60	func
 ?FUN_140083350@@YA_JUcri_any@@ZZ	140083350	func
-?M2VSL_DecPicture@@YAXUcri_any@@0ZZ	140089fe0	func
+?M2VSL_DecPicture@@YAX_J_K@Z	140089fe0	func
 ?M2VMC_MacroBlock@@YAXUcri_any@@ZZ	14008a3c0	func
 ?M2VMC_Skipped@@YAXUcri_any@@0ZZ	14008a970	func
 ?M2VMC_StartFrame@@YAXUcri_any@@ZZ	14008ab40	func
@@ -17409,6 +17409,10 @@ CRICRS_Destroy	140068380	func
 CRICRS_Enter	1400683d0	func
 ?CRICRS_Leave@@YAIPEAU_RTL_CRITICAL_SECTION@@@Z	140068430	func
 CRICRS_Leave	140068430	func
+?cridlg_assert@@YAXPEBD@Z	140068280	func
+cridlg_assert	140068280	func
+?CRICRS_Create@@YA_K_JH@Z	1400682e0	func
+CRICRS_Create	1400682e0	func
 ?MPVUMC_BiDirect@@YAXPEAX@Z	142cccad0	func
 ?addSyncPoint@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@IIPEBDPEAPEAUFMOD_SYNCPOINT@@@Z	1428d8ed2	func
 ?get@?$MS2Ptr@VUnk_WsB_Marker@@@@QEBAPEAVUnk_WsB_Marker@@XZ	140d290a0	func
@@ -17435,3 +17439,10 @@ CRICRS_Leave	140068430	func
 _mkdir	1420b1a80	func
 ?DAT_142db1d84@@3IB	142db1d84	data
 ??0NiDebugVisualizationClick@@QEAA@E@Z	141e2ede0	func
+_get_startup_argv_mode	14274ab64	func
+__crt_debugger_hook	14274ab78	func
+_get_startup_commit_mode	14274aed0	func
+_get_startup_file_mode	14274aed4	func
+_get_startup_new_mode	14274aedc	func
+_get_startup_thread_locale_mode	14274aee0	func
+_should_initialize_environment	14274aee4	func

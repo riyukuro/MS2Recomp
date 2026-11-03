@@ -63,7 +63,6 @@ public:
  MS2Ptr<ASTextField> FUN_140d01e20(const CString&);
  MS2Ptr<ASMovieClip> FUN_140bc7450(const CString&);
 };
-class Unk_RewardEntryList;
 class Unk_RewardMission { public: };
 class Unk_RewardMissionPtr {
 public: ~Unk_RewardMissionPtr(); bool operator==(Unk_RewardMission*) const; Unk_RewardMission* get() const {return m_p;} Unk_RewardMission* operator->() const;
@@ -74,11 +73,11 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 CString FUN_140e1c880(const char*,const char*,const char*,const int&,const char*);
 
 class Unk_RewardOtherDialog : public UIDialog {
-public: bool FUN_140e26860(); void FUN_1419f6a70(int,CStringW,int);
+public: bool FUN_140e26860();
 };
-class UIMassiveEvent { public: void FUN_1419f6eb0(); };   // C3: member view (uimassiveevent.h), hide the panel
+class UIMassiveEvent { public: void FUN_1419f6eb0(); void FUN_1419f6a70(int,CStringW,int); };   // C3: member view (uimassiveevent.h), hide the panel
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
- CQuestManager* FUN_140764020();
+ void* FUN_140764020();
 class ASTooltip : public AScript {
 public: ASTooltip(int,int); virtual ~ASTooltip(); int ApplyTextTooltip(const CStringW&);
 private: void* m_40; void* m_48; void* m_50; void* m_58;
@@ -180,8 +179,6 @@ public:
     virtual void vfunc_26();
     virtual int vfunc_27(const char*, const Scaleform::GFx::Value*, unsigned int);
     virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
-    void FUN_1418bc790(int,int);
-    Unk_RewardActor* FUN_1418bd1d0();
     void FUN_1418ba340(int);
     int FUN_1418b9b80();
     void FUN_1418bcf60(int, unsigned short);
@@ -190,7 +187,9 @@ class UIAvatarPC : public Unk_RewardAvatar
 {
 public:
     void FUN_1418bce80(int nValue);   // C3: the real member (uiavatarbase.h)
-    UIAvatarPC(void*, bool);
+    UIAvatarPC(class PC*, bool);
+    void FUN_1418bc790(int,int);
+    class AvatarPC* FUN_1418bd1d0();
 private:
     void* m_8;
     void* m_10;
@@ -250,20 +249,18 @@ class CPartyManager;
 // @0x140e26600
 template<> inline MS2Ptr<DungeonRoom>& MS2Ptr<DungeonRoom>::operator=(int) { Release(); return *this; }
 class DungeonRoomTable;
-class Unk_RewardSound { };
 int FUN_141276180(const CString& strSound, const CString& strArg);   // C3: this was the sound name
-extern Unk_RewardSound g_unkRewardSound; // 0x143ac5988
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1409eb450(int);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_140e14d70(unsigned int);
+CStringW FUN_140e14d70(int);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff1b0(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff310(const Scaleform::GFx::Value&,CString,CString,CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&,CString,CString);
-void FUN_14141f770(CString&,unsigned int,const ATL::CAtlArray<MS2Ptr<CItem> >&,MS2Ptr<CItem>(*)(const ATL::CAtlArray<MS2Ptr<CItem> >&,int),int,int);
-MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >&,int);
+void FUN_14141f770(const CString&,int,void*,MS2Ptr<CItem>(*)(void*,int),int,int);
+MS2Ptr<CItem> FUN_141420330(void*,int);
 enum Unk_ClosingJob { Unk_ClosingJob_None };   // same enum as uidungeonclosingphotodialog.cpp (job id; StringFormat<Unk_ClosingJob> 0x140e10af0)
 class Unk_RewardPActor {
 public:
@@ -279,16 +276,6 @@ public:
  virtual CStringW vfunc_77();
  Unk_ClosingJob FUN_141654730();
 };
-class Unk_RewardEntry : public DungeonMissionCli { public: };
-class Unk_RewardEntryPtr {
-public: Unk_RewardEntryPtr(const Unk_RewardEntryPtr&); ~Unk_RewardEntryPtr(); bool operator==(Unk_RewardEntry*) const; Unk_RewardEntry* operator->() const;
-private: void* m_0; Unk_RewardEntry* m_p;
-};
-class Unk_RewardEntryList {
-public: Unk_RewardEntryList(); ~Unk_RewardEntryList(); size_t FUN_140c9f760(); Unk_RewardEntryPtr& FUN_140c9eb50(size_t);
-private: void* m_0; void* m_8; void* m_10;
-};
-CString FUN_14031c9d0(unsigned int);
 
 // @0x140e26860
 // MS2: the exe reads one byte at +0xa8, which UIDialog declares as the first pointer of a vector (m_a8); the real owner of this flag is unproven.
@@ -355,7 +342,7 @@ MS2_REPLACE_METHOD(0x140E21090, UIDungeonRewardDialog, OnLoadComplete, 2637, 0xE
 void UIDungeonRewardDialog::vfunc_67() {
  bool restore=m_restore; UIDialog::vfunc_67(); Unk_RewardOtherDialog* dialog=((class Unk_RewardOtherDialog*)FUN_140e01890(20044));
  if(dialog) { if(restore) { if(dialog->FUN_140e26860()) { dialog->vfunc_8(1);m_restore=false; } } reinterpret_cast<UIMassiveEvent*>(dialog)->FUN_1419f6eb0(); }
- FUN_140764020()->MarkField180();
+ reinterpret_cast<CQuestManager*>(FUN_140764020())->MarkField180();
 }
 MS2_REPLACE_METHOD(0x140E21B30, UIDungeonRewardDialog, vfunc_67, 145, 0x23BD740F);
 
@@ -363,7 +350,7 @@ MS2_REPLACE_METHOD(0x140E21B30, UIDungeonRewardDialog, vfunc_67, 145, 0x23BD740F
 void UIDungeonRewardDialog::vfunc_72() {
  UIDialog::vfunc_72();
  if(m_timer1.FUN_140868c00()) { const int delay=1000; m_timer1.FUN_1408687f0(); Unk_RewardOtherDialog* dialog=((class Unk_RewardOtherDialog*)FUN_140e01890(20044));
- if(dialog) dialog->FUN_1419f6a70(3,L"",delay); m_timer2.FUN_140868750(delay);
+ if(dialog) reinterpret_cast<UIMassiveEvent*>(dialog)->FUN_1419f6a70(3,L"",delay); m_timer2.FUN_140868750(delay);
  } else if(m_timer2.FUN_140868c00()) {m_timer2.FUN_1408687f0();FUN_140e23690();}
 }
 MS2_REPLACE_METHOD(0x140E21BD0, UIDungeonRewardDialog, vfunc_72, 238, 0x43986A41);
@@ -383,7 +370,7 @@ void UIDungeonRewardDialog::vfunc_25(void* p1,TPtr<Unk_UISwfEntity_25> p2,void* 
  Unk_RewardCameraData data;data.FUN_141b48530();data.f1c=300.0f;
  data.target+=actor->vfunc_18();data.eye+=data.target;reinterpret_cast<Unk_RewardCamera*>(reinterpret_cast<UIAvatarBase*>(m_avatar.operator->())->GetView().operator->())->vfunc_13(data);
  switch(m_type) {case 1:case 4:
- if(m_win)m_avatar->FUN_1418bc790(14,85);
+ if(m_win)reinterpret_cast<UIAvatarPC*>(m_avatar.operator->())->FUN_1418bc790(14,85);
  else if(reinterpret_cast<Unk_RewardIntArray*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->FUN_140191110()>0) {
  int index=FUN_140768010(static_cast<int>(reinterpret_cast<Unk_RewardIntArray*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->FUN_140191110()),0);
  reinterpret_cast<UIAvatarPC*>(m_avatar.operator->())->FUN_1418bce80(reinterpret_cast<Unk_RewardIntArray*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->FUN_140297cb0(index));
@@ -441,13 +428,13 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  if(m_1a0==0)return;
  Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
  if(mission==0)return;
- Unk_RewardEntryList entries;
- reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMissions(reinterpret_cast<std::vector<MS2Ptr<DungeonMissionCli> >&>(entries));
+ std::vector<MS2Ptr<DungeonMissionCli> > entries;
+ reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMissions(entries);
  int cur=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetScore();
  int max=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMaxScore();
  int rank=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetRank();
  {
- CString rankName=FUN_14031c9d0(rank);
+ CString rankName=GetRankName(rank);
  MS2Ptr<ASMovieClip> gauge=m_1a0->FUN_1409b4560("m_rankGauge");
  if(gauge) {
   const int fullWidth=0x126;
@@ -488,15 +475,15 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  MS2Ptr<ASTextField> total=m_1a0->FUN_1409b4620("m_missionScoreTotal");
  if(total) total->SetTextW(StringFormat(L"{0}/{1}",cur,max));
  }
- FUN_140e25dc0(entries.FUN_140c9f760());
+ FUN_140e25dc0(entries.size());
  for(size_t i=0;i<m_labels.FUN_140bd0940();i++) {
   MS2Ptr<ASMovieClip> label=m_labels.FUN_140bcc370(i);
   if(label==0)continue;
-  if(i>=entries.FUN_140c9f760()) {label->vfunc_4(false);continue;}
+  if(i>=entries.size()) {label->vfunc_4(false);continue;}
   MS2Ptr<ASTextField> name=label->FUN_1409b4620("m_missionName");
   MS2Ptr<ASTextField> score=label->FUN_1409b4620("m_missionScore");
   if(name==0||score==0)continue;
-  Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
+  MS2Ptr<DungeonMissionCli> entry=entries[i];
   if(entry==0)continue;
   name->SetTextW(entry->GetName());
   score->SetTextW(StringFormat(L"{0}/{1}",entry->GetScore(),entry->GetMaxScore()));   // StringFormat<short,short> (0x140b1f230)
@@ -538,9 +525,9 @@ MS2_REPLACE_METHOD(0x140E250E0, UIDungeonRewardDialog, FUN_140e250e0, 129, 0x950
 // @0x140e25420
 void UIDungeonRewardDialog::CreateAvatar() {
  void* actor=((Unk_RewardPActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return;
- UIAvatarPC* avatar=new UIAvatarPC(actor,false);
+ UIAvatarPC* avatar=new UIAvatarPC(static_cast<PC*>(actor),false);
  reinterpret_cast<ClonePC*>(avatar->FUN_1418bd1d0())->FUN_1410885b0(1);
- avatar->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
+ reinterpret_cast<Unk_RewardActor*>(avatar->FUN_1418bd1d0())->FUN_14165f460()->FUN_141270610();
  m_avatar=avatar;m_avatar->vfunc_1(this);
 }
 MS2_REPLACE_METHOD(0x140E25420, UIDungeonRewardDialog, CreateAvatar, 281, 0x730F075B);
@@ -590,7 +577,7 @@ void UIDungeonRewardDialog::FUN_140e22210(CInPacket& packet) {
    }
   }
  }
- if(m_win) FUN_141276180(reinterpret_cast<const CString&>(g_unkRewardSound), "");
+ if(m_win) FUN_141276180(DAT_143ac5988, "");
  FUN_140e22820(); FUN_140e22d70(); FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140E22210, UIDungeonRewardDialog, FUN_140e22210, 896, 0x03E608C4);
@@ -613,8 +600,8 @@ void UIDungeonRewardDialog::FUN_140e22820() {
   ATL::CAtlArray<MS2Ptr<CItem> > items;
   BuildRewardItems(items,m_1e8);
   FUN_14141f970(m_268);
-  MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&,int)=FUN_141420330;
-  FUN_14141f770(m_268,(unsigned)items.GetCount(),items,getter,0x415,0x800);
+  MS2Ptr<CItem> (*getter)(void*,int)=FUN_141420330;
+  FUN_14141f770(m_268,(int)items.GetCount(),(void*)&items,getter,0x415,0x800);
   ASObj obj(2);
   obj.FUN_1407cba60("bagId",m_268);
   m_30->Invoke("initRewardItemData",obj.FUN_1422bb870());
@@ -677,8 +664,8 @@ void UIDungeonRewardDialog::FUN_140e23690() {
   BuildRewardItems(items,m_1e8);
   BuildRewardItems(items,m_228);
   FUN_14141f970(m_268);
-  MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&,int)=FUN_141420330;
-  FUN_14141f770(m_268,(unsigned)items.GetCount(),items,getter,0x415,0x800);
+  MS2Ptr<CItem> (*getter)(void*,int)=FUN_141420330;
+  FUN_14141f770(m_268,(int)items.GetCount(),(void*)&items,getter,0x415,0x800);
   ASObj obj(2);
   obj.FUN_1407cba60("bagId",m_268);
   m_30->Invoke("initRewardItemData",obj.FUN_1422bb870());
@@ -737,9 +724,9 @@ MS2_REPLACE_METHOD(0x140E25840, UIDungeonRewardDialog, FUN_140e25840, 956, 0x263
 
 // @0x140e25c30
 void UIDungeonRewardDialog::BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >& out,DungeonRewardInfo& info) {
- Unk_RewardItemVec& list=info.m_28;
- Unk_RewardItemIter end=list.FUN_14041a4e0();
- for(Unk_RewardItemIter it=list.FUN_140419db0();it!=end;++it) {
+ const std::vector<ItemEntity>& list=info.m_28;
+ std::vector<ItemEntity>::const_iterator end=list.end();
+ for(std::vector<ItemEntity>::const_iterator it=list.begin();it!=end;++it) {
   ItemEntity entity(*it);
   MS2Ptr<CItem> item(new CItem);
   if(item->FUN_14052b130(entity.vfunc_o18_0(),entity.vfunc_o18_1(),0)) {

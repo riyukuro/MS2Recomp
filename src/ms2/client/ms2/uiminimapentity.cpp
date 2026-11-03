@@ -189,7 +189,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CString FUN_14192ebf0(unsigned nKind);                                  // the minimap icon of an npc function
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // a string table text by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-UIMinimapDialog* FUN_141386800();
+template <class T> T* Unk_GaGetUI();   // C3: was FUN_141386800
 CStringW FUN_140298ea0(CStringW strKey);
 CString FUN_141082150(MS2Ptr<class CQuestData> spQuest, const CString& sEpic, const CString& sWorld, const CString& sRepeat, const CString& sEvent);
 MS2Ptr<class CQuestData> FUN_14074bc40(int nQuestId);
@@ -202,7 +202,7 @@ class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_14016a730(const char* psz, int nLength);              // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // a common string
-int FUN_140408410(const ATL::CAtlArray<int>& arr, const int& n);    // the index of a value or -1
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410; the index of a value or -1
 struct Unk_PtrB;
 extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;                     // the taxi stops the player has found
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
@@ -213,7 +213,7 @@ extern int DAT_143af7d40;                                           // input ena
 class UIEnterEventFieldDialog;
 class UIDTEventDialog;
 template <class T> T* FindCliDialog(int id);   // gameeventcli.cpp
-class Unk_MmEntityEvents                                            // UIEntityEventDispatcher (FUN_140c607b0)
+class Unk_UpperEvents                                            // UIEntityEventDispatcher (FUN_140c607b0)
 {
 public:
     void FUN_1419308c0(UIEntityEventListener* pListener);           // register
@@ -735,7 +735,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
 {
     strText = m_text;
     if (spProxy->FUN_1416c2040()) {
-        UIMinimapDialog* pDialog = FUN_141386800();
+        UIMinimapDialog* pDialog = Unk_GaGetUI<UIMinimapDialog>();
         if (pDialog) {
             unsigned int nQuest = 0;
             unsigned __int64 nCharId = 0;
@@ -828,7 +828,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
     const int& nField = spPortal->FUN_14169d280();
     if (pPC->GetHomeMapId(&nHome) && nHome == nField)
         strLabel = FormatStringId<CStringW>(0x70f, pPC->GetHomeAddress());
-    UIMinimapDialog* pDialog = FUN_141386800();
+    UIMinimapDialog* pDialog = Unk_GaGetUI<UIMinimapDialog>();
     if (pDialog) {
         CStringW strBuddies;
         UIMinimapDialog::HomeListPtr spHomes = pDialog->FindHomeList(nField);
@@ -982,7 +982,7 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
     if (pPC == 0)
         return;
     int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
-    m_state = FUN_140408410(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), nField) >= 0 ? "enabled" : "disabled";
+    m_state = Unk_ArrayFind(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), nField) >= 0 ? "enabled" : "disabled";
     if (TSingleton<CTaxiManager>::GetInstance()->FUN_14085f730(nField)) {
         if (pPC->FUN_140967010()->FUN_14050da30() == 0)
             return;
@@ -1129,7 +1129,7 @@ void UIMinimapDialog::OnLoadComplete()
     FUN_141923680(1);
     FUN_141a3c150();
     FUN_141a3ced0();
-    ((class Unk_MmEntityEvents*)FUN_140c607b0())->FUN_1419308c0(this);
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);
     FUN_140bfc4b0()->FUN_141aa87c0(this);
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
@@ -1156,7 +1156,7 @@ void UIMinimapDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
-    ((class Unk_MmEntityEvents*)FUN_140c607b0())->FUN_141930950(this);
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);
     FUN_140bfc4b0()->FUN_141aa8850(this);
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
     TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d94e0(this);
@@ -3118,12 +3118,12 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
 
 class Unk_MmPvPPlayer { public: MS2Ptr<CPvPInfo> FUN_140967420(); };   // PC: the pvp info (+0x1240)
 class Unk_HsInfo : public CPtred { };   // hide and seek: the player is a seeker
-class Unk_MmPvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
-class Unk_MmPvPRank                                                 // the pvp ranking service (FUN_140f97ef0)
+class Unk_PvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
+class Unk_PvPRankService                                                 // the pvp ranking service (FUN_140f97ef0)
 {
 public:
     int FUN_1413437e0(__int64 nCharId);                             // the rank of a character
-    Unk_MmPvPRankEntry* FUN_141343810(int nRank);                   // the row of a rank
+    Unk_PvPRankEntry* FUN_141343810(int nRank);                   // the row of a rank
 };
 class CPVPManager;
 CStringW FUN_140719630(int n);
@@ -3164,9 +3164,9 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                     PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
                     if (pOther != 0) {
                         bVisible = false;
-                        int nRank = reinterpret_cast<Unk_MmPvPRank*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413437e0(nCharId);
+                        int nRank = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413437e0(nCharId);
                         if (nRank > 0) {
-                            Unk_MmPvPRankEntry* pEntry = reinterpret_cast<Unk_MmPvPRank*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
+                            Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
                             if (nRank <= 3 && pEntry != 0 && pEntry->FUN_141343860())
                                 bVisible = true;
                             if (bVisible) {

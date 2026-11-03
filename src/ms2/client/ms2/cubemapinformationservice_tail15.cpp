@@ -12,16 +12,10 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??1?$CustomAllocator@H@efd@@QEAA@XZ 0x1411234d0 ; unique
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@HPEAX@std@@@efd@@QEAA@XZ 0x1411234e0 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123510 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123520 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123530 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123540 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123550 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123560 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123570 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123580 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123590 ; prop
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235a0 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235d0 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235e0 ; prop
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235f0 ; unique
@@ -41,7 +35,6 @@
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123d70 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123d90 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123dd0 ; unique
-// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123df0 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123e10 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123e30 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123e50 ; unique
@@ -155,14 +148,9 @@
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@QEAA@XZ 0x141125ad0 ; mt7: unfolded copy (exe caller: unrecovered SaleStateData pair ??_G 0x14112d420); the Cube copy is 0x141125970
 // tplpin --simulate (w560) after the value types were corrected, hand-applied; these override the block above
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x1411239f0
-// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a50
-// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a90
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@K@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123ab0
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123d70
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123d90
-// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123db0
-// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123df0
-// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123e30
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123e50
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123f30
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123f50
@@ -236,7 +224,6 @@
 // MS2-PIN: ??1?$MessageWrapper@VEntityChangeMessage@egf@@$0CADN@@efd@@UEAA@XZ 0x141123720
 // MS2-PIN: ??1?$MS2Ptr@VFittingDollData@@@@QEAA@XZ 0x141123760 ; mt11: Release 0x141149320 (leaf 0x14112fbe0); callers FUN_1410bc3d0/FUN_1410cb4c0 and pair dtor 0x141125970
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a30
-// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a70
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHH@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124050
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HIU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHI@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124080
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x1411240b0
@@ -282,14 +269,8 @@
 // MS2-PIN: ??1?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@QEAA@XZ 0x141125a90
 // MS2-PIN: ??1?$vector@H@efd@@QEAA@XZ 0x141125cb0
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@HPEAX@std@@@efd@@QEAA@XZ 0x1411234e0
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123510
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123520
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123530
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123540
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123550
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123570
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123590
-// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235b0
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235c0
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235d0
 // MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235e0
@@ -523,3 +504,17 @@ void FUN_141125970(void* p)
 {
     Unk_CMISDestroy((MS2Ptr<Cube>*)((char*)p + 8));
 }
+// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a10 ; gp1: by its exe callers
+// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a50 ; gp1: by its exe callers
+// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a90 ; gp1: by its exe callers
+// MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a70 ; gp1: by its exe callers
+// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123db0 ; gp1: by its exe callers
+// MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123df0 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123530 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235a0 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHI@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411234f0 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123510 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123520 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123570 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x141123590 ; gp1: by its exe callers
+// MS2-PIN: ??1?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@QEAA@XZ 0x1411235b0 ; gp1: by its exe callers

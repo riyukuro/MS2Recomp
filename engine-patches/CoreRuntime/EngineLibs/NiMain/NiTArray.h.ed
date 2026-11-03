@@ -1,0 +1,6 @@
+82a
+#if defined(EE_MS2_NITARRAY_SETAT_RELOAD)
+    // MS2: SetAt with m_pBase loaded at each use (NiTArray.inl)
+    inline void MS2SetAtReload(unsigned int uiIndex, const T& element);
+#endif
+.

@@ -615,3 +615,18 @@ _vswprintf_c_l	1402e1150	func
 # expat xmltok (mt12, 11-02): the big2/little2 prologTok twins differ only in byte order; shape pairing swapped them
 little2_prologTok	1423bd750	func
 big2_prologTok	1423bf1f0	func
+?GetScriptName@ScriptFactoryRequest@egf@@QEBAAEBVutf8string@efd@@XZ	1421b53e0	func
+?_Realloc@efd@@YAPEAXPEAX_KVMemHint@1@@Z	14206acb0	func
+?SetAttachedObjectsProperty@IAttachedObjectsProperty@ecr@@IEAA_NPEBVPropertyDescriptor@egf@@@Z	142037150	func
+??0PrintDestination@efd@@QEAA@AEBVutf8string@1@_N11@Z	1420cbaf0	func
+?GetAttribute@XMLUtils@efd@@YA_NAEBVTiXmlAttributeSet@2@AEBVTiXmlString@2@AEAVutf8string@2@@Z	142116a00	func
+?GetServiceManager@IBuiltinModel@egf@@QEBAPEBVServiceManager@efd@@XZ	142171560	func
+?GetRendererString@SystemDesc@efd@@SAPEBDW4RendererID@12@@Z	1420bb500	func
+??0NetMetricsDestination@efd@@QEAA@AEBVutf8string@1@0@Z	1420cc010	func
+?NiDX9ErrorString@@YAPEADI@Z	1427f89c0	func
+??0PhysXSDKManager@efdPhysX@@IEAA@XZ	142116b30	func
+?BeginLog@DebugOutDestination@efd@@UEAAX_NPEBDN111H@Z	1420b5530	func
+?PreRenderProcessList@NiAlphaSortProcessor@@UEAAXPEBVNiVisibleArray@@AEAV2@PEAX@Z	141db18d0	func
+??$BinaryStreamSave@E@efd@@YA_NAEAVBinaryStream@0@PEBEI@Z	142802650	func
+??$NiStreamSaveBinary@E@@YA_NAEAVBinaryStream@efd@@AEAE@Z	141c319f0	func
+??_E?$SmartPointer@VNiPhysXProp@@@efd@@QEAAPEAXI@Z	141f00330	func

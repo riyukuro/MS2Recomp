@@ -92,7 +92,7 @@ class GFxService;
 class WorldService;
 namespace ecrPhysX { class PropService; }
 namespace egfPhysX { class SceneService; }
-efd::ServiceManager* FUN_1413f9850();                       // the game's service manager
+class Unk_ServiceManager* FUN_1413f9850();                   // the game's service manager
 
 template <class T> struct Unk_ServiceTickId;
 template <> struct Unk_ServiceTickId<CEffectService> { enum { ID = 0x610000c }; };
@@ -107,7 +107,7 @@ class ServiceUpdate : public NiVisualTracker::GraphCallbackObject
 public:
     virtual float TakeSample(float)
     {
-        double dTime = FUN_1413f9850()->GetServiceLastTickTime(Unk_ServiceTickId<T>::ID);
+        double dTime = reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetServiceLastTickTime(Unk_ServiceTickId<T>::ID);
         return (float)dTime;
     }
 };
@@ -190,31 +190,27 @@ public:
     unsigned FUN_141bd86a0();
     unsigned FUN_141bd86c0();
 };
-class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0af0(); };   // EntityWorldManager block/game-object entity counts, read 32-bit
-class Unk_VtmSystem                                                          // memory/system statistics
-{
-public:
-    unsigned __int64 FUN_141245b10();                                       // physical memory (MB)
-};
+class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0af0(); };   // EntityWorldManager block/game-object entity counts, read 32-bit (the real members return size_t)
+class Unk_GoGpuMgr { public: unsigned __int64 GetVideoMem(); };            // memory/system statistics (gameoption.cpp)
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-MS2SceneGraphService* FUN_1413f98b0();
+namespace ecr { class SceneGraphService; }
+ecr::SceneGraphService* FUN_1413f98b0();
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-class Unk_VtmCameraMgr : public CameraMgr { public: GameObject* FUN_140a38d60(); };
-class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
+class Unk_VtmCameraMgr : public CameraMgr { };
+class Unk_EmModelLoader { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-Unk_VtmMovie* FUN_1422bb8b0(int nLayer);
+namespace Scaleform { namespace GFx { class Movie; } }
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nLayer);
 CString FUN_141277f60(int nLayer);                                      // name of UI layer nLayer
-class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
-__int64 FUN_141245aa0(GPUManager*);
+class Unk_GoDeviceInfo { public: unsigned __int64 GetBandwidth(); };   // the memory bandwidth (gameoption.cpp)
+Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 CNetworkService* FUN_140714f90();
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
-unsigned FUN_1413d7eb0(HardwareInstancingService*);
-int FUN_1413d7e30(HardwareInstancingService*);
 unsigned int FUN_140d868f0(char*);   // C3: was FUN_140d868f0
 extern unsigned __int64 DAT_143ae0bd0;                                      // PhysX memory in use (bytes)
 extern IDirect3D9* DAT_143d6ea00;                                           // the D3D9 object
@@ -359,8 +355,8 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         if ((HardwareInstancingService*)spInstancing != 0)
         {
-            m_spInstancingGroup->FUN_14118b9b0(FUN_1413d7eb0(spInstancing.operator->()), bForce, 0);
-            m_spInstancingGrid->FUN_14118b820(FUN_1413d7e30(spInstancing.operator->()), bForce, 0);
+            m_spInstancingGroup->FUN_14118b9b0(spInstancing.operator->()->FUN_1413d7eb0(), bForce, 0);
+            m_spInstancingGrid->FUN_14118b820(spInstancing.operator->()->FUN_1413d7e30(), bForce, 0);
             m_spUseInstancing->FUN_14118bc70(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc7420(), bForce, 0);
         }
         m_spEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85a0(), bForce, 0);
@@ -376,7 +372,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         // Number of objects held by the GFx movie of each UI layer.
         for (unsigned nLayer = 0; nLayer < 7; ++nLayer)
         {
-            Unk_VtmMovie* pMovie = FUN_1422bb8b0(nLayer);
+            Unk_VtmMovie* pMovie = reinterpret_cast<Unk_VtmMovie*>(FUN_1422bb8b0(nLayer));
             if (pMovie != 0)
             {
                 if ((Unk_VtmMovieView*)pMovie->m_spView != 0 ? true : false)
@@ -393,14 +389,13 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         // Position, animation and speed of the camera target.
         if (reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
-            GameObject* pTarget = reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
+            GameObject* pTarget = reinterpret_cast<GameObject*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
             Unk_VtmMover* pMover = reinterpret_cast<Unk_VtmMover*>(efd::DynamicCast<PCBase, GameObject>(pTarget));
             if (pTarget != 0)
             {
                 NiPoint3 kPos = pTarget->vfunc_18();
                 m_spPos->FUN_14118bdc0(kPos, bForce);
-                unsigned __int64 nKey;      // the egf::EntityID 0x14123c460 fills (no constructor runs on it)
-                efd::utf8string strAnim = reinterpret_cast<Unk_VtmAnimSvc*>(FUN_141b6f910())->FUN_141206030(pTarget->FUN_14123c460(reinterpret_cast<egf::EntityID&>(nKey)));
+                efd::utf8string strAnim = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(pTarget->FUN_14123c460());
                 m_spAnim->FUN_14118bee0(strAnim, bForce);
             }
             if (pMover != 0)
@@ -430,7 +425,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             m_spSmallObject->FUN_14118b9b0(nKb, bForce, 0);
             m_spGfxSysAlloc->FUN_14118b820(nSysAllocMb, bForce, 0);
         }
-        MS2SceneGraphService* pSceneGraphs = FUN_1413f98b0();
+        MS2SceneGraphService* pSceneGraphs = reinterpret_cast<MS2SceneGraphService*>(FUN_1413f98b0());
         if (pSceneGraphs != 0)
             m_spSceneGraphCacheCount->FUN_14118b9b0(pSceneGraphs->GetCacheIdentifierCount(), bForce, 0);
         MS2AnimationService* pAssets = ((class MS2AnimationService*)FUN_1413f9b10());
@@ -682,7 +677,7 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     m_spOsName = AddDebugString(m_idSystemPage, TSingleton<COSInfo>::GetInstance()->GetFullName(), 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     {
         char szText[128];
-        unsigned __int64 nVideoMem = ((class Unk_VtmSystem*)FUN_1409f7c90())->FUN_141245b10();
+        unsigned __int64 nVideoMem = ((class Unk_GoGpuMgr*)FUN_1409f7c90())->GetVideoMem();
         float fGB = (float)nVideoMem / 1024.0f;
         sprintf_s(szText, 128, "%.1fGB", (double)fGB);
         m_spMemory = AddDebugString(m_idSystemPage, szText, 670, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
@@ -698,8 +693,8 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
         D3DADAPTER_IDENTIFIER9 kIdent;
         GetIDirect3D9()->GetAdapterIdentifier(0, 0, &kIdent);
         CString strGpu(kIdent.Description);
-        if (FUN_141245aa0(((class GPUManager*)FUN_141245b20())) != 0)
-            strGpu.Format("%s [bw:%d]", kIdent.Description, FUN_141245aa0(((class GPUManager*)FUN_141245b20())));
+        if (FUN_141245b20()->GetBandwidth() != 0)
+            strGpu.Format("%s [bw:%d]", kIdent.Description, FUN_141245b20()->GetBandwidth());
         m_spGpuName = AddDebugString(m_idSystemPage, strGpu, 780, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     }
     m_spPageFile = AddDebugString(m_idSystemPage, "PageFile(MB):", 10, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));

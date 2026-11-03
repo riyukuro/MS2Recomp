@@ -11,6 +11,12 @@
 class CubeItemInfo;
 class ObjectWeaponInfo;
 class NoticeCubeInfo;
+// Cube grid point: Unk_Int3 whose default constructor zeroes it (0x1408850a0).
+struct Unk_CubePoint : public Unk_Int3
+{
+    // @0x1408850a0
+    Unk_CubePoint() { x = 0; y = 0; z = 0; }
+};
 struct Unk_CubeTextRecord {
     Unk_CubeTextRecord() : field0(0), field10(0), field14(0) {}   // 0x1408b6b50
     int field0;
@@ -26,7 +32,11 @@ public:
     unsigned __int64 field18;
     efd::SmartPointer<egf::Entity> entity;
     Unk_PayloadPtr<CubeItemInfo> item;
-    Unk_Int3 position;
+#ifdef MS2_CUBE_POSITION_POINT
+    Unk_CubePoint position;     // Cube::Cube (ugcmapoptions): the exe zeroes it with the Unk_CubePoint ctor
+#else
+    Unk_Int3 position;          // trivial elsewhere: the by-value position args in other units don't slice
+#endif
     int field44,field48,field4c,field50,field54,field58,field5c;
     int field60,field64,field68,field6c,field70,field74,field78,field7c;
     Unk_PayloadPtr<ObjectWeaponInfo> weapon;
