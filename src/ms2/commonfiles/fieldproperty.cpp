@@ -377,38 +377,6 @@ void FieldPropertyPhotoStudio::vfunc_2(Unk_PktIn* in)
 // @0x140381c30
 int FieldPropertyPhotoStudio::vfunc_3() { return 11; }
 
-// ---- destructors: the exe's bodies only call the base destructor (no vptr store), so they are written as free functions
-// bound to the class dtor symbols through progress/symbols-manual.tsv.
-// @0x140381c40
-void FUN_140381c40(FieldProperty* p) { p->CPtred::~CPtred(); }
-// @0x140381c60
-void FUN_140381c60(FieldPropertyAmbientLight* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381c80
-void FUN_140381c80(FieldPropertyDirectionalLight* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381ca0
-void FUN_140381ca0(FieldPropertyEnableLocalCamera* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381cc0
-void FUN_140381cc0(FieldPropertyGravity* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381ce0
-void FUN_140381ce0(FieldPropertyHideMyPC* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381d00
-void FUN_140381d00(FieldPropertyLockMyPC* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381d20
-void FUN_140381d20(FieldPropertyMusicConcert* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381d40
-void FUN_140381d40(FieldPropertyPhotoStudio* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381d60
-void FUN_140381d60(FieldPropertySightRange* p) { p->FieldProperty::~FieldProperty(); }
-// @0x140381d80
-void FUN_140381d80(FieldPropertyUserTagSymbol* p)
-{
-    p->m_strB.CStringW::~CStringW();
-    p->m_strA.CStringW::~CStringW();
-    p->FieldProperty::~FieldProperty();
-}
-// @0x140381dc0
-void FUN_140381dc0(FieldPropertyWeather* p) { p->FieldProperty::~FieldProperty(); }
-
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x140380880, FieldProperty, vfunc_1, 11, 0x02239C70);
 MS2_REPLACE_METHOD(0x1403808a0, FieldProperty, vfunc_2, 11, 0x02239C70);
@@ -459,16 +427,16 @@ MS2_REPLACE_METHOD(0x140381af0, FieldPropertyEnableLocalCamera, vfunc_3, 11, 0x9
 MS2_REPLACE_METHOD(0x140381ba0, FieldPropertyPhotoStudio, vfunc_1, 53, 0xC9A5CC96);
 MS2_REPLACE_METHOD(0x140381be0, FieldPropertyPhotoStudio, vfunc_2, 60, 0x2C00C7B0);
 MS2_REPLACE_METHOD(0x140381c30, FieldPropertyPhotoStudio, vfunc_3, 11, 0xDBEC80AE);
-MS2_REPLACE(0x140381c40, FUN_140381c40, 24, 0x45893F6C);
-MS2_REPLACE(0x140381c60, FUN_140381c60, 24, 0x797F65C6);
-MS2_REPLACE(0x140381c80, FUN_140381c80, 24, 0xB80E0BA6);
-MS2_REPLACE(0x140381ca0, FUN_140381ca0, 24, 0xF3438306);
-MS2_REPLACE(0x140381cc0, FUN_140381cc0, 24, 0xF2B3A7E6);
-MS2_REPLACE(0x140381ce0, FUN_140381ce0, 24, 0xAD5FE546);
-MS2_REPLACE(0x140381d00, FUN_140381d00, 24, 0xEBEE8B26);
-MS2_REPLACE(0x140381d20, FUN_140381d20, 24, 0xB748DA86);
-MS2_REPLACE(0x140381d40, FUN_140381d40, 24, 0x6CE15FA7);
-MS2_REPLACE(0x140381d60, FUN_140381d60, 24, 0x15896987);
-MS2_REPLACE(0x140381d80, FUN_140381d80, 60, 0xCA8F9059);
-MS2_REPLACE(0x140381dc0, FUN_140381dc0, 24, 0xB8C95127);
+MS2_REPLACE_DTOR(0x140381c40, FieldProperty, 24, 0x45893F6C);
+MS2_REPLACE_DTOR(0x140381c60, FieldPropertyAmbientLight, 24, 0x797F65C6);
+MS2_REPLACE_DTOR(0x140381c80, FieldPropertyDirectionalLight, 24, 0xB80E0BA6);
+MS2_REPLACE_DTOR(0x140381ca0, FieldPropertyEnableLocalCamera, 24, 0xF3438306);
+MS2_REPLACE_DTOR(0x140381cc0, FieldPropertyGravity, 24, 0xF2B3A7E6);
+MS2_REPLACE_DTOR(0x140381ce0, FieldPropertyHideMyPC, 24, 0xAD5FE546);
+MS2_REPLACE_DTOR(0x140381d00, FieldPropertyLockMyPC, 24, 0xEBEE8B26);
+MS2_REPLACE_DTOR(0x140381d20, FieldPropertyMusicConcert, 24, 0xB748DA86);
+MS2_REPLACE_DTOR(0x140381d40, FieldPropertyPhotoStudio, 24, 0x6CE15FA7);
+MS2_REPLACE_DTOR(0x140381d60, FieldPropertySightRange, 24, 0x15896987);
+MS2_REPLACE_DTOR(0x140381d80, FieldPropertyUserTagSymbol, 60, 0xCA8F9059);
+MS2_REPLACE_DTOR(0x140381dc0, FieldPropertyWeather, 24, 0xB8C95127);
 

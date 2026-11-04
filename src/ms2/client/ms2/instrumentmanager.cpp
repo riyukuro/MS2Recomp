@@ -6,6 +6,14 @@
 // MS2-UNIT: ?\instrumentmanager.cpp
 // MS2-RANGE: 0x1400d1dd0-0x1400d1f70 .text$di
 // MS2-RANGE: 0x140d05a90-0x140d1ae30 .text$mn
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0b490 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0b620 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??$_Unfancy@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@YAPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAV12@@Z 0x140d11500 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??$forward@AEAI@std@@YAAEAIAEAI@Z 0x140d115e0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHU?$pair@HH@std@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHU?$pair@HH@std@@@std@@PEAX@2@_K@Z 0x140d198d0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@_K@Z 0x140d19900 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@_K@Z 0x140d19930 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@2@_K@Z 0x140d19960 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-RANGE: 0x142ca4940-0x142ca49f0 .text$yd
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??$Unk_ImGetDialog@VUIPlayInstrumentDialog@@@@YAPEAVUIPlayInstrumentDialog@@H@Z 0x140d0c040

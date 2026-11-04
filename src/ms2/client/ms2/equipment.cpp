@@ -240,8 +240,7 @@ class Unk_SetEffectBits
 {
 public:
     Unk_SetEffectBits();    // 0x140afed60: the exe calls cameramoveeffectparam's T = 3 ctor (Unk_CamMoveBits)
-    Unk_SetEffectBits& FUN_140314670(int nPos, bool bValue);   // Set
-    bool FUN_140314790(int nPos) const;                         // Test
+    // Set / Test are bitset.h's Unk_Bitset<3> (0x140314670 / 0x140314790), called through a cast
     // @0x1411fe0e0
     bool FUN_1411fe0e0() const                                  // Any
     {
@@ -2751,9 +2750,9 @@ void CEquipment::FUN_1411ec480(bool bForce)
                 continue;
             if ((spOld.get() ? true : false) && (spNew.get() ? true : false)) {
                 if (!spNew->FUN_1411dfcf0(spOld))
-                    changed.FUN_140314670((int)i, true);
+                    reinterpret_cast<Unk_Bitset<3>&>(changed).Set((int)i, true);
             } else {
-                changed.FUN_140314670((int)i, true);
+                reinterpret_cast<Unk_Bitset<3>&>(changed).Set((int)i, true);
             }
             if (spNew.get() != NULL)
                 nLast = (int)i;
@@ -2761,7 +2760,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
         if (nLast >= 0 && nLast < (int)m_setEffects.size()) {
             MS2Ptr<Equipment::SetEffectInfo> spLast = m_setEffects[nLast];
             if ((spLast.get() ? true : false) && spLast->m_nEffect == 0)
-                changed.FUN_140314670(nLast, true);
+                reinterpret_cast<Unk_Bitset<3>&>(changed).Set(nLast, true);
         }
     }
     if (changed.FUN_1411fe0e0()) {
@@ -2773,7 +2772,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
         } else {
             size_t nCount = effects.size();
             for (size_t i = 0; i < nCount; i++) {
-                if (!changed.FUN_140314790((int)i))
+                if (!reinterpret_cast<Unk_Bitset<3>&>(changed).Test((int)i))
                     continue;
                 FUN_1411efa00((int)i);
                 FUN_1411eaa00(effects[i]);

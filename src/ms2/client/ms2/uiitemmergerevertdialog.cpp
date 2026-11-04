@@ -78,8 +78,6 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
-void FUN_140d42b70(ItemScrollSlot* pSlot, Unk_MrDropFn fn);        // SetDropFn (the exe's delegate takes ItemScrollSlot&)
-void FUN_140d42bc0(ItemScrollSlot* pSlot, Unk_MrRemoveFn fn);      // SetRemoveFn
 
 void FUN_140710590(COutPacket&);                                    // send
 unsigned __int64 FUN_140718370(const CStringW& str);                         // the uid in the text
@@ -171,8 +169,8 @@ void UIItemMergeRevertDialog::FUN_140e4c440()
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(0));
     if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
     {
-        FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
-        FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
+        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
+        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     ASObj obj(2);
     ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 1);
@@ -194,8 +192,8 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(pItem));
     if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
     {
-        FUN_140d42bc0(pSlot, Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
-        FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
+        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
+        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
     CStringW strText = StringFormat<CStringW, CStringW>(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);

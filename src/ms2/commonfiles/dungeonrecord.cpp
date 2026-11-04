@@ -23,7 +23,6 @@ CInputStream& FUN_14070f3c0(CInputStream& in, unsigned short& value);
 CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
 
 
-CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value);
 COutputStream& FUN_14070f960(COutputStream& out, long value);
@@ -53,14 +52,14 @@ inline CInputStream& operator>>(CInputStream& in, Unk_PartyBits& bits)
 inline CInputStream& operator>>(CInputStream& in, Unk_DungeonTimedValue<unsigned char>& v)
 {
     reinterpret_cast<Unk_OSInput&>(in).Read1(v.value);
-    FUN_14070f500(in, v.expire);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(v.expire));
     return in;
 }
 // @0x14031bf80
 inline CInputStream& operator>>(CInputStream& in, Unk_DungeonTimedValue<unsigned short>& v)
 {
     FUN_14070f3c0(in, v.value);
-    FUN_14070f500(in, v.expire);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(v.expire));
     return in;
 }
 // @0x14031bfc0
@@ -201,7 +200,7 @@ void DungeonRecord::ResolveRoom()
 CInputStream& operator>>(CInputStream& in, DungeonRecord& record)
 {
     reinterpret_cast<Unk_OSInput&>(in).Read6(record.m_dungeonRoomID);
-    FUN_14070f500(in, record.m_expire);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(record.m_expire));
     reinterpret_cast<Unk_OSInput&>(in).Read1(record.m_bonusRewardCount);
     in >> record.m_clearCount;
     reinterpret_cast<Unk_OSInput&>(in).Read1(record.m_bonusCount);
@@ -241,7 +240,7 @@ CInputStream& operator>>(CInputStream& in, DungeonRankReward& reward)
 {
     reinterpret_cast<Unk_OSInput&>(in).Read6(reward.m_18);
     reinterpret_cast<Unk_OSInput&>(in).Read5(reward.m_1c);
-    FUN_14070f500(in, reward.m_20);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(reward.m_20));
     return in;
 }
 MS2_REPLACE_OVERLOAD(0x14031BE60, CInputStream&(CInputStream&, DungeonRankReward&), operator>>, 90, 0x36AC0FCE);

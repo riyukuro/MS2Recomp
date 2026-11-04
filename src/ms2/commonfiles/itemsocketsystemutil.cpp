@@ -1579,8 +1579,6 @@ CStringW FUN_1409e0970(int nStat, int nValue);
 CStringW FUN_1409e0bf0(int nStat, int nValue);
 int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned>* paSa);   // the SA types a tier grants a job
 void FUN_140222be0(ATL::CAtlArray<int>& aJobs);         // the job ids
-unsigned __int64 FUN_140186270(ATL::CAtlArray<unsigned>& a);   // GetCount
-unsigned* FUN_140184510(ATL::CAtlArray<unsigned>& a, unsigned __int64 n);   // operator[]
 class Unk_ObjTable { };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -2167,9 +2165,9 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
             CStringW strJob =
                 ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(nJob));
             CStringW strList;
-            for (unsigned k = 0; k < FUN_140186270(aSa); k++)
+            for (unsigned k = 0; k < aSa.GetCount(); k++)
             {
-                unsigned* pSa = FUN_140184510(aSa, k);
+                unsigned* pSa = &aSa[k];
                 strList.Append(StringFormat(L", {0}", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(4, *pSa)));
             }
             FUN_1406334d0(strList);

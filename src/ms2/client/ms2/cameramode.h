@@ -9,12 +9,14 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
 
+class Unk_CachedEntity;
+void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // bool property setter
+
 // The object that owns the camera modes (CCameraMode::m_pOwner); it forwards the settings to the engine camera
 // through a property bag at +0x10 (hash-keyed setters).
 class Unk_CameraPropertyBag
 {
 public:
-    void FUN_14098c6e0(unsigned int nHash, const bool& bValue);
     int FUN_1409457c0(unsigned int nHash, const float& fValue);     // egf::Entity::SetPropertyValue<float>
     int FUN_1408a20a0(unsigned int nHash, bool& bValue) const;      // egf::Entity::GetPropertyValue<bool>
 };
@@ -29,7 +31,7 @@ public:
     void FUN_140afe7c0(bool b)
     {
         if (m_10)
-            m_10->FUN_14098c6e0(0x2310d55e, b);
+            FUN_14098c6e0((Unk_CachedEntity*)m_10, 0x2310d55e, b);
     }
     // @0x140af8160
     bool FUN_140af8160()
@@ -125,7 +127,6 @@ struct Unk_FlyByCameraData
 MS2_CHECK_SIZE(Unk_FlyByCameraData, 0x80);
 
 class CCameraMode;
-class Unk_PickListPtr;                  // picked-object list (defined by the units that use it)
 
 // The camera manager singleton (0x143ab3700). Its methods are inline COMDATs of other objs.
 class Unk_CameraManager
@@ -148,7 +149,6 @@ public:
     Vector3 FUN_140a38d00();                    // m_138 (pending move input)
     void FUN_140a38d90(Vector3 pt);             // m_138 = pt
     Unk_FlyByCameraData* FUN_1412201a0();               // &m_34 (inline, ?\flybycameramode.cpp obj)
-    Unk_PickListPtr FUN_140af0850(float fX, float fY, bool b1, bool b2, bool b3, void* p);  // pick at the cursor
 private:
     Unk_CameraManager();                                // never built here (the camera manager is camera.cpp's CameraMgr)
     int m_n0[0xd];                                      // +0x00

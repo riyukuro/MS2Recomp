@@ -59,7 +59,6 @@ public:
     int FUN_141661c50();
 };
 class Unk_QuestSkill : public CPtred {};
-bool FUN_140b02900(const MS2Ptr<Unk_QuestSkill>&);
 class CEquipItem   // C3: member view for the former free stand-ins
 {
 public:
@@ -190,7 +189,7 @@ int CQuest::CheckUserFind(PCBase* actor)
     reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(skills), 2);
     for (POSITION pos = skills.GetHeadPosition(); pos; skills.GetNext(pos)) {
         MS2Ptr<Unk_QuestSkill> skill(skills.GetAt(pos));
-        if (FUN_140b02900(skill)) continue;
+        if (!reinterpret_cast<const MS2Ptr<CEquipItem>&>(skill)) continue;
         context.m_skills.Add(((class CEquipItem*)(class Unk_QuestSkill*)(skill))->FUN_1411dc820());
     }
     CQuestConditionCheckerUserFind checker;

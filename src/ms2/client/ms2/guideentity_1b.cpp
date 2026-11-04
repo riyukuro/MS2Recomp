@@ -3,6 +3,8 @@
 // item / UGC / status listener slots and the notify callbacks) and the template glue its code emits.
 // See ms2/placeholder/cguidemanager.h.
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??$destroy@H@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@HPEAX@std@@@1@QEAH@Z 0x141395c00
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@HPEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@H@std@@@1@@Z 0x1413974d0
 // MS2-UNIT: client\ms2\guideentity.cpp
 // MS2-RANGE: 0x14138a4d0-0x141398800 .text$mn
 // MS2-RANGE: 0x141399320-0x141399600 .text$mn

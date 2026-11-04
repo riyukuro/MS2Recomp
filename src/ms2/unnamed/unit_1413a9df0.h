@@ -137,8 +137,7 @@ int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void* FUN_14136f3e0(int nUIId);                    // the dialog of a ui id
 CStringA StringFormat(const char* format);
 
-struct Unk_PtrB;
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;         // the owned titles
+extern ATL::CAtlArray<unsigned int> DAT_143ab3268;         // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 
 Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem);      // builds the condition of a <condition> element

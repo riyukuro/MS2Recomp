@@ -21,12 +21,12 @@ void FUN_1411ff420(unsigned char* p, unsigned char c)
 }
 
 // @0x1411ff480
-// MS2-FUNCTIONAL: the exe compares a constant 0 against 6 (`xor eax,eax; cmp eax,6; je`), an always-false branch its
-// /Od build did not fold; cl folds the same source to `test eax,eax`. The branch is never taken either way, so the
-// emitted behaviour is identical.
+// The exe's `xor eax,eax; cmp eax,6; je; jmp` is a constant-true condition (6) with an empty then: /Od tests the
+// value against 0 and jumps over the never-taken else.
 void FUN_1411ff480(unsigned char* p)
 {
-    if (0 == 6) {
+    if (6) {
+    } else {
         p[0] = p[0] & 0x3f;
     }
 }

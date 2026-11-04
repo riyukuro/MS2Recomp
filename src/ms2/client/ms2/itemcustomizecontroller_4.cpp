@@ -201,10 +201,9 @@ int CItemPickingHelper::PickTarget(Unk_PickTarget* pTarget, const CString* pPart
 }
 
 // @0x1414194b0
-// MS2-FUNCTIONAL: byte-exact except the stack slot of the uninitialised `tri` out-param (exe: lowest slot)
 int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& skins, NiPoint3* pHit)
 {
-    unsigned __int64 tri;
+    float tri;                                  // CMeshUVPicker::PickUVAndPosition writes a float (float* pIndex)
     m_spMesh.FUN_141418a00(0);
     if (pMesh == 0)
         return 0;
@@ -220,7 +219,7 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     efd::Point3 hit;
     efd::Point3 normal;
     NiPoint2 uv;
-    if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera(), xy.x, xy.y, &hit, &normal, &uv, &tri, &skins))
+    if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera(), xy.x, xy.y, &hit, &normal, &uv, reinterpret_cast<unsigned __int64*>(&tri), &skins))
     {
         if (pHit != 0)
             *pHit = *(NiPoint3*)&hit;

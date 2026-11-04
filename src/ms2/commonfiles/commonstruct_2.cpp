@@ -18,6 +18,7 @@
 #include "ms2/commonfiles/clientreconnectionstructs.h"
 #include "ms2/commonfiles/commonpricerecord.h"
 #include "ms2/placeholder/tptrvalue.h"
+#include "ms2/placeholder/packetlogqueue.h"
 #include "ms2/fmt/format.h"
 #include <list>
 #include <map>
@@ -107,7 +108,7 @@ void FUN_140276aa0(i64, i64, i64, Unk_StlTag); void FUN_140276d40(i64, i64, i64,
 i64 FUN_140278710(i64); i64 FUN_140278750(i64);
 
 // @0x14027b320
-i64 FUN_14027b320(i64 first, i64 last, i64 dest, i64 al)
+i64 FUN_14027b320(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
     Unk_BackoutB bo(dest, al);
     for (; first != last; first += 0x30)
@@ -236,17 +237,16 @@ void FUN_14027bb80(i64*, i64) {}
 
 // virtual-destructor element destroy (slot 0 = scalar deleting dtor, called with flag 0)
 struct Unk_VDtor { virtual ~Unk_VDtor(); };
-void FUN_140164fb0(i64, int); void FUN_14027f8b0(i64, int); void FUN_14027f8f0(i64, int); void FUN_14027f930(i64, int);
 // @0x14027bb90
 void FUN_14027bb90(i64 al, Unk_VDtor* p) { p->~Unk_VDtor(); }
 // @0x14027bbc0
-void FUN_14027bbc0(i64 al, i64 p) { FUN_140164fb0(p, 0); }
+void FUN_14027bbc0(i64 al, i64 p) { reinterpret_cast<CStringA*>(p)->~CStringT(); }
 // @0x14027bbe0
-void FUN_14027bbe0(i64 al, i64 p) { FUN_14027f8b0(p, 0); }
+void FUN_14027bbe0(i64 al, i64 p) { reinterpret_cast<PIng*>(p)->~PIng(); }
 // @0x14027bc00
-void FUN_14027bc00(i64 al, i64 p) { FUN_14027f8f0(p, 0); }
+void FUN_14027bc00(i64 al, i64 p) { reinterpret_cast<MS2Ptr<CPtred>*>(p)->~MS2Ptr(); }
 // @0x14027bc20
-void FUN_14027bc20(i64 al, i64 p) { FUN_14027f930(p, 0); }
+void FUN_14027bc20(i64 al, i64 p) { reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(p)->~MS2Ptr(); }
 
 i64 FUN_140277600(i64, i64, Unk_StlTag); i64 FUN_140277630(i64, i64, Unk_StlTag); i64 FUN_140277660(i64, i64, Unk_StlTag);
 // @0x14027bc40
@@ -674,10 +674,9 @@ Unk_PairHolder* FUN_14027d750(Unk_PairHolder* t) noexcept { FUN_14027d2e0(t); re
 struct CAdditionalEvent;
 struct Unk_ListB : Unk_List { ~Unk_ListB() throw(); };
 // ATL::CAtlList dtors: RemoveAll(), then the (empty) ATLASSERT do-while
-void FUN_140284b30(void*);   // CAtlList<MS2Ptr<CUserLimitHistory>>::RemoveAll: FreeNode needs a ~MS2Ptr<CUserLimitHistory> with no row
 struct Unk_ListA : Unk_List { ~Unk_ListA() throw(); };
 // @0x14027de70
-Unk_ListA::~Unk_ListA() throw() { FUN_140284b30(this); do {} while (0); }
+Unk_ListA::~Unk_ListA() throw() { reinterpret_cast<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>*>(this)->RemoveAll(); do {} while (0); }
 // @0x14027de90
 Unk_ListB::~Unk_ListB() throw() { reinterpret_cast<ATL::CAtlList<Unk_AdditionalEventValue>*>(this)->RemoveAll(); do {} while (0); }
 
@@ -749,14 +748,9 @@ Unk_Z16i* FUN_14027dcb0(Unk_Z16i* t) { t->a = 0; t->b = 0; t->c = 0; t->d = 0; r
 // @0x14027dcf0
 Unk_V3* FUN_14027dcf0(Unk_V3* t, const Unk_V3* o) { *t = *o; return t; }
 
-// ATL::CAtlArray dtors: if (m_pData) { CallDestructors(m_pData, m_nSize); free(m_pData); }
-void FUN_140280970(void*, u64); void FUN_1402809b0(void*, u64);
-struct Unk_AtlArrP { void* data; u64 size; u64 cap; int grow; ~Unk_AtlArrP() throw(); };
-struct Unk_AtlArrL { void* data; u64 size; u64 cap; int grow; ~Unk_AtlArrL() throw(); };
-// @0x14027ddf0
-Unk_AtlArrP::~Unk_AtlArrP() throw() { if (data) { FUN_140280970(data, size); ::free(data); } }
-// @0x14027de30
-Unk_AtlArrL::~Unk_AtlArrL() throw() { if (data) { FUN_1402809b0(data, size); ::free(data); } }
+// ATL::CAtlArray dtors (the ATL header body), emitted by FUN_14027e920 and MS2_EmitImplicitDtors_commonstruct2 below
+// MS2-PIN: ??1?$CAtlArray@UUnk_Z16i@@V?$CElementTraits@UUnk_Z16i@@@ATL@@@ATL@@QEAA@XZ 0x14027ddf0
+// MS2-PIN: ??1?$CAtlArray@UUnk_CommonPacketLogEntry@@V?$CElementTraits@UUnk_CommonPacketLogEntry@@@ATL@@@ATL@@QEAA@XZ 0x14027de30
 
 // ---- ItemAble / ItemEntity inline COMDATs of the exe ----
 // MS2-PIN: ??0ItemAble@@QEAA@AEBU0@@Z 0x14027db90
@@ -901,8 +895,10 @@ void FUN_14027e800(CPtred* t) { t->CPtred::~CPtred(); }
 void FUN_14027e870(CPtred* t) { t->CPtred::~CPtred(); }
 // The CPtred-derived dtors below are implicit (the exe stores no vptr). This slice owns their VAs but not the
 // ctors, so odr-use them here to make cl emit the COMDATs; the helper itself is never called.
-void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, ChangeableProductInfo* p1, HomeBlockInfo* p2, ItemDropItemLife* p3, NpcShopItemLife* p4)
+void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, ChangeableProductInfo* p1, HomeBlockInfo* p2, ItemDropItemLife* p3, NpcShopItemLife* p4,
+    ATL::CAtlArray<Unk_CommonPacketLogEntry>* p5)
 {
+    p5->ATL::CAtlArray<Unk_CommonPacketLogEntry>::~CAtlArray();
     p0->CUserChangeableItemHistory::~CUserChangeableItemHistory();
     p1->ChangeableProductInfo::~ChangeableProductInfo();
     p2->HomeBlockInfo::~HomeBlockInfo();
@@ -917,9 +913,9 @@ void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, Changea
 struct Unk_DtArr38 : CPtred { i64 pad[4]; i64 arr[1]; };
 // @0x14027e640
 void FUN_14027e640(Unk_DtArr38* t) { reinterpret_cast<ArrI64*>(&t->arr)->ArrI64::~ArrI64(); t->CPtred::~CPtred(); }
-struct Unk_DtArr20 : CPtred { i64 pad; Unk_AtlArrP arr; };
+struct Unk_DtArr20 : CPtred { i64 pad; ATL::CAtlArray<Unk_Z16i> arr; };
 // @0x14027e920
-void FUN_14027e920(Unk_DtArr20* t) { t->arr.Unk_AtlArrP::~Unk_AtlArrP(); t->CPtred::~CPtred(); }
+void FUN_14027e920(Unk_DtArr20* t) { t->arr.ATL::CAtlArray<Unk_Z16i>::~CAtlArray(); t->CPtred::~CPtred(); }
 struct Unk_DtSk28 : CPtred { i64 pad[1]; CStringW s; char cfg[8]; };
 // @0x14027e720
 void FUN_14027e720(Unk_DtSk28* t) { FUN_14027deb0(&t->cfg); t->s.CStringW::~CStringW(); t->CPtred::~CPtred(); }

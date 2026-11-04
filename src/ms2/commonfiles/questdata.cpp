@@ -106,7 +106,7 @@
 // The exe's Reference takes the typed pointer (the CPtred base sits at +0), so these pass it straight through.
 #define MS2_QUEST_SOCKETPTR_IMPL(T) \
     template<> void Unk_SocketPtr<T>::AddRefImpl(void*) const { Reference(p); } \
-    template<> void Unk_SocketPtr<T>::ReleaseImpl(void*) { if (FUN_140159bc0(p) == 0) { Reference(p); FUN_140159ba0(p); } }
+    template<> void Unk_SocketPtr<T>::ReleaseImpl(void*) { if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); } }
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::GroupPickData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationTarget)

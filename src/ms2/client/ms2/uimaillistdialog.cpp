@@ -20,6 +20,7 @@
 #include "ms2/placeholder/ascorelist.h"
 
 #include "uimaillistdialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 
 #include <stdlib.h>
 #include <algorithm>
@@ -91,8 +92,6 @@ public:
 class Unk_MlButton : public ASMovieClip { public: };
 // "m_checkAll".
 class Unk_MlCheckBox : public ASButton { public: };
-// "m_tab".
-class Unk_MlTab : public ASDisplayObject { };
 
 class Unk_PopupMenuInfo
 {
@@ -166,10 +165,8 @@ class Unk_MlWedding { public: void FUN_141b873c0(Unk_MailPtr<CMailInfo> spMail, 
 // ---- UIMailSendDialog's views ----
 
 // "m_receiver" / "m_title": the text inputs (the receiver one gets the name candidates).
-// "m_buddys": the buddy name dropdown (an AS component like m_list: slot 24 refreshes it).
-class Unk_MsCombo : public ASScrollingList
-{
-};
+// "m_buddys": the buddy name dropdown (slot 24 refreshes it).
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 // The send request (receiver, title, content), written by FUN_1401fc2a0 (three wide strings).
 struct Unk_MailSendInfo
 {
@@ -179,7 +176,6 @@ struct Unk_MailSendInfo
 };
 void FUN_1401fc2a0(unsigned char* payload, COutputStream& stream);   // unit_1401f9eb0.h
 // CommonString as the send dialog calls it: the ban word checker.
-CommonString* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr);   // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
@@ -764,8 +760,8 @@ MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, FUN_1419e73f0, 225, 0x8A7532B9
 // @0x1419e7fd0
 int UIMailListDialog::FUN_1419e7fd0()
 {
-    if (MS2Ptr<Unk_MlTab> spTab = FUN_140c02870("m_tab"))
-        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        return spTab.operator->()->GetSelectedIndex();
     return -1;
 }
 MS2_REPLACE_METHOD(0x1419E7FD0, UIMailListDialog, FUN_1419e7fd0, 166, 0x6BAF5A08); // FUN_1419e7fd0
@@ -1569,15 +1565,15 @@ MS2_REPLACE_METHOD(0x1419ecbf0, UIMailSendDialog, FUN_1419ecbf0, 1036, 0x5596C3D
 // @0x1419ed010
 void UIMailSendDialog::FUN_1419ed010()
 {
-    if (MS2Ptr<Unk_MsCombo> spCombo = FUN_140c28560("m_buddys"))
+    if (MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_buddys"))
     {
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->ClearItems();
+        spCombo->ClearItems();
         ATL::CAtlArray<CBuddyManager::Ptr> buddies;
         CBuddyManager::GetInstance()->GetAllBuddies(buddies);
         for (size_t i = 0; i < buddies.GetCount(); i++)
         {
             CBuddyManager::Ptr spBuddy = buddies[i];
-            reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemLabel(spBuddy->FUN_1401cc1c0());
+            spCombo->AddItemLabel(spBuddy->FUN_1401cc1c0());
         }
         spCombo->vfunc_24(true);
     }
@@ -1611,7 +1607,7 @@ void UIMailSendDialog::OnSend()
         FUN_141275260(0x244, 1, 1);
         return;
     }
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
     {
         CStringW strMessage;
         if (pChecker->CheckMailTitleText(info.m_strTitle, strMessage) != 0 ||
@@ -1646,7 +1642,7 @@ void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
                 strTitle = spField->GetTextW();
         }
     }
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         pChecker->FilterReservedWords(strTitle);
 }
 MS2_REPLACE_METHOD(0x1419ed4e0, UIMailSendDialog, FUN_1419ed4e0, 456, 0x8C5487D1); // FUN_1419ed4e0
@@ -1658,7 +1654,7 @@ void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
         return;
     strContent = XmlWide(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(m_30->Invoke("getContent")))->GetString());
     CBanTextChecker* pChecker;
-    CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
+    CBanTextChecker* pDead = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
     if (pChecker != 0)
         pChecker->FilterReservedWords(strContent);
 }

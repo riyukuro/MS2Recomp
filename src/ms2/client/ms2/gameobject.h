@@ -155,7 +155,7 @@ public:
     float GetScaleAC();                                  // 0x14123c2e0 m_fScaleAC
     void FUN_14123c330(float f);                            // 0x14123c330 m_fScaleA8 = f
     efd::Point3 FUN_14123c360();                            // 0x14123c360 m_pos98 (trivial copy)
-    void SetKEntityID(const egf::EntityID& kId);           // 0x14123c3e0 m_kEntityID = kId
+    void SetKEntityID(egf::EntityID kId);                  // 0x14123c3e0 m_kEntityID = kId
     void FUN_14123c430(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
     unsigned __int64 FUN_14123c500();                       // 0x14123c500 entity id value
     void SetKeepVisibleForBGTransparency(bool b);                             // 0x14123c680 join/leave the update list

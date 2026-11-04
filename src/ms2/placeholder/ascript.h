@@ -330,7 +330,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Unk_MouseCursorType a1);      // 0x1422cef80 (inline COMDAT, defined in asmousecursor.cpp; an Int value)
     void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value; aslistitemrenderer.cpp)
     // ASUIComponent (asuicomponent.cpp)
-    void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value (v by value; ASObj declares the same COMDAT)
+    void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value (v by value; asbilldata.cpp)
     Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);   // 0x140e262c0 Invoke with one string argument
     void FUN_1418adf60(const char* szName, AScript obj);                 // set a member to an AS object (obj by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_141311f50(const CString& strName);  // child by name (0x141311f50 for T = AScript)
@@ -340,7 +340,7 @@ public:
     template <class T> MS2Ptr<T> FUN_1422e5780(const CString& strName, MS2Ptr<T>& out);   // bind a child (inline COMDAT, defined in asloader.cpp for T = ASEventDispatcher)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASURLRequest a1);  // 0x1422e5810 (inline COMDAT, defined in asloader.cpp; a1 by value: the callee destroys it)
     // ASTileList (gfxui/astilelist.cpp)
-    void FUN_140e06d60(const char* szName, double d);                    // set a double member (ASObj declares the same COMDAT)
+    void FUN_140e06d60(const char* szName, double d);                    // set a double member (uichaosdpsdialog.cpp)
     Scaleform::GFx::Value FUN_140caf140(const char* szMethod, ASArray a1);   // 0x140caf140 Invoke with an AS array (a1 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_1422de460(const CString& strName);  // child object by name (inline COMDAT, defined in ascorelist.cpp for T = ASDataProvider)
 

@@ -13,12 +13,9 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_14086e8d0(const char* pszName);     // first child element
-    Unk_140165cf0* FUN_14086e7e0(const char* pszName);     // next sibling element
-};
+class Unk_140165cf0;
+class TiXmlElement;
+class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -50,7 +47,7 @@ inline int ReadTicketTagAttr(Unk_140165cf0* pElem, const char* pszName, unsigned
 inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned>& rOut)
 {
     int nCount = 0;
-    for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild; pChild = pChild->FUN_14086e7e0(pszName))
+    for (Unk_140165cf0* pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pElem)->FirstChildElement(pszName); pChild; pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pChild)->NextSiblingElement(pszName))
     {
         unsigned nValue;
         XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<unsigned int&>(nValue));

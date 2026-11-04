@@ -82,8 +82,6 @@ class Unk_CommandArgs { public: int FUN_1408d1f60(unsigned int, int); };
 typedef Delegate<void(ItemScrollSlot&)> SsRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> SsDropFn;
 typedef Delegate<bool(int, const CMsgBoxData&)> SsMsgBoxFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, SsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, SsDropFn fn);        // ItemScrollSlot::SetDropFn
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -219,8 +217,8 @@ void UIItemSocketScrollDialog::OnLoadComplete()
     ItemScrollSlot* pSlot = FUN_140f65ab0(CString(m_strSlot));
     if (pSlot != 0)
     {
-        FUN_140d42bc0(pSlot, SsRemoveFn(this, &UIItemSocketScrollDialog::FUN_140f650a0));
-        FUN_140d42b70(pSlot, SsDropFn(this, &UIItemSocketScrollDialog::FUN_140f65130));
+        pSlot->SetRemoveFn(SsRemoveFn(this, &UIItemSocketScrollDialog::FUN_140f650a0));
+        pSlot->SetDropFn(SsDropFn(this, &UIItemSocketScrollDialog::FUN_140f65130));
     }
     CStringW strNotice;
     CStringW strDesc;

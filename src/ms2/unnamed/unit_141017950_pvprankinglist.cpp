@@ -39,6 +39,8 @@
 #include "ms2/client/ms2/uipvpresultdialog.h"
 #include "ms2/commonfiles/packet.h"
 #include "ms2/commonfiles/pvpinfo.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/fittingdollpc.h"     // PC::FUN_140967420 (MS2Ptr<CPvPInfo>)
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
@@ -69,18 +71,6 @@ class Unk_PvpWorld                                                  // the world
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
 };
-
-// The player's PvP info proxy (PC method 0x140967420): operator-> 0x140965970, release 0x140964aa0.
-class Unk_PvInfoPtr
-{
-public:
-    ~Unk_PvInfoPtr() { FUN_140964aa0(); }
-    CPvPInfo* FUN_140965970() const;                                // operator->
-    void FUN_140964aa0();                                           // release
-    void* m_pad_00;
-    CPvPInfo* m_p;
-};
-class Unk_PvActor { public: Unk_PvInfoPtr FUN_140967420(); };
 
 class UIObject;
 class Unk_PvpUiService                                              // the UI service
@@ -116,11 +106,11 @@ static CString s_stun("stun");
 static char s_marker[0x48];
 static Unk_PvpMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cab370), Unk_PvpMarker());
 
-void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142cab370
-void FUN_142cab370() { FUN_1402aa1d0(s_marker); }
+void FUN_142cab370() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // ---- the rank map and rows ----
@@ -249,12 +239,12 @@ Unk_PvpTimerItem* Unk_PvpTimer::FUN_141017fb0(int nRank)
 // @0x141018010
 void Unk_PvpTimer::FUN_141018010()
 {
-    Unk_PvActor* pPC = (Unk_PvActor*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPC = (PC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (pPC->FUN_140967420().FUN_140965970()->m_nMode == 2)
+    if (pPC->FUN_140967420()->m_nMode == 2)
         std::sort(m_items.begin(), m_items.end(), FUN_141018720);
-    else if (pPC->FUN_140967420().FUN_140965970()->m_nMode == 5)
+    else if (pPC->FUN_140967420()->m_nMode == 5)
         std::sort(m_items.begin(), m_items.end(), FUN_141018870);
     m_ranks.RemoveAll();
     for (size_t i = 0; i < m_items.size(); ++i)

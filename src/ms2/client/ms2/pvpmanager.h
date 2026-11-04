@@ -7,6 +7,7 @@
 #pragma once
 
 #include <afx.h>
+#include <atlcoll.h>
 #include <map>
 #include <vector>
 
@@ -15,7 +16,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/cpvprankduelcomponent.h"
 
-// The notice timer (0x48 bytes). Its worker functions live in the neighbouring unit (unit_141017950).
+// The notice timer (0x48 bytes): its layout and functions are ATL::CAtlMap<unsigned __int64, int>'s. Its worker functions live in the neighbouring unit (unit_141017950).
 class Unk_PvpTimer
 {
 public:
@@ -35,13 +36,11 @@ public:
         m_40 = 0;
         FUN_1412818f0(fA, fB, fC, false);
     }
-    ~Unk_PvpTimer() noexcept(false) { try { FUN_14101ac20(); } catch (...) {} }         // 0x1412814e0
+    ~Unk_PvpTimer() noexcept(false) { try { reinterpret_cast<ATL::CAtlMap<unsigned __int64, int>&>(*this).RemoveAll(); } catch (...) {} }         // 0x1412814e0
 
     void FUN_1412818f0(float fA, float fB, float fC, bool bApply);      // 0x1412818f0
     void FUN_14101af70();
     unsigned FUN_14101a900(unsigned __int64 nValue);
-    void FUN_14101a9f0(unsigned nIndex);
-    void FUN_14101ac20();
     void FUN_141017e80();                                               // clear
     int FUN_141017f40(__int64 nCharId);                                 // the rank of a character
     int FUN_141017f80();                                                // the row count

@@ -181,7 +181,6 @@ public:
     unsigned int FUN_1416630c0();                       // tgp
     unsigned int FUN_14165ffe0();                       // return user state
     unsigned int FUN_141660030();                       // birthday
-    unsigned char FUN_1415275b0(unsigned short nId);    // burning
     unsigned short FUN_141663b50();                     // survival level
     int GetGmGrade();                                // the gm grade (member +0x11c8)
 private:

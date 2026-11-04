@@ -22,7 +22,6 @@ class ASObj;
 class CInPacket;
 class CMsgBoxData;
 class CQuest;
-class Unk_QdTabBar;
 class ASScrollingList;
 class Unk_QdInfo;
 class Unk_QdCheck;
@@ -111,7 +110,6 @@ public:
     TPtrValue<QuestFlags> GetFlags(int nChapter);               // 0x141aa25a0
 
     // child lookups (one COMDAT per wrapper class; defined in other units)
-    MS2Ptr<Unk_QdTabBar> FUN_140c02870(const CString& strName);    // tab strips
     MS2Ptr<Unk_QdInfo> FUN_140c02990(const CString& strName);      // "m_questInfo"
     MS2Ptr<Unk_QdCheck> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
 

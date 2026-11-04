@@ -119,7 +119,7 @@ class ASDropdownMenu : public ASButton
 public:
     ASDropdownMenu(const Scaleform::GFx::Value& v, int nMovieId);      // 0x1422df570
     virtual ~ASDropdownMenu();
-    void FUN_1422df5f0(int nRowCount);                                  // the number of visible rows
+    void SetMenuRowCount(unsigned nRowCount);                           // 0x1422df5f0 the number of visible rows
     void SetSelectedIndex(int nIndex);                                     // select an entry
     int GetSelectedIndex();                                                // the selected entry
     // Registers the selection-change callback; pUser comes back in Params::pUserData.

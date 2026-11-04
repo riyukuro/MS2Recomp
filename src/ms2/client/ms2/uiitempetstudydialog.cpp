@@ -69,8 +69,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
 typedef Delegate<void(ItemScrollSlot&)> PsRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> PsDropFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, PsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, PsDropFn fn);        // ItemScrollSlot::SetDropFn
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -142,8 +140,8 @@ void UIItemPetStudyDialog::OnLoadComplete()
     ItemScrollSlot* pSlot = FUN_140e559c0(m_strSlot);
     if (pSlot != 0)
     {
-        FUN_140d42bc0(pSlot, PsRemoveFn(this, &UIItemPetStudyDialog::FUN_140e55f10));
-        FUN_140d42b70(pSlot, PsDropFn(this, &UIItemPetStudyDialog::FUN_140e55f90));
+        pSlot->SetRemoveFn(PsRemoveFn(this, &UIItemPetStudyDialog::FUN_140e55f10));
+        pSlot->SetDropFn(PsDropFn(this, &UIItemPetStudyDialog::FUN_140e55f90));
     }
     m_spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
     if (m_spBox == 0)

@@ -126,7 +126,7 @@ void AddSeconds(CMsTime& time, int seconds);
 CMsTime AddByUnit(int unit, const CMsTime& time, long amount);
 __time64_t GetWeekdayStart(CMsTime& time, int weekday);
 __int64 PositiveDifference(__int64 from, __int64 to);
-bool IsEarlierDay(CMsTime& a, CMsTime& b, int baseHour);
+bool IsEarlierDay(CMsTime a, CMsTime b, int baseHour);   // by value: callers pass copy temps
 bool IsEarlierHourlessDay(CMsTime& a, CMsTime& b);
 bool IsFutureTime(__int64 time);
 int IsNotRecentDayChange(__int64 time);

@@ -4,6 +4,8 @@
 // MS2-UNIT: unit_1400e5dd0
 // MS2-RANGE: 0x1400e5dd0-0x1400e6230 .text$di
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400e5ef0
+// MS2-PIN: ??__EkEVT_INVALID@egf@@YAXXZ 0x1400e5fc0
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"

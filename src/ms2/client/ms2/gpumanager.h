@@ -123,8 +123,6 @@ public:
 };
 MS2_CHECK_SIZE(NvidiaGPU, 0xb0);
 
-int FUN_140392040(char* buf, size_t size, const char* fmt, ...);
-
 class GPUManager : public TSingleton<GPUManager> {
 public:
     GPUManager();                                       // 0x141375250

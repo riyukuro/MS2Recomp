@@ -8,17 +8,17 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+#include <efd/Color.h>
 
 class MyPC;
 class PC;
-namespace efd { class Color; }
 
-// 12-byte appearance record (two per character: the two equip colour slots); default ctor 0x1409f72f0.
-struct Unk_CharEquip
+// 12-byte appearance record (two per character: the two equip colour slots); default ctor 0x1409f72f0. It is the exe's
+// NiColor (an efd::Color); the ctors are defined under this name, so the stand-in stays and derives from efd::Color.
+struct Unk_CharEquip : public efd::Color
 {
     Unk_CharEquip();                                        // 0x1409f72f0
     Unk_CharEquip(const efd::Color& kColor);                // 0x140a0a3a0 (NiColor(const efd::Color&))
-    int m_a, m_b, m_c;
 };
 MS2_CHECK_SIZE(Unk_CharEquip, 0xc);
 

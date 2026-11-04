@@ -156,7 +156,7 @@ CStringW StringFormat(const wchar_t*);
 void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 __int64 GetServerTime();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-bool FUN_14086ab70(CMsTime, CMsTime, int);
+bool IsEarlierDay(CMsTime, CMsTime, int);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
 int FUN_141276180(const CString&, const CString&);
 
 // ---- the scalar / index codecs of the delegate user data (the exe keeps the index in the data pointer) ----
@@ -498,7 +498,7 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x140bafbc0
 void UIBingoEventDialog::vfunc_72()
 {
-    if (FUN_14086ab70(CMsTime(m_time), CMsTime(GetServerTime()), 0))
+    if (IsEarlierDay(CMsTime(m_time), CMsTime(GetServerTime()), 0))
     {
         m_time = CMsTime(GetServerTime());
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, FUN_14025e7a0()->Localize("$s_bingo_event_change_day"), 0, CStringW(L""));

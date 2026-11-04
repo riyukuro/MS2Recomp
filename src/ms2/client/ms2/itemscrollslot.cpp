@@ -29,29 +29,12 @@ void Unk_140657820();                                   // invalid call of an em
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 
 // The Delegate member bodies used here (shared layout: one heap implementation; vftable 1 clone, 2 invoke).
-template<> inline Delegate<void(ItemScrollSlot*, DragSlot*)>::~Delegate()
+template<> inline Delegate<void(ItemScrollSlot&, DragSlot*)>::~Delegate()
 {
     if (m_pImpl)
         delete m_pImpl;
 }
-template<> inline Delegate<void(ItemScrollSlot*, DragSlot*)>& Delegate<void(ItemScrollSlot*, DragSlot*)>::operator=(const Delegate& o)
-{
-    if (this == &o)
-        return *this;
-    if (m_pImpl)
-        delete m_pImpl;
-    if (o.m_pImpl == 0)
-        m_pImpl = 0;
-    else
-        m_pImpl = o.m_pImpl->vfunc_1();
-    return *this;
-}
-template<> inline Delegate<void(ItemScrollSlot*)>::~Delegate()
-{
-    if (m_pImpl)
-        delete m_pImpl;
-}
-template<> inline Delegate<void(ItemScrollSlot*)>& Delegate<void(ItemScrollSlot*)>::operator=(const Delegate& o)
+template<> inline Delegate<void(ItemScrollSlot&, DragSlot*)>& Delegate<void(ItemScrollSlot&, DragSlot*)>::operator=(const Delegate& o)
 {
     if (this == &o)
         return *this;
@@ -63,13 +46,30 @@ template<> inline Delegate<void(ItemScrollSlot*)>& Delegate<void(ItemScrollSlot*
         m_pImpl = o.m_pImpl->vfunc_1();
     return *this;
 }
-template<> inline void Delegate<void(ItemScrollSlot*)>::operator()(ItemScrollSlot* a1) const
+template<> inline Delegate<void(ItemScrollSlot&)>::~Delegate()
+{
+    if (m_pImpl)
+        delete m_pImpl;
+}
+template<> inline Delegate<void(ItemScrollSlot&)>& Delegate<void(ItemScrollSlot&)>::operator=(const Delegate& o)
+{
+    if (this == &o)
+        return *this;
+    if (m_pImpl)
+        delete m_pImpl;
+    if (o.m_pImpl == 0)
+        m_pImpl = 0;
+    else
+        m_pImpl = o.m_pImpl->vfunc_1();
+    return *this;
+}
+template<> inline void Delegate<void(ItemScrollSlot&)>::operator()(ItemScrollSlot& a1) const
 {
     if (m_pImpl == 0)
         Unk_140657820();
     m_pImpl->vfunc_2(a1);
 }
-template<> inline void Delegate<void(ItemScrollSlot*, DragSlot*)>::operator()(ItemScrollSlot* a1, DragSlot* a2) const
+template<> inline void Delegate<void(ItemScrollSlot&, DragSlot*)>::operator()(ItemScrollSlot& a1, DragSlot* a2) const
 {
     if (m_pImpl == 0)
         Unk_140657820();
@@ -105,7 +105,7 @@ int ItemScrollSlot::vfunc_17()
 {
     SetItem(MS2Ptr<CItem>(0));
     if (!m_fnRemove.IsNull())
-        m_fnRemove(this);
+        m_fnRemove(*this);
     return vfunc_10();
 }
 
@@ -113,7 +113,7 @@ int ItemScrollSlot::vfunc_17()
 int ItemScrollSlot::vfunc_18(void* p)
 {
     if (!m_fnDrop.IsNull())
-        m_fnDrop(this, static_cast<DragSlot*>(p));
+        m_fnDrop(*this, static_cast<DragSlot*>(p));
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
 

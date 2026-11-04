@@ -73,7 +73,7 @@ static CString s_strStun2 = "stun";
 
 class ASDialog : public ASDisplayObject {};
 // "m_inputSearch": the search text input.
-class Unk_DaInput : public ASTextInput { };   // C3: AddChangeHandler and the ASUIComponent focus pair are inherited
+class Unk_CoupleInput : public ASTextInput {};          // the MS2Ptr<T>::AssignRaw twin at 0x140bf1810 (as in uicoupleactiondialog)
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
@@ -190,7 +190,7 @@ void UIDynamicActionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0) {
-        Unk_DaInput* pInput = m_30->FUN_140bbe940<Unk_DaInput>("m_inputSearch", m_1a0);
+        ASTextInput* pInput = m_30->FUN_140bbe940<ASTextInput>("m_inputSearch", m_1a0);
         if (pInput != 0)
             m_1a0->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDynamicActionDialog::FUN_14192c690));
     }
@@ -201,7 +201,7 @@ MS2_REPLACE_METHOD(0x14192B1C0, UIDynamicActionDialog, OnLoadComplete, 369, 0);
 void UIDynamicActionDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    m_1a0.AssignRaw(0);
+    reinterpret_cast<MS2Ptr<Unk_CoupleInput>&>(m_1a0).AssignRaw(0);   // the exe calls the twin at 0x140bf1810
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c630));
     FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyClearAchieve"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c660));
 }
@@ -217,9 +217,9 @@ int UIDynamicActionDialog::vfunc_13()
     if (((Unk_DaInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
-            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (Unk_DaInput*)m_1a0 != 0) {
+            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (ASTextInput*)m_1a0 != 0) {
                 if (m_1a0.operator->()->GetFocused() != 0) {
-                    SetSearchText(reinterpret_cast<ASTextInput*>(m_1a0.operator->())->GetText());
+                    SetSearchText(m_1a0->GetText());
                     reinterpret_cast<ASUIComponent*>(pDlg)->SetFocused(1);
                     m_1a0.operator->()->SetFocused(0);
                     return 1;

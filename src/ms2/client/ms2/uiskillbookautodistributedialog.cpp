@@ -424,7 +424,6 @@ unsigned short FUN_1406438e0(JobSkillData* pData, unsigned short nLevel);
 // the three view classes of the movie children (vfunc 24 repaints)
 class Unk_SkillPacketView : public UIDialog { public: void FUN_vfunc_79_base(CInPacket& packet); };
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 extern Unk_Inventory g_143ab2a90;
 template <class T> T* Unk_SkillDialog(int nId)
 {
@@ -1043,7 +1042,7 @@ bool UISkillBookTreeDialog::OnRenameConfirm(int nResult, const CMsgBoxData& box)
         box.FUN_140b19130(0, nTabId);
         if (strName.IsEmpty())
             return false;
-        if (MS2Ptr<CBanTextChecker> spFilter = FUN_14025e7d0()->GetChecker())
+        if (MS2Ptr<CBanTextChecker> spFilter = TSingleton<CommonString>::GetInstance()->GetChecker())
         {
             CStringW strMsg;
             if (spFilter->CheckAutoDistributeEntryName(strName, strMsg) != 0)

@@ -86,7 +86,6 @@ static CString s_strTabIndex = "tabIndex";
 // ---- callees ------------------------------------------------------------------------------------------------------
 
 CLogString* GetLogString();                                // the log singleton
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // UGC file names and paths.
 CString FUN_141027200(CString strName);                     // the cache key of a URL
@@ -130,10 +129,7 @@ class Unk_UgcPlayer : public PC
 {
 public:
 };
-class Unk_WsB_Prop : public CInteractObject
-{
-};
-class Unk_WsB_Notice : public CPtred
+class CProxyGameObject : public CPtred
 {
 public:
     char m_pad[0x50 - sizeof(CPtred)];
@@ -148,8 +144,8 @@ public:
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
     void* FUN_141bd0cc0();                                  // the local player
-    MS2Ptr<Unk_WsB_Prop> FindProp(const CString& strName);
-    MS2Ptr<Unk_WsB_Notice> FindProxyObject(unsigned nObjectId);
+    MS2Ptr<CInteractObject> FindProp(const CString& strName);
+    MS2Ptr<CProxyGameObject> FindProxyObject(unsigned nObjectId);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -554,7 +550,7 @@ void CUgcDownloadCube::ProcessResult()
             if (pCube)
                 pCube->FUN_1408b51d0();
             else
-                ((class CUgcManager*)FUN_14052d220())->ApplyImageToCube(sp.get(), m_strPath, m_param.m_upload.m_uid);
+                TSingleton<CUgcManager>::GetInstance()->ApplyImageToCube(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
         UIUGCCubePaletteDialog* pDialog = FUN_140ef4a50(0x4f16);
         if (pDialog)
@@ -696,7 +692,7 @@ void CUgcDownloadBanner::ProcessResult()
         sp->m_user.CopyFrom(&m_param.m_user);
         sp->m_upload.CopyFrom(&m_param.m_upload);
         sp->m_post.CopyFrom(m_spPost.get());
-        ((class CUgcManager*)FUN_14052d220())->FUN_141887dc0(nBannerId, sp);
+        TSingleton<CUgcManager>::GetInstance()->FUN_141887dc0(nBannerId, sp);
     }
 }
 MS2_REPLACE_METHOD(0x141870e80, CUgcDownloadBanner, ProcessResult, 592, 0xBAA0BF86);
@@ -789,7 +785,7 @@ void CUgcDownloadProfile::ProcessResult()
                     }
                     if (nObjectId > 0)
                     {
-                        MS2Ptr<Unk_WsB_Notice> spTag = WorldService::GetInstance()->FindProxyObject(nObjectId);
+                        MS2Ptr<CProxyGameObject> spTag = WorldService::GetInstance()->FindProxyObject(nObjectId);
                         if (spTag.get())
                             spTag->m_strProfileImage = strUrl;
                     }
@@ -1017,7 +1013,7 @@ void CUgcDownloadRidee::ProcessResult()
             if (pRidee)
                 pRidee->FUN_1417072b0();
             else
-                ((class CUgcManager*)FUN_14052d220())->ApplyImageToRidee(sp.get(), m_strPath, m_param.m_upload.m_uid);
+                TSingleton<CUgcManager>::GetInstance()->ApplyImageToRidee(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadRidee::ProcessResult] proxy count = {0}", m_list.GetCount());
@@ -1227,7 +1223,7 @@ void CUgcDownloadBannerRollingImage::ProcessResult()
         for (int i = 0; i < nCount; i++)
         {
             int nBannerId = m_spProxy->m_images[i];
-            ((class CUgcManager*)FUN_14052d220())->ApplyBannerTexture(nBannerId, m_strPath);
+            TSingleton<CUgcManager>::GetInstance()->ApplyBannerTexture(nBannerId, m_strPath);
         }
     }
 }
@@ -1589,7 +1585,7 @@ void CUgcDownloadDown::Finish(CString strName, int nResult)
     }
     if (bSignal)
         ReleaseSemaphore(m_hSemaphore, 1, NULL);
-    ((class CUgcManager*)FUN_14052d220())->OnDownloadFinished(strName, sp, nResult);
+    TSingleton<CUgcManager>::GetInstance()->OnDownloadFinished(strName, sp, nResult);
 }
 MS2_REPLACE_METHOD(0x1418760a0, CUgcDownloadDown, Finish, 488, 0x13F3FE12);
 

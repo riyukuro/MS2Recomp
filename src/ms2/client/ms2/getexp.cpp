@@ -14,6 +14,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\getexp.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::GetCol
 #include "ms2/placeholder/commonresource.h"
 #include <efd/Point3.h>
 
@@ -58,8 +59,8 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);   // @0x1400
 // ---- exe data ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
-extern Vector3 DAT_143a08cf8;       // axis a (the up axis)
-extern Vector3 DAT_143a08cd8;       // axis b
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; axis a (the up axis)
+#define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; axis b
 extern float DAT_1439f733c;                 // minimum travel distance
 extern float DAT_1439f7340;                 // travel distance scale
 extern float DAT_1439f7344;                 // arrival radius scale
@@ -170,7 +171,7 @@ CExpEffectInfo::~CExpEffectInfo()
 Vector3 CExpEffectInfo::GetAxis0() const
 {
     Vector3 pt;
-    m_rot.FUN_140a01190(0, pt);
+    reinterpret_cast<const efd::Matrix3&>(m_rot).GetCol(0, reinterpret_cast<efd::Point3&>(pt));
     return pt;
 }
 
@@ -178,7 +179,7 @@ Vector3 CExpEffectInfo::GetAxis0() const
 Vector3 CExpEffectInfo::GetAxis1() const
 {
     Vector3 pt;
-    m_rot.FUN_140a01190(1, pt);
+    reinterpret_cast<const efd::Matrix3&>(m_rot).GetCol(1, reinterpret_cast<efd::Point3&>(pt));
     return pt;
 }
 
@@ -186,7 +187,7 @@ Vector3 CExpEffectInfo::GetAxis1() const
 Vector3 CExpEffectInfo::GetAxis2() const
 {
     Vector3 pt;
-    m_rot.FUN_140a01190(2, pt);
+    reinterpret_cast<const efd::Matrix3&>(m_rot).GetCol(2, reinterpret_cast<efd::Point3&>(pt));
     return pt;
 }
 

@@ -46,17 +46,6 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-class NxBounds3   // C3: member view for the former free stand-ins
-{
-public:
-    void set(float, float, float, float, float, float);
-};
-class NxMat33   // C3: member view for the former free stand-ins
-{
-public:
-    void id();
-    void rotZ(float);
-};
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
 
@@ -132,22 +121,22 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
     if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot)) != 0)
         return 0;
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
-    ((class NxBounds3*)(struct Unk_CtbBounds3*)(&m_bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
+    m_bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
     m_pose.m_pos.z = ptPos.z;
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    NxCreateBox(*(class NxBox*)(&m_obb), *(class NxBounds3 const*)(&m_bounds), *(class NxMat34 const*)(&m_pose));
+    NxCreateBox(m_obb, m_bounds, *(class NxMat34 const*)(&m_pose));
     NxVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
-    reinterpret_cast<NxVec3&>(m_obb.m_center) += vCenter;   // move the box centre (0x140adbf00)
+    m_obb.center += vCenter;   // move the box centre (0x140adbf00)
     return 1;
 }
 
 // @0x14169b2e0
 int Unk_PortalBox::FUN_14169b2e0(const Vector3* pPoint)
 {
-    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), static_cast<const NxVec3&>(NxVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
+    return NxBoxContainsPoint(m_obb, static_cast<const NxVec3&>(NxVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
 }
 
 // @0x14169b350

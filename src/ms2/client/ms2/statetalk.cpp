@@ -26,6 +26,7 @@
 #include <egf/EntityID.h>
 #include <efd/utf8string.h>
 #include <NiActorManager.h>
+#include <egmAnimation/AnimationService.h>
 
 #include "statetalk.h"
 
@@ -43,21 +44,6 @@
 #include "ms2/client/ms2/uihudentity.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
-
-void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
-
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes, as statefall.h's
-// StateFall::m_strAnim proves). The engine header inlines both, so the TU uses this plain-buffer view instead.
-struct Unk_TalkString
-{
-    Unk_TalkString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_TalkString() { FUN_1408a8900(m_buf); }
-    Unk_TalkString& operator=(const char* psz) { FUN_140ae18f0(m_buf, psz); return *this; }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
 
 // The npc's data record (uinametag.cpp owns the full one; only the "talkable" flag is read here).
 struct Unk_TalkNpcData
@@ -92,7 +78,7 @@ typedef egf::EntityID Unk_TalkModelKey;
 class Unk_TalkAnimSvc
 {
 public:
-    int FUN_140999490(const Unk_TalkModelKey& kKey, const Unk_TalkString& strName);
+    // C3: the name lookup is the real egmAnimation::AnimationService::GetAnimationIdFromName (0x140999490)
 };
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 // The owner's play-actor component (pcbase.cpp owns the full one) and its flag.
@@ -128,13 +114,13 @@ void StateTalk::vfunc_4(StateData* pData)
     if (FUN_1417b8560())
     {
         {
-            Unk_TalkString strFirst(m_pOwner->vfunc_123(0x2d));
-            bFirst = pAnim->FUN_140999490(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), strFirst)
+            efd::utf8string strFirst(m_pOwner->vfunc_123(0x2d));
+            bFirst = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), reinterpret_cast<const efd::utf8string&>(strFirst))
                 != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         {
-            Unk_TalkString strSecond(m_pOwner->vfunc_123(0x2e));
-            bSecond = pAnim->FUN_140999490(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), strSecond)
+            efd::utf8string strSecond(m_pOwner->vfunc_123(0x2e));
+            bSecond = reinterpret_cast<egmAnimation::AnimationService*>(pAnim)->GetAnimationIdFromName(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460(), reinterpret_cast<const efd::utf8string&>(strSecond))
                 != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         MyPC* pPlayer = FUN_1417b84b0();
@@ -144,13 +130,13 @@ void StateTalk::vfunc_4(StateData* pData)
     if (bFirst && bSecond && bTalk)
     {
         m_n10 = 0x47;
-        Unk_TalkString strPlay(m_pOwner->vfunc_123(0x2d));
+        efd::utf8string strPlay(m_pOwner->vfunc_123(0x2d));
         reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimation(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, true, false);
     }
     else
     {
         m_n10 = 0x49;
-        Unk_TalkString strPlay(m_pOwner->vfunc_123(0));
+        efd::utf8string strPlay(m_pOwner->vfunc_123(0));
         reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimation(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, false, false);
     }
     m_n40 = m_n10;
@@ -185,13 +171,13 @@ void StateTalk::vfunc_9(double fTime)
     {
         if ((m_pOwner->vfunc_85().get() ? true : false) && reinterpret_cast<UIHudEntity::Entity*>(m_pOwner->vfunc_85().operator->())->FUN_140f48d40() != 0)
         {
-            Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-            m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+            efd::utf8string strAnim(m_pOwner->vfunc_123(0x2e));
+            m_pOwner->PlayAnimation(*(const efd::utf8string*)&strAnim, 1.0f, false, false);
         }
         else
         {
-            Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2f));
-            m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+            efd::utf8string strAnim(m_pOwner->vfunc_123(0x2f));
+            m_pOwner->PlayAnimation(*(const efd::utf8string*)&strAnim, 1.0f, false, false);
         }
     }
     if (m_n40 != m_n10)
@@ -287,16 +273,16 @@ void StateTalkNpc::vfunc_4(StateData* pData)
     if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking())
     {
         m_n10 = 0x48;
-        Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-        if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->empty() || !m_pOwner->HasAnimSequence(((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->c_str()))
+        efd::utf8string strAnim(m_pOwner->vfunc_123(0x2e));
+        if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)&strAnim))->empty() || !m_pOwner->HasAnimSequence(((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)&strAnim))->c_str()))
             strAnim = m_pOwner->vfunc_123(0);
-        m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+        m_pOwner->PlayAnimation(*(const efd::utf8string*)&strAnim, 1.0f, false, false);
     }
     else
     {
         m_n10 = 0x49;
-        Unk_TalkString strAnim(m_pOwner->vfunc_123(0));
-        m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+        efd::utf8string strAnim(m_pOwner->vfunc_123(0));
+        m_pOwner->PlayAnimation(*(const efd::utf8string*)&strAnim, 1.0f, false, false);
     }
 }
 

@@ -53,12 +53,11 @@ class Unk_DTMovie : public ASMovieClip
 };
 
 
-// An AS object created on the C++ side (AScript with type 2) with the typed setters (COMDATs, one per value type).
+// An AS object created on the C++ side (AScript with type 2); the unsigned setter FUN_1409c0d20 is AScript's.
 class ASObj : public AScript
 {
 public:
     ASObj(int nType);
-    void FUN_1409c0d20(const char* szName, unsigned int n);
     virtual ~ASObj();
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
@@ -123,8 +122,6 @@ class Unk_140e45740* FUN_140e45740();   // C3: was FUN_140e45740
 
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
-// IsEarlierDay (0x14086ab70) called with its times by value: the exe spills a pointer to each temporary.
-bool FUN_14086ab70(CMsTime a, CMsTime b, int nBaseHour);
 
 // ---- the "{0:02}:{1:02}:{2:02}" formatter (0x140f38940): StringFormat's 3-argument variadic body, but with its own
 // MakeValue copy (the exe has MakeValue(int) 0x14086d170 here and 0x140163770 for the shared one) ----
@@ -290,7 +287,7 @@ void UIDTEventDialog::vfunc_72()
         for (POSITION pos = m_pending.GetStartPosition(); pos != NULL; m_pending.GetNext(pos)) {
             Unk_DTPtr<Unk_DTReward> pReward(m_pending.GetValueAt(pos));
             MS2_ASSERT_AT(186, pReward != NULL);
-            if (FUN_14086ab70(CMsTime(pReward->m_start), CMsTime(GetServerTime()), 0)) {
+            if (IsEarlierDay(CMsTime(pReward->m_start), CMsTime(GetServerTime()), 0)) {
                 if (vfunc_84(pReward) == 1) {
                     ids.Add(m_pending.GetKeyAt(pos));
                     m_active.SetAt(pReward->m_ctx->m_id, pReward);

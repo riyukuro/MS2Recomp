@@ -153,9 +153,8 @@ int FUN_14074b1c0(CQuestData* pData, int nBit);
 int FUN_14074b030(CQuestData* pData);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 int FUN_1407636c0(int nNpcId);
-enum Unk_SlotKey : int;
-unsigned FUN_140931210(Unk_SlotKey nAlliance);
-int FUN_140931250(Unk_SlotKey nAlliance);
+int FUN_140931210(Unk_FameAlliance nAlliance);
+int FUN_140931250(Unk_FameAlliance nAlliance);
 CStringW FUN_140762ee0(int nAlliance, int nGrade);
 CStringW FUN_140762f50(int nAlliance, int nGrade);
 CStringW FUN_140762de0(int nAlliance);
@@ -371,7 +370,7 @@ int UIAllianceQuestDialog::FUN_140bf6af0(int nNpc)
 // @0x140bf6b20
 CStringW UIAllianceQuestDialog::FUN_140bf6b20(int nAlliance)
 {
-    int nGrade = FUN_140931210((Unk_SlotKey)nAlliance);
+    int nGrade = FUN_140931210((Unk_FameAlliance)nAlliance);
     return FUN_14028dfa0<CStringW>(L"s_alliance_quest_current_fame_grade", FUN_140762ee0(nAlliance, nGrade));
 }
 
@@ -829,7 +828,7 @@ int UIAllianceQuestDialog::FUN_140bf9a40(unsigned nQuest)
         return 0;
     if (spData->m_require.m_alliance != 0 && spData->m_require.m_fameGrade != 0)
     {
-        int nGrade = FUN_140931250((Unk_SlotKey)spData->m_require.m_alliance);
+        int nGrade = FUN_140931250(spData->m_require.m_alliance);
         if (nGrade < spData->m_require.m_fameGrade)
             return 0;
     }
@@ -873,7 +872,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf9e10()
     {
         Unk_FameAlliance nOther = spLimit->m_mapGrade.GetKeyAt(pos);
         int nGrade = spLimit->m_mapGrade.GetValueAt(pos);
-        if (FUN_140931250((Unk_SlotKey)nOther) < nGrade)
+        if (FUN_140931250(nOther) < nGrade)
         {
             CStringW strOne = FUN_14028dfa0<CStringW, CStringW>(L"s_alliance_quest_limit_alliance", FUN_140762de0(nOther), FUN_140762f50(nOther, nGrade));
             if (strLimits.GetLength() != 0)

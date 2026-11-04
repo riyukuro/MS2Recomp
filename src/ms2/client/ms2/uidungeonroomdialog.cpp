@@ -2353,7 +2353,7 @@ void UIDungeonRoomDialog::RefreshGroupList()
         m_dungeonIds.push_back(nGroup);
     }
     m_dungeonGroupCombo->ClearItems();
-    m_dungeonGroupCombo->FUN_1422df5f0((int)m_dungeonIds.size());
+    m_dungeonGroupCombo->SetMenuRowCount((int)m_dungeonIds.size());
     for (unsigned i = 0; i < (unsigned)m_dungeonIds.size(); ++i)
     {
         if (m_dungeonIds[i] == 1)

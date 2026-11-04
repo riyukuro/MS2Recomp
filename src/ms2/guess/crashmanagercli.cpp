@@ -58,7 +58,7 @@ public:
 CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
 void* FUN_140d86260();   // C3: was FUN_140d86260
-void FUN_141b6db40(int nCode);
+int FUN_141b6db40(size_t nSize);
 CFeatureManager* FUN_140166410();
 void FUN_140a43b20();
 void FUN_140a43d40();

@@ -410,7 +410,7 @@ int UIGroupMessenger::vfunc_5()
     else
     {
         TiXmlDocument doc;
-        if (doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), GetXmlFileName()), 0))
+        if (doc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), GetXmlFileName()), TIXML_ENCODING_UNKNOWN))
         {
             void* pLoaded = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild(GetTypeName()));
             if (pLoaded == 0)

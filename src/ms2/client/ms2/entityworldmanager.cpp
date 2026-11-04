@@ -358,7 +358,7 @@ void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { CMainSystem::DestroyE
 // @0x1411cf570
 void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { CMainSystem::DestroyEntity(entity); }
 // @0x1411cf5a0
-void EntityWorldManager::FUN_1411cf5a0(const egf::EntityID& id, egf::Entity* entity) {
+void EntityWorldManager::FUN_1411cf5a0(egf::EntityID id, egf::Entity* entity) {
     worlds[currentMap].loadedEntities[id] = entity;
     worlds[currentMap].allEntities[id] = entity;
 }

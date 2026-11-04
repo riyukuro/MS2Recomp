@@ -12,6 +12,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/tptr.h"
 #include "ms2/placeholder/ccachedata.h"
+#include "ms2/placeholder/ascript.h"
 
 namespace Client { class Constants; }
 struct MS2Tick { unsigned value; MS2Tick(); MS2Tick(unsigned v); };
@@ -20,18 +21,6 @@ struct MS2Colors : ATL::CAtlArray<unsigned long> {
     MS2Colors(); ~MS2Colors(); MS2Colors& operator=(const MS2Colors& o);
     MS2Colors(MS2Colors&& o) { *this = o; }         // 0x14071a300 (base ctor, then operator=)
 };
-// 16-byte intrusive reference to a CCacheData (base at +0 unrecovered; pointee at +8). The element type of Constants::cacheRefs.
-struct Unk_ConstCacheRef {
-    void* m_base;                                   // +0
-    CCacheData* m_p;                                // +8
-    Unk_ConstCacheRef() : m_base(0), m_p(0) {}
-    Unk_ConstCacheRef(CCacheData* p);               // 0x1401e0d50
-    Unk_ConstCacheRef(const Unk_ConstCacheRef& o);  // 0x1401ef790
-    ~Unk_ConstCacheRef();                           // 0x1401e1170
-    CCacheData* get() const { return m_p; }         // 0x1402be5b0
-    CCacheData* operator->() const { return m_p; }  // 0x1401e1390
-};
-
 template<> class TSingleton<Client::Constants> {
 public:
     TSingleton();
@@ -153,7 +142,7 @@ public:
     bool GetOr(const CString& key, CStringW* out, const CStringW& def);
 
     bool m_unk8;                                     // +0x08 (the exe ctor stores a byte)
-    CAtlArray<Unk_ConstCacheRef> cacheRefs;               // +0x10
+    CAtlArray<MS2Ptr<CCacheData> > cacheRefs;             // +0x10 one per loaded constants xml
     ATL::CRBMap<CString, CString> values;            // +0x30
     Value<MS2Tick> LookAtInterval;                   // +0x60
     Value<float> LookAtDistanceNPC;                  // +0xb8

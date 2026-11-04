@@ -142,7 +142,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 // registrar of ClassObject factories, atexit helpers
 ClassObject* FUN_140de5570();
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
-void FUN_1401cd100(void* pId, int n);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 struct Unk_RegMarker {};                // empty: the initializer stores nothing after the call
 
 // ---- dynamic initializers ----
@@ -157,7 +157,7 @@ static CStringA s_strSkill("skill");
 static CStringA s_strStun("stun");
 // @0x1400d6790
 static char s_dat_143ac4e80[8];
-static Unk_RegMarker s_dat_143ac4e80_init = (FUN_1401cd100(&s_dat_143ac4e80, 0), Unk_RegMarker());
+static Unk_RegMarker s_dat_143ac4e80_init = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143ac4e80)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
 
 // ---- TriggerActionCli ----
 
@@ -392,17 +392,6 @@ void TriggerObject::Init(int nId, egf::EntityPtr ent)
 }
 
 // ---- trigger-box test ----
-class NxBounds3   // C3: member view for the former free stand-ins
-{
-public:
-    void set(float, float, float, float, float, float);
-};
-class NxMat33   // C3: member view for the former free stand-ins
-{
-public:
-    void id();
-    void rotZ(float);
-};
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
 NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3 (C3: was Unk_CtbVec3 (const Vector3&))
@@ -422,17 +411,17 @@ bool TriggerObject::Contains(const Vector3& pt)
         reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize));
         reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot));
         Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
-        Unk_CtbBounds3 bounds;
-        ((class NxBounds3*)(struct Unk_CtbBounds3*)(&bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
+        NxBounds3 bounds;
+        bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
         Unk_CtbMat34 pose(true);
         pose.m_pos.x = ptPos.x;
         pose.m_pos.y = ptPos.y;
         pose.m_pos.z = ptPos.z;
         ((class NxMat33*)(struct Unk_CtbMat33*)(&pose.m_rot))->id();
         ((class NxMat33*)(struct Unk_CtbMat33*)(&pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
-        Unk_CtbObb obb;
-        NxCreateBox(*(class NxBox*)(&obb), *(class NxBounds3 const*)(&bounds), *(class NxMat34 const*)(&pose));
-        return NxBoxContainsPoint(*(class NxBox const*)(&obb), static_cast<const NxVec3&>(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(pt))));
+        NxBox obb;
+        NxCreateBox(obb, bounds, *(class NxMat34 const*)(&pose));
+        return NxBoxContainsPoint(obb, static_cast<const NxVec3&>(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(pt))));
     }
     return false;
 }
@@ -518,13 +507,12 @@ public:
 };
 
 // world / animation services
-class Unk_TrigWorldSvc { public: bool FUN_141bd8e30(egf::EntityID kId, bool bShow, float fFade); };
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
 void FUN_141851f90(void *, float);  // C3: the definition's signature
-void FUN_141545250(egf::EntityID kId, unsigned b);
+void FUN_141545250(egf::EntityID kId, int b);
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 UIMinimapDialog * FUN_140c9b540(int);  // C3: the definition's signature
 class UIMinimapDialog   // C3: member view for the former free stand-ins
@@ -638,9 +626,9 @@ TriggerObjectMesh::TriggerObjectMesh()
 
 
 // @0x140de6d70
-void FUN_140de6d70(TriggerObject* pObj, void* pArg)
+bool FUN_140de6d70(TriggerObject* pObj, egf::EntityID kEntityId)
 {
-    ((egf::Entity*)(void const*)(TRIG_SP(pObj->m_spEntity).operator->()))->GetEntityID() == *(const egf::EntityID*)pArg;
+    return ((egf::Entity*)(void const*)(TRIG_SP(pObj->m_spEntity).operator->()))->GetEntityID() == kEntityId;
 }
 
 // @0x140de6db0
@@ -660,7 +648,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     std::string strModel((const char*)(&pEvent->m_arg)->vfunc_6());
     float fSkin = (&pEvent->m_arg)->vfunc_5();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance())->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = WorldService::GetInstance()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
     if (bShow != 0)
     {
         if (!((std::basic_string<char, std::char_traits<char>, std::allocator<char>>*)&static_cast<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>> const&>(strModel))->empty())
@@ -753,7 +741,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     bool bFlag = (&pEvent->m_arg)->vfunc_0();
     int nFade = (&pEvent->m_arg)->vfunc_3();
     float fFade = (float)nFade * 0.1f;
-    bool bOk = reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance())->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
+    bool bOk = WorldService::GetInstance()->FUN_141bd8e30(TRIG_ENT()->GetEntityID(), bShow, fFade);
     FUN_14098c6e0((Unk_CachedEntity *)(TRIG_ENT()), 0x4df0c0de, bFlag);
     FUN_140b60e40(TRIG_ENT_RAW(), bShow);
     if (bOk && !bSkipFx)
@@ -933,7 +921,7 @@ void TriggerObjectCamera::vfunc_3()
                 {
                     Vector3 euler = DAT_143b01a60;
                     ((efd::Matrix3&)pChild->GetWorldTransform().m_Rotate).ToEulerAnglesXYZ(euler.x, euler.y, euler.z);
-                    set.m_0 = ((class WorldService*)(void*)(reinterpret_cast<Unk_TrigWorldSvc*>(WorldService::GetInstance())))->FUN_141bcfc50();
+                    set.m_0 = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bcfc50();
                     set.m_c = (const Vector3&)pChild->GetWorldTranslate();
                     euler.x = -((euler.x * 180.0f) / 3.1415927f);
                     euler.y = -((euler.y * 180.0f) / 3.1415927f);

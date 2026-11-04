@@ -56,18 +56,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The movie root: child lookups by name (one COMDAT per wrapper class).
-class Unk_WpRoot : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
-};
-
-// A text input child of the page.
-class Unk_WpInput : public ASDisplayObject
-{
-};
-
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
@@ -177,10 +165,10 @@ bool UIWeddingPageMessage::vfunc_1()
         return false;
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     bool bGroom = pProxy->IsGroom(DAT_143ab2828);
-    if (MS2Ptr<Unk_WpInput> spMine = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_myMessage"))
-        reinterpret_cast<ASTextInput*>(spMine.operator->())->SetTextW(pProxy->GetMessageW(bGroom));
-    if (MS2Ptr<Unk_WpInput> spPartner = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_partnerMessage"))
-        reinterpret_cast<ASTextInput*>(spPartner.operator->())->SetTextW(pProxy->GetMessageW(!bGroom));
+    if (MS2Ptr<ASTextInput> spMine = m_pScript.operator->()->FUN_140bbe880<ASTextInput>("m_myMessage"))
+        spMine.operator->()->SetTextW(pProxy->GetMessageW(bGroom));
+    if (MS2Ptr<ASTextInput> spPartner = m_pScript.operator->()->FUN_140bbe880<ASTextInput>("m_partnerMessage"))
+        spPartner.operator->()->SetTextW(pProxy->GetMessageW(!bGroom));
     return true;
 }
 
@@ -246,7 +234,7 @@ bool UIWeddingPageSkill::vfunc_1()
     if (!UIWeddingPage::vfunc_1())
         return false;
     int nGrade = TSingleton<WeddingManager>::GetInstance()->ApplyHallTicket();
-    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = m_pScript.operator->()->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         std::map<int, MS2Ptr<WeddingSkillData> >& perks = TSingleton<WeddingTable>::GetInstance()->GetSkills();
@@ -458,7 +446,7 @@ void UIWeddingPageMission::SendQuest(int nQuestId)
 // @0x140fe8fb0
 void UIWeddingPageMission::FUN_140fe8fb0()
 {
-    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = m_pScript.operator->()->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         m_binder.FUN_140d43990();

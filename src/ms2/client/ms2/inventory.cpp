@@ -370,17 +370,7 @@ struct Unk_InventoryAccount {
 MS2_CHECK_SIZE(Unk_InventoryAccount, 0xa9d); // accessed prefix
 MS2_CHECK_OFFSET(Unk_InventoryAccount, flag, 0xa9c);
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-// The original iterator has a constructor, so member returns use the hidden
-// return buffer (RDX), even though the payload is one pointer.
-struct Unk_InventoryCharacterIterator { Unk_InventoryCharacterIterator(); void* node; };
-MS2_CHECK_SIZE(Unk_InventoryCharacterIterator, 8);
-class Unk_InventoryCharacters {
-public:
-    Unk_InventoryCharacterIterator FUN_140341f40();
-    Unk_InventoryCharacterIterator FUN_1404c0270(const unsigned __int64& id);
-};
 extern std::set<unsigned __int64> DAT_143ab2a30;   // ids of the account's characters (uicharacterlistdialog.cpp)
-bool FUN_1403344a0(const Unk_InventoryCharacterIterator&, const Unk_InventoryCharacterIterator&);
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_InventoryDialog* FUN_1405344f0 (calls cast back)
 class Unk_InventoryStateManager;
@@ -1643,7 +1633,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     unsigned __int64 owner = output.characterId;
     if (owner > 0) {
         int kind = output.kind;
-        if (FUN_1403344a0(reinterpret_cast<Unk_InventoryCharacters&>(DAT_143ab2a30).FUN_1404c0270(owner), reinterpret_cast<Unk_InventoryCharacters&>(DAT_143ab2a30).FUN_140341f40())) {
+        if (DAT_143ab2a30.find(owner) != DAT_143ab2a30.end()) {
             if (kind == 1) *reason = 3;
             else if (kind == 2) *reason = 2;
         } else {

@@ -50,7 +50,7 @@
 // hand pins (w114)
 // MS2-PIN: ??0CMagic@@QEAA@XZ 0x14145d120 ; unique: caller ?FUN_141467500@CMagicModel@@QEAAXUUnk_MagicTagPtr@@0UUnk_StreamPoi...
 // MS2-PIN: ??0?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@@QEAA@XZ 0x1414687c0 ; unique: single byte-identical candidate
-// MS2-PIN: ??0?$Unk_SocketPtr@UUnk_FillTargetCtx@@@@QEAA@AEBV0@@Z 0x1414687e0 ; unique: single byte-identical candidate
+// MS2-PIN: ??0?$Unk_SocketPtr@VCFillTargetContext@@@@QEAA@AEBV0@@Z 0x1414687e0 ; unique: single byte-identical candidate (the by-value arg of StateSkill::FUN_1417e95a0)
 // MS2-PIN: ??0?$Unk_SocketPtr@UUnk_FillTargetCtx@@@@QEAA@PEAUUnk_FillTargetCtx@@@Z 0x141468820 ; prop: callee ?AddRef@?$Unk_SocketPtr@UUnk_FillTargetCtx@@@@AEBAXXZ
 // MS2-PIN: ??1?$TPtredDummy@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@UEAA@XZ 0x141468d00 ; unique: caller ??_G?$TPtredDummy@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$...
 // MS2-PIN: ??8?$Unk_SocketPtr@VCMagicData@@@@QEBA_NPEAVCMagicData@@@Z 0x141469250 ; unique: caller ?FUN_141467500@CMagicModel@@QEAAXUUnk_MagicTagPtr@@0UUnk_StreamPoi...
@@ -583,7 +583,7 @@ struct Unk_MagicEffectReq {
     CString m_strName;                                              // +0x00
     int m_nObject;                                                  // +0x08
     int m_n0c;
-    Unk_NodePtr m_pNode;                                            // +0x10
+    NiNodePtr m_pNode;                                              // +0x10
     void* m_pXform;                                                 // +0x18 the Unk_MagicXform to play at
     void* m_p20;
     void* m_pIds;                                                   // +0x28 where the spawned ids are collected
@@ -612,7 +612,7 @@ MS2_CHECK_SIZE(Unk_Random, 0x40);
 struct Unk_MagicActor { Vector3 FUN_141678710(); };
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-extern Vector3 DAT_143a08cd8;                                       // the right axis
+#define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; the right axis
 bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);     // approximately equal
 
 // The 0x34 byte NiTransform the effect system takes (rotate, translate, scale).
@@ -810,7 +810,7 @@ class CNpc : public GameObject { public: MS2Ptr<NpcDataCli> GetNpcData(); };   /
 class Unk_MagicNpc : public Unk_MagicEntity { public: };
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 float FUN_14109ace0();                                                      // random in [-1, 1]
-extern Vector3 DAT_143a08cf8;                                       // the up axis
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up axis
 
 // ---- callees of the hit-effect spawner (unit-local; names invented) ----
 struct Unk_MagicConstValue { char m_pad00[1]; };
@@ -935,7 +935,7 @@ MS2_REPLACE_METHOD(0x14145E960, CMagic, FUN_14145e960, 746, 0xDD0A920B);
 // The physics query service (decoeditservice.cpp names the same member).
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 float FUN_14028d280(unsigned nMs);                                  // ms -> seconds
-float FUN_141403f20(Unk_NiPoint3 ptA, Unk_NiPoint3 ptB);            // distance
+float FUN_141403f20(NiPoint3 ptA, NiPoint3 ptB);            // distance
 Vector3 FUN_141b71390(Vector3 ptStart, Vector3 ptControl, Vector3 ptEnd, float fT);   // bezier point
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);   // catmull-rom point
 
@@ -980,13 +980,13 @@ void CMagic::FUN_14145ec50(unsigned nNow)
     }
     int nType = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
     if ((nType == 1 || nType == 3) && !FUN_14028d470(m_fRemainTime, 0)) {
-        if (FUN_141403f20(m_ptCurrent, m_ptStart) >= m_data.m_fDistance) {
+        if (FUN_141403f20((const efd::Point3&)m_ptCurrent, (const efd::Point3&)m_ptStart) >= m_data.m_fDistance) {
             m_fRemainTime = 0;
         } else {
             if (!FUN_14028d470(m_data.m_fNonTargetMoveDistance, 0)) {
                 const Unk_MagicSkillRow* pRow = reinterpret_cast<const Unk_MagicSkillRow*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetAttackData());
                 if (pRow != NULL && !pRow->m_flag100.FUN_1407dfbb0() && FUN_141464360() == NULL) {
-                    if (m_data.m_fNonTargetMoveDistance <= FUN_141403f20(m_ptCurrent, m_ptStart))
+                    if (m_data.m_fNonTargetMoveDistance <= FUN_141403f20((const efd::Point3&)m_ptCurrent, (const efd::Point3&)m_ptStart))
                         m_fRemainTime = 0;
                 }
             }
@@ -1188,7 +1188,13 @@ Unk_FillTargetCtx* FUN_1417e4e80(void* pMemory);                    // the ctor
 // stateskill.h's CFillTargetContext, sized for the new-expression only (the fields go through Unk_FillTargetCtx).
 class CFillTargetContext : public CPtred { public: CFillTargetContext(); char m_pad[0x88 - sizeof(CPtred)]; };
 MS2_CHECK_SIZE(CFillTargetContext, 0x88);
-int FUN_1417e95a0(Unk_SocketPtr<Unk_FillTargetCtx> spCtx);          // run the pick (callee releases the pointer)
+class StateSkill   // C3: member view (stateskill.h)
+{
+public:
+    static int FUN_1417e95a0(Unk_SocketPtr<CFillTargetContext> spCtx);   // run the area pick (callee releases the pointer)
+    static int FUN_1417ea310(GameObject* pOwner, ATL::CAtlArray<efd::SmartPointer<GameObject> >& aTargets);   // sort the hits by distance
+    static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);   // run the arrow pick (callee releases the pointer)
+};
 class CSkillSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -1236,7 +1242,7 @@ void CMagic::FUN_141462900(unsigned nNow)
             spCtx->m_n60 = 0;
             spCtx->m_nSrcIndex = m_spSkill->m_nSrcIndex;
             spCtx->m_nSrcLevel = m_spSkill->m_nSrcLevel;
-            int bFound = FUN_1417e95a0(spCtx);
+            int bFound = StateSkill::FUN_1417e95a0(reinterpret_cast<Unk_SocketPtr<CFillTargetContext>&>(spCtx));
             if (bFound == 0)
                 return;
             int nCount = (int)reinterpret_cast<Unk_MagicHitArr*>(&spCtx->m_aHits)->GetCount() < ((class CSkillSystem*)(struct Unk_MagicEntity*)(pOwner))->FUN_141769410((class SkillData*)(pRow), reinterpret_cast<MS2Ptr<SkillLevelData>*>(&m_spSkill->m_spSrc)->operator->()->FUN_140803dc0())
@@ -1723,12 +1729,6 @@ void CMagic::FUN_141464790(void* pHits, int nHits)
 MS2_REPLACE_METHOD(0x141464790, CMagic, FUN_141464790, 929, 0xE9CCCCA8);
 
 // ---- callees of the piercing pick (unit-local; names invented) ----
-class StateSkill   // C3: member view
-{
-public:
-    static int FUN_1417ea310(GameObject* pOwner, ATL::CAtlArray<efd::SmartPointer<GameObject> >& aTargets);   // sort the hits by distance
-    static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);   // run the arrow pick (callee releases the pointer)
-};
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -1772,7 +1772,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     spCtx->m_nSrcIndex = m_spSkill->m_nSrcIndex;
     spCtx->m_n80 = 4;
     spCtx->m_n84 = m_n534;
-    if (FUN_1417e95a0(spCtx) == 0)
+    if (StateSkill::FUN_1417e95a0(reinterpret_cast<Unk_SocketPtr<CFillTargetContext>&>(spCtx)) == 0)
         return;
     m_spVal = spCtx->m_spVal;
     if (((ATL::CAtlArray<efd::SmartPointer<GameObject>, ATL::CElementTraits<efd::SmartPointer<GameObject>>>*)(void*)(&spCtx->m_aHits))->IsEmpty())

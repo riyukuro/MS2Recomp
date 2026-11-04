@@ -13,8 +13,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/uiheadupdisplay.h"
 
-class Unk_RcProduct;                                                // the picked product (a CPtred)
-class CMeratMarketProduct;
+class CMeratMarketProduct;                                          // the picked product (meratmarketbasketinfo.h)
 
 class UIRandomCoupon : public UIHeadUpDisplay
 {
@@ -33,8 +32,7 @@ public:
 
     void FUN_140bfeae0();                                           // reset the pick
     void FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName);   // set the pick (nMode 0: nothing) and show
-    void SetProduct(MS2Ptr<Unk_RcProduct> spProduct);            // the picked product
-    void FUN_140bfebf0(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140bfebf0 typed with the recovered class (meratmarketman.cpp)
+    void SetProduct(MS2Ptr<CMeratMarketProduct> spProduct);         // 0x140bfebf0 the picked product
     void FUN_140bfec40();                                           // play the sound of the coupon (m_78)
 
 private:
@@ -43,7 +41,7 @@ private:
     int m_nA;                                                       // +0x74
     int m_nCoupon;                                                  // +0x78 coupon kind 1..3
     CStringW m_strName;                                             // +0x80
-    MS2Ptr<Unk_RcProduct> m_spProduct;                              // +0x88
+    MS2Ptr<CMeratMarketProduct> m_spProduct;                        // +0x88
     bool m_bButtonShown;                                            // +0x98
     char m_pad_99[7];
 };

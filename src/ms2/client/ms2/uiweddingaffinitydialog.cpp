@@ -15,34 +15,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/placeholder/weddingproxy.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types ----
 
 
-// The wedding data of the own character: the marriage time (+0x30) and the affinity experience log (+0x130, a map keyed
-// by the kind of event; the value is the event time and the experience).
+// The kind of an affinity log row (Unk_WeddingLog::m_nType), formatted into the string key.
 enum Unk_WdKind : unsigned int {};
-struct Unk_WdEvent { __int64 m_nTime; __int64 m_nExp; };
-struct Unk_WdNode { Unk_WdKind m_kind; Unk_WdEvent m_event; };
-class Unk_WdIter
-{
-public:
-    bool FUN_140902060(const Unk_WdIter& end);                  // !=
-    Unk_WdNode* FUN_140902120();                                // operator*
-    void FUN_1409021f0();                                       // ++
-private:
-    void* m_pad_00;
-};
-class Unk_WdLog { public: void FUN_140902c10(Unk_WdIter* out); void FUN_140902e70(Unk_WdIter* out); };   // begin / end
-struct Unk_WdWedding
-{
-    char m_pad_00[0x30];
-    __int64 m_nMarriedTime;             // +0x30
-    char m_pad_38[0x130 - 0x38];
-    Unk_WdLog m_log;                    // +0x130
-};
 class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
@@ -90,22 +71,20 @@ void UIWeddingAffinityDialog::vfunc_67()
 void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_WdWedding* pWedding = ((struct Unk_WdWedding*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0());
+    WeddingProxy* pWedding = TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0();
     __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
-    int nDays = GetDayNumberDifference(pWedding->m_nMarriedTime, GetServerTime());
+    int nDays = GetDayNumberDifference(pWedding->m_n30, GetServerTime());
     nExp = nExp * nDays;
     CStringW strHistory;
     strHistory += FUN_14028dfa0(CStringW(L"s_wedding_dialog_exp_1"), nExp, nDays);
-    Unk_WdIter it;
-    Unk_WdIter itEnd;
-    pWedding->m_log.FUN_140902c10(&it);
-    pWedding->m_log.FUN_140902e70(&itEnd);
-    for (; it.FUN_140902060(itEnd); it.FUN_1409021f0())
+    std::list<Unk_WeddingLog>::const_iterator it = static_cast<const std::list<Unk_WeddingLog>&>(pWedding->m_log.m_list).begin();
+    std::list<Unk_WeddingLog>::const_iterator itEnd = static_cast<const std::list<Unk_WeddingLog>&>(pWedding->m_log.m_list).end();
+    for (; it != itEnd; ++it)
     {
-        Unk_WdNode* pNode = it.FUN_140902120();
-        CMsTime kTime(pNode->m_event.m_nTime);
+        const Unk_WeddingLog& log = *it;
+        CMsTime kTime(log.m_nTime);
         CStringW strDate = FUN_140b8e850(kTime);
-        CStringW strText = FUN_14028dfa0<__int64>(StringFormat(L"s_wedding_dialog_exp_{0}", pNode->m_kind), pNode->m_event.m_nExp);
+        CStringW strText = FUN_14028dfa0<__int64>(StringFormat(L"s_wedding_dialog_exp_{0}", reinterpret_cast<const Unk_WdKind&>(log.m_nType)), log.m_nAmount);
         strHistory += L"\n";
         strHistory += StringFormat<CStringW, CStringW>(L"[{0}] {1}", strDate, strText);
     }

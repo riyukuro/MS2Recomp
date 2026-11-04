@@ -24,6 +24,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/wcformat.h"
 #include "uiweddingdialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 #include "uiweddingpage.h"
 #include "uimessageboxdata.h"
 #include "pcbase.h"
@@ -45,19 +46,6 @@
 #include "ms2/placeholder/asbuttonbar.h"  // C3: ASButtonBar::FUN_1422e3400
 
 // ---- unit-local views of exe objects ----
-
-// "m_tab": the page tab strip.
-class Unk_WdTab : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bVisible);
-
-
-};
 
 class Unk_McPackets
 {
@@ -84,7 +72,6 @@ CString FUN_1410291d0(__int64 nCharacterId, const CString& strKey);   // a UGC p
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class CUgcManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -233,7 +220,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onChangeProfie") == 0)
     {
-        ((class CUgcManager*)(class CUgcManager*)(((class CUgcManager*)FUN_14052d220())))->FUN_14187fd80();
+        TSingleton<CUgcManager>::GetInstance()->FUN_14187fd80();
         return 1;
     }
     else if (_stricmp(szMethod, "onDivorce") == 0)
@@ -357,17 +344,17 @@ MS2_REPLACE_METHOD(0x140fc83d0, UIWeddingDialog, FUN_140fc83d0, 139, 0xA38712A4)
 // @0x140fc8470
 void UIWeddingDialog::FUN_140fc8470()
 {
-    if (MS2Ptr<Unk_WdTab> spTab = FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
     {
-        reinterpret_cast<ASButtonBar*>(spTab.operator->())->FUN_1422e3400();
+        spTab.operator->()->FUN_1422e3400();
         for (PageMap::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
         {
             ASObj row(2);
             row.FUN_1407cba60("page", it->second->vfunc_6());
             row.FUN_1407cbb20("label", it->second->vfunc_7());
-            reinterpret_cast<ASButtonBar*>(spTab.operator->())->AddItem(row);
+            spTab.operator->()->AddItem(row);
         }
-        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(m_nTab);
+        spTab.operator->()->SetSelectedIndex(m_nTab);
         spTab->vfunc_24(true);
     }
 }

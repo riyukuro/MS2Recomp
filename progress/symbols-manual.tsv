@@ -1168,6 +1168,7 @@ D3DXSaveSurfaceToFileA	14230399f	func
 ?ms_RTTI@CCapRotationController@@2VNiRTTI@@B	143ab9d08	data
 ??0NiStream@@QEAA@XZ	141d44620	func
 ?DAT_143ac2fd8@@3PEAXEA	143ac2fd8	data
+?DAT_143ac2fd8@@3PEAVIClientPlatform@@EA	143ac2fd8	data
 ?ms_ClassInfo@CGuideObject@@2VClassInfo@efd@@B	143ace5e0	data
 ?ms_ClassInfo@CConstructionGuideObject@@2VClassInfo@efd@@B	143ace9f0	data
 ?ms_ClassInfo@CFishingGuideObject@@2VClassInfo@efd@@B	143acee00	data
@@ -1821,6 +1822,7 @@ FMOD_EventSystem_Create	142303b13	func
 ?DAT_143ab2928@@3_JA	143ab2928	data
 ?DAT_143ab2988@@3_JA	143ab2988	data
 ?DAT_143ab32b8@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A	143ab32b8	data
+?DAT_143ab32b8@@3V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@A	143ab32b8	data
 ??0Unk_DsNode@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422c6570	func
 ??1Unk_DsNode@@QEAA@XZ	1422c65c0	func
 ?FUN_140ae1df0@Unk_PointView@@QEBA?AVNxVec3@@XZ	140ae1df0	func
@@ -2166,9 +2168,6 @@ D3DXFloat16To32Array	14230396f	func
 ??0Unk_MagicHitHolder@@QEAA@H@Z	140963df0	func
 ??1Unk_MagicHitHolder@@QEAA@XZ	140964870	func
 ??1Unk_MagicSkillStateRef@@QEAA@XZ	140975740	func
-??0Unk_ConstCacheRef@@QEAA@PEAVCCacheData@@@Z	1401e0d50	func
-??0Unk_ConstCacheRef@@QEAA@AEBU0@@Z	1401ef790	func
-??1Unk_ConstCacheRef@@QEAA@XZ	1401e1170	func
 ??0Unk_PCBaseRayHit@@QEAA@XZ	140ad4440	func
 ?DAT_143af62e0@@3DA	143af62e0	data
 ?Get@?$Value@H@Constants@Common@@QEAAPEAHXZ	1402056b0	func
@@ -2445,7 +2444,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0Ridee@@QEAA@XZ	141703a70	func
 ??0Unk_PCBaseBuffList@@QEAA@PEAVPCBase@@@Z	14096ef20	func
 ??0Unk_PCBaseBuffTracker@@QEAA@XZ	141682e90	func
-??0Unk_PCBaseColorBoostMgr@@QEAA@XZ	14109bd60	func
 ??0Unk_PCBaseComp_b18@@QEAA@H_JAEBVCUgcItemLook@@@Z	1408970e0	func
 ??0Unk_PCBaseFlags@@QEAA@XZ	140d75040	func
 ??0Unk_CMISSvcPtr@@QEAA@PEAVHardwareInstancingService@@@Z	14098c7d0	func
@@ -10556,7 +10554,6 @@ criHeap_Destroy	140028074	func
 ?Sfr31ConstructOrClear@AS3@GFx@Scaleform@@YAPEAE_KPEAEPEA_KPEBDKPEBVValue@123@@Z	142532130	func
 ?Sfr31ValueTypeName@AS3@GFx@Scaleform@@YAPEAVASString@23@_KPEAV423@PEBK@Z	1425322c0	func
 ?Sfr31StateTraceOp@AS3@GFx@Scaleform@@YAX_KEPEA_K@Z	14253d520	func
-?ClassToString@AS3@GFx@Scaleform@@YAXPEAVObject@123@PEAVASString@23@@Z	142542a60	func
 ?Compare@DrawableImage@Render@Scaleform@@QEAAXPEAV123@0@Z	1425eb390	func
 ?CopyChannel@DrawableImage@Render@Scaleform@@QEAAXPEAV123@AEBV?$Rect@J@23@AEBV?$Point@J@23@W4ChannelBits@123@3@Z	1425eb570	func
 ?CopyPixels@DrawableImage@Render@Scaleform@@QEAAXPEAV123@AEBV?$Rect@J@23@AEBV?$Point@J@23@0PEBV523@_N@Z	1425eb700	func
@@ -17453,3 +17450,10 @@ _should_initialize_environment	14274aee4	func
 ?ms_virtualToPhysical@QOSCompare@efd@@1V?$map@IIU?$less@I@std@@@2@A	143b05550	data
 ?ms_bRenderBackfaces@NiDX9ShadowWriteShader@@1_NA	143a4b228	data
 ?g_pfnMS2CreateKFMCache@@3P6APEAVKFMCache@egmAnimation@@XZEA	143b094a0	data
+?FUN_14028efb0@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@VPoint3@efd@@@Z	14028efb0	func
+?FUN_140dc9e40@RootRotateInterpolator@@QEAAXPEAVPoint3@efd@@@Z	140dc9e40	func
+?SetAxis@RootRotateInterpolator@@QEAAXPEBVPoint3@efd@@@Z	140dc9fb0	func
+?CollectNear@DecoEditService@@QEAAXVNiPoint3@@MAEAV?$CAtlArray@PEAVNiMeshHWInstance@@V?$CElementTraits@PEAVNiMeshHWInstance@@@ATL@@@ATL@@@Z	141170520	func
+?CollectNear@DecoItem@@QEAAXVNiPoint3@@MAEAV?$CAtlArray@PEAVNiMeshHWInstance@@V?$CElementTraits@PEAVNiMeshHWInstance@@@ATL@@@ATL@@@Z	141174ab0	func
+?CollectNear@DecoLayer@@QEAAXVNiPoint3@@MAEAV?$CAtlArray@PEAVNiMeshHWInstance@@V?$CElementTraits@PEAVNiMeshHWInstance@@@ATL@@@ATL@@@Z	141177580	func
+??1Unk_GoAnchorPtr@@QEAA@XZ	140a00490	func

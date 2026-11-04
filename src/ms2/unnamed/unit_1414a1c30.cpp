@@ -70,6 +70,13 @@
 #include "ms2/placeholder/clientlogmanager.h"
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/uidialogeventdispatcher.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <efdPhysX/PhysXSDKManager.h>   // C3: ms_pPhysXManager (was extern Unk_SingletonObj* DAT_143b05988)
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 
 // Typed prefix for the otherwise opaque getter objects.
 struct Unk_ShutdownValue30 { void* m_opaque[6]; int m_value; };
@@ -285,7 +292,6 @@ class Unk_QgNavi;
 class Unk_QuestTable;
 class Unk_RankTable;
 class Unk_SoundSink;
-class Unk_UgcRideeMgr;
 class WeddingManager;
 // the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
 // this obj does not instantiate a second copy (LNK2005 in the full-exe link)
@@ -304,7 +310,8 @@ template<class T> class SingletonClass { public: static T* ms_pSingleton; };
 class GFxService;
 struct Unk_NametagFlags;
 // ---- exe globals (the singleton pointers) and getters of other units ----------------------------------------------------------
-extern Unk_SingletonObj* DAT_143b05988;
+// PhysXSDKManager::ms_pPhysXManager is protected; this view reads it under its own name (0x143b05988).
+struct Unk_PhysXSDKManagerStatics : efdPhysX::PhysXSDKManager { using efdPhysX::PhysXSDKManager::ms_pPhysXManager; };
 
 CLogString* GetLogString();
 class Unk_AdditionalFlags* FUN_140186320();   // C3: was FUN_140186320
@@ -312,9 +319,7 @@ class CLocaleLanguage* FUN_1401c0da0();   // C3: was FUN_1401c0da0
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 Unk_SingletonObj* FUN_1401d31f0();
 Unk_SingletonObj1* FUN_1401d3200();
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_PcBangTable* FUN_140541580();   // C3: was FUN_140541580
@@ -1167,7 +1172,7 @@ MS2_REPLACE(0x1414A39D0, FUN_1414a39d0, 94, 0x78B3D6DC);
 void FUN_1414a3a30()
 {
     if (TSingleton<CUgcManager>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_14052d220()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)TSingleton<CUgcManager>::GetInstance()));
         TSingleton<CUgcManager>::s_instance = 0;
     }
 }
@@ -1248,7 +1253,7 @@ MS2_REPLACE(0x1414A3D30, FUN_1414a3d30, 94, 0x2B2DA0BB);
 void FUN_1414a3d90()
 {
     if (TSingleton<CommonString>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_14025e7d0()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)TSingleton<CommonString>::GetInstance()));
         TSingleton<CommonString>::s_instance = 0;
     }
 }
@@ -1825,7 +1830,6 @@ unsigned long long Unk_MiscThis::FUN_1414a5600() { return 0; }
 void FUN_1414a5610(char* pThis, char* pDst) { memcpy(pDst, pThis + 0x60, 0x10); }
 MS2_REPLACE(0x1414A5610, FUN_1414a5610, 36, 0x8905C4F3);
 class MS2 { public: static const efd::ClassInfo ms_ClassInfo; };                          // C3: was extern char DAT_143ae0130
-namespace ecr { class PickService { public: static const efd::ClassInfo ms_ClassInfo; }; }   // C3: was extern int DAT_143a01f90
 // @0x1414a5640
 void* Unk_MiscThis::FUN_1414a5640() { return (void*)&MS2::ms_ClassInfo; }
 // @0x1414a5650
@@ -1931,7 +1935,7 @@ MS2_REPLACE(0x1414A5870, FUN_1414a5870, 8, 0x3EFF4636);
 Unk_SingletonObj80* FUN_1414a5880() { return reinterpret_cast<Unk_SingletonObj80*>(TSingleton<WebGuideTable>::s_instance); }
 MS2_REPLACE(0x1414A5880, FUN_1414a5880, 8, 0x2543A217);
 // @0x1414a5890
-Unk_SingletonObj* FUN_1414a5890() { return DAT_143b05988; }
+Unk_SingletonObj* FUN_1414a5890() { return reinterpret_cast<Unk_SingletonObj*>(Unk_PhysXSDKManagerStatics::ms_pPhysXManager); }
 MS2_REPLACE(0x1414A5890, FUN_1414a5890, 8, 0xC6930D6B);
 // @0x1414a58a0
 void FUN_1414a58a0(char* pThis) { reinterpret_cast<efd::SmartPointer<NiMaterial>*>(pThis + 0x10)->operator NiMaterial*(); }

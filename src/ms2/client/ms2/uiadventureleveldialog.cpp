@@ -388,7 +388,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
             obj.FUN_1409c0d20("level", pAbility->m_nRequireLevel);
         else if ((int)nStep < pAbility->m_nMaxCount)
             obj.FUN_1409c0d20("level", pAbility->GetLevelOfCount(pPlayer->vfunc_141()));
-        spList->FUN_1422dd230(obj);
+        spList->AddItem(obj);
     }
     spList->vfunc_24(true);
 }
@@ -417,7 +417,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         obj.FUN_1407cbb20("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), reinterpret_cast<const unsigned int&>(pMission->m_nCount)));
         obj.FUN_1407cbbe0("received", it->second.m_1c);
         obj.FUN_1407cbbe0("completed", it->second.m_18 >= (unsigned int)pMission->m_nCount);
-        spList->FUN_1422dd230(obj);
+        spList->AddItem(obj);
     }
     spList->vfunc_24(true);
 }

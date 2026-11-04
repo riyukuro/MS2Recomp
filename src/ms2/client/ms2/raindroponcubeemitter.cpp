@@ -351,7 +351,7 @@ RainDropSystem::RainDropSystem()
     : m_spSystem(NULL), m_spNode(NULL), m_spEmitter(NULL), m_spCtlr(NULL)
 {
     m_spSystem = NULL;
-    FUN_1409f76f0(&m_spNode, NULL);
+    m_spNode = (NiNode*)NULL;
     m_nHandle = ecr::SceneGraphService::kInvalidHandle;
     m_nTexture = 0;
 }
@@ -383,23 +383,23 @@ void RainDropSystem::Create()
                                             true, false, true, false, false, true);
     m_spSystem->AddModifier(NiNew NiPSAlignedQuadGenerator, true);
     m_spSystem->SetName("RainDropParticle");
-    FUN_1409f76f0(&m_spNode, NiNew NiNode(0));
-    static_cast<NiNode*>(FUN_1409475f0(&m_spNode))->SetTranslate(0.0f, 0.0f, 0.0f);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spNode))->AttachChild(m_spSystem, false);
+    m_spNode = NiNew NiNode(0);
+    m_spNode->SetTranslate(0.0f, 0.0f, 0.0f);
+    m_spNode->AttachChild(m_spSystem, false);
     NiBound kBound;
     kBound.SetCenterAndRadius(AsPoint(g_143b01a60), 3000.0f);
     m_spSystem->SetModelBound(kBound);
 
     efd::vector<efd::SmartPointer<NiObject>> kList;
     {
-        efd::SmartPointer<NiObject> spObject(NiObject::DynamicCast(&NiObject::ms_RTTI, (class NiObject const*)(static_cast<NiNode*>(FUN_1409475d0(&m_spNode)))));
+        efd::SmartPointer<NiObject> spObject(NiObject::DynamicCast(&NiObject::ms_RTTI, (class NiObject const*)(static_cast<NiNode*>(m_spNode))));
         kList.push_back(static_cast<efd::SmartPointer<NiObject>&&>(spObject));
     }
     m_nHandle = FUN_1413f98b0()->AddSceneGraph(kList, true, true);
 
     SetupProperties();
     NiFixedString kEmitterName("RainDropOnCubeEmitter");
-    m_spEmitter = NiNew RainDropOnCubeEmitter(kEmitterName, static_cast<NiNode*>(FUN_1409475d0(&m_spNode)), 80.0f,
+    m_spEmitter = NiNew RainDropOnCubeEmitter(kEmitterName, static_cast<NiNode*>(m_spNode), 80.0f,
                                               0.0f, 1.0f, 0.0f);
     m_spSystem->AddEmitter(m_spEmitter);
 

@@ -210,10 +210,8 @@ struct Unk_PiPetData
     unsigned int m_nState;                                              // +0x34 0 = the pet is out
 };
 MS2_CHECK_OFFSET(Unk_PiPetData, m_nState, 0x34);
-class Unk_PiBag : public CPetInventory { public: __int64 FUN_140c874f0();};
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 
-CommonString* FUN_14025e7d0();
 
 // Strings and tables.
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -378,10 +376,10 @@ Unk_PiPetData* FUN_140cbdba0(int nPet)
 }
 
 // @0x140cbdc40
-__int64 FUN_140cbdc40(int nPet)
+int FUN_140cbdc40(int nPet)
 {
     if (nPet != 0)
-        return static_cast<Unk_PiBag*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInventory())->FUN_140c874f0();
+        return reinterpret_cast<CPetManager*>(FUN_140535320())->GetInventory()->GetUsedSlotCount();
     return 0;
 }
 
@@ -637,7 +635,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
         CStringW strName = box.FUN_141a02d50().Trim(L',');
         if (strName.IsEmpty() || strName.GetLength() >= 32)
             return false;
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if (filter.get() != 0)
         {
             if (filter->CheckPetName(strName, strErr) == 0)

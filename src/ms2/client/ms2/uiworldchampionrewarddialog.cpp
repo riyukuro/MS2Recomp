@@ -42,7 +42,6 @@
 #include "ms2/placeholder/mstime.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
-class Unk_WcFrame : public ASMovieClip {};
 class Unk_WcTitle {};
 // MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of this unit (explicit specializations, defined last).
 template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
@@ -345,7 +344,7 @@ void UIWorldChampionRewardDialog::FUN_140febc40() {
         slot->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[i])));
         reinterpret_cast<ASDisplayObject*>(slot.operator->())->SetPositionInt(static_cast<int>(i) * 70, 0);
     }
-    int x = (reinterpret_cast<ASDisplayObject*>(reinterpret_cast<MS2Ptr<Unk_WcFrame>*>(&m_90)->operator->())->FUN_1422c1340() - reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1340()) / 2;
+    int x = (reinterpret_cast<ASDisplayObject*>(m_90.operator->())->FUN_1422c1340() - reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1340()) / 2;
     int y = static_cast<int>(reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1110());
     reinterpret_cast<ASDisplayObject*>(m_area.operator->())->SetPositionInt(x, y);
 }

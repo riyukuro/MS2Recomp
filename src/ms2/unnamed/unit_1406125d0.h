@@ -25,7 +25,7 @@ enum Unk_LockMode : int { LOCKMODE_LOCK = 0, LOCKMODE_UNLOCK = 1 };
 
 // Free functions of the exe, bound by their FUN_<va> names.
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
-int FUN_140534480(const ATL::CAtlArray<unsigned __int64>& aIds, const unsigned __int64& nId);
+template <class T> int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value);   // C3: was FUN_140534480 (the index of a value, itembreakmanager)
 bool FUN_140634120(MS2Ptr<CItem> item, int* pReason);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);

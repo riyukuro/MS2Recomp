@@ -64,7 +64,7 @@ void GameEventDTReward::OnStart()
 // @0x14041b380
 void GameEventDTReward::vfunc_6()
 {
-    TSingleton<CUserEventManager>::GetInstance()->RemoveDTReward(FUN_1402e1d00());
+    TSingleton<CUserEventManager>::GetInstance()->RemoveDTReward(GetID());
 }
 
 // @0x14041b3c0
@@ -96,7 +96,7 @@ void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& l
     FUN_14025a680(const_cast<CStringW&>(rewards), rows, L";");
     if (rows.IsEmpty())
         return;
-    m_spContext.AssignRaw(new DTRewardEventContext(FUN_1402e1d00(), FUN_1402e2730()));
+    m_spContext.AssignRaw(new DTRewardEventContext(GetID(), FUN_1402e2730()));
     for (unsigned i = 0; i < rows.GetCount(); i++) {
         ATL::CAtlArray<unsigned int> fields;
         FUN_140274fc0(rows[i], &fields, L",");

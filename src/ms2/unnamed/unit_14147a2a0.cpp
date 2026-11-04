@@ -25,7 +25,7 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 
 // ---- exe callees ----
 Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
-float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
+float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);                // horizontal distance (z cleared on the copies)
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 float FUN_1407680d0(class Unk_Random*);   // C3: was FUN_1407680d0
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
@@ -88,7 +88,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
     kInfo.m_origin = kStart;
     kInfo.m_dir = FUN_14147af10(kEnd.FUN_140965c40(kStart));
     kInfo.m_groups = 0x389;
-    float fDist = FUN_141403f20(kStart, kEnd);
+    float fDist = FUN_141403f20(reinterpret_cast<NiPoint3&>(kStart), reinterpret_cast<NiPoint3&>(kEnd));
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, pMask))
     {
         float fHit = FUN_140966ea0(Vector3(kStart), kInfo.m_hitPoint);

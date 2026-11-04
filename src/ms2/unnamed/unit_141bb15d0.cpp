@@ -4,6 +4,7 @@
 // MS2-UNIT: unit_141bb15d0
 // MS2-RANGE: 0x141bb15d0-0x141bb9720 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UUnk_WsN1@@V?$allocator@UUnk_WsN1@@@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UUnk_WsN1@@@std@@@2@XZ 0x141bb5790
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 // MS2-PIN: ?clear@?$vector@UUnk_WsV9a0@@V?$allocator@UUnk_WsV9a0@@@std@@@std@@QEAAXXZ 0x141bb7960

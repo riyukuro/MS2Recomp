@@ -82,7 +82,6 @@ typedef ATL::CRBMap<unsigned long long, efd::SmartPointer<Unk_LobbyActor> > Unk_
 class Unk_FieldMgr
 {
 public:
-    void FUN_141bbbc60(Unk_1401cd100 id, int a);              // remove an actor
     char m_pad[0xb8];
     Unk_LobbyActorMap m_actors;                             // +0xb8
 };
@@ -129,17 +128,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 unsigned char FUN_1401d1320(CCacheData*);
 
 // ---- the pc preview ----
-struct Unk_AllocHint
-{
-    Unk_AllocHint(const Unk_AllocHint&);                    // non-trivial: returned through a hidden pointer
-    efd::MemHint m_hint;
-};
-Unk_AllocHint FUN_140876480(int nCategory);
 class Unk_PCItems;
 class JobTable;
-class Unk_BackUpItem : public CPtred
-{
-};
 
 // ---- packets / messages ----
 struct Unk_1407a7d20
@@ -199,33 +189,9 @@ public:
 __int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class NiPick
-{
-public:
-    class Record { public: NiAVObject* GetAVObject(); };
-    class Results
-    {
-    public:
-        unsigned int GetSize() const;
-        Record* GetAt(unsigned int i) const;
-    };
-};
-namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
-class Unk_QueryResult
-{
-public:
-    ~Unk_QueryResult();                                     // 0x140a16120
-    void* FUN_140a16c00();
-    Unk_QueryResult* FUN_140a16c30();
-    void* m_p0;                                             // +0x00 the exe object is 8 bytes (FUN_140af0850 writes it through the sret slot)
-};
-struct Unk_140ae7ce0 { Unk_140ae7ce0(); float m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };  // Unk_CameraSetting (cameramode.h): 0x28 bytes, 4-aligned; no array, so no /GS cookie
 class Unk_QueryMgr : public CameraMgr
 {
 public:
-    bool FUN_140aeb590(Unk_140ae7ce0*);
-    void FUN_140aed720(Unk_140ae7ce0*);
-    Unk_QueryResult FUN_140af0850(float fX, float fY, bool b1, bool b2, bool b3, void* p);   // pick at the cursor (cameramode.h)
 };
 
 // ---- the game-option block (OnEnter) ----
@@ -368,8 +334,8 @@ CSceneStateMulti::BackUpCharacterInfo::BackUpCharacterInfo(MyPC* pPC)
             m_equip[i] = *((struct Unk_CharEquip const*)&((class PC*)(class MyPC*)(pPC))->FUN_141659220(i));
         m_nJobCode = reinterpret_cast<PC*>(pPC)->FUN_141654700();
         m_n68 = reinterpret_cast<PC*>(pPC)->FUN_141654730();
-        ATL::CAtlArray<MS2Ptr<Unk_BackUpItem> > tmp;
-        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->FUN_1416561a0()))->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*>(static_cast<ATL::CAtlList<MS2Ptr<Unk_BackUpItem>, ATL::CElementTraits<MS2Ptr<Unk_BackUpItem>>>*>(&m_items)));
+        ATL::CAtlArray<MS2Ptr<CEquipItem> > tmp;
+        reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pPC))->FUN_1416561a0()))->CollectShownItems(m_items);
     }
 }
 
@@ -527,10 +493,10 @@ void CSceneStateMulti::vfunc_1(int)
     }
     if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
     {
-        Unk_140ae7ce0 tmp;
-        if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeb590(&tmp))
+        Unk_CameraSetting tmp;
+        if (TSingleton<CameraMgr>::GetInstance()->GetSavedSetting(tmp))
         {
-            reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed720(&tmp);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(tmp);
             reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed750(4, 1);
         }
     }
@@ -609,7 +575,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
     if (m_nMode != 2)
         return;
     ReleasePreviewPC();
-    efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
+    efd::SmartPointer<MyPC> spPC(new (efd::MemHint(efd::MemHint::NONE)) MyPC());
     if (spPC.data())
     {
         reinterpret_cast<PC*>(spPC.operator->())->FUN_1416566d0(1);
@@ -631,7 +597,7 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
     if (m_nMode != 2)
         return;
     ReleasePreviewPC();
-    efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
+    efd::SmartPointer<MyPC> spPC(new (efd::MemHint(efd::MemHint::NONE)) MyPC());
     if (spPC.data())
     {
         reinterpret_cast<PC*>(spPC.operator->())->FUN_1416566d0(1);
@@ -643,10 +609,10 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
         if (info.FUN_14107b440(reinterpret_cast<PC*>(spPC.operator MyPC*())))
         {
             m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c500();
-            ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >& items = pInfo->m_items;
+            ATL::CAtlList<MS2Ptr<CEquipItem> >& items = pInfo->m_items;
             for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
             {
-                MS2Ptr<CItem> sub = reinterpret_cast<CEquipItem*>(items.GetAt(pos).operator->())->GetItem();
+                MS2Ptr<CItem> sub = items.GetAt(pos)->GetItem();
                 if (sub.get() != 0)
                 {
                     sub->SetObjectId(reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c580());
@@ -664,13 +630,13 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
     reinterpret_cast<CWindowService*>(FUN_140aadf80())->GetCursorClientPos(&fMapX, &fMapY);
     if (reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return 0;
-    Unk_QueryResult result = reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fMapX, fMapY, true, true, false, 0);
-    if (result.FUN_140a16c00() == 0)
+    efd::SmartPointer<ecr::PickService::PickRecord> result = reinterpret_cast<Unk_QueryMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fMapX, fMapY, true, true, false, 0);
+    if ((ecr::PickService::PickRecord*)result == 0)
         return 0;
     Unk_FieldMgr* pMgr = ((class Unk_FieldMgr*)WorldService::GetInstance());
-    for (unsigned iRow = 0; iRow < reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetSize(); iRow++)
+    for (unsigned iRow = 0; iRow < result->GetPickResult()->GetSize(); iRow++)
     {
-        NiPick::Record* pRow = reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetAt(iRow);
+        NiPick::Record* pRow = result->GetPickResult()->GetAt(iRow);
         for (POSITION pos = pMgr->m_actors.GetHeadPosition(); pos != 0; pMgr->m_actors.GetNext(pos))
         {
             Unk_LobbyActor* pActor = pMgr->m_actors.GetValueAt(pos);
@@ -816,7 +782,7 @@ void CSceneStateMulti::OnServerTimePacket(CInPacket& packet)
 void CSceneStateMulti::ReleasePreviewPC()
 {
     if (m_hPreviewPC != 0)
-        ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbbc60(Unk_1401cd100(reinterpret_cast<void*>(m_hPreviewPC)), 0);
+        WorldService::GetInstance()->FUN_141bbbc60(egf::EntityID(m_hPreviewPC), 0);
     m_hPreviewPC = 0;
 }
 

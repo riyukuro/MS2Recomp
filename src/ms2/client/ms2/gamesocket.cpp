@@ -67,8 +67,8 @@ public:
     void FUN_14153a1d0(unsigned int, unsigned int);
     void SetConnectionState(int);
     int GetConnectionState();
+    void QueueReceivedPacket(Unk_InPtr);   // 0x1415396b0
 };
-void FUN_1415396b0(void*,Unk_InPtr);
 int Unk_RandomStep(int*);   // C3: was FUN_140768600
 void FUN_140710b90(COutPacket*,int,unsigned*);   // no return value (rax is left over)
 void FUN_140710870(COutPacket*,ATL::CAtlList<Unk_BufferPtr>*,unsigned,unsigned*,int);
@@ -334,7 +334,7 @@ void CGameSocket::FUN_141265ae0()
     }
     if(stopped) PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x469,0,0);
     else for(POSITION pos=ready.GetHeadPosition();pos;ready.GetNext(pos)) {
-        Unk_InPtr packet(ready.GetAt(pos)); FUN_1415396b0(((void*)FUN_140714f90()),packet);
+        Unk_InPtr packet(ready.GetAt(pos)); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->QueueReceivedPacket(packet);
         m_logger->LogReceive((unsigned short)packet->GetType(),*reinterpret_cast<Unk_LogInPacket*>(packet.get()));
     }
 }

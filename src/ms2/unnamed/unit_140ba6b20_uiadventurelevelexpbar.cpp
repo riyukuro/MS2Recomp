@@ -27,6 +27,7 @@
 #include <string.h>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/crideedata.h"
 
 // return types of the getters this unit calls
 class CReservedWordTable;
@@ -71,26 +72,8 @@ extern unsigned int DAT_143ab2960;                                  // adventure
 extern __int64 DAT_143ab2968;
 extern unsigned int DAT_143af62d4;                                  // base height of the bar
 
-// The mount row of the player (opaque table row): +0x6c is nonzero while riding.
-struct Unk_AdvMountRow { char m_pad_00[0x6c]; int m_6c; };
-class Unk_AdvMountPtr
-{
-public:
-    ~Unk_AdvMountPtr();                                             // 0x140788ed0
-    Unk_AdvMountRow* FUN_1407895d0() const;                         // operator->
-    void* m_pad_00;
-    Unk_AdvMountRow* m_p;
-};
-class Ridee;
-class Unk_AdvHolder { public: Unk_AdvMountPtr FUN_141707750(); };
-class Unk_AdvHolderRef                                              // 8-byte reference to the holder
-{
-public:
-    Unk_AdvHolderRef(Unk_AdvHolder* p);                             // 0x140963df0
-    ~Unk_AdvHolderRef();                                            // 0x1409648b0
-    bool operator!=(Unk_AdvHolder* p) const;                        // 0x140ba7bb0
-    Unk_AdvHolder* m_p;
-};
+// The mount of the player: m_basic.m_nHidePCInfo of its riding row is nonzero while riding.
+class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view (held through efd::SmartPointer<Ridee>)
 class Unk_AdvActor : public PC { };
 class Unk_AdvWorld { };
 
@@ -203,10 +186,10 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
     Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_AdvHolderRef spHolder(reinterpret_cast<Unk_AdvHolder*>(pPlayer->FUN_1416764a0()));
+    efd::SmartPointer<Ridee> spHolder(pPlayer->FUN_1416764a0());
     if (spHolder != 0)
     {
-        bool bMounted = reinterpret_cast<Unk_AdvHolder*>(reinterpret_cast<efd::SmartPointer<Ridee>&>(spHolder).operator->())->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;
+        bool bMounted = spHolder->GetData()->m_basic.m_nHidePCInfo != 0 ? 1 : 0;
         if (bMounted)
             nVisible = 0;
     }
@@ -324,12 +307,6 @@ Scaleform::GFx::Value Unk_AdvEntity::FUN_140ba79c0(const char* szMethod, float a
     FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
     FUN_1422bcce0(args.FUN_1409b1f70(3), a4);
     return FUN_1422bb8f0(szMethod, args);
-}
-
-// @0x140ba7bb0
-bool Unk_AdvHolderRef::operator!=(Unk_AdvHolder* p) const
-{
-    return m_p != p;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

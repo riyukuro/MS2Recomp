@@ -63,7 +63,7 @@ private:
     Unk_PvPRankTable m_table;
 };
 
-// The player's PvP info (C3: PC::FUN_140967420's MS2Ptr<Unk_PCInteractMode>, fittingdollpc.h).
+// The player's PvP info (PC::FUN_140967420's MS2Ptr<CPvPInfo>, fittingdollpc.h).
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
 class Unk_PrItemData : public CItemData { };         // the icon name
@@ -173,7 +173,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
 void UIPvPResultDialog::FUN_1413440a0()
 {
     PC* pPC = reinterpret_cast<PC*>((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    bool bInPvP = pPC && ((Unk_PCInteractMode*)pPC->FUN_140967420() ? true : false);
+    bool bInPvP = pPC && ((CPvPInfo*)pPC->FUN_140967420() ? true : false);
     if (bInPvP)
     {
         m_178 = reinterpret_cast<CPvPInfo*>(pPC->FUN_140967420().operator->())->m_nMode;

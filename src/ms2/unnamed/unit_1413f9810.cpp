@@ -41,6 +41,7 @@
 #include <egf/FlatModelManager.h>
 #include <egf/Scheduler.h>
 #include <ecr/LightService.h>
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include <ecr/PickService.h>
 
 // return types of the getters this unit calls
@@ -90,12 +91,10 @@ public:
     void FUN_1413d6ab0(bool);
 };
 Unk_AnimSvc* FUN_1410a68d0();
-void* FUN_140999440(void* a, unsigned __int64 id);
 
 // ---- more unit-local placeholders / externs ------------------------------------------------------------------------------
 class Unk_NHEntMgr;                                                      // entity iteration source (FUN_1409670f0)
 class Unk_NHEntAccess;                                                   // property accessor (see fieldpropertycli.cpp)
-egf::Entity* FUN_1411cf440(Unk_NHEntMgr* p, unsigned __int64 id);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 class AlphaShellComposite   // C3: member view for the former free stand-ins
 {
@@ -222,7 +221,7 @@ MS2_REPLACE(0x1413F9B30, FUN_1413f9b30, 14, 0xC45E29F8);
 egf::EntityLoaderService* FUN_1413f9b50() { return GetService<egf::EntityLoaderService>(); }
 MS2_REPLACE(0x1413F9B50, FUN_1413f9b50, 14, 0xCE7DBF18);
 // @0x1413f9b70
-void* FUN_1413f9b70(unsigned __int64 id) { return FUN_140999440(FUN_1413f9b10(), id); }
+NiActorManager* FUN_1413f9b70(const egf::EntityID& id) { return reinterpret_cast<egmAnimation::AnimationService*>(FUN_1413f9b10())->GetActorManager(id); }
 MS2_REPLACE(0x1413F9B70, FUN_1413f9b70, 32, 0x15F69FD7);
 
 // @0x1413f9ba0
@@ -370,9 +369,9 @@ NiNode* FUN_1413fa030(egf::Entity* pEntity)
 MS2_REPLACE(0x1413FA030, FUN_1413fa030, 47, 0x82637247);
 
 // @0x1413fa070
-NiNode* FUN_1413fa070(unsigned __int64 id)
+NiNode* FUN_1413fa070(egf::EntityID id)
 {
-    egf::Entity* pEntity = FUN_1411cf440(reinterpret_cast<Unk_NHEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), id);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
     if (pEntity != 0) {
         return static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity))));
     } else {

@@ -31,7 +31,6 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wid
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
 CString FUN_14028d990(const CString& strUrl);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // The placeholder images of the config singleton (DAT_143aac5c0).
 class Unk_SingletonObj
@@ -432,7 +431,7 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
-            ((class CUgcManager*)FUN_14052d220())->FUN_141884e30(DAT_143ab2830, 0, nId, strName, strUrl);
+            TSingleton<CUgcManager>::GetInstance()->FUN_141884e30(DAT_143ab2830, 0, nId, strName, strUrl);
             strResult = (bNoDownload != 0) ? CString(FUN_1401d31f0()->m_strNoProfile) : FUN_141028a90(strName, 0);
         }
         else
@@ -463,7 +462,7 @@ CString FUN_1410291d0(__int64 nId, const CString& strName)
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
-            ((class CUgcManager*)FUN_14052d220())->FUN_141884fd0(DAT_143ab2830, 0, nId, strName);
+            TSingleton<CUgcManager>::GetInstance()->FUN_141884fd0(DAT_143ab2830, 0, nId, strName);
             strResult = FUN_1401d31f0()->m_strNoProfile;
         }
         else
@@ -493,7 +492,7 @@ CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const C
         CString strFile = FUN_1410280d0(6, strName);
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
-            ((class CUgcManager*)FUN_14052d220())->DownloadGuildMark(nGuildId, strName, strUrl);
+            TSingleton<CUgcManager>::GetInstance()->DownloadGuildMark(nGuildId, strName, strUrl);
             if (strDefault.GetLength() > 0)
                 strFile = strDefault;
             else
@@ -529,7 +528,7 @@ CString FUN_1410299f0(unsigned __int64 nGuildId, const CString& strName, int nIn
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
             if (bDownload)
-                ((class CUgcManager*)FUN_14052d220())->DownloadGuildPoster(nGuildId, strName, nIndex, strUrl);
+                TSingleton<CUgcManager>::GetInstance()->DownloadGuildPoster(nGuildId, strName, nIndex, strUrl);
             strFile = FUN_1401d31f0()->m_strNoGuild;
         }
         else
@@ -552,8 +551,8 @@ CString FUN_141029ca0(const CString& strUrl)
     CString strFile = FUN_1410280d0(0xca, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
-        if (((class CUgcManager*)FUN_14052d220()) != 0)
-            ((class CUgcManager*)FUN_14052d220())->DownloadEmptyBanner(strUrl);
+        if (TSingleton<CUgcManager>::GetInstance() != 0)
+            TSingleton<CUgcManager>::GetInstance()->DownloadEmptyBanner(strUrl);
     }
     else
     {
@@ -587,12 +586,12 @@ CString FUN_14102a0b0(int nKind, const CString& strKey, const CString& strUrl, C
     CString strFile = FUN_1410280d0(nKind, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
-        if (((class CUgcManager*)FUN_14052d220()) != 0)
+        if (TSingleton<CUgcManager>::GetInstance() != 0)
         {
             MS2Ptr<CUgcShopBannerProxy> spProxy(new CUgcShopBannerProxy);
             spProxy->m_strKey = strKey;
             spProxy->m_strEntity = strEntity;
-            ((class CUgcManager*)FUN_14052d220())->DownloadShopBannerWithProxy(spProxy, nKind, strUrl);
+            TSingleton<CUgcManager>::GetInstance()->DownloadShopBannerWithProxy(spProxy, nKind, strUrl);
         }
     }
     else

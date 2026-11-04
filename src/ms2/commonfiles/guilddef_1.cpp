@@ -92,7 +92,7 @@ void* FUN_1404f0ce0(void*); void FUN_1404f14c0(void*); void FUN_1404f31c0(void*,
 unsigned FUN_1404f4450(void*); size_t FUN_1404f44a0(void*); void FUN_1404f8b40(void*); void FUN_1404f8c50(void*);
 void FUN_1404f9a40(void*,__int64,__int64); void FUN_1405063e0(void*,void*); void FUN_140506ac0(void*);void* FUN_1405076d0(void*,void*); void FUN_1405085e0(void*,void*); void FUN_140508ed0(void*,void*,void*);
 void FUN_1405098f0(void*); void FUN_1405099e0(void*,Unk_GuildRef*); void FUN_140509c90(void*,Unk_GuildRef*);
-unsigned FUN_14050a000(void*); int FUN_14050a040(void*); void* FUN_14025e7d0(); CString* FUN_1402295b0(void*,CString*,int);
+unsigned FUN_14050a000(void*); int FUN_14050a040(void*); CString* FUN_1402295b0(void*,CString*,int);
 void FUN_140791e40(void*,Unk_GuildRef*,int);
 // @0x1404c5c80
  Unk_GuildSeason::Unk_GuildSeason()

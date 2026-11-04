@@ -10,7 +10,6 @@
 
 class ASData;
 class ASScrollingList;
-class Unk_DictTab;
 class Unk_DictInput;
 
 class UIGameDictionaryDialog : public UIDialog
@@ -50,7 +49,6 @@ public:
     unsigned FUN_140f46e40(int nTab);                       // the row types of a tab (bit mask)
     void FUN_140f46ea0(int nTab, CStringW strSearch, int bSelectFirst);     // open on a tab with a search text
 
-    MS2Ptr<Unk_DictTab> FUN_140c02870(const CString& strName);      // bind a tab child
     MS2Ptr<Unk_DictInput> FUN_140e35bd0(const CString& strName);    // find the search input
 
 private:

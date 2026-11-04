@@ -26,15 +26,11 @@ struct Vector3
     float FUN_140968990();                                          // efd::Point3::Unitize (returns the old length)
     Vector3 FUN_14097fc90(float f) const;                   // efd::Point3::operator*(float)
     Vector3& FUN_140a4e560(const Vector3& pt);      // efd::Point3::operator+=
-    bool FUN_140552700(const Vector3& pt) const;            // efd::Point3::operator!=
-    bool FUN_140552690(const Vector3& pt) const;           // efd::Point3::operator==
     float FUN_140967ac0() const;                                    // efd::Point3::Length
-    float FUN_140a00f20(const Vector3& pt) const;           // efd::Point3::Dot
     Vector3 FUN_1409f7960() const;                          // efd::Point3::operator- (unary)
     Vector3 FUN_140ae9180(float f) const;                   // efd::Point3::operator/(float)
     Vector3& FUN_140ae9200(const Vector3& pt);      // efd::Point3::operator-= (camera.cpp)
     Vector3& FUN_140ae9270(float f);                        // efd::Point3::operator/=(float) (camera.cpp)
-    Vector3& FUN_140ad0c10(float f);                        // efd::Point3::operator*=(float)
     Vector3 FUN_14109adc0(const Vector3& pt) const; // unit cross product (getexp)
     float x, y, z;
 };
@@ -51,7 +47,6 @@ struct Unk_NiPoint3
 {
     Unk_NiPoint3(const Vector3& pt) : x(pt.x), y(pt.y), z(pt.z) {}
     float FUN_140967ac0() const;                                    // efd::Point3::Length (inherited)
-    bool FUN_140552690(const Vector3& pt) const;            // efd::Point3::operator== (inherited)
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_NiPoint3, 12);

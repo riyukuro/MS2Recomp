@@ -35,7 +35,7 @@ extern const char* g_szCefMessageDlExecuteCommand;      // 0x1439f7f18 "dl_execu
 
 extern __int64 DAT_143ab2828;                           // the own account id
 extern int DAT_143ab2830;                               // the own world id
-extern ATL::CAtlArray<int> DAT_143ab3078;               // the visited field ids
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;               // the visited field ids
 
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -78,11 +78,11 @@ static char s_map[0x48];
 struct Unk_MapInit {};
 static Unk_MapInit s_initMap = (FUN_1402a9d70(&s_map, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb2ef0), Unk_MapInit());
 
-void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_map.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142cb2ef0
-void FUN_142cb2ef0() { FUN_1402aa1d0(s_map); }
+void FUN_142cb2ef0() { reinterpret_cast<Unk_UIntStrMap*>(s_map)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // @0x1414bc6c0
@@ -210,7 +210,7 @@ bool CMS2JavascriptHandler::IsVisitedField(CefRefPtr<CefV8Value> object, const C
     CefRefPtr<CefV8Value> field = arguments[0];
     CefString csField = field->GetStringValue();
     int nField = (int)_wtoi64(csField.c_str());
-    bool bVisited = (Unk_ArrayFind<int>(DAT_143ab3078, nField) >= 0) ? 1 : 0;
+    bool bVisited = (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), nField) >= 0) ? 1 : 0;
     retval = CefV8Value::CreateBool(bVisited);
     return true;
 }

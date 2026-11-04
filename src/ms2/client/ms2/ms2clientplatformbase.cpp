@@ -142,8 +142,8 @@ void CUserReportData::Reset()
     m_n110 = 0;
 }
 
-// @0x140c75430 (a member of an unrecovered class; the object is unused)
-unsigned __int64 FUN_140c75430(void* pThis, int nKind)
+// @0x140c75430 (the report record is passed but unused)
+int FUN_140c75430(CUserReportData* pData, int nKind)
 {
     switch (nKind) {
     case 0: return 0;

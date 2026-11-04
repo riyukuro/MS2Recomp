@@ -34,6 +34,7 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/client/ms2/dungeonmissioncli.h"
 #include "ms2/client/ms2/roomstagedungeoncli.h"
+#include "ms2/placeholder/cmycharacter.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"
@@ -65,10 +66,9 @@ public:
 class Unk_Finder : public ASDisplayObjectContainer { public: MS2Ptr<ASTextField> FUN_140d01e20(const CString&); };   // C3: was Unk_RewardClip::FUN_140d01e20
 class Unk_RewardMission { public: };
 class Unk_RewardMissionPtr {
-public: ~Unk_RewardMissionPtr(); bool operator==(Unk_RewardMission*) const; Unk_RewardMission* get() const {return m_p;} Unk_RewardMission* operator->() const;
+public: bool operator==(Unk_RewardMission*) const; Unk_RewardMission* get() const {return m_p;}
 private: void* m_0;Unk_RewardMission* m_p;
 };
-class Unk_RewardMissions { public: Unk_RewardMissionPtr FUN_140d9f4e0(); };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
 class Unk_RewardOtherDialog : public UIDialog {
@@ -324,8 +324,8 @@ void UIDungeonRewardDialog::OnLoadComplete() {
  m_timer1.FUN_1408687f0();m_timer2.FUN_1408687f0();
  CreateAvatar();FUN_140e25170();FUN_140e22820();
  switch(m_type) {case 1:FUN_140e22d70();break;case 2:UpdateMinigameStage();break;case 3:FUN_140e25050();break;case 4:FUN_140e250e0();break;}
- Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
- if(mission.get()&&reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMaxScore()>0) {FUN_140e24060();FUN_140e24c50(true);}else FUN_140e24c50(false);
+ MS2Ptr<RoomStageDungeonCli> mission=FUN_140931510()->GetStage();
+ if(reinterpret_cast<Unk_RewardMissionPtr&>(mission).get()&&mission->GetMaxScore()>0) {FUN_140e24060();FUN_140e24c50(true);}else FUN_140e24c50(false);
  Unk_RewardOtherDialog* dialog=((class Unk_RewardOtherDialog*)FUN_140e01890(20044));
  if(dialog&&dialog->FUN_140e26860()) {dialog->vfunc_8(0);m_restore=true;}
 }
@@ -418,13 +418,13 @@ MS2_REPLACE_METHOD_VIA(0x140E227E0, UIDungeonRewardDialog, IUIAvatarEventListene
 // @0x140e24060
 void UIDungeonRewardDialog::FUN_140e24060() {
  if(m_1a0==0)return;
- Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
- if(mission==0)return;
+ MS2Ptr<RoomStageDungeonCli> mission=FUN_140931510()->GetStage();
+ if(reinterpret_cast<Unk_RewardMissionPtr&>(mission)==0)return;
  std::vector<MS2Ptr<DungeonMissionCli> > entries;
- reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMissions(entries);
- int cur=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetScore();
- int max=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetMaxScore();
- int rank=reinterpret_cast<RoomStageDungeonCli*>(mission.operator->())->GetRank();
+ mission->GetMissions(entries);
+ int cur=mission->GetScore();
+ int max=mission->GetMaxScore();
+ int rank=mission->GetRank();
  {
  CString rankName=GetRankName(rank);
  MS2Ptr<ASMovieClip> gauge=m_1a0->FUN_1409b4560("m_rankGauge");

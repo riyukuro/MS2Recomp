@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ascorelist.h"
 
 #include "uinpcpreviewdialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 
 #include <errno.h>
 #include <stdlib.h>
@@ -78,10 +79,6 @@ static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The button bar (tab strip) of the movie.
-class Unk_NpTab : public AScript
-{
-public:
-};
 
 // The world: the actors of an object id, the preview npc spawn / removal and the npc tree.
 class Unk_NpWorld : public WorldService
@@ -89,7 +86,7 @@ class Unk_NpWorld : public WorldService
 public:
     PCBase* FUN_141bd0cc0();                            // the local player
 };
-int FUN_141274aa0(GameObject* pObj);                    // the actor filter of the collection above
+int FUN_141274aa0(class Unk_ExpActor* pObj);            // the actor filter of the collection above (getexp.cpp)
 CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 
 // The ui text service (singleton): the text of a "$s_..." key.
@@ -563,8 +560,8 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
 // @0x141a711b0
 int UINpcPreviewDialog::FUN_141a711b0()
 {
-    if (MS2Ptr<Unk_NpTab> spTab = FUN_140c02870("m_buttonBar"))
-        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex() == 0;
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_buttonBar"))
+        return spTab.operator->()->GetSelectedIndex() == 0;
     return 0;
 }
 

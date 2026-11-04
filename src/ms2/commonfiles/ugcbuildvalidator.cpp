@@ -46,8 +46,6 @@ class Unk_BackUpItem;
 // The application service (class id 0x06100017): the cube service. The cube grid lives in it.
 class Unk_Service6100017 : public CubeMapInformationService
 {
-public:
-    bool FUN_1410d55d0(int nMapId, int x);
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }

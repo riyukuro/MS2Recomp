@@ -65,6 +65,8 @@ Unk_GcCondRef FUN_1413a5420(CStringA strTag);                           // the c
 void* FUN_141395500(void* pNode);
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
 #define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>((list).m_arr)
+// The condition lists are the exe's CAtlArray<MS2Ptr<CGuideCondition>> (count / [] / Add are its members).
+#define GE_CONDS(list) reinterpret_cast<ATL::CAtlArray<MS2Ptr<CGuideCondition> >&>(list)   // m_arr is at +0
 
 // The guide manager: the trigger events that were raised.
 class Unk_GeMgr
@@ -544,9 +546,9 @@ int CGuideEntity::IsSaveSkipped() const
 // @0x1413a2ca0
 int CGuideEntity::CheckStart(bool* pbOpen, unsigned* pnFailed)
 {
-    for (unsigned i = 0; i < m_condTrigger.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condTrigger).GetCount(); ++i)
     {
-        if (FUN_1413a5570(m_condTrigger.FUN_141387b40(i).FUN_141387bb0()) == 0)
+        if (FUN_1413a5570(GE_CONDS(m_condTrigger)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -554,9 +556,9 @@ int CGuideEntity::CheckStart(bool* pbOpen, unsigned* pnFailed)
             return 0;
         }
     }
-    for (unsigned i = 0; i < m_condOpen.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condOpen).GetCount(); ++i)
     {
-        if (FUN_1413a5570(m_condOpen.FUN_141387b40(i).FUN_141387bb0()) == 0)
+        if (FUN_1413a5570(GE_CONDS(m_condOpen)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -570,9 +572,9 @@ int CGuideEntity::CheckStart(bool* pbOpen, unsigned* pnFailed)
 // @0x1413a2dd0
 int CGuideEntity::CheckClose(unsigned* pnFailed)
 {
-    for (unsigned i = 0; i < m_condClose.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condClose).GetCount(); ++i)
     {
-        if (FUN_1413a5570(m_condClose.FUN_141387b40(i).FUN_141387bb0()) == 0)
+        if (FUN_1413a5570(GE_CONDS(m_condClose)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -587,9 +589,9 @@ int CGuideEntity::CheckCancel(unsigned* pnFailed)
 {
     if (GE_REFS(m_condCancel).IsEmpty())
         return 0;
-    for (unsigned i = 0; i < m_condCancel.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condCancel).GetCount(); ++i)
     {
-        if (FUN_1413a5570(m_condCancel.FUN_141387b40(i).FUN_141387bb0()) == 0)
+        if (FUN_1413a5570(GE_CONDS(m_condCancel)[i].operator->()) == 0)
         {
             if (pnFailed != 0)
                 *pnFailed = i;
@@ -604,32 +606,32 @@ void CGuideEntity::GetFailedText(CStringW& strOut, bool bTrigger, unsigned nIdx)
 {
     if (bTrigger)
     {
-        if (nIdx >= m_condTrigger.FUN_1413886d0())
+        if (nIdx >= GE_CONDS(m_condTrigger).GetCount())
             return;
-        strOut = m_condTrigger.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+        strOut = GE_CONDS(m_condTrigger)[nIdx]->vfunc_7();
     }
     else
     {
-        if (nIdx >= m_condOpen.FUN_1413886d0())
+        if (nIdx >= GE_CONDS(m_condOpen).GetCount())
             return;
-        strOut = m_condOpen.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+        strOut = GE_CONDS(m_condOpen)[nIdx]->vfunc_7();
     }
 }
 
 // @0x1413a30a0
 void CGuideEntity::GetCloseText(CStringW& strOut, unsigned nIdx)
 {
-    if (nIdx >= m_condClose.FUN_1413886d0())
+    if (nIdx >= GE_CONDS(m_condClose).GetCount())
         return;
-    strOut = m_condClose.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+    strOut = GE_CONDS(m_condClose)[nIdx]->vfunc_7();
 }
 
 // @0x1413a3150
 void CGuideEntity::GetCancelText(CStringW& strOut, unsigned nIdx)
 {
-    if (nIdx >= m_condCancel.FUN_1413886d0())
+    if (nIdx >= GE_CONDS(m_condCancel).GetCount())
         return;
-    strOut = m_condCancel.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+    strOut = GE_CONDS(m_condCancel)[nIdx]->vfunc_7();
 }
 
 // @0x1413a3210
@@ -720,12 +722,12 @@ void FUN_1413a3710(CGuideEntity* pEntity)
 void CGuideEntity::MoveStartedConditions()
 {
     Unk_GcCondList keep;
-    for (unsigned i = 0; i < m_condOpen.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condOpen).GetCount(); ++i)
     {
-        if (m_condOpen.FUN_141387b40(i).FUN_141387bb0()->m_n18 != 0)
-            m_condTrigger.FUN_141388460(m_condOpen.FUN_141387b40(i));
+        if (GE_CONDS(m_condOpen)[i]->m_n18 != 0)
+            GE_CONDS(m_condTrigger).Add(GE_CONDS(m_condOpen)[i]);
         else
-            keep.FUN_141388460(m_condOpen.FUN_141387b40(i));
+            GE_CONDS(keep).Add(GE_CONDS(m_condOpen)[i]);
     }
     GE_REFS(m_condOpen).RemoveAll();
     GE_REFS(m_condOpen).Append(GE_REFS(keep));
@@ -734,12 +736,12 @@ void CGuideEntity::MoveStartedConditions()
 // @0x1413a3820
 void CGuideEntity::CollectTriggerValues(std::map<int, int>& mapValues)
 {
-    for (unsigned i = 0; i < m_condTrigger.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(m_condTrigger).GetCount(); ++i)
     {
-        int nKind = m_condTrigger.FUN_141387b40(i).FUN_141387bb0()->m_n18;
+        int nKind = GE_CONDS(m_condTrigger)[i]->m_n18;
         if (nKind == 0)
             continue;
-        int nValue = m_condTrigger.FUN_141387b40(i).FUN_141387bb0()->vfunc_8();
+        int nValue = GE_CONDS(m_condTrigger)[i]->vfunc_8();
         std::map<int, int>::iterator it = mapValues.find(nKind);
         if (it == mapValues.end())
             mapValues.insert(std::make_pair(nKind, nValue));
@@ -756,7 +758,7 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
         Unk_GcCondRef ref = FUN_1413a52c0(pCond);
         (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
         if (ref.FUN_141387b90())
-            list.FUN_141388460(ref);
+            GE_CONDS(list).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
     }
 }
 
@@ -776,10 +778,10 @@ void CGuideEntity::LoadActions(Unk_140165cf0* pElem, CAtlArray<MS2Ptr<CGuideActi
 void CGuideEntity::PruneConditions(Unk_GcCondList& list)
 {
     Unk_GcCondList keep;
-    for (unsigned i = 0; i < list.FUN_1413886d0(); ++i)
+    for (unsigned i = 0; i < GE_CONDS(list).GetCount(); ++i)
     {
-        if (!list.FUN_141387b40(i).FUN_141387bb0()->vfunc_6(&keep))
-            keep.FUN_141388460(list.FUN_141387b40(i));
+        if (!GE_CONDS(list)[i]->vfunc_6(&keep))
+            GE_CONDS(keep).Add(GE_CONDS(list)[i]);
     }
     reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).RemoveAll();
     reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).Append(GE_REFS(keep));
@@ -788,6 +790,6 @@ void CGuideEntity::PruneConditions(Unk_GcCondList& list)
 // @0x1413a3be0
 void CGuideEntity::ResetConditions(Unk_GcCondList& list)
 {
-    for (unsigned i = 0; i < list.FUN_1413886d0(); ++i)
-        list.FUN_141387b40(i).FUN_141387bb0()->vfunc_4();
+    for (unsigned i = 0; i < GE_CONDS(list).GetCount(); ++i)
+        GE_CONDS(list)[i]->vfunc_4();
 }

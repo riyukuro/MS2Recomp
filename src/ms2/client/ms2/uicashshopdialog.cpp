@@ -203,8 +203,8 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd230(const AScript& row);                         // append a row
 };
+// Rows are appended with the real ASCoreList::AddItem (0x1422dd230); the list's vtable is still the local view.
 
 class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
@@ -275,7 +275,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                                  // show
 void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct);                          // the link of a product
 class CReservedWordTable;
-CommonString* FUN_14025e7d0();
 
 // ---- delegates ----
 
@@ -843,7 +842,7 @@ void UICashShopDialog::FUN_1410360c0()
     spList->Invoke("resetRenderer");
     ASObj header(2);
     ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(header.FUN_1422bb870()))->SetNull();
-    spList->FUN_1422dd230(header);
+    reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(header);
     Unk_CashPageMap pages(10);
     for (size_t nPage = 1; nPage <= 3; nPage++) {
         TPtrValue<Unk_CashSlotMap> spNew(Unk_GrNewTag(0));
@@ -893,7 +892,7 @@ void UICashShopDialog::FUN_1410360c0()
         size_t nAdded = 0;
         for (POSITION posSlot = spSlots->GetHeadPosition(); posSlot != 0; spSlots->GetNext(posSlot)) {
             MS2Ptr<AScript> spRow = spSlots->GetValueAt(posSlot);
-            spList->FUN_1422dd230(*spRow);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(static_cast<const ASObj&>(*spRow));
             nAdded++;
             if (nAdded >= nCapacity)
                 break;
@@ -901,7 +900,7 @@ void UICashShopDialog::FUN_1410360c0()
         for (size_t j = nAdded; j < nCapacity; j++) {
             ASObj filler(2);
             ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(filler.FUN_1422bb870()))->SetNull();
-            spList->FUN_1422dd230(filler);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(filler);
         }
     }
     spList->vfunc_24(true);
@@ -933,7 +932,7 @@ void UICashShopDialog::FUN_141036ca0()
         spRow->FUN_1407cbb20("salePrice", strSale);
         spRow->FUN_1407cbb20("price", strOriginal);
         spRow->FUN_1407cb9c0("tooltip", 1);
-        spList->FUN_1422dd230(*spRow);
+        reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(static_cast<const ASObj&>(*spRow));
     }
     spList->vfunc_24(true);
 }
@@ -1188,7 +1187,7 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         return true;
     if (!strMessage.IsEmpty()) {
         CBanTextChecker* pChecker;
-        CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
+        CBanTextChecker* pDead = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
         if (pChecker != 0) {
             CStringW strError;
             if (pChecker->FUN_140226260(strMessage, strError) != 0) {

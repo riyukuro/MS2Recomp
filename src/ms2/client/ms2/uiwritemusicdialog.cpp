@@ -6,6 +6,9 @@
 // MS2-RANGE: 0x1400e37f0-0x1400e39d0 .text$di
 // MS2-RANGE: 0x140fed9c0-0x1410084b0 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@2@XZ 0x141006910
+// MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@2@XZ 0x141007410
+// MS2-PIN: ??$_Get_unwrapped@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@YAPEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@0@QEAU10@@Z 0x140ffe580
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEAIAEAV?$MS2Ptr@VMMLToken@@@@$0A@@?$pair@IV?$MS2Ptr@VMMLToken@@@@@std@@QEAA@AEAIAEAV?$MS2Ptr@VMMLToken@@@@@Z 0x140ff6000 ; unique
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$map@HV?$multimap@IV?$MS2Ptr@VMMLToken@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMMLToken@@@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$multimap@IV?$MS2Ptr@VMMLToken@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMMLToken@@@@@std@@@3@@std@@@std@@@2@@std@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x140ff6320 ; prop
@@ -226,7 +229,6 @@ public:
 struct Unk_StringOptionEntry { CString& FUN_140298f80(); };              // Constants::Common::Value<CString>::Get
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the web page
 
-CommonString* FUN_14025e7d0();
 class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
@@ -814,7 +816,7 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_empty_title"), 0, 0, L"");
         return;
     }
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
     {
         CStringW strMessage;
         if (pChecker->FUN_140225a70(strTitle, strMessage) != 0)
@@ -1169,7 +1171,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
     if (strPath.IsEmpty())
         return;
     TiXmlDocument doc;
-    bool bLoaded = doc.FUN_140870fc0(FUN_14016a600(strPath, 0), 0);
+    bool bLoaded = doc.LoadFile(FUN_14016a600(strPath, 0), TIXML_ENCODING_UNKNOWN);
     if (bLoaded)
     {
         Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");

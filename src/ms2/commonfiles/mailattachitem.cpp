@@ -18,6 +18,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/systemmailcontent.h"   // C3: CSystemMailContent::GetMail
 #include "ms2/commonfiles/commonpricerecord.h"   // C3: Unk_CommonPriceRecord(List)
+#include "ms2/commonfiles/mailtextutil.h"   // C3: MailText (its implicit dtor is this unit's 0x140692c60)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -25,24 +26,6 @@ __int64 GetServerTime();                                                       /
 CStringW FUN_14083d340(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 
-class Unk_ReplMap { void* m_p[3]; };
-class Unk_ReplList { void* m_p[4]; };
-void FUN_140660c40(Unk_ReplList*) noexcept;
-void FUN_140660c80(Unk_ReplMap*) noexcept;
-// Placeholder substitution builder: feed (key, value) pairs, then read the result.
-class MailText { public: bool Load(const CStringW& strTitle, const CStringW& strBody); CStringW ResolveTitle(); };   // C3: member view (mailtextutil.cpp)
-class Unk_StrRepl {
-public:
-    Unk_StrRepl(int mode);                                                     // 0x14065cfa0
-    // @0x140692c60
-    ~Unk_StrRepl() { FUN_140660c40(&m_list); FUN_140660c80(&m_map); }          // 0x140692c60
-    void FUN_14065d590(const CStringW& key, const CStringW& value);
-private:
-    void* m_unk_00;
-    Unk_ReplMap m_map;
-    Unk_ReplList m_list;
-};
-MS2_CHECK_SIZE(Unk_StrRepl, 0x40);
 
 // ---- Unk_MailAttachPtr (same bodies as the generic MS2Ptr<T>) -------------------------------------------------------
 
@@ -672,15 +655,15 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         m_str30 = FUN_14083d340(m_str30);
         m_str48 = FUN_14083d340(m_str48);
         m_str50 = FUN_14083d340(m_str50);
-        Unk_StrRepl repl0(0);
-        reinterpret_cast<MailText&>(repl0).Load(m_str30, L"");
-        Unk_StrRepl repl1(1);
-        reinterpret_cast<MailText&>(repl1).Load(m_str48, m_str58);
-        Unk_StrRepl repl2(2);
-        reinterpret_cast<MailText&>(repl2).Load(m_str50, m_str60);
-        m_str30 = reinterpret_cast<MailText&>(repl0).ResolveTitle();
-        m_str48 = reinterpret_cast<MailText&>(repl1).ResolveTitle();
-        m_str50 = reinterpret_cast<MailText&>(repl2).ResolveTitle();
+        MailText repl0(0);
+        repl0.Load(m_str30, L"");
+        MailText repl1(1);
+        repl1.Load(m_str48, m_str58);
+        MailText repl2(2);
+        repl2.Load(m_str50, m_str60);
+        m_str30 = repl0.ResolveTitle();
+        m_str48 = repl1.ResolveTitle();
+        m_str50 = repl2.ResolveTitle();
     }
     if (FUN_140692720(m_nKind))
         TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceObjectAndValueWords(m_str50);

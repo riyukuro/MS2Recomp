@@ -336,7 +336,7 @@ void UICoupleDanceEventDialog::FUN_140bfd5e0()
     FUN_140bfdc00();
     if (m_30 == NULL)
         return;
-    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
+    CString strStates = DAT_143ab2fc0.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     XmlSplit(strStates, states, ",");
     ASObj root(2);
@@ -392,7 +392,7 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
     MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return;
-    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
+    CString strStates = DAT_143ab2fc0.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     XmlSplit(strStates, states, ",");
     m_1c0 = 0;
@@ -444,7 +444,7 @@ void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
         return;
     if (nStep < 0 || nStep >= (int)pEvent->m_dailyItems.size())
         return;
-    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
+    CString strStates = DAT_143ab2fc0.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     XmlSplit(strStates, states, ",");
     if (nStep >= (int)states.size())

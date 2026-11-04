@@ -33,7 +33,6 @@ public:
 void* FUN_14025e7c0();                                  // the client's text-hook object
 class CInputKeyHandler { public: bool IsDebugMode(void); };
 void FUN_140710590(COutPacket& packet);                 // send
-struct Unk_MaidUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };   // the dialog's UI object
 class CManufactureManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -276,7 +275,7 @@ UIMaidDialog* CUserMaidManager::GetMaidDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((class CUIService*)(((Unk_MaidUIService*)TSingleton<CUIService>::GetInstance())))->FindObject((enum eUIClassID)(nUiId));
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((enum eUIClassID)(nUiId));
         if (spUI.get() != 0)
             return dynamic_cast<UIMaidDialog*>((UIObject*)spUI);
     }

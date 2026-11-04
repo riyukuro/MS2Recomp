@@ -883,7 +883,7 @@ class UIBeautyShopDialog   // C3: member view for the former free stand-ins
 public:
     void FUN_1418c9cb0(int);
 };
-class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
+class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 class UICutSceneMovie { public: void PlayScene(int nSceneId, CString strPath); };
 CString FUN_14016a600(const wchar_t* pw, int n);
 void Unk_SplitA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);

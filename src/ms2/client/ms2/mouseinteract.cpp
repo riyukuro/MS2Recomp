@@ -57,7 +57,6 @@ class Unk_MiWorld
 {
 public:
     Unk_MiPlayer* FUN_141bd0cc0();                          // the local player
-    MS2Ptr<CPortal> FUN_141bc2800(unsigned nId);
 
 };
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
@@ -397,7 +396,7 @@ MS2Ptr<CPortal> CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const 
     WorldService::GetInstance()->FUN_141bc2980(&aIds);
     for (size_t i = 0; i < aIds.size(); i++) {
         const int& nId = aIds[i];
-        MS2Ptr<CPortal> hit = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bc2800(nId);
+        MS2Ptr<CPortal> hit = WorldService::GetInstance()->FUN_141bc2800((int)nId);
         if (hit == (CPortal*)0)
             continue;
         efd::SmartPointer<egf::Entity> comp(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(hit->m_idEntity));

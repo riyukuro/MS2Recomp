@@ -34,7 +34,7 @@ public:
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140b8e910(const CMsTime& time);                                // date text
-bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
+bool IsEarlierDay(CMsTime tmOld, CMsTime tmNew, int nBaseHour);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
 void TruncateToDay(CMsTime& time);                                          // 0x14086a6c0 (commonfiles/timeutil.cpp)
 void AddDays(CMsTime& time, long days);                                     // 0x14086a7e0
 void AddHours(CMsTime& time, int hours);                                    // 0x14086a830
@@ -286,9 +286,9 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
         CMsTime tEnd(((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0())->m_nTime);
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
-        if (!FUN_14086ab70(CMsTime(tStart), CMsTime(pPage->m_date), 0))
+        if (!IsEarlierDay(CMsTime(tStart), CMsTime(pPage->m_date), 0))
             nFrom = tStart.GetHour();
-        if (!FUN_14086ab70(CMsTime(pPage->m_date), CMsTime(tEnd), 0))
+        if (!IsEarlierDay(CMsTime(pPage->m_date), CMsTime(tEnd), 0))
             nTo = tEnd.GetHour();
     }
     else if (pTarget->m_nKind == 2)
@@ -297,9 +297,9 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
         CMsTime tEnd(GetServerTime());
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
-        if (!FUN_14086ab70(CMsTime(tStart), CMsTime(pPage->m_date), 0))
+        if (!IsEarlierDay(CMsTime(tStart), CMsTime(pPage->m_date), 0))
             nFrom = tStart.GetHour();
-        if (!FUN_14086ab70(CMsTime(pPage->m_date), CMsTime(tEnd), 0))
+        if (!IsEarlierDay(CMsTime(pPage->m_date), CMsTime(tEnd), 0))
             nTo = tEnd.GetHour();
     }
     pPage->m_pScript->FUN_1409ba0d0("setEnableTime", nFrom, nTo);

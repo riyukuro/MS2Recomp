@@ -32,13 +32,11 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
-// A display-object container built over a GFx value (ctor 0x1422c6570 / dtor 0x1422c65c0 are
-// ASDisplayObjectContainer's): the gfxutil.h child search.
+// The gfxutil.h child search over an ASDisplayObjectContainer (the caller builds the real container and reaches
+// these members through a cast; never constructed).
 class Unk_SsNode : public ASDisplayObjectContainer
 {
 public:
-    Unk_SsNode(const Scaleform::GFx::Value& v, int nMovieId);
-    virtual ~Unk_SsNode();
     template <class T> MS2Ptr<T> FUN_140c120d0(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140c12120(const Scaleform::GFx::Value& v, const CString& strName);
 };
@@ -118,7 +116,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     m_group->AddItemLabel(GetStringCommonByKey(L"s_dungeon_search_setting_group_none"));
     m_group->AddItemLabel(TranslateEnumDungeonGroup(1));
     m_group->AddItemLabel(TranslateEnumDungeonGroup(2));
-    m_group->FUN_1422df5f0(3);
+    m_group->SetMenuRowCount(3);
     m_group->SetSelectedIndex(0);
     m_roomOfRow.resize(m_rows.size(), 0);
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c113c0), (void*)0);
@@ -323,8 +321,8 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
     out.clear();
     out.reserve(nCount);
     for (unsigned i = nStart; i < nCount + nStart; ++i) {
-        Unk_SsNode node(root, 2);
-        MS2Ptr<T> spChild = node.FUN_140c120d0<T>(StringFormat("{0}{1}", strName, i));
+        ASDisplayObjectContainer node(root, 2);
+        MS2Ptr<T> spChild = reinterpret_cast<Unk_SsNode&>(node).FUN_140c120d0<T>(StringFormat("{0}{1}", strName, i));
         if (spChild == NULL) {
             MS2_GFXUTIL_ASSERT(99, 0);
             return false;

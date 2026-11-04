@@ -53,6 +53,7 @@ class PC { public: int FUN_141654700(); int FUN_141654730(); };   // C3: member 
 class UIGameMenuDialog { public: int IsMenuExpanded(CStringA strMenu); };   // C3: was FUN_141938a00
 class UIItemEnchantDialog { public: unsigned __int64 GetSelectedUid(); };
 __int64 GetServerTime();
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 template<class T> T* GetUIDialog(int nId);                    // the mastery dialog
 class UIMasteryDialog   // C3: member view for the former free stand-ins
@@ -811,7 +812,7 @@ void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "dialogName", m_strDialog);
     CStringA strChild;
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "childName", strChild);
-    FUN_14015f050(strChild, m_children, ".");
+    Unk_SplitA(strChild, &m_children, ".");
 }
 
 // @0x1413af190

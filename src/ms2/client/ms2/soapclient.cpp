@@ -43,7 +43,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CLogString* GetLogString();
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
 int FUN_1406516b0();                                // the server kind
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -109,7 +108,7 @@ int CSoapClient::FUN_14176feb0()
 
     try
     {
-        spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+        spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
         if (spCtrl == 0)
             throw Exception(CString("pUgcUploadCtrl"), 0xd);
         if (spCtrl->GetImage().get())
@@ -169,7 +168,7 @@ int CSoapClient::FUN_14176feb0()
         delete[] pBuffer;
     if (pBuffer2 != 0)
         delete[] pBuffer2;
-    ((class CUgcManager*)FUN_14052d220())->FUN_141882d80(spCtrl, nError, strResult);
+    TSingleton<CUgcManager>::GetInstance()->FUN_141882d80(spCtrl, nError, strResult);
     return nError;
 }
 

@@ -62,6 +62,7 @@
 #include "ms2/commonfiles/itemsocketsystemutil.h"
 #include "ms2/commonfiles/itemextractiontable.h"
 #include "ms2/placeholder/cugcmanager.h"   // C3: CUgcManager::FUN_141885880
+#include <egf/EntityID.h>
 
 class Unk_ItemEquipData : public CItemData
 {
@@ -79,19 +80,15 @@ extern MS2Ptr<CItemData> FUN_14053f870(int);
 ItemGachaBoxTable* FUN_14052d230();
 class NpcShopItemLife : public CPtred { public: Unk_ItemSlot188 FUN_14026eab0(); };   // commonstruct_wa.h has the full class
 class Unk_SingletonObj {};
-// The UGC model download manager behind DAT_143aaf1d8 (avatarpc.cpp declares the same class).
-struct Unk_UgcNullKey { Unk_UgcNullKey(int n); Unk_UgcNullKey(const Unk_UgcNullKey&); void* m_pad; };   // ctor 0x1401cd100; copy ctor only makes it pass by address
+// The return type of the FUN_14052d220 definition below (TSingleton<CUgcManager>::GetInstance; callers use the real one).
 class Unk_UgcRideeMgr : public Unk_SingletonObj
 {
-public:
-    void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_UgcNullKey kKey);
 };
 class Unk_MusicBookTable;
 class Unk_EnchantRates : public CItemEnchantUtil { };
 // The pet row table behind DAT_143aaf1c8 (tabcontentspetevolution.cpp declares the same lookup).
 class Unk_PetRowTable : public Unk_SingletonObj { };
-class Unk_NamedSource;
-CStringW FUN_141277a90(Unk_NamedSource* pLook, const CStringW& strFallback);
+CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name (unit_141274d10_uihelpers)
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 class CUgcManager;
@@ -2270,7 +2267,7 @@ CStringW CItem::FUN_140527b10()
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
-        return FUN_141277a90((Unk_NamedSource*)&m_spUgc->m_look, strName);
+        return FUN_141277a90(&m_spUgc->m_look, strName);
     }
     else if (FUN_140527840()->FUN_14053cd10())
     {
@@ -2679,13 +2676,13 @@ void CItem::FUN_140524eb0(CInputStream& in)
         {
             if (m_spUgc->GetLookLocalPath().GetLength() > 0)
             {
-                FUN_14052d220()->FUN_141883df0(this, 0);
+                TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(this, egf::EntityID(0));
             }
         }
         if (FUN_140526010() != 0)
         {
             if (m_spUgc->GetLookLocalPath().GetLength() > 0)
-                reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141885880(MS2Ptr<CItem>(this));
+                TSingleton<CUgcManager>::GetInstance()->FUN_141885880(MS2Ptr<CItem>(this));
         }
     }
     if (FUN_140525a30() != 0 && static_cast<CItemGem*>(m_spGem) != 0)

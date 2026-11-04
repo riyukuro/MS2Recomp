@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/mstime.h"
 #include "uifamepointboarddialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 #include <atlcoll.h>
 #include <atltime.h>
 #include "ms2/ms2format.h"
@@ -28,16 +29,6 @@
 
 // ---- unit-local views of exe objects ----
 
-// "m_tab": the alliance tab strip.
-class Unk_FpTab : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bVisible);
-};
 
 // The movie root with the "setData" call.
 class Unk_FpScript : public AScript
@@ -55,8 +46,7 @@ __int64 GetServerTime();                                                // the s
 CStringW FUN_140762de0(int nAlliance);                                  // the alliance's name
 CString FUN_140762e90(int nAlliance);                                   // the alliance's symbol
 CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the grade's name
-enum Unk_SlotKey { };
-unsigned FUN_140931210(Unk_SlotKey nAlliance);                          // the player's grade
+int FUN_140931210(Unk_FameAlliance nAlliance);                          // the player's fame points
 void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
 
 extern ATL::CRBMap<__int64, int> DAT_143ab31e8;                         // time -> fame log id
@@ -132,9 +122,9 @@ int UIFamePointBoardDialog::FUN_140c156d0()
 // @0x140c15780
 void UIFamePointBoardDialog::FUN_140c15780()
 {
-    if (MS2Ptr<Unk_FpTab> spTab = FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
     {
-        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->FUN_1422e3400();
+        spTab->FUN_1422e3400();
         ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
         for (size_t i = 0; i < ids.GetCount(); i++)
         {
@@ -145,11 +135,11 @@ void UIFamePointBoardDialog::FUN_140c15780()
             ASObj row(2);
             row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
             row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_SlotKey)nAlliance)));
+            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
             row.FUN_1407cb9c0("allianceCode", nAlliance);
-            reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->AddItem(row);
+            spTab->AddItem(row);
         }
-        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(0);
+        spTab->SetSelectedIndex(0);
         spTab->vfunc_24(true);
     }
 }
@@ -163,7 +153,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     FUN_140762fc0(nAlliance, &nCurrent, &nMax, strPoint);
     ASObj data(2);
     data.FUN_1407cbb20("allianceName", FUN_140762de0(nAlliance));
-    data.FUN_1407cbb20("allianceGrade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_SlotKey)nAlliance)));
+    data.FUN_1407cbb20("allianceGrade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_FameAlliance)nAlliance)));
     data.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
     data.FUN_1407cb9c0("currentFame", nCurrent);
     data.FUN_1407cb9c0("maxFame", nMax);

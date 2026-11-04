@@ -446,6 +446,9 @@ CNetworkService* FUN_140714f90();
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_1414a5910(char* pOptimizer);   // C3: the frame time limit (COptimizer)
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
+// TSingleton<CLogString> declares no GetInstance: its live-instance getter is GetLogString (0x140166440).
+template <>
+inline CLogString* Unk_SingletonCreator<CLogString>::CreateInstance() { return TSingleton<CLogString>::s_instance ? GetLogString() : new CLogString; }
 class Unk_Ms2PhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_1414a2a10();                                           // TSingleton delete of FUN_1409f7ca0()
@@ -789,7 +792,7 @@ void MS2::PrepareShaderCache()
     NiFragmentMaterial::SetDefaultWriteDebugProgramData(true);
     NiFragmentMaterial::SetDefaultLoadProgramCacheOnCreation(true);
     NiFragmentMaterial::SetDefaultLockProgramCache(false);
-    if (kDoc.FUN_140870fc0(strVersionFile, 0))
+    if (kDoc.LoadFile(strVersionFile, TIXML_ENCODING_UNKNOWN))
     {
         Unk_140165cf0* pRoot;
         Unk_140165cf0* pShader;

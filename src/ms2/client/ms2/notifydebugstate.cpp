@@ -42,6 +42,7 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read6, Read8
 
 // The notices CMyCharacter posts (the name virtual GetTypeName is defined in unit_140db46d0).
 class NotifyDebugState : public NotifyObject
@@ -72,8 +73,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: the NotifySystem (calls cast b
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 __int64 GetServerTime();                        // server time
 int FUN_141472bc0();                            // tick count
-CInputStream& FUN_14070f480(CInputStream& in, int& value);
-CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
 
 // @0x140da1ec0
 NotifyDebugState::NotifyDebugState()
@@ -138,7 +137,7 @@ CInputStream& FUN_140d9fc80(CInputStream& in, ATL::CAtlMap<int, __int64>& map)
     {
         int nKey;
         __int64 nValue;
-        FUN_14070f500(FUN_14070f480(in, nKey), nValue);
+        reinterpret_cast<Unk_OSInput&>(in).Read6(reinterpret_cast<unsigned&>(nKey)).Read8(reinterpret_cast<unsigned __int64&>(nValue));
         map.SetAt(nKey, nValue);
     }
     return in;

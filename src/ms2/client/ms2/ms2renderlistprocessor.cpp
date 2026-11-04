@@ -106,8 +106,7 @@ class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };  
 // @0x1400f8ee0
 const NiRTTI MS2MaterialSwapProcessor::ms_RTTI("MS2MaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
 // @0x1400f8f10
-// the exe's MS2OuterGlowMaterialSwapProcessor::ms_RTTI at 0x143ae0ad8 (other units reach it by that name; symbols row)
-NiRTTI DAT_143ae0ad8("MS2OuterGlowMaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
+const NiRTTI MS2OuterGlowMaterialSwapProcessor::ms_RTTI("MS2OuterGlowMaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
 // @0x1400f8f40
 const NiRTTI MS2OutlinePreProcessor::ms_RTTI("MS2OutlinePreProcessor", &MS2RenderListProcessor::ms_RTTI);
 #endif

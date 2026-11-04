@@ -31,12 +31,12 @@ bool PendingEffect::Init(MS2Ptr<Unk_PeEffectSet> spSet, const NoticeMessage& kTa
     m_target.CopyFrom(kTarget);
     if (kTarget.m_p18)
     {
-        m_xformA = *static_cast<Unk_PeXform*>(kTarget.m_p18);
+        m_xformA = *static_cast<NiTransform*>(kTarget.m_p18);
         m_target.m_p18 = &m_xformA;
     }
     if (kTarget.m_p20)
     {
-        m_xformB = *static_cast<Unk_PeXform*>(kTarget.m_p20);
+        m_xformB = *static_cast<NiTransform*>(kTarget.m_p20);
         m_target.m_p20 = &m_xformB;
     }
     if (kTarget.m_p28)

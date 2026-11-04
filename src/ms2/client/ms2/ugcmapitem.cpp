@@ -17,7 +17,6 @@
 #include "hook/ms2hook.h"
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class Unk_CommonOwner   // C3: member view for the former free stand-ins
 {
 public:
@@ -139,7 +138,7 @@ int Unk_CubeStock::FUN_140dfc520(CUGCMapItem* pItem)
     MS2Ptr<CUgcItemLook> spLook = pItem->GetLook();
     bool bName = (spLook.get() ? true : false) && spLook->GetLocalPath().GetLength() > 0;
     if (bName)
-        ((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
+        TSingleton<CUgcManager>::GetInstance()->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
     return 0;
 }
 

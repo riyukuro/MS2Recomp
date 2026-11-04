@@ -53,8 +53,6 @@ class Unk_SSGNamedObj : public CLiftableObject {};
 class Unk_SSGWorld : public WorldService
 {
 public:
-    MS2Ptr<CPortal> FUN_141bc2800(int nId);                     // a field object by id
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // find one by name
     MS2Ptr<Unk_SSGNamedObj> FUN_141bc5a20(CString strName);     // a named field object
     MyPC* FUN_141bd0cc0();                                      // the local player actor
 };
@@ -344,7 +342,7 @@ int InteractNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40->m_30.find(m_30) == pResult->m_40->m_30.end())
         return 0;
-    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(m_38);
     if (spObj.IsNull())
         return 0;
     if (spObj->vfunc_7() == 0)
@@ -357,7 +355,7 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
     if (pContext->m_30.find(m_30) == pContext->m_30.end())
         return 0;
-    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(m_38);
     if (spObj.IsNull())
         return 0;
     if (spObj->vfunc_7() == 0)
@@ -368,7 +366,7 @@ int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 // @0x140e79590
 Vector3 InteractNavigationEntity::vfunc_7()
 {
-    MS2Ptr<CInteractObject> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_38);
+    MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(m_38);
     if (spObj.get() != 0)
     {
         Vector3 pt = spObj->GetPos();
@@ -471,7 +469,7 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_1c != 4)
         return 0;
-    MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_30);
+    MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
     if (reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spPortal->FUN_14169d2f0())) != reinterpret_cast<const efd::Point3&>(pResult->m_20))   // efd::Point3 !=
@@ -484,7 +482,7 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
 // @0x140e79e50
 Vector3 PortalNavigationEntity::vfunc_7()
 {
-    MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_30);
+    MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(m_30);
     if (spPortal.get() != 0)
     {
         Vector3 pt = spPortal->FUN_14169d2f0();

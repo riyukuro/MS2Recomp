@@ -317,7 +317,7 @@ __int64 PositiveDifference(__int64 from, __int64 to) {
     return to - from;
 }
 // @0x14086ab70
-bool IsEarlierDay(CMsTime& a, CMsTime& b, int baseHour) {
+bool IsEarlierDay(CMsTime a, CMsTime b, int baseHour) {
     MS2_ASSERT_AT(589, baseHour >= 0 && baseHour < 24);
     if(a > b) return false;
     if(baseHour != 0) { AddHours(a, -baseHour); AddHours(b, -baseHour); }

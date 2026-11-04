@@ -31,7 +31,7 @@ extern unsigned char DAT_1439f5458[16];
 
 CString FUN_140695240(const char* psz);                      // hash of a string (hkey)
 CString FUN_1409a2360(const char* psz, int nCodePage);       // CString from a narrow string (0 = default code page)
-std::string FUN_14083fa60(const char* pData, unsigned nLen); // string from a buffer
+std::string FUN_14083fa60(const unsigned char* pData, unsigned nLen); // string from a buffer
 __int64 GetServerTime();                                     // GetServerTime
 
 // The cipher context (0xbc bytes).
@@ -443,6 +443,6 @@ CString FUN_140c85310(const CString& strPlain)
     unsigned char aBuf[0x400];
     memset(aBuf, 0, sizeof(aBuf));
     int nOut = FUN_140c816b0((const unsigned*)DAT_1439f5448, DAT_1439f5458, pszPlain, (int)str.size(), aBuf);
-    std::string strHex = FUN_14083fa60((const char*)aBuf, nOut);
+    std::string strHex = FUN_14083fa60(aBuf, nOut);
     return CString(strHex.c_str());
 }

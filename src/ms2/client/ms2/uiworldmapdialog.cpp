@@ -186,7 +186,6 @@ extern ATL::CAtlArray<unsigned int> DAT_143ab3058;                          // t
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);  // FormatStringId<CStringW, CStringW>
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // a string table text by key
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                          // the movie of an id
-class Unk_QmGroupTable* FUN_140d738f0();   // C3: was FUN_140d738f0
 int FUN_14037c450(CFieldMissionTable* pTable, int nRound);                  // there is a previous round
 int FUN_14037c510(CFieldMissionTable* pTable, int nRound);                  // there is a next round
 CString Name_14021a6b0(int nId);                                            // the name movie of an id
@@ -195,7 +194,7 @@ int FUN_141b71c00(unsigned short nLevel);                                   // t
 CStringW FUN_1409404f0(__int64 n);                                          // the number with separators
 CStringW FUN_14016a730(const char* sz, int nCodePage);                     // widen
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // the index of a value or -1
-extern ATL::CAtlArray<int> DAT_143ab3078;                                   // the taxi stops the player has found
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;                                   // the taxi stops the player has found
 void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& lines);          // the quest's mission tooltip lines
 extern __int64 DAT_143ab2898;                                               // the player's meso
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
@@ -714,7 +713,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             int nArg = data.PopInt();
-            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetPrevRound(nArg);
+            int nRound = TSingleton<CFieldMissionTable>::GetInstance()->GetPrevRound(nArg);
             if (nRound != 0)
                 FUN_141b5cc40(nRound);
         }
@@ -725,7 +724,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             int nArg = data.PopInt();
-            int nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetNextRound(nArg);
+            int nRound = TSingleton<CFieldMissionTable>::GetInstance()->GetNextRound(nArg);
             if (nRound != 0)
                 FUN_141b5cc40(nRound);
         }
@@ -1681,7 +1680,7 @@ void UIWorldMapDialog::FUN_141b5be10()
     int nDone = ((class CQuestManager*)FUN_140764020())->CountCompletedQuests80();
     if (((class CQuestManager*)FUN_140764020())->IsLastRound() != 0)
     {
-        nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetMaxRound();
+        nRound = TSingleton<CFieldMissionTable>::GetInstance()->GetMaxRound();
         nEnable = 0;
     }
     ASObj obj(2);
@@ -1689,8 +1688,8 @@ void UIWorldMapDialog::FUN_141b5be10()
     obj.FUN_1407cbb20("rate", FormatStringId<CStringW>(0x98e, StringFormat(L"{0}", (nDone * 100) / nTotal)));
     obj.FUN_1407cbb20("count", StringFormat(L"{0}/{1}", nDone, nTotal));
     obj.FUN_1407cbb20("desc", FUN_14028dfa0<int>(CStringW(L"s_fieldmission_desc"), nRound));
-    obj.FUN_1407cbbe0("prev", FUN_14037c450(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
-    obj.FUN_1407cbbe0("next", FUN_14037c510(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
+    obj.FUN_1407cbbe0("prev", FUN_14037c450(TSingleton<CFieldMissionTable>::GetInstance(), nRound) != 0);
+    obj.FUN_1407cbbe0("next", FUN_14037c510(TSingleton<CFieldMissionTable>::GetInstance(), nRound) != 0);
     obj.FUN_1407cb9c0("enable", nEnable);
     FUN_141b5c2b0(nRound, &obj);
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_fieldMission"))
@@ -1714,7 +1713,7 @@ MS2_REPLACE_METHOD(0x141B5C230, UIWorldMapDialog, FUN_141b5c230, 118, 0x1D79830E
 // @0x141b5c2b0
 void UIWorldMapDialog::FUN_141b5c2b0(int nRound, ASObj* pObj)
 {
-    MS2Ptr<CFieldMissionReward> spReward = ((class CFieldMissionTable*)FUN_140d738f0())->GetReward(nRound);
+    MS2Ptr<CFieldMissionReward> spReward = TSingleton<CFieldMissionTable>::GetInstance()->GetReward(nRound);
     if (spReward.get() != 0)
     {
         if (spReward->m_nType == 1)
@@ -1811,8 +1810,8 @@ void UIWorldMapDialog::FUN_141b5cc40(int nRound)
     obj.FUN_1407cb9c0("rewardCount", nRound);
     obj.FUN_1407cb9c0("enable", nEnable);
     obj.FUN_1407cbb20("desc", FUN_14028dfa0<int>(CStringW(L"s_fieldmission_desc"), nRound));
-    obj.FUN_1407cbbe0("prev", FUN_14037c450(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
-    obj.FUN_1407cbbe0("next", FUN_14037c510(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
+    obj.FUN_1407cbbe0("prev", FUN_14037c450(TSingleton<CFieldMissionTable>::GetInstance(), nRound) != 0);
+    obj.FUN_1407cbbe0("next", FUN_14037c510(TSingleton<CFieldMissionTable>::GetInstance(), nRound) != 0);
     FUN_141b5c2b0(nRound, &obj);
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_fieldMission"))
         spPanel->Invoke("setData", obj);
@@ -2099,7 +2098,7 @@ void UIWorldMapDialog::FUN_141b5ee80(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
         CStringW strState(L"disabled");
         __int64 nFare = 0;
         bool bHere = false;
-        if (Unk_ArrayFind<int>(DAT_143ab3078, reinterpret_cast<const int&>(spTile->m_34)) >= 0)
+        if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), reinterpret_cast<const int&>(spTile->m_34)) >= 0)
         {
             bHere = spTile->m_34 == FUN_141b69690();
             if (m_194 != 0)

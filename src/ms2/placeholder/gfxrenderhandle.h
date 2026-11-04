@@ -81,9 +81,30 @@ public:
     virtual void vfunc_66();
     virtual Unk_BgTarget* vfunc_67(IDirect3DSurface9* pSurface, int nFlags);
 };
-Unk_BgHal* FUN_1422cf060();
+class Unk_GFxUIHal* FUN_1422cf060();   // the UI renderer's HAL (gfxrenderhelpers.h); callers view it as Unk_BgHal
 
 // The ref-counted handle objects of vfunc_9 (Scaleform render handles): AddRef/Release are out-of-line library functions.
+// Views of the SDK render classes vfunc_9 calls by name (render_renderer2d.h clashes with the GFx kernel headers here;
+// gfxmoviebackground.cpp declares the same views).
+namespace Scaleform { namespace Render {
+namespace ContextImpl {
+class Entry;
+class RenderNotify;
+class RTHandle
+{
+public:
+    bool   NextCapture(RenderNotify* render);
+    Entry* GetRenderEntry() const;
+private:
+    void* pData;
+};
+}
+class Renderer2D
+{
+public:
+    ContextImpl::RenderNotify* GetContextNotify() const;
+};
+} }
 class Unk_BgDispHandle;
 class Unk_GFxHandleObj
 {
@@ -108,7 +129,6 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17(Unk_BgTarget* pTarget, bool bFlag);
-    void* FUN_142582270();
     void FUN_142582230(void* p);
     void Assign(Unk_BgDispHandle& kHandle);                                 // 0x14127cb10
 };
@@ -129,7 +149,6 @@ class Unk_BgDispHandle : public Unk_BgDispBase
 public:
     Unk_BgDispHandle(const Unk_BgDispHandle& r);                            // 0x14127c130
     ~Unk_BgDispHandle();                                                    // 0x14127c530
-    bool FUN_1425805a0(void* p);
     void* FUN_142580250();
     void* GetObj();                                                         // 0x14127cc80
 };

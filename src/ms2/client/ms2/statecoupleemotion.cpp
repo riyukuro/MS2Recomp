@@ -129,10 +129,8 @@ class Unk_CeConsts { public: char m_pad0[0x37e0]; Unk_CeConstSlot m_maxDist; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Opaque scene-graph and math helpers of the placement search (free-function form).
-NiNodePtr FUN_14097eba0(NiNode* pNode);
 void FUN_140a0b2a0(NiAVObject* pObject);                                   // 0x140a0b2a0 detach from the parent
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
-bool FUN_1409a7f70(const NiNodePtr& sp, int nNull);                        // 0x1409a7f70 smart pointer == null
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
 int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                      // 0x14151f820 the message box currently shown
@@ -155,9 +153,6 @@ struct Unk_RayCastInfo
     efd::Point3 m_hitNormal;                            // +0x58
 };
 MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
-// 0x14097eba0 smart-pointer copy of a node
-NiNode* FUN_14098d0f0(const NiNodePtr& spNode);
-NiNode* FUN_14098d0f0(const NiAVObjectPtr& spNode);                            // 0x14098d0f0 the pointer in the smart pointer
 NiTransform* FUN_140a33de0(const NiTransform& kA, NiTransform* pOut, const NiTransform& kB);   // 0x140a33de0 compose
 void FUN_140a35bd0(efd::Matrix3* pDest, const NiTransform* pSrc);          // 0x140a35bd0 store the rotation part
 void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const char* const* ppszArg0,
@@ -276,22 +271,22 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
         MS2_ASSERT_AT(0x72, "m_spNifRoot" && 0);
         return false;
     }
-    FUN_1409f76f0(&m_spOwnerNode, NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName((const char*)m_strOwnerNode)));
-    if (FUN_1409475d0(&m_spOwnerNode) == 0)
+    m_spOwnerNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName((const char*)m_strOwnerNode));
+    if ((NiNode*)m_spOwnerNode == 0)
     {
         MS2_ASSERT_AT(0x75, "m_spOwnerNode" && 0);
         return false;
     }
-    FUN_1409f76f0(&m_spPeerNode, NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName((const char*)m_strPeerNode)));
-    if (FUN_1409475d0(&m_spPeerNode) == 0)
+    m_spPeerNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName((const char*)m_strPeerNode));
+    if ((NiNode*)m_spPeerNode == 0)
     {
         MS2_ASSERT_AT(0x78, "m_spPeerNode" && 0);
         return false;
     }
-    FUN_1409f76f0(&m_spCenterNode, NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName(PTR_s_Eff_center_1439f4db0)));
-    if (m_spCenterNode.FUN_1409f77a0(0))
+    m_spCenterNode = (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, m_spNifRoot->GetObjectByName(PTR_s_Eff_center_1439f4db0));
+    if (m_spCenterNode == 0)
         m_spCenterNode = m_spOwnerNode;
-    if (FUN_1409475d0(&m_spCenterNode) == 0)
+    if ((NiNode*)m_spCenterNode == 0)
     {
         MS2_ASSERT_AT(0x7e, "m_spCenterNode" && 0);
         return false;
@@ -308,7 +303,7 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
             pCtrl = pCtrl->GetNext();
         }
     }
-    for (NiTimeController* pCtrl = ((NiAVObject*)FUN_1409475f0(&m_spOwnerNode))->GetControllers(); pCtrl != 0;
+    for (NiTimeController* pCtrl = m_spOwnerNode->GetControllers(); pCtrl != 0;
          pCtrl = pCtrl->GetNext())
     {
         if (pCtrl->GetEndKeyTime() > m_fDuration)
@@ -453,8 +448,8 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
         return;
     if (!m_spAnimInfo->Load(m_spCoupleData->m_nAni))
         return;
-    FUN_1409f76f0(&m_spLoopEffectNode, NiNew NiNode(0));
-    TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()->AttachChild((NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode), false);
+    m_spLoopEffectNode = NiNew NiNode(0);
+    TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()->AttachChild((NiAVObject*)(NiNode*)m_spLoopEffectNode, false);
     if (FUN_1417b7e40() == 0x96)
         PlayFirstAni();
 }
@@ -488,8 +483,8 @@ void StateCoupleEmotion::vfunc_5(int n)
             break;
         pOwnerPC->SetRotationAndTargetYaw(m_posSaved);
     } while (0);
-    FUN_140a0b2a0((NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode));
-    FUN_1409f76f0(&m_spLoopEffectNode, 0);
+    FUN_140a0b2a0((NiAVObject*)(NiNode*)m_spLoopEffectNode);
+    m_spLoopEffectNode = (NiNode*)0;
     m_pOwner->FUN_141670330(0.0f);
 }
 
@@ -597,13 +592,13 @@ void StateCoupleEmotion::vfunc_24()
         NiPoint3 kRot;
         if (m_spAnimInfo == 0)
             break;
-        if (m_spAnimInfo->m_spOwnerNode.FUN_1409f77a0(0))
+        if (m_spAnimInfo->m_spOwnerNode == 0)
             break;
-        NiNodePtr spParent = FUN_14097eba0(((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetParent());
-        if (FUN_1409a7f70(spParent, 0))
+        NiAVObjectPtr spParent(m_spAnimInfo->m_spOwnerNode->GetParent());
+        if (spParent == 0)
             break;
-        NiTransform kXform = static_cast<NiAVObject*>(FUN_14098d0f0(spParent))->GetWorldTransform()
-            * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetLocalTransform();
+        NiTransform kXform = spParent->GetWorldTransform()
+            * m_spAnimInfo->m_spOwnerNode->GetLocalTransform();
         FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kXform), reinterpret_cast<efd::Point3&>(kRot));
         kRot = m_spCoupleData->m_posEnd + kRot;
         pOwnerPC->SetRotationAndTargetYaw(kRot);
@@ -853,19 +848,19 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         MS2_ASSERT_AT(0x289, "pPeerPC" && 0);
         return false;
     }
-    Unk_NodePtr spPeerNode(m_spAnimInfo->m_spPeerNode);
-    if (FUN_1409475d0(&spPeerNode) == 0)
+    NiNodePtr spPeerNode(m_spAnimInfo->m_spPeerNode);
+    if ((NiNode*)spPeerNode == 0)
     {
         MS2_ASSERT_AT(0x28c, "spPeerNode" && 0);
         return false;
     }
-    Unk_NodePtr spOwnerNode(m_spAnimInfo->m_spOwnerNode);
-    if (FUN_1409475d0(&spOwnerNode) == 0)
+    NiNodePtr spOwnerNode(m_spAnimInfo->m_spOwnerNode);
+    if ((NiNode*)spOwnerNode == 0)
     {
         MS2_ASSERT_AT(0x28f, "spOwnerNode" && 0);
         return false;
     }
-    NiNodePtr spParentNode = FUN_14097eba0(((NiAVObject*)FUN_1409475f0(&spOwnerNode))->GetParent());
+    NiAVObjectPtr spParentNode(spOwnerNode->GetParent());
     if (!spParentNode)
     {
         MS2_ASSERT_AT(0x292, "spParentNode" && 0);
@@ -874,9 +869,9 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
     NiPoint3 kRot(static_cast<const efd::Point3&>(pOwnerPC->vfunc_20()));   // the owner's angles; each step turns z by one degree
     for (int nStep = 0; nStep < 360; ++nStep, kRot.z += 1.0f)
     {
-        NiTransform kOwnerXf = ((NiAVObject*)FUN_1409475f0(&spOwnerNode))->GetWorldTransform();
-        NiTransform kParentXf = static_cast<NiAVObject*>(FUN_14098d0f0(spParentNode))->GetWorldTransform();
-        NiTransform kPeerXf = ((NiAVObject*)FUN_1409475f0(&spPeerNode))->GetWorldTransform();
+        NiTransform kOwnerXf = spOwnerNode->GetWorldTransform();
+        NiTransform kParentXf = spParentNode->GetWorldTransform();
+        NiTransform kPeerXf = spPeerNode->GetWorldTransform();
         reinterpret_cast<Vector3*>(&kParentXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
         reinterpret_cast<Vector3*>(&kPeerXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
         reinterpret_cast<Vector3*>(&kOwnerXf.m_Translate)->FUN_140ae9200(*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate)));
@@ -976,23 +971,23 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
         MS2_ASSERT_AT(0x186, "m_pAnimInfo" && 0);
         return;
     }
-    if (FUN_1409475d0(&m_spAnimInfo->m_spOwnerNode) == 0)
+    if ((NiNode*)m_spAnimInfo->m_spOwnerNode == 0)
     {
         MS2_ASSERT_AT(0x187, "m_pAnimInfo->m_spOwnerNode" && 0);
         return;
     }
-    NiNodePtr spParentNode = FUN_14097eba0(((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetParent());
+    NiAVObjectPtr spParentNode(m_spAnimInfo->m_spOwnerNode->GetParent());
     if (!spParentNode)
     {
         MS2_ASSERT_AT(0x18a, "spParentNode" && 0);
         return;
     }
-    if (FUN_1409475d0(&m_spAnimInfo->m_spCenterNode) == 0)
+    if ((NiNode*)m_spAnimInfo->m_spCenterNode == 0)
     {
         MS2_ASSERT_AT(0x18b, "m_pAnimInfo->m_spCenterNode" && 0);
         return;
     }
-    if (FUN_1409475d0(&m_spLoopEffectNode) == 0)
+    if ((NiNode*)m_spLoopEffectNode == 0)
     {
         MS2_ASSERT_AT(0x18c, "m_loopEffectNode" && 0);
         return;
@@ -1000,9 +995,9 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
     if (GetAniIndex() != pPeerState->GetAniIndex())
         return;
     m_spAnimInfo->UpdateNif();
-    NiTransform kParentXf = static_cast<NiAVObject*>(FUN_14098d0f0(spParentNode))->GetWorldTransform();
+    NiTransform kParentXf = spParentNode->GetWorldTransform();
     FUN_140b86230(m_spCoupleData->m_posEnd, kParentXf.m_Rotate);
-    NiTransform kOwnerXf = kParentXf * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetLocalTransform();
+    NiTransform kOwnerXf = kParentXf * m_spAnimInfo->m_spOwnerNode->GetLocalTransform();
     NiPoint3 kPos(m_spCoupleData->m_posStart + kOwnerXf.m_Translate);
     pOwnerPC->vfunc_19(kPos);
     NiPoint3 kAngles;
@@ -1011,11 +1006,11 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
         kAngles *= -57.2957763671875f;   // 0xc2652ee0
         pOwnerPC->vfunc_21(kAngles);
     }
-    NiTransform kCenterXf = kParentXf * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spCenterNode))->GetLocalTransform();
+    NiTransform kCenterXf = kParentXf * m_spAnimInfo->m_spCenterNode->GetLocalTransform();
     static_cast<efd::Point3&>(kCenterXf.m_Translate) += m_spCoupleData->m_posStart;
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetWorldTranslate(kCenterXf.m_Translate);
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetWorldRotate(*reinterpret_cast<const NiMatrix3*>(static_cast<const NiTransform*>(&kCenterXf)));
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetLocalFromWorldTransform(kCenterXf);
+    m_spLoopEffectNode->SetWorldTranslate(kCenterXf.m_Translate);
+    m_spLoopEffectNode->SetWorldRotate(*reinterpret_cast<const NiMatrix3*>(static_cast<const NiTransform*>(&kCenterXf)));
+    m_spLoopEffectNode->SetLocalFromWorldTransform(kCenterXf);
 }
 
 // @0x140b83260
@@ -1069,7 +1064,7 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
         MS2_ASSERT_AT(0x368, "m_pAnimInfo" && 0);
         return false;
     }
-    if (FUN_1409475d0(&m_spLoopEffectNode) == 0)
+    if ((NiNode*)m_spLoopEffectNode == 0)
     {
         MS2_ASSERT_AT(0x369, "m_loopEffectNode" && 0);
         return false;
@@ -1079,26 +1074,26 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
         MS2_ASSERT_AT(0x36a, "m_pAnimInfo->m_spNifRoot" && 0);
         return false;
     }
-    if (FUN_1409475d0(&m_spAnimInfo->m_spCenterNode) == 0)
+    if ((NiNode*)m_spAnimInfo->m_spCenterNode == 0)
     {
         MS2_ASSERT_AT(0x36b, "m_pAnimInfo->m_spCenterNode" && 0);
         return false;
     }
-    CStringA strNodeName((const char*)((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spCenterNode))->GetName());
+    CStringA strNodeName((const char*)m_spAnimInfo->m_spCenterNode->GetName());
     if (strNodeName != PTR_s_Eff_center_1439f4db0)
     {
         FUN_140b850d0(((void*)GetLogString()), 2, 0x13, L"[coupleEmotion] failed to find \"{0}\" node. currentNodeName: {1}",
             &PTR_s_Eff_center_1439f4db0, strNodeName);
     }
     NiPoint3 kEuler(m_spCoupleData->m_posEnd);
-    NiTransform kRootXf = static_cast<NiAVObject*>(FUN_14098d0f0(m_spAnimInfo->m_spNifRoot))->GetWorldTransform();
+    NiTransform kRootXf = m_spAnimInfo->m_spNifRoot->GetWorldTransform();
     kRootXf.m_Rotate.FromEulerAnglesXYZ((-kEuler.x * 3.1415927f) / 180.0f, (-kEuler.y * 3.1415927f) / 180.0f,
         (-kEuler.z * 3.1415927f) / 180.0f);
-    NiTransform kCenterXf = kRootXf * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spCenterNode))->GetLocalTransform();
+    NiTransform kCenterXf = kRootXf * m_spAnimInfo->m_spCenterNode->GetLocalTransform();
     static_cast<efd::Point3&>(kCenterXf.m_Translate) += m_spCoupleData->m_posStart;
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetWorldTranslate(kCenterXf.m_Translate);
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetWorldRotate(*reinterpret_cast<const NiMatrix3*>(static_cast<const NiTransform*>(&kCenterXf)));
-    ((NiAVObject*)FUN_1409475f0(&m_spLoopEffectNode))->SetLocalFromWorldTransform(kCenterXf);
+    m_spLoopEffectNode->SetWorldTranslate(kCenterXf.m_Translate);
+    m_spLoopEffectNode->SetWorldRotate(*reinterpret_cast<const NiMatrix3*>(static_cast<const NiTransform*>(&kCenterXf)));
+    m_spLoopEffectNode->SetLocalFromWorldTransform(kCenterXf);
     MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
     {
@@ -1109,7 +1104,7 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
     Unk_EffectTarget kTarget;
     kTarget.m_strName = strName;
     kTarget.m_nKind = 0;
-    kTarget.m_spObject = (NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode);
+    kTarget.m_spObject = (NiAVObject*)(NiNode*)m_spLoopEffectNode;
     reinterpret_cast<NoticeMessage&>(kTarget).SetActor(bMine ? reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() : reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
     unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
     m_effects.SetAt(strName, nHandle);

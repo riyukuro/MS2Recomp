@@ -50,13 +50,6 @@ typedef UIMsg Unk_TdUIMsg;
 
 // The status-listener registry (singleton 0x140aa6d40).
 
-// The movie root (m_30) with the child lookup of the trade controls.
-class Unk_TdRoot : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
-};
-#define TD_ROOT static_cast<Unk_TdRoot*>(m_30.operator->())
 
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
@@ -402,7 +395,7 @@ void UITradeDialogEx::vfunc_oa0_11(void* a1)
 void UITradeDialogEx::FUN_141b284b0()
 {
     FUN_141b27d90(DAT_143ab2898);
-    if ((m_spMyInput = TD_ROOT->FUN_140bbe880<ASTextInput>("m_myInputMeso")).get())
+    if ((m_spMyInput = m_30.operator->()->FUN_140bbe880<ASTextInput>("m_myInputMeso")).get())
     {
         m_spMyInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b291a0));
         if ((m_spMyInputText = m_spMyInput->GetTextField()).get())
@@ -413,7 +406,7 @@ void UITradeDialogEx::FUN_141b284b0()
             reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b29330), 0, 0);
         }
     }
-    m_spTargetInput = TD_ROOT->FUN_140bbe880<ASTextInput>("m_targetInputMeso");
+    m_spTargetInput = m_30.operator->()->FUN_140bbe880<ASTextInput>("m_targetInputMeso");
     m_spMyFee = m_30->FUN_1409b4620("m_myTradeFee");
     m_spTargetFee = m_30->FUN_1409b4620("m_targetTradeFee");
     FUN_141b28e30(true, 0);

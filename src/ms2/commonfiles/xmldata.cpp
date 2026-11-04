@@ -29,7 +29,10 @@ public:
     Unk_TiXmlAttribute sentinel;
 };
 
+#ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
+#define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+#endif
 class TiXmlParsingData;
 class TiXmlElement
 {

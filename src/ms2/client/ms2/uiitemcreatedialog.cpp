@@ -86,6 +86,7 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);              
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 
 // ---- unit-local views of exe objects ----
 
@@ -110,7 +111,6 @@ public:
 class Unk_IcDataProvider : public ASArray
 {
 public:
-    ASObj FUN_1422df140(int nIndex);                        // the row at the index
     void FUN_1419b9900(int nIndex, const CString& strName, int& nOut);
 };
 class Unk_IcCombo : public Unk_IcControl
@@ -162,7 +162,7 @@ CString FUN_14016a600(const wchar_t* sz, int nCodePage);    // narrow a string
 CString FUN_14016a5c0(const char* sz, int nCodePage);       // copy a string
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // the path of a file in a directory
 void FUN_140710590(COutPacket& packet);                     // send
-void FUN_1418fc840(MS2Ptr<Unk_IcCombo> spCombo, int nItemId, int nRank);   // fill the rank combo of an item
+void FUN_1418fc840(MS2Ptr<ASDropdownMenu> spCombo, int nItemId, int nRank);   // fill the rank combo of an item
 CFileSystem* GetFileSystem();
 
 template <class T> static T* Unk_IcGetDialog(int nId)
@@ -447,11 +447,11 @@ MS2_REPLACE_METHOD(0x1419b5080, UIItemCreateDialog, FUN_1419b5080, 274, 0xAE5E50
 // @0x1419b51a0
 int UIItemCreateDialog::GetSelectedItemRank()
 {
-    MS2Ptr<Unk_IcCombo> combo = FUN_140c28560("m_itemGrade");
+    MS2Ptr<ASDropdownMenu> combo = GetChild<ASDropdownMenu>("m_itemGrade");
     if (combo == 0)
         return 1;
     int nRank = 1;
-    combo->FUN_1419b9990("itemRank", nRank);
+    reinterpret_cast<Unk_IcCombo*>(combo.operator->())->FUN_1419b9990("itemRank", nRank);
     return nRank;
 }
 MS2_REPLACE_METHOD(0x1419b51a0, UIItemCreateDialog, GetSelectedItemRank, 206, 0xF74AB5D1);
@@ -514,7 +514,7 @@ MS2_REPLACE_METHOD(0x1419b54a0, UIItemCreateDialog, FUN_1419b54a0, 186, 0x285F60
 // @0x1419b5560
 void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
 {
-    if (MS2Ptr<Unk_IcCombo> combo = FUN_140c28560("m_itemGrade"))
+    if (MS2Ptr<ASDropdownMenu> combo = GetChild<ASDropdownMenu>("m_itemGrade"))
         FUN_1418fc840(combo, nItemId, nRank);
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if ((CItemData*)item) {
@@ -1209,7 +1209,7 @@ MS2_REPLACE_METHOD(0x1419b91f0, Unk_ItemOptionSimulator, FUN_1419b91f0, 258, 0x4
 // @0x1419b9900
 void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& nOut)
 {
-    ASObj row = FUN_1422df140(nIndex);
+    AScript row = reinterpret_cast<ASDataProvider*>(this)->FUN_1422df140(nIndex);
     if (row.IsUndefinedOrNull())
         return;
     row.AScript::TryGetInt(strName, &nOut);

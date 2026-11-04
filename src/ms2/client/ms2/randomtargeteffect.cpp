@@ -12,12 +12,12 @@
 // MS2-PIN: ??1?$CComPtrBase@UUnk_RtePlayer@@@ATL@@QEAA@XZ 0x140aac150
 // MS2-PIN: ??4?$CComPtr@VUnk_UpperNpc@@@ATL@@QEAAPEAVUnk_UpperNpc@@AEBV01@@Z 0x140aac1c0
 // MS2-PIN: ??4?$CComPtr@UUnk_RtePlayer@@@ATL@@QEAAPEAUUnk_RtePlayer@@AEBV01@@Z 0x140aac2b0
-// MS2-PIN: ??9Unk_NodePtr@@QEBA_NH@Z 0x140aac3e0
+// MS2-PIN: ??9?$SmartPointer@VNiNode@@@efd@@QEBA_NPEAVNiNode@@@Z 0x140aac3e0
 // MS2-PIN: ??B?$CComPtrBase@UUnk_RtePlayer@@@ATL@@QEBAPEAUUnk_RtePlayer@@XZ 0x140aac420
 // MS2-PIN: ??B?$CComPtrBase@VUnk_UpperNpc@@@ATL@@QEBAPEAVUnk_UpperNpc@@XZ 0x140aac440
 // MS2-PIN: ?IsNil@?$CRBTree@IV?$CComPtr@UUnk_RtePlayer@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CComPtr@UUnk_RtePlayer@@@ATL@@@2@@ATL@@AEBA_NPEAVCNode@12@@Z 0x140aac740
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCRandomTargetEffect@@@@AEBAXPEAX@Z 0x140aacc80
-// MS2-PIN: ??4Unk_NodePtr@@QEAAAEAU0@AEBU0@@Z 0x140aac240
+// MS2-PIN: ??4?$SmartPointer@VNiNode@@@efd@@QEAAAEAV01@AEBV01@@Z 0x140aac240
 // MS2-PIN: ?Maximum@?$CRBTree@IV?$CComPtr@VUnk_UpperNpc@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CComPtr@VUnk_UpperNpc@@@ATL@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140aac820
 // MS2-PIN: ?Predecessor@?$CRBTree@IV?$CComPtr@VUnk_UpperNpc@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CComPtr@VUnk_UpperNpc@@@ATL@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140aac900
 // MS2-PIN: ?Maximum@?$CRBTree@IV?$CComPtr@UUnk_RtePlayer@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CComPtr@UUnk_RtePlayer@@@ATL@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140aac890
@@ -43,7 +43,7 @@ bool FUN_14028d470(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 void FUN_140a0b2a0(NiAVObject* pNode);                            // detach the node from its parent
-void FUN_14098b3e0(void* pNode, float fScale, int nFlags);  // apply a uniform scale to the node
+void FUN_14098b3e0(NiAVObject* pNode, float fScale, bool bFlag);  // apply a uniform scale to the node
 void* FUN_140a0b000(void* pNode);                           // parent
 
 // The effect manager singleton (0x1403ed280).
@@ -162,17 +162,17 @@ void CRandomTargetEffect::Create(CString strName)
     if (m_nEffectId != 0)
         Destroy();
 
-    Unk_NodePtr spNode(NiNew NiNode(0));
+    NiNodePtr spNode(NiNew NiNode(0));
     NiNode* pRoot = static_cast<NiNode*>(((void*)((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot()));
-    pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
+    pRoot->AttachChild(static_cast<NiAVObject*>(spNode), false);
     NoticeMessage kRequest;
     kRequest.m_strName = strName;
     kRequest.m_nObject = 0;
     kRequest.SetActor(((class GameObject*)(void*)(m_pOwner))->FUN_14123c580());
-    kRequest.m_spNode = static_cast<NiAVObject*>(FUN_1409475d0(&spNode));
+    kRequest.m_spNode = static_cast<NiAVObject*>(spNode);
     m_nEffectId = ((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(NoticeMessage*)(&kRequest));
     m_spNode = spNode;
-    FUN_14098b3e0(FUN_1409475d0(&spNode), m_fScale, 0);
+    FUN_14098b3e0(static_cast<NiAVObject*>(spNode), m_fScale, (bool)0);
     UpdatePosition();
     SetVisible(false);
 }
@@ -182,9 +182,9 @@ void CRandomTargetEffect::Destroy()
 {
     Hide();
     ((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6060(m_nEffectId);
-    FUN_140a0b2a0(static_cast<NiAVObject*>(FUN_1409475d0(&m_spNode)));
+    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spNode));
     m_nEffectId = 0;
-    FUN_1409f76f0(&m_spNode, 0);
+    m_spNode = (NiNode*)0;
 }
 
 // @0x140aab0f0
@@ -192,21 +192,21 @@ void CRandomTargetEffect::UpdatePosition()
 {
     if (m_nEffectId == 0)
         return;
-    if (m_spNode.FUN_1409f77a0(0))
+    if (m_spNode == 0)
         return;
 
-    Unk_NodePtr spTarget(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())))));
-    if (spTarget.FUN_1409f77a0(0))
+    NiNodePtr spTarget(((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())))));
+    if (spTarget == 0)
         return;
 
-    NiTransform kTarget = static_cast<NiAVObject*>(FUN_1409475f0(&spTarget))->GetWorldTransform();
-    NiTransform kWorld = static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->GetWorldTransform();
+    NiTransform kTarget = spTarget->GetWorldTransform();
+    NiTransform kWorld = m_spNode->GetWorldTransform();
     kWorld = kTarget;
     kWorld.m_Translate.z += 150.0f;
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldTranslate(kWorld.m_Translate);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldRotate(kWorld.m_Rotate);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldScale(kWorld.m_fScale);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetLocalFromWorldTransform(kWorld);
+    m_spNode->SetWorldTranslate(kWorld.m_Translate);
+    m_spNode->SetWorldRotate(kWorld.m_Rotate);
+    m_spNode->SetWorldScale(kWorld.m_fScale);
+    m_spNode->SetLocalFromWorldTransform(kWorld);
 }
 
 // @0x140aab2e0

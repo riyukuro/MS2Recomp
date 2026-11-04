@@ -67,7 +67,6 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 bool FUN_14028d470(float a, float b);                               // nearly equal
 // The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its Vector3 local.
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 class NoticeMessage   // C3: member view for the former free stand-ins
@@ -75,12 +74,9 @@ class NoticeMessage   // C3: member view for the former free stand-ins
 public:
     class NiNode* GetRoot();
 };
-void FUN_1415672e0(NiAVObject* pObj, int n);
+void FUN_1415672e0(NiAVObject* pObj, bool bFlag);
 // Time controller / extra data helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
-class Unk_PropList;
-void* FUN_14098de00(Unk_PropList* pList, void** ppPos);             // slot at the position, advances it
-NiProperty* FUN_140993f00(void* pSlot);                             // slot -> property
 // The Catmull-Rom point between four control points (beameffect.cpp).
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);
 
@@ -173,7 +169,7 @@ CRibbonEffect::CRibbonEffect()
 CRibbonEffect::~CRibbonEffect()
 {
     vfunc_7();
-    FUN_1409f76f0(&m_spOwner, 0);
+    m_spOwner = (NiNode*)0;
 }
 
 // @0x141701850
@@ -184,10 +180,10 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CRibbonEffectParam* pRibbon = static_cast<const CRibbonEffectParam*>(pParam);
-    FUN_1409f76f0(&m_spTarget, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_RibbonTarget*>(pTarget)->m_hNode))))));
+    m_spTarget = (NiNode*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((NiAVObject*)reinterpret_cast<const NiAVObjectPtr&>(reinterpret_cast<const Unk_RibbonTarget*>(pTarget)->m_hNode)));
     m_pPoints = reinterpret_cast<const Unk_RibbonTarget*>(pTarget)->m_pPoints;
-    FUN_1409f76f0(&m_spOwner, ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetRoot());
-    if (m_spTarget.FUN_1409f77a0(0) || m_pPoints == 0)
+    m_spOwner = ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetRoot();
+    if (m_spTarget == 0 || m_pPoints == 0)
         return false;
 
     m_fHalfWidth = 0.5f * pRibbon->m_fWidth;
@@ -195,13 +191,13 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
-    FUN_1409f76f0(&m_spRoot, spRoot);
+    m_spRoot = spRoot;
 
     if ((const char*)pRibbon->m_strNifPath != 0)
     {
         NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pRibbon->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
-        Unk_SceneWalker kWalker((NiAVObject*)(static_cast<NiObject*>(FUN_1409849b0(&spModel))));
+        Unk_SceneWalker kWalker((NiAVObject*)spModel);
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0)
         {
@@ -217,11 +213,11 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, 0x15);
         NiAVObject* pMeshObj = m_spMesh->GetMesh();
         pMeshObj->SetName("RibbonEffect");
-        Unk_PropList* pList = ((class Unk_PropList*)&((class NiAVObject*)(class NiMesh*)(pFound))->GetPropertyList());
-        void* pPos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(class Unk_PropList*)(pList))->GetHeadPos();
+        NiPropertyList* pList = &((class NiAVObject*)(class NiMesh*)(pFound))->GetPropertyList();
+        NiTListIterator pPos = pList->GetHeadPos();
         while (pPos != 0)
         {
-            NiProperty* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            NiProperty* pProp = pList->GetNext(pPos);
             if (NiObject::IsExactKindOf(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pProp)))
             {
                 NiTimeController* pCtrl = ((class NiObjectNET*)(class NiObjectNET*)(pProp))->GetControllers();
@@ -312,8 +308,8 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(pZBuffer);
     }
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), 0);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
+    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
+    m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
     if (FUN_14028d470(pRibbon->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
@@ -324,7 +320,7 @@ bool CRibbonEffect::vfunc_9()
 {
     if (CEffect::vfunc_9())
     {
-        if ((FUN_1409475d0(&m_spRoot) ? true : false) && ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->GetAppCulled())
+        if (((NiNode*)m_spRoot ? true : false) && ((class NiAVObject*)(void*)(m_spRoot.operator->()))->GetAppCulled())
             return true;
         UpdateMesh();
         return true;
@@ -335,30 +331,30 @@ bool CRibbonEffect::vfunc_9()
 // @0x141702ae0
 void CRibbonEffect::vfunc_4()
 {
-    if (FUN_1409475d0(&m_spOwner) != 0)
-        static_cast<NiNode*>(FUN_1409475f0(&m_spOwner))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+    if ((NiNode*)m_spOwner != 0)
+        m_spOwner->AttachChild(static_cast<NiAVObject*>(m_spRoot), true);
+    m_spRoot->UpdateEffects();
+    m_spRoot->UpdateProperties();
+    ((class NiAVObject*)(void*)(m_spRoot.operator->()))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     m_b2e = true;
 }
 
 // @0x141702bd0
 void CRibbonEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)));
+    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spRoot));
 }
 
 // @0x141702c00
 void CRibbonEffect::vfunc_10(bool bVisible)
 {
-    ((class NiAVObject*)(class NiAVObject*)(static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))))->SetAppCulled(!bVisible);
+    ((class NiAVObject*)(class NiAVObject*)(static_cast<NiAVObject*>(m_spRoot.operator->())))->SetAppCulled(!bVisible);
 }
 
 // @0x141702c50
 int CRibbonEffect::vfunc_8(void* p)
 {
-    *static_cast<Vector3*>(p) = FUN_140947900(FUN_1409475f0(&m_spRoot));
+    *static_cast<Vector3*>(p) = FUN_140947900(m_spRoot.operator->());
     return 1;
 }
 

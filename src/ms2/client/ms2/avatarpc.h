@@ -15,79 +15,12 @@
 #include "ms2/client/ms2/clonepc.h"
 #include "ms2/client/ms2/clonecube.h"
 #include "ms2/placeholder/tcreatecharinfo.h"
+#include "ms2/placeholder/crideedata.h"   // CRideeData (the riding row)
 
 class CFishingGuideObject;   // cubecraft_1.h
 class CSkillRecord;          // skillrecord.h
 class StatePlayInstrumentData;
 class Unk_PCActionTimer;
-
-// ---- the ridee table row (the exe hands it around as a 16-byte smart pointer; the pointee is a table value, not a
-// CPtred, so the pointer class is hand written). Members outside this unit are bound by VA. ----
-
-class Unk_RideeInfo;
-class Unk_RideeInfoPtr
-{
-public:
-    Unk_RideeInfoPtr(const Unk_RideeInfoPtr& o);           // never emitted: makes by-value returns build in place
-    ~Unk_RideeInfoPtr() { FUN_140788ea0(); }
-    void FUN_140788ea0();                                   // 0x140788ea0 release
-    bool FUN_140789380(int nNull) const;                    // 0x140789380 null test
-    Unk_RideeInfo* FUN_1407895c0() const;                   // 0x1407895c0 operator->
-    void* m_pad_00;
-    Unk_RideeInfo* m_p;                                     // +0x08
-};
-
-// The table value behind Unk_RideeInfoPtr (offsets inside the value).
-class Unk_RideeInfo
-{
-public:
-    char m_pad_00[8];
-    CString m_strModel;                                     // +0x08 model path
-    char m_pad_10[0x20];
-    CString m_strRideAnim;                                  // +0x30 the rider's ride animation
-};
-MS2_CHECK_OFFSET(Unk_RideeInfo, m_strModel, 0x08);
-MS2_CHECK_OFFSET(Unk_RideeInfo, m_strRideAnim, 0x30);
-
-class Unk_RideeRow
-{
-public:
-    Unk_RideeInfoPtr FUN_140784970();                       // 0x140784970 the ridee info record
-    CString FUN_140784880(int nVariant);                    // 0x140784880 model key (1 = full name)
-    char m_pad_00[0x58];
-    float m_fScale;                                         // +0x58 copied to GameObject::m_fScaleAC
-    int m_nHidesEquip;                                      // +0x5c nonzero: the rider's equip nodes are not shown
-    char m_pad_60[0x80];
-    CString m_strEffect;                                    // +0xe0 effect name
-    char m_pad_e8[0x110 - 0xe8];
-    float m_fViewScale;                                     // +0x110 model size in the UI preview (itempreview.cpp: * 0.015)
-};
-MS2_CHECK_OFFSET(Unk_RideeRow, m_fScale, 0x58);
-MS2_CHECK_OFFSET(Unk_RideeRow, m_fViewScale, 0x110);
-MS2_CHECK_OFFSET(Unk_RideeRow, m_strEffect, 0xe0);
-
-// 16-byte smart pointer to a ridee table row; every member is an exe function bound by VA.
-class Unk_RideePtr
-{
-public:
-    Unk_RideePtr() { FUN_140788a50(); }
-    Unk_RideePtr(Unk_RideeRow* pNull) { m_p = 0; }                  // 0x1418c10f0 (uiavatarbase.cpp; m_pad_00 left alone)
-    Unk_RideePtr(const Unk_RideePtr& o) { FUN_1407889c0(o); }
-    ~Unk_RideePtr() { FUN_140788ed0(); }
-    Unk_RideePtr& operator=(const Unk_RideePtr& o) { FUN_1407892d0(o); return *this; }
-    Unk_RideePtr& operator=(int nNull) { FUN_14078bf70(); return *this; }       // 0x1409fac90 (inline COMDAT)
-    Unk_RideeRow* get() const;                              // 0x1409f78a0
-    Unk_RideeRow* operator->() const;                       // 0x1407895d0
-    bool FUN_1407893c0(int nNull) const;                    // 0x1407893c0 null test
-    void FUN_140788a50();                                   // 0x140788a50 default ctor
-    void FUN_1407889c0(const Unk_RideePtr& o);              // 0x1407889c0 copy ctor
-    void FUN_140788ed0();                                   // 0x140788ed0 dtor
-    void FUN_1407892d0(const Unk_RideePtr& o);              // 0x1407892d0 assign
-    void FUN_14078bf70();                                   // 0x14078bf70 release
-    void* m_pad_00;
-    Unk_RideeRow* m_p;                                      // +0x08
-};
-MS2_CHECK_SIZE(Unk_RideePtr, 0x10);
 
 // ---- AvatarRidee --------------------------------------------------------------------------------------------------
 
@@ -97,7 +30,7 @@ class AvatarRidee : public CloneCube
 
 public:
     AvatarRidee(MS2Ptr<CItemData> spData);                  // 0x1409fa1c0 (item model)
-    AvatarRidee(Unk_RideePtr spRow);                        // 0x1409fa300 (ridee table row)
+    AvatarRidee(MS2SvrPtr<CRideeData> spRow);               // 0x1409fa300 (ridee table row)
     virtual ~AvatarRidee();                                 // 0x1409f9530
 
     virtual void vfunc_9(void* p);                          // 9   0x1409f98b0
@@ -108,9 +41,9 @@ public:
     virtual bool vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 58 0x1409f9600
     virtual void vfunc_59(MS2Ptr<CItem> spItem);            // 59  0x1409fa4f0 requests the UGC ridee model
 
-    void FUN_1409f9ea0(Unk_RideePtr spRow);                 // 0x1409f9ea0 applies a ridee row (model path, scale)
+    void FUN_1409f9ea0(MS2SvrPtr<CRideeData> spRow);        // 0x1409f9ea0 applies a ridee row (model path, scale)
     void FUN_1409fa120(PCBase* pRider);                     // 0x1409fa120 sets the rider (+ its ride animation)
-    Unk_RideePtr GetRow();                           // 0x1409fa170 copy of m_spRow
+    MS2SvrPtr<CRideeData> GetRow();                  // 0x1409fa170 copy of m_spRow
     void FUN_1409fa7c0();                                   // 0x1409fa7c0 starts the rider's ride animation
     void FUN_1409fa940();                                   // 0x1409fa940 attaches the rider to the ridee
     bool FUN_1409faac0();                                   // 0x1409faac0 places the ridee in the preview (free id)
@@ -118,7 +51,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     int m_nEffect;                                          // +0x1a0 effect handle (1411a49c0 creates, 1411a6060 frees)
-    Unk_RideePtr m_spRow;                                   // +0x1a8
+    MS2SvrPtr<CRideeData> m_spRow;                          // +0x1a8
     PCBase* m_pRider;                                       // +0x1b8 raw (no reference held)
     NiAVObjectPtr m_spAttach;                               // +0x1c0 the "seat" node of the model
 };
@@ -246,5 +179,5 @@ unsigned int FUN_1409f6ee0();                               // 0x1409f6ee0 free 
 AvatarPet* FUN_1409f8510(CItemData* pData);                //  0x1409f8510 pet preview object
 unsigned int FUN_1409f9060();                               // 0x1409f9060 free pet preview id (0x426..0x42f)
 AvatarRidee* FUN_1409f92d0(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1409f92d0 ridee preview (item)
-AvatarRidee* FUN_1409f9430(Unk_RideePtr spRow);             // 0x1409f9430 ridee preview (table row)
+AvatarRidee* FUN_1409f9430(MS2SvrPtr<CRideeData> spRow);    // 0x1409f9430 ridee preview (table row)
 unsigned int FUN_1409faa70();                               // 0x1409faa70 free ridee preview id (0x41b..0x424)

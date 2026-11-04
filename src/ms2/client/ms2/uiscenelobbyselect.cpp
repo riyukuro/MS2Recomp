@@ -176,16 +176,16 @@ UISceneLobby::UISceneLobby()
 {
     m_6c = 0x620000d;
     {
-        Unk_LsSceneRef ref(new UISceneLobbyServer);
-        m_78.FUN_141ac7a70(ref);
+        Unk_ScenePtr<UISceneEntity> ref(new UISceneLobbyServer);
+        m_78.AddTail(ref);
     }
     {
-        Unk_LsSceneRef ref(new UISceneLobbySelect);
-        m_78.FUN_141ac7a70(ref);
+        Unk_ScenePtr<UISceneEntity> ref(new UISceneLobbySelect);
+        m_78.AddTail(ref);
     }
     {
-        Unk_LsSceneRef ref(new UISceneLobbyCreate);
-        m_78.FUN_141ac7a70(ref);
+        Unk_ScenePtr<UISceneEntity> ref(new UISceneLobbyCreate);
+        m_78.AddTail(ref);
     }
 }
 

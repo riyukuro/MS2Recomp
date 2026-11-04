@@ -95,12 +95,12 @@ inline void Unk_AddressPtr::AddRefImpl(void*) const { Reference(m_p); }
 inline void Unk_AddressPtr::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
 inline void Unk_AddressPtr::ReleaseImpl(void*)
 {
-    if (FUN_140159bc0(m_p) == 0) {
+    if (CPtred::ReleasePtred(m_p) == 0) {
         Reference(m_p);
-        FUN_140159ba0(m_p);
+        CPtred::DeletePtred(m_p);
     }
 }
-inline void Unk_AddressPtr::Reference(CPtred* v) { FUN_14015b020(v); }
+inline void Unk_AddressPtr::Reference(CPtred* v) { CPtred::AddRefPtred(v); }
 
 class CAddressTable : public CValidData<CAddressTable>
 {

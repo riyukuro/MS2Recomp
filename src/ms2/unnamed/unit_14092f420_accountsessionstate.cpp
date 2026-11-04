@@ -63,9 +63,10 @@
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@QEAAXPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@@Z 0x140934e80 ; prop
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@@Z 0x140935980 ; la1: called from set erase(first,last) 140935890
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@0@Z 0x140935890 ; unique
-// MS2-PIN: ??__Fg_143ab3128@@YAXXZ 0x142c9cc90 ; unique
+// MS2-PIN: ??__FDAT_143ab3128@@YAXXZ 0x142c9cc90 ; unique
 // MS2-PIN: ??__Fg_143ab3150@@YAXXZ 0x142c9cd10 ; unique
-// MS2-PIN: ??__Fg_143ab31a0@@YAXXZ 0x142c9cd30 ; unique
+// MS2-PIN: ??__FDAT_143ab31a0@@YAXXZ 0x142c9cd30 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBA_NAEBW4Unk_FameAlliance@@AEAH@Z 0x1409332c0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -192,11 +193,10 @@ extern unsigned DAT_143ab2970;
 
 // ---- statics of the zone (constructed by the .text$di initializers) ----------------------------------------------------
 
-enum Unk_SlotKey { };                       // the map key is an enum (so ATL passes it by const reference)
-typedef ATL::CAtlMap<Unk_SlotKey, unsigned> Unk_UIntMap;
+typedef ATL::CAtlMap<Unk_FameAlliance, int> Unk_FameMap;      // alliance -> fame points (scenestategame)
 typedef ATL::CAtlMap<int, int> Unk_IntMapA;
-typedef ATL::CAtlMap<unsigned short, int> Unk_IntMapB;
-typedef ATL::CAtlArray<void*> Unk_PtrArray;
+typedef ATL::CAtlMap<unsigned int, int> Unk_MasteryMap;     // mastery id -> value (scenestategame, masterymanager)
+typedef ATL::CAtlArray<int> Unk_TemplateIdArray;   // templates whose first use was announced (scenestategame)
 typedef std::vector<__int64> Unk_Wallet;
 
 // The block is shared with the exe: the hook DLL binds to the exe's objects instead of constructing its own.
@@ -208,13 +208,13 @@ typedef std::vector<__int64> Unk_Wallet;
 #define MS2_ZONE_GLOBAL_INIT(type, name, args) type name args
 #endif
 
-MS2_ZONE_GLOBAL(Unk_UIntMap, g_143ab3220);                                                      // @0x1400be590
-MS2_ZONE_GLOBAL(Unk_PtrArray, g_143ab3128);                                                     // @0x1400be5e0
+MS2_ZONE_GLOBAL(Unk_FameMap, DAT_143ab3220);                                                    // @0x1400be590
+MS2_ZONE_GLOBAL(Unk_TemplateIdArray, DAT_143ab3128);                                            // @0x1400be5e0
 MS2_ZONE_GLOBAL(Unk_Inventory, g_143ab2a90);                                                    // @0x1400be610
 MS2_ZONE_GLOBAL(CString, g_143ab2a50);                                                          // @0x1400be640
 MS2_ZONE_GLOBAL(CUserMail, g_143ab2ee0);                                                        // @0x1400be670
 MS2_ZONE_GLOBAL(Unk_IntMapA, g_143ab3150);                                                      // @0x1400be6a0
-MS2_ZONE_GLOBAL(Unk_IntMapB, g_143ab31a0);                                                      // @0x1400be6f0
+MS2_ZONE_GLOBAL(Unk_MasteryMap, DAT_143ab31a0);                                                  // @0x1400be6f0
 MS2_ZONE_GLOBAL_INIT(Unk_Wallet, g_143ab2a78, (4, (__int64)0));                                 // @0x1400be740
 
 static CString s_143ab3008("button_click");                                                     // @0x1400bed10
@@ -235,31 +235,19 @@ class Unk_EmoNpcTable;
 
 typedef std::vector<std::pair<int, __int64> > Unk_PayList;           // (currency kind, amount) pairs
 
-class Unk_SkillRow : public CPtred { };
-class Unk_SkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_141275260(int nStringId, int nA, int nB);
 
 
-class Unk_PartyRef : public CPtred { };
-class Unk_PartyHolder { public: MS2Ptr<Unk_PartyRef> FUN_141768380(); };
 class Unk_FieldRef : public CPtred { };
 int IsNotRecentDayChange(__int64 nTime);
-bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
+bool IsEarlierDay(CMsTime tmOld, CMsTime tmNew, int nBaseHour);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
 __int64 GetServerTime();
 
 class Unk_NoticeSub { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
 class Unk_NoticeSubRef;
 class Unk_Notice { public: void* m_pad_00; Unk_NoticeSub m_sub; };
-class Unk_NoticeTarget : public CPtred { public: unsigned FUN_14041f250(); };
-class Unk_NoticeList
-{
-public:
-    void FUN_14041f6e0();
-    void FUN_14041f7c0(Unk_Notice* pNotice);
-    MS2Ptr<Unk_NoticeTarget> FUN_14041f850(Unk_Notice* pNotice);
-};
 
 class Unk_Misc32d8 { public: void FUN_140581e40(); };
 // Same layout as the unit-local state of uiadventureleveldialog.cpp (the map global 0x143ab3318 is shared).
@@ -290,11 +278,13 @@ extern GameEventUserValue DAT_143ab3010;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/skillsystem.h"
+#include "ms2/placeholder/cskillsettable.h"   // CSkillSet
 extern Unk_CubeStock DAT_143ab2e50;
 extern Unk_Misc32d8 DAT_143ab32d8;
 extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;
-extern ATL::CAtlArray<unsigned> DAT_143ab32b8;
+extern ATL::CAtlArray<int> DAT_143ab32b8;
 
 class Unk_UiManager { public: };
 
@@ -381,10 +371,10 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
     }
     if (nSkillId != 0)
     {
-        MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<SkillData> spRow = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nSkillId);
         if (spRow.IsNull())
             return 0;
-        if (reinterpret_cast<SkillData*>(spRow.operator->())->FUN_1407e9de0())
+        if (spRow->FUN_1407e9de0())
         {
             FUN_141275260(0x9a7, 1, 1);
             return 0;
@@ -438,10 +428,10 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
     }
     if (nSkillId != 0)
     {
-        MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<SkillData> spRow = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nSkillId);
         if (spRow.IsNull())
             return 0;
-        if (reinterpret_cast<SkillData*>(spRow.operator->())->FUN_1407e9de0())
+        if (spRow->FUN_1407e9de0())
         {
             FUN_141275260(0x9a7, 1, 1);
             return 0;
@@ -880,11 +870,11 @@ bool FUN_140930d70()
     Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    bool bResult = ((class Unk_PartyHolder*)((class MyPC*)(class Unk_MyPc*)(pPc))->FUN_141523bc0())->FUN_141768380().get() != 0;
+    bool bResult = reinterpret_cast<CSkillSystem*>(((class MyPC*)(class Unk_MyPc*)(pPc))->FUN_141523bc0())->GetSkillSet().get() != 0;
     return bResult;
 }
 
-int FUN_140931890(ATL::CAtlArray<unsigned>* pArray, unsigned short* pValue);
+int FUN_140931890(ATL::CAtlArray<int>* pArray, unsigned short* pValue);
 
 // @0x140930e10
 int FUN_140930e10()
@@ -916,7 +906,7 @@ void FUN_140930f20()
     __int64 nNow = GetServerTime();
     if (DAT_143ab2988 == nNow)
         return;
-    if (FUN_14086ab70(CMsTime(DAT_143ab2988), CMsTime(nNow), 0))
+    if (IsEarlierDay(CMsTime(DAT_143ab2988), CMsTime(nNow), 0))
         g_143ab3150.RemoveAll();
     DAT_143ab2988 = nNow;
 }
@@ -939,11 +929,11 @@ void FUN_140930fe0(CInPacket& packet)
     case 1:
     {
         int nList = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
-        MS2Ptr<Unk_NoticeTarget> spTarget;
+        GameEventUserValue::VariablePtr spTarget;
         if (nList == 0)
-            spTarget = reinterpret_cast<Unk_NoticeList&>(DAT_143ab2fc0).FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
+            spTarget = DAT_143ab2fc0.ReadVariable(packet);
         else if (nList == 1)
-            spTarget = reinterpret_cast<Unk_NoticeList&>(DAT_143ab3010).FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
+            spTarget = DAT_143ab3010.ReadVariable(packet);
         if (spTarget.get() != 0)
         {
             ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
@@ -954,17 +944,17 @@ void FUN_140930fe0(CInPacket& packet)
 }
 
 // @0x140931210
-unsigned FUN_140931210(Unk_SlotKey nKey)
+int FUN_140931210(Unk_FameAlliance nAlliance)
 {
-    unsigned nValue = 0;
-    g_143ab3220.Lookup(nKey, nValue);
+    int nValue = 0;
+    DAT_143ab3220.Lookup(nAlliance, nValue);
     return nValue;
 }
 
 // @0x140931250
-int FUN_140931250(Unk_SlotKey nKey)
+int FUN_140931250(Unk_FameAlliance nAlliance)
 {
-    return ((CFameTable*)FUN_140764010())->GetGradeByPoint((Unk_FameAlliance)nKey, FUN_140931210(nKey));
+    return ((CFameTable*)FUN_140764010())->GetGradeByPoint(nAlliance, FUN_140931210(nAlliance));
 }
 
 // @0x140931290
@@ -973,7 +963,7 @@ int FUN_140931290()
     int nBest = 0;
     for (int i = 1; i < 10; i = i + 1)
     {
-        int n = FUN_140931250((Unk_SlotKey)i);
+        int n = FUN_140931250((Unk_FameAlliance)i);
         if (nBest < n)
             nBest = n;
     }
@@ -1048,11 +1038,11 @@ void FUN_140931590(Unk_Wallet* pVec, int nKind, __int64 nAmount)
 }
 
 // @0x140931890
-int FUN_140931890(ATL::CAtlArray<unsigned>* pArray, unsigned short* pValue)
+int FUN_140931890(ATL::CAtlArray<int>* pArray, unsigned short* pValue)
 {
     for (int i = 0; i < (int)pArray->GetCount(); i = i + 1)
     {
-        if ((*pArray)[i] == (unsigned)*pValue)
+        if ((*pArray)[i] == *pValue)
             return i;
     }
     return -1;
@@ -1072,7 +1062,7 @@ UIMainPlayerInfo* FUN_140931900(int nUiId)
 
 // Template glue of the unit's containers (the exe holds the members its callers use; the full instantiation is a superset
 // that tools/tplpin.py pairs against the exe).
-template class ATL::CAtlMap<Unk_SlotKey, unsigned>;
+template class ATL::CAtlMap<Unk_FameAlliance, int>;
 template class ATL::CAtlMap<int, int>;
 template class ATL::CAtlArray<unsigned>;
 

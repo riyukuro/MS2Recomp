@@ -143,7 +143,7 @@ int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408737
 int XmlQuery(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873a50
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x140177e10 for CAtlArray<unsigned> (xmlattr.h)
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 int FUN_140651920(CStringA);                                 // language code -> enum
 __int64 GetServerTime();                                            // server time
@@ -951,7 +951,7 @@ int CBlackMarketSchCond::Compact()
 void FUN_1401bf350(Unk_BmTabIndex* pIndex, CBlackMarketTable::TabPtr tab)
 {
     ATL::CAtlArray<CString> categories;
-    FUN_14015f050(tab->m_strCategory, categories, ",");
+    Unk_SplitA(tab->m_strCategory, &categories, ",");
     for (unsigned int i = 0; i < categories.GetCount(); i++)
     {
         CStringA strCategory(categories[i]);

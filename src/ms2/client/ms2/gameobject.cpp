@@ -51,6 +51,7 @@
 #include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/propertycache.h"
 #include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cboxcollision.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
 // ---- unit-local views of exe objects ----
@@ -128,21 +129,11 @@ struct Unk_GoCamEvent
 // Anchor handles collected by vfunc_27 (16-byte smart handle over the array element).
 struct Unk_GoFloat3 { float x, y, z; };
 class NxVec3;
-class NxBox { public: const NxVec3& GetCenter() const; };   // C3: member view (0x140a01180)
-class Unk_GoAnchorPose { };
-class Unk_GoAnchor
-{
-public:
-    char m_pad[0xb4];
-    Unk_GoAnchorPose m_kPose;   // +0xb4
-};
+// The anchor handle is MS2Ptr<CBoxCollision>; the stand-in stays as vfunc_27's array element type.
 class Unk_GoAnchorPtr
 {
 public:
-    Unk_GoAnchorPtr(const Unk_GoAnchorPtr& o);   // 0x140a00180
     ~Unk_GoAnchorPtr();                 // 0x140a00490
-    bool FUN_140a00660(int n) const;    // == NULL
-    Unk_GoAnchor* FUN_140ae1940() const;
     void* m_pad[2];
 };
 efd::Point3 FUN_141b6e150(const Unk_GoFloat3* p);
@@ -491,7 +482,7 @@ void GameObject::vfunc_22(efd::Point3 kPos)
 MS2_REPLACE_METHOD(0x14123c3a0, GameObject, vfunc_22, 43, 0x831329CD);
 
 // @0x14123c3e0
-void GameObject::SetKEntityID(const egf::EntityID& kId)
+void GameObject::SetKEntityID(egf::EntityID kId)
 {
     m_kEntityID = kId;
 }
@@ -619,10 +610,10 @@ int GameObject::vfunc_29(GameObject* pTarget, efd::Point3* pOut)
     NiPoint3 kBest(efd::Point3::ZERO);
     for (unsigned int i = 0; i < kAnchors.GetCount(); i++)
     {
-        Unk_GoAnchorPtr spAnchor(kAnchors[i]);
-        if (spAnchor.FUN_140a00660(0))
+        MS2Ptr<CBoxCollision> spAnchor(reinterpret_cast<MS2Ptr<CBoxCollision>&>(kAnchors[i]));
+        if (spAnchor == NULL)
             continue;
-        NiPoint3 kPt(FUN_141b6e150(reinterpret_cast<const Unk_GoFloat3*>(&reinterpret_cast<NxBox*>(&spAnchor.FUN_140ae1940()->m_kPose)->GetCenter())));
+        NiPoint3 kPt(FUN_141b6e150(reinterpret_cast<const Unk_GoFloat3*>(&spAnchor->m_kBox.GetCenter())));
         float fDist = FUN_140966f00(pTarget->vfunc_18(), kPt);
         if (fMin > fDist)
         {

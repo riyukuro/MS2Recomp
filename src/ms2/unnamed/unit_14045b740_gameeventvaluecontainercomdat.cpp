@@ -6,6 +6,14 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-UNIT: unit_14045b740
 // MS2-RANGE: 0x14045b740-0x14046c710 .text$mn
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@_KV?$allocator@_K@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@_K@std@@@2@XZ 0x1404642e0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@UNpcEventDropEventContext@@@@AEAAXXZ 0x140465c20 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@VArcadeOpenContext@@@@AEAAXXZ 0x140465ca0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@VBurningLevelupContext@@@@AEAAXXZ 0x140465d60 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@VCollectItemGroupContext@@@@AEAAXXZ 0x140465da0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@VItemBoxEventContext@@@@AEAAXXZ 0x140465de0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?Release@?$MS2Ptr@VQuestAdditionalRewardContext@@@@AEAAXXZ 0x140465e20 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??D?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VBurningLevelupContext@@@@@std@@@std@@@std@@QEBAAEAV?$MS2Ptr@VBurningLevelupContext@@@@XZ 0x14046c3b0 ; look-alike: byte-identical to the exe copy and to its callee, the symbols.tsv row is at another TU's copy
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?_Alloc_proxy@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HK@std@@HU?$less@U?$pair@HK@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HK@std@@H@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14045b740 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@_KIU?$less@_K@std@@V?$allocator@U?$pair@$$CB_KI@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KI@std@@PEAX@2@XZ 0x14045c100 ; unique

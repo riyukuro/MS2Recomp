@@ -27,6 +27,7 @@
 #include "ms2/commonfiles/timeutil.h"
 
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // The header statics of this unit: the label key of the combo rows, then the game header's sort names and "skill".
 static CString s_strLabel = "label";
@@ -42,14 +43,7 @@ public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
 };
-class Unk_DpInput : public Unk_DpControl { public: };         // the text
 class Unk_DpCheck : public Unk_DpControl { };
-// The "m_param<n>" movie clip: the child lookups by name.
-class Unk_DpParam
-{
-public:
-    MS2Ptr<Unk_DpInput> FUN_140bbe880(const CString& strName);
-};
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
@@ -91,16 +85,16 @@ void UIDebugPacketDialog::OnLoadInit()
     UIObject::OnLoadInit();
     m_movie = FUN_1409b40c0(m_28, (*m_30).FUN_1422bb890());
     m_execute = GetChild<ASButton>("m_execute");
-    m_id = FUN_140e35bd0("m_id");
-    m_loopCount = FUN_140e35bd0("m_loopCount");
-    m_loopDelay = FUN_140e35bd0("m_loopDelay");
+    m_id = GetChild<ASTextInput>("m_id");
+    m_loopCount = GetChild<ASTextInput>("m_loopCount");
+    m_loopDelay = GetChild<ASTextInput>("m_loopDelay");
     for (int i = 0; i < 5; i++)
     {
         int nNumber = i + 1;
         CStringA strParam = StringFormat<int>("m_param{0}", nNumber);
         MS2Ptr<ASMovieClip> spParam = GetChild<ASMovieClip>(strParam);
         m_type[i] = spParam.operator->()->GetDropdownMenu("m_type");
-        m_value[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe880("m_value");
+        m_value[i] = spParam->FUN_140bbe880<ASTextInput>("m_value");
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "None");
@@ -134,11 +128,11 @@ void UIDebugPacketDialog::OnLoadInit()
         m_type[i]->SetSelectedIndex(0);
     }
     m_executeRandom = GetChild<ASButton>("m_executeRandom");
-    m_randomStart = FUN_140e35bd0("m_randomStart");
-    m_randomEnd = FUN_140e35bd0("m_randomEnd");
-    m_randomLoopCount = FUN_140e35bd0("m_randomLoopCount");
-    m_randomLoopDelay = FUN_140e35bd0("m_randomLoopDelay");
-    m_randomLoopLength = FUN_140e35bd0("m_randomLoopLength");
+    m_randomStart = GetChild<ASTextInput>("m_randomStart");
+    m_randomEnd = GetChild<ASTextInput>("m_randomEnd");
+    m_randomLoopCount = GetChild<ASTextInput>("m_randomLoopCount");
+    m_randomLoopDelay = GetChild<ASTextInput>("m_randomLoopDelay");
+    m_randomLoopLength = GetChild<ASTextInput>("m_randomLoopLength");
     m_randomRemain = GetChild<ASTextField>("m_randomRemain");
     m_ignoreAdminPacket = FUN_140e52670("m_ignoreAdminPacket");
     m_usePacketCount = GetChild<ASButton>("m_usePacketCount");
@@ -304,11 +298,11 @@ void UIDebugPacketDialog::OnDoubleClick(const Scaleform::GFx::FunctionHandler::P
 // @0x141291470
 bool UIDebugPacketDialog::FUN_141291470()
 {
-    m_nId = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_id.operator->())->GetText());
+    m_nId = FUN_1401d9a00(m_id->GetText());
     if (m_nId == 0)
         return false;
-    m_nRemain = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_loopCount.operator->())->GetText());
-    m_nDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_loopDelay.operator->())->GetText());
+    m_nRemain = FUN_1401d9a00(m_loopCount->GetText());
+    m_nDelay = FUN_1401d9a00(m_loopDelay->GetText());
     if (m_nRemain < 1)
         m_nRemain = 1;
     m_nNext = GetTickCountMs2() + m_nDelay;
@@ -316,7 +310,7 @@ bool UIDebugPacketDialog::FUN_141291470()
     for (int i = 0; i < 5; i++)
     {
         int nType = m_type[i]->GetSelectedIndex();
-        CStringW strValue = reinterpret_cast<ASTextInput*>(m_value[i].operator->())->GetText();
+        CStringW strValue = m_value[i]->GetText();
         if (strValue.GetLength() < 1 && nType != 5)
             break;
         if (nType == 0)
@@ -338,12 +332,12 @@ bool UIDebugPacketDialog::FUN_141291470()
 // @0x141291850
 bool UIDebugPacketDialog::FUN_141291850()
 {
-    int nStart = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomStart.operator->())->GetText());
-    int nEnd = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomEnd.operator->())->GetText());
+    int nStart = FUN_1401d9a00(m_randomStart->GetText());
+    int nEnd = FUN_1401d9a00(m_randomEnd->GetText());
     reinterpret_cast<Unk_MergeRange*>(&m_range)->Set(nStart, nEnd);
-    m_nRandomRemain = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopCount.operator->())->GetText());
-    m_nRandomDelay = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopDelay.operator->())->GetText());
-    m_nRandomLength = FUN_1401d9a00(reinterpret_cast<ASTextInput*>(m_randomLoopLength.operator->())->GetText());
+    m_nRandomRemain = FUN_1401d9a00(m_randomLoopCount->GetText());
+    m_nRandomDelay = FUN_1401d9a00(m_randomLoopDelay->GetText());
+    m_nRandomLength = FUN_1401d9a00(m_randomLoopLength->GetText());
     m_nRandomNext = GetTickCountMs2() + m_nRandomDelay;
     return true;
 }

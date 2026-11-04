@@ -21,6 +21,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/icastingeventlistener.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/uitalkmanager.h"   // C3: UITalkManager::FUN_141b213f0 (MS2Ptr<CTalkScript>)
 #include "hook/ms2hook.h"
 
 // ---- unit-local placeholders ----
@@ -40,7 +41,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 CString FUN_1405a7e80(int n);                           // int -> decimal string
 void FUN_140710590(COutPacket& packet);                 // send
 
-// The casting bar request (FUN_1418e12f0): duration, label and a second text.
+// The casting bar request (UICastingBar::StartCastingText, 0x1418e12f0): duration, label and a second text.
 struct Unk_HcCastInfo
 {
     Unk_HcCastInfo()
@@ -67,7 +68,7 @@ MS2_CHECK_SIZE(Unk_HcCastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void FUN_1418e12f0(ICastingEventListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB, const CStringW& strExtra);   // show
+    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB, const CStringW& strExtra);   // show
     void FUN_1418e1390();                                                          // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
@@ -75,7 +76,6 @@ UICastingBar* FUN_140ac2270(int nId);
 CStringW GetStringCommon(int nId);                         // string table text of an id
 int FUN_14028d260(float fSeconds);                       // seconds -> ms
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
 
 // The doctor NPC script (1 = a script page shown by the NPC dialog service).
 class Unk_HcNpcScript : public CPtred
@@ -85,7 +85,6 @@ public:
 };
 MS2Ptr<Unk_HcNpcScript> FUN_140856820(unsigned nNpcId, int nScriptId);   // by id and script (empty when unknown)
 MS2Ptr<Unk_HcNpcScript> FUN_140856c50(unsigned nNpcId, int nMode);
-class Unk_HcDialogMgr { public: int FUN_141b213f0(MS2Ptr<Unk_HcNpcScript> spScript, unsigned nNpcId, unsigned nMode, int nFlags); };
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
@@ -186,9 +185,9 @@ efd::utf8string StateHomeConvenient::GetAnimation()
     switch (GetKind())
     {
     case 1:
-        return efd::utf8string(static_cast<const char*>(*FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallSequence)));
+        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallSequence.Get()));
     case 3:
-        return efd::utf8string(static_cast<const char*>(*FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallSequence)));
+        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallSequence.Get()));
     }
     return efd::utf8string("Object_React_A");
 }
@@ -225,13 +224,13 @@ void StateHomeConvenient::Finish(double fTime)
                 if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
                     if (Unk_HcNpcScript* pScript = FUN_140856c50(nNpc, 1).get())
-                        ((class Unk_HcDialogMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 1, 0x12);
+                        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(reinterpret_cast<CTalkScript*>(pScript)), nNpc, 1, 0x12);
                 }
                 else
                 {
                     int nScript = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorScriptID1.Get();
                     if (Unk_HcNpcScript* pScript = FUN_140856820(nNpc, nScript).get())
-                        ((class Unk_HcDialogMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 2, 0);
+                        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(reinterpret_cast<CTalkScript*>(pScript)), nNpc, 2, 0);
                 }
                 m_n40 = 1;
             }
@@ -277,7 +276,7 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
         if (pBar)
         {
             CStringW strExtra(L"");
-            pBar->FUN_1418e12f0(0, GetLabel(), nDuration, false, true, strExtra);
+            pBar->StartCastingText(0, GetLabel(), nDuration, false, true, strExtra);
         }
     }
 }

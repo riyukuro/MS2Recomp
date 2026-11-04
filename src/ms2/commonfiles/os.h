@@ -51,7 +51,6 @@ MS2_CHECK_OFFSET(Unk_OSData,kind,0xd0);
 MS2_CHECK_OFFSET(Unk_OSData,isNT,0xd8);
 MS2_CHECK_SIZE(COSInfo,0x18);
 MS2_CHECK_OFFSET(COSInfo,m_data,8);
-struct Unk_OSId { explicit Unk_OSId(unsigned __int64); unsigned __int64 value; };
 struct Unk_OSNumber { explicit Unk_OSNumber(unsigned __int64); Unk_OSNumber& operator=(const Unk_OSNumber&); unsigned __int64 value; bool flag; };
 class Unk_OSInput {
 public:
@@ -76,6 +75,6 @@ public:
     Unk_OSInput& Read9(float&);
     Unk_OSInput& Read10(CString&);
     Unk_OSInput& Read11(CStringW&);
-    Unk_OSInput& Read12(Unk_OSId&);
+    Unk_OSInput& Read12(ATL::CTime&);
     Unk_OSInput& Read13(Unk_OSNumber&);
 };

@@ -142,6 +142,7 @@
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/commonfiles/contentshutdown.h"
+#include "ms2/placeholder/famealliance.h"
 
 // ---- unit-local placeholders (names invented) -------------------------------------------------------------------
 
@@ -198,7 +199,7 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft,
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 __int64 GetServerTime();                                    // the server time
-bool FUN_14086ab70(CMsTime t1, CMsTime t2, int nHour);      // the day changed between the two times
+bool IsEarlierDay(CMsTime t1, CMsTime t2, int nHour);      // the day changed between the two times (C3: was FUN_14086ab70)
 void FUN_140710590(COutPacket& packet);                     // send
 __int64 FUN_1405957d0(__int64 nPrice, unsigned nDiscount);  // apply a discount
 CStringW FUN_1418fec00(int nType, __int64 nAmount, bool bShort);   // the currency text
@@ -303,8 +304,7 @@ public:
 };
 CStringW FUN_14093b9c0(int nId, int nGrade);                        // the achievement name
 int FUN_140931290();                                                // the general fame grade
-enum Unk_SlotKey { };
-int FUN_140931250(Unk_SlotKey nAlliance);                                   // the fame grade of an alliance
+int FUN_140931250(Unk_FameAlliance nAlliance);                              // the fame grade of an alliance
 CStringW FUN_140762de0(int nAlliance);                              // the alliance name
 CStringW FUN_140762f50(int nAlliance, int nGrade);                  // the alliance grade name
 void FUN_14083d2b0(CStringW& strText);                              // strips the text tags
@@ -756,7 +756,7 @@ void UIShopDialog::vfunc_72()
             }
             else if (m_bResetEnable && m_bResetLimited)
             {
-                if (FUN_14086ab70(CMsTime(m_1a0), CMsTime(tNow), 0))
+                if (IsEarlierDay(CMsTime(m_1a0), CMsTime(tNow), 0))
                 {
                     m_1a0 = tNow;
                     ResetProducts(0);
@@ -3618,7 +3618,7 @@ bool FUN_141b04af0(CNpcShopProductCli* pProduct, bool bNotify)
         return true;
     int nHave = 0;
     if (nAlliance != 0)
-        nHave = FUN_140931250((Unk_SlotKey)nAlliance);
+        nHave = FUN_140931250((Unk_FameAlliance)nAlliance);
     else
         nHave = FUN_140931290();
     if (nHave >= nGrade)

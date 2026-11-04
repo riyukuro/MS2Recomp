@@ -47,6 +47,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"   // C3: CInputKeyHandler::FUN_14116dcb0
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/gameevent.h"   // C3: GameEvent::GetID
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -103,7 +104,7 @@ public:
 private:
     void* m_0; T* m_p;
 };
-class GameEventAttendGiftCli   // C3: member view (gameeventcli.h clashes in this TU)
+class GameEventAttendGiftCli : public GameEvent   // C3: member view (gameeventcli.h clashes in this TU)
 {
 public:
     bool FUN_140ce3510();
@@ -125,7 +126,6 @@ public:
     CStringA GetDesc();
 };
 class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
-    int FUN_1402e1d00();
     Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
 };
 class Unk_140acd6e0 : public ASButton { public:
@@ -245,7 +245,7 @@ bool UIAttendGiftDialog::SelectRequestedEvent(int id)
     m_requested=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
         Unk_14102fe10<Unk_140ce3510> event=it->second;
-        if(event->FUN_1402e1d00()==id) { m_requested=event; return true; }
+        if(event->GetID()==id) { m_requested=event; return true; }
     }
     FUN_140d73ff0(L"s_attendGift_not_found_event"); return false;
 }
@@ -253,7 +253,7 @@ MS2_REPLACE_METHOD(0x14102C7A0, UIAttendGiftDialog, SelectRequestedEvent, 309, 0
 // @0x14102c8e0
 void UIAttendGiftDialog::AddEvent(Unk_14102fe10<Unk_140ce3510> event)
 {
-    m_events.insert(std::make_pair(event->FUN_1402e1d00(),event));
+    m_events.insert(std::make_pair(event->GetID(),event));
     if(event->FUN_140ce3510()) m_activeEvents.Add(event);
     if(FUN_141924630()) RefreshAll();
 }
@@ -261,7 +261,7 @@ MS2_REPLACE_METHOD(0x14102C8E0, UIAttendGiftDialog, AddEvent, 236, 0x8EE28BC0);
 // @0x14102c9e0
 void UIAttendGiftDialog::RemoveEvent(Unk_14102fe10<Unk_140ce3510> event)
 {
-    m_events.erase(event->FUN_1402e1d00());
+    m_events.erase(event->GetID());
     if(m_requested==event.get()) { m_requested=0; vfunc_67(); return; }
     RebuildActiveEvents();
     if(FUN_141924630()) {
@@ -343,7 +343,7 @@ void UIAttendGiftDialog::UpdateSelectedEvent()
     if(m_activeEvents.GetCount()==0) return;
     if(m_eventId!=0) {
         for(unsigned int i=0;i<m_activeEvents.GetCount();++i) {
-            if(m_activeEvents[i]->FUN_1402e1d00()==m_eventId) { m_selected=m_activeEvents[i]; return; }
+            if(m_activeEvents[i]->GetID()==m_eventId) { m_selected=m_activeEvents[i]; return; }
         }
     }
     if(m_selected==NULL) m_selected=m_activeEvents[0];
@@ -390,7 +390,7 @@ void UIAttendGiftDialog::SendSelectedEventRequest()
 {
     if(m_selected==NULL) return;
     {
-        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->GetID()); FUN_140710590(packet);
     }
 }
 MS2_REPLACE_METHOD(0x14102F0E0, UIAttendGiftDialog, SendSelectedEventRequest, 144, 0x6F4A4D63);
@@ -484,7 +484,7 @@ bool UIAttendGiftDialog::OnAttendanceMsgBox(int result,const CMsgBoxData& data)
         if(const_cast<CMsgBoxData&>(data).IsCheckbox0Checked()) id=data.FUN_141a02f10(0,0);
         COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
-        packet.Encode4(m_selected->FUN_1402e1d00());
+        packet.Encode4(m_selected->GetID());
         packet.Encode8(id);
         FUN_140710590(packet);
     }
@@ -562,7 +562,7 @@ void UIAttendGiftDialog::FUN_14102da40()
     m_giftList->vfunc_25(slots.FUN_1422bb870());
     m_giftList->vfunc_24(true);
     CStringW strPeriod;
-    if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->FUN_1402e1d00())) {
+    if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->GetID())) {
         int nItemId=m_selected->FUN_140ce3980();
         strPeriod=FUN_14028dfa0<CStringW>(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
     } else {
@@ -600,7 +600,7 @@ void UIAttendGiftDialog::FUN_14102e6a0()
     if(m_selected->FUN_140ce3a80()==0) {
     FUN_140cff840(FUN_1422dbb40(),"m_footerText",0);
     int nDefault=0;
-    int points=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
+    int points=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69,m_selected->GetID(),nDefault);
     m_usePoint->vfunc_4(true);
     m_usePoint->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",*(const unsigned*)&points));
     m_usePoint->FUN_1422c1fe0((unsigned int)points>0);

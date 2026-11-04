@@ -19,6 +19,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/loadingimagetable.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -34,7 +35,7 @@ class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local
 class Unk_LpConstants;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CString FUN_141900b70();
-class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
+class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 class Unk_LpMovie { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
@@ -46,7 +47,6 @@ public:
     bool IsDeviceLost() const;
 };
 class Ni2DBuffer* GetScreenshotBuffer(int);   // C3: was FUN_14184e5d0
-void FUN_14272b7f0(void* pTarget, void* pTexture);
 class NiDX9TextureData   // C3: member view for the former free stand-ins
 {
 public:
@@ -227,7 +227,7 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
         FUN_1419e07a0();
         void* pTex = ((void*)((class NiTexture*)(void*)(m_78.operator->()))->GetRendererData());
         if (pTex != 0)
-            FUN_14272b7f0(pChild, ((void*)((class NiDX9TextureData*)(void*)(pTex))->GetD3DTexture()));
+            reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pChild)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((class NiDX9TextureData*)(void*)(pTex))->GetD3DTexture()));
     }
 }
 

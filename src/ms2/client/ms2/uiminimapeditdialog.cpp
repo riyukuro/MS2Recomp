@@ -347,14 +347,14 @@ void UIMinimapEditDialog::FUN_141a53100()
     if (spMap == 0)
         return;
     TiXmlDocument doc;
-    if (doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
+    if (doc.LoadFile((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
     {
         Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
         if (pRoot == NULL)
             return;
         if (pRoot->FirstChild("minimap"))
         {
-            XmlGetChild((class TiXmlElement*)(pRoot->FirstChild("minimap")), "frustum", *(class NiFrustum*)(&m_spMinimap->m_frustum));
+            XmlGetChild((class TiXmlElement*)(pRoot->FirstChild("minimap")), "frustum", m_spMinimap->m_frustum);
             XmlGetChild((class TiXmlElement*)(pRoot->FirstChild("minimap")), "screen", reinterpret_cast<NiRect<float>&>(m_spMinimap->m_rcScreen));
             XmlGetChild((class TiXmlElement*)(pRoot->FirstChild("minimap")), "image", reinterpret_cast<NiRect<float>&>(m_spMinimap->m_rcImage));
             XmlGetChildAttr((class TiXmlElement*)(pRoot->FirstChild("minimap")), "image", "name", m_spMinimap->m_strImageName);
@@ -393,7 +393,7 @@ void UIMinimapEditDialog::FUN_141a53750()
             {
                 reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
                 reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamRot) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290()));
-                m_spMinimap->m_frustum = reinterpret_cast<const Unk_Frustum&>(pCamera->GetCamera()->GetViewFrustum());
+                m_spMinimap->m_frustum = pCamera->GetCamera()->GetViewFrustum();
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();
                 m_spMinimap->m_strImageName = m_strImageName;
                 m_spMinimap->m_rcScreen = Unk_Rect4(0, (float)DAT_143af62d4, 0, (float)DAT_143af62d8);
@@ -407,7 +407,7 @@ void UIMinimapEditDialog::FUN_141a53750()
     if (spMap->m_strXBlock.IsEmpty())
         return;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
+    if (!doc.LoadFile((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
         reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(decl);
@@ -423,7 +423,7 @@ void UIMinimapEditDialog::FUN_141a53750()
             reinterpret_cast<TiXmlNode*>(pRoot)->LinkEndChild(new TiXmlElement("minimap"));
         }
         Unk_XmlNode* pMinimap = pRoot->FirstChild("minimap");
-        XmlSetChild((class TiXmlElement*)(pMinimap), "frustum", *(class NiFrustum const*)(&m_spMinimap->m_frustum), 1);
+        XmlSetChild((class TiXmlElement*)(pMinimap), "frustum", m_spMinimap->m_frustum, 1);
         XmlSetChild((class TiXmlElement*)(pMinimap), "screen", reinterpret_cast<const NiRect<float>&>(m_spMinimap->m_rcScreen), 1);
         XmlSetChild((class TiXmlElement*)(pMinimap), "image", reinterpret_cast<const NiRect<float>&>(m_spMinimap->m_rcImage), 1);
         XmlSetChildAttr((class TiXmlElement*)(pMinimap), "image", "name", m_strImageName, 1);

@@ -12,6 +12,7 @@
 
 #include "uitencentaas2dialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/gfxui/asurlrequest.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/networkservice.h"
@@ -23,18 +24,12 @@
 #include "ms2/commonfiles/os.h"
 
 // ---- exe callees ----
-class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
+class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes; an ASLoader)
 {
 public:
-    Unk_AasImage(int nMovieId);                                             // 0x1422e5300
     char m_pad_ascript[0x90 - sizeof(AScript)];
 };
-class Unk_AasSource                                                         // the image source: the page url (0x40 bytes)
-{
-public:
-    Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
-    char m_pad_00[0x40];
-};
+class Unk_AasSource;
 struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
 {
     Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
@@ -234,9 +229,9 @@ MS2_REPLACE_METHOD(0x140E98F20, UITencentAas2Dialog, vfunc_26, 66, 0x3FE26FC5);
 // @0x140e98f70
 void UITencentAas2Dialog::vfunc_85()
 {
-    m_spImage.AssignRaw(new Unk_AasImage(2));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
-        FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
+    m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
+        FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2))));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(m_spImage->FUN_1422bb890());

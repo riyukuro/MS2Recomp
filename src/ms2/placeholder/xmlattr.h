@@ -29,8 +29,6 @@ class Unk_140165cf0
 public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);     // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);     // NextSiblingElement
-    Unk_140165cf0* FUN_14086e8d0(const char* pszName);     // FirstChildElement (the tinyxmlhelper.h list readers' copy)
-    Unk_140165cf0* FUN_14086e7e0(const char* pszName);     // NextSiblingElement (same)
     const Unk_140165cf0* NextSiblingElement() const;       // 0x14086e770 (TiXmlNode, any name)
     // @0x1403f0510 (TinyXML's non-const wrapper)
     Unk_140165cf0* NextSiblingElement() { return const_cast<Unk_140165cf0*>((const_cast<const Unk_140165cf0*>(this))->NextSiblingElement()); }
@@ -51,7 +49,7 @@ int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float& fOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0 (0x1408733e0)
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
-int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int& nOut);              // int or enum value
+int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890 (int or enum value)
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);  // string attribute with default
 void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& arr, const char* pszDelim);  // split into strings
 
@@ -158,7 +156,7 @@ template <class E> int XmlValue(Unk_140165cf0* pElem, const char* pszName, E& eO
         return 2;
     }
     int nValue = 0;
-    int nRet = FUN_140873890(pElem, pszName, nValue);
+    int nRet = XmlQuery((class TiXmlElement*)(pElem), pszName, nValue);
     if (nRet != 0)
         return nRet;
     eOut = (E)nValue;

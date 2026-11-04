@@ -21,9 +21,8 @@ class ASArray;
 class ASObj;
 class Unk_MLevelCtrl;
 class ASScrollingList;
-class Unk_MSubTab;
 class ASEventDispatcher;
-class Unk_MScroll;
+class ASButton;
 class CMasteryReceipe;
 class Unk_MFurn;
 class CMsgBoxData;
@@ -125,7 +124,6 @@ public:
     static int FUN_140eb9160(const void* pA, const void* pB);  // 0x140eb9160
 
     MS2Ptr<Unk_MLevelCtrl> FUN_140c02990(const CString& strName);   // child lookup
-    MS2Ptr<Unk_MSubTab> FUN_140c02870(const CString& strName);
     MS2Ptr<ASEventDispatcher> FindControl(const CString& strName);
 
 private:
@@ -133,7 +131,7 @@ private:
     ItemSlotBinder m_mastery;           // +0x188 "MasteryDialog_Mastery"
     ItemSlotBinder m_reward;            // +0x1c8 "MasteryDialog_Reward"
     ItemSlotBinder m_require;           // +0x208 "MasteryDialog_Require"
-    MS2Ptr<Unk_MScroll> m_magicScroll;  // +0x248 (16 bytes, pointer at +0x250)
+    MS2Ptr<ASButton> m_magicScroll;    // +0x248 (16 bytes, pointer at +0x250)
     int m_lastSelected[4];              // +0x258 "m_lastSelectedIndex" per main tab
     int m_268[14];                      // +0x268
     int m_scroll[14];                   // +0x2a0 scroll position per category

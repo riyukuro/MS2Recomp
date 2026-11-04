@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"   // MS2Ptr<CFieldDataCli> (the camera option row)
 #include "ms2/client/ms2/camera.h"
 
 // ---- unit-local placeholders ----
@@ -31,25 +32,12 @@ struct Unk_CameraOption
     float m_154;
 };
 
-// Smart pointer to it (pointer at +8).
-class Unk_CameraOptionPtr
-{
-public:
-    ~Unk_CameraOptionPtr() { FUN_140885ab0(); }     // 0x1408850f0 (another obj)
-    Unk_CameraOption* FUN_140885340() const;        // operator->
-    void FUN_140885ab0();                           // release
-
-    void* m_pad_00;
-    Unk_CameraOption* m_p;
-};
-
 class FieldProperty;
 
 // The world service (FUN_1403ed2d0).
 class Unk_GameContext : public WorldService
 {
 public:
-    Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
 
 // The game clock (TSingleton<CMainSystem>::GetInstance).
@@ -57,7 +45,6 @@ public:
 namespace egf { class Entity; }
 class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +73,7 @@ void CToolCameraMode::vfunc_6(int n)
         if (pTarget)
         {
             m_84 = 1;
-            float fRotation = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_154;
+            float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_154;
             Vector3 ptRot(90.0f, fRotation, -60.0f);
             vfunc_4(ptRot);
             vfunc_24(pTarget, 1);
@@ -115,7 +102,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     Unk_EfdMatrix3 kRot;
     reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
     Vector3 ptAxis;
-    FUN_140a01190(&kRot, 0, &ptAxis);
+    reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptAxis));
     ptAxis.FUN_140968990();
     float fDist = 200.0f;
     float fHeight = 0.0f;
@@ -177,10 +164,10 @@ void CToolCameraMode::vfunc_8(double fTime)
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
-        FUN_140a01190(&kRot, 0, &ptRight);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptRight));
         ptRight.FUN_140968990();
         Vector3 ptForward;
-        FUN_140a01190(&kRot, 2, &ptForward);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));

@@ -3,8 +3,8 @@
 // Registered with UIEntityEventDispatcher (placeholder/uientityeventdispatcher.h) in OnLoadInit / vfunc_26.
 // Ctor 0x141930750-area, 6 slots: 0 deleting dtor, 1..5 the event callbacks (0x141930750 .. 0x1419307f0 in
 // ?\uientityeventlistener.cpp); derived classes bind the base ctor/dtor/slots through progress/symbols-manual.tsv.
-// NOT an original header (name assumed); the signatures are the by-pointer forms (units that need the event type
-// keep their own typed view, see uiupperhpbar.h).
+// NOT an original header (name assumed); the signatures are the by-pointer forms (slot 2's argument is the
+// egf::EntityID that UIEntityEventDispatcher::vfunc_2 passes; overrides cast it, see uiupperhpbar.cpp).
 #pragma once
 
 #include "ms2/ms2layout.h"

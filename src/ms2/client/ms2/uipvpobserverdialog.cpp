@@ -44,7 +44,6 @@ class Unk_PoWorld                                               // the world ser
 {
 public:
     Unk_PoMe* FUN_141bd0cc0();                                      // the local player
-    bool FUN_141bc6fb0(unsigned* pnHour, unsigned* pnMin, int* pnC, int* pnFlag) const;     // the match countdown
 };
 
 struct Unk_PoConfig
@@ -128,7 +127,7 @@ void UIPvPObserverDialog::vfunc_72()
     unsigned nHour = 0;
     unsigned nMin = 0;
     int nC = 0;
-    reinterpret_cast<Unk_PoWorld*>(WorldService::GetInstance())->FUN_141bc6fb0(&nHour, &nMin, &nC, &nFlag);
+    WorldService::GetInstance()->FUN_141bc6fb0((int*)&nHour, (int*)&nMin, &nC, &nFlag);   // the match countdown
     if (nFlag != 0 && nHour == 0 && nMin == 0) {
         vfunc_67();
     }

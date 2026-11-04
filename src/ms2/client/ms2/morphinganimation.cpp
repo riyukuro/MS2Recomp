@@ -18,21 +18,10 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+#include "ms2/client/ms2/gameobject.h"   // C3: GameObject::FUN_14123c460
 
 // ---- out-of-unit callees ----
-// Key that names the owner's model in the model cache (16 bytes; plain data).
-struct Unk_ModelKey
-{
-    void* m_pad_00;
-    void* m_pad_08;
-};
-MS2_CHECK_SIZE(Unk_ModelKey, 0x10);
-
-class Unk_MorphOwner
-{
-public:
-    Unk_ModelKey& FUN_14123c460(Unk_ModelKey& kOut);    // fills kOut with the key of the owner's model, returns it
-};
+class Unk_MorphOwner;    // the owning GameObject (GameObject::FUN_14123c460 names its model in the model cache)
 class Unk_ModelEntry
 {
 public:
@@ -147,8 +136,7 @@ MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, SetWeight, 295, 0x516868E3);
 // @0x141487d80
 NiAVObject* CMorphingAnimation::FindNode(const CString& strNodeName)
 {
-    Unk_ModelKey kKey;
-    Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_ModelKey&>(m_pOwner->FUN_14123c460(kKey)))));
+    Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c460()));
     if (pEntry != NULL) {
         NiNode* pRoot = ((class NiNode *)((class NiActorManager*)(pEntry))->GetNIFRoot());
         if (pRoot == NULL)

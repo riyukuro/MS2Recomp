@@ -14,19 +14,14 @@
 
 #include <stdarg.h>
 
-// The process-wide printf options word every __stdio_common_* entry point takes as its first argument.
-extern unsigned long long DAT_143aad0e8;
-
-// @0x1402c3760 - &printfOptions
-unsigned long long* FUN_1402c3760()
-{
-    return &DAT_143aad0e8;
-}
+// @0x1402c3760 is the SDK's __local_stdio_printf_options (corecrt_stdio_config.h): the process-wide printf options word
+// (its static _OptionsStorage, 0x143aad0e8) every __stdio_common_* entry point takes as its first argument. This unit
+// calls it, so its noinline COMDAT is emitted here.
 
 // @0x1402c3770 - the va_list narrow formatter (vsprintf_s core)
 int FUN_1402c3770(char* pBuffer, size_t nBufferCount, const char* pszFormat, _locale_t pLocale, va_list args)
 {
-    int nCount = __stdio_common_vsprintf_s(*FUN_1402c3760(), pBuffer, nBufferCount, pszFormat, pLocale, args);
+    int nCount = __stdio_common_vsprintf_s(*__local_stdio_printf_options(), pBuffer, nBufferCount, pszFormat, pLocale, args);
     int nResult;
     if (nCount < 0)
         nResult = -1;

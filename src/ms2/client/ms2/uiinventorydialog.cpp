@@ -351,7 +351,6 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 GFxManager* FUN_14025e7a0();
 
 // The text filter of the common strings.
-CommonString* FUN_14025e7d0();
 
 // Field flags (the "no item merge here" map flag).
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -1350,7 +1349,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return false;
         }
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
         {
             CStringW strMsg;
             if (pChecker->FUN_140225210(strName, strMsg, 0) != 0)
@@ -1421,7 +1420,7 @@ bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
         if (strName.IsEmpty() || strName.GetLength() >= 0x20)
             return false;
         CStringW strMsg;
-        MS2Ptr<CBanTextChecker> spChecker = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> spChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
         if (spChecker.get() != 0)
         {
             if (spChecker->FUN_140225630(strName, strMsg) == 0)
@@ -2256,11 +2255,6 @@ MS2_REPLACE_METHOD(0x1419A0B20, UIInviteGroupDialog, FUN_1419a0b20, 234, 0);
 
 // ---- UIItemBreakBase / UIItemBreakDialog / UIItemBreakDonationDialog -------------------------------------------------
 
-// The slot bag movie of "m_itemBag" ("instance"): the bag name and the scrolling.
-class Unk_IbSlotBag : public ASObj
-{
-public:
-};
 // The slot bag registered under a movie name (FUN_1422c8e90): redraw a slot.
 class Unk_IbBreakBag;
 class ItemBreakSlotBag;
@@ -2331,7 +2325,7 @@ void UIItemBreakBase::FUN_1419a1430()
     FUN_1414106d0(GetTypeName());
     if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
-        if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
+        if (MS2Ptr<ASTileList> spSlots = spBag->FUN_140accef0<ASTileList>("instance"))   // the slot bag movie: the bag name and the scrolling
             spSlots->FUN_1407cba60("bagId", GetTypeName());
     }
     vfunc_85(true, 0);
@@ -2617,7 +2611,7 @@ void UIItemBreakDialog::OnLoadComplete()
         m_200.insert(std::make_pair(INV_TAB_PET, nIndex));
         nIndex++;
         unsigned nRows = spType->GetItemCount();
-        spType->FUN_1422df5f0(nRows > 1 ? nRows : 1);
+        spType->SetMenuRowCount(nRows > 1 ? nRows : 1);
         int nSelect = 0;
         std::map<int, int>::iterator it = m_200.find(m_1f8);
         if (it != m_200.end())
@@ -2637,7 +2631,7 @@ void UIItemBreakDialog::OnLoadComplete()
             spRank->AddItemRow(rank);
         }
         unsigned nRows = spRank->GetItemCount();
-        spRank->FUN_1422df5f0(nRows > 1 ? nRows : 1);
+        spRank->SetMenuRowCount(nRows > 1 ? nRows : 1);
         spRank->SetSelectedIndex(m_1fc - 1);
         reinterpret_cast<Unk_IbDropdown*>(spRank.operator->())->vfunc_24(1);
     }
@@ -2687,23 +2681,23 @@ void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
         spBreak->FUN_1422c1fe0(((class CItemBreakManager*)FUN_1409c4b20())->HasBreakItems());
     if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
-        if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
+        if (MS2Ptr<ASTileList> spSlots = spBag->FUN_140accef0<ASTileList>("instance"))
         {
             if (bReset)
             {
                 int nCount = (int)((class CItemBreakManager*)FUN_1409c4b20())->FUN_140533e20();
                 int nLastRow = nCount / 5;
                 int nTop = (std::max)(nLastRow - 2, 0);
-                ((ASTileList*)spSlots.operator->())->FUN_1422cf4f0(nTop);
+                spSlots->FUN_1422cf4f0(nTop);
             }
             else
             {
                 int nLastRow = (int)((class CItemBreakManager*)FUN_1409c4b20())->FUN_140533e20() / 5;
                 int nRow = nIndex / 5;
                 nRow = (std::min)((std::max)(0, nRow), nLastRow);
-                int nTop = ((ASTileList*)spSlots.operator->())->FUN_1422cf520();
+                int nTop = spSlots->FUN_1422cf520();
                 if (nRow < nTop || nTop + 2 < nRow)
-                    ((ASTileList*)spSlots.operator->())->FUN_1422cf4f0(nRow);
+                    spSlots->FUN_1422cf4f0(nRow);
             }
         }
     }

@@ -93,7 +93,6 @@ int FUN_14123c580(void* p);
 void* FUN_141200850(CEquipModel* p);
 
 // ---- out-of-unit callees ----
-void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);
 void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);
 int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);class CItemData   // C3: member view for the former free stand-ins
 {
@@ -113,7 +112,7 @@ void* FUN_1409478e0(void* p);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);
 float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
-bool FUN_140534e50(void* p);   unsigned FUN_1405258b0(void* p);
+unsigned FUN_1405258b0(void* p);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
@@ -126,7 +125,7 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-void* FUN_1409f7cb0(void* p);   void* FUN_14098d8d0(void* tbl, void* key);   void* FUN_14098d0f0(void* sp);
+void* FUN_1409f7cb0(void* p);   void* FUN_14098d8d0(void* tbl, void* key);
 int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_140a0b300(void* o, bool b);
 class Unk_NodeQueue   // the scene graph walk (applyeffect.cpp)
@@ -142,7 +141,6 @@ void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void FUN_1402bd040(float* p);
 void FUN_1411dde50(void* owner, void* self);
 void FUN_141422b30(struct Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
-void FUN_1409f76f0(void* p, void* node);   void FUN_1409fabf0(void* p, void* v);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
@@ -257,12 +255,12 @@ void FUN_141441ec0(efd::AssetID* p, const char* pszUrn, unsigned char nMult, efd
 }
 namespace ecr { class SceneGraphService; }
 ecr::SceneGraphService* GetSceneGraphService();
-void* FUN_1414f1e70(void* p, egf::EntityID id, int n);
+class MS2SceneGraphService { public: void SetBucketOverride(egf::EntityID entityID, int iBucket); };   // C3: member view (0x1414f1e70)
 class Unk_AkoMyPC;
 template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);
 void FUN_1401bf970(void* out, void* p);   bool FUN_1401b5240(void* sp, int n);   void FUN_1401b50d0(void* sp);
 void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd::utf8string* pVal);
-void* FUN_1413f9b70(const egf::EntityID& id);   void* FUN_1409995d0(void* p);   void* FUN_1409995c0();
+class NiActorManager* FUN_1413f9b70(const egf::EntityID& id);   void* FUN_1409995d0(void* p);   void* FUN_1409995c0();
 void FUN_14099a7c0(void* a, void* b);   void FUN_140999170(void* a);   void FUN_14099bb80(void* a, void* b, void* c);
 void* FUN_140999740(void* a, unsigned b);   void* FUN_140999900(void* a);   void* FUN_1409995f0(void* a, unsigned* n);
 void* FUN_1409998f0(void* a);   bool FUN_140998dc0(void* a, const char* s);
@@ -370,7 +368,7 @@ int CKfmModel::vfunc_6()
     if (m_spEntity.operator egf::Entity*() != 0) {
         FUN_141203e60(this);
         if (DAT_143ae2b30 != 0)
-            FUN_1414f1e70(GetSceneGraphService(), ((egf::Entity*)(void const*)(m_spEntity.operator->()))->GetEntityID(), 3);
+            ((MS2SceneGraphService*)(void*)GetSceneGraphService())->SetBucketOverride(((egf::Entity*)(void const*)(m_spEntity.operator->()))->GetEntityID(), 3);
         void* pActorMgr = FUN_1413f9b70(((egf::Entity*)(void const*)(m_spEntity.operator->()))->GetEntityID());
         if (pActorMgr != 0) {
             if (DAT_143ae2b30 != 0) {

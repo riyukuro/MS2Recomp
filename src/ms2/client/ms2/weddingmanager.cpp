@@ -66,6 +66,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cproxygameobject.h"
 
 // ---- unit statics (.text$di): the per-TU handle, the shared header statics (header_statics_a.h) and the field war string ----
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
@@ -107,7 +108,6 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
 }
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-class Unk_WsB_Notice : public CPtred { public: char m_pad[1]; };   // unit-local; only held through MS2Ptr
 
 class Unk_WeddingMail : public CPtred
 {
@@ -1258,9 +1258,8 @@ void Unk_IndexPool::Shuffle()
 // @0x141b90c70
 int Unk_IndexPool::Pick()
 {
-    unsigned int nRand = rand();
-    size_t nCount = m_indices.size() - 1;
-    unsigned int nPick = nRand % (unsigned int)nCount;
+    // The exe takes the size through `this` itself (no member-address hop), as if the pool were the vector.
+    unsigned int nPick = rand() % (unsigned int)(((std::vector<int>*)this)->size() - 1);
     return m_indices[nPick];
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -75,7 +75,7 @@ NiImplementRTTI(MS2ActorManager, NiActorManager);   // .text$di 0x1400d39e0
 // File-scope statics of the unit (dynamic initialisers 0x1400d3a10 / 0x1400d3a40 / 0x1400d3a70; no reader is known).
 CStringW g_143ac2fe0(L"");
 CStringW g_143ac2fe8(L"");
-void* DAT_143ac2fd8;    // singleton read by FUN_140d86260
+class IClientPlatform* DAT_143ac2fd8;   // the live publisher platform (ms2clientplatform.cpp sets it), read by FUN_140d86260
 
 // Public view of the protected NiActorManager state the (free-function) Create / flush code touches.
 struct Unk_ActorAccess : public MS2ActorManager

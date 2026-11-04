@@ -139,7 +139,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 NiAVObject* FUN_141b6efc0(egf::Entity*);
@@ -718,7 +717,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
             CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
-                ((CUgcManager*)FUN_14052d220())->FUN_1418845a0(((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
+                TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
             }
             m_spGuide->vfunc_15(m_spItem.get());
         }

@@ -15,6 +15,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <efd/Matrix3.h>
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <NiPoint3.h>
 #include "ms2/client/ms2/fielddatacli.h"   // C3: MS2Ptr<CFieldDataCli>, the option row
 
 // ---- unit-local placeholders ----
@@ -40,7 +41,6 @@ public:
 // The UI service (TSingleton<CUIService>::GetInstance).
 
 // The game's TinyXML element (0x90 bytes).
-class Unk_TiXmlElement;
 class TiXmlElement
 {
 public:
@@ -61,11 +61,7 @@ public:
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 // The exe writes NiPoint3 attributes: each efd::Point3 converts through the out-of-line NiPoint3(const efd::Point3&).
-struct Unk_FcNiPoint3 : public Vector3
-{
-    Unk_FcNiPoint3(const Vector3& pt);                      // 0x14027dcf0
-};
-void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, const Unk_FcNiPoint3& pt);   // SetPointAttribute
+void FUN_140874ad0(class TiXmlElement* pElem, const char* pszName, const NiPoint3& pt);   // XmlSetAttr, NiPoint3 view
 
 float FUN_140a38cd0(float f);                       // fabs
 
@@ -130,7 +126,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                 if (reinterpret_cast<Unk_FreeCamOption*>(spOption.get()) != 0)
                 {
                     TiXmlDocument doc;
-                    if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
+                    if (!doc.LoadFile("./data/xml/camera/customize.xml", TIXML_ENCODING_UNKNOWN))
                     {
                         ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement("ms2"))));
                     }
@@ -145,8 +141,8 @@ void CFreeCameraMode::vfunc_8(double fTime)
                         XmlSetAttr((class TiXmlElement*)(pCamera), "distance", fDist);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomIn", 50);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomOut", 150);
-                        FUN_140874ad0((Unk_TiXmlElement*)pCamera, "direction", ptDir);
-                        FUN_140874ad0((Unk_TiXmlElement*)pCamera, "rotation", FUN_140af8260());
+                        FUN_140874ad0((class TiXmlElement*)(pCamera), "direction", reinterpret_cast<const efd::Point3&>(ptDir));
+                        FUN_140874ad0((class TiXmlElement*)(pCamera), "rotation", reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_140af8260())));
                         doc.SaveFile();
                     }
                 }

@@ -20,6 +20,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/socketptr.h"
+#include "ms2/placeholder/crideedata.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/ms2format.h"
 
@@ -129,7 +130,7 @@ class Unk_NtPet : public CPet
 {
 public:
 };
-struct Unk_NtMountSeat { int FUN_140f48d40(); };
+struct Unk_NtMountSeat;                             // the seat's hud entity (UIHudEntity::Entity)
 class Unk_NtMountSeatPtr
 {
 public:
@@ -140,17 +141,6 @@ public:
     void* m_pad_00;
     Unk_NtMountSeat* m_p;
 };
-struct Unk_NtTeam : public CPvPInfo { };
-class Unk_NtTeamPtr
-{
-public:
-    ~Unk_NtTeamPtr() { FUN_140964aa0(); }
-    void* FUN_140965810() const;                        // get
-    Unk_NtTeam* FUN_140965970() const;                  // operator->
-    void FUN_140964aa0();                               // release
-    void* m_pad_00;
-    Unk_NtTeam* m_p;
-};
 class Unk_NtSeatSub { public: };
 // PC with its virtuals after slot 132 (PC itself declares 124..132).
 class Unk_NtPC : public PC
@@ -158,13 +148,9 @@ class Unk_NtPC : public PC
 public:
     // slots 133-146 are declared by PC (placeholder/fittingdollpc.h)
     Unk_NtMountSeatPtr FUN_141657730();
-    Unk_NtTeamPtr FUN_140967420();
 };
 CStringW FUN_141b720b0(int nTitle, __int64 nPc);
-class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
-class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
-class Unk_RideeData : public CPtred { };
-class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
+class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view
 class Unk_NtItemMgr
 {
 public:
@@ -352,8 +338,8 @@ int UINameTag::Entity::vfunc_8(int n)
     Ridee* pHolder = ((class Ridee*)((class PCBase*)(class PCBase*)(pActor))->FUN_1416764a0());
     if (pHolder != 0)
     {
-        MS2Ptr<Unk_RideeData> spMount = pHolder->GetData();
-        bool bMounted = (spMount.get() ? true : false) && reinterpret_cast<CRideeData*>(spMount.operator->())->FUN_140784970().operator->()->m_68 != 0;
+        MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
+        bool bMounted = ((CRideeData*)spMount ? true : false) && spMount->FUN_140784970()->m_nNameTagHide != 0;
         if (bMounted)
             return 1;
     }
@@ -386,7 +372,7 @@ float UINameTag::Entity::vfunc_9()
     if (pPc != 0)
     {
         bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
-            && pPc->FUN_141657730().FUN_141667740()->FUN_140f48d40() != 0;
+            && reinterpret_cast<UIHudEntity::Entity*>(pPc->FUN_141657730().FUN_141667740())->FUN_140f48d40() != 0;
         if (bSeated)
             return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)FUN_1401d3200())->m_848)->Read();
     }
@@ -517,11 +503,11 @@ void UINameTag::Entity::FUN_141a5ff60()
                     bSymbol = true;
                 }
             }
-            bool bTeam = !bSymbol && (pPc->FUN_140967420().FUN_140965810() ? true : false)
-                         && pPc->FUN_140967420().FUN_140965970()->FUN_140743610();
+            bool bTeam = !bSymbol && ((CPvPInfo*)pPc->FUN_140967420() ? true : false)
+                         && pPc->FUN_140967420()->FUN_140743610();
             if (bTeam)
             {
-                bool bRed = pPc->FUN_140967420().FUN_140965970()->GetPoint() == 0xc9;
+                bool bRed = pPc->FUN_140967420()->GetPoint() == 0xc9;
                 if (bRed)
                 {
                     obj.FUN_1409c0dc0("symbol", "red_team");
@@ -529,7 +515,7 @@ void UINameTag::Entity::FUN_141a5ff60()
                 }
                 else
                 {
-                    bool bBlue = pPc->FUN_140967420().FUN_140965970()->GetPoint() == 0xca;
+                    bool bBlue = pPc->FUN_140967420()->GetPoint() == 0xca;
                     if (bBlue)
                     {
                         obj.FUN_1409c0dc0("symbol", "blue_team");

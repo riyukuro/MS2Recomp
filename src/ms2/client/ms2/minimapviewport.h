@@ -6,7 +6,7 @@
 #pragma once
 
 #include "ms2/ms2layout.h"
-#include "ms2/client/ms2/fielddatacli.h"   // NiPoint3 / Unk_Rect4 / Unk_Frustum / CMinimap / CFieldDataCli
+#include "ms2/client/ms2/fielddatacli.h"   // NiPoint3 / Unk_Rect4 / NiFrustum / CMinimap / CFieldDataCli
 #include <NiRefObject.h>
 class NiPoint3;
 
@@ -51,7 +51,7 @@ public:
     bool FUN_141486550(const NiPoint3& kPos, float& fX, float& fY, float& fZ);      // 0x141486550
 
 private:
-    Unk_Frustum m_kFrustum;         // +0x10 the minimap camera frustum (m_bOrtho at +0x28)
+    NiFrustum m_kFrustum;           // +0x10 the minimap camera frustum (m_bOrtho at +0x28)
     Unk_Rect4 m_rcImage;            // +0x2c <image l r t b>
     Unk_Rect4 m_rcScreen;           // +0x3c <screen l r t b>
     float m_afMatrix[4][4];         // +0x4c world -> minimap, rows (v' = v * M, w = row 3)

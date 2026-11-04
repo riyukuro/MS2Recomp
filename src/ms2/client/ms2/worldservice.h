@@ -128,7 +128,6 @@ template <class T> struct Unk_WsOptional
 struct Unk_WsElem { void* p; };
 struct Unk_WsP8 { void* p; };
 struct Unk_WsP16 { void* p0; void* p1; };
-struct Unk_WsA_FieldRef;                                    // the m_350 value ref (worldservice_1.cpp)
 struct Unk_WsPod8 { unsigned char raw[8]; };
 struct Unk_WsPod16 { unsigned char raw[16]; };
 struct Unk_WsPod24 { unsigned char raw[24]; };
@@ -344,7 +343,7 @@ public:
     int FUN_141bbaf00(GameObject* obj, egf::EntityID id, bool bNewlyAdded);   // register a created object's entity
     int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // OnObjectDestroyed: unregister from the object maps
-    void FUN_141bbbc60(const egf::EntityID& id, int bImmediate);                 // destroy the object registered under entity id
+    void FUN_141bbbc60(egf::EntityID id, int bImmediate);                        // destroy the object registered under entity id
     void FUN_141bbbcf0(unsigned objId, int bImmediate);                          // destroy the object registered under object id
     int FUN_141bbbe40(int mapId, int arg2, int arg3);                            // start loading map mapId
     int FUN_141bbc1d0(const char* urn, int arg2);                                // begin loading the xblock urn
@@ -352,7 +351,7 @@ public:
     Vector3 FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
     void ClearFieldObjects();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
-    Unk_WsA_FieldRef FUN_141bc2800(int id);                                            // m_350.Lookup(field object id), by value (null when absent)
+    MS2Ptr<CPortal> FUN_141bc2800(int id);                                             // m_350.Lookup(field object id), by value (null when absent)
     MS2Ptr<CPortal> FindPortalByDestMap(int mapType);                                        // first m_350 portal with this map type (by value)
     void FUN_141bc2980(void* outIds);                                                  // append every field object id to the CAtlArray<int>
     void FUN_141bc2a70(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs
@@ -390,7 +389,7 @@ public:
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc6090(const Vector3& pos, int skipDisabled); // 0x141bc6090
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc6510(const Vector3& pos, int kind); // 0x141bc6510
-    MS2Ptr<class Unk_WsB_Prop> FindProp(const CString& name); // 0x141bc66b0
+    MS2Ptr<class CInteractObject> FindProp(const CString& name); // 0x141bc66b0
     void FUN_141bc6760(const CString& name, int arg3, int category, int arg5); // 0x141bc6760
     void FUN_141bc6860(const CString& name, int arg3, int category); // 0x141bc6860
     void FUN_141bc6930(int kind, int arg); // 0x141bc6930
@@ -417,8 +416,8 @@ public:
     int  FUN_141bc9830(int* id, CString& name, float maxDist); // 0x141bc9830
     void AddProxyObject(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
     void RemoveProxyObject(unsigned id); // 0x141bc9b30
-    MS2Ptr<class Unk_WsB_Notice> FindProxyObject(unsigned id); // 0x141bc9be0
-    MS2Ptr<class Unk_WsB_Notice> FUN_141bc9c60(void* owner); // 0x141bc9c60
+    MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id); // 0x141bc9be0
+    MS2Ptr<class CProxyGameObject> FUN_141bc9c60(void* owner); // 0x141bc9c60
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9d60(const CStringW& text); // 0x141bc9d60
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9e70(int kind); // 0x141bc9e70
     int FUN_141bca2e0(); // 0x141bca2e0
@@ -550,7 +549,7 @@ public:
     Unk_WsR990 FUN_141bd87a0(egf::EntityID id);             // m_990 lookup
     bool FUN_141bd8860(void* pNpc);                     // move a pending npc from m_990 to m_980
     bool FUN_141bd8ae0(void* pNpc);                     // move a pending npc from m_980 to m_990
-    bool FUN_141bd8e30(const unsigned __int64& entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by reference: every exe caller passes &id)
+    bool FUN_141bd8e30(egf::EntityID entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by value: every exe caller copies it)
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
     void FUN_141bd9410(MS2Ptr<class Unk_WsB_Prop> spObj); // show a debug tooltip over an interactive object (releases spObj)
@@ -574,7 +573,7 @@ public:
     MS2Ptr<Unk_WsRec708> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
     void FUN_141bda780();                               // expire the timed entries of m_ab0
     void FUN_141bda9c0(int v);                          // m_890 operation
-    void FUN_141bda9f0();                               // m_890 operation
+    int FUN_141bda9f0();                                // m_890 operation: the enabled count
     void FUN_141bdaa20();                               // m_890 operation
     efd::SmartPointer<egf::Entity> FUN_141bdaa50(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
     void ShowNodeViewerDialog();                               // show the node viewer dialog

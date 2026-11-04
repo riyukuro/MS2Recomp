@@ -67,13 +67,12 @@
 #include "ms2/placeholder/itemcloset.h"
 #include "ms2/placeholder/csadventurelevelmission.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read7, Read11
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
 CInputStream& FUN_14070f440(CInputStream&, long&);              // packet.cpp stream operators
 CInputStream& FUN_14070f480(CInputStream&, unsigned int&);
-CInputStream& FUN_14070f4c0(CInputStream&, __int64&);
-CInputStream& FUN_14070f5f0(CInputStream&, CStringW&);
 COutputStream& FUN_14070f960(COutputStream&, long);
 COutputStream& FUN_14070f9a0(COutputStream&, unsigned int);
 COutputStream& FUN_14070f9e0(COutputStream&, __int64);
@@ -542,7 +541,7 @@ void FUN_1407a6ef0(Unk_1407a6db0& v, COutputStream& out)
 // @0x1407a6f30
 void FUN_1407a6f30(Unk_1407a6db0& v, CInputStream& in)
 {
-    FUN_14070f4c0(in, v.m_00);
+    reinterpret_cast<Unk_OSInput&>(in).Read7(v.m_00);
     FUN_14070f440(in, (long&)v.m_08);
 }
 
@@ -559,7 +558,7 @@ void FUN_1407a6fe0(Unk_1407a6f80& v, CInputStream& in)
 {
     FUN_14070f440(in, v.m_00);
     FUN_14070f440(in, v.m_04);
-    FUN_14070f5f0(in, v.m_08);
+    reinterpret_cast<Unk_OSInput&>(in).Read11(v.m_08);
 }
 
 struct Unk_1407a71a0 { unsigned int m_00; ATL::CAtlArray<unsigned __int64> m_08; };
@@ -582,7 +581,7 @@ void FUN_1407a70f0(Unk_1407a7040& v, CInputStream& in)
     FUN_14070f440(in, (long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
-        FUN_14070f4c0(in, (__int64&)id);
+        reinterpret_cast<Unk_OSInput&>(in).Read7((__int64&)id);
         v.m_08.Add(id);
     }
 }
@@ -602,7 +601,7 @@ void FUN_1407a7230(Unk_1407a71a0& v, CInputStream& in)
     FUN_14070f440(in, (long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
-        FUN_14070f4c0(in, (__int64&)id);
+        reinterpret_cast<Unk_OSInput&>(in).Read7((__int64&)id);
         v.m_08.Add(id);
     }
 }

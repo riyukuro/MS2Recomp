@@ -16,7 +16,6 @@
 class ASObj;
 class CClubMember;
 class CMsgBoxData;
-class Unk_ClubClip;
 class ASScrollingList;
 
 class UIClubDialog : public UIDialog
@@ -46,7 +45,6 @@ public:
     void SetRowNameChange(ASObj& row, __int64 nNameChangeTime);        // "nameChange" flag of a club row
 
     // Unrecovered child-binding helpers of the swf entity base (this is the original UISwfEntity subobject).
-    MS2Ptr<Unk_ClubClip> FUN_140ba7930(const CString& strName);     // bind a movie clip child
     __int64 FUN_141904a70() { return m_nClubId; }                   // 0x141904a70 (inline, uicommon.cpp)
 
 private:

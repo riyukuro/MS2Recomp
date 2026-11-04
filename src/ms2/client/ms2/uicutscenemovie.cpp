@@ -28,6 +28,7 @@
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/client/ms2/autofindtaxistation.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/uiloadingprogress.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/loadingimagetable.h"
@@ -41,8 +42,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
-class Unk_141529a50 { public: void FUN_141529a50(bool b); };
-class Unk_1403ed2d0 : public WorldService { public: Unk_141529a50* FUN_141bd0cc0();};
+class Unk_1403ed2d0 : public WorldService { public: };
 void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
@@ -88,7 +88,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
     FUN_140b632f0()->AddToLayer(this, 2);
     ChromaSDK::GetChromaManager()->SetState(11);
     if (m_4c != 0) {
-        if (((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
+        if (((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())) {
             Play();
             return 1;
         } else {
@@ -112,11 +112,11 @@ int UICutSceneMovie::vfunc_53()
         m_30->Invoke("hide");
     SetSoundFade(false);
     FUN_14151f200();
-    Unk_141529a50* p = ((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (p) {
         FUN_141901390(1, vfunc_48());
         if (m_bIntroStory)
-            p->FUN_141529a50(false);
+            p->FUN_141529a50(0);
     }
     FUN_14025e7a0()->FUN_1422ae920(0);
     TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e40();
@@ -336,7 +336,7 @@ void UICutSceneMovie::vfunc_11()
         return;
     if (!FUN_1419102c0())
         return;
-    Unk_141529a50* p = ((Unk_141529a50*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    MyPC* p = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (p) {
         FUN_141901390(0, vfunc_48());
         if (m_bPlayPending) {

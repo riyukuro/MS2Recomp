@@ -31,9 +31,9 @@ public:
     void FUN_14152a2f0(int n);                              // scenestategame packet 0x35
     void FUN_141524a80(bool bForce);                        // stop moving for a cast (scenestategame)
     void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
-    class Unk_MyPCSkillSlots* FUN_141523bc0();              // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
+    class CSkillSystem* FUN_141523bc0();                    // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
     class StatePcGuideObjectController* FUN_141523be0();    // the guide object controller (scenestategame 0x1417127b0)
-    MS2Ptr<class Unk_MyPCStatPoints> FUN_140c25130();       // the stat point manager (statpointmanager.cpp)
+    MS2Ptr<class CStatPointManager> FUN_140c25130();        // the stat point manager (statpointmanager.cpp)
     void FUN_141661370(int a, int b, int c);                // PC member (scenestategame packet 0x83)
     void FUN_141528c30(CInPacket& packet);                  // scenestategame packet 0x135
     void FUN_141662850(__int64 nValue);                     // PC member (scenestategame packet 0xe0)

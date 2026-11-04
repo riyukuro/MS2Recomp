@@ -223,7 +223,7 @@ void UICollectItemGroupEventDialog::Refresh()
         return;
     m_slots.clear();
     HideItemPanels();
-    __int64 nReceived = g_gameEventUserValue.GetValue(0x898, spContext->m_eventId, (__int64)0);
+    __int64 nReceived = DAT_143ab2fc0.GetValue(0x898, spContext->m_eventId, (__int64)0);
     bool bReceived = nReceived > 0;
     size_t nCount = spContext->m_conditions.size();
     if (nCount > 5 || nCount < 2)

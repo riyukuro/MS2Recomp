@@ -31,7 +31,7 @@ public:
 };
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
    int FUN_1412033e0(class CEquipModel* self);
-void FUN_14097f710(void* dst, void* src);   char FUN_1409a7f70(void* sp, int n);
+void FUN_14097f710(void* dst, void* src);
 void FUN_141200ca0(class CEquipModel*);   // C3: was FUN_141200ca0
 void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
@@ -45,13 +45,12 @@ void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was
 void* FUN_141200820(class CEquipModel*);   // C3: was FUN_141200820
 void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
 void FUN_1412029d0(void* self, CString* out);   void FUN_141202ea0(class CEquipModel* self, CString* s);
-int FUN_141422110(void* a, void* b, void* c);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
+unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
 float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
-char FUN_140534e50(void* p);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
-void* FUN_141201c90(void* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
+std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
 void FUN_1402bd040(float* p);
 void FUN_141203db0(class CEquipModel*);   // C3: was FUN_141203db0
 void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f30
@@ -243,7 +242,7 @@ void CNifModel::vfunc_12()
     FUN_141202ea0((class CEquipModel*)(this), (CString*)&strName);
     if (MS2_NODEPTR(m_spNode).operator==((NiNode*)0) != 0)
         return;
-    if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &m_unk_f8) != 0) {
+    if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &m_unk_f8) != 0) {
         int iv = ((Unk_ModelActor*)pNode)->vfunc_48();
         Unk_NifNodeSet& nodes = NODESET(this);
         for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
@@ -280,7 +279,7 @@ void CNifModel::vfunc_13()
             : (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, ((class NiActorManager*)(void*)(pRootNode))->GetNIFRoot()->GetObjectByName("Bip01 Head"));
         if (pTarget == 0)
             return;
-        if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &m_unk_f8) != 0) {
+        if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &m_unk_f8) != 0) {
             Unk_NifNodeSet& nodes = NODESET(this);
             for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
                 NiAVObjectPtr sp = *it;

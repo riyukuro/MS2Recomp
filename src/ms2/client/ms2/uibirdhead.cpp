@@ -24,12 +24,6 @@ public:
     float FUN_1422afec0(int);
 };
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
-// AS invokers on the tooltip's movie clip (instances of the AScript::Invoke templates).
-class Unk_TooltipMovie {
-public:
-
-    Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
-};
 
 // @0x1418ce5e0
 UIBirdHead::UIBirdHead()
@@ -138,7 +132,7 @@ void UIBirdHead::vfunc_52()
     {
         vfunc_8(1);
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
-        reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e78470("setData", m_88, m_98);
+        reinterpret_cast<AScript*>(pClip.operator->())->Invoke("setData", m_88, m_98);
         reinterpret_cast<AScript*>(pClip.operator->())->Invoke("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
         pClip->Invoke("setFontColor", 0x3df0fb);

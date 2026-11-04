@@ -27,6 +27,8 @@
 #include <ecr/CoreRuntimeMessages.h>
 #include <efd/BitUtils.h>
 #include <egf/PropertyDescriptor.h>
+#include "ms2/commonfiles/ugcdef.h"
+#include "ms2/placeholder/cube.h"
 
 typedef unsigned __int64 u64;
 
@@ -35,7 +37,6 @@ void* FUN_140159860(u64 nSize, void* pWhere);                  // placement oper
 
 // ---- scalar deleting destructors ---------------------------------------------------------------------------------
 // of the record / handle types (59 bytes: dtor, then operator delete when bit 0 of the flags is set)
-void FUN_140fac610(void* p);
 void FUN_140fac640(void* p);
 void FUN_141125970(void* p);
 
@@ -121,7 +122,7 @@ void* FUN_14112cfa0(void* p, unsigned f)
 // @0x14112cfe0
 void* FUN_14112cfe0(void* p, unsigned f)
 {
-    FUN_140fac610(p);
+    static_cast<MS2Ptr<UGCMapBlueprintInfo>*>(p)->MS2Ptr<UGCMapBlueprintInfo>::~MS2Ptr();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -456,8 +457,6 @@ struct Unk_CMISArr16
     int m_nGrowBy;
 };
 
-void FUN_140884f70(void* pDst, const void* pSrc);              // copy ctor of the element of array A
-void FUN_140fac570(void* pDst, const void* pSrc);              // copy ctor of the element of array B
 void FUN_140fac5b0(void* pDst, const void* pSrc);              // copy ctor of the element of array C
 void* FUN_14111ea80(void* p);                                  // default ctor of B's element
 void* FUN_14111ead0(void* p);                                  // default ctor of C's element
@@ -485,8 +484,7 @@ u64 FUN_14112d900(Unk_CMISArr16* a, const void* pElem)
         if (!bOk)
             ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = ::operator new(0x10, a->m_pData + iElement);
-    FUN_140884f70(p, pElem);
+    ::new (a->m_pData + iElement) MS2Ptr<Cube>(*static_cast<const MS2Ptr<Cube>*>(pElem));
     a->m_nSize++;
     return iElement;
 }
@@ -500,8 +498,7 @@ u64 FUN_14112d9b0(Unk_CMISArr16* a, const void* pElem)
         if (!bOk)
             ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = ::operator new(0x10, a->m_pData + iElement);
-    FUN_140fac570(p, pElem);
+    ::new (a->m_pData + iElement) MS2Ptr<UGCMapBlueprintInfo>(*static_cast<const MS2Ptr<UGCMapBlueprintInfo>*>(pElem));
     a->m_nSize++;
     return iElement;
 }
@@ -866,13 +863,12 @@ unsigned FUN_14112e100(char* p) { return *reinterpret_cast<unsigned*>(p + 0x20);
 // @0x14112e110
 unsigned FUN_14112e110(char* p) { return *reinterpret_cast<unsigned*>(p + 0x40); }
 
-// @0x14112e120
-void FUN_14112e120(char* p)
+// @0x14112e120 the entity's model name
+const efd::utf8string& FUN_14112e120(egf::Entity* pEntity)
 {
-    if (reinterpret_cast<efd::SmartPointer<const egf::FlatModel>*>(p + 0x48)->operator const egf::FlatModel*())
-        static_cast<egf::PropertyDescriptor*>(FUN_141128450(p + 0x48))->GetName();
-    else
-        efd::utf8string::NullString();
+    if (reinterpret_cast<efd::SmartPointer<const egf::FlatModel>*>(reinterpret_cast<char*>(pEntity) + 0x48)->operator const egf::FlatModel*())
+        return static_cast<egf::PropertyDescriptor*>(FUN_141128450(reinterpret_cast<char*>(pEntity) + 0x48))->GetName();
+    return efd::utf8string::NullString();
 }
 
 // @0x14112e170 exchange

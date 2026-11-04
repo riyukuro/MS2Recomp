@@ -77,11 +77,10 @@ public:
 
 };
 egmAnimation::AnimationService* FUN_141b6f910();
-// CEffectService as this unit calls it: the entity id by value (effectservice.h declares it const&; same callee bytes)
+// CEffectService as this unit calls it: the hit-sound point by value
 class Unk_BoEffectService
 {
 public:
-    void FUN_1411a6f00(egf::EntityID id);                           // drop the kept object of an entity
     unsigned FUN_1411a5580(int nA, int nB, int nKind, efd::Point3 kPos, float fVolume);    // play a hit sound (the point by value)
 };
 bool Unk_IsFinite(const efd::Point3& pt);                           // all three coordinates are finite
@@ -766,7 +765,7 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
         bool bFade = true;
         m_spEntity->SetPropertyValue(0xa0b6b179, bFade);
         m_kFadeTimer.FUN_1408687f0();
-        reinterpret_cast<Unk_BoEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6f00(m_spEntity->GetEntityID());
+        TSingleton<CEffectService>::GetInstance()->RemoveTracked(m_spEntity->GetEntityID());
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
             FUN_14098b3e0(pRoot, 1.0f, false);

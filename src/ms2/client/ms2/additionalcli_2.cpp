@@ -980,7 +980,7 @@ void AdditionalCliList::FUN_140972380(CSpecialEffectCtx* pCtx)
             continue;
         if (sp->FUN_14096d810()->m_specialEffect.m_fProbability < FUN_140768090())
             continue;
-        reinterpret_cast<MS2Ptr<CXmlData>&>(pCtx->m_pParam) = sp->FUN_14096d810()->m_specialEffect.m_xml;
+        pCtx->m_pParam = sp->FUN_14096d810()->m_specialEffect.m_xml;
         if (!spFn->vfunc_1(pCtx))
             continue;
         pCtx->m_n30++;

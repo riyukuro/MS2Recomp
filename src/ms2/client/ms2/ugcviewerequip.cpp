@@ -64,7 +64,6 @@ class Unk_VwWorld
 {
 public:
     GameObject* FUN_141bd0cc0();                            // the local player
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // an interact object by name
 };
 class PCBase* FUN_140b120b0(class GameObject*);   // C3: was FUN_140b120b0
 
@@ -93,7 +92,6 @@ public:
 
 
 // The upload manager; the CUgcManager singleton.
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // UI dialogs by id.
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
@@ -264,14 +262,14 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141886a90(&m_item, spTexture) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141886a90(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -410,14 +408,14 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141886de0(&m_item, spTexture) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141886de0(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -557,7 +555,7 @@ void CUgcViewerBanner::vfunc_1()
     float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);
     float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
-        ((class CUgcManager*)FUN_14052d220())->FUN_14187f1f0();
+        TSingleton<CUgcManager>::GetInstance()->FUN_14187f1f0();
 }
 
 // @0x1418a04d0
@@ -577,7 +575,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
@@ -587,7 +585,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture) == 1)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141888770(spEntity, spTexture) == 1)
         spCtrl->m_spFile = spFile;
     return 1;
 }
@@ -600,7 +598,7 @@ void CUgcViewerBanner::vfunc_4()
     efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    MS2Ptr<CUgcRegistBanner> spRegist = ((class CUgcManager*)FUN_14052d220())->GetRegistBanner(nBannerId);
+    MS2Ptr<CUgcRegistBanner> spRegist = TSingleton<CUgcManager>::GetInstance()->GetRegistBanner(nBannerId);
     if (spRegist == 0)
         spTexture = m_spImage;
     else
@@ -611,14 +609,14 @@ void CUgcViewerBanner::vfunc_4()
             spTexture = ((class Unk_SgNifLoader*)FUN_140a0afd0())->FUN_141553eb0(strFile, 0);
             if (spTexture == 0)
             {
-                ((class CUgcManager*)FUN_14052d220())->FUN_141884af0(spRegist);
+                TSingleton<CUgcManager>::GetInstance()->FUN_141884af0(spRegist);
                 return;
             }
         }
         else
             spTexture = m_spImage;
     }
-    ((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture);
+    TSingleton<CUgcManager>::GetInstance()->FUN_141888770(spEntity, spTexture);
 }
 
 // @0x1418a0b10
@@ -701,7 +699,7 @@ void CUgcViewerBanner::FUN_1418a1000()
     if (spEntity == 0)
         return;
     NiTexturePtr spTexture = m_spImage;
-    ((class CUgcManager*)FUN_14052d220())->FUN_141888770(spEntity, spTexture);
+    TSingleton<CUgcManager>::GetInstance()->FUN_141888770(spEntity, spTexture);
 }
 
 // ---- CUgcViewerProfile --------------------------------------------------------------------------------------------
@@ -723,7 +721,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -802,7 +800,7 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -884,7 +882,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -972,7 +970,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -987,7 +985,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    CInteractObject* pObject = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_poster.m_strName).get();
+    CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_poster.m_strName).get();
     CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
         ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->FUN_141403180(strThumb);
@@ -997,7 +995,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a2520
 void CUgcViewerGuildPoster::vfunc_4()
 {
-    CInteractObject* pObject = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_poster.m_strName).get();
+    CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_poster.m_strName).get();
     CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
         ((class CInteractGuildPosterObject*)(class CInteractGuildPosterObject*)(pPoster))->UpdatePoster(1);
@@ -1077,14 +1075,14 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141887160(&m_item, spTexture) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141887160(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -1201,7 +1199,7 @@ int CUgcViewerBlueprintImage::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();

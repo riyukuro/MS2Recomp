@@ -4,14 +4,8 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/delegate.h"
 #include <atlcoll.h>
-class Unk_UpperEvt;
-class CProxyGameObject;template<class T> class MS2Ptr;
-class UIEntityEventListener {
-public:UIEntityEventListener();virtual ~UIEntityEventListener();
- virtual void vfunc_1(void*);virtual void vfunc_o70_2(const Unk_UpperEvt&);virtual void vfunc_3(MS2Ptr<CProxyGameObject>);virtual void vfunc_4(MS2Ptr<CProxyGameObject>);virtual void vfunc_5(MS2Ptr<CProxyGameObject>,int); // 3..5 get the actor by value (the callee destroys it)
-};
-MS2_CHECK_SIZE(UIEntityEventListener,8);
-class PCBase;class Unk_UpperEvt;class ASUIComponent;class Unk_AsBuff;class ASEffectManager;
+#include "ms2/placeholder/uientityeventlistener.h"
+class PCBase;class ASUIComponent;class Unk_AsBuff;class ASEffectManager;
 class UpperHpBarEntity {
 public:
  UpperHpBarEntity();~UpperHpBarEntity();
@@ -38,7 +32,7 @@ class UIUpperHpBar : public UIHeadUpDisplay,public UIEntityEventListener {
 public:
  UIUpperHpBar();virtual ~UIUpperHpBar();virtual CString GetTypeName();virtual void OnLoadComplete();virtual void vfunc_26();
  virtual void vfunc_41(const Scaleform::GFx::Value&);virtual void vfunc_43();virtual void vfunc_15();virtual void vfunc_3();
- virtual void vfunc_o70_2(const Unk_UpperEvt&); // UIEntityEventListener slot 2 (Ghidra vfunc_o70_2)
+ virtual void vfunc_o70_2(const void* pId); // UIEntityEventListener slot 2 (Ghidra vfunc_o70_2): the egf::EntityID
  virtual int vfunc_28(const char*,const Scaleform::GFx::Value*,unsigned int);
  virtual int vfunc_48(){return 20029;}
  void FUN_141b4c4c0(const CString&,const int&);void FUN_141b4c510(PCBase*,int);

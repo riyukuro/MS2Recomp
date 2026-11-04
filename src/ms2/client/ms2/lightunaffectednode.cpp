@@ -5,6 +5,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\lightunaffectednode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <NiShadowGenerator.h>
+#include <NiShadowManager.h>
 #include "lightunaffectednode.h"
 #include "hook/ms2hook.h"
 
@@ -12,7 +13,8 @@
 const NiRTTI LightUnaffectedNode::ms_RTTI("LightUnaffectedNode", &NiNode::ms_RTTI);
 
 // @0x1400f7420
-static Unk_LUNHolder s_holder(0);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: in place of the header's Unk_LUNHolder)
+static Unk_BuddyHandle s_holder(0);
 
 // @0x14144df10
 NiObject* LightUnaffectedNode::CreateClone(NiCloningProcess& kCloning)
@@ -39,12 +41,12 @@ LightUnaffectedNode::LightUnaffectedNode(bool affectsLights, bool isTemplate) : 
     m_bUpdateEffects = affectsLights;
     m_bTemplate = isTemplate;
     if (m_bTemplate == false) {
-        Unk_LUNList* list = FUN_140afe770();
-        void* pos = FUN_140afe720(list);
+        const NiTPointerList<NiShadowGeneratorPtr>& list = NiShadowManager::GetShadowGenerators();
+        NiTListIterator pos = list.GetHeadPos();
         while (pos != 0) {
-            Unk_LUNLight* light = FUN_140afe6c0(FUN_140afe730(list, &pos));
-            reinterpret_cast<NiShadowGenerator*>(light)->AttachUnaffectedCasterNode(this);
-            reinterpret_cast<NiShadowGenerator*>(light)->AttachUnaffectedReceiverNode(this);
+            NiShadowGenerator* light = list.GetNext(pos);
+            light->AttachUnaffectedCasterNode(this);
+            light->AttachUnaffectedReceiverNode(this);
         }
     }
 }
@@ -52,19 +54,19 @@ LightUnaffectedNode::LightUnaffectedNode(bool affectsLights, bool isTemplate) : 
 // @0x14144e110
 LightUnaffectedNode::~LightUnaffectedNode()
 {
-    Unk_LUNList* list1 = FUN_140afe770();
-    void* pos1 = FUN_140afe720(list1);
+    const NiTPointerList<NiShadowGeneratorPtr>& list1 = NiShadowManager::GetShadowGenerators();
+    NiTListIterator pos1 = list1.GetHeadPos();
     while (pos1 != 0) {
-        Unk_LUNLight* light1 = FUN_140afe6c0(FUN_140afe730(list1, &pos1));
-        reinterpret_cast<NiShadowGenerator*>(light1)->SetRenderViewsDirty(true);
+        NiShadowGenerator* light1 = list1.GetNext(pos1);
+        light1->SetRenderViewsDirty(true);
     }
     if (m_bTemplate == false) {
-        Unk_LUNList* list2 = FUN_140afe770();
-        void* pos2 = FUN_140afe720(list2);
+        const NiTPointerList<NiShadowGeneratorPtr>& list2 = NiShadowManager::GetShadowGenerators();
+        NiTListIterator pos2 = list2.GetHeadPos();
         while (pos2 != 0) {
-            Unk_LUNLight* light2 = FUN_140afe6c0(FUN_140afe730(list2, &pos2));
-            reinterpret_cast<NiShadowGenerator*>(light2)->DetachUnaffectedCasterNode(this);
-            reinterpret_cast<NiShadowGenerator*>(light2)->DetachUnaffectedReceiverNode(this);
+            NiShadowGenerator* light2 = list2.GetNext(pos2);
+            light2->DetachUnaffectedCasterNode(this);
+            light2->DetachUnaffectedReceiverNode(this);
         }
     }
 }

@@ -122,7 +122,6 @@ void FUN_1401ff930(unsigned char*, void*);   // C3: was FUN_1401ff930
 
 // items
 int FUN_14053dc60(CItemData*);
-bool FUN_140534e50(MS2Ptr<CItem>&);
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
 
@@ -323,7 +322,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
-        if (FUN_140534e50(spItem) != 0)
+        if (!spItem)
             continue;
         if (bAnyUsability == 0 && pPlayer->FUN_141662eb0(spItem.get()) == 0)
             continue;

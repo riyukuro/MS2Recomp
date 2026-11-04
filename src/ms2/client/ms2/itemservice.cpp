@@ -70,13 +70,8 @@ egmAnimation::AnimationService* FUN_141b6f910();
 // The model owner of CEquipModel is the CEquipItem (its MS2Ptr copy is the CPtred-generic 0x140884f30).
 class Unk_EquipModelOwner : public CPtred {};
 
-// CEquipModel members the unit uses (equipmodel.cpp).
-class Unk_IsModel : public CEquipModel
-{
-public:
-    PC* FUN_141200820();                                            // the owner PC (0 when none)
-};
-#define IsModel(p) static_cast<Unk_IsModel*>(static_cast<CEquipModel*>(p))
+void* FUN_141200820(CEquipModel* self);                             // the owner PC (0 when none; equipmodel.cpp)
+#define IsModel(p) static_cast<CEquipModel*>(p)
 int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   // attach an already loaded root
 
 typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
@@ -282,7 +277,7 @@ void CItemService::OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, ef
     {
         spModel->vfunc_33();
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
-        PC* pPC = IsModel(spModel.get())->FUN_141200820();
+        PC* pPC = (PC*)FUN_141200820(IsModel(spModel.get()));
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c00();
     }
@@ -299,7 +294,7 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->ReleaseLinkedItems();
         spModel->vfunc_34();
         reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
-        PC* pPC = IsModel(spModel.get())->FUN_141200820();
+        PC* pPC = (PC*)FUN_141200820(IsModel(spModel.get()));
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c10();
         if (spModel->vfunc_9() != 0)

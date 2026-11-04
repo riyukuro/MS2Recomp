@@ -174,7 +174,6 @@ CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wide
 CString FUN_14016a600(const wchar_t* pwsz, int n);              // wide -> narrow
-CommonString * FUN_14025e7d0(void);  // C3: the definition's signature
 int FUN_14029dd60(const char* pszText, const char* pszFormat, ...);                // sscanf
 void FUN_1401d3700(CString& strPath);
 std::wstring FUN_140291f90(const std::wstring& strToken, int nWhich);
@@ -214,9 +213,9 @@ HRESULT FUN_14028b890(unsigned uA, unsigned uB, unsigned* puOut)
 // @0x14028b8e0
 CStringW GetStringCommonByKey(const CStringW& strKey)
 {
-    if (FUN_14025e7d0() == 0)
+    if (TSingleton<CommonString>::GetInstance() == 0)
         return L"";
-    return FUN_14025e7d0()->GetWideByKey(strKey);
+    return TSingleton<CommonString>::GetInstance()->GetWideByKey(strKey);
 }
 
 // First IPv4 address of this host as a big-endian-packed value (a.b.c.d -> 0xaabbccdd).
@@ -836,13 +835,13 @@ void* FUN_14028dc60(void* p)
 // @0x14028dc80
 CString FUN_14028dc80(int nId)
 {
-    return FUN_14025e7d0()->GetNarrow(nId);
+    return TSingleton<CommonString>::GetInstance()->GetNarrow(nId);
 }
 
 // @0x14028dcd0
 CString FUN_14028dcd0(const CString& strKey)
 {
-    return FUN_14025e7d0()->GetNarrowByKey(strKey);
+    return TSingleton<CommonString>::GetInstance()->GetNarrowByKey(strKey);
 }
 
 // @0x14028dd20
@@ -860,9 +859,9 @@ CString FUN_14028ddb0(const CString& strKey, const fmt::ArgList& args)
 // @0x14028de60
 CStringW GetStringCommon(int nId)
 {
-    if (FUN_14025e7d0() == 0)
+    if (TSingleton<CommonString>::GetInstance() == 0)
         return L"";
-    return FUN_14025e7d0()->GetWide(nId);
+    return TSingleton<CommonString>::GetInstance()->GetWide(nId);
 }
 
 // @0x14028dee0
@@ -886,9 +885,9 @@ CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args)
 // @0x14028e060
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args)
 {
-    if (FUN_14025e7d0() == 0)
+    if (TSingleton<CommonString>::GetInstance() == 0)
         return L"";
-    CStringW strText = FUN_14025e7d0()->FUN_140229940(strKey);
+    CStringW strText = TSingleton<CommonString>::GetInstance()->FUN_140229940(strKey);
     if (strText.IsEmpty())
         return L"";
     return StringFormat(strText, args);

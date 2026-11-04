@@ -17,7 +17,7 @@
 
 class NotifyObject;
 class MyPC;
-class Unk_BackUpItem;
+class CEquipItem;
 class Unk_LobbyChar;
 
 // lobbyField.xml (Table/lobbyField.xml, root <ms2>, rows <key jobCode= selectMap= createMap=/>): job code -> the map
@@ -56,7 +56,7 @@ public:
         explicit BackUpCharacterInfo(MyPC* pPC);            // 0x14174dbc0
         virtual ~BackUpCharacterInfo();                     // 0x14174dd40
 
-        ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > m_items;     // +0x18
+        ATL::CAtlList<MS2Ptr<CEquipItem> > m_items;         // +0x18
         Unk_CharEquip m_equip[2];                             // +0x48
         int m_nGender;                                      // +0x60
         int m_nJobCode;                                     // +0x64

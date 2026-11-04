@@ -24,12 +24,6 @@ public:
     float FUN_1422afec0(int);
 };
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
-// AS invokers on the tooltip's movie clip (instances of the AScript::Invoke templates).
-class Unk_TooltipMovie {
-public:
-
-    Scaleform::GFx::Value FUN_1412cc450(const char* szMethod, CStringW a1, CString a2);
-};
 
 // @0x14191a7e0
 UIDebugTooltip::UIDebugTooltip(CString strName)
@@ -163,7 +157,7 @@ void UIDebugTooltip::vfunc_52()
         else
             vfunc_8(1);
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
-        reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_1412cc450("setData", m_88, m_98);
+        reinterpret_cast<AScript*>(pClip.operator->())->Invoke("setData", m_88, m_98);
         reinterpret_cast<AScript*>(pClip.operator->())->Invoke("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
         pClip->Invoke("setFontColor", 0x3df0fb);

@@ -94,6 +94,7 @@
 #define NOMINMAX                        // NxPhysics (interactobject.h)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestategame.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/cboxcollision.h"   // C3: MS2Ptr<CBoxCollision> (the part anchors)
 #include "scenestategame.h"
 #include "networkservice.h"
 #include "npsman.h"
@@ -178,6 +179,7 @@
 #include "ms2/unnamed/unit_140ad1860.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/uidamageeffect.h"   // C3: UIDamageEffect::FUN_141910b10
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/blindmanager.h"
@@ -214,12 +216,9 @@ public:
     MS2Ptr<class Unk_SSGNamedObj> FUN_141bc5a20(CString strName);   // a named field object (0x73)
     struct Unk_SSGEntListPtr FUN_141bd0420(unsigned int nModelHash);   // the entities of a model
     void FUN_141bc9aa0(MS2Ptr<CProxyGameObject> spProxy);   // add a field object proxy
-    MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nId);        // find one
     // interact objects (0x63)
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // find one by name
     void FUN_141bc5c40(MS2Ptr<CInteractObject> spObj);      // add one
     int FUN_141bc1720(MS2Ptr<class CPortal> spPortal);      // register a field object (portal) (0x48)
-    MS2Ptr<class CPortal> FUN_141bc2800(int nId);            // a field object by id
 };
 
 // The UI manager (FUN_1403ed2b0).
@@ -278,8 +277,6 @@ public:
     void OnPacket(class CInPacket&);
 };
    // UGC manager
-class Unk_UgcRideeMgr* FUN_14052d220();   // the definer's return type; read through this unit's CUgcManager view
-#define FUN_14052d220() ((CUgcManager*)FUN_14052d220())
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -574,12 +571,15 @@ public:
 class Unk_SSG9f7c90 { public:  };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 // The npc / monster class (class id 0x06200011).
-class CNpcData   // C3: member view (real class not in this TU)
+class CNpcData : public CPtred   // C3: member view (real class not in this TU; npcdata.h)
 {
 public:
     bool HasPropertyTag(int) const;
     bool IsBoss() const;
+    char m_pad_18[0x8c - sizeof(CPtred)];
+    bool m_bBossNotify;                                     // +0x8c
 };
+MS2_CHECK_OFFSET(CNpcData, m_bBossNotify, 0x8c);
 class Unk_SSGNpcData : public CPtred { public:   char m_pad[0x60 - sizeof(CPtred)]; int m_n60; char m_pad_64[0x8c - 0x64]; bool m_b8c; };   // the npc table row
 MS2_CHECK_OFFSET(Unk_SSGNpcData, m_n60, 0x60);
 // The drop item (class id 0x06200011; its members live in client\ms2\dropitem.cpp 0x14118c730-0x141192960). w95: split
@@ -1002,25 +1002,22 @@ void FUN_141275260(int nStringId, int nA, int nB);
 
 class Unk_SSGEffectCfg { public: char m_pad_00[0xd0]; CString m_strd0; char m_pad_d8[0x2c8 - 0xd8]; CString m_str2c8; CString m_str2d0; CString m_str2d8; char m_pad_2e0[0x328 - 0x2e0]; CString m_str328; char m_pad_330[0x358 - 0x330]; CString m_str358; CString m_str360; char m_pad_368[0x380 - 0x368]; CString m_str380; char m_pad_388[0x5b0 - 0x388]; CString m_str5b0; };
 MS2_CHECK_OFFSET(Unk_SSGEffectCfg, m_str2d8, 0x2d8);
-class Unk_SSGDlg4e3c { public: void FUN_141910b10(__int64 nDelta); };
 class UIDamageEffect* FUN_140ac55a0(int);   // C3: was FUN_140ac55a0
 MS2_CHECK_OFFSET(Unk_SSGEffectCfg, m_str358, 0x358);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 template <> PC* efd::DynamicCast<PC, PCBase>(PCBase* Source);   // DynamicCast<PC> (class id 0x6200003)
 
-class Unk_SSGSkillAttr : public CPtred { };
 class SkillData : public CPtred   // C3: member view (real class not in this TU)
 {
 public:
     unsigned int GetRechargeId();
 };
 class SkillDataTable { public: MS2Ptr<SkillData> GetSkillData(unsigned nSkillId); };   // C3: member view (0x1407ee1d0)
-class Unk_SSGSkillTable { public: MS2Ptr<Unk_SSGSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
-class SkillDataTableCli;
+class SkillDataTableCli { public: MS2Ptr<AdditionalLevelData> FUN_140aafef0(int nSkillId, unsigned short nLevel); };   // C3: member view (real class not in this TU)
 class Unk_SSGSkillCollision
 {
 public:
-    void FUN_141755cd0(PCBase* pActor, MS2Ptr<Unk_SSGSkillAttr> spSkill, const Vector3& kPos, const Vector3& kDir);
+    void FUN_141755cd0(PCBase* pActor, MS2Ptr<AdditionalLevelData> spSkill, const Vector3& kPos, const Vector3& kDir);
 };
 class CSkillCollisionManager* FUN_141469a90();   // C3: was FUN_141469a90
 class Unk_SSGMyPCV : public PC
@@ -1236,21 +1233,10 @@ CString DAT_143ae79b8 = "ugc_setblock";
 int FUN_140222f60(int nType);
 class Unk_PCWaterGunInfo : public CPtred { };
 class WaterGunBattleInfo { public: void Read(struct Unk_WgbIn* in); };   // C3: member view (watergunbattleinfo.h)
-// The trophy/achievement counters (std::map<int, map<unsigned short, int>> and a map<unsigned short, int> total;
-// only the clear/operator[] instances this unit calls are named).
-class Unk_SSGCountMap
-{
-public:
-    int& FUN_14063ec70(const int& nKey);                    // operator[]
-};
-class Unk_SSGCountMapMap
-{
-public:
-    void FUN_1409353d0();                                   // clear
-    Unk_SSGCountMap& FUN_140ed3b20(const int& nKey);        // operator[]
-};
+// The trophy/achievement counters (a std::map<int, std::map<int, long> > by group and a std::map<int, long> total).
+struct Unk_Be790B : public std::map<int, std::map<int, long> > {};   // unit_1400be790_mixedheaderstatics
 extern int DAT_143ab2954;
-extern Unk_SSGCountMapMap DAT_143ab32e8;
+extern Unk_Be790B DAT_143ab32e8;
 extern std::map<int, long> DAT_143ab32f8;
 // MyPC +0x179c (MyPC's members are unrecovered; this view only carries the inline setter at 0x14174a510).
 class Unk_SSGMyPCScore
@@ -1334,7 +1320,7 @@ void CSceneStateGame::OnLeave(int nNextState)
     ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->UnregisterPacketHandler();
     ((class GameEventManagerCli*)(void*)(((void*)TSingleton<GameEventManagerCli>::GetInstance())))->Clear();
     ((class TermTagManagerCli*)(void*)(((void*)TSingleton<TermTagManagerCli>::GetInstance())))->Clear();
-    FUN_14052d220()->FUN_1418894d0();
+    TSingleton<CUgcManager>::GetInstance()->FUN_1418894d0();
     WorldService::GetInstance()->FUN_141bbae80((void*)(IWorldServiceCallback*)(this));
     ((Unk_SSGUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adc050();
     WorldService::GetInstance()->FUN_141bbc580(0, 0);
@@ -2017,7 +2003,7 @@ void CSceneStateGame::vfunc_1(int nParam)
         out.COutPacket::WriteInt32(((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd98d0());
         FUN_140710590(out);
     }
-    FUN_14052d220()->FUN_141889150();
+    TSingleton<CUgcManager>::GetInstance()->FUN_141889150();
     {
         COutPacket out(static_cast<int>(SendOp::Ugc), 0);
         out.COutPacket::WriteUInt8(0x12);
@@ -3546,9 +3532,9 @@ public:
     efd::SmartPointer<Unk_SSGNpc> m_spNpc;                  // +0x18
 };
 MS2_CHECK_SIZE(NotifyAddNpc, 0x20);
-template <> bool MS2Ptr<Unk_SSGNpcData>::operator==(Unk_SSGNpcData* p) const;   // 0x1406a9050 (out of unit)
+template <> bool MS2Ptr<CNpcData>::operator==(CNpcData* p) const;   // 0x1406a9050 (out of unit)
 class Unk_PCBaseBuffs { public:  };
-MS2Ptr<Unk_SSGNpcData> FUN_1406cd330(int nNpcId);           // the npc table row
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                // the npc table row
 // @0x141718cf0
 void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
 {
@@ -3559,10 +3545,10 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
     Unk_SSGWorld* pWorld = (Unk_SSGWorld*)WorldService::GetInstance();
     kPos.z += 4.0f;
     efd::SmartPointer<Unk_SSGNpc> spNpc = new (efd::MemHint(efd::MemHint::NONE)) CNpc;
-    MS2Ptr<Unk_SSGNpcData> spData = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> spData = FUN_1406cd330(nNpcId);
     if (spData == 0)
         return;
-    if (((CNpcData*)(spData).operator->())->IsBoss())
+    if (spData->IsBoss())
     {
         CString strName = packet.ReadString();
         ((CNpc*)spNpc.operator->())->FUN_141095190(strName);
@@ -3593,7 +3579,7 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
         }
         ((CNpc*)spNpc.operator->())->FUN_141095290(packet.ReadInt32());
     }
-    if (((CNpcData*)(spData).operator->())->HasPropertyTag(5) == true)
+    if (spData->HasPropertyTag(5) == true)
         ((CNpc*)spNpc.operator->())->FUN_141095240(packet.ReadInt64());
     bool bFlag = packet.ReadUInt8() == 1;
     ((CNpc*)spNpc.operator->())->FUN_1410952b0(bFlag);
@@ -4262,20 +4248,20 @@ void CSceneStateGame::FUN_14172f210(CInPacket& packet)
 {
     int nValue0 = packet.ReadInt32();
     DAT_143ab2954 = nValue0;
-    DAT_143ab32e8.FUN_1409353d0();
+    DAT_143ab32e8.clear();
     DAT_143ab32f8.clear();
     unsigned nGroupCount = packet.ReadInt32();
     for (int i = 0; i < nGroupCount; i++)
     {
         int nGroup = packet.ReadInt32();
         unsigned nCount = packet.ReadInt32();
-        Unk_SSGCountMap& kGroup = DAT_143ab32e8.FUN_140ed3b20(nGroup);
+        std::map<int, long>& kGroup = DAT_143ab32e8[nGroup];
         for (int j = 0; j < nCount; j++)
         {
             int nKey = static_cast<unsigned short>(packet.ReadInt16());
             int nValue = packet.ReadInt32();
-            kGroup.FUN_14063ec70(nKey) = nValue;
-            reinterpret_cast<Unk_SSGCountMap&>(DAT_143ab32f8).FUN_14063ec70(nKey) += nValue;
+            kGroup[nKey] = nValue;
+            DAT_143ab32f8[nKey] += nValue;
         }
     }
     int nScore = packet.ReadInt32();
@@ -5014,7 +5000,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
         PC* pPC = ((PC*)WorldService::GetInstance()->FUN_141bd1290(nObjId));
         if (pPC == 0)
             return;
-        pPC->FUN_140967420()->FUN_140743a10(packet);
+        pPC->FUN_140967420()->ReadPointTeamMode(packet);
     }
     else if (nMode == 'e')
     {
@@ -5843,9 +5829,9 @@ void CSceneStateGame::OnStateFallDamage(CInPacket& packet)
     {
         if (pPC->IsDead() == 0)
             pPC->vfunc_59(0x1f, 0, 0, 0);
-        Unk_SSGDlg4e3c* pDlg = ((class Unk_SSGDlg4e3c*)FUN_140ac55a0(0x4e3c));
+        void* pDlg = ((void*)FUN_140ac55a0(0x4e3c));
         if (pDlg != 0)
-            pDlg->FUN_141910b10(-nAmount);
+            UIDamageEffect::FUN_141910b10(pDlg, (void*)-nAmount);   // the exp bar's (empty) delta hook, as mypc.cpp calls it
         ((CGuideManager*)(Unk_SSG9331e0*)(FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(0xf), pPC->IsDead() != 0 ? 1 : -1, 0);
         if (pPC->FUN_1416764a0() != 0)
         {
@@ -6244,7 +6230,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     {
         CString strName = packet.ReadString();
         unsigned char nKind = packet.ReadUInt8();
-        MS2Ptr<CInteractObject> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc66b0(strName);
+        MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(strName);
         if (spObj.IsNull())
             break;
         if (spObj->vfunc_5() != nKind)
@@ -6260,7 +6246,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         unsigned char nKind = packet.ReadUInt8();
         if (nResult == 0)
         {
-            MS2Ptr<CInteractObject> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc66b0(strName);
+            MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(strName);
             if (spObj.IsNull())
                 return;
             if (spObj->vfunc_5() != nKind)
@@ -6292,7 +6278,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         }
         else if (nResult == 4)
         {
-            MS2Ptr<CInteractObject> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc66b0(strName);
+            MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(strName);
             if (spObj.IsNull())
                 return;
             if (spObj->GetRow().IsNull())
@@ -6301,7 +6287,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         }
         else if (nResult == 13)
         {
-            MS2Ptr<CInteractObject> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc66b0(strName);
+            MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(strName);
             if (spObj.IsNull())
                 return;
             MS2Ptr<CInteractObjectData> spData = spObj->GetRow();
@@ -6429,7 +6415,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
     {
         CString strName = packet.ReadString();
         CString strEffect = packet.ReadUnicodeStringA();
-        MS2Ptr<CInteractObject> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc66b0(strName);
+        MS2Ptr<CInteractObject> spObj = WorldService::GetInstance()->FindProp(strName);
         if (spObj.IsNull())
             return;
         if (strEffect.GetLength() != 0)
@@ -7304,7 +7290,7 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
         int nEnabled = packet.ReadUInt8();
         int nHidden = packet.ReadUInt8();
         int n188 = static_cast<unsigned short>(packet.ReadInt16());
-        MS2Ptr<CPortal> spPortal = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc2800(nId);
+        MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(nId);
         if (spPortal.get() != 0)
             spPortal->m_n188 = n188;
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc3140(nId, nVisible, nEnabled, nHidden);
@@ -7704,7 +7690,7 @@ void CSceneStateGame::FUN_141720c60(CInPacket& packet)
     PCBase* pActor = ((PCBase*)WorldService::GetInstance()->FUN_141bd1200(nId));
     if (pActor == 0)
         return;
-    MS2Ptr<Unk_SSGSkillAttr> spSkill = reinterpret_cast<Unk_SSGSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(nSkillId, nLevel);
+    MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nLevel);
     if (spSkill == 0)
         return;
     ((class Unk_SSGSkillCollision*)FUN_141469a90())->FUN_141755cd0(pActor, spSkill, kPos, kDir);
@@ -7772,19 +7758,11 @@ MS2_REPLACE_METHOD(0x141720E50, CSceneStateGame, OnRegionSkill, 1037, 0xEEED3063
 // Part anchors of an actor (gameobject.cpp's 16-byte handle; GameObject::vfunc_27 collects them).
 struct Unk_UtilFloat3 { float x, y, z; };
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* p);
-class Unk_GoAnchor
-{
-public:
-    char m_pad[0xb4];
-    Unk_UtilFloat3 m_kPos;                                  // +0xb4
-};
+// The anchor handle is MS2Ptr<CBoxCollision>; the stand-in stays as vfunc_27's array element type.
 class Unk_GoAnchorPtr
 {
 public:
-    Unk_GoAnchorPtr(const Unk_GoAnchorPtr& o);              // 0x140a00180
     ~Unk_GoAnchorPtr();                                     // 0x140a00490
-    bool FUN_140a00660(int n) const;                        // == NULL
-    Unk_GoAnchor* FUN_140ae1940() const;
     void* m_pad[2];
 };
 
@@ -7832,10 +7810,10 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
                 float fMin = FLT_MAX;
                 for (size_t k = 0; k < kAnchors.GetCount(); k++)
                 {
-                    Unk_GoAnchorPtr spAnchor(kAnchors[k]);
-                    if (spAnchor.FUN_140a00660(0))
+                    MS2Ptr<CBoxCollision> spAnchor(reinterpret_cast<MS2Ptr<CBoxCollision>&>(kAnchors[k]));
+                    if (spAnchor == NULL)
                         continue;
-                    Vector3 kPt = FUN_141b6e150(&spAnchor.FUN_140ae1940()->m_kPos);
+                    Vector3 kPt = FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&spAnchor->m_kBox.center));
                     float fDist = kOrigin.FUN_140965c40(kPt).FUN_140967ac0();
                     if (fDist < fMin)
                     {
@@ -9122,9 +9100,6 @@ void CSceneStateGame::OnEventReward(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141735dd0, CSceneStateGame, OnEventReward, 1120, 0xD1CA309C);
 
 // 0x11f: field war announcement (side popup talk by Neirin).
-class Unk_SSGFieldWarInfo : public CPtred { public: char m_pad_18[0x2c - 0x18]; unsigned int m_nId; };
-MS2_CHECK_OFFSET(Unk_SSGFieldWarInfo, m_nId, 0x2c);
-class Unk_SSGFieldWarTable { public: MS2Ptr<Unk_SSGFieldWarInfo> FUN_140382be0(int nId); };
 class Unk_SSGSidePopupTalk : public UISidePopupTalk { };
 class UISidePopupTalk;
 template <class T> T* Unk_GaGetUI(int nId);   // the dialog of class T
@@ -9137,7 +9112,7 @@ void CSceneStateGame::FUN_14173dfd0(CInPacket& packet)
     {
         int nId = packet.ReadInt32();
         __int64 nUid = packet.ReadInt64();
-        MS2Ptr<Unk_SSGFieldWarInfo> spInfo = reinterpret_cast<Unk_SSGFieldWarTable*>(TSingleton<FieldWarDataTable>::GetInstance())->FUN_140382be0(nId);
+        MS2Ptr<FieldWarData> spInfo = TSingleton<FieldWarDataTable>::GetInstance()->GetData(nId);
         if (spInfo == 0)
             return;
         MS2Ptr<SidePopupTalkParam> spParam(new SidePopupTalkParam);
@@ -9145,9 +9120,9 @@ void CSceneStateGame::FUN_14173dfd0(CInPacket& packet)
         spParam->m_strIcon = "Neirin_normal";
         spParam->m_nNpcId = 30000;
         spParam->m_strScript = DAT_143ae7a20;
-        spParam->m_strText = FUN_14028dfa0<CStringW>(L"s_fieldwar_sidepopup_script", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spInfo->m_nId));
-        spParam->m_str70 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spInfo->m_nId);
-        spParam->m_str68 = StringFormat("{0}{1:08d}.png", ((class Unk_SSGEffectCfg*)FUN_1401d31f0())->m_strd0, spInfo->m_nId);
+        spParam->m_strText = FUN_14028dfa0<CStringW>(L"s_fieldwar_sidepopup_script", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spInfo->m_uiFieldID));
+        spParam->m_str70 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spInfo->m_uiFieldID);
+        spParam->m_str68 = StringFormat("{0}{1:08d}.png", ((class Unk_SSGEffectCfg*)FUN_1401d31f0())->m_strd0, spInfo->m_uiFieldID);
         spParam->m_str78 = StringFormat("{0}", nUid);
         Unk_SSGSidePopupTalk* pUi = ((Unk_SSGSidePopupTalk*)Unk_GaGetUI<UISidePopupTalk>(0x4f57));
         if (pUi != 0)
@@ -9778,10 +9753,9 @@ struct SpecialNPCInfo
     int m_n18;                                              // +0x18
 };
 MS2_CHECK_SIZE(SpecialNPCInfo, 0x20);
-MS2Ptr<Unk_SSGNpcData> FUN_1406cd330(int nNpcId);           // the npc table row
-class Unk_SSGFieldInfo : public CPtred { public: char m_pad_18[0x21 - 0x18]; bool m_b21; };
-class Unk_SSGFieldTable { public: MS2Ptr<Unk_SSGFieldInfo> FUN_141b978e0(unsigned nFieldId); };
-class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                // the npc table row
+#include "ms2/placeholder/uiworldmap.h"
+class WorldMapManager { public: MS2Ptr<UIWorldMap::MapTile> FindMapTileByKey(unsigned key); };   // C3: member view (worldmapmanager.h, 0x141b978e0)
 class Unk_SSGAdvCfg;
 int FUN_14125c5d0(struct Unk_StatusState* pState, int nNpcId, int* pA, int* pB);   // the definer's free form
 class Unk_SSGSpecialNpcUI { public: virtual void vfunc_0(); virtual void vfunc_1(SpecialNPCInfo* pInfo, int nA, int nB); };
@@ -9795,15 +9769,15 @@ void CSceneStateGame::FUN_141733b30(CInPacket& packet)
     {
         Unk_BmBoxPtr<SpecialNPCInfo> spInfo(Unk_BmNewTag(0));
         spInfo->FUN_14092c190(static_cast<CInputStream&>(packet));
-        MS2Ptr<Unk_SSGNpcData> spNpc = FUN_1406cd330(spInfo->m_nNpcId);
+        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spInfo->m_nNpcId);
         if (!spNpc)
             return;
-        if (!spNpc->m_b8c)
+        if (!spNpc->m_bBossNotify)
             return;
-        MS2Ptr<Unk_SSGFieldInfo> spField = ((class Unk_SSGFieldTable*)FUN_140cb17d0())->FUN_141b978e0(spInfo->m_nFieldId);
+        MS2Ptr<UIWorldMap::MapTile> spField = TSingleton<WorldMapManager>::GetInstance()->FindMapTileByKey(spInfo->m_nFieldId);
         if (spField == 0)
             return;
-        if (!spField->m_b21)
+        if (!spField->m_21)
             return;
         if (Unk_ArrayFind<unsigned int>(DAT_143ab3058, spInfo->m_nFieldId) == -1)
             return;
@@ -9882,7 +9856,7 @@ extern __int64 DAT_143ab2930;
 extern __int64 DAT_143ab2938;
 extern unsigned short DAT_143ab2940;
 extern __int64 DAT_143ab2948;
-extern ATL::CAtlArray<unsigned int> DAT_143ab32b8;
+extern ATL::CAtlArray<int> DAT_143ab32b8;
 // A (cube id, value) pair of the house set 0x143ab32d8 (ctor 0x1409ed810).
 struct Unk_SSGHouseKey
 {
@@ -10868,7 +10842,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
     }
         break;
     case 0x3f:
-        FUN_14052d220()->FUN_14188ff10(packet);
+        TSingleton<CUgcManager>::GetInstance()->FUN_14188ff10(packet);
         break;
     case 0x45:
     {
@@ -11314,7 +11288,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
     ((JobSystemCli*)(Unk_SSGSkillBook*)(((class Unk_SSGSkillBook*)((class PC*)(class PC*)(spPC.operator->()))->FUN_1416546d0())))->Refresh();
     spPC->FUN_141661b20(packet);
     spPC->FUN_141661ba0(packet.ReadUInt8());
-    spPC->FUN_140967420()->FUN_140743a10(packet);
+    spPC->FUN_140967420()->ReadPointTeamMode(packet);
     spPC->FUN_141661c00(packet);
     spPC->FUN_141661d40(packet);
     spPC->FUN_141676980(packet.ReadInt32());
@@ -11357,7 +11331,10 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14170FDA0, CSceneStateGame, OnAddUser, 8209, 0xDFA14B88);
 
 // ---- 0x7e: field object proxies (mode 3..5 players, 6..8 template objects, 9..11 spawn points) -----------------
-class Unk_Svc6d6e90 { public: Unk_ProxyHandle28 FUN_140a7cab0(int id); };
+class NpcDataTableCli { public: MS2Ptr<NpcDataCli> Find(unsigned nId); };   // member view (npcdatacli.h clashes with the local CNpcData)
+template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(const MS2Ptr<NpcDataCli>&);   // 0x140a4fe50
+template <> NpcDataCli* MS2Ptr<NpcDataCli>::get() const;                              // 0x140a4ff10
+template <> MS2Ptr<NpcDataCli>::~MS2Ptr();                                            // 0x1406d5390
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 class Unk_SSGProxyListener
 {
@@ -11392,7 +11369,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         spProxy->m_c8 = packet.ReadInt32();
         spProxy->m_cc = (unsigned short)packet.ReadInt16();
         spProxy->m_d0.FUN_140267e70(static_cast<CInputStream&>(packet));
-        if (FUN_14052d220()->GetMode() == 1)
+        if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
             spProxy->m_50 = "";
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
     }
@@ -11404,7 +11381,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 5)
     {
         int nId = packet.ReadInt32();
-        MS2Ptr<CProxyGameObject> spProxy = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9be0(nId);
+        MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FindProxyObject(nId);
         if (spProxy.get())
         {
             int nFlags = packet.ReadUInt8();
@@ -11447,7 +11424,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 8)
     {
         int nId = packet.ReadInt32();
-        MS2Ptr<CProxyGameObject> spProxy = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9be0(nId);
+        MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FindProxyObject(nId);
         if (spProxy.get())
         {
             spProxy->kind = packet.ReadUInt8();
@@ -11462,8 +11439,8 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         spProxy->m_78 = packet.ReadInt32();
         spProxy->kind = packet.ReadUInt8();
         spProxy->m_6c = packet.ReadVector3();
-        spProxy->m_28.FUN_140a4fe50(((class Unk_Svc6d6e90*)FUN_1406d6e90())->FUN_140a7cab0(spProxy->m_78));
-        if (spProxy->m_28.FUN_140a4ff10())
+        spProxy->m_28 = ((NpcDataTableCli*)FUN_1406d6e90())->Find(spProxy->m_78);
+        if (spProxy->m_28.get())
             ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
     }
     else if (nMode == 10)
@@ -11474,7 +11451,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 11)
     {
         int nId = packet.ReadInt32();
-        MS2Ptr<CProxyGameObject> spProxy = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9be0(nId);
+        MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FindProxyObject(nId);
         if (spProxy.get())
         {
             spProxy->kind = packet.ReadUInt8();
@@ -12057,14 +12034,6 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141729250, CSceneStateGame, OnLiftable, 2696, 0x7EC41E6F);
 
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::get() const;                          // 0x1409f78a0
-template <> MS2Ptr<Unk_RideeModel>::~MS2Ptr();                                          // 0x140788ea0
-template <> Unk_RideeModel* MS2Ptr<Unk_RideeModel>::operator->() const;                 // 0x1407895c0
-template <> Unk_RideeModel* MS2Ptr<Unk_RideeModel>::get() const;                        // 0x140789570
-MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);             // the ridee table row of an id
-
 // Packet 0x79: riding (ride on / ride off / mount summon / passenger seats / ride flag).
 // @0x14172a8f0
 void CSceneStateGame::OnResponseRide(CInPacket& packet)
@@ -12099,8 +12068,8 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
         {
             int nRideeId = packet.ReadInt32();
             __int64 nItemUid = packet.ReadInt64();
-            MS2Ptr<Unk_RideeData> spData = FUN_1407844b0(nRideeId);
-            if (spData.get() != 0)
+            MS2SvrPtr<CRideeData> spData = FUN_1407844b0(nRideeId);
+            if (spData != 0)
                 pActor->vfunc_59(0x26, new StateSummonData(reinterpret_cast<void*>(nItemUid), 0), 0, 0);
         }
     }
@@ -12120,9 +12089,9 @@ void CSceneStateGame::OnResponseRide(CInPacket& packet)
             efd::SmartPointer<Ridee> spRidee = pOwner->FUN_1416764a0();
             if (spRidee)
             {
-                MS2Ptr<Unk_RideeModel> spModel = spRidee->GetData()->FUN_1407849c0(nSeat);
-                if (spModel.get() != 0)
-                    strNode = spModel->m_strNode;
+                Unk_RiderPtr spModel = spRidee->GetData()->FUN_1407849c0(nSeat);
+                if (spModel != 0)
+                    strNode = spModel->m_strRideBone;
             }
             MS2Ptr<StateHoldData> spHold = new StateHoldData;
             spHold->m_nTargetId = nOwnerId;

@@ -42,11 +42,6 @@ typedef RenderedTextureRenderClick RTRC;
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 ecr::RenderSurface* FUN_1413f98d0();
-class Unk_PtrArray   // C3: member view for the former free stand-ins
-{
-public:
-    void RemoveAll();
-};
 void* FUN_140c8f680(void*);   // C3: was FUN_140c8f680
 void FUN_1416fa360(void* view, void* cp);
 void FUN_1416f9340(RTRC* p, unsigned w, unsigned h);
@@ -306,7 +301,7 @@ void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
         }
         proc->PostRenderProcessList(m_kProcessedGeometry, m_pvProcessorData);
         m_fRenderTime = m_fRenderTime + (FUN_1416fa2f0() - t0);
-        ((class Unk_PtrArray*)(void*)(&m_kProcessedGeometry))->RemoveAll();
+        ((NiVisibleArray*)(void*)(&m_kProcessedGeometry))->RemoveAll();
     }
     for (;;) {
         if (((void*)NiRenderer::GetRenderer())) ((NiRenderer*)((void*)NiRenderer::GetRenderer()))->PopProfileMarker();

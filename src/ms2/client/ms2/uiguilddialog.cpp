@@ -118,7 +118,10 @@
 
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
 class Unk_140165cf0;
+#ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
+#define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+#endif
 class TiXmlParsingData;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -131,7 +134,6 @@ private:
     void* m_pad[0x88 / 8];                                      // 0x90 bytes; pointer slots: an array of scalars would be a /GS buffer
 };
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
-class CommonString* FUN_14025e7d0();   // C3: the exe's CommonString instance getter (TSingleton<CommonString>::GetInstance)
 struct Unk_QnTracking;
 class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
 
@@ -950,7 +952,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     if (spOld->name == strGradeName && spOld->permissions == nAuth)
                         continue;
                     CBanTextChecker* pChecker;
-                    CBanTextChecker* pCheckerCopy = pChecker = FUN_14025e7d0()->GetChecker().get();
+                    CBanTextChecker* pCheckerCopy = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get();
                     if (pChecker != 0)
                     {
                         CStringW strBan;

@@ -107,9 +107,6 @@ void* FUN_140b285b0(void* p);
 Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
 void FUN_140b27ec0(void* ent, unsigned id, void* p);
 void FUN_140b27f00(void* ent, unsigned id, void* p);
-struct Unk_FpEntity {
-    void FUN_140b27f00(unsigned id, const Unk_Vec3f& v);     // FUN_140b27f00 called on the entity
-};
 unsigned FUN_140b27eb0();
 
 // ---- the factory ----
@@ -212,7 +209,7 @@ void FieldPropertyAmbientLightCli::vfunc_4()
         FUN_140b27ec0(ent.operator->(), 0xb086f4a8, &m_vecOld);
         return;
     }
-    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0xb086f4a8, m_color.ToColor());
+    FUN_140b27f00(ent.operator->(), 0xb086f4a8, (void*)&static_cast<const Unk_Vec3f&>(m_color.ToColor()));
 }
 
 // @0x140b27a80
@@ -232,8 +229,8 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
         FUN_140b27ec0(ent.operator->(), 0x2d8cf386, &m_vecOld);
         return;
     }
-    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0x2d8cf386, m_color1.ToColor());
-    ((Unk_FpEntity*)ent.operator->())->FUN_140b27f00(0xc3f0329e, m_color1.ToColor());
+    FUN_140b27f00(ent.operator->(), 0x2d8cf386, (void*)&static_cast<const Unk_Vec3f&>(m_color1.ToColor()));
+    FUN_140b27f00(ent.operator->(), 0xc3f0329e, (void*)&static_cast<const Unk_Vec3f&>(m_color1.ToColor()));
 }
 
 // @0x140b27c60
@@ -321,28 +318,6 @@ errno_t FUN_140b28690(void* const dst, rsize_t const dstSize, void const* const 
     return 0;
 }
 
-// ---- destructors (forward to the server class; no vptr store) ----
-// @0x140b281e0
-void FUN_140b281e0(FieldPropertyAmbientLightCli* p) { p->FieldPropertyAmbientLight::~FieldPropertyAmbientLight(); }
-// @0x140b28200
-void FUN_140b28200(FieldPropertyDirectionalLightCli* p) { p->FieldPropertyDirectionalLight::~FieldPropertyDirectionalLight(); }
-// @0x140b28220
-void FUN_140b28220(FieldPropertyEnableLocalCameraCli* p) { p->FieldPropertyEnableLocalCamera::~FieldPropertyEnableLocalCamera(); }
-// @0x140b28240
-void FUN_140b28240(FieldPropertyGravityCli* p) { p->FieldPropertyGravity::~FieldPropertyGravity(); }
-// @0x140b28260
-void FUN_140b28260(FieldPropertyHideMyPCCli* p) { p->FieldPropertyHideMyPC::~FieldPropertyHideMyPC(); }
-// @0x140b28280
-void FUN_140b28280(FieldPropertyLockMyPCCli* p) { p->FieldPropertyLockMyPC::~FieldPropertyLockMyPC(); }
-// @0x140b282a0
-void FUN_140b282a0(FieldPropertyMusicConcertCli* p) { p->FieldPropertyMusicConcert::~FieldPropertyMusicConcert(); }
-// @0x140b282c0
-void FUN_140b282c0(FieldPropertyPhotoStudioCli* p) { p->FieldPropertyPhotoStudio::~FieldPropertyPhotoStudio(); }
-// @0x140b282e0
-void FUN_140b282e0(FieldPropertyUserTagSymbolCli* p) { p->FieldPropertyUserTagSymbol::~FieldPropertyUserTagSymbol(); }
-// @0x140b28300
-void FUN_140b28300(FieldPropertyWeatherCli* p) { p->FieldPropertyWeather::~FieldPropertyWeather(); }
-
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 #include "hook/ms2hook.h"
 MS2_REPLACE_METHOD(0x140b27660, FieldPropertyGravityCli, vfunc_4, 37, 0x6E525173);
@@ -366,14 +341,14 @@ MS2_REPLACE(0x140b27ec0, FUN_140b27ec0, 50, 0x1305F788);
 MS2_REPLACE(0x140b27f00, FUN_140b27f00, 69, 0x1DC18B03);
 MS2_REPLACE(0x140b285a0, FUN_140b285a0, 15, 0x6BC6B691);
 MS2_REPLACE(0x140b285b0, FUN_140b285b0, 92, 0x5368ACA2);
-MS2_REPLACE(0x140b281e0, FUN_140b281e0, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b28200, FUN_140b28200, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b28220, FUN_140b28220, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b28240, FUN_140b28240, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b28260, FUN_140b28260, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b28280, FUN_140b28280, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b282a0, FUN_140b282a0, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b282c0, FUN_140b282c0, 24, 0xBA686CA9);
-MS2_REPLACE(0x140b282e0, FUN_140b282e0, 24, 0x73BA3849);
-MS2_REPLACE(0x140b28300, FUN_140b28300, 24, 0x7B5DC969);
+MS2_REPLACE_DTOR(0x140b281e0, FieldPropertyAmbientLightCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b28200, FieldPropertyDirectionalLightCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b28220, FieldPropertyEnableLocalCameraCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b28240, FieldPropertyGravityCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b28260, FieldPropertyHideMyPCCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b28280, FieldPropertyLockMyPCCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b282a0, FieldPropertyMusicConcertCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b282c0, FieldPropertyPhotoStudioCli, 24, 0xBA686CA9);
+MS2_REPLACE_DTOR(0x140b282e0, FieldPropertyUserTagSymbolCli, 24, 0x73BA3849);
+MS2_REPLACE_DTOR(0x140b28300, FieldPropertyWeatherCli, 24, 0x7B5DC969);
 

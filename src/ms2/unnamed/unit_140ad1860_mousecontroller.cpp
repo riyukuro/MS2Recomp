@@ -16,6 +16,7 @@
 #endif
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3 rotation builders
 #include <efd/Point3.h>
 #include "unit_140ad1860.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -56,7 +57,8 @@ public:
     ~NoticeMessage();
     void* m_storage[14];
 };
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/ISystemService.h>
+class Unk_Service6100017 : public efd::ISystemService { };   // the cube map service (class id 0x06100017; as entityvibrator.cpp)
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -179,22 +181,6 @@ private:
     Unk_McAttach* m_p;
 };
 
-// Physics service pointer (found in the service lookup cell).
-class Unk_McPhysSvc : public Unk_McRefObj { };
-class Unk_McPhysSvcPtr
-{
-public:
-    // (same code as the attachment pointer's ctor 0x140ad4230; ICF folded)
-    Unk_McPhysSvcPtr(Unk_McPhysSvc* p)
-    {
-        m_p = p;
-        if (m_p)
-            m_p->vfunc_1();
-    }
-    ~Unk_McPhysSvcPtr();                                        // 0x1401cd150
-private:
-    Unk_McPhysSvc* m_p;
-};
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // Entity instancing service: the object that knows which entities are hidden.
@@ -238,16 +224,6 @@ struct Unk_McPickHit
     Vector3 m_pt;                                       // +0x10 hit point
 };
 MS2_CHECK_OFFSET(Unk_McPickHit, m_pt, 0x10);
-class Unk_McPickResult;
-class Unk_PickListPtr
-{
-public:
-    ~Unk_PickListPtr();                                         // 0x140a16120
-    void* FUN_140a16c00() const;                                // non-null test
-    Unk_McPickResult* FUN_140a16c30() const;                    // operator->
-private:
-    Unk_McPickResult* m_p;
-};
 
 
 
@@ -630,8 +606,8 @@ void CMouseController::FUN_140ad2830()
     info.m_groups = 0x201;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
     {
-        Unk_McPhysSvcPtr spPhys(((class Unk_McPhysSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-        void* pHit = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spPhys).operator->())->GetCubeByEntity(static_cast<egf::Entity*>(info.m_hitEntity));
+        efd::SmartPointer<Unk_Service6100017> spPhys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        void* pHit = reinterpret_cast<CubeMapInformationService*>(spPhys.operator->())->GetCubeByEntity(static_cast<egf::Entity*>(info.m_hitEntity));
         if (pHit != 0)
         {
             Unk_McState* pState = reinterpret_cast<Unk_McState*>(reinterpret_cast<PC*>(pPc)->FUN_14166ccb0());
@@ -796,7 +772,7 @@ Vector3 CMouseController::FUN_140ad3260(Vector3 pt)
     v.x = v.x * -1.0f;
     v.FUN_140968990();
     Unk_NiMatrix3 rot;
-    rot.FUN_142084c10(((reinterpret_cast<Unk_McMapData*>(spMap.operator->())->m_fRotation * 3.1415927f) / 180.0f) * -1.0f);
+    reinterpret_cast<efd::Matrix3&>(rot).MakeZRotation(((reinterpret_cast<Unk_McMapData*>(spMap.operator->())->m_fRotation * 3.1415927f) / 180.0f) * -1.0f);
     return FUN_1420834e0(v, rot);
 }
 MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87);
@@ -856,16 +832,16 @@ MS2_REPLACE_METHOD(0x140AD3550, CMouseController, FUN_140ad3550, 488, 0x5FC70789
 // @0x140ad3740
 Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
 {
-    Unk_PickListPtr spPick = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850((float)nX, (float)nY, true, true, false, 0);
-    if (spPick.FUN_140a16c00() == 0)
+    efd::SmartPointer<ecr::PickService::PickRecord> spPick = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0850((float)nX, (float)nY, true, true, false, 0);
+    if ((ecr::PickService::PickRecord*)spPick == 0)
         return DAT_143b01a60;
-    if (reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult() == 0)
+    if (spPick->GetPickResult() == 0)
         return DAT_143b01a60;
     int bSpecialMap = FUN_140ad4140(reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd3060());
     NiPoint3 vUnused(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));                 // built and never read in the exe
-    for (unsigned i = 0; i < reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetSize(); i++)
+    for (unsigned i = 0; i < spPick->GetPickResult()->GetSize(); i++)
     {
-        NiPick::Record* pHit = reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetAt(i);
+        NiPick::Record* pHit = spPick->GetPickResult()->GetAt(i);
         egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(pHit->GetAVObject());
         if (pEntity == 0)
             continue;
@@ -888,7 +864,7 @@ Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
             }
         }
         if (bClickable != 0 && FUN_140ad3e80(pEntity))
-            return *reinterpret_cast<Unk_McPickHit*>(reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetAt(i))->FUN_140ad4bd0();
+            return *reinterpret_cast<Unk_McPickHit*>(spPick->GetPickResult()->GetAt(i))->FUN_140ad4bd0();
     }
     return DAT_143b01a60;
 }

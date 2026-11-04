@@ -2,7 +2,7 @@
 // MS2-UNIT: ?\uiinteriorpreviewdialog.cpp
 // MS2-RANGE: 0x1400dfba0-0x1400dfd9c .text$di
 // MS2-RANGE: 0x140f4cc50-0x140f4dfd0 .text$mn
-// MS2-PIN: ??0Unk_IpReg@@QEAA@P6AXPEAX0@Z 0x1409f2d20
+// MS2-PIN: ??0ClassInfo@efd@@QEAA@P6AXPEAV01@_K@Z@Z 0x1409f2d20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiinteriorpreviewdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiinteriorpreviewdialog.h"
@@ -10,6 +10,7 @@
 #include "ms2/commonfiles/ugcmappackageinfo.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
+#include <efd/ClassInfo.h>
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asdata.h"
@@ -30,9 +31,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 class ASDialog : public ASDisplayObject { };   // set the position
    // ItemFunctionArgs::GetString
-// efd::ClassInfo (ctor 0x1409f2d20): the setup callback fills a count + 32 parent entries of 0x20, so the object
-// needs the real 0x408 bytes or it overwrites the statics after it (s_strStun -> AV in its atexit dtor at Quit).
-class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); private: char m_storage[0x408]; };
+// efd::ClassInfo (ctor 0x1409f2d20): the setup callback fills a count + 32 parent entries of 0x20 (0x408 bytes).
 void FUN_140f50a40(void*, void*);
 class Unk_IpWorld;
 class Unk_IpActor;
@@ -52,7 +51,7 @@ static CString s_strItemPackageList("itemPackageList");             // @0x1400df
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400dfc60
 static CString s_strSkill("skill");                                 // @0x1400dfd20
 static CString s_strStun("stun");                                   // @0x1400dfd50
-static Unk_IpReg s_reg(FUN_140f50a40);                              // @0x1400dfd80
+static efd::ClassInfo s_reg(reinterpret_cast<efd::ClassInfo::CLASSINFO_FUNC>(FUN_140f50a40));                            // @0x1400dfd80
 
 // @0x140f4cc50
 UIInteriorPreviewDialog::UIInteriorPreviewDialog()

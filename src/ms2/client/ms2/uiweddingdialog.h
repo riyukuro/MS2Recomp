@@ -12,7 +12,6 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 class UIWeddingPage;
-class Unk_WdTab;
 class ASObj;
 class CInPacket;
 class CMsgBoxData;
@@ -44,7 +43,6 @@ public:
     void FUN_140fc86c0(ASObj& data);                            // 0x140fc86c0 "exp" / "grade"
     CString FUN_140fc88d0();                                    // 0x140fc88d0 the profile image path
 
-    MS2Ptr<Unk_WdTab> FUN_140c02870(const CString& strName);    // bind the tab strip
 
 private:
     MS2_LAYOUT_FRIEND;

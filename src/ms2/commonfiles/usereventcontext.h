@@ -3,6 +3,7 @@
 #include <afx.h>
 #include <atlcoll.h>
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/mstime.h"
 struct Unk_EventPayload { void* value; };
 struct Unk_EventHolder : CPtred, Unk_EventPayload {};
 namespace EventStruct {
@@ -49,19 +50,13 @@ template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefObject(Unk_EventHol
 template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefImpl(void*) const {
     AddRefObject(Unk_EventBase<Unk_EventPayload>::Get(p));
 }
-struct Unk_EventTime {
-    Unk_EventTime& operator=(const Unk_EventTime&);
-    __int64 FUN_140282020();
-    __int64 a,b;
-};
 class Unk_140165cf0;
-class CMsTime;
 struct Unk_EventCore {
     void FUN_1408d5390(int);
     bool FUN_1408d5040(Unk_140165cf0*);                 // load from a mail/event xml element (unit_1408d5040.cpp)
-    void FUN_1408d5320(const Unk_EventTime&);           // set the end time (unit_1408d5040.cpp)
+    void FUN_1408d5320(const CMsTime&);                // set the end time (unit_1408d5040.cpp)
     CMsTime FUN_1408d53f0() const;                      // the end time, or now + mode days (unit_1408d5040.cpp)
-    int type,id; CStringW name,text,extra; Unk_EventTime time;
+    int type,id; CStringW name,text,extra; CMsTime time;
     int mode; __int64 a,b,c;
 };
 MS2_CHECK_SIZE(Unk_EventCore, 0x50);

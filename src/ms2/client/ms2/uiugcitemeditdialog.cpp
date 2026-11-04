@@ -135,7 +135,6 @@ private:
     void* m_40;
 };
 
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffef0(unsigned int* pFlags, unsigned int nBit);     // *pFlags &= ~nBit
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);                // skinColors of the skin colour table
@@ -168,7 +167,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_UgcPathConfig, m_strUploadDir, 0xd8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-class CommonString* FUN_14025e7d0();       // C3: the CommonString singleton
 
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
 class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nKind); };   // C3: member view (inventory.h)
@@ -267,11 +265,11 @@ MS2_REPLACE_METHOD(0x141B3BC50, UIUGCItemEditDialog, GetTypeName, 61, 0xA930735B
 // @0x141b3bca0
 int UIUGCItemEditDialog::vfunc_73()
 {
-    if (!((class CUgcManager*)FUN_14052d220())->FUN_14187f3d0())
+    if (!TSingleton<CUgcManager>::GetInstance()->FUN_14187f3d0())
         return 0;
     if (m_spEditItem.get() != 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+        MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
         if (spUpload.get() != 0)
             spUpload->m_itemUid = m_spEditItem->GetItemUid();
     }
@@ -311,8 +309,8 @@ void UIUGCItemEditDialog::OnLoadComplete()
         m_nImagesPerPage = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root.GetMember("imageListCountPerPage")))->GetUInt();
     }
     FUN_141b40c30();
-    ((class CUgcManager*)FUN_14052d220())->m_str1b0 = "";
-    ((class CUgcManager*)FUN_14052d220())->m_str1b8 = "";
+    TSingleton<CUgcManager>::GetInstance()->m_str1b0 = "";
+    TSingleton<CUgcManager>::GetInstance()->m_str1b8 = "";
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
@@ -336,7 +334,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickOpenFolder", szMethod) == 0)
     {
-        ((class CUgcManager*)FUN_14052d220())->OpenUploadFolder(m_nKind);
+        TSingleton<CUgcManager>::GetInstance()->OpenUploadFolder(m_nKind);
         return 1;
     }
     else if (_stricmp("onChangeIndexDesign", szMethod) == 0)
@@ -512,7 +510,7 @@ void UIUGCItemEditDialog::vfunc_67()
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
-    ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
+    TSingleton<CUgcManager>::GetInstance()->OnUploadResult(vfunc_48());
     ReleaseAvatars();
     m_nKind = 0;
     m_nRadioMode = 1;
@@ -1149,7 +1147,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
             return false;
     }
     CStringW strName = GetItemName();
-    int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
+    int nRet = TSingleton<CUgcManager>::GetInstance()->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
     return nRet == 1 ? true : false;
 }
 MS2_REPLACE_METHOD(0x141B40300, UIUGCItemEditDialog, FUN_141b40300, 1394, 0x1A13C54A);
@@ -1181,7 +1179,7 @@ MS2_REPLACE_METHOD(0x141B40880, UIUGCItemEditDialog, FUN_141b40880, 546, 0x00982
 // @0x141b40ab0
 void UIUGCItemEditDialog::SelectKindAndImage(int nKind, int nImage)
 {
-    ((class CUgcManager*)FUN_14052d220())->RefreshLocalFiles(nKind);
+    TSingleton<CUgcManager>::GetInstance()->RefreshLocalFiles(nKind);
     FUN_141b40b00(0);
     FUN_141b41700(nImage);
 }
@@ -1193,8 +1191,8 @@ void UIUGCItemEditDialog::FUN_141b40b00(int nPage)
     if (m_30 == 0)
         return;
     ASDataProvider files(2);
-    int nTotal = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
-    ((class CUgcManager*)FUN_14052d220())->FUN_14188a140(m_nImagesPerPage, nPage, &files);
+    int nTotal = TSingleton<CUgcManager>::GetInstance()->FUN_14188a480();
+    TSingleton<CUgcManager>::GetInstance()->FUN_14188a140(m_nImagesPerPage, nPage, &files);
     m_30->Invoke("buildImageFiles", nTotal, nPage, Scaleform::GFx::Value(files.FUN_1422bb870()));
 }
 MS2_REPLACE_METHOD(0x141B40B00, UIUGCItemEditDialog, FUN_141b40b00, 291, 0x2667B9E7);
@@ -1304,10 +1302,10 @@ void UIUGCItemEditDialog::FUN_141b41700(int nIndex)
         return;
     if (nIndex != -1)
     {
-        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->GetUploadFile(nIndex);
+        MS2Ptr<CUploadFile> spFile = TSingleton<CUgcManager>::GetInstance()->GetUploadFile(nIndex);
         if (spFile == 0)
             return;
-        ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 0);
+        TSingleton<CUgcManager>::GetInstance()->FUN_141882a70(nIndex, 0);
     }
     m_30->Invoke("selectImage", nIndex);
 }
@@ -1316,7 +1314,7 @@ MS2_REPLACE_METHOD(0x141B41700, UIUGCItemEditDialog, FUN_141b41700, 203, 0x72678
 // @0x141b417e0
 bool UIUGCItemEditDialog::FUN_141b417e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0 || spUpload->m_spViewer == 0)
         return false;
     MS2Ptr<IUgcViewer> spViewer = spUpload->m_spViewer;
@@ -1460,7 +1458,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 {
     if (spAvatar == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != nKind)
@@ -1517,7 +1515,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 // @0x141b42800
 void UIUGCItemEditDialog::FUN_141b42800()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != m_nKind || spUpload->m_spViewer == 0)
@@ -1536,8 +1534,8 @@ void UIUGCItemEditDialog::FUN_141b428d0(int nKind)
         CStringW strPath = strDir + GetTimestampFileName(1);
         if (m_spView->FUN_141ab7870(strPath, 1) == true)
         {
-            ((class CUgcManager*)FUN_14052d220())->m_str1b0 = GetItemName();
-            ((class CUgcManager*)FUN_14052d220())->m_str1b8 = strPath;
+            TSingleton<CUgcManager>::GetInstance()->m_str1b0 = GetItemName();
+            TSingleton<CUgcManager>::GetInstance()->m_str1b8 = strPath;
             return;
         }
     }
@@ -1685,13 +1683,13 @@ bool UIUGCItemEditDialog::FUN_141b43660(int nImage)
 {
     if (nImage >= 0)
     {
-        if (((class CUgcManager*)FUN_14052d220())->DoesFileExistByIndex(nImage) == 0)
+        if (TSingleton<CUgcManager>::GetInstance()->DoesFileExistByIndex(nImage) == 0)
         {
             FUN_140d74390(GetStringCommon(0x2e2), 0,
                 Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45980));
             return false;
         }
-        if (((class CUgcManager*)FUN_14052d220())->FUN_141881800(m_nKind, nImage) == 0)
+        if (TSingleton<CUgcManager>::GetInstance()->FUN_141881800(m_nKind, nImage) == 0)
         {
             FUN_141275260(0x2e1, 1, 1);
             return false;
@@ -1736,7 +1734,7 @@ bool UIUGCItemEditDialog::FUN_141b43be0(int nImage)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return false;
     }
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nImage, 1))
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141882a70(nImage, 1))
         return true;
     return false;
 }
@@ -1759,7 +1757,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     }
     CStringW strName = GetItemName();
     // the checker only lives for the block
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
     {
         CStringW strMessage;
         if (pChecker->FUN_140225630(strName, strMessage) != 0)
@@ -1789,7 +1787,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
                 return false;
         }
     }
-    int nUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141881890(nImage);
+    int nUpload = TSingleton<CUgcManager>::GetInstance()->FUN_141881890(nImage);
     if (nUpload == 0)
     {
         FUN_140d74390(GetStringCommon(0x2e2), 0,
@@ -1829,7 +1827,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
 // @0x141b44910
 void UIUGCItemEditDialog::OnClickAddImage()
 {
-    int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    int nRet = TSingleton<CUgcManager>::GetInstance()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nRet == 0)
         return;
     SelectKindAndImage(m_nKind, 0);
@@ -1854,7 +1852,7 @@ MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, OnClickInitialize, 131, 0x5
 // @0x141b44a20
 void UIUGCItemEditDialog::OnClickNewDraw()
 {
-    if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->HasViewerContent() == 0)
         return;
     SelectKindAndImage(m_nKind, 0);
 }
@@ -1977,7 +1975,7 @@ void UIUGCItemEditDialog::FUN_141b450d0(int nResult)
     }
     else
     {
-        CStringW strError = ((class CUgcManager*)FUN_14052d220())->FUN_14187f210(nResult);
+        CStringW strError = TSingleton<CUgcManager>::GetInstance()->FUN_14187f210(nResult);
         if (!strError.IsEmpty())
             FUN_1412751f0(strError, 1, 1);
     }
@@ -1991,7 +1989,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != 1 && spUpload->m_nKind != 2 && spUpload->m_nKind != 7)
@@ -2118,7 +2116,7 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
         if (m_spMadeItem.get() != 0)
             m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
-        if (!((class CUgcManager*)FUN_14052d220())->BeginUpload())
+        if (!TSingleton<CUgcManager>::GetInstance()->BeginUpload())
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
         if (m_spEditItem.get() != 0)
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
@@ -2144,7 +2142,7 @@ bool UIUGCItemEditDialog::FUN_141b461b0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+        MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }
@@ -2168,7 +2166,7 @@ bool UIUGCItemEditDialog::FUN_141b462a0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+        MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }
@@ -2192,7 +2190,7 @@ UGCItemSlot* FUN_141b46a20(const CString& strName)
 }
 
 // @0x141b46a40
-inline void ASObj::FUN_141b46a40(const char* szName, ASFunction fn)
+inline void AScript::FUN_141b46a40(const char* szName, ASFunction fn)
 {
     ASData data;
     data.AddValue(fn.FUN_1422bb890());

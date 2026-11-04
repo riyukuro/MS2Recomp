@@ -282,7 +282,7 @@ int UIDialog::vfunc_5()
         return 0;
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     vfunc_83();
-    if (m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"), 0)) {
+    if (m_e8.LoadFile(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"), TIXML_ENCODING_UNKNOWN)) {
         void* pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
         if (!pNode)
             return 0;

@@ -120,7 +120,6 @@ class Unk_ClUgc : public CUgcManager
 public:
     void FUN_141880600(UICharacterListDialog::CharPtr spCharacter);   // upload a shot of a character as its profile image
 };
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
 // The generic reader of an item from a stream (the 0x141272280 object is an empty functor).
@@ -186,7 +185,6 @@ CStringW FUN_140298ea0(CStringW strKey);                     // string table tex
 struct Unk_ClSettingU16 { char m_p[0x58]; };
 struct Unk_ClSettingU32 { char m_p[0x58]; };
 namespace Common { namespace Constants { template<class T> class Value { public: T* Get(); }; } }   // C3: Value<int>::Get 0x1402056b0
-CString* FUN_140298f80(CString* pSetting);                     // the current value of a string setting
 struct Unk_ClOptions
 {
     char m_pad0[0x55a0];
@@ -282,8 +280,6 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 void FUN_14151f200();
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim, int nExpected);   // split
 unsigned __int64 FUN_140718370(const CStringW& str);                         // parse an id
-struct Unk_ClId { Unk_ClId(unsigned __int64 nId); Unk_ClId(const Unk_ClId&); void* m_p; };   // 8-byte id holder (egf::EntityID), ctor 0x1401cd100; the user copy ctor makes it a by-address argument
-class Unk_ClWorld { public: MyPC* FUN_141bd0cc0(); void FUN_141bbbc60(Unk_ClId id, int n); };   // by-value id: the exe builds it in an argument temp
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 // the GameEventUserValue readers of gamerule.cpp / uileveluppackagewidgetdialog.cpp (same view)
@@ -364,7 +360,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
     m_state.FUN_1408eeb60(&packet);
     CInputStream& s = packet;
     m_text368 = s.ReadUnicodeStringA();
-    if (((class Unk_ClUgc*)FUN_14052d220())->GetMode() == 1)
+    if (((class Unk_ClUgc*)TSingleton<CUgcManager>::GetInstance())->GetMode() == 1)
         m_text368 = "";
     FUN_1418e9fa0(s.ReadInt64());
     int nCount = s.ReadUInt8();
@@ -882,7 +878,7 @@ void UICharacterListDialog::FUN_1418ed4e0(unsigned __int64 nId, CString str)
 {
     CCharacterInfo* pCharacter = FindCharacter(nId).get();
     if (pCharacter != 0)
-        ((class Unk_ClUgc*)FUN_14052d220())->SendUGCMode11(CString(str));
+        ((class Unk_ClUgc*)TSingleton<CUgcManager>::GetInstance())->SendUGCMode11(CString(str));
 }
 
 // @0x1418ed5a0
@@ -950,7 +946,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
             if (vfunc_55() == 0)
                 OpenSelectedCharacter();
             else
-                ((class Unk_ClUgc*)FUN_14052d220())->FUN_141880600(CharPtr(spCharacter));
+                ((class Unk_ClUgc*)TSingleton<CUgcManager>::GetInstance())->FUN_141880600(CharPtr(spCharacter));
         }
         RefreshSelection();
     }
@@ -1039,7 +1035,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
 void UICharacterListDialog::FUN_1418ee370()
 {
     if (m_1c0 != 0)
-        reinterpret_cast<Unk_ClWorld*>(WorldService::GetInstance())->FUN_141bbbc60(Unk_ClId(m_1c0), 0);
+        WorldService::GetInstance()->FUN_141bbbc60(egf::EntityID(m_1c0), 0);
     m_1c0 = 0;
     m_1c8 = 0;
     m_1d0 = 0;
@@ -1483,7 +1479,6 @@ void UICharacterListDialog::FUN_1418f13d0()
     SendCharacterManagementMode2();
 }
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 // @0x1418f13f0
 void UICharacterListDialog::FUN_1418f13f0()
 {
@@ -1492,7 +1487,7 @@ void UICharacterListDialog::FUN_1418f13f0()
         CharPtr spCharacter(m_188);
         if (spCharacter.get())
         {
-            if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+            if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
             {
                 // a character whose name is no longer valid must be renamed before it enters
                 CStringW strReason;
@@ -1517,19 +1512,17 @@ void UICharacterListDialog::FUN_1418f13f0()
 }
 
 void* FUN_14136f520(int nId);
-// UIServerListDialog::FUN_141ad2c50 as this caller passes it: the name goes by reference (the callee ignores it)
-class Unk_ClServerList { public: int FUN_141ad2c50(__int64 nCharId, const CStringW& strName); };
 
 // @0x1418f1790
 void UICharacterListDialog::FUN_1418f1790()
 {
-    Unk_ClServerList* pList = static_cast<Unk_ClServerList*>(FUN_14136f520(0x4ef0));
+    UIServerListDialog* pList = static_cast<UIServerListDialog*>(FUN_14136f520(0x4ef0));
     if (pList != 0)
     {
         CharPtr spCharacter(m_188);
         if (spCharacter.get() != 0)
         {
-            if (pList->FUN_141ad2c50(spCharacter->FUN_1418e9cb0(), const_cast<Unk_UserProxy*>(spCharacter->FUN_1418e9d70())->FUN_1408f19e0()))
+            if (pList->FUN_141ad2c50(spCharacter->FUN_1418e9cb0(), (__int64)&static_cast<const CStringW&>(const_cast<Unk_UserProxy*>(spCharacter->FUN_1418e9d70())->FUN_1408f19e0())))   // the name goes by address (the callee ignores it)
                 return;
         }
     }
@@ -1863,7 +1856,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     {
         static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
-        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *FUN_140298f80(&((struct Unk_ClOptions*)FUN_1401d3200())->m_url));
+        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_url)->Get());
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 2;
@@ -2439,17 +2432,17 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         else if (_stricmp("onClickUserConsultation", szMethod) == 0)
         {
-            OpenUrl(*FUN_140298f80(&((struct Unk_ClOptions*)FUN_1401d3200())->m_consult));
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_consult)->Get());
             return 1;
         }
         else if (_stricmp("onClickUserPrivacyPolicy", szMethod) == 0)
         {
-            OpenUrl(*FUN_140298f80(&((struct Unk_ClOptions*)FUN_1401d3200())->m_privacy));
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_privacy)->Get());
             return 1;
         }
         else if (_stricmp("onClickThirdPartyInfomationSharingList", szMethod) == 0)
         {
-            OpenUrl(*FUN_140298f80(&((struct Unk_ClOptions*)FUN_1401d3200())->m_thirdParty));
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_thirdParty)->Get());
             return 1;
         }
     }

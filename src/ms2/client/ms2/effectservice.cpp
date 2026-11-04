@@ -1685,7 +1685,7 @@ void CEffectService::AddTracked(Unk_EsTracked* p)
 MS2_REPLACE_METHOD(0x1411a6ea0, CEffectService, AddTracked, 85, 0xBF19BC72);
 
 // @0x1411a6f00
-void CEffectService::RemoveTracked(const egf::EntityID& id)
+void CEffectService::RemoveTracked(egf::EntityID id)
 {
     POSITION pos = m_listTracked.GetHeadPosition();
     while (pos != NULL) {

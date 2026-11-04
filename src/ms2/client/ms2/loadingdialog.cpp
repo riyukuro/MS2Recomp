@@ -33,14 +33,13 @@ extern "C" long __cdecl labs(long);
 #pragma intrinsic(memset)
 
 // Header statics this TU shares with its neighbours (unit_1400d2c40 holds the other TUs' copies): the sort-type name
-// table and a null MS2Ptr handle whose pointee type is unknown. The handle's MS2Ptr COMDATs (0x140d4ba40 ctor,
+// table, and the splash handle g_spLoadingDialog that ms2.cpp fills. The handle's MS2Ptr COMDATs (0x140d4ba40 ctor,
 // 0x140d4bf10 dtor, 0x140d4db40 Reference, 0x140d4dc30 Release, 0x140d4dc70 ReleaseImpl) were linked from this obj.
-class Unk_HeldObject : public CPtred { };
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-#ifndef MS2_HOOK_DLL   // s_heldObject: the exe's object at 0x143ac2bd0, which other units reach as DAT_143ac2bd0 (the hook DLL binds it)
-MS2Ptr<Unk_HeldObject> DAT_143ac2bd0(0);
+#ifndef MS2_HOOK_DLL   // 0x143ac2bd0 (the hook DLL binds the exe's)
+MS2Ptr<CLoadingDialog> g_spLoadingDialog(0);
 #else
-extern MS2Ptr<Unk_HeldObject> DAT_143ac2bd0;
+extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;
 #endif
 
 CString FUN_140188f50(const char* psz, int n);
@@ -428,13 +427,13 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca4fd0-0x142ca5060 .text$yd
-// gap3: the DAT_143ac2bd0 MS2Ptr COMDATs (0x140d4bf10 was pinned to ~CSimpleArray<WORD>, whose body differs) and the
+// gap3: the g_spLoadingDialog MS2Ptr COMDATs (0x140d4bf10 was pinned to ~CSimpleArray<WORD>, whose body differs) and the
 // ATL/CRT inlines that compile differently with this toolset.
-// MS2-PIN: ??0?$MS2Ptr@VUnk_HeldObject@@@@QEAA@H@Z 0x140d4ba40
-// MS2-PIN: ??1?$MS2Ptr@VUnk_HeldObject@@@@QEAA@XZ 0x140d4bf10
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_HeldObject@@@@CAXPEAVUnk_HeldObject@@@Z 0x140d4db40
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_HeldObject@@@@AEAAXXZ 0x140d4dc30
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_HeldObject@@@@AEAAXPEAX@Z 0x140d4dc70
+// MS2-PIN: ??0?$MS2Ptr@VCLoadingDialog@@@@QEAA@H@Z 0x140d4ba40
+// MS2-PIN: ??1?$MS2Ptr@VCLoadingDialog@@@@QEAA@XZ 0x140d4bf10
+// MS2-PIN: ?Reference@?$MS2Ptr@VCLoadingDialog@@@@CAXPEAVCLoadingDialog@@@Z 0x140d4db40
+// MS2-PIN: ?Release@?$MS2Ptr@VCLoadingDialog@@@@AEAAXXZ 0x140d4dc30
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCLoadingDialog@@@@AEAAXPEAX@Z 0x140d4dc70
 // MS2-PIN: ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z 0x140d4c420
 // MS2-PIN: ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z 0x140d4db60
 // MS2-PIN: ?abs@@YAJJ@Z 0x140d4dcc0

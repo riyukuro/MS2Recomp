@@ -97,5 +97,5 @@ public:
 };
 MS2_CHECK_SIZE(GameEventUserValue, 0x48);
 
-// The user values of the local player (0x143ab2fc0; a second instance follows at 0x143ab3010). Name invented.
-extern GameEventUserValue g_gameEventUserValue;
+// The user values of the local player (0x143ab2fc0; a second instance follows at 0x143ab3010). userproxy.cpp defines it.
+extern GameEventUserValue DAT_143ab2fc0;

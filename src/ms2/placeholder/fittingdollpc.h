@@ -5,6 +5,7 @@
 #include "ms2/placeholder/pcgemequip.h"     // PCGemEquip at PC+0x1078
 #include <NiColor.h>
 #include <set>
+#include "ms2/commonfiles/pvpinfo.h"           // MS2Ptr<CPvPInfo> at PC+0x1240 (PC::FUN_140967420 copies it inline)
 class CItem;
 class NiAVObject;
 class NiColor;
@@ -101,17 +102,6 @@ struct Unk_PCItemSlots4
 };
 MS2_CHECK_SIZE(Unk_PCItemSlots4, 0x40);
 MS2_CHECK_SIZE(Unk_PCEquipSet, 0x198);   // ctor 0x1411dfe00, dtor 0x1411e06e0 (PC +0xde0..+0xf78)
-// The player's interact mode (PC +0x1240): while active it picks the kind of object to interact with (actionkeyobject.cpp).
-// Defined here because PC::FUN_140967420 copies the MS2Ptr inline.
-class Unk_PCInteractMode : public CPtred
-{
-public:
-    bool FUN_140743550();                                   // active
-    void FUN_140743a10(CInPacket& packet);                  // decode (scenestategame OnAddUser)
-    int FUN_140743710();                                    // the target kind
-    bool FUN_140743590();                                   // CPvPInfo: mode 1
-    bool FUN_140743690();                                   // CPvPInfo: mode 10
-};
 class PC : public PCBase {
     EE_DECLARE_CLASS1(PC, 0x06200003, PCBase);   // ClassInfo 0x143ae2e20 (setup COMDAT 0x1409f8020 in avatarpc; sb4)
 public:
@@ -262,7 +252,7 @@ public:
     void FUN_14165f1f0(int nA, int nB);                     // scenestategame 0x69 (cube weapon held / dropped)
     class Unk_MyPCEmotion* FUN_14165f100();                 // the playing emotion (actionkeyobject.cpp)
     // @0x140967420
-    MS2Ptr<Unk_PCInteractMode> FUN_140967420() { return m_spInteractMode; }   // COMDAT in actionkeyobject.cpp's range
+    MS2Ptr<CPvPInfo> FUN_140967420() { return m_spInteractMode; }   // COMDAT in actionkeyobject.cpp's range
     Vector3 FUN_1416767d0();                        // PCBase member: the position (the ride's when riding; actionkeyobject.cpp)
     void FUN_141660000(__int64 nValue);
     void FUN_141661ba0(int n);                              // scenestategame packet (state reset flag)
@@ -504,7 +494,7 @@ public:
     int m_n1220;                                            // +0x1220
     bool m_b1224;                                           // +0x1224 (FUN_1416642c0)
     efd::SmartPointer<CGuideObject> m_spGuide1228[3];       // +0x1228 the cube guides (SetGuide)
-    MS2Ptr<Unk_PCInteractMode> m_spInteractMode;            // +0x1240 (a CPvPInfo; actionkeyobject.cpp)
+    MS2Ptr<CPvPInfo> m_spInteractMode;                      // +0x1240 the pvp point / team / mode
     MS2Ptr<HideAndSeek::Info> m_spHideAndSeek1250;          // +0x1250
     MS2Ptr<WaterGunBattleInfo> m_spWaterGun1260;            // +0x1260
     MS2Ptr<CTailEffectObject> m_spTailEffect1270;           // +0x1270

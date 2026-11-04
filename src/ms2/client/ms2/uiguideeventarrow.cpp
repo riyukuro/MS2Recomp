@@ -177,7 +177,6 @@ void UIGuideEvent::CheckSummaryExpiry() { if(!m_expiry) return; if(GetTickCountM
 // ---- out-of-unit callees of the recovered (functional) part ----
 typedef Scaleform::GFx::Value GfxValue;
 int FUN_141274f80();
-float FUN_141adbe70(void*);                                         // UI scale
 float FUN_1412762d0(const NiPoint3&);
 int FUN_141389500(const CStringW&,int);                             // wide string to int
 bool FUN_1401c0090(const CString&,const CString&);
@@ -541,7 +540,7 @@ int UIGuideEventArrow::vfunc_2(void* out)
     *(Vector3*)out = reinterpret_cast<const Vector3&>(DAT_143b01a60);
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_pos), *(NiPoint3*)out))
     {
-        *reinterpret_cast<efd::Point3*>(out) *= FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance()));
+        *reinterpret_cast<efd::Point3*>(out) *= TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
         ((Vector3*)out)->y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(m_pos));
         return 1;
     }
@@ -831,7 +830,7 @@ int UIGuideEventArrowDialog::GetHouseMarkPosition(void* out)
     Vector3 tmp;
     if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(mark->FUN_14198b2b0()), *(NiPoint3*)out))
         return 0;
-    *reinterpret_cast<efd::Point3*>(out) *= FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance()));
+    *reinterpret_cast<efd::Point3*>(out) *= TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     return 1;
 }
 

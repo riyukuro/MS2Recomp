@@ -45,7 +45,7 @@
 // MS2-PIN: ??B?$SmartPointer@VRidee@@@efd@@QEBAPEAVRidee@@XZ 0x140965790
 // MS2-PIN: ?get@?$MS2Ptr@VCFieldDataCli@@@@QEBAPEAVCFieldDataCli@@XZ 0x1409657a0
 // MS2-PIN: ??B?$MS2Ptr@VCNurturingCubeObject@@@@QEBAPEAVCNurturingCubeObject@@XZ 0x140965800
-// MS2-PIN: ??B?$MS2Ptr@VUnk_PCInteractMode@@@@QEBAPEAVUnk_PCInteractMode@@XZ 0x140965810
+// MS2-PIN: ??B?$MS2Ptr@VCPvPInfo@@@@QEBAPEAVCPvPInfo@@XZ 0x140965810
 // MS2-PIN: ??B?$Unk_PayloadPtr@VCubeOwner@@@@QEBAPEAVCubeOwner@@XZ 0x140965820
 // MS2-PIN: ?get@?$MS2Ptr@VUnk_PCBaseComp_b18@@@@QEBAPEAVUnk_PCBaseComp_b18@@XZ 0x140965850
 // MS2-PIN: ??C?$MS2Ptr@VCNurturingCubeObject@@@@QEBAPEAVCNurturingCubeObject@@XZ 0x140965950
@@ -65,7 +65,7 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VCFieldDataCli@@@@AEAAXXZ 0x140969de0
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_b18@@@@AEAAXXZ 0x140969fa0
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCNurturingCubeObject@@@@AEAAXPEAX@Z 0x14096a350
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_PCInteractMode@@@@AEAAXPEAX@Z 0x14096a3f0
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCPvPInfo@@@@AEAAXPEAX@Z 0x14096a3f0
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_PCBaseComp_b18@@@@AEAAXPEAX@Z 0x14096a530
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAUPortalAction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x14096af00
 // MS2-PIN: ??$Call@UPortalAction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAUPortalAction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAUPortalAction@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x14096af40
@@ -95,7 +95,7 @@
 // getters, the house owner map, the reactor data copy):
 // MS2-PIN: ??1?$MS2Ptr@VCNurturingCubeObject@@@@QEAA@XZ 0x140964a40
 // MS2-PIN: ??_G?$MS2Ptr@VCNurturingCubeObject@@@@QEAAPEAXI@Z 0x140965e40
-// MS2-PIN: ??C?$MS2Ptr@VUnk_PCInteractMode@@@@QEBAPEAVUnk_PCInteractMode@@XZ 0x140965970
+// MS2-PIN: ??C?$MS2Ptr@VCPvPInfo@@@@QEBAPEAVCPvPInfo@@XZ 0x140965970
 // MS2-PIN: ??C?$MS2Ptr@VFunctionCubeData@@@@QEBAPEAVFunctionCubeData@@XZ 0x1409658d0
 // MS2-PIN: ??1?$pair@$$CB_KV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@QEAA@XZ 0x140964c80
 // MS2-PIN: ??0?$MS2Ptr@VReactorData@@@@QEAA@AEBV0@@Z 0x140963e40
@@ -104,7 +104,7 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCFieldDataCli@@@@AEAAXPEAX@Z 0x14096a300
 // MS2-PIN: memmove_s 0x140954e40
 // MS2-PIN: ?sqrt@@YAMM@Z 0x14096b1c0
-// MS2-PIN: ??1?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@XZ 0x140964aa0
+// MS2-PIN: ??1?$MS2Ptr@VCPvPInfo@@@@QEAA@XZ 0x140964aa0
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VUnk_WsB_Lift@@@@V?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VUnk_WsB_Lift@@@@XZ 0x140969a80
 // TaxiStationAction / FishingAction have byte-identical implicit destructors (two exe copies each):
 // MS2-PIN: ??1TaxiStationAction@@UEAA@XZ 0x140953ba0
@@ -370,7 +370,6 @@ int FUN_141276980();                                        // npc talk is allow
 class Unk_AkoWorldView : public WorldService
 {
 public:
-    MS2Ptr<CPortal> FUN_141bc2800(int nPortalId);     // the portal by id
 };
 // The quest manager (FUN_140764020).
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -473,7 +472,6 @@ public:
     void FUN_1410aad50();                                   // put the lifted cube down
 };
 // The ugc manager singleton.
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 class UIGuildFlagTooltip : public UIDialog
 {
@@ -495,9 +493,8 @@ public:
 // The taxi station lists (CAtlArray<int>): the known stations (0x143ab3078) and the stations already reported to the
 // server (0x143ab3098).
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // index of a value (-1: absent)
-struct Unk_PtrB;
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3098;
 extern int DAT_143ab2870;                                   // the current map id
 // The player's movement controller (PCBase +0x6d8; PCBase::FUN_14166d240 hands it out as void*).
 class Unk_PCMove
@@ -1165,7 +1162,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         int nPortalId = 0;
         data.FUN_140961900(0, nTarget);
         data.FUN_140961900(1, nPortalId);
-        MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bc2800(nPortalId);
+        MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);
@@ -1514,7 +1511,7 @@ MS2_REPLACE_METHOD(0x140958E70, InteractAction, FUN_140958e70, 273, 0xBA3636FF);
 // @0x140958cb0
 void InteractAction::vfunc_3()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
+    Unk_WsB_Prop* pObject = static_cast<Unk_WsB_Prop*>((CInteractObject*)WorldService::GetInstance()->FindProp(m_strObjectId));
     if (!pObject)
         return;
     m_n20 = 0;
@@ -1524,7 +1521,7 @@ MS2_REPLACE_METHOD(0x140958CB0, InteractAction, vfunc_3, 143, 0xC0354D66);
 // @0x140958d50
 Unk_AkoTarget InteractAction::vfunc_12()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
+    Unk_WsB_Prop* pObject = static_cast<Unk_WsB_Prop*>((CInteractObject*)WorldService::GetInstance()->FindProp(m_strObjectId));
     if (!pObject)
         return ActionKeyObject::vfunc_12();
     return Unk_AkoTarget(pObject->GetPos());
@@ -1545,7 +1542,7 @@ MS2_REPLACE_METHOD(0x140958E20, InteractAction, vfunc_13, 62, 0xA6B5DED9);
 // @0x1409582b0
 void InteractAction::vfunc_2()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
+    Unk_WsB_Prop* pObject = static_cast<Unk_WsB_Prop*>((CInteractObject*)WorldService::GetInstance()->FindProp(m_strObjectId));
     if (!pObject)
         return;
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -1620,7 +1617,7 @@ CStringW InteractAction::vfunc_6()
 {
     if (m_strObjectId.IsEmpty())
         return L"";
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
+    Unk_WsB_Prop* pObject = static_cast<Unk_WsB_Prop*>((CInteractObject*)WorldService::GetInstance()->FindProp(m_strObjectId));
     if (!pObject)
         return L"";
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
@@ -1763,7 +1760,7 @@ void RegistUgcAction::vfunc_2()
 {
     if (m_spEntity == 0)
         return;
-    ((class CUgcManager*)FUN_14052d220())->FUN_14187f590(m_spEntity);
+    TSingleton<CUgcManager>::GetInstance()->FUN_14187f590(m_spEntity);
 }
 MS2_REPLACE_METHOD(0x1409599F0, RegistUgcAction, vfunc_2, 117, 0x885DE4AF);
 // @0x140959a70

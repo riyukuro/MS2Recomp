@@ -813,13 +813,12 @@ int FUN_141276980()
     return 1;
 }
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // @0x141276a30
 int FUN_141276a30(const CStringW& str, CStringW& strOut)
 {
     {
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if ((CBanTextChecker*)filter != 0) {
             if (filter->FUN_140225210(str, strOut, 1) != 0)
                 return 0;
@@ -842,7 +841,7 @@ int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
         }
     }
     if ((nMask & 2) != 0) {
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if ((CBanTextChecker*)filter != 0) {
             CStringW strOut;
             if (filter->FUN_140225210(strName, strOut, 0) != 0) {
@@ -869,7 +868,7 @@ int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
         }
     }
     {
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if ((CBanTextChecker*)filter != 0) {
             int nResult = filter->FUN_140225210(strName, strOut, 0);
             return nResult;
@@ -891,7 +890,7 @@ int FUN_141276e00(const CStringW& strName, CStringW& strOut)
         }
     }
     {
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if ((CBanTextChecker*)filter != 0) {
             int nResult = filter->FUN_140225210(strName, strOut, 0);
             if (nResult != 0)

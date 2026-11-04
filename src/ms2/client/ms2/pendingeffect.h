@@ -10,6 +10,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"      // MS2Ptr<T>
 #include "ms2/placeholder/nipoint3.h"     // Vector3 (NiPoint3 with out-of-line special members)
+#include <NiTransform.h>                  // C3: NiTransform (ctor 0x140a332d0, operator= 0x140a35c30)
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/effectquery.h"   // C3: NoticeMessage, the real request/target
@@ -24,15 +25,6 @@ public:
     bool FUN_14119f680();                                   // every param reports vfunc_3 (ready)
     void FUN_14119f710();                                   // vfunc_4 on each param that is not ready
 };
-
-// NiTransform (0x34 bytes: 3x3 rotation, translate, scale). Special members are out of line.
-struct Unk_PeXform
-{
-    Unk_PeXform();                                          // 0x140a332d0
-    Unk_PeXform& operator=(const Unk_PeXform& o);           // 0x140a35c30
-    char m_pad_00[0x34];
-};
-MS2_CHECK_SIZE(Unk_PeXform, 0x34);
 
 typedef ATL::CAtlArray<Vector3> Unk_PePointArray;
 
@@ -62,8 +54,8 @@ public:
     MS2Ptr<Unk_PeEffectSet> m_spSet;                                    // +0x20
     NoticeMessage m_target;                                             // +0x30
     Unk_IntervalTimer m_tick;                                           // +0xa0 (C3: the real 50 ms timer)
-    Unk_PeXform m_xformA;                                               // +0xa8
-    Unk_PeXform m_xformB;                                               // +0xdc
+    NiTransform m_xformA;                                               // +0xa8
+    NiTransform m_xformB;                                               // +0xdc
     Unk_PePointArray m_points;                                          // +0x110
 };
 MS2_CHECK_SIZE(PendingEffect, 0x130);

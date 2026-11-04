@@ -251,7 +251,6 @@ extern unsigned char** DAT_143aaeaf0;
 extern unsigned char** DAT_143aaeaf8;
 extern std::string g_strLocaleDir2, g_strLocaleDir;
 extern int DAT_143ab0560;
-bool FUN_140870d70(TiXmlDocument*, const void*, unsigned, int);
 class Unk_FileIgnoreList;
 Unk_FileIgnoreList* FUN_1403a9410();
 __time64_t FUN_1403a9480(CFileBuffer*);
@@ -394,17 +393,17 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
     if (FUN_140398190() && !FUN_14039f3b0(CString(path))) {
         unsigned loaded = 0;
         if (FUN_14039bf70()) {
-            loaded = document->FUN_140870fc0(FUN_14016a5c0(path, 0), encoding);
+            loaded = document->LoadFile(FUN_14016a5c0(path, 0), static_cast<TiXmlEncoding>(encoding));
             if (loaded == 0) {
                 std::string alternate = FUN_14039b810(std::string(path));
-                loaded = document->FUN_140870fc0(FUN_14016a5c0(alternate.c_str(), 0), encoding);
+                loaded = document->LoadFile(FUN_14016a5c0(alternate.c_str(), 0), static_cast<TiXmlEncoding>(encoding));
             }
         }
         if (loaded == 0 && !localOnly) {
             void* data;
             unsigned __int64 size;
             if (FUN_14039f4b0(path, &data, &size, warn) != 0) {
-                if (!FUN_140870d70(document, data, static_cast<unsigned>(size), encoding)) {
+                if (!document->LoadMemory(static_cast<const char*>(data), static_cast<unsigned>(size), static_cast<TiXmlEncoding>(encoding))) {
                     EE_FREE(data);
                     return 0;
                 }
@@ -416,8 +415,8 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
     } else {
         if (FUN_140398640(std::string(path), true)) return 0;
         std::string alternate = FUN_14039b810(std::string(path));
-        if (!document->FUN_140870fc0(FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
-            if (!document->FUN_140870fc0(FUN_14016a5c0(path, 0), encoding)) {
+        if (!document->LoadFile(FUN_14016a5c0(alternate.c_str(), 0), static_cast<TiXmlEncoding>(encoding))) {
+            if (!document->LoadFile(FUN_14016a5c0(path, 0), static_cast<TiXmlEncoding>(encoding))) {
                 if (warn) {
                     CString text(path == nullptr ? "" : path);
                     Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
@@ -432,7 +431,7 @@ MS2_REPLACE_METHOD(0x1403974b0, CFileSystem, FUN_1403974b0, 1311, 0x73EE0E90);
 // @0x1403979e0
 int CFileSystem::LoadXmlFromBuffer(TiXmlDocument* document, BufferPtr buffer) {
     if (buffer.IsNull()) return 0;
-    if (!FUN_140870d70(document, buffer->GetBuffer(), buffer->GetSize(), 0)) return 0;
+    if (!document->LoadMemory(static_cast<const char*>(buffer->GetBuffer()), buffer->GetSize(), TIXML_ENCODING_UNKNOWN)) return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x1403979e0, CFileSystem, LoadXmlFromBuffer, 190, 0xB229CEED);

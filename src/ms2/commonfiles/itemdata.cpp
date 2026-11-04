@@ -69,9 +69,8 @@ private:
     void* m_data[0x11];
 };
 
-// The row lookup of the PC bang table: a 24-byte handle and the node it resolves to.
-struct Unk_TableHandle : CItemChangeBeautyTable::DataPtr { ~Unk_TableHandle(); };   // dtor 0x1403b87a0
-class Unk_PcBangTable { public: Unk_TableHandle FUN_1403b7c40(int nMode, int nId); };
+// The GameDictionaryManager instance getter's own return view (the lookup is GameDictionaryManager::Get).
+class Unk_PcBangTable;
 Unk_PcBangTable* FUN_140541580();
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned char FUN_1401d1320(CCacheData*);
@@ -383,7 +382,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
-        property.flag09 = FUN_140541580()->FUN_1403b7c40(3, GetItemId()).operator->() != 0;
+        property.flag09 = reinterpret_cast<GameDictionaryManager*>(FUN_140541580())->Get(GameDictionaryManager::kItem, GetItemId()).operator->() != 0;
     }
     return true;
 }

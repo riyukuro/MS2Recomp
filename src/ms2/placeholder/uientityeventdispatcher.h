@@ -9,7 +9,7 @@
 #include <afx.h>
 #include <atlcoll.h>
 
-class Unk_UpperEvt;
+namespace egf { class EntityID; }
 class UIEntityEventListener;
 class CProxyGameObject;
 template <class T> class MS2Ptr;
@@ -19,8 +19,8 @@ class UIEntityEventDispatcher : public TSingleton<UIEntityEventDispatcher>
 public:
     UIEntityEventDispatcher();                              // 0x141930820
     virtual ~UIEntityEventDispatcher();
-    virtual void vfunc_1(const Unk_UpperEvt& evt);
-    virtual void vfunc_2(const Unk_UpperEvt& evt);
+    virtual void vfunc_1(const egf::EntityID& evt);
+    virtual void vfunc_2(const egf::EntityID& evt);
     virtual void vfunc_3(MS2Ptr<CProxyGameObject> p);
     virtual void vfunc_4(MS2Ptr<CProxyGameObject> p);
     virtual void vfunc_5(MS2Ptr<CProxyGameObject> p, int n);

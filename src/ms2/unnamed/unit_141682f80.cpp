@@ -171,9 +171,8 @@ public:
     int IsActionKeyPressed(int);
     int IsActionKeyReleased(int);
     int FUN_14142c940(__int64 nAction, int nPriority);
+    __int64 GetKeyAction(int nKey);                 // 0x14142d190
 };
-struct Unk_PCBuffKey { int m_nId; int m_nExtra; };
-Unk_PCBuffKey FUN_14142d190(Unk_PCBuffTable* p, int n);
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -522,7 +521,8 @@ MS2_REPLACE_METHOD(0x141683EF0, Unk_PCMove, FUN_141683ef0, 361, 0xC6E837A1);
 // @0x141684060
 int Unk_PCMove::FUN_141684060(int nKey)
 {
-    return FUN_14142d190(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), nKey).m_nId;
+    __int64 nAction = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyAction(nKey);
+    return (int)nAction;
 }
 MS2_REPLACE_METHOD(0x141684060, Unk_PCMove, FUN_141684060, 44, 0x77C6DB8A);
 

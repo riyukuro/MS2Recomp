@@ -877,7 +877,7 @@ void ASTooltip::FUN_1409c7cc0(CItem* pItem)
             {
                 CString strMovie;
                 // CItem::FUN_1405278d0 returns the placeholder name of the item's CItemUgc
-                if (reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_1418859f0(&reinterpret_cast<CItemUgc*>(pItem->GetUgcInfo())->m_look,
+                if (TSingleton<CUgcManager>::GetInstance()->FUN_1418859f0(&reinterpret_cast<CItemUgc*>(pItem->GetUgcInfo())->m_look,
                         &reinterpret_cast<CItemUgc*>(pItem->GetUgcInfo())->m_blueprint, MS2Ptr<CItem>(pItem)))
                     strMovie = reinterpret_cast<Unk_TooltipConfigPaths*>(FUN_1401d31f0())->m_strUgcMovie;
                 else

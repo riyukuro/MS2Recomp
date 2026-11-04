@@ -49,6 +49,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CReactor);
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <egmAnimation/AnimationService.h>   // C3: AnimationService::AssetData::GetSequenceName
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -826,8 +827,11 @@ struct Unk_RxAnimRec
     void* m_spAssetData;
 };
 bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec);
-void* FUN_140998e80(void* pSp);              // SmartPointer<AssetData>::operator AssetData*
-class Unk_EmAssetData { public: efd::utf8string FUN_1409a1940(unsigned int nIdx) const; };
+// The animation service's protected AssetData (GetSequenceName 0x1409a1940), opened up like equipmodel.cpp's view.
+struct Unk_RxAnimAccess : egmAnimation::AnimationService
+{
+    using AnimationService::AssetData;
+};
 // @0x140b7cc50
 // MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
 efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
@@ -835,7 +839,7 @@ efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
     Unk_RxAnimRec* pRec;
     if (!FUN_1409991a0(this, &id, &pRec))
         return efd::utf8string::NullString();
-    Unk_EmAssetData* pName = static_cast<Unk_EmAssetData*>(FUN_140998e80(&pRec->m_spAssetData));
+    Unk_RxAnimAccess::AssetData* pName = reinterpret_cast<efd::SmartPointer<Unk_RxAnimAccess::AssetData>*>(&pRec->m_spAssetData)->operator Unk_RxAnimAccess::AssetData*();
     if (!pName)
         return efd::utf8string::NullString();
     if (!reinterpret_cast<efd::SmartPointer<NiActorManager>*>(&pRec->m_spActorManager)->operator NiActorManager*())
@@ -844,7 +848,7 @@ efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
     if (nIdx == NiActorManager::INVALID_SEQUENCE_ID)
         return efd::utf8string::NullString();
     else
-        return pName->FUN_1409a1940(nIdx);
+        return pName->GetSequenceName(nIdx);
 }
 
 // @0x140b7ce20

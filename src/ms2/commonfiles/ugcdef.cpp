@@ -42,6 +42,7 @@
 #include "ms2/placeholder/cugcgetcosttable.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cugcmanager.h"
+#include "ms2/placeholder/cinstrumentdatatable.h"   // C3: CInstrumentDataTable::GetCategory
 
 // The UGC info behind CItem::FUN_1405278d0 as this unit reads it (name at +0x40, rarity at +0x48).
 struct Unk_UgcItemInfoView
@@ -71,13 +72,11 @@ Unk_DateParts* FUN_14088dfa0(Unk_DateParts* out, __int64 t, int nHourOffset);
 __int64 GetServerTime();
 unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a byte that Unk_1402c45d0 accepts, else throws
 
-// The UGC managers behind the item.cpp singleton FUN_14052d220 (only the "is the server a test server" query is used).
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
+// The UGC manager singleton, TSingleton<CUgcManager> (only the "is the server a test server" query is used).
 CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
 
 // The music book table of item.cpp (the title of a music book lives at +0x28).
-class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_str28; };
-class Unk_MusicBookTable { public: MS2Ptr<Unk_MusicBookInfo> FUN_14072cc10(unsigned); };
+class Unk_MusicBookTable;
 Unk_MusicBookTable* FUN_14052d1d0();
 
 // The product id of the merat market (Unk_MeratProductKey, meratproductkey.h) is the key of the bookmark map.
@@ -956,7 +955,7 @@ void CUgcRegistBanner::Read(CInPacket& packet)
     static_cast<IUgcProxy&>(m_upload).Read(packet);
     static_cast<IUgcProxy&>(m_post).Read(packet);
     m_strUrl = packet.ReadUnicodeStringA();
-    if (((class CUgcManager*)FUN_14052d220())->GetMode() == 1)
+    if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
     {
         static_cast<IUgcProxy&>(m_upload).Clear();
         static_cast<IUgcProxy&>(m_post).Clear();
@@ -1563,7 +1562,7 @@ void CUgcItemLook::Read(CInputStream& stream)
     m_n50 = stream.ReadInt64();
     m_strUrl = stream.ReadUnicodeStringA();
     m_n60 = stream.ReadUInt8();
-    if (((class CUgcManager*)FUN_14052d220())->GetMode() == 1)
+    if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
         m_strUrl = "";
 }
 
@@ -1743,10 +1742,10 @@ void CUgcItemMusicNote::Read(CInputStream& stream)
 // @0x140894060
 CStringA CUgcItemMusicNote::FUN_140894060() const
 {
-    MS2Ptr<Unk_MusicBookInfo> spInfo = FUN_14052d1d0()->FUN_14072cc10(m_n24);
-    if ((Unk_MusicBookInfo*)spInfo != 0)
+    CInstrumentDataTable::CategoryPtr spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(m_n24);
+    if ((CInstrumentCategoryData*)spInfo != 0)
     {
-        return CStringA(spInfo->m_str28);
+        return CStringA(spInfo->m_strIcon);
     }
     return CStringA("");
 }

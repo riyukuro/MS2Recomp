@@ -93,7 +93,6 @@ Unk_ContB& Unk_ContB::Assign(const Unk_ContB& o)
 }
 
 // ---- implicit copy assignments ----
-CPtred* FUN_1404efd80(CPtred* pThis, const CPtred* pOther);
 
 // 0x38 bytes: CPtred, five ints and a pointer-sized field.
 class Unk_Row38 : public CPtred

@@ -43,6 +43,7 @@
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$vector@UUnk_CameraSetup@@V?$allocator@UUnk_CameraSetup@@@std@@@std@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$vector@UUnk_CameraSetup@@V?$allocator@UUnk_CameraSetup@@@std@@@std@@@std@@PEAX@2@_K@Z 0x140afc620 ; w116: node 0x40 (exe calls _Get_size_of_n<0x40>)
 // MS2-PINS-END tplpin
 // MS2-PIN: ??9?$SmartPointer@VNiAVObject@@@efd@@QEBA_NPEAVNiAVObject@@@Z 0x140af72f0
+// MS2-PIN: ??0?$SmartPointer@VPickRecord@PickService@ecr@@@efd@@QEAA@AEBV01@@Z 0x140af5c90 ; the copy of FUN_140af0850's by-value return (was the Unk_GoPickListPtr view copy ctor)
 // MS2-PIN: ?GetAnimType@NiTimeController@@QEBA?AW4AnimType@1@XZ 0x140af7db0
 // MS2-PIN: ?GetEndKeyTime@NiTimeController@@QEBAMXZ 0x140af7f50
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@UUnk_CameraSetting@@@std@@PEAX@2@_K@Z 0x140afc650
@@ -102,6 +103,7 @@
 #include "ms2/placeholder/freecameramode.h"
 #include "ms2/client/ms2/cameramoveeffectparam.h"
 #include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/placeholder/cgameoption.h"
 #include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include <ecr/CameraService.h>
@@ -146,25 +148,7 @@ public:
 // The game object of a picked mesh.
 class Unk_CameraPickObject;
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // the npc (or null); C3: free function (was Unk_CameraPickObject::FUN_140a38a00)
-// The pick record holder (ecr::PickService::PickRecord, reference counted).
 class Unk_GoPickHit;
-class Unk_GoPickListPtr
-{
-public:
-    Unk_GoPickListPtr(ecr::PickService::PickRecord* p);                 // 0x140a152b0
-    // @0x140af5c90
-    Unk_GoPickListPtr(const Unk_GoPickListPtr& o)
-    {
-        m_p = o.m_p;
-        if (m_p)
-            m_p->IncRefCount();
-    }
-    ~Unk_GoPickListPtr();                                               // 0x140a16120
-    ecr::PickService::PickRecord* FUN_140a16c00() const;
-    ecr::PickService::PickRecord* FUN_140a16c30() const;
-
-    ecr::PickService::PickRecord* m_p;
-};
 // The ui service: dialog lookup by id and the queued scene dialogs.
 class Unk_CameraUIService
 {
@@ -222,24 +206,8 @@ class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n); // set a global shader constant
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
-// The camera options of the client settings (FUN_1409a8b10).
-struct Unk_CameraOption
-{
-    bool m_0;
-    bool m_1;                                                           // camera effects on
-    int m_4;                                                            // camera speed (percent)
-};
-class Unk_ClientSettings
-{
-public:
-    // @0x140af7de0
-    Unk_CameraOption* FUN_140af7de0() { return &m_8; }
-
-    int m_0;
-    int m_4;
-    Unk_CameraOption m_8;
-};
-class CGameOption;
+// @0x140af7de0
+inline Unk_CameraState* CGameOption::FUN_140af7de0() { return &m_camera; }
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 class Unk_CameraConstValue
@@ -492,7 +460,7 @@ BOOL LoadTestCamerValue()
     ATL::CRBMap<CString, CString> values(10);
     CString strUnused;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0("./data/xml/table/TestCamerValue.xml", 0))
+    if (!doc.LoadFile("./data/xml/table/TestCamerValue.xml", TIXML_ENCODING_UNKNOWN))
     {
         if (!GetFileSystem()->FUN_1403974b0(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
             return FALSE;
@@ -1076,14 +1044,14 @@ void CameraMgr::FUN_140aeb1a0()
     {
         float fX, fY;
         reinterpret_cast<CWindowService*>(FUN_140aadf80())->GetCursorClientPos(&fX, &fY);
-        Unk_GoPickListPtr spPick = FUN_140af0850(fX, fY, true, true, false, 0);
-        if (!spPick.FUN_140a16c00())
+        efd::SmartPointer<ecr::PickService::PickRecord> spPick = FUN_140af0850(fX, fY, true, true, false, 0);
+        if (!(ecr::PickService::PickRecord*)spPick)
             return;
         Unk_GameContext* pContext = reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance());
         GameObject* pNpc = 0;
-        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); ++i)
+        for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); ++i)
         {
-            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
+            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick->GetPickResult()->GetAt(i));
             Unk_CameraPickObject* pObject = ((class Unk_CameraPickObject*)((class WorldService*)(class Unk_GameContext*)(pContext))->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             pNpc = reinterpret_cast<GameObject*>(FUN_140a38a00(reinterpret_cast<Unk_BossObject*>(pObject)));
             if (pNpc)
@@ -1108,11 +1076,11 @@ void CameraMgr::FUN_140aeb1a0()
 }
 
 // @0x140af0850
-Unk_GoPickListPtr CameraMgr::FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
+efd::SmartPointer<ecr::PickService::PickRecord> CameraMgr::FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
     NiAVObject* pRoot)
 {
     if (!FUN_1413f9890())
-        return Unk_GoPickListPtr(0);
+        return efd::SmartPointer<ecr::PickService::PickRecord>(0);
     NiPoint3 kOrigin;
     NiPoint3 kDir;
     NiCamera* pCamera = FUN_1413f9890()->GetActiveRenderSurface()->GetCamera();
@@ -1122,16 +1090,16 @@ Unk_GoPickListPtr CameraMgr::FUN_140af0850(float fX, float fY, bool bFrontOnly, 
     {
         if (!pRoot)
         {
-            Unk_GoPickListPtr spPick(pPick->PerformPick(kOrigin, kDir, bFrontOnly, bAppCulled, bClosestOnly));
+            efd::SmartPointer<ecr::PickService::PickRecord> spPick(pPick->PerformPick(kOrigin, kDir, bFrontOnly, bAppCulled, bClosestOnly));
             return spPick;
         }
         else
         {
-            Unk_GoPickListPtr spPick(pPick->PerformPick(kOrigin, kDir, pRoot, bFrontOnly, bAppCulled, bClosestOnly));
+            efd::SmartPointer<ecr::PickService::PickRecord> spPick(pPick->PerformPick(kOrigin, kDir, pRoot, bFrontOnly, bAppCulled, bClosestOnly));
             return spPick;
         }
     }
-    return Unk_GoPickListPtr(0);
+    return efd::SmartPointer<ecr::PickService::PickRecord>(0);
 }
 MS2_REPLACE_METHOD(0x140AF0850, CameraMgr, FUN_140af0850, 569, 0xA62206A5);
 
@@ -1317,8 +1285,8 @@ MS2_REPLACE_METHOD(0x140AED0D0, CameraMgr, FUN_140aed0d0, 18, 0x05E822F7);
 // @0x140aed0f0
 int CameraMgr::FUN_140aed0f0()
 {
-    if (reinterpret_cast<Unk_ClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140af7de0())
-        return m_244 && reinterpret_cast<Unk_ClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140af7de0()->m_1;
+    if (TSingleton<CGameOption>::GetInstance()->FUN_140af7de0())
+        return m_244 && TSingleton<CGameOption>::GetInstance()->FUN_140af7de0()->m_b01;
     return m_244;
 }
 MS2_REPLACE_METHOD(0x140AED0F0, CameraMgr, FUN_140aed0f0, 102, 0xB56490FF);
@@ -1877,7 +1845,7 @@ void CameraMgr::FUN_140aec4c0()
             FUN_140ae9ed0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), &ptEye, &ptRot);
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), 0);
         }
-        float fSpeed = (float)reinterpret_cast<Unk_ClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140af7de0()->m_4 / 100.0f;
+        float fSpeed = (float)TSingleton<CGameOption>::GetInstance()->FUN_140af7de0()->m_n04 / 100.0f;
         float f1 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1)->FUN_140298f40()) * fSpeed;
         float f2 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2)->FUN_140298f40()) * fSpeed;
         float f3 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3)->FUN_140298f40()) * fSpeed;

@@ -42,6 +42,7 @@ template<> void MS2Ptr<CClubCli>::Release();
 #include "ms2/commonfiles/contentshutdown.h"
 
 template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);   // 0x140ba7930, owned by unit_140ba6b20
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -83,12 +84,6 @@ class Unk_ClubConstInt { public: int m_n; };
 class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The movie clip holding the lists.
-class Unk_ClubClip : public CPtred
-{
-public:
-    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);
-};
 
 
 
@@ -369,10 +364,10 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 {
     MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
     if (spClub.get() != 0) {
-        MS2Ptr<Unk_ClubClip> spClip = FUN_140ba7930("m_clubData");
+        MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_clubData");
         if (spClip == 0)
             return;
-        if (MS2Ptr<ASScrollingList> spList = spClip->FUN_140bc7280("m_items")) {
+        if (MS2Ptr<ASScrollingList> spList = spClip->FUN_140bc7280<ASScrollingList>("m_items")) {
             spList->FUN_1422dd1d0();
             ASDataProvider rows(2);
             MS2Ptr<CClubMember> spLeader = spClub->GetLeader();

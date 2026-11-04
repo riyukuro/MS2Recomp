@@ -11,6 +11,7 @@
 #include <efd/RefCount.h>
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/magicdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -79,7 +80,6 @@ class Unk_InventoryStateManager;
 class Unk_MeratBlindManager;
 class Unk_MusicBookTable;
 class Unk_NametagTrophy;
-class Unk_QmGroupTable;
 class Unk_Restrictions;
 class Unk_RpTable;
 class Unk_SlotBreakManager;
@@ -216,12 +216,7 @@ struct Unk_SecondaryDtorBase
 struct Unk_SecondaryDtorSingleton : public Unk_PrimaryBase, public Unk_SecondaryDtorBase
 {
 };
-// Static table of the magic data (FUN_14146a6a0 = its destructor).
-struct Unk_MagicTable
-{
-    void FUN_14146a6a0();
-};
-extern Unk_MagicTable DAT_143adca50;
+extern ATL::CAtlMap<unsigned, Unk_MagicListPtr> DAT_143adca50;   // the magicPath.xml table (magicdata.cpp)
 
 // Singleton instance pointers and instance getters (exe data/functions; bound through progress/symbols).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -251,7 +246,6 @@ class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 class Unk_ClubBuffTable* FUN_140b1a4e0();   // C3: was FUN_140b1a4e0
 class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
-class Unk_QmGroupTable* FUN_140d738f0();   // C3: was FUN_140d738f0
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
 class Unk_GoUpdateList   // C3: member view for the former free stand-ins
@@ -302,7 +296,7 @@ MS2_REPLACE(0x14149FE70, FUN_14149fe70, 73, 0x032D49BB);
 // @0x14149fec0
 void FUN_14149fec0()
 {
-    DAT_143adca50.FUN_14146a6a0();
+    DAT_143adca50.RemoveAll();
 }
 MS2_REPLACE(0x14149FEC0, FUN_14149fec0, 21, 0xC697E12D);
 
@@ -740,7 +734,7 @@ void FUN_1414a0d80()
 {
     if (TSingleton<CFieldMissionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140d738f0());
+        delete (Unk_VirtualDtor*)((void*)TSingleton<CFieldMissionTable>::GetInstance());
         TSingleton<CFieldMissionTable>::s_instance = 0;
     }
 }

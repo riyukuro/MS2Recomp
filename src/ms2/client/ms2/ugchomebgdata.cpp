@@ -56,7 +56,6 @@ extern Vector3 DAT_143a08d08;   // zero colour
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
 
 // The statics of the home apply functions (opaque stand-ins for helpers of other units).
-void FUN_14097faa0(void* pDst, const Unk_UhPoint3& pt);     // NiPoint3::operator=
 // The entity list a WorldService model lookup returns (worldservice.h declares it incomplete).
 struct Unk_WsC_TagPtr
 {
@@ -84,7 +83,7 @@ UgcHomeBgData::UgcHomeBgData(CStringW strName, CString strPath)
 }
 
 // @0x140b67e00
-UgcHomeLightData::UgcHomeLightData(CStringW strName, Unk_UhPoint3 color)
+UgcHomeLightData::UgcHomeLightData(CStringW strName, NiPoint3 color)
     : m_strName(strName), m_color(color)
 {
 }
@@ -119,30 +118,30 @@ CString UgcHomeOptionData::GetBgPath(unsigned char nType)
 }
 
 // @0x140b680b0
-Unk_UhPoint3 UgcHomeOptionData::GetLightColor(unsigned char nType)
+NiPoint3 UgcHomeOptionData::GetLightColor(unsigned char nType)
 {
     MS2Ptr<UgcHomeLightData> spData(0);
     if (m_mapLight.Lookup(nType, spData))
         return spData->m_color;
-    return Unk_UhPoint3(DAT_143a08d08);
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(DAT_143a08d08));
 }
 
 // @0x140b68160
-Unk_UhPoint3 UgcHomeOptionData::GetCameraOffset(unsigned char nType)
+NiPoint3 UgcHomeOptionData::GetCameraOffset(unsigned char nType)
 {
     MS2Ptr<UgcHomeCameraData> spData(0);
     if (m_mapCamera.Lookup(nType, spData))
         return spData->m_offset;
-    return Unk_UhPoint3(DAT_143b01a60);
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
 }
 
 // @0x140b68210
-Unk_UhPoint3 UgcHomeOptionData::GetCameraUp(unsigned char nType)
+NiPoint3 UgcHomeOptionData::GetCameraUp(unsigned char nType)
 {
     MS2Ptr<UgcHomeCameraData> spData(0);
     if (m_mapCamera.Lookup(nType, spData))
         return spData->m_upAxis;
-    return Unk_UhPoint3(DAT_143a08cf8);
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
 }
 
 // @0x140b682c0
@@ -154,7 +153,7 @@ void UgcHomeOptionData::ApplyBg(unsigned char nType)
 // @0x140b682f0
 void UgcHomeOptionData::ApplyLight(unsigned char nType)
 {
-    Unk_UhPoint3 color = GetLightColor(nType);
+    NiPoint3 color = GetLightColor(nType);
     Unk_WsC_TagPtr hTag = WorldService::GetInstance()->FUN_141bd0420(0x169ea355);
     if ((hTag.FUN_1409f2170() != 0 ? true : false) && hTag.FUN_1409f2190()->GetCount() > 0)
     {
@@ -167,8 +166,8 @@ void UgcHomeOptionData::ApplyLight(unsigned char nType)
 // @0x140b683f0
 void UgcHomeOptionData::ApplyCamera(unsigned char nType)
 {
-    FUN_14097faa0((char*)CameraMgr::GetInstance() + 200, GetCameraOffset(nType));
-    FUN_14097faa0((char*)CameraMgr::GetInstance() + 0xd4, GetCameraUp(nType));
+    *reinterpret_cast<NiPoint3*>((char*)CameraMgr::GetInstance() + 200) = GetCameraOffset(nType);
+    *reinterpret_cast<NiPoint3*>((char*)CameraMgr::GetInstance() + 0xd4) = GetCameraUp(nType);
     CameraMgr::GetInstance()->FUN_140aed750(0x11, 1);
     FUN_140b6bd30(CameraMgr::GetInstance());
 }
@@ -213,8 +212,8 @@ void UgcHomeOptionData::LoadLight()
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
-        Unk_UhPoint3 color;
-        XmlGetAttr((class TiXmlElement*)(pNode), "ambientcolor", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(color));
+        NiPoint3 color;
+        XmlGetAttr((class TiXmlElement*)(pNode), "ambientcolor", color);
         reinterpret_cast<Vector3&>(color).FUN_140ae9270(255.0f);   // C3: efd::Point3::operator/= on the Vector3 view (nipoint3.h)
         MS2Ptr<UgcHomeLightData> spData(new UgcHomeLightData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), color));
         m_mapLight.SetAt((unsigned)m_mapLight.GetCount(), spData);
@@ -236,10 +235,10 @@ void UgcHomeOptionData::LoadCamera()
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
-        Unk_UhPoint3 offset(DAT_143b01a60);
-        XmlGetAttr((class TiXmlElement*)(pNode), "offset", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(offset));
-        Unk_UhPoint3 upAxis(DAT_143b01a60);
-        XmlGetAttr((class TiXmlElement*)(pNode), "upAxis", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(upAxis));
+        NiPoint3 offset(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
+        XmlGetAttr((class TiXmlElement*)(pNode), "offset", offset);
+        NiPoint3 upAxis(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
+        XmlGetAttr((class TiXmlElement*)(pNode), "upAxis", upAxis);
         MS2Ptr<UgcHomeCameraData> spData(new UgcHomeCameraData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId)));
         spData->m_offset = offset;
         spData->m_upAxis = upAxis;

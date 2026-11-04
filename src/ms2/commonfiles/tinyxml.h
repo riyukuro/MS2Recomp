@@ -142,12 +142,15 @@ enum
 
 
 // Used by the parsing routines.
+#ifndef TIXML_ENCODING_DEFINED	// MS2: also defined by ms2/placeholder/tixmldocument.h
+#define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding
 {
 	TIXML_ENCODING_UNKNOWN,
 	TIXML_ENCODING_UTF8,
 	TIXML_ENCODING_LEGACY
 };
+#endif
 
 const TiXmlEncoding TIXML_DEFAULT_ENCODING = TIXML_ENCODING_UNKNOWN;
 

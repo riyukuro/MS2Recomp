@@ -197,7 +197,7 @@ public:
     int FUN_1410d2f10();
     void FUN_1410d54f0(bool b);
     int FUN_1410d5550(int nKey);
-    void FUN_1410d55d0(int a, int b);
+    bool FUN_1410d55d0(int a, int b);   // the player owns the block (FUN_1408a06a0 on the current or the given map)
     bool FUN_1410d5640();
     bool FUN_1410d56a0();
     void FUN_1410d57a0(unsigned __int64 key);

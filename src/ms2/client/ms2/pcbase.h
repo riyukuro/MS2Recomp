@@ -24,6 +24,7 @@
 #include "ms2/placeholder/timer.h"     // Timer (0x38)
 #include "ms2/placeholder/pushcontrol.h"   // CPushControl (0x48)
 #include "ms2/placeholder/unkvec47.h"     // Unk_Vec4 / Unk_Vec7 (+0x180..+0x1bc)
+#include "ms2/client/ms2/colorboostmanager.h"   // CColorBoostManager (+0x648)
 #include <efd/utf8string.h>
 #include <efd/Point2.h>
 
@@ -64,19 +65,6 @@ class Unk_PCBaseBody;       // +0x150 physics/controller body (0xf8; ctor 0x1412
 
 // +0xc08: an 11-bit set (commonfiles\bitset.inl instance, the same as unit_140d73aa0's Unk_BitSet11): the reasons the
 // actor is hidden (AddHideReason / RemoveHideReason / ApplyHideReasons).
-// +0x648: CColorBoostManager (0x48; FUN_14109be00 adds a CColorBoostData).
-class CColorBoostData;
-class Unk_PCBaseColorBoostMgr
-{
-public:
-    Unk_PCBaseColorBoostMgr();                              // 0x14109bd60
-    ~Unk_PCBaseColorBoostMgr();                             // 0x14109bdc0
-    void FUN_14109be00(const CColorBoostData& kData);
-    void FUN_14109be30(const egf::EntityID& kId);          // per-frame update
-private:
-    void* m_unk[9];
-};
-
 // +0x6d8: the buff tracker of the next unit (0x70; ctor 0x141682e90, dtor 0x141682f30; FUN_141682f60(p, owner) binds
 // it, FUN_141682fe0(p, id) tests a buff, FUN_141683a90(p) flushes it).
 class Unk_PCBaseBuffTracker
@@ -480,7 +468,7 @@ public:
     efd::Point2 m_unk_620;              // +0x620 (init 0x140a0a600(p, 25.0, 105.0)) model size
     MS2Ptr<CBoxCollision> m_sp628;      // +0x628 collision box (FUN_141670fd0)
     MS2Ptr<Unk_PCBaseEmoPlayer> m_sp638; // +0x638 (init 0x14167e030)
-    Unk_PCBaseColorBoostMgr m_colorBoost;   // +0x648 CColorBoostManager (0x48)
+    CColorBoostManager m_colorBoost;        // +0x648 (0x48)
     CPushControl m_pushControl;         // +0x690 (0x48)
     Unk_PCBaseBuffTracker m_unk_6d8;    // +0x6d8
     Unk_PCBaseBuffList m_unk_748;       // +0x748 buffs

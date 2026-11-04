@@ -31,7 +31,6 @@ CStringW FUN_1412e1e50(CTimeSpan span, int a, int b);   // a duration text (uima
 
 #include "ms2/commonfiles/item.h"               // CItemUgc (the UGC info behind CItem::FUN_1405278d0)
 #include "ms2/placeholder/cugcmanager.h"
-class Unk_UgcRideeMgr* FUN_14052d220();                     // TSingleton<CUgcManager>::GetInstance (exe copy)
 CString FUN_1410280d0(int nType, CString strPath);   // a UGC resource url (ugcimagepath.cpp)
 // The config singleton DAT_143aac5c0 (cachedata.cpp FUN_1401d31f0): the movie shown for a UGC item without a look.
 struct Unk_TooltipConfigPaths

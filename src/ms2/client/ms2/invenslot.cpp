@@ -12,7 +12,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VUIShopDialog@@@@QEBAPEAVUIShopDialog@@XZ 0x14140e940 ; unique
 // MS2-PIN: ??_EInvenSlot@@WJA@EAAPEAXI@Z 0x14140e950 ; prop
 // MS2-PIN: ?GetClassDesc@InvenSlot@@UEBAPEBVClassInfo@efd@@XZ 0x14140e9c0 ; prop
-// MS2-PIN: ?IsEmpty@?$CAtlList@HV?$CElementTraits@H@ATL@@@ATL@@QEBA_NXZ 0x14140ea60 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlList@W4Unk_UIType@@V?$CElementTraits@W4Unk_UIType@@@ATL@@@ATL@@QEBA_NXZ 0x14140ea60 ; unique
 // MS2-PIN: ?SetupClassInfo@InvenSlot@@SAXPEAVClassInfo@efd@@_K@Z 0x14140ea90 ; unique
 // MS2-PIN: ??_EInventorySlotBag@@WJA@EAAPEAXI@Z 0x14140fcfc ; unique
 // MS2-PIN: ?GetClassDesc@InventorySlotBag@@UEBAPEBVClassInfo@efd@@XZ 0x14140fd70 ; unique
@@ -279,7 +279,7 @@ public:
 bool FUN_140633700(MS2Ptr<CItem> spItem);                 // the item is destroyed without a box
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pHas);   // the warning prefix of the item
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-extern Vector3 DAT_143a08cf8;                     // NiPoint3::UNIT_Z
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; NiPoint3::UNIT_Z
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem);
 
 // The tooltip paths (vfunc_0).
@@ -294,7 +294,8 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount);     // sell witho
 static int FUN_14140d350(CItem* pItem);
 
 // The right click mode (FUN_14140d3e0).
-extern ATL::CAtlList<int> DAT_143af2258;                  // the ids of the open dialogs, the latest first
+enum Unk_UIType {};                                       // uidialog.cpp's UI type id
+extern ATL::CAtlList<Unk_UIType> DAT_143af2258;           // the ids of the open dialogs, the latest first (uidialog.cpp)
 bool FUN_140633a20(MS2Ptr<CItem> spItem);                 // may be traded
 bool FUN_140633840(MS2Ptr<CItem> spItem);                 // may be sold
 bool FUN_140633b80(MS2Ptr<CItem> spItem);                 // may be registered on the black market

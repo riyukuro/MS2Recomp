@@ -375,8 +375,13 @@ CollisionPtr CSkillCollisionManager::Get(__int64 nHandle)
     return spShape;
 }
 
+struct Unk_SkColView                                                // collision vtable view: vfunc_3 takes its points by implicit conversion (NiPoint3(const efd::Point3&), 0x14027dcf0)
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);
+};
+
 // @0x141755cd0
-// MS2-FUNCTIONAL: the exe's vfunc_3 takes NiPoint3 by value, converted implicitly from efd::Point3 arguments; needs the cbasecollision.h retype (70 dependents)
 void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSkill, const Unk_SkPoint* pPos,
     const Unk_SkPoint* pDir)
 {
@@ -396,11 +401,7 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
     CollisionPtr spShape = TSingleton<CSkillCollisionManager>::GetInstance()->CreateFromInfo(pInfo, 0.0f);
     if (spShape == 0)
         return;
-    NiPoint3 kDir(*reinterpret_cast<const efd::Point3*>(pDir));
-    Vector3 ptDir = *(Vector3*)&kDir;
-    NiPoint3 kPos(*reinterpret_cast<const efd::Point3*>(pPos));
-    Vector3 ptPos = *(Vector3*)&kPos;
-    spShape->vfunc_3(ptPos, ptDir, 1.0f);
+    reinterpret_cast<Unk_SkColView*>(spShape.operator->())->vfunc_3(*reinterpret_cast<const efd::Point3*>(pPos), *reinterpret_cast<const efd::Point3*>(pDir), 1.0f);
     spShape->m_n58 = GetTickCountMs2();
     TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);
 }

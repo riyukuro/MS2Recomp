@@ -61,11 +61,11 @@ MS2_EMIT_CRT_MEMMOVE_S();
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-// A zero-initialised handle (static initialised by FUN_1401cd100(&DAT, 0)).
+// A zero-initialised handle (static initialised by the ctor 0x1401cd100 on &DAT, 0).
 struct Unk_UmRegMarker {};
-void FUN_1401cd100(void* h, int a);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 static void* s_dat_143ad7500;
-static Unk_UmRegMarker s_init_143ad7500 = (FUN_1401cd100(&s_dat_143ad7500, 0), Unk_UmRegMarker());
+static Unk_UmRegMarker s_init_143ad7500 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143ad7500)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_UmRegMarker());
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController;
 #endif
@@ -159,7 +159,7 @@ public:
     virtual bool vfunc_40(__int64 nAmount);
     virtual bool vfunc_41(__int64 nAmount);
 };
-Unk_UmWallet* FUN_140d86260();
+void* FUN_140d86260();   // ms2actormanager.cpp: the client platform
 
 // The list child "m_scrollList" of the movie (slot 24 refreshes it).
 class Unk_UmCtl : public AScript
@@ -840,7 +840,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     __int64 nCost = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
     {
-        if (!FUN_140d86260()->vfunc_41(nCost) && !FUN_140d86260()->vfunc_40(nCost))
+        if (!((Unk_UmWallet*)FUN_140d86260())->vfunc_41(nCost) && !((Unk_UmWallet*)FUN_140d86260())->vfunc_40(nCost))
         {
             FUN_141275260(0x35, 1, 1);
             return;
@@ -848,7 +848,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     }
     else
     {
-        if (!FUN_140d86260()->vfunc_40(nCost))
+        if (!((Unk_UmWallet*)FUN_140d86260())->vfunc_40(nCost))
         {
             FUN_141275260(0x35, 1, 1);
             return;

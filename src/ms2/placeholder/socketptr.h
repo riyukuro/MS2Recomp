@@ -5,7 +5,6 @@
 #include "ms2/placeholder/cptred.h"
 class CInPacket;
 #include "ms2/placeholder/tptreddummy.h"
-void FUN_14015b020(CPtred*); int FUN_140159bc0(CPtred*); void FUN_140159ba0(CPtred*);
 CPtred* FUN_1401ba820(CPtred*);
 // MS2-FUNCTIONAL: equivalent intrusive ownership; explicit casts and allocation temporaries differ.
 template<class T> struct Unk_SocketRef {
@@ -41,13 +40,13 @@ public:
     T* get() const { return p; } T* operator->() const { return p; } T& operator*() const { return *p; }
     bool operator==(T* v) const { return p==v; }
 private:
-    static void Reference(CPtred* v) { FUN_14015b020(v); }
+    static void Reference(CPtred* v) { CPtred::AddRefPtred(v); }
     void AddRef() const { if(p) AddRefImpl((void*)0); }
     // T derives from CPtred at offset 0: the exe passes p straight on (implicit upcast). Boxed payloads (Unk_SocketRef<T>
     // specialized) go through Base: MS2_SOCKETPTR_BOXED(T) after the specialization.
     void AddRefImpl(void*) const { Reference(p); }
     void Release() { if(p) { ReleaseImpl((void*)0); p=0; } }
-    void ReleaseImpl(void*) { if(FUN_140159bc0(p)==0) { Reference(p); FUN_140159ba0(p); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(p)==0) { Reference(p); CPtred::DeletePtred(p); } }
     void ResetNew() { Release(); p=Unk_SocketRef<T>::Create((void*)0); }
     void* pad; T* p;
 };
@@ -56,5 +55,5 @@ private:
     template<> inline void Unk_SocketPtr<__VA_ARGS__>::AddRefImpl(void*) const                                          \
     { Reference(Unk_SocketRef<__VA_ARGS__>::Base(p)); }                                                                 \
     template<> inline void Unk_SocketPtr<__VA_ARGS__>::ReleaseImpl(void*)                                               \
-    { CPtred* base=Unk_SocketRef<__VA_ARGS__>::Base(p); if(FUN_140159bc0(base)==0) { Reference(base); FUN_140159ba0(base); } }
+    { CPtred* base=Unk_SocketRef<__VA_ARGS__>::Base(p); if(CPtred::ReleasePtred(base)==0) { Reference(base); CPtred::DeletePtred(base); } }
 MS2_SOCKETPTR_BOXED(CInPacket)

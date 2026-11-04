@@ -62,6 +62,7 @@ public:
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
+class CLogString* GetLogString();   // 0x140166440
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -320,7 +321,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, MS2_QM_XML_ERR, strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_QM_XML_ERR, strPath);
         return 0;
     }
     for (Unk_140165cf0* pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("field")); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
@@ -536,7 +537,7 @@ static inline CFameTable* FameTable()
 class CQuestData;
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);
-int FUN_140931210(int n);
+int FUN_140931210(Unk_FameAlliance nAlliance);
 CStringW FUN_140298ea0(CStringW str);
 CString Name_14021a6b0(int n);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -546,7 +547,7 @@ CStringW FUN_14083cb20(const CStringW& str);
 // @0x140762280
 int FUN_140762280(void* pUnused, int n)
 {
-    return FUN_140931210(n);
+    return FUN_140931210((Unk_FameAlliance)n);
 }
 
 // @0x140762de0
@@ -1030,7 +1031,7 @@ MS2_REPLACE(0x140762c80, FUN_140762c80, 331, 0xDADB60B6);
 // and 1 / 1 at the top grade).
 void FUN_140762fc0(int nAlliance, int* pnCur, int* pnMax, CStringW& strText)
 {
-    int nPoint = FUN_140931210(nAlliance);
+    int nPoint = FUN_140931210((Unk_FameAlliance)nAlliance);
     int nGrade = FameTable()->GetGradeByPoint((Unk_FameAlliance)nAlliance, nPoint);
     if (nGrade == FameTable()->GetMaxGrade((Unk_FameAlliance)nAlliance))
     {

@@ -25,10 +25,10 @@
 #include "ms2/client/ms2/uiupperhpbar.h"
 #include "ms2/placeholder/uientityeventdispatcher.h"
 #include "ms2/placeholder/cproxygameobject.h"
+#include <egf/EntityID.h>
 #include "ms2/ms2recover.h"
 
 
-class Unk_UpperEvt { public: Unk_UpperEvt(const Unk_UpperEvt&);    /* 0x1408b6b20 */ private: void* m_0; };
 void FUN_1406c70a0(void*);
 extern template class MS2Ptr<CProxyGameObject>;
 
@@ -37,8 +37,8 @@ class Unk_EvtListenerView
 {
 public:
     virtual ~Unk_EvtListenerView();
-    virtual void s1(Unk_UpperEvt);
-    virtual void s2(Unk_UpperEvt);
+    virtual void s1(egf::EntityID);
+    virtual void s2(egf::EntityID);
     virtual void s3(MS2Ptr<CProxyGameObject>);
     virtual void s4(MS2Ptr<CProxyGameObject>);
     virtual void s5(MS2Ptr<CProxyGameObject>, int);
@@ -68,7 +68,7 @@ void UIEntityEventListener::vfunc_1(void*)
 }
 
 // @0x141930770
-void UIEntityEventListener::vfunc_o70_2(const Unk_UpperEvt&)
+void UIEntityEventListener::vfunc_o70_2(const void*)
 {
 }
 
@@ -123,7 +123,7 @@ void Unk_UpperEvents::FUN_141930950(UIEntityEventListener* pListener)
 }
 
 // @0x1419309e0
-void UIEntityEventDispatcher::vfunc_1(const Unk_UpperEvt& evt)
+void UIEntityEventDispatcher::vfunc_1(const egf::EntityID& evt)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -134,7 +134,7 @@ void UIEntityEventDispatcher::vfunc_1(const Unk_UpperEvt& evt)
 }
 
 // @0x141930a90
-void UIEntityEventDispatcher::vfunc_2(const Unk_UpperEvt& evt)
+void UIEntityEventDispatcher::vfunc_2(const egf::EntityID& evt)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {

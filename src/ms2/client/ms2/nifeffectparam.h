@@ -156,19 +156,19 @@ public:
     void FUN_14154c580();                                       // wrap in a SeparateNode / make relative
     void FUN_14154c7f0(Unk_EffectTarget* pTarget);              // log "LOD level"
     void FUN_14154cf20(NiAVObject* pkRoot);                     // apply the "Eff_LOD" level
-    Unk_NodePtr FUN_14154d0d0(const CString& strPath, int nA, int nB);     // load the nif
+    NiNodePtr FUN_14154d0d0(const CString& strPath, int nA, int nB);       // load the nif
     NiAVObjectPtr FUN_14154d410(Unk_EffectTarget* pTarget, const char* pszName, bool b);
 
 public:
     MS2_LAYOUT_FRIEND;
     bool m_bSplit;                          // +0x30 the model was split off a parent (type 1 after the duration)
     char m_pad_31[7];
-    Unk_NodePtr m_spTarget;                 // +0x38 the node the effect hangs on
+    NiNodePtr m_spTarget;                   // +0x38 the node the effect hangs on
     NiAVObjectPtr m_spModel;                // +0x40 the attach model/bone object
     NiTransform m_kXform;                   // +0x48 local transform (0x34)
     char m_pad_7c[4];
-    Unk_NodePtr m_spSplit;                  // +0x80 plain NiNode created for the split
-    Unk_NodePtr m_spRoot;                   // +0x88 "Effect Root" EffectNode
+    NiNodePtr m_spSplit;                    // +0x80 plain NiNode created for the split
+    NiNodePtr m_spRoot;                     // +0x88 "Effect Root" EffectNode
     float m_fFadeStart;                     // +0x90
     float m_fFadeTime;                      // +0x94
     int m_nLodLevel;                        // +0x98

@@ -163,7 +163,7 @@ class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
 public:
     static class Unk_AkoCutscene* GetInstance();
 };
-// The group reward table (FUN_140d738f0) and its 16-byte row handle.
+// The group reward row handle.
 class Unk_QmRewardGrade { public: virtual void vfunc_0(); virtual int vfunc_1(); };
 class Unk_QmGroupReward {
 public:
@@ -173,12 +173,8 @@ public:
     Unk_QmRewardGrade m_reward;                 // +0x38
     int m_itemId;                               // +0x40
 };
-class Unk_QmGroupTable;
-Unk_QmGroupTable* FUN_140d738f0();
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
-enum Unk_SlotKey : int;
-unsigned FUN_140931210(Unk_SlotKey);   // C3: was int(int)
-#define FUN_140931210(x) ((int)FUN_140931210((Unk_SlotKey)(x)))
+int FUN_140931210(Unk_FameAlliance nAlliance);   // the player's fame points
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -237,12 +233,6 @@ class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 // Unit-local stand-ins for exe systems reached only from here.
 extern GameEventUserValue DAT_143ab2fc0;
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-struct Unk_QmFieldHandle;
-class Unk_QmWorld {
-public:
-    Unk_QmFieldHandle FUN_141bc2800(int id);                // field object handle, returned by value
-    MS2Ptr<CProxyGameObject> FUN_141bc9be0(unsigned id);   // proxy object by id
-};
 MS2Ptr<CQuestData> FUN_14074bc40(int questId);
 int FUN_14074b050(CQuestData* data);
 int FUN_14074b030(CQuestData* data);
@@ -253,16 +243,11 @@ int FUN_14074b070(CQuestData* data);
 bool FUN_140764040(CQuestData*);
 bool FUN_140764080(CQuestData*);
 bool FUN_1407640c0(CQuestData*);
-// Field object handle filled by WorldService::FUN_141bc2800 (16 bytes, Unk_WsP16 layout).
+// The portal that WorldService::FUN_141bc2800 returns, seen through its rotation fields.
 class Unk_QmFieldObject {
 public:
     char m_pad_00[0x38];
     float m_rotX, m_rotY, m_rotZ;               // +0x38 euler angles in degrees
-};
-struct Unk_QmFieldHandle : Unk_WsP16 {
-    ~Unk_QmFieldHandle();                       // 0x140964a70
-    bool IsNull() const;                        // 0x140965190
-    Unk_QmFieldObject* operator->() const;      // 0x140965960
 };
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 class Unk_QmClientConfig { public: void* m_0; CContentShutdown m_shutdown; };
@@ -433,7 +418,7 @@ int CQuestManager::vfunc_o10_5()
 {
     PCBase* player = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (player == 0) return 0;
-    MS2Ptr<CProxyGameObject> proxy = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc9be0(((class GameObject*)(class PCBase*)(player))->FUN_14123c580());
+    MS2Ptr<CProxyGameObject> proxy = WorldService::GetInstance()->FindProxyObject(((class GameObject*)(class PCBase*)(player))->FUN_14123c580());
     if (proxy.IsNull()) return 0;
     return proxy->m_c8;
 }
@@ -501,7 +486,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9b90, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9bd0
 int CQuestManager::vfunc_o10_13(int id)
 {
-    int value = FUN_140931210(id);
+    int value = FUN_140931210((Unk_FameAlliance)id);
     return reinterpret_cast<CFameTable*>(FUN_140764010())->GetGradeByPoint((Unk_FameAlliance)id, value);
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9bd0, CQuestManager, CQuestManagerCommon, vfunc_o10_13, 53, 0xB7DAED80);
@@ -1112,7 +1097,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         if (worldMap) worldMap->FUN_141b5be10();
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify) {
-            MS2Ptr<CFieldMissionReward> reward = ((class CFieldMissionTable*)(void*)(FUN_140d738f0()))->GetReward(m_group);
+            MS2Ptr<CFieldMissionReward> reward = TSingleton<CFieldMissionTable>::GetInstance()->GetReward(m_group);
             if (reward.get() != 0) {
                 switch (reward->m_nType) {
                 case 1: {
@@ -1127,11 +1112,11 @@ void CQuestManager::OnQuest(CInPacket& packet)
         m_field190 = packet.ReadInt32();
         m_targetObject = packet.ReadInt32();
         m_requestTick = packet.ReadInt32();
-        Unk_QmFieldHandle target = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_targetObject);
+        MS2Ptr<CPortal> target = WorldService::GetInstance()->FUN_141bc2800(m_targetObject);
         if (target.IsNull()) return;
         NiTransform xform;   // 0x140a332d0
-        xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CPortal*)(void*)target.operator->())->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
-        ((efd::Matrix3*)&(xform.m_Rotate))->FromEulerAnglesXYZ((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f, (target->m_rotZ * 3.1415927f) / 180.0f);
+        xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(target.operator->()->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
+        ((efd::Matrix3*)&(xform.m_Rotate))->FromEulerAnglesXYZ((((Unk_QmFieldObject*)target.operator->())->m_rotX * 3.1415927f) / 180.0f, (((Unk_QmFieldObject*)target.operator->())->m_rotY * 3.1415927f) / 180.0f, (((Unk_QmFieldObject*)target.operator->())->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
         NoticeMessage request;
         request.m_strName = ((class Unk_QmEffectCfg*)FUN_1401d31f0())->m_portalEffect;
@@ -1572,7 +1557,7 @@ MS2_REPLACE_METHOD(0x1416cff70, CQuestManager, CountCompletedLevelGuideQuests, 3
 // @0x1416d00c0
 int CQuestManager::FUN_1416d00c0()
 {
-    int count = ((class CFieldMissionTable*)(void*)(FUN_140d738f0()))->GetNextRound(m_group);
+    int count = TSingleton<CFieldMissionTable>::GetInstance()->GetNextRound(m_group);
     return count;
 }
 MS2_REPLACE_METHOD(0x1416d00c0, CQuestManager, FUN_1416d00c0, 46, 0x43BD140E);
@@ -1603,7 +1588,7 @@ MS2_REPLACE_METHOD(0x1416d0150, CQuestManager, CountCompletedQuests80, 176, 0xAC
 // @0x1416d0210
 int CQuestManager::IsLastRound()
 {
-    return m_group == ((class CFieldMissionTable*)(void*)(FUN_140d738f0()))->GetMaxRound();
+    return m_group == TSingleton<CFieldMissionTable>::GetInstance()->GetMaxRound();
 }
 MS2_REPLACE_METHOD(0x1416d0210, CQuestManager, IsLastRound, 62, 0xD8B73C66);
 
@@ -1655,9 +1640,9 @@ MS2_REPLACE_METHOD(0x1416d0610, CQuestManager, IsPortalSummonRequestActive, 111,
 // @0x1416d0690
 Vector3 CQuestManager::GetTargetObjectPosition()
 {
-    Unk_QmFieldHandle target = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_targetObject);
+    MS2Ptr<CPortal> target = WorldService::GetInstance()->FUN_141bc2800(m_targetObject);
     if (target.IsNull()) return DAT_143b01a60;
-    return ((CPortal*)(void*)target.operator->())->FUN_14169d2f0();
+    return target.operator->()->FUN_14169d2f0();
 }
 MS2_REPLACE_METHOD(0x1416d0690, CQuestManager, GetTargetObjectPosition, 158, 0x580CD80D);
 
@@ -2034,7 +2019,7 @@ std::pair<unsigned, __int64> CQuestManager::FUN_1416d1e90()
                 gone.push_back(questId);
                 continue;
             }
-            PCBase* pc = ((PCBase*)((WorldService*)(Unk_QmWorld*)(reinterpret_cast<Unk_QmWorld*>(world)))->FUN_141bd1530(userId));
+            PCBase* pc = ((PCBase*)world->FUN_141bd1530(userId));
             if (pc == 0) {
                 gone.push_back(questId);
                 continue;
@@ -2419,6 +2404,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // MS2-PIN: ?SendQuestMode19@CQuestManager@@QEAAXH@Z 0x1416cf750
 // MS2-PIN: ?FUN_1416cf750@@YAXPEAVCQuestManager@@H@Z 0x1416cf750
 // MS2-PIN: ?SendQuestMode14@CQuestManager@@QEAAXXZ 0x1416d0c10
-// MS2-PIN: ?FUN_141bc2800@Unk_QmWorld@@QEAA?AUUnk_QmFieldHandle@@H@Z 0x141bc2800
+// MS2-PIN: ?FUN_141bc2800@WorldService@@QEAA?AV?$MS2Ptr@VCPortal@@@@H@Z 0x141bc2800
 // MS2-PIN: ?FUN_1416d0c10@@YAXPEAVUnk_GmQuestHolder@@@Z 0x1416d0c10
 // MS2-PIN: ??$?0I_J$0A@@?$pair@I_J@std@@QEAA@AEBIAEB_J@Z 0x1416d46a0

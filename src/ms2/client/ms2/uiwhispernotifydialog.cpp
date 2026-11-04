@@ -95,7 +95,6 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nId);                      // the sender's np
 CString FUN_141028a90(CString strId, int bDefault);             // the local file of a downloaded image
 CString FUN_1410280d0(int nKind, CString strName);
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int itemId);
 CStringW FUN_1401aa6a0(int nId);                                // the character's name
 CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid text
@@ -287,7 +286,7 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
         {
             if (spItem->GetUgcInfo() != 0)
             {
-                if (((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->GetUgcInfo())->m_look, MS2Ptr<CItem>(0), 0) != 0)
+                if (TSingleton<CUgcManager>::GetInstance()->FUN_1418841f0(&reinterpret_cast<Unk_WhisperItemUgc*>(spItem->GetUgcInfo())->m_look, MS2Ptr<CItem>(0), 0) != 0)
                     strName = "";
             }
         }

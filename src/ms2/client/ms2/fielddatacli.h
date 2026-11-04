@@ -6,13 +6,13 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/fieldproperty.h"   // Unk_Vec3f
 
+#include <NiFrustum.h>  // the minimap frustum (ctor 0x141d2fba0, 28 bytes)
 #include <NiPoint3.h>   // the camera settings are NiPoint3 (ctors 0x1405522f0 / 0x14097f250 / 0x14027dcf0, move = 0x14097faa0)
 
 #ifndef MS2_UNK_RECT4
 #define MS2_UNK_RECT4
 struct Unk_Rect4 { Unk_Rect4(float l, float r, float t, float b); float l, r, t, b; };   // ctor 0x14097eac0
 #endif
-struct Unk_Frustum { Unk_Frustum(int bOrtho); float l, r, t, b, n, f; bool ortho; char pad[3]; };   // ctor 0x141d2fba0 (28 bytes)
 
 struct Unk_Vec3Cli : Unk_Vec3f { Unk_Vec3Cli(float x, float y, float z); };   // 0x140a56db0 (forwards to Unk_Vec3f)
 
@@ -24,7 +24,7 @@ public:
     CString m_strImageIcon;                         // +0x20 <image icon>
     Unk_Rect4 m_rcImage;                            // +0x28 <image left right top bottom>
     Unk_Rect4 m_rcScreen;                           // +0x38 <screen ...>
-    Unk_Frustum m_frustum;                          // +0x48 <frustum> (ortho flag at +0x60)
+    NiFrustum m_frustum;                            // +0x48 <frustum> (ortho flag at +0x60)
     NiPoint3 m_vecCamPos;                           // +0x64 <camera position>
     NiPoint3 m_vecCamRot;                           // +0x70 <camera rotation>
     float m_fZoomFactor;                            // +0x7c <zoom zoomfactor>

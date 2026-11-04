@@ -15,12 +15,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
-Unk_EventTime FUN_140718950(const CString&);   // "YYYY-MM-DD hh:mm:ss" text -> time
+CMsTime FUN_140718950(const CString&);          // "YYYY-MM-DD hh:mm:ss" text -> time
 __int64 GetServerTime();                        // the current time
 void AddDays(CMsTime& time, long days);         // 0x14086a7e0 (commonfiles/timeutil.cpp)
-
-// Unk_EventTime is the 16-byte CMsTime (usereventcontext.h only needs its assignment and Get).
-MS2_CHECK_SIZE(Unk_EventTime, 0x10);
 
 // @0x1408d5040
 bool Unk_EventCore::FUN_1408d5040(Unk_140165cf0* pNode)
@@ -75,7 +72,7 @@ bool Unk_EventCore::FUN_1408d5040(Unk_140165cf0* pNode)
     {
         if (strEndDate.GetLength() > 0)
         {
-            Unk_EventTime endTime = FUN_140718950(strEndDate);
+            CMsTime endTime = FUN_140718950(strEndDate);
             FUN_1408d5320(endTime);
         }
     }
@@ -84,11 +81,11 @@ bool Unk_EventCore::FUN_1408d5040(Unk_140165cf0* pNode)
 MS2_REPLACE_METHOD(0x1408D5040, Unk_EventCore, FUN_1408d5040, 721, 0xB684B24F);
 
 // @0x1408d5320
-void Unk_EventCore::FUN_1408d5320(const Unk_EventTime& endTime)
+void Unk_EventCore::FUN_1408d5320(const CMsTime& endTime)
 {
     time = endTime;
     CMsTime zero(0);
-    if (reinterpret_cast<CMsTime&>(time) != zero)
+    if (time != zero)
     {
         mode = 0;
     }
@@ -106,7 +103,7 @@ void Unk_EventCore::FUN_1408d5390(int nMode)
         {
             nMode = nMax;
         }
-        reinterpret_cast<CMsTime&>(time) = 0;
+        time = 0;
     }
 }
 MS2_REPLACE_METHOD(0x1408D5390, Unk_EventCore, FUN_1408d5390, 83, 0x4B16BFF8);
@@ -120,6 +117,6 @@ CMsTime Unk_EventCore::FUN_1408d53f0() const
         AddDays(now, mode);
         return now;
     }
-    return reinterpret_cast<const CMsTime&>(time);
+    return time;
 }
 MS2_REPLACE_METHOD(0x1408D53F0, Unk_EventCore, FUN_1408d53f0, 115, 0xD48E5C39);

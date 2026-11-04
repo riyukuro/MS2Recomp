@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/ms2recover.h"
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read6, Read11
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -26,8 +27,6 @@ class ASDialog : public ASDisplayObject {};
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringW FUN_14083d340(CStringW str);
-CInputStream& FUN_14070f480(CInputStream& in, int& n);              // read an int
-CInputStream& FUN_14070f5f0(CInputStream& in, CStringW& str);       // read a wide string
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 
@@ -135,8 +134,8 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
     case 0:
         m_strCategory = FUN_14083d340(packet.ReadUnicodeString());
         m_strQuestion = FUN_14083d340(packet.ReadUnicodeString());
-        FUN_14070f5f0(packet, strExtra);
-        FUN_14070f480(packet, m_nSeconds);
+        reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read11(strExtra);
+        reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read6(reinterpret_cast<unsigned&>(m_nSeconds));
         m_nDeadline = GetTickCountMs2() + m_nSeconds * 1000;
         m_strQuestion.Replace(L"\\n", L"\n");
         if (!strExtra.IsEmpty())

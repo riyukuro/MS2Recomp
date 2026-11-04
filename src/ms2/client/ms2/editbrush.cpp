@@ -27,7 +27,6 @@
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14109a9e0();                                                // rand()
-void FUN_1405a85c0(void* pHandle);                                  // release the handle returned by a detach
 
 float FUN_14028aed0(float f);                                       // floorf
 NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
@@ -191,7 +190,7 @@ void PaintBrush::vfunc_5()
             {
                 Unk_BrushHandle hOut;
                 pParent->s37(&hOut, pInstance);
-                FUN_1405a85c0(&hOut);
+                reinterpret_cast<NiAVObjectPtr&>(hOut).efd::SmartPointer<NiAVObject>::~SmartPointer();
             }
         }
     }

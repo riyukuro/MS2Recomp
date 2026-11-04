@@ -61,6 +61,8 @@
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/mstime.h"
 #include "uiquestdialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
+#include "questuidata.h"   // C3: CQuestUIData / CChapterUIData and their FUN_1416e5f60 / FUN_1416e7f30 lookups
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
@@ -261,11 +263,6 @@ public:
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-};
-// "m_tab" / "m_subTab".
-class Unk_QdTabBar : public Unk_QdCtl
-{
-public:
 };
 // "m_questInfo".
 class Unk_QdInfo : public Unk_QdCtl { };
@@ -747,15 +744,6 @@ void UIQuestDialog::RefreshList()
     }
 }
 
-// The chapter name record (a counted object; the name sits at +0x28).
-class Unk_QdChapterText : public CPtred
-{
-public:
-    char m_pad_18[0x10];
-    CStringW m_28;
-};
-MS2Ptr<Unk_QdChapterText> FUN_1416e7f30(int nChapter);
-
 // @0x141a9b6e0
 void UIQuestDialog::RefreshCompleted()
 {
@@ -770,14 +758,14 @@ void UIQuestDialog::RefreshCompleted()
         {
             MS2Ptr<CQuestData> spData(quests[i]);
             int nChapter = spData->m_28;
-            MS2Ptr<Unk_QdChapterText> spText = FUN_1416e7f30(nChapter);
+            MS2Ptr<CChapterUIData> spText = FUN_1416e7f30(nChapter);
             if (!spText)
                 continue;
             ASObj node(2);
             ASArray children(2);
             node.FUN_1407cb9c0("chapter", nChapter);
             node.FUN_1407cbb20("level", LevelRange(nChapter));
-            node.FUN_1407cbb20("label", spText->m_28);
+            node.FUN_1407cbb20("label", spText->m_strName);
             node.FUN_140e35d00("type", IsChapterOpen(nChapter) != 0 ? 1 : 2);
             node.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             node.FUN_1409eb1d0("nodes", children);
@@ -933,16 +921,16 @@ void UIQuestDialog::CollectQuests(CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsi
 // @0x141a9c6d0
 int UIQuestDialog::GetTab()
 {
-    if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab"))
-        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        return spTab.operator->()->GetSelectedIndex();
     return 4;
 }
 
 // @0x141a9c780
 int UIQuestDialog::GetSubTab()
 {
-    if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab"))
-        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
+        return spTab.operator->()->GetSelectedIndex();
     return 3;
 }
 
@@ -1158,19 +1146,11 @@ CStringW UIQuestDialog::LevelRange(int nChapter)
     return FUN_14028dfa0(CStringW(L"s_quest_list_level"), nMin, nMax);
 }
 
-// The quest text record (a counted object; the quest name sits at +0x28).
-class Unk_QdQuestText : public CPtred
-{
-public:
-    char m_pad_18[0x10];
-    CStringW m_28;
-};
-MS2Ptr<Unk_QdQuestText> FUN_1416e5f60(int nQuestId);
 
 // @0x141a9df60
 CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
 {
-    MS2Ptr<Unk_QdQuestText> spText = FUN_1416e5f60(nQuestId);
+    MS2Ptr<CQuestUIData> spText = FUN_1416e5f60(nQuestId);
     if (!spText)
         return L"";
     CStringW strTitle;
@@ -1179,12 +1159,12 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
     case 8:     // falls through to case 9, and the default line below overwrites both (as in the exe)
     {
         CStringW strKey(L"s_quest_field_quest");
-        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
+        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_strName);
     }
     case 9:
     {
         CStringW strKey(L"s_quest_alliance_quest");
-        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_28);
+        strTitle = StringFormat<CStringW, CStringW>(L"[{0}] {1}", GetStringCommonByKey(strKey), spText->m_strName);
     }
     default:
         spText.operator->();
@@ -1208,8 +1188,8 @@ void UIQuestDialog::SetTab(int nTab)
 {
     if (nTab == 4)
         return;
-    if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab"))
-        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        spTab.operator->()->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
 }
@@ -1219,8 +1199,8 @@ void UIQuestDialog::SetSubTab(int nTab)
 {
     if (nTab == 3)
         return;
-    if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab"))
-        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
+        spTab.operator->()->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
 }
@@ -1330,12 +1310,12 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     }
     if (nAdded != 0)
     {
-        MS2Ptr<Unk_QdChapterText> spText = FUN_1416e7f30(nChapter);
+        MS2Ptr<CChapterUIData> spText = FUN_1416e7f30(nChapter);
         if (spText.get() != 0)
         {
             chapter.FUN_1407cb9c0("chapter", nChapter);
             chapter.FUN_1407cbb20("level", LevelRange(nChapter));
-            chapter.FUN_1407cbb20("label", spText.get() != 0 ? spText->m_28 : CStringW(L""));
+            chapter.FUN_1407cbb20("label", spText.get() != 0 ? spText->m_strName : CStringW(L""));
             chapter.FUN_140e35d00("type", IsChapterOpen(nChapter) != 0 ? 1 : 2);
             chapter.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             chapter.FUN_1409eb1d0("nodes", children);

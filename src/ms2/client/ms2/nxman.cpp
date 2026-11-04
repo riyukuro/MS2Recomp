@@ -68,7 +68,6 @@ CStringA FUN_14016a600(const wchar_t* psz, int n = 0);      // wide -> narrow
 CStringW FUN_14016a730(const char* psz, int n = 0);         // narrow -> wide
 CStringA FUN_14016a5c0(const char* psz, int n = 0);
 CStringA FUN_140188f50(const char* psz, int n = 0);
-CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 #include "ms2/ms2format.h"
 CStringW StringFormat(const wchar_t* psz, const fmt::ArgList& args);
@@ -212,21 +211,21 @@ int CNXMan::FUN_14160dd50(CStringW& rResult)
         for (int i = 0; i < nLines; ++i)
         {
             CAtlArray<CString> kParts;
-            Unk_SplitA(const_cast<CStringA&>(FUN_140164930(kLines, i)), (ATL::CAtlArray<CStringA>*)&(kParts), "=");
+            Unk_SplitA(const_cast<CStringA&>(kLines[i]), (ATL::CAtlArray<CStringA>*)&(kParts), "=");
             int nParts = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(kParts))->GetCount();
             if (nParts != 2)
             {
                 rResult = StringFormat<wchar_t const *>(L"invalid http response. ({0})", strBody.c_str());
                 return 0;
             }
-            if (FUN_140164930(kParts, 0) == "ver")
-                m_88 = atoi(FUN_140164930(kParts, 1));
-            else if (FUN_140164930(kParts, 0) == "purl")
-                m_38 = FUN_140164930(kParts, 1);
-            else if (FUN_140164930(kParts, 0) == "mweb")
-                m_50 = FUN_140164930(kParts, 1);
-            else if (FUN_140164930(kParts, 0) == "mapi")
-                m_58 = FUN_140164930(kParts, 1);
+            if (kParts[0] == "ver")
+                m_88 = atoi(kParts[1]);
+            else if (kParts[0] == "purl")
+                m_38 = kParts[1];
+            else if (kParts[0] == "mweb")
+                m_50 = kParts[1];
+            else if (kParts[0] == "mapi")
+                m_58 = kParts[1];
         }
         CWebBrowserService::SetMaviewUrl(m_50);
         CWebBrowserService::SetWebApiUrl(m_58);

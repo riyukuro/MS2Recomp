@@ -138,8 +138,6 @@ struct Unk_EntityDirtyAccess : egf::Entity {
     using egf::Entity::m_dirtyPropertySet;
 };
 bool FUN_1414b91b0(const egf::Entity*);
-// EntityWorldManager::FUN_1411cf5a0 as this call site sees it: the exe copies the EntityID into a by-value argument.
-class Unk_EntityWorldByValue { public: void FUN_1411cf5a0(egf::EntityID id, egf::Entity* entity); };
 // @0x1414b4a90
 MS2EntityManagerService::MS2EntityManagerService() {}
 // @0x1414b4ad0
@@ -167,7 +165,7 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         FUN_140de8bd0(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
         efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
         if(instancing)instancing->FUN_1413d7d10(id);
-        if(addToWorld)((Unk_EntityWorldByValue*)TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cf5a0(id,entity);
+        if(addToWorld)TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf5a0(id,entity);
         AddEntity(entity,creationArgs);
         return id;
     }

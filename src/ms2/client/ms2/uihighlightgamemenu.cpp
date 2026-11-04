@@ -57,13 +57,13 @@ class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
-// Two zero-initialised handles (static initialised by FUN_1401cd100(&DAT, 0)).
+// Two zero-initialised handles (static initialised by the ctor 0x1401cd100 on &DAT, 0).
 struct Unk_RegMarker {};
-void FUN_1401cd100(void* h, int a);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 static void* s_dat_143abe528;
-static Unk_RegMarker s_init_143abe528 = (FUN_1401cd100(&s_dat_143abe528, 0), Unk_RegMarker());
+static Unk_RegMarker s_init_143abe528 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143abe528)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
 static void* s_dat_143abe530;
-static Unk_RegMarker s_init_143abe530 = (FUN_1401cd100(&s_dat_143abe530, 0), Unk_RegMarker());
+static Unk_RegMarker s_init_143abe530 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143abe530)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
 
 static CString s_strSortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 

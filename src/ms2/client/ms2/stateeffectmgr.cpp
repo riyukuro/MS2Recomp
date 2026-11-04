@@ -138,7 +138,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         query.SetActor(reinterpret_cast<GameObject*>(pObject)->FUN_14123c580());
         int nEffectId = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
         if (nEffectId != 0)
-            pOut->FUN_140a3fce0(nEffectId);
+            pOut->push_back(reinterpret_cast<const unsigned&>(nEffectId));
     }
 }
 #ifndef MS2_HOOK_DLL

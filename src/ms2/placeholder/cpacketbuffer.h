@@ -28,5 +28,5 @@ MS2_CHECK_OFFSET(CPacketBuffer,m_data,0x20);
 template<> inline void Unk_SocketPtr<CPacketBuffer>::AddRefImpl(void*) const { Reference(p); }
 template<> inline void Unk_SocketPtr<CPacketBuffer>::ReleaseImpl(void*)
 {
-    if (FUN_140159bc0(p) == 0) { Reference(p); FUN_140159ba0(p); }
+    if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); }
 }

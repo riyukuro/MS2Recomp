@@ -15,7 +15,6 @@
 class UIWeddingGuestDialog;
 class UIWeddingInvitationDialog;
 class ASTextField;
-class Unk_GsTab;
 class ASScrollingList;
 class Unk_GsPageScript;
 struct Unk_GsFound;
@@ -122,7 +121,6 @@ public:
     bool FUN_140fcdf30(const CStringW& strName);                            // 0x140fcdf30 may that name be added
     int FUN_140fce0a0();                                                    // 0x140fce0a0 invitations still allowed
 
-    MS2Ptr<Unk_GsTab> FUN_140c02870(const CString& strName);                // 0x140c02870 tab strip child lookup
 
     MS2_LAYOUT_FRIEND;
     PagePtr m_spPage;                                                       // +0x178 the shown page

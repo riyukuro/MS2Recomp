@@ -28,7 +28,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // locali
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);   // date and time text
 CStringW FUN_14083bab0(CMsTime const &, CStringW);  // C3: the definition's signature
 CStringW FUN_140b8f230(int nDay);                               // the name of a week day
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 __int64 GetServerTime();                                        // the server time
 bool FUN_1406a5930();                                           // the star point event runs
@@ -180,7 +180,7 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
             FUN_140db8b90(m_d8, new NpcShopItemLife());
             m_d8.operator->()->Read(in);
         }
-        FUN_14015f050(m_b0, m_20, ",");
+        Unk_SplitA(m_b0, &m_20, ",");
         SetBuyItemCount(nBought);
         m_40.AssignRaw(new CItem());
         m_40->FUN_140523c40(nItemId, nRarity, nCount);
@@ -533,7 +533,7 @@ CNpcShopProductNewCli::CNpcShopProductNewCli()
 void CNpcShopProductNewCli::ReadFromPacket(CInPacket& in)
 {
     m_item.FUN_1406de840(in);
-    FUN_14015f050(*reinterpret_cast<CString*>(&m_item.m_strName), m_20, ",");
+    Unk_SplitA(*reinterpret_cast<CString*>(&m_item.m_strName), &m_20, ",");
     m_40.AssignRaw(new CItem());
     m_40->FUN_140523c40(m_item.m_nItemId, m_item.m_nRarity, 0);
 }

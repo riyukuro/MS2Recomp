@@ -16,31 +16,13 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/weaponactiontable.h"   // C3: CWeaponAction (PC::GetWeaponAction)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_WsString
-{
-    Unk_WsString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_WsString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
-
-// The record of the equipped item of a player (+0x20 holds the skill id of its change animation).
-class Unk_WsEquipRec : public CPtred
-{
-public:
-    char m_pad_18[8];
-    int m_n20;
-};
-struct Unk_WsEquipOwner { MS2Ptr<Unk_WsEquipRec> FUN_14165c520(); }; // 0x14165c520
 
 // The skill request a CSkillRecord is built from (same view as pcbase.cpp).
 struct Unk_InventorySkillRequest
@@ -129,10 +111,10 @@ void StateWaitingSelect::vfunc_2(int n)
         pPC->FUN_14166ce70(1);
         reinterpret_cast<PC*>(pPC)->FUN_141653f00();
         {
-            MS2Ptr<Unk_WsEquipRec> spEquip = reinterpret_cast<Unk_WsEquipOwner*>(pPC)->FUN_14165c520();
+            MS2Ptr<CWeaponAction> spEquip = reinterpret_cast<PC*>(pPC)->GetWeaponAction();
             if (spEquip.get() != 0)
             {
-                Unk_InventorySkillRequest kReq(spEquip->m_n20, 1);
+                Unk_InventorySkillRequest kReq(spEquip->m_nNormalAttack, 1);
                 kReq.origin = pPC->vfunc_18();
                 kReq.fValue = pPC->vfunc_20().z;
                 MS2Ptr<CSkillRecord> spSkill(new CSkillRecord);

@@ -35,7 +35,7 @@ struct Unk_LiftSoundReq
     CString m_strName;                                              // +0x00
     int m_nType;                                                    // +0x08
     int m_nPad0c;                                                   // +0x0c
-    void* m_unk[12];                                                // +0x10 node (assigned by FUN_1409fabf0) .. +0x68; 0x70 bytes (NoticeMessage)
+    void* m_unk[12];                                                // +0x10 node (assigned by SmartPointer<NiAVObject>::operator=, 0x1409fabf0) .. +0x68; 0x70 bytes (NoticeMessage)
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene-graph root of an entity
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
@@ -102,7 +102,7 @@ struct Unk_LiftQuestMgr
     Unk_LiftQuestCond m_cond;                                       // +0x10
 };
 void* FUN_140764020();   // C3: was FUN_140764020
-void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
+int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds

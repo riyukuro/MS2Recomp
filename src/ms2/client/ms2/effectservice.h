@@ -271,7 +271,7 @@ public:
     void DetachAllChildren();                                       // detach every child of the roots
     void DetachChildFromRoots(NiAVObject* pChild);                     // detach pChild from the roots
     void AddTracked(Unk_EsTracked* p);                       // keep p
-    void RemoveTracked(const egf::EntityID& id);                // drop the kept object of an entity
+    void RemoveTracked(egf::EntityID id);                       // drop the kept object of an entity (by value: callers copy)
     void FUN_1411a7000(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8253 added
     void FUN_1411a7070(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8254 removed
     void FUN_1411a7330(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel);   // 8196 updated

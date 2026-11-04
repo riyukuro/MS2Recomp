@@ -158,11 +158,11 @@ static CString s_stun("stun");
 static char s_marker[0x48];
 static Unk_ChatLinkMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca4c60), Unk_ChatLinkMarker());
 
-void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142ca4c60
-void FUN_142ca4c60() { FUN_1402aa1d0(s_marker); }
+void FUN_142ca4c60() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // ---- chat links ----

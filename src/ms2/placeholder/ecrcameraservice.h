@@ -41,7 +41,7 @@ public:
     }
 };
 
-// The global at 0x143b059e8: the game framework object; its first member is a smart pointer to the service manager
+// The global at 0x143b059e8 (egf::g_bapiContext), viewed as the game framework object; its first member is a smart pointer to the service manager
 // (efd::SmartPointer<ServiceManager>::operator-> is 0x1401cd190, a COMDAT of another obj).
 class Unk_AppFramework
 {
@@ -53,4 +53,5 @@ public:
 
     efd::SmartPointer<Unk_ServiceManager> m_spServiceManager;   // +0x00
 };
-extern Unk_AppFramework g_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define g_143b059e8 (*(Unk_AppFramework*)&egf::g_bapiContext)   // C3: was extern Unk_AppFramework g_143b059e8

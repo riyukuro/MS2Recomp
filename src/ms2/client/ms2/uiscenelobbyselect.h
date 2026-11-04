@@ -6,32 +6,13 @@
 #pragma once
 
 #include <afx.h>
+#include <atlcoll.h>
 
 #include "ms2/ms2layout.h"
 #include "ms2/gfxui/uiswfentity.h"
+#include "ms2/placeholder/sceneptr.h"
 
 class Unk_LsBackground;
-
-// A 16-byte ref to a scene (ctor 0x141ac79a0, dtor 0x141ac7a00).
-class Unk_LsSceneRef
-{
-public:
-    Unk_LsSceneRef(void* pScene);
-    ~Unk_LsSceneRef();
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_LsSceneRef, 0x10);
-
-// The child list of a scene entity (+0x78, 8 bytes).
-class Unk_LsSceneList
-{
-public:
-    void FUN_141ac7a70(const Unk_LsSceneRef& ref);
-private:
-    void* m_0;
-};
-MS2_CHECK_SIZE(Unk_LsSceneList, 8);
 
 // UISceneEntity (0xa8): the base of every UI scene; the unit-local view this scene family needs (see uiscenemodeselect.h).
 class UISceneEntity : public UISwfEntity
@@ -69,8 +50,7 @@ public:
     char m_pad68[4];
     int m_6c;                                                   // +0x6c the scene entity id
     char m_pad70[8];
-    Unk_LsSceneList m_78;                                       // +0x78 the child scenes
-    char m_pad80[0x28];
+    ATL::CAtlList<Unk_ScenePtr<UISceneEntity> > m_78;           // +0x78 the child scenes
 };
 MS2_CHECK_SIZE(UISceneEntity, 0xa8);
 MS2_CHECK_OFFSET(UISceneEntity, m_78, 0x78);

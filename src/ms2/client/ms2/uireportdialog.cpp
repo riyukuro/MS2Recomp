@@ -62,7 +62,6 @@ class Unk_ReportBlindManager : public BlindManager
 public:
 };
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // ---- the report form ---------------------------------------------------------------------------------------------------
 
@@ -436,7 +435,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
     {
         ((class BlindManager*)FUN_1409c1730())->BlockId(2, m_nPosterId);
-        ((class CUgcManager*)FUN_14052d220())->FUN_1418885b0(m_nBannerId);
+        TSingleton<CUgcManager>::GetInstance()->FUN_1418885b0(m_nBannerId);
     }
     else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
     {

@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"   // C3: CMeratMarketProduct
 
 // ---- header statics (.text$di): the market sort names, the key controller and the dialog's keys ----
 // @0x1400cb830
@@ -39,15 +40,14 @@ static CString s_strCoupon3 = "System_Random_Coupon_03";
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_RcProduct : public CPtred { public: char m_pad_18[0x10]; };
-
 // The Merat market dialog (ui id 0x4ec1): takes the picked product.
 class UIMeratMarketDialog : public UIObject
 {
 public:
     char m_pad_68[0x10];
+
+    void OnProductSelected(MS2Ptr<CMeratMarketProduct> spProduct);  // 0x14130ea00
 };
-void FUN_14130ea00(UIMeratMarketDialog* pDlg, MS2Ptr<Unk_RcProduct> spProduct);
 UIMeratMarketDialog* FUN_140bfed50(int nId);                        // find the dialog (dynamic_cast)
 
 // The UI manager: the lookup of a dialog by its ui id.
@@ -83,7 +83,7 @@ UIRandomCoupon::UIRandomCoupon()
     m_nA = 0;
     m_nCoupon = 1;
     m_strName.Empty();
-    m_spProduct = 0;
+    m_spProduct.AssignRaw(0);
     m_bButtonShown = 0;
 }
 
@@ -130,7 +130,7 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         {
             UIMeratMarketDialog* pDlg = FUN_140bfed50(0x4ec1);
             if (pDlg)
-                FUN_14130ea00(pDlg, m_spProduct);
+                pDlg->OnProductSelected(m_spProduct);
         }
         return 1;
     }
@@ -188,7 +188,7 @@ void UIRandomCoupon::FUN_140bfeae0()
     m_nA = 0;
     m_nCoupon = 1;
     m_strName.Empty();
-    m_spProduct = 0;
+    m_spProduct.AssignRaw(0);
     m_bButtonShown = 0;
 }
 
@@ -205,7 +205,7 @@ void UIRandomCoupon::FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName)
 }
 
 // @0x140bfebf0
-void UIRandomCoupon::SetProduct(MS2Ptr<Unk_RcProduct> spProduct)
+void UIRandomCoupon::SetProduct(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     m_spProduct = spProduct;
 }

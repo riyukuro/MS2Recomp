@@ -27,8 +27,8 @@ struct Unk_PortalBox
     int FUN_14169b080(egf::Entity* pEntity);                           // read size / position / rotation from the entity
     int FUN_14169b2e0(const Vector3* pPoint);                  // is the point inside the box
 
-    Unk_CtbBounds3 m_bounds;                                            // +0x00 local box
-    Unk_CtbObb m_obb;                                                   // +0x18 the box in world space
+    NxBounds3 m_bounds;                                                 // +0x00 local box
+    NxBox m_obb;                                                        // +0x18 the box in world space
     Unk_CtbMat34 m_pose;                                                // +0x54
     Unk_CtbMat34 m_inverse;                                             // +0x84
 };

@@ -184,36 +184,7 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-// The render service: each of its render contexts is drawn once with the current time. Declared here rather than
-// through <ecr/RenderService.h>, whose NiAnimation/egf statics the exe unit does not have.
-namespace ecr {
-class RenderContext
-{
-public:
-    virtual ~RenderContext();
-    virtual void Draw(efd::Float32 currentTime);
-    void IncRefCount();
-    void DecRefCount();
-};
-typedef efd::SmartPointer<RenderContext> RenderContextPtr;
-class RenderService
-{
-public:
-    inline efd::UInt32 GetRenderContextCount() const;
-    inline RenderContext* GetRenderContextAt(const efd::UInt32 index);
-    char m_pad[0x30];
-    std::vector<RenderContextPtr, efd::CustomAllocator<RenderContextPtr> > m_renderContexts;   // +0x30
-};
-inline efd::UInt32 ecr::RenderService::GetRenderContextCount() const
-{
-    return (efd::UInt32)m_renderContexts.size();
-}
-// @0x140c2b890
-inline ecr::RenderContext* ecr::RenderService::GetRenderContextAt(const efd::UInt32 index)
-{
-    return m_renderContexts[index];
-}
-}
+// The render service: each of its render contexts is drawn once with the current time (camera.h brings <ecr/RenderService.h>).
 class Unk_ServiceManager;
 Unk_ServiceManager*FUN_1413f9850();
 ecr::RenderService* FUN_1413f9890();

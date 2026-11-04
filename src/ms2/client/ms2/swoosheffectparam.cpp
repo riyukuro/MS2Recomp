@@ -133,18 +133,12 @@ int FUN_140ad02f0(int nValue, int nLimit);                          // upper cla
 bool FUN_14028d470(float a, float b);                               // nearly equal
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 class CMainSystem;
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
-bool FUN_1409a7f70(NiAVObjectPtr* pPtr, int nNull);                 // pointer == NULL?
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
-void FUN_1415672e0(NiAVObject* pObj, int n);
+void FUN_1415672e0(NiAVObject* pObj, bool bFlag);
 // Time controller helpers.
 // Property list of an NiMesh (hash/list walk with a position cursor).
-class Unk_PropList;
-void* FUN_14098de00(Unk_PropList* pList, void** ppPos);             // slot at the position, advances it
-NiProperty* FUN_140993f00(void* pSlot);                             // slot -> property
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_140b850d0(void* pLog, int nA, int nB, const wchar_t* pszFormat, const char*& pszArg, CString* pstrArg);
+void FUN_140b850d0(void* pLog, int nA, int nB, const wchar_t* pszFormat, const char* const* ppszArg, const CString& strArg);
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
@@ -161,11 +155,8 @@ typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_Nod
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
-class Unk_ResourceMgr : public CNifLoadingService
+class Unk_ResourceMgr : public CNifLoadingService   // C3: GetTexture / Preload are the real CNifLoadingService members
 {
-public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                    // texture load
-    void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 Unk_ResourceMgr* FUN_140a0afd0();
            // release by path
@@ -260,7 +251,7 @@ bool CSwooshEffectParam::vfunc_5(int n)
     {
         if (FUN_140a0afd0() != 0)
         {
-            FUN_140a0afd0()->FUN_1415525d0(FUN_140cc2ba0("Effect", m_strNifPath), 0, n);
+            FUN_140a0afd0()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), (bool)0, n);
         }
     }
     return true;
@@ -299,7 +290,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CSwooshEffectParam* pSwoosh = static_cast<const CSwooshEffectParam*>(pParam);
-    NiNode* pNode = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&reinterpret_cast<Unk_SwooshTarget*>(pTarget)->m_hNode))))));
+    NiNode* pNode = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)((NiAVObject*)reinterpret_cast<NiAVObjectPtr&>(reinterpret_cast<Unk_SwooshTarget*>(pTarget)->m_hNode))))));
     if (pNode == 0)
         return false;
 
@@ -346,9 +337,9 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
-    FUN_1409f76f0(&m_spRoot, spRoot);
+    m_spRoot = spRoot;
     NiPointer<Unk_SeparateNode> spSeparate = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(0, 0, 0);
-    FUN_1409f76f0(&m_spTarget, pNode);
+    m_spTarget = pNode;
     m_strNode1 = pSwoosh->m_strNode1;
     m_strNode2 = pSwoosh->m_strNode2;
     m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(pNode->GetObjectByName((const char*)pSwoosh->m_strNode1))))));
@@ -359,7 +350,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         NiAVObjectPtr spModel = FUN_140a0afd0()->Load(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         {
-            Unk_SceneWalker kWalker((NiAVObject*)(static_cast<NiObject*>(FUN_1409849b0(&spModel))));
+            Unk_SceneWalker kWalker((NiAVObject*)spModel);
             NiAVObject* pObj;
             while ((pObj = kWalker.Next(true)) != 0)
             {
@@ -377,11 +368,11 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
             m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, nTris, nVerts, 0x15);
             NiAVObject* pMeshObj = m_spMesh->GetMesh();
             pMeshObj->SetName("SwooshEffect");
-            Unk_PropList* pList = ((class Unk_PropList*)&((class NiAVObject*)(class NiMesh*)(pFound))->GetPropertyList());
-            void* pPos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(class Unk_PropList*)(pList))->GetHeadPos();
+            NiPropertyList* pList = &((class NiAVObject*)(class NiMesh*)(pFound))->GetPropertyList();
+            NiTListIterator pPos = pList->GetHeadPos();
             while (pPos != 0)
             {
-                NiProperty* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+                NiProperty* pProp = pList->GetNext(pPos);
                 bool bMaterial = NiObject::IsExactKindOf(&NiMaterialProperty::ms_RTTI, (const NiObject*)(void*)(pProp));
                 if (bMaterial || NiObject::IsExactKindOf(&NiTexturingProperty::ms_RTTI, (const NiObject*)(void*)(pProp)))
                 {
@@ -428,7 +419,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)(0));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)(1));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)(0));
-        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>((NiTexture*)FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5))));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>((NiTexture*)FUN_140a0afd0()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5))));
         static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spTexture);
 
         NiVertexColorProperty* spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -472,9 +463,9 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spZBuffer);
     }
     m_spMesh->UpdateBound();
-    FUN_1415672e0(m_spMesh->GetMesh(), 0);
+    FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
     spSeparate->AttachChild(m_spMesh->GetMesh(), false);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(spSeparate, false);
+    m_spRoot->AttachChild(spSeparate, false);
     if (FUN_14028d470(pSwoosh->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
@@ -485,7 +476,7 @@ bool CSwooshEffect::vfunc_9()
 {
     if (CEffect::vfunc_9())
     {
-        if ((FUN_1409475d0(&m_spRoot) ? true : false) && reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetAppCulled())
+        if (((NiNode*)m_spRoot ? true : false) && m_spRoot->GetAppCulled())
             return true;
         if (m_b2e)
             UpdateTrail();
@@ -497,36 +488,36 @@ bool CSwooshEffect::vfunc_9()
 // @0x14181ed70
 void CSwooshEffect::vfunc_4()
 {
-    if (FUN_1409475d0(&m_spTarget) != 0)
+    if ((NiNode*)m_spTarget != 0)
     {
         m_b2e = true;
-        static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        m_spTarget->AttachChild(static_cast<NiAVObject*>(m_spRoot), true);
+        m_spRoot->UpdateEffects();
+        m_spRoot->UpdateProperties();
+        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
         {
             NiFixedString kName((const char*)m_strNode1);
-            m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName))))));
+            m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(m_spTarget->GetObjectByName(kName))))));
         }
-        if (FUN_1409a7f70(&m_spTrail1, 0))
+        if (m_spTrail1 == (NiAVObject*)0)
         {
             m_b2d = true;
             m_b2e = false;
             const char* pszName = m_strNode1;
             CString* pstrId = &m_str10;
-            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode1 [{0}] effectID:{1}", pszName, pstrId);
+            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode1 [{0}] effectID:{1}", &pszName, *pstrId);
         }
         {
             NiFixedString kName((const char*)m_strNode2);
-            m_spTrail2 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName))))));
+            m_spTrail2 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(m_spTarget->GetObjectByName(kName))))));
         }
-        if (FUN_1409a7f70(&m_spTrail2, 0))
+        if (m_spTrail2 == (NiAVObject*)0)
         {
             m_b2d = true;
             m_b2e = false;
             const char* pszName = m_strNode2;
             CString* pstrId = &m_str10;
-            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode2 [{0}] effectID:{1}", pszName, pstrId);
+            FUN_140b850d0(((void*)GetLogString()), 1, 0x133, L"CSwooshEffect can't find TrailNode2 [{0}] effectID:{1}", &pszName, *pstrId);
         }
     }
 }
@@ -534,13 +525,13 @@ void CSwooshEffect::vfunc_4()
 // @0x14181f0c0
 void CSwooshEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)));
+    FUN_140a0b2a0(static_cast<NiAVObject*>(m_spRoot));
 }
 
 // @0x14181f0f0
 void CSwooshEffect::vfunc_10(bool bVisible)
 {
-    static_cast<NiAVObject*>(static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot)))->SetAppCulled(!bVisible);
+    static_cast<NiAVObject*>(static_cast<NiAVObject*>(m_spRoot.operator->()))->SetAppCulled(!bVisible);
 }
 
 // @0x14181f140
@@ -548,12 +539,12 @@ int CSwooshEffect::vfunc_8(void* p)
 {
     if (m_b2e)
     {
-        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate());
+        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(m_spRoot->GetWorldTranslate());
     }
     else
     {
-        if (FUN_1409475d0(&m_spTarget) != 0)
-            *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spTarget))->GetWorldTranslate());
+        if ((NiNode*)m_spTarget != 0)
+            *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(m_spTarget->GetWorldTranslate());
     }
     return 1;
 }
@@ -570,9 +561,9 @@ void CSwooshEffect::UpdateTrail()
     if (dElapsed >= (double)m_fInterval)
     {
         m_dLastSample = m_dLastSample + dElapsed;
-        const Vector3& kHeadA = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_14098d0f0(&m_spTrail1))->GetWorldTranslate());
+        const Vector3& kHeadA = reinterpret_cast<const Vector3&>(m_spTrail1->GetWorldTranslate());
         m_kPointsA.push_back(kHeadA);
-        const Vector3& kHeadB = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_14098d0f0(&m_spTrail2))->GetWorldTranslate());
+        const Vector3& kHeadB = reinterpret_cast<const Vector3&>(m_spTrail2->GetWorldTranslate());
         m_kPointsB.push_back(kHeadB);
         unsigned short nPoints = (unsigned short)m_kPointsA.size();
         if (nPoints < 4)

@@ -1323,7 +1323,6 @@ class CContentShutdownManager;
 class CInputKeyHandler;
 Unk_AltStringMgr* FUN_14025e7a0();
 void* FUN_14025e7c0();                                                          // the client's text-hook object
-CommonString* FUN_14025e7d0();                                                  // the CommonString singleton
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flags (symbols.tsv); local copies stay false -> "is not initialized" box
 CommonString* TSingleton<CommonString>::s_instance = 0;
@@ -1523,7 +1522,7 @@ void* FUN_14025e7c0()
 }
 
 // @0x14025e7d0
-CommonString* FUN_14025e7d0()
+CommonString* TSingleton<CommonString>::GetInstance()
 {
     return TSingleton<CommonString>::s_instance;
 }
@@ -1565,7 +1564,7 @@ struct BanTestMask
 // @0x1402599e0
 bool CommonString::FUN_1402599e0()
 {
-    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
+    CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
     if (pChecker == 0)
     {
         MS2_ASSERT_AT(0xde, 0);

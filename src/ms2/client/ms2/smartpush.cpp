@@ -118,10 +118,9 @@
 #include "ms2/client/ms2/instrumentmanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
-
-// The ridee data handle (not a CPtred): its members are the exe's out-of-line instances.
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/commonfiles/skillactionadditional.h"
+#include "ms2/commonfiles/masterytable.h"   // C3: CMasteryTable::Find (CMasteryReceipe)
 
 // ---- Callees of other units --------------------------------------------------------------------------------------------
 
@@ -159,23 +158,9 @@ class Unk_SpInstrument : public CInstrumentManager
 {
 };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
-class UIAutoFishingDialog : public UISystemShopDialog { };
-UIAutoFishingDialog* FUN_140cdee10(eUIClassID nId);                    // GetDialog<UIAutoFishingDialog>
+template <class T> T* Unk_FmGetDialog(eUIClassID nId);   // 0x140cdee10 for UISystemShopDialog (fishingmanager)
 template <class T> T* Unk_ImGetDialog(int nId);   // C3: was FUN_140d0c040
 
-// The mastery recipe table (FUN_1409670c0).
-class Unk_SpRecipe : public CPtred
-{
-public:
-    int m_n18;
-    int m_nMastery;                                                     // +0x1c the mastery kind
-    char m_pad_20[0x88 - 0x20];
-    unsigned m_nCountA;                                                 // +0x88
-    unsigned m_nCountB;                                                 // +0x8c
-};
-MS2_CHECK_OFFSET(Unk_SpRecipe, m_nMastery, 0x1c);
-MS2_CHECK_OFFSET(Unk_SpRecipe, m_nCountA, 0x88);
-class Unk_SpMastery { public: MS2Ptr<Unk_SpRecipe> FUN_14066aa00(int nId); };
 // The local player as a game object: only slot 18 (the position, efd::Point3 by value) is used.
 class Unk_SpGameObj
 {
@@ -203,9 +188,8 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 CFunctionCubeService* FUN_1409670b0();                                  // the function cube service
 
 // The auto interaction use counts of today (recipe id -> count).
-struct Unk_SpCountMap { char m_pad[0x48]; };
 extern ATL::CAtlMap<int, int> g_143ab3150;   // the gather counts (0x143ab3150)
-unsigned char FUN_140450290(Unk_SpCountMap* pMap, int nId, int* pnCount);  // Lookup
+typedef ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>> CGatherCountMap;   // g_143ab3150 as the exe's map type
 
 // The bag.
 class Unk_Inventory   // C3: member view (inventory.h)
@@ -223,16 +207,6 @@ class Unk_SpInventory : public Unk_Inventory
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_SpInventory
 extern __int64 DAT_143ab2898;                                           // the money
 
-// The additional effect (buff) table seen through an item's skill.
-// The exe dtor is MS2Ptr<SkillLevelData> (0x1407eb950); forwarded by VA.
-void FUN_1407eb950(void* p);
-struct Unk_SpSkillEffect { char m_pad_00[0x18]; int m_nId; unsigned short m_nLevel; };
-Unk_SpSkillEffect* FUN_1407e4770(void* p);
-class Unk_SpSkillEffects { public: char* FUN_140aba700(); char* FUN_140aba7f0(); };
-struct Unk_SpSkillLevel { char m_pad_00[0x98]; Unk_SpSkillEffects m_effects; };
-class Unk_SpSkillLevelPtr { public: ~Unk_SpSkillLevelPtr() { FUN_1407eb950(this); } Unk_SpSkillLevel* FUN_140932d90(); Unk_SpSkillLevel* FUN_1407ebbf0();
-    void* m_p0; void* m_p8; };
-class Unk_SpSkillTable { public: Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, short nLevel); };
 
 // CMsgBoxData::SetValue<T> (the COMDATs 0x140dd6030..0x140dd63d0): a named GFx value of the box.
 void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
@@ -719,7 +693,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     {
         if (((class Unk_SpInstrument*)FUN_140c8dac0())->IsPerforming() && !((class Unk_SpInstrument*)FUN_140c8dac0())->IsRemote())
         {
-            UIAutoFishingDialog* pAuto = FUN_140cdee10((eUIClassID)0x4f07);
+            UISystemShopDialog* pAuto = Unk_FmGetDialog<UISystemShopDialog>((eUIClassID)0x4f07);
             UIPlayInstrumentDialog* pPlay = Unk_ImGetDialog<UIPlayInstrumentDialog>((eUIClassID)0x4eec);
             if (pPlay != 0 && pAuto != 0 && pAuto->FUN_141924630() == 0 && pPlay->GetAutoPlay() != 0)
             {
@@ -929,9 +903,9 @@ int CSmartPushSafeRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 2)
         return 0;
     if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(2))
         return 2;
@@ -1001,9 +975,9 @@ int CSmartPushSafeWaterRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 2)
         return 0;
     if (((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
         return 0;
@@ -1082,9 +1056,9 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
         return 0;
     if (pMy->FUN_1416764d0() == 0)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 1)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 1)
         return 0;
-    if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
+    if (pMy->FUN_1416764a0()->GetData()->m_basic.m_nType == 2)
         return 0;
     if (!((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
         return 0;
@@ -1127,8 +1101,8 @@ void CSmartPushAutoInteraction::vfunc_4(int nValue)
     FUN_1412751f0(FUN_14028dfa0<int, CStringW>(CStringW(L"s_mastery_autointeraction_result"), nValue,
         CStringTable::GetInstance()->FUN_141811980(0x2f, nRecipe)), 3, 1);
     int nUsed = 0;
-    FUN_140450290(reinterpret_cast<Unk_SpCountMap*>(&g_143ab3150), nRecipe, &nUsed);
-    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_SpCountMap*)(&g_143ab3150))->SetAt(nRecipe, nUsed + nValue);
+    reinterpret_cast<CGatherCountMap*>(&g_143ab3150)->Lookup(nRecipe, nUsed);
+    reinterpret_cast<CGatherCountMap*>(&g_143ab3150)->SetAt(nRecipe, nUsed + nValue);
 }
 
 // @0x140dd2f10
@@ -1154,12 +1128,12 @@ void CSmartPushAutoInteraction::vfunc_3()
     CStringW strDesc = FUN_14028dfa0(strBuff, nItemId, nRecipe);
     CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strDesc);
     int nId = vfunc_14();
-    MS2Ptr<Unk_SpRecipe> spRecipe = ((class Unk_SpMastery*)FUN_1409670c0())->FUN_14066aa00(nId);
+    CMasteryTable::ReceipePtr spRecipe = ((class CMasteryTable*)FUN_1409670c0())->Find(nId);
     if (!spRecipe)
         return;
     int nUsed = 0;
-    FUN_140450290(reinterpret_cast<Unk_SpCountMap*>(&g_143ab3150), nId, &nUsed);
-    int nMax = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgMaxCount(spRecipe->m_nCountA, spRecipe->m_nCountB);
+    reinterpret_cast<CGatherCountMap*>(&g_143ab3150)->Lookup(nId, nUsed);
+    int nMax = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgMaxCount(spRecipe->m_nHighPropLimit, spRecipe->m_nNormalPropLimit);
     int nAvail = nMax - nUsed;
     if (nAvail == 0)
     {
@@ -1267,10 +1241,10 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
         CInteractObject* pObj = objects[i];
-        MS2Ptr<Unk_SpRecipe> spRecipe = ((class Unk_SpMastery*)FUN_1409670c0())->FUN_14066aa00(pObj->GetRow()->m_gathering.m_nReceipeId);
+        CMasteryTable::ReceipePtr spRecipe = ((class CMasteryTable*)FUN_1409670c0())->Find(pObj->GetRow()->m_gathering.m_nReceipeId);
         if (!spRecipe)
             continue;
-        if (spRecipe->m_nMastery != nKind)
+        if (spRecipe->m_nType != nKind)
             continue;
         float fRange = pObj->GetRow()->m_validate.m_fInteractionDistance;
         float fDist = pMy->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
@@ -1543,14 +1517,14 @@ int FUN_140dd5340(int nAbility)
             continue;
         if (((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20() == 0)
             continue;
-        Unk_SpSkillLevelPtr spSkill = reinterpret_cast<Unk_SpSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc40());
-        if (spSkill.FUN_140932d90())
+        MS2Ptr<SkillLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc40());
+        if (spSkill.get())
         {
-            Unk_SpSkillEffects& effects = spSkill.FUN_1407ebbf0()->m_effects;
-            for (char *p = effects.FUN_140aba700(), *pEnd = effects.FUN_140aba7f0(); p != pEnd; p += 0x10)
+            std::vector<MS2Ptr<SkillActionAdditional> >& effects = spSkill->m_vAdditional;
+            for (MS2Ptr<SkillActionAdditional> *p = effects._Unchecked_begin(), *pEnd = effects._Unchecked_end(); p != pEnd; ++p)
             {
-                char& effect = *p;
-                MS2Ptr<AdditionalLevelData> spBuff = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
+                MS2Ptr<SkillActionAdditional>& effect = *p;
+                MS2Ptr<AdditionalLevelData> spBuff = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(effect->m_nAdditionalID, effect->m_nLevel);
                 if (spBuff == 0)
                     continue;
                 if (spBuff->HasSA((SAType)nAbility) && nBest < spBuff->m_nDurationTick)

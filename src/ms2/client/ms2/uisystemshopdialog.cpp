@@ -90,8 +90,6 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 typedef Delegate<void(ItemScrollSlot&)> SsRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> SsDropFn;
 typedef Delegate<bool(int, const CMsgBoxData&)> SsMsgBoxFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, SsRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, SsDropFn fn);        // ItemScrollSlot::SetDropFn
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);   // create the named slot
 void FUN_140d42630(const CString& strName);                    // drop the named slot
@@ -414,8 +412,8 @@ void UISystemShopDialog::FUN_140fa5bc0()
         FUN_140d42540(GetTypeName(), 0, spBait);
         if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
         {
-            FUN_140d42bc0(pSlot, SsRemoveFn(this, &UISystemShopDialog::FUN_140fa6ab0));
-            FUN_140d42b70(pSlot, SsDropFn(this, &UISystemShopDialog::FUN_140fa6ae0));
+            pSlot->SetRemoveFn(SsRemoveFn(this, &UISystemShopDialog::FUN_140fa6ab0));
+            pSlot->SetDropFn(SsDropFn(this, &UISystemShopDialog::FUN_140fa6ae0));
             pSlot->SetFlags(0x11);
         }
         int bCancel = 0;

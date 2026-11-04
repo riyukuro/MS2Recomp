@@ -382,7 +382,8 @@ SAType FUN_14081dd80(const CString& str);
 Unk_SkillMasteryType FUN_14021c400(const CString& str);
 // Per SA type flags (0x20 bytes each); +8 = the type may be set by an additional effect.
 struct Unk_SATypeInfo { void* m_0; int m_bAllowAdditional; int m_c; void* m_10; void* m_18; };
-extern std::vector<Unk_SATypeInfo> DAT_143ab1a40;
+struct SpecialAbilityInfo;
+extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;   // skilltieroptionmanager.cpp (specialability.h's SAType clashes with ours)
 CString FUN_14016a5c0(const char* psz, int nCodePage);                     // multibyte copy
 bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
 extern int DAT_1439f4840;                                                   // the default code page
@@ -1236,7 +1237,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
                 Unk_AdditionalLog(GetLogString(), 1, 0x13, L"Unknown SA Type String ID:{0}", nID);
                 continue;
             }
-            if (DAT_143ab1a40[eType].m_bAllowAdditional == 0)
+            if (reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[eType].m_bAllowAdditional == 0)
             {
                 Unk_AdditionalLog(GetLogString(), 1, 0x13, L"Not Allow SA Type:{0}", eType);
                 continue;

@@ -119,8 +119,6 @@ private:
     int m_iFrameLimit;                                  // +0x20
 };
 void FUN_141610410(int nFrameLimit);
-// The scene graph service as these callers see it: the exe passes the entity id by value (ms2scenegraphservice.h has const&).
-class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
 __int64 FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 ecr::SceneGraphService* GetSceneGraphService();
@@ -435,7 +433,7 @@ void CMainSystem::DestroyEntity(egf::Entity* pEntity)
 {
     if (pEntity)
     {
-        ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(pEntity->GetEntityID());
+        ((MS2SceneGraphService*)GetSceneGraphService())->ClearBucketOverride(pEntity->GetEntityID());
         ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(pEntity->GetEntityID());
     }
 }
@@ -443,7 +441,7 @@ void CMainSystem::DestroyEntity(egf::Entity* pEntity)
 // @0x141473870
 void CMainSystem::DestroyEntityById(const egf::EntityID& id)
 {
-    ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(id);
+    ((MS2SceneGraphService*)GetSceneGraphService())->ClearBucketOverride(id);
     ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(id);
 }
 

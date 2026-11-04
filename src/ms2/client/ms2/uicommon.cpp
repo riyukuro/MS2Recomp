@@ -526,7 +526,6 @@ MS2_CHECK_OFFSET(Unk_UcGuildSvc, m_info, 8);
 __int64 FUN_141637b90(CPartyMember* p);
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 UIClubDialog* FUN_140b19090(int nUiId);
-void FUN_140ac5dd0(void* map, void** pos);                          // m_930.GetNext
 struct Unk_UcProxyRef;
 Unk_UcProxyRef* FUN_140ac58f0(Unk_UcProxyRef* dst, const void* src);
 void FUN_1406c70a0(Unk_UcProxyRef* p);
@@ -604,7 +603,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
         else
         {
             void* pMap = WorldService::GetInstance()->FUN_141bc9fb0();
-            for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; FUN_140ac5dd0(pMap, &pos))
+            for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
             {
                 MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
                 if (spProxy.get() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
@@ -1180,12 +1179,6 @@ public:
     void* m_pad_298; void* m_pad_2a0; void* m_pad_2a8;
     Unk_CommandArgs m_args;                                         // +0x2b0
 };
-class Unk_UcItemPtr
-{
-public:
-    ~Unk_UcItemPtr();                                               // 0x1401b50d0
-    void* m_pad_00; void* m_p;
-};
 MS2_CHECK_OFFSET(Unk_UcItemData, m_strType, 0x290);
 MS2_CHECK_OFFSET(Unk_UcItemData, m_args, 0x2b0);
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
@@ -1258,7 +1251,7 @@ MS2_REPLACE(0x1418fff20, FUN_1418fff20, 162, 0x243A22D7);
 
 // ---- the client configuration (singleton behind 0x1401d3200): only the entries this unit reads ----
 typedef Common::Constants::Value<int> Unk_UcCfgInt;
-struct Unk_UcCfgStr { CString& FUN_140298f80(); char m_pad[0x60 - 0]; };
+typedef Common::Constants::Value<CString> Unk_UcCfgStr;
 struct Unk_UcCfg
 {
     char m_pad_0000[0x5338];
@@ -1440,7 +1433,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     else if (nKind == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, ((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.FUN_140298f80());
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.Get());
         FUN_1418fe1c0(strUrl);
         return false;
     }
@@ -1838,41 +1831,28 @@ void UICommon::CAlignmentInfo::FUN_141901cd0()
 MS2_REPLACE_METHOD(0x141901cd0, UICommon::CAlignmentInfo, FUN_141901cd0, 62, 0x16A663B0);
 
 // Item counts: the bag stock, the cube fallback inventory and the stock of the plot.
-class Unk_UcStockEntry : public CPtred { public: int m_nCount; };
-class CUGCMapItem   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140dfc350();
-};
-Unk_UcItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
-class Unk_CubeStock
-{
-public:
-    MS2Ptr<Unk_UcStockEntry> FUN_140dfc8f0(__int64 nUid);
-    int FUN_140dfcb00(int nItemId);
-    int FUN_140dfcbf0(int nItemId, __int64 nRank);
-};
-extern Unk_CubeStock DAT_143ab2e50;
+#include "ms2/client/ms2/ugcmapitem.h"     // C3: Unk_CubeStock DAT_143ab2e50 (CUGCMapItem)
 
 // @0x141901d20
 int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit in the exe (r8, not r8d)
 {
-    Unk_UcItemPtr item = FUN_14053f870(nItemId);
-    if (reinterpret_cast<MS2Ptr<CItemData>&>(item).operator==(0) != 0)
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+    if (item.operator==(0) != 0)
         return 0;
-    if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())
+    if (item->HasMaidId())
     {
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nUid);
         if (spItem.get() != 0)
             return ((class CItem*)(class CItem*)(spItem.operator->()))->GetCount();
-        MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
+        MS2Ptr<CUGCMapItem> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
         if (spStock.get() != 0)
-            return ((class CUGCMapItem*)(class Unk_UcStockEntry*)(spStock.operator->()))->FUN_140dfc350();
+            return spStock->FUN_140dfc350();
     }
-    else if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasCubeTextureMesh())
+    else if (item->HasCubeTextureMesh())
     {
         int nCount = DAT_143ab2e20.FUN_1408fc2f0(nItemId, nRank);
         nCount += DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
@@ -1891,19 +1871,19 @@ MS2_REPLACE(0x141901d20, FUN_141901d20, 573, 0xA2CDF026);
 // @0x141901f70
 int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
 {
-    Unk_UcItemPtr item = FUN_14053f870(nItemId);
-    if (reinterpret_cast<MS2Ptr<CItemData>&>(item).operator==(0) != 0)
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+    if (item.operator==(0) != 0)
         return 0;
     int nMode = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650();
-    if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())
+    if (item->HasMaidId())
     {
-        MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
+        MS2Ptr<CUGCMapItem> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
         if (spStock.get() != 0)
-            return ((class CUGCMapItem*)(class Unk_UcStockEntry*)(spStock.operator->()))->FUN_140dfc350();
+            return spStock->FUN_140dfc350();
         if (nMode == 1 || nMode == 3)
             return ((class CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b9d80(nUid);
     }
-    else if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasCubeTextureMesh())
+    else if (item->HasCubeTextureMesh())
     {
         int nCount = DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
         if (nMode == 1 || nMode == 3)
@@ -2125,7 +2105,7 @@ int FUN_141902ac0(__int64 nId, int nType)
     else
     {
         void* pMap = WorldService::GetInstance()->FUN_141bc9fb0();
-        for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; FUN_140ac5dd0(pMap, &pos))
+        for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
         {
             MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
             if (spProxy.get() != 0 && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)

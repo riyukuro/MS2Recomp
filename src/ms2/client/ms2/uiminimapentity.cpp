@@ -17,6 +17,7 @@
 // MS2-PIN: ?get@?$MS2Ptr@VCNpcData@@@@QEBAPEAVCNpcData@@XZ 0x141a48d80 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a4ac40 ; unique
 // MS2-PIN: ?FUN_141a4b020@UIMinimapEntityProxyPortal@@QEBAHXZ 0x141a4b020 ; unique
+// MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141a4b030 ; order
 // MS2-PIN: ?vfunc_4@UIMinimapEntity@@UEAAHXZ 0x141a4b200 ; unique
 // MS2-PIN: ?vfunc_48@UIMinimapDialog@@UEAAHXZ 0x141a4b210 ; unique
 // MS2-PIN: ?Lookup@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@_K@Z 0x141a4c6d0 ; unique
@@ -144,27 +145,10 @@ struct Unk_MmEntityList
     void* m_0;
     void* m_8;
 };
-struct Unk_MmMinimapInfo : public CPtred                            // the field's minimap settings
-{
-    CString m_image;                                                // +0x18 the minimap image
-};
-struct Unk_MmFieldInfo : public CPtred                              // the current field's settings (world +0x298)
-{
-    char m_pad_18[0x64 - 0x18];
-    int m_64;                                                       // +0x64 nonzero: the minimap is forced minimized
-    char m_pad_68[0x150 - 0x68];
-    bool m_allowPing;                                               // +0x150
-    char m_pad_151[0x160 - 0x151];
-    MS2Ptr<Unk_MmMinimapInfo> m_minimap;                            // +0x160
-};
 class Unk_MmWorld : public WorldService                                                   // the world service (FUN_1403ed2d0)
 {
 public:
-    MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nId);                // a proxy by object id
     Unk_MmEntityList FUN_141bd0420(unsigned nModel);                // the entities of a model
-    MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
-    MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
 };
 
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -202,8 +186,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_14016a730(const char* psz, int nLength);              // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // a common string
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410; the index of a value or -1
-struct Unk_PtrB;
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;                     // the taxi stops the player has found
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;                     // the taxi stops the player has found
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
@@ -678,7 +661,7 @@ MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::FUN_141a32da0()
 {
     if (m_id == 0)
         return MS2Ptr<CProxyGameObject>(0);
-    return ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc9be0(m_id);
+    return WorldService::GetInstance()->FindProxyObject(m_id);
 }
 MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 111, 0x93351C5B);
 
@@ -2269,9 +2252,6 @@ void UIMinimapDialog::FUN_141a44f40()
 }
 MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 210, 0x473BA9B2);
 
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0 (ridee.cpp)
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
-
 // The ridden mount of an actor, held while it is read.
 typedef efd::SmartPointer<Ridee> Unk_MmRideeRef;
 
@@ -2335,7 +2315,6 @@ void UIMinimapDialog::FUN_141a42800()
 }
 MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 616, 0x8585C70C);
 
-float FUN_141adbe70(void* pService);                               // the ui scale
 
 // @0x141a42bb0
 void UIMinimapDialog::FUN_141a42bb0()
@@ -2350,7 +2329,7 @@ void UIMinimapDialog::FUN_141a42bb0()
     double dPanelY = 0.0;
     if (!m_maxPanel->FUN_1422c2510(&dPanelX, &dPanelY))
         return;
-    float fScale = FUN_141adbe70(TSingleton<CUIService>::GetInstance());
+    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     dPanelX /= fScale;
     dPanelY /= fScale;
     m_212 = false;
@@ -2400,7 +2379,7 @@ void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
         CString strKey = m_named.GetKeyAt(pos);
         EntityPtr spEntity = m_named.GetValueAt(pos);
         if (static_cast<bool>(static_cast<UIMinimapEntity*>(spEntity)) && spEntity->m_64) {
-            MS2Ptr<CInteractObject> spObject = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc66b0(strKey);
+            MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(strKey);
             if (spObject == 0)
                 continue;
             if (spObject->FUN_1413b5600() != 1)
@@ -2422,7 +2401,7 @@ void UIMinimapDialog::FUN_141a42a70()
     bool bVisible = true;
     Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
     if (spRidee.operator Ridee*()) {
-        if (spRidee.operator->()->GetData()->m_nSeats != 0)
+        if (spRidee.operator->()->GetData()->m_basic.m_nHidePCInfo != 0)
             bVisible = false;
     }
     m_30->Invoke("visiblePlayers", bVisible);
@@ -2540,7 +2519,7 @@ bool UIMinimapDialog::IsBossIcon(const CString& strIcon)
 // @0x141a45ce0
 bool UIMinimapDialog::IsPingAllowed()
 {
-    bool bAllow = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0()->m_allowPing;
+    bool bAllow = WorldService::GetInstance()->FUN_141bd30a0()->m_bMinimapPing;
     if (bAllow)
         return true;
     return false;
@@ -2610,7 +2589,7 @@ void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
 {
     UIPopUpMenu* pMenu = Unk_MmGetDialog<UIPopUpMenu>();
     if (pMenu != 0) {
-        ProxyPtr spProxy = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bc9c60(nId);
+        ProxyPtr spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nId);
         if (static_cast<CProxyGameObject*>(spProxy) != 0) {
             Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, CString(""), 0);
             pMenu->FUN_141a7eb60(info, spProxy, 9);
@@ -2805,7 +2784,7 @@ void UIMinimapDialog::FUN_141a3ed50()
 MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 377, 0x077301A2);
 
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }
-extern ATL::CAtlArray<void*> g_143ab3128;                           // the telescopes the player has used
+extern ATL::CAtlArray<int> DAT_143ab3128;                           // the telescopes the player has used
 CStringW GetStringCommon(int nStringId);                               // a common string by id
 
 // @0x141a3df40
@@ -2827,7 +2806,7 @@ void UIMinimapDialog::FUN_141a3df40()
             spEntity->m_layer = s_strLayerTelescope;
             spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
             spEntity->m_visible = true;
-            spEntity->m_state = Common::FindElement<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(g_143ab3128), nId) != -1 ? "enabled" : "disabled";
+            spEntity->m_state = Common::FindElement<int>(DAT_143ab3128, nId) != -1 ? "enabled" : "disabled";
             spEntity->m_text = GetStringCommon(0x59b);
             if (FUN_141a3e7d0(spEntity))
                 m_telescope = spEntity;
@@ -3150,7 +3129,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
     bool bVisible = true;
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC != 0) {
-        int nPkMode = reinterpret_cast<CFieldData*>(((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0().operator->())->GetPkMode();
+        int nPkMode = WorldService::GetInstance()->FUN_141bd30a0()->GetPkMode();
         if (nPkMode != 0) {
             bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->FUN_1416c22f0()) == 1 : false;
         } else {
@@ -3482,9 +3461,9 @@ void UIMinimapDialog::FUN_141a3c150()
     if (m_30 == 0)
         return;
     bool bForceMinimize = true;
-    MS2Ptr<Unk_MmFieldInfo> spField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0();
-    if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_minimap.get()))
-        bForceMinimize = spField->m_64 != 0 || spField->m_minimap->m_image.IsEmpty();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_spMinimap.get()))
+        bForceMinimize = spField->m_nMinimapInvisible != 0 || spField->m_spMinimap->m_strImageName.IsEmpty();
     m_forceMinimize = bForceMinimize;
     CStringW strName;
     ((class CubeMapInformationService*)(class Unk_MmHome*)(((class Unk_MmHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3330(&strName);

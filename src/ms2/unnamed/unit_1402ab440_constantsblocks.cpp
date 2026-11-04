@@ -10,7 +10,7 @@
 // MS2-PIN: ??$_Pocca@V?$allocator@I@std@@@std@@YAXAEAV?$allocator@I@0@AEBV10@U?$integral_constant@_N$0A@@0@@Z 0x1402bc150 ; unique: single byte-identical candidate
 // MS2-PIN: ??0?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA@XZ 0x1402bc4b0 ; unique: caller ?LoadFiles@Constants@Common@@QEAA_NXZ
 // MS2-PIN: ??0?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ 0x1402bc4f0 ; order: name order
-// MS2-PIN: ??0?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA@XZ 0x1402bc530 ; manual: Constants ctor +0x10 (cacheRefs)
+// MS2-PIN: ??0?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA@XZ 0x1402bc530 ; manual: Constants ctor +0x10 (cacheRefs)
 // MS2-PIN: ??0?$Values@UUnk_ConstColor@@@Constants@Common@@QEAA@XZ 0x1402bcd90 ; unique: caller ??0Constants@Client@@QEAA@XZ
 // MS2-PIN: ??0Unk_ConstFile@@QEAA@AEBU0@@Z 0x1402bceb0 ; unique: single byte-identical candidate
 // MS2-PIN: ??1?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA@XZ 0x1402bd110 ; prop: callee ?CallDestructors@?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUn...
@@ -24,7 +24,7 @@
 // MS2-PIN: ??_G?$Value@UUnk_ConstColor@@@Constants@Common@@UEAAPEAXI@Z 0x1402be750 ; prop: 0x1402be7d0 taken by ??_G?$Value@UMS2Tick@@@Constants@Common@@UEAAPEAXI@Z
 // MS2-PIN: ??_G?$Value@UMS2Tick@@@Constants@Common@@UEAAPEAXI@Z 0x1402be7d0 ; prop: symbol ??1?$Value@UMS2Tick@@@Constants@Common@@UEAA@XZ
 // MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstFile@@@Z 0x1402bed00 ; manual: LoadFiles (files)
-// MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstCacheRef@@@Z 0x1402bee60 ; manual: LoadFiles (cacheRefs)
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCCacheData@@@@@Z 0x1402bee60 ; manual: LoadFiles (cacheRefs)
 // MS2-PIN: ?CallConstructors@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x1402bf230 ; order: 0x1402bf2a0 taken by ?CallConstructors@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@CAXP...
 // MS2-PIN: ?CallConstructors@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@CAXPEAI_K@Z 0x1402bf2a0 ; order: name order
 // MS2-PIN: ?CallDestructors@?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@CAXPEAUUnk_ConstFile@@_K@Z 0x1402bf5c0 ; unique: single byte-identical candidate
@@ -90,7 +90,7 @@
 // MS2-PIN: ??_G?$Values@_J@Constants@Common@@UEAAPEAXI@Z 0x1402bead0
 // MS2-PIN: ??_G?$TSingleton@VConstants@Client@@@@UEAAPEAXI@Z 0x1402be5d0
 // MS2-PIN: ??_G?$Value@VPoint3@efd@@@Constants@Common@@UEAAPEAXI@Z 0x1402be910
-// MS2-PIN: ?CallConstructors@?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@CAXPEAUUnk_ConstCacheRef@@_K@Z 0x1402bf480
+// MS2-PIN: ?CallConstructors@?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VCCacheData@@@@_K@Z 0x1402bf480
 // MS2-PIN: ?Append@?$CAtlArray@UUnk_ConstColor@@V?$CElementTraits@UUnk_ConstColor@@@ATL@@@ATL@@QEAA_KAEBV12@@Z 0x1402bf0f0
 // MS2-PIN: ??_EConstants@Client@@WKOGI@EAAPEAXI@Z 0x1402be5c0
 // hand pins (w123): tplpin --simulate accepted
@@ -146,13 +146,13 @@
 // MS2-PIN: ??0Unk_ConstFile@@QEAA@AEBU0@@Z 0x1402bceb0
 // MS2-PIN: ??4?$vector@IV?$allocator@I@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1402be4b0
 // MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstFile@@@Z 0x1402bed00
-// MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstCacheRef@@@Z 0x1402bee60
-// MS2-PIN: ?SetCount@?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1402c3350
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCCacheData@@@@@Z 0x1402bee60
+// MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1402c3350
 // MS2-PIN: ?_Buy@?$vector@IV?$allocator@I@std@@@std@@AEAA_N_K@Z 0x1402c3550
 // MS2-PIN: ?_Copy_alloc@?$_Vector_alloc@U?$_Vec_base_types@IV?$allocator@I@std@@@std@@@std@@QEAAXAEBV?$allocator@I@2@@Z 0x1402c3640
 // MS2-PIN: ??0?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA@XZ 0x1402bc4b0
 // MS2-PIN: ??0?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ 0x1402bc4f0
-// MS2-PIN: ??0?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA@XZ 0x1402bc530
+// MS2-PIN: ??0?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA@XZ 0x1402bc530
 // MS2-PIN: ??0?$Values@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Constants@Common@@QEAA@XZ 0x1402bcdf0
 // MS2-PIN: ??1?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA@XZ 0x1402bd110
 // MS2-PIN: ??1?$Value@UMS2Colors@@@Constants@Common@@UEAA@XZ 0x1402bd310
@@ -180,7 +180,7 @@
 // MS2-PIN: ?_Buy@?$vector@IV?$allocator@I@std@@@std@@AEAA_N_K@Z 0x1402c3550
 // MS2-PIN: ?_Copy_alloc@?$_Vector_alloc@U?$_Vec_base_types@IV?$allocator@I@std@@@std@@@std@@QEAAXAEBV?$allocator@I@2@@Z 0x1402c3640
 // MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstFile@@V?$CElementTraits@UUnk_ConstFile@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstFile@@@Z 0x1402bed00
-// MS2-PIN: ?Add@?$CAtlArray@UUnk_ConstCacheRef@@V?$CElementTraits@UUnk_ConstCacheRef@@@ATL@@@ATL@@QEAA_KAEBUUnk_ConstCacheRef@@@Z 0x1402bee60
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCCacheData@@@@V?$CElementTraits@V?$MS2Ptr@VCCacheData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCCacheData@@@@@Z 0x1402bee60
 // MS2-PIN: ??$_Assign_range@PEAI@?$vector@IV?$allocator@I@std@@@std@@AEAAXPEAI0Uforward_iterator_tag@1@@Z 0x1402bbdc0
 // MS2-PIN: ??4?$vector@IV?$allocator@I@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1402be4b0
 #define MS2_THIS_FILE ""
@@ -1338,8 +1338,8 @@ bool Common::Constants::LoadFiles()
             continue;
         }
         {
-            Unk_ConstCacheRef ref(new CCacheData());
-            if (ref.get())
+            MS2Ptr<CCacheData> ref(new CCacheData());
+            if ((CCacheData*)ref)
             {
                 ref->FUN_1401d1160(CString(filePath));
                 cacheRefs.Add(ref);
@@ -1381,7 +1381,7 @@ void Common::Constants::Reload()
 {
     for (unsigned i = 0; i < cacheRefs.GetCount(); i++)
     {
-        if (FUN_1401d1320(cacheRefs[i].get()))
+        if (FUN_1401d1320(cacheRefs[i]))
         {
             Load();
             return;
@@ -1587,7 +1587,7 @@ template size_t ATL::CAtlArray<unsigned long, ATL::CElementTraits<unsigned long>
 
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a590-0x142c9a5b0 .text$yd
-// MS2-PIN: ?get@Unk_ConstCacheRef@@QEBAPEAVCCacheData@@XZ 0x1402be5b0 ; manual: LoadFiles
+// LoadFiles and Reload test a cache ref through MS2Ptr<CCacheData>::operator CCacheData* (0x1402be5b0).
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@KV?$CElementTraits@K@ATL@@@ATL@@AEAA_N_K@Z 0x1402c12b0 ; gp1: by its exe callers
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@UUnk_ConstColor@@V?$CElementTraits@UUnk_ConstColor@@@ATL@@@ATL@@AEAA_N_K@Z 0x1402c1930 ; gp1: by its exe callers
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@K@ATL@@SAXPEAK0_K@Z 0x1402c26b0 ; gp1: by its exe callers

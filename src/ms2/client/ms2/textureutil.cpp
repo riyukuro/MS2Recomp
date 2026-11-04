@@ -71,7 +71,6 @@ void FUN_14151f200();                                       // close the current
 void FUN_140d73aa0(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
 int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
 std::string FUN_14083fa60(const unsigned char* pcData, unsigned int uiLength);   // encode a byte string
-float FUN_141adbe70(void* pkSettings);                      // UI scale
 
 // A thread-local storage slot (the TLS index lives in the object).
 class Unk_TlsSlot
@@ -1180,7 +1179,7 @@ std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight)
     kRegion.top = iY;
     kRegion.right = iX + iWidth;
     kRegion.bottom = iY + iHeight;
-    float fScale = 1.0f / FUN_141adbe70((void*)TSingleton<CUIService>::GetInstance());
+    float fScale = 1.0f / TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     kRegion.left = (int)((float)kRegion.left * fScale);
     kRegion.top = (int)((float)kRegion.top * fScale);
     kRegion.right = (int)((float)kRegion.right * fScale);

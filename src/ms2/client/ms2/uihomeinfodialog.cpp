@@ -22,7 +22,7 @@
 #include <efd/ServiceManager.h>
 #include "pcbase.h"
 #include "ms2/placeholder/asdata.h"
-#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
+#include "ms2/placeholder/ascorelist.h"   // C3: ASDropdownMenu::SetSelectedIndex, ASCoreList, ASScrollingList
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
@@ -65,12 +65,6 @@ class ASDialog : public Unk_HiScript {};
 // ASMovieClip::FUN_1422c1fe0.
 class Unk_HiButton : public Unk_HiScript {};
 
-class ASCoreList   // C3: member view (ascorelist.h clashes with asdropdownmenu.h)
-{
-public:
-    void FUN_1422dd1d0();                                           // remove every entry
-    void AddItem(const class ASObj& item);                          // append an entry
-};
 // The list control of the convenient panel.
 class Unk_HiList : public AScript
 {
@@ -83,24 +77,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
 };
-// The convenient panel (balance buttons and the visitors list).
-class Unk_HiConv : public ASUIComponent
-{
-public:
-    MS2Ptr<Unk_HiList> FUN_140bc7280(const CString& strName);
-};
-// The drop down of the channel.
-class Unk_HiCombo : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool b);                                  // add an item and enable are ASDropdownMenu's
-};
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 // The second panel type the visitors book button is looked up on.
 class Unk_HiPanelB : public AScript
 {
@@ -242,16 +219,16 @@ void UIHomeInfoDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (FUN_1412c72d0())
     {
-        if (MS2Ptr<Unk_HiCombo> spChannel = FUN_140c28560("m_channel"))
+        if (MS2Ptr<ASDropdownMenu> spChannel = GetChild<ASDropdownMenu>("m_channel"))
         {
             CStringW strLabel;
             strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), FUN_14092f640());
             ASObj obj(2);
             obj.FUN_1407cbb20("label", strLabel);
-            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->AddItemRow(obj);
+            spChannel->AddItemRow(obj);
             spChannel->vfunc_24(true);
-            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->SetSelectedIndex(0);
-            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->FUN_1422c1fe0(0);
+            spChannel->SetSelectedIndex(0);
+            spChannel->FUN_1422c1fe0(0);
         }
     }
 }
@@ -447,7 +424,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
+        if (MS2Ptr<ASUIComponent> spConv = spPanel->FUN_140accfb0<ASUIComponent>("m_homeConvenientPanel"))
         {
             bool bMerat = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d710(0x61);
             spConv->Invoke("setMeratIcon", bMerat);
@@ -475,17 +452,17 @@ void UIHomeInfoDialog::FUN_1412c66c0()
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
+        if (MS2Ptr<ASUIComponent> spConv = spPanel->FUN_140accfb0<ASUIComponent>("m_homeConvenientPanel"))
         {
             std::set<__int64> ids;
             spService->FUN_1410d5930((Unk_CMISTree<0x11e>*)&ids);
-            if (MS2Ptr<Unk_HiList> spList = spConv->FUN_140bc7280("m_scrollingList"))
+            if (MS2Ptr<ASScrollingList> spList = spConv->FUN_140bc7280<ASScrollingList>("m_scrollingList"))
             {
                 reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
                 if (ids.empty())
                 {
                     spConv->vfunc_4(FUN_140930c50());
-                    spList->vfunc_24(true);
+                    reinterpret_cast<Unk_HiList*>(spList.operator->())->vfunc_24(true);
                 }
                 else
                 {
@@ -502,7 +479,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                             reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(obj);
                         }
                     }
-                    spList->vfunc_24(true);
+                    reinterpret_cast<Unk_HiList*>(spList.operator->())->vfunc_24(true);
                 }
             }
         }

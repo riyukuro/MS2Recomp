@@ -14,11 +14,8 @@
 #include "ms2/placeholder/cgameoption.h"
 
 // Post-processing service (singleton 0x1409a8b20): enable step by id.
-class Unk_PostProcessSvc
-{
-public:
-    void FUN_1416a3920(int nId, bool bOn);
-};
+class PostProcessingService { public: bool SetStepActive(int, bool); };   // C3: the real member (was FUN_1416a3920)
+class Unk_PostProcessSvc : public PostProcessingService {};
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -69,7 +66,7 @@ GaussianBlurEffect::GaussianBlurEffect(int nId, const CPostEffectParam* pParam)
 void GaussianBlurEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0xb, true);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0xb, true);
 }
 MS2_REPLACE_METHOD(0x140cfd410, GaussianBlurEffect, vfunc_1, 45, 0x6DD405AA);
 
@@ -77,7 +74,7 @@ MS2_REPLACE_METHOD(0x140cfd410, GaussianBlurEffect, vfunc_1, 45, 0x6DD405AA);
 void GaussianBlurEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(0xb, false);
+    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0xb, false);
 }
 MS2_REPLACE_METHOD(0x140cfd450, GaussianBlurEffect, vfunc_4, 45, 0xF44CA84E);
 

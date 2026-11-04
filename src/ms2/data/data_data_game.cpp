@@ -379,7 +379,7 @@ unsigned int SJRBF_IsGetChunk(unsigned __int64, unsigned int, unsigned int, unsi
 void * mpvsl_DuplicateObj(::cri_any, ::cri_any);
 void FUN_1400653f0(::cri_any);
 void FUN_140065410(::cri_any, ::cri_any, ::cri_any);
-void mpvsl_DecTaskOne(::cri_any, ::cri_any, ::cri_any);
+void mpvsl_DecTaskOne(__int64, unsigned __int64, int *);
 void * m2vsl_DuplicateObj(void *, int);
 void FUN_140089fa0(::cri07_decfields *);
 void FUN_140089fc0(::cri07_decfields *, int, int);

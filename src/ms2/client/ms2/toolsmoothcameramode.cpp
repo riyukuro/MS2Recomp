@@ -2,6 +2,8 @@
 // MS2-UNIT: ?\toolsmoothcameramode.cpp
 // MS2-RANGE: 0x14010e180-0x14010e4a0 .text$di
 // MS2-RANGE: 0x141856e00-0x1418589b0 .text$mn
+// MS2-PIN: ??__Es_pointer1@@YAXXZ 0x14010e1e0 ; <ecr/PickService.h> brings the look-alike egf::kENTITY_INVALID/kEVT_INVALID initializers
+// MS2-PIN: ??__Es_pointer2@@YAXXZ 0x14010e370
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\toolsmoothcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <algorithm>
@@ -14,9 +16,13 @@
 
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/fielddatacli.h"   // MS2Ptr<CFieldDataCli> (the camera option row)
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 #include <NiPoint3.h>
+#include <NiPick.h>
+#include <ecr/PickService.h>
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
@@ -44,68 +50,32 @@ struct Unk_CameraOption
     float m_154;
 };
 
-// Smart pointer to it (pointer at +8).
-class Unk_CameraOptionPtr
-{
-public:
-    ~Unk_CameraOptionPtr() { FUN_140885ab0(); }     // 0x1408850f0 (another obj)
-    Unk_CameraOption* FUN_140885340() const;        // operator->
-    void FUN_140885ab0();                           // release
-
-    void* m_pad_00;
-    Unk_CameraOption* m_p;
-};
-
-// A field actor (FUN_1409ffd30 casts an object to it).
+// A field actor (efd::DynamicCast<PCBase, GameObject> casts an object to it).
 class Unk_RpgActor : public Unk_CameraTargetEntity
 {
 };
-Unk_RpgActor* FUN_1409ffd30(Unk_CameraTargetEntity* p);
 
 // The game context (FUN_1403ed2d0).
 class CameraMgr   // C3: member view (real class not in this TU)
 {
 public:
+    efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
+        NiAVObject* pRoot);                                         // pick the scene under a window point
     void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
 };
 class Unk_GameContext
 {
 public:
-    Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    MS2Ptr<class CFieldDataCli> FUN_141bd30a0();   // the field data (copy of +0x298)
     class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
 };
 
-// The picked-object list returned by the camera manager's pick (FUN_140af0850).
 class Unk_PickEntry;
-class NiPick
-{
-public:
-    class Record;
-    class Results
-    {
-    public:
-        unsigned int GetSize() const;
-        Record* GetAt(unsigned int i) const;
-    };
-};
-class NiPick::Record { public: class NiAVObject* GetAVObject(); };   // C3: was Unk_PickEntry::FUN_140a17cb0
-namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
-class Unk_PickList : public ecr::PickService::PickRecord {};
-class Unk_PickListPtr
-{
-public:
-    ~Unk_PickListPtr() { FUN_140a16120(); }        // 0x140a16120
-    void FUN_140a16120();
-    Unk_PickList* FUN_140a16c00() const;            // get
-    Unk_PickList* FUN_140a16c30() const;            // operator->
-
-    void* m_p;
-};
 // The cursor (FUN_140aadf80).
 class CWindowService { public: int GetCursorClientPos(float *, float *); }; class Unk_Cursor : public CWindowService {
 public:
@@ -122,7 +92,6 @@ bool FUN_14028d470(float a, float b);               // nearly equal
 void FUN_1412751f0(const CStringW& str, int a, int b);     // chat/debug log line
 #include "ms2/ms2format.h"
 
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);   // GetCol
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 
@@ -267,10 +236,10 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptAngle.x, ptAngle.y, ptAngle.z);
         Vector3 ptRight;
-        FUN_140a01190(&kRot, 0, &ptRight);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptRight));
         ptRight.FUN_140968990();
         Vector3 ptForward;
-        FUN_140a01190(&kRot, 2, &ptForward);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
         ptForward.FUN_140968990();
         Vector3 ptPos = m_d8.m_pos;
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_130.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_130.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
@@ -292,7 +261,7 @@ void CToolSmoothCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {
-        float fRotation = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_154;
+        float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_154;
         Vector3 ptRot(90.0f, fRotation, -60.0f);
         vfunc_4(ptRot);
         vfunc_24(pTarget, 1);
@@ -368,15 +337,15 @@ void CToolSmoothCameraMode::vfunc_30()
     float fX;
     float fY;
     ((class Unk_Cursor*)FUN_140aadf80())->GetCursorClientPos(&fX, &fY);
-    Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
-    if (!pList.FUN_140a16c00())
+    efd::SmartPointer<ecr::PickService::PickRecord> pList = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0850(fX, fY, true, true, false, NULL);
+    if (!(ecr::PickService::PickRecord*)pList)
         return;
     Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
-    for (unsigned int i = 0; i < pList.FUN_140a16c30()->GetPickResult()->GetSize(); ++i)
+    for (unsigned int i = 0; i < pList->GetPickResult()->GetSize(); ++i)
     {
-        Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList.FUN_140a16c30()->GetPickResult()->GetAt(i));
+        Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList->GetPickResult()->GetAt(i));
         Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(reinterpret_cast<WorldService*>(pContext)->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
-        Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
+        Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {
             reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(pActor, 1);

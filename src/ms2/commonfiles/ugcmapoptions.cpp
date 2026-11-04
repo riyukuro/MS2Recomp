@@ -30,7 +30,6 @@
 #include "hook/ms2hook.h"
 
 class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
 Vector3 FUN_1408a15b0(Unk_Int3 kCell, Vector3& kOffset);   // the world position of a cube cell
@@ -504,7 +503,7 @@ void Cube::FUN_1408b4fd0(egf::Entity* pEntity)
     if (_access(strPath, 4) == 0)
         FUN_1408b51d0();
     else
-        ((class CUgcManager*)FUN_14052d220())->FUN_1418845a0(item.get(), entity->GetEntityID());
+        TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(item.get(), entity->GetEntityID());
 }
 MS2_REPLACE_METHOD(0x1408B4FD0, Cube, FUN_1408b4fd0, 500, 0xE53038B6);
 
@@ -522,7 +521,7 @@ int Cube::FUN_1408b51d0()
     strPath = FUN_1410280d0(2, CStringA(item->look->m_strUrl));
     if (_access(strPath, 4) != 0)
         return 0;
-    ((class CUgcManager*)FUN_14052d220())->FUN_1418873c0(this);
+    TSingleton<CUgcManager>::GetInstance()->FUN_1418873c0(this);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);

@@ -11,6 +11,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/socketptr.h"
+#include "ms2/placeholder/crideedata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"
@@ -68,10 +69,7 @@ public:
 };
 class Unk_HpPet : public CPet { };
 class CBreakableObject { public: efd::Point3 GetPtPos(); };           // C3: the seat position 0x140adf8e0 (was an Unk_HpSeat view)
-class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
-class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
-class Unk_RideeData : public CPtred { };
-class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
+class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view
 // An actor (pc, npc, pet) with the non-virtual accessors this unit calls.
 class MyPC { public: int FUN_1415278d0(void* p); };   // C3: member view (mypc.h needs CHomePrivilege)
 class Unk_HpActor : public PC
@@ -207,8 +205,8 @@ int UIHpBar::Entity::vfunc_8(int n)
         Ridee* pHolder = reinterpret_cast<Ridee*>(pActor->FUN_1416764a0());
         if (pHolder != 0)
         {
-            MS2Ptr<Unk_RideeData> spMount = pHolder->GetData();
-            bool bMounted = (bool)spMount.get() && reinterpret_cast<CRideeData*>(spMount.operator->())->FUN_140784970().operator->()->m_68 != 0;
+            MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
+            bool bMounted = (bool)(CRideeData*)spMount && spMount->FUN_140784970()->m_nNameTagHide != 0;
             if (bMounted)
                 return 1;
         }

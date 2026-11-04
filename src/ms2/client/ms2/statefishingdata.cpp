@@ -40,6 +40,7 @@
 #include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/fishcube.h"   // C3: CFishCube (CFishingManager::FindCube)
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -67,11 +68,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 CString FUN_140b62550(unsigned int n);                       // number -> text
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Vector3 DAT_143a08cf8;                       // the up vector
-
-class Unk_FishPacket : public CPtred
-{
-};
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up vector
 
 struct Unk_FsSpeed { float m_f0; float m_f4; float m_f8; };
 
@@ -111,11 +108,7 @@ public:
 };
 
 // The fishing manager with the members of the fishing states.
-class Unk_FsFishMgr : public CFishingManager
-{
-public:
-    MS2Ptr<Unk_FishPacket> FUN_140cdbb10(int nCell);         // the fishing zone of a grid cell
-};
+class Unk_FsFishMgr : public CFishingManager {};
 static inline Unk_FsFishMgr* FsFishMgr() { return static_cast<Unk_FsFishMgr*>(TSingleton<CFishingManager>::GetInstance()); }
 
 
@@ -128,7 +121,6 @@ public:
 
 // The model loader (singleton): loads a nif by path.
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
 
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
@@ -675,7 +667,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
             if (nType != 8)
                 return 0;
             Unk_FsCell kCellB = FUN_140ddc3c0(MS2_FS_HIT + efd::Point3(0.0f, 0.0f, 55.0f));
-            if (static_cast<Unk_FsFishMgr*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdbb10(FUN_1408a03c0(FUN_140ddc3c0(MS2_FS_HIT))).IsNull())
+            if (TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_1408a03c0(FUN_140ddc3c0(MS2_FS_HIT))).IsNull())
                 return 0;
             if (kCellA.z != kCellB.z)
                 m_pOwner->vfunc_19(MS2_FS_HIT + efd::Point3(0.0f, 0.0f, 55.0f));

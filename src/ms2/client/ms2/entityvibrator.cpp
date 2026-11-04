@@ -76,8 +76,6 @@ public:
 };
 
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* p);   // the service from the framework (DAT_143b059e8)
-// WorldService::FUN_141bd8e30 takes the id by const&, but these callers copy it (the exe builds a temp through the copy ctor).
-class Unk_VibObjTbl { public: bool FUN_141bd8e30(egf::EntityID kId, char nShow, float fFade); };
 // FindCubeByEntityRef takes the ref by const&, but this caller copies the id.
 class Unk_VibCubeSvc : public CubeMapInformationService { public: void* FUN_1410b8be0(egf::EntityID kId); };
 
@@ -246,7 +244,7 @@ int CEntityVibrator::FUN_1411cba60()
         if (m_88 == 0) {
             m_88 = (nNow > (unsigned)(m_2c + m_90));
             if (m_88 != 0 && m_94 > 0) {
-                reinterpret_cast<Unk_VibObjTbl*>(WorldService::GetInstance())->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), 0, 0.1f);
+                WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), false, 0.1f);
             }
         }
         if (m_80 == 0) {
@@ -256,7 +254,7 @@ int CEntityVibrator::FUN_1411cba60()
             }
             if (m_80 != 0) {
                 if (m_94 > 0 || m_aa) {
-                    reinterpret_cast<Unk_VibObjTbl*>(WorldService::GetInstance())->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), 1, 0.0f);
+                    WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), true, 0.0f);
                     m_aa = false;
                     if (m_ab) {
                         FUN_14098c6e0((class Unk_CachedEntity*)(m_entity.operator->()), 0x9004569a, m_ab);
@@ -453,7 +451,7 @@ void CEntityVibrator::FUN_1411cd0c0()
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(1, col1.x, col1.y, col1.z);
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(2, col2.x, col2.y, col2.z);
         Vector3 ptUp;
-        rot.FUN_140a01190(2, ptUp);
+        reinterpret_cast<const efd::Matrix3&>(rot).GetCol(2, reinterpret_cast<efd::Point3&>(ptUp));
         ptUp = ptUp.FUN_1409f7960();
         ptPos = ptPos.FUN_14097fd50(ptUp.FUN_14097fc90(ptBox.z * 0.5f));
         Vector3 ptEuler;
@@ -577,7 +575,7 @@ void CEntityVibrator::FUN_1411cdba0()
             ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(m_entity.operator egf::Entity*(), 5, 0, 1);
         }
     }
-    reinterpret_cast<Unk_VibObjTbl*>(WorldService::GetInstance())->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), 0, 0.1f);
+    WorldService::GetInstance()->FUN_141bd8e30(m_entity.operator->()->GetEntityID(), false, 0.1f);
     if (m_ab) {
         FUN_14098c6e0((class Unk_CachedEntity*)(m_entity.operator->()), 0x9004569a, m_ab);
     }

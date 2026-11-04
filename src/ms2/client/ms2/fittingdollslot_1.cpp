@@ -22,6 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/objectdata.h"
+#include "ms2/placeholder/citemdata.h"   // C3: CItemData (was Unk_FdItemRec)
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/stateidle.h"
 #include "ms2/client/ms2/statetransform.h"
@@ -58,15 +59,7 @@ public:
     static class WorldService* GetInstance();
 };
 
-// The record of an item (CItemData): +0x1e0 is the object id the item places (the doll).
-class Unk_FdItemRec : public CPtred
-{
-public:
-    char m_pad_018[0x1e0 - 0x18];
-    int m_nObjectId;                                        // +0x1e0
-};
-MS2_CHECK_OFFSET(Unk_FdItemRec, m_nObjectId, 0x1e0);
-MS2SvrPtr<Unk_FdItemRec> FUN_14053f870(unsigned nItemId);   // the item record of an id
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);   // the item record of an id (install.objCode is the doll object)
 
 // The graphics options (singleton FUN_1409f7c90).
 class COptimizer   // C3: member view (coptimizer.h)
@@ -185,10 +178,10 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
     }
     if (pObject == 0 && nObjectId != 0)
     {
-        MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(nItemId);
+        MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
         if (!spItem)
             return 0;
-        MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->m_nObjectId);
+        MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
         if (!spData)
             return 0;
         pObject = new (efd::MemHint(efd::MemHint::NONE)) FittingDollPC();
@@ -271,10 +264,10 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     PC::FUN_141662da0(1);
     vfunc_59(1, 0, 0, 0);
     AddStateFlags(4);
-    MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(nItemId);
+    MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->m_nObjectId);
+    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
     if (!spData)
         return 0;
     FUN_141658e40(spData->m_cube.m_fittingDoll.m_nGender);
@@ -456,13 +449,13 @@ MS2_REPLACE_METHOD(0x14121c6e0, FittingDollPC, FUN_14121c6e0, 28, 0xEF6D5F89);
 // The doll item's mode (0 when the item places no fitting doll ui).
 int FittingDollPC::FUN_14121c710()
 {
-    MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(unknown12e8);
+    MS2Ptr<CItemData> spItem = FUN_14053f870(unknown12e8);
     if (!spItem)
         return 0;
-    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->m_nObjectId);
+    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
     if (!spData)
         return 0;
-    if (FUN_1407072e0(spItem->m_nObjectId) == 0)
+    if (FUN_1407072e0(spItem->install.objCode) == 0)
         return 0;
     return spData->m_cube.m_fittingDoll.m_nType;
 }

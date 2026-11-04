@@ -224,14 +224,12 @@ class Unk_MyPCHousingSvc : public CubeMapInformationService
 public:
     int FUN_1410cdd80(NiPoint3 kFrom, NiPoint3 kTo, float fRange, efd::Point3 kDir);   // the build reach test
     void FUN_1410d6590(int nNoticeId);
-    bool FUN_1410d55d0(int nMapId, int nBlock);             // the player owns the block
 };
 class Unk_Service6100017;
 typedef efd::SmartPointer<Unk_Service6100017> Unk_MyPCSvcPtr;
 template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* p);
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();
 template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;
-class Unk_ClientSettings { public: class Unk_CameraOption* FUN_140af7de0(); };
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
@@ -473,7 +471,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_PCArg125, m_nGuildEmblem, 0x550);
 MS2_CHECK_SIZE(Unk_PCArg125, 0x558);
-extern ATL::CAtlArray<struct Unk_PtrB*> DAT_143ab3268;      // the local character's id list
+extern ATL::CAtlArray<unsigned int> DAT_143ab3268;      // the local character's id list
 
 // The game clock (FUN_14086d260).
 class Unk_MyPCGameClock : public CMainSystem { public: };
@@ -1025,7 +1023,7 @@ int MyPC::vfunc_10()
 {
     PC::vfunc_10();
     SetKeepVisibleForBGTransparency(true);
-    ((class Unk_MyPCUpdateList*)Unk_GoUpdateList::FUN_14123ee80())->SetUserFlags(*reinterpret_cast<unsigned char*>(reinterpret_cast<Unk_ClientSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140af7de0()));
+    ((class Unk_MyPCUpdateList*)Unk_GoUpdateList::FUN_14123ee80())->SetUserFlags(*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140af7de0()));
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bca240();
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyCompleteMyPC));
     FUN_140b632f0()->vfunc_3();
@@ -3316,11 +3314,6 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
 }
 MS2_REPLACE_METHOD(0x14152B2D0, MyPC, FUN_14152b2d0, 1311, 0x9ABACFC8);
 
-// MS2Ptr<Unk_RideeData> (Unk_RideeData is not CPtred-derived here): dtor 0x140788ed0, operator-> 0x1407895d0.
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();
-template <> bool MS2Ptr<Unk_RideeData>::operator==(Unk_RideeData* p) const;
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;
-
 // Mounted: learn the ridee's skill and close the windows a multi-seat ridee hides.
 // @0x14152c460
 void MyPC::vfunc_120(MS2Ptr<RideOnAction> spAction)
@@ -3329,13 +3322,13 @@ void MyPC::vfunc_120(MS2Ptr<RideOnAction> spAction)
     reinterpret_cast<StatePcGuideObjectController&>(m_kStateCtl).FUN_1417b7450();
     if (FUN_1416764a0() != 0)
     {
-        const int& nSkillId = FUN_1416764a0()->GetData()->m_nSkillId;   // outlives the temp copy (the ridee keeps the data)
+        const int& nSkillId = FUN_1416764a0()->GetData()->m_basic.m_nSkillSetId;   // outlives the temp copy (the ridee keeps the data)
         if (nSkillId != 0)
         {
             FUN_141523bc0()->FUN_141767f80(nSkillId);
             FUN_141523bc0()->FUN_1417683d0();
         }
-        if (FUN_1416764a0()->GetData()->m_nSeats > 1)
+        if (FUN_1416764a0()->GetData()->m_basic.m_nHidePCInfo > 1)
         {
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e2d);
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f2d);
@@ -3384,7 +3377,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
         MS2Ptr<CSkillSet> spSet = FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
-            int nSkillId = FUN_1416764a0()->GetData()->m_nSkillId;
+            int nSkillId = FUN_1416764a0()->GetData()->m_basic.m_nSkillSetId;
             if (nSkillId != 0)
             {
                 FUN_141523bc0()->FUN_141768100(nSkillId);
@@ -3598,17 +3591,17 @@ int MyPC::SendRequestRideMode1(RideOffAction* pAction)
 {
     if (FUN_1416764d0() == 0)
         return 1;
-    MS2Ptr<Unk_RideeData> spData = m_spB10->GetData();
+    MS2SvrPtr<CRideeData> spData = m_spB10->GetData();
     if (spData == 0)
         return 1;
     if (pAction == 0)
         pAction = new RideOffAction(0);
-    if ((spData->m_nType == 1 || spData->m_nType == 2) && pAction->m_n20 == 0)
+    if ((spData->m_basic.m_nType == 1 || spData->m_basic.m_nType == 2) && pAction->m_n20 == 0)
     {
         FUN_141275260(0x655, 1, 0);
         return 0;
     }
-    if (pAction->m_nType == 0xf && spData->m_n64 == 0)
+    if (pAction->m_nType == 0xf && spData->m_basic.m_nEnableRideOffUI == 0)
         return 0;
     COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
     packet.Encode1(1);
@@ -4599,30 +4592,8 @@ public:
     int FUN_141533e40() { return m_n294; }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-// The ridee row handle (16 bytes; same view as unit_140ba6b20's Unk_AdvMountPtr).
 #include "ms2/placeholder/ms2svrptr.h"
-class CRideeData : public CPtred { unsigned char m_pad[0xb0 - sizeof(CPtred)]; public: int m_nB0; };
-MS2SvrPtr<CRideeData> FUN_1407844b0(unsigned nRideeId);
 void FUN_1401fcc90(unsigned char* pReq, COutputStream& stream);   // encode the ride-along request
-
-
-
-
-
-
-
-
 
 // @0x14152dbc0
 // Ride on with the item of the pending item cast (packet 0x40 0), if the state allows it and the ridee may be used.
@@ -4769,7 +4740,7 @@ void MyPC::FUN_141530db0()
         if (FUN_141676410() != 0)
         {
             MS2SvrPtr<CRideeData> spRidee = FUN_1407844b0(FUN_141676410());
-            if ((bool)spRidee.get() && spRidee->m_nB0 != 0)
+            if ((bool)spRidee.get() && spRidee->m_basic.m_nDisablePickUp != 0)
                 return;
         }
         std::list<Unk_MyPCDropItem*> lstItems;
@@ -4958,7 +4929,7 @@ void MyPC::vfunc_128(CItem* pItem, int n)
     DAT_143aea120 = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->GetAbilityRate((SAType)0x23);
 }
 
-class UIUpperHpBar { public: void FUN_141b4c510(class Unk_UpperActor* pActor, int nObjectId); };   // UIUpperHpBar (0x4e3d)
+class UIUpperHpBar { public: void FUN_141b4c510(PCBase* pActor, int nObjectId); };   // UIUpperHpBar (0x4e3d)
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
 
 // @0x1415231f0
@@ -4975,7 +4946,7 @@ void MyPC::vfunc_112(void* p, int n)
     {
         PCBase* pActor = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(n));
         if (pActor != 0 && ((class CNpc*)(class PCBase*)(pActor))->FUN_141092ff0() != 0 && pActor->IsDead() == 0)
-            pHpBar->FUN_141b4c510(reinterpret_cast<Unk_UpperActor*>(pActor), n);
+            pHpBar->FUN_141b4c510(pActor, n);
     }
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));
     if (pExpBar != 0)

@@ -5,6 +5,7 @@
 // record constructors (SalesInfo, SaleStateData, AutomaticCreateCubeInfo, cell/timer/notify structs).
 // The family value types are the stand-ins of unit_14111eb90 (the _Tree constructors live there).
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@H@std@@@std@@QEAA@XZ 0x141121f60
 // MS2-UNIT: unit_141121cf0
 // MS2-RANGE: 0x141121cf0-0x141123340 .text$mn
 // MS2-PIN: ??_7NotifyChangeUIBuildingCount@@6B@ 0x142eb3a28 ; hand: anchor vftable
@@ -199,18 +200,17 @@ Unk_CMISCubeTimer::Unk_CMISCubeTimer()
 }
 
 void FUN_141122050(void* p);                             // 0x141122050 the Unk_CMISTree<4097> ctor (the exe calls it, not efd::utf8string())
-void FUN_1408a8900(void* pStr);                          // ~efd::utf8string
 struct Unk_CMISDeadString
 {
     Unk_CMISDeadString() { FUN_141122050(m_buf); }
-    ~Unk_CMISDeadString() { FUN_1408a8900(m_buf); }
+    ~Unk_CMISDeadString() { reinterpret_cast<efd::utf8string*>(m_buf)->~utf8string(); }
     char m_buf[0x20];
 };
 
 struct Unk_CMISCellName
 {
     Unk_CMISCellName() { reinterpret_cast<efd::utf8string*>(m_buf)->efd::utf8string::utf8string(); }
-    ~Unk_CMISCellName() { FUN_1408a8900(m_buf); }
+    ~Unk_CMISCellName() { reinterpret_cast<efd::utf8string*>(m_buf)->~utf8string(); }
     char m_buf[0x20];
 };
 

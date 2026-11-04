@@ -87,7 +87,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     NiPSParticleSystemPtr m_spSystem;                               // +0x10
-    Unk_NodePtr m_spNode;                                           // +0x18
+    NiNodePtr m_spNode;                                             // +0x18
     RainDropOnCubeEmitterPtr m_spEmitter;                           // +0x20
     NiPSEmitParticlesCtlrPtr m_spCtlr;                              // +0x28
     unsigned int m_nHandle;                                         // +0x30 id of the scene registration

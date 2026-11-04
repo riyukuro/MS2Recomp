@@ -46,13 +46,11 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-class Unk_AkoPortal;
-template <> Unk_AkoPortal* MS2Ptr<Unk_AkoPortal>::operator->() const;
-template <> MS2Ptr<Unk_AkoPortal>& MS2Ptr<Unk_AkoPortal>::operator=(int);
 template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;
 template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(int);
 template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(const MS2Ptr<NpcDataCli>&);
 template <> NpcDataCli* MS2Ptr<NpcDataCli>::get() const;
+template <> inline MS2Ptr<CPortal>::MS2Ptr();                    // 0x1416c2ba0 (defined below; inline: worldservice units instantiate ms2ptr_impl.h's copy)
 
 class Unk_Tbl1403ed2d0 { };                                         // object table
 class Unk_PosObject                                                 // MS2: slot 18 is GetPosition
@@ -96,8 +94,8 @@ public:
 // @0x1416c1cc0
 CProxyGameObject::CProxyGameObject()
 {
-    reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
-    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = 0;
+    m_18 = 0;
+    m_28 = 0;
     m_proxyId = 0;
     m_40 = 0;
     m_48 = 0;
@@ -124,8 +122,8 @@ CProxyGameObject::CProxyGameObject()
 // @0x1416c1f00
 CProxyGameObject::~CProxyGameObject()
 {
-    reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
-    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = 0;
+    m_18 = 0;
+    m_28 = 0;
 }
 
 // @0x1416c1ff0
@@ -171,7 +169,7 @@ MS2_REPLACE_METHOD(0x1416C2090, CProxyGameObject, FUN_1416c2090, 58, 0xA0774B98)
 int CProxyGameObject::FUN_1416c20d0()
 {
     int r;
-    if (((void*)((MS2Ptr<CPortal>*)(class Unk_ProxyHandle18*)(&m_18))->get())) {
+    if (((void*)m_18.get())) {
         r = 1;
     } else {
         r = 0;
@@ -186,12 +184,12 @@ int CProxyGameObject::FUN_1416c2110()
     if (FUN_1416c20d0() == 0) {
         return 0;
     }
-    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18).operator->())->m_key)));
+    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(m_18.operator->())->m_key)));
     if (ent != 0) {
         if (((class egf::FlatModel*)((egf::Entity*)(class Unk_Entity1411cf440*)(ent))->GetModel())->ContainsModel(0x7b35ceec)) {
             return 1;
         }
-        if (reinterpret_cast<Unk_ProxyTarget*>(reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18).operator->())->m_160 == 8) {
+        if (reinterpret_cast<Unk_ProxyTarget*>(m_18.operator->())->m_160 == 8) {
             return 1;
         }
     }
@@ -220,9 +218,9 @@ Unk_ProxyValue88* CProxyGameObject::FUN_1416c2200()
 MS2_REPLACE_METHOD(0x1416C2200, CProxyGameObject, FUN_1416c2200, 17, 0xEADCA25B);
 
 // @0x1416c2220
-Unk_ProxyHandle28 CProxyGameObject::FUN_1416c2220()
+MS2Ptr<NpcDataCli> CProxyGameObject::FUN_1416c2220()
 {
-    return Unk_ProxyHandle28(m_28);
+    return MS2Ptr<NpcDataCli>(m_28);
 }
 MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, FUN_1416c2220, 65, 0xD6E756B3);
 
@@ -286,7 +284,7 @@ CStringW CProxyGameObject::FUN_1416c23b0()
     if (FUN_1416c2090() != 0) {
         {
             CStringW name = FUN_1401aa6a0(m_78);
-            bool found = (!name.IsEmpty() && reinterpret_cast<const MS2Ptr<NpcDataCli>&>((const Unk_ProxyHandle28&)FUN_1416c2220())->GetNametag() != 0);
+            bool found = (!name.IsEmpty() && ((const MS2Ptr<NpcDataCli>&)FUN_1416c2220())->GetNametag() != 0);
             if (found) {
                 return name;
             }
@@ -366,12 +364,12 @@ MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, FUN_1416c2950, 54, 0x83FAF988)
 int CProxyGameObject::FUN_1416c2990(int nTemplateId)
 {
     m_78 = nTemplateId;
-    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
+    m_28 = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
     m_dc = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nTemplateId);
     m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
     FUN_1416c2a80();
     int r;
-    if (reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28).get()) {
+    if (m_28.get()) {
         r = 1;
     } else {
         r = 0;
@@ -412,7 +410,7 @@ bool CProxyGameObject::FUN_1416c2b70()
 MS2_REPLACE_METHOD(0x1416C2B70, CProxyGameObject, FUN_1416c2b70, 48, 0x4BF83D4E);
 
 // @0x1416c2ba0
-Unk_ProxyHandle18::Unk_ProxyHandle18()
+template <> inline MS2Ptr<CPortal>::MS2Ptr()
 {
-    m_8 = 0;
+    m_p = 0;
 }

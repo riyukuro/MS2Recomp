@@ -76,7 +76,7 @@ class ICastingEventListener;
 class UICastingBar : public UIObject
 {
 public:
-    void FUN_1418e12f0(ICastingEventListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
+    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };
@@ -207,7 +207,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
             if (pBar != 0)
             {
                 CStringW strLabel(L"");
-                pBar->FUN_1418e12f0(0, GetStringCommon(0x64b), nDuration, false, true, strLabel);
+                pBar->StartCastingText(0, GetStringCommon(0x64b), nDuration, false, true, strLabel);
             }
             CString strEmpty("");
             FUN_141276180(s_strTaxiCall, strEmpty);

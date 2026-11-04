@@ -2613,11 +2613,11 @@ void CMeratMarketMan::OnRandomCouponPick(CInPacket& packet)
         CStringW strDay = spProduct->m_premium.GetSellDayText();
         if (nType == 7) {
             __int64 nValue = spProduct->m_premium.FUN_1406a0270();
-            pCoupon->FUN_140bfebf0(spProduct);
+            pCoupon->SetProduct(spProduct);
             pCoupon->FUN_140bfeb50(1, (int)nValue, nCount, CStringW(strDay));
         }
         else if (nType == 8) {
-            pCoupon->FUN_140bfebf0(spProduct);
+            pCoupon->SetProduct(spProduct);
             pCoupon->FUN_140bfeb50(2, nRate, nCount, CStringW(strDay));
         }
     }

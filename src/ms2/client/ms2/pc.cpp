@@ -15,7 +15,7 @@
 // MS2-PIN: ??1?$MS2Ptr@VCEquipItem@@@@QEAA@XZ 0x141666900 ; prop
 // MS2-PIN: ??1?$MS2Ptr@VJobSystemCli@@@@QEAA@XZ 0x141666990 ; unique
 // MS2-PIN: ??1?$MS2Ptr@VWaterGunBattleInfo@@@@QEAA@XZ 0x1416669c0 ; unique
-// MS2-PIN: ??4?$MS2Ptr@VUnk_PCInteractMode@@@@QEAAAEAV0@H@Z 0x141666d90 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VCPvPInfo@@@@QEAAAEAV0@H@Z 0x141666d90 ; unique
 // MS2-PIN: ??4?$MS2Ptr@VUnk_PCBaseComp_a68@@@@QEAAAEAV0@AEBV0@@Z 0x1416670a0 ; prop
 // MS2-PIN: ??_GUnk_PCCubeCraft@@QEAAPEAXI@Z 0x141667830 ; unique
 // MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObjectFromAdditional@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObjectFromAdditional@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141667ac0 ; unique
@@ -77,11 +77,11 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEBAXPEAX@Z 0x141669480
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0
-// MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@H@Z 0x141666110
-// MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@PEAVUnk_PCInteractMode@@@Z 0x141666130
+// MS2-PIN: ??0?$MS2Ptr@VCPvPInfo@@@@QEAA@H@Z 0x141666110
+// MS2-PIN: ??0?$MS2Ptr@VCPvPInfo@@@@QEAA@PEAVCPvPInfo@@@Z 0x141666130
 // MS2-PIN: ??0?$MS2Ptr@VCSkillTierOptionManager@@@@QEAA@PEAVCSkillTierOptionManager@@@Z 0x1416661d0
 // MS2-PIN: ??0?$MS2Ptr@VInfo@HideAndSeek@@@@QEAA@PEAVInfo@HideAndSeek@@@Z 0x141666510
-// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_PCInteractMode@@@@QEAAAEAV1@PEAVUnk_PCInteractMode@@@Z 0x141666dc0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCPvPInfo@@@@QEAAAEAV1@PEAVCPvPInfo@@@Z 0x141666dc0
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSetItemManager@@@@QEAAAEAV1@PEAVCSetItemManager@@@Z 0x141666e30
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSkillTierOptionManager@@@@QEAAAEAV1@PEAVCSkillTierOptionManager@@@Z 0x141666ea0
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCStatPointManager@@@@QEAAAEAV1@PEAVCStatPointManager@@@Z 0x141666f10
@@ -94,7 +94,7 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VJobSystemCli@@@@AEAAXPEAX@Z 0x141669e00
 // MS2-PIN: ??1?$MS2Ptr@VCWeaponAction@@@@QEAA@XZ 0x1416668d0
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_PCD88@@@@QEAAAEAV1@PEAVUnk_PCD88@@@Z 0x141666ba0
-// MS2-PIN: ??4?$MS2Ptr@VUnk_PCInteractMode@@@@QEAAAEAV0@H@Z 0x141666d90
+// MS2-PIN: ??4?$MS2Ptr@VCPvPInfo@@@@QEAAAEAV0@H@Z 0x141666d90
 // MS2-PIN: ??4?$MS2Ptr@VCWeaponAction@@@@QEAAAEAV0@AEBV0@@Z 0x1416670a0
 // MS2-PIN: ??7?$MS2Ptr@VCWeaponAction@@@@QEBA_NXZ 0x141667490
 // MS2-PIN: ?get@?$MS2Ptr@VCGemSwim@@@@QEBAPEAVCGemSwim@@XZ 0x141667650
@@ -302,8 +302,6 @@ class Unk_PCWorld : public WorldService
 {
 public:
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
-    MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
-    MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nObjectId);          // the proxy of an object id
     struct Unk_PCEntListPtr FUN_141bd0420(unsigned int nModel);     // the entities of a model
     egf::Entity* FUN_141bcfd30(unsigned int nModel, NiPoint3 kPos, float fRange, int a, int b);  // the nearest entity of a model
 };
@@ -366,13 +364,7 @@ public:
 };
 // The content switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-// The entity manager and the entity property reads (as pcbase.cpp).
-class Unk_PCEntMgr                                                  // EntityWorldManager (entityworldmanager.h)
-{
-public:
-    egf::EntityPtr FUN_1411ce7c0(efd::utf8string kModel, efd::utf8string kAsset, efd::Point3 kPos, efd::Point3 kRot,
-        float fScale, int a, int b);                                // create an entity
-};
+// The entity property reads (as pcbase.cpp).
 void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
 float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                  // the horizontal distance
 void Unk_SplitA(CString& str, CAtlArray<CString>* paParts, const char* pszSep);   // split
@@ -461,17 +453,6 @@ extern "C" int DAT_143ae2b38;                                       // the model
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 // The KFM model of an equipped item (CEquipItem::FUN_1411dcbb0).
 class CKfmModel;
-class Unk_PCKfmActor
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
-    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21();
-    virtual void vfunc_22(float fScale);                            // MS2: slot 22 (the model scale)
-};
-Unk_PCKfmActor* FUN_14141c720(const MS2Ptr<CKfmModel>& spModel);
 class Unk_ItemEquipData : public CItemData {};
 struct Unk_EquipItemData : public CItemData {};                     // CEquipItem::FUN_1411dc7f0's record (as astooltip_local.h)
 int IsPercentStat(int nType);                                       // the stat is a 64-bit value                     // CItem::FUN_140527840's record (as astooltip_local.h)
@@ -492,10 +473,6 @@ public:
     void FUN_14133afb0(unsigned __int64, __int64, __int64);
 };
 template <class T> T* MyPCDialog(int nId);   // C3: was FUN_141531c80
-// MS2Ptr<Unk_RideeData> (not CPtred-derived here; ridee.cpp/pcbase.cpp do the same): instantiated by other objs.
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::get() const;                          // 0x1409f78a0
 // The string table (TSingleton<CStringTable>::GetInstance).
 // The PCBase UI components (pcbase.cpp has the same stand-ins) and their factories.
 class Unk_PCBaseComp_a68 : public CPtred {};
@@ -740,7 +717,7 @@ PC::PC()
     m_kGemEquip1078.FUN_141668230(this);
     m_spJobFB8.AssignRaw(new JobSystemCli());
     m_spJobFB8->SetOwner(this);
-    m_spInteractMode.AssignRaw(reinterpret_cast<Unk_PCInteractMode*>(new CPvPInfo()));
+    m_spInteractMode.AssignRaw(new CPvPInfo());
     m_spHideAndSeek1250.AssignRaw(new HideAndSeek::Info());
     m_spSetItems.AssignRaw(new CSetItemManager());
     m_spSkillTier1110.AssignRaw(new CSkillTierOptionManager(this));
@@ -775,7 +752,7 @@ PC::~PC()
     }
     if (m_spInteractMode.get() != 0)
     {
-        if (((CPvPInfo*)(Unk_PCInteractMode*)(reinterpret_cast<CPvPInfo*>(m_spInteractMode.operator->())))->HasPoint() && reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance()))
+        if (m_spInteractMode->HasPoint() && reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance()))
             TSingleton<CPVPManager>::GetInstance()->ForwardToEntries((void*)FUN_141656a80());
         m_spInteractMode = 0;
     }
@@ -1168,7 +1145,7 @@ void PC::vfunc_52(double fTime)
             float fNew = FUN_14123c260();
             for (size_t i = 0; i < aModels.GetCount(); i++)
             {
-                if (Unk_PCKfmActor* pActor = FUN_14141c720(aModels[i]))
+                if (CKfmModel* pActor = aModels[i])
                     pActor->vfunc_22(fNew);
             }
         }
@@ -1548,9 +1525,9 @@ CStringW PC::vfunc_77()
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
     if (spRidee)
     {
-        MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
-        if (spData.get() && spData->m_nAC != 0)
-            return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, spData->m_nNameId);
+        MS2SvrPtr<CRideeData> spData = spRidee->GetData();
+        if ((CRideeData*)spData && spData->m_basic.m_nShowRideeNameTag != 0)
+            return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, spData->m_basic.m_nId);
     }
     return PCBase::vfunc_77();
 }
@@ -2713,7 +2690,7 @@ void PC::FUN_141663550()
         return;
     do
     {
-        MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(FUN_141656a80());
+        MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60((void*)FUN_141656a80());
         if (spProxy.IsNull())
             break;
         int nState = spProxy->m_cc;
@@ -3158,7 +3135,7 @@ void PC::FUN_1416599b0()
     egf::EntityID kNone(0ull);
     if (m_entityDB0 != kNone)
     {
-        egf::Entity* pEntity = ((class EntityWorldManager*)(class Unk_PCEntMgr*)(reinterpret_cast<Unk_PCEntMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(m_entityDB0);
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_entityDB0);
         if (pEntity == 0)
             return;
         efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
@@ -4096,7 +4073,7 @@ void PC::FUN_14165cac0()
             }
         }
     }
-    spEntity = reinterpret_cast<Unk_PCEntMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
+    spEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
     if (spEntity == 0)
         return;
     efd::UInt32 nObjectId = FUN_14123c580();
@@ -4114,7 +4091,6 @@ int FUN_14081dd50(int nIndex);
 void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);   // fade a node tree
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_1410280d0(int nType, CString strPath);                  // a UGC resource path (ugcimagepath.cpp)
 extern unsigned DAT_143ab2830;                                      // the own character's type
 extern NiFixedString DAT_143ae50f8;                                 // the skin colour extra data key
@@ -4155,7 +4131,7 @@ void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
     }
     spInfo->m_3c0 = 0;
     spInfo->m_3c4 = FUN_141658e60();
-    MS2Ptr<CProxyGameObject> spProxy = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bc9be0(m_unk_70);
+    MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FindProxyObject(m_unk_70);
     if (spProxy)
     {
         spInfo->m_3c8 = spProxy->m_c8;
@@ -4762,7 +4738,7 @@ void PC::FUN_141656780()
 // Set the profile image key; request the image when it is not cached yet.
 void PC::FUN_141660fc0(CString str)
 {
-    if (((class CUgcManager*)FUN_14052d220())->GetMode() == 1)
+    if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
         m_str1028 = "";
     else
         m_str1028 = str;
@@ -4772,7 +4748,7 @@ void PC::FUN_141660fc0(CString str)
         return;
     CString strPath = FUN_1410280d0(5, str);
     if (_access(strPath, 0) != 0)
-        ((class CUgcManager*)FUN_14052d220())->FUN_141884e30(DAT_143ab2830, 0, FUN_141656a80(), str, CString(""));
+        TSingleton<CUgcManager>::GetInstance()->FUN_141884e30(DAT_143ab2830, 0, FUN_141656a80(), str, CString(""));
 }
 
 // ---- end of code ----

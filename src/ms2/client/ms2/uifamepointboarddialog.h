@@ -10,7 +10,6 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
-class Unk_FpTab;
 
 class UIFamePointBoardDialog : public UIDialog
 {
@@ -28,6 +27,5 @@ public:
     void FUN_140c15780();                                       // rebuild the tabs
     void FUN_140c15a10(int nAlliance);                          // send the alliance's data to the movie
 
-    MS2Ptr<Unk_FpTab> FUN_140c02870(const CString& strName);    // bind the tab strip
 };
 MS2_CHECK_SIZE(UIFamePointBoardDialog, 0x178);

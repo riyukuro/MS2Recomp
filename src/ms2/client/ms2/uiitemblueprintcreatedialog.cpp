@@ -120,7 +120,6 @@ public:
     void FUN_141882450(Unk_BpPtr<CUgcUploadCtrl>);
     bool FUN_141880490(Unk_BpPtr<CUgcUploadCtrl>);
 };
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 extern Unk_Inventory g_143ab2a90;                                   // the inventory
 class Unk_BpImageDialog : public UIDialog {
 public: int FUN_140c39820() { return m_type; }
@@ -5291,7 +5290,6 @@ MS2Ptr<CMsgBoxData> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegat
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412750f0(CItem*, int, int, int);
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_BpIdentity {
 public:
     void* p0;
@@ -5373,7 +5371,7 @@ void UIItemBlueprintCreateDialog::vfunc_26() {
     UIDialog::vfunc_26();
     m_addIcon = 0; m_addImage = 0; m_create = 0; m_input = 0;
     m_type = 0;
-    if (((class Unk_BpUploadManager*)FUN_14052d220())) ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882450(Unk_BpPtr<CUgcUploadCtrl>(0));
+    if (((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())) ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882450(Unk_BpPtr<CUgcUploadCtrl>(0));
     m_upload = 0; m_item = 0; m_icon = 0; m_image = 0;
     m_fee = std::make_pair(Unk_BpCurrency_Default, 0);
     m_itemId = 0; m_ready = 0; m_dirty = 0;
@@ -5383,7 +5381,7 @@ MS2_REPLACE_METHOD(0x140C369B0, UIItemBlueprintCreateDialog, vfunc_26, 394, 0xB9
 // @0x140c36b40
 void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     if (!item) return;
-    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882610();
+    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882610();
     if (upload == NULL) return;
     if (upload.get() != m_upload.get()) return;
     Unk_BpPtr<CUgcUploadCtrl> completed = upload->FUN_1418a4100();
@@ -5450,7 +5448,7 @@ MS2_REPLACE_METHOD(0x140C374B0, UIItemBlueprintCreateDialog, UpdateCreateButtonE
 // @0x140c37540
 void UIItemBlueprintCreateDialog::OnAddIconClick(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_30 == NULL) return;
-    if (((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141880490(m_upload)) {
+    if (((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141880490(m_upload)) {
         m_type = 0xd1;
         m_upload->image = m_icon;
     }
@@ -5459,7 +5457,7 @@ MS2_REPLACE_METHOD(0x140C37540, UIItemBlueprintCreateDialog, OnAddIconClick, 204
 // @0x140c37620
 void UIItemBlueprintCreateDialog::OnAddImageClick(const Scaleform::GFx::FunctionHandler::Params&) {
     if (m_30 == NULL) return;
-    if (((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141880490(m_upload)) {
+    if (((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141880490(m_upload)) {
         m_type = 9;
         m_upload->image = m_image;
     }
@@ -5472,7 +5470,7 @@ void UIItemBlueprintCreateDialog::FUN_140c37700(const Scaleform::GFx::FunctionHa
     FUN_140c38150();
     CStringW name = GetTrimmedName();
     CStringW& nameRef = name;
-    if (CBanTextChecker* filter = FUN_14025e7d0()->GetChecker()) {
+    if (CBanTextChecker* filter = TSingleton<CommonString>::GetInstance()->GetChecker()) {
         CStringW error;
         if (filter->FUN_140225630(nameRef, error) != 0) {
             FUN_140d73aa0(error, 0, 0, L"");
@@ -5510,11 +5508,11 @@ bool UIItemBlueprintCreateDialog::FUN_140c37d50(int result, const CMsgBoxData&) 
         viewer->m_30 = item->FUN_140528540();
         viewer->m_38 = item->GetItemUid();
         viewer->m_40 = item->FUN_1405276c0();
-        ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882450(m_upload);
-        ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882020();
+        ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882450(m_upload);
+        ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882020();
     } else {
-        ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882450(m_upload);
-        ((class Unk_BpUploadManager*)FUN_14052d220())->SendRequestCube();
+        ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882450(m_upload);
+        ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->SendRequestCube();
     }
     return true;
 }
@@ -5562,7 +5560,7 @@ MS2_REPLACE_METHOD(0x140C381B0, UIItemBlueprintCreateDialog, FUN_140c381b0, 136,
 // @0x140c38240
 void UIItemBlueprintCreateDialog::FUN_140c38240() {
     if (m_30 == NULL) return;
-    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882610();
+    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882610();
     if (upload == NULL) return;
     if (upload.get() != m_upload.get()) return;
     CStringW empty(L"");
@@ -5576,7 +5574,7 @@ MS2_REPLACE_METHOD(0x140C38240, UIItemBlueprintCreateDialog, FUN_140c38240, 429,
 // @0x140c38400
 void UIItemBlueprintCreateDialog::FUN_140c38400() {
     if (m_30 == NULL) return;
-    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)FUN_14052d220())->FUN_141882610();
+    Unk_BpPtr<CUgcUploadCtrl> upload = ((class Unk_BpUploadManager*)TSingleton<CUgcManager>::GetInstance())->FUN_141882610();
     if (upload == NULL) return;
     if (upload.get() != m_upload.get()) return;
     if (m_type == 0xd1) {

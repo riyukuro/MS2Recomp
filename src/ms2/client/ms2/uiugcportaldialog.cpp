@@ -84,36 +84,7 @@ static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "
 
 // ---- unit-local views of exe objects ----
 
-// The target drop down (its slot 24 is the "enable" setter; slots 6..23 are declared so the slot number is right).
-class Unk_UgcpCombo : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24(bool bEnable);                        // 24
-};
-// An element of the data provider: reads an item as an AS object.
-class Unk_UgcpArray : public ASDataProvider
-{
-public:
-    ASObj FUN_1422df140(unsigned int nIndex);
-};
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // the target drop down (0x140c28560)
 // One portal target of the UGC manager (a map type with its owner).
 class Unk_UgcpEntry : public CPtred
 {
@@ -241,9 +212,9 @@ int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 
 // The element of the data provider at an index, read as a string member (name -> out).
 // @0x140fb1930
-static void FUN_140fb1930(Unk_UgcpArray* pArray, unsigned int nIndex, const CString& strName, CStringW& strOut)
+static void FUN_140fb1930(ASDataProvider* pArray, unsigned int nIndex, const CString& strName, CStringW& strOut)
 {
-    ASObj item = pArray->FUN_1422df140(nIndex);
+    AScript item = pArray->FUN_1422df140(nIndex);
     if (item.IsUndefinedOrNull())
         return;
     item.TryGetWString(strName, strOut);
@@ -251,17 +222,17 @@ static void FUN_140fb1930(Unk_UgcpArray* pArray, unsigned int nIndex, const CStr
 
 // The selected row's member `strName` of a drop down.
 // @0x140fb19c0
-static void FUN_140fb19c0(Unk_UgcpCombo* pCombo, const CString& strName, CStringW& strOut)
+static void FUN_140fb19c0(ASDropdownMenu* pCombo, const CString& strName, CStringW& strOut)
 {
-    unsigned int nSel = reinterpret_cast<ASDropdownMenu*>(pCombo)->GetSelectedIndex();
+    unsigned int nSel = pCombo->GetSelectedIndex();
     if ((int)nSel < 0)
         return;
-    MS2Ptr<ASDataProvider> spData = reinterpret_cast<ASDropdownMenu*>(pCombo)->GetDataProvider();
+    MS2Ptr<ASDataProvider> spData = pCombo->GetDataProvider();
     if (spData == 0)
         return;
     if (nSel >= spData.operator->()->GetLength())
         return;
-    FUN_140fb1930(static_cast<Unk_UgcpArray*>(spData.operator->()), nSel, strName, strOut);
+    FUN_140fb1930(spData.operator->(), nSel, strName, strOut);
 }
 
 // @0x140fb0a70
@@ -279,7 +250,7 @@ void UIUGCPortalDialog::OnApply()
         }
     }
     CStringW strId(L"");
-    if (MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget"))
+    if (MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropDownTarget"))
     {
         FUN_140fb19c0(spCombo.operator->(), "id", strId);
     }
@@ -308,38 +279,38 @@ bool UIUGCPortalDialog::FUN_140fb0da0(CStringW& strName)
 // @0x140fb0e30
 void UIUGCPortalDialog::FUN_140fb0e30()
 {
-    MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
+    MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropDownTarget");
     if (spCombo == 0)
         return;
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->ClearItems();
+    spCombo.operator->()->ClearItems();
     {
         ASObj none(2);
         none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(none);
+        spCombo.operator->()->AddItemRow(none);
     }
     for (size_t i = 0; i < m_198.size(); i++)
     {
         ASObj item(2);
         item.FUN_1409c0e60("id", m_198[i].c_str());
         item.FUN_1409c0e60("label", m_198[i].c_str());
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(item);
+        spCombo.operator->()->AddItemRow(item);
     }
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
-    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    spCombo.operator->()->SetSelectedIndex(0);
+    ASDropdownMenu* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }
 
 // @0x140fb1040
 void UIUGCPortalDialog::FUN_140fb1040()
 {
-    MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
+    MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropDownTarget");
     if (spCombo == 0)
         return;
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->ClearItems();
+    spCombo.operator->()->ClearItems();
     {
         ASObj none(2);
         none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(none);
+        spCombo.operator->()->AddItemRow(none);
     }
     std::set<int>* pRemembered = reinterpret_cast<std::set<int>*>(&reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->GetPortalFields());
     Unk_UgcpEntryMap* pEntries = ((class Unk_UgcpMgr*)FUN_140cb17d0())->FUN_141b978c0();
@@ -379,24 +350,24 @@ void UIUGCPortalDialog::FUN_140fb1040()
         ASObj item(2);
         item.FUN_1407cbb20("id", StringFormat(L"{0}", nId));
         item.FUN_1407cbb20("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(item);
+        spCombo.operator->()->AddItemRow(item);
     }
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
-    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    spCombo.operator->()->SetSelectedIndex(0);
+    ASDropdownMenu* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }
 
 // @0x140fb15a0
 void UIUGCPortalDialog::FUN_140fb15a0()
 {
-    MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
+    MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropDownTarget");
     if (spCombo == 0)
         return;
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->ClearItems();
+    spCombo.operator->()->ClearItems();
     {
         ASObj none(2);
         none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(none);
+        spCombo.operator->()->AddItemRow(none);
     }
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
     CBuddyManager::GetInstance()->GetAllBuddies(buddies);
@@ -408,10 +379,10 @@ void UIUGCPortalDialog::FUN_140fb15a0()
         ASObj item(2);
         item.FUN_1407cbb20("id", strId);
         item.FUN_1407cbb20("label", buddies[i].get()->FUN_1401cc1c0());
-        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemRow(item);
+        spCombo.operator->()->AddItemRow(item);
     }
-    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
-    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    spCombo.operator->()->SetSelectedIndex(0);
+    ASDropdownMenu* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }
 

@@ -27,6 +27,7 @@
 #include "ms2/placeholder/ascorelist.h"
 
 #include "uiweddingguestdialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 #include "uiweddinginvitationdialog.h"
 #include "uiservice.h"
 #include "buddymanager.h"
@@ -62,17 +63,6 @@ public:
 };
 
 // The tab strip of the movie.
-class Unk_GsTab : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
 
 
 
@@ -341,17 +331,17 @@ void UIWeddingGuestDialog::FUN_140fcdc50(PagePtr spPage)
 // @0x140fcdcf0
 void UIWeddingGuestDialog::FUN_140fcdcf0()
 {
-    if (MS2Ptr<Unk_GsTab> spTab = FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
     {
-        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->FUN_1422e3400();
+        spTab->FUN_1422e3400();
         for (std::map<CString, PagePtr>::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
         {
             ASObj row(2);
             row.FUN_1407cba60("page", it->second->vfunc_6());
             row.FUN_1407cbb20("label", it->second->vfunc_7());
-            reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->AddItem(row);
+            spTab->AddItem(row);
         }
-        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(0);
+        spTab->SetSelectedIndex(0);
         spTab->vfunc_24(true);
     }
 }

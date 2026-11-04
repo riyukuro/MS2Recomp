@@ -10,6 +10,7 @@
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140d480a0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ?GetCount@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEBA_KXZ 0x140d47680
 // MS2-PIN: ?NewNode@?$CRBTree@IV?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@3@@ATL@@AEAAPEAVCNode@12@IAEBV?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@Z 0x140d48c00
 // MS2-PIN: ?InitHashTable@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@QEAA_NI_N@Z 0x140d484d0
 // MS2-PIN: ?Rehash@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@QEAAXI@Z 0x140d492a0

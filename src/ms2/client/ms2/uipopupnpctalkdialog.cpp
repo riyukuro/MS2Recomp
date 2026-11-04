@@ -1,6 +1,9 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UIPopupNpcTalkDialog: see uipopupnpctalkdialog.h.
 // MS2-UNIT: ?\uipopupnpctalkdialog.cpp
 // MS2-RANGE: 0x140e76460-0x140e78150 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??4?$Unk_ScriptPtr@VCTalkScript@@@@QEAAAEAV0@H@Z 0x140e77f50 ; unique
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipopupnpctalkdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uipopupnpctalkdialog.h"
@@ -42,7 +45,7 @@ struct Unk_PnContentPtr
     void* m_p;
 };
 typedef ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent>> Unk_PnContentArray;
-class Unk_PnTalkScript
+class Unk_PnTalkScript                                         // CTalkScript (talkscript.h; its scriptcontent.h clashes with cinematiccontent.h)
 {
 public:
     char m_pad[0x68];
@@ -53,7 +56,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PnUIMgr { public: };
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
+Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int n);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
@@ -70,7 +73,7 @@ UIPopupNpcTalkDialog::UIPopupNpcTalkDialog()
 {
     FUN_141924170(1);
     m_180 = 0;
-    m_188.FUN_140e77f50(0);
+    m_188 = 0;
     m_184 = 0;
     FUN_140bfc4b0()->FUN_141aa87c0(this);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIPopupNpcTalkDialog::FUN_140e770a0));
@@ -97,7 +100,7 @@ void UIPopupNpcTalkDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_184 = 0;
     m_180 = 0;
-    m_188.FUN_140e77f50(0);
+    m_188 = 0;
 }
 
 // @0x140e76ab0
@@ -276,10 +279,10 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         return 0;
     if (m_188.IsNull())
         return 0;
-    if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.GetCount())
+    if (m_180 >= (int)((Unk_PnTalkScript*)m_188.operator->())->m_contents.GetCount())
         return 2;
     int nDone = ((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184);
-    CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)reinterpret_cast<const Unk_PnContentPtr&>(m_188.FUN_14085a610()->m_contents[m_180]).FUN_140e78000());
+    CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)reinterpret_cast<const Unk_PnContentPtr&>(((Unk_PnTalkScript*)m_188.operator->())->m_contents[m_180]).FUN_140e78000());
     if (pCin != 0)
         static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setPortrait", pCin->m_speakerIllust);
     CStringW strNpc;
@@ -290,11 +293,11 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setNpc", strNpc);
     if (MS2Ptr<ASTextField> spScript = GetChild<ASTextField>("m_script"))
     {
-        CStringW strText = m_188.FUN_14085a610()->m_contents[m_180]->m_name;
+        CStringW strText = ((Unk_PnTalkScript*)m_188.operator->())->m_contents[m_180]->m_name;
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         spScript->SetTextHTMLW(strText);
     }
-    BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.GetCount() - 1);
+    BOOL bLast = m_180 == (int)(((Unk_PnTalkScript*)m_188.operator->())->m_contents.GetCount() - 1);
     if (MS2Ptr<ASButton> spEnd = GetChild<ASButton>("m_end"))
     {
         if (!bLast)
@@ -346,9 +349,3 @@ UIFameContentsNotify* FUN_140e77d80(int nType)
     return 0;
 }
 
-// @0x140e77f50
-Unk_PnScriptPtr& Unk_PnScriptPtr::FUN_140e77f50(int)
-{
-    FUN_140790930();
-    return *this;
-}

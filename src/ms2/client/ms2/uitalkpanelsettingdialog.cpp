@@ -55,7 +55,6 @@ struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 class Unk_140166410* FUN_140166410();
 class Unk_TpsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-CommonString* FUN_14025e7d0();
 CStringW BlockFormat(int nStringId);
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTag);
@@ -291,7 +290,7 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
     else
     {
         CStringW strMessage;
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         {
             if (pChecker->FUN_140225f70(strName, strMessage) != 0)
             {

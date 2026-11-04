@@ -5,6 +5,8 @@
 // MS2-RANGE: 0x1400be020-0x1400be110 .text$di
 // MS2-RANGE: 0x1408c3140-0x1408d1c50 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31a0
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31c0
 // MS2-PIN: memmove_s 0x1408d1ab0
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$TSingleton@VUnlimitedEnchantTable@@@@@ 0x142da3040
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$CValidData@VUnlimitedEnchantTable@@@@@ 0x142da3050

@@ -53,6 +53,7 @@
 #include <NiShaderFactory.h>
 #include <NiGlobalConstantEntry.h>
 #include <NiNode.h>
+#include <NiViewRenderClick.h>
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/client/ms2/fielddatacli.h"
@@ -97,6 +98,7 @@
 #include "ms2/placeholder/asbutton.h"  // C3: AScript::FUN_140bbe640<ASButton>
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/placeholder/astextinput.h"  // C3: ASTextInput::FUN_1422e0ab0
+#include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
 
 class PCBase;
 class UIPcBangDialog;
@@ -148,12 +150,6 @@ public:
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-
-class Unk_HudUIMgr
-{
-public:
-    float FUN_141adbe70();                                                      // the ui scale
-};
 
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_HudPackets
@@ -1192,7 +1188,6 @@ class NiDX9TextureData   // C3: member view for the former free stand-ins
 public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
-void FUN_14272b7f0(void* pTarget, void* pTex);
 
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 float FUN_14028aed0(float f);                                                   // round
@@ -1204,7 +1199,8 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 
-class Unk_HudUrlCfg { public: CString& FUN_140298f80(); };
+namespace Common { namespace Constants { template<class T> class Value { public: T* Get(); }; } }   // C3: Value<CString>::Get 0x140298f80
+class Unk_HudUrlCfg { };   // a Common::Constants::Value<CString> (Client::Constants::VisitorBookURL)
 class Unk_HudClientData
 {
 public:
@@ -1246,7 +1242,7 @@ CString UIVisitorsBookDialog::GetTypeName()
 void UIVisitorsBookDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     int nWidth = (int)(__int64)(1290.0f / fScale);
     int nHeight = (int)(__int64)(1290.0f / fScale);
     FUN_14135eda0(nWidth, nHeight);
@@ -1313,7 +1309,7 @@ bool UIVisitorsBookDialog::vfunc_90(POINT* pPos)
 // @0x14135bb70
 const char* FUN_14135bb70(Unk_HudUrlCfg* pCfg)
 {
-    return pCfg->FUN_140298f80();
+    return *reinterpret_cast<Common::Constants::Value<CString>*>(pCfg)->Get();
 }
 
 // @0x14135bc10
@@ -1336,7 +1332,6 @@ public:
 class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; bool m_bOutGlow; };      // +0x1e outer glow
 
 // The post process service (0x1409a8b20) and the post effect manager (0x1409a8b00).
-class Unk_HudPPEffect;
 class Unk_PostProcessSvc : public PostProcessingService
 {
 public:
@@ -1423,20 +1418,6 @@ public:
 Unk_HudMotionBlur* FUN_14135dd70(Unk_HudMotionBlurPtr* p);
 Unk_HudMotionBlur* FUN_14135dd80(Unk_HudMotionBlurPtr* p);
 
-// The effect behind the post process step (the smart pointer FUN_1409a74a0 / FUN_1409a7b30).
-class Unk_HudPPEffectPtr
-{
-public:
-    Unk_HudPPEffectPtr(Unk_HudPPEffect* p);                                     // 0x1409a74a0
-    ~Unk_HudPPEffectPtr();                                                      // 0x1409a7b30
-    Unk_HudPPEffect* m_p;
-};
-Unk_HudPPEffect* FUN_14135dd90(Unk_HudPPEffectPtr* p);
-class NiViewRenderClick   // C3: member view for the former free stand-ins
-{
-public:
-    class NiRenderListProcessor* GetProcessor() const;
-};
 Unk_HudMotionBlur* FUN_14135de30(const NiRTTI* pRTTI, NiObject* pObject);
 Unk_HudMotionBlur* FUN_14135dde0(NiObject* pObject, const NiRTTI* pRTTI);
 bool FUN_14135df60(NiObject* pObject, const NiRTTI* pRTTI);
@@ -1490,8 +1471,8 @@ void UIVisualEffectDialog::OnLoadComplete()
     bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(7);
     obj.FUN_1407cbbe0("blackAndWhiteEnable", bEnable);
     {
-        Unk_HudPPEffectPtr spEffect(((class Unk_HudPPEffect*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
-        Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
+        efd::SmartPointer<NiViewRenderClick> spEffect(((class NiViewRenderClick*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
+        Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((NiViewRenderClick*)spEffect)->GetProcessor())));
         bool bAll = false;
         if (FUN_14135dd70(&spBlur) != 0)
             bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
@@ -1923,8 +1904,8 @@ void UIVisualEffectDialog::SetSliderValue(const CString& strName, float fValue)
 // @0x14135d9d0
 void FUN_14135d9d0(int nMode)
 {
-    Unk_HudPPEffectPtr spEffect(((class Unk_HudPPEffect*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
-    Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
+    efd::SmartPointer<NiViewRenderClick> spEffect(((class NiViewRenderClick*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
+    Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((NiViewRenderClick*)spEffect)->GetProcessor())));
     if (FUN_14135dd70(&spBlur) != 0)
         FUN_14135dd80(&spBlur)->SetMode(nMode);
     bool bOk = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(10);
@@ -2013,12 +1994,6 @@ Unk_HudMotionBlur* FUN_14135dd70(Unk_HudMotionBlurPtr* p)
 
 // @0x14135dd80
 Unk_HudMotionBlur* FUN_14135dd80(Unk_HudMotionBlurPtr* p)
-{
-    return p->m_p;
-}
-
-// @0x14135dd90
-Unk_HudPPEffect* FUN_14135dd90(Unk_HudPPEffectPtr* p)
 {
     return p->m_p;
 }
@@ -2149,13 +2124,12 @@ float Unk_ShaderVec4::FUN_14135e1a0() const
 
 // ==== UIWeaponDummyDialog ====
 
-#define DAT_143b01a60 (*(Unk_HudStreamPoint*)&efd::Point3::ZERO)          // C3: was extern Unk_HudStreamPoint DAT_143b01a60
 extern char DAT_143aad1e0;
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
 // @0x14135e1c0
 UIWeaponDummyDialog::UIWeaponDummyDialog()
-    : m_rotation(&DAT_143b01a60), m_translation(&DAT_143b01a60)
+    : m_rotation(efd::Point3::ZERO), m_translation(efd::Point3::ZERO)
 {
     m_40 = 1;
 }
@@ -2222,11 +2196,11 @@ CString UIWeaponDummyDialog::FUN_14135e570()
 // @0x14135e660
 void UIWeaponDummyDialog::FUN_14135e660(ASData& data)
 {
-    Unk_HudStreamPoint kRot;
+    NiPoint3 kRot;
     kRot.x = (float)data.PopInt();
     kRot.y = (float)data.PopInt();
     kRot.z = (float)data.PopInt();
-    kRot = kRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
+    kRot = kRot * 3.14159274f / 180.0f;
     m_rotation = kRot;
     FUN_14135e880(FUN_14135e570(), kRot, m_translation);
 }
@@ -2234,7 +2208,7 @@ void UIWeaponDummyDialog::FUN_14135e660(ASData& data)
 // @0x14135e7a0
 void UIWeaponDummyDialog::FUN_14135e7a0(ASData& data)
 {
-    Unk_HudStreamPoint kTrans;
+    NiPoint3 kTrans;
     kTrans.x = (float)data.PopInt();
     kTrans.y = (float)data.PopInt();
     kTrans.z = (float)data.PopInt();
@@ -2243,7 +2217,7 @@ void UIWeaponDummyDialog::FUN_14135e7a0(ASData& data)
 }
 
 // @0x14135e880
-void UIWeaponDummyDialog::FUN_14135e880(const CString& strNode, const Unk_HudStreamPoint& kRot, const Unk_HudStreamPoint& kTrans)
+void UIWeaponDummyDialog::FUN_14135e880(const CString& strNode, const NiPoint3& kRot, const NiPoint3& kTrans)
 {
     if (strNode.IsEmpty())
         return;
@@ -2350,7 +2324,7 @@ void UIWebBrowserBase::vfunc_87(SIZE* pSize)
 {
     if (m_30 == 0)
         return;
-    float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     pSize->cx = (int)FUN_14028aed0((float)m_30->Invoke("getViewWidth").GetInt() / fScale);
     pSize->cy = (int)FUN_14028aed0((float)m_30->Invoke("getViewHeight").GetInt() / fScale);
 }
@@ -2396,7 +2370,7 @@ void UIWebBrowserBase::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
         {
             void* pTarget = p2->vfunc_24(p3);
             if (pTarget != 0)
-                FUN_14272b7f0(pTarget, ((void*)((class NiDX9TextureData*)(class Unk_HudBrowserTex*)(pTex))->GetD3DTexture()));
+                reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((class NiDX9TextureData*)(class Unk_HudBrowserTex*)(pTex))->GetD3DTexture()));
         }
     }
 }
@@ -2419,7 +2393,7 @@ int UIWebBrowserBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             float fWidth = data.PopFloat();
             float fHeight = data.PopFloat();
-            float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+            float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
             m_size.cx = (int)FUN_14028aed0(fWidth / fScale);
             m_size.cy = (int)FUN_14028aed0(fHeight / fScale);
             reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);

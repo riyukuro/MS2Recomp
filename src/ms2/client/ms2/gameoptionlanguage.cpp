@@ -24,13 +24,6 @@ template <> MS2Ptr<ASDropdownMenu> Unk_BpCreate<ASDropdownMenu>(int nMovieId, co
 
 // ---- unit-local placeholders ----
 
-// The drop down control (a list component of the option swf).
-class Unk_LgProv
-{
-public:
-    ASObj FUN_1422df140(int nIndex);                            // the row at the index
-};
-
 // View of the option dialog: the option id at +0x28 and the AS root at +0x30.
 struct Unk_LgDialog
 {
@@ -192,7 +185,7 @@ void CGameOptionLanguage::vfunc_7()
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
         if (((void*)list.get()) != 0)
         {
-            ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
+            AScript item = list->GetDataProvider().operator->()->FUN_1422df140(list->GetSelectedIndex());
             if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nLanguage = item.GetMember("index").GetInt();
         }
@@ -201,7 +194,7 @@ void CGameOptionLanguage::vfunc_7()
         RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
         if (((void*)list.get()) != 0)
         {
-            ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
+            AScript item = list->GetDataProvider().operator->()->FUN_1422df140(list->GetSelectedIndex());
             if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nVoice = item.GetMember("index").GetInt();
         }
@@ -287,7 +280,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     list->AddItemRow(item);
                 }
                 if (row->m_languages.GetCount() <= 3)
-                    list->FUN_1422df5f0((unsigned int)row->m_languages.GetCount());
+                    list->SetMenuRowCount((unsigned int)row->m_languages.GetCount());
                 if (row->m_languages.GetCount() == 1)
                     list->FUN_1422c1fe0(0);
             }
@@ -307,7 +300,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     item.FUN_1407cbb20("label", FUN_140cfca90(CString(strRegion)));
                     item.FUN_1407cb9c0("index", 0);
                     list->AddItemRow(item);
-                    list->FUN_1422df5f0(1);
+                    list->SetMenuRowCount(1);
                     list->SetSelectedIndex(0);
                     list->FUN_1422c1fe0(0);
                 }
@@ -322,7 +315,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                         list->AddItemRow(item);
                     }
                     if (row->m_regions.GetCount() <= 3)
-                        list->FUN_1422df5f0((unsigned int)row->m_regions.GetCount());
+                        list->SetMenuRowCount((unsigned int)row->m_regions.GetCount());
                     if (row->m_regions.GetCount() == 1)
                         list->FUN_1422c1fe0(0);
                 }
@@ -342,7 +335,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     list->AddItemRow(item);
                 }
                 if (row->m_voices.GetCount() <= 3)
-                    list->FUN_1422df5f0((unsigned int)row->m_voices.GetCount());
+                    list->SetMenuRowCount((unsigned int)row->m_voices.GetCount());
                 if (row->m_voices.GetCount() == 1)
                     list->FUN_1422c1fe0(0);
             }

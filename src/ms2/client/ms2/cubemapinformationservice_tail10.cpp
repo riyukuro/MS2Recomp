@@ -5,6 +5,10 @@
 // MS2-UNIT: unit_1410d6a30
 // MS2-RANGE: 0x1410d6a30-0x1410dbc10 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??$?0V?$tuple@AEBVEntityID@egf@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBVEntityID@egf@@_J@std@@QEAA@AEAV?$tuple@AEBVEntityID@egf@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db180
+// MS2-PIN: ??$?0U_Exact_args_t@std@@AEAJ$$V$0A@@?$tuple@AEBJ@std@@QEAA@U_Exact_args_t@1@AEAJ@Z 0x1410d9da0
+// MS2-PIN: ??$?0AEAJ@?$_Tuple_val@AEBJ@std@@QEAA@AEAJ@Z 0x1410d9c50
+// MS2-PIN: ??$?0AEBU?$pair@HH@std@@$0A@@?$tuple@AEBU?$pair@HH@std@@@std@@QEAA@AEBU?$pair@HH@1@@Z 0x1410d9c00
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@HPEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1410d6a30 ; prop
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1410d6a70 ; prop

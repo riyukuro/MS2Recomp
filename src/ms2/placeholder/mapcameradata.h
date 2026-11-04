@@ -10,9 +10,6 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 
-// The exe's CPtred assignment (0x1404efd80, ICF-folded `return this`): the reference count is never copied.
-CPtred* FUN_1404efd80(CPtred* pThis, const CPtred* pOther);
-
 // 0x38 bytes. vftable 0x142dd5ca8 (2 slots: ~CMapCameraData, vfunc_1 = load from the XML row).
 class CMapCameraData : public CPtred
 {
@@ -26,7 +23,7 @@ public:
     // @0x140a38b90
     CMapCameraData& operator=(const CMapCameraData& o)
     {
-        FUN_1404efd80(this, &o);
+        CPtred::operator=(o);
         m_18 = o.m_18;
         m_distance = o.m_distance;
         m_vAngle = o.m_vAngle;

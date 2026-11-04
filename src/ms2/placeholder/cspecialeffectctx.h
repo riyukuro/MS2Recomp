@@ -8,6 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cxmldata.h"
+#include "ms2/placeholder/ascript.h"   // MS2Ptr<CXmlData>
 
 // The attribute bag the ctx points at (block of Table/ attributes). The int getter is the one in itemdatastruct.cpp
 // (0x14054c530); the float getter is CXmlData::FUN_1408276a0 (specialeffectfunctionmanager.cpp). Both look the name up
@@ -15,7 +16,6 @@
 class Unk_SEAttrMap
 {
 public:
-    bool FUN_1403ef5f0(const wchar_t* szName, CStringW& strValue);      // 0x1403ef5f0 (map find)
     char m_unk;
 };
 
@@ -31,19 +31,6 @@ private:
 };
 MS2_CHECK_OFFSET(Unk_SEParam, m_attrs, 0x18);
 
-// 16-byte smart pointer to Unk_SEParam (an MS2Ptr shape; its ctor/dtor are out of line in other units).
-class Unk_SEParamPtr
-{
-public:
-    Unk_SEParamPtr();                   // 0x1401822f0
-    ~Unk_SEParamPtr();                  // 0x1401836d0
-    Unk_SEParam* FUN_140194790() const; // 0x140194790: returns m_p
-private:
-    void* m_unk_00;
-    Unk_SEParam* m_p;                   // +0x08
-};
-MS2_CHECK_SIZE(Unk_SEParamPtr, 0x10);
-
 class CSpecialEffectCtx : public CPtred
 {
 public:
@@ -53,14 +40,14 @@ public:
 
     // The function manager looks the effect function up by this id (+0x18) and hands it the ctx.
     int m_nKind;                        // +0x18
-    Unk_SEParamPtr m_pParam;            // +0x20
+    MS2Ptr<CXmlData> m_pParam;          // +0x20 the attribute block (ctor 0x1401822f0, dtor 0x1401836d0)
     int m_n30;                          // +0x30
 
     // Attribute getters (names invented). The name is taken by value (the callee destroys it).
     // @0x140827740
-    int GetInt(CStringW strName, int* pnDefault) { return m_pParam.FUN_140194790()->FUN_14054c530(strName, pnDefault); }
+    int GetInt(CStringW strName, int* pnDefault) { return reinterpret_cast<Unk_SEParam*>(m_pParam.operator->())->FUN_14054c530(strName, pnDefault); }
     // @0x1408277a0
-    float GetFloat(CStringW strName, float* pfDefault) { return reinterpret_cast<CXmlData*>(m_pParam.FUN_140194790())->FUN_1408276a0(strName, pfDefault); }
+    float GetFloat(CStringW strName, float* pfDefault) { return m_pParam.operator->()->FUN_1408276a0(strName, pfDefault); }
 };
 MS2_CHECK_SIZE(CSpecialEffectCtx, 0x38);
 MS2_CHECK_OFFSET(CSpecialEffectCtx, m_nKind, 0x18);

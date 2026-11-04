@@ -68,7 +68,6 @@ void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);   
 void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Vector3 pt);   // SetPointAttribute
 void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 float FUN_140a38cd0(float f);                       // fabs
 
@@ -131,13 +130,13 @@ void CEditCameraMode::vfunc_8(double fTime)
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
-        FUN_140a01190(&kRot, 0, &ptRight);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptRight));
         ptRight.FUN_140968990();
         Vector3 ptUp;
-        FUN_140a01190(&kRot, 1, &ptUp);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(1, reinterpret_cast<efd::Point3&>(ptUp));
         ptUp.FUN_140968990();
         Vector3 ptForward;
-        FUN_140a01190(&kRot, 2, &ptForward);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptUp.FUN_14097fc90(m_78.z)).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));

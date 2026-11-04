@@ -102,9 +102,7 @@ class Unk_FdPlotMgr {};
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-struct Unk_FdKey { int a, b; Unk_FdKey(const Unk_FdKey&); Unk_FdKey& operator=(const Unk_FdKey&); };   // the doll's plot key (8 bytes, returned by value)
-struct Unk_FdDollView { Unk_FdKey FUN_14123c460(); };       // FittingDollPC: the plot key of the doll
-Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, Unk_FdKey key);   // by value (the exe builds the key in an argument temp)
+Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, egf::EntityID kId);   // by value (the exe builds the key in an argument temp)
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
@@ -375,7 +373,7 @@ void UIFittingDollDialog::FUN_141934070()
         return;
     int bOwner = 0;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
+    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, pDoll->FUN_14123c460());
     if (pPlot != 0)
         bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
     bool bEquip = pDoll->FUN_14121c710() == 1;
@@ -421,7 +419,7 @@ int UIFittingDollDialog::FUN_141934430()
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
+    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, pDoll->FUN_14123c460());
     if (pPlot == 0)
         return 0xd;
     if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())

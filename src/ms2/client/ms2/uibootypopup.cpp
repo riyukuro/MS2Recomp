@@ -22,6 +22,7 @@
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/camera.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/commonfiles/objectdata.h"   // C3: CObjectData, FUN_140704ec0
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -45,17 +46,9 @@ public:
     int m_nEffectId;                    // +0x1e0
 };
 MS2_CHECK_OFFSET(CItemData, m_nEffectId, 0x1e0);
-class Unk_BootyEffect : public CPtred
-{
-public:
-    char m_pad_18[0x188 - 0x18];
-    int m_nSkillId;                     // +0x188
-    unsigned short m_nSkillLevel;       // +0x18c
-};
-MS2_CHECK_OFFSET(Unk_BootyEffect, m_nSkillId, 0x188);
-MS2_CHECK_OFFSET(Unk_BootyEffect, m_nSkillLevel, 0x18c);
+static_assert(offsetof(CObjectData, m_cube.m_firstEffect.m_nEffectId) == 0x188, "the skill id read at +0x188");
+static_assert(offsetof(CObjectData, m_cube.m_firstEffect.m_nLevel) == 0x18c, "the skill level read at +0x18c");
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-MS2Ptr<Unk_BootyEffect> FUN_140704ec0(int nEffectId);
 // AS invoker on the popup's movie clip (instance of the AScript::Invoke template).
 class ASDialog { public: class Scaleform::GFx::Value FUN_140e78470(char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_BootyMovie : public ASDialog {
 public:
@@ -211,11 +204,11 @@ void UIBootyPopup::FUN_141031a60(int bShow)
             MS2Ptr<CItemData> spItem = FUN_14053f870(m_88);
             if (spItem.get() != 0)
             {
-                MS2Ptr<Unk_BootyEffect> spEffect = FUN_140704ec0(spItem->m_nEffectId);
+                CObjectDataPtr spEffect = FUN_140704ec0(spItem->m_nEffectId);
                 if (spEffect.get() != 0)
                 {
-                    int nSkillId = spEffect->m_nSkillId;
-                    unsigned short nSkillLevel = spEffect->m_nSkillLevel;
+                    int nSkillId = spEffect->m_cube.m_firstEffect.m_nEffectId;
+                    unsigned short nSkillLevel = spEffect->m_cube.m_firstEffect.m_nLevel;
                     strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
                     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nSkillLevel);
                     if (spAttr.get() != 0)

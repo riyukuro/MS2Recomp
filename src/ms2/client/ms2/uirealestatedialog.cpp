@@ -51,7 +51,6 @@ static CString s_strStun = "stun";
 
 // ---- unit-local views of exe types ----
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_ReWorld { public: MyPC* FUN_141bd0cc0(); };                // the local player
 
 // The user report record (ctor 0x140c74fc0, 0x118 bytes; the same view as uicommon.cpp).
@@ -319,7 +318,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 1;
-    if (CBanTextChecker* pFilter = ((class CommonString*)FUN_14025e7d0())->GetChecker())
+    if (CBanTextChecker* pFilter = ((class CommonString*)TSingleton<CommonString>::GetInstance())->GetChecker())
     {
         CStringW strError;
         if (pFilter->CheckHomeName(strName, strError) == 0)

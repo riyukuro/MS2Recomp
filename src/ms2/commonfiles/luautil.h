@@ -13,8 +13,8 @@
 struct lua_State;
 class CIngredientContainer;
 
-// The game links its own Lua 5.1 (0x142391870..0x142394830); progress/symbols-engine.tsv only knows the Gamebryo copy
-// at 0x1421e2f90.., so the entry points are the unnamed FUN_<va> of that second copy.
+// The game links its own Lua 5.1 (0x142391870..0x142394830); these are its entry points (luaL_loadbuffer 0x142394530,
+// luaL_loadfile 0x142394560).
 #define LUA_GLOBALSINDEX (-10002)
 #define LUA_MULTRET (-1)
 extern "C" {                                                            // C linkage: nothrow under /EHsc, as in the exe
@@ -34,12 +34,10 @@ long long lua_tointeger(lua_State*, int);
 const char* lua_tolstring(lua_State*, int, size_t*);
 double lua_tonumber(lua_State*, int);
 void luaL_openlibs(lua_State*);
-int FUN_142394530(lua_State*, const char*, size_t, const char*);        // luaL_loadbuffer
-int FUN_142394560(lua_State*, const char*);                             // luaL_loadfile
+int luaL_loadbuffer(lua_State*, const char*, size_t, const char*);
+int luaL_loadfile(lua_State*, const char*);
 lua_State* luaL_newstate();
 }
-#define luaL_loadbuffer FUN_142394530
-#define luaL_loadfile FUN_142394560
 
 // The argument block of the OffenseScore / DefenseScore formulas (offsets from the push order; sizes unproved).
 struct Unk_OffenseScore

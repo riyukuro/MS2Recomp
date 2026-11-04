@@ -81,6 +81,7 @@ public:
     int FUN_141660030();
     short FUN_141663b50();
 };
+class MyPC { public: bool FUN_1415275b0(short nKind); };   // C3: member view (the burning event is active for nKind)
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view
 
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
@@ -272,7 +273,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         case NAMETAG_CONDITION_ADVENTURE_LEVEL:
             return pActor->vfunc_141() >= 100;
         case NAMETAG_CONDITION_BURNING:
-            return pActor->FUN_1415275b0(nId);
+            return reinterpret_cast<MyPC*>(pActor)->FUN_1415275b0(nId);
         case NAMETAG_CONDITION_SURVIVAL_LEVEL:
             return (unsigned short)reinterpret_cast<PC*>(pActor)->FUN_141663b50() >= 5;
         }

@@ -9,7 +9,7 @@
 typedef Unk_CommonPosition Unk_PDVec3;   // C3: was a local struct with its own ctor decl
 
 // Placeholder: real class unrecovered (0x40 bytes); ctor 0x140266860, dtor 0x14027e920.
-class QuestMask {
+struct QuestMask {   // the exe names it struct QuestMask (questmasktable.h)
 public:
     QuestMask();
     virtual ~QuestMask();

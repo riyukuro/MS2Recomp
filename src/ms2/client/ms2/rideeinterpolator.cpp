@@ -55,14 +55,14 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
     efd::SmartPointer<Ridee> spRidee(pBody->FUN_1416764a0());
     if (spRidee == 0)
         return false;
-    MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
+    MS2SvrPtr<CRideeData> spData = spRidee->GetData();
     if (spData == 0)
         return false;
     efd::SmartPointer<NiNode> spNode(NiDynamicCast(NiNode, pkInterpTarget));
     NiAVObject* pRoot = FUN_141b6ef70(pBody->FUN_14123c460());
     if ((spNode ? true : false) && pRoot != 0)
     {
-        MS2Ptr<Unk_RideeModel> spModel = spData->FUN_140784970();
+        Unk_RiderPtr spModel = spData->FUN_140784970();
         if (spModel == 0)
             return false;
         NiTransform kXform = ((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetLocalTransform();
@@ -74,7 +74,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         NiPoint3 kPos = kXform.m_Translate;
         NiMatrix3 kRot = kXform.m_Rotate;
         efd::Point3 kEuler;
-        efd::Point3 kSeatRot(spModel->m_fRotX, spModel->m_fRotY, spModel->m_fRotZ);
+        efd::Point3 kSeatRot(spModel->m_vRotation.x, spModel->m_vRotation.y, spModel->m_vRotation.z);
         NiMatrix3 kSeat;
         FUN_140b86230(kSeatRot, kSeat);
         kRot = kRot * kSeat;
@@ -88,9 +88,9 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         efd::Point3 kZ;
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(2, *(class efd::Point3*)(&kZ));
         ((struct Vector3*)&(kZ))->FUN_140968990();
-        kPos = kPos + kY * -spModel->m_fY;
-        kPos = kPos + kX * (0, spModel->m_fX);
-        kPos = kPos + kZ * (0, spModel->m_fZ);
+        kPos = kPos + kY * -spModel->m_vTranslation.y;
+        kPos = kPos + kX * (0, spModel->m_vTranslation.x);
+        kPos = kPos + kZ * (0, spModel->m_vTranslation.z);
         ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetTranslate(kPos);
         ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetRotate(kRot);
         ((class NiAVObject*)(void*)(pRoot))->UpdateEffects();

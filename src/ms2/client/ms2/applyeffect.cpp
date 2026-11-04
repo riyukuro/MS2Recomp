@@ -4,6 +4,7 @@
 // MS2-UNIT: ?\applyeffect.cpp
 // MS2-RANGE: 0x1409a36c0-0x1409ab110 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??0?$SmartPointer@VNiAVObject@@@efd@@QEAA@PEAVNiAVObject@@@Z 0x1409a7520
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCScreenEffectBase@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCScreenEffectBase@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1409a5490 ; unique
 // MS2-PIN: ??$?0AEBH$0A@@?$tuple@AEBH@std@@QEAA@AEBH@Z 0x1409a5530 ; unique

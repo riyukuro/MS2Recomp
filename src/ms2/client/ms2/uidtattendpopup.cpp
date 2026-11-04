@@ -79,10 +79,10 @@ MS2_REPLACE_METHOD(0x140C03F70, UIDTAttendPopup, vfunc_26, 87, 0x322058B9);
 void UIDTAttendPopup::vfunc_72(){if(!FUN_141924630())return;if(!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))return;{Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0||e->IsCheckedInToday()){vfunc_67();return;}unsigned remain=e->FUN_140ce3a20();if(remain==0)Request();else SetTime(remain);}}
 MS2_REPLACE_METHOD(0x140C03FD0, UIDTAttendPopup, vfunc_72, 233, 0xFA61125E);
 // @0x140c040c0
-void UIDTAttendPopup::AddEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.insert(std::make_pair((unsigned long)e->FUN_1402e1d00(),e));RefreshVisibility();}
+void UIDTAttendPopup::AddEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.insert(std::make_pair((unsigned long)e->GetID(),e));RefreshVisibility();}
 MS2_REPLACE_METHOD(0x140C040C0, UIDTAttendPopup, AddEntry, 207, 0x963AF570);
 // @0x140c041a0
-void UIDTAttendPopup::RemoveEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.erase(e->FUN_1402e1d00());RefreshVisibility();}
+void UIDTAttendPopup::RemoveEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.erase(e->GetID());RefreshVisibility();}
 MS2_REPLACE_METHOD(0x140C041A0, UIDTAttendPopup, RemoveEntry, 132, 0x8442B6F4);
 // @0x140c04230
 void UIDTAttendPopup::RefreshVisibility(){if(CanShow()){if(!FUN_141924630())FUN_141924680();}else if(FUN_141924630())vfunc_67();}
@@ -103,7 +103,7 @@ MS2_REPLACE_METHOD(0x140C04550, UIDTAttendPopup, CanShow, 220, 0x2442908C);
 void UIDTAttendPopup::OnPacket(CInPacket& p){int code=(&reinterpret_cast<Unk_DTInputPrefix*>(&p)->stream)->vfunc_1();if(code==3)RefreshVisibility();}
 MS2_REPLACE_METHOD(0x140C04640, UIDTAttendPopup, OnPacket, 77, 0x9BCCDA46);
 // @0x140c046a0
-void UIDTAttendPopup::OnClick(const Scaleform::GFx::FunctionHandler::Params&){Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return;UIAttendGiftDialog* dlg=FindDTDialog<UIAttendGiftDialog>(0x4eb8);if(dlg&&dlg->SelectRequestedEvent(e->FUN_1402e1d00()))dlg->FUN_141924680();}
+void UIDTAttendPopup::OnClick(const Scaleform::GFx::FunctionHandler::Params&){Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return;UIAttendGiftDialog* dlg=FindDTDialog<UIAttendGiftDialog>(0x4eb8);if(dlg&&dlg->SelectRequestedEvent(e->GetID()))dlg->FUN_141924680();}
 MS2_REPLACE_METHOD(0x140C046A0, UIDTAttendPopup, OnClick, 156, 0x7C250258);
 // @0x140c04750
 void UIDTAttendPopup::OnEvent(GameEventVariable*){RefreshVisibility();}

@@ -15,7 +15,6 @@
 #include "ms2/client/ms2/uidialog.h"
 
 class CInPacket;
-class Unk_UgcpCombo;
 
 class UIUGCPortalDialog : public UIDialog
 {
@@ -34,7 +33,6 @@ public:
     void FUN_140fb1040();                                       // 0x140fb1040 fill the drop down: remembered UGC maps
     void FUN_140fb15a0();                                       // 0x140fb15a0 fill the drop down: friends
     bool FUN_140fb1860(int nType);                              // 0x140fb1860 a map type that has portal targets
-    template <class T> MS2Ptr<T> FUN_140c28560(const CString& strName);   // 0x140c28560 bind a child of the movie
     template <class T> MS2Ptr<T> FUN_140e48d80(const CString& strName, MS2Ptr<T>* pOut);   // 0x140e48d80 bind a text child
 
 private:

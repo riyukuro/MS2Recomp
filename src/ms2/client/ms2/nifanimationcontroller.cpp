@@ -19,8 +19,6 @@
 
 // Unrecovered callees (real types unknown).
 
-void* FUN_14098de00(void* o, void** it);
-void* FUN_140993f00(void* o);
 
 #include <ecr/SceneGraphService.h>
 ecr::SceneGraphService* FUN_1413f98b0();
@@ -143,7 +141,7 @@ void FUN_141545080(int value, void* node)
         void* pSwitch = node;   // the exe's static cast to the switch-node type
         void* it = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(void*)(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList())))->GetHeadPos();
         while (it != 0) {
-            void* ch = FUN_140993f00(FUN_14098de00(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList()), &it));
+            void* ch = (NiProperty*)((class NiAVObject*)(void*)(pSwitch))->GetPropertyList().GetNext(it);
             if (ch != 0 && ((void*)((class NiObjectNET*)(void*)(ch))->GetControllers()) != 0)
                 FUN_141545080(value, ch);
         }
@@ -174,12 +172,12 @@ void FUN_1415451d0(int value, void* entityId)
 }
 
 // @0x141545250
-void FUN_141545250(void* entityId, int mode)
+void FUN_141545250(egf::EntityID kId, int mode)
 {
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
+    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(kId);
     if (ent == 0)
         return;
     void* n = ((ecr::SceneGraphService*)sg)->GetSceneGraphFromEntity((egf::Entity const*)ent);

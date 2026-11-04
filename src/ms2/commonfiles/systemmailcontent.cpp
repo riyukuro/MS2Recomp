@@ -62,6 +62,8 @@ CSystemMailContent::~CSystemMailContent()
 {
 }
 
+CLogString* GetLogString();   // the game log (0x140166440)
+
 // The log call with one string argument (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 // @0x140851fc0
 template <class T> inline void Unk_SmLog(CLogString* log, int level, int category, const wchar_t* format, const T& first)
@@ -87,7 +89,7 @@ void LoadSystemMailContent()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        Unk_SmLog(CLogString::GetInstance(), 1, 0x13, MS2_SM_XML_ERR, "systemMailContent.xml");
+        Unk_SmLog(GetLogString(), 1, 0x13, MS2_SM_XML_ERR, "systemMailContent.xml");
         return;
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))

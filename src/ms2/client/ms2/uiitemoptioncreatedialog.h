@@ -15,8 +15,6 @@
 class ASObj;
 class ASUIComponent;
 class ASScrollingList;
-class Unk_CoupleInput;
-class Unk_PsCombo;
 
 class UIItemOptionCreateDialog : public UIDialog
 {
@@ -36,8 +34,6 @@ public:
     void FUN_1412d3740();                                       // fill the random option table of the item / rank
     void FUN_1412d3a60();                                       // fill the constant option result of the item / rank
     void FUN_1412d3c10(const CString& strGroup, const CStringW& strSearch);    // fill the item list (group / search filter)
-    MS2Ptr<Unk_PsCombo> FUN_140c28560(const CString& strName);          // child "m_itemGrade"
-    MS2Ptr<Unk_CoupleInput> FUN_140e35bd0(const CString& strName);      // child "m_searchInput"
 
 protected:
     MS2_LAYOUT_FRIEND;

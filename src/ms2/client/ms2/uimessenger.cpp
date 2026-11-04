@@ -303,6 +303,7 @@
 // MS2-PIN: ?size@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEBA_KXZ 0x141a30dd0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??1CAtlStringMgr@ATL@@UEAA@XZ 0x141a23c10
 //
 // Two original TUs: the window (0x141a08af0-0x141a20f80, members up to 0x141a17e20, then its container glue) and the
 // browser (0x141a20f90-), each with its own COMDAT copies of the glue.
@@ -339,7 +340,6 @@
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/commonfiles/commonstringtable.h"
-CommonString* FUN_14025e7d0();   // the CommonString instance
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -496,11 +496,10 @@ public:
 };
 class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 TiXmlElement* XmlChild(TiXmlElement* pParent, const char* szName, bool bCreate);   // child element (created on request)
-void* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);       // FirstChildElement
-void* FUN_140165cf0(void* pNode, const char* szName);               // FirstChildElement
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
+    class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
@@ -669,7 +668,7 @@ int UIMessenger::vfunc_5()
         return 0;
     m_78 = 0;
     void* pNode;
-    void* pDead = pNode = FUN_140165cf0(&m_doc, GetTypeName());
+    void* pDead = pNode = (void*)((class Unk_XmlNode*)(void*)(&m_doc))->FirstChild(GetTypeName());
     if (pNode != 0)
     {
         m_78 = vfunc_54(pNode);
@@ -678,9 +677,9 @@ int UIMessenger::vfunc_5()
     else
     {
         TiXmlDocument doc;
-        if (doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)), 0))
+        if (doc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)), TIXML_ENCODING_UNKNOWN))
         {
-            void* pLoaded = FUN_140165cf0(&doc, GetTypeName());
+            void* pLoaded = (void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild(GetTypeName());
             if (pLoaded == 0)
                 return 0;
             m_78 = vfunc_54(pLoaded);
@@ -740,7 +739,7 @@ int UIMessenger::vfunc_54(void* pCfg)
             m_nTargetSelectedIndex = FUN_141a14110();
             m_bFirst = 0;
         }
-        for (void* pNode = FUN_140165cf0(pCfg, "Tab"); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("Tab")))
+        for (void* pNode = (void*)((class Unk_XmlNode*)(void*)(pCfg))->FirstChild("Tab"); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("Tab")))
         {
             TalkTab* pTab = new TalkTab;
             if (pTab != 0)
@@ -921,10 +920,10 @@ bool UIMessenger::LoadDebugChatCommand()
     }
     if (!((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
-    void* pRoot = FUN_140165cf0(&doc, "ms2");
+    void* pRoot = (void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2");
     if (pRoot == 0)
         return false;
-    for (void* pSet = FUN_140165cf0(pRoot, "CommandSet"); pSet != 0; pSet = ((void*)((class Unk_XmlNode*)(void*)(pSet))->NextSibling("CommandSet")))
+    for (void* pSet = (void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("CommandSet"); pSet != 0; pSet = ((void*)((class Unk_XmlNode*)(void*)(pSet))->NextSibling("CommandSet")))
     {
         CStringW strCmd;
         XmlGetAttr((class TiXmlElement*)(pSet), "cmd", strCmd);
@@ -2651,8 +2650,8 @@ CStringW FUN_141841180(const Unk_1407a5330& line, const Unk_1407a5820& extra, co
 CStringW FUN_14183f080(const CStringW& strText, int n, unsigned nFontSize);   // the html system line
 CStringW FUN_141841fd0(CStringW strText, unsigned nFontSize);            // the html notice line
 CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nFontSize);   // the html item link
-CStringW FUN_141841c60(unsigned nPartyId, CStringW strLeader, unsigned __int64 nA, unsigned __int64 nCharId, int nRoomId, int nGroupType,
-                       unsigned bFlag, unsigned nMaxUsers, int nFontSize);   // the helper recruit line
+CStringW FUN_141841c60(unsigned nPartyId, CStringW strLeader, unsigned __int64 nA, unsigned __int64 nCharId, unsigned nRoomId, unsigned nGroupType,
+                       int bFlag, int nMaxUsers, unsigned nFontSize);   // the helper recruit line
 bool FUN_140d2ab10(CStringW& strHtml);
 bool FUN_140d2c080(CStringW strHtml, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);   // the links
 __int64 FUN_140d2caf0(const CStringW& strLink);            // the item uid of a link
@@ -2843,7 +2842,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     int nType = line.m_nType;
     __int64 nCharId = line.m_nCharId;
     FUN_140d2c650(strText);
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
     {
         pChecker->MaskBannedWords(strText);
         pChecker->FilterReservedWords(strText);
@@ -3829,13 +3828,13 @@ int UIMessengerBrowser::FUN_141a27570()
             &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
         if (bFailed)
             continue;
-        void* pDialog = FUN_140165cf0(&doc, "MessengerDialog");
+        void* pDialog = (void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("MessengerDialog");
         if (pDialog == 0)
         {
             bValid = 0;
             break;
         }
-        void* pTabXml = FUN_140165cf0(pDialog, "Tab");
+        void* pTabXml = (void*)((class Unk_XmlNode*)(void*)(pDialog))->FirstChild("Tab");
         if (pTabXml == 0)
         {
             bValid = 0;
@@ -4219,7 +4218,7 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     if (pMe == 0)
         return;
     int nChannel = FUN_141482f00(nType);
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
     {
         pChecker->MaskBannedWords(strText);
         pChecker->FilterReservedWords(strText);

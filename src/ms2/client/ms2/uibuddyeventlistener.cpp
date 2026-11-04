@@ -127,7 +127,6 @@ public:
 class Unk_BdStream { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); Unk_BdStream m_stream; };
 
-CommonString* FUN_14025e7d0();                              // the CommonString singleton
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 CString FUN_140719530(unsigned __int64 n);                  // number to string
 unsigned __int64 FUN_140718350(const CString& str);         // string -> id
@@ -183,9 +182,7 @@ class Unk_BdWorld : public WorldService
 {
 public:
     void FUN_141bc9c60(Unk_BdProxyRef* pOut, __int64 nId);      // the proxy of a character id
-    MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nId);  // the same, as the exe's by-value return
 };
-void FUN_140ac5dd0(void* pMap, void** pos);                     // GetNext
 
 // The UI manager and the dialog finder.
 class UICommunityQueryDialog* FUN_140ae5a30(int);   // C3: was FUN_140ae5a30
@@ -265,7 +262,7 @@ extern template class MS2Ptr<CBanTextChecker>;
 // @0x1418d3050
 int FUN_1418d3050(const CStringW& strMemo, CStringW& strResult)
 {
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
     {
         CStringW strMessage;
         if (pChecker->FUN_140226220(strMemo, strMessage) != 0)
@@ -572,7 +569,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             unsigned __int64 nTarget = FUN_140718350(data.FUN_1422b8d30());
             if (m_190 == 0)
             {
-                MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bc9c60(nTarget);
+                MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nTarget);
                 if (spProxy)
                 {
                     UIPopUpMenu* pMenu = ((class UIPopUpMenu*)FUN_140c30140(0x4e39));
@@ -625,7 +622,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         CStringW strMemo = data.FUN_1422b8f40();
         CString strId = data.FUN_1422b8d30();
         __int64 nId = FUN_140718350(strId);
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         {
             CStringW strMessage;
             if (pChecker->FUN_140226220(strMemo, strMessage) != 0)
@@ -690,7 +687,7 @@ void UICommunityDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& 
         if (m_190 == 0)
         {
             unsigned __int64 nId = FUN_141b71960(pArgs->FUN_1422b8d30());
-            MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bc9c60(nId);
+            MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nId);
             if (spProxy.get())
                 pTrophy = spProxy->FUN_1416c2950();
         }
@@ -1082,7 +1079,7 @@ void UICommunityDialog::FUN_1418d6a90()
     void* pMap = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bc9fb0();
     if (!((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->IsEmpty())
     {
-        for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; FUN_140ac5dd0(pMap, &pos))
+        for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
         {
             Unk_BdProxyRef ref(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos))));
             if (ref.get() != 0 && (ref->FUN_1416c2040() != 0 || ref->FUN_1416c1ff0() != 0))
@@ -1761,7 +1758,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             }
             else if (operator==(strTag, L"banBuddy"))
             {
-                if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+                if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
                 {
                     CStringW strMessage;
                     if (pChecker->FUN_140226220(m_1a0, strMessage) == 0)
@@ -1781,7 +1778,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             }
             else if (operator==(strTag, L"homeBlock"))
             {
-                if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+                if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
                 {
                     CStringW strMessage;
                     if (pChecker->FUN_140226220(m_1a0, strMessage) == 0)
@@ -1930,7 +1927,7 @@ void UICommunityQueryDialog::FUN_1418dbcb0(int nMode)
         if (FUN_1418dc540(m_188) != 0)
             return;
         CStringW strMemo(m_1a0.Trim());
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         {
             CStringW strMessage;
             if (pChecker->FUN_140226260(strMemo, strMessage) == 0)
@@ -2091,7 +2088,7 @@ int UICommunityQueryDialog::FUN_1418dc7f0(const CStringW& str)
 int FUN_1418dc940(void* p, const CStringW& str, void* pUnused)
 {
     int bRejected = 0;
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
     {
         CStringW strMessage;
         if (pChecker->FUN_140226260(str, strMessage) != 0)

@@ -13,19 +13,10 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"   // MS2Ptr<T>
 #include "ms2/placeholder/nipoint3.h"
+#include <NiPoint3.h>
 #include "ms2/commonfiles/os.h"        // TSingleton<T>
 
 class CInPacket;
-
-// efd::Point3 with the default constructor 0x1405522f0 and the plain assignment 0x14097fad0.
-struct Unk_UhPoint3
-{
-    Unk_UhPoint3();                                         // 0x1405522f0
-    Unk_UhPoint3(const Vector3& pt);                // 0x14027dcf0 (NiPoint3(const efd::Point3&))
-    Unk_UhPoint3& operator=(const Unk_UhPoint3& pt);        // 0x14097fad0
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_UhPoint3, 12);
 
 // RTTI UgcHomeBgData, 0x28 bytes: one background row (the string-table name and the map path).
 class UgcHomeBgData : public CPtred
@@ -43,11 +34,11 @@ MS2_CHECK_SIZE(UgcHomeBgData, 0x28);
 class UgcHomeLightData : public CPtred
 {
 public:
-    UgcHomeLightData(CStringW strName, Unk_UhPoint3 color);   // 0x140b67e00
+    UgcHomeLightData(CStringW strName, NiPoint3 color);   // 0x140b67e00
     // ~UgcHomeLightData is implicit (0x140b697f0): the exe dtor stores no vftable.
 
     CStringW m_strName;                                     // +0x18
-    Unk_UhPoint3 m_color;                                   // +0x20 "ambientcolor" / 255
+    NiPoint3 m_color;                                   // +0x20 "ambientcolor" / 255
 };
 MS2_CHECK_SIZE(UgcHomeLightData, 0x30);
 
@@ -59,8 +50,8 @@ public:
     // ~UgcHomeCameraData is implicit (0x140b697c0): the exe dtor stores no vftable.
 
     CStringW m_strName;                                     // +0x18
-    Unk_UhPoint3 m_offset;                                  // +0x20 "offset"
-    Unk_UhPoint3 m_upAxis;                                  // +0x2c "upAxis"
+    NiPoint3 m_offset;                                  // +0x20 "offset"
+    NiPoint3 m_upAxis;                                  // +0x2c "upAxis"
 };
 MS2_CHECK_SIZE(UgcHomeCameraData, 0x38);
 
@@ -86,9 +77,9 @@ public:
 
     void Load();                                            // 0x140b67fa0 the three tables
     CString GetBgPath(unsigned char nType);                 // 0x140b67fe0 "" when missing
-    Unk_UhPoint3 GetLightColor(unsigned char nType);     // 0x140b680b0
-    Unk_UhPoint3 GetCameraOffset(unsigned char nType);   // 0x140b68160
-    Unk_UhPoint3 GetCameraUp(unsigned char nType);       // 0x140b68210
+    NiPoint3 GetLightColor(unsigned char nType);     // 0x140b680b0
+    NiPoint3 GetCameraOffset(unsigned char nType);   // 0x140b68160
+    NiPoint3 GetCameraUp(unsigned char nType);       // 0x140b68210
     void ApplyBg(unsigned char nType);                      // 0x140b682c0
     void ApplyLight(unsigned char nType);                   // 0x140b682f0
     void ApplyCamera(unsigned char nType);                  // 0x140b683f0

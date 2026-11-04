@@ -52,6 +52,7 @@
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/placeholder/cpetmanager.h"   // C3: CPetManager::GetInfo / UseItemById / FindItemById
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -97,19 +98,10 @@ class Unk_OwnerPC : public PC { };
 class Unk_SkillObj : public SkillLevelData { };
 class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<SkillActionAdditional> > m_vElems; };
 SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p);   // .get() (in-unit copy, defined below)
-class Unk_ItemEquipData : public CItemData { };
 struct Unk_PetFoodRule { int m_nKey; float m_fRate; int m_nItemId; };       // key +0, rate +4, item +8
 // The pet food book: its rule map sits at +0 (stateidle.cpp's Unk_SiPetBook).
 struct Unk_PetFoodBook { CAtlMap<int, Unk_PetFoodRule> m_map; };
-class Unk_PetSkillSvcInner { public: char m_pad_00[0x68]; Unk_PetFoodBook m_book; MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nItemId); int FUN_140c89220(int nItemId); };
-class Unk_PetSkillSvc { };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
-Unk_PetSkillSvcInner* FUN_140c8b450(Unk_PetSkillSvc* p);
-class CPetManager   // C3: member view for the former free stand-ins
-{
-public:
-    class Unk_PetManagerEmpty* FUN_140c8b430();
-};
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The pet animation table.
@@ -677,7 +669,7 @@ int CPet::FUN_140b11180()
         return 0;
     if (m_tm10a8.Check(1000) != 0)
     {
-        int nItemId = FUN_140b11c20(&FUN_140c8b450(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320())))->m_book, pOwner);
+        int nItemId = FUN_140b11c20(reinterpret_cast<Unk_PetFoodBook*>(&((class CPetManager*)FUN_140535320())->GetInfo()->options), pOwner);
         if (nItemId == 0)
             return 0;
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -685,7 +677,7 @@ int CPet::FUN_140b11180()
             return 0;
         if (FUN_140b11810(pOwner->GetCurStateId(), spData->FUN_14053dc20(), spData->FUN_14053dc40()) != 0)
         {
-            if (((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c89220(nItemId) != 0)
+            if (reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->UseItemById(nItemId) != 0)
                 return 1;
         }
     }
@@ -836,10 +828,10 @@ int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC)
             continue;
         if (kRule.m_fRate < 1.0f)
             continue;
-        MS2Ptr<Unk_ItemEquipData> spData = ((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c892c0(kRule.m_nItemId);
+        MS2Ptr<CItem> spData = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(kRule.m_nItemId);
         if (spData == 0)
             continue;
-        if (reinterpret_cast<CItem*>(spData.operator->())->CanUseAtLevel(pPC->vfunc_78()) == 0)
+        if (spData->CanUseAtLevel(pPC->vfunc_78()) == 0)
             continue;
         if (FUN_140b118f0(kRule.m_nItemId, pPC) != 0)
             continue;
@@ -874,10 +866,10 @@ int FUN_140b11e90(Unk_PetFoodBook* pBook, PCBase* pPC)
             continue;
         if (kRule.m_fRate < 1.0f)
             continue;
-        MS2Ptr<Unk_ItemEquipData> spData = ((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c892c0(kRule.m_nItemId);
+        MS2Ptr<CItem> spData = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(kRule.m_nItemId);
         if (spData.get() != 0 ? true : false)
         {
-            if (reinterpret_cast<CItem*>(spData.operator->())->CanUseAtLevel(pPC->vfunc_78()) == 0)
+            if (spData->CanUseAtLevel(pPC->vfunc_78()) == 0)
                 continue;
         }
         if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)

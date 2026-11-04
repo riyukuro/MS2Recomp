@@ -72,9 +72,6 @@ template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString
 class CProxyGameObject : public CPtred
 {
 };
-class Unk_WsB_Notice : public CProxyGameObject
-{
-};
 
 // The UI manager (open / close a dialog by UI id).
 class Unk_PsdUIManager
@@ -117,7 +114,6 @@ public:
 };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // The blocked-action flags and the keyboard state.
 class Unk_PsdFlags
@@ -743,7 +739,7 @@ int UIPartySearchDialog::FUN_140f8e3f0(int nPage)
 int UIPartySearchDialog::FUN_140f8e480(const CStringW& strText)
 {
     {
-        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        MS2Ptr<CBanTextChecker> filter = TSingleton<CommonString>::GetInstance()->GetChecker();
         if (filter.get())
         {
             CStringW strBad;
@@ -811,11 +807,11 @@ void UIPartySearchDialog::FUN_140f8e790(float x, float y, unsigned __int64 nAcco
             UIPopUpMenu* pMenu = ((class UIPopUpMenu*)FUN_140c30140(0x4e39));
             if (pMenu != 0)
             {
-                MS2Ptr<Unk_WsB_Notice> ref = WorldService::GetInstance()->FUN_141bc9c60((void*)nChar);
+                MS2Ptr<CProxyGameObject> ref = WorldService::GetInstance()->FUN_141bc9c60((void*)nChar);
                 if (ref.get() != 0)
                 {
                     Unk_PopupMenuInfo info(x, y, 3, nFlag, 1, CString("partySearchSlot"), 0);
-                    pMenu->FUN_141a7eb60(info, reinterpret_cast<MS2Ptr<CProxyGameObject>&>(ref), 0xc);
+                    pMenu->FUN_141a7eb60(info, ref, 0xc);
                 }
                 else
                 {

@@ -372,7 +372,7 @@ void UICashAttendDialog::vfunc_26()
 // @0x140bc3db0
 void UICashAttendDialog::AddEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
 {
-    m_events.insert(std::make_pair(spEvent->FUN_1402e1d00(),spEvent));
+    m_events.insert(std::make_pair(spEvent->GetID(),spEvent));
     if(spEvent->FUN_140ce3d90()) m_activeEvents.Add(spEvent);
     if(FUN_141924630()) FUN_140bc4460();
 }
@@ -380,7 +380,7 @@ void UICashAttendDialog::AddEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
 // @0x140bc3eb0
 void UICashAttendDialog::RemoveEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
 {
-    m_events.erase(spEvent->FUN_1402e1d00());
+    m_events.erase(spEvent->GetID());
     if(m_requested==spEvent.get()) { m_requested=0; vfunc_67(); return; }
     RebuildActiveEvents();
     if(FUN_141924630()) {
@@ -426,7 +426,7 @@ bool UICashAttendDialog::OnAttendMsgBox(int nButton,const CMsgBoxData& data)
         if(const_cast<CMsgBoxData&>(data).IsCheckbox0Checked()) nItemUid=data.FUN_141a02f10(0,0);
         COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
-        packet.Encode4(m_selected->FUN_1402e1d00());
+        packet.Encode4(m_selected->GetID());
         packet.Encode8(nItemUid);
         FUN_140710590(packet);
     }
@@ -467,7 +467,7 @@ void UICashAttendDialog::FUN_140bc44b0()
         }
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
-        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->HasTime(events[i]->FUN_1402e1d00()));
+        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->HasTime(events[i]->GetID()));
         m_eventButtons[i]->SetTooltipText(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
@@ -500,7 +500,7 @@ void UICashAttendDialog::FUN_140bc4d40()
     m_usePointButton->vfunc_4(false);
     if(m_selected==NULL) return;
     int nDefault=0;
-    int nPoints=reinterpret_cast<Unk_AttendTable&>(g_gameEventUserValue).FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
+    int nPoints=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69,m_selected->GetID(),nDefault);
     m_usePointButton->vfunc_4(true);
     m_usePointButton->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",(unsigned&)nPoints));
     m_usePointButton->FUN_1422c1fe0((unsigned)nPoints>0);
@@ -524,7 +524,7 @@ void UICashAttendDialog::ResolveSelectedEvent()
     if(m_activeEvents.GetCount()==0) return;
     if(m_eventId!=0) {
         for(unsigned int i=0;i<m_activeEvents.GetCount();++i) {
-            if(m_activeEvents[i]->FUN_1402e1d00()==m_eventId) { m_selected=m_activeEvents[i]; return; }
+            if(m_activeEvents[i]->GetID()==m_eventId) { m_selected=m_activeEvents[i]; return; }
         }
     }
     if(m_selected==NULL) m_selected=m_activeEvents[0];
@@ -581,7 +581,7 @@ void UICashAttendDialog::SendSelectedEventRequest()
 {
     if(m_selected==NULL) return;
     {
-        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->FUN_1402e1d00()); FUN_140710590(packet);
+        COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(8); packet.Encode4(m_selected->GetID()); FUN_140710590(packet);
     }
 }
 

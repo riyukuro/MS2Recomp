@@ -1073,25 +1073,6 @@ int StateRegen::vfunc_1()
 
 // ---- StateRide ----
 
-// A rider's ride-animation row: the animation name per riding pose.
-class Unk_SMRideAnim : public CPtred
-{
-public:
-    char m_pad_18[0x10];
-    CStringA m_str28;
-    CStringA m_str30;
-    CStringA m_str38;
-    CStringA m_str40;
-    CStringA m_str48;
-    CStringA m_str50;
-    CStringA m_str58;
-};
-class Unk_SMRideA : public CPtred
-{
-public:
-    MS2Ptr<Unk_SMRideAnim> FUN_140784970();
-};
-
 // @0x1417e05b0
 StateRide::StateRide(PCBase* pOwner) : State(pOwner)
 {
@@ -1135,8 +1116,6 @@ void StateRide::vfunc_8(double fTime)
     pRider->FUN_141705ac0(fTime);
 }
 
-
-class Unk_SMRider { public: MS2Ptr<Unk_SMRideA> FUN_141707750(); };
 // @0x1417e0780
 void StateRide::vfunc_9(double fTime)
 {
@@ -1144,22 +1123,22 @@ void StateRide::vfunc_9(double fTime)
     Ridee* pRider = m_pOwner->FUN_1416764a0();
     if (pRider == 0)
         return;
-    MS2Ptr<Unk_SMRideA> spRide = reinterpret_cast<Unk_SMRider*>(pRider)->FUN_141707750();
+    MS2SvrPtr<CRideeData> spRide = pRider->GetData();
     if (spRide == 0)
         return;
-    MS2Ptr<Unk_SMRideAnim> spAnim = spRide->FUN_140784970();
+    Unk_RiderPtr spAnim = spRide->FUN_140784970();
     if (spAnim == 0)
         return;
     if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 2 || reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 0x1b)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x17 || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x85)
         {
-            efd::utf8string kName(spAnim->m_str50);
+            efd::utf8string kName(spAnim->m_strAniPCSPRun);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
-            efd::utf8string kName(spAnim->m_str38);
+            efd::utf8string kName(spAnim->m_strAniPCRun);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
@@ -1167,41 +1146,41 @@ void StateRide::vfunc_9(double fTime)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x27)
         {
-            efd::utf8string kName(spAnim->m_str58);
+            efd::utf8string kName(spAnim->m_strAniPCSPJump);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
-            efd::utf8string kName(spAnim->m_str40);
+            efd::utf8string kName(spAnim->m_strAniPCJump);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
     else if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 4)
     {
-        efd::utf8string kName(spAnim->m_str30);
+        efd::utf8string kName(spAnim->m_strAniPCIdle);
         static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
     else if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 1)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0xc || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x87)
         {
-            efd::utf8string kName(spAnim->m_str48);
+            efd::utf8string kName(spAnim->m_strAniPCSPIdle);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
-            efd::utf8string kName(spAnim->m_str30);
+            efd::utf8string kName(spAnim->m_strAniPCIdle);
             static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
     else if (reinterpret_cast<PCBase*>(pRider)->FUN_141676b70())
     {
-        efd::utf8string kName(spAnim->m_str48);
+        efd::utf8string kName(spAnim->m_strAniPCSPIdle);
         static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
     else
     {
-        efd::utf8string kName(spAnim->m_str28);
+        efd::utf8string kName(spAnim->m_strAniPC);
         static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
 }

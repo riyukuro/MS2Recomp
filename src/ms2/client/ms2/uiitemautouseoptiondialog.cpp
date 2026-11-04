@@ -216,7 +216,7 @@ float UIItemAutoUseOptionDialog::Slot::FUN_140f4e080()
 // @0x140f4e0e0
 int UIItemAutoUseOptionDialog::Slot::FUN_140f4e0e0()
 {
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
         return spItem->FUN_140527840()->FUN_14053dc20();
     return 0;
@@ -276,7 +276,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_14()
 // @0x140f4e340
 int UIItemAutoUseOptionDialog::Slot::vfunc_15()
 {
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
         FUN_140d2cfc0(spItem);
     return DragSlot::vfunc_15();
@@ -305,7 +305,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     }
     else if (PetSlot* pPet = FUN_140dbc0d0(static_cast<DragSlot*>(p)))
     {
-        MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(pPet->GetPetItemId());
+        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pPet->GetPetItemId());
         if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
@@ -329,7 +329,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     }
     else if (void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))))
     {
-        MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(((class InvenSlot*)(void*)(pItemSlot))->FUN_141405980());
+        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(((class InvenSlot*)(void*)(pItemSlot))->FUN_141405980());
         if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
@@ -372,7 +372,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (!spItem)
         return 0;
     MS2Ptr<CItem> spWorn = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
@@ -396,14 +396,14 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_8(void* p)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
     {
         FUN_140f4f100(1);
         ASSlot slot(2);
         if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x1c01f) != 0)
         {
-            slot.SetItemCountValue(((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c89440(spItem->FUN_1405276c0(), 0));
+            slot.SetItemCountValue(reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->CountItems(spItem->FUN_1405276c0(), 0));
             *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         }
     }
@@ -595,7 +595,7 @@ int UIItemAutoUseOptionDialog::FUN_140f4faf0(int nItemId)
             Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
             if (pSlot == 0)
                 continue;
-            MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
+            MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
             if (spItem == 0)
                 continue;
             if (spItem->FUN_1405276c0() == nItemId)
@@ -611,7 +611,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(nItemId);
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(nItemId);
     if (spItem == 0)
         return;
     if (!spItem->FUN_140527840()->FUN_14053d270())
@@ -650,7 +650,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
             Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
             if (pSlot == 0)
                 continue;
-            MS2Ptr<CItem> spOld = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
+            MS2Ptr<CItem> spOld = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
             if (spOld == 0)
             {
                 pSlot->FUN_140f4e1a0(nItemId);

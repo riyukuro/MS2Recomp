@@ -65,10 +65,15 @@ public:
     int FUN_141527f60();
 };
 
-void* FUN_1412bcec0(unsigned nUIId);                        // the dialog of a ui id
-void* FUN_140d61d50(unsigned nUIId);                        // the dialog of a ui id
+class UIAchieveDialog; class UIMeratMarketRegisterDialog;
+template <class T> T* Unk_DrGetDialog(int nId);   // the open dialog of a ui id (0x1412bcec0 for UIAchieveDialog, uidungeonroomdialog)
+template <class T> T* Unk_MmGetDialog(int nId);   // the open dialog of a ui id (0x140d61d50 for UIMeratMarketRegisterDialog, meratmarketman)
 int Unk_GcState178(char*);   // C3: was FUN_1413b5610
-int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+class TiXmlElement   // C3: member view for the former FUN_14086f500 stand-in
+{
+public:
+    const char* Attribute(const char* name, int* i) const;
+};
 
 // The slot-55 dialog query (is the dialog hidden).
 // A dialog: only slot 55 (is the dialog hidden).
@@ -114,7 +119,7 @@ CGuideConditionEquipSkill::CGuideConditionEquipSkill()
 void CGuideConditionEquipSkill::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_14086f500(pElem, "isEquip", &m_nIsEquip);
+    ((class TiXmlElement*)(pElem))->Attribute("isEquip", &m_nIsEquip);
 }
 MS2_REPLACE_METHOD(0x1413A8460, CGuideConditionEquipSkill, vfunc_2, 63, 0x7F9BBE26);
 
@@ -200,7 +205,7 @@ MS2_REPLACE_METHOD(0x1413A8830, CGuideConditionAchieveTab, GetTypeName, 61, 0xAB
 // @0x1413a8880
 int CGuideConditionAchieveTab::vfunc_3()
 {
-    void* pDialog = FUN_1412bcec0(0x4e73);
+    void* pDialog = Unk_DrGetDialog<UIAchieveDialog>(0x4e73);
     if (pDialog != 0 && DialogSlot55(pDialog) == 0)
         return FUN_1413a5600(m_n20 == Unk_GcState178((char*)(pDialog)));
     return 0;
@@ -288,7 +293,7 @@ MS2_REPLACE_METHOD(0x1413A8F10, CGuideConditionUgcManagementTab, GetTypeName, 61
 // @0x1413a8f60
 int CGuideConditionUgcManagementTab::vfunc_3()
 {
-    void* pDialog = FUN_140d61d50(0x4ec5);
+    void* pDialog = Unk_MmGetDialog<UIMeratMarketRegisterDialog>(0x4ec5);
     if (pDialog == 0)
         return 0;
     if (DialogSlot55(pDialog) != 0)
@@ -505,7 +510,7 @@ MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 
 #ifndef MS2_HOOK_DLL
 
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
-void FUN_1401cd100(void*, int);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 struct Unk_RegMarker {};
 
 // @0x1400f4460
@@ -542,7 +547,7 @@ static CStringA s_strStun("stun");
 
 // @0x1400f4790
 static char s_8f78[8];
-static Unk_RegMarker s_init8f78 = (FUN_1401cd100(&s_8f78, 0), Unk_RegMarker());
+static Unk_RegMarker s_init8f78 = (reinterpret_cast<Unk_BuddyHandle*>(&s_8f78)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
 
 // @0x1400f47b0
 #include "ms2/placeholder/unk_1402a9d70.h"

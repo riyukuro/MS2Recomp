@@ -18,6 +18,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+// The condition lists are the exe's CAtlArray<MS2Ptr<CGuideCondition>> (count / [] / Add are its members).
+#define GE_CONDS(list) reinterpret_cast<ATL::CAtlArray<MS2Ptr<CGuideCondition> >&>(list)   // m_arr is at +0
 
 
 // This TU has its own copies of the StringFormat instances (the exe does not fold them), so each is a unit-local wrapper
@@ -138,7 +140,7 @@ void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
-            m_conds.FUN_141388460(ref);
+            GE_CONDS(m_conds).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
     }
 }
 
@@ -146,8 +148,8 @@ void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionAnyOne::vfunc_3()
 {
-    for (unsigned i = 0; i < m_conds.FUN_1413886d0(); ++i) {
-        if (FUN_1413a5570(m_conds.FUN_141387b40(i).FUN_141387bb0()) != 0)
+    for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i) {
+        if (FUN_1413a5570(GE_CONDS(m_conds)[i].operator->()) != 0)
             return 1;
     }
     return 0;
@@ -158,8 +160,8 @@ int CGuideConditionAnyOne::vfunc_3()
 void CGuideConditionAnyOne::vfunc_4()
 {
     CGuideCondition::vfunc_4();
-    for (unsigned i = 0; i < m_conds.FUN_1413886d0(); ++i)
-        m_conds.FUN_141387b40(i).FUN_141387bb0()->vfunc_4();
+    for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i)
+        GE_CONDS(m_conds)[i]->vfunc_4();
 }
 
 // @0x1413aa2e0
@@ -182,7 +184,7 @@ void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
-            m_conds.FUN_141388460(ref);
+            GE_CONDS(m_conds).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
     }
 }
 
@@ -190,9 +192,9 @@ void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 bool CGuideConditionAllOf::vfunc_6(Unk_GcCondList* pFailed)
 {
-    for (unsigned i = 0; i < m_conds.FUN_1413886d0(); ++i) {
-        if (!m_conds.FUN_141387b40(i).FUN_141387bb0()->vfunc_6(pFailed))
-            pFailed->FUN_141388460(m_conds.FUN_141387b40(i));
+    for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i) {
+        if (!GE_CONDS(m_conds)[i]->vfunc_6(pFailed))
+            reinterpret_cast<ATL::CAtlArray<MS2Ptr<CGuideCondition> >*>(pFailed)->Add(GE_CONDS(m_conds)[i]);
     }
     return true;
 }
@@ -201,8 +203,8 @@ bool CGuideConditionAllOf::vfunc_6(Unk_GcCondList* pFailed)
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionAllOf::vfunc_3()
 {
-    for (unsigned i = 0; i < m_conds.FUN_1413886d0(); ++i) {
-        if (FUN_1413a5570(m_conds.FUN_141387b40(i).FUN_141387bb0()) == 0)
+    for (unsigned i = 0; i < GE_CONDS(m_conds).GetCount(); ++i) {
+        if (FUN_1413a5570(GE_CONDS(m_conds)[i].operator->()) == 0)
             return 0;
     }
     return 1;

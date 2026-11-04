@@ -32,7 +32,6 @@ class CMsgBoxData;
 class GameEventVariable;
 class NotifyObject;
 class Unk_GmItem;
-class Unk_GmClip;
 class Unk_UISwfEntity_25;
 
 enum EMenuKey { EMenuKey_None = 0 };     // menu id key type of m_menuText (the exe has a separate CAtlMap instance for it)
@@ -185,9 +184,6 @@ public:
     void OnPetAttack();
     int FUN_14193e940(int nField);
     bool FUN_14193e9c0();
-
-    // The menu strip is a movie clip child ("m_menus"); 0x140ba7930 binds it by name.
-    MS2Ptr<Unk_GmClip> FUN_140ba7930(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

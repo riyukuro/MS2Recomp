@@ -18,10 +18,9 @@
 // ---- unit-local placeholders ----
 
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_1403a1310(void* pLogger, int nLevel, int nId, const wchar_t* pszFormat, const char* const& a, const char* const& b);
+template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& a, const U& b);   // C3: was FUN_1403a1310 (T = U = const char*, filesystem)
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 CStringW FUN_14016a730(const char* psz, int n);                     // narrow -> wide
-int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);
 int FUN_141b6fc50(const CString& strText, const CString& strCaption, unsigned n);   // message box
 
 // The event sink (TSingleton<CBigDataLogSystem>::GetInstance).
@@ -82,7 +81,7 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
     if (bLogOnly)
     {
         const char* pszType = strType.c_str();
-        FUN_1403a1310(((void*)GetLogString()), 2, 0x13, L"{0} {1}", pszType, message);
+        Unk_FileLog<const char*, const char*>(GetLogString(), 2, 0x13, L"{0} {1}", pszType, message);
     }
     else
     {
@@ -95,7 +94,7 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
         switch (code)
         {
         case NXE_INTERNAL_ERROR:
-            FUN_140392040(DAT_143ae37d0, 0x100, "%s \nCheck your graphic driver.", message);
+            sprintf_s(DAT_143ae37d0, 0x100, "%s \nCheck your graphic driver.", message);
             FUN_141b6fc50(DAT_143ae37d0, "PhysX", 0);
             TerminateProcess(GetCurrentProcess(), 2);
             break;

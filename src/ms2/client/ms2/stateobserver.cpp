@@ -105,7 +105,6 @@ typedef ATL::CAtlMap<unsigned, MS2Ptr<CProxyGameObject> > Unk_ObsProxyMap;
 class Unk_ObsWorld
 {
 public:
-    MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);                // the proxy of a player by id
     MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);    // the proxy of a player by name
 };
 
@@ -347,7 +346,7 @@ CStringW StateObserver::GetTargetName()
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return CStringW(L"");
-    MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
+    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9c60((void*)m_spObserve->m_nTarget);
     if (spProxy.IsNull())
         return CStringW(L"");
     return spProxy->FUN_1416c23b0();
@@ -444,7 +443,7 @@ void StateObserver::FUN_140ac48e0()
     if (pWorld == 0)
         return;
     Vector3 vTarget;
-    MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
+    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9c60((void*)m_spObserve->m_nTarget);
     if (spProxy.IsNull())
     {
         ObserveOther();

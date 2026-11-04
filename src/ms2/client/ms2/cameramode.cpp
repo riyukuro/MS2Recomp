@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x140afd490-0x140afe800 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3 rotation builders
 
 #include "cameramode.h"
 #include "ms2cameraservice.h"
@@ -14,6 +15,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/camera.h"
 #include <egf/ScriptContext.h>
+#include <NiShadowManager.h>   // C3: the shadow generator list (was Unk_CameraListOwner)
 
 // ---- unit-local placeholders ----
 
@@ -72,18 +74,6 @@ public:
 };
 typedef Unk_TList<Unk_CameraListEntryPtr> Unk_CameraList;
 
-class Unk_CameraListOwner
-{
-public:
-    // @0x140afe770
-    static Unk_CameraList* FUN_140afe770() { return &s_pInstance->m_list; }
-
-    char m_pad_000[0x190];
-    Unk_CameraList m_list;              // +0x190
-
-    static Unk_CameraListOwner* s_pInstance;            // 0x143afa980
-};
-
 int LoadTestCamerValue();                               // reloads the camera xml (returns 0 on failure)
 namespace ecr { class RenderSurface; } ecr::RenderSurface* FUN_1413f98d0();
 bool FUN_14028d470(float a, float b);                   // a == b (within epsilon)
@@ -133,7 +123,7 @@ void CCameraMode::vfunc_6(int n)
     Unk_UpperActor* pActor = reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60())));
     if (pActor)
         pActor->FUN_1416781a0(vfunc_1());
-    Unk_CameraList* pList = Unk_CameraListOwner::FUN_140afe770();
+    Unk_CameraList* pList = (Unk_CameraList*)&NiShadowManager::GetShadowGenerators();
     POSITION pos = pList->FUN_140afe720();
     while (pos)
     {
@@ -331,7 +321,7 @@ Vector3 CCameraMode::FUN_140afdd40(const Vector3& ptEye, const Vector3& ptAt,
     Vector3 right = dir.FUN_140a00e10(ptUp);
     right.FUN_140968990();
     Vector3 up = right.FUN_140a00e10(dir);
-    Unk_NiMatrix3 m(dir, up, right);
+    NiMatrix3 m((const efd::Point3&)dir, (const efd::Point3&)up, (const efd::Point3&)right);
     Vector3 angles;
     ((efd::Matrix3&)m).ToEulerAnglesXYZ(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
@@ -346,14 +336,14 @@ Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
 {
     Vector3 a0, a1;
     Unk_NiMatrix3 ma;
-    ma.FUN_142083d40(a.x * -0.0174532924f, a.y * -0.0174532924f, a.z * -0.0174532924f);
-    ma.FUN_140a01190(0, a0);
-    ma.FUN_140a01190(1, a1);
+    reinterpret_cast<efd::Matrix3&>(ma).FromEulerAnglesXYZ(a.x * -0.0174532924f, a.y * -0.0174532924f, a.z * -0.0174532924f);
+    reinterpret_cast<const efd::Matrix3&>(ma).GetCol(0, reinterpret_cast<efd::Point3&>(a0));
+    reinterpret_cast<const efd::Matrix3&>(ma).GetCol(1, reinterpret_cast<efd::Point3&>(a1));
     Vector3 b0, b1;
     Unk_NiMatrix3 mb;
-    mb.FUN_142083d40(b.x * -0.0174532924f, b.y * -0.0174532924f, b.z * -0.0174532924f);
-    mb.FUN_140a01190(0, b0);
-    mb.FUN_140a01190(1, b1);
+    reinterpret_cast<efd::Matrix3&>(mb).FromEulerAnglesXYZ(b.x * -0.0174532924f, b.y * -0.0174532924f, b.z * -0.0174532924f);
+    reinterpret_cast<const efd::Matrix3&>(mb).GetCol(0, reinterpret_cast<efd::Point3&>(b0));
+    reinterpret_cast<const efd::Matrix3&>(mb).GetCol(1, reinterpret_cast<efd::Point3&>(b1));
     Vector3 c0, c1;
     c0 = a0.FUN_14097fd50(FUN_1409ab5c0(t, b0.FUN_140965c40(a0)));
     c0.FUN_140968990();
@@ -364,7 +354,7 @@ Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
     c1 = c2.FUN_140a00e10(c0);
     c1.FUN_140968990();
     Vector3 angles;
-    Unk_NiMatrix3 m(c0, c1, c2);
+    NiMatrix3 m((const efd::Point3&)c0, (const efd::Point3&)c1, (const efd::Point3&)c2);
     ((efd::Matrix3&)m).ToEulerAnglesXYZ(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
     angles.y *= -57.2957764f;

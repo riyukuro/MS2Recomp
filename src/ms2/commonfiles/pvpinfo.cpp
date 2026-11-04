@@ -5,6 +5,8 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\pvpinfo.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "pvpinfo.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/commonfiles/stream.h"
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/commonfiles/dungeonroom.h"

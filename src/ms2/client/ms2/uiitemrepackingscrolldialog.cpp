@@ -72,8 +72,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 typedef Delegate<void(ItemScrollSlot&)> RpRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> RpDropFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, RpRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, RpDropFn fn);        // ItemScrollSlot::SetDropFn
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -207,8 +205,8 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     ItemScrollSlot* pSlot = FUN_140f62930(CString(m_strSlot));
     if (pSlot != 0)
     {
-        FUN_140d42bc0(pSlot, RpRemoveFn(this, &UIItemRePackingScrollDialog::FUN_140f62b70));
-        FUN_140d42b70(pSlot, RpDropFn(this, &UIItemRePackingScrollDialog::FUN_140f62be0));
+        pSlot->SetRemoveFn(RpRemoveFn(this, &UIItemRePackingScrollDialog::FUN_140f62b70));
+        pSlot->SetDropFn(RpDropFn(this, &UIItemRePackingScrollDialog::FUN_140f62be0));
     }
     CStringW strUnused1;
     CStringW strUnused2;

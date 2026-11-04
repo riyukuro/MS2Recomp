@@ -13,8 +13,8 @@
 class CItem;
 class ItemScrollSlot;
 
-typedef Delegate<void(ItemScrollSlot*, DragSlot*)> ItemScrollSlotDropFn;    // an item was dropped onto the slot
-typedef Delegate<void(ItemScrollSlot*)> ItemScrollSlotRemoveFn;             // the item was removed from the slot
+typedef Delegate<void(ItemScrollSlot&, DragSlot*)> ItemScrollSlotDropFn;    // an item was dropped onto the slot
+typedef Delegate<void(ItemScrollSlot&)> ItemScrollSlotRemoveFn;             // the item was removed from the slot
 
 // 0xc0 bytes. vftable 0x142e2b770 (26 slots, ??_G 0x140d42ff0 sized delete 0xc0), ITooltip @+0x78.
 class ItemScrollSlot : public MS2DragSlot

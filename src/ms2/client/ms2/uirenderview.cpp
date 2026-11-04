@@ -18,6 +18,7 @@
 #include <NiShaderFactory.h>
 #include <ecr/RenderService.h>
 #include <ecr/SceneGraphService.h>
+#include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 ecr::SceneGraphService* FUN_1413f98b0();                        // the scene graph service
@@ -27,7 +28,6 @@ class NiDX9TextureData   // C3: member view for the former free stand-ins
 public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
-void FUN_14272b7f0(void* pImage, void* pD3DTexture);            // sets the D3D texture of a swf image
 extern NiFixedString DAT_143ae52f8;                             // the global shader constant name
 void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
 void FUN_141d18b90(NiNode* pRoot, const NiFixedString& kName);  // sets the node name
@@ -117,7 +117,7 @@ int FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* 
             void* pImage = spTarget->vfunc_24(pArg);
             if (pImage != 0)
             {
-                FUN_14272b7f0(pImage, ((void*)((class NiDX9TextureData*)(void*)(pData))->GetD3DTexture()));
+                reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pImage)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((class NiDX9TextureData*)(void*)(pData))->GetD3DTexture()));
                 return 1;
             }
         }

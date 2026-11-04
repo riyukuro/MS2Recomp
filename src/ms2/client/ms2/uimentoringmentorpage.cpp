@@ -91,9 +91,8 @@ extern Unk_MentorInfo* DAT_143abb6d8;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_MentorInviteDialog;
 class UIInviteMentoringDialog { public: void FUN_140c2f010(); };   // C3: member view (uiinvitementoringdialog.h)
-Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
+UIInviteMentoringDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
@@ -177,8 +176,8 @@ int UIMentoringMentorPage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             FUN_141275260(0x2f7, 1, 1);
             return 1;
         }
-        Unk_MentorInviteDialog* pDlg = FUN_140b6f4c0(0x4f4c);
-        if (pDlg) reinterpret_cast<UIInviteMentoringDialog*>(pDlg)->FUN_140c2f010();
+        UIInviteMentoringDialog* pDlg = FUN_140b6f4c0(0x4f4c);
+        if (pDlg) pDlg->FUN_140c2f010();
         return 1;
     }
     else if (_stricmp(szMethod, "onPartyRequest") == 0)

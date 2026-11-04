@@ -75,8 +75,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 typedef Delegate<void(ItemScrollSlot&)> RmRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> RmDropFn;
 typedef Delegate<bool(int, const CMsgBoxData&)> RmMsgBoxFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, RmRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, RmDropFn fn);        // ItemScrollSlot::SetDropFn
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -260,14 +258,14 @@ void UIItemRemakeScrollDialog::OnLoadComplete()
     ItemScrollSlot* pSlot = FUN_140f5d0c0(CString(m_strSlot));
     if (pSlot != 0)
     {
-        FUN_140d42bc0(pSlot, RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5e570));
-        FUN_140d42b70(pSlot, RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5e5f0));
+        pSlot->SetRemoveFn(RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5e570));
+        pSlot->SetDropFn(RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5e5f0));
     }
     ItemScrollSlot* pIngredientSlot = FUN_140f5d0c0(CString(m_strIngredientSlot));
     if (pIngredientSlot != 0)
     {
-        FUN_140d42bc0(pIngredientSlot, RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5ed50));
-        FUN_140d42b70(pIngredientSlot, RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5ede0));
+        pIngredientSlot->SetRemoveFn(RmRemoveFn(this, &UIItemRemakeScrollDialog::FUN_140f5ed50));
+        pIngredientSlot->SetDropFn(RmDropFn(this, &UIItemRemakeScrollDialog::FUN_140f5ede0));
     }
     CStringW strNotice;
     CStringW strDesc;

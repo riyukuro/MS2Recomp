@@ -7,6 +7,7 @@
 #include <vcruntime_string.h>
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3 rotation builders
 
 #include "targetcameramode.h"
 
@@ -17,6 +18,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"   // MS2Ptr<CFieldDataCli> (the camera option row)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <NiPoint3.h>
@@ -56,24 +58,11 @@ struct Unk_CameraOption
     float m_23c;
 };
 
-// Smart pointer to it (pointer at +8).
-class Unk_CameraOptionPtr
-{
-public:
-    ~Unk_CameraOptionPtr() { FUN_140885ab0(); }     // 0x1408850f0 (another obj)
-    Unk_CameraOption* FUN_140885340() const;        // operator->
-    void FUN_140885ab0();                           // release
-
-    void* m_pad_00;
-    Unk_CameraOption* m_p;
-};
-
 // The game context (FUN_1403ed2d0).
 class Unk_GameContext : public WorldService
 {
 public:
     Unk_LocalPlayer* FUN_141bd0cc0();
-    Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -483,10 +472,10 @@ MS2_REPLACE_METHOD(0x14183bdf0, CTargetCameraMode, vfunc_21, 120, 0x6EA7BBE0);
 // @0x14183be70
 void CTargetCameraMode::vfunc_33()
 {
-    Unk_CameraOptionPtr spOption = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<Unk_CameraOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()))
+    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+    if (reinterpret_cast<Unk_CameraOption*>(spOption.get()))
     {
-        float fRotation = spOption.FUN_140885340()->m_154;
+        float fRotation = reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_154;
         if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
         {
             vfunc_31();
@@ -496,7 +485,7 @@ void CTargetCameraMode::vfunc_33()
         }
         else
         {
-            vfunc_16(spOption.FUN_140885340()->m_23c);
+            vfunc_16(reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_23c);
             vfunc_11(((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bcfc50());
             vfunc_12(fRotation);
         }
@@ -729,16 +718,16 @@ BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             Unk_NiMatrix3 kX;
             Unk_NiMatrix3 kY;
             Unk_NiMatrix3 kZ;
-            kX.FUN_142084b30(ptRot.x * -0.0174532924f);
-            kY.FUN_142084ba0(ptRot.y * -0.0174532924f);
-            kZ.FUN_142084c10(ptRot.z * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kX).MakeXRotation(ptRot.x * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kY).MakeYRotation(ptRot.y * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kZ).MakeZRotation(ptRot.z * -0.0174532924f);
             kRot = kX.FUN_140a33480(kY).FUN_140a33480(kZ);
             Vector3 kDir;
             Vector3 kUp;
             Vector3 kRight;
-            kRot.FUN_140a01190(0, kDir);
-            kRot.FUN_140a01190(1, kUp);
-            kRot.FUN_140a01190(2, kRight);
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(kDir));
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(1, reinterpret_cast<efd::Point3&>(kUp));
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(kRight));
             const NiFrustum* pFrustum = &pCamera->GetViewFrustum();
             float fNear = pFrustum->m_fNear;
             float fFov = FUN_140ad4b30();

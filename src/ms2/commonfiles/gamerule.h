@@ -165,7 +165,7 @@ int FUN_140475e40(int reason);
 BOOL FUN_140475e80(int reason);
 BOOL FUN_140475f20(int reason);
 BOOL FUN_140475fa0(int reason);
-void FUN_140475ff0(unsigned short value);
+__int64 FUN_140475ff0(unsigned short value);
 CString FUN_140476020(int reason);                          // GameReason_* name
 
 class CGameRule : public TSingleton<CGameRule>

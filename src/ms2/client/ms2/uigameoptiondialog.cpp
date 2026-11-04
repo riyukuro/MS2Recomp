@@ -93,7 +93,6 @@ CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -332,7 +331,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_hdr_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_hdr_off");
         obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strHdr);
-        FUN_1409b4bc0(pRetVal, obj.FUN_1422bb870());
+        *pRetVal = obj.FUN_1422bb870();
     }
     else if ((strName == "m_shimmer"))
     {
@@ -342,7 +341,7 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_shimmer_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_shimmer_off");
         obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strShimmer);
-        FUN_1409b4bc0(pRetVal, obj.FUN_1422bb870());
+        *pRetVal = obj.FUN_1422bb870();
     }
 }
 

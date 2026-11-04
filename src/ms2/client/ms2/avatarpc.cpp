@@ -14,7 +14,8 @@
 // MS2-PIN: ??C?$MS2Ptr@VCItemUgcMeshContainer@@@@QEBAPEAVCItemUgcMeshContainer@@XZ 0x1409f9140 ; prop
 // MS2-PIN: ??_EAvatarPet@@W7EAAPEAXI@Z 0x1409f9150 ; unique
 // MS2-PIN: ??_GAvatarPet@@UEAAPEAXI@Z 0x1409f9160 ; unique
-// MS2-PIN: ??4Unk_RideePtr@@QEAAAEAV0@H@Z 0x1409fac90 ; unique
+// MS2-PIN: ??B?$MS2SvrPtr@VCRideeData@@@@QEBAPEAVCRideeData@@XZ 0x1409f78a0 ; unique
+// MS2-PIN: ??4?$MS2SvrPtr@VCRideeData@@@@QEAAAEAV0@H@Z 0x1409fac90 ; unique
 // MS2-PIN: ??_EAvatarRidee@@W7EAAPEAXI@Z 0x1409facb4 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_GAvatarPC@@UEAAPEAXI@Z 0x1409f7a40
@@ -54,6 +55,7 @@
 // MS2-FUNCTIONAL: the PC / item-table / pet-table / ridee-table services are opaque FUN_ externs; the large factories
 // (preview avatar, ridee, fishing guide) are behaviour-equivalent but not byte-exact.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\avatarpc.cpp"
+#define MS2_SVRPTR_ASSIGN_INT   // `m_spRow = 0` calls the exe's operator=(int) COMDAT (0x1409fac90)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "avatarpc.h"
 #include "ms2/ms2recover.h"
@@ -94,30 +96,20 @@ struct Unk_AvAnimTarget
     char m_pad_00[0xa1];
     bool m_bA1;                                             // +0xa1
 };
-struct Unk_AvAnimTargetRef
-{
-    Unk_AvAnimTarget* FUN_140998ef0() const;                // operator->
-    Unk_AvAnimTarget* m_p;
-};
 struct Unk_AvSeqCtl
 {
     bool FUN_1409fad30();                                   // 0x1409fad30 the target's flag byte
     void FUN_1409fae00(bool b);                             // 0x1409fae00
     char m_pad_00[0x30];
-    Unk_AvAnimTargetRef m_spTarget;                         // +0x30
+    efd::SmartPointer<NiControllerManager> m_spTarget;      // +0x30
     char m_pad_38[0xc];
     float m_n44;
     float m_n48;
 };
-struct Unk_AvSeqRef
-{
-    Unk_AvSeqCtl* FUN_140998e90() const;                    // operator->
-    Unk_AvSeqCtl* m_p;
-};
 struct Unk_AvAnimRec
 {
     char m_pad_00[8];
-    Unk_AvSeqRef m_spSeq;                                   // +0x08
+    efd::SmartPointer<NiActorManager> m_spSeq;              // +0x08
     char m_pad_10[0x3c];
     bool m_bFlag;                                           // +0x4c
 };
@@ -133,8 +125,6 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
-class Unk_UgcRideeMgr;
-Unk_UgcRideeMgr* FUN_14052d220();
 CString FUN_1410280d0(int nKind, CString strName);
 
 class Unk_PCActionTimer : public CPtred {};
@@ -227,7 +217,6 @@ Unk_AvModeSvc* FUN_1409f7c90();
 Unk_AvPhysicsSvc* FUN_1409f7ca0();
 efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat);   // identity-constructs (0x1409f72e0) and returns the matrix
 void* FUN_1409f72e0(void* p);                       // efd::Matrix3 ctor
-Unk_CharEquip* FUN_1406c4340(Unk_CharEquip* p, float a, float b, float c);
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 
 #include "ms2/commonfiles/itemdatatable.h"   // C3: CItemDataTable::GetPaletteColor (0x1405587f0)
@@ -322,7 +311,7 @@ public:
 class Unk_PCLook;
 #include "ms2/commonfiles/jobsystem.h"   // C3: JobSystem::SetJob (0x140638200)
 #include "ms2/placeholder/pcgemequip.h"   // C3: PCGemEquip::EquipItem (0x141270bf0)
-void FUN_1417083a0(PCBase* pRider, NiAVObjectPtr spAttach, Unk_RideeInfoPtr kInfo);
+#include "ms2/client/ms2/ridee.h"   // C3: Ridee::FUN_1417083a0 (0x1417083a0)
 unsigned int FUN_141088660();   // C3: was FUN_141088660
 int FUN_14107c5f0(int, class PC*, class PC*);   // C3: was FUN_14107c5f0
 bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pAvatar);
@@ -341,7 +330,6 @@ class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 void FUN_141426140(MS2Ptr<CItemUgcMeshContainer>& spMesh);
 
-Unk_RideePtr FUN_1407844b0(int nRideeId);                   // the ridee table row of an id
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
 #include "ms2/placeholder/cbannerurlgetter.h"   // C3: the ctor 0x1409faf60
@@ -866,10 +854,10 @@ void AvatarPC::FUN_1409f5d20()
     if (FUN_141656750() == 0)
         return;
     bool bEquip = IsEnabled();
-    bool bTmp = (m_spRidee ? true : false) && (m_spRidee->GetRow().get() ? true : false);
+    bool bTmp = (m_spRidee ? true : false) && (m_spRidee->GetRow() ? true : false);
     if (bTmp)
     {
-        int nNoEquip = m_spRidee->GetRow()->m_nHidesEquip;
+        int nNoEquip = m_spRidee->GetRow()->m_basic.m_nHideRider;
         if (nNoEquip != 0)
             bEquip = false;
     }
@@ -1299,9 +1287,9 @@ AvatarRidee* FUN_1409f92d0(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
 }
 
 // @0x1409f9430
-AvatarRidee* FUN_1409f9430(Unk_RideePtr spRow)
+AvatarRidee* FUN_1409f9430(MS2SvrPtr<CRideeData> spRow)
 {
-    AvatarRidee* pRidee = new (efd::MemHint(efd::MemHint::NONE)) AvatarRidee(Unk_RideePtr(spRow));
+    AvatarRidee* pRidee = new (efd::MemHint(efd::MemHint::NONE)) AvatarRidee(MS2SvrPtr<CRideeData>(spRow));
     if (pRidee != 0 && pRidee->FUN_1409faac0())
         return pRidee;
     return 0;
@@ -1333,9 +1321,9 @@ bool AvatarRidee::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     m_spRow = 0;
     if (spData.get() != 0)
     {
-        Unk_RideePtr kRow = FUN_1407844b0(((class CItemData*)(spData.operator->()))->GetRideeId());
-        if (kRow.get() != 0)
-            FUN_1409f9ea0(Unk_RideePtr(kRow));
+        MS2SvrPtr<CRideeData> kRow = FUN_1407844b0(((class CItemData*)(spData.operator->()))->GetRideeId());
+        if (kRow != 0)
+            FUN_1409f9ea0(MS2SvrPtr<CRideeData>(kRow));
     }
     m_spItemData = spData;
     m_spItem = spItem;
@@ -1360,32 +1348,32 @@ void AvatarRidee::vfunc_9(void* p)
 void AvatarRidee::vfunc_12()
 {
     CloneCube::vfunc_12();
-    Unk_RideePtr kRow(m_spRow);
-    if (m_spRow.FUN_1407893c0(0) && m_spItemData.get() != 0)
+    MS2SvrPtr<CRideeData> kRow(m_spRow);
+    if (m_spRow == 0 && m_spItemData.get() != 0)
     {
         m_spRow = FUN_1407844b0(((class CItemData*)(m_spItemData.operator->()))->GetRideeId());
         kRow = m_spRow;
     }
     if (m_pRider != 0)
     {
-        if (m_spRow.get() != 0)
+        if (m_spRow != 0)
         {
             NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
             if (pRoot != 0)
             {
-                Unk_RideeInfoPtr kInfo = kRow->FUN_140784970();
-                if (kInfo.FUN_140789380(0))
+                Unk_RiderPtr kInfo = kRow->FUN_140784970();
+                if (kInfo == 0)
                     return;
-                NiFixedString kSeat((const char*)kInfo.FUN_1407895c0()->m_strModel);
+                NiFixedString kSeat((const char*)kInfo->m_strRideBone);
                 m_spAttach = pRoot->GetObjectByName(kSeat);
             }
         }
         FUN_1409fa7c0();
     }
-    if (kRow.get() != 0 && (kRow.get() ? true : false) && kRow->m_strEffect != "")
+    if (kRow != 0 && (kRow ? true : false) && kRow->m_basic.m_strLoopEffect != "")
     {
         NoticeMessage kRequest;   // C3: was Unk_AvEffectRequest
-        reinterpret_cast<CString&>(reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_pName) = kRow->m_strEffect;
+        reinterpret_cast<CString&>(reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_pName) = kRow->m_basic.m_strLoopEffect;
         reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_nKind = 0;
         kRequest.SetActor(FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
@@ -1417,23 +1405,23 @@ bool AvatarRidee::vfunc_57()
 {
     if (CloneCube::vfunc_57())
         return true;
-    if (m_spRow.get() != 0)
-        FUN_1409f9ea0(Unk_RideePtr(m_spRow));
+    if (m_spRow != 0)
+        FUN_1409f9ea0(MS2SvrPtr<CRideeData>(m_spRow));
     return true;
 }
 
 // @0x1409f9ea0
-void AvatarRidee::FUN_1409f9ea0(Unk_RideePtr spRow)
+void AvatarRidee::FUN_1409f9ea0(MS2SvrPtr<CRideeData> spRow)
 {
     m_spItem = 0;
     m_spItemData = 0;
     CString strModel;
-    if (spRow.get() != 0)
+    if (spRow != 0)
         strModel.Format((const char*)m_strModelFormat, (const char*)spRow->FUN_140784880(1));
     else
         strModel = m_strModel;
     m_spRow = spRow;
-    m_fScaleAC = spRow->m_fScale;
+    m_fScaleAC = spRow->m_basic.m_fScale;
     if (strModel != FUN_14123bbd0())
     {
         if (FUN_14123c410() != 0)
@@ -1459,7 +1447,7 @@ void AvatarRidee::FUN_1409fa120(PCBase* pRider)
 }
 
 // @0x1409fa170
-Unk_RideePtr AvatarRidee::GetRow()
+MS2SvrPtr<CRideeData> AvatarRidee::GetRow()
 {
     return m_spRow;
 }
@@ -1477,14 +1465,14 @@ AvatarRidee::AvatarRidee(MS2Ptr<CItemData> spData)
 }
 
 // @0x1409fa300
-AvatarRidee::AvatarRidee(Unk_RideePtr spRow)
+AvatarRidee::AvatarRidee(MS2SvrPtr<CRideeData> spRow)
     : CloneCube(MS2Ptr<CItemData>(0), "urn:gamebryo-animation:" + spRow->FUN_140784880(1))
     , m_spAttach(0)
 {
     m_str88 = "GameObject";
     m_strModelFormat = "urn:gamebryo-animation:%s";
     m_nEffect = 0;
-    m_fScaleAC = spRow->m_fScale;
+    m_fScaleAC = spRow->m_basic.m_fScale;
     m_spRow = spRow;
     m_pRider = 0;
     m_spAttach = 0;
@@ -1498,13 +1486,13 @@ void AvatarRidee::vfunc_59(MS2Ptr<CItem> spItem)
         CString strFile = FUN_1410280d0(7, spItem->GetUgcInfo()->m_strName);
         if (_access(strFile, 0) != 0)
         {
-            reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
+            TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
         }
         else
         {
             CUgcItemRidee kRidee(spItem.get(), FUN_14123c460());
-            if (reinterpret_cast<CUgcManager*>(FUN_14052d220())->ApplyImageToRidee(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
-                reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
+            if (TSingleton<CUgcManager>::GetInstance()->ApplyImageToRidee(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
+                TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
         }
     }
 }
@@ -1514,10 +1502,10 @@ void AvatarRidee::FUN_1409fa7c0()
 {
     if (m_pRider != 0)
     {
-        if ((m_spRow.get() ? true : false) && !m_bReloading)
+        if ((m_spRow ? true : false) && !m_bReloading)
         {
             m_pRider->vfunc_59(0x21, 0, 0, 0);
-            m_pRider->PlayAnimation((const char*)m_spRow->FUN_140784970().FUN_1407895c0()->m_strRideAnim, 1.0f, false,
+            m_pRider->PlayAnimation((const char*)m_spRow->FUN_140784970()->m_strAniPCIdle, 1.0f, false,
                 false);
         }
     }
@@ -1526,11 +1514,11 @@ void AvatarRidee::FUN_1409fa7c0()
 // @0x1409fa940
 void AvatarRidee::FUN_1409fa940()
 {
-    if (m_pRider == 0 || m_spAttach == 0 || m_spRow.FUN_1407893c0(0))
+    if (m_pRider == 0 || m_spAttach == 0 || m_spRow == 0)
         return;
     if (m_bReloading == true || m_pRider->GetCurStateId() != 0x21)
         return;
-    FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->FUN_140784970());
+    Ridee::FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->FUN_140784970());
 }
 
 // @0x1409faa70
@@ -1575,8 +1563,8 @@ efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat)
 
 // @0x1409f72f0
 Unk_CharEquip::Unk_CharEquip()
+    : efd::Color(0.0f, 0.0f, 0.0f)
 {
-    FUN_1406c4340(this, 0.0f, 0.0f, 0.0f);
 }
 
 // @0x1409f7c90
@@ -1610,7 +1598,7 @@ bool Unk_AvAnimTarget::FUN_1409fad60()
 // @0x1409fad30
 bool Unk_AvSeqCtl::FUN_1409fad30()
 {
-    return m_spTarget.FUN_140998ef0()->FUN_1409fad60();
+    return reinterpret_cast<Unk_AvAnimTarget*>(m_spTarget.operator->())->FUN_1409fad60();
 }
 
 // @0x1409fae00
@@ -1620,7 +1608,7 @@ void Unk_AvSeqCtl::FUN_1409fae00(bool b)
     {
         m_n48 = m_n44;
     }
-    reinterpret_cast<NiControllerManager*>(m_spTarget.FUN_140998ef0())->SetPaused(b);
+    m_spTarget->SetPaused(b);
 }
 
 // @0x1409fad80
@@ -1630,7 +1618,7 @@ void Unk_AcAnimSvc::FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag)
     if (!FUN_1409991a0(id, &pRec))
         return;
     pRec->m_bFlag = bFlag;
-    Unk_AvSeqCtl* pSeq = pRec->m_spSeq.FUN_140998e90();
+    Unk_AvSeqCtl* pSeq = reinterpret_cast<Unk_AvSeqCtl*>((NiActorManager*)pRec->m_spSeq);
     if (pSeq == 0)
         return;
     pSeq->FUN_1409fae00(bFlag);
@@ -1770,12 +1758,6 @@ Unk_AvPtrArray* Unk_AvPtrArrayCtor(Unk_AvPtrArray* p)
     p->m_nAlloc = 0;
     p->m_nGrowBy = 0;
     return p;
-}
-
-// @0x1409f78a0
-Unk_RideeRow* Unk_RideePtr::get() const
-{
-    return m_p;
 }
 
 // Atexit thunks of this unit's statics (gap1 yd sweep).

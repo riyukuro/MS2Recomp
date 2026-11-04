@@ -23,6 +23,7 @@
 #include "ms2/placeholder/cquestmanagercommon.h"
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/astextarea.h"   // C3: MS2Ptr<ASTextArea> (GetChild<ASTextArea> COMDAT 0x140c26f60)
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 #include "ms2/placeholder/astextfield.h"
@@ -36,28 +37,16 @@ class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3:
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 class Unk_QuestDebugAccess : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
+// The exe's non-null test of a condition parameter's CConditionDictPtr (0x141a99100), a separate copy of get().
 class Unk_QuestDebugHandle
 {
 public:
-    Unk_QuestDebugHandle(const Unk_QuestDebugHandle&);
-    ~Unk_QuestDebugHandle();
-    void* FUN_1402a5cb0();
     // @0x141a99100
     void* FUN_141a99100() const { return m_p; }
 private:
     void* m_0;
     void* m_p;
 };
-class Unk_QuestDebugCond
-{
-public:
-    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; void* m_90;
-    Unk_QuestDebugHandle codes;
-    void* m_a8; void* m_b0; void* m_b8; void* m_c0; void* m_c8; void* m_d0; void* m_d8; void* m_e0; void* m_e8; void* m_f0; void* m_f8; void* m_100; void* m_108; void* m_110;
-    Unk_QuestDebugHandle targets;
-};
-MS2_CHECK_OFFSET(Unk_QuestDebugCond, codes, 0x98);
-MS2_CHECK_OFFSET(Unk_QuestDebugCond, targets, 0x118);
 MS2Ptr<CQuestData> FUN_14074bc40(int);
 int FUN_14074b030(CQuestData*);
 CStringW FUN_1416e4df0(int);
@@ -75,7 +64,6 @@ public:
 };
 class Unk_QuestDebugGlobal { public: void* m_0; void* m_8; Unk_QuestDebugState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
-class Unk_QuestDebugDesc { };
 class Unk_QuestDebugMap : public ATL::CAtlMap<CString, CString, ATL::CStringElementTraitsI<CString>> {};
 void FUN_140761f00(const CStringW&, int);
 extern template CStringW StringFormat<CStringW, unsigned int>(const wchar_t*, const CStringW&, const unsigned int&);
@@ -185,7 +173,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (quest.IsNull()) return 1;
             void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
             if (!actor) return 1;
-            if (Unk_QuestDebugPtr<Unk_QuestDebugDesc> desc = FUN_140c26f60("m_desc")) {
+            if (MS2Ptr<ASTextArea> desc = FUN_140c26f60("m_desc")) {
                 CStringW text;
                 CStringW expLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_exp");
                 CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_meso");
@@ -213,21 +201,21 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
                     MS2Ptr<CConditionCommonData> cond = quest->m_conditions[i];
                     if (cond.IsNull()) continue;
                     {
-                        Unk_QuestDebugHandle codes(reinterpret_cast<Unk_QuestDebugCond*>(cond.operator->())->codes);
-                        if (codes.FUN_141a99100()) {
+                        CConditionDictPtr codes(cond.operator->()->m_code.m_dict);
+                        if (reinterpret_cast<Unk_QuestDebugHandle&>(codes).FUN_141a99100()) {
                             text += L"\n[Codes]\n";
-                            text += FUN_141a97770((Unk_QuestDebugMap*)codes.FUN_1402a5cb0());
+                            text += FUN_141a97770((Unk_QuestDebugMap*)codes.get());
                         }
                     }
                     {
-                        Unk_QuestDebugHandle targets(reinterpret_cast<Unk_QuestDebugCond*>(cond.operator->())->targets);
-                        if (targets.FUN_141a99100()) {
+                        CConditionDictPtr targets(cond.operator->()->m_target.m_dict);
+                        if (reinterpret_cast<Unk_QuestDebugHandle&>(targets).FUN_141a99100()) {
                             text += L"\n[Targets]\n";
-                            text += FUN_141a97770((Unk_QuestDebugMap*)targets.FUN_1402a5cb0());
+                            text += FUN_141a97770((Unk_QuestDebugMap*)targets.get());
                         }
                     }
                 }
-                reinterpret_cast<ASTextInput*>(desc.operator->())->SetTextW(text);
+                desc->SetTextW(text);
             }
         }
     } else if (_stricmp("onReqQuest", method) == 0) {

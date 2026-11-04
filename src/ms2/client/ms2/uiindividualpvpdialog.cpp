@@ -71,23 +71,7 @@ class Unk_140acd6e0 : public ASButton
 public:
 };
 
-// A row of Table/individualarena.xml.
-class Unk_ArenaData : public CPtred
-{
-public:
-    int m_18;
-    int m_nNameId;                                              // +0x1c string id of the name
-    int m_nDetailId;                                            // +0x20 string id of the detail
-    int m_24;
-    CString m_strBanner;                                        // +0x28 banner file
-    int m_30;
-    int m_34;
-    unsigned int m_nReward1;                                    // +0x38 reward item ids
-    int m_3c;
-    int m_40;
-    unsigned int m_nReward2;                                    // +0x44
-};
-class Unk_ArenaTable { public: MS2Ptr<Unk_ArenaData> FUN_14051a980(int nArena); };
+// The arena rows are IndividualArenaData, read through CIndividualArenaDataTable::GetData (individualarenadata.h).
 
 // The PvP manager.
 class Unk_PvpMgr : public CPVPManager
@@ -176,7 +160,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
     {
-        MS2Ptr<Unk_ArenaData> spData = reinterpret_cast<Unk_ArenaTable*>(TSingleton<CIndividualArenaDataTable>::GetInstance())->FUN_14051a980(it->first);
+        CIndividualArenaDataTable::DataPtr spData = TSingleton<CIndividualArenaDataTable>::GetInstance()->GetData(it->first);
         if (spData == 0)
             return;
         it->second->FUN_1422cdfb0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
@@ -264,20 +248,20 @@ void UIIndividualPvPDialog::FUN_1412cae10(int nArena)
         return;
     if (nArena == 2)
         return;
-    MS2Ptr<Unk_ArenaData> spData = reinterpret_cast<Unk_ArenaTable*>(TSingleton<CIndividualArenaDataTable>::GetInstance())->FUN_14051a980(nArena);
+    CIndividualArenaDataTable::DataPtr spData = TSingleton<CIndividualArenaDataTable>::GetInstance()->GetData(nArena);
     if (spData == 0)
         return;
     m_nSelected = nArena;
     m_spName->SetTextW(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
     m_spDetail->SetTextHTMLW(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nDetailId)));
     FUN_1412cacc0();
-    m_30->Invoke("setBanner", CStringW(m_strBannerDir), CString(spData->m_strBanner));
+    m_30->Invoke("setBanner", CStringW(m_strBannerDir), CString(spData->m_strBannerPath));
     ASObj rewards(2);
     ASObj first(2);
     ASObj second(2);
-    first.FUN_1407cba60("binding", FUN_1412cbc20(spData->m_nReward1));
+    first.FUN_1407cba60("binding", FUN_1412cbc20(spData->m_nRewardItemId1));
     rewards.FUN_1409eb270("reward1", first);
-    second.FUN_1407cba60("binding", FUN_1412cbc20(spData->m_nReward2));
+    second.FUN_1407cba60("binding", FUN_1412cbc20(spData->m_nRewardItemId2));
     rewards.FUN_1409eb270("reward2", second);
     m_30->Invoke("setRewardItem", rewards);
 }

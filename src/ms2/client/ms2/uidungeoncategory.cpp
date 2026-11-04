@@ -154,19 +154,9 @@ MS2_CHECK_OFFSET(Unk_DcRoom, m_strBanner, 0x148);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_bHidden, 0x1b1);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_nGroupId, 0x1ec);
 
-// The weekly dungeon mission counters.
-class Unk_DcMission : public CPtred
-{
-public:
-    unsigned int FUN_140b20750();
-    unsigned int FUN_140b20780();
-    int FUN_14031b9d0(__int64 now);
-    int FUN_14031ba10();
-};
 class Unk_DcRecord : public CPtred
 {
 public:
-    MS2Ptr<Unk_DcMission> FUN_140b22160(int nMissionId);
     bool FUN_140b22530();
     float FUN_140b22620();
     float FUN_140b22640();
@@ -480,12 +470,12 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     ASObj obj(2);
     int nWeekly = 0;
     int nWeeklyMax = 0;
-    if (MS2Ptr<Unk_DcMission> pMission = reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(0x3ee)) {
-        nWeekly = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetBonusRewardCountNow();
-        nWeeklyMax = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetMaxCount();
+    if (DungeonRecordCliPtr pMission = reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRecord(0x3ee)) {
+        nWeekly = pMission->GetBonusRewardCountNow();
+        nWeeklyMax = pMission->GetMaxCount();
         obj.FUN_1407cbb20("weekly", FUN_14028dfa0(L"s_dungeon_control_center_reward_weekly", reinterpret_cast<const unsigned&>(nWeekly), reinterpret_cast<const unsigned&>(nWeeklyMax)));
-        int nDaily = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetClearCount(GetServerTime());
-        int nDailyMax = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetSubRewardCount();
+        int nDaily = pMission->GetClearCount(GetServerTime());
+        int nDailyMax = pMission->GetSubRewardCount();
         obj.FUN_1407cbb20("daily", FUN_14028dfa0(L"s_dungeon_control_center_reward_daily", reinterpret_cast<const unsigned&>(nDaily), reinterpret_cast<const unsigned&>(nDailyMax)));
     }
     int nNext = 0;

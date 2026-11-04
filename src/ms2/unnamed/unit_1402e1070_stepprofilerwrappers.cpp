@@ -15,13 +15,10 @@
 
 #include <stdarg.h>
 
-// The process-wide printf options the CRT entry points take (first qword of the object the getter returns).
-unsigned long long* FUN_1402c3760();
-
 // @0x1402e1150 - the va_list wide formatter (vswprintf core)
 int FUN_1402e1150(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszFormat, _locale_t pLocale, va_list args)
 {
-    int nCount = __stdio_common_vswprintf(*FUN_1402c3760(), pBuffer, nBufferCount, pszFormat, pLocale, args);
+    int nCount = __stdio_common_vswprintf(*__local_stdio_printf_options(), pBuffer, nBufferCount, pszFormat, pLocale, args);
     int nResult;
     if (nCount < 0)
         nResult = -1;
@@ -44,7 +41,7 @@ int FUN_1402e1070(wchar_t* pBuffer, size_t nBufferCount, const wchar_t* pszForma
 int FUN_1402e10d0(char* pBuffer, size_t nBufferCount, size_t nMaxCount, const char* pszFormat,
                   _locale_t pLocale, va_list args)
 {
-    int nCount = __stdio_common_vsnprintf_s(*FUN_1402c3760(), pBuffer, nBufferCount, nMaxCount,
+    int nCount = __stdio_common_vsnprintf_s(*__local_stdio_printf_options(), pBuffer, nBufferCount, nMaxCount,
                                             pszFormat, pLocale, args);
     int nResult;
     if (nCount < 0)

@@ -35,6 +35,7 @@
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/equipitem.h"  // C3
+#include "ms2/client/ms2/equipment.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -56,11 +57,6 @@ class ASDialog : public ASDisplayObject {};
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
-class Unk_BackUpItem : public CEquipItem { };
-class Unk_PCItems { public: };
-bool FUN_140b02900(const MS2Ptr<Unk_BackUpItem>& sp);                  // IsNull
-bool FUN_140534e50(const MS2Ptr<CItem>& sp);                           // IsNull
-void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
 
 class Unk_UeWorld { public: MyPC* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
@@ -337,15 +333,15 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
                 continue;
             m_items.Add(spItem);
         }
-        ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
-        FUN_1411e1ce0(reinterpret_cast<Unk_PCItems*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0()), &equips, 0);
+        ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
+        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->CollectShownItemsInLayer(equips, 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos))
         {
-            MS2Ptr<Unk_BackUpItem> spEquip = equips.GetAt(pos);
-            if (FUN_140b02900(spEquip))
+            MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
+            if (spEquip.IsNull())
                 continue;
-            MS2Ptr<CItem> spItem = reinterpret_cast<MS2Ptr<CEquipItem>&>(spEquip)->GetItem();
-            if (FUN_140534e50(spItem))
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
+            if (!spItem)
                 continue;
             if (FUN_140fb7870(MS2Ptr<CItem>(spItem)) != 0)
                 continue;

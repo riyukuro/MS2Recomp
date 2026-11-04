@@ -41,9 +41,9 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    bool FUN_1410c3e00(int nRow);                                   // row enabled
 };
 class CubeMapInformationService { public:   // C3: member view (cubemapinformationservice_3.h)
+    unsigned char FUN_1410c3e00(int nKey);                          // row enabled
     int FUN_1410c3e80(int nKey);                                    // row level
     bool FUN_1410d5640();                                           // may change the options
 };
@@ -215,7 +215,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
         for (int i = 0; i < 9; ++i)
         {
             int nRow = i;
-            bool bOn = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3e00(nRow);
+            unsigned char bOn = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3e00(nRow);
             int nLevel = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3e80(nRow);
             int nValue;
             if (!bOn)

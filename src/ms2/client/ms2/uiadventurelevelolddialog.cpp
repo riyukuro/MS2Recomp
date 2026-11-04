@@ -90,16 +90,8 @@ public:
     int m_10;                                                       // highest step
 };
 
-// A level reward: m_0 is the kind (1 item, 2 stat), the rest the item (id, rarity, count) or the stat id.
-class Unk_ALReward
-{
-public:
-    bool FUN_1401958d0();                                           // empty record
-    int m_0;
-    int m_4;
-    int m_8;
-    int m_c;
-};
+bool FUN_1401958d0(CAdventureLevelReward* p);                       // empty record
+void FUN_140202290(unsigned char* payload, COutputStream& stream);
 
 // A mission: m_0 is the amount to reach, m_4 the reward kind, then the reward item (id, rarity, count).
 class Unk_ALMission
@@ -169,7 +161,6 @@ class Unk_ALClaimLevel
 {
 public:
     Unk_ALClaimLevel() : m_op(8), m_id(0) {}
-    void FUN_140202290(COutPacket& packet);
     int m_op;
     int m_id;
 };
@@ -411,18 +402,18 @@ int UIAdventureLevelOldDialog::FUN_140ba61b0(ASObj& obj, unsigned int nLevel)
 // @0x140ba63d0
 int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (pReward->FUN_1401958d0())
+    const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
+    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
         return 0;
-    if (pReward->m_0 != 1)
+    if (pReward->m_nType != 1)
         return 0;
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return 0;
     MS2Ptr<CItem> spItem(new CItem);
-    if (spItem->FUN_14052b130(pReward->m_4, pReward->m_8, 0) == 0)
+    if (spItem->FUN_14052b130(pReward->m_nId, pReward->m_nRank, 0) == 0)
         return 0;
-    spItem->SetCountClamped(pReward->m_c);
+    spItem->SetCountClamped(pReward->m_nValue);
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
@@ -435,10 +426,10 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
 // @0x140ba66a0
 int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (pReward->FUN_1401958d0())
+    const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
+    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
         return 0;
-    if (pReward->m_0 != 2)
+    if (pReward->m_nType != 2)
         return 0;
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
@@ -449,10 +440,10 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
-    param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), reinterpret_cast<const int&>(pReward->m_c));
+    param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), reinterpret_cast<const int&>(pReward->m_nValue));
     param.m_nFlags = 1;
     param.m_nTipArg = 4;
-    param.m_strCount = Unk_SocketFormat<int>("{0}", pReward->m_c);
+    param.m_strCount = Unk_SocketFormat<int>("{0}", pReward->m_nValue);
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415560(strBindID, &param);
@@ -464,16 +455,16 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 // @0x140ba6a10
 void UIAdventureLevelOldDialog::SendPrestige(unsigned int nLevel)
 {
-    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
-    if (pReward->FUN_1401958d0())
+    const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
+    if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
         return;
-    if (pReward->m_0 == 2)
+    if (pReward->m_nType == 2)
         return;
     Unk_ALClaimLevel claim;
     claim.m_op = 3;
     claim.m_id = nLevel;
     COutPacket packet(static_cast<int>(SendOp::Prestige), 0);
-    claim.FUN_140202290(packet);
+    FUN_140202290(reinterpret_cast<unsigned char*>(&claim), packet);
     FUN_140710590(packet);
 }
 

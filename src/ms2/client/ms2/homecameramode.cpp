@@ -4,6 +4,7 @@
 // MS2-PIN: ??_GCHomeCameraMode@@UEAAPEAXI@Z 0x140b67cd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\homecameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3 rotation builders
 
 #include "homecameramode.h"
 
@@ -15,6 +16,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <ecr/RenderService.h>   // C3: GetActiveRenderSurface / GetCamera
 #include <ecr/RenderSurface.h>
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
@@ -66,7 +68,7 @@ struct Unk_ClientConfig
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The scene camera (FUN_1413f9890()->FUN_140af7da0()->FUN_140af7df0()) and its frustum.
+// The scene camera (FUN_1413f9890()->GetActiveRenderSurface()->GetCamera()) and its frustum.
 struct Unk_HomeFrustum
 {
     float m_0, m_4, m_8, m_c, m_10;                 // left, right, top, bottom, near
@@ -75,16 +77,7 @@ class Unk_NiCamera
 {
 public:
 };
-class Unk_SceneCamera
-{
-public:
-};
-class Unk_SceneRoot
-{
-public:
-    Unk_SceneCamera* FUN_140af7da0();               // m_48
-};
-Unk_SceneRoot* FUN_1413f9890();
+ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
 
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
@@ -439,9 +432,9 @@ void CHomeCameraMode::FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarg
 {
     float fAngle = FUN_140b66b10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
     m_100.z = FUN_1409f2310(fAngle);
-    if (m_10c.FUN_140552690(g_143a08ce8))
+    if (reinterpret_cast<const efd::Point3&>(m_10c) == efd::Point3::UNIT_Y)
         m_100.z = 1.0f;
-    else if (m_10c.FUN_140552690(g_143a08cf8))
+    else if (reinterpret_cast<const efd::Point3&>(m_10c) == efd::Point3::UNIT_Z)
         ptPos.z = ptTarget.z;
     float fPrevDist = m_50;
     Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
@@ -571,26 +564,26 @@ MS2_REPLACE_METHOD(0x140B66BC0, CHomeCameraMode, vfunc_37, 1489, 0x509869EC);
 // @0x140b671a0
 BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
 {
-    Unk_SceneCamera* pSceneCamera = FUN_1413f9890()->FUN_140af7da0();
+    ecr::RenderSurface* pSceneCamera = FUN_1413f9890()->GetActiveRenderSurface();
     if (pSceneCamera)
     {
-        Unk_NiCamera* pCamera = (Unk_NiCamera*)reinterpret_cast<ecr::RenderSurface*>(pSceneCamera)->GetCamera();
+        Unk_NiCamera* pCamera = (Unk_NiCamera*)pSceneCamera->GetCamera();
         if (pCamera)
         {
             Unk_NiMatrix3 kRot;
             Unk_NiMatrix3 kX;
             Unk_NiMatrix3 kY;
             Unk_NiMatrix3 kZ;
-            kX.FUN_142084b30(ptRot.x * -0.0174532924f);
-            kY.FUN_142084ba0(ptRot.y * -0.0174532924f);
-            kZ.FUN_142084c10(ptRot.z * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kX).MakeXRotation(ptRot.x * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kY).MakeYRotation(ptRot.y * -0.0174532924f);
+            reinterpret_cast<efd::Matrix3&>(kZ).MakeZRotation(ptRot.z * -0.0174532924f);
             kRot = kX.FUN_140a33480(kY).FUN_140a33480(kZ);
             Vector3 kDir;
             Vector3 kUp;
             Vector3 kRight;
-            kRot.FUN_140a01190(0, kDir);
-            kRot.FUN_140a01190(1, kUp);
-            kRot.FUN_140a01190(2, kRight);
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(kDir));
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(1, reinterpret_cast<efd::Point3&>(kUp));
+            reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(kRight));
             Unk_HomeFrustum* pFrustum = (Unk_HomeFrustum*)&reinterpret_cast<NiCamera*>(pCamera)->GetViewFrustum();
             float fNear = pFrustum->m_10;
             float fFov = FUN_140ad4b30();

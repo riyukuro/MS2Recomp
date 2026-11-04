@@ -32,8 +32,6 @@
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 bool FUN_14028d470(float a, float b);                               // nearly equal
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-void FUN_1409f76f0(void* pSelf, void* pNew);                        // SmartPointer<NiNode>::Reset(pNew)
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_NodeQueue
@@ -134,7 +132,7 @@ bool CStatusEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     m_dStartTime = (double)(unsigned)(GetTickCountMs2() + (int)(__int64)(pStatus->m_fStartDelay * 1000.0f));
     m_bSuper = false;
     m_bFlag = false;
-    FUN_1409f76f0(&m_spNode, ((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(FUN_1409849b0(&reinterpret_cast<Unk_StatusTarget*>(pTarget)->m_hNode))))));
+    m_spNode = (NiNode*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)((NiAVObject*)reinterpret_cast<NiAVObjectPtr&>(reinterpret_cast<Unk_StatusTarget*>(pTarget)->m_hNode))));
     if (pStatus->m_strCategory.CompareNoCase("ice") == 0)
         m_nKind = 0;
     else if (pStatus->m_strCategory.CompareNoCase("fire") == 0)

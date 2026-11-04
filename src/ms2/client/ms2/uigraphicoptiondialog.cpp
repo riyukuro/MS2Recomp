@@ -32,12 +32,6 @@ class Unk_GoCheck : public ASButton
 public:
 };
 
-// The shadow quality combo box AS entity.
-class Unk_GoCombo : public ASDisplayObject
-{
-public:
-};
-
 // The graphics option block (Unk_AeGameOption::FUN_1409a8ac0): HDR, shimmer, mirror flags and the shadow quality.
 class Unk_GoGraphics
 {
@@ -72,6 +66,8 @@ bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: wa
 extern NiFixedString DAT_143ae53c0;                  // "gfEnableShimmerRender"
 CStringW GetStringCommon(int nStringId);
 
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // the shadow quality combo box (0x140c28560)
+
 class UIGraphicOptionDialog : public UIDialog
 {
 public:
@@ -86,7 +82,6 @@ public:
     virtual int vfunc_65();                                                         // 65 0x141946cf0
 
     MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);                      // child lookup (ICF'd GetChild instance)
-    MS2Ptr<Unk_GoCombo> FUN_140c28560(const CString& strName);                      // child lookup (ICF'd GetChild instance)
     void FUN_1419475a0(int bHdr);                                                  // HDR on/off
     void FUN_141947600(int bShimmer);                                              // shimmer on/off
     void FUN_141947710(int bMirror);                                               // mirror on/off
@@ -129,8 +124,8 @@ int UIGraphicOptionDialog::vfunc_5()
         spShimmer->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bShimmer);
     if (MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670("m_mirror"))
         spMirror->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bMirror);
-    if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow"))
-        reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->SetSelectedIndex(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_nShadow);
+    if (MS2Ptr<ASDropdownMenu> spShadow = GetChild<ASDropdownMenu>("m_shadow"))
+        spShadow->SetSelectedIndex(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_nShadow);
     return UIDialog::vfunc_5();
 }
 MS2_REPLACE_METHOD(0x141946d20, UIGraphicOptionDialog, vfunc_5, 718, 0x445E1ECF);
@@ -140,12 +135,12 @@ void UIGraphicOptionDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
     {
-        if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow")) {
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x311));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x312));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x313));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x314));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x315));
+        if (MS2Ptr<ASDropdownMenu> spShadow = GetChild<ASDropdownMenu>("m_shadow")) {
+            spShadow->AddItemLabel(GetStringCommon(0x311));
+            spShadow->AddItemLabel(GetStringCommon(0x312));
+            spShadow->AddItemLabel(GetStringCommon(0x313));
+            spShadow->AddItemLabel(GetStringCommon(0x314));
+            spShadow->AddItemLabel(GetStringCommon(0x315));
         }
     }
     if (m_30.get() != 0) {

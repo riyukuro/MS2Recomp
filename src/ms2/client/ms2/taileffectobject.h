@@ -21,7 +21,7 @@ public:
     struct TailEffectInfo : public CPtred
     {
         // implicit ctor (0x140ad08b0): `new TailEffectInfo()` zero-fills before it runs
-        Unk_NodePtr m_spNode;               // +0x18 the scene node the effect is attached to
+        NiNodePtr m_spNode;                 // +0x18 the scene node the effect is attached to
         int m_nEffectId;                    // +0x20 effect-manager handle
     };
 

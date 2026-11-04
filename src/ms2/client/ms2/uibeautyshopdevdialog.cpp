@@ -65,7 +65,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include <algorithm>
 #include <vector>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class NoticeMessage { public: void SetActor(int nActor); };   // C3: unit-local view (0x140a53190; was Unk_EffectTarget::FUN_140a53190)
+#include "ms2/placeholder/effectquery.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -123,17 +123,6 @@ public:
     CEmotionTable* GetItemTable();
 };
 class Unk_CsoSpawnMgr* FUN_140a50010();   // C3: was FUN_140a50010
-
-// An element of a tile list's data provider, viewed as an object.
-class Unk_BSDevRow : public ASObj
-{
-};
-
-// 0x1422df140 ASDataProvider::requestItemAt viewed through the array: this = the array (rcx), hidden return = rdx
-struct Unk_BSDevRowSource
-{
-    Unk_BSDevRow FUN_1422df140(unsigned nIndex);
-};
 
 class Unk_ItemEventSystem
 {
@@ -944,11 +933,11 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
     if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x50);
-    Unk_EffectTarget target;
+    NoticeMessage target;
     target.m_strName = ((class CommonResource*)FUN_1401d31f0())->m_strCustomizingFinish;
-    target.m_nKind = 1;
-    reinterpret_cast<NoticeMessage&>(target).SetActor(pPc->FUN_14123c580());
-    CEffectService::GetInstance()->FUN_1411a4a00(target);
+    target.m_nObject = 1;
+    target.SetActor(pPc->FUN_14123c580());
+    CEffectService::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&target));
     FUN_14191fc40(0);
     FUN_14191ff70();
     m_19c = 0;
@@ -1078,8 +1067,7 @@ void UIBeautyShopDevDialog::FUN_1419207c0(int nTab)
             {
                 if (spList->GetSelectedIndex() >= 0)
                 {
-                    Unk_BSDevRow row = reinterpret_cast<Unk_BSDevRowSource*>(spList->GetDataProvider().operator->())
-                                           ->FUN_1422df140(spList->GetSelectedIndex());
+                    AScript row = spList->GetDataProvider().operator->()->FUN_1422df140(spList->GetSelectedIndex());
                     if (row.FUN_1422bb870().IsObject())
                     {
                         Scaleform::GFx::Value vId = row.GetMember("itemid");

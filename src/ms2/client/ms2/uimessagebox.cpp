@@ -38,6 +38,7 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/state.h"
+#include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker
 #include "hook/ms2hook.h"
 
 // ---- statics (.text$di): the box tags, in the exe's initializer order ----
@@ -249,10 +250,6 @@ CFeatureManager* FUN_140166410();
 class Unk_MessageBoxShutdown { public: int FUN_1402c4c90(int nId); };
 class Unk_MessageBoxContents { public: void* m_0; Unk_MessageBoxShutdown m_shutdown; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class CBanTextChecker { public: int CheckGuildName(const CStringW& strName, CStringW& strOut); };   // C3: member view (commonstringtable.h)
-class Unk_MessageBoxFilter : public CPtred { };
-class Unk_MessageBoxFilters { public: MS2Ptr<Unk_MessageBoxFilter> FUN_140229a50(); };
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_MessageBoxNameDialog : public UICharacterListDialog { public: };
 template <class T> T* Unk_MMDialog(int nId);          // mentoringmanager.cpp
 template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820
@@ -269,7 +266,7 @@ bool FUN_140930b10();
 class Unk_MessageBoxGameOption { public: char m_pad_00[0x10]; __time64_t m_nFuncItemAsk; __time64_t m_nCurrencyAsk; };
 class Unk_MessageBoxGameOptions : public CGameOption { public: Unk_MessageBoxGameOption* FUN_140c9b8b0(); };
 
-// Game constants table slots (0x58 bytes each, FUN_1401d7c10 / FUN_1402056b0 / FUN_140298f80 read the value).
+// Game constants table slots (0x58 bytes each: Common::Constants::Value<T>).
 struct Unk_MessageBoxConstSlot { char m_pad_00[0x58]; };
 struct Unk_MessageBoxConsts
 {
@@ -282,8 +279,6 @@ struct Unk_MessageBoxConsts
 };
 MS2_CHECK_OFFSET(Unk_MessageBoxConsts, m_guideId, 0xd358);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MessageBoxConsts* FUN_1401d3200()
-const unsigned int* FUN_1401d7c10(const Unk_MessageBoxConstSlot* pSlot);
-const CString* FUN_140298f80(const Unk_MessageBoxConstSlot* pSlot);
 
 // Item sound transform (NiTransform: rotate, translate, scale).
 struct Unk_MessageBoxPt3 { float x, y, z; };
@@ -346,7 +341,6 @@ public:
 class Unk_MessageBoxWorld
 {
 public:
-    MS2Ptr<CPortal> FUN_141bc2800(int nId);
     void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<CPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
 };
@@ -683,7 +677,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         if (spItem->GetRarity() > 3)
             bAsk = 1;
         else if (spItem->HasSkin() != 0 ||
-                 spItem->GetSellPrice() * (int)nCount >= *FUN_1401d7c10(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_sellConfirmPrice))
+                 spItem->GetSellPrice() * (int)nCount >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_sellConfirmPrice)->Get())
             bAsk = 1;
     }
     if (bAsk != 0)
@@ -1285,7 +1279,7 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     else if (nButton == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *FUN_140298f80(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideUrl));
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *reinterpret_cast<Common::Constants::Value<CString>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideUrl)->Get());
         FUN_1418fe1c0(strUrl);
         return 0;
     }
@@ -2176,10 +2170,10 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
         }
-        if (Unk_MessageBoxFilter* pFilter = ((class Unk_MessageBoxFilters*)FUN_14025e7d0())->FUN_140229a50().get())
+        if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().get())
         {
             CStringW strMsg;
-            if (reinterpret_cast<CBanTextChecker*>(pFilter)->CheckGuildName(strName, strMsg))
+            if (pFilter->CheckGuildName(strName, strMsg))
             {
                 FUN_1412751f0(strMsg, 1, 1);
                 return 0;
@@ -2242,7 +2236,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         WorldService::GetInstance()->FUN_141bc2980(&ids);   // C3: WorldService (worldservice.h)
         for (size_t i = 0; i < ids.size(); i++)
         {
-            MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2800(ids[i]);
+            MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(ids[i]);
             if (spPortal == 0)
                 continue;
             if (spPortal->m_strTip.GetLength() > 0)

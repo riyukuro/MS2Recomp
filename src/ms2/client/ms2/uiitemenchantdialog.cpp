@@ -209,8 +209,6 @@ public:
 };
 
 // Ingredient / string tables.
-// StringFormat<CString, unsigned __int64>: the exe calls this identical COMDAT copy, not the one symbols.tsv names.
-CString FUN_140c4b950(const char* szFormat, const CString& strArg, const unsigned __int64& nArg);
 CStringW FUN_14183e930(const CStringW& text, unsigned color);
 CStringW FUN_14183e9c0(CStringW text, int rank);
 CStringW FUN_141902320(unsigned a, unsigned b);
@@ -1631,7 +1629,7 @@ void UIItemEnchantDialog::FUN_1419c6cd0(ASObj& dest, CIngredientContainer* conta
         if (ci->InitWithCount(itemId, rank, 0, need) != 0) {
             ASObj obj(2);
             int have = g_143ab2a90.FUN_140a5f780(ing->m_b, 0);
-            obj.FUN_1407cba60("binding", FUN_1419c78a0(ci, FUN_140c4b950("{0}.ingredient.{1}", GetTypeName(), i), m_bag1));
+            obj.FUN_1407cba60("binding", FUN_1419c78a0(ci, Unk_SocketFormat("{0}.ingredient.{1}", GetTypeName(), i), m_bag1));
             obj.FUN_1407cbb20("countText", FUN_1419021b0(have, need));
             list.PushObj(obj);
             if ((type == 0x60) && (need > have))

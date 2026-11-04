@@ -101,9 +101,10 @@ public:
     TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
     virtual ~TiXmlDeclaration();
 };
-class TiXmlComment   // C3: member view (the const char* ctor 0x1408700b0 is header-inline in tinyxml.h)
+class TiXmlComment   // C3: member view (the const char* ctor 0x140a27ec0 is emitted by blindmanager.cpp)
 {
 public:
+    TiXmlComment(const char* pszValue);
     virtual ~TiXmlComment();
 };
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -149,7 +150,7 @@ public:
 };
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 CLocaleLanguage* FUN_1401c0da0();
@@ -300,7 +301,6 @@ class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 MS2Ptr<CNpcData> FUN_1406cd330(int nId);   // the npc data row
 
 // TinyXML nodes written by the export (stack objects of 0x90 bytes).
-void FUN_1408700b0(Unk_XmlNodeBuf* pComment, const char* pszText);
 // The declaration and the root element live to the end of the export (the exe destroys both on every exit).
 struct Unk_XmlDeclLocal : Unk_XmlNodeBuf { ~Unk_XmlDeclLocal() { reinterpret_cast<TiXmlDeclaration*>(this)->TiXmlDeclaration::~TiXmlDeclaration(); } };
 struct Unk_XmlElemLocal : Unk_XmlNodeBuf { ~Unk_XmlElemLocal() { reinterpret_cast<TiXmlElement*>(this)->TiXmlElement::~TiXmlElement(); } };
@@ -321,9 +321,6 @@ int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str);
 CString Unk_SocketFormat(const char* pszFormat, const fmt::ArgList& args);
 CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, const CString& strName);
 
-// The exe's other COMDAT copy of StringFormat<CString, int>, the one FUN_141821bf0 calls.
-CString FUN_140740820(const char* pszFormat, const CString& a0, const int& a1);
-
 // Removes the named <property> children from every xblock / block entity whose model the model manager knows.
 // @0x141821bf0
 void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
@@ -340,7 +337,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
     CDebugConsole::FUN_141168200()->FUN_1411683e0("Read Model Complete");
 
     ATL::CAtlArray<CString> props;
-    FUN_14015f050(strDeleteProps, props, ",");
+    Unk_SplitA(strDeleteProps, &props, ",");
 
     {
         ATL::CAtlArray<CString> xblocks;
@@ -373,7 +370,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_140740820("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
+                CDebugConsole::FUN_141168200()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
             }
         }
     }
@@ -412,7 +409,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_140740820("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+                CDebugConsole::FUN_141168200()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
             }
         }
     }
@@ -939,7 +936,7 @@ bool FUN_1418226b0(bool bLog)
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&decl));
     {
         Unk_XmlNodeBuf comment;
-        FUN_1408700b0(&comment, FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
+        reinterpret_cast<TiXmlComment*>(&comment)->TiXmlComment::TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
         ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(*(class TiXmlNode const*)(&comment));
         reinterpret_cast<TiXmlComment*>(&comment)->TiXmlComment::~TiXmlComment();
     }

@@ -61,11 +61,11 @@ struct Unk_CriUtfSortTable
 extern Unk_CriUtfSortTable* DAT_143ba9d40;                      // table / column being sorted (qsort has no context argument)
 extern unsigned DAT_143ba9d48;
 
-int FUN_140038ddc(int level, const char* msg);
-int FUN_140038e24(int level, const char* code, int err);
+void criErr_Notify(long level, const char* msg);   // sfr_cri_02c, 0x140038ddc
+void criErr_NotifyGeneric(long level, const char* code, long err);   // sfr_cri_02c, 0x140038e24
 long criUtfRtv_GetCellVal(struct CriUtfRtvView const*, unsigned long, unsigned long, struct CriUtfRtvCell*);   // C3: was FUN_14003af50
 char const* criUtfRtv_GetDataStr(struct CriUtfRtvView const*, unsigned long, unsigned long);   // C3: was FUN_14003a7f4
-unsigned long FUN_14003a45c(struct CriUtfRtvView const*);   // C3: was FUN_14003a45c
+unsigned long criUtfRtv_GetNumRecord(struct CriUtfRtvView const*);   // sfr_cri_03a, 0x14003a45c
 void* criUtfHeap_Alloc(void*, unsigned long, char const*, long, long);   // C3: was FUN_14003a0d0
 void FUN_14003a0ec(void* heap, void* p);
 unsigned FUN_140047158(unsigned type);
@@ -117,29 +117,29 @@ int FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
 {
     if (table->m_heap == 0)
     {
-        FUN_140038ddc(0, "E08070301:No Heap");
+        criErr_Notify(0, "E08070301:No Heap");
         return 0;
     }
     if (slot >= 4)
     {
-        FUN_140038ddc(0, "E08012801:Invalid table no");
+        criErr_Notify(0, "E08012801:Invalid table no");
         return 0;
     }
     if (table->m_slots[slot].key != (unsigned)-1)
     {
-        FUN_140038ddc(0, "E08012802:Not Empty Index Table");
+        criErr_Notify(0, "E08012802:Not Empty Index Table");
         return 0;
     }
     if (table->m_slots[slot].value != 0)
     {
-        FUN_140038ddc(0, "E08012803:Internal Error");
+        criErr_Notify(0, "E08012803:Internal Error");
         return 0;
     }
-    unsigned n = FUN_14003a45c((struct CriUtfRtvView const*)(table));
+    unsigned n = criUtfRtv_GetNumRecord((struct CriUtfRtvView const*)(table));
     table->m_slots[slot].value = (unsigned*)criUtfHeap_Alloc(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
     if (table->m_slots[slot].value == 0)
     {
-        FUN_140038e24(0, "E06100300", -3);
+        criErr_NotifyGeneric(0, "E06100300", -3);
         return 0;
     }
     memset(table->m_slots[slot].value, 0, (long long)(int)(n << 2));
@@ -158,12 +158,12 @@ void FUN_140046d50(Unk_CriUtfSortTable* table, unsigned slot)
 {
     if (slot >= 4)
     {
-        FUN_140038ddc(0, "E08012804:Invalid table no");
+        criErr_Notify(0, "E08012804:Invalid table no");
         return;
     }
     if (table->m_slots[slot].value == 0)
     {
-        FUN_140038ddc(0, "E08012805:Internal Error");
+        criErr_Notify(0, "E08012805:Internal Error");
         return;
     }
     if (table->m_heap != 0)

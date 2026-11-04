@@ -7,31 +7,15 @@
 #include <afx.h>
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"
+#include "ms2/commonfiles/scriptptr.h"     // Unk_ScriptPtr<CTalkScript> (m_188)
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"     // UIQuestEventListener (13 slots)
 
 class NotifyObject;
-class Unk_PnTalkScript;
+class CTalkScript;
 class ASTextField;
 class ASButton;
-
-// A 16-byte talk script handle (quest id -> script): default ctor 0x140859c50, operator= 0x14085a3b0, null test
-// 0x14085a420, operator-> 0x14085a610, dtor 0x14078f140.
-class Unk_PnScriptPtr
-{
-public:
-    Unk_PnScriptPtr();
-    ~Unk_PnScriptPtr();
-    Unk_PnScriptPtr& operator=(const Unk_PnScriptPtr& o);
-    bool IsNull() const;
-    Unk_PnTalkScript* FUN_14085a610() const;
-    Unk_PnScriptPtr& FUN_140e77f50(int n);                      // 0x140e77f50 (this unit) drop the script
-    void FUN_140790930();
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_PnScriptPtr, 0x10);
 
 class UIPopupNpcTalkDialog : public UIDialog, public UIQuestEventListener
 {
@@ -60,7 +44,7 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_180;                          // +0x180 current line
     int m_184;                          // +0x184 quest id
-    Unk_PnScriptPtr m_188;              // +0x188 its talk script
+    Unk_ScriptPtr<CTalkScript> m_188;   // +0x188 its talk script
     ATL::CAtlMap<unsigned, int> m_198;  // +0x198 quests already opened
 };
 MS2_CHECK_SIZE(UIPopupNpcTalkDialog, 0x1e0);

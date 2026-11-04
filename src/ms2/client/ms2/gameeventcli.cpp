@@ -141,7 +141,6 @@ template <class T> T* Unk_GetUI(int nUiId);                     // <UIDungeonRoo
 class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751b0(const CStringW& str, int nType);             // chat / system message
-CommonString* FUN_14025e7d0();                                  // the CommonString singleton
 void FUN_140851c40(Unk_140165cf0* pElem);
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);              // the document's first child element
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -327,7 +326,7 @@ void GameEventDTRewardCli::vfunc_6()
     GameEventDTReward::vfunc_6();
     UIDTEventDialog* pDlg = FindCliDialog<UIDTEventDialog>(0x4f01);
     if (pDlg) {
-        pDlg->FUN_140f38630(FUN_1402e1d00());
+        pDlg->FUN_140f38630(GetID());
         if (pDlg->FUN_141924630()) {
             unsigned short nLevel = 0;
             Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
@@ -456,7 +455,7 @@ bool GameEventAttendGiftCli::IsCheckedInToday()
 {
     CMsTime now(GetServerTime());
     __int64 nDefault = 0;
-    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, FUN_1402e1d00(), nDefault);
+    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, GetID(), nDefault);
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
@@ -472,14 +471,14 @@ unsigned GameEventAttendGiftCli::FUN_140ce3660() { return (unsigned)m_gifts.GetC
 unsigned GameEventAttendGiftCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, GetID(), nDefault);
 }
 
 // @0x140ce36d0
 int GameEventAttendGiftCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, GetID(), nDefault);
 }
 
 // @0x140ce3710
@@ -518,7 +517,7 @@ int GameEventAttendGiftCli::FUN_140ce3900() { return m_i110; }
 unsigned GameEventAttendGiftCli::FUN_140ce3920()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0x67, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0x67, GetID(), nDefault);
 }
 
 // @0x140ce3960
@@ -531,7 +530,7 @@ int GameEventAttendGiftCli::FUN_140ce3980() { return m_i118; }
 int GameEventAttendGiftCli::FUN_140ce39a0()
 {
     int nDefault = 0;
-    int nTotal = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0x6a, FUN_1402e1d00(), nDefault);
+    int nTotal = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0x6a, GetID(), nDefault);
     nTotal += (int)TSingleton<CMainSystem>::GetInstance()->FUN_141473560();
     return nTotal;
 }
@@ -562,7 +561,7 @@ CMsTime GameEventAttendGiftCli::FUN_140ce3aa0() { return m_28; }
 CMsTime GameEventAttendGiftCli::FUN_140ce3ae0()
 {
     if (m_i114 == 2) {
-        __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetTime(FUN_1402e1d00());
+        __int64 nTime = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetTime(GetID());
         if (nTime != 0)
             return CMsTime(nTime);
     }
@@ -609,7 +608,7 @@ bool GameEventCashAttendCli::FUN_140ce3da0()
 {
     CMsTime now(GetServerTime());
     __int64 nDefault = 0;
-    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, FUN_1402e1d00(), nDefault);
+    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, GetID(), nDefault);
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
@@ -630,14 +629,14 @@ unsigned GameEventCashAttendCli::GetGroupCount()
 unsigned GameEventCashAttendCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, GetID(), nDefault);
 }
 
 // @0x140ce3ed0
 int GameEventCashAttendCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, GetID(), nDefault);
 }
 
 // @0x140ce3f10
@@ -834,7 +833,7 @@ void GameEventUpdateStringCli::OnStart()
 void GameEventUpdateStringCli::vfunc_6() {}
 
 // @0x140ce4c60
-void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { FUN_14025e7d0()->LoadStrings(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { TSingleton<CommonString>::GetInstance()->LoadStrings(pElem); }
 
 // @0x140ce4c90
 void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813970(pElem); }
@@ -915,11 +914,11 @@ void GameEventStringBoardCli::OnStart()
     else
         strText = m_80;
     if (!strText.IsEmpty())
-        CGameRule::GetInstance()->FUN_14047d820(FUN_1402e1d00(), strText);
+        CGameRule::GetInstance()->FUN_14047d820(GetID(), strText);
 }
 
 // @0x140ce5380
-void GameEventStringBoardCli::vfunc_6() { CGameRule::GetInstance()->FUN_14047d900(FUN_1402e1d00()); }
+void GameEventStringBoardCli::vfunc_6() { CGameRule::GetInstance()->FUN_14047d900(GetID()); }
 
 // ---- GameEventSnowmanCli ---------------------------------------------------------------------------------------------
 

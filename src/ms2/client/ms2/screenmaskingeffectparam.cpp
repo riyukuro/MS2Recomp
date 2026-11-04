@@ -27,11 +27,7 @@ public:
 Unk_ResourceMgr* FUN_140a0afd0();
 
 // Post-processing service (singleton 0x1409a8b20): enable step by id.
-class Unk_PostProcessSvc
-{
-public:
-    void FUN_1416a3920(int nId, bool bOn);
-};
+class PostProcessingService { public: bool SetStepActive(int, bool); };   // C3: the real member (was FUN_1416a3920)
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -78,7 +74,7 @@ ScreenMaskingEffect::ScreenMaskingEffect(int nId, const CPostEffectParam* pParam
 void ScreenMaskingEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(8, true);
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(8, true);
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
@@ -92,7 +88,7 @@ void ScreenMaskingEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
     float fBlend = 0.0f;
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(8, false);
+    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(8, false);
     FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140dca410, ScreenMaskingEffect, vfunc_4, 77, 0x6FFAF778);

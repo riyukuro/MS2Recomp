@@ -725,8 +725,7 @@ void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
 }
 
 // Rebuild the skill list of the movie for a tab.
-// The job skills null test: the exe calls an out-of-line IsNull folded with MS2Ptr<JobSkill>::IsNull (0x140fa3060).
-bool FUN_140fa3060(const Unk_CcSkillListPtr& sp);
+class ASButtonBar;
 
 // @0x140fa16f0
 void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
@@ -741,7 +740,8 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
         if (pPlayer == 0)
             return;
         Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)((class PC*)(class MyPC*)(pPlayer))->FUN_141654700());
-        if (FUN_140fa3060(spSkills))
+        // The exe's null test is the out-of-line MS2Ptr<ASButtonBar>::IsNull (0x140fa3060), ICF-folded with the job skills' own.
+        if (reinterpret_cast<const MS2Ptr<ASButtonBar>&>(spSkills).IsNull())
             return;
         ASArray arrSkills(2);
         std::set<unsigned> setLearned;

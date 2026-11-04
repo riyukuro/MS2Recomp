@@ -19,19 +19,15 @@ public:
     // The bool/CString/CStringW/int setters FUN_1407cbbe0/cba60/cbb20/cb9c0 and FUN_1422bb2b0 (a member as text) are
     // AScript's own (commonfiles/shopcategorytable.cpp, gfxui/ascript.cpp): calls through an ASObj bind those names.
     void FUN_1409c10e0(const char* szName, int n);                       // set an int member (uimeratmarketdialog.cpp "saleState")
-    void FUN_1409c0d20(const char* szName, unsigned int n);              // set an unsigned member
     void FUN_1409c0dc0(const char* szName, const char* szValue);         // set a string member from a char*
     void FUN_1409c0e60(const char* szName, const wchar_t* szValue);      // set a string member from a wchar_t*
     void FUN_1409c1180(const char* szName, __int64 n);                   // set a 64-bit member
     void FUN_1409c48f0(const char* szName, short n);                     // set a short member
-    void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value
     void FUN_140be2660(const char* szName, int n);                       // 0x140be2660 set an int member through an ASData (inline COMDAT, defined in uiclosetdialog.cpp)
     void FUN_140ef0000(const char* szName, int n);                       // same (uiugccubepalettedialog.cpp copy)
     void FUN_140ef00a0(const char* szName, int n);                       // same (second copy)
     void FUN_140f8f970(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uipartysearchdialog.cpp)
     void FUN_140f8fa10(const char* szName, unsigned int n);              // same, unsigned
-    void FUN_1409c4a30(const char* szName, float f);                     // set a float member (UIRimLightDialog)
-    void FUN_140e06d60(const char* szName, double d);                    // set a double member (UIRimLightDialog)
     void FUN_1409adc90(const char* szName, int n);                       // set an int member (item rank; UISnowmanEventDialog)
     void FUN_140f43b40(const char* szName, int n);                       // set an int member (fishing medal; UIRewardNotify)
     void FUN_1409eb310(const char* szName, int n);                       // set an int member via ASData (astooltip.cpp)
@@ -66,7 +62,6 @@ public:
     void FUN_141a07250(const char* szName, int n);                       // set an int member (uimessagebox's range; the trigger state positions)
     void FUN_1422bad80(const char* szName, int& n);                      // read an int member (uiugcitemeditdialog.cpp)
     void FUN_1422bafe0(const char* szName, bool& b);                     // read a bool member (uiugcitemeditdialog.cpp)
-    void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value)
     void FUN_141b46af0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiugcitemeditdialog.cpp)
     void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
     void FUN_140e88a10(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uisidepopuptalk_1.cpp: the popup "type")
@@ -90,7 +85,6 @@ public:
     unsigned int PushFloat(float f);                                 // push a Number
     unsigned int PushDouble(double d);                                // push a Number
     unsigned int PushObj(const ASObj& obj);                        // push an AS object
-    unsigned int FUN_1422bbf00(const AScript& obj);                      // push an AS object (the same callee; ascorelist.cpp)
     unsigned int PushString(const char* sz);                          // push a string (uimainplayerinfo empty slot names)
     unsigned int PushWString(const wchar_t* sz);                       // push a wide string
     int PushValue(Scaleform::GFx::Value v);                          // push a value (Value::PushBack as an int; v by value)

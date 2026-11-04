@@ -97,11 +97,6 @@ private:
     void* m_unrecovered_80;
 };
 MS2_CHECK_SIZE(ASDialog, 0x88);
-class Unk_AdWorld : public CMeratMarketMan {
-public:
-    bool FUN_140d5b370(MS2Ptr<Unk_AdMarketItem> item);
-    MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_AdSn id);
-};
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
 Unk_SingletonObj* FUN_140939a00();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
@@ -238,7 +233,7 @@ int UIAdPushDialog::vfunc_65()
     if (!UIDialog::vfunc_65())
         return 0;
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
-    reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->SendMeretMarketMode103(1);
+    reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->SendMeretMarketMode103(1);
     return 1;
 }
 
@@ -322,7 +317,7 @@ int UIAdPushDialog::vfunc_5()
 {
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlLoaded))->Clear();
     m_78 = 0;
-    if (m_xmlLoaded.FUN_140870fc0(GetStatePath(), 0))
+    if (m_xmlLoaded.LoadFile(GetStatePath(), TIXML_ENCODING_UNKNOWN))
     {
         Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)((class Unk_XmlNode*)(void*)(&m_xmlLoaded))->FirstChild(CStringA(GetTypeName())));
         if (!pNode)
@@ -346,11 +341,11 @@ int UIAdPushDialog::vfunc_5()
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->Clear();
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
-    m_xmlAccountLoaded.FUN_140870fc0(GetAccountStatePath(), 0);
+    m_xmlAccountLoaded.LoadFile(GetAccountStatePath(), TIXML_ENCODING_UNKNOWN);
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->Clear();
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountLoaded)))
-        m_xmlAccountSave.FUN_140870cf0(m_xmlAccountLoaded);
+        m_xmlAccountSave = m_xmlAccountLoaded;
     else
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
     return 1;
@@ -447,7 +442,7 @@ bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, 
         return false;
     if (m_sns.find(item->m_nSn) != m_sns.end())
         return false;
-    if (!reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->FUN_140d5b370(item))
+    if (!reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->IsPushableProduct(reinterpret_cast<const MS2Ptr<CMeratMarketProduct>&>(item)))
         return false;
     int nId = CPtred::InterlockedInc(&DAT_1439f60ac);
     MS2Ptr<AdPushEntityLimitedBundle> bundle(new AdPushEntityLimitedBundle(nId));
@@ -990,9 +985,9 @@ bool AdPushEntityLimitedBundle::vfunc_1()
         {
             if (m_item.get())
             {
-                MS2Ptr<Unk_AdMarketItem> fresh = reinterpret_cast<Unk_AdWorld*>(FUN_140939a00())->FUN_140d578d0(m_item->m_id);
+                MS2Ptr<CMeratMarketProduct> fresh = reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d578d0(reinterpret_cast<const Unk_MeratProductKey&>(m_item->m_id));
                 if (fresh.get())
-                    SetMarketItem(fresh);
+                    SetMarketItem(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(fresh));
             }
             m_dlg->FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle>(this));
             if (!m_dlg->FUN_140e044b0())

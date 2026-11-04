@@ -16,7 +16,7 @@ class UIAvatarPC;
 struct ItemEntity;
 class DungeonRewardInfo {
 public: DungeonRewardInfo(); virtual ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
- unsigned FUN_14026ccf0(); unsigned FUN_14026cbf0(); unsigned FUN_14026cd70(unsigned); bool FUN_14026ce30();
+ __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); unsigned FUN_14026cd70(unsigned); bool FUN_14026ce30();
 private:
  void* m_8;
  void* m_10;

@@ -51,8 +51,10 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 
 #include "uimasterydialog.h"
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
 #include "ms2/placeholder/header_statics_a.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
@@ -197,8 +199,6 @@ public:
 template<> MS2Ptr<ASEventDispatcher> AScript::FUN_140eb9cf0<ASEventDispatcher>(const CString& strName);
 // "m_grade00" ... (a toggle button).
 class Unk_MToggle : public Unk_MCtl { };
-// "m_subTab": the category button strip.
-class Unk_MSubTab : public Unk_MCtl { };
 // "m_guideBar" of the level control.
 using Unk_MGuide = ASUIComponent;   // C3 type identity: Unk_MGuide stood in for ASUIComponent
 // "m_levelControl" / "m_magicScrollControl".
@@ -211,8 +211,6 @@ public:
     Scaleform::GFx::Value FUN_140eba120(const char* szMethod, const AScript& a1, unsigned __int64 a2, int a3);
     Scaleform::GFx::Value FUN_140eba380(const char* szMethod, unsigned __int64 a1, unsigned int a2, CStringW a3, int a4);
 };
-// "m_magicScroll": the magic scroll page.
-class Unk_MScroll : public Unk_MCtl { };
 
 
 // The notify of the local character being damaged (RTTI .?AVNotifyDamagedMyPC@@).
@@ -248,7 +246,7 @@ unsigned int FUN_140889fd0(const void* p);                          // the map k
 // ---- housing / furniture / scroll tables ----
 class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
-extern ATL::CAtlArray<unsigned int> DAT_143ab32b8;   // scenestategame.cpp
+extern ATL::CAtlArray<int> DAT_143ab32b8;   // scenestategame.cpp
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
 typedef ATL::CAtlMap<unsigned int, MS2Ptr<Unk_MHouseRec> > Unk_MHouseMap;
 class Unk_MHouseTable
@@ -661,41 +659,41 @@ void UIMasteryDialog::FUN_140eafde0()
 {
     if (!FUN_141924630())
         return;
-    if (MS2Ptr<Unk_MSubTab> spSub = FUN_140c02870("m_subTab")) {
-        reinterpret_cast<ASButtonBar*>(spSub.operator->())->FUN_1422e3400();
+    if (MS2Ptr<ASButtonBar> spSub = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab")) {
+        spSub.operator->()->FUN_1422e3400();
         switch (GetMainTabIndex()) {
         case 0:
-            reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(3));
-            reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(5));
+            spSub.operator->()->AddLabelItem(GetMasteryTabName(3));
+            spSub.operator->()->AddLabelItem(GetMasteryTabName(5));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(4));
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(6));
+                spSub.operator->()->AddLabelItem(GetMasteryTabName(4));
+                spSub.operator->()->AddLabelItem(GetMasteryTabName(6));
             }
             break;
         case 1:
-            reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(7));
-            reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(8));
+            spSub.operator->()->AddLabelItem(GetMasteryTabName(7));
+            spSub.operator->()->AddLabelItem(GetMasteryTabName(8));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(9));
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(10));
+                spSub.operator->()->AddLabelItem(GetMasteryTabName(9));
+                spSub.operator->()->AddLabelItem(GetMasteryTabName(10));
             }
             break;
         case 2:
-            reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetHousingTabName());
+            spSub.operator->()->AddLabelItem(GetHousingTabName());
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetMasteryTabName(0xb));
+                spSub.operator->()->AddLabelItem(GetMasteryTabName(0xb));
             break;
         case 3:
             if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
                 break;
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7c))
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_enchant_scroll_tab"));
+                spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_enchant_scroll_tab"));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7d))
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_restore_scroll_tab"));
+                spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_restore_scroll_tab"));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7e))
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_fracto_scroll_tab"));
+                spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_fracto_scroll_tab"));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7f))
-                reinterpret_cast<ASButtonBar*>(spSub.operator->())->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_protected_scroll_tab"));
+                spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_protected_scroll_tab"));
             break;
         }
         spSub->vfunc_24(true);
@@ -958,7 +956,7 @@ void UIMasteryDialog::FUN_140eb24a0()
             row.FUN_1407cb9c0("id", nLevel);
             row.FUN_1409c0d20("level", nSum);
             row.FUN_1407cbb20("levelStr", FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), nLevel));
-            int bInactive = Common::FindElement<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab32b8), nLevel) != -1;
+            int bInactive = Common::FindElement<int>(DAT_143ab32b8, nLevel) != -1;
             CString strState;
             if (bInactive)
                 strState = "inactive";
@@ -1276,7 +1274,7 @@ int UIMasteryDialog::GetSubTabIndex()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return -1;
-    if (MS2Ptr<Unk_MSubTab> spTab = FUN_140c02870("m_subTab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
         return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
     return -1;
 }

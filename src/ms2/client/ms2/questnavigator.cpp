@@ -5,6 +5,7 @@
 // maps, npcs and objects the tracked quests lead to (rebuilt when a quest changes).
 // MS2-UNIT: ?\questnavigator.cpp
 // MS2-PIN: ??_7CQuestNavigator@@6B?$TSingleton@VCQuestNavigator@@@@@ 0x142e152e0
+// MS2-PIN: ??7?$MS2SvrPtr@VCRideeData@@@@QEBA_NXZ 0x140c9b760 ; unique
 // MS2-RANGE: 0x1400cf480-0x1400cf5f0 .text$di
 // MS2-RANGE: 0x140c99700-0x140c9ba20 .text$mn
 // MS2-FUNCTIONAL: written from the decompile; the Delegate / MS2Ptr template glue is not pinned
@@ -19,6 +20,7 @@
 #include "ms2/placeholder/cquestnavigator.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/ms2svrptr.h"
+#include "ms2/placeholder/crideedata.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uidialog.h"
@@ -94,21 +96,6 @@ float FUN_140966f00(NiPoint3 a, Vector3 b);
 
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
-// riding data (rows of the ride table)
-class CRideeData;
-struct Unk_QnRideRow { char m_pad_00[0x6c]; int m_6c; };
-class Unk_QnRideRef
-{
-public:
-    Unk_QnRideRef(int nRideId);                                     // 0x1407844b0
-    ~Unk_QnRideRef();                                               // 0x140788ed0
-    bool FUN_140c9b760() const { return m_p == 0; }                 // 0x140c9b760
-    void* m_0;
-    void* m_p;
-};
-class Unk_QnRideEntry { public: ~Unk_QnRideEntry(); Unk_QnRideRow* FUN_1407895c0(); void* m_0; void* m_p; };   // dtor 0x140788ea0
-class Unk_QnRideTable { public: Unk_QnRideEntry FUN_140784970(); };  // CRideeData (unit_140781d80)
-
 // ---- dynamic initializers (.text$di) ----
 
 #ifndef MS2_HOOK_DLL
@@ -131,11 +118,11 @@ static CString s_stun("stun");
 static char s_marker[0x48];
 static Unk_QnMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3a50), Unk_QnMarker());
 
-void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
+typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142ca3a50
-void FUN_142ca3a50() { FUN_1402aa1d0(s_marker); }
+void FUN_142ca3a50() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // ---- CQuestNavigator ----
@@ -490,10 +477,10 @@ bool CQuestNavigator::FUN_140c9af60()
         return false;
     if (pPC->FUN_1416764d0() != 0)
     {
-        Unk_QnRideRef ride(pPC->FUN_141676410());
-        if (ride.FUN_140c9b760())
+        MS2SvrPtr<CRideeData> ride = FUN_1407844b0(pPC->FUN_141676410());
+        if (!ride)
             return false;
-        return ((Unk_QnRideTable*)reinterpret_cast<MS2SvrPtr<CRideeData>&>(ride).operator->())->FUN_140784970().FUN_1407895c0()->m_6c != 0;
+        return ride->FUN_140784970()->m_nUseRidingNavi != 0;
     }
     return pPC->FUN_14123c660() == 0;
 }

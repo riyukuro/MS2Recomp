@@ -84,7 +84,6 @@ class Unk_UgcImageData : public AScript
 
 
 // The title label of the dialog (a text field child of the movie).
-class Unk_UiScale { public: float FUN_141adbe70(); };            // the UI scale of the UI manager
 class Unk_WcTitle : public ASDisplayObject { public: void FUN_1422e4b80(const CStringW& str); };
 // MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of another unit (declared only).
 template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
@@ -101,7 +100,6 @@ class Unk_GalleryAS;
 void GallerySet(Scaleform::GFx::Value*, int);
 void GallerySet(Scaleform::GFx::Value*, const Unk_GalleryAS&);
 
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 template <class T> T* UgcFindDialog(eUIClassID nId);
 void FUN_14151f200();
 int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
@@ -200,7 +198,7 @@ void UIUGCBannerDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
-    ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
+    TSingleton<CUgcManager>::GetInstance()->OnUploadResult(vfunc_48());
     m_188 = 0;
     m_1f8.RemoveAll();
     m_228 = 0;
@@ -227,12 +225,12 @@ void UIUGCBannerDialog::vfunc_72()
             bChanged = false;
             if (shifted.m_date == m_1c0.m_date)
                 bChanged = true;
-            if (((class CUgcManager*)FUN_14052d220()) != 0)
+            if (TSingleton<CUgcManager>::GetInstance() != 0)
             {
-                if (((class CUgcManager*)FUN_14052d220())->IsReserveChanged())
+                if (TSingleton<CUgcManager>::GetInstance()->IsReserveChanged())
                 {
                     bChanged = true;
-                    ((class CUgcManager*)FUN_14052d220())->SetReserveChanged(false);
+                    TSingleton<CUgcManager>::GetInstance()->SetReserveChanged(false);
                 }
             }
             if (bChanged == true)
@@ -250,7 +248,7 @@ void UIUGCBannerDialog::vfunc_72()
 void UIUGCBannerDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
     {
         vfunc_67();
@@ -313,13 +311,13 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0)
         {
             if (FUN_140d74e80(strTag) != 0)
-                ((class CUgcManager*)FUN_14052d220())->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
+                TSingleton<CUgcManager>::GetInstance()->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
                                                reinterpret_cast<const Unk_BannerDay&>(m_1c0));
             else if (operator==(strTag, L"noexist"))
             {
                 FUN_141b358d0();
                 FUN_141b364a0(-1);
-                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+                MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
                 if (spUpload.get() ? true : false)
                 {
                     if (spUpload->m_spViewer.get() ? true : false)
@@ -426,7 +424,7 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
                 return 1;
             }
-            ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 1);
+            TSingleton<CUgcManager>::GetInstance()->FUN_141882a70(nIndex, 1);
         }
         return 1;
     }
@@ -497,7 +495,7 @@ void UIUGCBannerDialog::FUN_141b35480(int nResult)
         FUN_140d73bc0(0x468, 0, 0, CStringW(L""));
     else
     {
-        CStringW strText = ((class CUgcManager*)FUN_14052d220())->FUN_14187f210(nResult);
+        CStringW strText = TSingleton<CUgcManager>::GetInstance()->FUN_14187f210(nResult);
         if (!strText.IsEmpty())
             FUN_1412751f0(strText, 1, 1);
     }
@@ -511,7 +509,7 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
         return 0x2a;
     if (spReserve->m_reserves.GetCount() != m_1f8.GetCount())
         return 0x2b;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return 0xd;
     if (spUpload->m_nKind != 3)
@@ -526,14 +524,14 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
             reinterpret_cast<CUgcBannerPost*>(reinterpret_cast<char*>(pViewer) + 0x18)->m_reserves.SetAt(spBanner->GetKey(), spBanner);
     }
     m_1f8.RemoveAll();
-    ((class CUgcManager*)FUN_14052d220())->FUN_141882020();
+    TSingleton<CUgcManager>::GetInstance()->FUN_141882020();
     return 0;
 }
 
 // @0x141b357e0
 int UIUGCBannerDialog::FUN_141b357e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return 0;
     if (spUpload->m_nKind != 3)
@@ -550,10 +548,10 @@ void UIUGCBannerDialog::FUN_141b358d0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    ((class CUgcManager*)FUN_14052d220())->RefreshLocalFiles(3);
+    TSingleton<CUgcManager>::GetInstance()->RefreshLocalFiles(3);
     ASArray arr(2);
-    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, 0, &arr);
-    int nCount = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
+    TSingleton<CUgcManager>::GetInstance()->FUN_141889e20(0x10, 0, &arr);
+    int nCount = TSingleton<CUgcManager>::GetInstance()->FUN_14188a480();
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
 }
 
@@ -564,7 +562,7 @@ void UIUGCBannerDialog::FUN_141b359b0()
         return;
     FUN_14088e0f0(&m_1c0, &m_190, m_1f4 * 0x18 + m_230);
     ASArray arr(2);
-    ((class CUgcManager*)FUN_14052d220())->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
+    TSingleton<CUgcManager>::GetInstance()->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
                                    reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8), &arr);
     int nLow = m_230 < 0x18 ? 0 : 1;
     int nBit = m_230 < 0x18 ? 2 : 3;
@@ -589,7 +587,7 @@ void UIUGCBannerDialog::FUN_141b35b80()
 // @0x141b35cd0
 void UIUGCBannerDialog::OnOpenFolder()
 {
-    ((class CUgcManager*)FUN_14052d220())->OpenUploadFolder(3);
+    TSingleton<CUgcManager>::GetInstance()->OpenUploadFolder(3);
 }
 
 // @0x141b35d00
@@ -600,12 +598,12 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return 0;
     }
-    if (((class CUgcManager*)FUN_14052d220())->DoesFileExistByIndex(nIndex) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->DoesFileExistByIndex(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
     }
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141881800(3, nIndex) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->FUN_141881800(3, nIndex) == 0)
     {
         FUN_141275260(0x2e1, 1, 1);
         return 0;
@@ -637,7 +635,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
     __int64 nPrice = FUN_141b368b0();
     if (!FUN_1418ff110(FUN_141b36a60(), nPrice, true))
         return 0;
-    int nRes = ((class CUgcManager*)FUN_14052d220())->FUN_141881890(nIndex);
+    int nRes = TSingleton<CUgcManager>::GetInstance()->FUN_141881890(nIndex);
     if (nRes == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
@@ -650,7 +648,7 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 // @0x141b36080
 int UIUGCBannerDialog::OnNewDraw()
 {
-    if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->HasViewerContent() == 0)
         return 0;
     FUN_141b358d0();
     return 1;
@@ -659,7 +657,7 @@ int UIUGCBannerDialog::OnNewDraw()
 // @0x141b360c0
 int UIUGCBannerDialog::OnAddImage()
 {
-    int nResult = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    int nResult = TSingleton<CUgcManager>::GetInstance()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)
         return 0;
     FUN_141b358d0();
@@ -676,7 +674,7 @@ int UIUGCBannerDialog::FUN_141b36140(int nIndex)
         return 0;
     int nPos = nIndex << 2;
     ASArray arr(2);
-    ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, nPos, &arr);
+    TSingleton<CUgcManager>::GetInstance()->FUN_141889e20(0x10, nPos, &arr);
     ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nPos, arr);
     return 1;
 }
@@ -716,7 +714,7 @@ int UIUGCBannerDialog::FUN_141b362b0(int nOffset)
 // @0x141b363b0
 void UIUGCBannerDialog::FUN_141b363b0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_spFile == 0)
@@ -736,7 +734,7 @@ void UIUGCBannerDialog::FUN_141b364a0(int nIndex)
     }
     else
     {
-        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->GetUploadFile(nIndex);
+        MS2Ptr<CUploadFile> spFile = TSingleton<CUgcManager>::GetInstance()->GetUploadFile(nIndex);
         if (spFile == 0)
             return;
         if (m_30.get() != 0)
@@ -915,7 +913,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)
             {
-                float fScale = ((Unk_UiScale*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+                float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
                 m_18c = (int)(data.PopDouble() / fScale);
                 m_190 = (int)(data.PopDouble() / fScale);
                 m_194 = (int)(data.PopDouble() / fScale);
@@ -926,7 +924,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     }
     else if (_stricmp("onProfile", szMethod) == 0)
-        ((class CUgcManager*)FUN_14052d220())->FUN_14187fb30();
+        TSingleton<CUgcManager>::GetInstance()->FUN_14187fb30();
     return 0;
 }
 

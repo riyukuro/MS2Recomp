@@ -20,7 +20,7 @@ struct Unk_Vec3f { Unk_Vec3f(float x, float y, float z); float x, y, z; };   // 
 class FieldProperty : public CPtred {
 public:
     FieldProperty();                                    // 0x140380840
-    virtual ~FieldProperty();                           // 0x140381c40, scalar deleting 0x140381de0
+    // ~FieldProperty() is implicit (0x140381c40, no vptr store); scalar deleting 0x140381de0
     virtual void vfunc_1(Unk_PktOut* out);              // 0x140380880 (empty)
     virtual void vfunc_2(Unk_PktIn* in);                // 0x1403808a0 (empty)
     virtual int vfunc_3() = 0;                          // property type id
@@ -33,7 +33,7 @@ class FieldPropertyGravity : public FieldProperty {
 public:
     FieldPropertyGravity();                             // 0x1403808e0
     FieldPropertyGravity(float fGravity);               // 0x140380920
-    virtual ~FieldPropertyGravity();
+    // ~FieldPropertyGravity() is implicit (0x140381cc0, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 1
@@ -45,7 +45,7 @@ class FieldPropertyMusicConcert : public FieldProperty {
 public:
     FieldPropertyMusicConcert();                        // 0x140380a20
     FieldPropertyMusicConcert(__int64 a, int b);        // 0x140380a70
-    virtual ~FieldPropertyMusicConcert();
+    // ~FieldPropertyMusicConcert() is implicit (0x140381d20, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 2
@@ -57,7 +57,7 @@ MS2_CHECK_SIZE(FieldPropertyMusicConcert, 0x28);
 class FieldPropertyHideMyPC : public FieldProperty {
 public:
     FieldPropertyHideMyPC();                            // 0x140380ba0
-    virtual ~FieldPropertyHideMyPC();
+    // ~FieldPropertyHideMyPC() is implicit (0x140381ce0, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 3
@@ -67,7 +67,7 @@ MS2_CHECK_SIZE(FieldPropertyHideMyPC, 0x18);
 class FieldPropertyLockMyPC : public FieldProperty {
 public:
     FieldPropertyLockMyPC();                            // 0x140380c60
-    virtual ~FieldPropertyLockMyPC();
+    // ~FieldPropertyLockMyPC() is implicit (0x140381d00, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 4
@@ -78,7 +78,7 @@ class FieldPropertyUserTagSymbol : public FieldProperty {
 public:
     FieldPropertyUserTagSymbol();                       // 0x140380d20
     FieldPropertyUserTagSymbol(CStringW a, CStringW b); // 0x140380d80
-    virtual ~FieldPropertyUserTagSymbol();
+    // ~FieldPropertyUserTagSymbol() is implicit (0x140381d80, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 5
@@ -92,7 +92,7 @@ public:
     FieldPropertySightRange();                          // 0x140380ef0
     FieldPropertySightRange(float fRange);              // 0x140380f90
     FieldPropertySightRange(float a, float b, float c, float d, unsigned char e, unsigned char f, unsigned char g);   // 0x140381030
-    virtual ~FieldPropertySightRange();
+    // ~FieldPropertySightRange() is implicit (0x140381d60, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 6
@@ -105,7 +105,7 @@ class FieldPropertyWeather : public FieldProperty {
 public:
     FieldPropertyWeather();                             // 0x140381390
     FieldPropertyWeather(int nWeather);                 // 0x1403813d0
-    virtual ~FieldPropertyWeather();
+    // ~FieldPropertyWeather() is implicit (0x140381dc0, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 7
@@ -117,7 +117,7 @@ class FieldPropertyAmbientLight : public FieldProperty {
 public:
     FieldPropertyAmbientLight();                        // 0x140381510
     FieldPropertyAmbientLight(const Unk_Rgb3b& color, bool bFlag, float fValue);   // 0x140381580
-    virtual ~FieldPropertyAmbientLight();
+    // ~FieldPropertyAmbientLight() is implicit (0x140381c60, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 8
@@ -131,7 +131,7 @@ class FieldPropertyDirectionalLight : public FieldProperty {
 public:
     FieldPropertyDirectionalLight();                    // 0x140381750
     FieldPropertyDirectionalLight(const Unk_Rgb3b& c1, const Unk_Rgb3b& c2, bool bFlag, float fValue);   // 0x1403817d0
-    virtual ~FieldPropertyDirectionalLight();
+    // ~FieldPropertyDirectionalLight() is implicit (0x140381c80, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 9
@@ -146,7 +146,7 @@ class FieldPropertyEnableLocalCamera : public FieldProperty {
 public:
     FieldPropertyEnableLocalCamera();                   // 0x1403819d0
     FieldPropertyEnableLocalCamera(bool b);             // 0x140381a10
-    virtual ~FieldPropertyEnableLocalCamera();
+    // ~FieldPropertyEnableLocalCamera() is implicit (0x140381ca0, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 10
@@ -158,7 +158,7 @@ class FieldPropertyPhotoStudio : public FieldProperty {
 public:
     FieldPropertyPhotoStudio();                         // 0x140381b10
     FieldPropertyPhotoStudio(bool b);                   // 0x140381b50
-    virtual ~FieldPropertyPhotoStudio();
+    // ~FieldPropertyPhotoStudio() is implicit (0x140381d40, no vptr store)
     virtual void vfunc_1(Unk_PktOut* out);
     virtual void vfunc_2(Unk_PktIn* in);
     virtual int vfunc_3();                              // 11

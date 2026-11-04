@@ -17,7 +17,6 @@
 class GameObject;
 
 class Unk_140165cf0;    // game TinyXML element
-CPtred* FUN_1404efd80(CPtred* pThis, const CPtred* pOther);      // the exe's CPtred assignment (ICF-folded `return this`)
 
 // One <move> element of magicPath.xml (0xc0 bytes, RTTI base CPtred).
 class CMagicData : public CPtred

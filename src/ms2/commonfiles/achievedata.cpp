@@ -289,6 +289,7 @@
 #include "filesystem.h"
 #include "logstring.h"
 #include "ms2/placeholder/tixmldocument.h"
+#include "ms2/placeholder/tixmlprinter.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -446,26 +447,10 @@ inline Unk_LockGuard::~Unk_LockGuard()
     static_cast<CLockCriticalSection*>(p)->vfunc_2();
 }
 
-// TinyXML's TiXmlString (8 bytes: a pointer to its representation).
-struct Unk_TiXmlStringRep;
-extern Unk_TiXmlStringRep g_Unk_TiXmlNullRep;       // 0x143ab1fb0
-class Unk_TiXmlString
-{
-public:
-    // @0x1401646b0
-    ~Unk_TiXmlString() { quit(); }
-    // @0x14016d840
-    void quit()
-    {
-        if (m_pRep != &g_Unk_TiXmlNullRep)
-            delete[] reinterpret_cast<char*>(m_pRep);
-    }
-    Unk_TiXmlStringRep* m_pRep;
-};
 // @0x140164670
 inline TiXmlDocument::~TiXmlDocument()
 {
-    reinterpret_cast<Unk_TiXmlString*>(&m_58)->Unk_TiXmlString::~Unk_TiXmlString();
+    reinterpret_cast<TiXmlString*>(&m_58)->TiXmlString::~TiXmlString();
     reinterpret_cast<TiXmlNode*>(this)->TiXmlNode::~TiXmlNode();
 }
 

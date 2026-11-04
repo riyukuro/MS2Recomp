@@ -66,6 +66,7 @@
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/ISystemService.h>
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker
 #include "ms2/commonfiles/npcdata.h"   // C3: CNpcData::GetFriendly
@@ -129,7 +130,6 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
 WC_WRAP(6)
 
 // The text filter.
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // Message boxes and the inventory (0x143ab2a90).
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -159,14 +159,7 @@ public:
 };
 class Cube;
 class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); Cube* GetCubeAtCell(Unk_Int3 pt); };   // C3: member view
-// efd::SmartPointer<>: the ctor AddRefs (vfunc 1), the dtor Releases (vfunc 2).
-class Unk_GmGridRef
-{
-public:
-    Unk_GmGridRef(void* p);                                     // 0x1401cd0b0
-    ~Unk_GmGridRef();                                           // 0x1401cd150
-    void* m_p;
-};
+class Unk_Service6100017 : public efd::ISystemService { };   // the cube map service (class id 0x06100017; as entityvibrator.cpp)
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_RxMapInfo : public CPtred
 {
@@ -460,10 +453,10 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     {
-        Unk_GmGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
+        efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
-        Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtPoint(ptLow));
+        Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtPoint(ptLow));
         if (pInfo == 0) {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;
@@ -484,7 +477,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         cells.push_back(Unk_Int3(cell.x + 1, cell.y - 1, cell.z - 1));
         cells.push_back(Unk_Int3(cell.x + 1, cell.y + 1, cell.z - 1));
         for (size_t i = 0; i < cells.size(); ++i) {
-            Unk_RxCellInfo* pCell = (Unk_RxCellInfo*)(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtCell(cells[i]));
+            Unk_RxCellInfo* pCell = (Unk_RxCellInfo*)(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtCell(cells[i]));
             if (pCell == 0)
                 continue;
             if (pCell->m_nCount != 0) {
@@ -551,7 +544,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
         return;
     if (strDesc.GetLength() > 0x64)
         return;
-    if (CBanTextChecker* pFilter = ((class CommonString*)FUN_14025e7d0())->GetChecker()) {
+    if (CBanTextChecker* pFilter = ((class CommonString*)TSingleton<CommonString>::GetInstance())->GetChecker()) {
         CStringW strError;
         if (pFilter->FUN_140226440(strTitle, strError) != 0 || pFilter->FUN_140226590(strDesc, strError) != 0) {
             FUN_1412751f0(strError, 1, 1);

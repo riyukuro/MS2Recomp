@@ -41,8 +41,6 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
 typedef Delegate<void(ItemScrollSlot&)> PtRemoveFn;
 typedef Delegate<void(ItemScrollSlot&, DragSlot*)> PtDropFn;
-void FUN_140d42bc0(ItemScrollSlot* pSlot, PtRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
-void FUN_140d42b70(ItemScrollSlot* pSlot, PtDropFn fn);        // ItemScrollSlot::SetDropFn
 
 extern Unk_Inventory g_143ab2a90;
 
@@ -121,8 +119,8 @@ void UIItemPetTrainingDialog::OnLoadComplete()
     ItemScrollSlot* pSlot = FUN_140e57e50(m_strSlot);
     if (pSlot != 0)
     {
-        FUN_140d42bc0(pSlot, PtRemoveFn(this, &UIItemPetTrainingDialog::FUN_140e58280));
-        FUN_140d42b70(pSlot, PtDropFn(this, &UIItemPetTrainingDialog::FUN_140e58300));
+        pSlot->SetRemoveFn(PtRemoveFn(this, &UIItemPetTrainingDialog::FUN_140e58280));
+        pSlot->SetDropFn(PtDropFn(this, &UIItemPetTrainingDialog::FUN_140e58300));
     }
     m_spBox = g_143ab2a90.FUN_140a5d680(m_nOwner);
     if (m_spBox == 0)

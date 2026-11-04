@@ -137,5 +137,5 @@ void Unk_PvpTimer::FUN_1412818f0(float fA, float fB, float fC, bool bApply)
     m_fC = fC;
     FUN_14101af70();
     if (bApply && (m_8 > m_20 || m_8 < m_28))
-        FUN_14101a9f0(FUN_14101a900(m_8));
+        reinterpret_cast<ATL::CAtlMap<unsigned __int64, int>&>(*this).Rehash(FUN_14101a900(m_8));
 }

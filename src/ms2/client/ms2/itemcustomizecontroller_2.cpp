@@ -45,20 +45,6 @@ public:
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
 
-// Exchange-scroll records: the singleton hands out a ref-counted record by item id.
-class Unk_ExchangeData : public CPtred
-{
-public:
-    char m_pad[0x24];                                   // +0x18
-    int m_nRarity;                                      // +0x3c
-    int m_nFlag;                                        // +0x40
-};
-class Unk_ExchangeMgr
-{
-public:
-    MS2Ptr<Unk_ExchangeData> FUN_140595750(int nItemId);
-};
-
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);               // find an item by uid
 CStringW FUN_1419021b0(unsigned a, unsigned b);                   // format "a/b"
 CStringW GetStringCommon(int id);                         // string table lookup
@@ -363,13 +349,13 @@ int ItemInfoSlot::vfunc_0(void* p)
                 void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
                 if (pPlayer == 0)
                     return 0;
-                MS2Ptr<Unk_ExchangeData> spData = reinterpret_cast<Unk_ExchangeMgr*>(TSingleton<CItemExchangeScrollTable>::GetInstance())->FUN_140595750(m_spItem->FUN_1405276c0());
+                CExchangeItemInfoPtr spData = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(m_spItem->FUN_1405276c0());
                 if (spData.get())
                 {
                     MS2Ptr<CItem> spCmp(new CItem);
                     if (spCmp.get())
                     {
-                        int bSet = spCmp->FUN_14052b130(spData->m_nRarity, spData->m_nFlag, 0);
+                        int bSet = spCmp->FUN_14052b130(spData->m_exchange.m_nId, spData->m_exchange.m_nRank, 0);
                         if (bSet == 0)
                             return 0;
                         ASTooltip tip2(pPlayer, 0x800, 2);

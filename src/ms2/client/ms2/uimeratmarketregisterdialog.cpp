@@ -169,7 +169,6 @@ template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
 // The text filter (bad words).
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // The key state.
 class Unk_MrdKeys : public CInputKeyHandler {};
@@ -185,7 +184,7 @@ CStringW FUN_140ebd9d0(bool a, __int64 b);
 // The slot bag of the movie.
 class ItemSlotBag;
 ItemSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
-DragSlot* FUN_140cfe6c0(DragSlot* pSlot);
+class ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* pBind);   // the slot as an ItemInfoSlot (TypeCast), else 0
 
 // Items of the dialog as the base UI knows them.
 class Unk_MrdEquipOut { public: };
@@ -292,7 +291,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(m_strKey)));
         if (pBag != 0)
         {
-            DragSlot* pSlot = FUN_140cfe6c0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex));
+            DragSlot* pSlot = reinterpret_cast<DragSlot*>(FUN_140cfe6c0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
             if (pSlot != 0)
                 pSlot->vfunc_0(pRetVal);
         }
@@ -879,7 +878,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
             return false;
         }
     }
-    if (CBanTextChecker* pFilter = FUN_14025e7d0()->GetChecker().get())
+    if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().get())
     {
         CStringW strBad;
         if (pFilter->CheckMarketDescription(strDescription, strBad) != 0)

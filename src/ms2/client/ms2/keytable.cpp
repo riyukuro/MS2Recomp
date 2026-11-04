@@ -76,7 +76,6 @@
 #include <vector>
 #include <map>
 #include "hook/ms2hook.h"
-extern template class MS2Ptr<Unk_RideeData>;          // the riding row's pointer glue is another unit's (0x140788ed0)
 
 // The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
@@ -2104,7 +2103,7 @@ void CKeyTable::LoadKeySetting(CString strName)
         return;
     CString strFile = StringFormat<CString>("keySetting_{0}.xml", strName);
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), strFile), 0))
+    if (!doc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), strFile), TIXML_ENCODING_UNKNOWN))
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -2636,7 +2635,7 @@ int CKeyTable::FUN_141432010(int nAction)
     efd::SmartPointer<Ridee> spRidee = pPlayer->FUN_1416764a0();
     if (spRidee == 0)
         return 1;
-    if (spRidee->GetData()->m_nSeats == 0)
+    if (spRidee->GetData()->m_basic.m_nHidePCInfo == 0)
         return 1;
     switch (nAction)
     {

@@ -30,21 +30,14 @@
 
 static const CStringW s_bannerClose(L"bannerClose");
 
-// Unit-local declarations of unrecovered objects; scalar pads preserve /GS behavior.
-// Kept only for the Set<unsigned __int64> COMDAT that this unit defines; locals are real ASObj/ASArray.
-class Unk_RpsASObj : public CPtred {
-public:
-    virtual ~Unk_RpsASObj();
-    template<class T> void Set(const char* name, T value) {
-        ASData args;
-        args.AddSize(value);
-        m_value.SetMember(name, args.PopValue());
-    }
-private:
-    void* p18;
-    Scaleform::GFx::Value m_value;
-};
-MS2_CHECK_SIZE(Unk_RpsASObj, 0x40);
+// The size_t setter (a Set<unsigned __int64> COMDAT; asobj.h declares it).
+// @0x140e846b0
+void ASObj::FUN_140e846b0(const char* szName, size_t n)
+{
+    ASData args;
+    args.AddSize(n);
+    m_value.SetMember(szName, args.PopValue());
+}
 template<class T> bool Contains(T& values, int n) {
     if (values.GetCount() == 0) return false;
     {
@@ -328,7 +321,7 @@ void UIRpsEventDialog::FUN_140e83370(MS2Ptr<RpsContext> event) {
         MS2Ptr<RpsContext::RewardData> reward = event->m_rewards[i];
         if (reward == NULL) { MS2_ASSERT_AT(193, 0); continue; }
         ASObj row(2);
-        reinterpret_cast<Unk_RpsASObj&>(row).Set("index", i);
+        row.FUN_140e846b0("index", i);
         row.FUN_1407cb9c0("cond", reward->m_count);
         row.FUN_1407cbbe0("received", Contains(received, static_cast<int>(i)));
         ASArray items(2);
@@ -369,7 +362,7 @@ void UIRpsEventDialog::FUN_140e83a30() {
         MS2Ptr<RpsContext::RewardData> reward = event->m_rewards[i];
         if (reward == NULL) { MS2_ASSERT_AT(98, 0); continue; }
         ASObj row(2);
-        reinterpret_cast<Unk_RpsASObj&>(row).Set("index", i);
+        row.FUN_140e846b0("index", i);
         row.FUN_1407cbbe0("received", Contains(received, static_cast<int>(i)));
         rewards.PushValue(row.FUN_1422bb870());
     }

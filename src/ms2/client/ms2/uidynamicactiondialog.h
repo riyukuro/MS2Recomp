@@ -14,7 +14,6 @@
 
 class ASData;
 class NotifyObject;
-class Unk_DaInput;
 class ASTileList;
 
 // A pending key bind (12 bytes, reset by 0x14192e620): m_0 = the swap box is open, m_4 = the action, m_8 = the key.
@@ -69,7 +68,7 @@ private:
     Unk_DaSlot m_178;                                       // +0x178 the action being bound (m_4) and its key (m_8)
     Unk_DaSlot m_184;                                       // +0x184 the same for a focused action with a key already used
     std::map<unsigned int, MS2Ptr<Unk_Emotion> > m_190;     // +0x190 the learned actions by id
-    MS2Ptr<Unk_DaInput> m_1a0;                              // +0x1a0 "m_inputSearch"
+    MS2Ptr<ASTextInput> m_1a0;                              // +0x1a0 "m_inputSearch"
     bool m_1b0;                                             // +0x1b0 reverse order
     bool m_1b1;                                             // +0x1b1 favorites only
     CStringW m_1b8;                                         // +0x1b8 the search text

@@ -22,6 +22,7 @@
 // MS2-PIN: ??7?$MS2Ptr@VCItemData@@@@QEBA_NXZ 0x1418c1d60
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VCItemData@@@@@ATL@@SAXPEAV?$MS2Ptr@VCItemData@@@@0_K@Z 0x1418c1d90
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiavatarbase.cpp"
+#define MS2_SVRPTR_ASSIGN_INT   // `m_spRow = 0` calls the exe's operator=(int) COMDAT (0x1409fac90)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 #include "uiavatarbase.h"
@@ -1801,19 +1802,19 @@ MS2_REPLACE_METHOD(0x1418BDE80, UIAvatarCube, FUN_1418bde80, 41, 0xE9AF397A);
 
 // @0x1418bdeb0
 UIAvatarRidee::UIAvatarRidee()
-    : m_pItemData(0), m_spRow(0)
+    : m_pItemData(0), m_spRow(nullptr)
 {
 }
 
 // @0x1418bdf30
 UIAvatarRidee::UIAvatarRidee(MS2Ptr<CItemData> spData)
-    : m_pItemData(spData.get()), m_spRow(0)
+    : m_pItemData(spData.get()), m_spRow(nullptr)
 {
     m_nKind = 3;
 }
 
 // @0x1418bdfd0
-UIAvatarRidee::UIAvatarRidee(Unk_RideePtr spRow)
+UIAvatarRidee::UIAvatarRidee(MS2SvrPtr<CRideeData> spRow)
     : m_pItemData(0), m_spRow(spRow)
 {
 }
@@ -1841,7 +1842,7 @@ void UIAvatarRidee::vfunc_1(IUIAvatarEventListener* pListener)
     }
     else
     {
-        if (m_spRow.get() != 0)
+        if (m_spRow != 0)
         {
             AvatarRidee* pRidee = FUN_1409f9430(m_spRow);
             if (pRidee)
@@ -1902,7 +1903,7 @@ void UIAvatarRidee::FUN_1418be460(CItemData* pData)
 MS2_REPLACE_METHOD(0x1418BE460, UIAvatarRidee, FUN_1418be460, 272, 0x7DA47DB9);
 
 // @0x1418be580
-void UIAvatarRidee::FUN_1418be580(Unk_RideePtr spRow)
+void UIAvatarRidee::FUN_1418be580(MS2SvrPtr<CRideeData> spRow)
 {
     m_spRow = spRow;
     m_pItemData = 0;
@@ -1950,7 +1951,7 @@ AvatarRidee* UIAvatarRidee::FUN_1418be7e0()
 MS2_REPLACE_METHOD(0x1418BE7E0, UIAvatarRidee, FUN_1418be7e0, 41, 0xCB75113F);
 
 // @0x1418be810
-Unk_RideePtr UIAvatarRidee::GetRow()
+MS2SvrPtr<CRideeData> UIAvatarRidee::GetRow()
 {
     return m_spRow;
 }

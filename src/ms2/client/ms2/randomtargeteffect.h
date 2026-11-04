@@ -27,7 +27,7 @@ public:
 private:
     void* m_pOwner;                                 // +0x18 the target game object
     int m_nEffectId;                                // +0x20 effect-manager handle, 0 = none
-    Unk_NodePtr m_spNode;                           // +0x28 attached NiNode
+    NiNodePtr m_spNode;                             // +0x28 attached NiNode
     float m_fScale;                                 // +0x30 (1.0)
     bool m_bVisible;                                // +0x34
 };

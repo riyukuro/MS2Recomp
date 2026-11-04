@@ -182,7 +182,7 @@ int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)
     if (item.IsNull())
         return 0;
     unsigned __int64 nItemUid = item->GetItemUid();
-    if (FUN_140534480(m_locked, nItemUid) != -1)
+    if (Unk_BreakFind(m_locked, nItemUid) != -1)
     {
         {
             CStringW sKey(L"s_itemlock_selected_item");
@@ -256,7 +256,7 @@ void CItemLockManager::FUN_1406132f0()
         if (nItemUid == 0)
             continue;
         MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5d680(nItemUid);
-        if (item.IsNull() && FUN_140534480(m_pending, nItemUid) == -1)
+        if (item.IsNull() && Unk_BreakFind(m_pending, nItemUid) == -1)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestItemLock), 0);
             packet.WriteUInt8(2);
@@ -286,7 +286,7 @@ int CItemLockManager::FUN_140613430(MS2Ptr<CItem> item)
         break;
     }
     unsigned __int64 nItemUid = item->GetItemUid();
-    if (FUN_140534480(m_locked, nItemUid) != -1)
+    if (Unk_BreakFind(m_locked, nItemUid) != -1)
         return 0;
     return 1;
 }

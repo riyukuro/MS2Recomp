@@ -97,6 +97,8 @@
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 #include "ms2/commonfiles/os.h"
+namespace GameRanking { class Page; }
+template <> MS2Ptr<GameRanking::Page>::~MS2Ptr();                   // 0x140b2db30
 class CGameRankingCli;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
@@ -146,7 +148,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void* FUN_140bb9630(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
 
-class Unk_RankArcadeTable* FUN_140e37aa0();   // C3: was FUN_140e37aa0
+class CArcadeDataTable* FUN_140e37aa0();
 
 class Unk_ArcGameRule { public: CGameEventValueArcadeOpen* FUN_1403ecfe0(); };
 class CGameEventValueManager;
@@ -173,7 +175,10 @@ struct Unk_ArcRankDataView
 };
 
 // the xml helpers (TinyXML element: 0x90 bytes, ctor 0x14086f2f0, dtor 0x14086f450)
+#ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
+#define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+#endif
 class TiXmlParsingData;
 class TiXmlElement
 {
@@ -279,7 +284,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     if (m_enter.get() != 0)
         m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
-    ((class CArcadeDataTable*)FUN_140e37aa0())->GetMainDataList(games);
+    FUN_140e37aa0()->GetMainDataList(games);
     m_games.clear();
     m_games.reserve(games.size());
     int nButton = 0;
@@ -454,7 +459,7 @@ void UIArcadeMainDialog::FUN_140ef6dd0()
     scratch.reserve(10);
     {
         std::vector<Unk_ArcadeRecord> records;
-        ((class CArcadeDataTable*)FUN_140e37aa0())->GetRecords(spGame->m_nId, records);
+        FUN_140e37aa0()->GetRecords(spGame->m_nId, records);
         if (!records.empty())
         {
             int nNpcScore = records.rbegin()->first;
@@ -541,7 +546,7 @@ bool UIArcadeMainDialog::FUN_140ef7ab0(int nResult, const CMsgBoxData& box)
 // @0x140ef7b00
 bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
 {
-    MS2SvrPtr<CArcadeMainData> spGame = ((class CArcadeDataTable*)FUN_140e37aa0())->GetMainData(nArcadeId);
+    MS2SvrPtr<CArcadeMainData> spGame = FUN_140e37aa0()->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
     efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -725,8 +730,8 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
         reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b870(&keys[i], 10, i, 0, nRegion);
     for (int i = 1; i < 6; i++)
     {
-        Unk_RankPageReq req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2add0(keys[i], 1, 1);
-        if (req.FUN_140b2e0c0(0))
+        MS2Ptr<GameRanking::Page> req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Query(reinterpret_cast<const CGameRankingParam::Key&>(keys[i]), 1, 1);
+        if (req == 0)
         {
             CGameRankingParam request;
             request.m_key.FUN_140b35820(keys[i]);

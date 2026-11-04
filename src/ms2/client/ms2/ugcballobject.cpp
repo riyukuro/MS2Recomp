@@ -37,11 +37,10 @@ struct Unk_UbPoint { float x, y, z; };                         // plain three-fl
 struct Unk_UbPointReader { Unk_UbPoint FUN_140204500(); };      // reads a point (three floats); Unk_PayloadReader::ReadPoint (unit_1401f9eb0)
 NxVec3 FUN_141b6e0e0(const efd::Point3& kPt);               // Point3 -> NxVec3 (C3: was const Vector3&)
 Vector3 FUN_141b6e150(const NxVec3& kVec);                  // NxVec3 -> Point3
-struct Unk_UbVec3 { float x, y, z; Unk_UbVec3(const NiPoint3& pt); Unk_UbVec3(const efd::Point3& pt); };   // Vector3 implicitly built from a point (0x14027dcf0)
-struct Unk_UbBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion
+struct Unk_UbBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion (NiPoint3(const efd::Point3&), 0x14027dcf0)
 {
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
-    virtual void vfunc_3(Unk_UbVec3 ptPos, Unk_UbVec3 ptDir, float fScale);   // 0x140ada620 place by angles
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x140ada620 place by angles
 };
 
 // A temporary point viewed as the efd::Point3 the callee takes by value: cl binds the temporary straight to the
@@ -100,7 +99,7 @@ int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, Unk_UbPoint kPt
     m_spBox->m_ptBox = kBox;
     m_spBox->m_kColor = NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     m_spBox->vfunc_4();
-    reinterpret_cast<Unk_UbBoxView*>(m_spBox.operator->())->vfunc_3(MS2_UB_POINT(Vector3(kPt.x, kPt.y, kPt.z)), NiPoint3::ZERO, 1.0f);
+    reinterpret_cast<Unk_UbBoxView*>(m_spBox.operator->())->vfunc_3(MS2_UB_POINT(Vector3(kPt.x, kPt.y, kPt.z)), static_cast<const efd::Point3&>(NiPoint3::ZERO), 1.0f);
     return 1;
 }
 
@@ -112,7 +111,7 @@ int CUGCBallObject::FUN_140ded420(Unk_UbTag* pTag, void* pShape)
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1;
-    reinterpret_cast<Unk_UbBoxView*>(m_spBox.operator->())->vfunc_3(static_cast<const NiPoint3&>(vfunc_18()), NiPoint3::ZERO, 1.0f);
+    reinterpret_cast<Unk_UbBoxView*>(m_spBox.operator->())->vfunc_3(static_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())), static_cast<const efd::Point3&>(NiPoint3::ZERO), 1.0f);
     if (CBaseCollision::Intersect((class CBaseCollision*)(pShape), (class CBaseCollision*)(m_spBox.get())) == 0)
         return 1;
     efd::Point3 kDir = static_cast<const NiPoint3&>(pPlayer->vfunc_18()) - static_cast<const NiPoint3&>(vfunc_18());

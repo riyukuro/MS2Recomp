@@ -19,6 +19,7 @@
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/client/ms2/blockmanager.h"  // C3: CBlockManager::FindBlockedAction, BlockPtr
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read7
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- out-of-unit callees ----
@@ -59,7 +60,6 @@ typedef __int64 i64;
 CStringW FUN_140d6e230(int nCurrency);
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax);
 CStringW FUN_140d70320(CStringW strKey, const float& fRate, const i64& nLow, const i64& nHigh);
-CInputStream& FUN_14070f4c0(CInputStream& in, unsigned __int64* pValue);
 CInputStream& FUN_140d70110(CInputStream& in, MS2Ptr<CMesoMarketProductCli>& sp);
 CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map);
 void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr);
@@ -547,7 +547,7 @@ CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
     {
         MS2Ptr<CMesoMarketProductCli> sp;
         unsigned __int64 qwKey;
-        FUN_140d70110(FUN_14070f4c0(in, &qwKey), sp);
+        FUN_140d70110(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read7(reinterpret_cast<__int64&>(qwKey))), sp);
         map.SetAt(qwKey, sp);
     }
     return in;

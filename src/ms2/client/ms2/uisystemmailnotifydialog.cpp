@@ -44,6 +44,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/gfxui/asmdragtarget.h"
+#include "ms2/commonfiles/userconditioneventdata.h"
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -98,13 +99,11 @@ struct Unk_SmData
 };
 MS2_CHECK_OFFSET(Unk_SmData, m_body, 0x70);
 
-// The counted handle of a mail record (ctor 0x1408d3090, dtor 0x1408d36d0, operator-> 0x1408d37f0).
+// The counted handle of a mail record: MS2Ptr<CUserConditionEventData> (from CUserConditionEventData::GetEvent). This
+// view keeps the two inline readers the exe has as separate functions.
 class Unk_SmHandle
 {
 public:
-    Unk_SmHandle(int nId);
-    ~Unk_SmHandle();
-    Unk_SmData* operator->() const;
     bool FUN_1412a6f10() const { return m_p == 0; }             // 0x1412a6f10 is empty
     Unk_SmData* FUN_1412a6f80() const { return m_p; }           // 0x1412a6f80
     void* m_unk_00;
@@ -327,11 +326,11 @@ void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
         {
             int nId = packet.ReadInt32();
             {
-                Unk_SmHandle rec(nId);
-                if (rec.FUN_1412a6f80() != 0)
+                MS2Ptr<CUserConditionEventData> rec(CUserConditionEventData::GetEvent(nId));
+                if (reinterpret_cast<Unk_SmHandle&>(rec).FUN_1412a6f80() != 0)
                 {
                     m_178 = nId;
-                    m_17c = rec->m_body.m_nPending;
+                    m_17c = rec->m_notify.m_nPreview;
                     if (FUN_141924630() != 0)
                         FUN_1412a5570(nId);
                 }
@@ -345,8 +344,8 @@ void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
 // @0x1412a5570
 void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
 {
-    Unk_SmHandle rec(nMailId);
-    if (rec.FUN_1412a6f10() != 0)
+    MS2Ptr<CUserConditionEventData> rec(CUserConditionEventData::GetEvent(nMailId));
+    if (reinterpret_cast<Unk_SmHandle&>(rec).FUN_1412a6f10() != 0)
         return;
     if (m_30.IsNull() != 0)
         return;
@@ -355,9 +354,9 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
     Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->GetUserConditionText(rec->m_nUrlTextId);
+    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->GetUserConditionText(rec->m_nGameEventId);
     ATL::CAtlArray<Unk_SmReward> rewards;
-    rec->m_body.FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
+    reinterpret_cast<Unk_SmBody&>(rec->m_notify).FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
     if (rewards.GetCount() > 0)
     {
         FUN_1412a5eb0(&rewards[0]);
@@ -367,11 +366,11 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
             spSlot->FUN_1422e4840(m_strSlot);
         FUN_140cfefe0((&*m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
-        if ((rec->m_body.m_strAttach == "attachment"))
+        if ((rec->m_notify.m_strDescArg == "attachment"))
             strAttach = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId);
         else
-            strAttach = (const char*)rec->m_body.m_strAttach;
-        CStringW strDesc = StringFormat<CStringW>(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
+            strAttach = (const char*)rec->m_notify.m_strDescArg;
+        CStringW strDesc = StringFormat<CStringW>(GetStringCommonByKey(FUN_14016a730(rec->m_notify.m_strDescKey, 0)), strAttach);
         FUN_140cfefe0((&*m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
     FUN_141276180(s_strPopUp, "");

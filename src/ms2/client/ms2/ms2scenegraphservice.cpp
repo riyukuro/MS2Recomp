@@ -502,7 +502,7 @@ void MS2SceneGraphService::AddAlwaysUpdated(NiAVObject* pkSceneGraph)
 MS2_REPLACE_METHOD(0x1414F1E30, MS2SceneGraphService, AddAlwaysUpdated, 48, 0xA04A05A5);
 
 // @0x1414f1e70
-void MS2SceneGraphService::SetBucketOverride(const egf::EntityID& entityID, int iBucket)
+void MS2SceneGraphService::SetBucketOverride(egf::EntityID entityID, int iBucket)
 {
     m_bucketOverrides[entityID.GetValue()] = iBucket;
 }
@@ -516,7 +516,7 @@ void MS2SceneGraphService::FUN_1414f1ec0()
 MS2_REPLACE_METHOD(0x1414F1EC0, MS2SceneGraphService, FUN_1414f1ec0, 33, 0xF5AD8023);
 
 // @0x1414f1ef0
-void MS2SceneGraphService::ClearBucketOverride(const egf::EntityID& entityID)
+void MS2SceneGraphService::ClearBucketOverride(egf::EntityID entityID)
 {
     if (!m_bucketOverrides.IsEmpty())
         m_bucketOverrides.RemoveKey(entityID.GetValue());

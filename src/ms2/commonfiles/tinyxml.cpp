@@ -862,7 +862,7 @@ bool TiXmlDocument::SaveFile() const
 }
 
 // MS2: game addition (CFileSystem loads packed XML through it): the 2.5.3 LoadFile newline loop over a memory buffer.
-// Name invented; callers use FUN_140870d70.
+// Name invented (0x140870d70).
 bool TiXmlDocument::LoadMemory( const char* buf, unsigned length, TiXmlEncoding encoding )
 {
 	TIXML_STRING data;

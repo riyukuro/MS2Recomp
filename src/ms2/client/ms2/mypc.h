@@ -21,8 +21,6 @@ class CEquipItem;
 class CItem;
 class CGetExp;              // RTTI CGetExp (0x50): the exp gain popup (?\getexp.cpp)
 class CHomePrivilege;       // commonfiles\homeprivilege.cpp (0x20, CPtred)
-class Unk_MyPCSkillSlots;   // = CSkillSystem (scenestategame.cpp / placeholder mypc.h view)
-class Unk_MyPCStatPoints;
 class Unk_MyPCComp1618;     // MS2Ptr at +0x1618 (null ctor 0x1415324e0, dtor 0x14050de40)
 
 // The member at +0x12e8: a StateLocalController (the records live on the base).

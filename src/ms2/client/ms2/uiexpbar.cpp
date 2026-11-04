@@ -25,6 +25,7 @@
 #include <string.h>
 #include <algorithm>
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/crideedata.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -57,9 +58,7 @@ extern __int64 DAT_143ab28a8;                                       // rest exp
 extern unsigned int DAT_143af62d4;                                  // base height of the bar
 
 class Unk_ExpActor : public PC { };
-// The riding row of the player (opaque table row): +0x6c is nonzero while riding.
-class Unk_RideeData : public CPtred { public: char m_pad[0x6c - sizeof(CPtred)]; int m_nSeats; };
-class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
+class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view
 class Unk_ExpWorld { };
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
@@ -176,7 +175,7 @@ void UIExpBar::FUN_141932430()
     efd::SmartPointer<Ridee> spHolder(reinterpret_cast<Ridee*>(pPlayer->FUN_1416764a0()));
     if (spHolder != (Ridee*)0)
     {
-        bool bMounted = spHolder->GetData()->m_nSeats != 0 ? 1 : 0;
+        bool bMounted = spHolder->GetData()->m_basic.m_nHidePCInfo != 0 ? 1 : 0;
         if (bMounted)
             nVisible = 0;
     }

@@ -219,7 +219,6 @@ CString FUN_1410280d0(int, CString);
 MS2Ptr<CItemData> FUN_14053f870(int);
 int FUN_1407072e0(int);
 
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 
@@ -518,7 +517,7 @@ void Unk_PCCubeCraft::FUN_1410a9630()
             CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
-                reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_1418845a0(m_spItem.get(), 0);
+                TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(m_spItem.get(), 0);
             }
             m_spGuide2->vfunc_15(m_spItem.get());
         }

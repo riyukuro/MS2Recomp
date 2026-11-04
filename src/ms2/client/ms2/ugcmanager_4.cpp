@@ -175,7 +175,6 @@ public:
 };
 UIUGCItemEditDialog* FUN_140eeff60(int nId);                // uiugccubepalettedialog.cpp
 
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // The kinds whose upload is answered by the game server (0: the file goes through the web server first).
 int FUN_14088db90(int nType);
@@ -1489,7 +1488,7 @@ MS2_REPLACE_METHOD(0x141883380, CUgcManager, SendUGCMode11, 107, 0x8ABFA234);
 // Reserves the picked hours of a day for the banner of the current upload.
 void CUgcManager::FUN_141883400(CRBMap<int, int>& hours, const Unk_BannerDay& day)
 {
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spCtrl == 0)
         return;
     if (spCtrl->m_nKind != 3)

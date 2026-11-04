@@ -68,7 +68,7 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
     CString strPath;
     strPath.Format("./Data/Resource/Exported/XBlock/%s.xblock", (const char*)strXBlock);
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0(FUN_14016a5c0((const char*)strPath, 0), 0))
+    if (!doc.LoadFile(FUN_14016a5c0((const char*)strPath, 0), TIXML_ENCODING_UNKNOWN))
         return 0;
     Unk_XmlNode* pGame = ((class Unk_XmlNode*)(void*)(&doc))->FirstChild("game");
     if (pGame == 0)

@@ -718,16 +718,16 @@ void GameEventSAHotTime::OnStart()
     spContext->m_18 = m_d0;
     spContext->m_28 = m_e0;
     spContext->m_30 = m_e8;
-    ((class CGameRule*)FUN_1401c0d90())->AddHotTimeEvent(FUN_1402e1d00(), spContext);
-    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d820(FUN_1402e1d00(), m_80);
+    ((class CGameRule*)FUN_1401c0d90())->AddHotTimeEvent(GetID(), spContext);
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d820(GetID(), m_80);
 }
 MS2_REPLACE_METHOD(0x1403BBF30, GameEventSAHotTime, OnStart, 392, 0x94BE1A07);
 
 // @0x1403bc0c0
 void GameEventSAHotTime::vfunc_6()
 {
-    ((class CGameRule*)FUN_1401c0d90())->RemoveHotTimeEvent(FUN_1402e1d00());
-    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d900(FUN_1402e1d00());
+    ((class CGameRule*)FUN_1401c0d90())->RemoveHotTimeEvent(GetID());
+    ((class CGameRule*)FUN_1401c0d90())->FUN_14047d900(GetID());
 }
 MS2_REPLACE_METHOD(0x1403BC0C0, GameEventSAHotTime, vfunc_6, 80, 0xE280C0AD);
 
@@ -908,12 +908,12 @@ void GameEventMesoRevival::OnStart()
 {
     MS2Ptr<MesoRevivalEventContext> spContext(new MesoRevivalEventContext);
     spContext->m_18 = m_d0;
-    ((class CGameRule*)FUN_1401c0d90())->AddMesoRevivalEvent(FUN_1402e1d00(), spContext);
+    ((class CGameRule*)FUN_1401c0d90())->AddMesoRevivalEvent(GetID(), spContext);
 }
 MS2_REPLACE_METHOD(0x1403BCB20, GameEventMesoRevival, OnStart, 233, 0x23BFF202);
 
 // @0x1403bcc10
-void GameEventMesoRevival::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveMesoRevivalEvent(FUN_1402e1d00()); }
+void GameEventMesoRevival::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveMesoRevivalEvent(GetID()); }
 MS2_REPLACE_METHOD(0x1403BCC10, GameEventMesoRevival, vfunc_6, 47, 0xB874E1D4);
 
 // ---- GameEventItemBuff ----------------------------------------------------------------------------------------------
@@ -1061,11 +1061,11 @@ void GameEventFreeAirTaxi::vfunc_4(Unk_GEIn* in) { GameEvent::vfunc_4(in); }
 MS2_REPLACE_METHOD(0x1403BD4F0, GameEventFreeAirTaxi, vfunc_4, 34, 0x52D23EA6);
 
 // @0x1403bd520
-void GameEventFreeAirTaxi::OnStart() { ((class CGameRule*)FUN_1401c0d90())->AddFreeAirTaxiEvent(FUN_1402e1d00()); }
+void GameEventFreeAirTaxi::OnStart() { ((class CGameRule*)FUN_1401c0d90())->AddFreeAirTaxiEvent(GetID()); }
 MS2_REPLACE_METHOD(0x1403BD520, GameEventFreeAirTaxi, OnStart, 47, 0xE1812CAC);
 
 // @0x1403bd560
-void GameEventFreeAirTaxi::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveFreeAirTaxiEvent(FUN_1402e1d00()); }
+void GameEventFreeAirTaxi::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveFreeAirTaxiEvent(GetID()); }
 MS2_REPLACE_METHOD(0x1403BD560, GameEventFreeAirTaxi, vfunc_6, 47, 0x59FF38BC);
 
 // ---- GameEventOntime ------------------------------------------------------------------------------------------------
@@ -1099,7 +1099,7 @@ void GameEventOntime::vfunc_2()
     if (first.GetCount() != nValueCount || second.GetCount() != nValueCount)
         return;
     m_d0.AssignRaw(new OntimeEventContext);
-    m_d0->m_18 = FUN_1402e1d00();
+    m_d0->m_18 = GetID();
     m_d0->m_20 = nType;
     m_d0->m_24.m_0 = first[0];
     m_d0->m_24.m_4 = first[1];
@@ -1139,13 +1139,13 @@ void GameEventOntime::OnStart()
 {
     if (m_d0.get()) {
         m_d0->m_1c = true;
-        ((class CGameRule*)FUN_1401c0d90())->AddOntimeEvent(FUN_1402e1d00(), m_d0);
+        ((class CGameRule*)FUN_1401c0d90())->AddOntimeEvent(GetID(), m_d0);
     }
 }
 MS2_REPLACE_METHOD(0x1403BDC50, GameEventOntime, OnStart, 158, 0x302A88DF);
 
 // @0x1403bdd00
-void GameEventOntime::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->DeactivateOntimeEvent(FUN_1402e1d00()); }
+void GameEventOntime::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->DeactivateOntimeEvent(GetID()); }
 MS2_REPLACE_METHOD(0x1403BDD00, GameEventOntime, vfunc_6, 47, 0xB82BE608);
 
 // ---- GameEventSaleEnchant -------------------------------------------------------------------------------------------
@@ -1434,12 +1434,12 @@ void GameEventPremiumMarketSale::OnStart()
     pContext->m_18 = m_d0;
     pContext->m_20.insert(m_d8.begin(), m_d8.end());
     pContext->m_30 = m_e8;
-    TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce2a0(FUN_1402e1d00(), pContext);
+    TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce2a0(GetID(), pContext);
 }
 MS2_REPLACE_METHOD(0x1403BF000, GameEventPremiumMarketSale, OnStart, 403, 0x7A587F4F);
 
 // @0x1403bf1a0
-void GameEventPremiumMarketSale::vfunc_6() { TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce320(FUN_1402e1d00()); }
+void GameEventPremiumMarketSale::vfunc_6() { TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce320(GetID()); }
 MS2_REPLACE_METHOD(0x1403BF1A0, GameEventPremiumMarketSale, vfunc_6, 47, 0x06CDE691);
 
 // ---- GameEventGameMenuPopup -----------------------------------------------------------------------------------------
@@ -1878,7 +1878,7 @@ void GameEventDungeonExtraReward::vfunc_2()
     for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<DungeonExtraRewardCountCtx> spCount(new DungeonExtraRewardCountCtx);
-        spCount->m_18 = FUN_1402e1d00();
+        spCount->m_18 = GetID();
         spCount->Load(pNode);
         if (spCount->m_dungeonID == 0 || spCount->m_count == 0)
             continue;
@@ -2166,12 +2166,12 @@ MS2_REPLACE_METHOD(0x1403C1F30, GameEventNpcEventDrop, vfunc_2, 598, 0xB54C8D81)
 void GameEventNpcEventDrop::OnStart()
 {
     if (m_d0.get())
-        ((class CGameRule*)FUN_1401c0d90())->AddNpcEventDrop(FUN_1402e1d00(), m_d0);
+        ((class CGameRule*)FUN_1401c0d90())->AddNpcEventDrop(GetID(), m_d0);
 }
 MS2_REPLACE_METHOD(0x1403C2190, GameEventNpcEventDrop, OnStart, 135, 0x8347BC99);
 
 // @0x1403c2220
-void GameEventNpcEventDrop::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveNpcEventDrop(FUN_1402e1d00()); }
+void GameEventNpcEventDrop::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveNpcEventDrop(GetID()); }
 MS2_REPLACE_METHOD(0x1403C2220, GameEventNpcEventDrop, vfunc_6, 47, 0x0ADD96DA);
 
 // ---- GameEventBlueMarble --------------------------------------------------------------------------------------------
@@ -2202,7 +2202,7 @@ void GameEventBlueMarble::vfunc_2()
         return;
     if (GetFileSystem()->LoadXmlFromString(&docSlot, m_70) == 0)
         return;
-    MS2Ptr<BlueMarbleEventContext> spContext(new BlueMarbleEventContext(FUN_1402e1d00(), FUN_1402e2730()));
+    MS2Ptr<BlueMarbleEventContext> spContext(new BlueMarbleEventContext(GetID(), FUN_1402e2730()));
     Unk_140165cf0* pRound = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&docRound)->FirstChild("round"));
     if (pRound)
         spContext->LoadRewards(pRound);
@@ -2233,7 +2233,7 @@ MS2_REPLACE_METHOD(0x1403C25B0, GameEventBlueMarble, vfunc_3, 511, 0xCE411612);
 void GameEventBlueMarble::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new BlueMarbleEventContext(FUN_1402e1d00(), FUN_1402e2730()));
+    m_d0.AssignRaw(new BlueMarbleEventContext(GetID(), FUN_1402e2730()));
     size_t nCount = (unsigned)MS2_GE_R(in)->ReadInt();
     for (size_t i = 0; i < nCount; i++)
     {
@@ -2346,7 +2346,7 @@ void GameEventDungeonEnterTimeLimit::OnStart() { ((class CGameRule*)FUN_1401c0d9
 MS2_REPLACE_METHOD(0x1403C30B0, GameEventDungeonEnterTimeLimit, OnStart, 51, 0x03061B7D);
 
 // @0x1403c30f0
-void GameEventDungeonEnterTimeLimit::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveEventTimeLimitDungeons(FUN_1402e1d00()); }
+void GameEventDungeonEnterTimeLimit::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->RemoveEventTimeLimitDungeons(GetID()); }
 MS2_REPLACE_METHOD(0x1403C30F0, GameEventDungeonEnterTimeLimit, vfunc_6, 47, 0x22EB50E5);
 
 // @0x1403c3130
@@ -2378,7 +2378,7 @@ void GameEventDungeonEnterTimeLimit::FUN_1403c31c0(const CStringW& strXml)
     for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<EventTimeLimitDungeonContext> spContext(new EventTimeLimitDungeonContext);
-        spContext->m_eventId = FUN_1402e1d00();
+        spContext->m_eventId = GetID();
         XmlGetAttr((class TiXmlElement*)(pNode), "dungeonID", reinterpret_cast<unsigned int&>(spContext->m_dungeonId));
         XmlValueRange(pNode, "rangeTime", spContext->m_rangeTime);
         if (spContext->m_dungeonId == 0 || spContext->m_rangeTime.m_start > spContext->m_rangeTime.m_end)
@@ -2500,7 +2500,7 @@ void GameEventEpicRestart::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C3CF0, GameEventEpicRestart, vfunc_2, 131, 0xE21A7CD6);
 
 // @0x1403c3d80
-void GameEventEpicRestart::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c020(FUN_1402e1d00(), m_38.Get(), m_d0, m_e0, m_d8); }
+void GameEventEpicRestart::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047c020(GetID(), m_38.Get(), m_d0, m_e0, m_d8); }
 MS2_REPLACE_METHOD(0x1403C3D80, GameEventEpicRestart, OnStart, 155, 0xDC91DCFD);
 
 // @0x1403c3e30
@@ -2663,7 +2663,7 @@ void GameEventStampEvent::vfunc_2()
         MS2_ASSERT_AT(MS2_LINE(2066), 0);
         return;
     }
-    MS2Ptr<StampEventContext> spContext(new StampEventContext(FUN_1402e1d00()));
+    MS2Ptr<StampEventContext> spContext(new StampEventContext(GetID()));
     Unk_140165cf0* pStampRoot = FUN_140345b40(&docStamp);
     if (pStampRoot)
     {
@@ -2732,7 +2732,7 @@ MS2_REPLACE_METHOD(0x1403C4FA0, GameEventStampEvent, vfunc_3, 94, 0xC3F5F23D);
 void GameEventStampEvent::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d8.AssignRaw(new StampEventContext(FUN_1402e1d00()));
+    m_d8.AssignRaw(new StampEventContext(GetID()));
     m_d8->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403C5010, GameEventStampEvent, vfunc_4, 170, 0x5E42215F);
@@ -2773,7 +2773,7 @@ GameEventTimeRunEvent::GameEventTimeRunEvent()
 // @0x1403c52f0
 void GameEventTimeRunEvent::vfunc_2()
 {
-    MS2Ptr<TimeRunEventContext> spContext(new TimeRunEventContext(FUN_1402e1d00()));
+    MS2Ptr<TimeRunEventContext> spContext(new TimeRunEventContext(GetID()));
     if (FUN_1403c5670(spContext) == 0)
         return;
     if (FUN_1403c58e0(spContext) == 0)
@@ -2806,7 +2806,7 @@ MS2_REPLACE_METHOD(0x1403C5550, GameEventTimeRunEvent, vfunc_3, 94, 0xC268AE54);
 void GameEventTimeRunEvent::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new TimeRunEventContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new TimeRunEventContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403C55C0, GameEventTimeRunEvent, vfunc_4, 170, 0xD50DD980);
@@ -4548,12 +4548,12 @@ void GameEventShutdownUGCUpload::OnStart()
     info.m_bFlag = m_f0;
     for (size_t i = 0; i < m_d0.GetCount(); i++)
         info.m_ids.insert((Unk_UGCUploadType)m_d0[i]);
-    FUN_1407d1ef0((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), FUN_1402e1d00(), info);
+    FUN_1407d1ef0((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), GetID(), info);
 }
 MS2_REPLACE_METHOD(0x1403CBDB0, GameEventShutdownUGCUpload, OnStart, 208, 0x414A87F9);
 
 // @0x1403cbe90
-void GameEventShutdownUGCUpload::vfunc_6() { FUN_1407d1f70((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), FUN_1402e1d00()); }
+void GameEventShutdownUGCUpload::vfunc_6() { FUN_1407d1f70((class CShutdownEventUGCUpload*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownUGCUpload()), GetID()); }
 MS2_REPLACE_METHOD(0x1403CBE90, GameEventShutdownUGCUpload, vfunc_6, 55, 0xC4914FA2);
 
 // ---- GameEventFindDungeonHelperBonus --------------------------------------------------------------------------------
@@ -4729,9 +4729,9 @@ MS2_REPLACE_METHOD(0x1403CC7F0, GameEventBattlePetSpawn, vfunc_2, 72, 0x3DBD65E8
 void GameEventBattlePetSpawn::OnStart()
 {
     if (m_d0 == 0)
-        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->AddSpawn(FUN_1402e1d00(), m_d8);
+        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->AddSpawn(GetID(), m_d8);
     else if (m_d0 == 1)
-        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->AddImprove(FUN_1402e1d00(), m_d8);
+        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->AddImprove(GetID(), m_d8);
 }
 MS2_REPLACE_METHOD(0x1403CC840, GameEventBattlePetSpawn, OnStart, 174, 0xB546D265);
 
@@ -4739,9 +4739,9 @@ MS2_REPLACE_METHOD(0x1403CC840, GameEventBattlePetSpawn, OnStart, 174, 0xB546D26
 void GameEventBattlePetSpawn::vfunc_6()
 {
     if (m_d0 == 0)
-        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->RemoveSpawn(FUN_1402e1d00(), m_d8);
+        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->RemoveSpawn(GetID(), m_d8);
     else if (m_d0 == 1)
-        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->RemoveImprove(FUN_1402e1d00(), m_d8);
+        ((CGameEventValueBattlePetSpawn*)TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->RemoveImprove(GetID(), m_d8);
 }
 MS2_REPLACE_METHOD(0x1403CC900, GameEventBattlePetSpawn, vfunc_6, 174, 0x7FF2D2B0);
 
@@ -4785,7 +4785,7 @@ GameEventGallery::GameEventGallery()
 // @0x1403ccc30
 void GameEventGallery::vfunc_2()
 {
-    MS2Ptr<GalleryContext> pContext(new GalleryContext(FUN_1402e1d00()));
+    MS2Ptr<GalleryContext> pContext(new GalleryContext(GetID()));
     if (!pContext)
     {
         MS2_ASSERT_AT(MS2_LINE(3905), "pContext" && 0);
@@ -4830,7 +4830,7 @@ MS2_REPLACE_METHOD(0x1403CCFA0, GameEventGallery, vfunc_3, 94, 0xD2043C6A);
 void GameEventGallery::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new GalleryContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new GalleryContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403CD010, GameEventGallery, vfunc_4, 170, 0xA20E7AB8);
@@ -5031,7 +5031,7 @@ GameEventSnowman::GameEventSnowman()
 // @0x1403cdd50
 void GameEventSnowman::vfunc_2()
 {
-    MS2Ptr<SnowmanContext> pContext(new SnowmanContext(FUN_1402e1d00()));
+    MS2Ptr<SnowmanContext> pContext(new SnowmanContext(GetID()));
     if (!pContext)
     {
         MS2_ASSERT_AT(MS2_LINE(4099), "pContext" && 0);
@@ -5071,7 +5071,7 @@ MS2_REPLACE_METHOD(0x1403CDFE0, GameEventSnowman, vfunc_3, 134, 0xDDB8A9A5);
 void GameEventSnowman::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new SnowmanContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new SnowmanContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
     m_e0 = MS2_GE_R(in)->ReadStringW();
 }
@@ -5173,7 +5173,7 @@ GameEventRps::GameEventRps()
 // @0x1403ce900
 void GameEventRps::vfunc_2()
 {
-    MS2Ptr<RpsContext> pContext(new RpsContext(FUN_1402e1d00()));
+    MS2Ptr<RpsContext> pContext(new RpsContext(GetID()));
     if (pContext == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(4209), 0);
@@ -5209,7 +5209,7 @@ MS2_REPLACE_METHOD(0x1403CEB70, GameEventRps, vfunc_3, 94, 0x4202E158);
 void GameEventRps::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new RpsContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new RpsContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403CEBE0, GameEventRps, vfunc_4, 170, 0x5C6C07B5);
@@ -5459,7 +5459,7 @@ GameEventReactor::GameEventReactor()
 // @0x1403cfc50
 void GameEventReactor::vfunc_2()
 {
-    MS2Ptr<ReactorContext> pContext(new ReactorContext(FUN_1402e1d00()));
+    MS2Ptr<ReactorContext> pContext(new ReactorContext(GetID()));
     if (!pContext)
     {
         MS2_ASSERT_AT(MS2_LINE(4541), 0);
@@ -5497,7 +5497,7 @@ MS2_REPLACE_METHOD(0x1403CFEA0, GameEventReactor, vfunc_3, 94, 0x1436D458);
 void GameEventReactor::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new ReactorContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new ReactorContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403CFF10, GameEventReactor, vfunc_4, 170, 0x2E1A0517);
@@ -5603,7 +5603,7 @@ GameEventTreeWatering::GameEventTreeWatering()
 // @0x1403d0550
 void GameEventTreeWatering::vfunc_2()
 {
-    MS2Ptr<TreeWateringContext> pContext(new TreeWateringContext(FUN_1402e1d00()));
+    MS2Ptr<TreeWateringContext> pContext(new TreeWateringContext(GetID()));
     if (!pContext)
     {
         MS2_ASSERT_AT(MS2_LINE(4671), 0);
@@ -5650,7 +5650,7 @@ MS2_REPLACE_METHOD(0x1403D07A0, GameEventTreeWatering, vfunc_3, 94, 0xC23C5C12);
 void GameEventTreeWatering::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d0.AssignRaw(new TreeWateringContext(FUN_1402e1d00()));
+    m_d0.AssignRaw(new TreeWateringContext(GetID()));
     m_d0->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403D0810, GameEventTreeWatering, vfunc_4, 170, 0xC30FE115);
@@ -5922,7 +5922,7 @@ GameEventBurningLevelup::GameEventBurningLevelup() : m_d0(new BurningLevelupCont
 // @0x1403d1ad0
 void GameEventBurningLevelup::vfunc_2()
 {
-    m_d0->m_eventId = FUN_1402e1d00();
+    m_d0->m_eventId = GetID();
     m_d0->m_endTime = m_38.Get();
     {
         TiXmlDocument doc;
@@ -6106,11 +6106,11 @@ void GameEventFestival::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D2D40, GameEventFestival, vfunc_4, 184, 0x85D0B06A);
 
 // @0x1403d2e00
-void GameEventFestival::OnStart() { reinterpret_cast<CGameEventValueFestival*>(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival())->Add(FUN_1402e1d00(), m_d0); }
+void GameEventFestival::OnStart() { reinterpret_cast<CGameEventValueFestival*>(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival())->Add(GetID(), m_d0); }
 MS2_REPLACE_METHOD(0x1403D2E00, GameEventFestival, OnStart, 119, 0x77406360);
 
 // @0x1403d2e80
-void GameEventFestival::vfunc_6() { ((class CGameEventValueFestival*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival()))->Remove(FUN_1402e1d00()); }
+void GameEventFestival::vfunc_6() { ((class CGameEventValueFestival*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival()))->Remove(GetID()); }
 MS2_REPLACE_METHOD(0x1403D2E80, GameEventFestival, vfunc_6, 55, 0x2B580719);
 
 // @0x1403d2ec0
@@ -6164,7 +6164,7 @@ GameEventCoupleDance::GameEventCoupleDance() : m_d0(new CoupleDanceContext)
 // @0x1403d3170
 void GameEventCoupleDance::vfunc_2()
 {
-    m_d0->m_eventId = FUN_1402e1d00();
+    m_d0->m_eventId = GetID();
     m_d0->m_beginTime = m_38.Get();
     m_d0->m_endTime = m_28.Get();
     {
@@ -6409,14 +6409,14 @@ void GameEventItemTradeRestriction::OnStart()
             spData->SetLimit(eType, nItemId, m_110);
         }
     }
-    reinterpret_cast<CGameEventValueItemTradeRestriction*>(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction())->Add(FUN_1402e1d00(), spData);
+    reinterpret_cast<CGameEventValueItemTradeRestriction*>(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction())->Add(GetID(), spData);
 }
 MS2_REPLACE_METHOD(0x1403D4120, GameEventItemTradeRestriction, OnStart, 843, 0x984F5098);
 
 // @0x1403d4480
 void GameEventItemTradeRestriction::vfunc_6()
 {
-    ((class CGameEventValueItemTradeRestriction*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction()))->Remove(FUN_1402e1d00());
+    ((class CGameEventValueItemTradeRestriction*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetItemTradeRestriction()))->Remove(GetID());
 }
 MS2_REPLACE_METHOD(0x1403D4480, GameEventItemTradeRestriction, vfunc_6, 55, 0x1BAE2831);
 
@@ -6473,7 +6473,7 @@ GameEventCollectItemGroup::GameEventCollectItemGroup()
 void GameEventCollectItemGroup::vfunc_2()
 {
     m_d0.AssignRaw(new CollectItemGroupContext);
-    m_d0->m_eventId = FUN_1402e1d00();
+    m_d0->m_eventId = GetID();
     m_d0->m_beginTime = m_28.Get();
     m_d0->m_endTime = m_38.Get();
     TiXmlDocument doc;
@@ -6547,7 +6547,7 @@ GameEventShutdownDummy::GameEventShutdownDummy() : m_d0(0)
 }
 
 // @0x1403d4f60
-void GameEventShutdownDummy::vfunc_2() { m_id = FUN_1402e1d00(); }
+void GameEventShutdownDummy::vfunc_2() { m_id = GetID(); }
 MS2_REPLACE_METHOD(0x1403D4F60, GameEventShutdownDummy, vfunc_2, 32, 0x07622CC4);
 
 // @0x1403d4f90
@@ -6666,7 +6666,7 @@ void GameEventArcadeOpen::vfunc_2()
     Unk_140165cf0* pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
     if (pInfo == NULL)
         return;
-    m_d0->m_eventId = FUN_1402e1d00();
+    m_d0->m_eventId = GetID();
     XmlGetAttr((class TiXmlElement*)(pInfo), "arcadeId", m_d0->m_arcadeId);
     XmlGetAttr((class TiXmlElement*)(pInfo), "rewardCountPerDay", m_d0->m_rewardCountPerDay);
     for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
@@ -6739,7 +6739,7 @@ void GameEventBingoEvent::vfunc_2()
         return;
     if (!m_d0->LoadCashItem(m_80))
         return;
-    m_d0->m_eventId = FUN_1402e1d00();
+    m_d0->m_eventId = GetID();
     m_d0->m_beginTime = FUN_1402e26f0();
     m_d0->m_endTime = FUN_1402e2730();
 }
@@ -6839,7 +6839,7 @@ void GameEventLongTermAttendGift::vfunc_2()
         MS2_ASSERT_AT(MS2_LINE(5905), 0);
         return;
     }
-    MS2Ptr<LongTermAttendGiftContext> spContext(new LongTermAttendGiftContext(FUN_1402e1d00()));
+    MS2Ptr<LongTermAttendGiftContext> spContext(new LongTermAttendGiftContext(GetID()));
     Unk_140165cf0* pInfo;
     Unk_140165cf0* pInfoRoot = FUN_140345b40(&docInfo);
     if (pInfoRoot && (pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pInfoRoot))->FirstChild("info"))) != NULL)
@@ -6897,7 +6897,7 @@ MS2_REPLACE_METHOD(0x1403D6860, GameEventLongTermAttendGift, vfunc_3, 94, 0x9E25
 void GameEventLongTermAttendGift::vfunc_4(Unk_GEIn* in)
 {
     GameEvent::vfunc_4(in);
-    m_d8.AssignRaw(new LongTermAttendGiftContext(FUN_1402e1d00()));
+    m_d8.AssignRaw(new LongTermAttendGiftContext(GetID()));
     m_d8->Read(*reinterpret_cast<CInPacket*>(in));
 }
 MS2_REPLACE_METHOD(0x1403D68D0, GameEventLongTermAttendGift, vfunc_4, 170, 0xFD1B888A);

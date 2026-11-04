@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
 #include <efd/Point3.h>
+#include <NiPoint3.h>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/questmasktable.h"
 #include "ms2/placeholder/itemcustom.h"
@@ -90,11 +91,11 @@ MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 
 // Out-of-line vector helpers and the XML attribute accessors of the game's TinyXML wrapper.
 class Unk_140165cf0;
-struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3& kIn); float x, y, z; };   // 0x14027dcf0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
-void FUN_140874ad0(void* pElem, const char* pszName, const Unk_XmlPoint& kValue);
+// The exe passes a NiPoint3 built implicitly from the efd::Point3 member (0x14027dcf0): XmlSetAttr's NiPoint3 view.
+void FUN_140874ad0(class TiXmlElement* pElem, const char* pszName, const NiPoint3& pt);   // XmlSetAttr, NiPoint3 view
 float FUN_14028aed0(float f);                           // round
 
 // @0x140266860
@@ -145,13 +146,12 @@ void ItemCustom::FUN_140266aa0(Unk_140165cf0* pElem)
 }
 
 // @0x140266b10
-// MS2-FUNCTIONAL: stack slot of the second temp point (0x30 vs 0x2c)
 void ItemCustom::FUN_140266b10(void* pElem) const
 {
     if (name.GetLength() > 0)
         XmlSetAttr((class TiXmlElement*)(pElem), "icon", name);
-    FUN_140874ad0(pElem, "position", unknown18);
-    FUN_140874ad0(pElem, "rotation", unknown24);
+    FUN_140874ad0((class TiXmlElement*)(pElem), "position", unknown18);
+    FUN_140874ad0((class TiXmlElement*)(pElem), "rotation", unknown24);
 }
 
 // @0x140266bc0

@@ -331,16 +331,16 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         }
         Unk_140165cf0* fr = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("frustum"));
         if (fr) {
-            XmlGetAttr((class TiXmlElement*)(fr), "left", spMM->m_frustum.l);
-            XmlGetAttr((class TiXmlElement*)(fr), "right", spMM->m_frustum.r);
-            XmlGetAttr((class TiXmlElement*)(fr), "top", spMM->m_frustum.t);
-            XmlGetAttr((class TiXmlElement*)(fr), "bottom", spMM->m_frustum.b);
-            XmlGetAttr((class TiXmlElement*)(fr), "near", spMM->m_frustum.n);
-            XmlGetAttr((class TiXmlElement*)(fr), "far", spMM->m_frustum.f);
+            XmlGetAttr((class TiXmlElement*)(fr), "left", spMM->m_frustum.m_fLeft);
+            XmlGetAttr((class TiXmlElement*)(fr), "right", spMM->m_frustum.m_fRight);
+            XmlGetAttr((class TiXmlElement*)(fr), "top", spMM->m_frustum.m_fTop);
+            XmlGetAttr((class TiXmlElement*)(fr), "bottom", spMM->m_frustum.m_fBottom);
+            XmlGetAttr((class TiXmlElement*)(fr), "near", spMM->m_frustum.m_fNear);
+            XmlGetAttr((class TiXmlElement*)(fr), "far", spMM->m_frustum.m_fFar);
             const char* s = ((class TiXmlElement*)(class Unk_140165cf0*)(fr))->Attribute("ortho");
             if (s) {
                 if (strcmp(s, "true") == 0)
-                    spMM->m_frustum.ortho = true;
+                    spMM->m_frustum.m_bOrtho = true;
             }
         }
         Unk_140165cf0* sc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("screen"));

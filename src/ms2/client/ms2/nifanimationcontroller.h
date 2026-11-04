@@ -39,4 +39,5 @@ MS2_CHECK_SIZE(CNifAnimationController, 0x60);
 
 void FUN_141545080(int value, void* node);   // recursive: set a value on every controller of a node subtree
 void FUN_1415451d0(int value, void* entityId);
-void FUN_141545250(void* entityId, int mode);
+namespace egf { class EntityID; }
+void FUN_141545250(egf::EntityID kId, int mode);

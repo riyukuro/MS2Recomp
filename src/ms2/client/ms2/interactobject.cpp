@@ -234,7 +234,6 @@ const egf::EntityID* FUN_1408b76f0(Unk_Entity* e);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 void FUN_1401cd100(egf::EntityID* pDst, int n);
 unsigned __int64 FUN_140affe40(Unk_Entity* e);
-egf::FlatModel* FUN_1408a9bd0(Unk_Entity* e);
 CString FUN_141b70dd0(struct Unk_UtilNameSrc* e);
 void FUN_1401d3700(CString& s);
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);    // util.cpp
@@ -1134,7 +1133,10 @@ private:
 };
 
 // ---- ranking / xml / image stand-ins used by the display image ----
+#ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
+#define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+#endif
 class TiXmlElement
 {
 public:
@@ -1170,7 +1172,6 @@ class Unk_IoTexMgr : public CUgcManager
 {
 public:
 };
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 
 // ranking
@@ -1296,7 +1297,7 @@ void CInteractDisplayImage::FUN_1414017b0(const CString& strFile)
         NiTexturePtr spTex = LoadUgcTexture(strPath, 0x100, false);
         if (spTex == 0)
             return;
-        ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
+        TSingleton<CUgcManager>::GetInstance()->FUN_141888770(m_ent, spTex);
     }
 }
 
@@ -1600,7 +1601,7 @@ void CInteractGuildPosterObject::vfunc_10()
 {
     if (vfunc_4() == 0)
         return;
-    ((class Unk_IoTexMgr*)FUN_14052d220())->FUN_141880230(GetName(), FUN_141402e60());
+    ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141880230(GetName(), FUN_141402e60());
 }
 
 // @0x141402e60
@@ -1622,9 +1623,9 @@ void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
     CStringW strFile = FUN_14016a730(FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), reinterpret_cast<bool&>(bShow)), 0);
     if (((class BlindManager*)FUN_1409c1730())->IsBlocked(5, CStringW(strRaw)) == 1)
     {
-        NiTexturePtr spTex = ((class Unk_IoTexMgr*)FUN_14052d220())->GetDefaultTexture();
+        NiTexturePtr spTex = ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->GetDefaultTexture();
         if (spTex)
-            ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
+            TSingleton<CUgcManager>::GetInstance()->FUN_141888770(m_ent, spTex);
     }
     else
     {
@@ -1645,7 +1646,7 @@ void CInteractGuildPosterObject::FUN_141403180(CStringW strFile)
         NiTexturePtr spTex = LoadUgcTexture(strFile, 0x100, false);
         if (spTex == 0)
             return;
-        ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
+        TSingleton<CUgcManager>::GetInstance()->FUN_141888770(m_ent, spTex);
     }
 }
 
@@ -1734,7 +1735,7 @@ void CInteractWatchTowerObject::vfunc_3(int nState)
 
 // NiPoint3 taken by value: efd::Point3 results convert through the out-of-line NiPoint3(const efd::Point3&) and are copied into the argument.
 // @0x141403f20
-float FUN_141403f20(Unk_NiPoint3 a, Unk_NiPoint3 b)
+float FUN_141403f20(NiPoint3 a, NiPoint3 b)
 {
     a.z = 0.0f;
     b.z = 0.0f;
@@ -1749,7 +1750,7 @@ void CInteractWatchTowerObject::vfunc_11()
     Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        float fDist = FUN_141403f20(pPlayer->GetPosition(), GetPos());
+        float fDist = FUN_141403f20(*(const efd::Point3*)&static_cast<const Vector3&>(pPlayer->GetPosition()), *(const efd::Point3*)&static_cast<const Vector3&>(GetPos()));
         if (fDist < 2000.0f)
             bNear = 1;
     }

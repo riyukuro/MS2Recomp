@@ -136,30 +136,29 @@ TSingleton<CNPSMan>::~TSingleton()
 }
 
 // @0x140db9270
-// MS2-FUNCTIONAL: the exe evaluates the stack args (&kColor.b, &kColor.g) into temps before the CStringA conversion;
-// ours calls the conversion first (named pointer locals get it to 2 lines, but store through rax twice)
+// The exe evaluates the stack args (&kColor.r + 2, + 1) into pointer temps before the CStringA conversion: the
+// components are addressed off r with pointer arithmetic (`&kColor.g` is a simple arg that cl evaluates after the call).
 Unk_NpColor3 FUN_140db9270(CStringA& strText)
 {
     static Unk_NpColor3 kDefault = FUN_140a56db0(1.0f, 0.0f, 1.0f);
     if (strText.IsEmpty())
         return kDefault;
     Unk_NpColor3 kColor;
-    int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f", &kColor.r, &kColor.g, &kColor.b);
+    int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f", &kColor.r, &kColor.r + 1, &kColor.r + 2);
     if (nParsed != 3)
         return Unk_NpColor3();
     return kColor;
 }
 
 // @0x140db93e0
-// MS2-FUNCTIONAL: the exe evaluates the stack args (&kColor.a, &kColor.b, &kColor.g) into temps before the CStringA
-// conversion; ours calls the conversion first (as FUN_140db9270)
+// The components are addressed off r with pointer arithmetic, as in FUN_140db9270.
 Unk_NpColor4 FUN_140db93e0(CStringA& strText)
 {
     static Unk_NpColor4 kDefault = FUN_14097f1d0(1.0f, 0.0f, 1.0f, 1.0f);
     if (strText.IsEmpty())
         return kDefault;
     Unk_NpColor4 kColor;
-    int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f, %f", &kColor.r, &kColor.g, &kColor.b, &kColor.a);
+    int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f, %f", &kColor.r, &kColor.r + 1, &kColor.r + 2, &kColor.r + 3);
     if (nParsed != 4)
         return Unk_NpColor4();
     return kColor;

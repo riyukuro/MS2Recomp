@@ -105,7 +105,8 @@ public:
 };
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
 extern float DAT_1439f81fc; extern float DAT_1439f8200; extern float DAT_1439f81f4; extern float DAT_1439f81f8; extern float DAT_1439f8204;
-extern int DAT_1439f8208;   extern int DAT_143ae2960;   extern char DAT_143a08cd8;
+extern int DAT_1439f8208;   extern int DAT_143ae2960;
+#define DAT_143a08cd8 (*(char*)&efd::Point3::UNIT_X)   // C3: was extern char DAT_143a08cd8
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset);
 void FUN_141610490();
 void FUN_1416105c0(CObjectShadow* self);
@@ -214,7 +215,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         Unk_NiPoint3 p130(((const Vector3*)&p148)->FUN_140a00e10(*(const Vector3*)dir));
         ((Vector3*)&p130)->FUN_140968990();
         Unk_NiPoint3 p100(*(const Vector3*)dir);
-        *(Unk_NiMatrix3*)&xf.m_Rotate = Unk_NiMatrix3(p130, p148, p100);
+        *(NiMatrix3*)&xf.m_Rotate = NiMatrix3(reinterpret_cast<const NiPoint3&>(p130), reinterpret_cast<const NiPoint3&>(p148), reinterpret_cast<const NiPoint3&>(p100));
         if (DAT_1439f81f4 < 0.001f) {
             fade = DAT_1439f81f8;
         } else {

@@ -85,7 +85,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 
-CommonString* FUN_14025e7d0();                                  // the CommonString singleton
 extern template class MS2Ptr<CBanTextChecker>;
 
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -456,7 +455,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pPro
         strName = GetStringCommon(0x790);
         pProfile->belongTo = strValue;
     }
-    if (CBanTextChecker* pCheck = FUN_14025e7d0()->GetChecker())
+    if (CBanTextChecker* pCheck = TSingleton<CommonString>::GetInstance()->GetChecker())
     {
         CStringW strBad;
         if (nField == 0 || nField == 1 || nField == 10)

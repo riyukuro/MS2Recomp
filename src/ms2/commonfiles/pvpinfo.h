@@ -6,8 +6,9 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
-#include "ms2/placeholder/cinpacket.h"
-#include "ms2/commonfiles/stream.h"
+
+class CInPacket;       // cinpacket.h
+class COutputStream;   // stream.h (kept out: fittingdollpc.h includes this header for PC::m_spInteractMode)
 
 class CPvPInfo : public CPtred
 {

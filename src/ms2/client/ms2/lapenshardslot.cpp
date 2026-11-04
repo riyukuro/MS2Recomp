@@ -80,7 +80,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);         // string table t
 CStringW GetStringCommon(int nStringId);                  // string table text by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
 void FUN_140d73bc0(int nNoticeId, int a, void* pListener, CStringW str);
-void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
 
 // Registry of named bags/slots (GFx bind data).
 
@@ -332,7 +331,7 @@ int LapenshardSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(spItem))
     {
         tip.SetEnablePuton(vfunc_22());
-        FUN_1409b4bc0(p, tip.FUN_1422bb870());
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         nResult = 1;
     }
     spItem->FUN_140526bf0(nGrade);
@@ -381,7 +380,7 @@ int LapenshardSlot::vfunc_8(void* p)
             }
         }
     }
-    FUN_1409b4bc0(p, slot.FUN_1422bb870());
+    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
     return 1;
 }
 

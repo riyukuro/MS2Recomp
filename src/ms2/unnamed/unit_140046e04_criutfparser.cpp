@@ -95,8 +95,8 @@ struct Unk_CriUtfValue
 extern const unsigned DAT_143a48708[13];                        // value size by type
 extern const char* DAT_143ba9d50;                               // version banner pointer
 
-int FUN_140038ddc(int level, const char* msg);
-int FUN_140038e24(int level, const char* code, int err);
+void criErr_Notify(long level, const char* msg);   // sfr_cri_02c, 0x140038ddc
+void criErr_NotifyGeneric(long level, const char* code, long err);   // sfr_cri_02c, 0x140038e24
 unsigned FUN_14003afb0(Unk_CriUtfTable* table, const unsigned char* src, Unk_CriUtfColumn* column);
 int FUN_140ccaae0(const char* fmt, ...);
 unsigned FUN_140047158(unsigned type);
@@ -120,12 +120,12 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
     data = data + n;
     if (head[0] != 0x40555446)
     {
-        FUN_140038ddc(0, "E06100301:Invalid IFF header (mismatched four_cc).");
+        criErr_Notify(0, "E06100301:Invalid IFF header (mismatched four_cc).");
         return 0;
     }
     if ((unsigned long long)head[1] + 8 > (unsigned long long)size)
     {
-        FUN_140038ddc(0, "E06100311:Size error.");
+        criErr_Notify(0, "E06100311:Size error.");
         return 0;
     }
     table->m_size = head[1];
@@ -144,7 +144,7 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
     table->m_d5c = hdr.d14;
     if (columns == 0)
     {
-        FUN_140038e24(0, "E06100302", -3);
+        criErr_NotifyGeneric(0, "E06100302", -3);
         return 0;
     }
     for (unsigned i = 0; i < table->m_columnCount; ++i)

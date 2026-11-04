@@ -106,9 +106,9 @@ void GPUManager::FUN_141375a80()
     int percent = FUN_141375ca0();
     float pct = (float)percent * 0.01f;
     float mb = pct * (float)total;
-    FUN_140392040(text, 0x40, "Nv Using GPU memory %% %0.f(MB)", (double)mb);
+    sprintf_s(text, 0x40, "Nv Using GPU memory %% %0.f(MB)", (double)mb);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0(text);
-    FUN_140392040(text, 0x40, "Nv Alloc GPU memory %zu/%zu(MB)", used, total);
+    sprintf_s(text, 0x40, "Nv Alloc GPU memory %zu/%zu(MB)", used, total);
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0(text);
 }
 

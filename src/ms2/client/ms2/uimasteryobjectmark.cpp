@@ -27,7 +27,6 @@
 class Unk_SSGWorld
 {
 public:
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // find a field object by name
     PCBase* FUN_141bd0cc0();                                    // the local player actor
 };
 CFunctionCubeService* FUN_1409670b0();
@@ -197,7 +196,7 @@ void UIMasteryObjectMark::OnLoadComplete()
         MS2Ptr<EntityContext> spContext = m_nodes.GetValueAt(pos);
         if (spContext == 0)
         {
-            CInteractObject* pObject = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_nodes.GetKeyAt(pos));
+            CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_nodes.GetKeyAt(pos));
             if (!pObject)
                 continue;
             CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(pObject);
@@ -255,7 +254,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         MS2Ptr<EntityContext> spContext = m_nodes.GetValueAt(posCur);
         if (spContext == 0)
             continue;
-        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc66b0(strKey);
+        MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(strKey);
         if (spObject.IsNull())
         {
             FUN_140e5b450(strKey);

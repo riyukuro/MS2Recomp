@@ -48,14 +48,14 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cpetdatatable.h"
 #include "ms2/placeholder/ccpetinfopacket.h"
+#include "ms2/placeholder/crideedata.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // CItem::FUN_140527840's record (item.cpp owns the real one).
 class Unk_ItemEquipData : public CItemData { };
 
-// The item-data rows the summon packet path reads (ridee.cpp / item.cpp own the real MS2Ptr instances).
-class Unk_RideeData : public CPtred { };
+// The item-data rows the summon packet path reads (item.cpp owns the real MS2Ptr instances).
 class Unk_PetRow : public CPtred { };
 class Unk_PCBaseComp_aa8 : public CPtred { };
 
@@ -63,8 +63,6 @@ class Unk_PCBaseComp_aa8 : public CPtred { };
 extern Unk_Inventory g_143ab2a90;
 
 // The item-data tables.
-MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row
-Unk_RideeData* FUN_1407895d0(MS2Ptr<Unk_RideeData>& refRow);               // 0x1407895d0 the row
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 // The world service, its effect manager and the field objects it hands out.
@@ -129,7 +127,7 @@ public:
 class UICastingBar : public UIObject
 {
 public:
-    void FUN_1418e12f0(ICastingEventListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB,
+    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB,
                        const CStringW& strExtra);                          // show
     void FUN_1418e1390();                                                  // cancel
 };
@@ -231,12 +229,12 @@ void StateSummon::vfunc_4(StateData* pData)
             else if (spItem->FUN_140527840()->IsRideItem())
             {
                 int nRideeId = spItem->FUN_140527840()->GetRideeId();
-                MS2Ptr<Unk_RideeData> spRow = FUN_1407844b0(nRideeId);
-                if (spRow.get() != 0)
+                MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(nRideeId);
+                if (spRow != 0)
                 {
                     nLabel = 0x650;
                     nDuration = static_cast<unsigned int>(
-                        *reinterpret_cast<float*>(reinterpret_cast<char*>(FUN_1407895d0(spRow)) + 0x74));
+                        spRow.get()->m_basic.m_fSummonCastTime);
                 }
                 m_n10 = 0x82;
             }
@@ -271,7 +269,7 @@ void StateSummon::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), GetStringCommon(nLabel), nDuration, false,
+            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(nLabel), nDuration, false,
                                 true, strExtra);
         }
     }
@@ -346,8 +344,8 @@ void StateSummon::vfunc_8(double fTime)
                 else if (spItem->FUN_140527840()->IsRideItem())
                 {
                     int nItemId = spItem->FUN_140527840()->GetRideeId();
-                    MS2Ptr<Unk_RideeData> spRow = FUN_1407844b0(nItemId);
-                    if (spRow.get() != 0)
+                    MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(nItemId);
+                    if (spRow != 0)
                     {
                         // MS2Ptr<RideOnActionUseItem> local (ctor 0x141532400, operator-> 0x141533230, dtor 0x141532ba0)
                         MS2Ptr<RideOnActionUseItem> spAction(new RideOnActionUseItem());
@@ -440,7 +438,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), GetStringCommon(0x651), nDuration, false,
+            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(0x651), nDuration, false,
                                 true, strExtra);
         }
         CStringA strArg("");
@@ -516,7 +514,7 @@ void StateRecall::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->FUN_1418e12f0(static_cast<ICastingEventListener*>(this), GetStringCommon(0x657), nDuration, false,
+            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(0x657), nDuration, false,
                                 true, strExtra);
         }
     }

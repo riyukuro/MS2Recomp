@@ -41,7 +41,7 @@ enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(Unk
 enum eShopResetType { eShopResetType_None = 0 };               // buyLimitResetType
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>), FUN_140177de0 (CAtlArray<int>)
-void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);
+void ParseInt64List(CString& str, ATL::CAtlArray<__int64>& rOut, const char* pszSep);   // 0x1402a5010 (conditionutil)
 unsigned char FUN_1401d1320(CCacheData*);
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
@@ -233,7 +233,7 @@ int CVIPTable::LoadGoods()
         }
         CString strPeriods;
         XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemPeriod", strPeriods);
-        FUN_1402a5010(strPeriods, &spGoods->m_bonusItemPeriods, ",");
+        ParseInt64List(strPeriods, spGoods->m_bonusItemPeriods, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemPeriods.GetCount())
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);

@@ -20,7 +20,6 @@
 class ASTextField;
 class CNpc;
 class ASScrollingList;
-class Unk_NpTab;
 
 // One row of the script list (0x20): what the row is (m_kind), the shown text and the ids it needs.
 //   1 = location header, 2 = quest (m_a quest id, m_b != 0 when this npc starts it), 3 = talk (m_c talk id),
@@ -62,7 +61,6 @@ public:
     void FUN_141a713a0();                               // spawn the preview npc
     void FUN_141a717c0();                               // remove the preview npc
     int FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut);   // collect a quest talk and the talks it jumps to
-    MS2Ptr<Unk_NpTab> FUN_140c02870(const CString& strName);    // bind a tab strip child of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

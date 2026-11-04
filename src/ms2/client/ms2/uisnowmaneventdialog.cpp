@@ -50,8 +50,6 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 __int64 GetServerTime();
 
 
-// IsEarlierDay (0x14086ab70) takes both times by value at this call (copy temps), not as timeutil.h declares.
-bool FUN_14086ab70(CMsTime a, CMsTime b, int nBaseHour);
 class Unk_LtaTable {   // C3: gameeventcli.cpp's view of the user value table
 public:
     CStringW FUN_140c6d980(int, int, const CStringW&);
@@ -200,7 +198,7 @@ void UISnowmanEventDialog::vfunc_72()
     if (m_timer.Check(1000) == 0)
         return;
     __int64 now = GetServerTime();
-    if (FUN_14086ab70(CMsTime(m_lastUpdate), CMsTime(now), 0))
+    if (IsEarlierDay(CMsTime(m_lastUpdate), CMsTime(now), 0))
         FUN_140e965e0();
 }
 MS2_REPLACE_METHOD(0x140E94F40, UISnowmanEventDialog, vfunc_72, 191, 0x3C07D89C);

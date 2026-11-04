@@ -312,7 +312,7 @@ Scaleform::GFx::Value ASArray::FUN_140e06cc0(const char* szMethod, double d)
 }
 
 // @0x140e06d60
-void ASObj::FUN_140e06d60(const char* szName, double d)
+void AScript::FUN_140e06d60(const char* szName, double d)
 {
     ASData args;
     ((class ASData*)(class ASData*)(&args))->AddDouble(d);

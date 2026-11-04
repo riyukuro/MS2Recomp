@@ -29,14 +29,7 @@
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 class GameObjectController { public: class GameObjectControllerHitReport * FUN_141240f20(void); void FUN_141240730(void); void FUN_141241070(void); };
 // MS2Ptr members instantiated by other objs.
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
-template <> bool MS2Ptr<Unk_RideeData>::operator==(Unk_RideeData* p) const;             // 0x1407893c0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
-template <> MS2Ptr<Unk_RideeModel>::~MS2Ptr();                                          // 0x140788ea0
-template <> Unk_RideeModel* MS2Ptr<Unk_RideeModel>::operator->() const;                 // 0x1407895c0
-template <> bool MS2Ptr<Unk_RideeModel>::operator==(Unk_RideeModel* p) const;           // 0x140789380
 template <> MS2Ptr<SkillData>::~MS2Ptr();                                               // 0x14063e5c0
-template <> void MS2Ptr<Unk_RideeModel>::Reference(Unk_RideeModel* p) { CPtred::AddRefPtred((CPtred*)p); }
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -223,11 +216,11 @@ void StateHold::vfunc_3(double fTime)
             Ridee* pRidee = FUN_1417cd1c0(pTarget->FUN_1416764a0());
             if (pRidee == 0)
                 return;
-            MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
+            MS2SvrPtr<CRideeData> spData = pRidee->GetData();
             if (spData == 0)
                 return;
             int nSeat = pTarget->FUN_141676790(m_pOwner->FUN_14123c580());
-            MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(nSeat);
+            Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
             if (spModel == 0)
                 return;
             nAttached = 1;
@@ -314,12 +307,12 @@ void StateHold::vfunc_9(double fTime)
         Ridee* pRidee = pPlayer->FUN_1416764a0();
         if (pRidee == 0)
             return;
-        MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
+        MS2SvrPtr<CRideeData> spData = pRidee->GetData();
         if (spData == 0)
             return;
         {
             int nSeat = pPlayer->FUN_141676790(m_pOwner->FUN_14123c580());
-            MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(nSeat);
+            Unk_RiderPtr spModel = spData->FUN_1407849c0(nSeat);
             if (spModel == 0)
                 return;
             {
@@ -327,12 +320,12 @@ void StateHold::vfunc_9(double fTime)
                 {
                     if (pRidee->FUN_14166cc80() == 0x17 || pRidee->FUN_14166cc80() == 0x85)
                     {
-                        efd::utf8string kAnim(spModel->m_str50);
+                        efd::utf8string kAnim(spModel->m_strAniPCSPRun);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        efd::utf8string kAnim(spModel->m_str38);
+                        efd::utf8string kAnim(spModel->m_strAniPCRun);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
@@ -340,12 +333,12 @@ void StateHold::vfunc_9(double fTime)
                 {
                     if (pRidee->FUN_14166cc80() == 0x27)
                     {
-                        efd::utf8string kAnim(spModel->m_str58);
+                        efd::utf8string kAnim(spModel->m_strAniPCSPJump);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        efd::utf8string kAnim(spModel->m_str40);
+                        efd::utf8string kAnim(spModel->m_strAniPCJump);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
@@ -353,23 +346,23 @@ void StateHold::vfunc_9(double fTime)
                 {
                     if (pRidee->FUN_14166cc80() == 0xc || pRidee->FUN_14166cc80() == 0x87)
                     {
-                        efd::utf8string kAnim(spModel->m_str48);
+                        efd::utf8string kAnim(spModel->m_strAniPCSPIdle);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        efd::utf8string kAnim(spModel->m_str30);
+                        efd::utf8string kAnim(spModel->m_strAniPCIdle);
                         m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->FUN_141676b70() != 0)
                 {
-                    efd::utf8string kAnim(spModel->m_str48);
+                    efd::utf8string kAnim(spModel->m_strAniPCSPIdle);
                     m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                 }
                 else
                 {
-                    efd::utf8string kAnim(spModel->m_str28);
+                    efd::utf8string kAnim(spModel->m_strAniPC);
                     m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                 }
             }

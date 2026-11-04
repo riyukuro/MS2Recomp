@@ -38,7 +38,6 @@ class Unk_UpperEvents {public:void FUN_1419308c0(UIEntityEventListener*);void FU
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 class Unk_UpperConfigData {public:int m_0;short m_4;char m_6;bool m_hp;char m_8;bool m_buff;};
 CString FUN_140b62550(unsigned int);
-class Unk_UpperEvt {public:Unk_UpperEvt(const Unk_UpperEvt&);private:void* m_0;};
 class Unk_WsC_GameObj : public GameObject {};   // C3: WorldService::FUN_141bd1180 result (static_cast to GameObject)
 template<class T> MS2Ptr<T> Unk_ASCreate(int,const Scaleform::GFx::Value&);
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int,const Scaleform::GFx::Value&);
@@ -280,9 +279,9 @@ void UIUpperHpBar::vfunc_3(){UIHeadUpDisplay::vfunc_3();}
 MS2_REPLACE_METHOD(0x141B4C3C0, UIUpperHpBar, vfunc_3, 24, 0x9F9232CC);
 
 // @0x141b4c3e0
-void UIUpperHpBar::vfunc_o70_2(const Unk_UpperEvt& evt){
+void UIUpperHpBar::vfunc_o70_2(const void* pId){
  if(m_30==0)return;
- PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(reinterpret_cast<const egf::EntityID&>(evt))));
+ PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(*static_cast<const egf::EntityID*>(pId))));
  if(actor==0)return;
  UpperHpBarEntity& entity=FUN_141b4d170(actor);
  int kind=((class GameObject*)(void*)(actor))->FUN_14123c580();

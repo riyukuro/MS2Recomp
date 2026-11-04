@@ -28,14 +28,12 @@ class Unk_Crc32
 {
 public:
     Unk_Crc32();                                            // 0x142351b30
-    ~Unk_Crc32();                                           // forwards to the hash base dtor 0x14038f3b0
-    void FUN_1403901d0(int& nOut, const unsigned char* pData, size_t nSize);   // CryptoPP::HashTransformation::CalculateDigest
+    ~Unk_Crc32();                                           // forwards to ~HashTransformation (0x14038f3b0)
     void* m_vfptr;
     unsigned m_nCrc;
     unsigned m_pad;
 };
 MS2_CHECK_SIZE(Unk_Crc32, 0x10);
-void FUN_14038f3b0(Unk_Crc32*) noexcept;            // ~HashTransformation
 
 // ---- CPCData ---------------------------------------------------------------------------------------------------------------
 
@@ -323,11 +321,11 @@ int CPCDataPack::FUN_140720850()
     try {
         Unk_Crc32 crc;
         int nOut;
-        crc.FUN_1403901d0(nOut, m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
+        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
         nCrcRecord = nOut;
-        crc.FUN_1403901d0(nOut, m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
+        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
         nCrcItems = nOut;
-        crc.FUN_1403901d0(nOut, m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
+        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
         nCrcExtra = nOut;
     } catch (CryptoPP::Exception&) {
         return 0;
@@ -338,7 +336,7 @@ int CPCDataPack::FUN_140720850()
 // @0x140720aa0
 Unk_Crc32::~Unk_Crc32()
 {
-    FUN_14038f3b0(this);
+    reinterpret_cast<CryptoPP::HashTransformation*>(this)->CryptoPP::HashTransformation::~HashTransformation();
 }
 
 // ---- CByteBuffer members defined here ------------------------------------------------------------------------------------

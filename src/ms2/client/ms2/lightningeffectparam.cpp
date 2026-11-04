@@ -63,12 +63,6 @@ Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
 class CMainSystem;
-// NiPoint3(const efd::Point3&) (0x14027dcf0) into a temporary, then NiPoint3::operator=(NiPoint3&&) (0x14097faa0).
-struct Unk_LightningPt3 { float x, y, z; Unk_LightningPt3& operator=(const Unk_LightningPt3&); };
-// The two conversion temporaries of the vertex loop sit back to back (0x190 / 0x19c).
-struct Unk_LightningPtPair { Unk_LightningPt3 m_left, m_right; };
-void FUN_14027dcf0(Unk_LightningPt3* p, const Vector3* pPoint);
-void FUN_14097faa0(NiPoint3* p, Unk_LightningPt3* pSrc);
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
@@ -369,12 +363,9 @@ void LightningEffect::Rebuild()
     for (int i = 0; i < (int)nCount; ++i)
     {
         NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
-        Unk_LightningPtPair kPt;
-        FUN_14027dcf0(&kPt.m_left, &m_arrLeft[i]);
-        FUN_14097faa0(&pPos[i], &kPt.m_left);
+        pPos[i] = reinterpret_cast<const efd::Point3&>(m_arrLeft[i]);
         pCol[i] = kWhite;
-        FUN_14027dcf0(&kPt.m_right, &m_arrRight[i]);
-        FUN_14097faa0(&pPos[i + nCount], &kPt.m_right);
+        pPos[i + nCount] = reinterpret_cast<const efd::Point3&>(m_arrRight[i]);
         pCol[i + nCount] = kWhite;
     }
     m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);

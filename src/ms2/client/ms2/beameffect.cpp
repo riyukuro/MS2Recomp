@@ -32,7 +32,6 @@
 // MS2-PIN: ??1?$SmartPointer@VNiTexturingProperty@@@efd@@QEAA@XZ 0x140a0a740
 // MS2-PIN: ??1?$SmartPointer@VNiVertexColorProperty@@@efd@@QEAA@XZ 0x140a0a770
 // MS2-PIN: ??1?$SmartPointer@VNiWireframeProperty@@@efd@@QEAA@XZ 0x140a0a7a0
-// MS2-PIN: ??0Unk_NiMatrix3@@QEAA@AEBUUnk_NiPoint3@@00@Z 0x140a0a480
 // MS2-PIN: ?IsNull@?$MS2Ptr@VBeamInfo@@@@QEBA_NXZ 0x140a0aac0
 // MS2-PIN: ?get@?$MS2Ptr@VBeamInfo@@@@QEBAPEAVBeamInfo@@XZ 0x140a0b050
 // MS2-PIN: ??B?$SmartPointer@VUnk_EffectNode@@@efd@@QEBAPEAVUnk_EffectNode@@XZ 0x140a0ab50
@@ -190,7 +189,6 @@ void FUN_1415672e0(NiAVObject*, bool);
 class Unk_EffectNode : public NiNode
 {
 public:
-    Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
     char m_pad_node[400 - sizeof(NiNode)];
 };
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
@@ -212,7 +210,7 @@ Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3&
     Vector3 kForward = kEnd.FUN_140965c40(kStart);
     Vector3 kSide = kForward.FUN_140a00e10(kUp);
     Vector3 kEuler;
-    Unk_NiMatrix3 kMatrix(kForward, kSide, kUp);
+    NiMatrix3 kMatrix((const efd::Point3&)kForward, (const efd::Point3&)kSide, (const efd::Point3&)kUp);
     reinterpret_cast<efd::Matrix3*>(&kMatrix)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
     kEuler.x = (kEuler.x * 180.0f) / 3.1415927f;
     kEuler.y = (kEuler.y * 180.0f) / 3.1415927f;
@@ -288,7 +286,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     m_fHalfWidth = 0.5f * m_spParam->m_fWidth;
     m_nQuality = m_spParam->m_nQuality;
 
-    NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
+    NiPointer<Unk_EffectNode> spRoot = reinterpret_cast<Unk_EffectNode*>(new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false));
     spRoot->SetName("Effect Root");
     m_spRoot = spRoot;
 

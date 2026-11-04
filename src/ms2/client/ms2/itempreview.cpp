@@ -25,8 +25,10 @@ static CString s_tabIndex = "tabIndex";
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/asmousecursor.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/socketptr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); unsigned int FUN_1408d2380(void); };
@@ -34,33 +36,21 @@ using UIMeratMarketCommon::WeaponType;
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The item list of a package (commonfiles\npcshopdata.cpp): a CPtred holder with the list at +0x18; the pointer to it
-// points at the list, so the reference count is reached through the holder.
+// The item list of a package (commonfiles\npcshopdata.cpp): a CAtlArray boxed behind its CPtred (TPtredDummy); the
+// pointer to it points at the list, so the reference count is reached through the box.
 typedef ATL::CAtlArray<MS2Ptr<CItemData> > Unk_PackageItems;
-class Unk_PackageItemsHolder : public CPtred, public Unk_PackageItems
-{
-};
-template <> void MS2Ptr<Unk_PackageItems>::Reference(Unk_PackageItems* p)
-{
-    CPtred::AddRefPtred(static_cast<Unk_PackageItemsHolder*>(p));
-}
-template <> void MS2Ptr<Unk_PackageItems>::ReleaseImpl(void*)
-{
-    if (CPtred::ReleasePtred(static_cast<Unk_PackageItemsHolder*>(m_p)) == 0)
+template<> struct Unk_SocketRef<Unk_PackageItems> {
+    static CPtred* Base(Unk_PackageItems* p)
     {
-        Reference(m_p);
-        CPtred::DeletePtred(static_cast<Unk_PackageItemsHolder*>(m_p));
+        CPtred* result;
+        if (p == NULL) result = NULL;
+        else result = CONTAINING_RECORD(p, TPtredDummy<Unk_PackageItems>, value);
+        return result;
     }
-}
-MS2Ptr<Unk_PackageItems> FUN_1406e5af0(int nPackageId);                 // the items of a package id
-
-// The gamepad cursor HUD (UI id 6, see gameoptiongamepad.cpp).
-class Unk_GpHud : public CPtred
-{
-public:
 };
-class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+MS2_SOCKETPTR_BOXED(Unk_PackageItems)
+Unk_SocketPtr<Unk_PackageItems> FUN_1406e5af0(unsigned nPackageId);    // the items of a package id
+
 // UIAvatarBase slot 28 takes a fourth argument here (the exe passes pUnused on the stack); uiavatarbase.h declares
 // three, so the call goes through this slot view.
 class Unk_IpAvatarSlots
@@ -79,7 +69,6 @@ int FUN_14053feb0(int nItemId);                                         // the d
 __int64 FUN_14028d0e0();                                                // the server time
 void FUN_141275260(int nStringId, int nA, int nB);                      // system notice
 int FUN_1408b5f70(int nItemId);                                         // the cube has a model view
-Unk_RideePtr FUN_1407844b0(int nRideeId);                               // the ridee table row of an id
 MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, int nGrade);   // a new item of a data row
 
 // ?\uiugcitemeditdialog.cpp helpers of the preview
@@ -234,7 +223,7 @@ MS2Ptr<CItem> ItemPreview::CreatePreviewItem(MS2Ptr<CItem> spItem)
         int nPackageId = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d1fd0((unsigned int)((unsigned int)(0)), 0);
         if (nPackageId == 0)
             return 0;
-        MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
+        Unk_SocketPtr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
         if (spPackage == 0 || ((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(spPackage.operator->()))->IsEmpty())
             return 0;
         size_t nSize = spPackage->GetCount();
@@ -441,9 +430,9 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     {
         kCamera.ApplyRideeCamera();
         float fScale = 1.0f;
-        Unk_RideePtr spRow = FUN_1407844b0(spData->GetRideeId());
-        if (spRow.get())
-            fScale = spRow->m_fViewScale * 0.015f;
+        MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(spData->GetRideeId());
+        if (spRow)
+            fScale = spRow->m_collision.m_fDepth * 0.015f;
         kCamera.m_fMinDistance = 300.0f;
         kCamera.m_kTarget += pObj->vfunc_18();
         kCamera.m_kPosition = kCamera.m_kPosition * fScale;
@@ -487,7 +476,7 @@ bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
         int nPackageId = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d1fd0((unsigned int)((unsigned int)(0)), 0);
         if (nPackageId == 0)
             return false;
-        MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
+        Unk_SocketPtr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
         if (spPackage == 0 || ((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(spPackage.operator->()))->IsEmpty())
             return false;
         return true;
@@ -941,19 +930,19 @@ void ItemPreviewMgr::SetHudMode(int bOn)
 {
     if (m_bHudOn == bOn)
         return;
-    MS2Ptr<Unk_GpHud> spHud = ((class Unk_GpHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
+    MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
     if (spHud == 0)
         return;
     m_bHudOn = bOn;
     if (bOn)
     {
-        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee50((Unk_MouseCursorType)4);
-        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cedb0();
+        spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)4);
+        spHud.operator->()->FUN_1422cedb0();
     }
     else
     {
-        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee00();
-        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee50((Unk_MouseCursorType)0);
+        spHud.operator->()->FUN_1422cee00();
+        spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)0);
     }
 }
 MS2_REPLACE_METHOD(0x140D406D0, ItemPreviewMgr, SetHudMode, 213, 0xDBA85ECF);

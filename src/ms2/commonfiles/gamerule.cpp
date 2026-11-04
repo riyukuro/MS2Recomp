@@ -493,9 +493,9 @@ void* FUN_1404a1bb0()
 MS2_REPLACE(0x1404A1BB0, FUN_1404a1bb0, 8, 0x01B1E857);
 
 // @0x140475ff0
-void FUN_140475ff0(unsigned short value)
+__int64 FUN_140475ff0(unsigned short value)
 {
-    ((class CExpTable*)(void*)(FUN_1404a1bb0()))->GetNextExp(value);
+    return ((class CExpTable*)(void*)(FUN_1404a1bb0()))->GetNextExp(value);
 }
 MS2_REPLACE(0x140475FF0, FUN_140475ff0, 32, 0xDE57401C);
 

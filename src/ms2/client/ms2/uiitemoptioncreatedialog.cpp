@@ -71,6 +71,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;                  
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
 template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);   // 0x140c02990, template COMDAT of another unit
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // ---- unit-local views of exe objects ----
 
@@ -80,22 +81,7 @@ template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CSt
 class Unk_OcInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The AS list controls of the movie ("m_itemGrade" combo, "m_items" list) and the search input.
-class Unk_PsCombo : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
-class Unk_CoupleInput : public AScript
-{
-public:
-};
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 
 MS2Ptr<CItemData> FUN_14053f870(int);          // the item row (NULL: no such item)
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
@@ -141,8 +127,8 @@ int UIItemOptionCreateDialog::vfunc_13()
     if (UIDialog::vfunc_13() != 0)
         return 1;
     if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
-        if (MS2Ptr<Unk_CoupleInput> input = FUN_140e35bd0("m_searchInput"))
-            FUN_1412d3c10("", reinterpret_cast<ASTextInput*>(input.operator->())->GetText());
+        if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchInput"))
+            FUN_1412d3c10("", input->GetText());
         return 1;
     } else if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0) != 0) {
         if (m_30.get() != 0)
@@ -256,8 +242,8 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
 // @0x1412d33b0
 void UIItemOptionCreateDialog::FUN_1412d33b0()
 {
-    if (MS2Ptr<Unk_PsCombo> combo = FUN_140c28560("m_itemGrade")) {
-        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->ClearItems();
+    if (MS2Ptr<ASDropdownMenu> combo = GetChild<ASDropdownMenu>("m_itemGrade")) {
+        combo->ClearItems();
         MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
         if (item == 0)
             return;
@@ -266,7 +252,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             ASObj row(2);
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
             row.FUN_1409adc90("itemRank", item->GetRank());
-            reinterpret_cast<ASDropdownMenu*>(combo.operator->())->AddItemRow(row);
+            combo->AddItemRow(row);
             nSelected = 0;
             m_nRank = item->GetRank();
         } else {
@@ -276,18 +262,18 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
                 row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nItemRank));
                 row.FUN_1407cb9c0("itemRank", nRank);
                 if (nItemRank == m_nRank)
-                    nSelected = reinterpret_cast<ASDropdownMenu*>(combo.operator->())->GetItemCount();
-                reinterpret_cast<ASDropdownMenu*>(combo.operator->())->AddItemRow(row);
+                    nSelected = combo->GetItemCount();
+                combo->AddItemRow(row);
             }
         }
-        unsigned nCount = reinterpret_cast<ASDropdownMenu*>(combo.operator->())->GetItemCount();
+        unsigned nCount = combo->GetItemCount();
         unsigned nRows;
         if (nCount > 1)
             nRows = nCount;
         else
             nRows = 1;
-        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->FUN_1422df5f0(nRows);
-        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->SetSelectedIndex(nSelected);
+        combo->SetMenuRowCount(nRows);
+        combo->SetSelectedIndex(nSelected);
         combo->vfunc_24(true);
     }
 }

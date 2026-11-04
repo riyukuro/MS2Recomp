@@ -2,6 +2,11 @@
 // tables (DungeonRankReward, DungeonSeason, DungeonRoundData, DungeonConfig, DungeonRewardCoupon).
 // MS2-UNIT: commonfiles\dungeonroom.cpp
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoom@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoom@@@@@std@@PEAX@2@_K@Z 0x140341a10
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBW4DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonRoom@@@@UDungeonRoomLess@@V?$allocator@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBW4DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonRoom@@@@UDungeonRoomLess@@V?$allocator@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@@std@@PEAX@2@_K@Z 0x140341aa0
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRewardCoupon@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRewardCoupon@@@@@std@@PEAX@2@_K@Z 0x1403419e0
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRankRewardBase@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRankRewardBase@@@@@std@@PEAX@2@_K@Z 0x1403419b0
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@std@@PEAX@2@_K@Z 0x140341a40
 // MS2-RANGE: 0x14031c970-0x140343e50 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRankRewardBase@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VDungeonRankRewardBase@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140322990 ; prop

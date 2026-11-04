@@ -32,7 +32,8 @@ class Unk_UISwfEntity_25;
 class Unk_MpAchieve;
 class Unk_MpSlot;
 
-// The ridee avatar of the render target (an UIAvatarRidee, new 0xd8): 16-byte handle, pointer at +8.
+// The ridee avatar of the render target (an UIAvatarRidee, new 0xd8): 16-byte handle, pointer at +8. It is
+// MS2Ptr<UIAvatarRidee>; readers go through a reinterpret_cast, and the members defined here keep the stand-in's names.
 class UIAvatarRidee;
 class Unk_MpRideePtr
 {
@@ -44,8 +45,6 @@ public:
     ~Unk_MpRideePtr();                                      // 0x1413146e0
     Unk_MpRideePtr& operator=(int nNull);                   // 0x1419f41d0
     Unk_MpRideePtr& AssignRaw(UIAvatarRidee* p);            // 0x1419f4200
-    UIAvatarRidee* get() const;                             // 0x141314ec0
-    UIAvatarRidee* operator->() const;                      // 0x141314f00
     void AddRef() const;                                    // 0x1413163f0 (declared only; the MS2Ptr<T>::AddRef COMDAT)
     void Release();                                         // 0x141316680
     void* m_0;

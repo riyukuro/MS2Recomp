@@ -51,12 +51,13 @@ public:
     bool Load();
 };
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class CommonString   // C3: member view for the former free stand-ins
 {
 public:
     void Reload();
 };
+template <class T> class TSingleton;
+template <> class TSingleton<CommonString> { public: static CommonString* GetInstance(); };   // 0x14025e7d0, as in commonstringtable.h
 CNetworkService* FUN_140714f90();
 
 // The text-filter owner (global DAT_143ab2080); the filter sits at +8.
@@ -291,7 +292,7 @@ void COnlinePatchManagerCli::ReloadTables()
     LoadTalkScripts();
     ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(FUN_140a87680()->FUN_140a87690()))->Load();
     TSingleton<CStringTable>::GetInstance()->FUN_141811960();
-    ((class CommonString*)(void*)(((void*)FUN_14025e7d0())))->Reload();
+    ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9f910-0x142c9f930 .text$yd

@@ -33,15 +33,10 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
-void* FUN_1411d15b0(void* p);
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern NiFixedString DAT_143ae5320;
 extern int DAT_1439f823c;
-struct Unk_WFRect {
-    Unk_WFRect(int a, int b, int c, int d);     // 0x140a5a400
-    int a, b, c, d;
-};
 bool FUN_1416bafb0(void* a, void* step);
 
 // @0x143ae5088 / @0x143ae508c (zero-initialised)
@@ -213,16 +208,16 @@ void WorldFadeOutRenderStep::vfunc_19()
     if (reinterpret_cast<NiRenderStep*>(this)->GetActive() == 1) {
         Unk_WFTarget* a = reinterpret_cast<Unk_WFTarget *>(reinterpret_cast<PostProcessingService*>(m_70)->GetFirstActiveStep());
         if (a->vfunc_17() != 0) {
-            void* h = FUN_1411d15b0(reinterpret_cast<Unk_GameContext*>(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8)->FUN_140af8310());
+            ecr::RenderService* h = reinterpret_cast<Unk_GameContext*>(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8)->FUN_140af8310()->GetSystemServiceAs<ecr::RenderService>();
             NiRenderer* p = GetNiRenderer();
             NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
             int w = q->GetWidth(0);
             int ht = q->GetHeight(0);
-            Unk_WFRect rect(0, w, 0, ht);
+            NiRect<unsigned int> rect(0, w, 0, ht);   // 0x140a5a400
             NiRenderedTexture* pp = reinterpret_cast<PostProcessingService*>(m_70)->GetRenderedTexture(5);
             NiRenderer* rn = reinterpret_cast<ecr::RenderService*>(h)->GetRenderer();
             Ni2DBuffer* r = rn->GetDefaultRenderTargetGroup()->GetBuffer(0);
-            r->Copy(pp->GetBuffer(), reinterpret_cast<const NiRect<unsigned int>*>(&rect), reinterpret_cast<const NiRect<unsigned int>*>(&rect), (Ni2DBuffer::CopyFilterPreference)0);
+            r->Copy(pp->GetBuffer(), &rect, &rect, (Ni2DBuffer::CopyFilterPreference)0);
             s_fadeStartTick = GetTickCount();
         }
     }

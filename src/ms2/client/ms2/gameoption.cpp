@@ -48,6 +48,7 @@
 // MS2-PIN: ??0Unk_GoResMode@@QEAA@HHH@Z 0x14124fcc0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400ea600
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_K@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141245790
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_K@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1412457b0
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@H_KU?$less@H@std@@V?$allocator@U?$pair@$$CBH_K@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBH_K@std@@PEAX@2@@Z 0x1412463a0
@@ -123,14 +124,12 @@ class Unk_GoRadio : public ASButton { };
 class Unk_GoSlider : public ASSlider { };
 
 // View of UIGameOptionDialog: the child lookups by name (getTabChild).
-class Unk_GoCombo;
 class Unk_GoDialog
 {
 public:
     MS2Ptr<Unk_GoCheck> FUN_140a57f50(CString name, int nIndex);
     MS2Ptr<Unk_GoSlider> FUN_140a58110(CString name, int nIndex);
     MS2Ptr<Unk_GoRadio> FUN_140a46480(CString name, int nIndex);
-    MS2Ptr<Unk_GoCombo> FUN_140cfcf10(CString name, int nIndex);
     MS2Ptr<ASTextField> FUN_14124e120(CString name, int nIndex);
     MS2Ptr<ASTextInput> FUN_14124e2e0(CString name, int nIndex);
 
@@ -773,8 +772,11 @@ int CGameOptionCommunity::vfunc_14()
 
 // ---- CGameOptionGraphicDefault ----
 
-// More option-dialog controls: a combo box and a text input (0x88 bytes).
-class Unk_GoCombo : public ASDropdownMenu { };   // the option dialog's combo box (a view)
+// gameoptionstruct.cpp's view of the option dialog: the drop-down lookup by child name.
+struct Unk_LgDialog
+{
+    MS2Ptr<ASDropdownMenu> FUN_140cfcf10(CString name, int nIndex);
+};
 
 // The lookups of the dialog view by child name (more instances of the getTabChild template); the first three live in this unit.
 MS2Ptr<ASTextField> FUN_1409b41a0(int nId, const Scaleform::GFx::Value& v);
@@ -1020,8 +1022,8 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
                     sp->FUN_1422ce090(TSingleton<CGraphicOptionTable>::GetInstance()->IsHdrSupported(nLevel));
             }
             {
-                MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
-                if (static_cast<Unk_GoCombo*>(sp) != 0)
+                MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+                if (static_cast<ASDropdownMenu*>(sp) != 0)
                 {
                     if (nLevel >= 3)
                         sp->SetSelectedIndex(2);
@@ -1089,8 +1091,8 @@ void CGameOptionGraphicDefault::vfunc_6()
             sp->FUN_1422ce090(m_state.m_bShimmer != 0);
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
             sp->SetSelectedIndex(m_state.m_nMultisampling);
     }
     {
@@ -1104,8 +1106,8 @@ void CGameOptionGraphicDefault::vfunc_6()
             sp->FUN_1422ce090(m_state.m_bEnchantEffect);
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
         {
             int nShadow = m_state.m_nShadow;
             if (nShadow >= 3)
@@ -1122,8 +1124,8 @@ void CGameOptionGraphicDefault::vfunc_6()
             sp->SetTextW(FUN_141245b20()->FUN_141245ab0());
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
             sp->SetSelectedIndex(m_state2.m_nOptimalHide);
     }
     {
@@ -1217,8 +1219,8 @@ void CGameOptionGraphicDefault::vfunc_7()
             m_state.m_bShimmer = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
         {
             int nSel = sp->GetSelectedIndex();
             if (nSel == 0)
@@ -1240,13 +1242,13 @@ void CGameOptionGraphicDefault::vfunc_7()
             m_state.m_bEnchantEffect = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
             m_state.m_nMultisampling = sp->GetSelectedIndex();
     }
     {
-        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
-        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
+        if (static_cast<ASDropdownMenu*>(sp) != 0)
             m_state2.m_nOptimalHide = sp->GetSelectedIndex();
     }
     {
@@ -1333,8 +1335,8 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
 void CGameOptionGraphicDefault::FUN_14124d080()
 {
     int nRows = 0;
-    MS2Ptr<Unk_GoCombo> spCombo = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_resolution"), -1);
-    if (static_cast<Unk_GoCombo*>(spCombo) != 0)
+    MS2Ptr<ASDropdownMenu> spCombo = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_resolution"), -1);
+    if (static_cast<ASDropdownMenu*>(spCombo) != 0)
     {
         spCombo->ClearItems();
         int nCurWidth = m_state.m_nWidth;

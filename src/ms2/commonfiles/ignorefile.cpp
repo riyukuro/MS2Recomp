@@ -86,7 +86,7 @@ bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
     TiXmlDocument doc;
     CString strFile;
     strFile = strPath.c_str();
-    if (!doc.FUN_140870fc0(strFile, 0))
+    if (!doc.LoadFile(strFile, TIXML_ENCODING_UNKNOWN))
     {
         const char* pszFile = strFile;
         Unk_FileLog(GetLogString(), 2, 0x13, L"[IgnoreFile] {0} \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4.\r\n", pszFile);

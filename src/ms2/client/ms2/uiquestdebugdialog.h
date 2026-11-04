@@ -5,35 +5,10 @@
 #include "ms2/placeholder/questdata.h"
 #include "ms2/placeholder/ascorelist.h"
 class ASCheckBox;
-class Unk_QuestDebugDesc;
-template<class T> class Unk_QuestDebugPtr
-{
-public:
-    Unk_QuestDebugPtr();
-    Unk_QuestDebugPtr(T*);
-    Unk_QuestDebugPtr(const Unk_QuestDebugPtr&);
-    Unk_QuestDebugPtr(Unk_QuestDebugPtr&&);
-    ~Unk_QuestDebugPtr();
-    Unk_QuestDebugPtr& operator=(Unk_QuestDebugPtr&&);
-    Unk_QuestDebugPtr& operator=(T* p)
-    {
-        Unk_QuestDebugPtr tmp(p);
-        T* old = m_p;
-        m_p = tmp.m_p;
-        tmp.m_p = old;
-        return *this;
-    }
-    operator T*() const;
-    T* operator->() const;
-    bool operator==(T*) const;
-    bool operator!() const;
-private:
-    void* m_0;
-    T* m_p;
-};
 class UIQuestDebugDialog : public UIDialog, public UIQuestEventListener
 {
 public:
+    MS2Ptr<class ASTextArea> FUN_140c26f60(const CString&);   // GetChild<ASTextArea> (0x140c26f60)
     UIQuestDebugDialog();
     virtual ~UIQuestDebugDialog();
     virtual CString GetTypeName();
@@ -56,7 +31,6 @@ public:
     int FUN_141a96c30(int, MS2Ptr<CQuestData>);
     // Unrecovered child-binding helpers; this is the original UISwfEntity subobject.
     MS2Ptr<ASCheckBox> FUN_140e52670(const CString&);
-    Unk_QuestDebugPtr<Unk_QuestDebugDesc> FUN_140c26f60(const CString&);
     virtual int vfunc_48() { return 20043; }
 private:
     MS2_LAYOUT_FRIEND;

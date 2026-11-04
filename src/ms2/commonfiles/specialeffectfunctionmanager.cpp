@@ -66,7 +66,7 @@ MS2_REPLACE_METHOD(0x140827970, CSpecialEffectFunctionManager, Execute, 167, 0x5
 float CXmlData::FUN_1408276a0(const CStringW& strName, float* pfDefault)
 {
     CStringW strValue;
-    if (!reinterpret_cast<Unk_SEAttrMap*>(m_unknown18)->FUN_1403ef5f0(strName, strValue))
+    if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strName, strValue))
         return *pfDefault;
     return FUN_140718480(strValue);
 }

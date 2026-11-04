@@ -11,6 +11,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
+#include "ms2/commonfiles/itemdroptable.h"         // ItemDropPicker
 
 class Unk_140165cf0;                    // the tinyxml element wrapper (FUN_140165cf0 = FirstChildElement)
 
@@ -45,17 +46,6 @@ MS2_CHECK_OFFSET(CItemSocketScrollData, m_bTradableCountDeduction, 0x68);
 
 typedef MS2Ptr<CItemSocketScrollData> CItemSocketScrollDataPtr;
 
-// An 0x18 byte container the server data keeps (its ctor 0x1402fc040 and dtor 0x1402febe0 are not recovered).
-class Unk_IssContainer
-{
-public:
-    Unk_IssContainer();                     // 0x1402fc040
-    ~Unk_IssContainer();                    // 0x1402febe0
-private:
-    char m_pad[0x18];
-};
-MS2_CHECK_SIZE(Unk_IssContainer, 0x18);
-
 // RTTI CItemSocketScrollDataServer: the data plus the success probability / open count.
 class CItemSocketScrollDataServer : public CItemSocketScrollData
 {
@@ -66,7 +56,7 @@ public:
 
     unsigned int m_nSuccessProb;            // +0x70 "successProb" (type 1 only)
     unsigned int m_nOpenCount;              // +0x74 "openCount" (type 1 only)
-    Unk_IssContainer m_unk78;               // +0x78
+    ItemDropPicker<int> m_unk78;            // +0x78 (ctor 0x1402fc040, dtor 0x1402febe0)
 };
 MS2_CHECK_OFFSET(CItemSocketScrollDataServer, m_nSuccessProb, 0x70);
 MS2_CHECK_OFFSET(CItemSocketScrollDataServer, m_unk78, 0x78);

@@ -160,7 +160,7 @@ void ASCoreList::AddItem(const ASObj& item)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
-        spProvider->FUN_1422bbf00(item);
+        spProvider->PushObj(item);
 }
 MS2_REPLACE_METHOD(0x1422DD230, ASCoreList, AddItem, 93, 0x32872065);
 
@@ -178,7 +178,7 @@ void ASCoreList::AddLabelItemW(const CStringW& strLabel)
     if (spProvider.get() != 0) {
         AScript item(2);
         item.FUN_1407cbb20("label", strLabel);
-        spProvider->FUN_1422bbf00(item);
+        spProvider->PushObj(static_cast<const ASObj&>(item));
     }
 }
 MS2_REPLACE_METHOD(0x1422DD310, ASCoreList, AddLabelItemW, 185, 0x2E2BB395);

@@ -33,7 +33,6 @@ MS2Ptr<Unk_HudSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
 extern template class MS2Ptr<Unk_HudSlider>;                         // instances owned by uiupperhuddialog.cpp
 
 void FUN_140710590(COutPacket& packet);
-CommonString* FUN_14025e7d0();                                      // the CommonString singleton
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);           // show a notice message
 
 #ifndef MS2_HOOK_DLL
@@ -103,7 +102,7 @@ void UIUGCCubeNoticeDialog::OnApply()
     if (MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>("m_sliderDistance"))
         m_nDistance = (int)reinterpret_cast<ASSlider*>(spSlider.operator->())->FUN_1422ce630();
     CBanTextChecker* pChecker;
-    CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
+    CBanTextChecker* pDead = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
     if (pChecker != 0)
     {
         CStringW strMessage;

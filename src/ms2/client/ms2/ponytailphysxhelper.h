@@ -10,6 +10,7 @@
 #include "ms2/client/ms2/frustumcollision.h"
 #include "ms2/placeholder/nipoint3.h"
 #include <NiTransform.h>
+#include <NiSourceTexture.h>   // C3: the control map is an efd::SmartPointer<NiSourceTexture>
 
 class CEquipModel;
 class NiNode;
@@ -33,16 +34,6 @@ struct Unk_PonyPart
 };
 MS2_CHECK_SIZE(Unk_PonyPart, 0xc0);
 
-// A texture-like handle (8 bytes, NiRefObject pointer: IncRefCount 0x140980460 / DecRefCount 0x1405a93d0).
-struct Unk_PonyHandle
-{
-    Unk_PonyHandle(void* p = 0);                                // 0x141065070 init with p (AddRef)
-    ~Unk_PonyHandle() { FUN_140a5a930(); }                      // drop (DecRef)
-    void FUN_141068540(void* p);                                // assign (AddRef new, DecRef old)
-    void FUN_140a5a930();                                       // drop (DecRef)
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PonyHandle, 8);
 
 // Listener at +0xa0: slots 1, 2 and 5 are called by the controller (the base class only knows slot 0).
 class Unk_PonyListener : public Unk_ItemCustomizeListener
@@ -105,7 +96,7 @@ public:
     float m_fSensitivity;                                           // +0xb8 drag speed (client config)
     int m_bBusy;                                                    // +0xbc 1 once the parts are in the rest pose
     int m_nValue;                                                   // +0xc0 the slider value (-1 none)
-    Unk_PonyHandle m_kControlMap;                                   // +0xc8 the "_control.dds" mask
+    efd::SmartPointer<NiSourceTexture> m_kControlMap;               // +0xc8 the "_control.dds" mask
     Unk_PonyPart m_kFirst;                                          // +0xd0
     Unk_PonyPart m_kSecond;                                         // +0x190
 };

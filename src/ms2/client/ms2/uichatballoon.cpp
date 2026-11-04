@@ -35,6 +35,7 @@
 #include "ms2/placeholder/ascorelist.h"  // C3: ASDropdownMenu (was Unk_CbCtl's members)
 #include "ms2/placeholder/gfxservice.h"  // C3: GFxSceneService::GetSubSceneId / FUN_1422b9ea0
 #include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/client/ms2/cubespawnobject.h"  // C3: CubeSpawnObject (was Unk_CbPet)
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/mypc.h"
@@ -76,8 +77,7 @@ public:
 bool FUN_140930110(int nActorId);
 
 // The actor: the pc / npc / pet views and their data handles.
-class Unk_CbPet { public: MS2Ptr<NpcDataCli> FUN_140a4f1b0(); };
-Unk_CbPet* FUN_1418fc490(PCBase* pActor);                           // the actor as a pet (queries class id 0x6200080)
+CubeSpawnObject* FUN_1418fc490(PCBase* pActor);                     // the actor as a pet (queries class id 0x6200080)
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                 // FormatStringId(id) without arguments
 struct Unk_CbFlags { bool m_0; bool m_1; };
@@ -99,16 +99,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-};
-class Unk_CbList                                                    // a 16 byte smart pointer to the list control, passed by value
-{
-public:
-    ~Unk_CbList() { FUN_140bbfda0(); }
-    bool FUN_140bc03e0(int n);                                      // == 0
-    Unk_CbCtl* FUN_140bc0530();                                     // ->
-    void FUN_140bbfda0();                                           // release
-    void* m_pad_00;
-    void* m_p;
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 UICutSceneMovie* FUN_14138fd50(int nUiId);
@@ -288,10 +278,10 @@ CString UIChatBalloon::Entity::FUN_1418fb7e0()
             return FUN_141028be0(pPc->FUN_141656a80(), pPc->FUN_1416612e0(), 1, CString(""));
         else
         {
-            Unk_CbPet* pPet = FUN_1418fc490(pActor);
+            CubeSpawnObject* pPet = FUN_1418fc490(pActor);
             if (pPet != 0)
             {
-                MS2Ptr<CNpcData> info(pPet->FUN_140a4f1b0());
+                MS2Ptr<CNpcData> info(pPet->GetNpc());
                 if (info.get() != 0)
                 {
                     CString str(info->m_strPortrait);
@@ -458,9 +448,9 @@ UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
 // @0x1418fc580 is the MS2Ptr<UIChatBalloon::Entity> pointer constructor (COMDAT).
 
 // @0x1418fc490
-Unk_CbPet* FUN_1418fc490(PCBase* pActor)
+CubeSpawnObject* FUN_1418fc490(PCBase* pActor)
 {
-    Unk_CbPet* pPet = 0;
+    CubeSpawnObject* pPet = 0;
     if (pActor != 0 && pActor->TypeCast(0x6200080, (void**)&pPet))
         return pPet;
     else
@@ -494,11 +484,11 @@ int FUN_1418fc810()
 }
 
 // @0x1418fc840
-void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
+void FUN_1418fc840(MS2Ptr<ASDropdownMenu> list, int nItemId, int nSelRank)
 {
-    if (list.FUN_140bc03e0(0))
+    if (list == 0)
         return;
-    ((ASDropdownMenu*)list.FUN_140bc0530())->ClearItems();
+    list->ClearItems();
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
         return;
@@ -508,7 +498,7 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
         ASObj row(2);
         row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
         row.FUN_1409adc90("itemRank", item->GetRank());
-        ((ASDropdownMenu*)list.FUN_140bc0530())->AddItemRow(row);
+        list->AddItemRow(row);
         nSel = 0;
     }
     else
@@ -520,14 +510,14 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nRank));
             row.FUN_1407cb9c0("itemRank", i);
             if (nRank == nSelRank)
-                nSel = ((ASDropdownMenu*)list.FUN_140bc0530())->GetItemCount();
-            ((ASDropdownMenu*)list.FUN_140bc0530())->AddItemRow(row);
+                nSel = list->GetItemCount();
+            list->AddItemRow(row);
         }
     }
-    unsigned int nCount = ((ASDropdownMenu*)list.FUN_140bc0530())->GetItemCount();
-    ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422df5f0(nCount > 1 ? nCount : 1);
-    ((ASDropdownMenu*)list.FUN_140bc0530())->SetSelectedIndex(nSel);
-    list.FUN_140bc0530()->vfunc_24(true);
+    unsigned int nCount = list->GetItemCount();
+    list->SetMenuRowCount(nCount > 1 ? nCount : 1);
+    list->SetSelectedIndex(nSel);
+    reinterpret_cast<Unk_CbCtl*>(list.operator->())->vfunc_24(true);
 }
 
 // @0x1418fcb70

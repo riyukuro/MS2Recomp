@@ -289,8 +289,8 @@ MS2_REPLACE_METHOD(0x140653e00, CLogString, CountLevel, 89, 0x4E51C3B9);
 bool CLogString::ReadLogPathFromSettings()
 {
     TiXmlDocument doc;
-    bool bFailed=!doc.FUN_140870fc0(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),0) ? TRUE : FALSE;
-    if(bFailed && !doc.FUN_140870fc0("setting.xml",0)) return false;
+    bool bFailed=!doc.LoadFile(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),TIXML_ENCODING_UNKNOWN) ? TRUE : FALSE;
+    if(bFailed && !doc.LoadFile("setting.xml",TIXML_ENCODING_UNKNOWN)) return false;
     Unk_140165cf0* root=((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if(!root) return false;
     Unk_140165cf0* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("logpath"));

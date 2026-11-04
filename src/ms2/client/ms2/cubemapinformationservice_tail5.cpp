@@ -8,6 +8,7 @@
 // MS2-UNIT: unit_141145cb0
 // MS2-RANGE: 0x141145cb0-0x141148d70 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@efd@@U?$integral_constant@_N$00@2@@Z 0x1411487c0
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"

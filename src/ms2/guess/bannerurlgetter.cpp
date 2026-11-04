@@ -45,7 +45,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CAdBannerManagerCli* GetAdBannerManagerCli();
 CString FUN_14016a600(const wchar_t* psz, int n);           // wide -> narrow
 CString FUN_141029ed0(int nKind, const CString& strUrl);    // the cached file of a url
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 void FUN_1418fe1c0(const CString& strLink);
 
 // @0x1409faff0
@@ -118,10 +117,10 @@ void CBannerUrlGetter::RequestFile()
         m_bReady = true;
         return;
     }
-    if (((class CUgcManager*)FUN_14052d220()) != 0)
+    if (TSingleton<CUgcManager>::GetInstance() != 0)
     {
         ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
-        ((class CUgcManager*)FUN_14052d220())->DownloadBannerByKind(0xcd, m_strUrl);
+        TSingleton<CUgcManager>::GetInstance()->DownloadBannerByKind(0xcd, m_strUrl);
     }
 }
 

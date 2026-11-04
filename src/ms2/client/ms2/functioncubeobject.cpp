@@ -252,7 +252,6 @@ class Unk_FcAnimSvc
 {
 public:
     efd::Category GetCatAnim();                                  // 0x141235eb0 the animation channel
-    struct Unk_FcAnimStr FUN_140b7cc50(const egf::EntityID& kId);   // current animation
     char m_pad[0x120];
     efd::Category m_catAnim;                                        // +0x120
 };
@@ -260,8 +259,12 @@ struct Unk_FcAnimName { alignas(8) char m_pad[0x20]; };   // efd::utf8string, 0x
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float, bool bForce);
-// The same string as a scoped local: utf8string(const char*) 0x1409989e0, ~utf8string 0x1408a8900.
-struct Unk_FcAnimStr : Unk_FcAnimName { ~Unk_FcAnimStr(); };
+// reactor.cpp's view of the animation service: the current animation name.
+class Unk_RxAnimSvc
+{
+public:
+    efd::utf8string FUN_140b7cc50(const egf::EntityID& kId);
+};
 
 // The use-request the cube sends (CString id + count), as statenurturing declares it.
 struct Unk_FcUseInfo
@@ -1439,7 +1442,7 @@ class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 public:
     template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
 };
-void FUN_14098c6e0(Unk_Entity* pEntity, unsigned uHash, unsigned char* pb);
+void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned int nProp, const bool& bValue);   // C3: the definition's signature
 CStringA FUN_1409a2360(const char* psz, int nFlag);
 
 // @0x1412291f0
@@ -1502,7 +1505,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             m_entPet->SetPropertyValue<efd::Point3>(0x68c7c29d, (const efd::Point3&)(vRot));
             reinterpret_cast<Unk_CachedEntity*>(m_entPet.operator->())->SetPropertyValue<float>(0x2d7cad2d, *reinterpret_cast<const float*>(&reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_pFx));
             unsigned char bFlag = 0;
-            FUN_14098c6e0((Unk_Entity*)m_entPet.operator->(), 0xa0b6b179, &bFlag);
+            FUN_14098c6e0((Unk_CachedEntity*)((Unk_Entity*)m_entPet.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0((egf::Entity*)m_entPet.data(), 0);
             return 1;
         }
@@ -1518,7 +1521,7 @@ void CBreedingCubeObject::vfunc_3()
     if (m_strAnim.IsEmpty())
         return;
     egf::EntityID kId = m_entPet->GetEntityID();
-    bool bDiff = FUN_14122e000(reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->FUN_140b7cc50(kId), m_strAnim);
+    bool bDiff = FUN_14122e000(reinterpret_cast<const Unk_FcAnimName&>(static_cast<const efd::utf8string&>(reinterpret_cast<Unk_RxAnimSvc*>(FUN_141b6f910())->FUN_140b7cc50(kId))), m_strAnim);
     if (bDiff)
     {
         efd::utf8string kName(m_strAnim);
@@ -1609,17 +1612,17 @@ void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
         if (nState == 0)
         {
             unsigned char b = 0;
-            FUN_14098c6e0((Unk_Entity*)m_entPet.operator->(), 0xa0b6b179, &b);
+            FUN_14098c6e0((Unk_CachedEntity*)((Unk_Entity*)m_entPet.operator->()), 0xa0b6b179, *(bool const*)(&b));
         }
         else if (nState == 1)
         {
             unsigned char b = 1;
-            FUN_14098c6e0((Unk_Entity*)m_entPet.operator->(), 0xa0b6b179, &b);
+            FUN_14098c6e0((Unk_CachedEntity*)((Unk_Entity*)m_entPet.operator->()), 0xa0b6b179, *(bool const*)(&b));
         }
         else if (nState == 2)
         {
             unsigned char b = 1;
-            FUN_14098c6e0((Unk_Entity*)m_entPet.operator->(), 0xa0b6b179, &b);
+            FUN_14098c6e0((Unk_CachedEntity*)((Unk_Entity*)m_entPet.operator->()), 0xa0b6b179, *(bool const*)(&b));
         }
         if (arrAnims.GetCount() > 0)
         {
@@ -1834,10 +1837,10 @@ int CNurturingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, in
         return 0;
     if (pRow->m_nSub == 1)
         m_spData->m_bBuff = 1;
-    m_obj.FUN_140704bd0(&pRow->m_objData);
-    for (POSITION pos = m_obj.m_map.GetStartPosition(); pos != 0; m_obj.m_map.GetNext(pos))
+    m_obj = pRow->m_objData;
+    for (POSITION pos = reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).GetStartPosition(); pos != 0; reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).GetNext(pos))
     {
-        __int64 nValue = m_obj.m_map.GetValueAt(pos);
+        __int64 nValue = reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).GetValueAt(pos);
         m_nE8 = (nValue > m_nE8) ? nValue : m_nE8;
     }
     FUN_14122cbc0(m_nLevel, egf::EntityPtr((egf::Entity*)pEntity));
@@ -1933,7 +1936,7 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110()));
     if (pRow == 0)
         return 0;
-    if (m_obj.m_strOwner != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
+    if (m_obj.m_strQuestTag != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
         return 0;
     if (reinterpret_cast<CGameRule*>(FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get()) == 0)
         return 0;
@@ -2004,7 +2007,7 @@ int CNurturingCubeObject::FUN_14122c340()
 int CNurturingCubeObject::FUN_14122c410()
 {
     int nNpc = 0;
-    reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(m_nLevel, reinterpret_cast<unsigned int&>(nNpc));
+    reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_pluralNpcIds).Lookup(m_nLevel, reinterpret_cast<unsigned int&>(nNpc));
     return nNpc;
 }
 
@@ -2116,20 +2119,20 @@ void CNurturingCubeObject::FUN_14122cbc0(unsigned short nLevel, egf::EntityPtr e
     if (ent == 0)
         return;
     m_entPet = ent;
-    if (m_obj.m_map.GetCount() < 3)
+    if (reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).GetCount() < 3)
         return;
     unsigned __int64 nGaugeA = 300;
     unsigned __int64 nGaugeB = 500;
-    m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
-    m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
+    reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).Lookup((unsigned short)1, nGaugeA);
+    reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).Lookup((unsigned short)2, nGaugeB);
     int nNpc = 0;
-    if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
+    if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_pluralNpcIds).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
     {
         m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
         int nId = DAT_1439f706c;
         DAT_1439f706c = DAT_1439f706c + 1;
         m_spPet->FUN_14123c5a0(nId);
-        if (m_spPet->vfunc_124(nNpc, ent, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
+        if (m_spPet->vfunc_124(nNpc, ent, (int)nGaugeA, (int)nGaugeB, m_obj.m_strQuestTag) != 0)
             WorldService::GetInstance()->FUN_141bbb1e0((class GameObject*)(((CubeSpawnObject*)m_spPet)), 0, 1);
     }
 }
@@ -2141,15 +2144,15 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
         return;
     if (m_nLevel == nLevel)
         return;
-    if (m_obj.m_map.GetCount() < 3)
+    if (reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).GetCount() < 3)
         return;
     {
         unsigned __int64 nGaugeA = 300;
         unsigned __int64 nGaugeB = 500;
-        m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
-        m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
+        reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).Lookup((unsigned short)1, nGaugeA);
+        reinterpret_cast<Unk_FcMapU64&>(m_obj.m_requiredGrowth).Lookup((unsigned short)2, nGaugeB);
         int nNpc = 0;
-        if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_mapNpc).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
+        if (reinterpret_cast<ATL::CAtlMap<unsigned short, unsigned int>&>(m_obj.m_pluralNpcIds).Lookup(nLevel, reinterpret_cast<unsigned int&>(nNpc)))
         {
             if (((CubeSpawnObject*)m_spPet) != 0)
             {
@@ -2160,7 +2163,7 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
             int nId = DAT_1439f706c;
             DAT_1439f706c = DAT_1439f706c + 1;
             m_spPet->FUN_14123c5a0(nId);
-            if (m_spPet->vfunc_124(nNpc, m_entPet, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
+            if (m_spPet->vfunc_124(nNpc, m_entPet, (int)nGaugeA, (int)nGaugeB, m_obj.m_strQuestTag) != 0)
                 WorldService::GetInstance()->FUN_141bbb1e0((class GameObject*)(((CubeSpawnObject*)m_spPet)), 0, 1);
         }
     }

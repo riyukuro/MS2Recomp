@@ -18,6 +18,9 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <NiPoint3.h>
+#include <list>
+#include <map>
+#include "ms2/client/ms2/chatemoticoncli.h"   // C3: ChatEmoticonGroupInfo (the +0x38 map clear)
 
 // ---- unit-local placeholders ----
 
@@ -388,8 +391,8 @@ Vector3 CBossTargetCamera::FUN_140a38570()
 MS2_REPLACE_METHOD(0x140a38570, CBossTargetCamera, FUN_140a38570, 822, 0xD000EB82);
 
 // destructor body of a class with two containers at +0x18/+0x38 (no caller in the exe, so the owner is unknown)
-class Unk_ListA { public: void FUN_140a3f3c0(); };
-class Unk_ListB { public: void FUN_140a3f320(); };
+class Unk_ListA {};   // C3: cleared through std::list<unsigned>::clear
+class Unk_ListB {};   // C3: cleared through the std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> > _Tree::clear
 class Unk_TwoLists
 {
 public:
@@ -470,8 +473,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // @0x140a38f60
 void Unk_TwoLists::FUN_140a38f60()
 {
-    m_18.FUN_140a3f3c0();
-    m_38.FUN_140a3f320();
+    reinterpret_cast<std::list<unsigned>*>(&m_18)->clear();
+    reinterpret_cast<std::map<unsigned, MS2Ptr<ChatEmoticonGroupInfo> >*>(&m_38)->clear();
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)

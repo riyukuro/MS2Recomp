@@ -59,7 +59,6 @@ class Unk_140acd6e0 : public ASDisplayObject { public:
 };
 class ASDialog : public ASDisplayObject {};
 class Unk_SingletonObj* FUN_140939a10();
-class Unk_WbUIMgr { public: float FUN_141adbe70(); };
 class Unk_WbBrowser : public COffscreenWebBrowser { public:                                               // one browser page of the manager
 };
 class Unk_WbBrowserMgr : public CWebBrowserService { public:                                            // the browser manager
@@ -156,7 +155,7 @@ void UIWebBrowser::OnLoadComplete()
     if (FUN_140bc6d10("m_btnMaxSize", m_btnMaxSize).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
     FUN_141b509b0();
-    float fScale = reinterpret_cast<Unk_WbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     unsigned nWidth = (unsigned)(m_nSmallSize / fScale);
     unsigned nHeight = (unsigned)(m_nSmallSize / fScale);
     FUN_14135eda0(nWidth, nHeight);

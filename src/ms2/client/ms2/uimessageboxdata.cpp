@@ -63,6 +63,9 @@ extern CString DAT_143af3e30;
 class Unk_MsgDisplay : public ASDisplayObject
 {
 };
+class ASDialog : public Unk_MsgDisplay   // CMsgBoxData::FUN_141a04f80 takes it by value
+{
+};
 class Unk_MsgCheck : public ASButton
 {
 };
@@ -97,14 +100,9 @@ class Unk_ClubBuffTable;
 Unk_ClubBuffTable* FUN_140b1a4e0();
 
 
-// The AS array push helpers (an AS array is built from objects and strings), and the int-valued AS object setter.
+// The AS array push helpers (an AS array is built from objects and strings).
 class Unk_MsgASArray : public ASArray
 {
-};
-class Unk_MsgASObj : public ASObj
-{
-public:
-    void FUN_141a07250(const char* szName, int n);                  // set an int member through an ASData
 };
 
 CString FUN_141a066e0(int nType);                                   // the AS box type name
@@ -117,7 +115,7 @@ bool FUN_1407183f0(const CStringW& str);
 int CMsgBoxData::FUN_141a034d0(ASObj& obj)
 {
     obj.FUN_1407cba60("boxType", FUN_14016a5c0(FUN_141a066e0(m_nType), 0));
-    ((Unk_MsgASObj&)obj).FUN_141a07250("sID", m_nId);
+    obj.FUN_141a07250("sID", m_nId);
     obj.FUN_1407cbb20("msg", m_strMsg);
     obj.FUN_1407cbb20("msg2", m_strMsg2);
     obj.FUN_1407cbb20("btnLabel0", m_strBtn0);
@@ -347,15 +345,15 @@ CStringW CMsgBoxData::FUN_141a04da0()
 }
 
 // @0x141a04f80
-void FUN_141a04f80(MS2Ptr<Unk_MsgDisplay> spBox)
+void CMsgBoxData::FUN_141a04f80(MS2Ptr<ASDialog> spDialog)
 {
-    if (spBox->FUN_1422bb870().IsNull() == 0)
+    if (reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422bb870().IsNull() == 0)
     {
         Unk_MsgPoint2& stage = g_messageBoxState.m_stage;
-        stage.x = (float)spBox->FUN_1422c1500();
-        stage.y = (float)spBox->FUN_1422c1530();
+        stage.x = (float)reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422c1500();
+        stage.y = (float)reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422c1530();
         Unk_MsgPoint2& pos = g_messageBoxState.m_pos;
-        spBox->GetPosition(&pos.x, &pos.y);
+        reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->GetPosition(&pos.x, &pos.y);
         g_messageBoxState.m_bSaved = 1;
     }
 }
@@ -747,7 +745,7 @@ bool CMsgBoxData::GetBoolArg(unsigned int nIndex, bool& bOut) const
 }
 
 // @0x141a07250
-void Unk_MsgASObj::FUN_141a07250(const char* szName, int n)
+void ASObj::FUN_141a07250(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);

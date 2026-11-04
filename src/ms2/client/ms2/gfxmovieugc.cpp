@@ -90,7 +90,7 @@ void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_G
     {
         spObj->vfunc_17(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
-        if (kHandle.FUN_1425805a0(reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->FUN_142582270()))
+        if (reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle&>(kHandle).NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spHandle.operator->())->GetContextNotify()))
             reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->Assign(kHandle);
         spObj->vfunc_17(spTarget, true);
     }
@@ -167,7 +167,7 @@ int GFxMovieUgc::FUN_14127dc60()
         {
             IDirect3DSurface9* pSurface = 0;
             pTexture->GetSurfaceLevel(0, &pSurface);
-            m_spRenderTarget = FUN_1422cf060()->vfunc_67(pSurface, 0);
+            m_spRenderTarget = ((Unk_BgHal*)FUN_1422cf060())->vfunc_67(pSurface, 0);
             if (pSurface != 0)
                 pSurface->Release();
             if (m_spRenderTarget)

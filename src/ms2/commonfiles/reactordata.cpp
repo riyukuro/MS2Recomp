@@ -72,7 +72,6 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 int FUN_140768010(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
-CStringA& FUN_140164930(ATL::CAtlArray<CStringA>&, size_t nIndex);       // operator[]
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CReactorDataTable::s_bInit;
@@ -226,7 +225,7 @@ CStringA ReactorData::GetCreateAnimation()
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount() == 0)
         return "";
     int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount(), 0);
-    return FUN_140164930(m_createAnims, nIndex);
+    return m_createAnims[nIndex];
 }
 
 // @0x14076b110
@@ -235,7 +234,7 @@ CStringA ReactorData::GetReactAnimation()
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount() == 0)
         return "";
     int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount(), 0);
-    return FUN_140164930(m_reactAnims, nIndex);
+    return m_reactAnims[nIndex];
 }
 
 // @0x14076b1c0

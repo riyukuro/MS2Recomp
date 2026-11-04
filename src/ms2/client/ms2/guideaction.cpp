@@ -56,6 +56,27 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes; field names from placeholder/effectquery.h)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    CString m_strName;      // +0x00 effect file name
+    int m_nObject;          // +0x08
+    void* m_p10;            // +0x10
+    void* m_p18;            // +0x18 the transform to play at
+    void* m_p20;
+    void* m_p28;
+    bool m_bFlag30;
+    bool m_bFlag31;
+    bool m_bFlag32;         // +0x32
+    bool m_bFlag33;
+    bool m_bFlag34;
+    unsigned __int64 m_n38; // +0x38
+    void* m_p40[5];         // +0x40 callback, mode, object code, actor, owner, lookup id (no char padding: it would add a /GS cookie)
+    double m_dTimestamp;    // +0x68
+};
+MS2_CHECK_SIZE(NoticeMessage, 0x70);
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -419,11 +440,11 @@ void CGuideActionEffect::vfunc_3()
         xf.m_Translate = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(cube.m_pos))));
         xf.m_Rotate.FromEulerAnglesXYZ((cube.m_rotate.x * 3.1415927f) / 180.0f, (cube.m_rotate.y * 3.1415927f) / 180.0f, (cube.m_rotate.z * 3.1415927f) / 180.0f);
         xf.m_fScale = cube.m_scale;
-        Unk_EffectTarget kTarget;
+        NoticeMessage kTarget;
         kTarget.m_strName = m_path;
-        kTarget.m_nKind = 0;
-        kTarget.m_pXform = &xf;
-        cube.m_handle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+        kTarget.m_nObject = 0;
+        kTarget.m_p18 = &xf;
+        cube.m_handle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kTarget));
     }
 }
 MS2_REPLACE_METHOD(0x1413832D0, CGuideActionEffect, vfunc_3, 427, 0x74750A6C);

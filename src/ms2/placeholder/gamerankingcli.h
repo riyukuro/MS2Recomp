@@ -11,6 +11,9 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/os.h"
 
+template <class T> class MS2Ptr;
+namespace GameRanking { class Page; }
+
 // The 12-byte key of a ranking board: (type, sub category, tab / season, ...).
 struct Unk_RankKey
 {
@@ -69,6 +72,7 @@ MS2_CHECK_OFFSET(Unk_RankData, m_party, 0xa8);
 class CGameRankingParam : public CPtred
 {
 public:
+    struct Key;                                             // the real key (client/ms2/gamerankingcli.h); Unk_RankKey here
     CGameRankingParam();                                    // 0x140b3dd70
     virtual ~CGameRankingParam();                           //  0 0x140b436f0
 
@@ -135,7 +139,7 @@ struct Unk_RankInfoPtr                                      // my-rank answer (C
     void* m_p;
 };
 
-struct Unk_RankPageReq                                      // page request (Cli::FUN_140b2add0 / FUN_140b2af90)
+struct Unk_RankPageReq                                      // page request (Cli::FUN_140b2af90)
 {
     ~Unk_RankPageReq();                                     // 0x140b2db30
     bool FUN_140b2e0c0(int);                                // == NULL
@@ -166,7 +170,7 @@ public:
     int FUN_140b2b440(const Unk_RankKey& key, int nPage, ATL::CAtlArray<Unk_RankDataPtr>& rows, CStringW strSearch, int bForce);
     void Request(const CGameRankingParam* pParam);          // 0x140b2bf30: send the request
     Unk_RankInfoPtr FUN_140b2ac30(const Unk_RankKey& key, int bFlag);
-    Unk_RankPageReq FUN_140b2add0(const Unk_RankKey& key, int a1, int a2);
+    MS2Ptr<GameRanking::Page> Query(const CGameRankingParam::Key& key, int nPage, int bCheckValid);   // 0x140b2add0
     Unk_RankPageReq FUN_140b2af90(const Unk_RankKey& key, CStringW strSearch, int a1);
     void FUN_140b2b870(Unk_RankKey* pKey, int nType, int nSub, int nTab, int nSeason);
     void FUN_140b2bbf0(Unk_RankKey* pKey, int nType, int nSub, int nTab, int nSeason);

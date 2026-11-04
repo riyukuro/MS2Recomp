@@ -5,7 +5,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__EDAT_143ae2c58@@YAXXZ 0x1400fad30 ; prop
 // MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x1400fae80 ; prop
-// MS2-PIN: ??__EDAT_143ae2e20@@YAXXZ 0x1400fafc0 ; prop
+// MS2-PIN: ??__E?ms_ClassInfo@PC@@2VClassInfo@efd@@B@@YAXXZ 0x1400fafc0 ; prop
 // MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400fae20 ; prop
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400fae50 ; prop
 // MS2-PIN: ??__Es_capName@@YAXXZ 0x1400fafe0 ; prop
@@ -255,11 +255,7 @@ CString DAT_143ae2ca8("PC_InviteSuccess");
 static CString s_nextSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 // This tail appears to come from an adjacent original object. The callback builds ClassInfo entries.
 #ifndef MS2_HOOK_DLL
-#ifndef MS2_HOOK_DLL   // s_nextClassInfo: the exe's object at 0x143ae2e20, which other units reach as DAT_143ae2e20 (the hook DLL binds it)
-efd::ClassInfo DAT_143ae2e20(PC::SetupClassInfo);
-#else
-extern efd::ClassInfo DAT_143ae2e20;
-#endif
+EE_IMPLEMENT_CONCRETE_CLASS_INFO(PC);   // 0x143ae2e20 (the hook DLL binds the exe's)
 #endif
 static CString s_capName("Cap");
 
@@ -401,19 +397,8 @@ class Unk_BuddyOptions   // C3: member view for the former free stand-ins
 public:
     struct Unk_BuddySettings& GetSettings();
 };
-class CPvPInfo   // C3: member view for the former free stand-ins
-{
-public:
-    bool HasPoint();
-};
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-// WorldService's proxy-by-id lookup, called through a view (worldservice.h is shared).
-class Unk_PartyWorldView
-{
-public:
-    MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);    // the proxy of a player by id
-};
 extern CStringW DAT_143ae2c58;
 
 // @0x14162a0d0
@@ -990,7 +975,7 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
         SendPartyMode2(0x14);
         return;
     }
-    if (player != NULL && ((class CPvPInfo*)(player->FUN_140967420().operator->()))->HasPoint()) {
+    if (player != NULL && player->FUN_140967420()->HasPoint()) {
         SendPartyMode2(0x15);
     } else {
         CStringW key = StringFormat<CStringW, unsigned int>(L"{0}_{1}", DAT_143ae2c58, reinterpret_cast<const unsigned int&>(partyKind));
@@ -1775,7 +1760,7 @@ int CPartyManager::FUN_141631dd0()
     for (int i = 0; i < size; ++i) {
         MS2Ptr<CPartyMember> member(members[i]);
         if (member.IsNull()) continue;
-        MS2Ptr<CProxyGameObject> proxy = reinterpret_cast<Unk_PartyWorldView*>(world)->FUN_141bc9c60(member->FUN_141637bb0());
+        MS2Ptr<CProxyGameObject> proxy = world->FUN_141bc9c60((void*)member->FUN_141637bb0());
         if (proxy.IsNull()) continue;
         if (proxy->kind != 0) continue;
         ++count;

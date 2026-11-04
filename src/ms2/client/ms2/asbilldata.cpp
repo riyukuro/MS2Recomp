@@ -683,7 +683,7 @@ __int64 ASMeratMarketBuyBillData::FUN_1409adb70(const CString& strName, ASObj* p
 }
 
 // @0x1409adbe0
-void ASObj::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
+void AScript::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
 {
     ASData data;
     data.AddValue(v);

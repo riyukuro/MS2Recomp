@@ -51,12 +51,9 @@ struct Unk_FactoryPlayer : public PC
 {
 };
 struct Unk_FactoryWorld { Unk_FactoryPlayer* FUN_141bd0cc0(); };    // the local player
-struct Unk_FactoryApp { int FUN_141adbd10(); };
 
-// Scene-graph node the player's attach list holds (RTTI NiNode); FUN_141b71d10 toggles its highlight shader.
-struct Unk_FactoryNodeName { Unk_FactoryNodeName(const Unk_FactoryNodeName& k); long long m_a, m_b; };
-extern Unk_FactoryNodeName DAT_143a09680;
-struct Unk_FactoryNode { void FUN_141b71d10(bool bOn, const Unk_FactoryNodeName& kName); };
+// util.cpp: toggles the highlight shader under a node (its colour arg is util's Unk_Colc view of a NiColorA).
+void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const struct Unk_Colc& kColor);
 
 // ---- the controller registry (statics defined in this TU) ----
 typedef efd::SmartPointer<CItemCustomizeController> ControllerPtr;
@@ -191,7 +188,7 @@ void FUN_141413d80()
     if (!s_listControllers.IsEmpty())
     {
         bool bDragging = false;
-        if (reinterpret_cast<Unk_FactoryApp*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() == 0 || s_spCurrent)
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adbd10() == 0 || s_spCurrent)
         {
             int bHit = 0;
             efd::Point3 kPos;
@@ -301,11 +298,11 @@ void FUN_141414250(bool bOn)
         pPlayer->vfunc_44(&listNodes);
         for (efd::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
         {
-            Unk_FactoryNode* pNode = ((struct Unk_FactoryNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(*it)));
+            NiNode* pNode = ((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(*it)));
             if (pNode == 0)
                 continue;
-            Unk_FactoryNodeName kName(DAT_143a09680);
-            pNode->FUN_141b71d10(bOn, kName);
+            NiColorA kColor(efd::ColorA::BLACK);
+            FUN_141b71d10(pNode, bOn, reinterpret_cast<const Unk_Colc&>(kColor));
         }
     }
 }

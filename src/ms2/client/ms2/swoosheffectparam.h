@@ -57,12 +57,12 @@ public:
     void UpdateTrail();                                         // 0x14181f1d0 sample the nodes, rebuild the strip
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_NodePtr m_spRoot;           // +0x30 "Effect Root" EffectNode (a SeparateNode child holds the mesh)
-    Unk_NodePtr m_spUnused38;       // +0x38 (initialised, never used here)
+    NiNodePtr m_spRoot;             // +0x30 "Effect Root" EffectNode (a SeparateNode child holds the mesh)
+    NiNodePtr m_spUnused38;         // +0x38 (initialised, never used here)
     NiPointer<CMesh> m_spMesh;      // +0x40 "SwooshEffect"
     NiAVObjectPtr m_spTrail1;       // +0x48 TrailNode1 (node named by the param's node1)
     NiAVObjectPtr m_spTrail2;       // +0x50 TrailNode2
-    Unk_NodePtr m_spTarget;         // +0x58 node the effect follows
+    NiNodePtr m_spTarget;           // +0x58 node the effect follows
     int m_nUVSets;                  // +0x60 = 1 (taken from the nif's mesh when there is one)
     int m_nCurveSamples;            // +0x64 samples kept in the ribbon (segments * quality)
     int m_nSegments;                // +0x68 control segments kept (length * sampling rate)

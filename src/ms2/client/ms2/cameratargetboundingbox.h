@@ -10,6 +10,14 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxBounds3.h>    // C3: NxBounds3 (ctor 0x140adb8f0, dtor 0x140adbb40)
+#include <NxBox.h>        // C3: NxBox (ctor 0x140adb930, dtor 0x140adbb50)
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 
 namespace egf { class Entity; }
 
@@ -20,15 +28,6 @@ struct Unk_CtbVec3
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_CtbVec3, 12);
-// NxBounds3: min, max (ctor 0x140adb8f0 makes it empty, dtor 0x140adbb40).
-struct Unk_CtbBounds3
-{
-    Unk_CtbBounds3();                                   // 0x140adb8f0
-    ~Unk_CtbBounds3();                                  // 0x140adbb40
-    Unk_CtbVec3 m_min;
-    Unk_CtbVec3 m_max;
-};
-MS2_CHECK_SIZE(Unk_CtbBounds3, 0x18);
 // 3x3 matrix, row-major (default ctor 0x140adb9d0 does nothing).
 struct Unk_CtbMat33
 {
@@ -39,16 +38,6 @@ struct Unk_CtbMat33
     float m20, m21, m22;
 };
 MS2_CHECK_SIZE(Unk_CtbMat33, 0x24);
-// NxBox: centre, extents, rotation (ctor 0x140adb930, dtor 0x140adbb50).
-struct Unk_CtbObb
-{
-    Unk_CtbObb();                                       // 0x140adb930
-    ~Unk_CtbObb();                                      // 0x140adbb50
-    Unk_CtbVec3 m_center;
-    Unk_CtbVec3 m_extents;
-    Unk_CtbMat33 m_rot;
-};
-MS2_CHECK_SIZE(Unk_CtbObb, 0x3c);
 // NxMat34: rotation + translation (ctor(bool identity) 0x140adb9e0, dtor 0x140adbb80).
 struct Unk_CtbMat34
 {
@@ -88,8 +77,8 @@ public:
     virtual int Contains(Vector3 pt);
     virtual Vector3 GetClosest(const Vector3& pt);
 
-    Unk_CtbBounds3 m_bounds;                                            // +0x20 local box
-    Unk_CtbObb m_obb;                                                   // +0x38 the box in world space
+    NxBounds3 m_bounds;                                                 // +0x20 local box
+    NxBox m_obb;                                                        // +0x38 the box in world space
     Unk_CtbMat34 m_pose;                                                // +0x74
     Unk_CtbMat34 m_inverse;                                             // +0xa4
 };

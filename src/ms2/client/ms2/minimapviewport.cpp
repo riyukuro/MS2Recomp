@@ -25,7 +25,6 @@ public:
 
 // efd::Matrix3 helpers (all out of line in the exe).
 float FUN_140a38cd0(float fValue);                               // efd::Abs
-void FUN_1409f72e0(Unk_MvMatrix3& kMatrix);                      // efd::Matrix3::Matrix3()
 
 static const float k_fPi = 3.1415927f;   // the exe multiplies by pi, then divides by 180
 
@@ -78,20 +77,20 @@ void MinimapViewport::FUN_141485a50(const NiPoint3& kCamPos, const NiPoint3& kAx
     float fDotZ = -kAxisZ.Dot(kCamPos);
     float fDotY = -kAxisY.Dot(kCamPos);
 
-    float fSumLR = m_kFrustum.r + m_kFrustum.l;
-    float fSumTB = m_kFrustum.t + m_kFrustum.b;
-    float fInvLR = 1.0f / (m_kFrustum.r - m_kFrustum.l);
-    float fInvTB = 1.0f / (m_kFrustum.t - m_kFrustum.b);
-    float fInvNF = 1.0f / (m_kFrustum.f - m_kFrustum.n);
+    float fSumLR = m_kFrustum.m_fRight + m_kFrustum.m_fLeft;
+    float fSumTB = m_kFrustum.m_fTop + m_kFrustum.m_fBottom;
+    float fInvLR = 1.0f / (m_kFrustum.m_fRight - m_kFrustum.m_fLeft);
+    float fInvTB = 1.0f / (m_kFrustum.m_fTop - m_kFrustum.m_fBottom);
+    float fInvNF = 1.0f / (m_kFrustum.m_fFar - m_kFrustum.m_fNear);
 
-    if (m_kFrustum.ortho)
+    if (m_kFrustum.m_bOrtho)
     {
         float fX = 2.0f * fInvLR;
         float fXT = fSumLR * fInvLR;
         float fZ = 2.0f * fInvTB;
         float fZT = fSumTB * fInvTB;
         float fNF = fInvNF;
-        float fNT = -m_kFrustum.n * fNF;
+        float fNT = -m_kFrustum.m_fNear * fNF;
         m_afMatrix[0][0] = fX * kAxisX.x;
         m_afMatrix[0][1] = fX * kAxisX.y;
         m_afMatrix[0][2] = fX * kAxisX.z;
@@ -115,8 +114,8 @@ void MinimapViewport::FUN_141485a50(const NiPoint3& kCamPos, const NiPoint3& kAx
         float fXV = -fSumLR * fInvLR;
         float fZ = 2.0f * fInvTB;
         float fZV = -fSumTB * fInvTB;
-        float fNF = m_kFrustum.f * fInvNF;
-        float fNT = -m_kFrustum.n * fNF;
+        float fNF = m_kFrustum.m_fFar * fInvNF;
+        float fNT = -m_kFrustum.m_fNear * fNF;
         m_afMatrix[0][0] = fX * kAxisX.x + fXV * kAxisY.x;
         m_afMatrix[0][1] = fX * kAxisX.y + fXV * kAxisY.y;
         m_afMatrix[0][2] = fX * kAxisX.z + fXV * kAxisY.z;
@@ -199,24 +198,22 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3&
 {
     if (FUN_140a38cd0(kRot.z) < 1e-05f)
     {
-        Unk_MvMatrix3 kMatrix;
-        FUN_1409f72e0(kMatrix);
-        reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(0, kAxisY);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(1, kAxisZ);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(2, kAxisX);
+        efd::Matrix3 kMatrix;
+        kMatrix.FromEulerAnglesXYZ(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
+        kMatrix.GetCol(0, kAxisY);
+        kMatrix.GetCol(1, kAxisZ);
+        kMatrix.GetCol(2, kAxisX);
         ((struct Vector3*)&(kAxisY))->FUN_140968990();
         ((struct Vector3*)&(kAxisZ))->FUN_140968990();
         ((struct Vector3*)&(kAxisX))->FUN_140968990();
     }
     else
     {
-        Unk_MvMatrix3 kMatrix;
-        FUN_1409f72e0(kMatrix);
-        reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(0, kAxisY);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(1, kAxisZ);
-        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(2, kAxisX);
+        efd::Matrix3 kMatrix;
+        kMatrix.FromEulerAnglesXYZ(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
+        kMatrix.GetCol(0, kAxisY);
+        kMatrix.GetCol(1, kAxisZ);
+        kMatrix.GetCol(2, kAxisX);
         reinterpret_cast<efd::Point3&>(kAxisZ) = -reinterpret_cast<const efd::Point3&>(kAxisZ);
         reinterpret_cast<efd::Point3&>(kAxisX) = -reinterpret_cast<const efd::Point3&>(kAxisX);
         ((struct Vector3*)&(kAxisY))->FUN_140968990();

@@ -230,10 +230,10 @@ void * FUN_140002e40(void *, unsigned int);
 ::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *);
 void * FUN_14000a010(void *, unsigned int);
 void * FUN_14000a020(void *, unsigned int);
-void FUN_14000a110(::Scaleform::GFx::AS2::Object *, ::Scaleform::GFx::AS2::ASStringContext *, ::Scaleform::GFx::ASString const *, ::Scaleform::GFx::AS2::Value *);
+extern unsigned char DAT_14000a110[];
 void * FUN_14000a880(void *, unsigned int);
 unsigned int FUN_14000d320(void *);
-void FUN_14000d760(::Scaleform::GFx::AS2::Object *, ::Scaleform::GFx::AS2::ASStringContext *, ::Scaleform::GFx::ASString const *, ::Scaleform::GFx::AS2::Value *);
+extern unsigned char DAT_14000d760[];
 void FUN_14000e410(void **, void *, void *, void *, void *);
 namespace Scaleform { namespace GFx { namespace AS2 { void FUN_14000e470(void **, void *, void *, void *); } } }
 namespace Scaleform { namespace GFx { namespace AS2 { int FUN_14000e500(void *); } } }
@@ -1709,7 +1709,7 @@ alignas(16) Sd_1431b5310 DAT_1431b5310 = {
     DAT_1429947f0,
     DAT_14295d970,
     DAT_142988bb0,
-    (const void*)&FUN_14000a110,
+    DAT_14000a110,
     DAT_142991170,
     DAT_140007ba0,
     (const void*)&FUN_140007ff0,
@@ -1857,7 +1857,7 @@ alignas(16) Sd_1431b5e70 DAT_1431b5e70 = {
     DAT_1429947f0,
     DAT_14295d970,
     DAT_142988bb0,
-    (const void*)&FUN_14000d760,
+    DAT_14000d760,
     DAT_142991170,
     DAT_140007ba0,
     (const void*)&FUN_140007ff0,
@@ -3060,6 +3060,8 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_14294ab50@@3PAEA=?GetEnvironment@CFunctionObject@AS2@GFx@Scaleform@@UEAAPEAVEnvironment@234@AEBVFnCall@234@PEAV?$Ptr@VInteractiveObject@GFx@Scaleform@@@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14294afb0@@3PAEA=?GetGC@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEAVGlobalContext@234@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14294f7d0@@3PAEA=?GetMember@Object@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14000a110@@3PAEA=?GetMemberRaw@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_14000d760@@3PAEA=?GetMemberRaw@?$Prototype@VVideoObject@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142953280@@3PAEA=?GetMemberRaw@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142955080@@3PAEA=?GetStandardMember@AvmCharacter@AS2@GFx@Scaleform@@UEBA_NW4StandardMember@1234@PEAVValue@234@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142956b10@@3PAEA=?GetTopParent@AvmCharacter@AS2@GFx@Scaleform@@UEBAPEAVInteractiveObject@34@_N@Z")

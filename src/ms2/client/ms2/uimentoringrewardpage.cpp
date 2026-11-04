@@ -133,7 +133,7 @@ void ASMentoringRewardPage::OnInit(){
  if(!m_owner)return;
  m_script=m_owner->GetScript();
  do{m_script->FUN_140bbe640("m_receiveButton",m_button);if(m_button==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(24),__FUNCTION__));}while(0);
- do{m_script->FUN_140beaf20("m_coin",reinterpret_cast<MS2Ptr<ASTextField>&>(m_coin));if(m_coin==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(25),__FUNCTION__));}while(0);
+ do{m_script->FUN_140beaf20("m_coin",m_coin);if(m_coin==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(25),__FUNCTION__));}while(0);
  do{m_script->FUN_140bc71c0("m_effect1",m_effect1);if(m_effect1==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(26),__FUNCTION__));}while(0);
  do{m_script->FUN_140bc71c0("m_effect2",m_effect2);if(m_effect2==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(27),__FUNCTION__));}while(0);
  do{m_script->FUN_140bc71c0("m_effect3",m_effect3);if(m_effect3==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(28),__FUNCTION__));}while(0);

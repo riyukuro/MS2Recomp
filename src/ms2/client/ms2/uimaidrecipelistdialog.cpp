@@ -20,6 +20,7 @@
 #define MS2_TPTRVALUE_MOVE   // the recipe book entries are copied with the add-ref ctor (0x1406889c0)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/mstime.h"
 #include "uimaidrecipelistdialog.h"
 #include "ms2/placeholder/asdata.h"
@@ -822,11 +823,8 @@ bool FUN_14083d890(CStringW str);                     // show a notice
 
 // The AS controls the edit window binds.
 class Unk_MdText : public ASTextField { public: };
-class Unk_MdShopList : public ASScrollingList {};
 class Unk_MdShopPanel : public AScript {};
 MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
-
-MS2Ptr<Unk_MdShopList> FUN_140accef0_(AScript* p);
 
 template <class T> struct Unk_McValue { T* FUN_1412788b0(); };   // the palette of the designer colours
 
@@ -1404,7 +1402,7 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
     MS2Ptr<Unk_MdShopPanel> spPanel = FUN_140f880c0<Unk_MdShopPanel>("m_shopItemList");
     if (!spPanel)
         return;
-    MS2Ptr<Unk_MdShopList> spList = spPanel->FUN_140accef0<Unk_MdShopList>("m_itemList");
+    MS2Ptr<ASTileList> spList = spPanel->FUN_140accef0<ASTileList>("m_itemList");
     if (!spList)
         return;
     if (MS2Ptr<ASTextField> spName = reinterpret_cast<AScript*>(spPanel.get())->FUN_1409b4620("m_name"))

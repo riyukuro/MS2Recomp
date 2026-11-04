@@ -143,7 +143,6 @@ class CUgcManager   // C3: member view for the former free stand-ins
 public:
     void FUN_14187fb30();
 };
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 __int64 FUN_14028d260(float f);
 int MinutesToSeconds(int n);
 int HoursToSeconds(int n);
@@ -685,7 +684,7 @@ void UIMyInfoDialog::FUN_141a5a640(NotifyObject* pNotify)
 // @0x141a5a720
 void UIMyInfoDialog::OnChangeProfile()
 {
-    ((class CUgcManager*)(void*)(((void*)FUN_14052d220())))->FUN_14187fb30();
+    TSingleton<CUgcManager>::GetInstance()->FUN_14187fb30();
 }
 
 // @0x141a5a750

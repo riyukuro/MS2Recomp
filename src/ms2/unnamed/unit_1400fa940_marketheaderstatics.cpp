@@ -8,18 +8,11 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
+#include <NiRTTI.h>
 
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
-// The TU's registrar ctor lives out of line in the exe at 0x141d16b90 ([this]=name record, [this+8]=record).
-class Unk_ScpRegistrar
-{
-public:
-    Unk_ScpRegistrar(const void* pName, const void* pRecord);
-
-    const void* m_pName;                // +0x00
-    const void* m_pRecord;              // +0x08
-};
+// The TU's NiRTTI ctor lives out of line in the exe at 0x141d16b90 ([this]=name, [this+8]=base RTTI).
 
 // first TU: the market sort-type name table with its labels and condition
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -44,6 +37,6 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // The TU's registration record; only its address is taken here.
 static char s_registrarRecord[1];
-static Unk_ScpRegistrar s_registrar("OutlineRenderStep", s_registrarRecord);
+static NiRTTI s_registrar("OutlineRenderStep", reinterpret_cast<const NiRTTI*>(s_registrarRecord));
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb3a70-0x142cb3c10 .text$yd

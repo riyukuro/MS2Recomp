@@ -105,26 +105,10 @@ MS2_CHECK_SIZE(FunctionCubeData, 0x138);
 
 // ---- unit-local views of exe classes this unit calls into ----
 
-// The nurturing pet data of a cube row (class of objectdata.cpp, unrecovered): owner name, then three hash maps.
+// The nurturing pet data of a cube row is CObjectData::Nurturing (objectdata.h). Its maps are keyed by short there; the
+// calls here use the unsigned short instantiations the exe binds, through this view.
 typedef ATL::CAtlMap<unsigned short, unsigned __int64> Unk_FcMapU64;
 MS2_CHECK_SIZE(Unk_FcMapU64, 0x48);
-struct Unk_FcMapInt
-{
-    unsigned char FUN_1405b9580(unsigned short nKey, int* pnValue);       // lookup
-    char m_pad[0x48];
-};
-struct Unk_FcObjData
-{
-    Unk_FcObjData();                                              // 0x140708840
-    ~Unk_FcObjData();                                             // 0x140708d60
-    void FUN_140704bd0(const Unk_FcObjData* pSrc);                // copy
-    CStringW m_strOwner;                                          // +0x00
-    char m_pad_08[0x18];
-    Unk_FcMapU64 m_map;                                           // +0x20 level -> experience
-    Unk_FcMapInt m_mapNpc;                                        // +0x68 level -> npc id
-    char m_pad_b0[0x48];
-};
-MS2_CHECK_SIZE(Unk_FcObjData, 0xf8);
 
 // The cube table row an object is built from (only the columns the objects copy).
 struct Unk_FcRow
@@ -164,7 +148,7 @@ struct Unk_FcRow
     int m_n170;                                                   // +0x170
     char m_pad_174[4];
     CString m_str178;                                             // +0x178
-    Unk_FcObjData m_objData;                                      // +0x180
+    CObjectData::Nurturing m_objData;                                      // +0x180
     char m_pad_278[8];
     Unk_FcSkillText m_skill;                                      // +0x280
     Unk_FcNotice m_notice;                                        // +0x298
@@ -452,7 +436,7 @@ public:
     unsigned short m_nLevel;                                      // +0xf0
     unsigned short m_nMaxLevel;                                   // +0xf2
     unsigned m_nF4;                                               // +0xf4
-    Unk_FcObjData m_obj;                                          // +0xf8
+    CObjectData::Nurturing m_obj;                                          // +0xf8
 };
 MS2_CHECK_SIZE(CNurturingCubeObject, 0x1f0);
 MS2_CHECK_OFFSET(CNurturingCubeObject, m_entPet, 0xd0);

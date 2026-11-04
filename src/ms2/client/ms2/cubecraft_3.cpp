@@ -81,7 +81,6 @@ MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
 int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiTexture>);
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 // CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
 class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
 FittingDollPC* FUN_14121b590(int, int, int);
@@ -260,7 +259,7 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (_access(path, 4) != 0) return 1;
     NiPointer<NiTexture> texture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(path, NULL);
     if (texture == NULL) {
-        reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_1418845a0(item.get(), 0);
+        TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(item.get(), 0);
         return 1;
     }
     NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);

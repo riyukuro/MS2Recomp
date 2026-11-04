@@ -75,9 +75,9 @@ public:
 };
 bool FUN_14028d470(float a, float b);                               // nearly equal
 
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-extern char DAT_143b059e8;                                          // service lookup cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8 (service lookup cell)
 struct Unk_CcSvcCell;
 class Unk_AnimSvc;
 Unk_AnimSvc*FUN_1410a68f0(Unk_CcSvcCell*);
@@ -296,7 +296,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     const CLightEffectParam* pLightParam = static_cast<const CLightEffectParam*>(pParam);
     bool bValid = false;
 
-    NiNode* pShadow = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightTarget*>(pTarget)->m_hNode))))));
+    NiNode* pShadow = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((NiAVObject*)reinterpret_cast<const NiAVObjectPtr&>(reinterpret_cast<const Unk_LightTarget*>(pTarget)->m_hNode)))));
     switch (m_unk_18)
     {
     case 0:

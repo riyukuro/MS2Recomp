@@ -87,17 +87,8 @@ extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
 // Backup (equipped) item record.
-class CEquipItem : public CPtred { public: class MS2Ptr<class CItem> GetItem(void); void FUN_1411dd280(void); void SetItem(class CItem *); }; class Unk_BackUpItem : public CEquipItem {
-public:
-
-
-
-};
-class Unk_PCItems
-{
-public:
-    MS2Ptr<Unk_BackUpItem> FUN_1411e1580(unsigned __int64 uid);
-};
+class CEquipItem : public CPtred { public: class MS2Ptr<class CItem> GetItem(void); void FUN_1411dd280(void); void SetItem(class CItem *); };
+class Unk_PCItems;
 Unk_PCItems* FUN_1416561a0(MyPC* pc);
 
 class Unk_CinWorld
@@ -127,7 +118,7 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();
     void FUN_141416740(int nHave, int nCount);
 };
-Unk_EnSlot* FUN_140f6e830(const CString& name);
+class ItemInfoSlot* FUN_140f6e830(const CString& name);   // itemsocketsystempagesbase defines it
 void FUN_141415600(const CString& key);
 void FUN_141415450(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_141414e50(const CString& name);
@@ -190,6 +181,7 @@ class CEquipment   // C3: member view for the former free stand-ins
 public:
     float GetAbilityRate(SAType eType);   // 0x1411e1110
     void FUN_1411e7660();
+    MS2Ptr<CEquipItem> FUN_1411e1580(__int64 uid);   // 0x1411e1580 the worn item with this uid
     void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // 0x1411e1ce0 the worn items in a layer
 };
 void FUN_1412752d0(const CStringW& key, int a);
@@ -215,7 +207,7 @@ extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 extern template class MS2Ptr<CMsgBoxData>;
 extern template class MS2Ptr<ASMovieClip>;
-extern template class MS2Ptr<Unk_BackUpItem>;
+extern template class MS2Ptr<CEquipItem>;
 
 // @0x14129cfa0
 UIItemRemakeOptionDialog::UIItemRemakeOptionDialog()
@@ -395,10 +387,10 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
     }
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
-        ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
-        reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->CollectShownItemsInLayer(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&equips), 0);
+        ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
+        reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->CollectShownItemsInLayer(equips, 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos)) {
-            MS2Ptr<Unk_BackUpItem> equip = equips.GetAt(pos);
+            MS2Ptr<CEquipItem> equip = equips.GetAt(pos);
             if (!equip)
                 continue;
             MS2Ptr<CItem> item = equip->GetItem();
@@ -778,7 +770,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0800()
 // @0x1412a0900
 Unk_EnSlot* UIItemRemakeOptionDialog::FUN_1412a0900(const CString& name)
 {
-    Unk_EnSlot* slot = FUN_140f6e830(name);
+    Unk_EnSlot* slot = reinterpret_cast<Unk_EnSlot*>(FUN_140f6e830(name));
     if (slot != 0)
         return slot;
     return 0;
@@ -895,7 +887,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1650(MS2Ptr<CItem> item)
         } else {
             MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
-                MS2Ptr<Unk_BackUpItem> equip = FUN_1416561a0(pc)->FUN_1411e1580(item->GetItemUid());
+                MS2Ptr<CEquipItem> equip = reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->FUN_1411e1580(item->GetItemUid());
                 if (equip.get() != 0) {
                     equip->SetItem(item.get());
                     equip->FUN_1411dd280();

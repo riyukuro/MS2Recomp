@@ -5,6 +5,7 @@
 // MS2-UNIT: unit_14111fdf0
 // MS2-RANGE: 0x14111fdf0-0x141121cf0 .text$mn
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAA@XZ 0x1411200d0
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"

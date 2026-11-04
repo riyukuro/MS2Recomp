@@ -14,7 +14,7 @@
 
 class ASData;
 class NotifyObject;
-class Unk_CoupleInput;
+class ASTextInput;
 class ASTileList;
 
 
@@ -71,7 +71,7 @@ private:
     MS2_LAYOUT_FRIEND;
     unsigned __int64 m_178;                                 // +0x178 the selected character (account of the partner)
     std::map<unsigned int, MS2Ptr<Unk_Emotion> > m_180;              // +0x180 the learned emotions by id
-    MS2Ptr<Unk_CoupleInput> m_190;                          // +0x190 "m_inputSearch"
+    MS2Ptr<ASTextInput> m_190;                              // +0x190 "m_inputSearch"
     bool m_1a0;                                             // +0x1a0 reverse order
     bool m_1a1;                                             // +0x1a1 favorites only
     CStringW m_1a8;                                         // +0x1a8 the search text

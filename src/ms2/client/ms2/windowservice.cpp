@@ -139,9 +139,9 @@ void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
 class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 
-class Unk_HeldObject;
-extern MS2Ptr<Unk_HeldObject> DAT_143ac2bd0;
-#define g_workerPtr reinterpret_cast<Unk_WorkerPtr&>(DAT_143ac2bd0)
+class CLoadingDialog;
+extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;     // 0x143ac2bd0, loadingdialog.cpp
+#define g_workerPtr reinterpret_cast<Unk_WorkerPtr&>(g_spLoadingDialog)
 class CLoadingDialog   // C3: member view for the former free stand-ins
 {
 public:

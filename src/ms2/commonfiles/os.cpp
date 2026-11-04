@@ -5,6 +5,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\os.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "os.h"
+#include "ms2/placeholder/mstime.h"   // C3: CMsTime(__time64_t), operator= (Read13)
 #define EE_EFD_CONFIG_RELEASE
 #define EE_USE_NATIVE_STL
 #include <efd/ILogger.h>
@@ -186,8 +187,8 @@ MS2_REPLACE_METHOD(0x14070F580, Unk_OSInput, Read10, 97, 0xB244067C);
 Unk_OSInput& Unk_OSInput::Read11(CStringW& value) { value=vfunc_8(); return *this; }
 MS2_REPLACE_METHOD(0x14070F5F0, Unk_OSInput, Read11, 97, 0x5BF0625C);
 // @0x14070f660
-Unk_OSInput& Unk_OSInput::Read12(Unk_OSId& value) { value=Unk_OSId(vfunc_4()); return *this; }
+Unk_OSInput& Unk_OSInput::Read12(ATL::CTime& value) { value=ATL::CTime(vfunc_4()); return *this; }
 MS2_REPLACE_METHOD(0x14070F660, Unk_OSInput, Read12, 64, 0x1DDE707F);
 // @0x14070f6b0
-Unk_OSInput& Unk_OSInput::Read13(Unk_OSNumber& value) { value=Unk_OSNumber(vfunc_4()); return *this; }
+Unk_OSInput& Unk_OSInput::Read13(Unk_OSNumber& value) { reinterpret_cast<CMsTime&>(value)=CMsTime(vfunc_4()); return *this; }
 MS2_REPLACE_METHOD(0x14070F6B0, Unk_OSInput, Read13, 66, 0x5DF6D9DC);

@@ -150,7 +150,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASDialog : public ASDisplayObject {};
-class Unk_CoupleInput : public ASTextInput {};          // "m_inputSearch": the search text input
+class Unk_CoupleInput : public ASTextInput {};          // the MS2Ptr<T>::AssignRaw twin at 0x140bf1810
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
@@ -231,7 +231,7 @@ void UICoupleActionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0) {
-        Unk_CoupleInput* pInput = m_30->FUN_140bbe940<Unk_CoupleInput>("m_inputSearch", m_190);
+        ASTextInput* pInput = m_30->FUN_140bbe940<ASTextInput>("m_inputSearch", m_190);
         if (pInput != 0)
             m_190->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICoupleActionDialog::FUN_140beced0));
     }
@@ -242,7 +242,7 @@ MS2_REPLACE_METHOD(0x140BEC2F0, UICoupleActionDialog, OnLoadComplete, 369, 0xCE6
 void UICoupleActionDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    m_190.AssignRaw(0);
+    reinterpret_cast<MS2Ptr<Unk_CoupleInput>&>(m_190).AssignRaw(0);   // the exe calls the twin at 0x140bf1810
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UICoupleActionDialog::FUN_140becea0));
 }
 MS2_REPLACE_METHOD(0x140BEC470, UICoupleActionDialog, vfunc_26, 244, 0x258ACD36);
@@ -258,7 +258,7 @@ int UICoupleActionDialog::vfunc_13()
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
-                if (((class ASUIComponent*)(class Unk_CoupleInput*)(m_190.operator->()))->GetFocused() != 0) {
+                if (((class ASUIComponent*)(class ASTextInput*)(m_190.operator->()))->GetFocused() != 0) {
                     SetSearchText(m_190->GetText());
                     ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->SetFocused(1);
                     ((class ASUIComponent*)(class ASDisplayObject*)(m_190.operator->()))->SetFocused(0);

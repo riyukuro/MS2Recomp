@@ -66,8 +66,8 @@ namespace egmAnimation { class AnimationService { public: NiActorManager* GetAct
 extern unsigned char DAT_143afc898; // assertions throw when set
 extern char DAT_1439fc800;          // texture format preferences
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Vector3 DAT_143a08cf8;   // the up axis
-extern Vector3 DAT_143a08cd8;   // reference axis
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up axis
+#define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X) // C3: was extern Vector3 DAT_143a08cd8; reference axis
 
 // ---- out-of-unit callees ----
 
@@ -500,7 +500,7 @@ void CPonyTailController::vfunc_37()
         if (pSrc != 0)
         {
             CString strControl = strPath + "_control.dds";
-            Unk_PonyHandle kTemp;
+            efd::SmartPointer<NiSourceTexture> kTemp;
             if (efd::File::Access((const char*)strControl, (efd::File::OpenMode)0))
             {
                 NiFixedString kName((const char*)strControl);
@@ -547,18 +547,18 @@ static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, Unk_P
         Vector3 kFwd = kN.FUN_140a00e10(kUp);
         kFwd.FUN_140968990();
         Unk_NiPoint3 cN(kN), cU(kUp), cF(kFwd);
-        Unk_NiMatrix3 mBasis(cN, cU, cF);
+        NiMatrix3 mBasis(reinterpret_cast<const NiPoint3&>(cN), reinterpret_cast<const NiPoint3&>(cU), reinterpret_cast<const NiPoint3&>(cF));
         if (nKind == 2)
         {
             Unk_EfdMatrix3 mTurn;
             ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
             if (pThis->m_spPicker.operator CItemPickingHelper*() && pThis->m_spPicker->GetPickedIndex() == nPickIndex)
                 mTurn.FUN_14107cc40(3.1415927f, kFwd);
-            mRot = Unk_NiMatrix3(mTurn.FUN_140a33480(mBasis));
+            mRot = Unk_NiMatrix3(mTurn.FUN_140a33480(reinterpret_cast<const Unk_EfdMatrix3&>(mBasis)));
         }
         else
         {
-            mRot = mBasis;
+            mRot = reinterpret_cast<Unk_NiMatrix3&>(mBasis);
         }
     }
     kPart.m_kPose.m_fScale = pModel->vfunc_21();

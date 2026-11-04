@@ -303,15 +303,6 @@ public:
 };
 
 #include <ecr/PickService.h>
-// The pick result of CameraMgr::FUN_140af0850 (camera.cpp layout; dtor 0x140a16120 bound in symbols-manual.tsv).
-class Unk_GoPickListPtr
-{
-public:
-    ~Unk_GoPickListPtr();                                               // 0x140a16120
-    ecr::PickService::PickRecord* FUN_140a16c00() const;                // the pick (null test)
-    ecr::PickService::PickRecord* FUN_140a16c30() const;                // operator-> (the pick record)
-    ecr::PickService::PickRecord* m_p;
-};
 
 class Unk_CubeHolder : public Unk_PCCubeCraft
 {
@@ -359,6 +350,7 @@ public:
     __int64 GetOwnerId(int nA, int nB);
     class Cube* FUN_1410b8790(Unk_Int3 pt);
     int FUN_1410cdd80(Vector3* pFrom, Vector3* pTo, float fDist, Unk_Int3* pOffset);
+    bool FUN_1410d55d0(int a, int b);
 };
 class Unk_CubeMgr
 {
@@ -366,7 +358,6 @@ public:
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
-    bool FUN_1410d55d0(int a, int b);
 };
 void FUN_140ef2fb0();
 CStringW FUN_140ef4540();
@@ -1473,7 +1464,7 @@ void UIUGCCubePaletteDialog::FUN_140eed2d0()
             nIndex = 5;
         else
             nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
-        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetMenuRowCount(nIndex);
         ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
         ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
@@ -1573,7 +1564,7 @@ void UIUGCCubePaletteDialog::FUN_140eede00(int nCubeType)
             nIndex = 0xf;
         else
             nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
-        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetMenuRowCount(nIndex);
         ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
         ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
@@ -1624,7 +1615,7 @@ void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCate
             nIndex = 0xf;
         else
             nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
-        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetMenuRowCount(nIndex);
         ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
         ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
         if (reinterpret_cast<MS2Ptr<UGCKeyMode>*>(&spFirst)->operator->() != 0)   // C3: the exe folds this operator-> onto MS2Ptr<UGCKeyMode>'s
@@ -1999,12 +1990,12 @@ void UGCKeyMode1::vfunc_1()
         float fX = 0;
         float fY = 0;
         ((CWindowService*)(Unk_FpsSvc*)(((class Unk_FpsSvc*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
-        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
-        if (spPick.FUN_140a16c00() == 0)
+        efd::SmartPointer<ecr::PickService::PickRecord> spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
+        if ((ecr::PickService::PickRecord*)spPick == 0)
             return;
-        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); i++)
         {
-            NiPick::Record* pHit = spPick.FUN_140a16c30()->GetPickResult()->GetAt(i);
+            NiPick::Record* pHit = spPick->GetPickResult()->GetAt(i);
             if (pHit == 0)
                 continue;
             NiObject* pObj = NiObject::DynamicCast(&NiMesh::ms_RTTI, pHit->GetAVObject());
@@ -2104,12 +2095,12 @@ void UGCKeyMode2::vfunc_1()
         float fX = 0;
         float fY = 0;
         ((CWindowService*)(Unk_FpsSvc*)(((class Unk_FpsSvc*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
-        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
-        if (spPick.FUN_140a16c00() == 0)
+        efd::SmartPointer<ecr::PickService::PickRecord> spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
+        if ((ecr::PickService::PickRecord*)spPick == 0)
             return;
-        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); i++)
         {
-            NiPick::Record* pHit = spPick.FUN_140a16c30()->GetPickResult()->GetAt(i);
+            NiPick::Record* pHit = spPick->GetPickResult()->GetAt(i);
             if (pHit == 0)
                 continue;
             NiObject* pObj = NiObject::DynamicCast(&NiMesh::ms_RTTI, pHit->GetAVObject());
@@ -2271,7 +2262,7 @@ void FUN_140ef2fb0()
         int nMapId = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FUN_141bd3060();
         int nStyle = FUN_1408a18d0((__int64)((class PCBase*)(pWorld))->FUN_141656a80());
         if (((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(1) != 0 || ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(3) != 0 || nCount > nMax ||
-            reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410d55d0(nMapId, nStyle) != 0 || FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) != 0 ||
+            ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410d55d0(nMapId, nStyle) != 0 || FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) != 0 ||
             FUN_140930ce0() != 0 || FUN_140930c50() != 0)
         {
             FUN_140ef37d0();

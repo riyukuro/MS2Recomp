@@ -22,6 +22,8 @@
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116dd30
 #include "ms2/commonfiles/os.h"
+#include <egf/Entity.h>
+#include "ms2/client/ms2/statemanager.h"  // C3: CStateService::FUN_1417e25a0
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -79,7 +81,6 @@ class Unk_LgMsgBox { public: virtual int vfunc_0(); virtual void vfunc_1(); virt
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22();
     virtual void vfunc_23(int nId, const char* szName); };   // FUN_140d86260: slot 0 is the region count, slot 23 shows a message box
-class Unk_LgState { public: void FUN_1417e25a0(int nSceneId); };   // FUN_140aa6d30
 
 class CUIService;
 class WorldService   // C3: member view for the former free stand-ins
@@ -102,13 +103,6 @@ CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
 void* FUN_140d86260();   // C3: was FUN_140d86260
 class CNetworkService* FUN_140714f90();
-class CStateService;
-template <> class TSingleton<CStateService>   // as in statemanager.h: s_instance is defined in statemanager.cpp
-{
-public:
-    static CStateService* s_instance;
-    static CStateService* GetInstance() { return s_instance; }
-};
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 UIIntroMovie* FUN_140e85420(int nUiId);
@@ -297,7 +291,7 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (m_nProgress != 0xffff)
             ((class Unk_LgMsgBox*)FUN_140d86260())->vfunc_23(0x388, "NotPreloadingToModeSelect");
-        reinterpret_cast<Unk_LgState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0x6200085);
+        TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200085);
         return 1;
     }
     else if (_stricmp("OnEndPopdown", szMethod) == 0)

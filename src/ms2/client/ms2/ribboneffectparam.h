@@ -63,11 +63,11 @@ public:
     void UpdateMesh();                                          // 0x141702d00 curve through the points + strip
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_NodePtr m_spOwner;          // +0x30 node the root is attached to (owner node or the effect scene root)
-    Unk_NodePtr m_spRoot;           // +0x38 "Effect Root" EffectNode
-    Unk_NodePtr m_spUnused40;       // +0x40 (never set)
+    NiNodePtr m_spOwner;            // +0x30 node the root is attached to (owner node or the effect scene root)
+    NiNodePtr m_spRoot;             // +0x38 "Effect Root" EffectNode
+    NiNodePtr m_spUnused40;         // +0x40 (never set)
     NiPointer<CMesh> m_spMesh;      // +0x48 "RibbonEffect"
-    Unk_NodePtr m_spTarget;         // +0x50 node of the target handle
+    NiNodePtr m_spTarget;           // +0x50 node of the target handle
     float m_fHalfWidth;             // +0x58 param width / 2
     int m_nQuality;                 // +0x5c param quality
     int m_nUVSets;                  // +0x60 = 1

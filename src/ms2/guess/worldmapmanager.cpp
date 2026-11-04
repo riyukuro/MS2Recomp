@@ -221,7 +221,6 @@ int FUN_140d01040(CString& strAlign);                                       // t
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-const Unk_FieldIdListPtr& FUN_141b695b0(Unk_FieldIdListMap* pMap, POSITION pos);  // CAtlMap::GetValueAt (uiworldmapdialog.cpp)
 CStringTable* GetStringTable();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pQuest);                                      // the quest id
@@ -1001,7 +1000,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         unsigned nField = portalMap.GetKeyAt(pos);
         if (!GetInstance()->FindMapTileByKey(nField))
             continue;
-        Unk_FieldIdListPtr spPortals = FUN_141b695b0(&portalMap, pos);
+        Unk_FieldIdListPtr spPortals = portalMap.GetValueAt(pos);
         for (POSITION portalPos = spPortals->GetHeadPosition(); portalPos != 0; spPortals->GetNext(portalPos))
         {
             unsigned nPortal = spPortals->GetAt(portalPos);
@@ -1030,7 +1029,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
     for (POSITION pos = npcMap.GetStartPosition(); pos != 0; ((ATL::CAtlMap<unsigned int, Unk_FieldPtr<ATL::CAtlList<unsigned int, ATL::CElementTraits<unsigned int>>>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_FieldPtr<ATL::CAtlList<unsigned int, ATL::CElementTraits<unsigned int>>>>>*)(void*)(&npcMap))->GetNext(pos))
     {
         int nNpcId = npcMap.GetKeyAt(pos);
-        Unk_FieldIdListPtr spFields = FUN_141b695b0(&npcMap, pos);
+        Unk_FieldIdListPtr spFields = npcMap.GetValueAt(pos);
         if (spFields->GetCount() == 0)
             continue;
         unsigned nField = spFields->GetHead();

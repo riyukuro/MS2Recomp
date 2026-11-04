@@ -55,6 +55,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/asevent.h"
 
 // return types of the getters this unit calls
 class Unk_InventoryListener;
@@ -138,21 +139,7 @@ public:
     unsigned FUN_1422cf920();                       // the selected count
     void FUN_1422cf980(std::vector<unsigned>& indices);    // the selected row indices
 };
-struct Unk_TrFindMulti { MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8cee0(const CString&); };
 
-// The list change event handed to the handlers and the row wrapper of the clicked row.
-class Unk_ListEventBase {
-public:
-    ~Unk_ListEventBase();                                                   // 0x1422e22a0
-    __int64 m_f0, m_f1, m_f2, m_f3, m_f4, m_f5, m_f6, m_f7;                 // 0x40 bytes (no array: the exe has no GS cookie)
-};
-class ASListEvent : public Unk_ListEventBase {
-public:
-    ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params);     // 0x1422e2740
-    ~ASListEvent();                                                         // 0x140f83bb0
-    Scaleform::GFx::Value FUN_1422e27d0();                                  // the clicked row
-    int FUN_1422e2820();                                                    // its index
-};
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
 
 // The packet records of the page (the encoders are free functions of commonfiles\itemsocketsystemutil.cpp).
@@ -212,8 +199,7 @@ void FUN_140629c50(struct Unk_SockMsgI64&, class COutputStream&);   // C3: was F
 void FUN_140629d60(struct Unk_SockMsgF&, class CInPacket&);   // C3: was FUN_140629d60
 void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
 
-// @0x140f83bb0
-ASListEvent::~ASListEvent() {}
+// ASListEvent's implicit dtor 0x140f83bb0 is emitted here (asevent.h).
 
 // @0x140f7d060
 ItemSocketSystemPageSocketUnlock::ItemSocketSystemPageSocketUnlock()
@@ -264,7 +250,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     MS2Ptr<ASMovieClip> slots1 = m_root->FUN_1409b4560("m_slots1");
     {
         if (slots1.get() != 0) {
-            m_ingredientControl = reinterpret_cast<Unk_TrFindMulti*>(slots1.operator->())->FUN_140e8cee0("m_itemBag");
+            m_ingredientControl = reinterpret_cast<AScript*>(slots1.operator->())->FUN_140e159f0<ASMultiSelectTileCacheList>("m_itemBag");
             if (m_ingredientControl.get() != 0) {
                 if (multi)
                     reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82ba0), 0);

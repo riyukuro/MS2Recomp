@@ -9,7 +9,7 @@
 #include "hook/ms2hook.h"
 
 // Process-fatal error handler (shows the out-of-memory message and exits); out-of-unit.
-void FUN_141b6db40(int nCode);
+int FUN_141b6db40(size_t nSize);
 
 // @0x1414d6c20
 MS2PhysXAllocator::MS2PhysXAllocator()

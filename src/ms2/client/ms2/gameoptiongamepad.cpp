@@ -17,19 +17,12 @@
 #include <algorithm>
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/asmousecursor.h"
+#include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/asslider.h"
 #include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local placeholders ----
 
-// The gamepad cursor HUD dialog (UI id 6).
-class Unk_GpHud : public CPtred
-{
-public:
-};
-
-class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 // The game-option settings object (TSingleton<CGameOption>; +0x1a0 is the saved gamepad block).
 class Unk_GpSettings
@@ -201,11 +194,11 @@ void CGameOptionGamePad::vfunc_10()
     FUN_14125f670(&m_state, m_state.m_bUse, true);
     if (FUN_140a58520(FUN_140a58540()) != 0)
     {
-        MS2Ptr<Unk_GpHud> spHud = ((class Unk_GpHudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
-        if (static_cast<Unk_GpHud*>(spHud) != 0)
+        MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+        if (static_cast<ASMouseCursor*>(spHud) != 0)
         {
-            reinterpret_cast<MS2Ptr<ASMouseCursor>&>(spHud)->FUN_1422cee00();
-            reinterpret_cast<MS2Ptr<ASMouseCursor>&>(spHud)->FUN_1422cee50((Unk_MouseCursorType)0);
+            spHud->FUN_1422cee00();
+            spHud->FUN_1422cee50((Unk_MouseCursorType)0);
         }
     }
 }

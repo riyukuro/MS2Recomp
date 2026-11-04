@@ -56,7 +56,7 @@ public:
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
 void FUN_140275080(CString&, void*, const char*);                        // split at a separator (C3: the exe's void* signature)
-void FUN_140177f30(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);   // split into numbers
+template <class T> void XmlSplitImpl(const CString& str, ATL::CAtlArray<T>& arr, const char* pszDelim);   // 0x140177f30
 
 // The three-argument log call of this unit (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 // @0x1405b1bd0
@@ -190,7 +190,7 @@ int CItemGemStoneUpgradeTable::Load()
         if (!strParts.IsEmpty())
         {
             ATL::CAtlArray<unsigned> list;
-            FUN_140177f30(strParts, list, ",");
+            XmlSplitImpl<int>(strParts, reinterpret_cast<ATL::CAtlArray<int>&>(list), ",");
             if (!list.IsEmpty())
             {
                 size_t nCount = list.GetCount();

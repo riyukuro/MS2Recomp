@@ -27,23 +27,6 @@
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
 
-class NxBounds3   // C3: member view for the former free stand-ins
-{
-public:
-    void set(float, float, float, float, float, float);
-};
-class NxMat33   // C3: member view for the former free stand-ins
-{
-public:
-    void id();
-    void multiply(class NxVec3 const&, class NxVec3&) const;
-    void rotZ(float);
-};
-class NxMat34   // C3: member view (was Unk_CtbMat34::FUN_140adbcb0)
-{
-public:
-    NxVec3 operator*(const NxVec3& v) const;   // pose * point
-};
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
 
@@ -83,14 +66,14 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
         return 0;
     m_entityId = pEntity->GetEntityIDValue();
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
-    ((class NxBounds3*)(struct Unk_CtbBounds3*)(&m_bounds))->set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
+    m_bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.m_pos.x = ptPos.x;
     m_pose.m_pos.y = ptPos.y;
     m_pose.m_pos.z = ptPos.z;
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
     m_pose.FUN_140b00260(&m_inverse);
-    NxCreateBox(*(class NxBox*)(&m_obb), *(class NxBounds3 const*)(&m_bounds), *(class NxMat34 const*)(&m_pose));
+    NxCreateBox(m_obb, m_bounds, *(class NxMat34 const*)(&m_pose));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0x6AA13F9C);
@@ -98,7 +81,7 @@ MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0
 // @0x140aff330
 int CCameraTargetBoundingBox::Contains(Vector3 pt)
 {
-    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), static_cast<const NxVec3&>(NxVec3(pt.x, pt.y, pt.z))) != 0;
+    return NxBoxContainsPoint(m_obb, static_cast<const NxVec3&>(NxVec3(pt.x, pt.y, pt.z))) != 0;
 }
 MS2_REPLACE_METHOD(0x140AFF330, CCameraTargetBoundingBox, Contains, 104, 0xFF706066);
 
@@ -109,18 +92,18 @@ Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
         return pt;
     NxVec3 vWorld(pt.x, pt.y, pt.z);
     NxVec3 vLocal = reinterpret_cast<const NxMat34&>(m_inverse) * vWorld;
-    if (vLocal.x < m_bounds.m_min.x)
-        vLocal.x = m_bounds.m_min.x;
-    if (vLocal.x > m_bounds.m_max.x)
-        vLocal.x = m_bounds.m_max.x;
-    if (vLocal.y < m_bounds.m_min.y)
-        vLocal.y = m_bounds.m_min.y;
-    if (vLocal.y > m_bounds.m_max.y)
-        vLocal.y = m_bounds.m_max.y;
-    if (vLocal.z < m_bounds.m_min.z)
-        vLocal.z = m_bounds.m_min.z;
-    if (vLocal.z > m_bounds.m_max.z)
-        vLocal.z = m_bounds.m_max.z;
+    if (vLocal.x < m_bounds.min.x)
+        vLocal.x = m_bounds.min.x;
+    if (vLocal.x > m_bounds.max.x)
+        vLocal.x = m_bounds.max.x;
+    if (vLocal.y < m_bounds.min.y)
+        vLocal.y = m_bounds.min.y;
+    if (vLocal.y > m_bounds.max.y)
+        vLocal.y = m_bounds.max.y;
+    if (vLocal.z < m_bounds.min.z)
+        vLocal.z = m_bounds.min.z;
+    if (vLocal.z > m_bounds.max.z)
+        vLocal.z = m_bounds.max.z;
     vWorld = reinterpret_cast<const NxMat34&>(m_pose) * vLocal;
     return Vector3(vWorld.x, vWorld.y, vWorld.z);
 }

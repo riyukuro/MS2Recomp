@@ -226,12 +226,9 @@ class Unk_WsC_GameObj : public GameObject {};                         // WorldSe
 class Unk_PdWorld : public WorldService                                 // the world service (WorldService::GetInstance)
 {
 public:
-    MS2Ptr<CProxyGameObject> FUN_141bc9be0(unsigned int nObjectId);     // the proxy of an object id
 };
 class Unk_PdApp                                                         // the application / ui service (FUN_1403ed2b0)
 {
-public:
-    float FUN_141adbe70();                                              // the ui scale
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_140d86260();   // C3: was FUN_140d86260
@@ -1717,8 +1714,7 @@ public:
     void FUN_141930950(class UIEntityEventListener*);
 };
 class Unk_PmUgcEvents;
-MS2Ptr<ASScrollingList> FUN_140bc61d0(int nMovieId, const Scaleform::GFx::Value& v);  // new ASScrollingList
-class Unk_PmRoot { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& obj); };
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // new T (0x140bc61d0 for ASScrollingList)
 void FUN_14028cd00(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int n);   // split
 int FUN_1418fd740(__int64 nAccount, __int64 nCharId, int nKind);       // report
 int FUN_1418fd330(__int64 nCharId);
@@ -2008,7 +2004,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     target.m_n20 = ((class PC*)(class PCBase*)(pTarget))->FUN_141654700();
     target.m_nJobCode = ((class PC*)(class PCBase*)(pTarget))->FUN_141654730();
     {
-        MS2Ptr<CProxyGameObject> spProxy = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bc9be0(pTarget->FUN_14123c580());
+        MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FindProxyObject(pTarget->FUN_14123c580());
         if (spProxy.get() != 0)
             target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(spProxy->FUN_1416c2950())->Sum();
     }
@@ -2522,7 +2518,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         obj.FUN_1407cb9c0("trophy", target.m_nTrophy);
         obj.FUN_1407cb9c0("jobcode", target.m_nJobCode);
     }
-    Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
+    Scaleform::GFx::Value list = m_30.get()->Invoke("open", obj);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(list))->IsObject())
     {
         m_100 = 0;
@@ -2533,7 +2529,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
         FUN_140b632f0()->AddToLayer(this, 0);
         ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
         ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
-        m_f0 = FUN_140bc61d0(m_28, list);
+        m_f0 = Unk_ASCreate<ASScrollingList>(m_28, list);
         return 1;
     }
     return 0;
@@ -2558,8 +2554,8 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
     }
     if (m_80 == 2)
     {
-        fX = fX * ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
-        fY = fY * ((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
+        fX = fX * TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
+        fY = fY * TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
     }
     ASObj obj(2);
     Unk_PdSetData(&obj, "type", (Unk_PmMenuType)m_84);
@@ -2573,7 +2569,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
         Unk_PdSetData(&obj, "dirx", Unk_PmDirOn);
         Unk_PdSetData(&obj, "diry", Unk_PmDirOn);
     }
-    Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
+    Scaleform::GFx::Value list = m_30.get()->Invoke("open", obj);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(list))->IsObject())
     {
         m_100 = 0;
@@ -2583,7 +2579,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
         FUN_140b632f0()->AddToLayer(this, 0);
         ((class Unk_UpperEvents*)(class Unk_PmEntityEvents*)(((class Unk_PmEntityEvents*)FUN_140c607b0())))->FUN_1419308c0(this);
         ((class UIUGCEventDispatcher*)(class Unk_PmUgcEvents*)(reinterpret_cast<Unk_PmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(this);
-        m_f0 = FUN_140bc61d0(m_28, list);
+        m_f0 = Unk_ASCreate<ASScrollingList>(m_28, list);
         return 1;
     }
     return 0;
@@ -3541,16 +3537,7 @@ void UIPopUpMenu::FUN_141a871a0()
 
 // ======== the popup dispatch (the sixth TU of this range: right click on the scene) ========
 
-// The pick result of CameraMgr::FUN_140af0850 (camera.cpp layout; dtor 0x140a16120 bound in symbols-manual.tsv).
 class Unk_GoPickHit;
-class Unk_GoPickListPtr
-{
-public:
-    ~Unk_GoPickListPtr();                                               // 0x140a16120
-    ecr::PickService::PickRecord* FUN_140a16c00() const;
-    ecr::PickService::PickRecord* FUN_140a16c30() const;
-    ecr::PickService::PickRecord* m_p;
-};
 class Unk_PpScene;
 #include "ms2/commonfiles/usermail.h"   // C3: CUserMail::FUN_1408e57f0 (was a free FUN_1408e57f0)
 #define FUN_1408e57f0() ((Unk_PpScene*)CUserMail::FUN_1408e57f0())   // the ui scene manager
@@ -3562,8 +3549,8 @@ public:
 };
 ecr::SceneGraphService* GetSceneGraphService();
 // The second exe copy of SmartPointer<egf::Entity>::operator Entity* (0x1408a9280, identical to 0x1408a9090).
-struct Unk_PpEntityRef { egf::Entity* FUN_1408a9280(); };
-void FUN_1413fb630(egf::Entity* pEntity, efd::vector<unsigned __int64>& meshes);   // the meshes of an entity (grown with the efd allocator)
+// C3: the entity reads go through the real efd::SmartPointer<egf::Entity>::operator-> (0x1408a9280)
+void FUN_1413fb630(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes);   // the meshes of an entity (grown with the efd allocator)
 // The pick cursor point (TU-local): its ctor 0x141a8e170 constructs an efd::Point3 member (efd::Point3(x, y, z) 0x14027dda0).
 struct Unk_PdCursor
 {
@@ -3573,7 +3560,6 @@ struct Unk_PdCursor
 };
 float FUN_140966f00(Unk_PdCursor kA, NiPoint3 kB);                      // the distance
    // CStateService
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 extern int DAT_143ab0248;                                               // the client country
 struct Unk_PpInteract : CInteractObjectData
 {
@@ -3645,16 +3631,16 @@ void FUN_141a8a010(float x, float y)
     {
         if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
             return;
-        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(x, y, true, true, false, 0);
-        if (spPick.FUN_140a16c00() == 0)
+        efd::SmartPointer<ecr::PickService::PickRecord> spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(x, y, true, true, false, 0);
+        if ((ecr::PickService::PickRecord*)spPick == 0)
             return;
         if (((class GFxSceneService*)(class Unk_PpScene*)(FUN_1408e57f0()))->GetSubSceneId() == 0x620001f)
             return;
         std::vector<GameObject*> objects;
         std::list<Unk_GoPickHit*> hits;
-        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); i++)
         {
-            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
+            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick->GetPickResult()->GetAt(i));
             if (pHit == 0)
                 continue;
             GameObject* pObject = WorldService::GetInstance()->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
@@ -3688,9 +3674,9 @@ void FUN_141a8a010(float x, float y)
             if (FUN_141a8b670(pHit, x, y))
                 return;
         }
-        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick->GetPickResult()->GetSize(); i++)
         {
-            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
+            Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick->GetPickResult()->GetAt(i));
             GameObject* pObject = 0;
             egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(static_cast<NiAVObject*>(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             int nId = 0;
@@ -3833,7 +3819,7 @@ void FUN_141a8b020(int nBannerId, float x, float y)
     UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
     {
-        MS2Ptr<CUgcRegistBanner> spBanner = ((class CUgcManager*)FUN_14052d220())->GetRegistBanner(nBannerId);
+        MS2Ptr<CUgcRegistBanner> spBanner = TSingleton<CUgcManager>::GetInstance()->GetRegistBanner(nBannerId);
         if (spBanner == 0)
             return;
         Unk_PopupMenuInfo info(x, y, 2, 0x40, 0, CString(""), 0);
@@ -3888,14 +3874,14 @@ bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
         efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
         if (spEntity == 0)
             continue;
-        efd::vector<unsigned __int64> meshes;
-        FUN_1413fb630(spEntity, meshes);
+        efd::vector<NiMesh*> meshes;
+        FUN_1413fb630(spEntity, &meshes);
         for (unsigned __int64 i = 0; i < meshes.size(); i++)
         {
-            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == meshes.at(i))
+            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == (unsigned __int64)(void*)meshes.at(i))
             {
                 int nBannerId = 0;
-                reinterpret_cast<Unk_PpEntityRef*>(&spEntity)->FUN_1408a9280()->GetPropertyValue<int>(0x819a96c0, nBannerId);
+                spEntity.operator->()->GetPropertyValue<int>(0x819a96c0, nBannerId);
                 FUN_141a8b020(nBannerId, x, y);
                 return true;
             }
@@ -3915,14 +3901,14 @@ bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
         efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
         if (spEntity == 0)
             continue;
-        efd::vector<unsigned __int64> meshes;
-        FUN_1413fb630(spEntity, meshes);
+        efd::vector<NiMesh*> meshes;
+        FUN_1413fb630(spEntity, &meshes);
         for (unsigned __int64 i = 0; i < meshes.size(); i++)
         {
-            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == meshes.at(i))
+            if ((unsigned __int64)((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()) == (unsigned __int64)(void*)meshes.at(i))
             {
                 int nRowId = 0;
-                reinterpret_cast<Unk_PpEntityRef*>(&spEntity)->FUN_1408a9280()->GetPropertyValue<int>(0xd460e9bc, nRowId);
+                spEntity.operator->()->GetPropertyValue<int>(0xd460e9bc, nRowId);
                 MS2Ptr<CInteractObjectData> spData = CInteractObjectData::Get(nRowId);
                 if (spData.operator==(0))
                     continue;

@@ -29,10 +29,8 @@ MS2_CHECK_OFFSET(StateEffectData, m_strEffect, 0x08);
 MS2_CHECK_OFFSET(StateEffectData, m_nGender, 0x20);
 
 // Output list the effect lookup appends effect ids to.
-class Unk_StateEffectIdList
+class Unk_StateEffectIdList : public std::list<unsigned>   // C3: the State's m_ids; ids go in through the real push_back (0x140a3fce0)
 {
-public:
-    void FUN_140a3fce0(const int& nId);         // push_back
 };
 
 // RTTI StateEffectMgr, 0x40 bytes (TSingleton at +0).

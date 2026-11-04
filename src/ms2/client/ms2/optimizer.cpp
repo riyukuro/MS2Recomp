@@ -377,7 +377,7 @@ void COptimizer::LoadOptimization()
         bool bLoaded;
         {
             CString strFile("Optimization.xml");
-            bLoaded = doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755b0(), strFile), 0);
+            bLoaded = doc.LoadFile(FUN_140cc2a00(FUN_1412755b0(), strFile), TIXML_ENCODING_UNKNOWN);
         }
         if (bLoaded)
         {

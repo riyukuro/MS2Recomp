@@ -24,9 +24,7 @@ class CMailInfo;
 class Unk_MlButton;
 class Unk_MlCheckBox;
 class ASScrollingList;
-class Unk_MlTab;
 class ASTextInput;
-class Unk_MsCombo;
 template <class T> class Unk_MailPtr;
 
 // One ad of an ad mail as a bill row (RTTI .?AVASMailAdBillData@@, 0x58 bytes; ctor 0x1419ea130, dtor 0x1419ea3c0).
@@ -102,7 +100,6 @@ public:
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
     MS2Ptr<Unk_MlButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button
-    MS2Ptr<Unk_MlTab> FUN_140c02870(const CString& strName);        // 0x140c02870 tab strip
     MS2Ptr<Unk_MlCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
 
 private:
@@ -151,7 +148,6 @@ public:
     void FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& names);   // buddies and guild members by character id
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
-    MS2Ptr<Unk_MsCombo> FUN_140c28560(const CString& strName);      // 0x140c28560 dropdown
 
 private:
     MS2_LAYOUT_FRIEND;

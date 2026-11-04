@@ -96,9 +96,8 @@ class Unk_TaxiResTable;
 class Unk_TaxiTimer;
 struct Unk_TaxiEnt { };
 
-struct Unk_PtrB;
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;            // the taxi stops found (ids)
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;            // the taxi stops found (ids)
+extern ATL::CAtlArray<unsigned int> DAT_143ab3098;
 extern int DAT_143ab2870;                               // taxi station id (resource id)
 class CTaxiManager;
 class OnceCallbackTimer;

@@ -52,7 +52,6 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int, int, int);
 void FUN_1412751f0(const CStringW&, int, int);
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 class UICommunityQueryDialog : public UIDialog {};
 UICommunityQueryDialog* FUN_140ae5a30(int);
@@ -413,7 +412,7 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
         FUN_141275260(0x2f7, 1, 1);
         return;
     }
-    if (CBanTextChecker* pFilter = FUN_14025e7d0()->GetChecker().operator CBanTextChecker*())
+    if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().operator CBanTextChecker*())
     {
         CStringW strBad;
         if (pFilter->FUN_140225210(strName, strBad, 0) != 0)

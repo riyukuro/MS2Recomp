@@ -134,7 +134,6 @@ class Unk_SiWorld : public WorldService
 {
 public:
     MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);                  // an interact object by name
 };
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
@@ -334,7 +333,7 @@ void StateInteraction::vfunc_5(int n)
     {
         if (m_spInteract.get())
         {
-            MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
+            MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(m_spInteract->m_strObjectId);
             if (spObject.get())
                 spObject->vfunc_9();
         }
@@ -359,7 +358,7 @@ void StateInteraction::vfunc_8(double fTime)
         return;
     if (m_n10 == 0x8d && m_spInteract.get())
     {
-        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(m_spInteract->m_strObjectId);
         if (spObject.get() ? true : false)
         {
             if (spObject->vfunc_4() != 0)
@@ -373,7 +372,7 @@ void StateInteraction::vfunc_8(double fTime)
     }
     if (m_spInteract.get())
     {
-        MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(m_spInteract->m_strObjectId);
         if (spObject.get())
         {
             if (m_n48 != 0)
@@ -554,7 +553,7 @@ int StateInteraction::FUN_1417d2880()
         return 0;
     if (m_spInteract->m_nFlag == 0)
         return 0;
-    MS2Ptr<CInteractObject> spObject = reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_spInteract->m_strObjectId);
+    MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(m_spInteract->m_strObjectId);
     if (spObject.IsNull())
         return 0;
     if (spObject->vfunc_16() == 0)

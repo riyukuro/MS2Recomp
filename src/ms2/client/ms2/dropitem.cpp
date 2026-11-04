@@ -140,7 +140,7 @@ float FUN_140966f00(Vector3 kA, NiPoint3 kB);       // the same, the second poin
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; NiPoint3::UNIT_Y
-extern Vector3 DAT_143a08cf8;                               // NiPoint3::UNIT_Z
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; NiPoint3::UNIT_Z
 extern Vector3 DAT_143a08d08;                               // NiPoint3::ALL_ONES
 
 extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY

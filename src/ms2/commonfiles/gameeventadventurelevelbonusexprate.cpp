@@ -4,6 +4,11 @@
 // emitted by the instantiations below, which pull in the dtor COMDATs.
 // MS2-UNIT: ?\gameeventadventurelevelbonusexprate.cpp
 // MS2-RANGE: 0x1403e4a90-0x1403e8230 .text$mn
+// MS2-PIN: ??1?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x1403e4c10 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??1?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@QEAA@XZ 0x1403e4f40 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??1?$MS2Ptr@VGameEventAdventureLevelBonusExpRate@@@@QEAA@XZ 0x1403e5180 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??1?$MS2Ptr@VGameEventArcadeOpen@@@@QEAA@XZ 0x1403e5630 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ??4?$MS2Ptr@UOntimeEventContext@@@@QEAAAEAV0@AEBV0@@Z 0x1403e7a70 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??1BurningLevelupContext@@UEAA@XZ 0x1403e58e0
 // MS2-PINS-BEGIN tplpin

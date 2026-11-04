@@ -378,12 +378,6 @@ public:
     virtual int vfunc_63();                             // 0x1f8
     void FUN_14166d8e0(Vector3 kDir);
 };
-class Unk_GsWorld : public WorldService
-{
-public:
-    MS2Ptr<CPortal> FUN_141bc2800(int nId);
-    int FUN_141bda9f0();
-};
 class Unk_GsGround : public CubeMapInformationService { };
 
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
@@ -395,7 +389,7 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_141901390(int nRelease, int nUiType);
 void FUN_14151f200();
 void FUN_141ac9310(Vector3 kRot, Vector3* pDir, Vector3* pOut);
-extern Vector3 DAT_143a08cf8;                       // the up vector
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; the up vector
 struct Unk_GsMatrix3
 {
     Unk_GsMatrix3() {}                                      // 0x1409f72e0
@@ -665,7 +659,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
     if (pPlayer == 0) return;
     int bMoved = 0;
     if (m_b0 != 0) {
-        MS2Ptr<CPortal> ref = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_b0);
+        MS2Ptr<CPortal> ref = WorldService::GetInstance()->FUN_141bc2800(m_b0);
         if (((void*)ref.get()) != 0) {
             Vector3 kHit;
             if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ref->FUN_14169d2f0(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
@@ -789,7 +783,7 @@ void UISceneGameCinematicCutScene::vfunc_48(int n)
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) pPlayer->vfunc_22(DAT_143b01a60);
     FUN_141901390(0, vfunc_65());
-    reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bd3c00(false);
+    WorldService::GetInstance()->FUN_141bd3c00(false);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0xb);
@@ -802,7 +796,7 @@ void UISceneGameCinematicCutScene::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     FUN_141901390(1, vfunc_65());
-    reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bd3c00(true);
+    WorldService::GetInstance()->FUN_141bd3c00(true);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0);
@@ -984,7 +978,6 @@ CMyCharacter* FUN_140931510();
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class UIDPSDialog;
 template <class T> T* PCBaseDialog(int nId);
-CommonString* FUN_14025e7d0();
 void* FUN_141371b20();   // C3: was FUN_141371b20
 void* FUN_141371b30();   // C3: was FUN_141371b30
 class CSoundService* FUN_140c9cb10();   // C3: was FUN_140c9cb10
@@ -1215,7 +1208,7 @@ int UISceneGamePlay::FUN_141aca870()
             return 1;
         }
         else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x21, 1, 0) != 0) {
-            reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bd2fa0();
+            WorldService::GetInstance()->FUN_141bd2fa0();
             return 1;
         }
         else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x2a, 1, 0) != 0 && ((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x1e, 1, 0) != 0) {
@@ -1336,7 +1329,7 @@ int UISceneGamePlay::FUN_141aca870()
                 return 1;
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x24, 1, 0) != 0) {
-                reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->ShowResearchAndDevelopmentDialog();
+                WorldService::GetInstance()->ShowResearchAndDevelopmentDialog();
                 return 1;
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x3f, 1, 0) != 0) {
@@ -1345,15 +1338,15 @@ int UISceneGamePlay::FUN_141aca870()
                 FUN_140c9cb10();
                 FUN_1417af7a0();
                 if (FUN_1401d1320(reinterpret_cast<CCacheData*>(TSingleton<CItemDataTable>::GetInstance())) != 0) reinterpret_cast<Unk_GsSettings*>(TSingleton<CItemDataTable>::GetInstance())->Reload();
-                FUN_14025e7d0()->Reload();
+                TSingleton<CommonString>::GetInstance()->Reload();
                 FUN_1409c51f0();
                 UIMessenger::ReloadDebugChatCommands();
                 FUN_141815db0((void*)FUN_141371b20());
                 return 1;
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x41, 1, 0) != 0) {
-                int bShow = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bda9f0() == 0;
-                reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bda9c0(bShow);
+                int bShow = WorldService::GetInstance()->FUN_141bda9f0() == 0;
+                WorldService::GetInstance()->FUN_141bda9c0(bShow);
                 CStringW strMsg;
                 strMsg.Format(L"Proxy 보기 : %s", bShow != 0 ? L"True" : L"False");
                 FUN_1412751b0(strMsg, 0x14);
@@ -1621,7 +1614,7 @@ void UISceneGamePlay::FUN_141acc510(NotifyObject* pNotify)
     if (pChange == 0) return;
     reinterpret_cast<Common::Constants*>(FUN_1401d3200())->Load();
     TSingleton<CStringTable>::GetInstance()->FUN_141811960();
-    FUN_14025e7d0()->Reload();
+    TSingleton<CommonString>::GetInstance()->Reload();
     FUN_1409c51f0();
     FUN_141815db0((void*)FUN_141371b20());
 }

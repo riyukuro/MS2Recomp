@@ -94,7 +94,7 @@ extern NiFixedString DAT_143ae53a0;
 
 // The world service accessors this unit uses.
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_MarkerMap;
-void FUN_1401cd100(void* pId, __int64 nId);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -166,16 +166,15 @@ void FUN_142cabb00();
 struct Unk_RegMarker {};
 static char s_id[8];
 // @0x1400e5030
-static Unk_RegMarker s_initId = (FUN_1401cd100(&s_id, 0), Unk_RegMarker());
+static Unk_RegMarker s_initId = (reinterpret_cast<Unk_BuddyHandle*>(&s_id)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
 static char s_marker[0x48];
 // @0x1400e5050
 static Unk_RegMarker s_initMarker = (reinterpret_cast<Unk_MarkerMap*>(&s_marker)->Unk_MarkerMap::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());
 
-void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142cabb00
-void FUN_142cabb00() { FUN_1402aa1d0(s_marker); }
+void FUN_142cabb00() { reinterpret_cast<Unk_MarkerMap*>(s_marker)->Unk_MarkerMap::~Unk_MarkerMap(); }
 #endif
 
 // ---- the functions ----

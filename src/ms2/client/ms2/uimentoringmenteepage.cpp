@@ -72,7 +72,6 @@ class Unk_MentorClip : public ASMovieClip {};
 class Unk_MentorScript : public AScript
 {
 public:
-    MS2Ptr<ASUIComponent> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
 };
 CString FUN_141028be0(__int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
 CString FUN_14016a600(const wchar_t* sz, int n);                         // wide to narrow
@@ -111,7 +110,7 @@ void ASMentoringMenteePage::Refresh()
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
     int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
-    ((class ASTextField*)(m_coin))->SetTextW(FUN_14028dfa0<unsigned, unsigned>(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentee), reinterpret_cast<const unsigned&>(nReward)));
+    m_coin->SetTextW(FUN_14028dfa0<unsigned, unsigned>(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentee), reinterpret_cast<const unsigned&>(nReward)));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
 
@@ -215,7 +214,7 @@ void UIMentoringPage::FUN_140c6f190()
     {
         pNotify->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
     }
-    if (MS2Ptr<ASUIComponent> pMentor = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0("m_mentor"))
+    if (MS2Ptr<ASUIComponent> pMentor = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>("m_mentor"))
     {
         pMentor->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
     }
@@ -233,7 +232,7 @@ MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, FUN_140c6f190, 1536, 0xA2D1B5E6
 // @0x140c6f7a0
 void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEntry)
 {
-    MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0(strName);
+    MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>(strName);
     if (pClip.get())
     {
         ASObj obj(2);

@@ -82,9 +82,9 @@ public:
     float m_fStartTime;                                     // +0x68 clock at which the current nif was started
     float m_fDuration;                                      // +0x6c longest controller of the owner node
     NiAVObjectPtr m_spNifRoot;                              // +0x70 scene root of the loaded nif
-    Unk_NodePtr m_spOwnerNode;                              // +0x78 node named m_strOwnerNode
-    Unk_NodePtr m_spPeerNode;                               // +0x80 node named m_strPeerNode
-    Unk_NodePtr m_spCenterNode;                             // +0x88 "Eff_center" (falls back to the owner node)
+    NiNodePtr m_spOwnerNode;                                // +0x78 node named m_strOwnerNode
+    NiNodePtr m_spPeerNode;                                 // +0x80 node named m_strPeerNode
+    NiNodePtr m_spCenterNode;                               // +0x88 "Eff_center" (falls back to the owner node)
     Unk_TargetPtr m_spTarget;                               // +0x90
 };
 MS2_CHECK_SIZE(CoupleEmotionAnimInfo, 0x98);
@@ -145,7 +145,7 @@ public:
     MS2Ptr<CoupleEmotionAnimInfo> m_spAnimInfo;             // +0x50
     efd::Point3 m_posSaved;                             // +0x60 position before the emotion started
     unsigned m_n6c;                                         // +0x6c time (ms) the current phase was entered
-    Unk_NodePtr m_spLoopEffectNode;                         // +0x70
+    NiNodePtr m_spLoopEffectNode;                           // +0x70
     ATL::CRBMap<CStringA, int> m_effects;                   // +0x78 effect name -> effect handle
 };
 MS2_CHECK_SIZE(StateCoupleEmotion, 0xa8);

@@ -43,7 +43,6 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 int FUN_140695080(class CMatchPartyRecruit const*);   // C3: was FUN_140695080
 
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // Keyboard state.
 class Unk_PsKeys : public CInputKeyHandler {};
@@ -313,7 +312,7 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
         FUN_140d73aa0(BlockFormat<int>(0xb53, 2), 0, 0, CStringW(L""));
         return 0;
     }
-    if (CBanTextChecker* pFilter = FUN_14025e7d0()->GetChecker().get())
+    if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().get())
     {
         CStringW strBad;
         if (pFilter->FUN_1402262e0(pState->m_text, strBad) != 0)

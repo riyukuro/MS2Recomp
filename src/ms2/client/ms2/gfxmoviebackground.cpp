@@ -65,7 +65,7 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // first member: efd::SmartPointer<efd::ServiceManager>
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae52e0;                                         // material name of the screen quad
-extern char DAT_143a08cd8;                                                  // the reference axis of the camera angle
+#define DAT_143a08cd8 (*(char*)&efd::Point3::UNIT_X)                                                // the reference axis of the camera angle
 
 // The GFx renderer HAL: slot 67 wraps a D3D surface into a render target.
 class Unk_BgHal

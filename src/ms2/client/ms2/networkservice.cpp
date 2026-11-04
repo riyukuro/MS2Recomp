@@ -76,6 +76,8 @@
 #include "ms2/client/ms2/dungeonrecordcli.h"  // C3: was a local member view
 #include "ms2/client/ms2/pcbase.h"  // C3: was a local member view
 #include "ms2/client/ms2/buddymanager.h"  // C3: was a local member view
+#include "ms2/client/ms2/inventory.h"  // C3: Unk_Inventory::FUN_140a612b0
+#include "ms2/placeholder/pcgemequip.h"  // C3: PCGemEquip::GetItemByGemType (was Unk_NetworkEquipment)
 #include "ms2/placeholder/statecoupleemotion.h"  // C3: was a local member view
 #include "ms2/client/ms2/rawstring.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
@@ -228,7 +230,6 @@ MS2_CHECK_SIZE(Unk_NetworkSyncRequest,4);
 
 void* FUN_140764020();
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class CKeyTable   // C3: member view for the former free stand-ins
@@ -332,11 +333,13 @@ void FUN_1405340b0(void*,__int64);
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 CStringW GetStringCommon(int);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
+enum eUIClassID : int;   // uiservice.h
 class CUIService   // C3: member view for the former free stand-ins
 {
 public:
     void SetMode(int);
     void FUN_141adbfb0(void* p);
+    MS2Ptr<UIObject> FindObject(eUIClassID nClass);   // 0x141adcea0 (was Unk_NetworkUIManager::FUN_141adcea0)
 };
 // Their units define s_instance; declaring the getters keeps os.h's generic s_instance from being instantiated here
 // (cl takes `template<> T* TSingleton<T>::s_instance;` for a definition).
@@ -365,7 +368,7 @@ public:
     int GetSubSceneId();
 };
 extern char DAT_143a7b760,DAT_143a7b788;
-void* FUN_14280ef5e(void*,long,void*,void*,int);
+extern "C" void* __RTDynamicCast(void*,long,void*,void*,int) noexcept(false);   // 0x14280ef5e (CRT; cl predeclares it, clang does not)
 
 #include "ms2/placeholder/conlinepatchfilebuffer.h"
 #include "ms2/placeholder/citem.h"
@@ -373,9 +376,8 @@ void* FUN_14280ef5e(void*,long,void*,void*,int);
 #include <list>
 void FUN_14038bb30(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
-int FUN_14053fd90(void*);int FUN_140a612b0(void*,int,Unk_SocketPtr<CItem>,int);extern char DAT_143ab2a90;
+int FUN_14053fd90(void*);extern char DAT_143ab2a90;
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
-class Unk_NetworkEquipment { public: Unk_SocketPtr<CItem> FUN_141270140(int); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -395,9 +397,6 @@ public:
 };
 extern unsigned short DAT_143ab2964;extern int DAT_143ab2970,DAT_143ab2974;
 void FUN_140aad050(void*,const ReconnectionOptions&);
-void FUN_140c0e410(void*);
-struct Unk_NetworkSessionPtr { ~Unk_NetworkSessionPtr(){FUN_140c0e410(this);} void* FUN_140c0e5d0() const; void* a0;void* p; };
-class Unk_NetworkSession { public: Unk_NetworkSessionPtr FUN_140d9f2c0(); };
 
 class CGameOption;
 template<> CGameOption* TSingleton<CGameOption>::GetInstance();
@@ -422,7 +421,6 @@ struct Unk_NetworkLoadingPtr {
 };
 MS2_CHECK_SIZE(Unk_NetworkLoadingPtr,8);
 inline Unk_NetworkLoadingPtr FUN_1415401b0(const efd::SmartPointer<CSceneStateBase>&);
-class Unk_NetworkUIManager { public: Unk_SocketPtr<UIObject> FUN_141adcea0(int); };
 extern char DAT_143a59c28,DAT_143a8da88;
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNetworkService);
@@ -496,7 +494,7 @@ BOOL CNetworkService::SendRetrieveFurnishingItem(CItem* item) {
     if(item==0) return false;
     if(!IsFutureTime(item->FUN_140528a90())) return false;
     int type=FUN_14053fd90(((void*)((class CItem*)(class CItem*)(item))->FUN_140527840()));
-    int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
+    int slot=reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a612b0(type,MS2Ptr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
     if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
     else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
@@ -681,7 +679,7 @@ void CNetworkService::DispatchPacket(CInPacket& packet) {
     case static_cast<int>(RecvOp::Quest): ((class CQuestManager*)(void*)(FUN_140764020()))->OnQuest(packet); break;
     case static_cast<int>(RecvOp::Party): ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->OnParty(packet); break;
     case static_cast<int>(RecvOp::Achieve): ((class CAchieveManager*)(void*)(((void*)FUN_1406c7600())))->OnPacket(*(class CByteBuffer*)&(packet)); break;
-    case static_cast<int>(RecvOp::Ugc): ((class CUgcManager*)(void*)(((void*)FUN_14052d220())))->OnUgc(packet); break;
+    case static_cast<int>(RecvOp::Ugc): TSingleton<CUgcManager>::GetInstance()->OnUgc(packet); break;
     case static_cast<int>(RecvOp::MeretMarket): ((class CMeratMarketMan*)(void*)(((void*)FUN_140939a00())))->OnMeretMarket(packet); break;
     case static_cast<int>(RecvOp::Gvg): OnGvg(packet); break;
     case static_cast<int>(RecvOp::KeyTable): ((class CKeyTable*)(void*)(((void*)FUN_1409331f0())))->OnKeyTable(packet); break;
@@ -820,7 +818,7 @@ void CNetworkService::OnGvg(CInPacket& input) {
         case 1: { bool flag=input.ReadBool();((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af130(flag);break; }
         case 7: ((class CContentShutdownManager*)(void*)(((void*)FUN_14025e7b0())))->FUN_140cca720(*(class Unk_ShutdownInput*)&static_cast<class CInputStream&>(input));break;
         case 25: { Unk_SocketOptions options;((class Unk_CommonFourInts*)(struct Unk_SocketOptions*)(&options))->Read(input);m_socket.FUN_1412672a0(options);break; }
-        case 42: ((class DungeonRecordManagerCli*)(void*)(reinterpret_cast<Unk_NetworkSession*>(((void*)FUN_140931510()))->FUN_140d9f2c0().FUN_140c0e5d0()))->OnRates(input);break;
+        case 42: FUN_140931510()->GetRecord()->OnRates(input);break;
         case 43: {
             ReconnectionOptions options;options.FUN_140208500(input);
             if(((void*)FUN_140e800e0())!=0) {
@@ -1064,7 +1062,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         } else { FUN_140d86260()->vfunc_59(result);FUN_140d73bc0(message,0,0,L""); }
     }
     if(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId()==0x6200009) {
-        void* login=FUN_14280ef5e(((void*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene()),0,&DAT_143a7b760,&DAT_143a7b788,0);
+        void* login=__RTDynamicCast(((void*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene()),0,&DAT_143a7b760,&DAT_143a7b788,0);
         if(login) ((class UISceneLogin*)(void*)(login))->FUN_141acf470();
     }
 } else { FUN_140d86260()->vfunc_11();DAT_143ab2860=reply.value; }
@@ -1199,7 +1197,7 @@ void CNetworkService::FUN_14153f6c0(CInPacket& input) {
     case 2: ((class PC*)(class Unk_NetworkPlayer*)(player))->FUN_141663620(); break;
     case 3: {
         __int64 itemId=input.ReadInt64();const CStringW& name=input.ReadUnicodeString();
-        Unk_SocketPtr<CItem> item=reinterpret_cast<Unk_NetworkEquipment*>(((void*)((class PC*)(class Unk_NetworkPlayer*)(player))->FUN_14165f460()))->FUN_141270140(7);
+        MS2Ptr<CItem> item=reinterpret_cast<PCGemEquip*>(((void*)((class PC*)(class Unk_NetworkPlayer*)(player))->FUN_14165f460()))->GetItemByGemType(7);
         if(static_cast<bool>(item)&&item->GetItemUid()==itemId) ((class CItem*)(class CItem*)(item.operator->()))->SetCoupleName(name);
     }
     }
@@ -1272,8 +1270,8 @@ inline Unk_NetworkLoadingPtr FUN_1415401b0(const efd::SmartPointer<CSceneStateBa
 // @0x141540270
 inline UIObject* FUN_141540270(int id) {
     if(((void*)TSingleton<CUIService>::GetInstance())!=0) {
-        Unk_SocketPtr<UIObject> object=reinterpret_cast<Unk_NetworkUIManager*>(((void*)TSingleton<CUIService>::GetInstance()))->FUN_141adcea0(id);
-        if(object.get()!=0) return static_cast<UIObject*>(FUN_14280ef5e(object.operator->(),0,&DAT_143a59c28,&DAT_143a8da88,0));
+        MS2Ptr<UIObject> object=reinterpret_cast<CUIService*>(((void*)TSingleton<CUIService>::GetInstance()))->FindObject(static_cast<eUIClassID>(id));
+        if(object.get()!=0) return static_cast<UIObject*>(__RTDynamicCast(object.operator->(),0,&DAT_143a59c28,&DAT_143a8da88,0));
     }
     return 0;
 }

@@ -19,6 +19,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>, SetTargetYaw)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- unit-local placeholders ----
@@ -49,7 +50,7 @@ public:
     virtual void vfunc_21(Vector3 pt);              // set the player rotation
 };
 
-// The target's rpg object (FUN_1409ffd30); slot 20 reads the player rotation.
+// The target's rpg object (efd::DynamicCast<PCBase, GameObject>); slot 20 reads the player rotation.
 class Unk_TargetRpg
 {
 public:
@@ -59,12 +60,6 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual Vector3 vfunc_20();
-};
-Unk_TargetRpg* FUN_1409ffd30(Unk_CameraTargetEntity* p);    // rpg object of a target
-class PCBase   // C3: member view for the former free stand-ins
-{
-public:
-    void SetTargetYaw(float);
 };
 
 float FUN_1409f25a0(float f);                       // cos
@@ -199,7 +194,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     if (!pTarget)
         return;
 
-    Unk_TargetRpg* pRpg = FUN_1409ffd30(pTarget);
+    Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pTarget)));
     Vector3 ptCenter;
     m_78 = pTarget->vfunc_17();
     m_78.z += vfunc_27();
@@ -260,7 +255,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f,
                                    m_108.m_setting.m_18.z * -0.0174532924f);
                 Vector3 ptDir;
-                kRot.FUN_140a01190(0, ptDir);
+                reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
                 ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
                 m_50 = m_108.m_38;
                 m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_108.m_38).FUN_14097fd50(ptCenter);
@@ -285,7 +280,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_d8.m_rot.x * -0.0174532924f, m_d8.m_rot.y * -0.0174532924f,
                                    m_d8.m_rot.z * -0.0174532924f);
                 Vector3 ptDir;
-                kRot.FUN_140a01190(0, ptDir);
+                reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
                 ptCenter = ptCenter.FUN_14097fd50(m_108.m_40.FUN_14097fc90(t));
                 m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_50).FUN_14097fd50(ptCenter);
                 m_d8.m_rot = CCameraMode::FUN_140afdd40(ptCenter, m_d8.m_pos, g_143a08cf8);
@@ -316,7 +311,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         Unk_NiMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f, m_108.m_setting.m_18.z * -0.0174532924f);
         Vector3 ptDir;
-        kRot.FUN_140a01190(0, ptDir);
+        reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
         ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
         m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_108.m_38 + (float)(m_1f0 * m_108.m_6c)).FUN_14097fd50(ptCenter);
         m_d8.m_rot = m_108.m_setting.m_18;
@@ -338,7 +333,7 @@ MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B
 void CLocalTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
     m_18c = m_setting.m_c.FUN_140965c40(CCameraMode::vfunc_35()).FUN_140967ac0();
-    Unk_TargetRpg* pRpg = FUN_1409ffd30(p);
+    Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(p)));
     if (pRpg)
     {
         m_194 = CCameraMode::FUN_140afdd40(CCameraMode::vfunc_35(), m_setting.m_c, g_143a08cf8);
@@ -363,7 +358,7 @@ void CLocalTargetCameraMode::FUN_140d4f680(const Unk_CameraSetup& setup)
     m_108 = setup;
     m_178 = 1;
     m_1f0 = 0;
-    Unk_TargetRpg* pRpg = FUN_1409ffd30(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+    Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60())));
     if (pRpg)
     {
         m_1ac = pRpg->vfunc_20();

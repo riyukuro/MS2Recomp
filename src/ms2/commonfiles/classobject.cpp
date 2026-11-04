@@ -71,16 +71,14 @@ struct Unk_PayloadReader : Unk_SPDReader {
 
 struct Unk_LoginMachineId { unsigned char m_data[16]; };                    // encoded by 0x14067c2c0, decoded by 0x14067c310
 MS2_CHECK_SIZE(Unk_LoginMachineId, 16);
-struct Unk_LoginBlob { unsigned char m_data[0x20]; };                       // encoded by 0x1406c3380, decoded by 0x1406c33f0
-MS2_CHECK_SIZE(Unk_LoginBlob, 0x20);
 class Unk_MachineId   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14067c2c0(class COutputStream*) const;
     void FUN_14067c310(class CInputStream*);
 };
-void FUN_1406c3380(Unk_LoginBlob* pBlob, COutputStream* pOut);
-void FUN_1406c33f0(Unk_LoginBlob* pBlob, Unk_PayloadReader* pIn);
+void FUN_1406c3380(ATL::CAtlArray<char>& a, COutputStream* out);    // unit_1406c3230_atlbytearrayglue
+void FUN_1406c33f0(ATL::CAtlArray<char>& a, Unk_SPDReader* in);
 
 // The first hello of the connection (Unk_NetworkHello in networkservice.cpp).
 struct Unk_LoginHello { unsigned m_nVersion, m_nLocale, m_nBuild; };
@@ -175,7 +173,7 @@ void FUN_1401f9470(Unk_LoginB* p, Unk_PayloadReader& in)
 MS2_REPLACE(0x1401F9470, FUN_1401f9470, 522, 0x6226ED33);
 
 struct Unk_LoginC {
-    unsigned m_nType; int m_n04; __int64 m_n08; Unk_LoginBlob m_blob10; Unk_LoginBlob m_blob30; unsigned m_n50;
+    unsigned m_nType; int m_n04; __int64 m_n08; ATL::CAtlArray<char> m_blob10; ATL::CAtlArray<char> m_blob30; unsigned m_n50;
     int m_n54; Unk_LoginMachineId m_id; int m_n68; int m_n6c; unsigned m_n70;
 };
 MS2_CHECK_SIZE(Unk_LoginC, 0x78);
@@ -185,8 +183,8 @@ void FUN_1401f9680(Unk_LoginC* p, COutputStream* out)
 {
     out->WriteUInt8(p->m_nType);
     out->WriteInt64(p->m_n08);
-    FUN_1406c3380(&p->m_blob10, out);
-    FUN_1406c3380(&p->m_blob30, out);
+    FUN_1406c3380(p->m_blob10, out);
+    FUN_1406c3380(p->m_blob30, out);
     out->WriteInt16((short)p->m_n50);
     out->WriteInt32(p->m_n54);
     ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c2c0(out);
@@ -203,8 +201,8 @@ void FUN_1401f97a0(Unk_LoginC* p, Unk_PayloadReader& in)
     Unk_SPDByteRange range;
     p->m_nType = in.FUN_140202740(*FUN_140203550(&range, 1, 2));
     p->m_n08 = in.ReadInt64();
-    FUN_1406c33f0(&p->m_blob10, &in);
-    FUN_1406c33f0(&p->m_blob30, &in);
+    FUN_1406c33f0(p->m_blob10, &in);
+    FUN_1406c33f0(p->m_blob30, &in);
     p->m_n50 = (unsigned short)in.ReadInt16();
     p->m_n54 = in.ReadInt32();
     ((class Unk_MachineId*)(struct Unk_LoginMachineId*)(&p->m_id))->FUN_14067c310(&static_cast<CInputStream&>(in));

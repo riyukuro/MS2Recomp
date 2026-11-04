@@ -16,7 +16,7 @@
 class ASMovieClip;
 class ASTextField;
 class ASButton;
-class Unk_DpInput;
+class ASTextInput;
 class ASDropdownMenu;
 class Unk_DpCheck;
 
@@ -50,17 +50,16 @@ public:
     void OnDoubleClick(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291440
     bool FUN_141291470();                                       // 0x141291470 read the fixed packet and arm the loop
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
-    MS2Ptr<Unk_DpInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup
     MS2Ptr<Unk_DpCheck> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
 
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASButton> m_178;                                 // +0x178 (never bound)
     MS2Ptr<ASButton> m_execute;                             // +0x188 "m_execute"
-    MS2Ptr<Unk_DpInput> m_id;                                   // +0x198 "m_id"
-    MS2Ptr<Unk_DpInput> m_loopCount;                            // +0x1a8 "m_loopCount"
-    MS2Ptr<Unk_DpInput> m_loopDelay;                            // +0x1b8 "m_loopDelay"
-    MS2Ptr<Unk_DpInput> m_value[5];                             // +0x1c8 "m_param<n>.m_value"
+    MS2Ptr<ASTextInput> m_id;                                   // +0x198 "m_id"
+    MS2Ptr<ASTextInput> m_loopCount;                            // +0x1a8 "m_loopCount"
+    MS2Ptr<ASTextInput> m_loopDelay;                            // +0x1b8 "m_loopDelay"
+    MS2Ptr<ASTextInput> m_value[5];                             // +0x1c8 "m_param<n>.m_value"
     MS2Ptr<ASDropdownMenu> m_type[5];                           // +0x218 "m_param<n>.m_type"
     MS2Ptr<ASMovieClip> m_movie;                                // +0x268 (double click)
     COutPacket m_packet;                                        // +0x278 the fixed packet
@@ -69,11 +68,11 @@ private:
     unsigned int m_nNext;                                       // +0x2b8 time of the next send
     int m_nId;                                                  // +0x2bc packet id
     MS2Ptr<ASButton> m_executeRandom;                       // +0x2c0 "m_executeRandom"
-    MS2Ptr<Unk_DpInput> m_randomStart;                          // +0x2d0 "m_randomStart"
-    MS2Ptr<Unk_DpInput> m_randomEnd;                            // +0x2e0 "m_randomEnd"
-    MS2Ptr<Unk_DpInput> m_randomLoopCount;                      // +0x2f0 "m_randomLoopCount"
-    MS2Ptr<Unk_DpInput> m_randomLoopDelay;                      // +0x300 "m_randomLoopDelay"
-    MS2Ptr<Unk_DpInput> m_randomLoopLength;                     // +0x310 "m_randomLoopLength"
+    MS2Ptr<ASTextInput> m_randomStart;                          // +0x2d0 "m_randomStart"
+    MS2Ptr<ASTextInput> m_randomEnd;                            // +0x2e0 "m_randomEnd"
+    MS2Ptr<ASTextInput> m_randomLoopCount;                      // +0x2f0 "m_randomLoopCount"
+    MS2Ptr<ASTextInput> m_randomLoopDelay;                      // +0x300 "m_randomLoopDelay"
+    MS2Ptr<ASTextInput> m_randomLoopLength;                     // +0x310 "m_randomLoopLength"
     MS2Ptr<ASTextField> m_randomRemain;                         // +0x320 "m_randomRemain"
     MS2Ptr<Unk_DpCheck> m_ignoreAdminPacket;                    // +0x330 "m_ignoreAdminPacket"
     MS2Ptr<ASButton> m_usePacketCount;                      // +0x340 "m_usePacketCount"

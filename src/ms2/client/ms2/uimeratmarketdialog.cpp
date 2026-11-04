@@ -460,7 +460,7 @@ template <> Delegate<void(AScript&)>::DelegateImplBase::~DelegateImplBase() {}
 template <> inline Delegate<void(AScript&)>::~Delegate() { if (m_pImpl != 0) delete m_pImpl; }   // 0x1413144a0
 template <> Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::DelegateImplBase::DelegateImplBase() {}
 template <> Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::DelegateImplBase::~DelegateImplBase() {}
-class CRideeData : public CPtred {}; MS2SvrPtr<CRideeData> FUN_1407844b0(unsigned nRideeId);                               // the ridee table row of an id
+#include "ms2/placeholder/crideedata.h"   // C3: CRideeData, FUN_1407844b0 (the riding row of an id)
 int FUN_141b48430(int nKind);                                           // the angle set of an avatar kind
 float FUN_141b48480(int nSet, int nIndex);                              // the default angle
 CStringW FUN_1418fec00(int nFormat, __int64 nTime, bool bZone);              // a time text
@@ -481,7 +481,7 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfb90(class CDBPremiumProduct*, bool);   // C3: was FUN_140ebfb90
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-class Unk_WsB_Notice : public CPtred {}; class COutputStream; void FUN_1401fa700(unsigned char* pThis, COutputStream& packet); class Unk_XmlNode { public: Unk_XmlNode* FirstChild(char const*); };
+class COutputStream; void FUN_1401fa700(unsigned char* pThis, COutputStream& packet); class Unk_XmlNode { public: Unk_XmlNode* FirstChild(char const*); };
                        // MyPC: request the field leave
 // ASMeratMarketEquipData::FUN_1409b9830 hands out the record as the dialog product (the exe uses the
 // MS2Ptr<CMeratMarketProduct> copy/assign of the result).
@@ -538,7 +538,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_141b708a0(unsigned nSeconds, bool b);
 CStringW FUN_140ec1f20();                                                   // the sale notice text
 CStringW FUN_140ec2010();                                                   // the sale notice image path
-CommonString* FUN_14025e7d0();
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
@@ -599,7 +598,6 @@ class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct);
 void FUN_140710590(COutPacket& packet);
 class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int nLogId, const CStringA& strDetail);
 void FUN_141b70f90(const CMsTime& time, const CStringW& strFormat, CStringW& strOut);   // the time as text
@@ -1636,9 +1634,9 @@ int UIMeratMarketDialog::FillProductRow(ASMeratMarketProduct& row, MS2Ptr<CMerat
                 row.FUN_1409adbe0("funcClickCalculate", Scaleform::GFx::Value(fnCalculate.FUN_1422bb870()));
                 ASFunction fnModelHouse(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnProductMessageHouse), 0, FUN_1422db730());
                 row.FUN_1409adbe0("funcClickModelhouse", Scaleform::GFx::Value(fnModelHouse.FUN_1422bb870()));
-                bLoaded = ((class CUgcManager*)FUN_14052d220())->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
+                bLoaded = TSingleton<CUgcManager>::GetInstance()->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
             } else {
-                bLoaded = ((class CUgcManager*)FUN_14052d220())->FUN_1418841f0(&spProduct->m_ugc.m_look, MS2Ptr<CItem>(0), &callBack) == 1;
+                bLoaded = TSingleton<CUgcManager>::GetInstance()->FUN_1418841f0(&spProduct->m_ugc.m_look, MS2Ptr<CItem>(0), &callBack) == 1;
             }
             if (bLoaded)
                 row.FUN_1407cba60("iconPath", CStringA(((struct Unk_ConfigPaths*)FUN_1401d31f0())->m_strUgcIcon));
@@ -3023,7 +3021,7 @@ void UIMeratMarketDialog::ShowSeller(__int64 nSellerId, const CStringW& strName,
     else
     {
         CStringW strFiltered;
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         {
             CStringW strMessage;
             if (pChecker->FUN_1402261e0(strName, strMessage) != 0)
@@ -4411,9 +4409,9 @@ void UIMeratMarketDialog::OnRightClickSeller(ASData& data)
         if (nCharId > 0)
         {
             Unk_PopupMenuInfo info(fX, fY, 3, 0x3f3fe, 0, "", 0);
-            MS2Ptr<Unk_WsB_Notice> spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nCharId);
-            if (reinterpret_cast<MS2Ptr<CProxyGameObject>&>(spProxy).get() != 0)
-                pMenu->FUN_141a7eb60(info, reinterpret_cast<MS2Ptr<CProxyGameObject>&>(spProxy), 5);
+            MS2Ptr<CProxyGameObject> spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nCharId);
+            if (spProxy.get() != 0)
+                pMenu->FUN_141a7eb60(info, spProxy, 5);
             else
                 pMenu->FUN_141a7f090(info, strName, 0, 0, 5, 1);
         }
@@ -5139,8 +5137,8 @@ void UIMeratMarketDialog::EquipPreview(UIAvatarBase* pAvatar, MS2Ptr<CItemData> 
             {
                 float fScale = 1.1f;
                 MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(spData->GetRideeId());
-                if (reinterpret_cast<Unk_RideePtr&>(spRow).get())
-                    fScale = reinterpret_cast<Unk_RideeRow*>(spRow.operator->())->m_fViewScale * 0.018f;
+                if (spRow)
+                    fScale = spRow->m_collision.m_fDepth * 0.018f;
                 kCamera.m_fMinDistance = 300.0f;
                 kCamera.m_kTarget += pObject->vfunc_18();
                 kCamera.m_kPosition = kCamera.m_kPosition * fScale;
@@ -5389,7 +5387,7 @@ void UIMeratMarketDialog::SetBlueprintInfo(ASObj& data, MS2Ptr<CMeratMarketProdu
     ASObj info(2);
     {
         CStringA strImage;
-        if (((class CUgcManager*)FUN_14052d220())->FUN_1418859f0(&spProduct->m_ugc.m_look, &spProduct->m_ugc.m_blueprint, MS2Ptr<CItem>(0)))
+        if (TSingleton<CUgcManager>::GetInstance()->FUN_1418859f0(&spProduct->m_ugc.m_look, &spProduct->m_ugc.m_blueprint, MS2Ptr<CItem>(0)))
             strImage = ((struct Unk_ConfigPaths*)FUN_1401d31f0())->m_strDefaultImage;
         else
             strImage = FUN_1410280d0(9, spProduct->m_ugc.m_look.m_strUrl);
@@ -6686,7 +6684,7 @@ void UIMeratMarketDialog::ApplySearchAll(MS2Ptr<CMeratMarketSchCond> spCond, ASO
         strWord = strWord.Trim();
         if (strWord.IsEmpty())
             return;
-        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker()) {
+        if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker()) {
             CStringW strMessage;
             if (pChecker->FUN_1402261e0(strWord, strMessage) != 0) {
                 MS2Ptr<AScript> spPage = GetPage(m_250);

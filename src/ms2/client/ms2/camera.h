@@ -16,6 +16,7 @@
 #include <efd/ReferenceCounting.h>
 #include <efd/RefCount.h>
 #include <efd/SmartPointer.h>
+#include <ecr/PickService.h>
 #include <egf/EntityID.h>
 #include <egf/Entity.h>
 #include <NiNode.h>
@@ -39,7 +40,6 @@ class GameObject;
 class Camera;
 class CameraMgr;
 class CCameraMoveEffectParam;
-class Unk_GoPickListPtr;
 
 // The current field of view of a NiFOVInterpolator (the camera effect nifs animate "Camera01" with a NiFOVController).
 class Unk_FOVInterpolator : public NiFOVInterpolator
@@ -193,7 +193,7 @@ public:
     void FUN_140aed750(int nMode, int bKeep);                           // set the camera mode
     void FUN_140aed1c0();
     void FUN_140aeb1a0();                                               // pick the npc under the cursor (npc control)
-    Unk_GoPickListPtr FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
+    efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
         NiAVObject* pRoot);                                             // pick the scene under a window point
     void FUN_140aec8a0(bool bKeep);                                     // apply the map camera data
     void FUN_140aecbb0(int nId, int nTargetId, bool bEnter);            // enter/leave a trigger camera setup

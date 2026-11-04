@@ -46,10 +46,6 @@ void FUN_140932930(void*);
 Unk_Be790TreeA::Unk_Be790TreeA(int nBlock) { FUN_140932400(this, nBlock); }
 Unk_Be790TreeA::~Unk_Be790TreeA() { FUN_140932930(this); }
 
-struct Unk_PtrA;
-struct Unk_PtrB;
-struct Unk_PtrC;
-
 #ifndef MS2_HOOK_DLL   // s_str2a40: the exe's object at 0x143ab2a40, which other units reach as DAT_143ab2a40 (the hook DLL binds it)
 CStringA DAT_143ab2a40;
 #else
@@ -66,14 +62,14 @@ ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0(17, 0.75f, 0.25f, 2.25f, 
 extern ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr2a58: the exe's object at 0x143ab2a58, which other units reach as DAT_143ab2a58 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrA*> DAT_143ab2a58;
+ATL::CAtlArray<unsigned char> DAT_143ab2a58;
 #else
-extern ATL::CAtlArray<Unk_PtrA*> DAT_143ab2a58;
+extern ATL::CAtlArray<unsigned char> DAT_143ab2a58;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr3098: the exe's object at 0x143ab3098, which other units reach as DAT_143ab3098 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
+ATL::CAtlArray<unsigned int> DAT_143ab3098;
 #else
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3098;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj32e8: the exe's object at 0x143ab32e8, which other units reach as DAT_143ab32e8 (the hook DLL binds it)
 Unk_Be790B DAT_143ab32e8;
@@ -95,10 +91,10 @@ CStringW DAT_143ab2d78(L"");
 #else
 extern CStringW DAT_143ab2d78;
 #endif
-#ifndef MS2_HOOK_DLL   // s_arr30b8: the exe's object at 0x143ab30b8, which other units reach as DAT_143ab30b8 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrC*> DAT_143ab30b8;
+#ifndef MS2_HOOK_DLL   // 0x143ab30b8, read by clientplatformnexonkorea (the hook DLL binds the exe's)
+ATL::CAtlArray<int> g_aShutdownNoticed;
 #else
-extern ATL::CAtlArray<Unk_PtrC*> DAT_143ab30b8;
+extern ATL::CAtlArray<int> g_aShutdownNoticed;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2d80: the exe's object at 0x143ab2d80, which other units reach as DAT_143ab2d80 (the hook DLL binds it)
 CStore DAT_143ab2d80;
@@ -116,14 +112,14 @@ std::set<unsigned int> DAT_143ab3308;
 extern std::set<unsigned int> DAT_143ab3308;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr32b8: the exe's object at 0x143ab32b8, which other units reach as DAT_143ab32b8 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrC*> DAT_143ab32b8;
+ATL::CAtlArray<int> DAT_143ab32b8;
 #else
-extern ATL::CAtlArray<Unk_PtrC*> DAT_143ab32b8;
+extern ATL::CAtlArray<int> DAT_143ab32b8;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr3268: the exe's object at 0x143ab3268, which other units reach as DAT_143ab3268 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;
+ATL::CAtlArray<unsigned int> DAT_143ab3268;
 #else
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3268;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2e80: the exe's object at 0x143ab2e80, which other units reach as DAT_143ab2e80 (the hook DLL binds it)
 Unk_TradeItemTable DAT_143ab2e80;
@@ -142,9 +138,9 @@ ATL::CAtlArray<unsigned int> DAT_143ab3058;
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr3078: the exe's object at 0x143ab3078, which other units reach as DAT_143ab3078 (the hook DLL binds it)
-ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
+ATL::CAtlArray<unsigned int> DAT_143ab3078;
 #else
-extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2e20: the exe's object at 0x143ab2e20, which other units reach as DAT_143ab2e20 (the hook DLL binds it)
 CWarehouseItemTable DAT_143ab2e20;
@@ -182,8 +178,8 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 // MS2-PIN: ??__FDAT_143ab3098@@YAXXZ 0x142c9cdf0
 // MS2-PIN: ??__EDAT_143ab2d78@@YAXXZ 0x1400be930
 // MS2-PIN: ??__FDAT_143ab2d78@@YAXXZ 0x142c9ce70
-// MS2-PIN: ??__EDAT_143ab30b8@@YAXXZ 0x1400be960
-// MS2-PIN: ??__FDAT_143ab30b8@@YAXXZ 0x142c9ce90
+// MS2-PIN: ??__Eg_aShutdownNoticed@@YAXXZ 0x1400be960
+// MS2-PIN: ??__Fg_aShutdownNoticed@@YAXXZ 0x142c9ce90
 // MS2-PIN: ??__EDAT_143ab30e0@@YAXXZ 0x1400be7f0
 // MS2-PIN: ??__FDAT_143ab30e0@@YAXXZ 0x142c9cdb0
 // MS2-PIN: ??__EDAT_143ab3268@@YAXXZ 0x1400bea50

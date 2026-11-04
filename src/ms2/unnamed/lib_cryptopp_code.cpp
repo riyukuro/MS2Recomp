@@ -61,6 +61,7 @@ namespace CryptoPP   // C3: member view of the CryptoPP names this unit calls
 extern AssignIntFn g_pAssignIntToInteger;
 void UnalignedDeallocate(void* p);
 class NameValuePairs { public: static void ThrowIfTypeMismatch(const char* name, const std::type_info& stored, const std::type_info& retrieving); };
+class DL_GroupParameters_IntegerBased { public: virtual void AssignFrom(const NameValuePairs& source); };
 class Integer
 {
 public:
@@ -190,7 +191,6 @@ extern const std::type_info DAT_143aa1de0;
 extern const std::type_info DAT_143aa1d00;
 void FUN_14232fe10(void* pObject, const CppNameValuePairs* source);
 void FUN_1423306d0(void* pObject, const CppNameValuePairs* source);
-void FUN_142375640(void* pObject, const CppNameValuePairs* source);
 
 // NameValuePairs::GetThisObject: GetValue("ThisObject:" + typeid(T).name(), object)
 static __forceinline bool CppGetThisObject(const CppNameValuePairs* source, const std::type_info& t, void* pObject)
@@ -238,7 +238,7 @@ CppAssignHelper* FUN_142372f20(CppAssignHelper* self, char* pObject, const CppNa
     if (CppGetThisObject(source, DAT_143aa1d00, pObject))
         self->m_done = true;
     else if (DAT_143aa1d00 != DAT_143aa1d00)
-        FUN_142375640(pObject + 0x50, source);
+        reinterpret_cast<CryptoPP::DL_GroupParameters_IntegerBased*>(pObject + 0x50)->CryptoPP::DL_GroupParameters_IntegerBased::AssignFrom(*reinterpret_cast<const CryptoPP::NameValuePairs*>(source));
     return self;
 }
 

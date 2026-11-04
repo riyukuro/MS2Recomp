@@ -9,112 +9,10 @@
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/cubecraft_1.h"     // StateLocalController
 #include "ms2/placeholder/intervaltimer.h"
+#include "ms2/placeholder/crideedata.h"   // CRideeData (the riding row)
 
 class NxActor;
 class RideeInterpolator;    // ?\rideeinterpolator.cpp
-
-// A model entry of a riding row: the seat node of the rider and its offset/rotation on the mount.
-class Unk_RideeModel
-{
-public:
-    void* m_00;
-    CString m_strNode;                                      // +0x08 seat node name
-    float m_fX;                                             // +0x10 seat offset
-    float m_fY;                                             // +0x14
-    float m_fZ;                                             // +0x18
-    float m_fRotX;                                          // +0x1c seat rotation (degrees)
-    float m_fRotY;                                          // +0x20
-    float m_fRotZ;                                          // +0x24
-    CString m_str28;                                        // +0x28 seat animations (StateHold::vfunc_9 picks one)
-    CString m_str30;                                        // +0x30
-    CString m_str38;                                        // +0x38
-    CString m_str40;                                        // +0x40
-    CString m_str48;                                        // +0x48
-    CString m_str50;                                        // +0x50
-    CString m_str58;                                        // +0x58
-    float m_f60;                                            // +0x60 (vfunc_89)
-    float m_f64;                                            // +0x64
-};
-MS2_CHECK_OFFSET(Unk_RideeModel, m_fRotX, 0x1c);
-MS2_CHECK_OFFSET(Unk_RideeModel, m_str28, 0x28);
-MS2_CHECK_OFFSET(Unk_RideeModel, m_str58, 0x58);
-MS2_CHECK_OFFSET(Unk_RideeModel, m_f60, 0x60);
-
-// The seat (model entry) list of a riding row.
-class Unk_RideeSeatList
-{
-public:
-    int FUN_140784180();                                    // count
-    char m_pad[0x18];
-};
-
-// The equip part list of a riding row.
-class Unk_RideePartList
-{
-public:
-    size_t FUN_14078cd60();                                 // count
-    const CEffectDummy& FUN_140789540(size_t i);            // GetAt
-    char m_pad[0x18];
-};
-
-// The riding row. Strings name the mount's effects; +0x108..+0x110 is the PhysX box (width, depth, height).
-class Unk_RideeData
-{
-public:
-    MS2Ptr<Unk_RideeModel> FUN_140784970();                 // the default model entry
-    MS2Ptr<Unk_RideeModel> FUN_1407849c0(int i);            // model entry i of the seat list
-
-    char m_pad_00[0x30];
-    int m_nNameId;                                          // +0x30
-    char m_pad_34[4];
-    int m_nType;                                            // +0x38 1/2: the rider is not slowed down
-    char m_pad_3c[0x1c];
-    float m_fScale;                                         // +0x58
-    int m_n5c;                                              // +0x5c nonzero: the rider is hidden while riding
-    char m_pad_60[4];
-    int m_n64;                                              // +0x64 nonzero: the ridee can be left by a type 0xf ride off
-    char m_pad_68[4];
-    int m_nSeats;                                           // +0x6c (>1: the ridee carries passengers)
-    int m_nSkillId;                                         // +0x70 the skill learned while riding
-    char m_pad_74[4];
-    float m_f78;                                            // +0x78
-    float m_f7c;                                            // +0x7c run speed
-    float m_f80;                                            // +0x80 walk speed
-    float m_f84;                                            // +0x84
-    int m_n88;                                              // +0x88 nonzero: the rider cannot get off by input
-    char m_pad_8c[4];
-    CString m_str90;                                        // +0x90 (vfunc_123 0x1e)
-    CString m_str98;                                        // +0x98 (vfunc_123 0x1f)
-    __int64 m_nA0;                                          // +0xa0 stamina needed to run (0: none)
-    char m_pad_a8[4];
-    int m_nAC;                                              // +0xac nonzero: the ride name replaces the rider's (PC::vfunc_77)
-    char m_pad_b0[8];
-    CString m_strB8;                                        // +0xb8 run start effect
-    CString m_strC0;                                        // +0xc0 run start effect (stamina)
-    char m_pad_c8[8];
-    CString m_strD0;                                        // +0xd0 run loop effect
-    CString m_strD8;                                        // +0xd8 run loop effect (stamina)
-    CString m_strE0;                                        // +0xe0 idle loop effect
-    CString m_strE8;                                        // +0xe8 ride-off effect (RideOffAction type 0x18)
-    char m_pad_f0[0x18];
-    float m_f108;                                           // +0x108 box width
-    float m_f10c;                                           // +0x10c box depth
-    float m_f110;                                           // +0x110 box height
-    bool m_b114;                                            // +0x114 pushes props (PhysX box)
-    char m_pad_115[0xb];
-    float m_f120;                                           // +0x120 shadow size
-    char m_pad_124[0x144];
-    Unk_RideeSeatList m_seats;                              // +0x268
-    Unk_RideePartList m_parts;                              // +0x280 equip parts
-};
-MS2_CHECK_OFFSET(Unk_RideeData, m_nNameId, 0x30);
-MS2_CHECK_OFFSET(Unk_RideeData, m_fScale, 0x58);
-MS2_CHECK_OFFSET(Unk_RideeData, m_nA0, 0xa0);
-MS2_CHECK_OFFSET(Unk_RideeData, m_strE0, 0xe0);
-MS2_CHECK_OFFSET(Unk_RideeData, m_f108, 0x108);
-MS2_CHECK_OFFSET(Unk_RideeData, m_f120, 0x120);
-MS2_CHECK_OFFSET(Unk_RideeData, m_seats, 0x268);
-MS2_CHECK_OFFSET(Unk_RideeData, m_parts, 0x280);
 
 // The actor state controller of a Ridee (+0xd60): queues the state records sent to the server. 0x50 bytes,
 // vftable 0x142f5b728 (one slot). The record list and the current record belong to StateLocalController (its ctor
@@ -189,11 +87,11 @@ public:
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141707440();             // the rider's ugc ridee item
     void FUN_1417074c0();                                   // seat the rider
     int FUN_1417075e0();                                   // the rider may ride now
-    MS2Ptr<Unk_RideeData> GetData();                 // copy of m_spData
+    MS2SvrPtr<CRideeData> GetData();                         // copy of m_spData
     float FUN_141707960();                                  // +0x64 of the default model entry
     void MakeNxBoxController();                             // 0x141707e60
     void FUN_1417082c0();                                   // release the PhysX box
-    static void FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, MS2Ptr<Unk_RideeModel> spModel);
+    static void FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, Unk_RiderPtr spModel);
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -208,7 +106,7 @@ public:
     int m_nIdleFx;                                          // +0xdb8 effect handle
     RideeInterpolator* m_pDC0;                              // +0xdc0 interpolator driving the seat node
     efd::SmartPointer<NiAVObject> m_spSeat;                 // +0xdc8 the rider's seat node
-    MS2Ptr<Unk_RideeData> m_spData;                         // +0xdd0
+    MS2SvrPtr<CRideeData> m_spData;                         // +0xdd0
     int m_nDE0;                                             // +0xde0 the rider is above the water line
     NxActor* m_pBox;                                        // +0xde8 kinematic PhysX box
     Unk_IntervalTimer m_timerDF0;                           // +0xdf0

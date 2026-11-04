@@ -267,7 +267,7 @@ class UIAvatarRidee : public UIAvatarBase
 public:
     UIAvatarRidee();                                                // 0x1418bdeb0 (m_nKind stays 0)
     UIAvatarRidee(MS2Ptr<CItemData> spData);                        // 0x1418bdf30
-    UIAvatarRidee(Unk_RideePtr spRow);                              // 0x1418bdfd0 (m_nKind stays 0)
+    UIAvatarRidee(MS2SvrPtr<CRideeData> spRow);                              // 0x1418bdfd0 (m_nKind stays 0)
     virtual ~UIAvatarRidee();                               // 0x1418be060 (scalar deleting 0x1418c1a00)
 
     virtual void vfunc_1(IUIAvatarEventListener* pListener);    // 1  0x1418be0b0
@@ -279,14 +279,14 @@ public:
 
     void FUN_1418be340(void* pUnused);                                   // 0x1418be340
     void FUN_1418be460(CItemData* pData);                   // 0x1418be460
-    void FUN_1418be580(Unk_RideePtr spRow);                 // 0x1418be580
+    void FUN_1418be580(MS2SvrPtr<CRideeData> spRow);                 // 0x1418be580
     AvatarRidee* FUN_1418be7e0();                           // 0x1418be7e0
-    Unk_RideePtr GetRow();                           // 0x1418be810 copy of the row
+    MS2SvrPtr<CRideeData> GetRow();                           // 0x1418be810 copy of the row
 
 public:
     MS2_LAYOUT_FRIEND;
     CItemData* m_pItemData;                                 // +0xc0
-    Unk_RideePtr m_spRow;                                   // +0xc8
+    MS2SvrPtr<CRideeData> m_spRow;                                   // +0xc8
 };
 MS2_CHECK_SIZE(UIAvatarRidee, 0xd8);
 

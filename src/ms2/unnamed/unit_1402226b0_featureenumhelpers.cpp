@@ -27,7 +27,7 @@ extern CStringW DAT_143aacc90;
 // One entry of the level array (an int; its own type so the array instantiations are not shared with CAtlArray<int>).
 enum Unk_LevelEntry { Unk_LevelEntry_None = 0 };
 
-// An int array of unrecovered class: CAtlArray layout (data, count, allocated, grow-by); its Add / SetCount live elsewhere.
+// An int array: the CAtlArray<int> layout (data, count, allocated, grow-by); its SetCount lives elsewhere.
 struct Unk_LevelArray
 {
     void* m_pData;
@@ -35,7 +35,6 @@ struct Unk_LevelArray
     size_t m_nMaxSize;
     int m_nGrowBy;
     int m_pad_1c;
-    void FUN_1401854f0(int nLevel);                     // Add
 };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -141,7 +140,7 @@ bool FUN_140222a70(unsigned nMask, Unk_LevelArray* pLevels)
     for (int i = 0; i < nMax; i++) {
         unsigned nBit = 1 << i;
         if ((nMask & nBit) != 0)
-            pLevels->FUN_1401854f0(FUN_140222940(nBit));
+            reinterpret_cast<ATL::CAtlArray<int>*>(pLevels)->Add(FUN_140222940(nBit));
     }
     return !FUN_140223750(pLevels);
 }

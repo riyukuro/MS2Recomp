@@ -35,6 +35,7 @@
 #include "dungeonmissioncli.h"
 #include "ms2/commonfiles/dungeonmissiondatatable.h"
 #include "ms2/commonfiles/stream.h"
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read8
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2format.h"
@@ -50,7 +51,6 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // The packet stream readers (commonfiles\packet.cpp).
 CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
-CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
 
 // The string table text with two arguments (a key like "s_dungeonMission_ingame_misison_normal").
 
@@ -194,8 +194,8 @@ DungeonMissionPlayTime::DungeonMissionPlayTime()
 void DungeonMissionPlayTime::vfunc_2(CInputStream& in)
 {
     DungeonMissionCli::vfunc_2(in);
-    FUN_14070f500(in, m_time1);
-    FUN_14070f500(in, m_time2);
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(m_time1));
+    reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(m_time2));
 }
 
 // @0x140b1e340

@@ -95,7 +95,7 @@ extern char DAT_142ec05ba;      // ""
 // ---- out-of-unit callees ----
 void FUN_1401d3700(CString& s);
 // smart pointers (MS2Ptr<Owner> at +0x28, NiPointer at +0xf0 / +0x108 / the temporaries)
-void FUN_1405a85c0(void* sp); void FUN_1405a85f0(void* sp);
+void FUN_1405a85f0(void* sp);
 void* FUN_140884f30(void* dst, void* src);
 void* FUN_14097eb60(void* out, void* p); void* FUN_14097eba0(void* out, void* p);
 void* FUN_1409f7170(void* sp, void* p); void FUN_1409f74b0(void* sp);

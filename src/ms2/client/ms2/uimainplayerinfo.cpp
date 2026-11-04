@@ -55,6 +55,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/commonfiles/achievedata.h"
 #include "ms2/gfxui/notifyhandler.h"
+#include "ms2/placeholder/crideedata.h"
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
@@ -184,30 +185,7 @@ public:
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 
 // The mount of the player.
-struct Unk_AdvMountRow;
-struct Unk_MpMountRow
-{
-    char m_pad_00[0x30];
-    int m_30;                                                           // +0x30 ridee name id
-    char m_pad_34[0x64 - 0x34];
-    int m_64;                                                           // +0x64 ride off
-    int m_68;                                                           // +0x68 0 = no ridee avatar
-    int m_6c;                                                           // +0x6c riding type (2 = hides the tag)
-    char m_pad_70[0x250 - 0x70];
-    efd::Point3 m_250;                                                  // +0x250 render target camera target
-    efd::Point3 m_25c;                                                  // +0x25c render target camera eye
-};
-class Unk_AdvMountPtr
-{
-public:
-    Unk_AdvMountPtr(const Unk_AdvMountPtr& o);
-    ~Unk_AdvMountPtr();                                                 // 0x140788ed0
-    Unk_AdvMountRow* FUN_1407895d0() const;                             // operator->
-    void* m_pad_00;
-    Unk_AdvMountRow* m_p;
-};
-#define MP_ROW(p) reinterpret_cast<Unk_MpMountRow*>((p).FUN_1407895d0())
-class Ridee : public PCBase { public: Unk_AdvMountPtr FUN_141707750(); };   // C3: member view (held through efd::SmartPointer<Ridee>)
+class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view (held through efd::SmartPointer<Ridee>)
 
 // The ridee avatar (UIAvatarRidee, 0xd8; slot 1 binds the event listener, slot 28 forwards the render target).
 struct Unk_MpCamData
@@ -235,7 +213,7 @@ public:
 class UIAvatarRidee
 {
 public:
-    UIAvatarRidee(Unk_AdvMountPtr spMount);                             // 0x1418bdfd0 (the mount by value)
+    UIAvatarRidee(MS2SvrPtr<CRideeData> spMount);                       // 0x1418bdfd0 (the mount by value)
     virtual void s0();
     virtual void vfunc_1(void* pListener);
     virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
@@ -244,15 +222,10 @@ public:
     virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25();
     virtual void s26(); virtual void s27();
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);
-    Unk_AdvMountPtr FUN_1418be810();
+    MS2SvrPtr<CRideeData> GetRow();                                     // 0x1418be810
     char m_pad_08[0xd0];
 };
 MS2_CHECK_SIZE(UIAvatarRidee, 0xd8);
-// The exe calls uiavatarbase.cpp's UIAvatarRidee(Unk_RideePtr) (0x1418bdfd0): this view spells the row pointer
-// Unk_AdvMountPtr, so the full exe binds the name to that constructor.
-#ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??0UIAvatarRidee@@QEAA@VUnk_AdvMountPtr@@@Z=??0UIAvatarRidee@@QEAA@VUnk_RideePtr@@@Z")
-#endif
 
 // The ride-off request (0x28 bytes, ctor(int) 0x14031b2a0).
 class RideOffActionRidingUI { public: RideOffActionRidingUI(int n); char m_pad_00[0x28]; };   // C3: view (rideonaction.h needs MS2_THIS_FILE)
@@ -706,14 +679,14 @@ void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
     if (p2.get() == 0 || p3 == 0)
         return;
     m_camera = 0;
-    if (m_ridee.get() != 0)
+    if (reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).get() != 0)
     {
-        m_ridee->vfunc_28(p1, p2, p3, p4);
-        m_camera = reinterpret_cast<UIAvatarBase*>(m_ridee.operator->())->GetView();
-        Unk_AdvMountPtr spMount = m_ridee->FUN_1418be810();
+        reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->vfunc_28(p1, p2, p3, p4);
+        m_camera = reinterpret_cast<UIAvatarBase*>(reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).operator->())->GetView();
+        MS2SvrPtr<CRideeData> spMount = reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->GetRow();
         Unk_MpCamData data;
-        data.m_target = MP_ROW(spMount)->m_250;
-        data.m_eye = MP_ROW(spMount)->m_25c;
+        data.m_target = spMount->m_faceCamera.m_vLookAtPosition;
+        data.m_eye = spMount->m_faceCamera.m_vCameraPosition;
         reinterpret_cast<Unk_MpCamera*>(m_camera.operator->())->vfunc_13(data);
     }
 }
@@ -857,14 +830,14 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
         efd::SmartPointer<Ridee> holder(((Ridee*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416764a0()));
         if (holder == 0)
             break;
-        bool bNoAvatar = MP_ROW(holder->FUN_141707750())->m_68 == 0;
+        bool bNoAvatar = holder->GetData()->m_basic.m_nUseRidingUI == 0;
         if (bNoAvatar)
             break;
         nMode = 1;
-        obj.FUN_1407cb9c0("rideOff", MP_ROW(holder->FUN_141707750())->m_64);
-        obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, MP_ROW(holder->FUN_141707750())->m_30));
-        m_ridee.AssignRaw(new UIAvatarRidee(holder->FUN_141707750()));
-        m_ridee->vfunc_1(0);
+        obj.FUN_1407cb9c0("rideOff", holder->GetData()->m_basic.m_nEnableRideOffUI);
+        obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, holder->GetData()->m_basic.m_nId));
+        m_ridee.AssignRaw(new UIAvatarRidee(holder->GetData()));
+        reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->vfunc_1(0);
     } while (0);
     if (m_nSlotMode == nMode)
         return;
@@ -1014,7 +987,7 @@ void UIMainPlayerInfo::FUN_1419f13b0(int bInfinity, int bForce)
 {
     if (m_bInfinity == bInfinity && bForce == 0)
         return;
-    if (m_ridee.get() != 0)
+    if (reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).get() != 0)
         return;
     if (m_playerInfo == 0)
         return;
@@ -1072,7 +1045,7 @@ int UIMainPlayerInfo::FUN_1419f16b0()
     int nType = 0;
     if (holder != 0)
     {
-        nType = MP_ROW(holder->FUN_141707750())->m_6c;
+        nType = holder->GetData()->m_basic.m_nHidePCInfo;
         if (nType != 0)
             bVisible = 0;
     }

@@ -20,6 +20,7 @@
 #include "ms2/placeholder/cpacketbuffer.h"
 #include "ms2/placeholder/exception.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/mstime.h"   // C3: CMsTime::Get (FUN_14070fb70)
 #include "ms2/commonfiles/buffercryptmanager.h"
 #include "ms2/placeholder/cbuffercryptmanager.h"
 #include "ms2/ms2format.h"
@@ -32,7 +33,6 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_14016a600(const wchar_t*, int);                     // wide -> CString
 int FUN_1401cde60(CBufferCryptManager*, unsigned char* data, int length, int connectionState, unsigned* key);   // decrypt
 void FUN_1401cddd0(CBufferCryptManager *, unsigned char *, int, int, unsigned int *);  // C3: the definition's signature
-unsigned __int64 FUN_140282020(const Unk_OSNumber&);
 // The byte vectors streamed by the operators below are CAtlArray<char> (a distinct instantiation from CInPacket::m_data's
 // CAtlArray<unsigned char>: operator[] 0x1406c35b0 vs 0x140203bf0, both byte-identical).
 int FUN_1406c3660(const ATL::CAtlArray<char>&);                       // element count
@@ -60,7 +60,7 @@ void FUN_140715250(ATL::CAtlArray<char>& array, __int64 count) { array.SetCount(
 // @0x140714db0
 unsigned char* FUN_140714db0(ATL::CAtlArray<char>& array) { if (array.IsEmpty()) return 0; return (unsigned char*)&array[0]; }
 // @0x140714fc0
-unsigned __int64 FUN_140714fc0(const Unk_OSId& id) { return id.value; }
+unsigned __int64 FUN_140714fc0(const ATL::CTime& id) { return *(const unsigned __int64*)&id; }   // the CTime's time value
 
 // ---- stream operators -------------------------------------------------------------------------------------------------
 // @0x14070f700
@@ -106,9 +106,9 @@ COutputStream& FUN_14070faa0(COutputStream& out, const CString& value) { out.Wri
 // @0x14070fae0
 COutputStream& FUN_14070fae0(COutputStream& out, const CStringW& value) { out.WriteUnicodeString(value); return out; }
 // @0x14070fb20
-COutputStream& FUN_14070fb20(COutputStream& out, const Unk_OSId& value) { out.WriteInt64(FUN_140714fc0(value)); return out; }
+COutputStream& FUN_14070fb20(COutputStream& out, const ATL::CTime& value) { out.WriteInt64(FUN_140714fc0(value)); return out; }
 // @0x14070fb70
-COutputStream& FUN_14070fb70(COutputStream& out, const Unk_OSNumber& value) { out.WriteInt64(FUN_140282020(value)); return out; }
+COutputStream& FUN_14070fb70(COutputStream& out, const Unk_OSNumber& value) { out.WriteInt64(reinterpret_cast<const CMsTime&>(value).Get()); return out; }
 // @0x14070fbc0
 COutputStream& FUN_14070fbc0(COutputStream& out, const ATL::CAtlArray<char>& value)
 {

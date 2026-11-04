@@ -185,7 +185,7 @@ public:
     bool FUN_1422b27c0();
     void FUN_1422b27e0(bool);
     int IsArchive();
-    void FUN_1422aee20(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // C3: the real member
+    void SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // 0x1422aee20
     void FUN_1422aeea0(void (*pfn)(class AScript&, int));                                 // C3: the real member
 };
 class Unk_UisMovieMgr
@@ -294,7 +294,7 @@ class UIPopupProfileImage* FUN_141a90250(int);   // C3: was FUN_141a90250
 class UIBanner;
 template<class T> T* Unk_GetUI(int nUiId);   // C3: the actionkeyobject template
 class UISlimeEventBar* FUN_1419949f0(int);   // C3: was FUN_1419949f0
-class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
+class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
 class UIGroupMessengerBrowser : public UIDialog { public: UIGroupMessengerBrowser(); int vfunc_48(); int FUN_141952780(); int FUN_141952840(); char m_pad[0x290 - sizeof(UIDialog)]; };   // ctor 0x141950770
 class UIAdPushDialog : public UIDialog { public: UIAdPushDialog(); int vfunc_48(); bool IsAnyAnimating(); bool MaximizeAll(); char m_pad[0x3f0 - sizeof(UIDialog)]; };   // ctor 0x140e3efd0
@@ -583,7 +583,7 @@ void CUIService::FUN_141ad93b0()
 {
     {
         TiXmlDocument kDoc;
-        bool bLoaded = kDoc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), "version.xml"), 0);
+        bool bLoaded = kDoc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), "version.xml"), TIXML_ENCODING_UNKNOWN);
         if (bLoaded)
         {
             TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&kDoc))->FirstChild("ms2"));
@@ -1202,9 +1202,9 @@ int CUIService::FUN_141adbe00(float fValue, int bRaw)
 MS2_REPLACE_METHOD(0x141adbe00, CUIService, FUN_141adbe00, 91, 0x1AE4A279);
 
 // @0x141adbe70
-void CUIService::FUN_141adbe70()
+float CUIService::FUN_141adbe70()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afec0(2);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afec0(2);
 }
 MS2_REPLACE_METHOD(0x141adbe70, CUIService, FUN_141adbe70, 32, 0x1FDD01DB);
 
@@ -2325,7 +2325,7 @@ class UIUnlimitedEnchantDialog : public UIDialog { public: UIUnlimitedEnchantDia
 void CUIService::FUN_141adf580()
 {
     FUN_140b632f0()->FUN_1422d4b40(FUN_141adda20);
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aee20(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
     ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeea0(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
     RegisterObject(MS2Ptr<UIObject>(new UIGuideEvent));
     RegisterObject(MS2Ptr<UIObject>(new UIExpBar));
@@ -3002,7 +3002,7 @@ int CUIService::FUN_141aed0a0(MS2Ptr<UIDialog> spDlg)
 void CUIService::FUN_141aebed0()
 {
     FUN_140b632f0()->FUN_1422d4b40(FUN_141adda20);
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aee20(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
     ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeea0(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
     RegisterDialog(MS2Ptr<UIDialog>(new UICameraDialog));
 }

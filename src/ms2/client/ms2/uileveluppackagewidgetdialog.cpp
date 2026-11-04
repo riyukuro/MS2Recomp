@@ -149,8 +149,7 @@ private:
 };
 extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
 #define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
-class Unk_DTTable { public: __int64 FUN_140be8f80(int nKind, unsigned nId, const __int64& nDefault); };
-#define g_attendTableDT (*reinterpret_cast<Unk_DTTable*>(&g_attendTable))
+// C3: the DT / level reads are the real GameEventUserValue::GetValue<__int64> (0x140be8f80) on DAT_143ab2fc0
 
 class Unk_MyPCBurningEvent : public CPtred {};
 
@@ -501,7 +500,7 @@ int UIBurningEventWidgetDialog::vfunc_84()
         if (spContext->m_rewardItems.empty())
             continue;
         __int64 nDefaultDT = 0;
-        __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+        __int64 nDT = DAT_143ab2fc0.GetValue(0x7d2, spContext->m_eventId, nDefaultDT);
         if (nDT != 0)
             continue;
         __int64 nDefault = 0;
@@ -537,7 +536,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
         if (nValue != Unk_EwBurningKey(pSelf))
             continue;
         __int64 nDefaultDT = 0;
-        __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+        __int64 nDT = DAT_143ab2fc0.GetValue(0x7d2, spContext->m_eventId, nDefaultDT);
         if (nDT != 0)
             continue;
         spResult = spContext;
@@ -571,11 +570,11 @@ void UIBurningEventWidgetDialog::vfunc_86()
     if (nValue != Unk_EwBurningKey(pSelf))
         return;
     __int64 nDefaultLevel = 0;
-    __int64 nLevel = g_attendTableDT.FUN_140be8f80(0x7d1, spContext->m_eventId, nDefaultLevel);
+    __int64 nLevel = DAT_143ab2fc0.GetValue(0x7d1, spContext->m_eventId, nDefaultLevel);
     if (nLevel == 0)
         return;
     __int64 nDefaultDT = 0;
-    __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+    __int64 nDT = DAT_143ab2fc0.GetValue(0x7d2, spContext->m_eventId, nDefaultDT);
     if (nDT != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);

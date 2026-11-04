@@ -25,14 +25,8 @@ struct Unk_MaterialEntry
     unsigned m_nState;
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
-class Unk_PtrArray   // C3: member view for the former free stand-ins
-{
-public:
-    void Add(void*);
-};
 NiRenderer* GetNiRenderer();                                // NiRenderer::GetRenderer
 bool FUN_141568c90(NiRenderObject* pObject);
-void* FUN_1409a8120(void* pSmartPointer);                   // the raw pointer held by a smart pointer
 
 // @0x1415156b0
 void FUN_1415156b0(MS2VelocityMaterialSwapProcessor* pProcessor, NiAVObject* pkObject)
@@ -61,10 +55,10 @@ void MS2VelocityMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray
     if (pkInput == 0)
         return;
     unsigned int uiCount = ((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetCount();
-    if (FUN_1409a8120(&m_spMaterial) == 0)
+    if ((NiMaterial*)m_spMaterial == 0)
     {
         for (unsigned int ui = 0; ui < uiCount; ui++)
-            ((class Unk_PtrArray*)(class NiVisibleArray*)(&kOutput))->Add((void*)(((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui))));
+            ((class NiVisibleArray*)(&kOutput))->Add(*((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui)));
     }
     else
     {

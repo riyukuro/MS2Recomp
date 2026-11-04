@@ -1495,7 +1495,7 @@ void ASObj::FUN_1409c4990(const char* szName, unsigned long n)
 }
 
 // @0x1409c4a30
-void ASObj::FUN_1409c4a30(const char* szName, float f)
+void AScript::FUN_1409c4a30(const char* szName, float f)
 {
     ASData data;
     data.AddFloat(f);
@@ -2670,7 +2670,7 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
 }
 
 // @0x1409c0d20
-void ASObj::FUN_1409c0d20(const char* szName, unsigned int n)
+void AScript::FUN_1409c0d20(const char* szName, unsigned int n)
 {
     ASData data;
     data.FUN_1422b8030(n);

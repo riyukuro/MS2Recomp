@@ -196,8 +196,6 @@ public:
 template <> MS2Ptr<UISwfEntity>::MS2Ptr(UISwfEntity* p);                                 // 0x140f9c100
 template <> MS2Ptr<UISwfEntity>::~MS2Ptr();                                             // 0x140b62af0
 template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                                            // 0x140975740
-template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
-template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
 
 // The argument of vfunc_71/73 (passed as MS2Ptr by value; the callee releases it).
 class Unk_PCBaseEmoAnim : public CPtred {};                          // the effect set's +0x30 animation record
@@ -217,7 +215,6 @@ public:
     virtual CString vfunc_1();                                      // the source's name
     virtual MS2Ptr<Unk_PCBaseFxSet> vfunc_2(void* pKey);
 };
-class RideeData { public: class Passengers { public: size_t FUN_140784180(); }; };   // C3: real names
 class CTextureAnimation   // C3: member view (real class not in this TU)
 {
 public:
@@ -317,7 +314,6 @@ class Unk_PCBaseBuffs : public Unk_PCBaseBuffList
 // The entity manager (0x1409670f0) and its lookup / property getter.
 class Unk_PCBaseEntMgr;
 int FUN_1408a13d0(NiPoint3 kPos);                                   // the cube cell index of a position (ugcmapdata_1.cpp)
-void FUN_1409fabf0(void* pNodePtr, void* pNode);
 
 // The shadow mesh (efd::SmartPointer at GameObject +0x58; unit_14160fb10).
 class CObjectShadow : public NiRefObject {};
@@ -2760,7 +2756,7 @@ int PCBase::FUN_141676410()
 {
     if (m_spB10 == 0)
         return 0;
-    return m_spB10->GetData()->m_nNameId;
+    return m_spB10->GetData()->m_basic.m_nId;
 }
 MS2_REPLACE_METHOD(0x141676410, PCBase, FUN_141676410, 133, 0x8F2137E9);
 
@@ -2952,7 +2948,7 @@ MS2_REPLACE_METHOD(0x141673ef0, PCBase, FUN_141673ef0, 116, 0xAEB0C93F);
 void PCBase::AddColorBoost(float a, float b, float c)
 {
     CColorBoostData kData(a, b, c);
-    reinterpret_cast<CColorBoostManager*>(&m_colorBoost)->FUN_14109be00(kData);
+    m_colorBoost.FUN_14109be00(kData);
     Ridee* pRidee = FUN_1416764a0();
     if (pRidee != 0)
         pRidee->AddColorBoost(a, b, c);
@@ -3188,7 +3184,7 @@ int PCBase::FUN_141676500()
 {
     if (m_spB10 == 0)
         return 0;
-    return m_spB10->GetData()->m_nType == 1;
+    return m_spB10->GetData()->m_basic.m_nType == 1;
 }
 MS2_REPLACE_METHOD(0x141676500, PCBase, FUN_141676500, 158, 0x9A8E329D);
 
@@ -3333,7 +3329,7 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
         ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
         ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
-    int nHide = m_spB10->GetData()->m_n5c;
+    int nHide = m_spB10->GetData()->m_basic.m_nHideRider;
     if (nHide != 0)
         AddHideReason(2);
     if (FUN_14166cb00(1))
@@ -3400,11 +3396,11 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     int bGround = m_spB10->FUN_141671a30();
     CString strEffect("");
     if (spAction.get() && spAction->m_nType == 0x18) {
-        bool bEffect = !m_spB10->GetData()->m_strE8.IsEmpty();
+        bool bEffect = !m_spB10->GetData()->m_basic.m_strRideOffBySkillEffect.IsEmpty();
         if (bEffect)
-            strEffect = m_spB10->GetData()->m_strE8;
+            strEffect = m_spB10->GetData()->m_basic.m_strRideOffBySkillEffect;
     }
-    int nHide = m_spB10->GetData()->m_n5c;
+    int nHide = m_spB10->GetData()->m_basic.m_nHideRider;
     if (nHide != 0)
         RemoveHideReason(2);
     m_spB10 = 0;
@@ -3639,7 +3635,7 @@ MS2_REPLACE_METHOD(0x141679220, PCBase, HasAnimSequence, 73, 0x7A70E4CC);
 int PCBase::FUN_1416765b0()
 {
     if (FUN_1416764a0() != 0)
-        return (int)m_mapB28.GetCount() < (int)reinterpret_cast<RideeData::Passengers*>(&FUN_1416764a0()->GetData()->m_seats)->FUN_140784180();
+        return (int)m_mapB28.GetCount() < (int)FUN_1416764a0()->GetData()->m_passengers.FUN_140784180();
     else
         return 0;
 }
@@ -3735,7 +3731,7 @@ void PCBase::vfunc_53(float f)
     GameObject::vfunc_53(f);
     FUN_14166f940();
     m_spStateMgr->FUN_1417daaa0(f);
-    reinterpret_cast<CColorBoostManager*>(&m_colorBoost)->FUN_14109be30(FUN_14123c460());
+    m_colorBoost.FUN_14109be30(FUN_14123c460());
     bool bMoved = false;
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
     if (spRidee)
@@ -4045,9 +4041,9 @@ int PCBase::FUN_141677f40(PCBase* pActor)
     if (spRidee) {
         PCBase* pRider = spRidee->GetRider();
         PCBase* pLocal = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
-        MS2Ptr<Unk_RideeData> spData = spRidee->GetData();
-        if ((spData.get() ? true : false) && pLocal != 0 && pRider != 0) {
-            if (pLocal->FUN_14123c580() == pRider->FUN_14123c580() && spData->m_n88 == 0) {
+        MS2SvrPtr<CRideeData> spData = spRidee->GetData();
+        if ((spData ? true : false) && pLocal != 0 && pRider != 0) {
+            if (pLocal->FUN_14123c580() == pRider->FUN_14123c580() && spData->m_basic.m_nEnableSwim == 0) {
                 if (spRidee->FUN_1417075e0() == 0) {
                     MS2Ptr<RideOffAction> spAction(new RideOffAction(1));
                     if (static_cast<MyPC*>(pLocal)->SendRequestRideMode1(spAction.get()) == 0)

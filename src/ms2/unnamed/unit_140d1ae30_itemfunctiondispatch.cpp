@@ -123,7 +123,6 @@ class Unk_IuWorld : public WorldService
 public:
     MyPC* FUN_141bd0cc0();                                  // the local player
     void FUN_141bc2c90(NiPoint3 kPos, ATL::CAtlArray<MS2Ptr<CPortal> >& arrOut);   // the portals containing a position (AddRef'd)
-    MS2Ptr<CPortal> FUN_141bc2800(int nId);                 // a portal by id
 };
 
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
@@ -238,7 +237,6 @@ int SecondsToMs(int nSeconds);                              // seconds to ms
 extern int DAT_143ab2914;                                   // the GM level
 
 // OpenMassive.
-size_t FUN_140966da0(const ATL::CAtlArray<MS2Ptr<CPortal> >& arr);   // GetCount (the CAtlArray<MS2Ptr<T>> COMDAT)
 bool FUN_140930b10();                                       // the player has a state that blocks it
 bool FUN_140930b70();                                       // the player is idle
 extern int DAT_143ab287c;                                   // the wedding progress state
@@ -1791,7 +1789,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
     reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2c90(pPlayer->vfunc_18(), arrPortals);
-    if (FUN_140966da0(arrPortals) > 0)
+    if (arrPortals.GetCount() > 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
         return 0;
@@ -1801,7 +1799,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     WorldService::GetInstance()->FUN_141bc2980(&vIds);
     for (size_t i = 0; i < vIds.size(); ++i)
     {
-        MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2800(vIds[i]);
+        MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(vIds[i]);
         if (spPortal == 0)
             continue;
         if (spPortal->m_strTip.GetLength() > 0)

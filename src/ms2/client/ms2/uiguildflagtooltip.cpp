@@ -25,11 +25,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-class Unk_FtWorld
-{
-public:
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);      // an interact object by name
-};
 class CGuildManager;
 
 // The score table of the guild ranking seasons: the entry of a trophy count has a value at +0x18.
@@ -118,7 +113,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        CInteractObject* pObject = reinterpret_cast<Unk_FtWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_78).get();
+        CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_78).get();
         if (pObject == 0)
             return;
         CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
@@ -178,7 +173,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
 {
     if (m_78.GetLength() < 1)
         return false;
-    CInteractObject* pObject = reinterpret_cast<Unk_FtWorld*>(WorldService::GetInstance())->FUN_141bc66b0(m_78).get();
+    CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_78).get();
     if (pObject == 0)
         return false;
     CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);

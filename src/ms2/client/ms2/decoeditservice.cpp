@@ -55,9 +55,6 @@
 #include "ms2/client/ms2/windowservice.h"
 
 // ---- services reached through globals ----
-// FUN_141bbbc60 (destroy the object of an entity id) as these callers see it: the id is a by-value argument temp.
-// worldservice.h declares it const egf::EntityID& for its other callers.
-struct Unk_DecoWorld : WorldService { void FUN_141bbbc60(egf::EntityID kId, int bImmediate); };
 efd::MessageService* FUN_1413f9830();
 // The scene service (slot 19 hands a scene graph to the world for a game object's key).
 class Unk_DecoSceneSvc
@@ -68,7 +65,7 @@ public:
     virtual void vfunc_8();   virtual void vfunc_9();   virtual void vfunc_10();  virtual void vfunc_11();
     virtual void vfunc_12();  virtual void vfunc_13();  virtual void vfunc_14();  virtual void vfunc_15();
     virtual void vfunc_16();  virtual void vfunc_17();  virtual void vfunc_18();
-    virtual void vfunc_19(Unk_NodePtr spNode, egf::EntityID kId);
+    virtual void vfunc_19(NiNodePtr spNode, egf::EntityID kId);
 };
 void* FUN_1413f9870();   // C3: was FUN_1413f9870
 class CMainSystem;
@@ -150,12 +147,6 @@ struct Unk_DecoCollision
     int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-
-// ---- the lights (NiShadowGenerator, see lightunaffectednode.h) ----
-class Unk_LUNLight : public NiShadowGenerator {};
-struct Unk_LUNList;
-Unk_LUNLight** FUN_140afe730(Unk_LUNList* list, void** pos);        // advance, returns entry
-Unk_LUNLight* FUN_140afe6c0(Unk_LUNLight** entry);                  // entry -> light
 
 // ---- static initializers (.text$di, in this order) ----
 // @0x1400e6d40
@@ -302,7 +293,7 @@ void DecoEditService::LoadXml()
 {
     m_mapLayers.RemoveAll();
     TiXmlDocument doc;
-    bool bLoaded = doc.FUN_140870fc0(GetXmlPath(), 0);
+    bool bLoaded = doc.LoadFile(GetXmlPath(), TIXML_ENCODING_UNKNOWN);
     if (bLoaded)
     {
         void* pRoot = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
@@ -534,7 +525,7 @@ void DecoItem::Refresh()
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
-        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(Unk_NodePtr(pRoot), FUN_14123c460());
+        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(NiNodePtr(pRoot), FUN_14123c460());
     }
 }
 
@@ -732,11 +723,11 @@ int DecoItem::vfunc_10()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        Unk_LUNList* pList = ((struct Unk_LUNList*)&NiShadowManager::GetShadowGenerators());
-        void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiShadowGenerator>>*)(struct Unk_LUNList*)(pList))->GetHeadPos();
+        const NiTPointerList<NiShadowGeneratorPtr>& kList = NiShadowManager::GetShadowGenerators();
+        NiTListIterator pos = kList.GetHeadPos();
         while (pos != 0)
         {
-            Unk_LUNLight* pLight = FUN_140afe6c0(FUN_140afe730(pList, &pos));
+            NiShadowGenerator* pLight = kList.GetNext(pos);
             pLight->AttachUnaffectedCasterNode(pRoot);
             pLight->AttachUnaffectedReceiverNode(pRoot);
         }
@@ -774,11 +765,11 @@ void DecoItem::vfunc_14()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        Unk_LUNList* pList = ((struct Unk_LUNList*)&NiShadowManager::GetShadowGenerators());
-        void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiShadowGenerator>>*)(struct Unk_LUNList*)(pList))->GetHeadPos();
+        const NiTPointerList<NiShadowGeneratorPtr>& kList = NiShadowManager::GetShadowGenerators();
+        NiTListIterator pos = kList.GetHeadPos();
         while (pos != 0)
         {
-            Unk_LUNLight* pLight = FUN_140afe6c0(FUN_140afe730(pList, &pos));
+            NiShadowGenerator* pLight = kList.GetNext(pos);
             pLight->DetachUnaffectedCasterNode(pRoot);
             pLight->DetachUnaffectedReceiverNode(pRoot);
         }
@@ -867,7 +858,7 @@ DecoLayer::~DecoLayer()
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        static_cast<Unk_DecoWorld*>(WorldService::GetInstance())->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
+        WorldService::GetInstance()->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
     }
     m_aItems.RemoveAll();
 }
@@ -977,7 +968,7 @@ bool DecoLayer::ChangeAsset(CString strAsset)
         {
             ATL::CAtlArray<NiTransform> aXf;
             aOld[i]->CollectTransforms(aXf);
-            static_cast<Unk_DecoWorld*>(WorldService::GetInstance())->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
+            WorldService::GetInstance()->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
             DecoItem* pItem = AddItem(aXf);
             if (pItem != 0)
                 IsKfm(GetAsset()) ? pItem->LoadKfm(GetAsset()) : pItem->LoadNif(GetAsset());

@@ -22,8 +22,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -33,14 +31,6 @@ public:
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_14028d260(float fSeconds);                     // seconds -> milliseconds
 
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_TfString
-{
-    Unk_TfString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_TfString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
 
 // ---- StateTransform ----
 

@@ -96,6 +96,8 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gameeventvalue.h"   // C3: CGameEventValueCoupleDance::Get
+#include "ms2/client/ms2/fielddatacli.h"   // C3: CFieldData::m_nHomeReturnable
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -126,21 +128,10 @@ class ASDialog : public ASDisplayObject
 public:
     Scaleform::GFx::Value FUN_14193f350(const char* szMethod, bool a1, int a2, int a3);       // 0x14193f350
 };
-class Unk_GmEvtKey { public: int m_0; };
 // the event contexts the game rule hands out (CPtred objects behind an MS2Ptr)
-class Unk_GmStampEvent : public CPtred {};
-class Unk_GmLtaEvent : public CPtred {};
 class Unk_GmTimeRunEvent : public CPtred {};
 class Unk_GmGalleryEvent : public CPtred {};
-class Unk_GmRpsEvent : public CPtred {};
-class Unk_GmDanceEvent : public CPtred {};
-class Unk_GmEvtMgr
-{
-public:
-    MS2Ptr<Unk_GmStampEvent> FUN_14047ca40(const Unk_GmEvtKey& key);
-    MS2Ptr<Unk_GmLtaEvent> FUN_14047ce70();
-    MS2Ptr<Unk_GmRpsEvent> FUN_14047d140();
-};
+class Unk_GmEvtMgr;
 class Unk_GmNet
 {
 public:
@@ -219,17 +210,10 @@ class Unk_GmGrid;
 class Unk_GmField;
 class Unk_GmConstInt { public: int m_value; };
 class Unk_GmConstLevel { public: unsigned int m_value; };
-class Unk_GmFieldInfo : public CPtred
-{
-public:
-    char m_pad_18[0x5c - 0x18];
-    int m_5c;
-};
 class Unk_GmApp : public WorldService
 {
 public:
     PC* FUN_141bd0cc0();                                                // the local player
-    MS2Ptr<Unk_GmFieldInfo> FUN_141bd30a0();
 };
 class Unk_GmTable
 {
@@ -269,7 +253,7 @@ class Unk_GmMenuRange
 public:
     char m_pad[0x8];
 };
-class Unk_GmAction { public: void FUN_14098d150();  char m_pad[0x8]; };
+class Unk_GmAction : public TFunctor<void, EmptyParam> {};   // C3: the call is the real TFunctor<void, EmptyParam>::operator()
 
 // A menu table row (the guide dialog sees only the name and the id).
 struct Unk_GmMenuEntry
@@ -297,52 +281,18 @@ MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strTip, 0x48);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strCaption, 0x60);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_nOpenUi, 0x68);
 typedef MS2Ptr<CGameMenuDef> Unk_GmMenuRef;    // the menu entry (Unk_GmMenuEntry view of CGameMenuDef)
-class Unk_GmNodeRef;
-class Unk_GmNodeArr                             // CAtlArray<Unk_GmNodeRef>
+class Unk_GmNodeRef                             // 16 bytes: the MS2Ptr<CGameMenuItem> FUN_14193fba0 tests
 {
 public:
-    // The exe constructs the array before FUN_140cf7710 Adds to it and destroys it afterwards (an uninitialized
-    // local handed garbage m_pData/m_nSize to the exe's Add and leaked the node references)
-    Unk_GmNodeArr() { FUN_140c1c9d0(); }
-    ~Unk_GmNodeArr() { FUN_140c1cc60(); }
-    void FUN_140c1c9d0();                                        // ctor (all zero)
-    void FUN_140c1cc60();                                        // dtor (releases the elements)
-    size_t FUN_140c1d2c0() const;
-    const Unk_GmNodeRef& FUN_140c1cd50(size_t i) const;           // operator[] (returns a reference, bounds-checked)
-    void* m_pData;                              // CAtlArray fields (no char pad: a char[] local gets a /GS cookie)
-    size_t m_nSize;
-    size_t m_nMaxSize;
-    int m_nGrowBy;
-};
-MS2_CHECK_SIZE(Unk_GmNodeArr, 0x20);
-struct Unk_GmNodeBody
-{
-    char m_pad_0[0x18];
-    int m_18;
-    char m_pad_1c[0x20 - 0x1c];
-    Unk_GmNodeArr m_children;                   // +0x20 (FUN_14193a140: add rax, 0x20 before size / at)
-    struct { int m_0; int m_4; } m_range;      // +0x40 position of the entry in the strip
-};
-MS2_CHECK_OFFSET(Unk_GmNodeBody, m_children, 0x20);
-MS2_CHECK_OFFSET(Unk_GmNodeBody, m_range, 0x40);
-class Unk_GmNodeRef                             // 16 bytes: a counted pointer to a menu node
-{
-public:
-    Unk_GmNodeRef() {}
-    Unk_GmNodeRef(const Unk_GmNodeRef& o) : m_0(o.m_0), m_8(o.m_8) { if (m_8) CPtred::AddRefPtred(static_cast<CPtred*>(m_8)); }   // copy: adds a reference
-    ~Unk_GmNodeRef();                           // 0x140c1cd20
-    void* FUN_140c1cd90() const;                // the entry pointer (null: none)
-    Unk_GmNodeBody* FUN_140c1cdb0() const;
-    Unk_GmMenuEntry* FUN_140c1cda0() const;
     void* m_0;
     void* m_8;
 };
 class Unk_GmMenuTable : public CGameMenuTable
 {
 public:
-    Unk_GmNodeRef FUN_140cf77a0(int nId, int nLang);
 };
-class Unk_GmGridRef;
+class Unk_CubeMgr;
+struct Unk_CubeSpRef { bool FUN_140ef4cb0(Unk_CubeMgr* p); };    // uiugccubepalettedialog.cpp: the 8-byte cube-service ref; true when it holds p
 class Unk_Service6100017;
 template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
@@ -353,18 +303,14 @@ public:
     void* m_0;
     void* m_8;
 };
-class Unk_GmStatusInfo : public CPtred { public: char m_pad_18[0x6c - 0x18]; int m_6c; };
 class Unk_GmQuestIface { public: virtual void vfunc_0(); virtual int vfunc_1(); virtual void vfunc_2(); virtual int vfunc_3(); };
 class Unk_GmQuest : public CPtred, public Unk_GmQuestIface {};
 
 // Base of the movie clips this dialog binds.
-class Unk_GmCtl : public ASObj { public:  };
 class Unk_GmItem : public ASMovieClip {};
-Unk_GmCtl* FUN_140bc0530(MS2Ptr<Unk_GmItem>* pItem);   // MS2Ptr::operator-> (takes the smart pointer, not the clip)
 class Unk_GmClip : public ASMovieClip
 {
 public:
-    MS2Ptr<Unk_GmClip> FUN_1409b4560(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);
 };
 class Unk_GmPoint { public: int x; int y; Unk_GmPoint& operator=(const Unk_GmPoint& o); };   // returned through a hidden pointer; exe 0x141937345 loads both with integer moves
@@ -535,8 +481,6 @@ class Unk_GmDtPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&
 class Unk_GmDtEvents;
 class Unk_GmMentorConfig { public:  };
 class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3: member view (was FUN_14041d160)
-class CGameEventValueMentoring { public: int GetId(); };   // C3: the real member (local view, was FUN_140424de0)
-class Unk_GmEventHolder { public: MS2Ptr<Unk_GmDanceEvent> FUN_140428700(); };
 class CKeyTable { public: CStringW GetActionKeyName(int nId, int n); };   // C3: the real CKeyTable member (local view)   // member (this=rcx, hidden return=rdx)
 class Unk_GmShieldUIScale;
 class Unk_GmUtilHolder;
@@ -575,9 +519,7 @@ class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GmGuideTable (calls cast back)
-class Unk_GmALTable;
 class CCharacterAbilityTable;
-int FUN_140195f70(Unk_GmALTable* pTable, int nLevel, Unk_GmEvtKey* pKey);
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
@@ -600,6 +542,9 @@ public:
     void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
     MS2Ptr<GalleryContext> GetGallery();             // 0x14047cf60
     MS2Ptr<TimeRunEventContext> GetTimeRunEvent();   // 0x14047d6c0
+    MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
+    MS2Ptr<LongTermAttendGiftContext> GetLongTermAttendGift();   // 0x14047ce70
+    MS2Ptr<RpsContext> GetRps();                                 // 0x14047d140
 };
 bool FUN_14028d470(float, float);
 enum Unk_SubJobCode : int;
@@ -760,7 +705,6 @@ class UIRealEstateDialog   // C3: member view for the former free stand-ins
 public:
     void FUN_141ab4000(int, int);
 };
-bool FUN_140ef4cb0(Unk_GmGridRef&, int);
 bool FUN_14193fb70(const Unk_GmMenuRef&);
 bool FUN_14193fba0(Unk_GmNodeRef*);
 bool FUN_14193fbd0(Unk_GmTargetRef*);
@@ -798,7 +742,6 @@ class UISkillBookTreeDialog
 public:
     static bool CanUpgrade(JobSkillPtr spSkill, int nLevel);   // takes the pointer by value (the callee destroys it)
 };
-struct Unk_GmStatusView { MS2Ptr<Unk_GmStatusInfo> FUN_141707750(); };   // member (this=rcx, hidden return=rdx)
 int FUN_1418dd0c0();
 int FUN_1418dd110();
 bool FUN_1418fe060();
@@ -968,7 +911,7 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByName(CString(strName));
         if (ref.get()) {
             if (!((TFunctor<void, EmptyParam>*)(Unk_GmAction*)&(((Unk_GmMenuEntry*)ref.operator->())->m_action))->IsNull()) {
-                ((Unk_GmMenuEntry*)ref.operator->())->m_action.FUN_14098d150();
+                ((Unk_GmMenuEntry*)ref.operator->())->m_action.operator()();
             } else if (((Unk_GmMenuEntry*)ref.operator->())->m_nOpenUi != 0) {
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(((Unk_GmMenuEntry*)ref.operator->())->m_nOpenUi));
             }
@@ -1149,7 +1092,7 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (ref.get()) {
             CStringW strTip(((Unk_GmMenuEntry*)ref.operator->())->m_strTip);
             if (MS2Ptr<Unk_GmItem> item = FindMenuItem(strName)) {
-                if (((ASMovieClip*)(Unk_GmCtl*)(FUN_140bc0530(&item)))->FUN_1422c2030() == 0)
+                if (item->FUN_1422c2030() == 0)
                     strTip = ((Unk_GmMenuEntry*)ref.operator->())->m_strTipOff;
             }
             FUN_14193dd90(pRetVal, ((Unk_GmMenuEntry*)ref.operator->())->m_18, strTip, ((Unk_GmMenuEntry*)ref.operator->())->m_58);
@@ -1218,14 +1161,14 @@ void UIGameMenuDialog::FUN_141937ed0()
     int nContract = ((class MyPC*)(class PCBase*)(pPc))->FUN_141527ed0();
     if (m_30.get() != 0)
         m_30->Invoke("initContract", nContract == 0);
-    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
+    if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
         int nShown = 0;
         efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
         if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 &&
             !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820)
             nShown = 1;
         else
-            nShown = reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd30a0()->m_5c;
+            nShown = WorldService::GetInstance()->FUN_141bd30a0()->m_nHomeReturnable;
         SetMenuEnable(0x16, nShown);
     }
 }
@@ -1432,7 +1375,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         if (p != 0)
             nCount = ((class UIRpsEventDialog*)(void*)(p))->FUN_140e841a0();
     } else if (nId == 0x4f87) {
-        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), reinterpret_cast<Unk_GmEvtKey*>(&DAT_143ab3308));
+        nCount = TSingleton<CAdventureLevelTable>::GetInstance()->CountUnclaimedRewards(pPc->vfunc_141(), DAT_143ab3308);
     } else if (nId == 0x4f71) {
         void* p = ((void*)FUN_140b769d0(0x4f71));
         if (p != 0)
@@ -1442,7 +1385,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         if (p != 0)
             nCount = ((class UIStampEventDialog*)(void*)(p))->FUN_140ed8040();
     } else if (nId == 0x4f67) {
-        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), reinterpret_cast<Unk_GmEvtKey*>(&DAT_143ab3308));
+        nCount = TSingleton<CAdventureLevelTable>::GetInstance()->CountUnclaimedRewards(pPc->vfunc_141(), DAT_143ab3308);
         void* p = Unk_SSGGetDialog<UIAdventureLevelDialog>(0x4f67);
         if (p != 0)
             nCount = nCount + ((class UIAdventureLevelDialog*)(void*)(p))->FUN_140ba3240();
@@ -1580,14 +1523,14 @@ void UIGameMenuDialog::FUN_141939cf0(int nId)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_GmNodeRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FUN_140cf77a0(nId, FUN_14193a010());
-    if (FUN_14193fba0(&ref))
+    MS2Ptr<CGameMenuItem> ref = ((CGameMenuTable*)(Unk_GmMenuTable*)(((class Unk_GmMenuTable*)FUN_140c1d2f0())))->FindTopItem(nId, (EGameMenuSet)(FUN_14193a010()));
+    if (FUN_14193fba0(reinterpret_cast<Unk_GmNodeRef*>(&ref)))
         return;
-    if (!reinterpret_cast<CGameMenuItem*>(ref.FUN_140c1cdb0())->IsVisible())
+    if (!ref->IsVisible())
         return;
     ASObj obj(2);
-    obj.FUN_1407cb9c0("row", ref.FUN_140c1cdb0()->m_range.m_0);
-    obj.FUN_1407cb9c0("col", ref.FUN_140c1cdb0()->m_range.m_4);
+    obj.FUN_1407cb9c0("row", ref->m_nRow);
+    obj.FUN_1407cb9c0("col", ref->m_nCol);
     if (FUN_14193a7b0(nId, &obj) == 0)
         return;
     m_30->Invoke("modifyMenuEntity", obj.FUN_1422bb870());
@@ -1602,7 +1545,7 @@ void UIGameMenuDialog::FUN_141939ec0()
         return;
     efd::SmartPointer<Ridee> spInfo(((class PCBase*)(class PCBase*)(pPc))->FUN_1416764a0());
     if (spInfo != 0) {
-        bool bBusy = reinterpret_cast<Unk_GmStatusView*>(spInfo.operator->())->FUN_141707750()->m_6c != 0;
+        bool bBusy = spInfo->GetData()->m_basic.m_nHidePCInfo != 0;
         if (bBusy)
             nEnable = 0;
     }
@@ -1647,29 +1590,29 @@ void UIGameMenuDialog::FUN_14193a140()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<EMenuKey> arrAdded;
-    Unk_GmNodeArr arrMenus;
-    ((CGameMenuTable*)(Unk_GmMenuTable*)(((class Unk_GmMenuTable*)FUN_140c1d2f0())))->GetTopItems(*(ATL::CAtlArray<MS2Ptr<CGameMenuItem>, ATL::CElementTraits<MS2Ptr<CGameMenuItem>>>*)(Unk_GmNodeArr*)(&arrMenus), (EGameMenuSet)(FUN_14193a010()));
-    for (size_t i = 0; i < arrMenus.FUN_140c1d2c0(); ++i) {
-        Unk_GmNodeRef ref(arrMenus.FUN_140c1cd50(i));
+    ATL::CAtlArray<MS2Ptr<CGameMenuItem> > arrMenus;
+    ((CGameMenuTable*)(Unk_GmMenuTable*)(((class Unk_GmMenuTable*)FUN_140c1d2f0())))->GetTopItems(arrMenus, (EGameMenuSet)(FUN_14193a010()));
+    for (size_t i = 0; i < arrMenus.GetCount(); ++i) {
+        MS2Ptr<CGameMenuItem> ref(arrMenus[i]);
         ASObj obj(2);
-        obj.FUN_1407cb9c0("row", ref.FUN_140c1cdb0()->m_range.m_0);
-        obj.FUN_1407cb9c0("col", ref.FUN_140c1cdb0()->m_range.m_4);
-        if (!reinterpret_cast<CGameMenuItem*>(ref.FUN_140c1cdb0())->IsVisible())
+        obj.FUN_1407cb9c0("row", ref->m_nRow);
+        obj.FUN_1407cb9c0("col", ref->m_nCol);
+        if (!ref->IsVisible())
             continue;
-        if (FUN_14193a7b0(ref.FUN_140c1cdb0()->m_18, &obj) == 0)
+        if (FUN_14193a7b0(ref->m_nId, &obj) == 0)
             continue;
-        arrAdded.Add(reinterpret_cast<const EMenuKey&>(ref.FUN_140c1cdb0()->m_18));
-        if (ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0() > 0) {
+        arrAdded.Add(reinterpret_cast<const EMenuKey&>(ref->m_nId));
+        if (ref->m_children.GetCount() > 0) {
             ASDataProvider children(2);   // exe 0x1422deec0: addEntity wants a CLIK DataProvider
-            for (size_t j = 0; j < ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0(); ++j) {
-                Unk_GmNodeRef child(ref.FUN_140c1cdb0()->m_children.FUN_140c1cd50(j));
-                if (!reinterpret_cast<CGameMenuItem*>(child.FUN_140c1cdb0())->IsVisible())
+            for (size_t j = 0; j < ref->m_children.GetCount(); ++j) {
+                MS2Ptr<CGameMenuItem> child(ref->m_children[j]);
+                if (!child->IsVisible())
                     continue;
                 ASObj childObj(2);
-                if (FUN_14193a7b0(child.FUN_140c1cdb0()->m_18, &childObj) == 0)
+                if (FUN_14193a7b0(child->m_nId, &childObj) == 0)
                     continue;
                 children.PushValue(childObj.FUN_1422bb870());
-                arrAdded.Add(reinterpret_cast<const EMenuKey&>(child.FUN_140c1cdb0()->m_18));
+                arrAdded.Add(reinterpret_cast<const EMenuKey&>(child->m_nId));
             }
             obj.FUN_1409adbe0("child", children.FUN_1422bb870());
         }
@@ -1742,8 +1685,8 @@ void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
     bool bSkip = FUN_14193fb70(((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByUiId(nId));
     if (bSkip)
         return;
-    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
-        if (MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(GetMenuName(nId))) {
+    if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
+        if (MS2Ptr<ASMovieClip> spEntry = spMenus->FUN_1409b4560(GetMenuName(nId))) {
             if (MS2Ptr<ASButton> spButton = spEntry->FUN_140acce30<ASButton>("m_button")) {
                 ((ASUIComponent*)(spButton).operator->())->SetFocused(nEnable);
                 ((ASButton*)(spButton).operator->())->FUN_1422ce090(nEnable);
@@ -1791,9 +1734,9 @@ MS2Ptr<Unk_GmItem> UIGameMenuDialog::FindMenuItemById(int nId)
 // @0x14193b180
 MS2Ptr<Unk_GmItem> UIGameMenuDialog::FindMenuItem(const CString& strName)
 {
-    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
-        if (MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(strName))
-            return spEntry->FUN_140bbe700<Unk_GmItem>("m_button");
+    if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
+        if (MS2Ptr<ASMovieClip> spEntry = spMenus->FUN_1409b4560(strName))
+            return static_cast<Unk_GmClip*>(spEntry.operator->())->FUN_140bbe700<Unk_GmItem>("m_button");
     }
     return MS2Ptr<Unk_GmItem>(0);
 }
@@ -1901,7 +1844,7 @@ void UIGameMenuDialog::FUN_14193b750()
         ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820) {
         nShown = 1;
     } else {
-        nShown = reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd30a0()->m_5c;
+        nShown = WorldService::GetInstance()->FUN_141bd30a0()->m_nHomeReturnable;
     }
     if (nShown == 0) {
         if (FUN_14193e9c0() != 0)
@@ -2040,7 +1983,7 @@ void UIGameMenuDialog::FUN_14193c3c0()
 // @0x14193c550
 void UIGameMenuDialog::OpenStampEventDialog()
 {
-    MS2Ptr<Unk_GmStampEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<const Unk_GmEvtKey&>(DAT_143ab2fc0));
+    MS2Ptr<StampEventContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spEvent == NULL) {
         FUN_1412751f0(GetStringCommonByKey(L"s_stampevent_invalid_event"), 1, 1);
         return;
@@ -2057,7 +2000,7 @@ void UIGameMenuDialog::FUN_14193c630()
 // @0x14193c660
 void UIGameMenuDialog::OpenLongTermAttendGiftDialog()
 {
-    MS2Ptr<Unk_GmLtaEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047ce70();
+    MS2Ptr<LongTermAttendGiftContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetLongTermAttendGift();
     if (spEvent == NULL) {
         FUN_1412751f0(GetStringCommonByKey(L"s_longtermattendgift_dialog_invalid_event"), 1, 1);
         return;
@@ -2190,7 +2133,7 @@ void UIGameMenuDialog::FUN_14193d030()
 // @0x14193d250
 void UIGameMenuDialog::FUN_14193d250()
 {
-    MS2Ptr<Unk_GmRpsEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047d140();
+    MS2Ptr<RpsContext> spEvent = ((class CGameRule*)FUN_1401c0d90())->GetRps();
     if (spEvent == NULL) {
         FUN_1412751f0(GetStringCommonByKey(L"s_rpsevent_invalid_event"), 1, 1);
         return;
@@ -2201,7 +2144,7 @@ void UIGameMenuDialog::FUN_14193d250()
 // @0x14193d320
 void UIGameMenuDialog::FUN_14193d320()
 {
-    MS2Ptr<Unk_GmDanceEvent> spEvent = ((class Unk_GmEventHolder*)((class CGameEventValueManager*)(class Unk_GmMentorConfig*)(reinterpret_cast<Unk_GmMentorConfig*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(((class CGameEventValueManager*)(class Unk_GmMentorConfig*)(reinterpret_cast<Unk_GmMentorConfig*>(TSingleton<CGameEventValueManager>::GetInstance())))->GetCoupleDance())->Get();
     if (spEvent == NULL) {
         FUN_1412752d0(L"s_microgame_couple_dance_event_invalid_event", 1);
         return;
@@ -2384,7 +2327,7 @@ void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
     CString strLayer(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
     if (bEvent)
         strLayer += "_event";
-    FUN_140bc0530(&spItem)->FUN_1407cba60("layerName", CString(strLayer));
+    spItem->FUN_1407cba60("layerName", CString(strLayer));
 }
 
 // @0x14193dd50
@@ -2518,7 +2461,7 @@ int UIGameMenuDialog::FUN_14193e940(int nField)
 bool UIGameMenuDialog::FUN_14193e9c0()
 {
     efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
-    if (FUN_140ef4cb0(*(Unk_GmGridRef*)&grid, 0) != 0)
+    if (reinterpret_cast<Unk_CubeSpRef*>(&grid)->FUN_140ef4cb0(0) != 0)
         return false;
     bool bField = ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820;
     void* pDlg1;

@@ -36,6 +36,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/effectparam.h"   // C3: CEffect::ms_RTTI
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/commonfiles/ugcmapdata.h"   // C3: Unk_UGCGroup, the row FUN_1408a0d30 fills
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -59,13 +60,6 @@ CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
 
-// A row of the lookup table that FUN_1408a0d30 fills (0xc0 bytes).
-struct Unk_AddressRow
-{
-    Unk_AddressRow();     // 0x1408ad110
-    ~Unk_AddressRow();    // 0x14050de70
-    void* m_data[24];     // 0xc0, like cubemapinformationservice_3's Unk_CMISSalable
-};
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -102,12 +96,12 @@ template<class T> T* Unk_BuddyPtr<T>::operator->() const { return p; }
 template<class T> void Unk_BuddyPtr<T>::Release() { if (p) { ReleaseImpl(0); p = 0; } }
 template<class T> void Unk_BuddyPtr<T>::ReleaseImpl(void*)
 {
-    if (FUN_140159bc0(p) == 0) {
+    if (CPtred::ReleasePtred(p) == 0) {
         Reference(p);
-        FUN_140159ba0(p);
+        CPtred::DeletePtred(p);
     }
 }
-template<class T> void Unk_BuddyPtr<T>::Reference(CPtred* v) { FUN_14015b020(v); }
+template<class T> void Unk_BuddyPtr<T>::Reference(CPtred* v) { CPtred::AddRefPtred(v); }
 
 // @0x140978f40
 CAddressTable::CAddressTable()
@@ -204,8 +198,8 @@ CStringW CAddressTable::GetText(int nId)
 // @0x1409795f0
 CStringW CAddressTable::GetTextChecked(int nId, int nType, int nUnused)
 {
-    Unk_AddressRow row;
-    if (FUN_1408a0d30(nType, *(struct Unk_UGCGroup*)(&row), nId) == 0)
+    Unk_UGCGroup row;
+    if (FUN_1408a0d30(nType, row, nId) == 0)
         return CStringW(L"");
     CStringW strText = GetText(nId);
     return strText;

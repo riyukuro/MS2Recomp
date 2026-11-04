@@ -35,7 +35,8 @@ private:
     char m_pad_40[0x88 - sizeof(ASDisplayObject)];
 };
 
-// The handle the home name input is moved into (its get / -> / release live in the unit that owns the shared instance).
+// The handle the home name input is moved into: MS2Ptr<ASTextInput> (its get / release live in the unit that owns the
+// shared instance; -> goes through the real MS2Ptr<ASTextInput>). The move ctor 0x140c26dc0 is defined under this name.
 struct Unk_HmPtrView { void* m_0; void* m_8; };                    // the layout of an MS2Ptr
 struct Unk_HmNameRef
 {
@@ -46,7 +47,6 @@ struct Unk_HmNameRef
     }
     ~Unk_HmNameRef();                                               // 0x140bbfdd0 release
     operator Unk_HmInput*() const;                                  // 0x140bc0500
-    Unk_HmInput* operator->() const;                                // 0x140bc0550
     void* m_0;
     void* m_8;
 };
@@ -70,7 +70,6 @@ typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
 void FUN_14151f150(Unk_MsgBoxPtr box);
 void FUN_140710590(COutPacket& packet);
-CommonString* FUN_14025e7d0();                                      // the CommonString singleton
 
 extern template class MS2Ptr<CMsgBoxData>;                          // instances owned by other units
 #ifndef MS2_HOOK_DLL
@@ -163,8 +162,8 @@ void UIHomeInfoEditDialog::OnLoadComplete()
     UIModalDialog::OnLoadComplete();
     if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
     {
-        reinterpret_cast<ASTextInput*>(spName.operator->())->SetMaxChars(FUN_140c26920());
-        reinterpret_cast<ASTextInput*>(spName.operator->())->SetTextW(FUN_140c268d0());
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->SetMaxChars(FUN_140c26920());
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->SetTextW(FUN_140c268d0());
     }
     if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
     {
@@ -203,10 +202,10 @@ void UIHomeInfoEditDialog::OnConfirm()
     {
         if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
         {
-            if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
+            if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
             {
                 CStringW strMessage;
-                CStringW strName = reinterpret_cast<ASTextInput*>(spName.operator->())->GetText();
+                CStringW strName = reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->GetText();
                 strName.Trim(L",");
                 if (pChecker->CheckHomeName(strName, strMessage) == 0)
                 {

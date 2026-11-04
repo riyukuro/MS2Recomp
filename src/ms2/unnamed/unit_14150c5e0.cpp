@@ -65,11 +65,6 @@ extern int DAT_143ae0dd0;                                   // shimmer mode (0: 
 extern float DAT_1439f8010;                                 // distance scale
 extern NiFixedString DAT_143ae53c0;                          // "gfEnableShimmerRender"
 
-class Unk_PtrArray   // C3: member view for the former free stand-ins
-{
-public:
-    void Add(void*);
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -81,7 +76,6 @@ bool FUN_141568c90(NiRenderObject* pObject);
 bool FUN_141567260(class NiAVObject*);   // C3: was FUN_141567260
 float FUN_14059d930(float f);                               // fabsf
 float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);       // horizontal distance
-void* FUN_1409a8120(void* pSmartPointer);                   // the raw pointer held by a smart pointer
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
 
 void FUN_14150cc30(MS2ShimmerSortProcessor* pProcessor, NiAVObject* pkObject);
@@ -126,10 +120,10 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         }
         const NiMaterial* pkMat = ((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pkObject))->GetActiveMaterial());
         kSaved.SetAt(pkObject, pkMat);
-        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spSkinnedMaterial), 0xffffffff);
+        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)m_spSkinnedMaterial, 0xffffffff);
         ((class NiMaterialInstance*)(void*)(((void*)((class NiRenderObject*)(class NiRenderObject*)(pkObject))->GetActiveMaterialInstance())))->ClearCachedShader();
         pkObject->SetMaterialNeedsUpdate(true);
-        ((class Unk_PtrArray*)(class NiVisibleArray*)(&kList))->Add((void*)(pkObject));
+        ((class NiVisibleArray*)(&kList))->Add(*(pkObject));
         nShimmer++;
     }
     PostProcessingService* pService = reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20());
@@ -170,10 +164,10 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
                     {
                         const NiMaterial* pkMat = ((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pkObject))->GetActiveMaterial());
                         kSaved.SetAt(pkObject, pkMat);
-                        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spMaterial), 0xffffffff);
+                        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)m_spMaterial, 0xffffffff);
                         ((class NiMaterialInstance*)(void*)(((void*)((class NiRenderObject*)(class NiRenderObject*)(pkObject))->GetActiveMaterialInstance())))->ClearCachedShader();
                         pkObject->SetMaterialNeedsUpdate(true);
-                        ((class Unk_PtrArray*)(class NiVisibleArray*)(&kList))->Add((void*)(pkObject));
+                        ((class NiVisibleArray*)(&kList))->Add(*(pkObject));
                     }
                 }
             }

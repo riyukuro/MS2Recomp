@@ -300,19 +300,13 @@ void FUN_140d73ff0(CStringW);
 
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType);
 
-// The AS accessor object the array loaders build over a Value (0x80 bytes: ctor 0x1422c6570, dtor 0x1422c65c0); one
-// child getter COMDAT per wrapper class.
-class Unk_DsNode
+// The array loaders build an ASDisplayObjectContainer over a Value; one child getter COMDAT per wrapper class.
+class Unk_DsNode : public ASDisplayObjectContainer
 {
 public:
-    Unk_DsNode(const Scaleform::GFx::Value& v, int n);
-    ~Unk_DsNode();
     MS2Ptr<Unk_DsButton> FUN_140d01c90(const CString& strName);
     MS2Ptr<Unk_DsLabel> FUN_140d01dd0(const CString& strName);
-private:
-    void* m_pad[0x10];   // pointer array: no /GS cookie in the loaders
 };
-MS2_CHECK_SIZE(Unk_DsNode, 0x80);
 bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart);
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart);
 
@@ -777,8 +771,8 @@ bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned 
     out.clear();
     out.reserve(nCount);
     for (unsigned i = nStart; i < nCount + nStart; ++i) {
-        Unk_DsNode node(root, 2);
-        MS2Ptr<Unk_DsButton> child = node.FUN_140d01c90(StringFormat("{0}{1}", strName, i));
+        ASDisplayObjectContainer node(root, 2);
+        MS2Ptr<Unk_DsButton> child = static_cast<Unk_DsNode&>(node).FUN_140d01c90(StringFormat("{0}{1}", strName, i));
         if (child == NULL) {
             (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", 99), 0));
             return false;
@@ -796,8 +790,8 @@ bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned 
     out.clear();
     out.reserve(nCount);
     for (unsigned i = nStart; i < nCount + nStart; ++i) {
-        Unk_DsNode node(root, 2);
-        MS2Ptr<Unk_DsLabel> child = node.FUN_140d01dd0(StringFormat("{0}{1}", strName, i));
+        ASDisplayObjectContainer node(root, 2);
+        MS2Ptr<Unk_DsLabel> child = static_cast<Unk_DsNode&>(node).FUN_140d01dd0(StringFormat("{0}{1}", strName, i));
         if (child == NULL) {
             (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", 99), 0));
             return false;

@@ -32,14 +32,11 @@
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 
-void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 class Unk_CubeSelection;
         // the cube selection is in the craft mode
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
 int FUN_14028d260(float f);                                // 0x14028d260 round to ms
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0 the flat model of the entity
 efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
 #define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                          // the up axis
 
@@ -55,12 +52,7 @@ class Unk_JpScale { public: };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's physics body.
-class Unk_JpBody : public GameObjectController
-{
-public:
-    unsigned FUN_141240ef0();
-};
-inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->GetPhysicsBody()); }
+inline GameObjectController* JpBody(PCBase* p) { return reinterpret_cast<GameObjectController*>(p->GetPhysicsBody()); }
 
 // The actor's buffs.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
@@ -71,14 +63,6 @@ class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey)
 class Unk_HsInfo : public CPtred { };
 int FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
 
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_JpString
-{
-    Unk_JpString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_JpString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
 
 // The hide-and-seek jump animation name (set up by the .text$di init, cleared when the actor hides) and the toggle of the
 // random jump.
@@ -139,7 +123,7 @@ void StateJump::vfunc_4(StateData* pData)
     m_nOnGround = m_pOwner->FUN_1416749c0();
     float fA = m_pOwner->FUN_14166da60();
     float fSpeed = m_pOwner->vfunc_95();
-    Unk_JpBody* pBody = JpBody(m_pOwner);
+    GameObjectController* pBody = JpBody(m_pOwner);
     pBody->FUN_141240730();
     pBody->FUN_141240610(fA, m_vDir, fSpeed);
     m_tick.Init();
@@ -191,7 +175,7 @@ void StateJump::vfunc_6()
 void StateJump::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Unk_JpBody* pBody = JpBody(m_pOwner);
+    GameObjectController* pBody = JpBody(m_pOwner);
     if (pBody->IsJumping() != 0)
     {
         efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
@@ -249,9 +233,9 @@ void StateJump::vfunc_8(double fTime)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = 1;
-                if (FUN_1408a9bd0(pEntity)->ContainsModel(0xbadf0a13))
+                if (pEntity->GetModel()->ContainsModel(0xbadf0a13))
                     spAction->m_n2c = 0xbadf0a13;
-                else if (FUN_1408a9bd0(pEntity)->ContainsModel(0xc13e30c8))
+                else if (pEntity->GetModel()->ContainsModel(0xc13e30c8))
                     spAction->m_n2c = 0xc13e30c8;
                 pPC->SendRequestRideMode1(spAction);
             }
@@ -403,19 +387,19 @@ int StateJump::FUN_1417d6620()
         {
             MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
             spAction->m_n28 = 0;
-            if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
+            if (m_pSeat->GetModel()->ContainsModel(0xbadf0a13))
                 spAction->m_n2c = 0xbadf0a13;
-            else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
+            else if (m_pSeat->GetModel()->ContainsModel(0xc13e30c8))
                 spAction->m_n2c = 0xc13e30c8;
             if (pPC->SendRequestRideMode1(spAction) != 0)
                 pPC->vfunc_59(1, 0, 0, 0);
         }
-        else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
+        else if (m_pSeat->GetModel()->ContainsModel(0xbadf0a13))
         {
             m_pOwner->vfunc_22(efd::Point3::ZERO);
             m_pOwner->vfunc_59(8, 0, 0, 0);
         }
-        else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
+        else if (m_pSeat->GetModel()->ContainsModel(0xc13e30c8))
         {
             m_pOwner->vfunc_22(efd::Point3::ZERO);
             m_pOwner->vfunc_59(9, 0, 0, 0);

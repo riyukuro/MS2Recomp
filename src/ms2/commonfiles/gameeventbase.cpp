@@ -119,7 +119,7 @@ GameEvent::GameEvent()
 }
 
 // @0x1402e1d00
-int GameEvent::FUN_1402e1d00() { return m_id; }
+int GameEvent::GetID() { return m_id; }
 
 // @0x1402e1d20
 bool GameEvent::Init(int id, const CMsTime& start, const CMsTime& end, const CStringW& value1, const CStringW& value2,
@@ -152,7 +152,7 @@ bool GameEvent::Init(int id, const CMsTime& start, const CMsTime& end, const CSt
     vfunc_2();
     return true;
 }
-MS2_REPLACE_METHOD(0x1402E1D00, GameEvent, FUN_1402e1d00, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x1402E1D00, GameEvent, GetID, 14, 0x72E52537);
 
 // @0x1402e1f40
 bool GameEvent::LoadXml(Unk_140165cf0* pElem)

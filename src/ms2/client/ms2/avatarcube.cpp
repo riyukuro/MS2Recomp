@@ -47,11 +47,10 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
-// The UGC cube manager (singleton behind FUN_14052d220).
+// The UGC cube manager (TSingleton<CUgcManager>).
 class Unk_UgcCubeMgr : public CUgcManager
 {
 };
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_1410280d0(int nKind, CString strName);
 
 // The avatar-attend manager (singleton behind FUN_1403ed2d0): the avatar object registered under an id.
@@ -120,14 +119,14 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
             CString strFile = FUN_1410280d0(2, spItem->GetUgcInfo()->m_strName);
             if (_access(strFile, 0))
             {
-                ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
+                ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, FUN_14123c460());
             }
             else
             {
                 CUgcItemCube kCube(spItem.get(), FUN_14123c460());
-                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->ApplyImageToCube(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
+                if (((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->ApplyImageToCube(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
                 {
-                    ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
+                    ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, FUN_14123c460());
                 }
             }
         }

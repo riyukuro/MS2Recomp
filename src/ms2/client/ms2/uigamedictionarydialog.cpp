@@ -58,11 +58,6 @@ public:
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
 };
-// "m_tab": the tab strip.
-class Unk_DictTab : public Unk_DictCtl
-{
-public:
-};
 // "m_inputSearch": the search text input.
 class Unk_DictInput : public ASDisplayObject
 {
@@ -198,8 +193,8 @@ void UIGameDictionaryDialog::OnLoadComplete()
     FUN_140f452e0();
     if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
-    if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
-        reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(m_178);
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        spTab->SetSelectedIndex(m_178);
     if (m_17c != 0)
     {
         if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items"))
@@ -436,12 +431,12 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
     if (vfunc_55() == 0)
     {
-        if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
+        if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
         {
             if (m_178 == nTab)
                 FUN_140f45870();
             else
-                reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(nTab);
+                spTab->SetSelectedIndex(nTab);
         }
         if (m_17c != 0)
         {

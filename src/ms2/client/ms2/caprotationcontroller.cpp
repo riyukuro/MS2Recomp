@@ -48,6 +48,7 @@
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/gameobject.h"   // C3: GameObject::FUN_14123c460
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/placeholder/cinputkeyhandler.h"   // C3: CInputKeyHandler::FUN_14116d950
@@ -103,7 +104,6 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual Vector3 vfunc_20();                         // rotation (x, y, z degrees)
-    Unk_CapEntityKey& FUN_14123c460(Unk_CapEntityKey& kOut);    // the entity key
 };
 
 struct Unk_CapEntityLoader
@@ -260,7 +260,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
     if (pPlayer == 0)
         return;
     Unk_EfdMatrix3 kRotZ;
-    kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
+    reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
     Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
     m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
     m_fRadius = m_kDragDir.FUN_140968990();
@@ -292,7 +292,7 @@ void CCapRotationController::vfunc_31()
                 Vector3 kDelta = reinterpret_cast<const Vector3&>(kHit).FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
                 kDelta.FUN_140968990();
                 Unk_EfdMatrix3 kRotZ;
-                kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
+                reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
                 kDelta = kRotZ.FUN_140a00720(kDelta);
                 Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
                 kAxis.FUN_140968990();
@@ -325,7 +325,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
     if (pLoader == 0)
         return;
     Unk_CapEntityKey kKey;
-    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_CapEntityKey&>(pPlayer->FUN_14123c460(kKey))));
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(static_cast<const egf::EntityID&>(reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c460(reinterpret_cast<egf::EntityID&>(kKey))));
     if (pScene == 0)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
@@ -353,7 +353,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
             kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
-            Unk_NiMatrix3 kRot(Unk_NiMatrix3(kN, kSide, kUp).FUN_140a33480(kFix));
+            Unk_NiMatrix3 kRot(((const Unk_EfdMatrix3*)&static_cast<const NiMatrix3&>(NiMatrix3((const efd::Point3&)kN, (const efd::Point3&)kSide, reinterpret_cast<const NiPoint3&>(kUp))))->FUN_140a33480(kFix));
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
             kXf.m_Translate = *reinterpret_cast<const NiPoint3*>(&kHit);
             Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());

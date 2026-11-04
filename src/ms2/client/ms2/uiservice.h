@@ -188,7 +188,7 @@ public:
     void FUN_141adbca0(int n);                                         // 0x141adbca0
     void FUN_141adbcd0(char b);                                        // 0x141adbcd0
     int FUN_141adbe00(float fValue, int bRaw);                           // 0x141adbe00
-    void FUN_141adbe70();                                              // 0x141adbe70
+    float FUN_141adbe70();                                             // 0x141adbe70 (the ui scale)
     void FUN_141adbf30();                                              // 0x141adbf30
     void FUN_141adbf70(int n);                                         // 0x141adbf70
     void RegisterObject(MS2Ptr<UIObject> spObj);                        // 0x141aebfa0 register an object (class id / name tables)

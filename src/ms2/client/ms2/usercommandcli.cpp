@@ -101,13 +101,13 @@ class Unk_Restrictions;
 struct Unk_XmlElement;
 
 // Header-local objects in original initializer order. Unknown original names.
-struct Unk_CommandId { explicit Unk_CommandId(unsigned __int64); unsigned __int64 value; };
-MS2_CHECK_SIZE(Unk_CommandId,8);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_CommandId)
+MS2_CHECK_SIZE(Unk_BuddyHandle,8);
 static CString s_sort8[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_sort7[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill="skill";
 static CString s_stun="stun";
-static Unk_CommandId s_id(0);
+static Unk_BuddyHandle s_id(0);
 static Unk_1402a9d70 s_table(17,.75f,.25f,2.25f,10);
 static CString s_job="jobCode";
 static CString s_sort="sortValue";
@@ -208,12 +208,12 @@ public:
 };
 class CSoundEventMgr; template <class T> class TSingleton;
 template <> class TSingleton<CSoundEventMgr> { public: static CSoundEventMgr* GetInstance(); };   // 0x140d13c40, as in soundeventmgr.h
-class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class CommonString   // C3: member view for the former free stand-ins
 {
 public:
     void Reload();
 };
+template <> class TSingleton<CommonString> { public: static CommonString* GetInstance(); };   // 0x14025e7d0, as in commonstringtable.h
  void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
 void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void FUN_141adc530(void*,int);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
@@ -1006,7 +1006,7 @@ int CUserCommandCli::ShowBgmState(Unk_CommandArgs&) {
 }
 // @0x141365cd0
 int CUserCommandCli::ReloadStrings(Unk_CommandArgs&) {
-    ((class CommonString*)(void*)(((void*)FUN_14025e7d0())))->Reload(); FUN_1409c51f0(); FUN_141815db0(FUN_141371b20());
+    ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload(); FUN_1409c51f0(); FUN_141815db0(FUN_141371b20());
     { CStringW text(L"Success Reload String"); FUN_1412751b0(text,20); } return 1;
 }
 // @0x141365d50
@@ -1811,7 +1811,7 @@ void FUN_14136b910(void*,Unk_g2_Vec24* src,int status) {
 // @0x14136ba00
 int CUserCommandCli::ShowKey(Unk_CommandArgs& args) {
     bool on = args.FUN_1408d2140(0,false);
-    *((char*)((void*)FUN_14025e7d0()) + 0xf0) = on;
+    *((char*)((void*)TSingleton<CommonString>::GetInstance()) + 0xf0) = on;
     if (on) FUN_1412751b0(L"Now You can see text to keyText(Converted)",20);
     else FUN_1412751b0(L"Now You can see text to Text(Original)",20);
     return 1;

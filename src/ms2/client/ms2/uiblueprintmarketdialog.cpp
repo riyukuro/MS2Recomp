@@ -109,7 +109,6 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_1412752d0(const CStringW& key, int type);                          // a system message by string key
 void FUN_140710590(COutPacket& packet);                                     // send
-class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow -> wide
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 int FUN_140222b30(int nValue, int nMin);
@@ -128,7 +127,6 @@ extern int DAT_143ab2974;                                                   // t
 
 class Unk_MeratKeyState : public CInputKeyHandler {};   // 0x1c = Enter
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-CommonString* FUN_14025e7d0();
 
 // The config singleton (members not recovered).
 struct Unk_ConfigPaths
@@ -491,7 +489,7 @@ bool UIBlueprintMarketDialog::FillRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMa
     row.FUN_1409adbe0("funcClickCalculate", Scaleform::GFx::Value(fnCalculate.FUN_1422bb870()));
     ASFunction fnModelHouse(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnClickModelHouse), 0, FUN_1422db730());
     row.FUN_1409adbe0("funcClickModelhouse", Scaleform::GFx::Value(fnModelHouse.FUN_1422bb870()));
-    bool bIcon = ((class CUgcManager*)FUN_14052d220())->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
+    bool bIcon = TSingleton<CUgcManager>::GetInstance()->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
     if (bIcon)
         row.FUN_1407cba60("iconPath", CStringA(((struct Unk_ConfigPaths*)FUN_1401d31f0())->m_strUgcIcon));
     return true;
@@ -644,7 +642,7 @@ void UIBlueprintMarketDialog::SearchText(MS2Ptr<CMeratMarketSchCond> spCond, CSt
         ApplySearchData(spCond, searchData);
         return;
     }
-    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker()) {
+    if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker()) {
         CStringW strMessage;
         if (pChecker->FUN_1402261e0(strText, strMessage) != 0) {
             CStringW strNotice = FormatStringId<CStringW>(0xa13, strMessage);
