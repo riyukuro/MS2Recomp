@@ -1218,7 +1218,6 @@ int StateRide::vfunc_1()
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nKey); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
-bool FUN_140552700(const efd::Point3& kA, const efd::Point3& kB);    // efd::Point3::operator!=
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();
 class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen); };
 float FUN_1409f25a0(float f);
@@ -1529,7 +1528,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
         kTarget.y = 20.0f * FUN_1409f2310(m_fAngle) + m_pos54.y;
         m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, -((m_fAngle * 180.0f) / 3.1415927f)));
     }
-    if (FUN_140552700(m_pOwner->vfunc_18(), kTarget))
+    if (m_pOwner->vfunc_18() != kTarget)
     {
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
         if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))

@@ -17,6 +17,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaidrecipelistdialog.cpp"    // assumed
 // The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
 #define MS2_ASUICOMPONENT_SLOTS
+#define MS2_TPTRVALUE_MOVE   // the recipe book entries are copied with the add-ref ctor (0x1406889c0)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/mstime.h"

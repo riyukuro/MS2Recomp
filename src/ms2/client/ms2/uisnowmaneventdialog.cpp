@@ -8,6 +8,7 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/aswindow.h"   // C3: ASDialog (an ASWindow: FUN_1422e6270/FUN_1422e6310)
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cinpacket.h"
@@ -45,11 +46,6 @@ MS2_CHECK_SIZE(CAlignmentInfo, 0x30);
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
-class ASDialog : public AScript {
-public:
-    int FUN_1422e6270();
-    int FUN_1422e6310();
-};
 
 __int64 GetServerTime();
 

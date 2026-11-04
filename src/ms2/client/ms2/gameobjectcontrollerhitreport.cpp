@@ -64,7 +64,7 @@ NxControllerAction GameObjectControllerHitReport::onShapeHit(const NxControllerS
         Unk_Entity* pEntity = (Unk_Entity*)((class CPhysXHelper*)FUN_1409f7ca0())->GetEntityFromActor(&hit.shape->getActor());
         if (pEntity != 0)
         {
-            m_entity.FUN_1408b6ec0(pEntity);
+            m_entity = (egf::Entity*)pEntity;
             m_bHit = 1;
         }
         else
@@ -103,23 +103,23 @@ MS2_REPLACE_METHOD(0x140CFAF30, GameObjectControllerHitReport, FUN_140cfaf30, 45
 // @0x140cfaf70
 egf::EntityID GameObjectControllerHitReport::GetEntityID() const
 {
-    if (m_entity.FUN_1408b70b0(0))
+    if (m_entity == 0)
         return reinterpret_cast<const egf::EntityID&>(s_nullEntityId);
-    return reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetEntityID();
+    return m_entity->GetEntityID();
 }
 MS2_REPLACE_METHOD(0x140CFAF70, GameObjectControllerHitReport, GetEntityID, 112, 0x3DF814DF);
 
 // @0x140cfaff0
 Unk_Entity* GameObjectControllerHitReport::GetEntity() const
 {
-    return m_entity.FUN_1408a9090();
+    return (Unk_Entity*)m_entity.data();
 }
 MS2_REPLACE_METHOD(0x140CFAFF0, GameObjectControllerHitReport, GetEntity, 31, 0x0110B063);
 
 // @0x140cfb020
 void GameObjectControllerHitReport::SetEntity(Unk_Entity* pEntity)
 {
-    m_entity.FUN_1408b6ec0(pEntity);
+    m_entity = (egf::Entity*)pEntity;
 }
 MS2_REPLACE_METHOD(0x140CFB020, GameObjectControllerHitReport, SetEntity, 41, 0x04B44E2C);
 

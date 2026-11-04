@@ -7,14 +7,10 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
+#include "ms2/commonfiles/itementityless.h"
 #include "ms2/commonfiles/itemgachaboxtable.h"
 class CMsgBoxData;
 class ASMovieClip;
-// Orders the set of special items (the comparator is the ItemEntity ordering of commonfiles\commonstruct).
-struct Unk_GachaLess
-{
-    bool operator()(const ItemEntity& a, const ItemEntity& b) const { return FUN_14026aeb0(a, b); }
-};
 class UIItemGachaBoxDialog : public UIDialog
 {
 public:

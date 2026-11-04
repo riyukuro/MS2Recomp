@@ -46,7 +46,7 @@ class Unk_RsWorld : public WorldService { };
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14183e930(const CStringW& str, int nColor);
+CStringW FUN_14183e930(const CStringW& str, unsigned nColor);
 void* FUN_140c24ef0();   // C3: was FUN_140c24ef0
 int FUN_1418dd0d0();
 __int64 GetServerTime();                                // the server time

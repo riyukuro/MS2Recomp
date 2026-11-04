@@ -6,14 +6,8 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/fieldproperty.h"   // Unk_Vec3f
 
-// 12-byte vector class used for the camera settings. All special members are out of line in the exe.
-struct Unk_GVec3 {
-    Unk_GVec3();                                    // 0x1405522f0
-    Unk_GVec3(float x, float y, float z);           // 0x14097f250
-    Unk_GVec3(const Unk_GVec3& o);                  // 0x14027dcf0
-    Unk_GVec3& operator=(const Unk_GVec3& o);      // 0x14097faa0 (NiPoint3 assignment; the exe passes the source by address)
-    float x, y, z;
-};
+#include <NiPoint3.h>   // the camera settings are NiPoint3 (ctors 0x1405522f0 / 0x14097f250 / 0x14027dcf0, move = 0x14097faa0)
+
 #ifndef MS2_UNK_RECT4
 #define MS2_UNK_RECT4
 struct Unk_Rect4 { Unk_Rect4(float l, float r, float t, float b); float l, r, t, b; };   // ctor 0x14097eac0
@@ -31,8 +25,8 @@ public:
     Unk_Rect4 m_rcImage;                            // +0x28 <image left right top bottom>
     Unk_Rect4 m_rcScreen;                           // +0x38 <screen ...>
     Unk_Frustum m_frustum;                          // +0x48 <frustum> (ortho flag at +0x60)
-    Unk_GVec3 m_vecCamPos;                          // +0x64 <camera position>
-    Unk_GVec3 m_vecCamRot;                          // +0x70 <camera rotation>
+    NiPoint3 m_vecCamPos;                           // +0x64 <camera position>
+    NiPoint3 m_vecCamRot;                           // +0x70 <camera rotation>
     float m_fZoomFactor;                            // +0x7c <zoom zoomfactor>
     int m_bVisibleMyPC;                             // +0x80 <visible mypc>
     int m_bVisibleOtherPC;                          // +0x84
@@ -50,7 +44,7 @@ public:
     virtual bool vfunc_1(Unk_140165cf0* node);      // 0x140a55500
 
     MS2Ptr<CMinimap> m_spMinimap;                   // +0x160
-    Unk_GVec3 m_vecDummyTargetPos;                // +0x170 <camera dummyTargetPos>
+    NiPoint3 m_vecDummyTargetPos;                 // +0x170 <camera dummyTargetPos>
     Unk_Vec3Cli m_vecUnk17c;                        // +0x17c
     unsigned m_nBgmId;                                   // +0x188 <bgm id>
     unsigned m_nBgmParam;                                // +0x18c

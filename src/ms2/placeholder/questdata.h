@@ -50,7 +50,7 @@ public:
     {
     public:
         GroupPickData();
-        virtual ~GroupPickData();
+        // implicit dtor: 0x140758b90 has no vftable store
         bool operator!=(const GroupPickData& o) const;
         int m_18;                                   // ctor 0
         int m_count;                                // +0x1c ctor 1

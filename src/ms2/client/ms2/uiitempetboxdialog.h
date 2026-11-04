@@ -9,17 +9,13 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
+#include "ms2/commonfiles/itementityless.h"
 class CMsgBoxData;
 class UIAvatarPet;
 class ASMovieClip;
 class Unk_PetBoxButton;
 class ASButton;
 class Unk_PetBoxCheck;
-// Orders the set of dropped pets (the comparator is the ItemEntity ordering of commonfiles\commonstruct).
-struct Unk_PetBoxLess
-{
-    bool operator()(const ItemEntity& a, const ItemEntity& b) const { return FUN_14026aeb0(a, b); }
-};
 // One obtained pet: the rendered avatar and the AS clip (m_petCard) it is shown in. The user-declared ctor and dtor
 // make the vector's element destroy go through the scalar deleting dtor (0x140e540a0).
 struct Unk_PetBoxCard
@@ -78,8 +74,8 @@ private:
     CString m_bagId;                            // +0x188 "bagId" of the key items (ItemLullu_...)
     Unk_ItemVec m_result;                       // +0x190 the obtained items (std::vector<ItemEntity>)
     Unk_StrVec m_slotBinds;                     // +0x1a8 the "binding" strings handed to the AS slots
-    std::set<ItemEntity, Unk_PetBoxLess> m_special1;    // +0x1c0
-    std::set<ItemEntity, Unk_PetBoxLess> m_special2;    // +0x1d0 items of the second set (flag read from the packet)
+    std::set<ItemEntity, Unk_GachaLess> m_special1;    // +0x1c0
+    std::set<ItemEntity, Unk_GachaLess> m_special2;    // +0x1d0 items of the second set (flag read from the packet)
     bool m_multi;                               // +0x1e0 ten at a time
     bool m_sent;                                // +0x1e1 the open request was sent
     MS2Ptr<Unk_PetBoxButton> m_singleOpen;      // +0x1e8

@@ -40,9 +40,7 @@ typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_Nod
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // Registers the service's dependency (a template inline of efd::IDependencyRegistrar, instantiated in another unit).
-void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);
 // efd::ServiceManager::GetSystemServiceAs<ecr::RenderService>() (0x1411d15b0, shared COMDAT of another unit).
-ecr::RenderService* FUN_1411d15b0(efd::ServiceManager* pManager);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNifAnimationService);
 CNifAnimationService* TSingleton<CNifAnimationService>::s_instance = 0;
@@ -117,14 +115,14 @@ int CNifAnimationService::FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, in
 // MS2-FUNCTIONAL: engine-typed rewrite; codegen differs from exe (inlined engine templates / frame layout)
 efd::SyncResult CNifAnimationService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
-    FUN_1411ab770(pRegistrar, 1);
+    pRegistrar->AddDependency<ecr::RenderService>(1);
     return efd::SyncResult_Success;
 }
 // @0x141545950
 efd::AsyncResult CNifAnimationService::OnInit()
 {
     m_mapInfo.RemoveAll();
-    ecr::RenderService* pkRender = FUN_1411d15b0(m_pServiceManager);
+    ecr::RenderService* pkRender = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     NiDefaultClickRenderStep* pkClickStep = NiDynamicCast(NiDefaultClickRenderStep, pkRender->GetActiveRenderSurface()->GetRenderStep());
     NiViewRenderClick* pkClick = 0;
     NiTPointerList<NiRenderClickPtr>& kClicks = pkClickStep->GetRenderClickList();
@@ -184,7 +182,7 @@ efd::AsyncResult CNifAnimationService::OnShutdown()
         }
         m_mapInfo.RemoveAll();
 
-        ecr::RenderService* pkRender = FUN_1411d15b0(m_pServiceManager);
+        ecr::RenderService* pkRender = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
         if (pkRender != 0 && pkRender->GetActiveRenderSurface() != 0)
         {
             NiDefaultClickRenderStep* pkClickStep = NiDynamicCast(NiDefaultClickRenderStep, pkRender->GetActiveRenderSurface()->GetRenderStep());

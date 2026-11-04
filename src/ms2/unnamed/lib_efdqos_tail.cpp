@@ -93,9 +93,14 @@ extern "C" const char* DAT_143a0eaf0 = "efdVirtualQualityOfService";
 // @0x143a0eaf8
 extern "C" const char* DAT_143a0eaf8 = "efdQualityOfService";
 #endif
-extern "C" efd::QualityOfService DAT_143a0eae0;   // QOSCompare::ms_defaultQualityOfService
-extern "C" bool DAT_143b05548;                    // QOSCompare::ms_configRead
-extern "C" efd::map<efd::QualityOfService, efd::QualityOfService> DAT_143b05550;   // QOSCompare::ms_virtualToPhysical
+// C3: was extern "C" DAT_143a0eae0 / DAT_143b05548 / DAT_143b05550. The statics are protected, and the
+// ReadConfig copy below is a free function, so it reaches them through this derived view.
+struct QOSCompareStatics : efd::QOSCompare
+{
+    using efd::QOSCompare::ms_defaultQualityOfService;   // 0x143a0eae0
+    using efd::QOSCompare::ms_configRead;                // 0x143b05548
+    using efd::QOSCompare::ms_virtualToPhysical;         // 0x143b05550
+};
 
 // QOSCompare::GetPhysicalQOS: the named physical QOS from the "efdQualityOfService" enum, else atoi of the name.
 // @0x1420e6380
@@ -144,12 +149,12 @@ efd::QualityOfService FUN_1420e64b0(efd::EnumManager* pEnumManager, const efd::u
 // @0x1420e65e0
 void FUN_1420e65e0(efd::IConfigManager* pConfigManager, efd::EnumManager* pEnumManager)
 {
-    if (DAT_143b05548)
+    if (QOSCompareStatics::ms_configRead)
         return;
-    DAT_143b05548 = true;
+    QOSCompareStatics::ms_configRead = true;
 
-    DAT_143b05550[efd::QOS_UNRELIABLE] = efd::kQOS_Unreliable;
-    DAT_143b05550[efd::QOS_CONNECTIONLESS] = efd::kQOS_UnreliableConnectionless;
+    QOSCompareStatics::ms_virtualToPhysical[efd::QOS_UNRELIABLE] = efd::kQOS_Unreliable;
+    QOSCompareStatics::ms_virtualToPhysical[efd::QOS_CONNECTIONLESS] = efd::kQOS_UnreliableConnectionless;
 
     if (!pConfigManager)
         return;
@@ -164,7 +169,7 @@ void FUN_1420e65e0(efd::IConfigManager* pConfigManager, efd::EnumManager* pEnumM
             efd::QualityOfService physicalQOS = FUN_1420e6380(pEnumManager, defaultQOS);
             if (physicalQOS != efd::QOS_INVALID)
             {
-                DAT_143a0eae0 = physicalQOS;
+                QOSCompareStatics::ms_defaultQualityOfService = physicalQOS;
             }
             else
             {
@@ -196,7 +201,7 @@ void FUN_1420e65e0(efd::IConfigManager* pConfigManager, efd::EnumManager* pEnumM
             }
 
             if (!invalid)
-                DAT_143b05550[virtualQOS] = physicalQOS;
+                QOSCompareStatics::ms_virtualToPhysical[virtualQOS] = physicalQOS;
         }
     }
 }

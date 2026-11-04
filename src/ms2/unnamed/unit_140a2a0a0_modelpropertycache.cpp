@@ -14,6 +14,7 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/filesystem.h"
+#include <efd/Point3.h>
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -47,8 +48,6 @@ typedef ATL::CAtlMap<CStringA, Unk_ValueList*, ATL::CStringElementTraits<CString
 typedef ATL::CAtlMap<CStringA, Unk_MixinSet*, ATL::CStringElementTraits<CStringA>, ATL::CElementTraits<Unk_MixinSet*> > Unk_MixinMap;
 typedef ATL::CAtlMap<CStringA, Unk_PropMap*, ATL::CStringElementTraits<CStringA>, ATL::CElementTraits<Unk_PropMap*> > Unk_ModelMap;
 
-class Unk_CommonVec3;
-struct Unk_MpVec3 { float x, y, z; };   // field view of Unk_CommonVec3
 class TiXmlElement;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -58,7 +57,7 @@ public:
 struct Unk_FlatFiles : public CFileSystem { };
 void FUN_140399100(CStringA strExt, CStringA strDir, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrFiles, CStringA strPrefix, bool bRecursive);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_14028c2d0(CStringA str, Unk_CommonVec3* pOut);
+void FUN_14028c2d0(CStringA str, efd::Point3* pOut);
 int FUN_14028d260(float f);
 CStringA FUN_140188f50(const char* psz, int nCodePage);
 // The exe's CAtlArray<CStringA>::operator[] COMDAT copy used by the int/float property readers (same body as 0x140164930).
@@ -73,7 +72,7 @@ public:
     int FUN_140a2a920(const CStringA& strModel, CStringA strMixin);                // model is, or inherits, strMixin
     Unk_ValueList* FUN_140a2a9f0(CStringA strModel, const CStringA& strProp);       // cached values of a property
     int FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
-    int FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, Unk_CommonVec3* pOut);
+    int FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, efd::Point3* pOut);
     int FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
     int FUN_140a2b550(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
     int FUN_140a2b790(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, float* pOut);
@@ -221,11 +220,11 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2afd0
-int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, Unk_CommonVec3* pOut)
+int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, efd::Point3* pOut)
 {
-    reinterpret_cast<Unk_MpVec3*>(pOut)->x = 0.0f;
-    reinterpret_cast<Unk_MpVec3*>(pOut)->y = 0.0f;
-    reinterpret_cast<Unk_MpVec3*>(pOut)->z = 0.0f;
+    pOut->x = 0.0f;
+    pOut->y = 0.0f;
+    pOut->z = 0.0f;
     for (Unk_140165cf0* pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("property")); pProp != 0; pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pProp))->NextSibling("property"))) {
         CStringA strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
         Unk_140165cf0* pSet;

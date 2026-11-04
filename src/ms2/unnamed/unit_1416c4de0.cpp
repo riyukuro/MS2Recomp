@@ -20,7 +20,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 
 // The game context (FUN_1403ed2d0).
 class WorldService   // C3: member view for the former free stand-ins
@@ -112,7 +112,7 @@ void CPVPCameraMode::vfunc_8(double fTime)
     Vector3 ptRot = g_143b01a60;
     Vector3 ptCenter = FUN_1416c5d30();
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-    if (ptMove.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptInput = ptMove;
         float fRate = 15.0f;
@@ -193,7 +193,7 @@ void CPVPCameraMode::vfunc_39(double fTime)
             else
             {
                 m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
-                if (m_c0.m_rot.FUN_140552700(m_d8.m_rot))
+                if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
         }

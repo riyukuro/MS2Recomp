@@ -36,7 +36,6 @@ class ASDialog : public ASDisplayObjectContainer
 {
 public:
     virtual void vfunc_2(int, int, int);                        // place the movie
-    int FUN_1422c13b0();                                        // width
 };
 
 // A picked guest (CPtred; the name is at +0x30).
@@ -148,7 +147,7 @@ void UIWeddingInvitationDialog::vfunc_43()
             int nY = pRef->GetIllustGlobalX() - 0x50;
             if (nX != -1 && nY != -1)
             {
-                pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+                pDialog->vfunc_2(5, nY, nX - pDialog->GetHeightCeil());
                 return;
             }
         }

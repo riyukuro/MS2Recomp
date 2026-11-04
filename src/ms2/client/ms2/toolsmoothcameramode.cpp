@@ -238,12 +238,12 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
     float fRate = 15.0f;
     float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
     float fScale = fStep;
-    if (m_148.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_148) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         m_148 = m_148.FUN_14097fc90(fScale);
         m_c0.m_pos = m_d8.m_pos = m_d8.m_pos.FUN_14097fd50(m_148);
     }
-    if (m_13c.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_13c) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         m_13c = m_13c.FUN_14097fc90(fScale);
         Vector3 ptRot = FUN_140af8260();
@@ -251,7 +251,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         ptRot.z = ptRot.z - m_13c.y;
         m_d8.m_rot = ptRot;
     }
-    if (ptMove.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         ptMove = ptMove.FUN_14097fc90(fScale);
         Vector3 ptRot = m_c0.m_rot;
@@ -259,7 +259,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         ptRot.z = ptRot.z - ptMove.z;
         m_d8.m_rot = ptRot;
     }
-    if (m_130.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_130) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         m_130 = m_130.FUN_14097fc90(fScale);
         Vector3 ptAngle = m_c0.m_rot;
@@ -306,8 +306,8 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
 {
     if (m_f0 != 0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        float fDist = ptDelta.Length();
         if (fDist <= 1.0f)
         {
             m_c0.m_pos = m_d8.m_pos;

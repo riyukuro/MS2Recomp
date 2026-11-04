@@ -2,9 +2,10 @@
 // 26 slots): the AS item slot icon with an item tooltip. NOT an original header (the code is in ?\asitemslot.cpp).
 // Ctor 0x1409ba310, dtor 0x1409ba410 (deleting 0x1409bb920), vfunc_25 (the item tooltip value) 0x1409ba800.
 //
-// ASUIComponent declares no virtuals (its derived classes elsewhere would all need the slot symbols), so the slots it
-// introduces (3 and 4 override ASDisplayObject, 16-24 are new) are declared here as ASItemSlot members; they are
-// really ASUIComponent's (0x1422c7260, 0x1422c7230, 0x1422c7ec0-0x1422c80c0 in steps of 0x40/0x3c; slot 24 is validateNow).
+// ASUIComponent declares slots 3 and 16-24 only under MS2_ASUICOMPONENT_SLOTS (its derived classes elsewhere would all
+// need the slot symbols), so without the macro they are declared here as ASItemSlot members; they are really
+// ASUIComponent's (0x1422c7260, 0x1422c7ec0-0x1422c80c0 in steps of 0x40/0x3c; slot 24 is validateNow). The vftable
+// layout is the same either way. Slot 4 (0x1422c7230) the base always declares.
 #pragma once
 
 #include "ms2/ms2layout.h"
@@ -18,8 +19,8 @@ public:
     ASItemSlot(CString strName, int nUnused);// 0x1409ba1d0 (the base gets movie 2)
     ASItemSlot(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1409ba310
     virtual ~ASItemSlot();                                      // 0 (0x1409ba410)
+#ifndef MS2_ASUICOMPONENT_SLOTS   // else ASUIComponent declares slots 3 and 16-24 (same vftable layout)
     virtual void vfunc_3(int nVisible);                         // 3 0x1422c7260
-    virtual void vfunc_4(bool b);                               // 4 0x1422c7230
     virtual void vfunc_16();                                    // 16 0x1422c7ec0
     virtual void vfunc_17();                                    // 17 0x1422c7f00
     virtual void vfunc_18();                                    // 18 0x1422c7f40
@@ -29,6 +30,9 @@ public:
     virtual void vfunc_22();                                    // 22 0x1422c8040
     virtual void vfunc_23();                                    // 23 0x1422c8080
     virtual void vfunc_24(bool bRefresh);                       // 24 0x1422c80c0
+#else
+    using SlotsCheck = decltype(&ASUIComponent::vfunc_24);      // fails to compile if the macro came after asuicomponent.h
+#endif
     // Builds the item tooltip and returns its value through *ppOut (slot 25, 0x1409ba800). ppOut is really the
     // tooltip callback's Params (its first member is pRetVal).
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);

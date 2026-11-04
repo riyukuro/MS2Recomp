@@ -79,7 +79,6 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 // The 0xc-byte counter triple of the tally (unit_140267ba0_tripletintclear: Clear 0x140267bd0, Add 0x140267c70).
-class Unk_IntTriple { public: void Clear(); void Add(int nIndex, int nAdd); };
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------------------
 class Unk_SingletonObj;

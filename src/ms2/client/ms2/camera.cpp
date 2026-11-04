@@ -132,8 +132,8 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // data 
 int FUN_140768010(int nRange, int nBase);    // random integer
 float FUN_140768090();                                                  // random float in [0, 1)
 extern "C" float (__cdecl* __imp_sinf)(float);                        // the exe calls the CRT import
-extern const Vector3 g_143a08ce8;                              // efd::Point3::UNIT_Y
-extern const Vector3 g_143a08cf8;                              // efd::Point3::UNIT_Z
+#define g_143a08ce8 (*(const Vector3*)&efd::Point3::UNIT_Y) // C3: was extern const Vector3 g_143a08ce8; efd::Point3::UNIT_Y
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)                              // efd::Point3::UNIT_Z
 class Unk_GameContext
 {
 public:
@@ -404,8 +404,8 @@ Unk_CameraSetting Unk_CameraSetting::ScaleBy(float f)
     m_0 = m_0 * f;
     m_4 = m_4 * f;
     m_8 = m_8 * f;
-    m_c.FUN_140ad0c10(f);
-    m_18.FUN_140ad0c10(f);
+    reinterpret_cast<efd::Point3&>(m_c) *= f;
+    reinterpret_cast<efd::Point3&>(m_18) *= f;
     return *this;
 }
 
@@ -1478,7 +1478,7 @@ MS2_REPLACE_METHOD(0x140AF01D0, CameraMgr, FUN_140af01d0, 49, 0x75B8012A);
 // @0x140af0210
 BOOL CameraMgr::FUN_140af0210()
 {
-    if (m_d4.FUN_140552690(g_143a08ce8))
+    if (reinterpret_cast<const efd::Point3&>(m_d4) == efd::Point3::UNIT_Y)
         return TRUE;
     return FALSE;
 }
@@ -1559,7 +1559,6 @@ bool CameraMgr::ScreenToRay(const NiPoint2& kScreen, NiPoint3& kOrigin, NiPoint3
 MS2_REPLACE_METHOD(0x140AF0520, CameraMgr, ScreenToRay, 169, 0x98386F27);
 
 // @0x140af05d0
-// MS2-FUNCTIONAL: the argument temporaries are evaluated in a different order.
 bool CameraMgr::WorldToScreen(const efd::Point3& kWorld, NiPoint2& kScreen)
 {
     ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
@@ -1570,7 +1569,7 @@ bool CameraMgr::WorldToScreen(const efd::Point3& kWorld, NiPoint2& kScreen)
     {
         NiCamera* pCamera = pData->GetCamera();
         NiPoint3 kPt(kWorld);
-        if (!pCamera->WorldPtToScreenPt(kPt, kScreen.x, kScreen.y))
+        if (!pCamera->WorldPtToScreenPt(kPt, ((efd::Point2&)kScreen).x, kScreen.y))
             return false;
         kScreen.x = kScreen.x * (float)DAT_143af62d4;
         kScreen.y = (1.0f - kScreen.y) * (float)DAT_143af62d8;
@@ -1581,7 +1580,6 @@ bool CameraMgr::WorldToScreen(const efd::Point3& kWorld, NiPoint2& kScreen)
 MS2_REPLACE_METHOD(0x140AF05D0, CameraMgr, WorldToScreen, 285, 0xC91CEC8F);
 
 // @0x140af0700
-// MS2-FUNCTIONAL: the argument temporaries are evaluated in a different order.
 bool CameraMgr::FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen)
 {
     ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
@@ -1590,7 +1588,7 @@ bool CameraMgr::FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen)
     if (!pSurface->GetCamera())
         return false;
     NiPoint3 kPt(kWorld);
-    if (!pSurface->GetCamera()->WorldPtToScreenPt3(kPt, kScreen.x, kScreen.y, kScreen.z))
+    if (!pSurface->GetCamera()->WorldPtToScreenPt3(kPt, ((efd::Point3&)kScreen).x, kScreen.y, kScreen.z))
         return false;
     kScreen.z = kScreen.z;
     kScreen.x = kScreen.x * (float)DAT_143af62d4;

@@ -38,6 +38,7 @@
 #include <NiFilename.h>
 #include <NiKFMTool.h>
 #include <NiString.h>
+#include <NiTextKey.h>   // C3: the KF text keys the preload table fills
 #include "ms2animationservice.h"
 #include "ms2kfmfactory.h"
 #include "gameobject.h"
@@ -155,16 +156,6 @@ int Unk_AssetEvent::GetState()
     return m_nState;
 }
 
-class Unk_PreloadEntry : public efd::MemObject
-{
-public:
-    Unk_PreloadEntry() {}
-    ~Unk_PreloadEntry();                        // 0x141c50d70
-    void SetName(const NiFixedString& kName);   // 0x141c50ef0
-    void SetTime(float fTime) { m_fTime = fTime; }  // 0x1414ad5a0
-    float m_fTime;
-    NiFixedString m_kName;
-};
 
 // Filter given to the player manager: accepts the objects that are players.
 // @0x1414a9c80
@@ -363,7 +354,7 @@ MS2_REPLACE_METHOD(0x1414A8F60, MS2AnimationService, UnCacheNpcAssets, 336, 0x51
 // Reads the "preload" table of a KF file (<ms2><kfm-name><key text= time=/>...</...></ms2>) into a new array of
 // entries and returns their number. The preload files are cached per path in s_mapXml / s_mapCache.
 // @0x1414a90c0
-int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
+int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries)
 {
     Unk_XmlNode* pRoot = 0;
     int nCount = 0;
@@ -415,12 +406,12 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
                 for (Unk_XmlNode* pKey = pAnim->FirstChild("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                     ++nCount;
                 if (nCount > 0)
-                    *ppEntries = EE_NEW Unk_PreloadEntry[nCount];
+                    *ppEntries = EE_NEW NiTextKey[nCount];
                 int nIndex = 0;
                 for (Unk_XmlNode* pKey = pAnim->FirstChild("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                 {
                     CString kText = FUN_140188f50(((class TiXmlElement*)(pKey))->Attribute("text"), 0);
-                    (*ppEntries)[nIndex].SetName(((class TiXmlElement*)(pKey))->Attribute("text"));
+                    (*ppEntries)[nIndex].SetText(((class TiXmlElement*)(pKey))->Attribute("text"));
                     (*ppEntries)[nIndex].SetTime((float)atof(((class TiXmlElement*)(pKey))->Attribute("time")));
                     const char* szPreload = ((class TiXmlElement*)(pKey))->Attribute("preload");
                     if (szPreload == 0)

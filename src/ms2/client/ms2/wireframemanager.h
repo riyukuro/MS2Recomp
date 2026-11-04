@@ -11,14 +11,14 @@
 
 namespace egf { class Entity; }
 
-// The list's element traits: the entity handles compare through the exe's operator== (0x14168af30).
-bool FUN_14168af30(const Unk_EntRef& a, const Unk_EntRef& b);
-struct Unk_WfEntTraits : public ATL::CElementTraitsBase<Unk_EntRef>
+// The list's element traits: the entity handles compare through efd::SmartPointer<egf::Entity>::operator==
+// (0x14168af30).
+struct Unk_WfEntTraits : public ATL::CElementTraitsBase<egf::EntityPtr>
 {
     // MS2-FUNCTIONAL: the exe copy loads the result through a movzx/cmp pair
-    static bool CompareElements(const Unk_EntRef& a, const Unk_EntRef& b)
+    static bool CompareElements(const egf::EntityPtr& a, const egf::EntityPtr& b)
     {
-        return FUN_14168af30(a, b) != 0;
+        return (a == b) != 0;
     }
 };
 
@@ -47,7 +47,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlList<Unk_EntRef, Unk_WfEntTraits> m_entities;      // +0x10 (block size 10)
+    ATL::CAtlList<egf::EntityPtr, Unk_WfEntTraits> m_entities;      // +0x10 (block size 10)
     bool m_bWireframe;                                          // +0x40
 };
 MS2_CHECK_OFFSET(CWireframeManager, m_entities, 0x10);

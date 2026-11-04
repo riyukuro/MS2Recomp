@@ -49,8 +49,7 @@ public:
     virtual bool vfunc_9();                                     // 9 0x1417902b0 fade the music volume per frame
     virtual int vfunc_12();                                     // 12 0x141790750 effect type 3
 
-    static void operator delete(void*, size_t);                 // efd::MemObject::operator delete 0x14208a8f0
-    using efd::MemObject::operator delete;                      // the placement form 0x14097f700: unwind of new (MemHint)
+    using efd::MemObject::operator delete;                      // 0x14208a8f0; the placement form 0x14097f700: unwind of new (MemHint)
     static const NiRTTI ms_RTTI;                                // 0x143aea260 (defined in ?\soundeventmgr.cpp)
 
 public:

@@ -9,8 +9,6 @@
 // MS2-RANGE: 0x140115140-0x140115380 .text$di
 // MS2-PIN: memmove_s 0x1419b3b30 ; unique
 // MS2-PIN: ??1ChangeColors@CCItemColoringPacket@@UEAA@XZ 0x1419b32c0
-// MS2-PIN: ??0Unk_IcEffectRequest@@QEAA@XZ 0x140a52ef0
-// MS2-PIN: ??1Unk_IcEffectRequest@@QEAA@XZ 0x1405a89e0
 // MS2-PIN: ??C?$MS2Ptr@VASArray@@@@QEBAPEAVASArray@@XZ 0x1419b3340
 // MS2-PIN: ??0?$MS2Ptr@VTData@UIBillDialog@@@@QEAA@PEAVTData@UIBillDialog@@@Z 0x1419b3190
 // MS2-PIN: ?AddRef@?$MS2Ptr@VTData@UIBillDialog@@@@AEBAXXZ 0x1419b3600
@@ -55,6 +53,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/effectquery.h"   // C3: NoticeMessage (ctor 0x140a52ef0, dtor 0x1405a89e0, SetActor 0x140a53190)
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"
@@ -179,23 +178,6 @@ public:
 extern Unk_Inventory g_143ab2a90;
 int FUN_14109a9e0();                            // rand
 
-// The hair apply effect.
-struct Unk_IcEffectRequest
-{
-    Unk_IcEffectRequest();                      // 0x140a52ef0
-    ~Unk_IcEffectRequest();                     // 0x1405a89e0
-    CString m_strName;                          // +0x00 effect xml
-    int m_n08;                                  // +0x08
-    int m_pad_0c;
-    void* m_pad_10[12];
-};
-MS2_CHECK_SIZE(Unk_IcEffectRequest, 0x70);
-class Unk_IcEffectMgr { public: void FUN_1411a4a00(Unk_IcEffectRequest* pRequest); };
-class NoticeMessage   // C3: member view for the former free stand-ins
-{
-public:
-    void SetActor(int);
-};
 struct Unk_IcEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
@@ -842,11 +824,11 @@ void UIItemColoringDialog::FUN_1419af750()
         if (pPc->GetCurStateId() != 0xe)
             pPc->vfunc_59(0xe, 0, 0, 0);
         pPc->FUN_14166cc40(0x53);
-        Unk_IcEffectRequest request;
+        NoticeMessage request;   // the hair apply effect
         request.m_strName = ((struct Unk_IcEffectPaths*)FUN_1401d31f0())->m_hairApply;
-        request.m_n08 = 1;
-        ((class NoticeMessage*)(struct Unk_IcEffectRequest*)(&request))->SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
-        reinterpret_cast<Unk_IcEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a4a00(&request);
+        request.m_nObject = 1;
+        request.SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
     }
 }
 MS2_REPLACE_METHOD(0x1419af750, UIItemColoringDialog, FUN_1419af750, 222, 0x7478D72B);

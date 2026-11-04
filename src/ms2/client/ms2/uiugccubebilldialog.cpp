@@ -193,7 +193,7 @@ void FUN_140ee8610(MS2Ptr<CItem> spItem)
 }
 
 // @0x140ee8000
-bool FUN_140ee8000(void* pUnused, int nAnswer, const CMsgBoxData& data)
+bool UIUGCCubeBillDialog::FUN_140ee8000(int nAnswer, const CMsgBoxData& data)
 {
     if (nAnswer == 0)
     {

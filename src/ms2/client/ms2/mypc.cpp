@@ -390,17 +390,11 @@ class CPersonalInfoAgreement { public: void FUN_141261e40(int bSet, unsigned int
 // The ride options of the account settings (+2: the ride-on flag sent with a ride-on item).
 struct Unk_MyPCRideOpt { unsigned char m_pad_0[2]; bool m_b2; };
 // The auto loot options (+0x14c of the account settings).
-struct Unk_GsAutoLoot; class Unk_MyPCAutoLoot { }; bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bMeso); bool FUN_141261510(Unk_GsAutoLoot* p);
+struct Unk_GsAutoLoot; bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bMeso); bool FUN_141261510(Unk_GsAutoLoot* p);
 class Unk_MyPCAdvCfg
 {
 public:
     CPersonalInfoAgreement* FUN_140a46860();
-
-    // @0x141533e20
-    Unk_MyPCAutoLoot* FUN_141533e20() { return &m_kAutoLoot; }
-
-    unsigned char m_pad_000[0x14c];
-    Unk_MyPCAutoLoot m_kAutoLoot;                           // +0x14c
 };
 class Unk_MyPCUpdateList : public BGTransparencyMgr { };
 class Unk_GoUpdateList   // C3: member view for the former free stand-ins
@@ -1643,9 +1637,9 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
 MS2_REPLACE(0x141531470, MyPC::FUN_141531470, 1322, 0xF9E6B7A2);
 
 // @0x141523ba0
-void MyPC::FUN_141523ba0()
+CQuestManager* MyPC::FUN_141523ba0()
 {
-    reinterpret_cast<CQuestManager*>(FUN_140764020());
+    return reinterpret_cast<CQuestManager*>(FUN_140764020());
 }
 MS2_REPLACE_METHOD(0x141523BA0, MyPC, FUN_141523ba0, 19, 0xD45838FC);
 
@@ -4788,13 +4782,13 @@ void MyPC::FUN_141530db0()
                 continue;
             if (pDrop->GetOwnerObjId() == FUN_14123c580())
                 continue;
-            if (FUN_141261340((Unk_GsAutoLoot*)reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20(), reinterpret_cast<CDropItem*>(pDrop)->FUN_140b12380(), pDrop->GetDropKind() == 0x3ed))
+            if (FUN_141261340((Unk_GsAutoLoot*)TSingleton<CGameOption>::GetInstance()->FUN_141533e20(), reinterpret_cast<CDropItem*>(pDrop)->FUN_140b12380(), pDrop->GetDropKind() == 0x3ed))
             {
                 pDrop->FUN_141192840(1);
                 pDrop->FUN_141190900(0);
             }
         }
-        if (FUN_141261510((Unk_GsAutoLoot*)reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20()))
+        if (FUN_141261510((Unk_GsAutoLoot*)TSingleton<CGameOption>::GetInstance()->FUN_141533e20()))
             FUN_1415310e0(lstMesos);
         if (reinterpret_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141682fe0(0x493e3))
         {

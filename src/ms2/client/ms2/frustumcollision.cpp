@@ -5,6 +5,13 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\frustumcollision.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "frustumcollision.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxVec3.h>       // C3: the box corners
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 #include <math.h>
 #include <cmath>
 #include <float.h>
@@ -18,21 +25,19 @@
 float FUN_141224f30(float fY, float fX);   // atan2 wrapper
 extern "C" float (__cdecl* __imp_cosf)(float);
 
-// efd::Point2 (x, y) as used by the 2D edge tests; operator- and Length live in another obj.
-struct Unk_FcPoint2 : public NiPoint2
+// The efd::Point2 length getter 0x140affe70 is defined on the Unk_Point2 view (cameratargetboundingbox.cpp).
+struct Unk_Point2
 {
-    Unk_FcPoint2(float fX, float fY);                           // 0x140a0a4c0
-    Unk_FcPoint2 FUN_140a4e500(const Unk_FcPoint2& pt) const;   // operator-
-    float FUN_140affe70() const;                                // Length
+    float FUN_140affe70() const;                                // length
+    float x, y;
 };
 
 void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation (degrees)
 bool NxComputeBoxPoints(class NxBox const&, class NxVec3*);   // C3: was FUN_140adc650
-struct Unk_FcRawPoint2 { float x, y; };                           // NiPoint2 storage, built in place below
-void FUN_140db9c80(Unk_FcRawPoint2* pDst, const Unk_FcPoint2& pt);   // NiPoint2::NiPoint2(const efd::Point2&)
 
 // Free reinterpretations: the exe calls the efd::Point2 / NiPoint3 helpers on the members directly.
-#define AsPoint2(pt) reinterpret_cast<const Unk_FcPoint2&>(pt)
+#define AsPoint2(pt) static_cast<const efd::Point2&>(pt)
+#define AsLen2(pt) reinterpret_cast<const Unk_Point2&>(static_cast<const efd::Point2&>(pt))
 #define AsPoint3(pt) reinterpret_cast<const Vector3&>(pt)
 
 // @0x141222df0
@@ -69,17 +74,17 @@ void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
     m_aCorners[6] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
     m_aCorners[7] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
 
-    m_aEdgeA[0] = m_ptApex;
-    m_aEdgeA[1] = m_aCorners[4];
-    m_aEdgeA[2] = m_aCorners[7];
-    m_aEdgeB[0] = m_ptApex;
-    m_aEdgeB[1] = m_aCorners[5];
-    m_aEdgeB[2] = m_aCorners[6];
+    m_aEdgeA[0] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_ptApex))));
+    m_aEdgeA[1] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_aCorners[4]))));
+    m_aEdgeA[2] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_aCorners[7]))));
+    m_aEdgeB[0] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_ptApex))));
+    m_aEdgeB[1] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_aCorners[5]))));
+    m_aEdgeB[2] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_aCorners[6]))));
 
-    m_akEdge2[0] = Unk_FcPoint2(m_aEdgeA[0].x, m_aEdgeA[0].y);
-    m_akEdge2[1] = Unk_FcPoint2(m_aEdgeA[1].x, m_aEdgeA[1].y);
-    m_akEdge2[2] = Unk_FcPoint2(m_aEdgeA[0].x, m_aEdgeA[0].y);
-    m_akEdge2[3] = Unk_FcPoint2(m_aEdgeA[2].x, m_aEdgeA[2].y);
+    m_akEdge2[0] = NiPoint2(m_aEdgeA[0].x, m_aEdgeA[0].y);
+    m_akEdge2[1] = NiPoint2(m_aEdgeA[1].x, m_aEdgeA[1].y);
+    m_akEdge2[2] = NiPoint2(m_aEdgeA[0].x, m_aEdgeA[0].y);
+    m_akEdge2[3] = NiPoint2(m_aEdgeA[2].x, m_aEdgeA[2].y);
 
     CBaseCollision::vfunc_3(ptPos, ptDir, fScale);
 }
@@ -105,13 +110,13 @@ int CFrustumCollision::Contains(const Vector3& pt) const
 int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 {
     Vector3 kRel = pt.FUN_140965c40(m_ptOrigin);
-    float fDepth = m_ptForward.FUN_140a00f20(kRel);
+    float fDepth = reinterpret_cast<const efd::Point3&>(m_ptForward).Dot(reinterpret_cast<const efd::Point3&>(kRel));
     if (fDepth <= 0.0f || m_fDepth <= fDepth)
         return 0;
     Vector3 kDir = pt.FUN_140965c40(m_ptApex);
     kDir.z = 0.0f;
     kDir.FUN_140968990();
-    float fDot = m_ptForward.FUN_140a00f20(kDir);
+    float fDot = reinterpret_cast<const efd::Point3&>(m_ptForward).Dot(reinterpret_cast<const efd::Point3&>(kDir));
     if (fDot > __imp_cosf(m_fHalfAngle))
         return 1;
     return 0;
@@ -120,43 +125,42 @@ int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 // @0x141223e70
 int CFrustumCollision::IntersectsBox(const void* pBox) const
 {
-    Unk_FcNxVec3 aBoxCorners[8];
+    NxVec3 aBoxCorners[8];
     NxComputeBoxPoints(*(class NxBox const*)(pBox), (class NxVec3*)(aBoxCorners));
 
     NiPoint2 akBoxEdge[8];
-    akBoxEdge[0] = Unk_FcPoint2(aBoxCorners[0].x, aBoxCorners[0].y);
-    akBoxEdge[1] = Unk_FcPoint2(aBoxCorners[1].x, aBoxCorners[1].y);
-    akBoxEdge[2] = Unk_FcPoint2(aBoxCorners[1].x, aBoxCorners[1].y);
-    akBoxEdge[3] = Unk_FcPoint2(aBoxCorners[2].x, aBoxCorners[2].y);
-    akBoxEdge[4] = Unk_FcPoint2(aBoxCorners[2].x, aBoxCorners[2].y);
-    akBoxEdge[5] = Unk_FcPoint2(aBoxCorners[3].x, aBoxCorners[3].y);
-    akBoxEdge[6] = Unk_FcPoint2(aBoxCorners[3].x, aBoxCorners[3].y);
-    akBoxEdge[7] = Unk_FcPoint2(aBoxCorners[0].x, aBoxCorners[0].y);
+    akBoxEdge[0] = NiPoint2(aBoxCorners[0].x, aBoxCorners[0].y);
+    akBoxEdge[1] = NiPoint2(aBoxCorners[1].x, aBoxCorners[1].y);
+    akBoxEdge[2] = NiPoint2(aBoxCorners[1].x, aBoxCorners[1].y);
+    akBoxEdge[3] = NiPoint2(aBoxCorners[2].x, aBoxCorners[2].y);
+    akBoxEdge[4] = NiPoint2(aBoxCorners[2].x, aBoxCorners[2].y);
+    akBoxEdge[5] = NiPoint2(aBoxCorners[3].x, aBoxCorners[3].y);
+    akBoxEdge[6] = NiPoint2(aBoxCorners[3].x, aBoxCorners[3].y);
+    akBoxEdge[7] = NiPoint2(aBoxCorners[0].x, aBoxCorners[0].y);
 
     NiPoint2 kHit;
-    Unk_FcPoint3 kDirA, kDirB, kPtA, kPtB;
-    kDirA = AsPoint3(m_aEdgeA[1]).FUN_140965c40(AsPoint3(m_aEdgeA[0]));
-    float fLenA = kDirA.FUN_140968990();
-    kDirB = AsPoint3(m_aEdgeB[1]).FUN_140965c40(AsPoint3(m_aEdgeB[0]));
-    float fLenB = kDirB.FUN_140968990();
+    NiPoint3 kDirA, kDirB, kPtA, kPtB;
+    kDirA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeA[1]).FUN_140965c40(AsPoint3(m_aEdgeA[0]))))));
+    float fLenA = reinterpret_cast<Vector3&>(kDirA).FUN_140968990();
+    kDirB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeB[1]).FUN_140965c40(AsPoint3(m_aEdgeB[0]))))));
+    float fLenB = reinterpret_cast<Vector3&>(kDirB).FUN_140968990();
 
     for (unsigned nSide = 0; nSide < 2; nSide++)
     {
         unsigned nFirst = nSide * 2;
-        float fSideLen = AsPoint2(m_akEdge2[nFirst + 1]).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
+        float fSideLen = AsLen2(AsPoint2(m_akEdge2[nFirst + 1]) - AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
         for (unsigned nEdge = 0; nEdge < 4; nEdge++)
         {
             unsigned nBox = nEdge * 2;
-            Unk_FcRawPoint2 kSideDir;   // computed and never read
-            FUN_140db9c80(&kSideDir, AsPoint2(m_akEdge2[nFirst + 1]).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])));
+            NiPoint2 kSideDir(AsPoint2(m_akEdge2[nFirst + 1]) - AsPoint2(m_akEdge2[nFirst]));   // computed and never read
             if (SegmentIntersect(&m_akEdge2[nFirst], &m_akEdge2[nFirst + 1], &akBoxEdge[nBox], &akBoxEdge[nBox + 1], &kHit))
             {
-                float fHitLen = AsPoint2(kHit).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
+                float fHitLen = AsLen2(AsPoint2(kHit) - AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
                 if (fHitLen > m_fApexDist)
                 {
                     float fT = fHitLen / fSideLen;
-                    kPtA = AsPoint3(m_aEdgeA[0]).FUN_14097fd50(AsPoint3(kDirA).FUN_14097fc90(fLenA * fT));
-                    kPtB = AsPoint3(m_aEdgeB[0]).FUN_14097fd50(AsPoint3(kDirB).FUN_14097fc90(fLenB * fT));
+                    kPtA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeA[0]).FUN_14097fd50(AsPoint3(kDirA).FUN_14097fc90(fLenA * fT))))));
+                    kPtB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeB[0]).FUN_14097fd50(AsPoint3(kDirB).FUN_14097fc90(fLenB * fT))))));
                     BOOL bBelow = kPtA.z < aBoxCorners[0].z;
                     BOOL bAbove = kPtB.z > aBoxCorners[4].z;
                     if (!bBelow && !bAbove)

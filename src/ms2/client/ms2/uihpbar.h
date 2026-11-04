@@ -5,7 +5,7 @@
 // from the unit path (w20).
 #pragma once
 #include "ms2/client/ms2/uihudentity.h"
-#include "ms2/client/ms2/fielddatacli.h"   // Unk_GVec3 (out-of-line copy ctor 0x14027dcf0)
+#include "ms2/client/ms2/fielddatacli.h"   // NiPoint3 (out-of-line copy ctor 0x14027dcf0)
 
 class Unk_HpClip;
 
@@ -110,7 +110,7 @@ public:
 
         int m_c8;                            // +0xc8 value
         int m_cc;                            // +0xcc maximum
-        Unk_GVec3 m_d0;                      // +0xd0 (ZERO)
+        NiPoint3 m_d0;                       // +0xd0 (ZERO)
     };
 
     UISlimeEventBar();                                  // 0x1419935a0

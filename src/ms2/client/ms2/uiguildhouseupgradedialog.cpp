@@ -63,7 +63,6 @@ public:
 class Unk_GpAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 n);
 };
 class Unk_GalleryAS : public AScript
 {
@@ -213,7 +212,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
     TSingleton<CGuildXmlData>::GetInstance()->GetHouseKeys(list);
     for (size_t i = 0; i < list.size(); i++)
         m_themes[list[i].first].push_back(list[i].second);
-    static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
+    static_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
     reinterpret_cast<ASButtonBar*>(m_tab.operator->())->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() - 1);
     reinterpret_cast<ASCoreList*>(m_themeList.operator->())->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030() - 1);
 }

@@ -215,7 +215,7 @@ void UgcHomeOptionData::LoadLight()
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         Unk_UhPoint3 color;
         XmlGetAttr((class TiXmlElement*)(pNode), "ambientcolor", *(class NiPoint3*)&static_cast<struct Unk_UhPoint3&>(color));
-        color.FUN_140ae9270(255.0f);
+        reinterpret_cast<Vector3&>(color).FUN_140ae9270(255.0f);   // C3: efd::Point3::operator/= on the Vector3 view (nipoint3.h)
         MS2Ptr<UgcHomeLightData> spData(new UgcHomeLightData(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x33, nId), color));
         m_mapLight.SetAt((unsigned)m_mapLight.GetCount(), spData);
     }

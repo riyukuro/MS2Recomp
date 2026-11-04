@@ -132,11 +132,11 @@ public:
     Unk_TiXmlAttribute sentinel;
 };
 
-class Unk_TiXmlElement
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
+    TiXmlElement(const char* pszName);      // 0x14086f2f0
+    virtual ~TiXmlElement();                // 0x14086f450
     // @0x140552e00
     bool HasAttributes() { return attributeSet.First() == 0 ? false : true; }
     // @0x140552e40
@@ -144,12 +144,12 @@ public:
     // @0x140552e70
     bool HasContent() { return HasAttributes() || HasChildren(); }
 private:
-    void* unknown00[5];                         // TiXmlBase, parent, type
+    void* unknown00[4];                         // TiXmlBase, parent, type
     void* firstChild;                           // +0x28
     void* unknown30[4];                         // lastChild, value, prev, next
     Unk_TiXmlAttributeSet attributeSet;         // +0x50
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // @0x1408011f0
 Unk_SkillSensor::Unk_SkillSensor()
@@ -197,7 +197,7 @@ void Unk_SkillSensor::LoadElement(Unk_140165cf0* pElem, CString strName)
 void Unk_SkillSensor::SaveElement(void* pParent, CString strName)
 {
     static Unk_SkillSensor kDefault;
-    Unk_TiXmlElement elem(strName);
+    TiXmlElement elem(strName);
     FUN_140800570(&elem);
     if (m_nSensorStartDelay != kDefault.m_nSensorStartDelay)
         XmlSetAttr((class TiXmlElement*)(&elem), "sensorStartDelay", (unsigned long)m_nSensorStartDelay);
@@ -669,7 +669,7 @@ int Unk_SkillBlock150::Save(void* pParent)
 {
     if (m_eEnable == 0)
         return 1;
-    Unk_TiXmlElement elem("magicControl");
+    TiXmlElement elem("magicControl");
     XmlSetAttr((class TiXmlElement*)(&elem), "enable", (int)m_eEnable);
     XmlSetAttr((class TiXmlElement*)(&elem), "moveSpeed", m_fMoveSpeed);
     XmlSetAttr((class TiXmlElement*)(&elem), "duration", m_fDuration);
@@ -961,12 +961,12 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
 // @0x140804ae0
 int SkillLevelData::FUN_140804ae0(void* pParent)
 {
-    Unk_TiXmlElement elem("level");
+    TiXmlElement elem("level");
     XmlSetAttr((class TiXmlElement*)(&elem), "value", m_nLevel);
     if (!m_strStringParam.IsEmpty())
         XmlSetAttr((class TiXmlElement*)(&elem), "value", m_strStringParam);
     {
-        Unk_TiXmlElement detect("detectProperty");
+        TiXmlElement detect("detectProperty");
         m_detect.FUN_140800570(&detect);
         if (detect.HasAttributes())
             ((TiXmlNode*)(&elem))->InsertEndChild(*(const TiXmlNode*)&detect);
@@ -1144,7 +1144,7 @@ int SkillMotionData::FUN_1408080d0(Unk_140165cf0* pElem)
 // @0x140808240
 int SkillMotionData::FUN_140808240(void* pParent)
 {
-    Unk_TiXmlElement elem("motion");
+    TiXmlElement elem("motion");
     for (SkillAttackData* pAttack : m_vAttack)
     {
         if (!pAttack->Save(&elem))

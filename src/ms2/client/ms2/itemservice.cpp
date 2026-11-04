@@ -63,7 +63,6 @@ CLogString* GetLogString();
 template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                     const T& first);                // 0x1403a1280 for T = const char*
 
-egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc2 { public: efd::Category FUN_141235eb0(); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -369,7 +368,7 @@ efd::AsyncResult CItemService::OnInit()
     m_catGlobal = m_spMessages->GetGloballyUniqueCategory();
     m_spMessages->Subscribe(this, s_catEntityChannel, 0, false);
     m_spMessages->Subscribe(this, m_catGlobal, 0, false);
-    m_spMessages->Subscribe(this, FUN_140ae1200(m_pServiceManager)->GetEntityLoadCategory(), 0, false);
+    m_spMessages->Subscribe(this, m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()->GetEntityLoadCategory(), 0, false);
     m_spMessages->Subscribe(this, s_catAnimationChannel, 0, false);
     m_spMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
     return efd::AsyncResult_Complete;
@@ -395,7 +394,7 @@ efd::AsyncResult CItemService::OnShutdown()
     {
         m_spMessages->Unsubscribe(this, s_catEntityChannel, 0);
         m_spMessages->Unsubscribe(this, m_catGlobal, 0);
-        m_spMessages->Unsubscribe(this, FUN_140ae1200(m_pServiceManager)->GetEntityLoadCategory(), 0);
+        m_spMessages->Unsubscribe(this, m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()->GetEntityLoadCategory(), 0);
         m_spMessages->Unsubscribe(this, s_catAnimationChannel, 0);
         m_spMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0);
     }

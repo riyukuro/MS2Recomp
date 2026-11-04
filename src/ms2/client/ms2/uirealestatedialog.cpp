@@ -35,6 +35,7 @@
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017> (the house service pointer)
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker::CheckHomeName
 #include "ms2/client/ms2/achievemanager.h"       // C3: CAchieveManager::IsCompleted
 #include "ms2/client/ms2/inventory.h"            // C3: Unk_Inventory::FUN_140a5f180
@@ -82,6 +83,7 @@ MS2_CHECK_SIZE(CUserReportData, 0x118);
 
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
 struct Unk_EntityAppFramework;
+class Unk_Service6100017;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_HoService : public efd::ISystemService
@@ -92,16 +94,8 @@ public:
     CStringW FUN_1410d5d80(int nStringId);
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-class Unk_HoServicePtr
-{
-public:
-    Unk_HoServicePtr(Unk_HoService* p);                             // 0x1401cd0b0
-    ~Unk_HoServicePtr();                                            // 0x1401cd150
-    Unk_HoService* FUN_1401cd1a0() const;                           // operator->
-    Unk_HoService* FUN_140885310() const;                           // get
-private:
-    Unk_HoService* m_p;
-};
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
 
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_Inventory;
@@ -138,8 +132,7 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat);    // the trophy requirement text
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
@@ -371,10 +364,10 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
             {
                 __int64 nTime = 0;
                 int nState = 0;
-                Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-                if (spSvc.FUN_140885310() ? true : false)
+                efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                if ((Unk_Service6100017*)spSvc ? true : false)
                 {
-                    if (reinterpret_cast<CubeMapInformationService*>(spSvc.FUN_1401cd1a0())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
+                    if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
                     {
                         CMsTime tWait(nTime + *FUN_1401d3200()->UgcHomeSaleWaitingTime.Get());
                         m_30->Invoke("setWaitingDate", BlockFormat(0x7dd, tWait.GetYear(), tWait.GetMonth(), tWait.GetDay(), tWait.GetHour(), tWait.GetMinute()));
@@ -461,8 +454,8 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     {
                         if (DAT_143ab2898 < nPrice)
                         {
-                            Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-                            FUN_140d73aa0(spSvc.FUN_1401cd1a0()->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                            efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                            FUN_140d73aa0(reinterpret_cast<Unk_HoService*>(spSvc.operator->())->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
                     }
@@ -476,8 +469,8 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                     else if (g_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
-                        Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-                        FUN_140d73aa0(spSvc.FUN_1401cd1a0()->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                        efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                        FUN_140d73aa0(reinterpret_cast<Unk_HoService*>(spSvc.operator->())->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -549,7 +542,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     if (pMovie == 0)
         return;
     ASObj obj(2);
-    Unk_HoServicePtr spSvc(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
+    efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
     CStringW strMapName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nMapId);
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, m_nMapId) == 0)
@@ -576,7 +569,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     }
     else
     {
-        if (reinterpret_cast<CubeMapInformationService*>(spSvc.FUN_1401cd1a0())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
+        if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
         {
             reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", nState == 4 ? 2 : 1);
             if (nState == 4)
@@ -595,9 +588,9 @@ void UIRealEstateDialog::FUN_141ab42a0()
                 else if (nKind == 1)
                     nBlock = 1;
                 else
-                    nBlock = reinterpret_cast<CubeMapInformationService*>(spSvc.FUN_1401cd1a0())->FUN_1410c3000();
+                    nBlock = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c3000();
                 {
-                    Unk_CubeOwners& rOwners = *spSvc.FUN_1401cd1a0()->FUN_1410d3360();
+                    Unk_CubeOwners& rOwners = *reinterpret_cast<Unk_HoService*>(spSvc.operator->())->FUN_1410d3360();
                     Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(rOwners, m_nGroup, nBlock);
                     if (spOwner.get() != 0)
                     {

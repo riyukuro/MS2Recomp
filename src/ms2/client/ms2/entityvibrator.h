@@ -5,7 +5,7 @@
 #pragma once
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
-#include "ms2/client/ms2/cubespawnobject.h"     // Unk_EntRef, Unk_Entity (forward)
+#include "ms2/client/ms2/cubespawnobject.h"     // egf::EntityPtr, Unk_Entity (forward)
 #include <efd/SmartPointer.h>
 
 namespace egf { class Entity; }

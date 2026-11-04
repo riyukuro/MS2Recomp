@@ -119,7 +119,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-void* FUN_1408e57f0();
+class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 extern int DAT_1439fa004;
 
 
@@ -208,7 +208,7 @@ MS2_REPLACE_METHOD(0x141abe680, UIRewardNotify, vfunc_43, 184, 0x9A181B4D);
 // @0x141abe740
 void UIRewardNotify::vfunc_15()
 {
-    if (((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
+    if (((class GFxSceneService*)(void*)(CUserMail::FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
         return;
     if (m_block != 0)
         return;
@@ -644,7 +644,7 @@ MS2_REPLACE_METHOD(0x141ac1fa0, UIRewardNotify, vfunc_45, 54, 0xF5BC91C1);
 void UIRewardNotify::AppendReward(MS2Ptr<AScript> pReward)
 {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-    if (pEntity == 0 || ((class GFxSceneService*)(void*)(FUN_1408e57f0()))->GetSubSceneId() == 0x6200031 || m_block != 0) {
+    if (pEntity == 0 || ((class GFxSceneService*)(void*)(CUserMail::FUN_1408e57f0()))->GetSubSceneId() == 0x6200031 || m_block != 0) {
         m_queue.Add(pReward);
     } else {
         pEntity->Invoke("appendReward", pReward);

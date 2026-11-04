@@ -64,7 +64,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entit
 void FUN_14098b3e0(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
 void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
-CString FUN_140188f50(const char* pszText, unsigned int nCodePage); // UTF-8 -> CString
+CString FUN_140188f50(const char* pszText, int nCodePage); // UTF-8 -> CString
 void FUN_1401d3700(CString& str);                                   // normalise an object name
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 __int64 FUN_14028d260(float);  // C3: the definition's signature

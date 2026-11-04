@@ -39,9 +39,9 @@ class Unk_Service6100017 : public efd::ISystemService { };
 struct Unk_EntityAppFramework;
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-extern Vector3 DAT_143b01a60;                               // the zero point
-extern Vector3 DAT_143a08ce8;                               // (0, 1, 0)
-extern const Vector3 g_143a08cf8;                           // (0, 0, 1)
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
+#define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; (0, 1, 0)
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)                           // (0, 0, 1)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
 extern int DAT_143ad1b20;                                           // running actor counter
@@ -86,8 +86,7 @@ int FUN_140768010(int nRange, int nBase);                           // random nu
 float FUN_140768090();                                              // random 0..1
 float FUN_14109ace0();                                              // random 0..1
 __int64 FUN_14028d260(float f);                                     // seconds -> milliseconds
-bool FUN_140a33ff0(const Vector3* p);                       // all components finite
-Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
+bool Unk_IsFinite(const efd::Point3& kPoint);   // C3: was FUN_140a33ff0(const Vector3*); all components finite
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned nProp, efd::AssetID* pValue);
 
 
@@ -136,15 +135,10 @@ struct Unk_VibEffectReq
 };
 MS2_CHECK_SIZE(Unk_VibEffectReq, 0x70);
 
-// NiPoint3(x, y, z) (0x140a00350).
-struct Unk_VibNiPt : Vector3
-{
-    Unk_VibNiPt(float x, float y, float z);
-};
-// NiMatrix3 with the column getter (0x1411ce070).
+// NiMatrix3 with the column getter (0x1411ce070); the column is an NxVec3 (ctor(x, y, z) 0x140a00350).
 struct Unk_VibNiMat : Unk_NiMatrix3
 {
-    Unk_VibNiPt FUN_1411ce070(int nCol) const;
+    NxVec3 FUN_1411ce070(int nCol) const;
 };
 
 // @0x1411cb290
@@ -285,7 +279,7 @@ int CEntityVibrator::FUN_1411cba60()
                 SetRotation(m_54);
                 efd::SmartPointer<Unk_Service6100017> com(FUN_1401cd040(&DAT_143b059e8));
                 if ((Unk_Service6100017*)com != 0) {
-                    reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<Unk_EntRef&>(m_entity));
+                    reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
                 }
                 if (!m_a8) {
                     if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(m_entity.operator egf::Entity*())) {
@@ -337,7 +331,7 @@ MS2_REPLACE_METHOD(0x1411CBA60, CEntityVibrator, FUN_1411cba60, 2806, 0xCBF39D64
 // MS2-FUNCTIONAL: behaviour-checked against the exe (constants and math match); PhysX descriptor temporaries differ
 void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
 {
-    if (!FUN_140a33ff0(&m_70)) {
+    if (!Unk_IsFinite(reinterpret_cast<const efd::Point3&>(m_70))) {
         EE_LOG_AT(0x12, 1, ("CEntityVibrator::MakePhysxActor"), MS2_THIS_FILE, 0xc3);
         if (DAT_143afc898 != 0) {
             throw 13;
@@ -450,10 +444,10 @@ void CEntityVibrator::FUN_1411cd0c0()
         Vector3 ptBox = m_98;
         NxMat34 pose = m_68->getGlobalPose();
         Vector3 ptPos(pose.t.x, pose.t.y, pose.t.z);
-        FUN_140ad0c10(&ptPos, 100.0f);
-        Unk_VibNiPt col0 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(0);
-        Unk_VibNiPt col1 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(1);
-        Unk_VibNiPt col2 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(2);
+        reinterpret_cast<efd::Point3&>(ptPos) *= 100.0f;
+        NxVec3 col0 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(0);
+        NxVec3 col1 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(1);
+        NxVec3 col2 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(2);
         Unk_VibMat rot;
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(0, col0.x, col0.y, col0.z);
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(1, col1.x, col1.y, col1.z);
@@ -464,7 +458,7 @@ void CEntityVibrator::FUN_1411cd0c0()
         ptPos = ptPos.FUN_14097fd50(ptUp.FUN_14097fc90(ptBox.z * 0.5f));
         Vector3 ptEuler;
         if (((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->ToEulerAnglesXYZ(ptEuler.x, ptEuler.y, ptEuler.z)) {
-            FUN_140ad0c10(&ptEuler, -57.295776f);
+            reinterpret_cast<efd::Point3&>(ptEuler) *= -57.295776f;
             SetRotation(ptEuler);
         }
         SetPosition(ptPos);
@@ -480,7 +474,7 @@ void CEntityVibrator::FUN_1411cd3b0()
     if (m_7c != 0) {
         efd::SmartPointer<Unk_Service6100017> com(FUN_1401cd040(&DAT_143b059e8));
         if ((Unk_Service6100017*)com != 0) {
-            reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<Unk_EntRef&>(m_entity));
+            reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
         }
         if (!m_a8) {
             if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689a10(m_entity.operator egf::Entity*())) {
@@ -551,8 +545,8 @@ MS2_REPLACE_METHOD(0x1411CD570, CEntityVibrator, FUN_1411cd570, 1251, 0xF0018A6D
 // @0x1411cda60
 void CEntityVibrator::SetPosition(Vector3 pos)
 {
-    if (m_ac.FUN_140552700(pos)) {
-        if (!FUN_140a33ff0(&pos)) {
+    if (reinterpret_cast<const efd::Point3&>(m_ac) != reinterpret_cast<const efd::Point3&>(pos)) {
+        if (!Unk_IsFinite(reinterpret_cast<const efd::Point3&>(pos))) {
             return;
         }
         m_ac = pos;
@@ -564,8 +558,8 @@ MS2_REPLACE_METHOD(0x1411CDA60, CEntityVibrator, SetPosition, 144, 0x24E4DCF5);
 // @0x1411cdb00
 void CEntityVibrator::SetRotation(Vector3 rot)
 {
-    if (m_b8.FUN_140552700(rot)) {
-        if (!FUN_140a33ff0(&rot)) {
+    if (reinterpret_cast<const efd::Point3&>(m_b8) != reinterpret_cast<const efd::Point3&>(rot)) {
+        if (!Unk_IsFinite(reinterpret_cast<const efd::Point3&>(rot))) {
             return;
         }
         m_b8 = rot;
@@ -640,9 +634,9 @@ void CEntityVibrator::FUN_1411cddc0(CString strModel, unsigned char nMode)
 MS2_REPLACE_METHOD(0x1411CDDC0, CEntityVibrator, FUN_1411cddc0, 614, 0x02DD91E3);
 
 // @0x1411ce070
-Unk_VibNiPt Unk_VibNiMat::FUN_1411ce070(int nCol) const
+NxVec3 Unk_VibNiMat::FUN_1411ce070(int nCol) const
 {
-    return Unk_VibNiPt(m_afEntry[0][nCol], m_afEntry[1][nCol], m_afEntry[2][nCol]);
+    return NxVec3(m_afEntry[0][nCol], m_afEntry[1][nCol], m_afEntry[2][nCol]);
 }
 MS2_REPLACE_METHOD(0x1411CE070, Unk_VibNiMat, FUN_1411ce070, 132, 0x73C3E33A);
 

@@ -102,14 +102,7 @@ MS2_CHECK_SIZE(ItemPreviewCommon::CLimitCharRotate, 0x30);
 class Unk_UabClock;
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
-// NiAVObject::m_kLocal.m_Translate (+0x74) as an NiPoint3 with its assignment operator.
-struct Unk_UabNodeTranslate
-{
-    Unk_UabNodeTranslate& FUN_14097faa0(const Unk_NiPoint3& kSrc);  // NiPoint3::operator=
-    float x, y, z;
-};
 void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
-Unk_NiPoint3 FUN_14027dcf0(const Vector3& kPt);                 // NiPoint3(const efd::Point3&)
 float FUN_14059d930(float f);                                           // fabs
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class A, class B, class C>
@@ -117,7 +110,7 @@ void Unk_EquipLog(CLogString* log, int level, int category, const wchar_t* forma
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos);   // rotates about a pivot
 int FUN_141b48430(int nKind);                                           // camera set of a kind
 float FUN_141b48480(int nSet, int nIndex);                              // default angle
-extern Vector3 DAT_143b01a60;                                   // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // The swf entity the avatar is dragged onto, and its point (the width / height are ints here).
 struct Unk_UabPoint { int x; int y; };
@@ -704,7 +697,7 @@ void UIAvatarBase::FUN_1418b9c10()
         FUN_1418ba250(&m_kAngle, &m_kAngleBase);
         const Vector3& kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
         m_kPosBase = kPos;
-        if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(m_kAngleBase) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
             FUN_1418ba4a0(pRot, &kPos, &m_kPivotBase);
         else
             m_kPivotBase = m_kPosBase;
@@ -864,7 +857,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 // @0x1418ba4a0
 void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
-    if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_kAngleBase) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(pRot->FUN_140a00720(m_kPivot));
     else
         *pOut = *pPos;
@@ -2375,9 +2368,10 @@ std::pair<std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator, bo
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos)
 {
     *reinterpret_cast<Unk_NiMatrix3*>(reinterpret_cast<char*>(pNode) + 0x50) = *pRot;
-    reinterpret_cast<Unk_UabNodeTranslate*>(reinterpret_cast<char*>(pNode) + 0x74)->FUN_14097faa0(
+    *reinterpret_cast<NiPoint3*>(reinterpret_cast<char*>(pNode) + 0x74) = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(
+        reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(
         reinterpret_cast<const Vector3&>(kPos).FUN_14097fd50(reinterpret_cast<const Vector3&>(kPivot))
-            .FUN_140965c40(pRot->FUN_140a00720(reinterpret_cast<const Vector3&>(kPivot))));
+            .FUN_140965c40(pRot->FUN_140a00720(reinterpret_cast<const Vector3&>(kPivot)))))));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc950-0x142cbca30 .text$yd

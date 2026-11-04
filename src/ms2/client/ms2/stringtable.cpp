@@ -982,7 +982,6 @@ CStringW CStringTable::FUN_141813610(int a, int b, int c)
 
 // The format arguments of a text: the type bits of the arguments and their values.
 struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
-unsigned long long FUN_1401cfc00(const CStringW& str);
 Unk_StFmtArg FUN_1401cfcf0(const CStringW& str);
 
 // The argument pack helpers are unit-local stand-ins (an fmt-style ArgList).
@@ -997,10 +996,10 @@ CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
     {
         CStringW strText = aTexts[i];
         if (aArgs.IsEmpty())
-            nTypes = FUN_1401cfc00(strText);
+            nTypes = fmt::internal::make_type(strText);
         else
         {
-            unsigned long long n = FUN_1401cfc00(strText);
+            unsigned long long n = fmt::internal::make_type(strText);
             nTypes |= n << (aArgs.GetCount() << 2);
         }
         aArgs.Add(FUN_1401cfcf0(strText));

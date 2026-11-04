@@ -62,13 +62,9 @@ struct Unk_GoAutoCfg
     int m_nOther;                                               // +0xd0
     int m_nGrade;                                               // +0xd4
 };
-class Unk_GoAutoLoot { public: void FUN_141261310(const Unk_GoOpt& opt); };
-class Unk_GoGameCfg
-{
-public:
-    Unk_GoAutoLoot* FUN_141533e20();
-};
+struct Unk_GoAutoLoot;   // the auto-loot block of the game options (cgameoption.h)
 struct Unk_GsAutoLoot;   // C3: the auto-loot options as gameoptionstruct.cpp declares them
+void FUN_141261310(Unk_GsAutoLoot* pDst, const Unk_GsAutoLoot* pSrc);   // copy the auto-loot options (gameoptionstruct.cpp)
 Unk_GsAutoLoot* FUN_141260ea0(Unk_GsAutoLoot* p);                       // reset, returns p
 void FUN_141260ed0(Unk_GsAutoLoot* p);                                  // reset to the defaults
 int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, class TiXmlDocument* pDoc);   // C3: was FUN_141260f40
@@ -93,7 +89,7 @@ public:
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 #define FUN_140c8b450(p) ((Unk_GoAutoCfg*)reinterpret_cast<CPetManager*>(p)->GetInfo())   // C3: CPetManager::GetInfo (cpetmanager.h)
-class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* FUN_141244300(); };   // C3: member view (gameoption.cpp)
+class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* FUN_141244300(); Unk_GoAutoLoot* FUN_141533e20(); };   // C3: member view (gameoption.cpp)
 void FUN_140710590(COutPacket& packet);                         // send
 
 // @0x1419d95c0
@@ -368,7 +364,7 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
 {
     if (m_nMode != 0)
     {
-        reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20()->FUN_141261310(m_opt);
+        FUN_141261310((Unk_GsAutoLoot*)TSingleton<CGameOption>::GetInstance()->FUN_141533e20(), (const Unk_GsAutoLoot*)&m_opt);
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     else

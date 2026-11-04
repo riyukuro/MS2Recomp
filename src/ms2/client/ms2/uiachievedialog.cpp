@@ -60,7 +60,6 @@ public:
     Scaleform::GFx::Value FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row);
 };
 // the movie root: gotoAndPlay(label) and the reward count call
-class Unk_RewardClip { public: Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg); };
 class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName); };
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int n, CStringW str); };
 
@@ -128,15 +127,13 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-class Unk_IntTriple { public: unsigned __int64 Get(int nIndex); };   // TripletIntOperations::Get
 
 // collected ids: dungeons, fish, pets, quests, items
 CMyCharacter* FUN_140931510();
 class Unk_BreakSelected* FUN_140535320();
 struct Unk_AcQuestMgr { char m_pad_00[0x10]; char m_10[0x10]; };
 void* FUN_140764020();
-struct Unk_Be790Map : public ATL::CAtlMap<unsigned int, unsigned int> {};
-extern Unk_Be790Map DAT_143ab30e0;        // achievement id -> grade
+extern ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0;        // achievement id -> grade
 
 extern int DAT_143ab2914;                                       // the GM level
 
@@ -581,17 +578,17 @@ void UIAchieveDialog::FUN_1418a8ff0()
     FilterOptions options;
     switch (spCategory->m_nTab) {
     case 1:
-        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "summary");
+        reinterpret_cast<AScript*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "summary");
         FUN_1418a9c20();
         return;
     case 2:
-        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
+        reinterpret_cast<AScript*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
         options.m_survival = 1;
         options.m_filter = GetFilterIndex();
         FUN_1418aa190(&options);
         break;
     case 0:
-        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
+        reinterpret_cast<AScript*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
         options.m_survival = 0;
         options.m_categoryTag = spCategory->m_strCategoryTag;
         options.m_contentsTag = spCategory->m_strContentsTag;

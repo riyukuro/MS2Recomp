@@ -15,8 +15,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
-CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 
 // The broken-down time record built by FUN_14088e170 from a __time64_t.
 struct Unk_DateParts

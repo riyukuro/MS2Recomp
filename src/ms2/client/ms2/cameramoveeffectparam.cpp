@@ -37,7 +37,6 @@ int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
 
 // Camera manager (singleton 0x1409478c0): camera-path playback.
-CameraMgr* FUN_1409478c0();
 
 // @0x140afe800
 CCameraMoveEffectParam::CCameraMoveEffectParam()
@@ -122,9 +121,9 @@ bool CCameraMoveEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CCameraMoveEffectParam* pMove = static_cast<const CCameraMoveEffectParam*>(pParam);
-    if (FUN_1409478c0()->FUN_140a18070() && pMove->m_strFilePath.GetLength() > 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() && pMove->m_strFilePath.GetLength() > 0)
     {
-        FUN_1409478c0()->FUN_140af0e40(pMove);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140af0e40(pMove);
         m_fDuration = 0.0f;
     }
     return true;

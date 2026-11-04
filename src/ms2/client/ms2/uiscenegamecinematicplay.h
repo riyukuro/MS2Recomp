@@ -37,13 +37,13 @@ public:
     virtual void vfunc_57();
     virtual void vfunc_58();
     virtual void vfunc_59();
-    virtual void vfunc_60();
+    virtual void vfunc_60(MS2Ptr<AScript> spBackground);        // 60 0x1422e8530 the scene's background AS object
     virtual void vfunc_61();
     virtual void vfunc_62();
     virtual void vfunc_63();
     virtual void vfunc_64() {}                                  // 64 0x140e84f90 emitted from this unit
 
-    void FUN_1422e7950();                                       // 0x1422e7950 the presentation ref has changed
+    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
 
 public:
     char m_pad68[4];

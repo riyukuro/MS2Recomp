@@ -51,7 +51,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_ShieldActor : public PCBase
 {
@@ -151,7 +150,7 @@ void UIShieldBar::Entity::vfunc_6(NiPoint3* pPos)
                         ((Unk_ShieldClip*)gaugeMc.operator->())->vfunc_13("defence");
                         m_b4 = 0;
                     }
-                    FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_ShieldUIScale*)(((class Unk_ShieldUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+                    *pPos *= ((class GFxManager*)(class Unk_ShieldUIScale*)(((class Unk_ShieldUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
                     pPos->y = pPos->y + vfunc_9();
                     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
                     pPos->x = pPos->x - (float)(m_38->FUN_1422c1340() / 2);

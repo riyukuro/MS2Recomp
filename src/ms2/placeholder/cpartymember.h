@@ -2,17 +2,7 @@
 #pragma once
 #include "ms2/commonfiles/userproxy.h"
 #include "ms2/placeholder/cptred.h"
-
-enum Unk_LimitValue : int;   // value type of the counter map (an enum in the exe; same layout as int; see unit_140268010.cpp)
-
-struct Unk_PartyCounters {
-    Unk_PartyCounters(); // 140268010
-    ~Unk_PartyCounters();
-    CLockCriticalSection lock;
-    ATL::CAtlMap<int, Unk_LimitValue> values;
-    int FUN_140268570(int);
-};
-MS2_CHECK_SIZE(Unk_PartyCounters, 0x78);
+#include "ms2/unnamed/unit_140268010.h"   // Unk_LockedIntMap (the counters)
 
 class CPartyMember : public CPtred {
 public:
@@ -23,7 +13,7 @@ public:
     void FUN_141637ad0(int);
     void SetRole(int);
     void SetReadyState(int);
-    void SetCounters(const Unk_PartyCounters*);
+    void SetCounters(const Unk_LockedIntMap*);
     __int64 FUN_141637bb0();
     bool FUN_141637c20();
     int FUN_141637c90();
@@ -36,7 +26,7 @@ public:
     int leader;
     bool offline;
     Unk_UserProxy user;
-    Unk_PartyCounters counters;
+    Unk_LockedIntMap counters;
     int readyState;
 };
 // ctor 141637930, dtor 1416379e0; the last store is the dword at +3f0.

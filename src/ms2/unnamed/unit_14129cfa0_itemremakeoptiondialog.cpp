@@ -115,12 +115,6 @@ class Unk_EnScript : public AScript
 public:
     void FUN_1422bac00(const char* name, CString& out);
 };
-class Unk_EnArray : public ASArray
-{
-public:
-    void FUN_1422bbf00(const ASObj& obj);
-    void FUN_1422bbfe0(const wchar_t* text);
-};
 class Unk_EnSlotArgs { public: void* m_0; unsigned char m_8[1]; };
 class Unk_EnSlot
 {
@@ -173,7 +167,7 @@ class Unk_RemakeStat
 public:
     Unk_RemakeStat(unsigned mode, MS2Ptr<CItem> item, bool bFinal);   // 0x140617de0
     ~Unk_RemakeStat();                                                // 0x14061ac50
-    bool FUN_140619290(int index, int& nOption, int& nValue);   // fills a Unk_LockOpt's two fields
+    bool FUN_140619290(int index, int& nOption, int& nValue);   // fills a Unk_RemakeLockOpt's two fields
     unsigned m_mode;
     int m_pad4;
     MS2Ptr<CItem> m_item;
@@ -202,7 +196,7 @@ void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
 void FUN_140d73aa0(CStringW text, int a, void* pListener, CStringW c);
 enum Unk_RemakeError : int {};
-CStringW FUN_1419021b0(int a, int b);
+CStringW FUN_1419021b0(unsigned a, unsigned b);
 CStringW FUN_1409404f0(__int64 v);
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 extern __int64 DAT_143ab2898;
@@ -444,15 +438,15 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
     dbg.m_kind = 1;
     dbg.m_value = 300;
     SetState(3);
-    Unk_LockOpt lockOpt;
+    Unk_RemakeLockOpt lockOpt;
     if (option >= 0) {
         if (m_optionCount <= 1) {
             NOTICE(FUN_140298ea0(L"s_itemremake_notice_disable_lock_item_option_error_count"));
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
-        if (stat.FUN_140619290(option, lockOpt.m_v, lockOpt.m_4))
-            dbg.m_options.FUN_140b9b410(lockOpt);
+        if (stat.FUN_140619290(option, lockOpt.m_nIndex, lockOpt.m_nValue))
+            reinterpret_cast<Unk_RemakeLockOptList&>(dbg.m_options).push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
@@ -486,15 +480,15 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
     else
         dbg.m_value = value;
     SetState(3);
-    Unk_LockOpt lockOpt;
+    Unk_RemakeLockOpt lockOpt;
     if (option >= 0) {
         if (m_optionCount <= 1) {
             NOTICE(FUN_140298ea0(L"s_itemremake_notice_disable_lock_item_option_error_count"));
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
-        if (stat.FUN_140619290(option, lockOpt.m_v, lockOpt.m_4))
-            dbg.m_options.FUN_140b9b410(lockOpt);
+        if (stat.FUN_140619290(option, lockOpt.m_nIndex, lockOpt.m_nValue))
+            reinterpret_cast<Unk_RemakeLockOptList&>(dbg.m_options).push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
@@ -867,7 +861,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
             ASObj entry(2);
             entry.FUN_1407cba60("binding", FUN_1412a0720(ingredient.get(), CString(bagKey), m_names1b8));
             entry.FUN_1407cbb20("countText", FUN_1419021b0(have, count));
-            reinterpret_cast<Unk_EnArray&>(list).FUN_1422bbf00(entry);
+            list.PushObj(entry);
             if (type == 0x60 && count > have)
                 fee = (__int64)((count - have) * 1000);
         }
@@ -1024,7 +1018,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
     }
     CCItemRemakeOptionPacket::RemakeOption option;
     option.m_18 = uid;
-    Unk_LockOpt lockOpt;
+    Unk_RemakeLockOpt lockOpt;
     if (nOption >= 0) {
         if (m_optionCount <= 1) {
             NOTICE(FUN_140298ea0(CStringW(L"s_itemremake_notice_disable_lock_item_option_error_count")));
@@ -1043,8 +1037,8 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
             return;
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
-        if (stat.FUN_140619290(nOption, lockOpt.m_v, lockOpt.m_4))
-            option.m_options.FUN_140b9b410(lockOpt);
+        if (stat.FUN_140619290(nOption, lockOpt.m_nIndex, lockOpt.m_nValue))
+            reinterpret_cast<Unk_RemakeLockOptList&>(option.m_options).push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(0);

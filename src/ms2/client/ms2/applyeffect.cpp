@@ -179,12 +179,13 @@ public:
     bool m_bActive;
 };
 class Unk_AeFeatureMgr;
-extern Unk_AeFeatureMgr* DAT_143ab3da0;
+class PostProcessingService;
+template <> class TSingleton<PostProcessingService> { public: static PostProcessingService* s_instance; };   // postprocessingservice.h's specialization (0x143ab3da0)
 class Unk_AeFeatureMgr
 {
 public:
     // @0x1409a8b20
-    static Unk_AeFeatureMgr* FUN_1409a8b20() { return DAT_143ab3da0; }
+    static Unk_AeFeatureMgr* FUN_1409a8b20() { return reinterpret_cast<Unk_AeFeatureMgr*>(TSingleton<PostProcessingService>::s_instance); }
 };
 class PostProcessEffect;
 class PostProcessingService   // C3: member view
@@ -199,7 +200,7 @@ public:
 bool FUN_1409a5770(NiFixedString& kKey, const float* pfData, int iCount);
 bool FUN_1409a5810(NiFixedString& kKey, const NiPoint3* pkData, int iCount);
 bool FUN_1409a5850(NiFixedString& kKey, const bool* pbData, unsigned int uiSize);
-MS2SceneGraphService* FUN_1413f98b0();
+ecr::SceneGraphService* FUN_1413f98b0();
 int FUN_1414d00b0(NiRenderObject* pObj);                    // material swap predicate
 
 // @0x1409a36c0
@@ -554,19 +555,18 @@ inline Unk_AeFogState* FUN_1409a8d60(NiDX9Renderer* pRenderer)
 {
     return *(Unk_AeFogState**)((char*)pRenderer + 0xba8);
 }
-extern efd::SmartPointer<NiFogProperty> DAT_143afa7f0;      // the default fog property
+struct NiFogPropertyStatics : NiFogProperty { using NiFogProperty::ms_spDefault; };   // C3: was extern DAT_143afa7f0 (protected static)
 // @0x1409a8a80
-inline NiFogProperty* GetNiFogProperty() { return DAT_143afa7f0; }
+inline NiFogProperty* GetNiFogProperty() { return NiFogPropertyStatics::ms_spDefault; }
 
 // The scene graph service lookup (global service manager reference).
-efd::ServiceManager* FUN_1401cd190(void* pHolder);
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(unsigned char*)&egf::g_bapiContext)          // C3: was extern unsigned char DAT_143b059e8
 struct Unk_AeServiceCell { void* m_spManager; };              // SmartPointer<ServiceManager>
 // @0x1409a5700
 inline MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pCell)
 {
-    return FUN_1401cd190(&pCell->m_spManager)->GetSystemServiceAs<MS2SceneGraphService>();
+    return reinterpret_cast<const efd::SmartPointer<efd::ServiceManager>*>(&pCell->m_spManager)->operator->()->GetSystemServiceAs<MS2SceneGraphService>();
 }
 
 // The functor that refreshes the effects of every scene graph.
@@ -654,7 +654,7 @@ void ApplyEffect::SetFogEffect(bool bEnabled, unsigned int* puiColor, float fNea
             throw 13;
         }
         NiShaderFactory::RegisterGlobalShaderConstant(DAT_143ae5318, NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT, 4, &fDensity);
-        FUN_1413f98b0()->ClearAllCachedShaders();
+        static_cast<MS2SceneGraphService*>(FUN_1413f98b0())->ClearAllCachedShaders();
     }
     FUN_1409a5850(DAT_143ae52f8, &bEnabled, 1);
     FUN_1409a5810(DAT_143ae5300, (const NiPoint3*)&kColor, 1);

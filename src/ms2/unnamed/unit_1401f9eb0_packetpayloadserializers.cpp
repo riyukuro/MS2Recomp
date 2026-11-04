@@ -143,10 +143,6 @@ template<class T, size_t N> struct Unk_Allowed {
 struct Unk_BoolConstraint:Unk_Allowed<int,2> {
     Unk_BoolConstraint(int a,int b):Unk_Allowed<int,2>(a,b){}
 };
-struct Unk_WideRange {int minimum,maximum; Unk_WideRange(int,int);bool Check(const CStringW&) const;};
-struct Unk_WideMaximum {int maximum; explicit Unk_WideMaximum(int);bool Check(const CStringW&) const;};
-struct Unk_NarrowMaximum {int maximum; explicit Unk_NarrowMaximum(int);bool Check(const CString&) const;};
-struct Unk_NarrowLimit {int maximum; explicit Unk_NarrowLimit(int);bool Check(const CString&) const;bool Check(const CStringW&) const;};
 // Member helpers preserve the return-buffer-after-this ABI of the original packet templates.
 template<class Constraint>float Unk_ReadFloat(void* packet,Constraint constraint) {
     float value=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadFloat();
@@ -215,10 +211,6 @@ template<>CStringW Unk_PayloadReader::ReadMarkup<Unk_WideMaximum>(Unk_WideMaximu
     if(!constraint.Check(stripped))valid=0;
     return original;
 }
-MS2_CHECK_SIZE(Unk_WideRange,8);
-MS2_CHECK_SIZE(Unk_WideMaximum,4);
-MS2_CHECK_SIZE(Unk_NarrowMaximum,4);
-MS2_CHECK_SIZE(Unk_NarrowLimit,4);
 
 struct Unk_NarrowPayload {CString text;};
 struct Unk_WidePayload {CStringW text;};

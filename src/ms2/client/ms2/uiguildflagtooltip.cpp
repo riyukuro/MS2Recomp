@@ -49,7 +49,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-Vector3* FUN_140ad0c10(Vector3* pt, float f);           // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);  // Value = string
@@ -193,7 +192,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())
         {
-            FUN_140ad0c10(&kScreen, ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+            reinterpret_cast<efd::Point3&>(kScreen) *= ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
             kScreen.x -= pEntity->FUN_1422c1340() * 0.5;
             kScreen.y -= pEntity->GetHeightCeil() * 0.5;
             pEntity->SetPositionFloat(kScreen.x, kScreen.y);

@@ -98,7 +98,7 @@ struct Unk_IesParams                                                      // Sca
 };
 
 // Helpers of other units.
-void FUN_140cff1b0(Scaleform::GFx::Value& v, CString strName, CStringW strText);   // set the text of a child field
+void FUN_140cff1b0(const Scaleform::GFx::Value& v, CString strName, CStringW strText);   // set the text of a child field
 void FUN_141415600(const CString& strKey);                          // release the item bound to the key
 void FUN_141415560(const CString& strKey, ItemInfoSlot::CreateParam* pParam);      // bind an item slot
 void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem);  // create the drag slot

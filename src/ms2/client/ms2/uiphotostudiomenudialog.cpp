@@ -13,7 +13,6 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
-class Unk_RewardClip { public: class Scaleform::GFx::Value FUN_140e262c0(char const *, char const *); };
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- header statics (the market sort-key names) ----
@@ -35,7 +34,6 @@ class Unk_PsUiMgr
 public:
     void FUN_141adc530(int nId);   // show
 };
-CameraMgr* FUN_1409478c0();
 CStringW TakeScreenshotJpg(int a, int b);   // the exe call site leaves the third argument (r9) unset
 
 // @0x140e75ea0
@@ -71,7 +69,7 @@ void UIPhotoStudioMenuDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
-        ((class Unk_RewardClip*)(pDialog))->FUN_140e262c0("setState", "other");
+        (reinterpret_cast<AScript*>(pDialog))->FUN_140e262c0("setState", "other");
     FUN_140e761b0();
 }
 
@@ -109,7 +107,7 @@ void UIPhotoStudioMenuDialog::OnFreeCamera()
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
     if (MS2Ptr<Unk_140acd6e0> spCheck = GetChild<Unk_140acd6e0>("m_freeCamera"))
-        spCheck->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
+        spCheck->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
 }
 
 // @0x140e76270
@@ -118,12 +116,12 @@ void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)
     {
-        FUN_1409478c0()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else
     {
-        FUN_1409478c0()->FUN_140947980(2);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
 }

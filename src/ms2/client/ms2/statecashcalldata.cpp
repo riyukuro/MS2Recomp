@@ -99,7 +99,7 @@ struct Unk_CcXform
 MS2_CHECK_SIZE(Unk_CcXform, 0x34);
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
-extern Vector3 DAT_143a08ce8;                       // the default direction
+#define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- StateCashCallData ----

@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ugcbannerobject.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ugcbannerobject.h"
+#include <egf/Entity.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -14,7 +15,7 @@ void FUN_140b60e10(egf::Entity *, bool);  // C3: the definition's signature
 void FUN_140b60e40(egf::Entity *, bool);  // C3: the definition's signature
 
 // @0x140b9c680
-UgcBannerObject::UgcBannerObject(Unk_EntRef ent)
+UgcBannerObject::UgcBannerObject(egf::EntityPtr ent)
     : m_ent(ent)
 {
     m_nBannerId = 0;
@@ -39,8 +40,8 @@ void UgcBannerObject::SetVisible(unsigned char bVisible)
     if (m_bVisible == bVisible)
         return;
     m_bVisible = bVisible;
-    FUN_140b60e10((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
-    FUN_140b60e40((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
+    FUN_140b60e10((egf::Entity *)(m_ent.data()), (bool&)m_bVisible);
+    FUN_140b60e40((egf::Entity *)(m_ent.data()), (bool&)m_bVisible);
 }
 
 // @0x140b9c7f0
@@ -52,16 +53,16 @@ unsigned char UgcBannerObject::GetVisible() const
 // @0x140b9c810
 Unk_Entity* UgcBannerObject::GetEntity() const
 {
-    return m_ent.FUN_1408a9090();
+    return (Unk_Entity*)m_ent.data();
 }
 
 // @0x140b9c840
 void UgcBannerObject::Init()
 {
-    if (m_ent.FUN_1408b70b0(0))
+    if (m_ent == 0)
         return;
-    m_nBannerId = FUN_140b60d90((egf::Entity *)(m_ent.FUN_1408a9090()));
-    m_bVisible = FUN_140b60dd0((egf::Entity *)(m_ent.FUN_1408a9090()));
+    m_nBannerId = FUN_140b60d90((egf::Entity *)(m_ent.data()));
+    m_bVisible = FUN_140b60dd0((egf::Entity *)(m_ent.data()));
     if (m_bVisible == 0)
-        FUN_140b60e40((egf::Entity *)(m_ent.FUN_1408a9090()), (bool&)m_bVisible);
+        FUN_140b60e40((egf::Entity *)(m_ent.data()), (bool&)m_bVisible);
 }

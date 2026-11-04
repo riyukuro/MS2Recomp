@@ -12,29 +12,12 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/commonfiles/timer.h"
-class Unk_RewardAvatar;
-template<class T> class Unk_RewardPtr {
-public:
- Unk_RewardPtr(); ~Unk_RewardPtr();
- Unk_RewardPtr(const Unk_RewardPtr&);
- Unk_RewardPtr& operator=(const Unk_RewardPtr&);
- Unk_RewardPtr& operator=(T*);
- Unk_RewardPtr& operator=(int n) { Release(); return *this; }
- void Release();
- T* get() const;
- T* operator->() const;
- T& operator*() const;
- Unk_RewardPtr(T*);
- bool operator==(T*) const;
- operator T*() const;
-private: void* m_0; T* m_p;
-};
+class UIAvatarPC;
 struct ItemEntity;
 class DungeonRewardInfo {
-public: DungeonRewardInfo(); ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
- __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); int FUN_14026cd70(int); bool FUN_14026ce30();
+public: DungeonRewardInfo(); virtual ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
+ unsigned FUN_14026ccf0(); unsigned FUN_14026cbf0(); unsigned FUN_14026cd70(unsigned); bool FUN_14026ce30();
 private:
- void* m_0;
  void* m_8;
  void* m_10;
  void* m_18;
@@ -43,10 +26,6 @@ public:
  std::vector<ItemEntity> m_28;
 };
 MS2_CHECK_SIZE(DungeonRewardInfo,0x40);
-class Unk_RewardLabels {
-public: Unk_RewardLabels(); ~Unk_RewardLabels(); void FUN_140bcfb70(); size_t FUN_140bd0940(); MS2Ptr<ASMovieClip>& FUN_140bcc370(size_t); void FUN_140bd0800(const MS2Ptr<ASMovieClip>&);
-private: void* m_0; void* m_8; void* m_10;
-};
 class Unk_RewardStream;
 // bitset<32> (commonfiles\bitset.inl): bytes, bit pos%8 of byte pos/8.
 #define RWD_BIT_ASSERT(line,str,expr) (void)((!!(expr))||(_wassert(str,L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl",line),0))
@@ -117,11 +96,11 @@ private:
  MS2Ptr<DungeonRoom> m_room;
  bool m_party; int m_294,m_298;
  Unk_RewardBits m_bits;
- Unk_RewardPtr<Unk_RewardAvatar> m_avatar;
+ MS2Ptr<UIAvatarPC> m_avatar;
  CStringW m_tip;
  Timer m_timer1,m_timer2;
  bool m_restore;
- Unk_RewardLabels m_labels;
+ std::vector<MS2Ptr<ASMovieClip> > m_labels;
 };
 MS2_CHECK_SIZE(UIDungeonRewardDialog,0x348);
 MS2_CHECK_OFFSET(UIDungeonRewardDialog,m_180,0x180);

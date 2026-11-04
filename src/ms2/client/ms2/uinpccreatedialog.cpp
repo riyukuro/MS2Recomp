@@ -103,7 +103,7 @@ void FUN_1412751f0(const CStringW& strText, int a, int b);
 class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
-unsigned FUN_140718200(const CStringW& str);          // the npc id of an id text
+int FUN_140718200(const CStringW& str);          // the npc id of an id text
 CStringW FUN_1401aa6a0(int nNpc);
 void FUN_140841420(CStringW& str);                      // trim
 CStringTable* GetStringTable();

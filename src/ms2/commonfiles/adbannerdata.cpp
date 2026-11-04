@@ -46,7 +46,6 @@ Unk_AdbPtr& Unk_AdbPtr::operator=(const Unk_AdbPtr& o)
     return *this;
 }
 // @0x14016e5a0
-AdBannerData* Unk_AdbPtr::get() const { return m_p; }
 AdBannerData* Unk_AdbPtr::operator->() const { return m_p; }
 void Unk_AdbPtr::AddRef() const
 {
@@ -170,7 +169,7 @@ void CAdBannerManager::FUN_14016dfd0(Unk_AbOut* pOut)
     int nCount = (int)m_banners.GetCount();
     pOut->vfunc_2((unsigned short)nCount);
     for (int i = 0; i < nCount; i++)
-        m_banners[i].get()->Write(pOut);
+        m_banners[i]->Write(pOut);
 }
 
 // @0x14016e060
@@ -180,7 +179,7 @@ void FUN_14016e060(CAdBannerManager& manager, CInputStream& stream)
     int nCount = reinterpret_cast<Unk_AbIn&>(stream).vfunc_2();
     for (int i = 0; i < nCount; i++) {
         Unk_AdbPtr banner(new AdBannerData());
-        banner.get()->Read(reinterpret_cast<Unk_AbIn*>(&stream));
+        banner->Read(reinterpret_cast<Unk_AbIn*>(&stream));
         manager.m_banners.Add(banner);
     }
 }

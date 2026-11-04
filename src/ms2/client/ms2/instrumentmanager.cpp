@@ -200,7 +200,7 @@ int FUN_141276180(const CString& strChannel, const CString& strArg);        // t
 void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // split
 void FUN_1401ffdc0(unsigned char*, class COutputStream&);   // C3: was FUN_1401ffdc0
 
-extern Vector3 DAT_143b01a60;                                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // ---- CInstrumentManager::Voice / RemoteVoice / Slot ----
 
@@ -466,7 +466,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         {
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
-                pDialog->FUN_140ff0260(nUid, strScore);
+                pDialog->ShowScoreText(nUid, strScore);
         }
     }
     else if (nType == 14)

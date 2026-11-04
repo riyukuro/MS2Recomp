@@ -383,7 +383,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
         if (pInfo->FUN_1406a0fe0())
         {
             CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
-            Unk_AdBannerPtr spBanner = GetAdBannerManagerCli()->FUN_14096b5b0(2, strName);
+            Unk_AdbPtr spBanner = GetAdBannerManagerCli()->FUN_14096b5b0(2, strName);
             if (spBanner.get() != 0)
             {
                 m_spBanner.AssignRaw(new ShopBannerInfo());

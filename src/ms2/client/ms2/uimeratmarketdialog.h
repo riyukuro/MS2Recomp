@@ -162,7 +162,7 @@ public:
     virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 49 0x1412ec1e0 "getTooltip"
     virtual int vfunc_48() { return 0x4ec1; }                       // 48 0x141315a60 the UI type id
 
-    void ApplyBanners(Unk_AdBannerArray& banners);                  // 0x1412ee610
+    void ApplyBanners(ATL::CAtlArray<Unk_AdbPtr>& banners);                  // 0x1412ee610
     void ClearTabCounts();                                          // 0x1412f7760
     void ResetPreview();                                            // 0x1412f7f10
     void ResetModels();                                             // 0x1412f8190

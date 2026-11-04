@@ -8,7 +8,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class ASObj;
-class Unk_PrEntry;
+class Unk_PvPRankEntry;
 
 class UIPvPResultDialog : public UIDialog
 {
@@ -27,7 +27,7 @@ public:
     void FUN_141343c10(int nFrom, int nTo);                     // push the rows of ranks nFrom..nTo (any order)
     void FUN_141343da0(int nRank);                              // m_180 = nRank; the reward text / icon and "showLastResult"
     void FUN_1413440a0();                                       // read the mode and the reward item from the player's PvP info
-    bool FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntry);   // fill one row object
+    bool FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* pEntry);   // fill one row object
     void FUN_141344780(int nRank);                              // push all rows, then FUN_141343da0
 
     int m_178;                                                  // +0x178 mode (2 = free-for-all, 5 = one punch)

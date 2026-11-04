@@ -39,7 +39,7 @@ class NiMesh;
 class NiNode;
 class NiAVObject;
 namespace efd { class utf8string; }
-class Unk_TiXmlElement;
+class TiXmlElement;
 class Unk_DecoXml;
 
 // One batch of instances of the layer's asset. Virtual slots 9..14 / 53 hook the GameObject load / unload.
@@ -59,7 +59,7 @@ public:
     virtual void vfunc_14();                                        // 14 0x141175050
     virtual void vfunc_53(float f);                                 // 53 0x141174550 builds the instanced meshes
 
-    bool SaveXml(Unk_TiXmlElement* pParent);                            // 0x1411740b0 one "grass" child per instance
+    bool SaveXml(TiXmlElement* pParent);                            // 0x1411740b0 one "grass" child per instance
     void Refresh();                                                 // 0x141174280 update the scene and hand it to the world
     void SetCulled(int bVisible);                                   // 0x141174380 (0: hide) app-cull the meshes
     void SetModel(const CString& strModel);                         // 0x141174450 (the caller keeps the string)
@@ -93,7 +93,7 @@ public:
     explicit DecoLayer(CString strName);                            // 0x141176960 (by value: the ctor destroys it)
     virtual ~DecoLayer();                                           // 0x1411769f0
 
-    bool SaveXml(Unk_TiXmlElement* pParent);                            // 0x141176b10
+    bool SaveXml(TiXmlElement* pParent);                            // 0x141176b10
     void Refresh();                                                 // 0x141176d30
     void SetCulled(int bVisible);                                   // 0x141176dc0
     CString GetName();                                              // 0x141176e60

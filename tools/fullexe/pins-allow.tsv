@@ -156,6 +156,7 @@ pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5cdc0@Unk_Inve
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5d680@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@_J@Z 0x140a5d680: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5d9a0@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z 0x140a5d9a0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5f780@Unk_Inventory@@QEAAHHH@Z 0x140a5f780: already attributed (tag), ignored
+pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a5f780@Unk_Inventory@@QEAAXHH@Z 0x140a5f780: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a603e0@Unk_Inventory@@QEAAHHHH@Z 0x140a603e0: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a60790@Unk_Inventory@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@@Z 0x140a60790: already attributed (tag), ignored
 pin already attributed	client/ms2/inventory.cpp: MS2-PIN ?FUN_140a617f0@Unk_Inventory@@QEAAHV?$MS2Ptr@VCItem@@@@@Z 0x140a617f0: already attributed (tag), ignored
@@ -303,7 +304,7 @@ pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ??$construct@KAEBK
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ??$construct@KK@?$_Default_allocator_traits@V?$allocator@K@std@@@std@@SAXAEAV?$allocator@K@1@QEAK$$QEAK@Z 0x141370370: already attributed (tag), ignored
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ?_Myhead@?$_List_alloc@U?$_List_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAU?$_List_node@HPEAX@2@XZ 0x141374590: already attributed (tag), ignored
 pin already attributed	client/ms2/usercommandcli.cpp: MS2-PIN ?_Myhead@?$_List_alloc@U?$_List_base_types@V?$list@HV?$allocator@H@std@@@std@@V?$allocator@V?$list@HV?$allocator@H@std@@@std@@@2@@std@@@std@@QEAAAEAPEAU?$_List_node@V?$list@HV?$allocator@H@std@@@std@@PEAX@2@XZ 0x141374590: already attributed (tag), ignored
-pin already attributed	client/ms2/weddingmanager.cpp: MS2-PIN ?ApplyHallTicket@WeddingManager@@QEAAXXZ 0x141b89950: already attributed (tag), ignored
+pin already attributed	client/ms2/weddingmanager.cpp: MS2-PIN ?ApplyHallTicket@WeddingManager@@QEAAHXZ 0x141b89950: already attributed (tag), ignored
 pin already attributed	client/ms2/weddingmanager.cpp: MS2-PIN ?CanStartWedding@WeddingManager@@QEAA_N_J@Z 0x141b867e0: already attributed (tag), ignored
 pin already attributed	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b867e0@Unk_MsgWedding@@QEAA_N_J@Z 0x141b867e0: already attributed (tag), ignored
 pin already attributed	client/ms2/weddingmanager.cpp: MS2-PIN ?FUN_141b867e0@Unk_UcSlotMgr@@QEAA_N_J@Z 0x141b867e0: already attributed (tag), ignored
@@ -467,6 +468,7 @@ pin already attributed	commonfiles/ms2filestring.cpp: MS2-PIN ?Open@CPackFile@@Q
 pin already attributed	commonfiles/ms2filestring.cpp: MS2-PIN ?Read@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAPEAEPEA_K_N@Z 0x1406b0e20: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?CheckCondition@CNametagSymbolTable@@QEAAIG@Z 0x1406c5d60: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?Exists@CNametagSymbolTable@@QEAAHG@Z 0x1406c5a70: already attributed (tag), ignored
+pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?Exists@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5a70: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?FUN_1406c54d0@@YAXPEAVCNametagSymbolTable@@@Z 0x1406c54d0: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?FUN_1406c5a70@Unk_NtMgr@@QEAAHF@Z 0x1406c5a70: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?FUN_1406c5b00@Unk_NtItemMgr@@QEAAHGH@Z 0x1406c5b00: already attributed (tag), ignored
@@ -480,7 +482,9 @@ pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?FUN_1406c636
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?GetIcon@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c6360: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?GetIconRanked@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c61a0: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?IsShown@CNametagSymbolTable@@QEAAHG@Z 0x1406c5c80: already attributed (tag), ignored
+pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?IsShown@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5c80: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?IsType@CNametagSymbolTable@@QEAAHGH@Z 0x1406c5b00: already attributed (tag), ignored
+pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?IsType@CNametagSymbolTable@@QEAA_NGH@Z 0x1406c5b00: already attributed (tag), ignored
 pin already attributed	commonfiles/nametagsymboltable.cpp: MS2-PIN ?Load@CNametagSymbolTable@@QEAAHXZ 0x1406c54d0: already attributed (tag), ignored
 pin already attributed	commonfiles/questdata.cpp: MS2-PIN ?FUN_14075b430@Unk_QuestIdsPtrView@@QEBAPEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@XZ 0x14075b430: already attributed (tag), ignored
 pin already attributed	commonfiles/questmasktable.cpp: MS2-PIN ?CheckNpc@CQuestMaskTable@@QEAAHIH@Z 0x140764e40: already attributed (tag), ignored
@@ -1150,13 +1154,6 @@ pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ?
 pin names no function	client/ms2/cubemapinformationservice_tail15.cpp: MS2-PIN ??1?$map@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@@std@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail3.cpp: MS2-PIN ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@U?$less@_K@std@@V?$CustomAllocator@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@2@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_tail3.cpp: MS2-PIN ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@U?$less@_K@std@@V?$CustomAllocator@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@efd@@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@2@@Z: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??0Unk_CtiFmtPrefs@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??0Unk_CtiPixPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??0Unk_CtiPixelData@@QEAA@IIAEBUUnk_CtiPixFmt@@II@Z: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??0Unk_CtiTexPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??1Unk_CtiPixPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ??1Unk_CtiTexPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/customizedtexinfo.cpp: MS2-PIN ?get@Unk_CtiPixPtr@@QEBAPEAXXZ: no such function in the obj
 pin names no function	client/ms2/dpsmetersystem.cpp: MS2-PIN ??$?0AEAHAEAN$0A@@?$pair@HN@std@@QEAA@AEAHAEAN@Z: no such function in the obj
 pin names no function	client/ms2/dpsmetersystem.cpp: MS2-PIN ??$?0HN$0A@@?$pair@$$CBIM@std@@QEAA@$$QEAU?$pair@HN@1@@Z: no such function in the obj
 pin names no function	client/ms2/dpsmetersystem.cpp: MS2-PIN ??$make_pair@AEAHAEAN@std@@YA?AU?$pair@HN@0@AEAHAEAN@Z: no such function in the obj
@@ -1326,6 +1323,9 @@ pin names no function	client/ms2/smartpush.cpp: MS2-PIN ?GetTypeName@?$DelegateI
 pin names no function	client/ms2/smartpush.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCSmartPushAutoPlayInstrument@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/soundeventmgr.cpp: MS2-PIN ??$get@$0A@$$QEAH@std@@YA$$QEAH$$QEAV?$tuple@$$QEAH@0@@Z: no such function in the obj
 pin names no function	client/ms2/soundeventmgr.cpp: MS2-PIN ??$move@AEAV?$tuple@$$QEAH@std@@@std@@YA$$QEAV?$tuple@$$QEAH@0@AEAV10@@Z: no such function in the obj
+pin names no function	client/ms2/soundproperty.cpp: MS2-PIN ??@1830a4daf89d272c95ec3911af8a1793@: no such function in the obj
+pin names no function	client/ms2/soundproperty.cpp: MS2-PIN ??@90c9ea69db87f6874a5a77bf21c2723f@: no such function in the obj
+pin names no function	client/ms2/soundproperty.cpp: MS2-PIN ??@bf5d475d8ef5f9eda45d4ed9c8429156@: no such function in the obj
 pin names no function	client/ms2/statecoupleemotion.cpp: MS2-PIN ?FUN_140b845a0@@YAX_JI@Z: no such function in the obj
 pin names no function	client/ms2/statecoupleemotion.cpp: MS2-PIN ?FUN_140b84dc0@@YA_NAEBVNiPoint3@@Z: no such function in the obj
 pin names no function	client/ms2/statecoupleemotion.cpp: MS2-PIN ?FUN_140b86230@@YAXAEBUVector3@@AEAUUnk_NiMatrix3@@@Z: no such function in the obj
@@ -1354,6 +1354,8 @@ pin names no function	client/ms2/ugcballobject.cpp: MS2-PIN ??0Unk_UbVec3@@QEAA@
 pin names no function	client/ms2/ugcballobject.cpp: MS2-PIN ?FUN_14020af60_ref@@YAXPEAVCOutPacket@@AEBUVector3@@@Z: no such function in the obj
 pin names no function	client/ms2/uiadpushlimiteddialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIAdPushLimitedDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiadpushlimiteddialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIAdPushLimitedDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
+pin names no function	client/ms2/uiarcademaindialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
+pin names no function	client/ms2/uiarcademaindialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uibingoeventdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uibingoeventdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBingoEventDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiblackmarketpage.cpp: MS2-PIN ?OnInit@?$DelegateImpl@U?$pair@PEAVBlackMarketPageItemRegister@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
@@ -1406,8 +1408,6 @@ pin names no function	client/ms2/uiitembillboarddialog.cpp: MS2-PIN ?GetTypeName
 pin names no function	client/ms2/uiitembillboarddialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBillBoardDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiitemblueprintcreatedialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uiitemblueprintcreatedialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBlueprintCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
-pin names no function	client/ms2/uiitemcoloringdialog.cpp: MS2-PIN ??0Unk_IcEffectRequest@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/uiitemcoloringdialog.cpp: MS2-PIN ??1Unk_IcEffectRequest@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiitemeditdialog.cpp: MS2-PIN ??0Unk_IEEffectRequest@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiitemeditdialog.cpp: MS2-PIN ??1Unk_IEEffectRequest@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/uiitemeventopenboxdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemEventOpenBoxDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
@@ -1583,6 +1583,8 @@ pin names no function	client/ms2/uipvpguildteamdialog.cpp: MS2-PIN ??$_Try_empla
 pin names no function	client/ms2/uipvpguildteamdialog.cpp: MS2-PIN ??$try_emplace@$$V@?$map@_JV?$MS2Ptr@VASUIComponent@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$MS2Ptr@VASUIComponent@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$MS2Ptr@VASUIComponent@@@@@std@@@std@@@std@@@std@@_N@1@$$QEA_J@Z: no such function in the obj
 pin names no function	client/ms2/uipvpguildteamdialog.cpp: MS2-PIN ??A?$map@_JV?$MS2Ptr@VASUIComponent@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$MS2Ptr@VASUIComponent@@@@@std@@@3@@std@@QEAAAEAV?$MS2Ptr@VASUIComponent@@@@$$QEA_J@Z: no such function in the obj
 pin names no function	client/ms2/uiquestdialog.cpp: MS2-PIN ?GetValueAt@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@@@@3@@ATL@@QEAAAEAV?$TPtrValue@V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@@@PEAU__POSITION@@@Z: no such function in the obj
+pin names no function	client/ms2/uirewardnotify.cpp: MS2-PIN ??$?0AEAHH$0A@@?$pair@HH@std@@QEAA@AEAH$$QEAH@Z: no such function in the obj
+pin names no function	client/ms2/uirewardnotify.cpp: MS2-PIN ??$forward@AEAH@std@@YAAEAHAEAH@Z: no such function in the obj
 pin names no function	client/ms2/uirewardnotify.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIFameContentsNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uirewardnotify.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIRewardNotify@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/uirewardnotify.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIRouletteDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj

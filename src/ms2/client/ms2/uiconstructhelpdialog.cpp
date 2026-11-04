@@ -39,15 +39,10 @@ public:
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
-// The smart pointer to the service (8 bytes; its glue COMDATs live in the unit that first used it).
-class Unk_HoServicePtr
-{
-public:
-    Unk_HoServicePtr(Unk_HoService* p);                         // 0x1401cd0b0
-    ~Unk_HoServicePtr();                                        // 0x1401cd150
-private:
-    Unk_HoService* m_p;
-};
+// The smart pointer to the service (C3: efd::SmartPointer<Unk_Service6100017>, the Unk_HoServicePtr view kept for the null test).
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+class Unk_HoServicePtr;
 unsigned char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
 
 
@@ -91,11 +86,11 @@ void UIConstructHelpDialog::vfunc_67()
 void UIConstructHelpDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-    if (FUN_140ef4cb0(&spService, 0))
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (FUN_140ef4cb0(reinterpret_cast<Unk_HoServicePtr*>(&spService), 0))
         return;
     if (m_30.get() != 0)
-        m_30->Invoke("setMode", !reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c35c0());
+        m_30->Invoke("setMode", !reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c35c0());
 }
 
 // @0x1419060e0
@@ -121,8 +116,8 @@ int UIConstructHelpDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIConstructHelpDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-    if (FUN_140ef4cb0(&spService, 0))
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (FUN_140ef4cb0(reinterpret_cast<Unk_HoServicePtr*>(&spService), 0))
         return;
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
@@ -130,7 +125,7 @@ void UIConstructHelpDialog::vfunc_43()
         if (WorldService::GetInstance()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
         {
             std::set<unsigned __int64> kVisitors;
-            reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5930(&kVisitors);
+            reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d5930(&kVisitors);
             if (kVisitors.empty() != 0)
                 pEntity->vfunc_2(6, 0, 0x21);
             else

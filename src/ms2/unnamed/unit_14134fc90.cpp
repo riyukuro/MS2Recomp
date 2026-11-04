@@ -69,7 +69,7 @@ public:
 NotifySystem* FUN_140939a10();
 
 // The string table (FUN_1409331f0).
-class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> FUN_14142d760(int, int); }; class Unk_DemolishTable : public CKeyTable {
+class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> GetActionKeyName(int, int); }; class Unk_DemolishTable : public CKeyTable {
 public:
 
 };
@@ -251,7 +251,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textKey");
         if (spText.get() != 0)
         {
-            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
+            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->GetActionKeyName(0x493ed, 0);
             spText->SetTextHTMLW(strText);
         }
     }

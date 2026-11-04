@@ -49,7 +49,7 @@ public:
     QuestMask m_maskB;                  // +0x68
     int m_nA8;                          // +0xa8
     CString m_strName;                  // +0xb0
-    Unk_EntRef m_ent;                   // +0xb8
+    egf::EntityPtr m_ent;                   // +0xb8
     bool m_bC0;                         // +0xc0
     bool m_bC1;                         // +0xc1
     bool m_bC2;                         // +0xc2

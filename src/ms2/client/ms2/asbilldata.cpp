@@ -55,7 +55,7 @@ bool FUN_1406a5930();                                           // star points a
 CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct); // the option label (uimeratmarketcommon.cpp)
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId);   // the chosen option's text
 CStringW FUN_140ebd870(CMeratMarketPremiumProduct* pProduct);   // the option text of a UGC option
-CStringW FUN_140ec05f0(CDBPremiumProduct* pProduct);            // the star point text
+CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);            // the star point text
 
 // defined below
 void FUN_1409ad9c0(ASObj& obj, const CStringW& strPoint, __int64 nPoint);   // "strStarPoint" / "starPoint"
@@ -606,7 +606,7 @@ void ASBillData::FUN_1409ad420(ASArray& arr, int nCurrency, CDBPremiumProduct* p
     }
     CStringW strSalePrice = FUN_1418fec00(nCurrency, nSalePrice, false);
     __int64 nPoint = pSub->GetPoint();
-    CStringW strPoint = FUN_140ec05f0(pSub);
+    CStringW strPoint = FUN_140ec05f0(static_cast<CMeratMarketPremiumProduct*>(pSub));
     ASObj row(2);
     FUN_1409ad800(row, strLabel);
     FUN_1409ad7b0(row, strSale);

@@ -57,9 +57,7 @@ public:
 private:
     char m_b[0x10];
 };
-class Unk_AdItemInfo {
-public:
-    CStringA FUN_1406a0160();                   // icon path
+class Unk_AdItemInfo {                          // its icon path is CDBPremiumProduct::GetIconPath (0x1406a0160)
 private:
     char m_pad_00[0x18];
 };

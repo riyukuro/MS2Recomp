@@ -60,11 +60,7 @@ public:
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                    // add an item
 };
-class Unk_HioButton : public ASMovieClip
-{
-public:
-    int FUN_1422c2030();                                        // is enabled
-};
+class Unk_HioButton : public ASMovieClip {};                   // its "enabled" read is ASMovieClip::FUN_1422c2030
 
 // The selected row of each table (3 bytes), as the exe copies it out of the home setting.
 struct Unk_CMISFlags3

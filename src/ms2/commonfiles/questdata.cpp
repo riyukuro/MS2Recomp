@@ -818,9 +818,6 @@ inline CQuestData::QuestRewardItem::QuestRewardItem()
 inline CQuestData::CompleteReward::~CompleteReward()
 {
 }
-inline CQuestData::GroupPickData::~GroupPickData()
-{
-}
 inline CQuestData::Require::~Require()
 {
 }
@@ -1259,7 +1256,7 @@ int XmlQuery(class TiXmlElement*, char const*, CString&);    // C3: was FUN_1408
 int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 int FUN_14028e160(CString& str);
 int FUN_140718170(const CString& str);
-int FUN_1407181d0(const CString& str);
+unsigned int FUN_1407181d0(const CString& str);
 int FUN_1407514d0(const CString& str);
 int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140751ee0(Unk_140165cf0* pElem, const char* pszName, int* pOut);

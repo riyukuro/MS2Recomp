@@ -24,18 +24,18 @@ public:
     static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
+    int FUN_141bbbe40(int mapId, int arg2, int arg3);
 };
-void FUN_141bbbe40(void*, int, int, int);
 void* FUN_140aae430();
-void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
+class MS2 { public: void SetBackgroundColor(NiColorA kColor); };   // C3: member view (ms2.h), the app's clear colour
 extern int DAT_1439f4a78;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_140353fc0
 bool FUN_141902530(int, const CMsgBoxData&);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool (int, CMsgBoxData const &)>);  // C3: the definition's signature
-void* FUN_140aa6d30();
+class CStateService;
+template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
@@ -49,7 +49,8 @@ struct Unk_1407a7d20 {
     void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4;
 };
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
-void* FUN_1409478c0();
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -86,9 +87,9 @@ void CSceneStateLogin::OnEnter(int nPrevState)
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
-    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
+    ((class MS2*)FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     DAT_1439f4a78 = -1;
-    FUN_141bbbe40(WorldService::GetInstance(), 1, 1, 0);
+    WorldService::GetInstance()->FUN_141bbbe40(1, 1, 0);
 }
 
 // @0x14174c170
@@ -119,7 +120,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         int result = packet.ReadUInt8();
         if (result > 0)
         {
-            ((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e25a0(0x620000d);
+            ((class CStateService*)(void*)(TSingleton<CStateService>::GetInstance()))->FUN_1417e25a0(0x620000d);
         }
         else
         {
@@ -140,13 +141,13 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
 // @0x14174c4a0
 void CSceneStateLogin::vfunc_1(int)
 {
-    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
+        if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
         {
-            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
-            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(4, 1);
         }
     }
 }

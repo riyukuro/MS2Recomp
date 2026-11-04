@@ -234,10 +234,10 @@ BOOL CMS2VectorProperty::OnUpdateValue()
 }
 
 // @0x141856680
-Unk_GridPoint2 CMS2VectorProperty::GetVector2()
+efd::Point2 CMS2VectorProperty::GetVector2()
 {
     CString strText = FormatProperty();
-    Unk_GridPoint2 kResult;
+    efd::Point2 kResult;
     CAtlArray<CString> arrParts;
     if (FUN_14028c3e0(strText, arrParts, ",", 2))
     {

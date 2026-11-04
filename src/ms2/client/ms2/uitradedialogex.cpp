@@ -7,6 +7,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitradedialogex.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Point2.h>   // C3: the dialog offsets
 
 #include "uitradedialogex.h"
 #include "trademanagerex.h"
@@ -102,8 +103,7 @@ public:
 
 // The meso the player owns, the zero offset and the trade table.
 extern __int64 DAT_143ab2898;
-struct Unk_TdXY { float x, y; };                                // dialog offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_TdXY offLeft, Unk_TdXY offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);   // dialog offsets
 
 // ---- statics of the unit's header (the sort name list, skill, stun, a condition object) and the trade sounds ----
 
@@ -195,7 +195,7 @@ void UITradeDialogEx::vfunc_66()
         }
         else
         {
-            FUN_141275c30(this, pInv, reinterpret_cast<const Unk_TdXY&>(efd::Point2::ZERO), reinterpret_cast<const Unk_TdXY&>(efd::Point2::ZERO));
+            FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }

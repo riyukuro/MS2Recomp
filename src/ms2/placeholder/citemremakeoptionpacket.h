@@ -10,6 +10,8 @@
 //   ApplyOptionClient 0x20 : ApplyOptionBase + MS2Ptr<CItem> (+0x10)
 #pragma once
 
+#include <vector>
+
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/citem.h"
@@ -17,14 +19,19 @@
 
 class CInPacket;
 
-// A locked option (8 bytes: the ctor 0x140b98d30 zeroes +0 and +4; itemremakeoption.h Unk_RemakeLockOpt), appended to the
-// option list of the debug record.
-struct Unk_LockOpt {
-    Unk_LockOpt();                                                  // 0x140b98d30
-    int m_v;
-    int m_4;
+// A locked option of a remake request: the option index and its value, 8 bytes. The ctor 0x140b98d30 (an inline COMDAT,
+// first emitted by ?\tabcontentspetremakeoption.cpp) zeroes both ints. It is the element of the option list
+// (Unk_RemakeOptionList50 is this std::vector, 0x18 bytes; push_back(const&) 0x140b9b410 and its emplace_back glue
+// 0x140b99c40..0x140b9a170 are in tabcontentspetremakeoption.cpp).
+struct Unk_RemakeLockOpt
+{
+    Unk_RemakeLockOpt() : m_nIndex(0), m_nValue(0) {}   // 0x140b98d30
+    int m_nIndex;                                       // +0x0 the option index
+    int m_nValue;                                       // +0x4 its value
 };
-MS2_CHECK_SIZE(Unk_LockOpt, 8);
+MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
+typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
+MS2_CHECK_SIZE(Unk_RemakeLockOptList, 0x18);
 
 // The option list of a remake record: a vector of (kind, value) pairs, 0x18 bytes (unit_140267390.cpp defines the same
 // struct; ctor 0x14027d690, dtor 0x14027e3f0).
@@ -32,7 +39,6 @@ struct Unk_RemakeOptionList50 {
     Unk_RemakeOptionList50() throw();                               // 0x14027d690
     ~Unk_RemakeOptionList50();                                      // 0x14027e3f0
     Unk_RemakeOptionList50& operator=(const Unk_RemakeOptionList50& o); // 0x14027eb30
-    void FUN_140b9b410(const Unk_LockOpt& opt);                     // append
     void* m_first; void* m_last; void* m_end;
 };
 MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);

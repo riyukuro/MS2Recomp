@@ -55,13 +55,13 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 class Unk_CsLoader : public CFileSystem { };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
-int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
+int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_1406516b0();                                                    // current language id
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
-extern NiPoint3 DAT_143b01a60;                                          // the zero point
+#define DAT_143b01a60 (*(NiPoint3*)&efd::Point3::ZERO)          // C3: was extern NiPoint3 DAT_143b01a60
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -269,7 +269,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     for (Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pGroup != 0; pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
     {
         CString strType("");
-        FUN_140873ad0(pGroup, "name", strType);
+        XmlQuery((class TiXmlElement*)(pGroup), "name", strType);
         if (strType.CompareNoCase("data") == 0)
         {
             pData = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("list"));
@@ -279,7 +279,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             if (strType.CompareNoCase("display") == 0)
             {
                 CStringW strLocale;
-                FUN_140873b30(pGroup, "locale", strLocale);
+                XmlQuery((class TiXmlElement*)(pGroup), "locale", strLocale);
                 if (!((class CFeatureManager*)FUN_140166410())->IsLocaleInList(strLocale))
                     continue;
                 if (strLocale.IsEmpty())
@@ -324,7 +324,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             spJob.operator->()->m_nJobCode = nJobCode;
             spJob.operator->()->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(
                 6, JobTable::GetInstance()->GetSubJob1(nJobCode));
-            FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
+            XmlQuery((class TiXmlElement*)(pRow), "movie", spJob.operator->()->m_strMovie);
             int nDescKey = 0;
             XmlGetAttr((class TiXmlElement*)(pRow), "descKey", reinterpret_cast<int&>(nDescKey));
             if (nDescKey != 0)

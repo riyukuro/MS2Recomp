@@ -23,10 +23,9 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invokers on the tooltip's movie clip (instances of the AScript::Invoke templates).
-class Unk_CbScript { public: class Scaleform::GFx::Value FUN_140e0a8c0(char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, int); }; class Unk_TooltipMovie : public Unk_CbScript {
+class Unk_TooltipMovie {
 public:
 
     Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
@@ -140,7 +139,7 @@ void UIBirdHead::vfunc_52()
         vfunc_8(1);
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e78470("setData", m_88, m_98);
-        reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e0a8c0("setAdditional", m_90, 0);
+        reinterpret_cast<AScript*>(pClip.operator->())->Invoke("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
         pClip->Invoke("setFontColor", 0x3df0fb);
         m_7c = 0;
@@ -182,7 +181,7 @@ void UIBirdHead::FUN_1418cee70()
         if (pEntity.get())
         {
             vfunc_8(1);
-            FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
             ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y + m_a0);
         }
     }

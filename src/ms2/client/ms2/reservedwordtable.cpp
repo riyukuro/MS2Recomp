@@ -94,8 +94,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140763e10(int nMoney);                         // a money text
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime

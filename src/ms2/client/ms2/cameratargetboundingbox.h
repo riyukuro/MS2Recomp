@@ -17,9 +17,6 @@ namespace egf { class Entity; }
 struct Unk_CtbVec3
 {
     Unk_CtbVec3();                                      // 0x140a003a0
-    Unk_CtbVec3(float fX, float fY, float fZ);          // 0x140a00350
-    Unk_CtbVec3& FUN_140adbbc0(const Unk_CtbVec3& v);   // operator=
-    Unk_CtbVec3 FUN_140adbd00(float f) const;           // operator*(float)
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_CtbVec3, 12);
@@ -58,7 +55,6 @@ struct Unk_CtbMat34
     Unk_CtbMat34(bool bIdentity);                       // 0x140adb9e0
     ~Unk_CtbMat34();                                    // 0x140adbb80
     bool FUN_140b00260(Unk_CtbMat34* pOut) const;       // inverse
-    Unk_CtbVec3 FUN_140adbcb0(const Unk_CtbVec3& v) const;   // pose * point
     Unk_CtbMat33 m_rot;
     Unk_CtbVec3 m_pos;
 };

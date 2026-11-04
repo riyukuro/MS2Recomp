@@ -6,6 +6,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapeditdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor
 #include "uiminimapeditdialog.h"
 #include <time.h>
 #include <d3dx9.h>
@@ -89,7 +90,6 @@ CString FUN_1409a2360(const char* psz, int n);                      // text conv
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);          // wide -> narrow
 void FUN_140d73aa0(CStringW strText, int nType, void* pOwner, CStringW strTag);   // show a message box
 
-class Unk_MeApp { public: void FUN_141489ff0(NiColorA kColor); };   // the app's clear colour (the exe passes a copy; MS2::SetBackgroundColor's const& can't)
 void* FUN_140aae430();   // C3: was FUN_140aae430
 
 // camera manager members (exe functions of other objs)
@@ -179,7 +179,7 @@ int UIMinimapEditDialog::vfunc_65()
         return 0;
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return 0;
-    ((class Unk_MeApp*)FUN_140aae430())->FUN_141489ff0(NiColorA(0, 0, 0, 0));
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(NiColorA(0, 0, 0, 0));
     FUN_141a540f0(1);
     TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesOption(true, 0);
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFogRange(false);
@@ -195,7 +195,7 @@ int UIMinimapEditDialog::vfunc_65()
 void UIMinimapEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_MeApp*)FUN_140aae430())->FUN_141489ff0(efd::ColorA::BLACK);
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     FUN_141a540f0(0);
     TSingleton<ApplyEffect>::GetInstance()->ApplySoftParticleOption();
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFog();

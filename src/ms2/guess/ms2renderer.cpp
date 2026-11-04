@@ -50,11 +50,9 @@ public:
     virtual void Do_LockRenderer();
     virtual void Do_UnlockRenderer();
     virtual void Do_RenderMesh(NiMesh* pkMesh);
-    static void operator delete(void*, size_t);                          // efd::MemObject::operator delete 0x14208a8f0
 };
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
-extern char DAT_143a4b228;
 
 // MS2Renderer::ms_RTTI (parent NiDX9Renderer::ms_RTTI 0x143d6eb58). Its dynamic initializer is the exe's .text$di
 // 0x1400d3cd0, so it runs from this unit's .CRT$XCU slot.
@@ -171,8 +169,9 @@ bool MS2Renderer::SetLeftRightSwap(bool bSwap)
 // @0x140d9db20
 void MS2Renderer::SetMaxFogValue(float fFogVal) { ((Unk_AeFogState*)m_pkRenderState)->FUN_1409a9bf0(fFogVal); }
 
+struct NiDX9ShadowWriteShaderStatics : NiDX9ShadowWriteShader { using NiDX9ShadowWriteShader::ms_bRenderBackfaces; };   // C3: was extern char DAT_143a4b228 (protected static)
 // @0x140d9db50
-void FUN_140d9db50(bool b) { DAT_143a4b228 = b; }
+void FUN_140d9db50(bool b) { NiDX9ShadowWriteShaderStatics::ms_bRenderBackfaces = b; }
 
 // @0x140d9db60
 void MS2Renderer::SetRenderShadowCasterBackfaces(bool bRenderBackfaces) { FUN_140d9db50(bRenderBackfaces); }

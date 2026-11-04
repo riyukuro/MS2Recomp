@@ -100,11 +100,6 @@ public:
 };
 
 // The movie root: the data calls.
-class Unk_CbScript : public AScript
-{
-public:
-    Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nKind);
-};
 class Unk_RsScript : public AScript
 {
 public:
@@ -377,7 +372,7 @@ void UIRevivalDialog::FUN_141abae20()
         }
         if (m_30.get() != 0)
         {
-            static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setData", strMsg, pPc->IsRevivalBlocked());
+            static_cast<AScript*>(m_30.operator->())->Invoke("setData", strMsg, pPc->IsRevivalBlocked());
         }
     }
 }

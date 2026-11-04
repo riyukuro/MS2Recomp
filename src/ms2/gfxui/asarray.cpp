@@ -53,7 +53,7 @@ ASArray::~ASArray()
 // @0x1422bbc60
 unsigned int ASArray::PushInt(int n)
 {
-    return FUN_1409ba030("push", n).GetUInt();
+    return Invoke("push", n).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BBC60, ASArray, PushInt, 97, 0xB3F1AC1D);
 
@@ -123,7 +123,7 @@ MS2_REPLACE_METHOD(0x1422BC050, ASArray, PushValue, 71, 0xE7580F3C);
 // @0x1422bc0a0
 unsigned int ASArray::UnshiftInt(int n)
 {
-    return FUN_1409ba030("unshift", n).GetUInt();
+    return Invoke("unshift", n).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BC0A0, ASArray, UnshiftInt, 97, 0xDCBE0863);
 

@@ -18,7 +18,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/placeholder/nipoint3.h"
-#include "ms2/client/ms2/cubespawnobject.h"       // Unk_EntRef
+#include "ms2/client/ms2/cubespawnobject.h"       // egf::EntityPtr
 
 namespace egf { class Entity; }
 
@@ -177,12 +177,12 @@ public:
     virtual void vfunc_4();                                     // 0x140de6250
 
     bool HasModel(const unsigned& rModelId);                    // 0x140de5e70
-    void Init(int nId, Unk_EntRef ent);                         // 0x140de5ef0
+    void Init(int nId, egf::EntityPtr ent);                         // 0x140de5ef0
     bool Contains(const Vector3& pt);                   // 0x140de5f60 point inside the trigger box
     static MS2Ptr<TriggerObject> Create(egf::Entity* pEntity);  // 0x140de6260 (by FlatModel id)
 
     int m_nId;                                                  // +0x18
-    Unk_EntRef m_spEntity;                                      // +0x20
+    egf::EntityPtr m_spEntity;                                      // +0x20
 };
 MS2_CHECK_SIZE(TriggerObject, 0x28);
 

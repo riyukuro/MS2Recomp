@@ -12,7 +12,8 @@
 
 namespace CryptoPP { void* UnalignedAllocate(std::size_t size); }
 
-// MS2-FUNCTIONAL: reproduces the source object's six-word state and deep-copies its optional byte buffer; the exe uses memcpy_s and carries its invalid-parameter path.
+// MS2-FUNCTIONAL: reproduces the source object's six-word state and deep-copies its optional byte buffer with memcpy_s, as the exe
+// does; the exe has a 0x30 frame with an EH state slot but no handler (an inlined SecBlock copy ctor).
 // @0x142351e00
 std::uint64_t* FUN_142351e00(std::uint64_t* destination, const std::uint64_t* source)
 {
@@ -21,10 +22,8 @@ std::uint64_t* FUN_142351e00(std::uint64_t* destination, const std::uint64_t* so
     destination[2] = size;
     auto* bytes = size ? static_cast<std::uint8_t*>(CryptoPP::UnalignedAllocate(size)) : nullptr;
     destination[3] = reinterpret_cast<std::uintptr_t>(bytes);
-    if (size)
-    {
-        std::memcpy(bytes, reinterpret_cast<const void*>(source[3]), size);
-    }
+    memcpy_s(bytes, static_cast<std::size_t>(destination[2]), reinterpret_cast<const void*>(source[3]),
+             static_cast<std::size_t>(destination[2]));
     destination[4] = source[4];
     destination[5] = source[5];
     return destination;

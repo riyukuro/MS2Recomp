@@ -132,6 +132,7 @@ class Unk_SsHeldWeapon;
 class CKeyTable
 {
 public:
+    int FUN_140a700b0();                                  // the current page
     int SetKeyBindingAndSync(int nKey, int nType, __int64 nAction, int nSlot, int nPriority);
     int FUN_14142c940(__int64 nAction, int nPriority);      // the key bound to the action, 0 = none
     int FindKeyByQuickSlot(unsigned nIndex, int nPriority);      // the key of a quick slot action
@@ -145,12 +146,7 @@ public:
     void SaveKeySetting(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
     void LoadKeySetting(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
     void SendKeyTableMode7();                               // leave the skill set mode and save
-};
-class Unk_SsHud   // C3: the rest are CKeyTable's (cast at the call)
-{
-public:
-    int FUN_140a700b0();                                  // the current page
-    void FUN_14142e8c0(MS2Ptr<CSkillSet> spSet);   // save the skill set
+    void ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet);   // 0x14142e8c0, the set fills the quick slots
 };
 
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
@@ -216,7 +212,7 @@ private:
     void* m_p;
 };
 Unk_SsItemPtr FUN_14053f870(int nItemId);                 // the item data record of an item id
-int FUN_141769320(Unk_SsItemPtr kPtr);                    // the skill id of the item
+int FUN_141769320(MS2Ptr<CItemData> spData);              // the skill id of the item
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -503,7 +499,7 @@ int SkillSlot::vfunc_17()
 {
     if (FUN_141761990() != 0)
         return 0;
-    int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+    int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
     if (SendKeyTableMode5(m_nSkillId, m_nItemId, m_nItemUid, nPage, GetIndex()) == 0)
     {
         vfunc_12();
@@ -554,7 +550,7 @@ int SkillSlot::vfunc_18(void* p)
     SkillSlot* pSkillSlot = FUN_141761e60(static_cast<DragSlot*>(p));
     if (pSkillSlot != 0)
     {
-        int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+        int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
         int nSkillId = pSkillSlot->GetSkillId();
         __int64 nItemUid = pSkillSlot->GetItemUid();
         int nItemId = pSkillSlot->GetItemId();
@@ -586,7 +582,7 @@ int SkillSlot::vfunc_18(void* p)
         BookSlot* pBookSlot = FUN_141761e10(static_cast<DragSlot*>(p));
         if (pBookSlot != 0)
         {
-            int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+            int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
             int nSkillId = pBookSlot->FUN_140a366a0();
             if (FUN_14092f690(nSkillId, 0, 0, nPage, GetIndex()) != 0)
             {
@@ -607,7 +603,7 @@ int SkillSlot::vfunc_18(void* p)
                 if (spItem.get() != 0 && spItem->FUN_140527840()->FUN_14053e460())
                 {
                     int bUsable = 1;
-                    nSkillId = FUN_141769320(spItem->FUN_140527840());
+                    nSkillId = FUN_141769320(MS2Ptr<CItemData>(spItem->FUN_140527840()));
                     if (spItem->FUN_140527840()->IsRideItem())
                     {
                         if (spItem->HasCubeTextureMesh() != 0 && spItem->FUN_140525f60() == 0)
@@ -629,7 +625,7 @@ int SkillSlot::vfunc_18(void* p)
                                 bUsable = 0;
                         }
                     }
-                    int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+                    int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
                     if (bUsable != 0 && FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, GetIndex()) != 0)
                     {
                         SetSkillId(nSkillId);
@@ -665,7 +661,7 @@ int SkillSlot::vfunc_18(void* p)
                             break;
                         if (static_cast<MyPC*>(static_cast<PC*>(pPc))->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
                             break;
-                        int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+                        int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
                         int nSkillId = spItem->FUN_140527840()->FUN_14053dc20();
                         if (FUN_14092f690(nSkillId, 0, 0, nPage, GetIndex()) == 0)
                             break;
@@ -745,7 +741,7 @@ void SkillSlot::FUN_14175e310(int nSkillId)
 // @0x14175e350
 void SkillSlot::FUN_14175e350(int nSkillId)
 {
-    int nPage = ((class Unk_SsHud*)FUN_1409331f0())->FUN_140a700b0();
+    int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
     FUN_14092f690(nSkillId, 0, 0, nPage, GetIndex());
     SetSkillId(nSkillId);
     vfunc_10();
@@ -2705,7 +2701,7 @@ void CSkillSystem::FUN_1417683d0()
         ((CKeyTable*)FUN_1409331f0())->SendKeyTableMode7();
     else
     {
-        ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142e8c0(m_spSkillSet);
+        ((CKeyTable*)FUN_1409331f0())->ApplySkillSetToQuickSlots(m_spSkillSet);
         if (m_spSkillSet->m_nSlotLock == 0)
         {
             CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nVersion);
@@ -2935,15 +2931,15 @@ unsigned FUN_1417692f0(unsigned __int64 nKey)
 }
 
 // @0x141769320
-int FUN_141769320(Unk_SsItemPtr kPtr)
+int FUN_141769320(MS2Ptr<CItemData> spData)
 {
-    if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->IsRideItem())
+    if (spData->IsRideItem())
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemA;
-    else if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->IsPetItem())
+    else if (spData->IsPetItem())
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemC;
-    else if ((reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->GetType() == 5)
+    else if (spData->GetType() == 5)
         return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemB;
-    return (reinterpret_cast<const MS2Ptr<CItemData>&>(kPtr).operator->())->FUN_14053dc20();
+    return spData->FUN_14053dc20();
 }
 
 // @0x141769410
@@ -2954,7 +2950,7 @@ int CSkillSystem::FUN_141769410(SkillData* pData, int nSkillId)
     return pData->m_nJump;
 }
 
-extern Vector3 DAT_143b01a60;                     // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 __int64 FUN_14028d0e0();                                  // the next cast id
 
 // @0x141763fa0

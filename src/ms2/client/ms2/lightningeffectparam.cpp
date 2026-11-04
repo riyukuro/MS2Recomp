@@ -63,15 +63,14 @@ Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
 class CMainSystem;
-// The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
-struct Unk_LightningNiPoint3 : public Vector3 {};
 // NiPoint3(const efd::Point3&) (0x14027dcf0) into a temporary, then NiPoint3::operator=(NiPoint3&&) (0x14097faa0).
 struct Unk_LightningPt3 { float x, y, z; Unk_LightningPt3& operator=(const Unk_LightningPt3&); };
 // The two conversion temporaries of the vertex loop sit back to back (0x190 / 0x19c).
 struct Unk_LightningPtPair { Unk_LightningPt3 m_left, m_right; };
 void FUN_14027dcf0(Unk_LightningPt3* p, const Vector3* pPoint);
 void FUN_14097faa0(NiPoint3* p, Unk_LightningPt3* pSrc);
-class Unk_LightningCamera { public: Unk_LightningNiPoint3 FUN_140af0250(); };
+// The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
+class CameraMgr { public: NiPoint3 FUN_140af0250(); };
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 
 // Random float (about -1..1), tick counter, camera direction.
@@ -441,7 +440,7 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
         kCur.x = kCur.x + kStep.x;
         kCur.y = kCur.y + kStep.y;
         Vector3 kRel = kCur.FUN_140965c40(kStart);
-        fAlong = kDir.FUN_140a00f20(kRel);
+        fAlong = reinterpret_cast<const efd::Point3&>(kDir).Dot(reinterpret_cast<const efd::Point3&>(kRel));
         kCur.z = kStart.z + kDir.z * fAlong;
         m_arrPath.Add(kCur);
         if (m_arrPath.GetCount() >= 100)
@@ -454,7 +453,7 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
     Vector3 kFlat = kDelta;
     kFlat.z = 0.0f;
     kFlat.FUN_140968990();
-    Vector3 kCamera = reinterpret_cast<Unk_LightningCamera*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
+    Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0250()));
     Vector3 kSide = kFlat.FUN_140a00e10(kCamera);
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)
     {

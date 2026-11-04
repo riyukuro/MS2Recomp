@@ -37,9 +37,7 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
-struct Unk_Point2;
-float FUN_1412762d0(const Unk_Point2* pt);
+float FUN_1412762d0(const NiPoint3& pt);
 class Unk_PopupActor : public PC
 {
 };
@@ -116,9 +114,9 @@ void UIPopupProfileImage::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+        *pPos *= ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         pPos->y = pPos->y + vfunc_9();
-        pPos->y = pPos->y + FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&static_cast<const NiPoint3&>(vfunc_10())));
+        pPos->y = pPos->y + FUN_1412762d0(static_cast<const NiPoint3&>(vfunc_10()));
         ((Unk_PopupEntity*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
     }
 }

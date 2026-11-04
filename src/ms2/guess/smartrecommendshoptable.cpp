@@ -26,6 +26,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/citemoptiontable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -44,7 +45,6 @@ class Unk_RsLoader : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-class Unk_RsItemTable { public: void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo); };
 Unk_140166430* FUN_140166430();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
@@ -168,8 +168,8 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
             m_spData->m_items.SetAt(spItem->m_nCode, spItem);
             CString strCode;
             strCode.Format("code=%u", spItem->m_nCode);
-            reinterpret_cast<Unk_RsItemTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
-            reinterpret_cast<Unk_RsItemTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
         }
         return 1;
     }

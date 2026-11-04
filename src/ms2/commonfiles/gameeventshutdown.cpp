@@ -28,16 +28,13 @@
 #include "gameeventshutdown.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 #define MS2_GAMEEVENTVALUE_TYPES   // GetShutdownValue
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
-// The factory registrar: its ctor (0x140316aa0, commonfiles\dungeonmissiondata.cpp) registers the factory under the
+// The factory registrar (ClassObjectRegistrar): its ctor (0x140316aa0, commonfiles\dungeonmissiondata.cpp) registers the factory under the
 // name; the by-value CString is destroyed by the callee.
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 
 // The two registrations of this file whose factory lives in a neighbouring unit.
 GameEvent* FUN_14041d460();   // ?\gameeventreturnuser.cpp: the base class takes an id, so it has no factory of its own
@@ -70,20 +67,20 @@ int Parse_140218e60(const CStringW& str);
 // The 14 registrations, in .text$di order (0x1400b8890..0x1400b8ca0); the two NULL factories are the classes whose
 // ctor takes the object kind (0x14041d460 is in gameeventreturnuser.cpp).
 #ifndef MS2_HOOK_DLL
-static Unk_GEFactoryRegistry s_regShutdown(L"GameEventShutdown", FUN_14041d460);                                       // 0x143aaeec5
-static Unk_GEFactoryRegistry s_regDesignersMarket(L"GameEventShutdownDesignersMarket", FUN_14041dab0);                 // 0x143aaeec9
-static Unk_GEFactoryRegistry s_regDungeonMatch(L"GameEventShutdownDungeonMatch", FUN_14041d900);                       // 0x143aaeec8
-static Unk_GEFactoryRegistry s_regEnchantScroll(L"GameEventShutdownEnchantScroll", FUN_14041df60);                     // 0x143aaeece
-static Unk_GEFactoryRegistry s_regItemSocketTarget(L"GameEventShutdownItemSocketTarget", FUN_14041e050);               // 0x143aaeecf
-static Unk_GEFactoryRegistry s_regItemSocketTargetGemStone(L"GameEventShutdownItemSocketTargetGemStone", FUN_14041e140); // 0x143aaeed0
-static Unk_GEFactoryRegistry s_regMastery(L"GameEventShutdownMastery", FUN_14041dd80);                                 // 0x143aaeecc
-static Unk_GEFactoryRegistry s_regMasteryReward(L"GameEventShutdownMasteryReward", FUN_14041de70);                     // 0x143aaeecd
-static Unk_GEFactoryRegistry s_regMusicScoreMarket(L"GameEventShutdownMusicScoreMarket", FUN_14041dba0);               // 0x143aaeeca
-static Unk_GEFactoryRegistry s_regNoParam(L"GameEventShutdownNoParam", FUN_14041d6a0);                                 // 0x143aaeec6
-static Unk_GEFactoryRegistry s_regNpcTalk(L"GameEventShutdownNpcTalk", FUN_14041dc90);                                 // 0x143aaeecb
-static Unk_GEFactoryRegistry s_regShop(L"GameEventShutdownShop", FUN_14041d810);                                       // 0x143aaeec7
-static Unk_GEFactoryRegistry s_regUGCDownload(L"GameEventShutdownUGCDownload", FUN_14041e230);                         // 0x143aaeed1
-static Unk_GEFactoryRegistry s_regStringBoard(L"GameEventStringBoard", FUN_14041e930);                                 // 0x143aaeed2
+static ClassObjectRegistrar s_regShutdown(L"GameEventShutdown", (ClassObjectCreateFn)FUN_14041d460);                                       // 0x143aaeec5
+static ClassObjectRegistrar s_regDesignersMarket(L"GameEventShutdownDesignersMarket", (ClassObjectCreateFn)FUN_14041dab0);                 // 0x143aaeec9
+static ClassObjectRegistrar s_regDungeonMatch(L"GameEventShutdownDungeonMatch", (ClassObjectCreateFn)FUN_14041d900);                       // 0x143aaeec8
+static ClassObjectRegistrar s_regEnchantScroll(L"GameEventShutdownEnchantScroll", (ClassObjectCreateFn)FUN_14041df60);                     // 0x143aaeece
+static ClassObjectRegistrar s_regItemSocketTarget(L"GameEventShutdownItemSocketTarget", (ClassObjectCreateFn)FUN_14041e050);               // 0x143aaeecf
+static ClassObjectRegistrar s_regItemSocketTargetGemStone(L"GameEventShutdownItemSocketTargetGemStone", (ClassObjectCreateFn)FUN_14041e140); // 0x143aaeed0
+static ClassObjectRegistrar s_regMastery(L"GameEventShutdownMastery", (ClassObjectCreateFn)FUN_14041dd80);                                 // 0x143aaeecc
+static ClassObjectRegistrar s_regMasteryReward(L"GameEventShutdownMasteryReward", (ClassObjectCreateFn)FUN_14041de70);                     // 0x143aaeecd
+static ClassObjectRegistrar s_regMusicScoreMarket(L"GameEventShutdownMusicScoreMarket", (ClassObjectCreateFn)FUN_14041dba0);               // 0x143aaeeca
+static ClassObjectRegistrar s_regNoParam(L"GameEventShutdownNoParam", (ClassObjectCreateFn)FUN_14041d6a0);                                 // 0x143aaeec6
+static ClassObjectRegistrar s_regNpcTalk(L"GameEventShutdownNpcTalk", (ClassObjectCreateFn)FUN_14041dc90);                                 // 0x143aaeecb
+static ClassObjectRegistrar s_regShop(L"GameEventShutdownShop", (ClassObjectCreateFn)FUN_14041d810);                                       // 0x143aaeec7
+static ClassObjectRegistrar s_regUGCDownload(L"GameEventShutdownUGCDownload", (ClassObjectCreateFn)FUN_14041e230);                         // 0x143aaeed1
+static ClassObjectRegistrar s_regStringBoard(L"GameEventStringBoard", (ClassObjectCreateFn)FUN_14041e930);                                 // 0x143aaeed2
 #endif
 
 // ---- GameEventShutdown ----------------------------------------------------------------------------------------------

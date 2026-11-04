@@ -60,7 +60,7 @@ class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
 // Movie helpers: set a member of the movie root to a visibility / enable flag / text.
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, int bEnable);
+void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 

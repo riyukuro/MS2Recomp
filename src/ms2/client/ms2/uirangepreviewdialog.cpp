@@ -32,12 +32,9 @@ extern char DAT_143ae95e2;              // collision, pc
 extern char DAT_143ae95e3;              // collision, npc
 
 // The npc map iterator and the npc size setters.
-struct Unk_RpExtent { float cx, cy; };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
 void* FUN_140a7b9f0(void* pMap, void* pos);
-PCBase* FUN_140a7b650(void* pEntry);
-Unk_RpExtent* FUN_140a0a600(Unk_RpExtent* pOut, float cx, float cy);
 class Unk_RpBody;
 class GameObjectController   // C3: member view for the former free stand-ins
 {
@@ -122,15 +119,14 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
     void* pMap = WorldService::GetInstance()->FUN_141bd36d0();
     for (void* pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; FUN_141347090(pMap, &pos))
     {
-        PCBase* pNpc = FUN_140a7b650(FUN_1413470e0(pMap, pos));
+        PCBase* pNpc = static_cast<efd::SmartPointer<CNpc>*>(FUN_1413470e0(pMap, pos))->operator CNpc*();
         if (pNpc != 0)
         {
             MS2Ptr<CNpcData> kData(reinterpret_cast<CNpc*>(pNpc)->GetNpcData());
             if (kData == 0)
                 continue;
-            Unk_RpExtent kSize;
-            pNpc->FUN_141670d50(*reinterpret_cast<efd::Point2*>(FUN_140a0a600(&kSize, *(float*)((char*)kData.operator->() + 0x2d8),
-                                               *(float*)((char*)kData.operator->() + 0x2dc))));
+            pNpc->FUN_141670d50(efd::Point2(*(float*)((char*)kData.operator->() + 0x2d8),
+                                            *(float*)((char*)kData.operator->() + 0x2dc)));
             ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->FUN_141240520(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += *(float*)((char*)kData.operator->() + 0x2dc);

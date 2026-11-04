@@ -8,6 +8,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/commonfiles/serverpacketdef.h"
+#include "ms2/commonfiles/constraints.h"
 #include <errno.h>
 #include <string.h>
 #include "ms2/ms2recover.h"
@@ -62,8 +63,6 @@ MS2_REPLACE(0x1401F8DF0, FUN_1401f8df0, 271, 0xEF910EA6);
 
 // ---- login packet payloads --------------------------------------------------------------------------------------
 // The structs are named after their layout only; the owning request/response classes are not recovered yet.
-struct Unk_NarrowLimit { int maximum; explicit Unk_NarrowLimit(int); };      // 0x1402c38f0 (owned by unit_1401f9eb0)
-MS2_CHECK_SIZE(Unk_NarrowLimit, 4);
 
 // The payload reader of unit_1401f9eb0, which owns the template ReadNarrowWrapper<Unk_NarrowLimit> (0x140202cb0).
 struct Unk_PayloadReader : Unk_SPDReader {

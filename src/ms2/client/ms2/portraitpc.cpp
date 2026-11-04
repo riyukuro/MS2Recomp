@@ -85,17 +85,9 @@ public:
 };
 Unk_PtItemEvents* FUN_140a6a840();
 
-// efd::Point3 / NiPoint3 helpers called out of line.
-struct Unk_PtVec3 : public Vector3
-{
-    Unk_PtVec3(const Vector3& pt);                  // 0x14027dcf0 (NiPoint3(const efd::Point3&))
-    Unk_PtVec3(float x, float y, float z);                  // 0x14097f250
-};
-
 // ---- out-of-unit callees ----
 
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
-#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 class CEquipment   // C3: member view for the former free stand-ins
 {
@@ -105,7 +97,7 @@ public:
     void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;   // 0x1411e1b80 the worn items
 };
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
-Unk_PtVec3 FUN_14169a860();
+NiPoint3 FUN_14169a860();
 
 // ---- class info and header statics (the exe runs them in this order) ----
 
@@ -133,7 +125,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
     pPortrait->FUN_141656a50(pSource->FUN_141656a80());
     pPortrait->FUN_14123bb80(pSource->FUN_14123bbd0());
     static_cast<PC*>(pPortrait)->vfunc_19(*reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pSource->vfunc_18())));
-    efd::Point3 kDir = *reinterpret_cast<const efd::Point3*>(&static_cast<const Unk_PtVec3&>(FUN_14169a860()));
+    efd::Point3 kDir = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(FUN_14169a860()));
     static_cast<PC*>(pPortrait)->vfunc_21(kDir);
     pPortrait->vfunc_131((short)pSource->vfunc_78());
     pPortrait->vfunc_76(CStringW(L""));
@@ -317,7 +309,7 @@ void PortraitPC::vfunc_31(void*)
 }
 
 // @0x14169a860
-Unk_PtVec3 FUN_14169a860()
+NiPoint3 FUN_14169a860()
 {
     PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC != 0)
@@ -327,9 +319,9 @@ Unk_PtVec3 FUN_14169a860()
         efd::Point3 kSide;
         pMyPC->vfunc_67(&kDir, &kSide);
         float fZ = pMyPC->FUN_14166dad0(kLook, kSide);
-        return Unk_PtVec3(0.0f, 0.0f, fZ);
+        return NiPoint3(0.0f, 0.0f, fZ);
     }
-    return Unk_PtVec3(DAT_143b01a60);
+    return NiPoint3(efd::Point3::ZERO);
 }
 
 // The CRT's memmove_s (static inline in corecrt_memcpy_s.h) sits in this unit's range; referencing it instantiates it.

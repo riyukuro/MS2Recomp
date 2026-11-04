@@ -5,6 +5,7 @@
 // MS2-PIN: ?SetupClassInfo@CSceneStateRelocateWorld@@SAXPEAVClassInfo@efd@@_K@Z 0x141751190
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestaterelocateworld.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor
 #include "scenestaterelocateworld.h"
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
@@ -14,7 +15,6 @@
 
 CNetworkService* FUN_140714f90();
 void* FUN_140aae430();
-void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 extern __int64 DAT_143ab2868;
@@ -39,7 +39,7 @@ CSceneStateRelocateWorld::~CSceneStateRelocateWorld()
 // @0x141750fa0
 void CSceneStateRelocateWorld::OnEnter(int nPrevState)
 {
-    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     m_nState = 0;
     CSceneStateBase::OnEnter(nPrevState);
 }

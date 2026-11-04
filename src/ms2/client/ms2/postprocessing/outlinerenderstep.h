@@ -4,14 +4,9 @@
 #include "ms2/placeholder/postprocesseffect.h"
 #include <NiRenderer.h>
 #include <NiRenderTargetGroup.h>
+#include <NiRenderedTexture.h>
 
-class Unk_PPFmt {
-public:
-    Unk_PPFmt();    // 0x140984420: {6, 3, 2}
-    unsigned int v, b, c;
-};
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
-void* FUN_141d61a80(unsigned int w, unsigned int h, NiRenderer* p, Unk_PPFmt* fmt, unsigned short flags);
 void FUN_141475e60(void* p);
 void FUN_141626ac0(void* p);
 

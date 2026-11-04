@@ -123,7 +123,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // Point3 operator*=
 float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
 float FUN_14029d220(float f);                                       // fabs
 
@@ -296,7 +295,7 @@ void UIHouseMarkEntity::FUN_14198b340()
         if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
         {
             FUN_14198c0d0(true);
-            FUN_140ad0c10(&ptScreen, ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250()));
+            ptScreen *= ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250());
             m_clip->SetPositionFloat(ptScreen.x, ptScreen.y);
         }
         else

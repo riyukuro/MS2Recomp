@@ -131,7 +131,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 // Opaque scene-graph and math helpers of the placement search (free-function form).
 NiNodePtr FUN_14097eba0(NiNode* pNode);
 void FUN_140a0b2a0(NiAVObject* pObject);                                   // 0x140a0b2a0 detach from the parent
-void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
+void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 bool FUN_1409a7f70(const NiNodePtr& sp, int nNull);                        // 0x1409a7f70 smart pointer == null
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
 int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
@@ -160,12 +160,6 @@ NiNode* FUN_14098d0f0(const NiNodePtr& spNode);
 NiNode* FUN_14098d0f0(const NiAVObjectPtr& spNode);                            // 0x14098d0f0 the pointer in the smart pointer
 NiTransform* FUN_140a33de0(const NiTransform& kA, NiTransform* pOut, const NiTransform& kB);   // 0x140a33de0 compose
 void FUN_140a35bd0(efd::Matrix3* pDest, const NiTransform* pSrc);          // 0x140a35bd0 store the rotation part
-void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                     // 0x140ad0c10 scale the angles (radians -> degrees)
-struct Unk_SceAdd
-{
-    efd::Point3 FUN_14097fd50(const NiPoint3& kB) const;                    // 0x14097fd50 kA + kB
-    efd::Point3 FUN_140965c40(const NiPoint3& kB) const;                    // 0x140965c40 kA - kB
-};
 void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const char* const* ppszArg0,
     const CStringA& strArg1);                                              // 0x140b850d0 log with two {n} argumentsCStringA FUN_140a52ef0();                                                  // 0x140a52ef0 empty effect-param block ctor
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x140353fc0 log
@@ -610,8 +604,8 @@ void StateCoupleEmotion::vfunc_24()
             break;
         NiTransform kXform = static_cast<NiAVObject*>(FUN_14098d0f0(spParent))->GetWorldTransform()
             * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetLocalTransform();
-        FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&kXform), (struct Vector3*)(&kRot));
-        kRot = reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posEnd)->FUN_14097fd50(kRot);
+        FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kXform), reinterpret_cast<efd::Point3&>(kRot));
+        kRot = m_spCoupleData->m_posEnd + kRot;
         pOwnerPC->SetRotationAndTargetYaw(kRot);
     } while (0);
     do
@@ -891,23 +885,23 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         kOwnerXf.m_Rotate = matRot;
         kParentXf = kOwnerXf * kParentXf;
         kPeerXf = kOwnerXf * kPeerXf;
-        NiPoint3 ptPeer(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kPeerXf.m_Translate));
-        NiPoint3 ptOwner(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kOwnerXf.m_Translate));
+        NiPoint3 ptPeer(m_spCoupleData->m_posStart + kPeerXf.m_Translate);
+        NiPoint3 ptOwner(m_spCoupleData->m_posStart + kOwnerXf.m_Translate);
         if (!FUN_140b84dc0(ptPeer))
             continue;
         if (!FUN_140b84dc0(ptOwner))
             continue;
         efd::Point3 kHit;
-        NiPoint3 kDir(reinterpret_cast<const Unk_SceAdd*>(&ptPeer)->FUN_140965c40(ptOwner));
+        NiPoint3 kDir(ptPeer - ptOwner);
         float fLen = ((struct Vector3*)&static_cast<class NiPoint3 const&>(kDir))->FUN_140968990();
         if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptOwner, kHit, kDir, fLen, 0) != 0)
             continue;
         NiPoint3 kAngles;
         if (kParentXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
-            FUN_140ad0c10(&kAngles, -57.2957763671875f);   // 0xc2652ee0
+            kAngles *= -57.2957763671875f;   // 0xc2652ee0
         *pfYaw = kAngles.z;
         posA = ptPeer;
-        posB = reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kParentXf.m_Translate);
+        posB = m_spCoupleData->m_posStart + kParentXf.m_Translate;
         return true;
     }
     return false;
@@ -1009,12 +1003,12 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
     NiTransform kParentXf = static_cast<NiAVObject*>(FUN_14098d0f0(spParentNode))->GetWorldTransform();
     FUN_140b86230(m_spCoupleData->m_posEnd, kParentXf.m_Rotate);
     NiTransform kOwnerXf = kParentXf * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetLocalTransform();
-    NiPoint3 kPos(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kOwnerXf.m_Translate));
+    NiPoint3 kPos(m_spCoupleData->m_posStart + kOwnerXf.m_Translate);
     pOwnerPC->vfunc_19(kPos);
     NiPoint3 kAngles;
     if (kOwnerXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
     {
-        FUN_140ad0c10(&kAngles, -57.2957763671875f);   // 0xc2652ee0
+        kAngles *= -57.2957763671875f;   // 0xc2652ee0
         pOwnerPC->vfunc_21(kAngles);
     }
     NiTransform kCenterXf = kParentXf * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spCenterNode))->GetLocalTransform();

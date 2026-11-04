@@ -42,6 +42,7 @@
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/client/ms2/physxhelper.h"
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -231,11 +232,6 @@ class Unk_AvModeSvc   // C3: member view (real class not in this TU)
 public:
     int FUN_1409f7ea0();
 };
-class Unk_FsOptimizer   // C3: member view (real class not in this TU)
-{
-public:
-    int FUN_140ddcc90();
-};
 class Unk_RideeGameMode
 {
 public:
@@ -260,7 +256,6 @@ int FUN_141472bc0();
 class Unk_RideeCamera : public CameraMgr
 {
 public:
-    NiPoint3 FUN_140af8290();
 };
 
 class Unk_RideeOption
@@ -351,7 +346,7 @@ Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 ecr::SceneGraphService* FUN_1410a68f0(Unk_EntityAppFramework* pFramework);
 
 extern int DAT_143ae2b30;                                           // no rendering (server/tool build)
-extern const NiPoint3 g_kCubeGuideZero;                             // 0x143b01a60, the zero point as a NiPoint3 (trivial 12-byte copy)
+#define g_kCubeGuideZero (*(const NiPoint3*)&efd::Point3::ZERO) // C3: 0x143b01a60, was extern const NiPoint3 g_kCubeGuideZero
 
 int FUN_1408a13d0(NiPoint3 kPos);
 void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);  // euler angles (degrees) to a rotation
@@ -500,14 +495,14 @@ int Ridee::vfunc_10()
         {
             m_pRider->vfunc_59(0x21, 0, 0, 0);
             NiPoint3 kPos = m_pRider->vfunc_18();
-            Unk_EntRef spEntity(((class GameObjectController*)(class Unk_RideeBody*)(m_pRider->GetPhysicsBody()))->FUN_141240f20()->GetEntity());
+            egf::EntityPtr spEntity((egf::Entity*)((class GameObjectController*)(class Unk_RideeBody*)(m_pRider->GetPhysicsBody()))->FUN_141240f20()->GetEntity());
             if (spEntity != 0)
             {
-                MS2Ptr<Unk_RideeFieldObj> spObj = ((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4f10(spEntity.FUN_1408a9090());
+                MS2Ptr<Unk_RideeFieldObj> spObj = ((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4f10((Unk_Entity*)spEntity.data());
                 if (spObj.get())
                 {
                     kPos.z = ((CBreakableObject*)spObj.operator->())->GetPtPos().z + ((CBreakableObject*)spObj.operator->())->GetPtSize().z + 10.0f;
-                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
+                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity((Unk_Entity*)spEntity.data());
                     egf::EntityID kId(s_kNoEntity);
                     NiPoint3 kAt = g_kCubeGuideZero;
                     m_pRider->FUN_141678240(kId, kAt);
@@ -515,7 +510,7 @@ int Ridee::vfunc_10()
                 }
                 else
                 {
-                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity(spEntity.FUN_1408a9090());
+                    ((class GameObjectController*)(class Unk_RideeBody*)(GetPhysicsBody()))->FUN_141240f20()->SetEntity((Unk_Entity*)spEntity.data());
                 }
             }
             kPos.z += 25.0f;
@@ -558,7 +553,7 @@ void Ridee::vfunc_12()
     {
         m_pRider->vfunc_59(0x21, 0, 0, 0);
         vfunc_19(static_cast<const efd::Point3&>(m_pRider->vfunc_18()));
-        if (((Unk_FsOptimizer*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+        if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         {
             bool bValue = false;
             FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bValue);
@@ -593,7 +588,7 @@ void Ridee::vfunc_24(int n)
         if (m_unk_b0 != 0 && m_unk_40 == m_pRider->vfunc_25())
             return;
         m_unk_40 = m_pRider->vfunc_25();
-        if (((Unk_FsOptimizer*)(FUN_1409f7c90()))->FUN_140ddcc90() == 0)
+        if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
             efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
             if (m_unk_40 != 0)
@@ -858,7 +853,7 @@ MS2_REPLACE_METHOD(0x1417060d0, Ridee, FUN_1417060d0, 165, 0x6A0276AB);
 // @0x141706180
 void Ridee::vfunc_67(efd::Point3* pDir, efd::Point3* pSide)
 {
-    m_posBF4 = reinterpret_cast<Unk_RideeCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290();
+    m_posBF4 = reinterpret_cast<NiPoint3&&>(static_cast<Vector3&&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290()));   // C3: was Unk_RideeCamera::FUN_140af8290 (NiPoint3 view)
     PCBase::vfunc_67(pDir, pSide);
 }
 MS2_REPLACE_METHOD(0x141706180, Ridee, vfunc_67, 82, 0xB163C752);

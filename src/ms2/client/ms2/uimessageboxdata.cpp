@@ -36,6 +36,7 @@
 #include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get was Unk_MsgOption::FUN_1402056b0
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 #include "ms2/commonfiles/clubcommon.h"   // C3: CClubDataTable::FUN_140211990
+#include <efd/Point2.h>        // C3: efd::Point2::ZERO (DAT_143b02320)
 
 // 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
 // this unit's range, so the instance is emitted here.
@@ -46,7 +47,7 @@ template MS2Ptr<CItem>& MS2Ptr<CItem>::operator=(int);
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 extern Unk_MessageBoxStatic g_messageBoxState;                // 0x143af3df8
-extern Unk_MsgPoint2 DAT_143b02320;                                    // the zero point both ctor fields start from
+#define DAT_143b02320 (*(Unk_MsgPoint2*)&efd::Point2::ZERO) // C3: was extern Unk_MsgPoint2 DAT_143b02320; the zero point both ctor fields start from
 
 static CString s_strDialogOpen = "dialog_open";
 static CString s_strSystemNoticeConfirm = "system_notice_confirm";
@@ -71,10 +72,9 @@ public:
 };
 
 // The AS object `obj` keys. Free functions of other units.
-unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 
 CString FUN_14016a5c0(const char* psz, int n);
-CStringW FUN_14183e930(const CStringW& str, int nColor);
+CStringW FUN_14183e930(const CStringW& str, unsigned nColor);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
@@ -349,7 +349,7 @@ CStringW CMsgBoxData::FUN_141a04da0()
 // @0x141a04f80
 void FUN_141a04f80(MS2Ptr<Unk_MsgDisplay> spBox)
 {
-    if (FUN_1409b0350(&spBox->FUN_1422bb870()) == 0)
+    if (spBox->FUN_1422bb870().IsNull() == 0)
     {
         Unk_MsgPoint2& stage = g_messageBoxState.m_stage;
         stage.x = (float)spBox->FUN_1422c1500();

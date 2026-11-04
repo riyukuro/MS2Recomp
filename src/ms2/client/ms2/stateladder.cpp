@@ -64,7 +64,7 @@ public:
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
-extern efd::Point3 DAT_143a08cf8;                                                          // the up axis
+#define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                                                          // the up axis
 
 // The owner seen through its vftable: the exe returns slot 18's point straight into an efd::Point3 local, and slot 22
 // takes the point by value (gameobject.h declares it by reference; the caller copies it into an argument temp).

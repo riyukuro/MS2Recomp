@@ -60,7 +60,6 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 void FUN_14141f970(const CString&);
 class Unk_RewardClip : public ASMovieClip {
 public:
- Scaleform::GFx::Value FUN_140e262c0(const char*,const char*);
  MS2Ptr<ASMovieClip> FUN_140bc7450(const CString&);
 };
 class Unk_Finder : public ASDisplayObjectContainer { public: MS2Ptr<ASTextField> FUN_140d01e20(const CString&); };   // C3: was Unk_RewardClip::FUN_140d01e20
@@ -83,17 +82,10 @@ public: ASTooltip(int,int); virtual ~ASTooltip(); int ApplyTextTooltip(const CSt
 private: void* m_40; void* m_48; void* m_50; void* m_58;
 };
 class Unk_RewardThing : public PCGemEquip { };
-struct Unk_RewardVector
-{
-    Unk_RewardVector();
-    float x, y, z;
-    Unk_RewardVector& operator+=(const Unk_RewardVector&);
-};
-MS2_CHECK_SIZE(Unk_RewardVector, 12);
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();
-    Unk_RewardVector eye, target;
+    efd::Point3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
@@ -122,7 +114,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_RewardVector vfunc_18();
+    virtual efd::Point3 vfunc_18();
 };
 class Unk_RewardCamera
 {
@@ -222,6 +214,8 @@ private:
     void* m_e8;
 };
 MS2_CHECK_SIZE(UIAvatarPC, 0xf0);
+// `m_avatar = 0` is this unit's inline COMDAT.
+template<> inline MS2Ptr<UIAvatarPC>& MS2Ptr<UIAvatarPC>::operator=(int) { Release(); return *this; }
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_140768010(int,int);
 class Unk_RewardPActor;
@@ -283,13 +277,13 @@ MS2_REPLACE_METHOD(0x140E26860, Unk_RewardOtherDialog, FUN_140e26860, 18, 0x2CB8
 bool Unk_RewardMissionPtr::operator==(Unk_RewardMission* p) const { return m_p==p; }
 MS2_REPLACE_METHOD(0x140E26660, Unk_RewardMissionPtr, operator==, 55, 0x3A11F2EB);
 // @0x140e262c0
-Scaleform::GFx::Value Unk_RewardClip::FUN_140e262c0(const char* method,const char* arg) {
+Scaleform::GFx::Value AScript::FUN_140e262c0(const char* method,const char* arg) {
  ASArgList args;
  args.FUN_1409b2800(1);
  FUN_1422bce70(args.FUN_1409b1f70(0),arg);
  return FUN_1422bb8f0(method,args);
 }
-MS2_REPLACE_METHOD(0x140E262C0, Unk_RewardClip, FUN_140e262c0, 148, 0x7E9B9EE2);
+MS2_REPLACE_METHOD(0x140E262C0, AScript, FUN_140e262c0, 148, 0x7E9B9EE2);
 // @0x140e20ae0
 UIDungeonRewardDialog::UIDungeonRewardDialog() {
  ResetState(); m_268="DungeonReward_gainItems"; m_2c=0x1b;
@@ -305,7 +299,7 @@ CString UIDungeonRewardDialog::GetTypeName() { return "DungeonRewardDialog"; }
 MS2_REPLACE_METHOD(0x140E21000, UIDungeonRewardDialog, GetTypeName, 61, 0x76DD8AEE);
 
 // @0x140e21050
-void UIDungeonRewardDialog::vfunc_26() { UIDialog::vfunc_26(); m_labels.FUN_140bcfb70(); ResetState(); }
+void UIDungeonRewardDialog::vfunc_26() { UIDialog::vfunc_26(); m_labels.clear(); ResetState(); }
 MS2_REPLACE_METHOD(0x140E21050, UIDungeonRewardDialog, vfunc_26, 53, 0x294469C5);
 
 // @0x140e21090
@@ -474,8 +468,8 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  if(total) total->SetTextW(StringFormat(L"{0}/{1}",cur,max));
  }
  FUN_140e25dc0(entries.size());
- for(size_t i=0;i<m_labels.FUN_140bd0940();i++) {
-  MS2Ptr<ASMovieClip> label=m_labels.FUN_140bcc370(i);
+ for(size_t i=0;i<m_labels.size();i++) {
+  MS2Ptr<ASMovieClip> label=m_labels[i];
   if(label==0)continue;
   if(i>=entries.size()) {label->vfunc_4(false);continue;}
   MS2Ptr<ASTextField> name=label->FUN_1409b4620("m_missionName");
@@ -526,12 +520,12 @@ void UIDungeonRewardDialog::CreateAvatar() {
  UIAvatarPC* avatar=new UIAvatarPC(static_cast<PC*>(actor),false);
  reinterpret_cast<ClonePC*>(avatar->FUN_1418bd1d0())->FUN_1410885b0(1);
  ((Unk_RewardThing*)reinterpret_cast<PC*>(avatar->FUN_1418bd1d0())->FUN_14165f460())->FUN_141270610();
- m_avatar=avatar;m_avatar->vfunc_1(this);
+ m_avatar.AssignRaw(avatar);m_avatar->vfunc_1(this);
 }
 MS2_REPLACE_METHOD(0x140E25420, UIDungeonRewardDialog, CreateAvatar, 281, 0x730F075B);
 
 // @0x140e25540
-void UIDungeonRewardDialog::LoadRenderTarget() { if(m_180.get())reinterpret_cast<Unk_RewardClip*>(m_180.operator->())->FUN_140e262c0("loadRenderTarget",""); }
+void UIDungeonRewardDialog::LoadRenderTarget() { if(m_180.get())reinterpret_cast<AScript*>(m_180.operator->())->FUN_140e262c0("loadRenderTarget",""); }
 MS2_REPLACE_METHOD(0x140E25540, UIDungeonRewardDialog, LoadRenderTarget, 94, 0x191710D4);
 
 // @0x140e255b0
@@ -547,7 +541,7 @@ void UIDungeonRewardDialog::ResetState() {
 MS2_REPLACE_METHOD(0x140E25610, UIDungeonRewardDialog, ResetState, 376, 0x95F7B099);
 
 // @0x140e25790
-void UIDungeonRewardDialog::RequestClose() { if((m_room.get()?true:false)&&m_room->m_isLeaveAfterCloseReward)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
+void UIDungeonRewardDialog::RequestClose() { if((m_room.get()?true:false)&&m_room->m_isLeaveAfterCloseReward)SendDungeonReward();else reinterpret_cast<AScript*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
 MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, RequestClose, 155, 0xBA656490);
 
 // @0x140e25ff0
@@ -737,15 +731,15 @@ MS2_REPLACE_METHOD(0x140E25C30, UIDungeonRewardDialog, BuildRewardItems, 387, 0x
 
 // @0x140e25dc0
 void UIDungeonRewardDialog::FUN_140e25dc0(size_t count) {
- if(m_labels.FUN_140bd0940()>count) return;
+ if(m_labels.size()>count) return;
  if(m_1a0==0) return;
  const int top=0x115; const int step=0x24;
  CString name="UIDungeonRewardDialog_MissionLabel";
- for(size_t i=m_labels.FUN_140bd0940();i<count;i++) {
+ for(size_t i=m_labels.size();i<count;i++) {
   MS2Ptr<ASMovieClip> label(new ASMovieClip(name,2));
   m_1a0->FUN_1422c6900((*label).FUN_1422bb890());
   label->SetPositionInt(0,(int)i*step+top);
-  m_labels.FUN_140bd0800(label);
+  m_labels.push_back(label);
  }
 }
 MS2_REPLACE_METHOD(0x140E25DC0, UIDungeonRewardDialog, FUN_140e25dc0, 549, 0xC23D10DF);

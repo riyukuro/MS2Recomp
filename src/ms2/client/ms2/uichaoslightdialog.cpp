@@ -137,25 +137,14 @@ struct Unk_EffectCast
 };
 
 // The effect manager singleton (0x1403ed280): +0x48 holds the live effects, grouped by owner.
-struct Unk_EffectGroup;
-typedef std::list<NiPointer<CEffect> > Unk_EffectList;
-struct Unk_EffectGroup
-{
-    void* m_unk_00;
-    Unk_EffectList m_listEffects;                                       // +0x08
-    // @0x141044280
-    Unk_EffectList::iterator FUN_141044280() { return m_listEffects.begin(); }
-    // @0x1410443f0
-    Unk_EffectList::iterator FUN_1410443f0() { return m_listEffects.end(); }
-};
-typedef std::map<unsigned int, Unk_EffectGroup*> Unk_EffectGroupMap;
+// The groups are effectservice.h's Unk_EsEffectGroup.
 class Unk_EffectMgr
 {
 public:
     // @0x141044430
-    Unk_EffectGroupMap* FUN_141044430() { return &m_mapGroups; }
+    Unk_EsGroupMap* FUN_141044430() { return &m_mapGroups; }
     char m_pad_00[0x48];
-    Unk_EffectGroupMap m_mapGroups;                                     // +0x48
+    Unk_EsGroupMap m_mapGroups;                                     // +0x48
 };
 
 // The statics the "apply" checkbox drives (0x143acd310 flag, 0x143acd330 the edited param).
@@ -449,11 +438,11 @@ void FUN_141041ea0(const ChaosLightEffectParam* pParam)
     s_defaultParam.FUN_141043a30(*pParam);
     if (!s_bApply)
         return;
-    Unk_EffectGroupMap* pMap = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_141044430();
-    for (Unk_EffectGroupMap::iterator itGroup = pMap->begin(); itGroup != pMap->end(); ++itGroup)
+    Unk_EsGroupMap* pMap = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_141044430();
+    for (Unk_EsGroupMap::iterator itGroup = pMap->begin(); itGroup != pMap->end(); ++itGroup)
     {
-        Unk_EffectGroup* pGroup = itGroup->second;
-        for (Unk_EffectList::iterator itEffect = pGroup->FUN_141044280(); itEffect != pGroup->FUN_1410443f0(); ++itEffect)
+        Unk_EsEffectGroup* pGroup = itGroup->second;
+        for (std::list<CEffectPtr>::iterator itEffect = pGroup->FUN_141044280(); itEffect != pGroup->FUN_1410443f0(); ++itEffect)
         {
             NiPointer<ChaosLightEffect> spEffect(static_cast<ChaosLightEffect*>(Unk_EffectCast::FUN_1410443c0(&ChaosLightEffect::ms_RTTI, *itEffect)));
             NiPointer<ChaosLightEffect>& rEffect = spEffect;

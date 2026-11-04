@@ -45,6 +45,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/commonfiles/gameevent.h"    // LongTermAttendGiftContext
+#include "ms2/commonfiles/gamerule.h"     // CGameRule::GetLongTermAttendGift
 #include "ms2/client/ms2/uidailymissiondialog.h"   // UIDailyMissionDialog::FUN_140c02900
 #include <algorithm>
 
@@ -67,78 +69,12 @@ static CString s_strSortTypeNamesLtaD[] = {"None", "Buy", "Like", "PriceLow", "P
 
 // ---- unit-local helper types ----
 
-// One attendance day of the event: the day number and the two reward items (ItemEntity at +0x20 / +0x50).
-class Unk_LtaRecord : public CPtred {
-public:
-    int m_day;
-    int m_pad_1c;
-    ItemEntity m_20;
-    ItemEntity m_50;
-};
-MS2_CHECK_OFFSET(Unk_LtaRecord, m_day, 0x18);
-MS2_CHECK_OFFSET(Unk_LtaRecord, m_20, 0x20);
-MS2_CHECK_OFFSET(Unk_LtaRecord, m_50, 0x50);
-MS2_CHECK_SIZE(Unk_LtaRecord, 0x80);
-
-class Unk_LtaRecordArray {
-public:
-    size_t FUN_140412e80() const;
-    MS2Ptr<Unk_LtaRecord>& FUN_140410eb0(size_t index);
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18;
-};
-MS2_CHECK_SIZE(Unk_LtaRecordArray, 0x20);
-
-// The event record (a game event; fetched from the event manager).
-class Unk_LtaEvent : public CPtred {
-public:
-    int m_id;
-    int m_pad_1c;
-    Unk_LtaRecordArray m_rewards;
-    void* m_pad_40; void* m_pad_48;
-    CMsTime m_start;
-    CMsTime m_end;
-    CStringW m_frame;
-    CStringW m_title;
-    unsigned int m_days;
-    unsigned int m_meratCost;
-};
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_id, 0x18);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_rewards, 0x20);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_start, 0x50);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_end, 0x60);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_frame, 0x70);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_title, 0x78);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_days, 0x80);
-MS2_CHECK_OFFSET(Unk_LtaEvent, m_meratCost, 0x84);
-
-class Unk_LtaEventMgr {
-public:
-    MS2Ptr<Unk_LtaEvent> FUN_14047ce70();
-};
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 MS2Ptr<CItemData> FUN_14053f870(int);
 
 // The global table of strings / ints keyed by (kind, id): global at 0x143ab2fc0, map at +0x18, entry value at +0x20
-// (text), +0x28 (expiry).
-struct Unk_LtaKey
-{
-    Unk_LtaKey(int n1, int n2);             // 0x14041eee0
-    int m_0; int m_4;
-};
-class Unk_LtaValue;
-class Unk_LtaIter                           // 24 bytes; ctor 0x140420170, dtor 0x140420290
-{
-public:
-    Unk_LtaIter();
-    ~Unk_LtaIter();
-    Unk_LtaValue* FUN_140420460();          // the entry
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-};
-MS2_CHECK_SIZE(Unk_LtaIter, 0x18);
-class Unk_LtaMap { public: bool FUN_140420bb0(const Unk_LtaKey& key, Unk_LtaIter& it); };
+// (text), +0x28 (expiry): a GameEventUserValue.
 int FUN_140718200(const CStringW& str);
 CStringW FUN_140718600(const CStringW& str);
 __int64 GetServerTime();                         // the current time source
@@ -159,7 +95,7 @@ public:
     CStringW FUN_140c6d980(int nKind, int nId, const CStringW& strDefault);
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    Unk_LtaMap m_18;                        // +0x18
+    GameEventUserValue::VariableMap m_18;   // +0x18
 };
 extern GameEventUserValue DAT_143ab2fc0;    // read through the Unk_LtaTable view
 
@@ -269,20 +205,20 @@ inline CStringW Unk_LtaValue::FUN_140c6dac0(const CStringW& strDefault) const
 // @0x140c6d8d0
 inline int Unk_LtaTable::FUN_140c6d8d0(int nKind, int nId, const int& nDefault)
 {
-    Unk_LtaKey key(nKind, nId);
-    Unk_LtaIter it;
-    if (m_18.FUN_140420bb0(key, it))
-        return it.FUN_140420460()->FUN_140c6da60(nDefault);
+    GameEventVariable::Key key(nKind, nId);
+    GameEventUserValue::VariablePtr it;
+    if (m_18.Lookup(key, it))
+        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->FUN_140c6da60(nDefault);
     return nDefault;
 }
 
 // @0x140c6d980
 inline CStringW Unk_LtaTable::FUN_140c6d980(int nKind, int nId, const CStringW& strDefault)
 {
-    Unk_LtaKey key(nKind, nId);
-    Unk_LtaIter it;
-    if (m_18.FUN_140420bb0(key, it))
-        return it.FUN_140420460()->FUN_140c6dac0(strDefault);
+    GameEventVariable::Key key(nKind, nId);
+    GameEventUserValue::VariablePtr it;
+    if (m_18.Lookup(key, it))
+        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->FUN_140c6dac0(strDefault);
     return strDefault;
 }
 
@@ -445,7 +381,7 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
 {
     if (nResult == 0) {
         Unk_LtaWallet* wallet = ((class Unk_LtaWallet*)FUN_140d86260());
-        if (wallet->vfunc_40(m_178->m_meratCost)) {
+        if (wallet->vfunc_40(m_178->m_merat)) {
             COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.Encode1(0x1a);
             packet.Encode1(1);
@@ -483,11 +419,11 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
     CStringW strPoint = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nAttendPoint);
     CStringW strDays = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nCatchUp);
     ASObj info(2);
-    info.FUN_1407cbb20("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_start, L"."), FUN_14083bab0(m_178->m_end, L".")));
+    info.FUN_1407cbb20("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_beginTime, L"."), FUN_14083bab0(m_178->m_endTime, L".")));
     info.FUN_1407cbb20("curAttendancePoint", strPoint);
     info.FUN_1407cbb20("possibleAttendanceDays", strDays);
-    info.FUN_1407cbbe0("enableAttendance", nPossible < m_178->m_days);
-    info.FUN_1407cbb20("frame", m_178->m_frame);
+    info.FUN_1407cbbe0("enableAttendance", nPossible < m_178->m_maxAttendance);
+    info.FUN_1407cbb20("frame", m_178->m_eventTag);
     m_30->Invoke("setData", info.FUN_1422bb870());
 }
 
@@ -499,7 +435,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
     unsigned int nCur = FUN_140c6d570();
     int nCatchUp = GetMissedDayCount();
     ASDataProvider days(2);
-    unsigned __int64 nDays = m_178->m_days;
+    unsigned __int64 nDays = m_178->m_maxAttendance;
     for (unsigned __int64 i = 1; i <= nDays; ++i) {
         ASObj row(2);
         row.FUN_1407cba60("frame", FUN_140c6d470());
@@ -517,21 +453,21 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
     if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_reward")) {
         list->FUN_1422dd1d0();
         CString strFrame = FUN_140c6d470();
-        for (size_t i = 0; i < m_178->m_rewards.FUN_140412e80(); ++i) {
-            MS2Ptr<Unk_LtaRecord> rec = m_178->m_rewards.FUN_140410eb0(i);
+        for (size_t i = 0; i < m_178->m_rewards.GetCount(); ++i) {
+            MS2Ptr<LongTermAttendGiftContext::Reward> rec = m_178->m_rewards[i];
             ASObj row(2);
-            row.FUN_1407cb9c0("count", rec->m_day);
+            row.FUN_1407cb9c0("count", rec->m_count);
             row.FUN_1407cba60("frame", FUN_140c6d470());
-            row.FUN_1407cb9c0("state", GetDayState(rec->m_day));
-            row.FUN_1409c0d20("slotID01", rec->m_20.m_itemId);
-            row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
-            row.FUN_1409adc90("slotRank01", rec->m_20.vfunc_o18_1());
-            row.FUN_1409adc90("slotRank02", rec->m_50.vfunc_o18_1());
-            row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
-            row.FUN_1407cba60("slotIcon01", GetItemIconPath(rec->m_20.m_itemId));
-            row.FUN_1407cba60("slotIcon02", GetItemIconPath(rec->m_50.m_itemId));
-            row.FUN_1409c0d20("slotItemCount01", rec->m_20.m_count);
-            row.FUN_1409c0d20("slotItemCount02", rec->m_50.m_count);
+            row.FUN_1407cb9c0("state", GetDayState(rec->m_count));
+            row.FUN_1409c0d20("slotID01", rec->m_item01.m_itemId);
+            row.FUN_1409c0d20("slotID02", rec->m_item02.m_itemId);
+            row.FUN_1409adc90("slotRank01", rec->m_item01.vfunc_o18_1());
+            row.FUN_1409adc90("slotRank02", rec->m_item02.vfunc_o18_1());
+            row.FUN_1409c0d20("slotID02", rec->m_item02.m_itemId);
+            row.FUN_1407cba60("slotIcon01", GetItemIconPath(rec->m_item01.m_itemId));
+            row.FUN_1407cba60("slotIcon02", GetItemIconPath(rec->m_item02.m_itemId));
+            row.FUN_1409c0d20("slotItemCount01", rec->m_item01.m_count);
+            row.FUN_1409c0d20("slotItemCount02", rec->m_item02.m_count);
             list->AddItem(row);
         }
         list->vfunc_24(true);
@@ -563,7 +499,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c920()
 // @0x140c6cbf0
 bool UILongTermAttendGiftDialog::LoadEvent()
 {
-    m_178 = ((class Unk_LtaEventMgr*)FUN_1401c0d90())->FUN_14047ce70();
+    m_178 = ((CGameRule*)FUN_1401c0d90())->GetLongTermAttendGift();
     return m_178.get() != 0;
 }
 
@@ -585,7 +521,7 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
     unsigned int nCatchUp = GetMissedDayCount();
     if (nAttendPoint == 0) {
         if (nCatchUp > 0) {
-            CStringW strMsg = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
+            CStringW strMsg = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_merat);
             FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
             return;
         } else {
@@ -623,7 +559,7 @@ int UILongTermAttendGiftDialog::GetDayState(unsigned int nDay)
 int UILongTermAttendGiftDialog::GetMissedDayCount()
 {
     unsigned int nCur = FUN_140c6d570();
-    int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(GetServerTime())) + 1;
+    int nDays = FUN_14086bd40(CMsTime(m_178->m_beginTime), CMsTime(GetServerTime())) + 1;
     int nMax = 0x50;
     unsigned int nLimit = *(const unsigned int*)&std::min<int>(nMax, nDays);
     if (nCur < nLimit)
@@ -646,9 +582,9 @@ CString UILongTermAttendGiftDialog::GetDayStateFrame(unsigned int nDay, unsigned
             strState = "disable";
     }
     bool bReward = false;
-    for (size_t i = 0; i < m_178->m_rewards.FUN_140412e80(); ++i) {
-        MS2Ptr<Unk_LtaRecord> rec = m_178->m_rewards.FUN_140410eb0(i);
-        if (!((unsigned int)rec->m_day != nDay)) {
+    for (size_t i = 0; i < m_178->m_rewards.GetCount(); ++i) {
+        MS2Ptr<LongTermAttendGiftContext::Reward> rec = m_178->m_rewards[i];
+        if (!((unsigned int)rec->m_count != nDay)) {
             bReward = true;
             break;
         }
@@ -674,27 +610,27 @@ CString UILongTermAttendGiftDialog::FUN_140c6d470()
 {
     if (m_178 == 0)
         return "";
-    return FUN_14016a600(m_178->m_frame, 0);
+    return FUN_14016a600(m_178->m_eventTag, 0);
 }
 
 // @0x140c6d520
 int UILongTermAttendGiftDialog::FUN_140c6d520()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8d, m_178->m_id, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8d, m_178->m_eventId, nDefault);
 }
 
 // @0x140c6d570
 int UILongTermAttendGiftDialog::FUN_140c6d570()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8e, m_178->m_id, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8e, m_178->m_eventId, nDefault);
 }
 
 // @0x140c6d5c0
 CStringW UILongTermAttendGiftDialog::GetClaimedDays()
 {
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0xa8c, m_178->m_id, (const wchar_t*)0);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0xa8c, m_178->m_eventId, (const wchar_t*)0);
 }
 
 MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, GetTypeName, 61, 0xE157B792);

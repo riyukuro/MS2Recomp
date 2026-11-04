@@ -16,6 +16,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxVec3.h>       // C3: NxVec3 locals (was Unk_CtbVec3)
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
@@ -31,6 +38,11 @@ public:
     void id();
     void multiply(class NxVec3 const&, class NxVec3&) const;
     void rotZ(float);
+};
+class NxMat34   // C3: member view (was Unk_CtbMat34::FUN_140adbcb0)
+{
+public:
+    NxVec3 operator*(const NxVec3& v) const;   // pose * point
 };
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
@@ -86,7 +98,7 @@ MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0
 // @0x140aff330
 int CCameraTargetBoundingBox::Contains(Vector3 pt)
 {
-    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), *(class NxVec3 const*)&(const Unk_CtbVec3&)Unk_CtbVec3(pt.x, pt.y, pt.z)) != 0;
+    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), static_cast<const NxVec3&>(NxVec3(pt.x, pt.y, pt.z))) != 0;
 }
 MS2_REPLACE_METHOD(0x140AFF330, CCameraTargetBoundingBox, Contains, 104, 0xFF706066);
 
@@ -95,8 +107,8 @@ Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
 {
     if (Contains(pt))
         return pt;
-    Unk_CtbVec3 vWorld(pt.x, pt.y, pt.z);
-    Unk_CtbVec3 vLocal = m_inverse.FUN_140adbcb0(vWorld);
+    NxVec3 vWorld(pt.x, pt.y, pt.z);
+    NxVec3 vLocal = reinterpret_cast<const NxMat34&>(m_inverse) * vWorld;
     if (vLocal.x < m_bounds.m_min.x)
         vLocal.x = m_bounds.m_min.x;
     if (vLocal.x > m_bounds.m_max.x)
@@ -109,7 +121,7 @@ Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
         vLocal.z = m_bounds.m_min.z;
     if (vLocal.z > m_bounds.m_max.z)
         vLocal.z = m_bounds.m_max.z;
-    vWorld.FUN_140adbbc0(m_pose.FUN_140adbcb0(vLocal));
+    vWorld = reinterpret_cast<const NxMat34&>(m_pose) * vLocal;
     return Vector3(vWorld.x, vWorld.y, vWorld.z);
 }
 MS2_REPLACE_METHOD(0x140AFF3A0, CCameraTargetBoundingBox, GetClosest, 514, 0x1D624BCD);
@@ -208,9 +220,9 @@ Vector3 CCameraTargetBoundingCylinder::GetClosest(const Vector3& pt)
     float fDy = pt.y - m_center.y;
     if (fDx * fDx + fDy * fDy > m_radius * m_radius)
     {
-        Unk_Point2 ptDir(pt.x - m_center.x, pt.y - m_center.y);
-        ptDir.FUN_140affeb0();
-        Unk_Point2 ptEdge = ptDir.FUN_140affce0(m_radius);
+        efd::Point2 ptDir(pt.x - m_center.x, pt.y - m_center.y);
+        reinterpret_cast<Unk_Point2&>(ptDir).FUN_140affeb0();
+        Unk_Point2 ptEdge = reinterpret_cast<Unk_Point2&>(ptDir).FUN_140affce0(m_radius);
         ptNear.x = m_center.x + ptEdge.x;
         ptNear.y = m_center.y + ptEdge.y;
     }
@@ -296,7 +308,7 @@ bool Unk_CtbMat33::FUN_140afff50(Unk_CtbMat33* pOut) const
 bool Unk_CtbMat34::FUN_140b00260(Unk_CtbMat34* pOut) const
 {
     bool bOk = m_rot.FUN_140afff50(&pOut->m_rot);
-    ((class NxMat33*)(struct Unk_CtbMat33 const*)(&pOut->m_rot))->multiply(*(class NxVec3 const*)&static_cast<struct Unk_CtbVec3 const&>(m_pos.FUN_140adbd00(-1.0f)), *(class NxVec3*)(&pOut->m_pos));
+    ((class NxMat33*)(struct Unk_CtbMat33 const*)(&pOut->m_rot))->multiply(static_cast<const NxVec3&>(reinterpret_cast<const NxVec3&>(m_pos) * -1.0f), *(class NxVec3*)(&pOut->m_pos));
     return bOk;
 }
 

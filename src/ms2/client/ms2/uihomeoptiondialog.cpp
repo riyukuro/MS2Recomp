@@ -49,15 +49,13 @@ class CubeMapInformationService { public:   // C3: member view (cubemapinformati
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
-// The smart pointer to the service (8 bytes; its glue COMDATs live in the unit that first used it).
+// The smart pointer to the service (C3: efd::SmartPointer<Unk_Service6100017>, the Unk_HoServicePtr view kept for the null test).
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
 class Unk_HoServicePtr
 {
 public:
-    Unk_HoServicePtr(Unk_HoService* p);                             // 0x1401cd0b0
-    ~Unk_HoServicePtr();                                            // 0x1401cd150
-    Unk_HoService* FUN_140885310() const;                           // get
     bool FUN_140ef4cb0(int n);                                      // operator== against a raw pointer
-private:
     Unk_HoService* m_p;
 };
 
@@ -66,7 +64,6 @@ class Unk_HoWorld { public: MyPC* FUN_141bd0cc0(); };               // the local
 
 // The house open type (compared as a byte: a scoped enum over unsigned char, as MyPC's house setting).
 enum class Unk_HomeOpenType : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
-void FUN_141530720(MyPC* pPC, unsigned char nOpenType, CStringW strPassword, unsigned char bFlag);   // the player sends the open type
 CStringW FUN_140298ea0(CStringW strKey);                            // string table by key
 CString FUN_140223190(int nRow);                                   // the name of a permission row
 int FUN_1418fd280();
@@ -136,10 +133,10 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-            if (spService.FUN_140ef4cb0(0))
+            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+            if (reinterpret_cast<Unk_HoServicePtr&>(spService).FUN_140ef4cb0(0))
                 return 1;
-            if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5640() == 0)
+            if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d5640() == 0)
             {
                 FUN_140d73bc0(0x6e1, 0, 0, CStringW(L""));
                 return 1;
@@ -212,14 +209,14 @@ void UIHomeOptionDialog::FUN_140fa97a0()
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
     {
-        Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-        if (spService.FUN_140885310() == 0)
+        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        if ((Unk_Service6100017*)spService == 0)
             return;
         for (int i = 0; i < 9; ++i)
         {
             int nRow = i;
-            bool bOn = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e00(nRow);
-            int nLevel = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e80(nRow);
+            bool bOn = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3e00(nRow);
+            int nLevel = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3e80(nRow);
             int nValue;
             if (!bOn)
                 nValue = 0;
@@ -239,7 +236,7 @@ void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPass
         strPassword = L"";
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
-        FUN_141530720(pPC, nOpenType, CStringW(strPassword), 1);
+        pPC->FUN_141530720((Unk_MyPCHouseSetting)nOpenType, CStringW(strPassword), 1);
 }
 MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, FUN_140fa99b0, 149, 0x7577FED5);
 

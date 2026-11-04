@@ -20,8 +20,8 @@
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08ce8;   // NiPoint3::UNIT_X
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08ce8 (*(const Vector3*)&efd::Point3::UNIT_Y) // C3: was extern const Vector3 g_143a08ce8 (0, 1, 0)
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 extern float g_143abb090;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
 class Unk_BuffContainer;
@@ -273,7 +273,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
         }
 
         Vector3 ptMove = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -547,7 +547,7 @@ void CHomeCameraMode::vfunc_37(double fTime)
             else
             {
                 m_dc.m_pos = m_dc.m_pos.FUN_14097fd50(FUN_1409ab5c0(fT, m_c4.m_pos.FUN_140965c40(m_dc.m_pos)));
-                if (m_dc.m_rot.FUN_140552700(m_c4.m_rot))
+                if (reinterpret_cast<const efd::Point3&>(m_dc.m_rot) != reinterpret_cast<const efd::Point3&>(m_c4.m_rot))
                     m_dc.m_rot = CCameraMode::FUN_140afdec0(fT, m_dc.m_rot, m_c4.m_rot);
             }
         }

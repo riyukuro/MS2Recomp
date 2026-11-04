@@ -85,7 +85,7 @@ public:
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 
 // The condition panel clip: its "m_slot" item slot child (COMDAT of uibingoeventdialog.cpp).
-class Unk_CigClip : public ASMovieClip
+class Unk_BingoClip : public ASMovieClip
 {
 public:
     MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString& strName);
@@ -247,13 +247,13 @@ void UICollectItemGroupEventDialog::Refresh()
         else
             spSlotMovie->vfunc_15("normal");
         FUN_140cff840((*spSlotMovie).FUN_1422bb890(), "m_recivedMovie", bReceived);
-        MS2Ptr<ASItemSlot> spSlot = static_cast<Unk_CigClip*>(spSlotMovie.operator->())->FUN_140bb4ba0("m_slot");
+        MS2Ptr<ASItemSlot> spSlot = static_cast<Unk_BingoClip*>(spSlotMovie.operator->())->FUN_140bb4ba0("m_slot");
         if (spSlot == 0)
             continue;
         m_slots.push_back(spSlot);
         spSlot->SetItem(item.vfunc_o18_0(), item.vfunc_o18_1(), item.vfunc_o18_2());
     }
-    MS2Ptr<ASItemSlot> spReward = static_cast<Unk_CigClip*>(m_rewardPanel.operator->())->FUN_140bb4ba0("m_slot");
+    MS2Ptr<ASItemSlot> spReward = static_cast<Unk_BingoClip*>(m_rewardPanel.operator->())->FUN_140bb4ba0("m_slot");
     if (spReward.get() != 0)
     {
         m_slots.push_back(spReward);

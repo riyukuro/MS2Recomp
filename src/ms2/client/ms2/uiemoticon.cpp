@@ -60,7 +60,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -214,7 +213,7 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
         return;
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+        *pPos *= ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
         {
             pPos->y = pPos->y + reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_638)->FUN_140298f40());

@@ -4,13 +4,6 @@
 // The class layout is shared with charactermeshmerger.cpp (which only creates and fills the infos).
 // MS2-UNIT: ?\customizedtexinfo.cpp
 // MS2-RANGE: 0x141165f00-0x1411673f0 .text$mn
-// MS2-PIN: ??0Unk_CtiTexPtr@@QEAA@PEAX@Z 0x14097ed60
-// MS2-PIN: ??1Unk_CtiTexPtr@@QEAA@XZ 0x14097f4a0
-// MS2-PIN: ??0Unk_CtiPixPtr@@QEAA@PEAX@Z 0x140a5a500
-// MS2-PIN: ??1Unk_CtiPixPtr@@QEAA@XZ 0x140a5a900
-// MS2-PIN: ?get@Unk_CtiPixPtr@@QEBAPEAXXZ 0x140a5ac70
-// MS2-PIN: ??0Unk_CtiFmtPrefs@@QEAA@XZ 0x140984420
-// MS2-PIN: ??0Unk_CtiPixelData@@QEAA@IIAEBUUnk_CtiPixFmt@@II@Z 0x141d31950
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\customizedtexinfo.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -23,6 +16,7 @@
 #include <efd/SmartPointer.h>
 #include <NiRefObject.h>
 #include <NiSourceTexture.h>
+#include <NiPixelData.h>
 #include <NiPoint2.h>
 #include <efd/Color.h>
 #include <stdlib.h>
@@ -45,36 +39,6 @@ struct Unk_CtiColor                                             // 4 floats (r, 
 MS2_CHECK_SIZE(Unk_CtiColor, 0x10);
 
 struct Unk_CtiPixel { unsigned char r, g, b, a; };              // one RGBA8 pixel
-struct Unk_CtiTexPtr                                            // texture handle (assign 0x14097f9b0)
-{
-    Unk_CtiTexPtr(void* pRaw);                                  // 0x14097ed60
-    ~Unk_CtiTexPtr();                                           // 0x14097f4a0
-    void* m_p;
-};
-
-struct Unk_CtiPixPtr                                            // resampled pixel data handle (efd::SmartPointer<NiPixelData>)
-{
-    Unk_CtiPixPtr(void* pRaw);                                  // 0x140a5a500
-    ~Unk_CtiPixPtr();                                           // 0x140a5a900
-    void* get() const;                                          // 0x140a5ac70
-    void* m_p;
-};
-
-struct Unk_CtiPixFmt;                                           // NiPixelFormat
-struct Unk_CtiPixelData : public efd::MemObject                 // NiPixelData
-{
-    Unk_CtiPixelData(unsigned w, unsigned h, const Unk_CtiPixFmt& kFmt, unsigned nMips, unsigned nFaces);  // 0x141d31950
-    unsigned char m_abData[0x90];                               // opaque
-};
-MS2_CHECK_SIZE(Unk_CtiPixelData, 0x90);
-
-struct Unk_CtiFmtPrefs                                          // NiTexture::FormatPrefs
-{
-    Unk_CtiFmtPrefs();                                          // 0x140984420
-    int m_ePixelLayout;
-    int m_eAlphaFmt;
-    int m_eMipMapped;
-};
 
 class Unk_CtiTexture                                            // a loaded texture
 {
@@ -95,8 +59,8 @@ public:
     CCustomizedTexInfo();                                       // 0x141165f00
     virtual ~CCustomizedTexInfo();                              // 0x141166020 (??_G 0x141166ff0)
 
-    Unk_CtiTexPtr m_spBase;                                     // +0x10
-    Unk_CtiTexPtr m_spDecal;                                    // +0x18
+    efd::SmartPointer<NiTexture> m_spBase;                      // +0x10 (ctor 0x14097ed60, dtor 0x14097f4a0, assign 0x14097f9b0)
+    efd::SmartPointer<NiTexture> m_spDecal;                     // +0x18
     Unk_CtiColor m_akColor[3];                                  // +0x20
     float m_fParam0, m_fParam1, m_fParam2, m_fParam3;           // +0x50
 };
@@ -105,7 +69,6 @@ MS2_CHECK_SIZE(CCustomizedTexInfo, 0x60);
 class CCustomizedTextureManager { public: char m_pad_00[8]; };
 
 // ---- exe callees ----
-void* FUN_140a5ac70(void* p);
 extern char DAT_1439fb040[];
 void* FUN_140876480(void* out, int cat);
 void* FUN_14208a860(unsigned __int64 size, unsigned cat);
@@ -140,8 +103,8 @@ CCustomizedTexInfo::CCustomizedTexInfo()
 // @0x141166020
 CCustomizedTexInfo::~CCustomizedTexInfo()
 {
-    *reinterpret_cast<efd::SmartPointer<NiTexture>*>(&m_spBase) = (NiTexture*)0;
-    *reinterpret_cast<efd::SmartPointer<NiTexture>*>(&m_spDecal) = (NiTexture*)0;
+    m_spBase = (NiTexture*)0;
+    m_spDecal = (NiTexture*)0;
 }
 
 // @0x1411660b0
@@ -157,15 +120,15 @@ void* FUN_1411660b0(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
 void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCustomizedTexInfo* pB)
 {
     CCustomizedTexInfo* pResult = EE_NEW CCustomizedTexInfo;
-    Unk_CtiTexture* pBaseA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pA->m_spBase)->operator NiTexture*())));
+    Unk_CtiTexture* pBaseA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(pA->m_spBase.operator NiTexture*())));
     if (pBaseA == 0)
         return pResult;
 
-    Unk_CtiTexture* pDecalA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pA->m_spDecal)->operator NiTexture*())));
-    Unk_CtiTexture* pBaseB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pB->m_spBase)->operator NiTexture*())));
-    Unk_CtiTexture* pDecalB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pB->m_spDecal)->operator NiTexture*())));
-    unsigned nWidth = ((Unk_CtiTexture*)reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pA->m_spBase)->operator->())->vfunc_18();
-    unsigned nHeight = ((Unk_CtiTexture*)reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pA->m_spBase)->operator->())->vfunc_19();
+    Unk_CtiTexture* pDecalA = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(pA->m_spDecal.operator NiTexture*())));
+    Unk_CtiTexture* pBaseB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(pB->m_spBase.operator NiTexture*())));
+    Unk_CtiTexture* pDecalB = (Unk_CtiTexture*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiSourceTexture::ms_RTTI), (class NiObject const*)(pB->m_spDecal.operator NiTexture*())));
+    unsigned nWidth = ((Unk_CtiTexture*)pA->m_spBase.operator->())->vfunc_18();
+    unsigned nHeight = ((Unk_CtiTexture*)pA->m_spBase.operator->())->vfunc_19();
     if (FUN_141167270(pBaseA) == 0)
         pBaseA->vfunc_20();
     if (pDecalA)
@@ -182,14 +145,14 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
     if (pDecalB && FUN_141167270(pDecalB) == 0)
         pDecalB->vfunc_20();
 
-    Unk_CtiPixPtr hBaseA(pBaseA ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseA)), nWidth, nHeight)) : 0);
-    Unk_CtiPixPtr hDecalA(pDecalA ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalA)), nWidth, nHeight)) : 0);
-    Unk_CtiPixPtr hBaseB(pBaseB ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseB)), nWidth, nHeight)) : 0);
-    Unk_CtiPixPtr hDecalB(pDecalB ? ((void*)ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalB)), nWidth, nHeight)) : 0);
+    NiPixelDataPtr hBaseA(pBaseA ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseA)), nWidth, nHeight) : 0);
+    NiPixelDataPtr hDecalA(pDecalA ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalA)), nWidth, nHeight) : 0);
+    NiPixelDataPtr hBaseB(pBaseB ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pBaseB)), nWidth, nHeight) : 0);
+    NiPixelDataPtr hDecalB(pDecalB ? ConvertToRGBA32((class NiPixelData*)(FUN_141167270(pDecalB)), nWidth, nHeight) : 0);
 
-    Unk_CtiPixelData* pPix = EE_NEW Unk_CtiPixelData(nWidth, nHeight, *(const Unk_CtiPixFmt*)DAT_1439fb040, 1, 1);
-    unsigned nStride = ((class NiPixelData*)(void*)(pPix))->GetPixelStride();
-    char* pDst = ((char*)((class NiPixelData*)(void*)(pPix))->GetPixels(0, 0));
+    NiPixelData* pPix = EE_NEW NiPixelData(nWidth, nHeight, *(const NiPixelFormat*)DAT_1439fb040, 1, 1);
+    unsigned nStride = pPix->GetPixelStride();
+    char* pDst = ((char*)pPix->GetPixels(0, 0));
     for (unsigned y = 0; y < nHeight; ++y)
     {
         for (unsigned x = 0; x < nWidth; ++x)
@@ -199,12 +162,12 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             Unk_CtiPixel kPix;
             FUN_141166d20(&kPix);
             Unk_CtiColor kBase;
-            SamplePixelData((NiPixelData*)hBaseA.get(), kUV, (Unk_TexColor*)&kPix, true);
+            SamplePixelData(hBaseA, kUV, (Unk_TexColor*)&kPix, true);
             FUN_1411671d0(&kPix, &kBase);
-            if (hDecalA.get() != 0)
+            if ((NiPixelData*)hDecalA != 0)
             {
                 Unk_CtiColor kMask;
-                SamplePixelData((NiPixelData*)hDecalA.get(), kUV, (Unk_TexColor*)&kPix, true);
+                SamplePixelData(hDecalA, kUV, (Unk_TexColor*)&kPix, true);
                 FUN_1411671d0(&kPix, &kMask);
                 Unk_CtiColor kTint(&static_cast<const Unk_CtiColor&>(FUN_141166de0(kMask.r, pA->m_akColor[0]) + FUN_141166de0(kMask.g, pA->m_akColor[1])
                     + FUN_141166de0(1.0f - kMask.r, pA->m_akColor[2])));
@@ -216,15 +179,15 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             {
                 kColor = kBase;
             }
-            if (hBaseB.get() != 0)
+            if ((NiPixelData*)hBaseB != 0)
             {
                 Unk_CtiColor kBase2;
-                SamplePixelData((NiPixelData*)hBaseB.get(), kUV, (Unk_TexColor*)&kPix, true);
+                SamplePixelData(hBaseB, kUV, (Unk_TexColor*)&kPix, true);
                 FUN_1411671d0(&kPix, &kBase2);
-                if (hDecalB.get() != 0)
+                if ((NiPixelData*)hDecalB != 0)
                 {
                     Unk_CtiColor kMask2;
-                    SamplePixelData((NiPixelData*)hDecalB.get(), kUV, (Unk_TexColor*)&kPix, true);
+                    SamplePixelData(hDecalB, kUV, (Unk_TexColor*)&kPix, true);
                     FUN_1411671d0(&kPix, &kMask2);
                     Unk_CtiColor kTint2(&static_cast<const Unk_CtiColor&>(FUN_141166de0(kMask2.r, pB->m_akColor[0]) + FUN_141166de0(kMask2.g, pB->m_akColor[1])
                         + FUN_141166de0(1.0f - kMask2.r, pB->m_akColor[2])));
@@ -248,10 +211,10 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             pDst = pDst + nStride;
         }
     }
-    Unk_CtiFmtPrefs kPrefs;
-    kPrefs.m_ePixelLayout = 2;
-    kPrefs.m_eMipMapped = 0;
-    *reinterpret_cast<efd::SmartPointer<NiTexture>*>(&pResult->m_spBase) = NiSourceTexture::Create((NiPixelData*)pPix, reinterpret_cast<NiTexture::FormatPrefs&>(kPrefs), true);
+    NiTexture::FormatPrefs kPrefs;
+    kPrefs.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)2;
+    kPrefs.m_eMipMapped = (NiTexture::FormatPrefs::MipFlag)0;
+    pResult->m_spBase = NiSourceTexture::Create(pPix, kPrefs, true);
     return pResult;
 }
 
@@ -381,7 +344,7 @@ void FUN_1411671d0(Unk_CtiPixel* pPix, Unk_CtiColor* pOut)
 // @0x141167270
 void* FUN_141167270(void* pTex)
 {
-    return FUN_140a5ac70((char*)pTex + 0x70);
+    return reinterpret_cast<const efd::SmartPointer<NiPixelData>*>((char*)pTex + 0x70)->operator NiPixelData*();
 }
 
 // The UCRT's `static __inline memmove_s` of this TU (unreferenced copy).

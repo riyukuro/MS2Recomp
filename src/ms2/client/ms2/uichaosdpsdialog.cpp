@@ -69,11 +69,9 @@ public:
     __int64 FUN_141656a80();
 };
 
-// The AS root object of the dialog, with the invokes the exe instantiates for it.
+// The AS root object of the dialog (its Invoke(number) is ASArray::FUN_140e06cc0, asobj.h).
 class Unk_ChaosAS : public AScript
 {
-public:
-    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);            // 0x140e06cc0 Invoke(name, number)
 };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -166,7 +164,7 @@ void UIChaosDPSDialog::FUN_140e05950()
     if (spLast.get() != 0)
     {
         double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
-        static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
+        static_cast<ASArray*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
     {
@@ -305,7 +303,7 @@ bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 #endif
 
 // @0x140e06cc0
-Scaleform::GFx::Value Unk_ChaosAS::FUN_140e06cc0(const char* szMethod, double d)
+Scaleform::GFx::Value ASArray::FUN_140e06cc0(const char* szMethod, double d)
 {
     ASArgList args;
     args.FUN_1409b2800(1);

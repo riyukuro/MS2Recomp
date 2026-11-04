@@ -123,20 +123,12 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_140399100(CString strMask, CString strDir, ATL::CAtlArray<CString>& rOut, CString strExtra, bool bRecursive);
 CString FUN_14028d3c0(CString strPath);                                             // file name of a path
-void FUN_1401d3700(CString* pStr);                                                  // lower-case
+void FUN_1401d3700(CString& str);                                                   // lower-case
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CString FUN_14016a5c0(const char* pszName, int);
 
 // The <script>/<select>/<job> children of a parent (24 bytes, a vector of element pointers) with index access.
-class Unk_ElemArray
-{
-public:
-    Unk_ElemArray();                                                // 0x140163e20
-    ~Unk_ElemArray();                                               // 0x1401644e0
-    unsigned __int64 FUN_14016d900();                               // size
-    Unk_ScriptXmlNode*& FUN_140164a30(unsigned __int64 n);          // operator[]
-    void *m_a, *m_b, *m_c;
-};
+typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);
 
 void FUN_140857f20(CStringA path);
@@ -661,9 +653,9 @@ void FUN_140857f20(CStringA path)
         }
         Unk_ElemArray nodes;
         FUN_14028faa0((struct Unk_XmlElement*)quest, "script", "id", (std::vector<struct Unk_XmlElement*>&)nodes);
-        for (unsigned __int64 i = 0; i < nodes.FUN_14016d900(); i++)
+        for (unsigned __int64 i = 0; i < nodes.size(); i++)
         {
-            Unk_ScriptXmlNode* node = nodes.FUN_140164a30(i);
+            Unk_ScriptXmlNode* node = (Unk_ScriptXmlNode*)nodes[i];
             TalkPtr script(new CTalkScript());
             script->m_questId = questId;
             XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
@@ -700,9 +692,9 @@ void FUN_140858440(CStringA path)
             TalkArrayPtr talks(Unk_GrNewTag(0));
             Unk_ElemArray scriptNodes;
             FUN_14028faa0((struct Unk_XmlElement*)npc, "script", "id", (std::vector<struct Unk_XmlElement*>&)scriptNodes);
-            for (unsigned __int64 i = 0; i < scriptNodes.FUN_14016d900(); i++)
+            for (unsigned __int64 i = 0; i < scriptNodes.size(); i++)
             {
-                Unk_ScriptXmlNode* node = scriptNodes.FUN_140164a30(i);
+                Unk_ScriptXmlNode* node = (Unk_ScriptXmlNode*)scriptNodes[i];
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
                 XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
@@ -745,9 +737,9 @@ void FUN_140858440(CStringA path)
         {
             Unk_ElemArray nodes;
             FUN_14028faa0((struct Unk_XmlElement*)npc, kinds[k], "id", (std::vector<struct Unk_XmlElement*>&)nodes);
-            if (nodes.FUN_14016d900() != 0)
+            if (nodes.size() != 0)
             {
-                Unk_ScriptXmlNode* node = nodes.FUN_140164a30(0);
+                Unk_ScriptXmlNode* node = (Unk_ScriptXmlNode*)nodes[0];
                 TalkPtr script(new CTalkScript());
                 script->m_npcId = npcId;
                 XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
@@ -832,7 +824,7 @@ void LoadTalkScripts()
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
-            FUN_1401d3700(&name);
+            FUN_1401d3700(name);
             if (name.Find("questscript", 0) == 0)
                 FUN_140857f20(files[i]);
         }
@@ -843,7 +835,7 @@ void LoadTalkScripts()
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
-            FUN_1401d3700(&name);
+            FUN_1401d3700(name);
             if (name.Find("npcscript", 0) == 0)
                 FUN_140858440(files[i]);
         }

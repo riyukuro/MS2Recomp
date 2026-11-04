@@ -15,6 +15,7 @@
 
 #include <algorithm>
 #include <map>
+#include <set>
 
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/placeholder/asdata.h"
@@ -112,26 +113,6 @@ public:
     int m_10;
 };
 
-// Iterator of the level / ability id tables.
-template <class T>
-class Unk_ALIter
-{
-public:
-    Unk_ALIter() {}
-    T* FUN_1401957b0();
-    void FUN_1401957c0();
-    bool FUN_140195770(const Unk_ALIter& o);
-private:
-    void* m_0;
-};
-template <class T>
-class Unk_ALIdSet
-{
-public:
-    Unk_ALIter<T> FUN_140194c80();
-    Unk_ALIter<T> FUN_1401950d0();
-};
-
 // The adventure level data table (singleton 0x1401958a0).
 class Unk_ALTable
 {
@@ -150,14 +131,7 @@ public:
 extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
 
 // The claimed level rewards (global 0x143ab3308): find / end / iterator compare are COMDATs of earlier units.
-class Unk_ALClaimIter { public: bool FUN_140184350(const Unk_ALClaimIter& o); private: void* m_0; };
-class Unk_ALClaimed
-{
-public:
-    Unk_ALClaimIter FUN_140312be0(const unsigned int& nKey);
-    Unk_ALClaimIter FUN_14018f840();
-};
-extern Unk_ALClaimed g_unkClaimed;                                          // 0x143ab3308
+extern std::set<unsigned int> DAT_143ab3308;
 
 // The ability manager of the player and the current ability state.
 class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_ALAbilityMgr : public AdditionalCliList { };
@@ -345,9 +319,9 @@ void UIAdventureLevelOldDialog::FUN_140ba5ab0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALIdSet<unsigned short>& levels = reinterpret_cast<Unk_ALIdSet<unsigned short>&>(TSingleton<CAdventureLevelTable>::GetInstance()->GetLevels());
-    for (Unk_ALIter<unsigned short> it = levels.FUN_140194c80(); it.FUN_140195770(levels.FUN_1401950d0()); it.FUN_1401957c0()) {
-        unsigned short nLevel = *it.FUN_1401957b0();
+    const std::vector<unsigned int>& levels = TSingleton<CAdventureLevelTable>::GetInstance()->GetLevels();
+    for (std::vector<unsigned int>::const_iterator it = levels.begin(); it != levels.end(); ++it) {
+        unsigned short nLevel = (unsigned short)*it;
         ASObj obj(2);
         if (!FUN_140ba61b0(obj, nLevel))
             continue;
@@ -383,9 +357,9 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         return;
     spList->Invoke("resetRenderer");
     ((class ASCoreList*)(spList))->FUN_1422dd1d0();
-    Unk_ALIdSet<unsigned int>& abilities = reinterpret_cast<Unk_ALIdSet<unsigned int>&>(TSingleton<CAdventureLevelTable>::GetInstance()->GetAbilityIds());
-    for (Unk_ALIter<unsigned int> it = abilities.FUN_140194c80(); it.FUN_140195770(abilities.FUN_1401950d0()); it.FUN_1401957c0()) {
-        unsigned int* pId = it.FUN_1401957b0();
+    const std::vector<unsigned int>& abilities = TSingleton<CAdventureLevelTable>::GetInstance()->GetAbilityIds();
+    for (std::vector<unsigned int>::const_iterator it = abilities.begin(); it != abilities.end(); ++it) {
+        const unsigned int* pId = &*it;
         Unk_ALAbility* pAbility = (Unk_ALAbility*)TSingleton<CAdventureLevelTable>::GetInstance()->GetAbility(*pId);
         unsigned short nStep = ((class CAdventureLevelAbility*)(pAbility))->GetCount(pPlayer->vfunc_141());
         MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
@@ -422,7 +396,7 @@ int UIAdventureLevelOldDialog::FUN_140ba61b0(ASObj& obj, unsigned int nLevel)
     if (pPlayer == NULL)
         return 0;
     CString strState("active");
-    if (g_unkClaimed.FUN_140312be0(nLevel).FUN_140184350(g_unkClaimed.FUN_14018f840()))
+    if (DAT_143ab3308.find(nLevel) != DAT_143ab3308.end())
         strState = "inactive";
     if (nLevel > pPlayer->vfunc_141())
         strState = "lock";

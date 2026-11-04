@@ -92,7 +92,7 @@ const NiRTTI MS2ShadowClickValidator::ms_RTTI("MS2ShadowClickValidator", MS2_VAL
 const NiRTTI MS2ShadowVisitor::ms_RTTI("MS2ShadowVisitor", MS2_VIS_BASE);
 
 // ---- out-of-unit data and helpers ----
-extern char DAT_143ae51a8;      // NiFixedString: extra-data name that marks a shadow caster
+extern NiFixedString DAT_143ae51a8;      // extra-data name that marks a shadow caster
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
 extern int DAT_143ae2b44;       // model-node culling enabled
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -104,7 +104,7 @@ unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster tes
     if (DAT_143ae2b34)                                                                                     \
         bResult = FUN_141569010(pkObject);                                                                 \
     else                                                                                                   \
-        bResult = pkObject->GetExtraData(*(const NiFixedString*)&DAT_143ae51a8) != 0
+        bResult = pkObject->GetExtraData(DAT_143ae51a8) != 0
 
 // The model node (derives NiNode, 0x180+ bytes); only the two fields the shadow visitor reads.
 class Unk_ShadowModelNode : public NiNode

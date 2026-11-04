@@ -46,7 +46,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_TamingTamed : public CPet { };
 class Unk_TamingActor : public PCBase
@@ -130,7 +129,7 @@ void UITamingBar::Entity::vfunc_6(NiPoint3* pPos)
                 ((Unk_TamingClip*)bar.operator->())->SetWidthInt((int)(fRate * (float)m_a0));
                 m_b8 = 0;
             }
-            FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+            *pPos *= ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             reinterpret_cast<ASDisplayObject*>(((Unk_TamingEntity*)m_38.operator->()))->SetPositionFloat(pPos->x, pPos->y);

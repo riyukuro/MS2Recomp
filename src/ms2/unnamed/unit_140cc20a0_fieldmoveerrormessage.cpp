@@ -27,7 +27,6 @@ CStringW FUN_14028dfa0(const CStringW& strKey, const Unk_FmtPack& args);   // St
 Unk_FmtPack* FUN_140163e50(Unk_FmtPack* pOut, i64 nTypes, Unk_FmtArg arg); // fmt::internal::make_args
 
 // fmt::BasicFormatter<wchar_t>::format over a boxed argument.
-i64 FUN_1402da110(i64 ctx, i64* pOut, fmt::internal::Arg* pVal);
 
 // The global application/config singleton whose +0x60/+0x68/+0x70 are the base directory strings.
 struct Unk_MoveErrConfig {
@@ -67,7 +66,7 @@ void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue)
         arg_value = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(str);
         arg.type = fmt::internal::Arg::STRING;
     }
-    *pOut = FUN_1402da110(ctx, pOut, &arg);
+    *pOut = (i64)reinterpret_cast<fmt::BasicFormatter<wchar_t>*>(ctx)->format(*reinterpret_cast<const wchar_t**>(pOut), arg);
 }
 
 // The lambda thunk: vfunc(value, out) forwarding to MakeValue<int>.

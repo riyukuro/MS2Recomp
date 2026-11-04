@@ -55,18 +55,11 @@
 // ---- exe data ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Unk_EfdMatrix3 DAT_143a09600;        // the identity matrix
-extern Vector3 DAT_143a08cf8;       // the up axis
-struct Unk_PickXY { float x, y; };          // cursor position
-extern Unk_PickXY DAT_143b02320;            // initial value of the cursor position
+#define DAT_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)       // C3: was extern Vector3 DAT_143a08cf8; the up axis (NiPoint3::UNIT_Z)
 
 // ---- unit-local views of exe objects ----
 
 // 3-float point whose default ctor is the efd::Point3 one (0x1405522f0); used for the camera ray.
-struct Unk_GVec3 : public Vector3
-{
-    Unk_GVec3();                                                // 0x1405522f0
-};
-
 struct Unk_CapItem : public CItemData {};                       // the equipped cap's item data
 
 // The model record of the cap item (CItem::FUN_140527870); only the three fields this unit writes.
@@ -130,11 +123,9 @@ struct Unk_CapCamera : public CameraMgr
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float Unk_Acos(float fCos);                                     // acos
-void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
                    float fRadius, Vector3* pHit);       // ray / sphere hit
 void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler);   // rotation -> euler angles (degrees)
-void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assignment
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
 // C3: world translate = NiAVObject::GetWorldTranslate (0x140947900)
@@ -287,25 +278,25 @@ void CCapRotationController::vfunc_31()
     Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_PickXY kCursor = DAT_143b02320;
+    efd::Point2 kCursor = efd::Point2::ZERO;   // 0x143b02320
     if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
     {
         if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
-            Unk_GVec3 kOrigin;
-            Unk_GVec3 kDir;
-            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)) != 0)
+            NiPoint3 kOrigin;
+            NiPoint3 kDir;
+            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), kOrigin, kDir) != 0)
             {
-                Unk_GVec3 kHit;
-                FUN_14147aa60(kOrigin, kDir, FUN_140947900(m_spMesh.operator->()), m_fRadius, &kHit);
-                Vector3 kDelta = kHit.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
+                NiPoint3 kHit;
+                FUN_14147aa60(reinterpret_cast<const Vector3&>(kOrigin), reinterpret_cast<const Vector3&>(kDir), FUN_140947900(m_spMesh.operator->()), m_fRadius, reinterpret_cast<Vector3*>(&kHit));
+                Vector3 kDelta = reinterpret_cast<const Vector3&>(kHit).FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
                 kDelta.FUN_140968990();
                 Unk_EfdMatrix3 kRotZ;
                 kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
                 kDelta = kRotZ.FUN_140a00720(kDelta);
                 Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
                 kAxis.FUN_140968990();
-                float fAngle = SafeAcos(m_kDragDir.FUN_140a00f20(kDelta));
+                float fAngle = SafeAcos(reinterpret_cast<const efd::Point3&>(m_kDragDir).Dot(reinterpret_cast<const efd::Point3&>(kDelta)));
                 efd::Quaternion kQuat;
                 kQuat.FromAngleAxis(fAngle, *(const efd::Point3*)&kAxis);
                 Unk_EfdMatrix3 kRot;
@@ -357,14 +348,14 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             Vector3 kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
             kSide.FUN_140968990();
             Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
-            FUN_140968990(&kUp);
+            reinterpret_cast<Vector3&>(kUp).FUN_140968990();
             Unk_NiMatrix3 kFix;
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
             kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
             Unk_NiMatrix3 kRot(Unk_NiMatrix3(kN, kSide, kUp).FUN_140a33480(kFix));
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
-            FUN_14097fad0(&kXf.m_Translate, &kHit);
+            kXf.m_Translate = *reinterpret_cast<const NiPoint3*>(&kHit);
             Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
             Unk_MeshSet& kSet = *pSet;
             Unk_MeshSet::const_iterator itEnd = kSet.end();
@@ -408,14 +399,14 @@ void CCapRotationController::vfunc_35()
     Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_PickXY kCursor = DAT_143b02320;
+    efd::Point2 kCursor = efd::Point2::ZERO;   // 0x143b02320
     if (FUN_140aadf80()->GetCursorClientPos(&kCursor.x, &kCursor.y) != 0)
     {
         if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
-            Unk_GVec3 kOrigin;
-            Unk_GVec3 kDir;
-            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)) != 0)
+            NiPoint3 kOrigin;
+            NiPoint3 kDir;
+            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), kOrigin, kDir) != 0)
             {
                 float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
                 float fYaw = m_kCurEuler.z + fDelta;

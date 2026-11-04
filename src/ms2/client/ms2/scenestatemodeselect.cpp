@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x1400c51e0-0x1400c5340 .text$di
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestatemodeselect.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor
 #include "scenestatemodeselect.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -21,10 +22,9 @@ public:
     void FUN_141bbae80(void* p);
     int FUN_141bbbe40(int mapId, int arg2, int arg3);
 };
-void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
-extern void* DAT_143ab8f48;
 void* FUN_140aae430();
-void* FUN_1409478c0();
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -59,7 +59,7 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
-    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     WorldService::GetInstance()->FUN_141bbbe40(0x3e9, 1, 0);
 }
 
@@ -86,13 +86,13 @@ void CSceneStateModeSelect::OnPacket(CInPacket& packet)
 // @0x140aae230
 void CSceneStateModeSelect::vfunc_1(int)
 {
-    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0)
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0)
     {
         Unk_140ae7ce0 tmp;
-        if (((class CameraMgr*)(void*)(FUN_1409478c0()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
+        if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
         {
-            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
-            ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(4, 1);
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(4, 1);
         }
     }
 }
@@ -114,7 +114,7 @@ void FUN_140aae2b0(void*, Unk_140aae2b0Arg* arg)
 // @0x140aae430
 void* FUN_140aae430()
 {
-    return DAT_143ab8f48;
+    return TSingleton<MS2>::s_instance;   // C3: was extern void* DAT_143ab8f48
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9fb70-0x142c9fbe0 .text$yd

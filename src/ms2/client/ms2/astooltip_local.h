@@ -338,10 +338,6 @@ struct Unk_TooltipQuestHolder
     unsigned char m_00[0x10];
     Unk_TooltipQuestState m_quests;                                   // +0x10
 };
-struct Unk_TooltipQuestOwner
-{
-    Unk_TooltipQuestHolder* FUN_141523ba0();                          // MyPC: the quest state
-};
 
 
 CStringW FUN_1416e4df0(int nBookId);                                  // the quest/book name (as part 1)

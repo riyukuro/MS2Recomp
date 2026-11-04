@@ -30,15 +30,6 @@ public:
 class CLogString* GetLogString();
 
 // Unrecovered helpers.
-// CAtlArray<CString> stand-in: the exe instantiates its own copies of this array's ctor/dtor/GetCount/operator[]
-// (0x140163230 / 0x1401641d0 / 0x1401662c0 / 0x140164930), distinct from the CAtlArray<CString> COMDATs of other units.
-class Unk_TimeStrList {
-public:
-    Unk_TimeStrList(); ~Unk_TimeStrList();
-    CString& FUN_140164930(size_t index);
-    void* m_data; size_t m_count; size_t m_alloc; int m_pad_18;
-};
-MS2_CHECK_SIZE(Unk_TimeStrList,0x20);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& out, const wchar_t* delimiter);
@@ -174,13 +165,13 @@ void CStopWatchEx::SetCallback(Unk_StopWatchCallback* callback) { m_callback = c
 Unk_TimeRange::Unk_TimeRange() { startHour = 0; startMinute = 0; endHour = 0; endMinute = 0; }
 // @0x140869b60
 int Unk_TimeRange::Parse(CString text) {
-    Unk_TimeStrList halves;
-    Unk_SplitA(text, (ATL::CAtlArray<CStringA>*)&(halves), "-");
-    if(reinterpret_cast<ATL::CAtlArray<CStringA>*>(&halves)->GetCount() != 2) return 0;
+    ATL::CAtlArray<CStringA> halves;
+    Unk_SplitA(text, &halves, "-");
+    if(halves.GetCount() != 2) return 0;
     ATL::CAtlArray<int> start;
     ATL::CAtlArray<int> end;
-    XmlSplit(halves.FUN_140164930(0), start, ":");
-    XmlSplit(halves.FUN_140164930(1), end, ":");
+    XmlSplit(halves[0], start, ":");
+    XmlSplit(halves[1], end, ":");
     if(start.GetCount() != 2 || end.GetCount() != 2) return 0;
     startHour = start[0];
     startMinute = start[1];

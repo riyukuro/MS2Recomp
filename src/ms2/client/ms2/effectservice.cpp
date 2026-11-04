@@ -1100,15 +1100,8 @@ struct Unk_EsOptionData
 // The voice gender option (+0xe4 of the game option).
 struct Unk_SoundFlag;
 int FUN_141260470(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
-class Unk_EsVoiceOption { };
-class Unk_EsOption
-{
-public:
-    // @0x1411b1f30
-    Unk_EsVoiceOption* FUN_1411b1f30() { return &m_voice; }
-    char m_pad_00[0xe4];
-    Unk_EsVoiceOption m_voice;                                  // +0xe4
-};
+// @0x1411b1f30
+Unk_SoundFlag* CGameOption::FUN_1411b1f30() { return &m_soundChar; }
 // The client config (FUN_1401d31f0, declared void* in postprocesseffect.h): sky object files at +0x208, area effect files at +0x3c0.
 struct Unk_EsConfig
 {
@@ -1380,7 +1373,7 @@ unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
     Unk_EventVoice kVoice;
     if (TSingleton<SoundPropertyMgr>::GetInstance()->GetEventVoice(nId, pActor, &kVoice)) {
         CString strName;
-        if (FUN_141260470(reinterpret_cast<Unk_SoundFlag*>(reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30())))
+        if (FUN_141260470(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()))
             strName = kVoice.m_strRestoreSoundId;
         else
             strName = kVoice.m_strSoundId;

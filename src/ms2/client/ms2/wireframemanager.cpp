@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x141b93fd0-0x141b94cb0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
-// MS2-PIN: ?CompareElements@Unk_WfEntTraits@@SA_NAEBUUnk_EntRef@@0@Z 0x141b945b0
+// MS2-PIN: ?CompareElements@Unk_WfEntTraits@@SA_NAEBV?$SmartPointer@VEntity@egf@@@efd@@0@Z 0x141b945b0
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\wireframemanager.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -59,7 +59,7 @@ void CWireframeManager::FUN_141b940c0(egf::Entity* pEntity)
             pObject->AttachProperty(pWire);
         }
         pWire->SetWireframe(m_bWireframe);
-        Unk_EntRef ref(reinterpret_cast<Unk_Entity*>(pEntity));
+        egf::EntityPtr ref(reinterpret_cast<egf::Entity*>(pEntity));
         m_entities.AddTail(ref);
     }
 }
@@ -69,7 +69,7 @@ void CWireframeManager::FUN_141b941f0(egf::Entity* pEntity)
 {
     POSITION pos;
     {
-        Unk_EntRef ref(reinterpret_cast<Unk_Entity*>(pEntity));
+        egf::EntityPtr ref(reinterpret_cast<egf::Entity*>(pEntity));
         pos = m_entities.Find(ref, 0);
     }
     if (pos != 0)
@@ -83,10 +83,10 @@ void CWireframeManager::FUN_141b94260(bool bWireframe)
     POSITION pos = m_entities.GetHeadPosition();
     while (pos != 0)
     {
-        Unk_EntRef ref = m_entities.GetNext(pos);
+        egf::EntityPtr ref = m_entities.GetNext(pos);
         if (ref != 0)
         {
-            NiAVObject* pObject = FUN_1413f98b0()->GetSceneGraphFromEntity(reinterpret_cast<egf::Entity*>(ref.FUN_1408a9090()));
+            NiAVObject* pObject = FUN_1413f98b0()->GetSceneGraphFromEntity(reinterpret_cast<egf::Entity*>(ref.data()));
             if (pObject)
             {
                 NiWireframeProperty* pWire = NiDynamicCast(NiWireframeProperty, pObject->GetProperty(NiProperty::WIREFRAME));

@@ -66,3 +66,31 @@ MS2_CHECK_OFFSET(CMentoringManager, m_n10, 0x10);
 MS2_CHECK_OFFSET(CMentoringManager, m_n20, 0x20);
 MS2_CHECK_OFFSET(CMentoringManager, m_mentors, 0x38);
 MS2_CHECK_OFFSET(CMentoringManager, m_mentees, 0x58);
+
+// The mentoring payloads CMentoringManager reads and UIInviteMentoringDialog sends (first byte = the protocol); the
+// structs of commonfiles\mentor.h with their own constructors (their reads and writes are the mentor.h methods).
+struct Unk_MMListPacket2                                    // protocol 2 (0x140b730b0, dtor 0x140b73320)
+{
+    unsigned char protocol;
+    ATL::CAtlArray<Unk_MentorPtr<CMentor> > entries;
+    Unk_MMListPacket2() : protocol(2) {}
+};
+struct Unk_MMNamePacket5                                    // protocol 5 (0x140b73110, dtor 0x140b73360)
+{
+    unsigned char protocol;
+    __int64 id;
+    CStringW name;
+    Unk_MMNamePacket5() : protocol(5), id(0) {}
+};
+struct Unk_MMIdPacket6                                      // protocol 6 (0x140b73010)
+{
+    unsigned char protocol;
+    __int64 id;
+    Unk_MMIdPacket6() : protocol(6), id(0) {}
+};
+struct Unk_MMIdPacket7                                      // protocol 7 (0x140b73030)
+{
+    unsigned char protocol;
+    __int64 id;
+    Unk_MMIdPacket7() : protocol(7), id(0) {}
+};

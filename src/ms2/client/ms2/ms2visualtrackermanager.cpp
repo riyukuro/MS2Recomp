@@ -46,6 +46,7 @@
 #include "ms2/unnamed/unit_1414bc310.h"
 #include <atlcomcli.h>
 #include <d3d9.h>
+#include <NiDX9Renderer.h>
 #include <list>
 #pragma push_macro("min")
 #pragma push_macro("max")
@@ -213,13 +214,13 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 unsigned int FUN_140d868f0(char*);   // C3: was FUN_140d868f0
 extern unsigned __int64 DAT_143ae0bd0;                                      // PhysX memory in use (bytes)
-extern IDirect3D9* DAT_143d6ea00;                                           // the D3D9 object
+struct NiDX9RendererStatics : NiDX9Renderer { using NiDX9Renderer::ms_pkD3D9; };   // C3: was extern IDirect3D9* DAT_143d6ea00 (protected static)
 extern int DAT_143b0d788;                                                   // GFx system allocation (bytes)
 
 
 // ---- small helpers that the exe keeps as separate functions ----
 // @0x14151e7e0
-IDirect3D9* GetIDirect3D9() { return DAT_143d6ea00; }
+IDirect3D9* GetIDirect3D9() { return NiDX9RendererStatics::ms_pkD3D9; }
 // @0x14151e740
 int FUN_14151e740() { return DAT_143b0d788; }
 // @0x14151e750: the allocator behind the memory manager

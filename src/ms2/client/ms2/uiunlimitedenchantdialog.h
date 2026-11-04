@@ -18,7 +18,7 @@
 
 class CInPacket;
 class CItem;
-class Unk_UeBag;
+class ASTileList;
 
 // The result of the item check (it is also the argument of the "system error" text, so it is a real enum).
 enum Unk_UnlimitedEnchantError
@@ -54,7 +54,6 @@ public:
     void SendLimitBreakMode1(unsigned __int64 nUid);                       // 0x140fb7570 ask for the enchant
     void FUN_140fb7690(__int64 nUid);                                // 0x140fb7690 refresh the bag, select the item
     Unk_UnlimitedEnchantError FUN_140fb7870(MS2Ptr<CItem> spItem);                         // 0x140fb7870 check an item (0 ok)
-    MS2Ptr<Unk_UeBag> FUN_140ba4b70(const CString& strName);         // child lookup of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

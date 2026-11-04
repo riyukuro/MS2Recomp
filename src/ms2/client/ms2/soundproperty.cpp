@@ -162,7 +162,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);   // string attribute
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 CString FUN_14028d1f0(const char* psz);                                 // CString of attribute text
 CString FUN_140188f50(const char* psz, int nCodePage);
 CString FUN_14016a5c0(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
@@ -172,8 +172,7 @@ CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex)
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
-class Unk_SpOptions { public: int FUN_141260470(); };
-class Unk_SpConfig { public: Unk_SpOptions* FUN_1411b1f30(); };
+int FUN_141260470(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
 
 int FUN_141793500(CString strEvent);
 
@@ -254,7 +253,7 @@ void SystemSoundProperty::Load(Unk_140165cf0* pElem)
     if (m_bByJob && m_bByGender)
     {
         CString strJobs;
-        FUN_140873ad0(pElem, "jobSoundID", strJobs);
+        XmlQuery((class TiXmlElement*)(pElem), "jobSoundID", strJobs);
         ATL::CAtlArray<CString> jobs;
         Unk_SplitA(const_cast<CStringA&>(strJobs), (ATL::CAtlArray<CStringA>*)&(jobs), ";");
         for (unsigned i = 0; i < jobs.GetCount(); i++)
@@ -294,7 +293,7 @@ CString SystemSoundProperty::GetCategory(int nGender)
 CString SystemSoundProperty::GetSoundName(unsigned nGender, int nJob)
 {
     int bByJob = m_bByJob;
-    if (reinterpret_cast<Unk_SpConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470() != 0)
+    if (FUN_141260470(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30()) != 0)
         bByJob = 0;
     if (m_bByGender && bByJob)
     {
@@ -349,7 +348,7 @@ void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
             CString strKey;
             strKey.Format("Job%d", nJob);
             CString strNames;
-            if (FUN_140873ad0(pElem, strKey, strNames) != 0)
+            if (XmlQuery((class TiXmlElement*)(pElem), strKey, strNames) != 0)
                 continue;
             ATL::CAtlArray<CString> names;
             Unk_SplitA(const_cast<CStringA&>(strNames), (ATL::CAtlArray<CStringA>*)&(names), ",");

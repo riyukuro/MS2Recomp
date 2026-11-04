@@ -65,6 +65,7 @@
 #include "usercommandcli.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/userugcmapinfo.h"   // C3: Unk_BmPtr<UserUGCMapInfo>
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2format.h"
@@ -79,6 +80,7 @@
 #include "ms2/placeholder/ckeytable.h"
 #include "ms2/placeholder/ckeysettingparam.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/unk_1402a9d70.h"   // the condition-table static (CAtlMap<UINT, CString>)
 class CQuestData;
 class CQuestManagerCommon;
 class CReconnectionManagerCli;
@@ -99,13 +101,6 @@ class Unk_Restrictions;
 struct Unk_XmlElement;
 
 // Header-local objects in original initializer order. Unknown original names.
-struct Unk_CommandStatics {
-    Unk_CommandStatics(int,float,float,float,int);
-    ~Unk_CommandStatics();
-    void* a; void* b; void* c; void* d; void* e;
-    void* f; void* g; void* h; void* i; void* j;
-};
-MS2_CHECK_SIZE(Unk_CommandStatics,0x50);
 struct Unk_CommandId { explicit Unk_CommandId(unsigned __int64); unsigned __int64 value; };
 MS2_CHECK_SIZE(Unk_CommandId,8);
 static CString s_sort8[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
@@ -113,14 +108,14 @@ static CString s_sort7[]={"None","Buy","Like","PriceLow","PriceHigh","Create","E
 static CString s_skill="skill";
 static CString s_stun="stun";
 static Unk_CommandId s_id(0);
-static Unk_CommandStatics s_table(17,.75f,.25f,2.25f,10);
+static Unk_1402a9d70 s_table(17,.75f,.25f,2.25f,10);
 static CString s_job="jobCode";
 static CString s_sort="sortValue";
 static CString s_tab="tabIndex";
 static CString s_sort7b[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skillb="skill";
 static CString s_stunb="stun";
-static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
+static Unk_1402a9d70 s_tableb(17,.75f,.25f,2.25f,10);
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 // External, non-RTTI command and XML helper types; scalar layout follows callers.
@@ -149,7 +144,7 @@ int FUN_14136f660(void*,const char*,int&);
 #include "ms2/placeholder/coutpacket.h"
 extern bool DAT_143af62d0;
 extern int DAT_143ab2914,DAT_143ab0248;
-extern Vector3 DAT_143b01a60;
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 #include "ms2/placeholder/mstime.h"
 #include "ms2/commonfiles/crashmanager.h"
 void FUN_1401d9a30(CStringW&,ATL::CAtlArray<int>&,const wchar_t*);
@@ -245,14 +240,6 @@ public:
     void SetFrameLimit(float);
     void StartFrameSampling(unsigned int, int);
 };
-class Unk_CommandActorPtr {
-public:
-    Unk_CommandActorPtr(void*);
-    ~Unk_CommandActorPtr();
-    void* FUN_140fa9d30() const;
-private: void* unknown; void* object;
-};
-MS2_CHECK_SIZE(Unk_CommandActorPtr,0x10);
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -395,7 +382,7 @@ struct Unk_g1_List48 { void* m_00; void* m_08; void* m_10; void* m_18; void* m_2
 MS2_CHECK_SIZE(Unk_g1_List48,0x30);
 struct Unk_g1_EffectReq { void* m_name; int m_value; int m_pad; };
 // The game TinyXML element (ctor 0x14086f2f0, dtor 0x14086f450, 0x90 bytes).
-class TiXmlElement { public: TiXmlElement(const char*); ~TiXmlElement(); private: void* m_pad[0x90/sizeof(void*)]; public:
+class TiXmlElement { public: TiXmlElement(const char*); virtual ~TiXmlElement(); private: void* m_pad[0x88/sizeof(void*)]; public:
     void SetAttribute(char const*, int);   // C3: was free FUN_14086f920
 };
 // The game TinyXML declaration node (ctor 0x1408704d0, 0x68 bytes).
@@ -434,20 +421,12 @@ void FUN_140841420(CStringW&);
 int FUN_14083fec0(CStringW,CStringW);
 // @0x141371ac0
 inline void* FUN_141371ac0(void* p) { return (char*)p+0x160; }
-// ATL::CAtlList of world objects (same shape as uidevelopdialog's Unk_DevList)
-class Unk_ShList { public:
-    Unk_ShList(int nBlock);             // 0x140963ae0
-    ~Unk_ShList();                      // 0x1409647c0
-    __int64 FUN_140967000();            // head position
-    void* FUN_140a01110(__int64 pos);
-    void FUN_1409671f0(__int64* pPos);  // next
-private:
-    void* m_raw[6];
-};
 int FUN_141274b10(Unk_ExpActor *);  // C3: the definition's signature
 __int64 FUN_140967000(void*);
 void* FUN_140a01110(void*,__int64);
 class Unk_WsC_GameObj; template <> efd::SmartPointer<Unk_WsC_GameObj>::operator Unk_WsC_GameObj*() const;
+template <> ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >::CAtlList(UINT nBlockSize);   // 0x140963ae0
+template <> ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >::~CAtlList();                 // 0x1409647c0
 void FUN_1409671f0(void*,__int64*);
 void FUN_140a53190(void*,int);
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
@@ -1088,8 +1067,8 @@ int CUserCommandCli::SetHomePassword(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()>2) flag=args.FUN_1408d1f60(2,0);
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_CommandActorPtr ref(((void*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
-        if(ref.FUN_140fa9d30()) {
+        Unk_BmPtr<UserUGCMapInfo> ref(((class UserUGCMapInfo*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
+        if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x18); packet.WriteUInt8((unsigned char)mode);
             packet.WriteUnicodeString(name); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet);
         }
@@ -1117,8 +1096,8 @@ int CUserCommandCli::SetHomeNotice(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_CommandActorPtr ref(((void*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
-        if(ref.FUN_140fa9d30()) {
+        Unk_BmPtr<UserUGCMapInfo> ref(((class UserUGCMapInfo*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
+        if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x1d); packet.WriteUnicodeString(name); FUN_140710590(packet);
         }
     }
@@ -1371,10 +1350,10 @@ int CUserCommandCli::ShowFishRecordReport(Unk_CommandArgs&) {
 }
 // @0x1413687d0
 int CUserCommandCli::ShowEffectAfterimage(Unk_CommandArgs&) {
-    Unk_ShList list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list),reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b10));
-    for(__int64 pos=list.FUN_140967000(); pos!=0; list.FUN_1409671f0(&pos)) {
-        void* entry=reinterpret_cast<efd::SmartPointer<Unk_WsC_GameObj>*>(list.FUN_140a01110(pos))->operator Unk_WsC_GameObj*();
+    ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > list(10);
+    WorldService::GetInstance()->FUN_141bd2db0(&list,reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b10));
+    for(POSITION pos=list.GetHeadPosition(); pos!=0; list.GetNext(pos)) {
+        void* entry=list.GetAt(pos).operator Unk_WsC_GameObj*();
         NoticeMessage request;
         request.m_strName="Eff_AfterImage.xml";
         request.m_nObject=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(entry));

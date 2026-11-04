@@ -84,7 +84,6 @@ class ASDialog : public ASDisplayObject
 {
 public:
     virtual void vfunc_2(int, int, int);
-    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW a1);          // invoke with a string
     Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& a1);      // invoke with an object
 };
 
@@ -450,7 +449,7 @@ void UIMailListDialog::FUN_1419e5000(__int64 nMailId)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
-        pDlg->FUN_140acd130("readMail", FUN_141b71910(nMailId));
+        static_cast<AScript*>(pDlg)->Invoke("readMail", FUN_141b71910(nMailId));
     FUN_1419e5900();
 }
 MS2_REPLACE_METHOD(0x1419E5000, UIMailListDialog, FUN_1419e5000, 167, 0xCFAD7E71); // FUN_1419e5000
@@ -460,7 +459,7 @@ void UIMailListDialog::FUN_1419e50b0(__int64 nMailId)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
-        pDlg->FUN_140acd130("receiveMail", FUN_141b71910(nMailId));
+        static_cast<AScript*>(pDlg)->Invoke("receiveMail", FUN_141b71910(nMailId));
 }
 MS2_REPLACE_METHOD(0x1419E50B0, UIMailListDialog, FUN_1419e50b0, 154, 0x92C96AA2); // FUN_1419e50b0
 

@@ -129,7 +129,6 @@ CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
 bool FUN_140e45240(const CStringW& s, const char* c);
-extern Unk_140e45740* DAT_143ac5d88;
 CStringA FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item);
 class ASWindow   // C3: member view for the former free stand-ins
 {
@@ -967,7 +966,7 @@ bool AdPushEntityLimitedBundle::vfunc_1()
             if (script.get())
             {
                 Unk_AdItemInfo& info = m_item->m_info;
-                CStringA strIcon = info.FUN_1406a0160();
+                CStringA strIcon = reinterpret_cast<CDBPremiumProduct&>(info).GetIconPath();
                 static_cast<AScript*>(script.operator->())->FUN_1407cba60(s_strIconPath, CStringA(strIcon));
                 script->FUN_1407cbbe0("visible", true);
                 script->FUN_1407cb9c0("id", m_nId);
@@ -1148,7 +1147,7 @@ bool FUN_140e45240(const CStringW& s, const char* c)
 // @0x140e45740
 Unk_140e45740* FUN_140e45740()
 {
-    return DAT_143ac5d88;
+    return reinterpret_cast<Unk_140e45740*>(SingletonClass<UIAlignWidgetManager>::ms_pSingleton);   // 0x143ac5d88
 }
 
 // @0x140e47420

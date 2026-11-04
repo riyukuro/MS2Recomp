@@ -71,42 +71,12 @@ __int64 GetServerTime();                                           // server tim
 CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span);                // "mm:ss" text
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
 
-// The localized-string formatter: FUN_14028dfa0(key, args) is the non-variadic back end (invented name; see
-// uiworldchampionrewarddialog.cpp). This formatter does not share fmt's BasicFormatter<wchar_t> instantiations, so the
-// unit-local formatter class Unk_WcFormatter (same Char) gives its MakeValue / ArgType copies their own names.
-CStringW FUN_14028dfa0(const CStringW&, const fmt::ArgList&);
-namespace fmt { namespace internal {
-struct Unk_WcFormatter { typedef wchar_t Char; };
-template <typename T> inline ULongLong wc_make_type(const T& arg) { return MakeValue<Unk_WcFormatter>::type(arg); }
-struct Unk_WcArgType {
-    ULongLong type;
-    Unk_WcArgType() : type(0) {}
-    template <typename T> Unk_WcArgType(const T& arg) : type(wc_make_type(arg)) {}
-};
-inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType t1 = Unk_WcArgType(), Unk_WcArgType t2 = Unk_WcArgType(),
-                              Unk_WcArgType t3 = Unk_WcArgType(), Unk_WcArgType t4 = Unk_WcArgType(), Unk_WcArgType t5 = Unk_WcArgType(),
-                              Unk_WcArgType t6 = Unk_WcArgType(), Unk_WcArgType t7 = Unk_WcArgType(), Unk_WcArgType t8 = Unk_WcArgType(),
-                              Unk_WcArgType t9 = Unk_WcArgType(), Unk_WcArgType t10 = Unk_WcArgType(), Unk_WcArgType t11 = Unk_WcArgType(),
-                              Unk_WcArgType t12 = Unk_WcArgType(), Unk_WcArgType t13 = Unk_WcArgType(), Unk_WcArgType t14 = Unk_WcArgType()) {
-    return t0.type | (t1.type << 4) | (t2.type << 8) | (t3.type << 12) | (t4.type << 16) | (t5.type << 20) |
-           (t6.type << 24) | (t7.type << 28) | (t8.type << 32) | (t9.type << 36) | (t10.type << 40) |
-           (t11.type << 44) | (t12.type << 48) | (t13.type << 52) | (t14.type << 56);
-}
-} }
-#define WC_REF(n) fmt::internal::MakeValue<fmt::internal::Unk_WcFormatter>(v##n)
-#define WC_WRAP(n) \
-    template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
-    inline CStringW FUN_14028dfa0(CStringW arg1, FMT_GEN(n, FMT_MAKE_ARG)) { \
-        const fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, WC_REF)}; \
-        return FUN_14028dfa0(arg1, fmt::ArgList(fmt::internal::wc_make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
-    }
-WC_WRAP(3)
+#include "ms2/placeholder/wcformat.h"  // FUN_14028dfa0 and its wrappers
 
 CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids);
 void* FUN_140a8a680(int nUiId);
@@ -240,7 +210,7 @@ void PartyVoteKickUserCli::vfunc_2()
     MS2Ptr<CPartyMember> member = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(owner);
     if (member.get() != 0)
         strName = member->FUN_141637bd0();
-    FUN_1412751b0(FUN_1405c2690(CStringW(L"s_party_vote_kick_user_notify"), strName), 2);
+    FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_party_vote_kick_user_notify"), strName), 2);
     void* pDialog = FUN_140a8a680(0x4e45);
     if (pDialog != 0)
     {

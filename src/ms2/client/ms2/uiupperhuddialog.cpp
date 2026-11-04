@@ -1369,7 +1369,7 @@ extern NiFixedString DAT_143ae5430;
 extern NiFixedString DAT_143ae5440;
 extern NiFixedString DAT_143ae5450;
 extern NiFixedString DAT_143ae5458;
-extern NiRTTI DAT_143ae0e88;
+class MS2VelocityMaterialSwapProcessor { public: static const NiRTTI ms_RTTI; };   // C3: was extern NiRTTI DAT_143ae0e88
 extern float DAT_1439f824c;
 extern float DAT_1439f8250;
 extern float DAT_1439f8254;
@@ -1491,7 +1491,7 @@ void UIVisualEffectDialog::OnLoadComplete()
     obj.FUN_1407cbbe0("blackAndWhiteEnable", bEnable);
     {
         Unk_HudPPEffectPtr spEffect(((class Unk_HudPPEffect*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
-        Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
+        Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
         bool bAll = false;
         if (FUN_14135dd70(&spBlur) != 0)
             bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
@@ -1924,7 +1924,7 @@ void UIVisualEffectDialog::SetSliderValue(const CString& strName, float fValue)
 void FUN_14135d9d0(int nMode)
 {
     Unk_HudPPEffectPtr spEffect(((class Unk_HudPPEffect*)FUN_1411782c0((void*)(((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())), 3)));
-    Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
+    Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&MS2VelocityMaterialSwapProcessor::ms_RTTI, ((class NiObject*)((class NiViewRenderClick*)(class Unk_HudPPEffect*)(FUN_14135dd90(&spEffect)))->GetProcessor())));
     if (FUN_14135dd70(&spBlur) != 0)
         FUN_14135dd80(&spBlur)->SetMode(nMode);
     bool bOk = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(10);
@@ -2149,7 +2149,7 @@ float Unk_ShaderVec4::FUN_14135e1a0() const
 
 // ==== UIWeaponDummyDialog ====
 
-extern Unk_HudStreamPoint DAT_143b01a60;
+#define DAT_143b01a60 (*(Unk_HudStreamPoint*)&efd::Point3::ZERO)          // C3: was extern Unk_HudStreamPoint DAT_143b01a60
 extern char DAT_143aad1e0;
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 

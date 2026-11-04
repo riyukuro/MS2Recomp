@@ -145,6 +145,7 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_AdditionalEffect@@@@AEAAXPEAX@Z 0x1409c1a30 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asitemslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#define MS2_ASUICOMPONENT_SLOTS   // C3: slots 3 and 16-24 are ASUIComponent's (not redeclared below)
 #include <new>
 #include "ms2/placeholder/asitemslot.h"
 #include "ms2/placeholder/asslot.h"
@@ -180,6 +181,7 @@
 #include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/cpetdatatable.h"
 #include "ms2/commonfiles/itembreakmanager.h"
+#include "ms2/commonfiles/meratproductkey.h"
 
 // ---- statics, in the exe's initializer order (.text$di) ----
 // The ASItemSlot TU.
@@ -322,17 +324,7 @@ public:
     ASAdditionalEffectSlot(CString strName, int nMovieId);
     ASAdditionalEffectSlot(const Scaleform::GFx::Value& v, int nMovieId);
     virtual ~ASAdditionalEffectSlot();                          // 0
-    virtual void vfunc_3(int nVisible);                         // 3 0x1422c7260 (ASUIComponent's)
-    virtual void vfunc_4(bool b);                               // 4 0x1422c7230
-    virtual void vfunc_16();                                    // 16-24 0x1422c7ec0..0x1422c80c0
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
+    // slots 3, 4 and 16-24: ASUIComponent's (0x1422c7260, 0x1422c7230, 0x1422c7ec0..0x1422c80c0)
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);       // 25 the effect tooltip
     void SendSlotData();                                       // push the slot data
     void SetEffect(int nId, unsigned short nLevel);         // set the effect and refresh
@@ -566,17 +558,7 @@ class ASScrollPanel : public ASUIComponent
 public:
     ASScrollPanel(const Scaleform::GFx::Value& v, int nMovieId);
     virtual ~ASScrollPanel();                                   // 0
-    virtual void vfunc_3(int nVisible);                         // 3 0x1422c7260 (ASUIComponent's)
-    virtual void vfunc_4(bool b);                               // 4 0x1422c7230
-    virtual void vfunc_16();                                    // 16-24 0x1422c7ec0..0x1422c80c0
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
+    // slots 3, 4 and 16-24: ASUIComponent's (0x1422c7260, 0x1422c7230, 0x1422c7ec0..0x1422c80c0)
     void SetContentsHeight(int nHeight);                            // setContentsHeight
 };
 MS2_CHECK_SIZE(ASScrollPanel, 0x88);
@@ -1541,12 +1523,10 @@ extern int DAT_143ab2914;                                       // the GM level 
 struct Unk_MeratOid
 {
     Unk_MeratOid();
-    void FUN_1409c1640(CStringW strOid);                        // parse "P<n>" / "U<n>"
     int m_nPremiumId;                                           // +0x00
     __int64 m_nUgcId;                                           // +0x08
 };
 MS2_CHECK_SIZE(Unk_MeratOid, 0x10);
-struct Unk_MeratProductKey { void Reset(); CStringW FUN_1409b0470() const; };   // C3: unit-local view (def in asbilldata)
 
 // The premium part of a market record (the coin shop product, 0x238 bytes at record +0x30).
 class CDBPremiumProduct;
@@ -1973,7 +1953,7 @@ void ASMeratMarketProductBase::GetProductOID(Unk_MeratOid* pOid)
 {
     CStringW strOid;
     TryGetWString("productOID", strOid);
-    pOid->FUN_1409c1640(strOid);
+    reinterpret_cast<Unk_MeratProductKey*>(pOid)->FUN_1409c1640(strOid);
 }
 
 // @0x1409bc720
@@ -2754,9 +2734,10 @@ void ASObj::FUN_1409c1180(const char* szName, __int64 n)
 }
 
 // @0x1409c1640
-void Unk_MeratOid::FUN_1409c1640(CStringW strOid)
+// Parse the key from its text: "P<n>" (premium) or "U<n>" (UGC).
+void Unk_MeratProductKey::FUN_1409c1640(CStringW strOid)
 {
-    reinterpret_cast<Unk_MeratProductKey*>(this)->Reset();
+    Reset();
     if (strOid.GetLength() <= 2)
         return;
     wchar_t chKind = strOid[0];

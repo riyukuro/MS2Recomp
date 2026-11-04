@@ -59,10 +59,9 @@ public:
 };
 
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
  // the profile key of the player
-CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
+CString FUN_141028be0(__int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);

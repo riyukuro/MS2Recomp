@@ -66,7 +66,6 @@ int FUN_141276180(const CString&,const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_1422baa20 { public: Scaleform::GFx::Value FUN_1422baa20(const char*); Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); Scaleform::GFx::Value FUN_140ba26d0(const char*,unsigned int);
     Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); };
-class Unk_1422ba7f0 : public AScript { public: Unk_1422ba7f0(const Scaleform::GFx::Value&,int); };
 // @0x141959330
 UIGuideEvent::UIGuideEvent() : m_sound(0),m_guide(0),m_tip(0),m_lastTip(0),m_tips(10),
     m_strings(17,.75f,.25f,2.25f,10),m_voices(17,.75f,.25f,2.25f,10),m_expiry(0),m_arrows(17,.75f,.25f,2.25f,10) { FUN_14195b970(); }
@@ -77,7 +76,7 @@ void UIGuideEvent::OnLoadComplete() {
     UIObject::OnLoadComplete();
     FUN_14195c230("guideTutorial",m_tutorial);
     FUN_14195c230("guideSummary",m_summary);
-    m_hasArrow.AssignRaw(new Unk_1422ba7f0(((AScript*)m_30.operator->())->GetMember("hasGuideArrow"),2));
+    m_hasArrow.AssignRaw(new AScript(const_cast<Scaleform::GFx::Value&>(static_cast<const Scaleform::GFx::Value&>(((AScript*)m_30.operator->())->GetMember("hasGuideArrow"))),2));   // the Value& ctor (0x1422ba7f0)
 }
 // @0x1419596e0
 void UIGuideEvent::vfunc_26() { UIObject::vfunc_26(); m_summary=NULL; m_tutorial=NULL; m_hasArrow=NULL; m_timer.Init(); }
@@ -179,8 +178,7 @@ void UIGuideEvent::CheckSummaryExpiry() { if(!m_expiry) return; if(GetTickCountM
 typedef Scaleform::GFx::Value GfxValue;
 int FUN_141274f80();
 float FUN_141adbe70(void*);                                         // UI scale
-Vector3* FUN_140ad0c10(Vector3*,float);             // efd::Point3::operator*=
-float FUN_1412762d0(const struct Unk_Point2*);
+float FUN_1412762d0(const NiPoint3&);
 int FUN_141389500(const CStringW&,int);                             // wide string to int
 bool FUN_1401c0090(const CString&,const CString&);
 void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
@@ -543,8 +541,8 @@ int UIGuideEventArrow::vfunc_2(void* out)
     *(Vector3*)out = reinterpret_cast<const Vector3&>(DAT_143b01a60);
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_pos), *(NiPoint3*)out))
     {
-        FUN_140ad0c10((Vector3*)out, FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance())));
-        ((Vector3*)out)->y += FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&m_pos));
+        *reinterpret_cast<efd::Point3*>(out) *= FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance()));
+        ((Vector3*)out)->y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(m_pos));
         return 1;
     }
     return 0;
@@ -833,7 +831,7 @@ int UIGuideEventArrowDialog::GetHouseMarkPosition(void* out)
     Vector3 tmp;
     if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(mark->FUN_14198b2b0()), *(NiPoint3*)out))
         return 0;
-    FUN_140ad0c10((Vector3*)out, FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance())));
+    *reinterpret_cast<efd::Point3*>(out) *= FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance()));
     return 1;
 }
 

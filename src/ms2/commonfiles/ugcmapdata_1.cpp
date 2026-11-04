@@ -68,12 +68,8 @@ public:
     virtual void vfunc_2();
     void FUN_1410bb610(int mode,PCBase* player,float distance,std::vector<efd::SmartPointer<egf::Entity> >& hits);
 };
-class Unk_Ptr1401cd040 {
-public:
-    Unk_Ptr1401cd040(void* p);                                      // 0x1401cd0b0
-    ~Unk_Ptr1401cd040();                                            // 0x1401cd150
-    Unk_UgcPhysSvc* m_p;
-};
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
 Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
@@ -336,14 +332,14 @@ void FUN_1408a1640(Cube* cube) {
 MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 // @0x1408a18d0
 int FUN_1408a18d0(__int64 charID) {
-    Unk_Ptr1401cd040 service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
+    efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
     int style=0;
     PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player!=0) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
-            reinterpret_cast<Unk_UgcPhysSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(service).operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
+            reinterpret_cast<Unk_UgcPhysSvc*>(service.operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
             if(hits.size()>0) {
                 efd::SmartPointer<egf::Entity> first=hits[0];
                 first->GetPropertyValue(0x85ef19e7,style);

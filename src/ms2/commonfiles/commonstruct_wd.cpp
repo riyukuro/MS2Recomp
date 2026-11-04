@@ -437,7 +437,7 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     }
 }
 // @0x14027a8c0
-void FUN_14027a8c0(void* vec, i64 first, i64 last, i64 dest) { FUN_14027a9d0(first, last, dest, (i64)&reinterpret_cast<VRemake*>(vec)->_Getal()); }
+i64 FUN_14027a8c0(i64 vec, i64 first, i64 last, i64 dest) { return FUN_14027a9d0(first, last, dest, (i64)&reinterpret_cast<VRemake*>(vec)->_Getal()); }
 
 // @0x14027a900
 void FUN_14027a900(void* vec, i64 first, i64 last, i64 dest) { FUN_14027ac40(first, last, dest, (i64)&reinterpret_cast<VIng*>(vec)->_Getal()); }

@@ -13,6 +13,7 @@
 #include "smartpushtable.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/formatstringid.h"   // C3: FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
@@ -42,13 +43,11 @@ class Unk_140166420 : public CFileSystem { };
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-int FUN_1407181d0(CString* pStr);                                       // string to int
+unsigned int FUN_1407181d0(const CString& str);                                       // string to int
 CFeatureManager* FUN_140166410();
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // split into a std::vector<CString>
 int Parse_140219650(const CStringA& value);
 
-CStringW FormatStringId(int id, const fmt::ArgList& args);              // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols.tsv)
 bool CSmartPushTable::s_bInit;
@@ -136,10 +135,10 @@ void CSmartPushTable::Load()
             Unk_StrVec idTag;
             FUN_140275080(*parts.FUN_14027f1c0(0), &idTag, ":");
             if (idTag.FUN_14028b4c0() > 0)
-                spData->m_requireItem.m_a = FUN_1407181d0(idTag.FUN_14027f1c0(0));
+                spData->m_requireItem.m_a = FUN_1407181d0(*idTag.FUN_14027f1c0(0));
             if (idTag.FUN_14028b4c0() > 1)
                 spData->m_requireItem.m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*idTag.FUN_14027f1c0(1));
-            spData->m_requireItem.m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
+            spData->m_requireItem.m_c = FUN_1407181d0(*parts.FUN_14027f1c0(2));
         }
         m_data.SetAt(spData->m_nId, spData);
     }

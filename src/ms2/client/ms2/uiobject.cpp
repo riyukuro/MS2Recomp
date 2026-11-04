@@ -51,7 +51,7 @@ void FUN_1412751b0(const CStringW& strText, int nType);     // system message
 void FUN_1412751f0(const CStringW& strText, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
 int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
-int FUN_1407181d0(const CString& str);
+unsigned int FUN_1407181d0(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
 

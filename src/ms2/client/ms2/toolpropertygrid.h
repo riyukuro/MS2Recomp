@@ -9,6 +9,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <efd/Point2.h>
 
 class CSliderProp;
 
@@ -79,7 +80,6 @@ public:
 };
 
 // A "r, g, b" / "x, y" / "x, y, z" text property.
-class Unk_GridPoint2 { public: Unk_GridPoint2(); float x, y; };         // ctor 0x14097f3a0
 class CMS2VectorProperty : public CMFCPropertyGridProperty
 {
 public:
@@ -87,7 +87,7 @@ public:
     virtual BOOL OnUpdateValue();                           // 0x141856580
 
     COLORREF GetColor();                                    // 0x1418563f0
-    Unk_GridPoint2 GetVector2();                            // 0x141856680
+    efd::Point2 GetVector2();                               // 0x141856680
     Vector3 GetVector3();                           // 0x141856770
     BOOL UpdateColor();                                     // 0x141855eb0 range-checks r, g, b
     BOOL UpdateWithParent();                                // 0x1418568a0

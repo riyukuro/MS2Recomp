@@ -191,7 +191,6 @@ static CQuestMaskTable* FUN_14109a710()
     return TSingleton<CQuestMaskTable>::s_instance;
 }
 Unk_NpcTableCli* FUN_1406d6e90();
-class Unk_HudActor { public: float FUN_140f4a450(); };
 class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, int n); };
 template<class T> T* Unk_DmgFindUI(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
@@ -841,7 +840,7 @@ CStringW CNpc::vfunc_77()
 void CNpc::vfunc_32(bool b)
 {
     if ((CObjectShadow*)m_spShadow != NULL && m_spShadow->FUN_14109a720()) {
-        if (reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() < 200000.0f)
+        if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() < 200000.0f)
             vfunc_93(false);
     }
     PCBase::vfunc_32(b);
@@ -1390,7 +1389,7 @@ bool CNpc::FUN_141094300()
         return true;
     float fDefault = 400.0f;
     float fRange = reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x218)->Get(fDefault) + m_spNpcData->m_capsule.m_fRadius;
-    if (reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() > fRange)
+    if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() > fRange)
         return false;
     return true;
 }
@@ -1903,7 +1902,7 @@ void CNpc::vfunc_33(void* a, void* b)
             if (bBoss)
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
         } else if (pPlayer != NULL && bBoss && pPlayer->IsDead() == 0) {
-            if (reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+            if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
                 if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
             }
@@ -1948,7 +1947,7 @@ void CNpc::vfunc_34(void* p)
             if (pPlayer != NULL && GetNpcData()->IsBoss())
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
         } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->IsDead() == 0) {
-            if (reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+            if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
                 if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
             }
@@ -1999,7 +1998,7 @@ void CNpc::vfunc_35(void* p)
             if (pPlayer != NULL && GetNpcData()->IsBoss())
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(2, pPlayer);
         } else if (pPlayer != NULL && GetNpcData()->IsBoss() && pPlayer->IsDead() == 0) {
-            if (reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+            if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
                 if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5770(1, pPlayer);
             }

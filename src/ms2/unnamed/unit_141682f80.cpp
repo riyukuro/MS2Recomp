@@ -202,9 +202,6 @@ public:
 };
 #include "ms2/client/ms2/pcbase.h"
 class AdditionalCliList { public: unsigned FUN_1409709b0(); int FUN_140970a40(); };   // C3: member view
-bool FUN_140552690(Vector3* a, Vector3* b);
-bool FUN_140552700(Vector3* a, Vector3* b);
-void FUN_140ad0c10(Vector3* p, float f);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -356,7 +353,7 @@ Vector3 Unk_PCMove::FUN_141683290()
     }
     if (TSingleton<CMouseController>::GetInstance() != 0) {
         if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21f0() != 0) {
-            if (FUN_140552690(&kDir, &DAT_143b01a60))
+            if (reinterpret_cast<const efd::Point3&>(kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
                 *reinterpret_cast<efd::Point3*>(&kDir) = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(TSingleton<CMouseController>::GetInstance()->GetMove()));
         } else {
             TSingleton<CMouseController>::GetInstance()->FUN_140ad2070();
@@ -376,13 +373,13 @@ Vector3 Unk_PCMove::FUN_141683290()
                 }
             } else {
                 Vector3 kCur = FUN_140a58540()->GetLeftStickMoveDir();
-                if (FUN_140552700(&kCur, &DAT_143b01a60))
+                if (reinterpret_cast<const efd::Point3&>(kCur) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
                     *reinterpret_cast<efd::Point3*>(&kDir) = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(kCur));
             }
         }
     }
     if (bFlipped)
-        FUN_140ad0c10(&kDir, -1.0f);
+        reinterpret_cast<efd::Point3&>(kDir) *= -1.0f;
     return kDir;
 }
 
@@ -420,7 +417,7 @@ Vector3 Unk_PCMove::FUN_1416836d0()
             pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
             if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pActor)->FUN_1416749a0())->FUN_140970a40() != 0)
-                FUN_140ad0c10(&kDir, -1.0f);
+                reinterpret_cast<efd::Point3&>(kDir) *= -1.0f;
         }
     }
     return kDir;
@@ -490,7 +487,7 @@ void Unk_PCMove::FUN_141683a90()
             pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
             if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pActor)->FUN_1416749a0())->FUN_140970a40() != 0)
-                FUN_140ad0c10(&m_dir, -1.0f);
+                reinterpret_cast<efd::Point3&>(m_dir) *= -1.0f;
         }
     }
 }

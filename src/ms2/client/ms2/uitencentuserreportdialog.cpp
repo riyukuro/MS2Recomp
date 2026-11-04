@@ -22,6 +22,7 @@ void FUN_140201180(unsigned char* payload, COutputStream& stream);   // C3: the 
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/asgameentity.h"
 #include "ms2/placeholder/singletonclass.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 
@@ -31,13 +32,14 @@ static CString s_jobCode = "jobCode";
 static CString s_sortValue = "sortValue";
 static CString s_tabIndex = "tabIndex";
 template<> inline bool MS2Ptr<ASCheckBox>::IsNull() const { return m_p == 0; }
+// The page entity's copy and assignment are this unit's inline COMDATs.
+template<> inline MS2Ptr<ASGameEntity>::MS2Ptr(const MS2Ptr& o) : m_p(o.m_p) { AddRef(); }
+template<> inline MS2Ptr<ASGameEntity>& MS2Ptr<ASGameEntity>::operator=(const MS2Ptr& o) {
+    o.AddRef(); Release(); m_p = o.m_p; return *this;
+}
 
-class Unk_ReportEntity : public AScript {
-public:
-    template<class T> Unk_ReportHandle<T> GetChild(const CString&, Unk_ReportHandle<T>&);
-};
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
-template<class T> Unk_ReportHandle<T> MakeReportEntity(int, const Scaleform::GFx::Value&);
+MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);     // new ASGameEntity(root, nUiId)
 class Unk_ReportScript : public CPtred {
 public:
     template<class T> Scaleform::GFx::Value Invoke(const char* method, T value) {
@@ -46,23 +48,23 @@ public:
         FUN_1422bccb0(args.FUN_1409b1f70(0), value);
         return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
     }
-    template<class T> Unk_ReportHandle<T> GetChild(const CString& name) {
+    template<class T> MS2Ptr<T> GetChild(const CString& name) {
         Scaleform::GFx::Value child = reinterpret_cast<AScript*>(this)->GetMember(name);
         if (child.IsObject())
-            return MakeReportEntity<T>(m_id, child);
-        return Unk_ReportHandle<T>(0);
+            return FUN_140ba77e0(m_id, child);
+        return MS2Ptr<T>(0);
     }
 private:
     int m_id;
 };
 class Unk_ReportDialogAccess : public UIDialog {
 public:
-    template<class T> Unk_ReportHandle<T> GetChild(const CString& name) {
+    template<class T> MS2Ptr<T> GetChild(const CString& name) {
         if (m_30 == NULL)
-            return Unk_ReportHandle<T>(0);
+            return MS2Ptr<T>(0);
         return reinterpret_cast<Unk_ReportScript*>(m_30.operator->())->GetChild<T>(name);
     }
-    template<class T> Unk_ReportHandle<T> GetChild(const CString& name, Unk_ReportHandle<T>& out) {
+    template<class T> MS2Ptr<T> GetChild(const CString& name, MS2Ptr<T>& out) {
         out = GetChild<T>(name);
         return out;
     }
@@ -175,7 +177,7 @@ void UITencentUserReportDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     CString pageName(m_data.type == 3 ? "m_ReportPageUgcItem" : "m_ReportPageCommon");
-    Unk_ReportHandle<Unk_ReportEntity> pEntityPage;
+    MS2Ptr<ASGameEntity> pEntityPage;
     reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild(pageName, pEntityPage);
     MS2_ASSERT_AT(40, pEntityPage);
     m_page = new UITencentUserReportPage(m_data.type, pEntityPage);
@@ -326,7 +328,7 @@ void UITencentUserReportDialog::SendRequestReport()
 MS2_REPLACE_METHOD(0x140EDC010, UITencentUserReportDialog, SendRequestReport, 449, 0x6FD06EBB);
 
 // @0x140edc1e0
-UITencentUserReportPage::UITencentUserReportPage(int type, Unk_ReportHandle<Unk_ReportEntity> entity)
+UITencentUserReportPage::UITencentUserReportPage(int type, MS2Ptr<ASGameEntity> entity)
 {
     m_type = type;
     m_entity = entity;

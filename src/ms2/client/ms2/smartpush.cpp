@@ -204,7 +204,7 @@ CFunctionCubeService* FUN_1409670b0();                                  // the f
 
 // The auto interaction use counts of today (recipe id -> count).
 struct Unk_SpCountMap { char m_pad[0x48]; };
-extern Unk_SpCountMap DAT_143ab3150;
+extern ATL::CAtlMap<int, int> g_143ab3150;   // the gather counts (0x143ab3150)
 unsigned char FUN_140450290(Unk_SpCountMap* pMap, int nId, int* pnCount);  // Lookup
 
 // The bag.
@@ -1127,8 +1127,8 @@ void CSmartPushAutoInteraction::vfunc_4(int nValue)
     FUN_1412751f0(FUN_14028dfa0<int, CStringW>(CStringW(L"s_mastery_autointeraction_result"), nValue,
         CStringTable::GetInstance()->FUN_141811980(0x2f, nRecipe)), 3, 1);
     int nUsed = 0;
-    FUN_140450290(&DAT_143ab3150, nRecipe, &nUsed);
-    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_SpCountMap*)(&DAT_143ab3150))->SetAt(nRecipe, nUsed + nValue);
+    FUN_140450290(reinterpret_cast<Unk_SpCountMap*>(&g_143ab3150), nRecipe, &nUsed);
+    ((ATL::CAtlMap<unsigned long, int, ATL::CElementTraits<unsigned long>, ATL::CElementTraits<int>>*)(struct Unk_SpCountMap*)(&g_143ab3150))->SetAt(nRecipe, nUsed + nValue);
 }
 
 // @0x140dd2f10
@@ -1158,7 +1158,7 @@ void CSmartPushAutoInteraction::vfunc_3()
     if (!spRecipe)
         return;
     int nUsed = 0;
-    FUN_140450290(&DAT_143ab3150, nId, &nUsed);
+    FUN_140450290(reinterpret_cast<Unk_SpCountMap*>(&g_143ab3150), nId, &nUsed);
     int nMax = ((class CLua*)FUN_1401c0db0())->CalcGatheringObjectgMaxCount(spRecipe->m_nCountA, spRecipe->m_nCountB);
     int nAvail = nMax - nUsed;
     if (nAvail == 0)

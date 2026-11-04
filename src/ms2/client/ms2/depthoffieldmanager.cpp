@@ -28,7 +28,7 @@ class NiViewRenderClick   // C3: member view for the former free stand-ins
 public:
     class NiRenderListProcessor* GetProcessor() const;
 };
-void* FUN_1414cfbe0(void* p);
+#include "ms2/client/ms2/ms2materialswapprocessor.h"   // C3: MS2MaterialSwapProcessor::GetSwappers
 class Unk_LsPassFlag { public: void FUN_1414cf920(bool bOn); };   // the pass flag setter (ms2lightservice)
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_140c900e0(const NiFixedString& name, const efd::Point2* data, int n);
@@ -102,7 +102,7 @@ void FUN_141178150(bool on)
 {
     void* a = FUN_1411782c0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1);
     void* b = ((void*)((class NiViewRenderClick*)(void*)(a))->GetProcessor());
-    void* p = FUN_1414cfbe0(b);
+    void* p = (void*)&((MS2MaterialSwapProcessor*)b)->GetSwappers();
     reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 1)))->FUN_1414cf920(on);
     reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 2)))->FUN_1414cf920(on);
 }

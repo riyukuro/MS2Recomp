@@ -148,7 +148,7 @@ struct Unk_BpImageResult {
 };
 Unk_BpImageResult FUN_14186cc30(CStringW);
 class Unk_BpAScript : public AScript {
-public: Scaleform::GFx::Value FUN_140c38f00(const char*, CString, CStringW);
+public:
 };
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);
 void FUN_1422bcea0(Scaleform::GFx::Value*, const wchar_t*);
@@ -5430,7 +5430,7 @@ void UIItemBlueprintCreateDialog::FUN_140c370a0(const int& type, Unk_BpPtr<Unk_B
         if (image.get()) path = image->GetThumbnailPath();
         if (!path.IsEmpty()) FUN_14186cc30(path);
     }
-    reinterpret_cast<Unk_BpAScript*>(m_30.operator->())->FUN_140c38f00("setImage", kind, path);
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_140c38f00("setImage", kind, path);
 }
 MS2_REPLACE_METHOD(0x140C370A0, UIItemBlueprintCreateDialog, FUN_140c370a0, 685, 0xE3C97793);
 // @0x140c37360
@@ -5531,14 +5531,14 @@ bool UIItemBlueprintCreateDialog::FUN_140c37f90(int result, const CMsgBoxData&) 
 }
 MS2_REPLACE_METHOD(0x140C37F90, UIItemBlueprintCreateDialog, FUN_140c37f90, 224, 0x2B2BDFBE);
 // @0x140c38f00
-Scaleform::GFx::Value Unk_BpAScript::FUN_140c38f00(const char* method, CString kind, CStringW path) {
+Scaleform::GFx::Value AScript::FUN_140c38f00(const char* method, CString kind, CStringW path) {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce70(args.FUN_1409b1f70(0), kind);
     FUN_1422bcea0(args.FUN_1409b1f70(1), path);
     return FUN_1422bb8f0(method, args);
 }
-MS2_REPLACE_METHOD(0x140C38F00, Unk_BpAScript, FUN_140c38f00, 253, 0x727A8E79);
+MS2_REPLACE_METHOD(0x140C38F00, AScript, FUN_140c38f00, 253, 0x727A8E79);
 // @0x140c38080
 CStringW UIItemBlueprintCreateDialog::GetTrimmedName() {
     if (m_input == NULL) return L"";

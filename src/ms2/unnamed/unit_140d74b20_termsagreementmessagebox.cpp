@@ -27,7 +27,7 @@ public:
     CMsgBoxData(int nType);
     void SetExtra(const CStringW& str);
     void SetMsg(const CStringW& str);
-    void FUN_141a027c0(Unk_MsgBoxCallback cb);
+    void SetCallback(Unk_MsgBoxCallback cb);   // 0x141a027c0
     void FUN_141a01800(int n);
     void SetTitle(const CStringW& str);
     void SetCheckbox0(CStringW str, bool b);
@@ -92,7 +92,7 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(coupon);
     box->SetCheckbox1(CStringW(coupon), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_140d73c60(box);
     return box;
 }

@@ -103,7 +103,7 @@ class Unk_MentorScript : public AScript
 {
 public:
 };
-CString FUN_141028be0(unsigned __int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
+CString FUN_141028be0(__int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
 CString FUN_14016a600(const wchar_t* sz, int n);                         // wide to narrow
 CString FUN_140719530(unsigned __int64 n);                               // number to string
       // localized names

@@ -19,6 +19,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "worldservice.h"
+#include "ms2/client/ms2/uimessageboxdata.h"   // C3: CMsgBoxData::GetExtra
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unit-local views of exe objects used by the packet handlers.
@@ -151,8 +152,7 @@ public:
 };
 // Misc exe helpers.
 void FUN_1412751b0(const CStringW& text, int channel);
-CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 CStringW GetStringCommon(int id);
 CString FUN_14016a600(const wchar_t* text, int codepage);
 CString FUN_141028be0(__int64 id, const CString& a, int b, CString c);
@@ -164,7 +164,6 @@ void FUN_140d73bc0(int, int, void*, CStringW);
 void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 Unk_MessageBoxPtr FUN_14151f820();
-const CStringW& FUN_141a02ce0(void* messageBoxData);
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 
 
@@ -518,7 +517,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
         CStringW text = GetStringCommon(0x814);
         Unk_MessageBoxPtr active = FUN_14151f820();
         if ((FUN_140534fc0(active) ? true : false)
-            && FUN_141a02ce0(FUN_140534fe0(active)) == text)
+            && static_cast<CMsgBoxData*>(FUN_140534fe0(active))->GetExtra() == text)
         {
             return;
         }

@@ -151,7 +151,8 @@ public:
 };
 bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
 struct Unk_EntityAppFramework;
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 CLogString* GetLogString();
@@ -164,7 +165,6 @@ public:
 };
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140de8bd0(egf::Entity*, egf::PropertyID, efd::AssetID*);
-void FUN_140998250(egf::Entity*, egf::PropertyID, efd::AssetID&);
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -321,10 +321,10 @@ bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& 
     if (entity.data() != nullptr) {
         if (entity->GetModel()->ContainsModel("Mesh")) {
             actor = false;
-            FUN_140998250(entity, 0x770e5fc6, asset);
+            entity->GetPropertyValue<efd::AssetID>(0x770e5fc6, asset);
         } else if (entity->GetModel()->ContainsModel("Actor")) {
             actor = true;
-            FUN_140998250(entity, 0x12383cea, asset);
+            entity->GetPropertyValue<efd::AssetID>(0x12383cea, asset);
         } else {
             return false;
         }

@@ -69,7 +69,7 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
-extern bool DAT_143ae53c0;                          // "any shimmer object this frame" flag
+extern NiFixedString DAT_143ae53c0;                  // "gfEnableShimmerRender"
 CStringW GetStringCommon(int nStringId);
 
 class UIGraphicOptionDialog : public UIDialog
@@ -215,7 +215,7 @@ void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
             if (reinterpret_cast<NiRenderStep*>(pStep)->GetActive() != 0)
                 ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(0xc, true);
             bool bFlag = false;
-            FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
+            FUN_1409a5850(DAT_143ae53c0, (bool const*)(&bFlag), 1);
         }
     }
 }

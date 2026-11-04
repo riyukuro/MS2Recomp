@@ -80,8 +80,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 
 // Unrecovered helpers.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringW FUN_141425950(int nItemId);                                        // item name
-CStringTable* GetStringTable();                                              // the string table singleton
+CStringW FUN_141425950(unsigned int nItemId);                                        // item name
 CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
@@ -2181,7 +2180,7 @@ CStringW CMeratMarketProduct::GetName()
     if (IsPremium())
         return m_premium.GetName();
     int nItemId = GetItemId();
-    CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     if (IsUgc())
     {
         if (m_ugc.IsMusicType())

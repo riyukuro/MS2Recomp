@@ -114,7 +114,6 @@ public:
     void FUN_141adc530(int nId);                                        // show
 };
 
-CameraMgr* FUN_1409478c0();
 class UIMeratMarketDialog* FUN_140bd2c00();   // C3: was FUN_140bd2c00
 class Unk_HmOptions;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -641,7 +640,7 @@ void UIHomeMenuDialog::FUN_140c2a780()
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_freeCamera"))
     {
-        sp->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
+        sp->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
     }
     if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintSave"))
     {
@@ -701,7 +700,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)
     {
-        FUN_1409478c0()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else

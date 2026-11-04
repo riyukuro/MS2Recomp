@@ -6,7 +6,7 @@
 #pragma once
 
 #include "ms2/ms2layout.h"
-#include "ms2/client/ms2/fielddatacli.h"   // Unk_GVec3 / Unk_Rect4 / Unk_Frustum / CMinimap / CFieldDataCli
+#include "ms2/client/ms2/fielddatacli.h"   // NiPoint3 / Unk_Rect4 / Unk_Frustum / CMinimap / CFieldDataCli
 #include <NiRefObject.h>
 class NiPoint3;
 
@@ -25,7 +25,6 @@ class Unk_MvRot3 { friend class MinimapViewport; float x, y, z; };
 struct Unk_MvMatrix3
 {
     void FUN_142083d40(float fX, float fY, float fZ);           // 0x142083d40 efd::Matrix3::FromEulerAnglesXYZ (radians)
-    void FUN_140a01190(unsigned uiCol, Unk_GVec3& kCol) const;  // 0x140a01190 efd::Matrix3::GetCol
     float m_afEntry[3][3];
 };
 MS2_CHECK_SIZE(Unk_MvMatrix3, 0x24);
@@ -40,17 +39,16 @@ public:
     // Copies the map's minimap camera settings and rebuilds the view matrix; nScale > 0 overrides the zoom.
     unsigned InitFromFieldMinimap(int nScale);                                             // 0x141485770
     // Builds m_afMatrix from the camera position and the three rotation axes.
-    void FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& kAxisX, const Unk_GVec3& kAxisY,
-                       const Unk_GVec3& kAxisZ);                                    // 0x141485a50
+    void FUN_141485a50(const NiPoint3& kCamPos, const NiPoint3& kAxisX, const NiPoint3& kAxisY,
+                       const NiPoint3& kAxisZ);                                     // 0x141485a50
     // Extracts the three axes of the rotation matrix (in degrees) and unitizes them.
-    void FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ);   // 0x141486a20
+    void FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3& kAxisY, NiPoint3& kAxisZ);   // 0x141486a20
     void ResetScale();                                                           // 0x1414863e0 (m_fScale = 1)
     // Projects a world position onto the minimap with the current zoom.
-    bool FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410
-    bool FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale);       // 0x141486450
-    bool FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut);                      // 0x141486410 (NiPoint3 form, returns the in-view flag; uiminimapentity.cpp)
+    bool FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut);                       // 0x141486410 (returns the in-view flag)
+    bool FUN_141486450(const NiPoint3& kPos, NiPoint3& kOut, float fScale);         // 0x141486450
     // Transforms a world position by m_afMatrix; false (and FLT_MAX outputs) when it is behind the camera.
-    bool FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY, float& fZ);     // 0x141486550
+    bool FUN_141486550(const NiPoint3& kPos, float& fX, float& fY, float& fZ);      // 0x141486550
 
 private:
     Unk_Frustum m_kFrustum;         // +0x10 the minimap camera frustum (m_bOrtho at +0x28)

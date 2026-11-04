@@ -121,8 +121,7 @@ public:
 void FUN_14121e670(const CString& strDialog, int nHomeId, unsigned __int64 nDollId, bool bEquip);
 void FUN_14121e760(const CString& strDialog);
 void FUN_14121b840(int nError);                             // show the message of an error code
-struct Unk_AlignOffset { float x, y; };                       // dialog offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 
 // The equipment lists of the doll and of the player.
 typedef ATL::CAtlList<MS2Ptr<CEquipItem> > Unk_FdEquipList;
@@ -267,7 +266,7 @@ void UIFittingDollDialog::vfunc_66()
         }
         else
         {
-            FUN_141275c30(this, pInv, reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO), reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO));
+            FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }

@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "arccontroller.h"
+#include <efd/Point3.h>        // C3: efd::Point3::ZERO (DAT_143b01a60)
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -77,9 +78,9 @@ void CArcController::FUN_1409ab3b0(float fDelta)
         m_elapsed += fDelta;
         if (m_elapsed > m_arc.m_flightScale)
             m_elapsed = m_arc.m_flightScale;
-        Vector3 delta = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_elapsed, m_arc.m_direction);
-        delta.z = 0.5f * m_arc.m_gravity * m_elapsed * m_elapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_elapsed;
-        if (m_offset.FUN_140552690(DAT_143b01a60))
+        Vector3 delta = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_elapsed, m_arc.m_direction);
+        delta.z = 0.5f * m_arc.m_gravity * m_elapsed * m_elapsed + m_arc.m_speed * m_arc.m_angle.y * m_elapsed;
+        if (reinterpret_cast<const efd::Point3&>(m_offset) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
             m_offset = delta;
         if (m_bRising && delta.z < m_offset.z)
             m_bRising = false;

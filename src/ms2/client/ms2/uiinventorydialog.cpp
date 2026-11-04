@@ -225,6 +225,7 @@
 #include "ms2/placeholder/aslabel.h"   // C3: ASLabel::FUN_1422e4a50
 #include "ms2/commonfiles/contentshutdown.h"   // C3: CContentShutdown::Get
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton (the m_itemBreak button)
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
@@ -294,11 +295,6 @@ class Unk_InvTabBar : public ASButtonBar
 {
 };
 
-// The "m_itemBreak" button: enabled state.
-class Unk_InvButton : public ASUIComponent
-{
-public:
-};
 
 
 // The movie manager's key focus.
@@ -390,8 +386,7 @@ public:
 };
 
 // Message boxes, notices and strings.
-struct Unk_InvPoint { float x, y; };
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_InvPoint offLeft, Unk_InvPoint offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
@@ -1084,7 +1079,7 @@ void UIInventoryDialog::vfunc_18()
     {
         UIDialog* pDlg = FUN_140c300a0(m_190);
         if (pDlg != 0 && pDlg->vfunc_55() == 0 && pDlg->FUN_1422dc430() != 0)
-            FUN_141275c30(pDlg, this, reinterpret_cast<const Unk_InvPoint&>(efd::Point2::ZERO), reinterpret_cast<const Unk_InvPoint&>(efd::Point2::ZERO));
+            FUN_141275c30(pDlg, this, efd::Point2::ZERO, efd::Point2::ZERO);
     }
 }
 MS2_REPLACE_METHOD(0x141999C70, UIInventoryDialog, vfunc_18, 156, 0);
@@ -1596,7 +1591,7 @@ void UIInventoryDialog::vfunc_66()
         if (ASDialog* pAs = dynamic_cast<ASDialog*>((AScript*)m_30))
         {
             if (UIDialog* pDlg = FUN_140c300a0(m_190))
-                FUN_141275c30(pDlg, this, reinterpret_cast<const Unk_InvPoint&>(efd::Point2::ZERO), reinterpret_cast<const Unk_InvPoint&>(efd::Point2::ZERO));
+                FUN_141275c30(pDlg, this, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }
@@ -1837,7 +1832,7 @@ CStringW UIInventoryDialog::FUN_14199d9c0()
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
-    if (MS2Ptr<Unk_InvButton> spButton = m_30->FUN_140acce30<Unk_InvButton>("m_itemBreak"))
+    if (MS2Ptr<ASButton> spButton = m_30->FUN_140acce30<ASButton>("m_itemBreak"))
     {
         if (spButton->FUN_1422c2030() == 1 || (unsigned short)pPc->vfunc_78() >= 0x14)
         {

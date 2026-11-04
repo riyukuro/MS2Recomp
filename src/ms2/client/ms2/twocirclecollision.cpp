@@ -34,7 +34,7 @@ CTwoCircleCollision::~CTwoCircleCollision()
 // @0x141868c60
 void CTwoCircleCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
-    if (m_ptCenter.FUN_140552700(ptPos))
+    if (reinterpret_cast<const efd::Point3&>(m_ptCenter) != reinterpret_cast<const efd::Point3&>(ptPos))
     {
         m_ptCenter = ptPos;
         CBaseCollision::vfunc_3(ptPos, ptDir, fScale);

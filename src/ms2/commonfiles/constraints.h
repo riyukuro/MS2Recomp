@@ -4,20 +4,20 @@
 #include "ms2/ms2layout.h"
 struct Unk_MinUtf8 { int length; bool CheckA(const CString&); };
 MS2_CHECK_SIZE(Unk_MinUtf8,4);
-struct Unk_MaxLength { int length; explicit Unk_MaxLength(int); bool CheckA(const CString&); bool CheckW(const CStringW&); };
-MS2_CHECK_SIZE(Unk_MaxLength,4);
+struct Unk_NarrowLimit { int maximum; explicit Unk_NarrowLimit(int); bool Check(const CString&) const; bool Check(const CStringW&) const; };
+MS2_CHECK_SIZE(Unk_NarrowLimit,4);
 struct Unk_RangeUtf8 { int minLength,maxLength; Unk_RangeUtf8(int minLength,int maxLength); bool CheckA(const CString&); };
 MS2_CHECK_SIZE(Unk_RangeUtf8,8);
 struct Unk_MinWide { int length; bool CheckW(const CStringW&); };
 MS2_CHECK_SIZE(Unk_MinWide,4);
-struct Unk_MaxWide { int length; explicit Unk_MaxWide(int); bool CheckW(const CStringW&); };
-MS2_CHECK_SIZE(Unk_MaxWide,4);
-struct Unk_RangeWide { int minLength,maxLength; Unk_RangeWide(int minLength,int maxLength); bool CheckW(const CStringW&); };
-MS2_CHECK_SIZE(Unk_RangeWide,8);
+struct Unk_WideMaximum { int maximum; explicit Unk_WideMaximum(int); bool Check(const CStringW&) const; };
+MS2_CHECK_SIZE(Unk_WideMaximum,4);
+struct Unk_WideRange { int minimum,maximum; Unk_WideRange(int minimum,int maximum); bool Check(const CStringW&) const; };
+MS2_CHECK_SIZE(Unk_WideRange,8);
 struct Unk_MinBytes { int length; bool CheckA(const CString&); };
 MS2_CHECK_SIZE(Unk_MinBytes,4);
-struct Unk_MaxBytes { int length; explicit Unk_MaxBytes(int); bool CheckA(const CString&); };
-MS2_CHECK_SIZE(Unk_MaxBytes,4);
+struct Unk_NarrowMaximum { int maximum; explicit Unk_NarrowMaximum(int); bool Check(const CString&) const; };
+MS2_CHECK_SIZE(Unk_NarrowMaximum,4);
 struct Unk_RangeBytes { int minLength,maxLength; Unk_RangeBytes(int minLength,int maxLength); bool CheckA(const CString&); };
 MS2_CHECK_SIZE(Unk_RangeBytes,8);
 // Coordinate record passed to 0x1402c40c0; original type name is unknown.

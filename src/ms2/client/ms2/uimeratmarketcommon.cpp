@@ -139,12 +139,6 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/commonfiles/os.h"
 
-struct Unk_MeratOid                                            // the AS form of a market product key
-{
-    void FUN_1409c1640(CStringW str);
-    int m_nPremiumId;
-    __int64 m_nUgcId;
-};
 class Unk_McMarket : public CMeratMarketMan { };
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 class Unk_McUi : public CUIService { };
@@ -798,7 +792,6 @@ void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spP
 
 // ---- purchase condition checks ----
 class Unk_McPayback : public CUgcGetCostTable { };
-extern Unk_McPayback* DAT_143ab22a8;
 Unk_McPayback* FUN_140ec3940();
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1418fec00(int nType, __int64 nAmount, bool b);
@@ -1234,7 +1227,7 @@ void FUN_140ec1340(ASData& data)
     if (pPlayer == 0)
         return;
     Unk_ReportId id;
-    ((Unk_MeratOid*)&id)->FUN_1409c1640(FUN_14016a730(static_cast<const CString&>(data.FUN_1422b8d30()), 0));
+    ((Unk_MeratProductKey*)&id)->FUN_1409c1640(FUN_14016a730(static_cast<const CString&>(data.FUN_1422b8d30()), 0));
     __int64 nTarget = FUN_140718350(static_cast<const CString&>(data.FUN_1422b8d30()));
     CStringW strReason = data.FUN_1422b8f40();
     CStringW strName = data.FUN_1422b8f40();
@@ -1485,7 +1478,7 @@ int FUN_140ec2ab0()
 // @0x140ec3940
 Unk_McPayback* FUN_140ec3940()
 {
-    return DAT_143ab22a8;
+    return reinterpret_cast<Unk_McPayback*>(TSingleton<CUgcGetCostTable>::s_instance);
 }
 
 // @0x140ec3b50

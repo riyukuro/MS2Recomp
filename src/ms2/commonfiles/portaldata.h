@@ -12,8 +12,8 @@ typedef Unk_CommonPosition Unk_PDVec3;   // C3: was a local struct with its own 
 class QuestMask {
 public:
     QuestMask();
-    ~QuestMask();
-    __int64 m_pad[8];
+    virtual ~QuestMask();
+    __int64 m_pad[7];
 };
 MS2_CHECK_SIZE(QuestMask, 0x40);
 

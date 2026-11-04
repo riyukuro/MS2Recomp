@@ -26,6 +26,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\ugcdef.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ugcdef.h"
+#include "ms2/commonfiles/meratproductkey.h"
 #include "stream.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/citem.h"
@@ -79,18 +80,10 @@ class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_
 class Unk_MusicBookTable { public: MS2Ptr<Unk_MusicBookInfo> FUN_14072cc10(unsigned); };
 Unk_MusicBookTable* FUN_14052d1d0();
 
-// The product id of the merat market (a premium product number and a UGC listing id); the key of the bookmark map.
-struct Unk_MeratOid
-{
-    bool operator<(const Unk_MeratOid& o) const;
-    bool operator==(const Unk_MeratOid& o) const;
-    int m_nPremiumId;                                       // +0x00
-    unsigned __int64 m_nUgcId;                              // +0x08
-};
-MS2_CHECK_SIZE(Unk_MeratOid, 0x10);
+// The product id of the merat market (Unk_MeratProductKey, meratproductkey.h) is the key of the bookmark map.
 
 // @0x140899d90
-bool Unk_MeratOid::operator<(const Unk_MeratOid& o) const
+bool Unk_MeratProductKey::operator<(const Unk_MeratProductKey& o) const
 {
     if (m_nPremiumId != o.m_nPremiumId)
         return m_nPremiumId < o.m_nPremiumId;
@@ -99,7 +92,7 @@ bool Unk_MeratOid::operator<(const Unk_MeratOid& o) const
 }
 
 // @0x140899ce0
-bool Unk_MeratOid::operator==(const Unk_MeratOid& o) const
+bool Unk_MeratProductKey::operator==(const Unk_MeratProductKey& o) const
 {
     if (m_nPremiumId == o.m_nPremiumId && m_nUgcId == o.m_nUgcId)
         return true;
@@ -110,7 +103,7 @@ bool Unk_MeratOid::operator==(const Unk_MeratOid& o) const
 class Unk_MeratEquipEntry : public CPtred
 {
 public:
-    Unk_MeratOid m_oid;                                     // +0x18
+    Unk_MeratProductKey m_oid;                              // +0x18
     char m_pad_28[0x288 - 0x28];
     __int64 m_nId;                                          // +0x288
 };
@@ -2660,31 +2653,31 @@ void CUgcGetCostTable::Read(CInPacket& packet)
     SetTable(table);
 }
 
-// Blueprint fee currency selector (unit-local view of the fee object; its owner unit is uiitemblueprintcreatedialog.cpp)
-enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
-class Unk_BpFee
+// The price type of a UGC design row (unit-local view of CUGCDesignData, ugcdesigntable.h; the blueprint and item edit
+// dialogs read it)
+class CUGCDesignData
 {
 public:
-    Unk_BpCurrency FUN_14089e200();     // 0x14089e200
+    int FUN_14089e200();                // 0x14089e200
 
     char m_pad[0x24];
-    int m_currency;                     // +0x24
+    int m_nPriceType;                   // +0x24
 };
 
 // @0x14089e200
-Unk_BpCurrency Unk_BpFee::FUN_14089e200()
+int CUGCDesignData::FUN_14089e200()
 {
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d710(0x62))
     {
-        if (m_currency == 3)
-            return (Unk_BpCurrency)10;
+        if (m_nPriceType == 3)
+            return 10;
     }
     else
     {
-        if (m_currency == 10 || m_currency == 9)
-            return (Unk_BpCurrency)3;
+        if (m_nPriceType == 10 || m_nPriceType == 9)
+            return 3;
     }
-    return (Unk_BpCurrency)m_currency;
+    return m_nPriceType;
 }
 
 // @0x1408984b0
@@ -2774,7 +2767,7 @@ void CUgcCharBookMark::FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> 
 MS2Ptr<Unk_MeratEquipEntry> CUgcCharBookMark::FUN_140896e80(const Unk_MeratOid& oid)
 {
     MS2Ptr<Unk_MeratEquipEntry> spEntry(0);
-    m_map.Lookup(oid, spEntry);
+    m_map.Lookup(reinterpret_cast<const Unk_MeratProductKey&>(oid), spEntry);
     return spEntry;
 }
 

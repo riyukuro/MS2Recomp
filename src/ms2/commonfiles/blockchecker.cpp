@@ -9,8 +9,7 @@
 __int64 GetServerTime();
 CStringW GetStringCommon(int);
 #include "ms2/ms2format.h"
-CStringW BlockFormat(int,const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW,BlockFormat,int)
+#include "ms2/placeholder/blockformat.h"
 // Custom game time has the CTime value at offset zero and a flag at offset eight.
 #include "ms2/placeholder/mstime.h"
 #define BLOCK_BIT_ASSERT(line,expr) (void)((!!(expr)) || (_wassert(_CRT_WIDE(#expr),L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl",line),0))

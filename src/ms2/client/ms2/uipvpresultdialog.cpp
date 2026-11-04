@@ -37,7 +37,7 @@ public:
 };
 
 // One row of the result (the ranking's row, see uipvprankingdialog.cpp).
-class Unk_PrEntry
+class Unk_PvPRankEntry
 {
 public:
     bool FUN_141343860();                                           // the player has a rank
@@ -52,15 +52,15 @@ public:
     bool m_bOnline;                     // +0x28
 };
 
-class Unk_PrTable { };                                              // the rank list (Unk_PvpTimer)
-class Unk_PrService                                                 // the game-mode service
+class Unk_PvPRankTable { };                                         // the rank list (Unk_PvpTimer)
+class Unk_PvPRankService                                            // the game-mode service
 {
 public:
-    Unk_PrEntry* FUN_141343810(int nRank);                          // the row of a rank
+    Unk_PvPRankEntry* FUN_141343810(int nRank);                     // the row of a rank
     int FUN_141344a80() { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017f80(); }         // 0x141344a80 the row count
 private:
     void* m_pad_00;
-    Unk_PrTable m_table;
+    Unk_PvPRankTable m_table;
 };
 
 // The player's PvP info (C3: PC::FUN_140967420's MS2Ptr<Unk_PCInteractMode>, fittingdollpc.h).
@@ -141,7 +141,7 @@ void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
     int nLast = (std::max)(nFrom, nTo);
     for (int nRank = nFirst; nRank <= nLast; nRank++)
     {
-        Unk_PrEntry* pEntry = (Unk_PrEntry*)reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
+        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
@@ -182,7 +182,7 @@ void UIPvPResultDialog::FUN_1413440a0()
 }
 
 // @0x141344210
-bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntry)
+bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* pEntry)
 {
     if (pEntry == 0)
         return false;
@@ -249,10 +249,10 @@ void UIPvPResultDialog::FUN_141344780(int nRank)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nCount = reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141344a80();
+    int nCount = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141344a80();
     for (int n = 1; n <= nCount; n++)
     {
-        Unk_PrEntry* pEntry = (Unk_PrEntry*)reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(n);
+        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(n);
         if (pEntry == 0)
             continue;
         ASObj obj(2);

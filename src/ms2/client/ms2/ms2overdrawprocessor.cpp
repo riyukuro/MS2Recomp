@@ -19,7 +19,7 @@ public:
 };
 void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 NiRenderer* GetNiRenderer();                                 // the active renderer
-extern char DAT_143ae5210, DAT_143ae50f0;
+extern NiFixedString DAT_143ae5210, DAT_143ae50f0;
 
 // The per-object state saved while the overdraw material/properties are applied: the object, its active material
 // and its z-buffer / alpha properties (detached while the processor's own are attached).
@@ -60,7 +60,7 @@ struct Unk_OverdrawState
 // @0x1414d4e20
 MS2OverdrawProcessor::MS2OverdrawProcessor()
 {
-    m_spOverdrawMaterial = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae5210));
+    m_spOverdrawMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5210);
 
     m_spZBuffer = NiNew NiZBufferProperty;
     m_spZBuffer->SetZBufferTest(false);
@@ -85,7 +85,7 @@ void MS2OverdrawProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, N
         NiRenderObject* obj = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(i));
         Unk_OverdrawState state(obj);
         saved.push_back(state);
-        FUN_1410479a0((class NiObjectNET*)(obj), *(class NiFixedString const*)(&DAT_143ae50f0), reinterpret_cast<const NiColor&>(static_cast<const Unk_Colc&>(Unk_Colc(0.003921569f, 0.0f, 0.0f))));
+        FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50f0, reinterpret_cast<const NiColor&>(static_cast<const Unk_Colc&>(Unk_Colc(0.003921569f, 0.0f, 0.0f))));
         obj->PurgeRendererData(GetNiRenderer());
         obj->ApplyAndSetActiveMaterial(m_spOverdrawMaterial, 0xffffffff);
         obj->AttachProperty(m_spZBuffer);

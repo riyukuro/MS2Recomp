@@ -379,7 +379,7 @@ public:
     Unk_InventoryCharacterIterator FUN_140341f40();
     Unk_InventoryCharacterIterator FUN_1404c0270(const unsigned __int64& id);
 };
-extern Unk_InventoryCharacters DAT_143ab2a30;
+extern std::set<unsigned __int64> DAT_143ab2a30;   // ids of the account's characters (uicharacterlistdialog.cpp)
 bool FUN_1403344a0(const Unk_InventoryCharacterIterator&, const Unk_InventoryCharacterIterator&);
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_InventoryDialog* FUN_1405344f0 (calls cast back)
@@ -1643,7 +1643,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     unsigned __int64 owner = output.characterId;
     if (owner > 0) {
         int kind = output.kind;
-        if (FUN_1403344a0(DAT_143ab2a30.FUN_1404c0270(owner), DAT_143ab2a30.FUN_140341f40())) {
+        if (FUN_1403344a0(reinterpret_cast<Unk_InventoryCharacters&>(DAT_143ab2a30).FUN_1404c0270(owner), reinterpret_cast<Unk_InventoryCharacters&>(DAT_143ab2a30).FUN_140341f40())) {
             if (kind == 1) *reason = 3;
             else if (kind == 2) *reason = 2;
         } else {

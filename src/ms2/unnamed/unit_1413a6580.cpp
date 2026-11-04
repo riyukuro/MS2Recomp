@@ -18,6 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/portal.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
@@ -26,11 +27,6 @@ class CUIService;
 class Unk_SoundSink;
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
-
-// A field portal, only held through MS2Ptr here.
-class Unk_GcPortal : public CPtred
-{
-};
 
 // The world manager (FUN_1403ed2d0).
 class Unk_GcWorld : public WorldService
@@ -69,7 +65,6 @@ public:
     int GetSubSceneId();
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-__int64 FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arr);   // element count
 
 #ifndef MS2_HOOK_DLL
 static ClassObjectRegistrar s_regActionInput(L"CGuideConditionActionInput", CGuideConditionActionInput::CreateObject);   // .text$di 0x1400f2ed0
@@ -234,8 +229,8 @@ int CGuideConditionPortalEnable::vfunc_3()
     Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    ATL::CAtlArray<MS2Ptr<Unk_GcPortal> > arrPortals;
+    ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
     ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(pPC->vfunc_18(), &arrPortals);
-    return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);
+    return FUN_1413a5600(arrPortals.GetCount() != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

@@ -9,6 +9,7 @@
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimanufacturedialog.cpp"    // assumed
+#define MS2_TPTRVALUE_MOVE   // the recipe book entries are copied with the add-ref ctor (0x1406889c0)
 
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/mstime.h"
@@ -94,94 +95,7 @@ class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the r
 class Unk_UmPC { public: };
 class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, the equip holder)
 
-// The exe's 16 byte smart pointer to a boxed payload (the table rows are boxed in a TPtredDummy; the pointer points at the
-// payload, 0x18 behind the CPtred base). Same as the one of the manufacture manager.
-template <class T> class Unk_UmValuePtr
-{
-public:
-    Unk_UmValuePtr() : m_pad(0), m_p(0) {}
-    Unk_UmValuePtr(const Unk_UmValuePtr& o) : m_pad(0), m_p(o.m_p) { AddRef(); }
-    ~Unk_UmValuePtr() { Release(); }
-    Unk_UmValuePtr& operator=(const Unk_UmValuePtr& o) { o.AddRef(); Release(); m_p = o.m_p; return *this; }
-    T* get() const { return m_p; }
-    T* operator->() const { return m_p; }
-    bool IsNull() const { return m_p == 0; }
-    bool operator==(const T* p) const { return m_p == p; }                                     // @0x1412db8c0
-private:
-    static CPtred* Base(T* p) { return reinterpret_cast<CPtred*>(reinterpret_cast<char*>(p) - sizeof(CPtred)); }
-    void AddRef() const { if (m_p) CPtred::AddRefPtred(Base(m_p)); }
-    void Release()
-    {
-        if (m_p)
-        {
-            if (CPtred::ReleasePtred(Base(m_p)) == 0)
-            {
-                CPtred::AddRefPtred(Base(m_p));
-                CPtred::DeletePtred(Base(m_p));
-            }
-            m_p = 0;
-        }
-    }
-    void* m_pad;
-    T* m_p;
-};
-
-// The maid description table (the maid's name).
-struct Unk_UmDescRow
-{
-    char m_pad_00[0x10];
-    CStringW m_10;                                              // +0x10 the maid's name
-};
-class Unk_UmDescTable { public: Unk_UmValuePtr<Unk_UmDescRow> FUN_14067f780(int nMsgId); };
-
-// The recipe books (a maid's recipes and their grades).
-struct Unk_UmRecipeRef { int m_id; int m_level; };              // one entry of a maid's recipe book
-class Unk_UmRecipeArr
-{
-public:
-    size_t FUN_14068acc0() const;                               // count
-    Unk_UmValuePtr<Unk_UmRecipeRef>& FUN_140689a50(size_t n);   // 0x140689a50 returns &slot[n] (0x10 stride) in rax, no hidden slot
-};
-class Unk_UmBook;
-// The book pointer's two accessors return its payload (mov rax, [this+8]) as the recipe array.
-class Unk_UmBookPtr : public Unk_UmValuePtr<Unk_UmBook>
-{
-public:
-    Unk_UmRecipeArr* FUN_140689bf0() const;
-    Unk_UmRecipeArr* FUN_140689c20() const;
-};
-class Unk_UmBookTable
-{
-public:
-    Unk_UmBookPtr FUN_140685da0(int nBookId);
-};
 class Unk_MdBookTable* FUN_1412db940();   // C3: was FUN_1412db940
-
-// A recipe ingredient.
-struct Unk_UmIngredient
-{
-    int m_nCount;                                               // +0x00
-    int m_nRarity;                                              // +0x04
-    unsigned m_nItemId;                                         // +0x08
-    int m_nGroup;                                               // +0x0c
-};
-
-// A manufacture recipe.
-struct Unk_UmRecipe
-{
-    char m_pad_00[0x1c];
-    int m_1c;                                                   // +0x1c the meso a craft needs
-    unsigned m_20[3];                                           // +0x20 the craft time per mood
-    int m_2c;                                                   // +0x2c the meso cost
-    char m_pad_30[0x38 - 0x30];
-    std::vector<Unk_UmValuePtr<Unk_UmIngredient> > m_38;        // +0x38 the ingredients
-    int m_50;                                                   // +0x50 the result item id
-    int m_54;                                                   // +0x54 the result amount
-    int m_58;                                                   // +0x58 the result rarity
-};
-MS2_CHECK_OFFSET(Unk_UmRecipe, m_38, 0x38);
-MS2_CHECK_OFFSET(Unk_UmRecipe, m_50, 0x50);
-class Unk_UmRecipeTable { public: Unk_UmValuePtr<Unk_UmRecipe> FUN_1406855c0(int nRecipeId); };
 
 // The record of a running craft.
 struct Unk_UmMfItem : public CPtred
@@ -197,8 +111,7 @@ MS2_CHECK_OFFSET(Unk_UmLevels, m_5180, 0x5180);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
@@ -559,10 +472,10 @@ void UIManufactureDialog::FUN_1412e34c0()
     MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    Unk_UmValuePtr<Unk_UmDescRow> spDesc = reinterpret_cast<Unk_UmDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid->m_nMaidId);
-    if (spDesc.IsNull())
+    TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(spMaid->m_nMaidId);
+    if (!spDesc)
         return;
-    CStringW strName = FormatStringId<CStringW>(0x7af, spDesc->m_10);
+    CStringW strName = FormatStringId<CStringW>(0x7af, spDesc->specialty);
     CStringW strMood;
     if (reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade() == 0)
         strMood = GetStringCommon(0x79f);
@@ -591,38 +504,38 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
     MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    Unk_UmBookPtr spBook = ((class Unk_UmBookTable*)FUN_1412db940())->FUN_140685da0(spMaid->m_nMaidId);
+    CMaidRecipeGroupTable::RecipeList spBook = ((class CMaidRecipeGroupTable*)FUN_1412db940())->Find(spMaid->m_nMaidId);
     if (spBook == 0)
         return;
     if (MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>("m_scrollList"))
     {
         reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
         int nFirst = 0;
-        for (size_t i = 0; i < spBook.FUN_140689bf0()->FUN_14068acc0(); i++)
+        for (size_t i = 0; i < spBook->GetCount(); i++)
         {
-            Unk_UmValuePtr<Unk_UmRecipeRef> spRef = spBook.FUN_140689c20()->FUN_140689a50(i);
-            if (spRef.IsNull())
+            TPtrValue<RecipeLevel> spRef = (*spBook)[i];
+            if (!spRef)
                 continue;
-            Unk_UmValuePtr<Unk_UmRecipe> spRecipe = reinterpret_cast<Unk_UmRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spRef->m_id);
+            MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spRef->recipeId);
             if (spRecipe.get() != 0)
             {
                 ASObj row(2);
                 row.FUN_140e846b0("id", i + 1);
-                row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50));
-                row.FUN_1407cb9c0("recipeID", spRef->m_id);
-                if (spRef->m_level > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180)->Get())   // exe: add rax, 0x5180
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->m_level));
+                row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
+                row.FUN_1407cb9c0("recipeID", spRef->recipeId);
+                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180)->Get())   // exe: add rax, 0x5180
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
                 else
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->m_level));
-                m_mapRecipes.SetAt((int)i, spRef->m_id);
-                int bAvailable = spRef->m_level <= spMaid->m_nOrder;
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
+                m_mapRecipes.SetAt((int)i, spRef->recipeId);
+                int bAvailable = spRef->requireLevel <= spMaid->m_nOrder;
                 if (bAvailable != 0)
                     nFirst = (int)i;
                 row.FUN_1407cb9c0("available", bAvailable);
                 reinterpret_cast<ASCoreList*>(spList.get())->AddItem(row);
-                int nItemId = spRecipe->m_50;
-                int nRarity = spRecipe->m_58;
-                int nAmount = spRecipe->m_54;
+                int nItemId = spRecipe->productItemId;
+                int nRarity = spRecipe->productRank;
+                int nAmount = spRecipe->productCount;
                 MS2Ptr<CItem> spItem(new CItem());
                 if (spItem->FUN_14052b130(nItemId, nRarity, 0))
                 {
@@ -658,13 +571,13 @@ void UIManufactureDialog::FUN_1412e4240()
     MS2Ptr<Unk_UmMfItem> spMf(0);
     if (TSingleton<CManufactureManager>::GetInstance()->Lookup(m_nManufactureId, reinterpret_cast<MS2Ptr<CManufacture>&>(spMf)) != 0)
     {
-        Unk_UmValuePtr<Unk_UmRecipe> spRecipe = reinterpret_cast<Unk_UmRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_1409eedf0());
+        MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(reinterpret_cast<CManufacture*>(spMf.operator->())->FUN_1409eedf0());
         if (spRecipe.get() != 0)
         {
-            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
-            int nItemId = spRecipe->m_50;
-            int nRarity = spRecipe->m_58;
-            int nAmount = spRecipe->m_54;
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId);
+            int nItemId = spRecipe->productItemId;
+            int nRarity = spRecipe->productRank;
+            int nAmount = spRecipe->productCount;
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_14052b130(nItemId, nRarity, 0))
             {
@@ -713,7 +626,7 @@ void UIManufactureDialog::FUN_1412e48a0()
     int nRecipeId = 0;
     if (!m_mapRecipes.Lookup(m_nSelected, nRecipeId))
         return;
-    Unk_UmValuePtr<Unk_UmRecipe> spRecipe = reinterpret_cast<Unk_UmRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(nRecipeId);
+    MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(nRecipeId);
     if (spRecipe.get() != 0)
     {
         int nGrade = 0;
@@ -724,16 +637,16 @@ void UIManufactureDialog::FUN_1412e48a0()
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->m_2c);
+        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->maidExp);
         CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
-        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
-        ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId);
+        ATL::CTimeSpan span((unsigned __int64)spRecipe->leadTimes[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
         CStringW strTime = FUN_1412e1e50(span, 1, 0);
         CStringW strCost = FUN_14028dee0(0x7ac, strTime, nMeso);
         m_30->Invoke("selectItem", m_nSelected, CStringW(strName), CStringW(strGrade), CStringW(strCost), bAvailable, ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode());
-        int nItemId = spRecipe->m_50;
-        int nRarity = spRecipe->m_58;
-        int nAmount = spRecipe->m_54;
+        int nItemId = spRecipe->productItemId;
+        int nRarity = spRecipe->productRank;
+        int nAmount = spRecipe->productCount;
         MS2Ptr<CItem> spProduct(new CItem());
         if (spProduct->FUN_14052b130(nItemId, nRarity, 0))
         {
@@ -745,18 +658,18 @@ void UIManufactureDialog::FUN_1412e48a0()
         for (size_t i = 0; i < m_aIngredientKeys.GetCount(); i++)
             FUN_141415600(m_aIngredientKeys[i]);
         std::vector<CStringW> aUnused;
-        for (size_t k = 0; k < spRecipe->m_38.size(); k++)
+        for (size_t k = 0; k < spRecipe->ingredients.size(); k++)
         {
-            Unk_UmValuePtr<Unk_UmIngredient> spIngredient = spRecipe->m_38[k];
-            if (spIngredient.IsNull())
+            TPtrValue<MaidIngredient> spIngredient = spRecipe->ingredients[k];
+            if (!spIngredient)
                 continue;
-            int nIngItem = reinterpret_cast<MaidIngredient*>(spIngredient.operator->())->GetItemId();
-            int nGroup = reinterpret_cast<MaidIngredient*>(spIngredient.operator->())->GetItemStringId();
+            int nIngItem = spIngredient->GetItemId();
+            int nGroup = spIngredient->GetItemStringId();
             MS2Ptr<CItemData> spData = FUN_14053f870(nIngItem);
             if (spData == 0)
                 continue;
-            int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->m_nRarity : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->m_nCount);
+            int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->field04 : FUN_14053feb0(nIngItem);
+            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->count);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
@@ -781,10 +694,10 @@ void UIManufactureDialog::FUN_1412e48a0()
                 m_30->Invoke("ingredients", (unsigned __int64)(k + 1), CString(strKey), CStringW(strCount));
             }
         }
-        if (spRecipe->m_1c > 0)
+        if (spRecipe->workbenchType > 0)
         {
-            int nRow = (int)(spRecipe->m_38.size() + 1);
-            int nMesoCost = spRecipe->m_1c;
+            int nRow = (int)(spRecipe->ingredients.size() + 1);
+            int nMesoCost = spRecipe->workbenchType;
             int nCode = 0;
             efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
             int nResult = spService->FUN_1410d2fb0(DAT_143ab2820, nMesoCost, &nCode);

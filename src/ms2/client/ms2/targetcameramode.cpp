@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <NiPoint3.h>
 #include "ms2/client/ms2/camera.h"
 #include <ecr/RenderService.h>   // C3: GetActiveRenderSurface / GetCamera
 #include <ecr/RenderSurface.h>
@@ -27,7 +28,7 @@ extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf throug
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_7 / vfunc_24)
 
 // The input state (FUN_14025e7c0).
@@ -264,7 +265,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
         }
 
         Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -449,7 +450,7 @@ MS2_REPLACE_METHOD(0x14183bc30, CTargetCameraMode, vfunc_27, 147, 0x3EE26CF8);
 // @0x14183bcd0
 void CTargetCameraMode::vfunc_3(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_c))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_c))
     {
         m_f0 = 0;
         m_setting.m_c = pt;
@@ -461,7 +462,7 @@ MS2_REPLACE_METHOD(0x14183bcd0, CTargetCameraMode, vfunc_3, 128, 0x1B240A92);
 // @0x14183bd60
 void CTargetCameraMode::vfunc_4(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_18))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_18))
     {
         m_f0 = 0;
         m_setting.m_18 = pt;
@@ -811,8 +812,8 @@ void CTargetCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        float fDist = ptDelta.Length();
         float fBlend = 0.0f;
         if (m_fc)
         {
@@ -864,7 +865,7 @@ void CTargetCameraMode::vfunc_39(double fTime)
             else
             {
                 m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
-                if (m_c0.m_rot.FUN_140552700(m_d8.m_rot))
+                if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
         }

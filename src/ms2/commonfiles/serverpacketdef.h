@@ -14,7 +14,7 @@ Unk_SPDByteRange* FUN_140203550(Unk_SPDByteRange* out, unsigned char lo, unsigne
 class Unk_SPDReader : public CIOBuffer, public CInputStream {
 public:
     unsigned char FUN_140202740(Unk_SPDByteRange range);
-    CStringW FUN_140202f40(Unk_MaxWide maxLen);
+    CStringW FUN_140202f40(Unk_WideMaximum maxLen);
 };
 
 // Plain data record copied into Unk_SPDA.

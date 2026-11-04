@@ -77,6 +77,15 @@ exe, pass `-DMS2_RESOURCES_RES=<path>/MapleStory2.res`.
 
 `resources/` holds Nexon's data. It is gitignored, and the publish script refuses any resource file.
 
+The plain link below has no `rsrc` stage: it links the `.res` named by `MS2_RESOURCES_RES`. Left empty, rc compiles
+the stand-in `cmake/fullexe-plain/standin/standin.rc` to `<build>/standin.res` and the link takes that. The stand-in is
+written for this repo and holds nothing of the exe's: its own icon 2000 (`standin.ico`, drawn by `mkicon.py` there),
+manifest 1 (Common Controls 6, asInvoker, DPI aware), and plain English dialogs with the control IDs the client binds:
+3000 (out of memory: buttons 8 and 10, SysLink 1034, text 1035), 3001 (error: button 11, text 1036), 148 and 150 (a
+WebBrowser control, 1236 and 1237), plus a VERSIONINFO reading "MS2Recomp stand-in". It lacks the exe's dev dialogs,
+menus, bitmaps and strings, its dialogs look different, and the exe's `.rsrc` does not byte-match the original. For the
+original resources, pass the `.res` built from your exe (the commands above).
+
 ## Committed lists instead of exe reads
 
 These options are off by default. Each one replaces an exe read with a committed list of names or addresses (no exe
@@ -101,24 +110,55 @@ stubs, duplicate symbols, unresolved symbols before the shim, `/FORCE` flags, bo
 comes from the glue files in `data/fullexe/plain/`: `objs.txt` (the obj list in link order), `alias.rsp` (the
 `/alternatename` lines) and `stubs.tsv` (the data stubs, names and addresses only). They are generated from the newest
 `cmake/fullexe` build that linked and passed. By default the objs come from that kind of build's compile cache
-(`MS2_PLAIN_OBJ_ROOT`); `-DMS2_PLAIN_COMPILE=ON` compiles them instead (see Compile list below). The one remaining data stub is extracted once from your exe
-with `plainglue.py stubs <exe> data/fullexe/plain/stubs.tsv <obj>`:
+(`MS2_PLAIN_OBJ_ROOT`); `-DMS2_PLAIN_COMPILE=ON` compiles them instead (see Compile list below). The one remaining data
+stub, `g_physXItem`, lies in the exe's `.bss`. Its obj is zero fill only (no exe bytes), so it is committed as
+`data/fullexe/plain/stubs.obj`, the default of `MS2_PLAIN_STUBS_OBJ`. `plainglue.py stubs <exe> data/fullexe/plain/stubs.tsv <obj>`
+writes it from the exe and reports whether it holds exe bytes:
 
 ```
 cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja -DMS2_PLAIN_OBJ_ROOT=build/progress-<tag> \
-      -DMS2_PLAIN_STUBS_OBJ=<obj> -DMS2_RESOURCES_RES=<res> && cmake --build build/fullexe-plain
+      [-DMS2_RESOURCES_RES=<res>] && cmake --build build/fullexe-plain
 ```
 
 The result is `build/fullexe-plain/out/MapleStory2.exe`, a copy of `fullexe-plain.exe`. The `/ORDER` list (`order.txt`,
-32 MB) is not committed, so by default the linker lays functions out in its own order. To get the exe's layout, run
-`tools/fullexe/plainglue.py write <dir>` on a finished `cmake/fullexe` build and pass `-DMS2_PLAIN_GLUE=<dir>`
-(`MS2_PLAIN_ORDER` turns on when `<dir>/order.txt` exists). With `-DMS2_PLAIN_NAME=fullexe3`, that build's glue and its
-objs, the result is byte-identical to `link2`'s `fullexe3.exe` except for the link timestamp. The exe's export directory
-records the output name, so the default name shifts some `.rdata` bytes.
+32 MB) goes into the glue as `order.tar.xz` (1.7 MB, `plainglue.py pack <dir>`). The plain build unpacks it into
+`<build>/glue/` at configure time, and `MS2_PLAIN_ORDER` turns on when either file exists. Without it, the linker lays
+functions out in its own order. With `-DMS2_PLAIN_NAME=fullexe3`, a build's glue (`plainglue.py write <dir>` on a
+finished `cmake/fullexe` build, `-DMS2_PLAIN_GLUE=<dir>`) and its objs, the result is byte-identical to `link2`'s
+`fullexe3.exe` except for the link timestamp. The exe's export directory records the output name, so the default name
+shifts some `.rdata` bytes.
 
-Refreshing the glue (maintainers): after each applied merge, once that commit's fullexe-latest build has linked and
-passed, run `tools/fullexe/plainglue.py write data/fullexe/plain` with `FULLEXE_DIR` and `--cache` pointing at that
-build. Delete the `order.txt` it writes, then commit `objs.txt`, `alias.rsp` and `stubs.tsv` together.
+#### Refreshing the glue (maintainers only)
+
+This needs an exe-reading `cmake/fullexe` build. `glue-refresh.sh`, `latest.sh`, the `work/` dirs and
+`publish-github.sh` named here are maintainer files and are not in the published repo. After each applied merge, once
+that commit's fullexe-latest build has linked and passed, run these against that build, with `FULLEXE_DIR` and
+`--cache` pointing at it:
+
+1. `tools/fullexe/plainglue.py write data/fullexe/plain`
+2. `plainglue.py compile data/fullexe/plain` (in that build's checkout and environment)
+3. `plainglue.py pack data/fullexe/plain`
+
+Then delete `order.txt` and commit `objs.txt`, `alias.rsp`, `stubs.tsv`, `order.tar.xz`, `compile.tsv`, `flags.tsv` and
+`tree.tsv` together. Rerun `plainglue.py stubs` and commit `stubs.obj` only when `stubs.tsv` changes and the tool still
+reports zero fill. The glue names that build's objs, so a checkout other than that commit links only by luck: a
+renamed, added or removed unit breaks the link (LNK1120).
+
+`tools/fullexe/glue-refresh.sh [--commit]` runs those steps in one command, from the latest published
+`fullexe-latest` build. It takes `work/fx29/fx/fullexe-latest.glue`, which `latest.sh` publishes only on a smoke
+PASS. If that dir holds no glue for the published commit (a `latest.sh --loop` started before 10-30 keeps none), the
+script runs step 1 itself on the build's `out` dir, after checking that `out/fullexe3.exe` is the published exe. It
+writes a `commit` file naming the build's commit. Run it while up1's worktree is still at that commit; the script stops
+once the worktree has moved on. It also stops when `stubs.tsv` changed. It does not open the original exe.
+
+Each published merge carries fresh glue: after `work/merge/<rev8>/apply.sh` and before `tools/publish-github.sh`, run
+`MS2_AGENT=<name> tools/fullexe/glue-refresh.sh --commit`. It commits the glue for the newest smoke-passed
+`fullexe-latest` build, which can be older than the merge. The published tip must be that build's own sources, so
+`glue-refresh.sh --side <branch> [--overlay <path>]...` makes a side commit: parent the build's commit, tree that commit
+with the refreshed glue (plus any `--overlay` path, such as this file, as master has it). `PUBLISH_REV=<branch>
+tools/publish-github.sh` then publishes that commit instead of master. When the script stops because up1's worktree
+has moved past the published build, refresh after the next smoke PASS. When it stops because `stubs.tsv` changed, run
+`plainglue.py stubs` against an exe first (above).
 
 ### Compile list
 
@@ -140,25 +180,117 @@ under `MS2_PLAIN_GEN`, and makes one custom command per obj into `<build>/cache`
 What matches: compiled from the same checkout and SDKs, every obj's code, data, relocations and symbols are identical
 to the compile cache's (checked on 83 objs: 50 game, 10 vc9, 3 vc11, 10 engine, 10 Scaleform). Only the `/Z7` debug
 sections differ, and only in recorded paths: the obj's own `/Fo` path, the `${GEN}` dir and the command line (no
-`/showIncludes`). The link uses `/debug:none`, so those sections do not reach the exe. The checkout path itself does
-not leak into code or data in the sample.
+`/showIncludes`). The link uses `/debug:none`, so those sections do not reach the exe. The checkout path does reach
+the exe, though: about 17.7k `__FILE__` strings (asserts, `MS2Ptr` and engine logging) hold the source path as spelled
+on the compiler command line, and the anonymous-namespace names (`?A0x<hash>`) hash it, which also moves `/ORDER`
+matches. A build from another path gave an exe 37,888 bytes larger. Byte identity needs the same checkout path, with
+`MS2_MSVC_ROOT` and `MS2_PLAIN_ENGINE` spelled as in the reference build, and the exe's own `.res` (the stand-in
+changes `.rsrc`). For this project's reference builds that is
+the checkout `z:/home/riyu/Documents/MS2_decomp/work/up1/wt` (as the exe's `__FILE__` strings spell it), with its
+`third_party` and `engine` under it.
 
-A full `-DMS2_PLAIN_COMPILE=ON` build (3637 steps, about 85 minutes at `-j16`) of a clean worktree with that build's glue
+A full `-DMS2_PLAIN_COMPILE=ON` build on Linux (10-31, 73b439ad5's glue: 3637 steps, about 85 minutes at `-j16`) of a
+clean worktree with that build's glue
 and `-DMS2_PLAIN_NAME=fullexe3` gave an exe identical to `link2`'s `fullexe3.exe` except for 4 bytes, the link
 timestamps in the COFF header and the debug directory. The objs are not byte-identical files. That would need the same `/Fo`
 dir, the same `${GEN}` dir and `/showIncludes`.
 
-On Windows with Visual Studio:
+A second full build (3ce41dab9, the same checkout path, no exe anywhere: the committed `stubs.obj` default, `order.txt`
+unpacked from `order.tar.xz`, a supplied `.res`) gave the same symbol set and section list as the reference
+`fullexe3.exe` but was 512 bytes larger (`.text$mn` +0xd0, `.xdata` -0x20). Of its 3390 objs that could be compared
+(283 reference objs had been rebuilt since), 3329 were identical outside the debug and `.chks64` sections. The 61 that
+differed were all engine objs (`ecrD3D11Renderer`, `NiMain` textures, `NiMesh`, `AttachNifData`, `LuaWrap`,
+`ActorModel`, `egmAnimationBindings`). The reference cache had built them on 10-27, before 153 `engine-patches` files
+changed; the fresh build applied the patches at that commit. So the size difference comes from a stale reference cache,
+not from reading the exe. Relinking the reference objs with the committed `stubs.obj` and the unpacked order list gave
+the reference exe except for the 4 timestamp bytes.
 
-- VS opens `cmake/fullexe-plain` directly (Open Folder, or a `CMakePresets.json` entry with the cache variables above);
-  the Ninja generator is the tested one.
-- The 14.16 `cl` comes from the developer environment. Set `MS2_CL_1414` / `MS2_CL_1415` to those toolsets' `cl.exe`,
-  or the 14.16 compiler builds those units too (not byte-identical).
-- `vc9`, `vc9c` and `vc11` need `MS2_CL_<tool>` set to a `.cmd` wrapper that sets that compiler's own `INCLUDE`/`LIB`
-  and runs its `cl.exe`; the commands otherwise inherit the 14.16 environment. The `tools/msvc9/cl`-style wrappers the
-  Linux build uses are bash scripts with their own Wine prefix and are the only Wine-specific part.
+On Windows with Visual Studio (tested on Windows 10 with VS 2022 Community from the VS GUI's Open Folder, step 5
+below: on 11-03 it built all 3731 steps of 6c1b0a955's glue with every `MS2_CL_<tool>` on the 14.16 fallback, and the
+exe logged in on a local server and entered a field):
+
+- Install VS 2022 (Community is enough) with the "Desktop development with C++" workload and these individual
+  components: MSVC v141 VS 2017 C++ x64/x86 build tools (14.16), C++ ATL for v141, C++ MFC for v141, C++ CMake tools
+  for Windows (CMake and Ninja come with VS; no Python or Wine is needed to build), and the Windows 10 SDK (10.0.19041).
+- Use a developer prompt for the 14.16 toolset: `"C:\Program Files\Microsoft Visual
+  Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.16`. A plain VS 2022 prompt gives cl 14.4x,
+  which is not the build's compiler. Check with `cl` (it prints 19.16).
+- `cmake/fullexe-plain/CMakePresets.json` has a `windows-noexe` preset (Ninja, `MS2_PLAIN_COMPILE=ON`, build dir
+  `<checkout>\build\fullexe-plain`, the stand-in resources). The checkout, SDK and engine paths
+  default to the repo root, `<checkout>\third_party` and `<checkout>\engine`.
+- `MS2_CL_1414`, `MS2_CL_1415`, `MS2_CL_vc9`, `MS2_CL_vc9c`, `MS2_CL_vc9v` and `MS2_CL_vc11` may name those compilers'
+  `cl.exe` (or a `.cmd` wrapper that sets that compiler's own `INCLUDE`/`LIB`). Each one left unset gives a CMake
+  warning and the 14.16 `cl` builds those rows instead; the exe then works but is not byte-identical. CMake adds the
+  `/I<checkout>\src` (and for `vc9v` the `/FI tools\msvc9v\compat.h`) that the Linux wrappers add, and builds the
+  fallback `vc*` rows `/MD /Zp8`. `/MD`: their flag sets name no CRT, and cl 19.16's default `/MT` would pull
+  `libcpmt.lib` into the link (LNK2038/LNK2005). `/Zp8` (the cl rows' layout option): at the default `/Zp16` cl 19.16
+  rounds a derived class past a base with an `align(16)` member where VC9 fills the base's tail padding, so
+  `sfr_video_02` would stop at its `ShapeDataFloatMP size` static_assert (0xa0, the exe's 0x90). With both, every
+  `vc*` row compiles under the fallback with its static_asserts intact, and an all-fallback build links and runs.
 - Command lines reach 9.6 KB, over cmd.exe's limit, so on Windows each flag set goes into a response file
-  (`<build>/out/cl/<id>.rsp`). This path is untested.
+  (`<build>/out/cl/<id>.rsp`).
 - `tree.tsv` symlinks need Developer Mode or an elevated prompt; without it CMake copies the target instead.
 - Flag-set arguments containing `$(` (unexpanded `$(GB_SDK)` include dirs that name no dir) are dropped, since Ninja and
   MSBuild would both read them as variables.
+- Code-page warnings (C4819, C4828: the sources hold cp949 text) are harmless.
+
+Steps for a Windows-only user with no exe (run on a Windows 10 VM, see above):
+
+1. Clone the repo and fetch the Scaleform submodule (`src/ms2/scaleform` is a submodule; a few hundred
+   `compile.tsv` rows compile from it): `git clone <url> <checkout>`, then `git submodule update --init` in
+   `<checkout>`. Build the tip as cloned: its sources are the ones the committed glue was made from.
+   `data/fullexe/plain/commit` only records the maintainer's build id. For a byte-identical exe, clone to the
+   reference checkout path (see "What matches"; a `subst Z:` drive works).
+2. Put the SDK tree at `<checkout>\third_party` (or a junction to it) and the patched engine tree at
+   `<checkout>\engine`. `tools/apply_engine_patches.py` (Python) patches a stock engine tree.
+3. `src\ms2\cef\include` is a git symlink. Without symlink support git checks it out as a small text file, and the CEF
+   units then fail to find their headers. Replace it with a junction: in `src\ms2\cef`, `del include` then
+   `mklink /J include ..\..\..\third_party\src\cef_binary_3.3396.1786.gd3e36d0_windows64_minimal\include`.
+4. Resources: nothing to do, the build compiles the stand-in (see Resources). Only for the exe's own resources, pass
+   `-DMS2_RESOURCES_RES=<path to .res>` with a `.res` built from an exe (`tools/extract_resources.py --compile`).
+5. In the 14.16 developer prompt (above):
+   ```
+   cmake -S <checkout>\cmake\fullexe-plain -B <build> -G Ninja -DMS2_PLAIN_COMPILE=ON
+         -DMS2_ROOT=<checkout> -DMS2_PLAIN_CHECKOUT=<checkout> -DMS2_MSVC_ROOT=<checkout>/third_party
+         -DMS2_PLAIN_ENGINE=<checkout>/engine
+   cmake --build <build>
+   ```
+   (or, with the default layout, `cmake --preset windows-noexe` then `cmake --build --preset windows-noexe` from
+   `cmake\fullexe-plain`). Use forward slashes in the `-D` paths. `MS2_PLAIN_STUBS_OBJ` and the order list default
+   to the committed `stubs.obj` and `order.tar.xz`. The exe is `<build>\out\fullexe-plain.exe`.
+
+   Or in the VS GUI, with no developer prompt: File > Open > Folder, pick `<checkout>\cmake\fullexe-plain`. VS
+   selects the `windows-noexe` preset and configures with the 14.16 `cl` and its own Ninja (the default layout from
+   steps 2 to 4 is needed, since the preset passes no `-D` paths). Then Build > Build All. The exe is
+   `<checkout>\build\fullexe-plain\out\fullexe-plain.exe`.
+
+   On a Windows 10 install without recent updates, VS 2022 may fail to start ("Could not start Visual Studio",
+   `ControllerConnectionException`). Its .NET runtime stops with "Your Windows doesn't fully support CET". Install
+   the Windows updates, or turn off the shadow-stack mitigation for the ServiceHub exes in an elevated PowerShell:
+   `gci "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\ServiceHub" -r -fi *.exe |
+   % { Set-ProcessMitigation -Name $_.Name -Disable UserShadowStack }`.
+
+### Without the original exe
+
+`cmake/fullexe` cannot run without the exe: `rtti_scan`, `progress` (byte matching), `pinreport`, `implibs --lib`,
+`datapair`, `shim`, `rsrc` and `crtinit` all open it, and `alias` then finds no pairs. The plain build with
+`-DMS2_PLAIN_COMPILE=ON` reads no exe: the obj commands come from `compile.tsv`/`flags.tsv`/`tree.tsv`, the data stub
+from `stubs.obj`, the `/ORDER` list from `order.tar.xz` and the resources from the stand-in (or `MS2_RESOURCES_RES`).
+The glue is committed in `data/fullexe/plain` (`tools/fullexe/glue-refresh.sh` refreshes them). A user without the exe still
+needs:
+
+- the published tip as cloned, with its submodule (step 1 above); the glue names that tip's objs, so sources from any
+  other commit fail to compile or link;
+- every SDK root above, the 14.16 toolset, and the old compilers for `vc9`, `vc9c`, `vc9v`, `vc11`, `1414`, `1415` (or the
+  14.16 fallback, not byte-identical);
+- `third_party/` at the checkout's top level when the SDKs live elsewhere: some sources reach SDK headers through
+  relative symlinks (`src/ms2/cef/include` -> `../../../third_party/src/cef_binary_...`), so a link or junction to
+  `MS2_MSVC_ROOT` is needed;
+- nothing for the resources: the stand-in builds in (only the exe's own `.res` gives the original resources and a
+  byte-identical `.rsrc`);
+- for a byte-identical exe, the reference build's checkout path (see "What matches" below). Any other path builds a
+  working exe that differs in its `__FILE__` strings and layout.
+
+Still exe-bound: the default `cmake/fullexe` build (the stages above), and every glue refresh, which runs from an
+exe-reading build's objs and map. A user without the exe can only build the published tip, whose glue names its own
+sources.

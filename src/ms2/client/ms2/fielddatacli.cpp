@@ -46,15 +46,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CStringA FUN_140188f50(char const*, int);                              // node text
-struct Unk_UtilFloat3;
-void FUN_141b6ed40(CStringA const&, Unk_UtilFloat3*);                          // parse "x,y,z"
+struct Vector3;
+void FUN_141b6ed40(CStringA const&, Vector3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
-struct Unk_CommonVec3;
-void FUN_14028c2d0(CStringA, Unk_CommonVec3*);
+void FUN_14028c2d0(CStringA, efd::Point3*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
 extern char DAT_143b01a60;
 bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
-bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
 class Unk_140166420 : public CFileSystem { };
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
@@ -151,7 +149,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
     if (a->m_bGemSystem != b->m_bGemSystem) return true;
     if (a->m_fCameraHAngle != b->m_fCameraHAngle) return true;
     if (a->m_nCapacity != b->m_nCapacity) return true;
-    if (FUN_140552700(a->m_vecDummyTargetPos, b->m_vecDummyTargetPos)) return true;
+    if (reinterpret_cast<const efd::Point3&>(a->m_vecDummyTargetPos) != reinterpret_cast<const efd::Point3&>(b->m_vecDummyTargetPos)) return true;
     if (FUN_140a56f50(&a->m_vecUnk17c, &b->m_vecUnk17c)) return true;
     if (a->m_nBgmId != b->m_nBgmId) return true;
     if (a->m_nBgmParam != b->m_nBgmParam) return true;
@@ -268,7 +266,7 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
         XmlGetAttr((class TiXmlElement*)(pCamera), "useFileSetting", m_bUseFileSetting);
         Unk_140165cf0* t = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(pCamera))->Attribute("dummyTargetPos");
         if (t) {
-            FUN_141b6ed40(FUN_140188f50(reinterpret_cast<char const *>(t), 0), reinterpret_cast<Unk_UtilFloat3 *>(&m_vecDummyTargetPos));
+            FUN_141b6ed40(FUN_140188f50(reinterpret_cast<char const *>(t), 0), reinterpret_cast<Vector3 *>(&m_vecDummyTargetPos));
         }
         Unk_140165cf0* t2 = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(pCamera))->Attribute("usedummytarget");
         if (t2) {
@@ -321,14 +319,14 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
             Unk_140165cf0* pos = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(cam))->Attribute("position");
             if (pos) {
                 D3DXVECTOR3 v;
-                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(pos), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
-                spMM->m_vecCamPos = Unk_GVec3(v.x, v.y, v.z);
+                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(pos), 0), reinterpret_cast<efd::Point3 *>(&v.x));
+                spMM->m_vecCamPos = NiPoint3(v.x, v.y, v.z);
             }
             Unk_140165cf0* rot = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(cam))->Attribute("rotation");
             if (rot) {
                 D3DXVECTOR3 v;
-                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(rot), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
-                spMM->m_vecCamRot = Unk_GVec3(v.x, v.y, v.z);
+                FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(rot), 0), reinterpret_cast<efd::Point3 *>(&v.x));
+                spMM->m_vecCamRot = NiPoint3(v.x, v.y, v.z);
             }
         }
         Unk_140165cf0* fr = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("frustum"));
@@ -462,15 +460,6 @@ MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p)
     return self;
 }
 
-// The camera vectors are NiPoint3 in the exe: assigning efd::Point3::ZERO makes an implicit conversion temp (0x14027dcf0).
-class NiPoint3
-{
-public:
-    NiPoint3(const efd::Point3& pt);
-    NiPoint3& operator=(NiPoint3&& pt);
-    float x, y, z;
-};
-
 // @0x140a56c20
 CMinimap::CMinimap()
     : m_rcImage(0, 0, 0, 0), m_rcScreen(0, 0, 0, 0), m_frustum(0)
@@ -481,8 +470,9 @@ CMinimap::CMinimap()
     m_bVisibleNpc = 1;
     m_bLimitScale = 1;
     m_fZoomFactor = 1.0f;
-    reinterpret_cast<NiPoint3&>(m_vecCamPos) = efd::Point3::ZERO;
-    reinterpret_cast<NiPoint3&>(m_vecCamRot) = efd::Point3::ZERO;
+    // assigning efd::Point3::ZERO makes an implicit NiPoint3 conversion temp (0x14027dcf0)
+    m_vecCamPos = efd::Point3::ZERO;
+    m_vecCamRot = efd::Point3::ZERO;
 }
 
 // @0x140a56db0

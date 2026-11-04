@@ -36,7 +36,6 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-class Unk_IntTriple { public: int Sum(void); void Read(class CInputStream &); void Write(class COutputStream &); };
 #define CLUB_JOIN_MAX 3
 
 // Unrecovered xml helpers (the same ones the other table units use).
@@ -311,7 +310,7 @@ void CClubMemberProxy::Reset()
     m_44 = 0;
     m_48 = 0;
     m_50 = 0;
-    m_trophy.FUN_140267bd0();
+    m_trophy.Clear();
     SetName(CStringW(L""));
     SetPicture(CString(""));
 }
@@ -462,7 +461,7 @@ void CClubMemberProxy::FUN_14020e130(const CClubMemberProxy& o)
     m_44 = o.m_44;
     m_48 = o.m_48;
     m_50 = o.m_50;
-    m_trophy.FUN_140267ea0(o.m_trophy);
+    m_trophy.Copy(o.m_trophy);
     SetName(strName);
     SetPicture(strPicture);
 }
@@ -486,7 +485,7 @@ void CClubMemberProxy::FUN_14020e350(Unk_UserProxy* p)
     m_44 = p->m_9c;
     m_48 = p->m_a0;
     m_50 = p->m_a8;
-    m_trophy.FUN_140267ea0(*reinterpret_cast<const Unk_GuildTriple*>(&p->m_d4));
+    m_trophy.Copy(*reinterpret_cast<const Unk_IntTriple*>(&p->m_d4));
     SetName(strName);
     SetPicture(strPicture);
 }
@@ -642,7 +641,7 @@ int CClubMember::FUN_14020edd0()
 }
 
 // @0x14020edf0
-Unk_GuildTriple* CClubMember::FUN_14020edf0()
+Unk_IntTriple* CClubMember::FUN_14020edf0()
 {
     return &m_info.m_trophy;
 }

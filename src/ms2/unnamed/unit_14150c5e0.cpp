@@ -14,6 +14,7 @@
 #include <NiAVObject.h>
 #include <NiMesh.h>
 #include <NiPSMeshParticleSystem.h>
+#include <NiPSParticleSystem.h>
 #include <NiVisibleArray.h>
 #include <NiSyncArgs.h>
 #include <NiTPointerMap.h>
@@ -59,11 +60,10 @@ public:
 };
 
 extern const NiRTTI DAT_143afbfd0;                          // NiPSMeshParticleSystem::ms_RTTI
-extern const NiRTTI DAT_143afbfb8;
 #define DAT_143b01a60 (*(NiPoint3*)&efd::Point3::ZERO)          // C3: was extern NiPoint3 DAT_143b01a60
 extern int DAT_143ae0dd0;                                   // shimmer mode (0: all objects, 1: near the player)
 extern float DAT_1439f8010;                                 // distance scale
-extern bool DAT_143ae53c0;                                  // "any shimmer object this frame" flag
+extern NiFixedString DAT_143ae53c0;                          // "gfEnableShimmerRender"
 
 class Unk_PtrArray   // C3: member view for the former free stand-ins
 {
@@ -111,7 +111,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
             continue;
         if (DAT_143ae0dd0 == 1 && pActor != 0)
         {
-            int bParticle = NiObject::DynamicCast(&DAT_143afbfb8, (class NiObject const*)(pkObject)) ? 1 : 0;
+            int bParticle = NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, (class NiObject const*)(pkObject)) ? 1 : 0;
             int bNear = 0;
             const NiPoint3& kPos = bParticle ? *((class NiPoint3*)&((class NiBound*)(void*)(((void*)&((class NiAVObject*)(class NiRenderObject*)(pkObject))->GetWorldBound())))->GetCenter()) : *((class NiPoint3*)&((class NiAVObject*)(class NiRenderObject*)(pkObject))->GetWorldTranslate());
             float fDz = FUN_14059d930(kPlayerPos.z - kPos.z);
@@ -139,14 +139,14 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         if (nShimmer == 0)
         {
             bool bFlag = false;
-            FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
+            FUN_1409a5850(DAT_143ae53c0, (bool const*)(&bFlag), 1);
             for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)
                 FUN_14150cc30(this, ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui)));
         }
         else
         {
             bool bFlag = true;
-            FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
+            FUN_1409a5850(DAT_143ae53c0, (bool const*)(&bFlag), 1);
             if (DAT_143ae0dd0 == 0)
             {
                 for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)

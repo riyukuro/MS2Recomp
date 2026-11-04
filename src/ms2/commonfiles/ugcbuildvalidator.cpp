@@ -62,8 +62,8 @@ class Unk_1403ed2d0 : public WorldService
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player
 };
-bool FUN_140930d20(__int64 nOwner);
-bool FUN_140930c90(__int64 nOwner);
+unsigned char FUN_140930d20(__int64 nOwner);
+unsigned char FUN_140930c90(__int64 nOwner);
 bool FUN_14092f660();
 bool FUN_1408a07b0(int nMapId, int a, __int64 b);
 extern int DAT_143ae0fb4;

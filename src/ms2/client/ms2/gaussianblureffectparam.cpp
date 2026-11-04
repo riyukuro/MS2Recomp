@@ -26,11 +26,11 @@ public:
 };
 
 // Render target size: renderer wrapper (singleton 0x1409a8b10) -> back buffer (0x1409a8ac0) -> width / height.
-class Unk_RenderTarget
+class Unk_AeGraphicOption
 {
 public:
-    unsigned int FUN_1409a8ab0();   // width
-    unsigned int FUN_1409a8aa0();   // height
+    unsigned int FUN_1409a8ab0() const;   // width
+    unsigned int FUN_1409a8aa0() const;   // height
 };
 class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 
@@ -93,8 +93,8 @@ void GaussianBlurEffect::vfunc_7(int nState, float fAlpha)
         break;
     }
     float fOffset = (m_fOffsetMax - m_fOffsetMin) * fT + m_fOffsetMin;
-    unsigned int nWidth = reinterpret_cast<Unk_RenderTarget*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1409a8ab0();
-    unsigned int nHeight = reinterpret_cast<Unk_RenderTarget*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1409a8aa0();
+    unsigned int nWidth = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    unsigned int nHeight = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     if (nWidth == 0 || nHeight == 0)
         return;
     if (nWidth >= nHeight)

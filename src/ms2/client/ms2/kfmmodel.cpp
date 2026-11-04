@@ -38,6 +38,7 @@
 #include <NiTextKeyExtraData.h>
 #include <egmAnimation/AnimationService.h>
 #include <egf/EntityManager.h>
+#include <egf/EntityIDFactory.h>
 #include <efd/Category.h>
 #include <NiFloatsExtraData.h>
 #include <NiKFMTool.h>
@@ -72,7 +73,7 @@ extern char DAT_143b01a60;      // NiPoint3::ZERO
 extern char DAT_143afbbb0;      // NiMesh::ms_RTTI
 extern char DAT_143afc8c0;      // RTTI of the joint-carrying scene component
 extern char DAT_143afafe0;      // NiFloatsExtraData::ms_RTTI
-extern char DAT_143ac2fc0;      // ms_ClassInfo of the actor-manager owner component
+class MS2ActorManager { public: static const NiRTTI ms_RTTI; };   // C3: was extern char DAT_143ac2fc0
 extern efd::AssetID DAT_143a0acf8;   // the invalid asset id
 
 // ---- unit-local views of exe objects ----
@@ -156,11 +157,6 @@ void FUN_1414737d0(egf::Entity* e);
 class EntityWorldManager;
 egf::Entity* FUN_1411cf440(egf::EntityManager* m, const egf::EntityID& id);
 bool FUN_1411cf2d0(egf::EntityManager* m, egf::Entity* e, int n);
-struct Unk_KfmEntWorld   // the entity manager's create-from-model-name member
-{
-    egf::EntityPtr FUN_1411cec80(const efd::utf8string& kModel, unsigned long long nId, bool b);
-};
-unsigned long long FUN_142132a40(void* p);
 void* FUN_1411f91c0();   void FUN_141419f50(void* reg, void* model);   void FUN_14141a000(void* reg, void* model);
 bool FUN_1413e9750(const efd::AssetID& a, const efd::AssetID& b);
 class CPhysXHelper;
@@ -183,8 +179,7 @@ efd::SmartPointer<Unk_KfmPhysics> FUN_141209640(CEquipModel* p);
 void FUN_140a332d0(NiTransform* p);
 const NiTransform& FUN_140a33f90(void* obj);   void FUN_140aacb60(void* obj, const void* xf);
 void FUN_140981070(void* obj, const void* p);   void FUN_140ddcca0(void* obj, const void* m);   void FUN_1410b2450(void* obj, float s);
-void FUN_14097faa0(void* dst, const void* src);
-void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
+void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 void FUN_1409f72e0(void* m);
 bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
 bool FUN_1409a1140(const efd::utf8string& a, const efd::utf8string& b);
@@ -369,7 +364,7 @@ int CKfmModel::vfunc_6()
         if (FUN_141b6f910()->Cache(kId, (egmAnimation::KFMCache::IKFMCacheRequestData*)0, g_catKfm, kHandles) == 0)
             FUN_141b6f910()->UnCacheHandles(kHandles);
     }
-    void* pComp = FUN_141442860(&DAT_143ac2fc0, FUN_1414400d0());
+    void* pComp = FUN_141442860((void*)&MS2ActorManager::ms_RTTI, FUN_1414400d0());
     if (pComp != 0)
         FUN_140d821f0(pComp);
     if (m_spEntity.operator egf::Entity*() != 0) {
@@ -920,10 +915,8 @@ void CKfmModel::EndOfSequence(NiActorManager*, NiActorManager::SequenceID, NiCon
 void CKfmModel::CreateEntity()
 {
     DestroyEntity();
-    unsigned __int64 nScratch;
-    void* pDummy = &nScratch;
     m_spEntity.operator=(
-        ((Unk_KfmEntWorld*)reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()))->FUN_1411cec80(FUN_141201780(), FUN_142132a40(pDummy), true));
+        TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity(FUN_141201780(), egf::EntityIDFactory::GetNextID(), true));
     TSingleton<CItemService>::GetInstance()->RegisterModel(this);
 }
 
@@ -995,7 +988,7 @@ void CKfmModel::FUN_141440f60()
     NiPoint3 kTrans = pXf->m_Translate;
     reinterpret_cast<Unk_KfmModelSlots*>(this)->vfunc_24(kTrans);
     efd::Point3 kRot;
-    FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&pXf->m_Rotate), (struct Vector3*)(&kRot.x));
+    FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(pXf->m_Rotate), reinterpret_cast<efd::Point3&>(kRot.x));
     reinterpret_cast<Unk_KfmModelSlots*>(this)->vfunc_26(reinterpret_cast<NiPoint3&>(kRot));
 }
 

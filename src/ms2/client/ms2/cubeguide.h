@@ -12,7 +12,7 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/fittingdollpc.h"
 
-extern const NiPoint3 g_kCubeGuideZero;  // 0x143b01a60, the zero vector as a NiPoint3 (trivial 12-byte copy); own name: DAT_143b01a60 has other types in includers
+#define g_kCubeGuideZero (*(const NiPoint3*)&efd::Point3::ZERO) // C3: 0x143b01a60, was extern const NiPoint3 g_kCubeGuideZero
 
 class CubeItemInfo;
 

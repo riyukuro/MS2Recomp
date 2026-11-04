@@ -11,8 +11,6 @@
 
 class NiCloningProcess;
 
-void FUN_14097fad0(float* pDst, const float* pSrc);         // 0x14097fad0: NiPoint3 assignment
-
 // 0x138 bytes. vftable 0x142f60d20 (overrides slots 0 ddtor, 2 GetRTTI, 3 CreateClone, 32 UpdateWorldData). The exe's
 // 1-byte member is its own Unk_CamMoveBits (same commonfiles bitset<3> as Unk_LightUpdateBits; only that type's
 // out-of-line ctor/operator[] are emitted, so reuse it here). Implicit dtor 0x1417514c0, ??_G 0x141751660.

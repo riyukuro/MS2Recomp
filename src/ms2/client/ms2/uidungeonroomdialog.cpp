@@ -150,7 +150,6 @@ class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const 
 
 // ---- out-of-unit callees ----
 class Unk_CadScript : public AScript { public: template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&, MS2Ptr<T>&); };   // C3: view as uitimergaugedialog declares it
-class Unk_LockedIntMap { public: Unk_LimitValue Get(int); };   // C3: unit-local view (def in unit_140268010_sharedstatemap); Unk_PartyCounters::FUN_140268570
 CMyCharacter* FUN_140931510();                                                          // the local character state
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
                                    // WorldService (worldservice.h): the local player
@@ -250,7 +249,6 @@ public:
 class Unk_RewardClip : public ASMovieClip   // C3: unit-local view named like the uiachievedialog one
 {
 public:
-    Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);    // Invoke with one string argument
 };
 
 // ---- the bind / create templates (ascript.inl; this unit instantiates them for its own wrapper types) ----
@@ -1031,7 +1029,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
     {
         if (i >= items.size())
         {
-            static_cast<Unk_RewardClip*>(m_rewardItems[i].operator->())->FUN_140e262c0("setData", "");
+            static_cast<AScript*>(m_rewardItems[i].operator->())->FUN_140e262c0("setData", "");
             continue;
         }
         ItemEntity* pEntity = &items[i]->m_item;
@@ -1732,7 +1730,7 @@ int UIDungeonRoomInfo::GetMemberClearCount(MS2Ptr<CPartyMember> spMember)
 {
     if (m_spRoom == 0)
         return 0xb;
-    return reinterpret_cast<Unk_LockedIntMap*>(&spMember->counters)->Get(m_spRoom->GetDungeonRoomID());
+    return spMember->counters.Get(m_spRoom->GetDungeonRoomID());
 }
 
 // @0x1412b6480

@@ -95,7 +95,6 @@ FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 CStringW FUN_1419021b0(unsigned int, unsigned int);                    // "have/need"
 CStringW FUN_1409404f0(__int64 nValue);                          // money text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void* FUN_140967100();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
@@ -272,7 +271,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                     nFee = (__int64)((nCount - nHave) * 1000);
             }
             data.FUN_1409eb1d0("ingredient", list);
-            data.FUN_1407cbb20("fee", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
+            data.FUN_1407cbb20("fee", FUN_14028dfa0(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
             m_30->FUN_140acd1f0("setData", data);
         }
     }

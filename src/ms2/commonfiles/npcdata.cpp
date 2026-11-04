@@ -84,8 +84,12 @@ class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
+    TiXmlElement(const char* pszName);          // 0x14086f2f0
+    virtual ~TiXmlElement();                    // 0x14086f450
     char const* Attribute(char const*) const;
     void SetDoubleAttribute(char const *, double);
+private:
+    void* m_data[0x11];
 };
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -117,14 +121,6 @@ struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement* pParent);       
 #define FUN_14028f8d0(p) ((Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(p)))
 bool FUN_14028d470(float a, float b);                                           // approx equal
 
-class Unk_TiXmlElement
-{
-public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
-private:
-    void* m_data[0x12];
-};
 
 // @0x1406c8910
 Unk_NpcModel::Unk_NpcModel() : m_fScale(1.0f), m_fAniSpeed(1.0f), m_nSpawnAlphaAnimation(1), m_vOffset(0.0f, 0.0f, 0.0f)
@@ -137,7 +133,7 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
     static Unk_NpcModel s_default;
     if (*this != s_default)
     {
-        Unk_TiXmlElement elem("model");
+        TiXmlElement elem("model");
         if (m_strKfm != "")
             XmlSetAttr((class TiXmlElement*)(&elem), "kfm", m_strKfm);
         if (m_fScale != 1.0f)
@@ -146,7 +142,7 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
             reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("anispeed", m_fAniSpeed);
         if (m_nSpawnAlphaAnimation != 1)
             XmlSetAttr((class TiXmlElement*)(&elem), "spawnAlphaAnimation", (int)m_nSpawnAlphaAnimation);
-        if (m_vOffset.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
+        if (reinterpret_cast<const efd::Point3&>(m_vOffset) != reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f))))
         {
             NiPoint3 kOffset(reinterpret_cast<const efd::Point3&>(m_vOffset));
             XmlSetAttr((class TiXmlElement*)(&elem), "offset", kOffset);
@@ -166,7 +162,7 @@ bool Unk_NpcModel::operator!=(const Unk_NpcModel& o) const
         return true;
     if (m_nSpawnAlphaAnimation != o.m_nSpawnAlphaAnimation)
         return true;
-    if (m_vOffset.FUN_140552700(o.m_vOffset))
+    if (reinterpret_cast<const efd::Point3&>(m_vOffset) != reinterpret_cast<const efd::Point3&>(o.m_vOffset))
         return true;
     return false;
 }
@@ -354,9 +350,9 @@ bool CNpcData::NodeCollision::operator!=(const NodeCollision& o) const
 {
     if (m_strTargetNode != o.m_strTargetNode)
         return true;
-    if (m_vVolume.FUN_140552700(o.m_vVolume))
+    if (reinterpret_cast<const efd::Point3&>(m_vVolume) != reinterpret_cast<const efd::Point3&>(o.m_vVolume))
         return true;
-    if (m_vOffset.FUN_140552700(o.m_vOffset))
+    if (reinterpret_cast<const efd::Point3&>(m_vOffset) != reinterpret_cast<const efd::Point3&>(o.m_vOffset))
         return true;
     return false;
 }
@@ -1412,15 +1408,9 @@ int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
-// The boss notify table (the pc bang style handle table): a handle lookup by (mode, npc id), then a per-node test.
-struct Unk_BossNotifyHandle { ~Unk_BossNotifyHandle(); bool FUN_1403b8910(int n) const; unsigned long long m_a, m_b; };    // dtor 0x1403b87a0
-class Unk_BossNotifyMgr : public GameDictionaryManager
-{
-public:
-    Unk_BossNotifyHandle FUN_1403b7c40(int nMode, int nNpcId);
-};
+// The web-finder dictionary: an entry lookup by (table, npc id), then a null test of the entry.
 class Unk_PcBangTable* FUN_140541580();   // C3: was Unk_BossNotifyMgr*
-#define FUN_140541580() ((Unk_BossNotifyMgr*)FUN_140541580())
+#define FUN_140541580() ((GameDictionaryManager*)FUN_140541580())
 
 // @0x1406cfaa0
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut)
@@ -1485,12 +1475,12 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         {
             if (GetFriendly() > 0)
             {
-                m_bBossNotifyDefault = FUN_140541580()->FUN_1403b7c40(1, GetId()).FUN_1403b8910(0);
+                m_bBossNotifyDefault = FUN_140541580()->Get(1, GetId()) == 0;
             }
             else
             {
                 {
-                    m_bBossNotifyDefault = FUN_140541580()->FUN_1403b7c40(2, GetId()).FUN_1403b8910(0);
+                    m_bBossNotifyDefault = FUN_140541580()->Get(2, GetId()) == 0;
                 }
                 FUN_140541580()->SetMobLevel(GetId(), m_nClass);
             }

@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <NiPoint3.h>
 
 // ---- the unit's header statics (header_statics_a.h order plus a pointer holder before the map) ----
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -45,7 +46,7 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 
 // Lower bound of the per-frame yaw input (-0.1f): a named constant in the obj's own .rdata (0x142f5c218), bound to the
 // exe copy so that the hooked vfunc_8 reads no DLL-local static.
@@ -266,7 +267,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
         }
 
         Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -385,8 +386,8 @@ void CRPGCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        float fDist = ptDelta.Length();
         if (fDist <= 1.0f)
         {
             m_c0.m_pos = m_d8.m_pos;

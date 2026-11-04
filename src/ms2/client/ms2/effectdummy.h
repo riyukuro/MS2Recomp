@@ -7,20 +7,11 @@
 #include <vector>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ms2svrptr.h"
+#include <NiPoint3.h>
 
 class TiXmlNode;
 class Unk_140165cf0;   // game TinyXML element (see effectdummy.cpp)
 
-// 12-byte float triple with out-of-line special members (NiPoint3 family; compare Unk_GVec3 in fielddatacli.h).
-struct Unk_DummyVec3
-{
-    Unk_DummyVec3();                                        // 0x1405522f0
-    Unk_DummyVec3(float x, float y, float z);               // 0x14097f250
-    Unk_DummyVec3& operator=(const Unk_DummyVec3& o);       // 0x14097fad0
-    bool operator==(const Unk_DummyVec3& o) const;          // 0x140552690
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_DummyVec3, 12);
 
 class CEffectDummy : public CPtred
 {
@@ -37,18 +28,18 @@ public:
     void Parse(Unk_140165cf0* pNode);                           // 0x140a511b0: <dummy name> <attachInfo ...> <transform ...>
     void SetName(const CString& s);                         // 0x140a512e0
     void SetParentNode(const CString& s);                   // 0x140a51310
-    void SetTranslate(const Unk_DummyVec3& v);              // 0x140a51340
+    void SetTranslate(const NiPoint3& v);              // 0x140a51340
     const CString& GetName() const;                         // 0x140a51370
     const CString& GetParentNode() const;                   // 0x140a51390
-    const Unk_DummyVec3& GetTranslate() const;              // 0x140a513b0
+    const NiPoint3& GetTranslate() const;              // 0x140a513b0
 
     float m_fScale;                                         // +0x18 <transform scale>
-    Unk_DummyVec3 m_vRotation;                              // +0x1c <transform rotation>
+    NiPoint3 m_vRotation;                              // +0x1c <transform rotation>
     bool m_bApplyWorldTransform;                            // +0x28 <attachInfo applyWorldTransform>
     bool m_bApplyLocalScale;                                // +0x29 <attachInfo applyLocalScale>
     CString m_strName;                                      // +0x30 <dummy name>
     CString m_strParentNode;                                // +0x38 <attachInfo parentNode>
-    Unk_DummyVec3 m_vTranslate;                             // +0x40 <transform translate>
+    NiPoint3 m_vTranslate;                             // +0x40 <transform translate>
 };
 MS2_CHECK_SIZE(CEffectDummy, 0x50);
 MS2_CHECK_OFFSET(CEffectDummy, m_strName, 0x30);

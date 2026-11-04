@@ -23,7 +23,7 @@ class CHomemadeCubeObject;
 class CReactor;
 class PCBase;
 namespace egf { class Entity; }
-class Unk_AkoPortal;
+class CPortal;
 class Unk_WsC_GameObj;
 class CMsgBoxData;
 
@@ -140,7 +140,7 @@ private:
     MS2_LAYOUT_FRIEND;
     efd::SmartPointer<egf::Entity> m_spEntity;          // +0x18 the portal's entity
     void* m_unk_20;                                     // +0x20 unused
-    MS2Ptr<Unk_AkoPortal> m_spPortal;                   // +0x28 the portal's field object
+    MS2Ptr<CPortal> m_spPortal;                         // +0x28 the portal's field object
 };
 MS2_CHECK_SIZE(PortalAction, 0x38);
 

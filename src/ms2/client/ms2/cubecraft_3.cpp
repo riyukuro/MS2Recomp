@@ -85,7 +85,7 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 // CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
 class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
 FittingDollPC* FUN_14121b590(int, int, int);
-void FUN_140a0b1f0(const NiMatrix3&, NiPoint3&);
+void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: was (const NiMatrix3&, NiPoint3&)
 void FUN_140b86230(const NiPoint3&, NiMatrix3&);
 int FUN_14123c660(GameObject*);
 void FUN_14123c300(GameObject*, float);
@@ -290,7 +290,7 @@ MS2_REPLACE_METHOD(0x1410b0c60, CFittingDollCubeGuide, vfunc_3, 70, 0xEEBA0580);
 // @0x1410b0cb0
 void CFittingDollCubeGuide::vfunc_4(const NiMatrix3& rotation) {
     NiPoint3 angles;
-    FUN_140a0b1f0(rotation, angles);
+    FUN_140a0b1f0(rotation, reinterpret_cast<efd::Point3&>(angles));
     doll->vfunc_21(reinterpret_cast<const efd::Point3&>(angles));
 }
 MS2_REPLACE_METHOD(0x1410b0cb0, CFittingDollCubeGuide, vfunc_4, 117, 0xCB7A88BE);
@@ -350,7 +350,7 @@ void CKfmCubeGuide::vfunc_1() {
         FUN_140a38a50(entity.operator->(), 0xfd95ca52, position);
         NiPoint3 direction;
         NiMatrix3 rotation = parent->GetWorldRotate();
-        FUN_140a0b1f0(rotation, direction);
+        FUN_140a0b1f0(rotation, reinterpret_cast<efd::Point3&>(direction));
         FUN_140a38a50(entity.operator->(), 0x68c7c29d, direction);
     }
     if (rootReady == 0) {
@@ -381,7 +381,7 @@ MS2_REPLACE_METHOD(0x1410b1750, CKfmCubeGuide, vfunc_3, 93, 0xB16325BF);
 // @0x1410b17c0
 void CKfmCubeGuide::vfunc_4(const NiMatrix3& rotation) {
     NiPoint3 angles;
-    FUN_140a0b1f0(rotation, angles);
+    FUN_140a0b1f0(rotation, reinterpret_cast<efd::Point3&>(angles));
     FUN_140a38a50(entity.operator->(), 0x68c7c29d, angles);
 }
 MS2_REPLACE_METHOD(0x1410b17c0, CKfmCubeGuide, vfunc_4, 79, 0x6E878803);

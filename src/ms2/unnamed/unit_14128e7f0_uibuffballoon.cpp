@@ -39,7 +39,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_BuffActor : public PCBase
 {
@@ -110,7 +109,7 @@ void UIBuffBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_BuffUIScale*)(((class Unk_BuffUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+        *pPos *= ((class GFxManager*)(class Unk_BuffUIScale*)(((class Unk_BuffUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         reinterpret_cast<ASDisplayObject*>(((Unk_BuffEntity*)m_38.operator->()))->SetPositionFloat(pPos->x - 55.0f, pPos->y - 110.0f);

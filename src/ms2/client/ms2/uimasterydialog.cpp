@@ -50,6 +50,7 @@
 #define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/asdisplayobject.h"
 
 #include "uimasterydialog.h"
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uichatballoon_ptr.h"
@@ -189,12 +190,11 @@ public:
     virtual void vfunc_24(bool b);
     void FUN_1409c0dc0(const char* szName, const char* szValue);     // the ASObj setters, applied to the control
     void FUN_1407cb9c0(const char* szName, int n);
-    MS2Ptr<Unk_MGroup> FUN_140eb9cf0(const CString& strName);        // child lookups (in-unit COMDATs)
     MS2Ptr<class Unk_MToggle> FUN_140e28bc0(const CString& strName);
 };
 
 // "m_mainTab" / "m_gradeGroup" (a button group: selectedIndex).
-class Unk_MGroup : public Unk_MCtl { public: Unk_MGroup(const Scaleform::GFx::Value& v, int nMovieId); char m_pad40[0x40]; };    // 0x1422c3090, 0x80 bytes
+template<> MS2Ptr<ASEventDispatcher> AScript::FUN_140eb9cf0<ASEventDispatcher>(const CString& strName);
 // "m_grade00" ... (a toggle button).
 class Unk_MToggle : public Unk_MCtl { };
 // "m_subTab": the category button strip.
@@ -247,9 +247,8 @@ bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsI
 unsigned int FUN_140889fd0(const void* p);                          // the map key hash
 // ---- housing / furniture / scroll tables ----
 class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
-class Unk_MHouseSet { };
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
-extern Unk_MHouseSet DAT_143ab32b8;
+extern ATL::CAtlArray<unsigned int> DAT_143ab32b8;   // scenestategame.cpp
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
 typedef ATL::CAtlMap<unsigned int, MS2Ptr<Unk_MHouseRec> > Unk_MHouseMap;
 class Unk_MHouseTable
@@ -290,8 +289,7 @@ int FUN_140930e10();
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140c43630
 class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool bHistory); };   // C3: member view (uimessenger.h)
-class Unk_MMap { };
-extern Unk_MMap DAT_143ab31a0;
+extern ATL::CAtlMap<unsigned int, int> DAT_143ab31a0;   // scenestategame.cpp
 extern __int64 DAT_143ab2898;
 extern unsigned short DAT_143ab291c;
 extern __int64 DAT_143ab2930;
@@ -419,7 +417,7 @@ void UIMasteryDialog::vfunc_67()
                     m_lastSelected[i] = 0;
             }
         }
-        if (MS2Ptr<Unk_MGroup> spTab = FindControl("m_mainTab")) {
+        if (MS2Ptr<ASEventDispatcher> spTab = FindControl("m_mainTab")) {
             m_nMainTab = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
         }
     }
@@ -438,7 +436,7 @@ void UIMasteryDialog::OnLoadComplete()
     reinterpret_cast<ASObj*>(m_30.operator->())->FUN_1409eb1d0("m_lastSelectedIndex", last);
     if (MS2Ptr<Unk_MLevelCtrl> spScrollCtrl = FUN_140c02990("m_magicScrollControl"))
         spScrollCtrl->Invoke("setSelectedSlotIndex", FUN_140eb6870() - 1);
-    if (MS2Ptr<Unk_MGroup> spMainTab = FindControl("m_mainTab"))
+    if (MS2Ptr<ASEventDispatcher> spMainTab = FindControl("m_mainTab"))
         spMainTab->Invoke("setSelectedButtonByIndex", m_nMainTab);
     do { m_30->FUN_140bbe640("m_magicScroll", m_magicScroll); if (m_magicScroll == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(272), __FUNCTION__)); } while (0);
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
@@ -1062,7 +1060,7 @@ void UIMasteryDialog::FUN_140eb3460()
         int nG0 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 4);
         int nG1 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 5);
         int nG2 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 6);
-        if (MS2Ptr<Unk_MGroup> spGroup = spCtrl->FUN_140eb9cf0("m_gradeGroup")) {
+        if (MS2Ptr<ASEventDispatcher> spGroup = spCtrl->FUN_140eb9cf0<ASEventDispatcher>("m_gradeGroup")) {
             int nSel = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spGroup->GetMember("selectedIndex")))->GetInt();
             if (nG1 == 0 && nSel == 1)
                 spGroup->Invoke("setSelectedButtonByIndex", 0);
@@ -1105,9 +1103,9 @@ void UIMasteryDialog::FUN_140eb3460()
             spList->AddItem(row);
         }
         if (MS2Ptr<Unk_MLevelCtrl> spCtrl2 = FUN_140c02990("m_magicScrollControl")) {
-            if (MS2Ptr<Unk_MGroup> spGrade = spCtrl2->FUN_140eb9cf0("m_gradeGroup"))
+            if (MS2Ptr<ASEventDispatcher> spGrade = spCtrl2->FUN_140eb9cf0<ASEventDispatcher>("m_gradeGroup"))
                 m_30c = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spGrade->GetMember("selectedIndex")))->GetInt();
-            if (MS2Ptr<Unk_MGroup> spSlot = spCtrl2->FUN_140eb9cf0("m_slotGroup"))
+            if (MS2Ptr<ASEventDispatcher> spSlot = spCtrl2->FUN_140eb9cf0<ASEventDispatcher>("m_slotGroup"))
                 m_308 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spSlot->GetMember("selectedIndex")))->GetInt();
         }
         FUN_140eb8b20();
@@ -1268,7 +1266,7 @@ int UIMasteryDialog::GetMainTabIndex()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return -1;
-    if (MS2Ptr<Unk_MGroup> spTab = FindControl("m_mainTab"))
+    if (MS2Ptr<ASEventDispatcher> spTab = FindControl("m_mainTab"))
         return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
     return -1;
 }
@@ -1511,7 +1509,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
     obj.FUN_1409c0d20("level", nNeed);
     obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
     int nFlag = 0;
-    reinterpret_cast<ATL::CAtlMap<unsigned int, int>&>(DAT_143ab31a0).Lookup(nId, nFlag);
+    DAT_143ab31a0.Lookup(nId, nFlag);
     CString strState;
     if (nFlag != 0 || ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->HasRewards(nType, nIndex) == 0)
         strState = "inactive";
@@ -2003,27 +2001,27 @@ public:
 struct Unk_MSinkRef { Unk_MSink* m_pObj; void* m_p8; void* m_pIdx; };
 
 // @0x140eb9620
-MS2Ptr<Unk_MGroup> FUN_140eb9620(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASEventDispatcher> FUN_140eb9620(int nMovieId, const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<Unk_MGroup> sp(new Unk_MGroup(v, nMovieId));
+    MS2Ptr<ASEventDispatcher> sp(new ASEventDispatcher(v, nMovieId));
     return sp;
 }
 
 // @0x140eb9cf0
-MS2Ptr<Unk_MGroup> Unk_MCtl::FUN_140eb9cf0(const CString& strName)
+template<> MS2Ptr<ASEventDispatcher> AScript::FUN_140eb9cf0<ASEventDispatcher>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140eb9620(m_nMovieId, v);
-    return MS2Ptr<Unk_MGroup>(0);
+    return MS2Ptr<ASEventDispatcher>(0);
 }
 
 // @0x140eb9db0
-MS2Ptr<Unk_MGroup> UIMasteryDialog::FindControl(const CString& strName)
+MS2Ptr<ASEventDispatcher> UIMasteryDialog::FindControl(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
-        return MS2Ptr<Unk_MGroup>(0);
-    return reinterpret_cast<Unk_MCtl*>(m_30.get())->FUN_140eb9cf0(strName);
+        return MS2Ptr<ASEventDispatcher>(0);
+    return reinterpret_cast<AScript*>(m_30.get())->FUN_140eb9cf0<ASEventDispatcher>(strName);
 }
 
 // @0x140eb9e40

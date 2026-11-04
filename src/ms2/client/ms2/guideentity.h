@@ -7,49 +7,9 @@
 
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cguidecondition.h"
+#include "ms2/placeholder/cguideaction.h"
 
 class Unk_140165cf0;
-class Unk_GeActRef;
-
-// The actions of a guide entity (open / close handlers); only the three slots the entity calls are named.
-class Unk_GeAction
-{
-public:
-    virtual ~Unk_GeAction();
-    virtual void Unk_Slot1();
-    virtual void Unk_Slot2();
-    virtual void vfunc_3();                                 // 3: start
-    virtual void vfunc_4();                                 // 4: stop
-    virtual int vfunc_5();                                  // 5: done
-};
-
-// A shared action handle (rc block + pointer), the action twin of Unk_GcCondRef.
-class Unk_GeActRef
-{
-public:
-    Unk_GeAction* FUN_141387ba0();                          // the held action
-    void FUN_141387630();                                   // release
-    void* m_pRc;
-    Unk_GeAction* m_p;
-};
-MS2_CHECK_SIZE(Unk_GeActRef, 0x10);
-
-// An action held by Unk_GeActList: destroying it releases the action (MS2Ptr<CGuideAction> dtor 0x141387630).
-class Unk_GeActElem : public Unk_GeActRef
-{
-public:
-    ~Unk_GeActElem() { FUN_141387630(); }
-};
-
-class Unk_GeActList
-{
-public:
-    unsigned __int64 FUN_1413886c0();                             // count
-    Unk_GeActRef& FUN_141387b00(size_t nIdx);               // the nth
-    void FUN_1413883b0(const Unk_GeActRef& ref);            // append
-    CAtlArray<Unk_GeActElem> m_arr;                         // dtor 0x141387590 releases the actions
-};
-MS2_CHECK_SIZE(Unk_GeActList, 0x20);
 
 // 0xd8.
 class CGuideEntity : public CPtred
@@ -78,7 +38,7 @@ public:
     void MoveStartedConditions();                           // 0x1413a3720
     void CollectTriggerValues(std::map<int, int>& mapValues);   // 0x1413a3820
     void LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list);   // 0x1413a3960
-    void LoadActions(Unk_140165cf0* pElem, Unk_GeActList& list);       // 0x1413a3a30
+    void LoadActions(Unk_140165cf0* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list);   // 0x1413a3a30
     void PruneConditions(Unk_GcCondList& list);             // 0x1413a3b00
     void ResetConditions(Unk_GcCondList& list);             // 0x1413a3be0
 
@@ -93,6 +53,6 @@ public:
     Unk_GcCondList m_condOpen;                              // +0x58
     Unk_GcCondList m_condClose;                             // +0x78
     Unk_GcCondList m_condCancel;                            // +0x98
-    Unk_GeActList m_actions;                                // +0xb8
+    CAtlArray<MS2Ptr<CGuideAction> > m_actions;             // +0xb8
 };
 MS2_CHECK_SIZE(CGuideEntity, 0xd8);

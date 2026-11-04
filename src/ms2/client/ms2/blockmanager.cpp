@@ -44,7 +44,6 @@ public:
     bool FUN_14036e4c0();
 };
 CStringW Name_140217ff0(int id);
-void FUN_140165320(void* dst, const CStringW& s);
 void FUN_142c9ef00();
 
 // Stream embedded at packet+8; slots: 1 = byte, 3 = int, 4 = int64.
@@ -169,7 +168,7 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, u64 cb)
 // @0x140a30b80
 void FUN_140a30b80(char* dialog, int id)
 {
-    FUN_140165320(dialog + 0x228, Name_140217ff0(id));
+    reinterpret_cast<ATL::CAtlArray<CStringW>*>(dialog + 0x228)->Add(Name_140217ff0(id));
 }
 
 // @0x140a2ff20  show the "you are blocked" notice for a record

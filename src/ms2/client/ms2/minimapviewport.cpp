@@ -23,8 +23,7 @@ class Unk_MvWorld : public WorldService
 public:
 };
 
-// efd::Point3 and efd::Matrix3 helpers (all out of line in the exe).
-float FUN_140a00f20(const Unk_GVec3& kA, const Unk_GVec3& kB);   // efd::Point3::Dot
+// efd::Matrix3 helpers (all out of line in the exe).
 float FUN_140a38cd0(float fValue);                               // efd::Abs
 void FUN_1409f72e0(Unk_MvMatrix3& kMatrix);                      // efd::Matrix3::Matrix3()
 
@@ -54,9 +53,9 @@ unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
             m_rcImage = spMinimap->m_rcImage;
             m_rcScreen = spMinimap->m_rcScreen;
 
-            Unk_GVec3 kAxisY(0.0f, 0.0f, 0.0f);
-            Unk_GVec3 kAxisZ(0.0f, 0.0f, 0.0f);
-            Unk_GVec3 kAxisX(0.0f, 0.0f, 0.0f);
+            NiPoint3 kAxisY(0.0f, 0.0f, 0.0f);
+            NiPoint3 kAxisZ(0.0f, 0.0f, 0.0f);
+            NiPoint3 kAxisX(0.0f, 0.0f, 0.0f);
             Unk_MvRot3 kRot = reinterpret_cast<const Unk_MvRot3&>(spMinimap->m_vecCamRot);
             FUN_141486a20(kRot, kAxisX, kAxisY, kAxisZ);
             FUN_141485a50(spMinimap->m_vecCamPos, kAxisX, kAxisY, kAxisZ);
@@ -72,12 +71,12 @@ unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
 }
 
 // @0x141485a50
-void MinimapViewport::FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& kAxisX, const Unk_GVec3& kAxisY,
-                                    const Unk_GVec3& kAxisZ)
+void MinimapViewport::FUN_141485a50(const NiPoint3& kCamPos, const NiPoint3& kAxisX, const NiPoint3& kAxisY,
+                                    const NiPoint3& kAxisZ)
 {
-    float fDotX = -FUN_140a00f20(kAxisX, kCamPos);
-    float fDotZ = -FUN_140a00f20(kAxisZ, kCamPos);
-    float fDotY = -FUN_140a00f20(kAxisY, kCamPos);
+    float fDotX = -kAxisX.Dot(kCamPos);
+    float fDotZ = -kAxisZ.Dot(kCamPos);
+    float fDotY = -kAxisY.Dot(kCamPos);
 
     float fSumLR = m_kFrustum.r + m_kFrustum.l;
     float fSumTB = m_kFrustum.t + m_kFrustum.b;
@@ -144,15 +143,15 @@ void MinimapViewport::ResetScale()
 }
 
 // @0x141486410
-bool MinimapViewport::FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut)
+bool MinimapViewport::FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut)
 {
     return FUN_141486450(kPos, kOut, m_fScale);
 }
 
 // @0x141486450
-bool MinimapViewport::FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale)
+bool MinimapViewport::FUN_141486450(const NiPoint3& kPos, NiPoint3& kOut, float fScale)
 {
-    Unk_GVec3 kPt;
+    NiPoint3 kPt;
     if (FUN_141486550(kPos, kPt.x, *(&kPt.x + 1), *(&kPt.x + 2)))
     {
         kOut.z = kPt.z;
@@ -164,7 +163,7 @@ bool MinimapViewport::FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, floa
 }
 
 // @0x141486550
-bool MinimapViewport::FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY, float& fZ)
+bool MinimapViewport::FUN_141486550(const NiPoint3& kPos, float& fX, float& fY, float& fZ)
 {
     float fEps = efd::Max<float>(1e-05f, 0.0f);
     Unk_Rect4 kRect(0.0f, 1.0f, 1.0f, 0.0f);
@@ -196,16 +195,16 @@ bool MinimapViewport::FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY,
 }
 
 // @0x141486a20
-void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ)
+void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, NiPoint3& kAxisX, NiPoint3& kAxisY, NiPoint3& kAxisZ)
 {
     if (FUN_140a38cd0(kRot.z) < 1e-05f)
     {
         Unk_MvMatrix3 kMatrix;
         FUN_1409f72e0(kMatrix);
         reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
-        kMatrix.FUN_140a01190(0, kAxisY);
-        kMatrix.FUN_140a01190(1, kAxisZ);
-        kMatrix.FUN_140a01190(2, kAxisX);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(0, kAxisY);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(1, kAxisZ);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(2, kAxisX);
         ((struct Vector3*)&(kAxisY))->FUN_140968990();
         ((struct Vector3*)&(kAxisZ))->FUN_140968990();
         ((struct Vector3*)&(kAxisX))->FUN_140968990();
@@ -215,9 +214,9 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec
         Unk_MvMatrix3 kMatrix;
         FUN_1409f72e0(kMatrix);
         reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
-        kMatrix.FUN_140a01190(0, kAxisY);
-        kMatrix.FUN_140a01190(1, kAxisZ);
-        kMatrix.FUN_140a01190(2, kAxisX);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(0, kAxisY);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(1, kAxisZ);
+        reinterpret_cast<const efd::Matrix3*>(&kMatrix)->GetCol(2, kAxisX);
         reinterpret_cast<efd::Point3&>(kAxisZ) = -reinterpret_cast<const efd::Point3&>(kAxisZ);
         reinterpret_cast<efd::Point3&>(kAxisX) = -reinterpret_cast<const efd::Point3&>(kAxisX);
         ((struct Vector3*)&(kAxisY))->FUN_140968990();

@@ -10,6 +10,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton (m_prev / m_next)
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -63,7 +64,6 @@ public:
     ASButtonGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
     bool FUN_1422e8ce0(int nValue, bool bFlag);
 };
-class Unk_SchedButton : public ASMovieClip { public: };
 
 // The smart pointer of the group wrapper (16 bytes, the pointer at +8).
 template <class T> class Unk_WedPtr
@@ -310,9 +310,9 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
         if (reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909870(DAT_143ab2830, tHour) == 1)
             pPage->m_pScript->Invoke("setDisabledTime", i);
     }
-    if (MS2Ptr<Unk_SchedButton> spPrev = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_prev"))
+    if (MS2Ptr<ASButton> spPrev = pPage->m_pScript->FUN_140acce30<ASButton>("m_prev"))
         spPrev->FUN_1422c1fe0(nFrom == 0);
-    if (MS2Ptr<Unk_SchedButton> spNext = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_next"))
+    if (MS2Ptr<ASButton> spNext = pPage->m_pScript->FUN_140acce30<ASButton>("m_next"))
         spNext->FUN_1422c1fe0(nTo == 0x18);
     if (MS2Ptr<ASTextField> spDate = pPage->m_pScript->FUN_1409b4620("m_date"))
         spDate->SetTextW(FUN_140b8e910(pPage->m_date));

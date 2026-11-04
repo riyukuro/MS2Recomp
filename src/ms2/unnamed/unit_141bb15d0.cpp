@@ -69,10 +69,10 @@ template class std::vector<unsigned>;
 
 // Stand-in families: the exe has more 0x38-node (key + 16-byte value) map instantiations in this zone than WorldService's
 // named members account for; the value types are not recovered (only their size).
-struct Unk_WsF0 { unsigned char raw[16]; };
-struct Unk_WsF1 { unsigned char raw[16]; };
-struct Unk_WsF2 { unsigned char raw[16]; };
-struct Unk_WsF3 { unsigned char raw[16]; };
+struct Unk_WsF0 { unsigned __int64 raw[2]; };
+struct Unk_WsF1 { unsigned __int64 raw[2]; };
+struct Unk_WsF2 { unsigned __int64 raw[2]; };
+struct Unk_WsF3 { unsigned __int64 raw[2]; };
 // 16-byte vector elements with a destructor (the exe's _Tidy of these vectors sits here; their other members are elsewhere).
 struct Unk_WsN1 { void* p0; void* p1; ~Unk_WsN1() {} };
 struct Unk_WsN2 { void* p0; void* p1; ~Unk_WsN2() {} };
@@ -92,10 +92,10 @@ template class std::map<int, Unk_WsF0>;
 template class std::map<unsigned, Unk_WsF1>;
 template class std::map<unsigned __int64, Unk_WsF2>;
 template class std::map<unsigned __int64, Unk_WsF3>;
-struct Unk_WsF4 { unsigned char raw[16]; };
-struct Unk_WsF5 { unsigned char raw[16]; };
-struct Unk_WsF6 { unsigned char raw[16]; };
-struct Unk_WsF7 { unsigned char raw[16]; };
+struct Unk_WsF4 { unsigned __int64 raw[2]; };
+struct Unk_WsF5 { unsigned __int64 raw[2]; };
+struct Unk_WsF6 { unsigned __int64 raw[2]; };
+struct Unk_WsF7 { unsigned __int64 raw[2]; };
 template class std::map<int, Unk_WsF4>;
 template class std::map<unsigned __int64, Unk_WsF5>;
 template class std::map<unsigned, Unk_WsF6>;

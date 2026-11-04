@@ -697,7 +697,7 @@ public:
     MS2Ptr<CMeratMarketProduct> FUN_140896e80(const Unk_MeratProductKey& key);      // 0x140896e80
 
     MS2Ptr<Unk_CharBookMarkOwner> m_spOwner;                // +0x18
-    ATL::CRBMap<Unk_MeratOid, MS2Ptr<Unk_MeratEquipEntry> > m_map;               // +0x28
+    ATL::CRBMap<Unk_MeratProductKey, MS2Ptr<Unk_MeratEquipEntry> > m_map;        // +0x28
     ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> > m_list;    // +0x58
 };
 MS2_CHECK_SIZE(CUgcCharBookMark, 0x78);

@@ -410,10 +410,10 @@ int FUN_141276180(const CString& strSound, const CString& strOption);      // pl
 void FUN_140a36d00(const CString& strPrefix);                                     // clear the slot list of the movie
 void FUN_140a36c30(const CString& strPrefix, std::vector<JobSkillPtr>& skills);   // fill it
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
-class Unk_LsHud   // C3: member view for the former free stand-ins
+class CKeyTable   // C3: member view (ckeytable.h)
 {
 public:
-    int GetPage();
+    int FUN_140a700b0();                                    // the current quick slot page
 };
 int FUN_14092fac0(int nSkillId, int nA, __int64 nB, int nPage);                // register a shortcut
 int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
@@ -439,7 +439,6 @@ template <class T> T* Unk_SkillDialog(int nId)
 
 CStringW FUN_1418fe870(int nType, int* pnValue, unsigned nFlag);                 // money text by pay type
 unsigned __int64 FUN_140718370(const CStringW& str);                                 // the uid in the text
-char* FUN_141523ba0(MyPC* pPlayer);                                         // the quest data of a PC
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 int XmlQuery(class TiXmlElement* pElem, const char* pszName, CStringW& strOut);   // wide string attribute
@@ -709,7 +708,7 @@ void UISkillBookTreeDialog::RefreshSlotsIfShown()
 // @0x140ec91c0
 void UISkillBookTreeDialog::RegisterShortcut(int nSkillId)
 {
-    int nSlot = ((class Unk_LsHud*)(void*)(((void*)FUN_1409331f0())))->GetPage();
+    int nSlot = ((class CKeyTable*)(void*)(((void*)FUN_1409331f0())))->FUN_140a700b0();
     FUN_14092fac0(nSkillId, 0, 0, nSlot);
 }
 
@@ -1872,7 +1871,7 @@ bool UISkillBookTreeDialog::CanReachLevel(int nSkillId, unsigned short nLevel, i
     }
     if (spData->m_requireQuestID != 0)
     {
-        if (((class CQuestManagerCommon*)(char const*)(FUN_141523ba0(pPlayer) + 0x10))->FUN_140745590(spData->m_requireQuestID) == 0)
+        if (((class CQuestManagerCommon*)(reinterpret_cast<char*>(pPlayer->FUN_141523ba0()) + 0x10))->FUN_140745590(spData->m_requireQuestID) == 0)
             return false;
     }
     return true;

@@ -6,24 +6,14 @@
 #include <NiPoint2.h>
 #include "ms2/placeholder/cbasecollision.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <NiPoint3.h>
 
-// efd::Point3 with the default constructor 0x1405522f0 (another obj); assigned from a NiPoint3 conversion temporary.
+// The point type of CMeshUVPicker::PickUVAndPosition's out-parameters (the matched signature keeps it); a NiPoint3.
 struct Unk_FcPoint3
 {
-    Unk_FcPoint3();                                         // 0x1405522f0
-    Unk_FcPoint3& operator=(const Unk_NiPoint3& pt);        // 0x14097faa0
-    float FUN_140968990();                                  // efd::Point3::Unitize (returns the old length)
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_FcPoint3, 12);
-
-// An NxVec3-like triple with the default constructor 0x140a003a0 (the corner points of an oriented box).
-struct Unk_FcNxVec3
-{
-    Unk_FcNxVec3();                                         // 0x140a003a0
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_FcNxVec3, 12);
 
 class CFrustumCollision : public CBaseCollision
 {
@@ -57,8 +47,8 @@ public:
     float m_fApexDist;                  // +0x10c distance from the near plane back to the cone apex
     Vector3 m_ptOrigin;         // +0x110
     Vector3 m_ptApex;           // +0x11c
-    Unk_FcPoint3 m_aEdgeA[3];           // +0x128 apex and the two far corners of the first side face
-    Unk_FcPoint3 m_aEdgeB[3];           // +0x14c apex and the two far corners of the second side face
+    NiPoint3 m_aEdgeA[3];               // +0x128 apex and the two far corners of the first side face
+    NiPoint3 m_aEdgeB[3];               // +0x14c apex and the two far corners of the second side face
     NiPoint2 m_akEdge2[4];              // +0x170 the two side edges projected onto the ground plane (pairs)
 };
 MS2_CHECK_SIZE(CFrustumCollision, 0x190);

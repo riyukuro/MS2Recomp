@@ -55,11 +55,16 @@ public:
 };
 void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 unsigned int FUN_140d96630(class NiAVObject*);   // C3: was FUN_140d96630
-class Unk_NodeQueue   // C3: member view for the former free stand-ins
+class Unk_NodeQueue   // C3: member view (alphaanimation.cpp's breadth-first node queue)
 {
 public:
+    Unk_NodeQueue(NiAVObject* pRoot);                       // 0x14098cb80
+    ~Unk_NodeQueue();                                       // 0x14098cf00
     void AddChildren(class NiNode*);
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
+typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
    void FUN_14098da10(void* wl, void* node);
 extern char DAT_143ae2b34, DAT_143a09680;
 extern NiFixedString DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8, DAT_143ae53c8, DAT_143ae5210;
@@ -219,15 +224,6 @@ void* FUN_1414d3ff0(void* list) { return *(void**)((char*)list + 0x10); }
 
 // The scene-graph walk (applyeffect.cpp / nifanimationcontroller.cpp declare the same view); its pending
 // CAtlList<NiAVObject*> sits at +0.
-class Unk_AeSceneIter
-{
-public:
-    Unk_AeSceneIter(NiAVObject* pRoot);                     // 0x14098cb80
-    ~Unk_AeSceneIter();                                     // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bEnterChildren);
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
-};
-MS2_CHECK_SIZE(Unk_AeSceneIter, 0x30);
 
 // @0x1414d39a0
 void FUN_1414d39a0(OutlineMap& map)

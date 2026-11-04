@@ -120,7 +120,7 @@ public:
 // @0x141447080
 CLiftableObject::CLiftableObject() : m_ent(0), m_bC2(true)
 {
-    m_ent.FUN_1408b6ec0(0);
+    m_ent = 0;
     m_nKind = 0;
     m_bFixed = 0;
     m_nA8 = 0;
@@ -178,22 +178,22 @@ int CLiftableObject::Init(Unk_Entity* pEntity, bool bFixed, int nKind)
 // @0x141447410
 void CLiftableObject::BindEntity(Unk_Entity* pEntity)
 {
-    m_ent.FUN_1408b6ec0(pEntity);
-    if (m_ent.FUN_1408b70b0(0) != 0)
+    m_ent = (egf::Entity*)pEntity;
+    if (m_ent == 0 != 0)
         return;
     if (m_bFixed == 0)
     {
         efd::utf8string name;
-        efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID(), name);
+        efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetDataFileID(), name);
         m_strName = name.c_str();
         FUN_1401d3700(m_strName);
     }
     float fRange = 150.0f;
-    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
+    if (m_ent->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
         m_fRange = fRange;
-    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue(0xd89e9b12, m_b108);
-    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
-    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
+    m_ent->GetPropertyValue(0xd89e9b12, m_b108);
+    m_ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
+    m_ent->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
     if (m_bFixed == 0)
     {
         reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned int>(0x2e687f77, (unsigned int&)(m_nA8));
@@ -241,14 +241,14 @@ bool CLiftableObject::IsLiftEnabled() const
 // @0x141447910
 void CLiftableObject::SetEffectEnabled(bool bOn)
 {
-    if (m_ent.FUN_1408b70b0(0) != 0)
+    if (m_ent == 0 != 0)
         return;
     if (bOn && m_nEffect == 0)
     {
         NoticeMessage kReq;   // C3: was Unk_LiftSoundReq
         ((Unk_LiftSoundReq&)(kReq)).m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
         ((Unk_LiftSoundReq&)(kReq)).m_nType = 0;
-        *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(((Unk_LiftSoundReq&)(kReq)).m_unk) = (NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()))));
+        *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(((Unk_LiftSoundReq&)(kReq)).m_unk) = (NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()))));
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0((Unk_EffectTarget&)(kReq));
     }
     else if (!bOn && m_nEffect != 0)
@@ -292,17 +292,17 @@ int CLiftableObject::GetState() const
 void CLiftableObject::SetState(int nState)
 {
     m_nState = nState;
-    if (m_ent.FUN_1408b70b0(0) != 0)
+    if (m_ent == 0 != 0)
         return;
     switch (m_nState)
     {
     case 0:
     case 2:
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()), 9, 0, 1);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.data()), 9, 0, 1);
         FUN_141447ec0(1);
         break;
     case 1:
-        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()), 5, 0, 1);
+        ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(reinterpret_cast<egf::Entity*>(m_ent.data()), 5, 0, 1);
         FUN_141447ec0(0);
         break;
     }
@@ -316,7 +316,7 @@ void CLiftableObject::FUN_141447c10()
     {
         m_timer.FUN_1408687f0();
         bool bOff = false;
-        FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.FUN_1408a9280()), 0xa0b6b179, *(bool const*)(&bOff));
+        FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOff));
     }
 }
 
@@ -335,7 +335,7 @@ int CLiftableObject::FUN_141447cc0() const
 // @0x141447ce0
 Unk_Entity* CLiftableObject::FUN_141447ce0()
 {
-    return m_ent.FUN_1408a9090();
+    return (Unk_Entity*)m_ent.data();
 }
 
 // @0x141447d10
@@ -347,9 +347,9 @@ int CLiftableObject::IsNotFixed() const
 // @0x141447d50
 void CLiftableObject::FUN_141447d50(int nOn)
 {
-    if (m_ent.FUN_1408a9090() == 0)
+    if (m_ent.data() == 0)
         return;
-    FUN_141b71e70(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID(), nOn ? true : false, 1, 0);
+    FUN_141b71e70(((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetEntityID(), nOn ? true : false, 1, 0);
 }
 
 // @0x141447de0
@@ -373,22 +373,22 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
     m_bC1 = bActive;
     if (bActive)
     {
-        if (m_ent.FUN_1408a9090() != 0)
+        if (m_ent.data() != 0)
         {
             bool bOn = true;
-            FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.FUN_1408a9280()), 0xa0b6b179, *(bool const*)(&bOn));
-            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
+            FUN_14098c6e0((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOn));
+            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
             if (pComp != 0)
                 FUN_14098b3e0((NiAVObject*)pComp, 1.0f, false);
         }
     }
     else
     {
-        if (m_ent.FUN_1408a9090() != 0)
+        if (m_ent.data() != 0)
         {
-            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
+            void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
             if (pComp != 0)
-                FUN_140ae1e80((NiAVObject*)pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetEntityID());
+                FUN_140ae1e80((NiAVObject*)pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetEntityID());
         }
         m_timer.FUN_140868750(500);
     }
@@ -398,11 +398,11 @@ void CLiftableObject::FUN_141447ec0(bool bActive)
 // @0x141448050
 void CLiftableObject::FUN_141448050(bool bActive)
 {
-    if (m_ent.FUN_1408b70b0(0) != 0)
+    if (m_ent == 0 != 0)
         return;
     if (bActive)
     {
-        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
+        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
         if (pComp != 0 && m_b108 != 0)
         {
             bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(((void*)TSingleton<CGraphicOptionTable>::GetInstance())))->GetShadowOption(5);
@@ -411,7 +411,7 @@ void CLiftableObject::FUN_141448050(bool bActive)
     }
     else
     {
-        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9090()));
+        void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
         if (pComp != 0)
             FUN_141567330((class NiAVObject*)(pComp), false);
     }

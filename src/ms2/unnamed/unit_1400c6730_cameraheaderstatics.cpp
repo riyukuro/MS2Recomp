@@ -14,8 +14,8 @@ class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };  
 #ifndef MS2_HOOK_DLL
 class CCameraMoveEffect { public: static const NiRTTI ms_RTTI; };
 class CCapRotationController { public: static const NiRTTI ms_RTTI; };
-extern const NiRTTI DAT_143ad1568;   // CEffect::ms_RTTI
-extern const NiRTTI DAT_143adac28;   // CItemCustomizeController::ms_RTTI
+class CEffect { public: static const NiRTTI ms_RTTI; };   // C3: was extern const NiRTTI DAT_143ad1568
+class CItemCustomizeController { public: static const NiRTTI ms_RTTI; };   // C3: was extern const NiRTTI DAT_143adac28
 #endif
 
 // first TU
@@ -28,7 +28,7 @@ static Unk_BuddyHandle s_pointer1(NULL);
 // second TU
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 #ifndef MS2_HOOK_DLL
-const NiRTTI CCameraMoveEffect::ms_RTTI("CCameraMoveEffect", &DAT_143ad1568);
+const NiRTTI CCameraMoveEffect::ms_RTTI("CCameraMoveEffect", &CEffect::ms_RTTI);
 #endif
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
@@ -36,7 +36,7 @@ static Unk_BuddyHandle s_pointer2(NULL);
 
 // third TU
 #ifndef MS2_HOOK_DLL
-const NiRTTI CCapRotationController::ms_RTTI("CCapRotationController", &DAT_143adac28);
+const NiRTTI CCapRotationController::ms_RTTI("CCapRotationController", &CItemCustomizeController::ms_RTTI);
 #endif
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill3 = "skill";

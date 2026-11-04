@@ -2215,7 +2215,7 @@ void UILapenshardUpgradeTab::SendLapenshardMode5()
 class SkillSlot : public MS2DragSlot
 {
 public:
-    SkillSlot(const CString& strName, int nIndex, unsigned nSkillId, int nUnk, __int64 nUnk2);      // 0x14175c840
+    SkillSlot(const CString& strName, int nIndex, int nSkillId, int nUnk, __int64 nUnk2);         // 0x14175c840
     virtual ~SkillSlot();
     void SetFixed(int n);                                          // m_bc = n
 private:

@@ -189,11 +189,6 @@ bool FUN_14116e080(NiAVObject* pObject);            // the skin decal is set up
 bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bFlag, const CString& strTexture,
     const NiColor& kColor0, const NiColor& kColor1, const NiColor& kColor2);   // apply the skin decal (unit_14116e3f0)
 NiColor FUN_141b6dea0(unsigned nColor);             // a colour value
-class Unk_FsOptimizer   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140ddcc90();
-};
 CString FUN_1414253b0(const CString& strPath, int bDiffuse);   // the face model path of a variant (the exe passes it by reference)
 CString FUN_141425220(const CString& strPath, int bDiffuse);  // the ear model path of a variant
 CString FUN_141421740(const CString& strPath, int* pnFlag);   // the variant letter of a model path
@@ -267,8 +262,8 @@ MS2_CHECK_SIZE(Unk_SetEffectBits, 1);
 int FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
 int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
 extern int DAT_143ae2b50;                               // the mesh optimizer is on
-extern const NiPoint3 DAT_143a08cf8;                    // the cap pick axis
-extern const NiPoint3 DAT_143b01a60;                    // NiPoint3::ZERO                 // the app time
+#define DAT_143a08cf8 (*(const NiPoint3*)&efd::Point3::UNIT_Z)  // C3: was extern const NiPoint3 DAT_143a08cf8
+#define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)    // C3: was extern const NiPoint3 DAT_143b01a60
 bool FUN_141b701f0(struct Unk_UtilNodeList*, unsigned int);   // C3: was FUN_141b701f0
 namespace efd { class ServiceManager; }
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
@@ -1766,7 +1761,7 @@ void CEquipment::FUN_1411e6e70()
                 continue;
             if (m_pPC->FUN_14123c660() != 0)
                 spItem->FUN_1411dce60(s_tagDefault);
-            if (m_pPC->vfunc_25() != 0 && ((class Unk_FsOptimizer*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+            if (m_pPC->vfunc_25() != 0 && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                 spItem->FUN_1411dce60(s_tagOptimizer);
             spItem->FUN_1411dd280();
         }

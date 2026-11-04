@@ -36,6 +36,8 @@
 class CDirWatcher;
 class Unk_SingletonObj;
 class Unk_SingletonObj1;
+namespace Client { class Constants; }
+template <> class TSingleton<Client::Constants> { public: static Client::Constants* s_instance; };   // clientconstants.h's specialization (0x143aac5c8)
 class Unk_MailService;
 
 // Singleton base at +0x18 that stores the complete object (see logstring.h).
@@ -135,7 +137,6 @@ private:
 extern bool DAT_143aac548;                      // watcher disabled
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
 class CommonResource;
-extern Unk_SingletonObj1* DAT_143aac5c8;
 CLogString* GetLogString();
 unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
 Unk_SingletonObj* FUN_1401d31f0();
@@ -468,7 +469,7 @@ Unk_SingletonObj* FUN_1401d31f0()
 // @0x1401d3200
 Unk_SingletonObj1* FUN_1401d3200()
 {
-    return DAT_143aac5c8;
+    return reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::s_instance);
 }
 
 // @0x1401d3510

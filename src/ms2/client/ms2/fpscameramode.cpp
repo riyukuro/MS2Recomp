@@ -138,7 +138,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
     Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
     m_d8.m_pos = ptEye;
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-    if (ptMove.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptNew = g_143b01a60;
         Vector3 ptInput = ptMove;
@@ -170,12 +170,12 @@ void CFPSCameraMode::vfunc_8(double fTime)
     }
     m_setting.m_c = m_d8.m_pos;
     m_setting.m_18 = m_d8.m_rot;
-    if (m_c0.m_pos.FUN_140552700(m_d8.m_pos))
+    if (reinterpret_cast<const efd::Point3&>(m_c0.m_pos) != reinterpret_cast<const efd::Point3&>(m_d8.m_pos))
     {
         m_c0.m_pos = m_d8.m_pos;
         m_pOwner->FUN_140a38dc0(m_d8.m_pos);
     }
-    if (m_c0.m_rot.FUN_140552700(m_d8.m_rot))
+    if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
     {
         m_c0.m_rot = m_d8.m_rot;
         m_pOwner->FUN_140a38e00(m_d8.m_rot);

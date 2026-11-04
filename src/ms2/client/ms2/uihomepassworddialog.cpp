@@ -25,7 +25,6 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 class Unk_HpWorld;
 class Unk_HpActor;                                              // the local player
-class Unk_HpMovie { public: Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nState); };
 
 class MyPC   // C3: member view for the former free stand-ins
 {
@@ -95,11 +94,11 @@ void UIHomePasswordDialog::OnLoadComplete()
             CMsTime time(nExpire);
             if (nState != 0)
             {
-                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", BlockFormat<int, int, int, int, int>(0xb08, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), nState);
+                reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setState", BlockFormat<int, int, int, int, int>(0xb08, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), nState);
             }
             else
             {
-                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", GetStringCommon(0xb09), nState);
+                reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setState", GetStringCommon(0xb09), nState);
             }
         }
     }

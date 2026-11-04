@@ -189,9 +189,7 @@ class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 ItemGachaBoxTable* FUN_14052d230();
 
 // The dialog offsets of the inventory placement.
-struct Unk_AlignOffset { float x, y; };
-#define DAT_143b02320 (*(Unk_AlignOffset*)&efd::Point2::ZERO)   // zero offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 
 // The game event values (shop talk, give point, reset price sale).
 // The give point lookup is a member: the exe passes the value in rcx and the returned holder in rdx.
@@ -649,11 +647,11 @@ void UIShopDialog::vfunc_66()
         else if (m_nShopType == 4)
         {
             efd::Point2 offLeft(0.0f, 0.0f), offRight(0.0f, 180.0f);
-            FUN_141275c30(this, pInv, *(Unk_AlignOffset*)&offLeft, *(Unk_AlignOffset*)&offRight);
+            FUN_141275c30(this, pInv, offLeft, offRight);
         }
         else
         {
-            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
+            FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }
@@ -3268,7 +3266,7 @@ void UIShopDialog::ArrangeInventory()
         return;
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0 && pInv->vfunc_55() == 0 && pInv->FUN_1422dc430())
-        FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
+        FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
 }
 MS2_REPLACE_METHOD(0x141B03620, UIShopDialog, ArrangeInventory, 131, 0x643F48E9);
 

@@ -110,6 +110,7 @@
 #include <set>
 #include "uicommon.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/userugcmapinfo.h"   // C3: Unk_BmPtr<UserUGCMapInfo>
 #include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get was Unk_UcCfgInt::FUN_1402056b0
 #include "ms2/client/ms2/fielddatacli.h"   // CFieldDataCli (WorldService::FUN_141bd30a0)
 #include "ms2/client/ms2/buddymanager.h"
@@ -646,14 +647,6 @@ unsigned int FUN_1409301f0();   // C3: was FUN_1409301f0
 __int64 FUN_140930240();                                            // merat balance
 __int64 FUN_140930ae0();                                            // red merat balance
 extern Unk_Inventory g_143ab2a90;
-class Unk_UcStatRef                                                 // counted reference to the character's stat record
-{
-public:
-    Unk_UcStatRef(Unk_UcPCInfo* p);                                         // 0x14050dd40
-    ~Unk_UcStatRef();                                               // 0x14050de40
-    bool FUN_141532fa0(int n);
-    void* m_pad_00; void* m_pad_08;
-};
 template <class A> CStringW BlockFormat(int nId, const A& a);
 class Unk_UcUiMgr : public CUIService
 {
@@ -707,8 +700,8 @@ bool FUN_1418fe120()
         return false;
     if (pPC->FUN_14152e950() == 0)
         return false;
-    Unk_UcStatRef stat(((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50()));
-    if (stat.FUN_141532fa0(0))
+    Unk_BmPtr<UserUGCMapInfo> stat(((class UserUGCMapInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50()));   // the house info
+    if (stat == 0)
         return false;
     return true;
 }
@@ -1170,12 +1163,11 @@ bool FUN_1418ff180(int nCurrency, __int64 nAmount, int nItemId, bool bMessage, i
 MS2_REPLACE(0x1418ff180, FUN_1418ff180, 93, 0xEC334497);
 
 // @0x1418ff110
-void FUN_1418ff110(int nCurrency, __int64 nAmount, bool bMessage)
+bool FUN_1418ff110(int nCurrency, __int64 nAmount, bool bMessage)
 {
     if (nCurrency == 3 || nCurrency == 10)
-        FUN_1418ff180(nCurrency, nAmount, 0, bMessage, 1);
-    else
-        FUN_1418ff180(nCurrency, nAmount, 0, bMessage, 0);
+        return FUN_1418ff180(nCurrency, nAmount, 0, bMessage, 1);
+    return FUN_1418ff180(nCurrency, nAmount, 0, bMessage, 0);
 }
 MS2_REPLACE(0x1418ff110, FUN_1418ff110, 101, 0x94364910);
 

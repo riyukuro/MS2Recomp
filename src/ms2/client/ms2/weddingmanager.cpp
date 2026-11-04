@@ -432,17 +432,17 @@ int WeddingManager::GetInvitedCount()
 }
 
 // @0x141b89950
-void WeddingManager::ApplyHallTicket()
+int WeddingManager::ApplyHallTicket()
 {
     __int64 exp = m_proxy.GetExp();
-    TSingleton<WeddingTable>::GetInstance()->GetGrade(exp);
+    return TSingleton<WeddingTable>::GetInstance()->GetGrade(exp);
 }
 
 // @0x141b899d0
-void WeddingManager::ApplyPartner()
+bool WeddingManager::ApplyPartner()
 {
     Unk_WeddingPartner* member = m_proxy.GetSelf(DAT_143ab2828);
-    member->IsOnline();
+    return member->IsOnline();
 }
 
 // @0x141b89d00
@@ -1284,7 +1284,7 @@ bool Unk_UcSlotMgr::FUN_141b867e0(__int64 partnerId)
 { return reinterpret_cast<WeddingManager*>(this)->CanStartWedding(partnerId); }
 
 // Full-executable aliases for existing WeddingManager methods.
-// MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAXXZ 0x141b89950
+// MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAHXZ 0x141b89950
 // MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VUnk_WeddingMail@@@@PEAVAScript@@@Z 0x141b873c0
 // MS2-PIN: ?CanStartWedding@WeddingManager@@QEAA_N_J@Z 0x141b867e0
 // MS2-PIN: ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0

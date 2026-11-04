@@ -7,9 +7,6 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cmailtypes.h"
 
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
-
 // Intrusive pointer to a CPtred-derived mail object (16 bytes, pointer at +8); one instance per T.
 template<class T> class Unk_MailPtr {
 public:

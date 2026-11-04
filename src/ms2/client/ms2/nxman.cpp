@@ -72,7 +72,6 @@ CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 #include "ms2/ms2format.h"
 CStringW StringFormat(const wchar_t* psz, const fmt::ArgList& args);
-void*    FUN_1402da110(void* p1, void* p2, void* p3);
 void     FUN_1416a0e70(void);
 
 
@@ -483,7 +482,7 @@ void FUN_14160f720(void* p1, void** pOut, void* p3)
         arg_value = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(str);
         arg.type = fmt::internal::Arg::STRING;
     }
-    *pOut = FUN_1402da110(p1, pOut, &arg);
+    *pOut = (void*)static_cast<fmt::BasicFormatter<wchar_t>*>(p1)->format(*(const wchar_t**)pOut, arg);
 }
 
 // @0x14160f840

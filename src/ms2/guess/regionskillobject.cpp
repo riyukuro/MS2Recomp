@@ -349,7 +349,7 @@ void CRegionSkillObject::FUN_1416f6f50()
             for (it = m_pending.begin(); it != m_pending.end(); ++it)
             {
                 Vector3 ptCur = it->first;
-                if (ptDone.FUN_140552690(ptCur))
+                if (reinterpret_cast<const efd::Point3&>(ptDone) == reinterpret_cast<const efd::Point3&>(ptCur))
                 {
                     m_pending.erase(it);
                     break;
@@ -391,7 +391,7 @@ void CRegionSkillObject::FUN_1416f6f50()
             for (POSITION posCur = m_waiting.GetHeadPosition(); posCur != 0; m_waiting.GetNext(posCur))
             {
                 Vector3 ptCur = m_waiting.GetAt(posCur);
-                if (ptDone.FUN_140552690(ptCur))
+                if (reinterpret_cast<const efd::Point3&>(ptDone) == reinterpret_cast<const efd::Point3&>(ptCur))
                 {
                     m_waiting.RemoveAt(posCur);
                     break;

@@ -48,7 +48,7 @@ int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut)
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_1403ed280;                                                    // the effect service
 class CEffectService;
-void FUN_1411a4800(const CString& strEffect, int nType);                // preloads an effect
+bool FUN_1411a4800(const CString& strEffect, int nType);                // preloads an effect
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
 CItemGemPropertyTable* TSingleton<CItemGemPropertyTable>::s_instance;   // DAT_143aafd08

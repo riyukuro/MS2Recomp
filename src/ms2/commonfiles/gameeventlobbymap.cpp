@@ -13,16 +13,12 @@
 #include "gameeventlobbymap.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
-// Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 GameEvent* FUN_14041cb50();   // ReturnUser factory (next unit)
-int FUN_140718200(CStringW* text);
+int FUN_140718200(const CStringW& text);
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 
 struct Unk_GESub { char m_pad; };
@@ -56,11 +52,11 @@ GameEvent* FUN_14041c820();
 
 #ifndef MS2_HOOK_DLL
 // Registration of the event factories by name (dynamic initializers).
-static Unk_GEFactoryRegistry s_regCharacterCountRestricted(L"GameEventCharacterCountRestricted", FUN_14041c5a0);   // 0x143aaeec2
-static Unk_GEFactoryRegistry s_regLobbyMap(L"GameEventLobbyMap", FUN_14041c1a0);                                  // 0x143aaeec0
-static Unk_GEFactoryRegistry s_regLoginNotice(L"GameEventLoginNotice", FUN_14041c400);                            // 0x143aaeec1
-static Unk_GEFactoryRegistry s_regOnlinePatch(L"GameEventOnlinePatch", FUN_14041c820);                            // 0x143aaeec3
-static Unk_GEFactoryRegistry s_regReturnUser(L"GameEventReturnUser", FUN_14041cb50);                              // 0x143aaeec4
+static ClassObjectRegistrar s_regCharacterCountRestricted(L"GameEventCharacterCountRestricted", (ClassObjectCreateFn)FUN_14041c5a0);   // 0x143aaeec2
+static ClassObjectRegistrar s_regLobbyMap(L"GameEventLobbyMap", (ClassObjectCreateFn)FUN_14041c1a0);                                  // 0x143aaeec0
+static ClassObjectRegistrar s_regLoginNotice(L"GameEventLoginNotice", (ClassObjectCreateFn)FUN_14041c400);                            // 0x143aaeec1
+static ClassObjectRegistrar s_regOnlinePatch(L"GameEventOnlinePatch", (ClassObjectCreateFn)FUN_14041c820);                            // 0x143aaeec3
+static ClassObjectRegistrar s_regReturnUser(L"GameEventReturnUser", (ClassObjectCreateFn)FUN_14041cb50);                              // 0x143aaeec4
 #endif
 
 // @0x14041c1a0
@@ -77,7 +73,7 @@ GameEventLobbyMap::GameEventLobbyMap() : m_mapId(0)
 }
 
 // @0x14041c2c0
-void GameEventLobbyMap::vfunc_2() { m_mapId = FUN_140718200(&m_68); }
+void GameEventLobbyMap::vfunc_2() { m_mapId = FUN_140718200(m_68); }
 
 // @0x14041c2f0
 void GameEventLobbyMap::vfunc_3(Unk_GEOut* out)
@@ -138,7 +134,7 @@ GameEventCharacterCountRestricted::GameEventCharacterCountRestricted() : m_limit
 void GameEventCharacterCountRestricted::vfunc_2()
 {
     if (!m_68.IsEmpty())
-        m_limit = FUN_140718200(&m_68);
+        m_limit = FUN_140718200(m_68);
 }
 
 // @0x14041c710

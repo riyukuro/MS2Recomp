@@ -22,8 +22,8 @@ static Unk_BuddyHandle s_pointer1(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 #ifndef MS2_HOOK_DLL
 class CFogEffect { public: static const NiRTTI ms_RTTI; };
-extern const NiRTTI DAT_143ad1568;   // CEffect::ms_RTTI
-const NiRTTI CFogEffect::ms_RTTI("CFogEffect", &DAT_143ad1568);
+class CEffect { public: static const NiRTTI ms_RTTI; };   // C3: was extern const NiRTTI DAT_143ad1568
+const NiRTTI CFogEffect::ms_RTTI("CFogEffect", &CEffect::ms_RTTI);
 #endif
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";

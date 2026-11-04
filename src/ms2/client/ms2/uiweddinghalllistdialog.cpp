@@ -39,7 +39,7 @@ template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const
 unsigned __int64 FUN_140718370(const CStringW& str);                // string to unsigned __int64
 __int64 GetServerTime();                                            // the current time
 bool FUN_140900f30(__int64 nTime);                                  // the time is at night
-CStringW FUN_141b71910(unsigned __int64 n);                         // the number as text
+CStringW FUN_141b71910(__int64 n);                         // the number as text
 
 // @0x140fd8df0
 UIWeddingHallListDialog::UIWeddingHallListDialog()

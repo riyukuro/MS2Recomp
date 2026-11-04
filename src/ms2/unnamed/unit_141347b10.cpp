@@ -80,7 +80,6 @@ CStringW GetStringCommon(int nId);                                 // string tab
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
 int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 CStringW FUN_1418fee40(int nCurrency, __int64 nAmount, const CString& strArg, bool bAlt);
 bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId);
@@ -126,13 +125,13 @@ ShopBannerInfo::~ShopBannerInfo()
 }
 
 // @0x141347c30
-void ShopBannerInfo::FUN_141347c30(const Unk_AdBannerPtr& spBanner, int nType, CStringA strKey)
+void ShopBannerInfo::FUN_141347c30(const Unk_AdbPtr& spBanner, int nType, CStringA strKey)
 {
-    CString strUrl = FUN_14016a600(spBanner.FUN_14016e5a0()->m_str40, 0);
+    CString strUrl = FUN_14016a600(spBanner->m_str40, 0);
     m_nKind = 0;
-    m_strName = (const wchar_t*)spBanner.FUN_14016e5a0()->m_strTypeName;
-    m_strName2 = (const wchar_t*)spBanner.FUN_14016e5a0()->m_str30;
-    m_strName3 = (const wchar_t*)spBanner.FUN_14016e5a0()->m_str38;
+    m_strName = (const wchar_t*)spBanner->m_strTypeName;
+    m_strName2 = (const wchar_t*)spBanner->m_str30;
+    m_strName3 = (const wchar_t*)spBanner->m_str38;
     m_nType = nType;
     CString strImg = FUN_14102a0b0(nType, m_strName, strUrl, strKey);
     if (strImg.GetLength() > 0)
@@ -167,7 +166,7 @@ void ShopBanner::FUN_141347ed0(MS2Ptr<ShopBannerInfo> spInfo)
 MS2_REPLACE_METHOD(0x141347ed0, ShopBanner, FUN_141347ed0, 115, 0xDF5BF32C);
 
 // @0x141347f50
-MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdBannerPtr& spBanner, int nType)
+MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdbPtr& spBanner, int nType)
 {
     MS2Ptr<ShopBannerInfo> spInfo(new ShopBannerInfo);
     if (spInfo.get())
@@ -342,7 +341,7 @@ void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSal
     int nMaxDepth = 0;
     FUN_141348dd0(arr, arrTabs, &nMaxDepth, nSale, pfnEach);
     if (spRoot.get())
-        spRoot->FUN_140e813f0("buildCategoryList", arrTabs, nMaxDepth);
+        spRoot->Invoke("buildCategoryList", arrTabs, nMaxDepth);
 }
 MS2_REPLACE(0x141348cf0, FUN_141348cf0, 211, 0xEC8D684F);
 
@@ -527,7 +526,7 @@ void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl
         return;
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x11));
     spBox->SetMsg(strText);
-    spBox->SetCallback(FUN_140b76b10(FUN_141349e10));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_141349e10));
     if (!strUrl.IsEmpty())
         spBox->SetSound(strUrl);
     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);

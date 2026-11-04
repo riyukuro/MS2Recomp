@@ -22,7 +22,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 int FUN_140873420(void* pElement, const char* szName, CStringW& strOut);        // xml attribute -> wide string
 CStringW FUN_14083cb20(const CStringW& strNumber);                              // digits grouped with commas
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);                       // string equals
-CStringW FUN_1407196b0(int nItem);                                              // an item id as text
+CStringW FUN_1407196b0(long nItem);                                              // an item id as text
 CStringW FUN_140719a00(__int64 nMoney);                                         // a money amount as text
 int FUN_140718200(const CStringW& strNumber);                                   // text -> int
 class Unk_XmlNode   // C3: member view for the former free stand-ins

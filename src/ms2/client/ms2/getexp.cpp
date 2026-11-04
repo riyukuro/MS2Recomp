@@ -14,6 +14,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\getexp.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/commonresource.h"
 #include <efd/Point3.h>
 
 #include <NiNode.h>
@@ -68,13 +69,6 @@ extern float DAT_1439f7350;                 // player flash g
 extern float DAT_1439f7354;                 // player flash b
 
 // ---- unit-local views of exe objects ----
-
-// 3-float point whose default ctor is the efd::Point3 one (0x1405522f0).
-struct Unk_GVec3 : public Vector3
-{
-    Unk_GVec3();                                                // 0x1405522f0
-    Unk_GVec3& operator=(const Unk_NiPoint3& pt);              // 0x14097faa0
-};
 
 // Uninitialized storage for a position returned through a vfunc.
 struct Unk_PosBuf { float x, y, z; };
@@ -145,14 +139,12 @@ public:
 };
 struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Value<CString>::get
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-struct Unk_NameHolder { };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // Unit helpers declared elsewhere.
 void FUN_140194470(void* pDst, void* pSrc);
 Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
-bool FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
-                   float fRadius, Unk_GVec3* pHit);                                  // ray / sphere hit
+bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
+                   float fRadius, NiPoint3* pHit);                                   // ray / sphere hit
 void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
 
@@ -206,11 +198,11 @@ void CExpEffectInfo::UpdateOrientation()
     Unk_NiMatrix3 kMat;
     Vector3 vNeg = vDir.FUN_1409f7960();
     Vector3 vUp = DAT_143b01a60;
-    if (vNeg.FUN_140552690(DAT_143a08cf8))
+    if (reinterpret_cast<const efd::Point3&>(vNeg) == reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))
     {
         vUp = DAT_143a08cd8;
     }
-    else if (vNeg.FUN_140552690(DAT_143a08cf8.FUN_1409f7960()))
+    else if (reinterpret_cast<const efd::Point3&>(vNeg) == reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(DAT_143a08cf8.FUN_1409f7960())))
     {
         vUp = DAT_143a08cd8.FUN_1409f7960();
     }
@@ -341,7 +333,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     pRoot->AttachChild((NiAVObject*)m_spNode.operator NiNode*(), true);
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)m_spNode.operator NiNode*();
-    ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
+    ((Unk_ExpTarget&)(kRequest)).m_strName = TSingleton<CommonResource>::GetInstance()->m_strEffectGetExp;
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
     kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
     m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
@@ -378,14 +370,16 @@ void CExpEffectInfo::Finish()
         return;
     float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c260();
     Vector3 ptCur = *(const Vector3*)&((NiAVObject*)m_spNode.operator->())->GetTranslate();
-    Unk_GVec3 ptHit;
-    if (!FUN_14147aa60(ptCur, ptCur.FUN_140965c40(m_ptTarget), m_ptTarget, fRadius, &ptHit))
-        ptHit = ptCur;
+    NiPoint3 ptHit;
+    if (!FUN_14147aa60(reinterpret_cast<const efd::Point3&>(ptCur),
+                       reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(ptCur.FUN_140965c40(m_ptTarget))),
+                       reinterpret_cast<const efd::Point3&>(m_ptTarget), fRadius, &ptHit))
+        ptHit = reinterpret_cast<const efd::Point3&>(ptCur);
     ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->AddColorBoost(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
-    SetPosition(ptHit);
+    SetPosition(reinterpret_cast<const Vector3&>(ptHit));
     StopEffect();
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
-    ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x340);
+    ((Unk_ExpTarget&)(kRequest)).m_strName = TSingleton<CommonResource>::GetInstance()->m_strEffectGetExpEnd;
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = 1;
     kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));

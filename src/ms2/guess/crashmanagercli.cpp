@@ -42,7 +42,9 @@ public:
     CString m_strMessage;                                   // +0x170
 };
 MS2_CHECK_OFFSET(Unk_CrashDialog, m_strMessage, 0x170);
-extern Unk_CrashDialog g_dlgCrash;                          // 0x143af7f80
+class CErrorNotificationDlg;                                // memorydepletiondlg.h
+extern CErrorNotificationDlg DAT_143af7f80;                 // the crash dialog (weddingmanager.cpp)
+#define g_dlgCrash (*(Unk_CrashDialog*)&DAT_143af7f80)
 extern DWORD g_dwCrashMainThreadId;                         // 0x143aac530
 extern LPTOP_LEVEL_EXCEPTION_FILTER g_pfnPrevExceptionFilter;   // 0x143ab6728
 
@@ -188,7 +190,7 @@ void FUN_140a43b20()
 void FUN_140a43d40()
 {
     TSingleton<CFileLogger>::GetInstance()->FUN_140392430();
-    g_dlgCrash.DoModal();
+    g_dlgCrash.CDialog::DoModal();     // direct call: the exe knows the global's dynamic type
 }
 
 // @0x140a43d70

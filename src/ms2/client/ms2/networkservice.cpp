@@ -331,8 +331,7 @@ void FUN_1405340b0(void*,__int64);
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 CStringW GetStringCommon(int);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 class CUIService   // C3: member view for the former free stand-ins
 {
 public:
@@ -358,13 +357,6 @@ MS2_CHECK_SIZE(Unk_NetworkLoginResult,0x58);
 MS2_CHECK_OFFSET(Unk_NetworkLoginResult,start,0x38);
 extern int DAT_143ab2860;extern CString DAT_143ab29d8,DAT_143ab2a28;
 int FUN_140cc1fb0(int);
-void FUN_140c79890(void*);void FUN_140c79b50(void*);
-struct Unk_NetworkAuthErrors {
-    Unk_NetworkAuthErrors() { reinterpret_cast<RawString*>(this)->RawString::RawString(); }
-    ~Unk_NetworkAuthErrors() { reinterpret_cast<RawString*>(this)->RawString::~RawString(); }
-    void* p0;size_t n8;unsigned size;float a14,a18,a1c;size_t a20;void* p28;unsigned a30,a34;void* p38;void* p40;
-};
-MS2_CHECK_SIZE(Unk_NetworkAuthErrors,0x48);
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1066,7 +1058,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         int message=FUN_140cc1fb0(result);
         if(message==0x218) {
             CStringW text=L"";
-            if(((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionJP()&&error==0x4e2e) { Unk_NetworkAuthErrors errors;text=reinterpret_cast<RawString&>(errors).Get((ERawString)0x17); }
+            if(((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionJP()&&error==0x4e2e) { RawString errors;text=errors.Get((ERawString)0x17); }
             if(text.IsEmpty()) text=BlockFormat<int>(message,error);
             FUN_140d86260()->vfunc_58(0x218,0);FUN_140d73aa0(text,0,0,L"");
         } else { FUN_140d86260()->vfunc_59(result);FUN_140d73bc0(message,0,0,L""); }

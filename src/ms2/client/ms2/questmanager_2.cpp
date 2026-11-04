@@ -264,7 +264,7 @@ struct Unk_QmFieldHandle : Unk_WsP16 {
     bool IsNull() const;                        // 0x140965190
     Unk_QmFieldObject* operator->() const;      // 0x140965960
 };
-extern Vector3 DAT_143b01a60;           // NiPoint3::ZERO
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 class Unk_QmClientConfig { public: void* m_0; CContentShutdown m_shutdown; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int stringId, int, int);
@@ -308,14 +308,7 @@ template <class T> T* Unk_GaGetUI(int nId);   // C3: was FUN_1413868b0
 CString Name_14021a6b0(int alliance);                                    // the alliance's string key
 CStringW FUN_14016a730(const char* text, int codePage);
 extern int DAT_143abdf50;
-// The quest portal effect (?\questmanager.cpp case 0x12): NiTransform and the effect request.
-struct Unk_QmXform {
-    Unk_QmXform();                                                      // 0x140a332d0 NiTransform()
-    Unk_EfdMatrix3 m_rotate;
-    NiPoint3 m_translate;
-    float m_fScale;
-};
-MS2_CHECK_SIZE(Unk_QmXform, 0x34);
+// The quest portal effect (?\questmanager.cpp case 0x12): the effect request.
 class Unk_QmEffectService { public:  };
 class Unk_QmEffectCfg {
 public:
@@ -1136,9 +1129,9 @@ void CQuestManager::OnQuest(CInPacket& packet)
         m_requestTick = packet.ReadInt32();
         Unk_QmFieldHandle target = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_targetObject);
         if (target.IsNull()) return;
-        Unk_QmXform xform;
-        xform.m_translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CPortal*)(void*)target.operator->())->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
-        ((efd::Matrix3*)(Unk_EfdMatrix3*)&(xform.m_rotate))->FromEulerAnglesXYZ((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f, (target->m_rotZ * 3.1415927f) / 180.0f);
+        NiTransform xform;   // 0x140a332d0
+        xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CPortal*)(void*)target.operator->())->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
+        ((efd::Matrix3*)&(xform.m_Rotate))->FromEulerAnglesXYZ((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f, (target->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
         NoticeMessage request;
         request.m_strName = ((class Unk_QmEffectCfg*)FUN_1401d31f0())->m_portalEffect;

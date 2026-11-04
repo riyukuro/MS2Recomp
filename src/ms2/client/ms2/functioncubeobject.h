@@ -22,8 +22,9 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/client/ms2/animationcallbackmanager.h"      // CGlobalKeyTextCallback
-#include "ms2/client/ms2/cubespawnobject.h"               // Unk_EntRef
+#include "ms2/client/ms2/cubespawnobject.h"               // egf::EntityPtr
 #include "ms2/placeholder/cinpacket.h"
+#include "ms2/commonfiles/objectdata.h"            // CObjectData::AdditionalEffect (the option block)
 
 namespace efd { class IMessage; }
 namespace egf { class EntityChangeMessage; }
@@ -33,18 +34,6 @@ class Unk_Entity;
 
 
 
-// 0x18-byte option block of the data row (FunctionCubeData +0xd0): int 0, short 1 at +4, int 0, float 0, int 0.
-struct Unk_FcOptions
-{
-    Unk_FcOptions();                                              // 0x140708280
-    int m_n0;                                                     // +0x00
-    short m_n4;                                                   // +0x04
-    int m_n8;                                                     // +0x08
-    float m_fC;                                                   // +0x0c
-    int m_n10;                                                    // +0x10
-    int m_n14;                                                    // +0x14
-};
-MS2_CHECK_SIZE(Unk_FcOptions, 0x18);
 
 // Per-state string lists: the animations (several per state) and the sound of each of the 6 cube states.
 typedef ATL::CAtlArray<CString> Unk_FcStrList;
@@ -98,7 +87,7 @@ public:
     CString m_strB8;                                              // +0xb8
     CString m_strC0;                                              // +0xc0
     CString m_strC8;                                              // +0xc8
-    Unk_FcOptions m_opt;                                          // +0xd0
+    CObjectData::AdditionalEffect m_opt;                                     // +0xd0
     int m_nE8;                                                    // +0xe8
     int m_nEC;                                                    // +0xec
     int m_nF0;                                                    // +0xf0
@@ -171,7 +160,7 @@ struct Unk_FcRow
     CString m_strB8;                                              // +0x140
     CString m_strC0;                                              // +0x148
     CString m_strC8;                                              // +0x150
-    Unk_FcOptions m_opt;                                          // +0x158
+    CObjectData::AdditionalEffect m_opt;                                     // +0x158
     int m_n170;                                                   // +0x170
     char m_pad_174[4];
     CString m_str178;                                             // +0x178
@@ -283,7 +272,7 @@ public:
     Vector3 GetPosition();                                     // 0x141226d00 position property
     // @0x140967140 (inline; COMDAT in actionkeyobject.cpp's range)
     unsigned char FUN_140967140() { return m_bAlt; }
-    Unk_EntRef GetEnt();                                   // 0x141226e60 copy of the entity handle
+    egf::EntityPtr GetEnt();                                   // 0x141226e60 copy of the entity handle
     egf::EntityID GetEntityId();                               // 0x141226eb0 the entity id (or 0)
     MS2Ptr<CBoxCollision> UpdateAndGetBoxCollision();                        // 0x141226f90 refresh the box pose, return it
     void PlayHitSoundAtPosition(int nSound);                               // 0x141227100
@@ -320,7 +309,7 @@ public:
     char m_bAlt;                                                  // +0x20
     char m_b21;                                                   // +0x21
     CString m_strId;                                              // +0x28
-    Unk_EntRef m_ent;                                             // +0x30 the cube entity
+    egf::EntityPtr m_ent;                                             // +0x30 the cube entity
     int m_nState;                                                 // +0x38
     int m_n3c;                                                    // +0x3c (not initialised by the ctor)
     int m_nArg;                                                   // +0x40
@@ -397,7 +386,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     CString m_strAnim;                                            // +0xc8
-    Unk_EntRef m_entPet;                                          // +0xd0 the pet entity
+    egf::EntityPtr m_entPet;                                          // +0xd0 the pet entity
 };
 MS2_CHECK_SIZE(CBreedingCubeObject, 0xd8);
 
@@ -443,7 +432,7 @@ public:
     unsigned FUN_14122cb60();                                     // 0x14122cb60
     __int64 FUN_14122cb80();                                      // 0x14122cb80
     __int64 GetTime();                                      // 0x14122cba0
-    void FUN_14122cbc0(unsigned short nLevel, Unk_EntRef ent);    // 0x14122cbc0 spawn the pet
+    void FUN_14122cbc0(unsigned short nLevel, egf::EntityPtr ent);    // 0x14122cbc0 spawn the pet
     void FUN_14122ce80(unsigned short nLevel);                    // 0x14122ce80 respawn on a level change
     int FUN_14122d190();                                          // 0x14122d190 is the timer over
     int FUN_14122d200();                                          // 0x14122d200 action id
@@ -456,7 +445,7 @@ public:
     __int64 m_nTime;                                              // +0xb8 timestamp of the last feeding
     __int64 m_nC0;                                                // +0xc0
     char m_pad_c8[8];
-    Unk_EntRef m_entPet;                                          // +0xd0
+    egf::EntityPtr m_entPet;                                          // +0xd0
     efd::SmartPointer<CubeSpawnObject> m_spPet;                   // +0xd8
     __int64 m_nE0;                                                // +0xe0
     __int64 m_nE8;                                                // +0xe8

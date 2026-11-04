@@ -44,7 +44,7 @@ public:
 class CLiftableObject : public CPtred
 {
 public:
-    CStringA FUN_1414472a0();                                   // the liftable's name
+    CStringA GetName() const;                                   // 0x1414472a0: the liftable's name
     int FUN_141447cc0() const;                                      // its id
     int GetState() const;                                           // nonzero: already carried
     Vector3 FUN_141447c80();                            // its position
@@ -151,7 +151,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     Vector3 pt;
     if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vfunc_7())), reinterpret_cast<NiPoint3&>(pt)))
     {
-        pt.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40()));
+        reinterpret_cast<efd::Point3&>(pt) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40());
         pt.y += vfunc_8();
         m_20->SetPositionFloat(pt.x, pt.y);
         m_20->vfunc_3(1);
@@ -384,7 +384,7 @@ Vector3 InteractNavigationEntity::vfunc_7()
 // @0x140e79670
 LiftableNavigationEntity::LiftableNavigationEntity(CLiftableObject* pObject)
 {
-    m_38 = pObject->FUN_1414472a0();
+    m_38 = pObject->GetName();
     m_30 = pObject->FUN_141447cc0();
 }
 
@@ -474,7 +474,7 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
     MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
-    if (spPortal->FUN_14169d2f0().FUN_140552700(reinterpret_cast<const Vector3&>(pResult->m_20)))   // efd::Point3 !=
+    if (reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spPortal->FUN_14169d2f0())) != reinterpret_cast<const efd::Point3&>(pResult->m_20))   // efd::Point3 !=
         return 0;
     if (!spPortal->FUN_14169d160())
         return 0;
@@ -664,7 +664,7 @@ void UIQuestNavigation::FUN_140e7b430(NotifyObject* pNotify)
     NotifyAddLiftable* pAdd = dynamic_cast<NotifyAddLiftable*>(pNotify);
     if (!pAdd)
         return;
-    CStringA strKey = Unk_SocketFormat<CString>("liftable_{0}", static_cast<CLiftableObject*>(pAdd->m_pObj)->FUN_1414472a0());
+    CStringA strKey = Unk_SocketFormat<CString>("liftable_{0}", static_cast<CLiftableObject*>(pAdd->m_pObj)->GetName());
     if (m_entities.Lookup(strKey))
         return;
     MS2Ptr<NavigationEntity> spEntity(new LiftableNavigationEntity(static_cast<CLiftableObject*>(pAdd->m_pObj)));

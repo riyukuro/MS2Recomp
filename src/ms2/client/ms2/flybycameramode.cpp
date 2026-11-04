@@ -29,11 +29,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include <efd/Point3.h>        // C3: efd::Point3::UNIT_Z (g_143a08cf8)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extern Vector3 DAT_143a08cd8;
-extern const Vector3 g_143a08cf8;       // NiPoint3::UNIT_Z
+#define DAT_143a08cd8 (*(const Vector3*)&efd::Point3::UNIT_X)       // C3: was extern Vector3 DAT_143a08cd8; NiPoint3::UNIT_X
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)       // NiPoint3::UNIT_Z
 float FUN_141b6fdb0(float f, int n);            // ease curve (n = exponent)
 class CameraMgr   // C3: member view for the former free stand-ins
 {

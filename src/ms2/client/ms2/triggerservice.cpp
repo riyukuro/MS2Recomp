@@ -330,7 +330,7 @@ void CTriggerService::FUN_141861620(const egf::EntityChangeMessage* pMsg, efd::C
             MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
             if (spObject == 0)
                 return;
-            spObject->Init(nId, reinterpret_cast<Unk_Entity*>(pEntity));
+            spObject->Init(nId, pEntity);
             m_mapObjects.SetAt(nId, spObject);
         }
     }

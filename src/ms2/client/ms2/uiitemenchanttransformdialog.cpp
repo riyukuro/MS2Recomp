@@ -56,7 +56,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // A button of the movie (the label and the enabled flag).
-class Unk_TfButton : public AScript { };   // ASButton::FUN_1422cdfb0 sets the label, ASMovieClip::FUN_1422c1fe0 enables
 
 
 // The movie's board (the root child of the dialog).
@@ -220,7 +219,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
+    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
     }
@@ -338,7 +337,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         outputs.PushObj(entry);
     }
     ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
-    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit"))
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     ((Unk_TfBoard*)board)->Invoke("selectItem", obj.FUN_1422bb870());
 }
@@ -365,7 +364,7 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit"))
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
 }
 
@@ -377,7 +376,7 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
+    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     }

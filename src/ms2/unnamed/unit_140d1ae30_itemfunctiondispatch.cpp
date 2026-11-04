@@ -186,7 +186,6 @@ public:
     Unk_IuQuestList m_list;                                 // +0x10
 };
 void* FUN_140764020();   // C3: was FUN_140764020
-Unk_IuQuestMgr* FUN_141523ba0(PC* pPlayer);                 // the player's quests (MyPC)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
 
 // ItemChangeBeauty: the field object the player stands on (ridee.cpp's view of the same COMDATs).
@@ -224,7 +223,6 @@ public:
 UIItemExchangeScrollDialog* FUN_140b6ce30(int nId);         // the dialog getter of another unit (same template body)
 UIWebBrowser* FUN_140c43790(int nId);                       // the dialog getter of another unit (same template body)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-bool FUN_141b899d0(WeddingManager* pWedding);              // ApplyPartner: the partner is online (returns AL; weddingmanager.cpp declares it void)
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked action notice
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);                // wide to multibyte
@@ -892,10 +890,10 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
     }
-    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
+    egf::EntityPtr spEntity((egf::Entity*)((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
-        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
+        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.data());
         if ((spObj.get() ? true : false) && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
         {
             FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
@@ -1385,7 +1383,7 @@ int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
         return 0;
     }
-    if (!FUN_141b899d0(TSingleton<WeddingManager>::GetInstance()))
+    if (!TSingleton<WeddingManager>::GetInstance()->ApplyPartner())
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
         return 0;
@@ -1740,13 +1738,13 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_level"), 0, 0, L"");
         return 0;
     }
-    if (reinterpret_cast<CQuestManagerCommon*>(&FUN_141523ba0(pPlayer)->m_list)->FUN_140745820(nQuestId, 0) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->m_list)->FUN_140745820(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_invalid"), 0, 0, L"");
         return 0;
     }
-    MS2Ptr<Unk_IuQuest> spQuest = (&FUN_141523ba0(pPlayer)->m_list)->vfunc_3(nQuestId);
-    if (spQuest.get() != 0 && FUN_141523ba0(pPlayer)->vfunc_1(nQuestId, 0) == 0)
+    MS2Ptr<Unk_IuQuest> spQuest = (&reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->m_list)->vfunc_3(nQuestId);
+    if (spQuest.get() != 0 && reinterpret_cast<Unk_IuQuestMgr*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0())->vfunc_1(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_completed"), 0, 0, L"");
         return 0;
@@ -1911,10 +1909,10 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
-    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
+    egf::EntityPtr spEntity((egf::Entity*)((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
-        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
+        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.data());
         if ((spObj.get() ? true : false) && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_position"), 1, 1);

@@ -47,6 +47,8 @@
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/client/ms2/entityinstancing.h"  // C3: EntityInstancing::FUN_1411c6a50
+#include "ms2/client/ms2/ms2scenegraphservice.h"   // C3: TSingleton<MS2SceneGraphService>::s_instance
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -61,7 +63,6 @@ class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operat
 extern unsigned DAT_143af62d4;                                  // client area width
 extern unsigned DAT_143af62d8;                                  // client area height
 extern RECT g_rcWindow;                                         // 0x143af7d48: last GetWindowRect of the game window
-extern ecr::SceneGraphService* DAT_143ab9508;
 class Unk_McEntityRules;
 extern Unk_McEntityRules* DAT_143ab9510;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -200,7 +201,6 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 class Unk_McInstancing
 {
 public:
-    bool FUN_1411c6a50(egf::EntityID id);                       // entity not hidden (by value: the exe copies)
     // @0x140ad4bb0
     int FUN_140ad4bb0() const { return m_nHidden; }
     char m_pad_00[0xd0];
@@ -250,11 +250,6 @@ private:
 };
 
 
-// An efd::Point3 local (its default ctor 0x1402bd040 is not Vector3's 0x1405522f0).
-struct Unk_McPoint3 : Vector3
-{
-    Unk_McPoint3();
-};
 
 
 // Math helpers.
@@ -283,7 +278,6 @@ struct Unk_McRequest
     char m_pad_20[0x50];
 };
 MS2_CHECK_SIZE(Unk_McRequest, 0x70);
-void FUN_14097fad0(float* pDst, const Unk_NiPoint3* pSrc);      // NiPoint3 assignment
 
 // Game-wide constants table (the pick range of the cursor).
 struct Unk_McConstUInt { char m_pad_00[0x58]; };
@@ -462,7 +456,7 @@ MS2_REPLACE_METHOD(0x140AD21B0, CMouseController, HasMode, 44, 0x126CFED4);
 // @0x140ad21f0
 int CMouseController::FUN_140ad21f0()
 {
-    return m_vMove.FUN_140552700(DAT_143b01a60);
+    return reinterpret_cast<const efd::Point3&>(m_vMove) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
 }
 MS2_REPLACE_METHOD(0x140AD21F0, CMouseController, FUN_140ad21f0, 41, 0xF33D26B7);
 
@@ -503,7 +497,7 @@ void CMouseController::FUN_140ad2300(const Vector3& pt)
     xf.m_fScale = 1.0f;
     ((efd::Matrix3*)(struct Unk_McRot*)(&xf.m_rotate))->MakeIdentity();
     Unk_NiPoint3 niPt(pt);
-    FUN_14097fad0(xf.m_afTranslate, &niPt);
+    *reinterpret_cast<NiPoint3*>(xf.m_afTranslate) = *reinterpret_cast<const NiPoint3*>(&niPt);
     NoticeMessage request;   // C3: was Unk_McRequest
     ((Unk_McRequest&)(request)).m_strName = "CH/Common/Eff_mouse_click.xml";
     ((Unk_McRequest&)(request)).m_pXform = &xf;
@@ -534,7 +528,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
             pt = FUN_140ad3740(nX, nY);
             break;
         }
-        if (pt.FUN_140552690(DAT_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(pt) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         {
             FUN_140ad22d0();
             return;
@@ -669,7 +663,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         return 0;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -758,7 +752,7 @@ void CMouseController::FUN_140ad3040()
             FUN_140ad22d0();
             return;
         }
-        if (m_vDown.FUN_140552700(DAT_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(m_vDown) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         {
             Vector3 vPos = FUN_140ad3c70();
             Vector3 vTarget = (reinterpret_cast<Unk_McBuffSrc*>(reinterpret_cast<PC*>(pPc)->FUN_1416749a0())->FUN_140970a40() != 0) ? m_vDir : m_vDown;
@@ -840,7 +834,7 @@ int CMouseController::FUN_140ad3550(int nX, int nY, Vector3* pOut)
     FUN_140ad40b0();
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_MouseRay ray;
     *reinterpret_cast<efd::Point3*>(&ray.vOrigin) = *reinterpret_cast<const efd::Point3*>(&vOrigin);
@@ -908,17 +902,17 @@ Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
         return DAT_143b01a60;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
     {
-        Unk_McPoint3 vA;
-        Unk_McPoint3 vB;
-        pPc->vfunc_67(&vA, &vB);
-        Vector3 vNormal = vA.FUN_140a00e10(vB);
+        efd::Point3 vA;   // efd::Point3 locals: the default ctor 0x1402bd040, not Vector3's 0x1405522f0
+        efd::Point3 vB;
+        pPc->vfunc_67(reinterpret_cast<Vector3*>(&vA), reinterpret_cast<Vector3*>(&vB));
+        Vector3 vNormal = reinterpret_cast<Vector3&>(vA).FUN_140a00e10(reinterpret_cast<Vector3&>(vB));
         Vector3 vPos = pPc->vfunc_18();
-        float fDen = vNormal.FUN_140a00f20(vDir);
+        float fDen = reinterpret_cast<const efd::Point3&>(vNormal).Dot(reinterpret_cast<const efd::Point3&>(vDir));
         if (fDen != 0.0f)
         {
-            float t = vNormal.FUN_140a00f20(vPos.FUN_140965c40(vOrigin)) / fDen;
+            float t = reinterpret_cast<const efd::Point3&>(vNormal).Dot(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vPos.FUN_140965c40(vOrigin)))) / fDen;
             Vector3 vHit = vOrigin.FUN_14097fd50(FUN_1409ab5c0(t, vDir));
             return vHit;
         }
@@ -985,7 +979,7 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
         Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(reinterpret_cast<HardwareInstancingService*>(spSvc.FUN_14098d0e0())->FUN_1413d66b0(pEntity));
         if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {
-            bResult = !pInst->FUN_1411c6a50(pEntity->GetEntityID());
+            bResult = !reinterpret_cast<EntityInstancing*>(pInst)->FUN_1411c6a50(pEntity->GetEntityID());
         }
         else
         {
@@ -1087,7 +1081,7 @@ Unk_McEntityRules* FUN_140ad4b90()
 // @0x140ad4ba0
 ecr::SceneGraphService* GetSceneGraphService()
 {
-    return DAT_143ab9508;
+    return TSingleton<MS2SceneGraphService>::s_instance;   // C3: was extern ecr::SceneGraphService* DAT_143ab9508
 }
 
 // @0x140ad4be0

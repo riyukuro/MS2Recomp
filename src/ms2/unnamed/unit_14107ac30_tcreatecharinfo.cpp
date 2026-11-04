@@ -113,7 +113,6 @@ extern const efd::Color g_143a09660;                        // the default appea
 Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour value
 bool FUN_1402226b0(int nJob);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-Vector3* FUN_14097faa0(Vector3* pDst, const NiPoint3& kSrc);
 void FUN_140deec40(Vector3* p);
 bool Unk_IsFinite(const efd::Point3& kPoint);   // bonerotateinterpolator.cpp
 __declspec(noreturn) void FUN_140159b70(long hr);
@@ -259,7 +258,7 @@ void FUN_14107b010()
 MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);
 
 // @0x14107b050
-// The rotated points reach FUN_14097faa0 (NiPoint3 assignment) through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
+// The rotated points reach NiPoint3's move assignment (0x14097faa0) through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
 void FUN_14107b050(const Vector3& kDir)
 {
     Vector3 kRight = kDir;
@@ -268,13 +267,13 @@ void FUN_14107b050(const Vector3& kDir)
     FUN_140deec40(&kFlat);
     Unk_NiMatrix3 matRot;
     NiPoint3 kAxis(0, 0, 1.0f);
-    FUN_14097faa0(reinterpret_cast<Vector3*>(&kAxis), reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kAxis).FUN_140a00e10(kRight))));
+    kAxis = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kAxis).FUN_140a00e10(kRight)));
     matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
-    FUN_14097faa0(&kRight, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight));
-    FUN_14097faa0(&kFlat, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat));
+    *reinterpret_cast<NiPoint3*>(&kRight) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight);
+    *reinterpret_cast<NiPoint3*>(&kFlat) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat);
     reinterpret_cast<efd::Matrix3*>(&matRot)->MakeZRotation((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
-    FUN_14097faa0(&kRight, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight));
-    FUN_14097faa0(&kFlat, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat));
+    *reinterpret_cast<NiPoint3*>(&kRight) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight);
+    *reinterpret_cast<NiPoint3*>(&kFlat) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat);
     FUN_14107cad0(&DAT_143ae5388, &kRight, 1);
     FUN_14107cad0(&DAT_143ae5390, &kFlat, 1);
 }

@@ -40,6 +40,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/skillslot.h"
+#include "ms2/client/ms2/skillsystem.h"   // C3: CSkillSystem::GetSkillSet
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/mypc.h"
@@ -121,15 +122,9 @@ void FUN_1417633f0(const CString& strName, int nCount);                 // creat
 
 
 // The skill set of the player.
-class Unk_MpSkillOwner { public: MS2Ptr<CSkillSet> FUN_141768380(); };
 
 // The key table.
 class Unk_MpKeyPages { public: int FUN_1414370a0(); };
-class Unk_LsHud   // C3: member view (real class not in this TU)
-{
-public:
-    int GetPage();
-};
 class CKeyTable   // C3: member view (real class not in this TU)
 {
 public:
@@ -144,6 +139,7 @@ public:
     CStringW FUN_141431820(int);
     bool GetQuickSlotEntry(unsigned nSlot, Unk_SsQuickEntry& entry);
     void ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet);
+    int FUN_140a700b0();                                    // the current quick slot page
 };
 class Unk_MpKeyTable
 {
@@ -563,7 +559,7 @@ void UIMainPlayerInfo::OnLoadComplete()
         dialog->Invoke("enabledExpansionSlotToggle", 1);
         dialog->FUN_1409ba0d0("expansionSlotActive", m_bSkillMinimize, m_bCommonMinimize);
     }
-    int nPage = ((Unk_LsHud*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->GetPage() + 1;
+    int nPage = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_140a700b0() + 1;
     FUN_1419f24f0(nPage);
 }
 
@@ -1121,7 +1117,7 @@ void UIMainPlayerInfo::FUN_1419f19c0()
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    MS2Ptr<CSkillSet> spSet = ((Unk_MpSkillOwner*)((MyPC*)(Unk_MpPC*)(pPc))->FUN_141523bc0())->FUN_141768380();
+    MS2Ptr<CSkillSet> spSet = ((MyPC*)(Unk_MpPC*)(pPc))->FUN_141523bc0()->GetSkillSet();
     if (spSet.get() != 0)
     {
         ((CKeyTable*)FUN_1409331f0())->ApplySkillSetToQuickSlots(spSet);
@@ -1534,7 +1530,7 @@ bool UIMainPlayerInfo::OnPrevPage()
     int nPages = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_1419f4760();
     if (nPages <= 0)
         return false;
-    int nCur = ((Unk_LsHud*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->GetPage();
+    int nCur = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_140a700b0();
     int nPage = nCur - 1;
     if (nPage < 0)
         nPage = nPages + nPage;
@@ -1550,7 +1546,7 @@ bool UIMainPlayerInfo::OnNextPage()
     int nPages = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_1419f4760();
     if (nPages <= 0)
         return false;
-    int nCur = ((Unk_LsHud*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->GetPage();
+    int nCur = ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_140a700b0();
     int nNext = (nCur + 1) % nPages;
     ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_141431ae0(nNext, true);
     return true;

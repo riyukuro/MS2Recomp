@@ -272,7 +272,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
             }
             else
             {
-                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(pGather->GetPos());
                 ptScreen.x += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ddd0)->FUN_140298f40());
                 ptScreen.y += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de28)->FUN_140298f40());
@@ -346,7 +346,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             }
             else
             {
-                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(spHome->GetPosition());
                 ptScreen.x += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de80)->FUN_140298f40());
                 ptScreen.y += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8)->FUN_140298f40());

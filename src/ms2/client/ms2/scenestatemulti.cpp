@@ -29,6 +29,7 @@
 // MS2-PIN: ??B?$SmartPointer@VUnk_LobbyActor@@@efd@@QEBAPEAVUnk_LobbyActor@@XZ 0x140965780
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestatemulti.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor
 #include "scenestatemulti.h"
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
@@ -63,7 +64,6 @@
 class CMsgBoxData;
 class UIServerListDialog;
 class Unk_1401cd100 { public: Unk_1401cd100(void*); Unk_1401cd100(const Unk_1401cd100&); private: void* m_p; };
-void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 void* FUN_140aae430();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_141275500();
@@ -388,7 +388,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_lobbyField.Load();
     FUN_141275500();
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
-    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     if (nPrevState == 0x6200009)
         FUN_14174f4a0();
     m_timer.FUN_1408687f0();

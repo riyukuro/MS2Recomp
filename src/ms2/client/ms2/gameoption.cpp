@@ -786,8 +786,7 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);    // notice
 int FUN_14151f6e0();
 
 static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight);
-CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 
 // @0x14124ff50
 MS2Ptr<ASUIComponent> UIGameOptionDialog::FUN_14124ff50(int nIndex)

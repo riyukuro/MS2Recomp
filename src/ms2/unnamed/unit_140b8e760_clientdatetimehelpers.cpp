@@ -28,8 +28,7 @@
 #include "hook/ms2hook.h"
 
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
-CStringW FormatStringId(int nId, const fmt::ArgList& args);             // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 int FUN_1406516a0();                                                    // client language
 int FUN_1406516b0();                                                    // the language / region id
 int FUN_1406516d0(int nLanguage);                                       // the digit-group size of a language

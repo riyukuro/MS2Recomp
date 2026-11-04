@@ -6,12 +6,12 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
-#include "ms2/client/ms2/cubespawnobject.h"     // Unk_EntRef
+#include "ms2/client/ms2/cubespawnobject.h"     // egf::EntityPtr
 
 class UgcBannerObject : public CPtred
 {
 public:
-    UgcBannerObject(Unk_EntRef ent);                // 0x140b9c680 (ent by value: the callee destroys it)
+    UgcBannerObject(egf::EntityPtr ent);                // 0x140b9c680 (ent by value: the callee destroys it)
     virtual ~UgcBannerObject();                     // 0x140b9c710
 
     unsigned int GetBannerId() const;               // 0x140b9c750
@@ -22,7 +22,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_EntRef m_ent;                               // +0x18
+    egf::EntityPtr m_ent;                               // +0x18
     unsigned int m_nBannerId;                       // +0x20
     unsigned char m_bVisible;                                // +0x24
 };

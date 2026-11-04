@@ -12,12 +12,23 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/placeholder/cguildxmldata.h"   // Unk_GuildNpcKind (key of CGuildInfo+0x2c8)
-struct Unk_GuildTriple {
-    Unk_GuildTriple(); void FUN_140267bd0(); int FUN_140267c10(); void FUN_140267ea0(const Unk_GuildTriple&);
-    void FUN_140267f50(COutputStream&); void FUN_140267fb0(CInputStream&);
-    int v[3];
+// The 12-byte three-int value (trophy / achievement tallies); defined in unit_140267ba0, unit_140267c10, unit_140267e40.
+class Unk_IntTriple {
+public:
+    Unk_IntTriple();                                        // 0x140267ba0
+    void Clear();                                           // 0x140267bd0
+    int Sum();                                              // 0x140267c10
+    void Add(int nIndex, int nValue);                       // 0x140267c70
+    unsigned __int64 Get(int nIndex);                       // 0x140267d70 (3: the sum)
+    void WriteTo(COutputStream& out);                       // 0x140267e40
+    void ReadFrom(CInputStream& in);                        // 0x140267e70
+    void Copy(const Unk_IntTriple& other);                  // 0x140267ea0
+    int IsEqual(const Unk_IntTriple& other);                // 0x140267ef0
+    void Write(COutputStream& out);                         // 0x140267f50
+    void Read(CInputStream& in);                            // 0x140267fb0
+    int m_v[3];
 };
-MS2_CHECK_SIZE(Unk_GuildTriple,12);
+MS2_CHECK_SIZE(Unk_IntTriple,12);
 struct Unk_GuildArray : ATL::CAtlArray<unsigned char> {
     Unk_GuildArray(); ~Unk_GuildArray(); void FUN_1401c0580();
 };
@@ -48,7 +59,7 @@ public: CStringW FUN_1408f19e0(); CString FUN_1408f1a60();
     __int64 m_a8;
     char m_padb0[0x20];
     int m_d0;
-    Unk_GuildTriple m_d4;
+    Unk_IntTriple m_d4;
 };
 MS2_CHECK_OFFSET(Unk_GuildCharacter, m_14, 0x14);
 MS2_CHECK_OFFSET(Unk_GuildCharacter, m_2c, 0x2c);
@@ -130,7 +141,7 @@ public:
     void FUN_1404c7940(CInPacket* in);
     void FUN_1404c7990(COutputStream& out);
     void FUN_1404c7ad0(CInputStream& in);
-    __int64 f18,f20,f28,f30; CStringW f38; CString f40; int f48,f4c,f50; Unk_GuildTriple f54; __int64 f60;
+    __int64 f18,f20,f28,f30; CStringW f38; CString f40; int f48,f4c,f50; Unk_IntTriple f54; __int64 f60;
 };
 MS2_CHECK_SIZE(CGuildJoinRequestForGuild,0x68);
 class CGuildJoinRequestForChar : public CPtred {
@@ -143,7 +154,7 @@ public:
     void FUN_1404c7f90(CInPacket* in);
     void FUN_1404c7fe0(COutputStream& out);
     void FUN_1404c8150(CInputStream& in);
-    __int64 f18,f20; CStringW f28; int f30; CString f38; int f40; Unk_GuildTriple f44; int f50; CStringW f58; __int64 f60,f68,f70;
+    __int64 f18,f20; CStringW f28; int f30; CString f38; int f40; Unk_IntTriple f44; int f50; CStringW f58; __int64 f60,f68,f70;
 };
 MS2_CHECK_SIZE(CGuildJoinRequestForChar,0x78);
 class CGuildJoinRequestSchCond : public CPtred {
@@ -174,7 +185,7 @@ public:
     void FUN_1404c8a50(CInPacket* in);
     void FUN_1404c8aa0(COutputStream& out);
     void FUN_1404c8be0(CInputStream& in);
-    __int64 f18; CStringW f20; CString f28; int f30,f34; Unk_GuildTriple f38; int f44; __int64 f48,f50; CStringW f58;
+    __int64 f18; CStringW f20; CString f28; int f30,f34; Unk_IntTriple f38; int f44; __int64 f48,f50; CStringW f58;
 };
 MS2_CHECK_SIZE(CSearchGuildJoin,0x60);
 class CGuildInviteInfo : public CPtred {
@@ -211,7 +222,7 @@ public:
     void FUN_1404ca910(CStringW value);
     CString FUN_1404ca980();
     void FUN_1404caa00(CString value);
-    __int64 f00,f08; unsigned char f10; int f14,f18; unsigned short f1c; int f20,f24,f28; Unk_GuildTriple f2c; int f38,f3c,f40; __int64 f48; CLockCriticalSection lock; CStringW name; CString code;
+    __int64 f00,f08; unsigned char f10; int f14,f18; unsigned short f1c; int f20,f24,f28; Unk_IntTriple f2c; int f38,f3c,f40; __int64 f48; CLockCriticalSection lock; CStringW name; CString code;
 };
 MS2_CHECK_SIZE(Unk_GuildMemberData,0x90);
 class CGuildMemberRaid : public CPtred {
@@ -235,7 +246,7 @@ public:
     virtual ~CGuildMember();
     void FUN_1404cb250();
     int FUN_1404cb370();
-    Unk_GuildTriple* FUN_1404cb390();
+    Unk_IntTriple* FUN_1404cb390();
     int FUN_1404cb3b0();
     int FUN_1404cb3e0();
     void FUN_1404cb420(COutPacket* out);

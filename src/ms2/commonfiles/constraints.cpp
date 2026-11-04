@@ -9,7 +9,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
-CStringW FUN_14016a730(const char*,unsigned int);
+CStringW FUN_14016a730(const char*,int);
 bool FUN_140222590(int);
 bool FUN_1402c4740(int);
 bool FUN_1402c4770(int);
@@ -31,21 +31,22 @@ bool Unk_MinUtf8::CheckA(const CString& value) {
 }
 MS2_REPLACE_METHOD(0x1402C3840, Unk_MinUtf8, CheckA, 160, 0xE4FFA38B);
 // @0x1402c38f0
-Unk_MaxLength::Unk_MaxLength(int value) : length(value) {}
+Unk_NarrowLimit::Unk_NarrowLimit(int value) : maximum(value) {}
 // @0x1402c3910
-bool Unk_MaxLength::CheckA(const CString& value) {
-    bool checkResult=(value.GetLength() <= length);
+bool Unk_NarrowLimit::Check(const CString& value) const {
+    bool checkResult=(value.GetLength() <= maximum);
     MS2_ASSERT_AT(35,checkResult);
     return checkResult;
 }
-MS2_REPLACE_METHOD(0x1402C3910, Unk_MaxLength, CheckA, 108, 0x1452C846);
+// Check is overloaded, so MS2_REPLACE_METHOD (decltype(&Class::Method)) cannot name it: register through a this-first thunk.
+MS2_REPLACE_IMPL(0x1402C3910, static_cast<bool (*)(const Unk_NarrowLimit*, const CString&)>([](const Unk_NarrowLimit* self, const CString& value) { return self->Check(value); }), "Unk_NarrowLimit::Check", 108, 0x1452C846);
 // @0x1402c3990
-bool Unk_MaxLength::CheckW(const CStringW& value) {
-    bool checkResult=(value.GetLength() <= length);
+bool Unk_NarrowLimit::Check(const CStringW& value) const {
+    bool checkResult=(value.GetLength() <= maximum);
     MS2_ASSERT_AT(42,checkResult);
     return checkResult;
 }
-MS2_REPLACE_METHOD(0x1402C3990, Unk_MaxLength, CheckW, 108, 0x2CDC2D7F);
+MS2_REPLACE_IMPL(0x1402C3990, static_cast<bool (*)(const Unk_NarrowLimit*, const CStringW&)>([](const Unk_NarrowLimit* self, const CStringW& value) { return self->Check(value); }), "Unk_NarrowLimit::Check", 108, 0x2CDC2D7F);
 // @0x1402c3a10
 Unk_RangeUtf8::Unk_RangeUtf8(int minLength,int maxLength) : minLength(minLength),maxLength(maxLength) { MS2_ASSERT_AT(50,minLength <= maxLength); }
 // @0x1402c3a70
@@ -66,25 +67,25 @@ bool Unk_MinWide::CheckW(const CStringW& value) {
 }
 MS2_REPLACE_METHOD(0x1402C3B50, Unk_MinWide, CheckW, 113, 0x2B2CF39D);
 // @0x1402c3bd0
-Unk_MaxWide::Unk_MaxWide(int value) : length(value) {}
+Unk_WideMaximum::Unk_WideMaximum(int value) : maximum(value) {}
 // @0x1402c3bf0
-bool Unk_MaxWide::CheckW(const CStringW& value) {
+bool Unk_WideMaximum::Check(const CStringW& value) const {
     bool checkResult=false;
-    checkResult=(value.GetLength() <= length);
+    checkResult=(value.GetLength() <= maximum);
     MS2_ASSERT_AT(93,checkResult);
     return checkResult;
 }
-MS2_REPLACE_METHOD(0x1402C3BF0, Unk_MaxWide, CheckW, 113, 0xE76DE6D2);
+MS2_REPLACE_METHOD(0x1402C3BF0, Unk_WideMaximum, Check, 113, 0xE76DE6D2);
 // @0x1402c3c70
-Unk_RangeWide::Unk_RangeWide(int minLength,int maxLength) : minLength(minLength),maxLength(maxLength) { MS2_ASSERT_AT(101,minLength <= maxLength); }
+Unk_WideRange::Unk_WideRange(int minimum,int maximum) : minimum(minimum),maximum(maximum) { MS2_ASSERT_AT(101,minimum <= maximum); }
 // @0x1402c3cd0
-bool Unk_RangeWide::CheckW(const CStringW& value) {
+bool Unk_WideRange::Check(const CStringW& value) const {
     bool checkResult=false;
-    checkResult=(value.GetLength() >= minLength && value.GetLength() <= maxLength);
+    checkResult=(value.GetLength() >= minimum && value.GetLength() <= maximum);
     MS2_ASSERT_AT(109,checkResult);
     return checkResult;
 }
-MS2_REPLACE_METHOD(0x1402C3CD0, Unk_RangeWide, CheckW, 134, 0x03C2B948);
+MS2_REPLACE_METHOD(0x1402C3CD0, Unk_WideRange, Check, 134, 0x03C2B948);
 // @0x1402c3d80
 bool Unk_MinBytes::CheckA(const CString& value) {
     bool checkResult=false;
@@ -94,15 +95,15 @@ bool Unk_MinBytes::CheckA(const CString& value) {
 }
 MS2_REPLACE_METHOD(0x1402C3D80, Unk_MinBytes, CheckA, 113, 0x179C086D);
 // @0x1402c3e00
-Unk_MaxBytes::Unk_MaxBytes(int value) : length(value) {}
+Unk_NarrowMaximum::Unk_NarrowMaximum(int value) : maximum(value) {}
 // @0x1402c3e20
-bool Unk_MaxBytes::CheckA(const CString& value) {
+bool Unk_NarrowMaximum::Check(const CString& value) const {
     bool checkResult=false;
-    checkResult=(value.GetLength() <= length);
+    checkResult=(value.GetLength() <= maximum);
     MS2_ASSERT_AT(142,checkResult);
     return checkResult;
 }
-MS2_REPLACE_METHOD(0x1402C3E20, Unk_MaxBytes, CheckA, 113, 0xB1AE1D8D);
+MS2_REPLACE_METHOD(0x1402C3E20, Unk_NarrowMaximum, Check, 113, 0xB1AE1D8D);
 // @0x1402c3ea0
 Unk_RangeBytes::Unk_RangeBytes(int minLength,int maxLength) : minLength(minLength),maxLength(maxLength) { MS2_ASSERT_AT(150,minLength <= maxLength); }
 // @0x1402c3f00

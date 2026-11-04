@@ -21,7 +21,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
 void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
@@ -154,7 +154,7 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
         }
 
         Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -318,7 +318,7 @@ MS2_REPLACE_METHOD(0x141838E40, CTarget2DCameraMode, vfunc_27, 147, 0xCF35E811);
 // @0x141838ee0
 void CTarget2DCameraMode::vfunc_3(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_c))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_c))
     {
         m_d8 = 0;
         m_setting.m_c = pt;
@@ -330,7 +330,7 @@ MS2_REPLACE_METHOD(0x141838EE0, CTarget2DCameraMode, vfunc_3, 128, 0x198561E9);
 // @0x141838f70
 void CTarget2DCameraMode::vfunc_4(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_18))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_18))
     {
         m_d8 = 0;
         m_setting.m_18 = pt;

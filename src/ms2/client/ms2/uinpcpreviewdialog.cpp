@@ -95,7 +95,7 @@ CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 // The ui text service (singleton): the text of a "$s_..." key.
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
-CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
+CStringW FUN_1401aa6a0(int nNpc);                  // the name text of an npc id
 
 // The talk window.
 class UITalkManager { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };   // uitalkmanager.h clashes with this unit's CCinematicContent

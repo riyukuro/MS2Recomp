@@ -103,8 +103,8 @@ int FindStatByName(const CStringA& strName);            // stat name -> id (-1 w
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlQuery(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_1408738d0
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
-int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
+int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -113,7 +113,17 @@ public:
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
-class TiXmlElement { public: void SetDoubleAttribute(char const *, double); };   // C3: member view (was FUN_14086f970)
+// Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
+class TiXmlElement
+{
+public:
+    TiXmlElement(const char* pszName);          // 0x14086f2f0
+    virtual ~TiXmlElement();                    // 0x14086f450
+    void SetDoubleAttribute(char const *, double);   // C3: member view (was FUN_14086f970)
+private:
+    void* unknown08[17];
+};
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
 class JobData   // C3: member view for the former free stand-ins
 {
 public:
@@ -123,17 +133,6 @@ public:
 // The skill flags of the additional effect table (FUN_140186320 is its accessor, inline in additionalactionadditional.cpp).
 class Unk_SkillFlags : public StanceTable { };
 class Unk_AdditionalFlags* FUN_140186320();   // C3: was FUN_140186320
-
-// Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
-class Unk_TiXmlElement
-{
-public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
-private:
-    void* unknown00[18];
-};
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
 
 // Container comparisons (true = same; the templates of additionalactionadditional.cpp).
 template <class T> bool IsSameArray(const ATL::CAtlArray<T>& a, const ATL::CAtlArray<T>& b)
@@ -412,7 +411,7 @@ int SkillBeginCondition::Save(void* pParent)
     static SkillBeginCondition s_default;
     if (!IsDefault())
     {
-        Unk_TiXmlElement elem("beginCondition");
+        TiXmlElement elem("beginCondition");
         if (0.0f < m_fProbability)
             reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("probability", m_fProbability);
         if (m_nUseTargetCountFactor != s_default.m_nUseTargetCountFactor)
@@ -423,14 +422,14 @@ int SkillBeginCondition::Save(void* pParent)
             XmlSetAttr((class TiXmlElement*)(&elem), "onlyBattleRidingState", m_nOnlyBattleRidingState);
         if (m_caster.HasContent())
         {
-            Unk_TiXmlElement caster("caster");
+            TiXmlElement caster("caster");
             if (m_caster.Save(&caster) == 0)
                 return 0;
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&caster)));
         }
         if (m_target.HasContent())
         {
-            Unk_TiXmlElement target("target");
+            TiXmlElement target("target");
             if (m_target.Save(&target) == 0)
                 return 0;
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&target)));
@@ -571,7 +570,7 @@ int SkillCondition::Save(void* pParent)
     if (!IsDefault())
     {
         // The element name is the beginCondition one in the original.
-        Unk_TiXmlElement elem("beginCondition");
+        TiXmlElement elem("beginCondition");
         if (s_default.m_fInvokeEffectFactor != m_fInvokeEffectFactor)
             reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("invokeEffectFactor", m_fInvokeEffectFactor);
         if (s_default.m_fDefaultRechargingCooldownTime != m_fDefaultRechargingCooldownTime)
@@ -591,7 +590,7 @@ int SkillCondition::Save(void* pParent)
             unsigned nCode = m_arrRequireEffect[i];
             if (nCode == 0)
                 continue;
-            Unk_TiXmlElement child("requireEffect");
+            TiXmlElement child("requireEffect");
             XmlSetAttr((class TiXmlElement*)(&child), "code", nCode);
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
@@ -600,7 +599,7 @@ int SkillCondition::Save(void* pParent)
             unsigned nCode = m_arrRequireMapCodes[i];
             if (nCode == 0)
                 continue;
-            Unk_TiXmlElement child("requireMapCodes");
+            TiXmlElement child("requireMapCodes");
             XmlSetAttr((class TiXmlElement*)(&child), "code", nCode);
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
@@ -609,7 +608,7 @@ int SkillCondition::Save(void* pParent)
             int nId = m_arrHasNotAdditionalEffectGroup[i];
             if (nId == 0)
                 continue;
-            Unk_TiXmlElement child("hasNotAdditionalEffectGroup");
+            TiXmlElement child("hasNotAdditionalEffectGroup");
             XmlSetAttr((class TiXmlElement*)(&child), "id", nId);
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
         }
@@ -619,7 +618,7 @@ int SkillCondition::Save(void* pParent)
             int nRightHand = m_arrWeapon[i].m_nRightHand;
             if (nLeftHand == 0 && nRightHand == 0)
                 continue;
-            Unk_TiXmlElement child("weapon");
+            TiXmlElement child("weapon");
             XmlSetAttr((class TiXmlElement*)(&child), "lh", nLeftHand);
             XmlSetAttr((class TiXmlElement*)(&child), "rh", nRightHand);
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&child)));
@@ -825,13 +824,13 @@ void SkillData::Load(Unk_140165cf0* pElem)
     Unk_140165cf0* pUi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBasic))->FirstChild("ui"));
     if (pUi != 0)
     {
-        FUN_140873ad0(pUi, "icon", m_strIcon);
+        XmlQuery((class TiXmlElement*)(pUi), "icon", m_strIcon);
         XmlValue(pUi, "attackType", m_eAttackType);
         XmlQuery((class TiXmlElement*)(pUi), "disableChangeSkillIconEffect", m_bDisableChangeSkillIconEffect);
         XmlQuery((class TiXmlElement*)(pUi), "showCastingBar", m_bShowCastingBar);
         XmlQuery((class TiXmlElement*)(pUi), "tooltip", *(unsigned int*)&static_cast<int&>(m_nTooltip));
         CStringW strParam;
-        FUN_140873b30(pUi, "paramCastingBar", strParam);
+        XmlQuery((class TiXmlElement*)(pUi), "paramCastingBar", strParam);
         m_spParamCastingBar->FUN_14092c400(strParam);
     }
     Unk_140165cf0* pKinds = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBasic))->FirstChild("kinds"));

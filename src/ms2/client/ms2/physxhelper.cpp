@@ -148,7 +148,7 @@ public:
 };
 extern int DAT_143ae2b30;
 extern const Vector3 g_143b01a60;
-extern const Vector3 g_143a08cf8;
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)
 
 // The PhysX character kit entry points are DLL imports of the exe (IAT slots 0x142ccec98 / 0x142ccec90).
 extern "C" __declspec(dllimport) NxControllerManager* NxCreateControllerManager(NxUserAllocator*);

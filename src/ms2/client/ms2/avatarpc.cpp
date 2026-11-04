@@ -222,7 +222,7 @@ public:
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                               Vector3* pNormal, int nMask);   // 0x14168a310
 };
-extern Unk_AvPhysicsSvc* DAT_143ab50b8;
+template <> class TSingleton<CPhysXHelper> { public: static CPhysXHelper* s_instance; };   // physxhelper.h's specialization (0x143ab50b8)
 Unk_AvModeSvc* FUN_1409f7c90();
 Unk_AvPhysicsSvc* FUN_1409f7ca0();
 efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat);   // identity-constructs (0x1409f72e0) and returns the matrix
@@ -1588,7 +1588,7 @@ Unk_AvModeSvc* FUN_1409f7c90()
 // @0x1409f7ca0
 Unk_AvPhysicsSvc* FUN_1409f7ca0()
 {
-    return DAT_143ab50b8;
+    return reinterpret_cast<Unk_AvPhysicsSvc*>(TSingleton<CPhysXHelper>::s_instance);
 }
 
 // @0x1409f7ea0

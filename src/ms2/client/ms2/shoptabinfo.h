@@ -86,7 +86,7 @@ public:
     virtual ~ShopBanner();                                          // 0x1413147c0
 
     void FUN_141347ed0(MS2Ptr<ShopBannerInfo> spInfo);                                  // add (keyed by its name)
-    MS2Ptr<ShopBannerInfo> FUN_141347f50(const Unk_AdBannerPtr& spBanner, int nType);   // add one from an ad banner
+    MS2Ptr<ShopBannerInfo> FUN_141347f50(const Unk_AdbPtr& spBanner, int nType);   // add one from an ad banner
     MS2Ptr<ShopBannerInfo> FUN_1413480a0(const CString& strName);                       // find by name
     void FUN_141348160(const CString& strUrl);                                          // open a banner link
     void FUN_141348190(ASArray& arr);                                                   // write all banners

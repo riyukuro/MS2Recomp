@@ -94,18 +94,12 @@ class Unk_ClubUIManager
 public:
 };
 
-// The world (FUN_1403ed2d0): my player and the player lookup by name.
 class Unk_ClubWorldObj;
-class Unk_ClubWorld
-{
-public:
-    PCBase* FUN_141bd0cc0();
-    Unk_ClubWorldObj* FUN_141bd1420(CStringW strName);
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    class Unk_WsC_GameObj* FUN_141bd1420(CStringW strName);   // a player by name
     static class WorldService* GetInstance();
 };
 
@@ -1379,7 +1373,7 @@ void CClubClientManager::FUN_140b18260(CInPacket& packet)
     __int64 nClubId = packet.ReadInt64();
     CStringW strFirst = packet.ReadUnicodeString();
     CStringW strSecond = packet.ReadUnicodeString();
-    Unk_ClubWorldObj* pObj = ((class Unk_ClubWorld*)WorldService::GetInstance())->FUN_141bd1420(strFirst);
+    Unk_ClubWorldObj* pObj = ((Unk_ClubWorldObj*)WorldService::GetInstance()->FUN_141bd1420(strFirst));
     if (pObj == 0)
         return;
 }

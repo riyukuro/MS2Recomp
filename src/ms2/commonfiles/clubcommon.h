@@ -10,7 +10,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/clubuserclub.h"          // Club::NameInfo, Club::UserClub
-#include "ms2/commonfiles/guilddef_1.h"          // Unk_GuildTriple (trophy triple)
+#include "ms2/commonfiles/guilddef_1.h"          // Unk_IntTriple (trophy triple)
 #include "ms2/commonfiles/os.h"                   // TSingleton
 
 class CInPacket;
@@ -58,7 +58,7 @@ public:
     int m_44;                                       // +0x44
     int m_48;                                       // +0x48
     __int64 m_50;                                   // +0x50
-    Unk_GuildTriple m_trophy;                       // +0x58 12-byte triple (ctor 0x140267ba0, writer 0x140267f50;
+    Unk_IntTriple m_trophy;                       // +0x58 12-byte triple (ctor 0x140267ba0, writer 0x140267f50;
                                                     //       same type as userproxy.h Unk_UserProxyColor)
     CLockCriticalSection m_lock;                    // +0x68
     CStringW m_name;                                // +0x98
@@ -89,7 +89,7 @@ public:
     int FUN_14020eca0(Club::SaveMember* pSave);    // fill the save record when the dirty flag is set, then clear it
     void FUN_14020edb0(int nDirty);                 // set m_f4
     int FUN_14020edd0();                            // m_f4
-    Unk_GuildTriple* FUN_14020edf0();               // &m_info.m_trophy
+    Unk_IntTriple* FUN_14020edf0();               // &m_info.m_trophy
     void FUN_14020ee10();                           // m_info.m_trophy.FUN_140267c10()
     __int64 m_18;                                   // +0x18
     CClubMemberProxy m_info;                        // +0x20 (character id at +0x40 is compared with the club leader)

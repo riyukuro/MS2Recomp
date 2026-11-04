@@ -158,9 +158,8 @@ Unk_Int3 Unk_DkSub(const Unk_DkPoint& a, const Unk_DkPoint& b) { return a - b; }
 Unk_Int3 Unk_DkAdd(const Unk_DkPoint& a, const Unk_DkPoint& b) { return a + b; }
 
 unsigned __int64 FUN_1411283f0(const void* pLink);
-unsigned __int64 FUN_1409657b0(const void* pPtr);
 struct Unk_DkLessLink { bool operator()(const void* a, const void* b) const { return FUN_1411283f0(a) < FUN_1411283f0(b); } };
-struct Unk_DkLessPtr { bool operator()(const void* a, const void* b) const { return FUN_1409657b0(a) < FUN_1409657b0(b); } };
+struct Unk_DkLessPtr { bool operator()(const void* a, const void* b) const { return (unsigned __int64)reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(a)->get() < (unsigned __int64)reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(b)->get(); } };
 struct Unk_DkLessInt { bool operator()(const int& a, const int& b) const { return a < b; } };
 struct Unk_DkLessInt2 { bool operator()(const int& a, const int& b) const { return a < b; } };
 void Unk_DkLessAnchor(const void* a, const void* b, const int& c, const int& d)
@@ -179,18 +178,18 @@ struct Unk_DkNearer
 {
     GameObject* m_pPlayer;
     // @0x14112cbc0
-    bool operator()(Unk_EntRef kA, Unk_EntRef kB) const
+    bool operator()(egf::EntityPtr kA, egf::EntityPtr kB) const
     {
         NiPoint3 kPlayer = m_pPlayer->vfunc_18();
         Vector3 kPosA = DAT_143b01a60;
         Vector3 kPosB = DAT_143b01a60;
-        reinterpret_cast<egf::Entity*>(kA.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosA));
-        reinterpret_cast<egf::Entity*>(kB.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosB));
+        kA->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosA));
+        kB->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosB));
         float fA = FUN_140966f00(kPlayer, kPosA);
         return fA < FUN_140966f00(kPlayer, kPosB);
     }
 };
-bool Unk_DkNearerAnchor(GameObject* pPlayer, Unk_EntRef kA, Unk_EntRef kB)
+bool Unk_DkNearerAnchor(GameObject* pPlayer, egf::EntityPtr kA, egf::EntityPtr kB)
 {
     Unk_DkNearer kLess = { pPlayer };
     return kLess(kA, kB);

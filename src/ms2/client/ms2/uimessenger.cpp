@@ -521,13 +521,6 @@ public:
 };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
-// The world and its local player (the selected super world chat item).
-class Unk_MsgWorld
-{
-public:
-    MyPC* FUN_141bd0cc0();
-    PCBase* FUN_141bd1420(CStringW strName);                        // a player by name
-};
 extern Unk_Inventory g_143ab2a90;                                   // the player's inventory
 
 // The messenger state (messengerdata.cpp's Unk_MdState): the current window name and the browser (+0x48).
@@ -3760,7 +3753,7 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     MyPC* pMe = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return 0;
-    PCBase* pSpeaker = reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
+    PCBase* pSpeaker = ((PCBase*)WorldService::GetInstance()->FUN_141bd1420(strName));
     if (pSpeaker == 0)
         return 0;
     if (pSpeaker == pMe && ((UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())

@@ -200,8 +200,6 @@ ItemPtr FUN_1419be700(unsigned __int64 uid);
 // CItem members the header declares with another signature.
 int FUN_140526470(CItem* pItem, unsigned nMode);                        // the item may be remade in nMode
 int FUN_14053feb0(int nItemId);                                         // the default rank of an item id
-// ASArray: read the int element nIndex.
-bool FUN_1422bc860(ASArray* pArr, unsigned nIndex, int& n);
 // The CItem sub-objects: the binding state (CItemTransfer) and the status record (its option at +0x18).
 class Unk_ItemOwnerRef : public CItemTransfer {};
 class Unk_ItemEnchantData : public CItemStatus {};
@@ -1254,7 +1252,7 @@ void TabContentsPetRemakeOption::FUN_140b96b60(CAtlArray<int>& out)
     int nIndex = 0;
     for (unsigned i = 0; i < indices.GetLength(); i++)
     {
-        FUN_1422bc860(&indices, i, nIndex);
+        indices.GetUInt(i, reinterpret_cast<unsigned&>(nIndex));
         out.Add(nIndex);
     }
 }

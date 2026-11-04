@@ -1,0 +1,4 @@
+#!/bin/bash
+# cl 15.00.30729 (VS2008 SP1 x64) for the units that declare `// MS2-TOOLSET: vc9c`: the vc9 cl (tools/msvc9/cl) with the
+# same headers; the vc9c options (cmake/ms2-unit-profiles.cmake) compile the unit as C (/TC).
+exec "$(dirname "$0")/../msvc9/cl" "$@"

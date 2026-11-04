@@ -401,15 +401,10 @@ class Unk_AkoHouseSvc   // C3: static member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class Unk_PCHousingSvcPtr
-{
-public:
-    Unk_PCHousingSvcPtr(Unk_PCHousingSvc* p);                       // 0x1401cd0b0
-    ~Unk_PCHousingSvcPtr();                                         // 0x1401cd150
-    Unk_PCHousingSvc* FUN_140885310() const;                        // operator CubeMapInformationService*
-    Unk_PCHousingSvc* m_p;
-};
-Unk_PCHousingSvc* FUN_1401cd040(char* pCell);
+// The housing service pointer (C3: efd::SmartPointer<Unk_Service6100017>, in place of the Unk_PCHousingSvcPtr view).
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was Unk_PCHousingSvc* FUN_1401cd040(char*)
 // Physics: the ray cast record and the PhysX helper (physxhelper.h needs NOMINMAX; state.cpp has the same view).
 struct Unk_RayCastInfo
 {
@@ -485,11 +480,6 @@ class Unk_AvModeSvc   // C3: member view (real class not in this TU)
 {
 public:
     int FUN_1409f7ea0();
-};
-class Unk_FsOptimizer   // C3: member view (real class not in this TU)
-{
-public:
-    int FUN_140ddcc90();
 };
 class Unk_PCEquipConfig
 {
@@ -2762,7 +2752,7 @@ void PC::vfunc_24(int nFlags)
             }
         }
         m_unk_40 = bShow;
-        if (((Unk_FsOptimizer*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_80)
+        if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_80)
         {
             if (m_unk_40)
             {
@@ -3111,11 +3101,11 @@ void PC::vfunc_135(int nMode, int nValue, void* pInfo)
     PC* pLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (this == pLocal)
     {
-        Unk_PCHousingSvcPtr spHousing(FUN_1401cd040((char*)&egf::g_bapiContext));
+        efd::SmartPointer<Unk_Service6100017> spHousing(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
         if (nMode == 0)
-            reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(0);
+            reinterpret_cast<CubeMapInformationService*>(spHousing.operator->())->FUN_1410cc160(0);
         else if (nValue != 2)
-            reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(1);
+            reinterpret_cast<CubeMapInformationService*>(spHousing.operator->())->FUN_1410cc160(1);
     }
 }
 
@@ -3657,62 +3647,62 @@ int PC::FUN_14165a540()
 {
     efd::Point3 kPos;
     efd::Point3 kRot;
-    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040((char*)&egf::g_bapiContext));
-    if (spSvc.FUN_140885310())
+    efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+    if (((Unk_Service6100017*)spSvc))
     {
         efd::Point3 kHit;
         NiPoint3 kMy = vfunc_18();
-        Cube* pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        Cube* pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kMy, &kHit, 0.0f);
         if (pCube == 0)
         {
             NiPoint3 kTry = kMy;
             kTry.y += 25.0f;
-            pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x += 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.y -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x -= 25.0f;
                 kTry.y += 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x += 25.0f;
                 kTry.y += 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x -= 25.0f;
                 kTry.y -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x += 25.0f;
                 kTry.y -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
         }
         if (pCube != 0)
@@ -3729,7 +3719,7 @@ int PC::FUN_14165a540()
             egf::Entity* pSideB = 0;
             egf::Entity** ppSide = &pSideA;
             int nDir;
-            if (reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9330(pCube, kHit, 25.0f, &kPos, &kRot, &nDir, &pFound))
+            if (reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b9330(pCube, kHit, 25.0f, &kPos, &kRot, &nDir, &pFound))
             {
                 Cube* pSide;
                 switch (nDir)
@@ -3737,13 +3727,13 @@ int PC::FUN_14165a540()
                 case 1:
                     kDir.y = 1.0f;
                     kDir.x = -1.0f;
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0xff);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0x100);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3753,13 +3743,13 @@ int PC::FUN_14165a540()
                 case 3:
                     kDir.y = 1.0f;
                     kDir.x = 1.0f;
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 1);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0x100);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3769,13 +3759,13 @@ int PC::FUN_14165a540()
                 case 5:
                     kDir.y = -1.0f;
                     kDir.x = 1.0f;
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 1);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0xff00);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3785,13 +3775,13 @@ int PC::FUN_14165a540()
                 case 7:
                     kDir.y = -1.0f;
                     kDir.x = -1.0f;
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0xff);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pFound, 0xff00);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3867,8 +3857,8 @@ int PC::FUN_14165a540()
 // @0x14165b500
 int PC::FUN_14165b500(int nKind)
 {
-    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040((char*)&egf::g_bapiContext));
-    if (!spSvc.FUN_140885310())
+    efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+    if (!((Unk_Service6100017*)spSvc))
         return 0;
     if (nKind == 1)
     {
@@ -3896,7 +3886,7 @@ int PC::FUN_14165b500(int nKind)
                 kInfo.m_groups = StateClimb::FUN_1417bc010();
                 if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
                 {
-                    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByEntity((egf::Entity*)kInfo.m_hitEntity) != 0)
+                    if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByEntity((egf::Entity*)kInfo.m_hitEntity) != 0)
                     {
                         efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220)
                             - efd::Point3(0.0f, 0.0f, 90.0f);
@@ -3915,29 +3905,29 @@ int PC::FUN_14165b500(int nKind)
         // standing on a cube: climb down its open side
         efd::Point3 kHit;
         NiPoint3 kMy = vfunc_18();
-        Cube* pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        Cube* pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kMy, &kHit, 0.0f);
         if (pCube == 0)
         {
             NiPoint3 kTry = kMy;
             kTry.y += 25.0f;
-            pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x += 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.y -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
             if (pCube == 0)
             {
                 kTry = kMy;
                 kTry.x -= 25.0f;
-                pCube = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
+                pCube = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b8f30(kTry, &kHit, 0.0f);
             }
         }
         if (pCube != 0)
@@ -3948,7 +3938,7 @@ int PC::FUN_14165b500(int nKind)
             {
                 int nOffset = aOffsets[i];
                 efd::Point3 kDir = aDirs[i];
-                if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pCube, nOffset) == 0)
+                if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9080(pCube, nOffset) == 0)
                 {
                     efd::Point3 kFrom = kMy;
                     kFrom += -kDir * 25.0f;
@@ -4076,9 +4066,9 @@ void PC::FUN_14165cac0()
         kModel = "MS2TombStone";
     efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
     {
-        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040((char*)&egf::g_bapiContext));
-        if (spSvc.FUN_140885310())
-            kPos = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9150(kPos);
+        efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+        if (((Unk_Service6100017*)spSvc))
+            kPos = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b9150(kPos);
     }
     if (efd::ClassInfo::IsKindOf(this != NULL ? GetClassDesc() : NULL, 0x06200044))   // AvatarPC
         kPos = efd::Point3::ZERO;
@@ -4131,7 +4121,6 @@ extern NiFixedString DAT_143ae50f8;                                 // the skin 
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pnCharId);  // the item is bound to the character
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
 float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
-float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);                                      // the special ability is shown (specialability.cpp)
 
 // The proxy object view: FUN_1416c2920 returns an int here (the shared header declares it void).
@@ -4352,7 +4341,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     if (nKind == 2) {
         PCBase* pAttacker = ((PCBase*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1200(spRecord->m_nOwnerId));
         if (pAttacker)
-            fSpeed = FUN_140a0fde0((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
+            fSpeed = efd::Min<float>((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
     }
     else if (nKind == 4) {
         PC_RECORD_PT(m_ptDir) = PC_RECORD_PT(m_ptPos) - vfunc_18();
@@ -4652,9 +4641,9 @@ void PC::vfunc_142()
     }
     efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
     {
-        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040((char*)&egf::g_bapiContext));
-        if (spSvc.FUN_140885310())
-            kPos = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9150(kPos);
+        efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+        if (((Unk_Service6100017*)spSvc))
+            kPos = reinterpret_cast<Unk_PCHousingSvc*>(spSvc.operator->())->FUN_1410b9150(kPos);
     }
     reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adf770(kPos);
     reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adeaf0(GetTickCountMs2());

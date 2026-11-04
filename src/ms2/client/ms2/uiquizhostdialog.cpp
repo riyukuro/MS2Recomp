@@ -29,11 +29,7 @@ class ASDialog : public ASDisplayObject
 // The free functions below reach the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30) through this view.
 struct Unk_QhDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 
-class Unk_QhMovieEntity : public UIDialog
-{
-public:
-    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // GetChild<ASButton>
-};
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 CStringW FUN_140298ea0(CStringW strKey);                        // localized string
@@ -126,7 +122,7 @@ void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable)
 // @0x140e7e0b0
 void FUN_140e7e0b0(UIQuizHostDialog* pDialog, bool bEnable)
 {
-    if (MS2Ptr<ASButton> spButton = static_cast<Unk_QhMovieEntity*>(static_cast<UIDialog*>(pDialog))->FUN_140bb4b10("m_btnEventFinish"))
+    if (MS2Ptr<ASButton> spButton = static_cast<UIDialog*>(pDialog)->GetChild<ASButton>("m_btnEventFinish"))
         spButton->FUN_1422c1fe0(bEnable);
 }
 

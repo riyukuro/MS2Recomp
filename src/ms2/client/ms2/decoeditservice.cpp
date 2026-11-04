@@ -115,17 +115,19 @@ extern NiFixedString DAT_143ae51e8;                                          // 
 extern NiFixedString DAT_143ae5278;
 
 // ---- xml (game TinyXML) ----
-class Unk_TiXmlElement;
-void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndChild
-void* FUN_14086e090(void* pParent, void* pChild);
-class Unk_TiXmlElement                                              // the game's TiXmlElement (0x90 bytes)
+class TiXmlElement                                                  // the game's TiXmlElement (0x90 bytes)
 {
 public:
-    Unk_TiXmlElement(const char* pszValue);                         // 0x14086f2f0
+    TiXmlElement(const char* pszValue);                             // 0x14086f2f0
 private:
     char m_pad[0x90];
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
+class TiXmlNode   // C3: member view for the former FUN_14086e090 stand-in
+{
+public:
+    class TiXmlNode* LinkEndChild(class TiXmlNode*);
+};
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -281,7 +283,7 @@ MS2_REPLACE_METHOD(0x14116FCD0, DecoEditService, SelectLayer, 110, 0x87070A29);
 void DecoEditService::SaveXml()
 {
     TiXmlDocument doc;
-    FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
+    ((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement("ms2")));
     void* pElement = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pElement != 0)
     {
@@ -289,7 +291,7 @@ void DecoEditService::SaveXml()
         {
             MS2Ptr<DecoLayer> spLayer = m_mapLayers.GetValueAt(pos);
             if (spLayer.get() != 0)
-                spLayer->SaveXml(static_cast<Unk_TiXmlElement*>(pElement));
+                spLayer->SaveXml(static_cast<TiXmlElement*>(pElement));
         }
     }
     doc.SaveFile(GetXmlPath());
@@ -492,7 +494,7 @@ DecoItem::~DecoItem()
 }
 
 // @0x1411740b0
-bool DecoItem::SaveXml(Unk_TiXmlElement* pParent)
+bool DecoItem::SaveXml(TiXmlElement* pParent)
 {
     NiAVObject* pObject;
     if (pParent == 0)
@@ -513,8 +515,8 @@ bool DecoItem::SaveXml(Unk_TiXmlElement* pParent)
         }
         for (unsigned i = 0; i < aXf.GetCount(); i++)
         {
-            Unk_TiXmlElement* pGrass = new Unk_TiXmlElement("grass");
-            FUN_14086e090(pParent, pGrass);
+            TiXmlElement* pGrass = new TiXmlElement("grass");
+            ((class TiXmlNode*)(void*)(pParent))->LinkEndChild((class TiXmlNode*)(pGrass));
             XmlSetAttr((class TiXmlElement*)(pGrass), aXf[i]);
         }
     }
@@ -871,12 +873,12 @@ DecoLayer::~DecoLayer()
 }
 
 // @0x141176b10
-bool DecoLayer::SaveXml(Unk_TiXmlElement* pParent)
+bool DecoLayer::SaveXml(TiXmlElement* pParent)
 {
     if (pParent == 0)
         return false;
-    Unk_TiXmlElement* pLayer = new Unk_TiXmlElement("layer");
-    FUN_14086e090(pParent, pLayer);
+    TiXmlElement* pLayer = new TiXmlElement("layer");
+    ((class TiXmlNode*)(void*)(pParent))->LinkEndChild((class TiXmlNode*)(pLayer));
     XmlSetAttr((TiXmlElement*)pLayer, "name", GetName());
     XmlSetAttr((TiXmlElement*)pLayer, "asset", GetAsset());
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
@@ -884,9 +886,9 @@ bool DecoLayer::SaveXml(Unk_TiXmlElement* pParent)
         DecoItem* pItem = m_aItems[i];
         if (pItem != 0)
         {
-            Unk_TiXmlElement* pItemXml = new Unk_TiXmlElement("layer");
-            FUN_14086e090(pLayer, pItemXml);
-            pItem->SaveXml(static_cast<Unk_TiXmlElement*>(pItemXml));
+            TiXmlElement* pItemXml = new TiXmlElement("layer");
+            ((class TiXmlNode*)(void*)(pLayer))->LinkEndChild((class TiXmlNode*)(pItemXml));
+            pItem->SaveXml(static_cast<TiXmlElement*>(pItemXml));
         }
     }
     return true;

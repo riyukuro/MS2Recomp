@@ -32,7 +32,7 @@ bool SSAORenderStep::vfunc_15(unsigned int a, void* b)
 {
     if (!PostProcessEffect::vfunc_15(a, 0))
         return false;
-    FUN_14169f6d0(&m_c0, &((void**)b)[1]);
+    m_c0 = *reinterpret_cast<const efd::SmartPointer<NiRenderedTexture>*>(&((void**)b)[1]);
     {
         NiFixedString file((const char*)TSingleton<CommonResource>::GetInstance()->m_strVectorNoiseDDS);
         m_b8 = NiSourceTexture::Create(file, *reinterpret_cast<NiTexture::FormatPrefs*>(&DAT_1439fc800), false, false, true);

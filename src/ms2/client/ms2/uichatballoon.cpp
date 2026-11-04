@@ -63,7 +63,6 @@ struct Unk_CbCfg
 };
 struct Unk_CbCfg2 { char m_pad[0x90]; CString m_90; };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedata); the default profile image name
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // efd::Point3::operator*=
 class Unk_CbEntity : public ASGameEntity
 {
 public:
@@ -113,7 +112,7 @@ public:
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 UICutSceneMovie* FUN_14138fd50(int nUiId);
-UIGuideEvent* FUN_14136f3e0(int nUiId);
+void* FUN_14136f3e0(int nUiId);
 int FUN_141274ff0();
 int FUN_141275080();
 void FUN_141274f50();
@@ -192,7 +191,7 @@ void UIChatBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get() != 0)
     {
-        FUN_140ad0c10(pPos, FUN_14025e7a0()->FUN_1422afec0(m_18));
+        *pPos *= FUN_14025e7a0()->FUN_1422afec0(m_18);
         pPos->y = pPos->y + vfunc_9();
         m_38->SetPositionFloat(pPos->x - 110.0f, pPos->y - 90.0f);
     }
@@ -539,7 +538,7 @@ int FUN_1418fcb70()
     UICutSceneMovie* pA = FUN_14138fd50(0x4e7e);
     if (pA != 0 && pA->FUN_1419102c0() != 0)
         return 0;
-    UIGuideEvent* pB = FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pB = (UIGuideEvent*)FUN_14136f3e0(0x4e53);
     if (pB != 0 && pB->SkipTextTip() != 0)
         return 1;
     if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)

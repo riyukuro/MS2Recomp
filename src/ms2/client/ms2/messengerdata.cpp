@@ -229,7 +229,6 @@ MS2_CHECK_SIZE(Unk_MdEntry, 0x28);
 // The group chat registry: a room by kind, a member by name (counted handles 0x141381160 / 0x14137c280).
 class Unk_MdMember { public: unsigned char m_pad[0x18]; Unk_MdName m_name; __int64 m_nOwner; };
 class Unk_MdRooms;
-extern Unk_MdRooms* g_pRooms;                                               // 0x143ad8ba8
 Unk_MdRooms* FUN_141484720();
 
 // @0x141480c70
@@ -1041,7 +1040,7 @@ CString FUN_1414842b0(int nKind, CStringW strName)
 // @0x141484720
 Unk_MdRooms* FUN_141484720()
 {
-    return g_pRooms;
+    return reinterpret_cast<Unk_MdRooms*>(TSingleton<CGroupChatManager>::s_instance);   // 0x143ad8ba8
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2920-0x142cb2940 .text$yd

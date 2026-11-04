@@ -156,7 +156,7 @@ ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
-extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
+class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };   // C3: member view (the material class the fade supports)
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
@@ -165,7 +165,7 @@ struct Unk_NodeQueue
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
     Unk_NodeQueue(NiAVObject* pRoot);                    // 0x14098cb80
     ~Unk_NodeQueue();                                  // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bDescend);
+    NiAVObject* Next(bool bDescend);                   // 0x14098e0d0
 };
 typedef Unk_NodeQueue Unk_CmWalker;   // C3: was a local stand-in for Unk_NodeQueue
 
@@ -505,14 +505,14 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                     AlphaShellComposite::MarkScene(pRoot, false);
                     NiBound kBound = *((class NiBound const*)&((class NiAVObject*)(pRoot))->GetWorldBound());
                     Unk_CmWalker kWalker((NiAVObject*)(pRoot));
-                    while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
+                    while (NiAVObject* pObject = kWalker.Next(true))
                     {
                         NiRenderObject* pMesh = NiDynamicCast(NiRenderObject, pObject);
                         if (pMesh != 0)
                         {
                             TransparencyStandardMaterial* pMaterial = 0;
                             const NiMaterial* pActive = pMesh->GetActiveMaterial();
-                            if (pActive != 0 && NiMaterial::DynamicCast((const NiRTTI*)&DAT_143d69198, pActive))
+                            if (pActive != 0 && NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pActive))
                                 pMaterial = new (efd::MemHint(efd::MemHint::NONE)) TransparencyStandardMaterial(pMesh);
                             if (pMaterial != 0)
                             {
@@ -561,7 +561,7 @@ void BGTransparencyMgr::SortEntities()
         if (pRoot != 0)
         {
             Unk_CmWalker kWalker((NiAVObject*)(pRoot));
-            while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
+            while (NiAVObject* pObject = kWalker.Next(true))
             {
                 NiRenderObject* pNet = NiDynamicCast(NiRenderObject, pObject);
                 if (pNet != 0)

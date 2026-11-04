@@ -42,6 +42,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/effectservice.h"   // C3: EffectNode (the ribbon root)
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
@@ -100,19 +101,10 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                    // texture load
-    void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
 // The effect node (400 bytes) carries the effect-space point.
-class Unk_EffectNode : public NiNode
-{
-public:
-    Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
-    char m_pad_node[400 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
 #ifndef MS2_HOOK_DLL
 // File statics of this TU (initialised by the .text$di entries).
@@ -155,7 +147,7 @@ void CRibbonEffectParam::vfunc_1(Unk_140165cf0* pNode)
 bool CRibbonEffectParam::vfunc_5(int n)
 {
     if (!m_strNifPath.IsEmpty())
-        FUN_140a0afd0()->FUN_1415525d0(FUN_140cc2ba0("Effect", m_strNifPath), 0, n);
+        FUN_140a0afd0()->Preload(FUN_140cc2ba0("Effect", m_strNifPath), false, n);
     return true;
 }
 
@@ -201,7 +193,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     m_fHalfWidth = 0.5f * pRibbon->m_fWidth;
     m_nQuality = pRibbon->m_nQuality;
 
-    NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
+    NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
     FUN_1409f76f0(&m_spRoot, spRoot);
 
@@ -276,7 +268,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         spTexture->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
         spTexture->SetApplyMode((NiTexturingProperty::ApplyMode)1);
         spTexture->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
-        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5)));
+        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->GetTexture(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5)));
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
 
         NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;

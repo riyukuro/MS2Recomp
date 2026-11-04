@@ -24,13 +24,6 @@ class Unk_TalkItemList;
 
 // The 8-byte millisecond poll timer of the next-key repeat (ctor 0x140517b00, test 0x140268870, reset 0x140268840).
 
-// The loaded reward image names (the accessors are out of line). The dtor 0x1401641d0 is ~CAtlArray<CString>, which
-// destroys the names.
-class Unk_TalkImageList : public ATL::CAtlArray<CString>
-{
-public:
-};
-MS2_CHECK_SIZE(Unk_TalkImageList, 0x20);
 
 class UITalkCinematic : public UIHeadUpDisplay
 {
@@ -78,7 +71,7 @@ private:
     int m_nTalkComplete;                                            // +0x70 1 until a page starts
     int m_nLoaded;                                                  // +0x74 the swf is ready
     char m_pad_78[8];
-    Unk_TalkImageList m_images;                                     // +0x80 reward images to release
+    ATL::CAtlArray<CString> m_images;                               // +0x80 reward images to release (dtor 0x1401641d0)
     MS2Ptr<CCinematicContent> m_spContent;                          // +0xa0 the current page
     MS2Ptr<CCinematicComponent> m_spComponent;                      // +0xb0 its component
     unsigned m_nKeyGroup;                                           // +0xc0 key group of the talk (0x620001d)

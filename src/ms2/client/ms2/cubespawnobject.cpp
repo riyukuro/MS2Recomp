@@ -6,7 +6,7 @@
 // MS2-PIN: ??0?$MS2Ptr@VUnk_HpBarFx@@@@QEAA@H@Z 0x140a4fc50
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCStateManager@@@@QEAAAEAV1@PEAVCStateManager@@@Z 0x140a4fd30
 // MS2-PIN: ??4?$MS2Ptr@VUnk_HpBarFx@@@@QEAAAEAV0@AEBV0@@Z 0x140a4fde0
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_NpcData@@@@QEBAPEAVUnk_NpcData@@XZ 0x140a4ff10
+// MS2-PIN: ?get@?$MS2Ptr@VNpcDataCli@@@@QEBAPEAVNpcDataCli@@XZ 0x140a4ff10
 // MS2-PIN: ??C?$MS2Ptr@VCStateManager@@@@QEBAPEAVCStateManager@@XZ 0x140a4ff20
 // MS2-PIN: ?vfunc_114@PCBase@@UEAAXPEAX@Z 0x140a4ffb0
 // MS2-PIN: ?GetClassDesc@CubeSpawnObject@@UEBAPEBVClassInfo@efd@@XZ 0x140a50000
@@ -36,41 +36,14 @@
 
 // ---- unit-local placeholders ----
 
-// A part of the npc row's model part list (+0x588).
-class Unk_NpcPartList { char m_pad[0x18]; };                        // C3: a std::vector<CEffectDummy> (read through a cast)
-
-// Npc table row (NpcData xml). Only the members this unit reads.
-class Unk_NpcData : public CPtred
-{
-public:
-    char m_pad_18[0x38];
-    CString m_strModel;                                             // +0x50 animation (kfm) name
-    float m_fScale;                                                 // +0x58
-    char m_pad_5c[8];
-    efd::Point3 m_offset;                                           // +0x64 spawn offset
-    char m_pad_70[0x44];
-    int m_nB4;                                                      // +0xb4 display id override
-    char m_pad_b8[0x588 - 0xb8];
-    Unk_NpcPartList m_parts;                                        // +0x588
-};
-MS2_CHECK_OFFSET(Unk_NpcData, m_strModel, 0x50);
-MS2_CHECK_OFFSET(Unk_NpcData, m_offset, 0x64);
-MS2_CHECK_OFFSET(Unk_NpcData, m_nB4, 0xb4);
-MS2_CHECK_OFFSET(Unk_NpcData, m_parts, 0x588);
-
-class Unk_NpcTable
-{
-public:
-    MS2Ptr<Unk_NpcData> FUN_140a7cab0(int nNpcId);
-};
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
-// MS2Ptr<Unk_NpcData> members instantiated by earlier objs (the rest are this obj's COMDATs).
-template <> void MS2Ptr<Unk_NpcData>::Reference(Unk_NpcData* p);         // 0x1406d9f40
-template <> void MS2Ptr<Unk_NpcData>::Release();                          // 0x1406db080
-template <> MS2Ptr<Unk_NpcData>::~MS2Ptr();                               // 0x1406d5390
-template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::operator->() const;         // 0x140965990
-template <> bool MS2Ptr<Unk_NpcData>::operator==(Unk_NpcData* p) const;   // 0x1409f90f0
+// MS2Ptr<NpcDataCli> members instantiated by earlier objs (the rest are this obj's COMDATs).
+template <> void MS2Ptr<NpcDataCli>::Reference(NpcDataCli* p);         // 0x1406d9f40
+template <> void MS2Ptr<NpcDataCli>::Release();                          // 0x1406db080
+template <> MS2Ptr<NpcDataCli>::~MS2Ptr();                               // 0x1406d5390
+template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;         // 0x140965990
+template <> bool MS2Ptr<NpcDataCli>::operator==(NpcDataCli* p) const;   // 0x1409f90f0
 
 // The chat balloon component (uichatballoon.cpp: FUN_1418fbdb0(object id)).
 class Unk_PCBaseComp_aa8 : public CPtred
@@ -212,9 +185,9 @@ CubeSpawnObject::~CubeSpawnObject()
 }
 
 // @0x140a4ed00
-int CubeSpawnObject::vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGaugeB, const CStringW& strOwner)
+int CubeSpawnObject::vfunc_124(int nNpcId, egf::EntityPtr ent, int nGaugeA, int nGaugeB, const CStringW& strOwner)
 {
-    m_spNpc = ((class Unk_NpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nNpcId);
+    m_spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpcId);
     if (m_spNpc == NULL)
         return 0;
     reinterpret_cast<egf::EntityPtr&>(m_entity) = reinterpret_cast<egf::EntityPtr&>(ent);
@@ -222,14 +195,14 @@ int CubeSpawnObject::vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGau
     m_nGaugeB = nGaugeB;
     m_strOwner = strOwner;
     CString strPath;
-    strPath.Format("urn:gamebryo-animation:%s", (const char*)m_spNpc->m_strModel);
+    strPath.Format("urn:gamebryo-animation:%s", (const char*)m_spNpc->m_model.m_strKfm);
     FUN_14123bb80(strPath);
-    m_fScaleAC = m_spNpc->m_fScale;
-    FUN_14123c280(m_spNpc->m_fScale);
-    CStringW strName = FUN_1401aa6a0(reinterpret_cast<CNpcData*>(m_spNpc.operator->())->GetId());
+    m_fScaleAC = m_spNpc->m_model.m_fScale;
+    FUN_14123c280(m_spNpc->m_model.m_fScale);
+    CStringW strName = FUN_1401aa6a0(m_spNpc->GetId());
     if (!strName.IsEmpty())
     {
-        if (reinterpret_cast<NpcDataCli*>(m_spNpc.operator->())->GetNametag())
+        if (m_spNpc->GetNametag())
             vfunc_76(strName);
     }
     return 1;
@@ -247,9 +220,9 @@ int CubeSpawnObject::vfunc_69()
 {
     if (m_spNpc == NULL)
         return 0;
-    if (m_spNpc->m_nB4 != 0)
-        return m_spNpc->m_nB4;
-    return reinterpret_cast<CNpcData*>(m_spNpc.operator->())->GetId();
+    if (m_spNpc->m_nEmotionId != 0)
+        return m_spNpc->m_nEmotionId;
+    return m_spNpc->GetId();
 }
 MS2_REPLACE_METHOD(0x140a4eff0, CubeSpawnObject, vfunc_69, 128, 0xCE493C67);
 
@@ -272,7 +245,7 @@ MS2Ptr<Unk_PCBaseComp_aa8> CubeSpawnObject::vfunc_85()
 MS2_REPLACE_METHOD(0x140a4f0b0, CubeSpawnObject, vfunc_85, 236, 0x2B063CFF);
 
 // @0x140a4f1b0
-MS2Ptr<Unk_NpcData> CubeSpawnObject::GetNpc()
+MS2Ptr<NpcDataCli> CubeSpawnObject::GetNpc()
 {
     return m_spNpc;
 }
@@ -310,7 +283,7 @@ void CubeSpawnObject::FUN_140a4f3f0(int n)
         return;
     if (!FUN_140a4f690())
         return;
-    Unk_ScriptPtr<CTalkScript> spScript = FUN_140856fa0(reinterpret_cast<CNpcData*>(m_spNpc.operator->())->GetId(), n);
+    Unk_ScriptPtr<CTalkScript> spScript = FUN_140856fa0(m_spNpc->GetId(), n);
     if (spScript.get())
     {
         if (spScript.operator->()->m_contents.GetCount() > 0)
@@ -353,7 +326,7 @@ void CubeSpawnObject::vfunc_9(void* p)
         efd::Point3 kDir = efd::Point3::ZERO;
         reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
         reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kDir));
-        kPos = kPos + m_spNpc->m_offset;
+        kPos = kPos + reinterpret_cast<const efd::Point3&>(m_spNpc->m_model.m_vOffset);
         vfunc_19(kPos);
         vfunc_21(kDir);
         vfunc_59(1, NULL, 0, 0);
@@ -373,8 +346,8 @@ MS2_REPLACE_METHOD(0x140a4f710, CubeSpawnObject, vfunc_9, 718, 0x44CD5478);
 void CubeSpawnObject::vfunc_12()
 {
     PCBase::vfunc_12();
-    for (size_t i = 0; i < reinterpret_cast<std::vector<CEffectDummy>&>(m_spNpc->m_parts).size(); i++)
-        FUN_141674ef0(reinterpret_cast<std::vector<CEffectDummy>&>(m_spNpc->m_parts)[i]);
+    for (size_t i = 0; i < m_spNpc->m_effectDummies.size(); i++)
+        FUN_141674ef0(m_spNpc->m_effectDummies[i]);
     vfunc_59(1, NULL, 0xa8, 0);
 }
 MS2_REPLACE_METHOD(0x140a4f9f0, CubeSpawnObject, vfunc_12, 182, 0x080792C4);

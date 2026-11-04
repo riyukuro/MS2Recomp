@@ -30,15 +30,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 
 // The <learning> children of a parent (24 bytes) with index access.
-class Unk_ElemArray
-{
-public:
-    Unk_ElemArray();                                                // 0x140163e20
-    ~Unk_ElemArray();                                               // 0x1401644e0
-    unsigned __int64 FUN_14016d900();                               // size
-    Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);              // operator[]
-    void *m_a, *m_b, *m_c;
-};
+typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // @0x14064ca50
@@ -87,9 +79,9 @@ int CLearningQuestTable::Load()
     }
     Unk_ElemArray list;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "learning", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
-    for (unsigned __int64 i = 0; i < list.FUN_14016d900(); i++)
+    for (unsigned __int64 i = 0; i < list.size(); i++)
     {
-        Unk_140165cf0* pNode = list.FUN_140164a30(i);
+        Unk_140165cf0* pNode = (Unk_140165cf0*)list[i];
         DataPtr data(new CLearningQuestData);
         if (data->Read(pNode) == 0)
             return 0;

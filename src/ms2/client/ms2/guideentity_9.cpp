@@ -226,7 +226,8 @@ Unk_GcCondRef& Unk_GcCondRef::operator=(const Unk_GcCondRef& rhs)
 // @0x1413a47b0
 bool FUN_1413a47b0(const MS2Ptr<CGuideAction>& ref)
 {
-    return reinterpret_cast<const Unk_GeActRef&>(ref).m_p == 0;
+    struct Layout { void* m_unk_00; CGuideAction* m_p; };   // MS2Ptr (m_p is private)
+    return reinterpret_cast<const Layout&>(ref).m_p == 0;
 }
 
 // @0x1413a47e0
@@ -634,23 +635,23 @@ void CGuideEntity::GetCancelText(CStringW& strOut, unsigned nIdx)
 // @0x1413a3210
 void CGuideEntity::StartActions()
 {
-    for (unsigned i = 0; i < m_actions.FUN_1413886c0(); ++i)
-        m_actions.FUN_141387b00(i).FUN_141387ba0()->vfunc_3();
+    for (unsigned i = 0; i < m_actions.GetCount(); ++i)
+        m_actions[i]->vfunc_3();
 }
 
 // @0x1413a32a0
 void CGuideEntity::StopActions()
 {
-    for (unsigned i = 0; i < m_actions.FUN_1413886c0(); ++i)
-        m_actions.FUN_141387b00(i).FUN_141387ba0()->vfunc_4();
+    for (unsigned i = 0; i < m_actions.GetCount(); ++i)
+        m_actions[i]->vfunc_4();
 }
 
 // @0x1413a3330
 int CGuideEntity::AreActionsDone()
 {
-    for (unsigned i = 0; i < m_actions.FUN_1413886c0(); ++i)
+    for (unsigned i = 0; i < m_actions.GetCount(); ++i)
     {
-        if (m_actions.FUN_141387b00(i).FUN_141387ba0()->vfunc_5() == 0)
+        if (m_actions[i]->vfunc_5() == 0)
             return 0;
     }
     return 1;
@@ -760,14 +761,14 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
 }
 
 // @0x1413a3a30
-void CGuideEntity::LoadActions(Unk_140165cf0* pElem, Unk_GeActList& list)
+void CGuideEntity::LoadActions(Unk_140165cf0* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list)
 {
     for (Unk_140165cf0* pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
     {
         MS2Ptr<CGuideAction> ref = FUN_141382b90(pAct);
         (void)((FUN_1413a47b0(ref) == 0) || (_wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212), 0));
         if (ref.operator->())
-            list.FUN_1413883b0(reinterpret_cast<const Unk_GeActRef&>(ref));
+            list.Add(ref);
     }
 }
 

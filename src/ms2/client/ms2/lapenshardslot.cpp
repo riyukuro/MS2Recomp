@@ -53,11 +53,11 @@ public:
 };
 class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 
-// The quick slot manager (FUN_1409331f0).
-class Unk_LsHud
+// The quick slot manager (FUN_1409331f0; unit-local view of CKeyTable, ckeytable.h).
+class CKeyTable
 {
 public:
-    int GetPage();                                // the current page
+    int FUN_140a700b0();                          // the current page
     unsigned char m_pad[0x198];
     int m_nPage;                                        // +0x198
 };
@@ -202,7 +202,7 @@ int LapenshardSlot::vfunc_14()
         }
         if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
             return 0;
-        int nPage = ((class Unk_LsHud*)FUN_1409331f0())->GetPage();
+        int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
         FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
     }
     FUN_141404930(spItem->GetItemUid());
@@ -427,7 +427,7 @@ Unk_LsEquipRequest::Unk_LsEquipRequest()
 
 
 // @0x140a700b0
-int Unk_LsHud::GetPage()
+int CKeyTable::FUN_140a700b0()
 {
     return m_nPage;
 }

@@ -121,6 +121,7 @@ static CStringW s_143af3d08=L"useBindItemSkill";
 #include "ms2/client/ms2/jobsystemcli.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/portal.h"
 #include "ms2/placeholder/uidialogeventdispatcher.h"
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/client/ms2/trademanagerex.h"
@@ -264,8 +265,6 @@ bool RequestCoupleEmotion(__int64, int);   // C3: was FUN_140b845a0
 int UseItem(MS2Ptr<CItem> spItem, int n);
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
-class Unk_MessageBoxPortal;
-size_t FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& arr);   // CAtlArray::GetCount
 
 class Unk_MessageBoxGameOption { public: char m_pad_00[0x10]; __time64_t m_nFuncItemAsk; __time64_t m_nCurrencyAsk; };
 class Unk_MessageBoxGameOptions : public CGameOption { public: Unk_MessageBoxGameOption* FUN_140c9b8b0(); };
@@ -344,18 +343,11 @@ class Unk_MessageBoxPC : public MyPC
 {
 public:
 };
-class Unk_MessageBoxPortal : public CPtred
-{
-public:
-    char m_pad_18[0x160];
-    CStringW m_strName;                                         // +0x178
-};
-MS2_CHECK_OFFSET(Unk_MessageBoxPortal, m_strName, 0x178);
 class Unk_MessageBoxWorld
 {
 public:
-    MS2Ptr<Unk_MessageBoxPortal> FUN_141bc2800(int nId);
-    void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& out);   // AddRefs each portal it appends
+    MS2Ptr<CPortal> FUN_141bc2800(int nId);
+    void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<CPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
 };
 extern Unk_Inventory g_143ab2a90;
@@ -2223,9 +2215,9 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (!pPlayer)
             return 0;
-        ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> > portals;
+        ATL::CAtlArray<MS2Ptr<CPortal> > portals;
         reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2c90(pPlayer->vfunc_18(), portals);
-        if (FUN_140966da0(portals) > 0)
+        if (portals.GetCount() > 0)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
             return 0;
@@ -2250,10 +2242,10 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         WorldService::GetInstance()->FUN_141bc2980(&ids);   // C3: WorldService (worldservice.h)
         for (size_t i = 0; i < ids.size(); i++)
         {
-            MS2Ptr<Unk_MessageBoxPortal> spPortal = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2800(ids[i]);
+            MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2800(ids[i]);
             if (spPortal == 0)
                 continue;
-            if (spPortal->m_strName.GetLength() > 0)
+            if (spPortal->m_strTip.GetLength() > 0)
                 nOpen++;
         }
         if (nOpen >= 10)

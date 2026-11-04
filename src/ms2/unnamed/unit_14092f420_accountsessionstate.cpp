@@ -271,7 +271,6 @@ public:
     bool m_1c;
 };
 
-class Unk_IdList {};
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_QuickSlots { };
 int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
@@ -286,15 +285,15 @@ Unk_BonusBar* FUN_140933220();
 bool FUN_140930d70();
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 
-extern Unk_NoticeList DAT_143ab2fc0;
-extern Unk_NoticeList DAT_143ab3010;
+extern GameEventUserValue DAT_143ab2fc0;
+extern GameEventUserValue DAT_143ab3010;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/client/ms2/uiservice.h"
 extern Unk_CubeStock DAT_143ab2e50;
 extern Unk_Misc32d8 DAT_143ab32d8;
 extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
-extern Unk_IdList DAT_143ab3268;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3268;
 extern ATL::CAtlArray<unsigned> DAT_143ab32b8;
 
 class Unk_UiManager { public: };
@@ -309,8 +308,8 @@ void FUN_14092f420()
     FUN_140931510()->ClearDungeonState();
     DAT_143ab2d80.Clear();
     g_143ab2a90.FUN_140a5c970();
-    ((GameEventUserValue&)DAT_143ab2fc0).Clear();
-    ((GameEventUserValue&)DAT_143ab3010).Clear();
+    DAT_143ab2fc0.Clear();
+    DAT_143ab3010.Clear();
     DAT_143ab2e20.RemoveAll();
     DAT_143ab2e50.FUN_140dfc4f0();
     DAT_143ab2857 = 0;
@@ -932,9 +931,9 @@ void FUN_140930fe0(CInPacket& packet)
     {
         int nList = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
         if (nList == 0)
-            ((GameEventUserValue&)DAT_143ab2fc0).Read(packet);
+            DAT_143ab2fc0.Read(packet);
         else if (nList == 1)
-            ((GameEventUserValue&)DAT_143ab3010).Read(packet);
+            DAT_143ab3010.Read(packet);
         break;
     }
     case 1:
@@ -942,9 +941,9 @@ void FUN_140930fe0(CInPacket& packet)
         int nList = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
         MS2Ptr<Unk_NoticeTarget> spTarget;
         if (nList == 0)
-            spTarget = DAT_143ab2fc0.FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
+            spTarget = reinterpret_cast<Unk_NoticeList&>(DAT_143ab2fc0).FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
         else if (nList == 1)
-            spTarget = DAT_143ab3010.FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
+            spTarget = reinterpret_cast<Unk_NoticeList&>(DAT_143ab3010).FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
         if (spTarget.get() != 0)
         {
             ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
@@ -1218,10 +1217,6 @@ typedef Unk_TailTree<Unk_TailNodeB> Unk_TailTreeB;
 
 Unk_TailAlc* FUN_140932820(Unk_TailAlc* pAlc);
 Unk_TailProxy* FUN_140932780(Unk_TailProxy* pProxy);
-int& FUN_140180c20(int& n);
-__int64& FUN_140867870(__int64& n);
-int& FUN_140162e40(int& n);
-const std::less<unsigned>& FUN_140180bc0(const std::less<unsigned>& cmp);
 Unk_TailZeroTag& FUN_140162f10(Unk_TailZeroTag& tag);
 void FUN_1403564a0(Unk_TailProxy* pVal);
 Unk_TailSetNode*& FUN_140932360(Unk_TailSetNode*& pNode);
@@ -1268,15 +1263,11 @@ void FUN_140933a50(Unk_TailSet* pTree, Unk_TailSetNode* pNode);
 void FUN_1409339b0(Unk_TailAlmTree* pTree, Unk_TailAlmNode* pNode);
 Unk_TailAlmNode*& FUN_140931d80(Unk_TailAlc* pAlc, Unk_TailAlmNode* pNode);
 void FUN_1409322a0(Unk_TailAlc* pAlc, Unk_TailAlmVal* pVal);
-void* FUN_140786280(size_t n);
 Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
 Unk_TailIter* FUN_140935280(Unk_TailSet* pTree, Unk_TailIter* pRet);
 Unk_TailIter* FUN_140935890(Unk_TailSet* pTree, Unk_TailIter* pRet, Unk_TailIter itFirst, Unk_TailIter itLast);
 void* FUN_140932130(void* pVal);
 Unk_TailSetNode* FUN_1409340a0(void* pVal, void* pWhere);
-void* FUN_140197cb0(size_t n);
-void* FUN_14015f9d0(void* pBytes);
-void FUN_14015fc80(void* p, size_t nBytes);
 Unk_TailPair** FUN_140934be0(std::vector<Unk_TailPair>* pVec);
 void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
@@ -1291,14 +1282,14 @@ Unk_TailVecBase::Unk_TailVecBase(Unk_TailZeroTag)
 // @0x140931680
 Unk_TailPair* FUN_140931680(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 {
-    pThis->first = FUN_140162e40(nKey);
-    pThis->second = FUN_140867870(nValue);
+    pThis->first = std::forward<int&>(nKey);
+    pThis->second = std::forward<__int64&>(nValue);
     return pThis;
 }
 
 // @0x140931720
 Unk_TailOuterPair::Unk_TailOuterPair(bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag)
-    : std::less<unsigned>(FUN_140180bc0(cmp)), m_inner(FUN_140162f10(tag))
+    : std::less<unsigned>(std::forward<const std::less<unsigned>&>(cmp)), m_inner(FUN_140162f10(tag))
 {
 }
 
@@ -1313,8 +1304,8 @@ Unk_TailVecBase* FUN_1409317c0(Unk_TailVecBase* pThis, bool, const Unk_TailAlc& 
 // @0x140931840
 Unk_TailPair* FUN_140931840(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 {
-    pThis->first = FUN_140180c20(nKey);
-    pThis->second = FUN_140867870(nValue);
+    pThis->first = std::forward<int>(nKey);
+    pThis->second = std::forward<__int64&>(nValue);
     return pThis;
 }
 
@@ -1691,13 +1682,13 @@ void FUN_140935120()
 // @0x140935140
 void* FUN_140935140(Unk_TailAlc*, size_t n)
 {
-    return FUN_14015f9d0(FUN_140786280(n));
+    return std::_Allocate<16>(std::_Get_size_of_n<0x50>(n));
 }
 
 // @0x140935170
 void* FUN_140935170(Unk_TailAlc*, size_t n)
 {
-    return FUN_14015f9d0(FUN_140197cb0(n));
+    return std::_Allocate<16>(std::_Get_size_of_n<0x38>(n));
 }
 
 // @0x1409351d0
@@ -1711,25 +1702,25 @@ Unk_TailPair* FUN_1409351d0(std::vector<Unk_TailPair>* pThis, size_t n)
 // @0x1409354f0
 void FUN_1409354f0(Unk_TailAlc*, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x50);
+    std::_Deallocate<16>(p, n * 0x50);
 }
 
 // @0x140935520
 void FUN_140935520(Unk_TailAlc*, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x38);
+    std::_Deallocate<16>(p, n * 0x38);
 }
 
 // @0x140935550
 void FUN_140935550(Unk_TailAlc*, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x50);
+    std::_Deallocate<16>(p, n * 0x50);
 }
 
 // @0x140935580
 void FUN_140935580(Unk_TailAlc*, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x38);
+    std::_Deallocate<16>(p, n * 0x38);
 }
 
 // @0x1409355e0

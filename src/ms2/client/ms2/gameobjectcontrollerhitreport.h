@@ -10,7 +10,7 @@
 #include "NxCharacter/include/NxController.h"
 
 #include "ms2/ms2layout.h"
-#include "cubespawnobject.h"        // Unk_EntRef (8-byte entity handle)
+#include "cubespawnobject.h"        // egf::EntityPtr (8-byte entity handle)
 
 namespace egf { class EntityID; }
 class CPhysXHelper;
@@ -38,7 +38,7 @@ public:
 
 private:
     NxVec3 m_normal;            // +0x08 contact normal of the last shape hit
-    Unk_EntRef m_entity;        // +0x18 egf entity owning the touched actor
+    egf::EntityPtr m_entity;        // +0x18 egf entity owning the touched actor
     void* m_pOther;             // +0x20 the other controller of the last controller hit
     void* m_p28;                // +0x28
     int m_bHit;                 // +0x30 1 while m_entity is valid

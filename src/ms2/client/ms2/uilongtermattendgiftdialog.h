@@ -11,7 +11,7 @@
 class CInPacket;
 class CMsgBoxData;
 class NotifyObject;
-class Unk_LtaEvent;
+class LongTermAttendGiftContext;
 class ASScrollingList;
 
 class UILongTermAttendGiftDialog : public UIDialog
@@ -53,7 +53,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_LtaEvent> m_178;                                            // +0x178 the event record
+    MS2Ptr<LongTermAttendGiftContext> m_178;                                            // +0x178 the event record
 };
 MS2_CHECK_SIZE(UILongTermAttendGiftDialog, 0x188);
 MS2_CHECK_OFFSET(UILongTermAttendGiftDialog, m_178, 0x178);

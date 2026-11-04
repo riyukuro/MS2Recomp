@@ -44,17 +44,10 @@ static CString s_winSound = "BattleField_Win";
 enum Unk_ClosingJob { Unk_ClosingJob_None };
 class Unk_ClosingThing : public PCGemEquip { };
 class PC { public: class Unk_MyPCEquip* FUN_14165f460(); int FUN_141654730(); };   // C3: unit-local view (def in pc); the gem equipment
-struct Unk_ClosingVector
-{
-    Unk_ClosingVector();
-    float x, y, z;
-    Unk_ClosingVector& operator+=(const Unk_ClosingVector&);
-};
-MS2_CHECK_SIZE(Unk_ClosingVector, 12);
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();
-    Unk_ClosingVector eye, target;
+    efd::Point3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
@@ -80,7 +73,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual Unk_ClosingVector vfunc_18();
+    virtual efd::Point3 vfunc_18();
     void FUN_140e11d00();
     // 76 and 77 are the name setter (by value: the callee destroys it) and getter
     virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();

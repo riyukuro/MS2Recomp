@@ -59,11 +59,7 @@ public:
 class Unk_OxButton : public ASUIComponent
 {
 };
-class Unk_OxMovieEntity : public UIDialog
-{
-public:
-    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // child lookup (GetChild<ASButton>)
-};
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 // The UI manager (singleton 0x1403ed2b0).
 class Unk_OxUIMgr
@@ -80,8 +76,6 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 // The key binds (singleton 0x1409331f0).
 class Unk_OxKeyBinds : public CKeyTable
 {
-public:
-    void FUN_14142ece0(ATL::CAtlArray<unsigned int>& aIds);     // the key setting ids to refresh
 };
 
 // The command arguments of a chat / AS command ("/ugcox camera 3").
@@ -528,8 +522,8 @@ void FUN_140e00690(CInPacket& packet)
     spBox->FUN_141a01800(1);
     spBox->SetTitle(GetStringCommonByKey(L"s_ugcox_move_eventmap_confirm"));
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff700));
-    spBox->FUN_140534050(nMapId);
-    spBox->FUN_140534050(nPortalId);
+    spBox->Append<unsigned>(nMapId);
+    spBox->Append<unsigned>(nPortalId);
     spBox->FUN_140e01830(nFee);
     FUN_140d73c60(spBox);
 }
@@ -676,7 +670,7 @@ void FUN_140e00fd0()
     aIds.Add(0x1c9c705);
     aIds.Add(0x1c9c706);
     aIds.Add(0x1c9c707);
-    reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->FUN_14142ece0(aIds);
+    reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->ApplyItemListToQuickSlots(aIds);
 }
 
 // Sub 0xc: the host dialog's submit / finish buttons.
@@ -737,7 +731,7 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
     UIOxQuizDialog* pQuiz = FUN_140e01930(0x4f7d);
     if (pQuiz != 0)
     {
-        if (MS2Ptr<ASButton> hButton = static_cast<Unk_OxMovieEntity*>(static_cast<UIDialog*>(pQuiz))->FUN_140bb4b10("m_quiz_promote"))
+        if (MS2Ptr<ASButton> hButton = static_cast<UIDialog*>(pQuiz)->GetChild<ASButton>("m_quiz_promote"))
         {
             CStringW strTip = GetStringCommonByKey(L"s_ugcox_btn_quiz_promote_tooltip");
             strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)StringFormat<int>(L"{0}", nTotal));

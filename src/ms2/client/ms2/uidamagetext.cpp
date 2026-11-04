@@ -41,7 +41,6 @@ class Unk_DtNpc : public CNpc { };
           // CPartyManager: a party member (int return)
 class Unk_DtClip : public ASMovieClip { };
 class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };
-class Unk_HudActor { public: float FUN_140f4a450(); };
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 class Unk_DtUIScale;
@@ -58,8 +57,7 @@ public:
     int GetSubSceneId();
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-struct Unk_Point2;
-float FUN_1412762d0(const Unk_Point2* pPos);
+float FUN_1412762d0(const NiPoint3& kPos);
 NiNode* FUN_1413fa070(egf::EntityID id);                                    // entity id -> scene root
 // Call an AS function object (skillslot.cpp; a member: rcx = the function object, rdx = the returned value).
 class Unk_SsFn : public AScript
@@ -592,7 +590,7 @@ float UIDamageText::FUN_141913af0(GameObject* pTarget)
 {
     if (pTarget == 0)
         return 0.0f;
-    float fHeight = FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&static_cast<const NiPoint3&>(pTarget->vfunc_18())));
+    float fHeight = FUN_1412762d0(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     PCBase* pActor = efd::DynamicCast<PCBase, GameObject>(pTarget);
     if (pActor != 0)
         fHeight += pActor->FUN_141670430();
@@ -603,7 +601,7 @@ MS2_REPLACE_METHOD(0x141913AF0, UIDamageText, FUN_141913af0, 128, 0xF6F52AFD);
 // @0x141913b80
 float UIDamageText::FUN_141913b80(const NiPoint3& kPos)
 {
-    return FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&kPos));
+    return FUN_1412762d0(kPos);
 }
 MS2_REPLACE_METHOD(0x141913B80, UIDamageText, FUN_141913b80, 29, 0x5D2D3D01);
 
@@ -721,13 +719,13 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     {
         if (m_bObserver)
             return 1;
-        return reinterpret_cast<Unk_HudActor*>(pActor)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
+        return reinterpret_cast<GameObject*>(pActor)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
     }
     else if (pTarget != 0)
     {
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
-            return reinterpret_cast<Unk_HudActor*>(pTarget)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
+            return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
     }
     return 0;
 }

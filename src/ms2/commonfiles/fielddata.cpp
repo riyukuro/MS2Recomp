@@ -324,10 +324,10 @@ void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_1406530d0(void*,int,int,const wchar_t*,const fmt::ArgList&);
+class CLogString { public: void FUN_1406530d0(int,int,const wchar_t*,const fmt::ArgList&); };   // C3: member view (logstring.h)
 template<class T> void Unk_FieldLog(void* log,int level,int category,const wchar_t* format,const T& arg) {
     fmt::internal::Value values[] = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(arg)};
-    FUN_1406530d0(log,level,category,format,fmt::ArgList(fmt::internal::make_type(arg),values));
+    reinterpret_cast<CLogString*>(log)->FUN_1406530d0(level,category,format,fmt::ArgList(fmt::internal::make_type(arg),values));
 }
 
 class Unk_1401b4ec0 {

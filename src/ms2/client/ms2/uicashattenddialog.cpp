@@ -142,8 +142,6 @@ static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create"
 static UICommon::CMyPCKeyInputController s_keyController;
 
 class Unk_140bccd50;
-class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143abd630;
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_CadReader { public:
     virtual ~Unk_CadReader();
@@ -236,7 +234,7 @@ template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString s
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", (unsigned)(line)), 0))
 
 // @0x140bccd50
-Unk_140bccd50* FUN_140bccd50() { return reinterpret_cast<Unk_140bccd50*>(DAT_143abd630); }
+Unk_140bccd50* FUN_140bccd50() { return reinterpret_cast<Unk_140bccd50*>(TSingleton<PacketHandlerManager>::s_instance); }
 // @0x140bd09c0
 int FUN_140bd09c0(void* p) { return (int)(__int64)p; }
 // @0x140bd09d0

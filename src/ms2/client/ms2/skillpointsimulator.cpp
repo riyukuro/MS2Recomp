@@ -17,9 +17,8 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cquestmanagercommon.h"
-
-// Out-of-unit callees.
-char* FUN_141523ba0(void*);                             // its quest state holder
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
 
 // @0x140abc2b0
 CSkillPointSimulator::CSkillPointSimulator()
@@ -306,7 +305,7 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     }
     if (spData->m_requireQuestID != 0)
     {
-        if (!reinterpret_cast<CQuestManagerCommon*>(FUN_141523ba0(pPlayer) + 0x10)->FUN_140745590(spData->m_requireQuestID))
+        if (!reinterpret_cast<CQuestManagerCommon*>(reinterpret_cast<char*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523ba0()) + 0x10)->FUN_140745590(spData->m_requireQuestID))
             return 0;
     }
     return 1;

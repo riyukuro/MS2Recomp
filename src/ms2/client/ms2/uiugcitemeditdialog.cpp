@@ -129,7 +129,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser, int nMovieId);
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);
     ~ASFunction();
 private:
     void* m_40;

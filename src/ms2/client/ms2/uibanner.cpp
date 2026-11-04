@@ -54,7 +54,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 class Unk_BannerMgr;
 Unk_BannerMgr* FUN_1409478c0();                                             // singleton accessor
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -129,7 +128,7 @@ void UIBanner::Entity::vfunc_6(NiPoint3* pPos)
     if (m_38.get() != 0)
     {
         float fScale = ((class GFxManager*)(class Unk_BannerUIScale*)(((class Unk_BannerUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
-        FUN_140ad0c10(pPos, fScale);
+        *pPos *= fScale;
         ((Unk_BannerClip*)m_38.operator->())->SetPositionFloat(pPos->x - 110.0f, pPos->y);
     }
 }

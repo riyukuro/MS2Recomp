@@ -84,6 +84,7 @@
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/avatarpc.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
@@ -139,7 +140,7 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
+void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned, const bool&);   // C3: was egf::Entity*
@@ -168,7 +169,6 @@ public:
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
-void FUN_140a51340(CEffectDummy* pDummy, const NiPoint3& v);   // CEffectDummy::SetTranslate, seen taking the converted point
 Unk_AnimSvc* FUN_1410a68d0();
 struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
 Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell);
@@ -185,11 +185,6 @@ class Unk_GuidePlayer : public AvatarPC
 };
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_FsOptimizer   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140ddcc90();
-};
 void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
 struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_nSize; };
 
@@ -837,7 +832,7 @@ int CConstructionGuideObject::vfunc_11()
     CEffectDummy kDummy;
     kDummy.SetName("Lift Node");
     kDummy.SetParentNode("Scene Root");
-    FUN_140a51340(&kDummy, efd::Point3(0.0f, 0.0f, -100.0f));
+    kDummy.SetTranslate(efd::Point3(0.0f, 0.0f, -100.0f));
     FUN_141674ef0(kDummy);
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
@@ -1070,7 +1065,7 @@ int CFishingGuideObject::vfunc_11()
     if (pPlayer != 0)
         kReq.SetActor(pOwner->FUN_14123c580());
     m_nEffectA = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
-    if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+    if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_nEffectA, 0);
     bool bShow = false;
     FUN_14098c6e0((class Unk_CachedEntity*)FUN_14123c410(), 0xa0b6b179, bShow);
@@ -1102,7 +1097,7 @@ void CFishingGuideObject::FUN_1410a4cb0()
     if (FUN_14123c410() != 0)
     {
         bool bShow = true;
-        if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+        if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_40 != 0)
             bShow = false;
         FUN_14098c6e0((class Unk_CachedEntity*)FUN_14123c410(), 0xa0b6b179, bShow);
         m_nShown = 1;
@@ -1154,7 +1149,7 @@ void CFishingGuideObject::vfunc_24(int)
         if (m_unk_b0 != 0 && m_unk_40 == pOwner->vfunc_25())
             return;
         m_unk_40 = pOwner->vfunc_25();
-        if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+        if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
             efd::SmartPointer<ecr::SceneGraphService> spSvc((ecr::SceneGraphService*)FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
             if (m_unk_40 != 0)
@@ -1212,7 +1207,7 @@ void CFishingGuideObject::vfunc_53(float f)
             kReq.m_nObject = 0;
             kReq.SetActor(FUN_14123c580());
             m_nEffectB = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
-            if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+            if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_40 != 0)
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_nEffectB, 0);
           }
         }
@@ -1229,7 +1224,7 @@ void CFishingGuideObject::vfunc_53(float f)
 // @0x1410a5690
 void CFishingGuideObject::FUN_1410a5690()
 {
-    if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
+    if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         return;
     m_line.RemoveAll();
     PCBase* pOwner = FUN_1410a1310();
@@ -1332,7 +1327,7 @@ int CSkillMagicControlGuide::FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::
     float fAngle = GameObject::DirectionToNegYawRadians(kDir);
     kRot.MakeZRotation(fAngle);
     efd::Point3 kFwd = DAT_143a08d08;
-    FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&kRot), (struct Vector3*)(&kFwd));
+    FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kFwd));
     if (CGuideObject::vfunc_124(nOwnerId, kPos, kFwd, pOwner) == 0)
         return 0;
     m_spInfo = spInfo;

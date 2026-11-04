@@ -22,7 +22,7 @@ class ASObj;
 class Unk_MLevelCtrl;
 class ASScrollingList;
 class Unk_MSubTab;
-class Unk_MGroup;
+class ASEventDispatcher;
 class Unk_MScroll;
 class CMasteryReceipe;
 class Unk_MFurn;
@@ -126,7 +126,7 @@ public:
 
     MS2Ptr<Unk_MLevelCtrl> FUN_140c02990(const CString& strName);   // child lookup
     MS2Ptr<Unk_MSubTab> FUN_140c02870(const CString& strName);
-    MS2Ptr<Unk_MGroup> FindControl(const CString& strName);
+    MS2Ptr<ASEventDispatcher> FindControl(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -54,8 +54,8 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 __int64 GetServerTime();                                                 // the server time
-unsigned FUN_140768010(unsigned nMax, int nMin);                         // random index
-int FUN_1407181d0(CString* pStr);                                        // string to int
+int FUN_140768010(int nMax, int nMin);                                   // random index
+unsigned int FUN_1407181d0(const CString& str);                                        // string to int
 
 // A std::vector<CString> the exe keeps out of line (ctor 0x14027d6f0, dtor 0x14027e450).
 class Unk_StrVec
@@ -205,7 +205,7 @@ int CLoadingImageTable::Load()
                 FUN_140275080(*tokens.FUN_14027f1c0(i), &parts, ":");
                 if (parts.FUN_14028b4c0() == 2)
                 {
-                    int nIndex = FUN_1407181d0(parts.FUN_14027f1c0(0));
+                    int nIndex = FUN_1407181d0(*parts.FUN_14027f1c0(0));
                     CString strFile(parts.FUN_14027f1c0(1)->Trim());
                     spMovie.get()->m_files.insert(std::make_pair(nIndex, strFile));
                 }
@@ -265,7 +265,7 @@ CString CLoadingImageTable::GetImageFile(int nMapCode, int bCommon)
     CollectImages(nMapCode, aImages, bCommon);
     if (aImages.GetCount() == 0)
         return CString("");
-    ImagePtr spImage(aImages.GetAt(FUN_140768010(aImages.GetCount(), 0)));
+    ImagePtr spImage(aImages.GetAt((unsigned)FUN_140768010(aImages.GetCount(), 0)));
     return CString(spImage.get()->m_strFile);
 }
 

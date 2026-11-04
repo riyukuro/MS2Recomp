@@ -25,21 +25,6 @@
 
 CLogString* TSingleton<CLogString>::s_instance=0;
 extern bool g_logLoadingError;
-class Unk_140163940 {
-public:
-    Unk_140163940(CLockCriticalSection&);
-    ~Unk_140163940();
-    operator int() const;
-private: void* m_lock;
-};
-class Unk_1401b4ec0 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection&,int);
-    ~Unk_1401b4ec0();
-private: void* m_lock;
-};
-MS2_CHECK_SIZE(Unk_140163940,8);
-MS2_CHECK_SIZE(Unk_1401b4ec0,8);
 class Unk_140659080 {
 public:
     void FUN_1401d42d0();
@@ -150,7 +135,7 @@ unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
             while(!m_queue.IsEmpty()) {
                 CStringW line;
                 {
-                    Unk_140163940 guard(m_queueLock);
+                    Unk_LockGuard guard(m_queueLock);
                     if(guard!=0) {} else {
                         if(m_queue.IsEmpty()) break;
                         line=m_queue.RemoveHead();
@@ -165,7 +150,7 @@ unsigned int CLogString::vfunc_1(void*,Unk_140659080& start)
         if(result==WAIT_OBJECT_0) break;
     }
     {
-        Unk_140163940 guard(m_queueLock);
+        Unk_LockGuard guard(m_queueLock);
         if(guard!=0) {} else {
             if(!m_queue.IsEmpty()) {
                 while(!m_queue.IsEmpty()) {
@@ -267,13 +252,13 @@ CStringW CLogString::GetRoot() { return m_root; }
 MS2_REPLACE_METHOD(0x140653b30, CLogString, GetRoot, 68, 0x44C95B86);
 
 // @0x140653b80
-void CLogString::AddCallback(Callback callback) { Unk_1401b4ec0 guard(m_callbackLock,1); m_callbacks.push_back(callback); }
+void CLogString::AddCallback(Callback callback) { Unk_CriticalSectionLock guard(m_callbackLock,1); m_callbacks.push_back(callback); }
 MS2_REPLACE_METHOD(0x140653b80, CLogString, AddCallback, 105, 0x1E498D94);
 
 // @0x140653bf0
 void CLogString::RemoveCallback(Callback callback)
 {
-    Unk_1401b4ec0 guard(m_callbackLock,1);
+    Unk_CriticalSectionLock guard(m_callbackLock,1);
     for(unsigned i=0;i<m_callbacks.size();++i) if(m_callbacks[i]==callback) { m_callbacks.erase(m_callbacks.begin()+i); return; }
 }
 MS2_REPLACE_METHOD(0x140653bf0, CLogString, RemoveCallback, 325, 0xEDF114DF);
@@ -281,7 +266,7 @@ MS2_REPLACE_METHOD(0x140653bf0, CLogString, RemoveCallback, 325, 0xEDF114DF);
 // @0x140653d40
 void CLogString::EnqueueLine(const CStringW& text)
 {
-    CStringW line=FormatTimestampedLine(text); Unk_140163940 guard(m_queueLock);
+    CStringW line=FormatTimestampedLine(text); Unk_LockGuard guard(m_queueLock);
     if(guard!=0) {} else { m_queue.AddTail(line); SignalWork(); }
 }
 MS2_REPLACE_METHOD(0x140653d40, CLogString, EnqueueLine, 143, 0xD9B70076);
@@ -346,7 +331,7 @@ MS2_REPLACE_METHOD(0x140654280, CLogString, OpenLogFile, 388, 0xBB875AD9);
 // @0x140654410
 void CLogString::OpenGroupFiles()
 {
-    Unk_1401b4ec0 guard(m_groupLock,1);
+    Unk_CriticalSectionLock guard(m_groupLock,1);
     for(POSITION pos=m_groups.GetHeadPosition();pos;m_groups.GetNext(pos)) {
         GroupPtr group=m_groups.GetValueAt(pos);
         if(!group->m_file) OpenGroupFile(group);
@@ -371,7 +356,7 @@ MS2_REPLACE_METHOD(0x140654520, CLogString, OpenGroupFile, 607, 0xD962302B);
 void CLogString::CloseFiles()
 {
     if(m_file) { FlushFileBuffers(m_file); CloseHandle(m_file); m_file=0; }
-    Unk_140163940 guard(m_groupLock);
+    Unk_LockGuard guard(m_groupLock);
     if(guard!=0) {} else {
         for(POSITION pos=m_groups.GetHeadPosition();pos;m_groups.GetNext(pos)) {
             GroupPtr group=m_groups.GetValueAt(pos);
@@ -405,7 +390,7 @@ MS2_REPLACE_METHOD(0x140654920, CLogString, QueueTaggedLine, 178, 0x52509381);
 // @0x1406549e0
 void CLogString::EnqueueGroupLine(const CString& name,const CStringW& text)
 {
-    Unk_1401b4ec0 guard(m_groupLock,1);
+    Unk_CriticalSectionLock guard(m_groupLock,1);
     GroupPtr group;
     if(!m_groups.Lookup(name,group)) group=CreateGroup(name);
     group->m_queue.AddTail(text); SignalWork();
@@ -443,7 +428,7 @@ MS2_REPLACE_METHOD(0x140654c70, CLogString, FormatTimestampedLine, 134, 0x2C74BB
 void CLogString::InvokeCallbacks(ContextPtr context)
 {
     std::vector<Callback> callbacks;
-    { Unk_140163940 guard(m_callbackLock); if(guard!=0) {} else callbacks=m_callbacks; }
+    { Unk_LockGuard guard(m_callbackLock); if(guard!=0) {} else callbacks=m_callbacks; }
     for(unsigned i=0;i<callbacks.size();++i) callbacks[i](context.get());
 }
 MS2_REPLACE_METHOD(0x140654d00, CLogString, InvokeCallbacks, 234, 0x5F59D737);
@@ -452,14 +437,14 @@ MS2_REPLACE_METHOD(0x140654d00, CLogString, InvokeCallbacks, 234, 0x5F59D737);
 // @0x140654df0
 CLogString::GroupPtr CLogString::CreateGroup(CString name)
 {
-    Unk_1401b4ec0 guard(m_groupLock,1);
+    Unk_CriticalSectionLock guard(m_groupLock,1);
     GroupPtr group(new CLogCustomGroup(name));
     OpenGroupFile(group); m_groups.SetAt(name,group); return group;
 }
 // @0x140654f70
 void CLogString::FUN_140654f70()
 {
-    Unk_1401b4ec0 guard(m_groupLock,1);
+    Unk_CriticalSectionLock guard(m_groupLock,1);
     for(POSITION pos=m_groups.GetHeadPosition();pos;m_groups.GetNext(pos)) {
         GroupPtr group=m_groups.GetValueAt(pos);
         if((group.get() ? true : false) && group->m_file) {

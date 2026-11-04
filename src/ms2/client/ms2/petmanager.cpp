@@ -108,7 +108,7 @@ class Unk_PmWorld
 public:
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-class Unk_PmPetRowTable : public CPtred { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
+class Unk_PetRowTable : public CPtred { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 struct Unk_PmConfig { char m_pad_0[0x328]; CString m_strLevelUpEffect; };      // +0x328 the pet level up effect
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
@@ -1151,7 +1151,7 @@ MS2Ptr<Unk_PetRow> CPetManager::GetSummonedPetRow()
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
     if (spData == 0)
         return MS2Ptr<Unk_PetRow>(0);
-    return ((class Unk_PmPetRowTable*)FUN_14052d210())->FUN_1407290f0(spData->GetPetId());
+    return FUN_14052d210()->FUN_1407290f0(spData->GetPetId());
 }
 // @0x140c8b5c0
 void* CPetManager::GetPlayerPet(int nObjectId)

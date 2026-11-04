@@ -46,10 +46,9 @@ class Unk_1403ed2d0 : public WorldService { public: Unk_141529a50* FUN_141bd0cc0
 void FUN_14151f200();
 int FUN_14151f6e0();
 void FUN_141901390(int a1, int nUIType);
-class Unk_140d13c70 { public: bool m_bMute; void FUN_14125fe20(); float FUN_1412602e0(); };
-class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); };
+void FUN_14125fe20(Unk_SoundState* p);   // reapply the sound volumes
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
+void FUN_140d73bc0(int nId, int n, void* pListener, CStringW str);
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 class Unk_140298f40 { public: };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
@@ -202,11 +201,11 @@ void UICutSceneMovie::SetSoundFade(bool bFade)
         return;
     const int nFadeTime = 1000;
     if (bFade) {
-        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
+        FUN_14125fe20(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
         TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeOut(2, nFadeTime);
         TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeOut(1, nFadeTime);
     } else {
-        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
+        FUN_14125fe20(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
         TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeIn(2, nFadeTime);
         TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeIn(1, nFadeTime);
     }
@@ -246,7 +245,7 @@ int UICutSceneMovie::vfunc_13()
 {
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible() &&
         FUN_14151f6e0()) {
-        FUN_140d73bc0(0x88c, 1, this, L"");
+        FUN_140d73bc0(0x88c, 1, static_cast<IMessageListener*>(this), L"");
         return 1;
     }
     return 0;
@@ -293,10 +292,10 @@ int UICutSceneMovie::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp(szMethod, "onHideComplete") == 0) {
         FUN_1422dc080();
         m_strPath.Empty();
-        reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
+        FUN_14125fe20(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
         return 1;
     } else if (_stricmp(szMethod, "onExit") == 0) {
-        FUN_140d73bc0(0x88c, 1, this, L"");
+        FUN_140d73bc0(0x88c, 1, static_cast<IMessageListener*>(this), L"");
         return 1;
     } else if (_stricmp(szMethod, "onSwfStop") == 0) {
         Exit();
@@ -393,9 +392,9 @@ MS2_REPLACE_METHOD(0x14190FEF0, UICutSceneMovie, Play, 197, 0x9AC68545);
 bool UICutSceneMovie::PlayUsm()
 {
     if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
-        Unk_140d13c70* pSound = reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
+        Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
         if (pSound)
-            pPlayer->FUN_1422e9490(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
+            pPlayer->FUN_1422e9490(pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());
         pPlayer->FUN_1422e95b0(m_strPath);
         pPlayer->FUN_1422e9690(m_68);
         return true;
@@ -409,9 +408,9 @@ bool UICutSceneMovie::PlaySwf()
 {
     if (m_30 == NULL)
         return false;
-    Unk_140d13c70* pSound = reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
+    Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound)
-        FUN_14025e7a0()->SetMasterVolume(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
+        FUN_14025e7a0()->SetMasterVolume(pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());
     m_30->Invoke("playSwfMovie", m_strPath);
     return true;
 }

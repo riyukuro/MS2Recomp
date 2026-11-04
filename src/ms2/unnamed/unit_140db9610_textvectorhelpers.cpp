@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point2.h>
 #include <efd/Point3.h>
+#include <NiPoint3.h>
 #include <NiColor.h>
 #include <atlcoll.h>
 #include <stdarg.h>
@@ -23,11 +24,6 @@ struct Unk_DbPt2 : Unk_DbEfdPt2                                                 
 };
 struct Unk_DbVec3 { float x, y, z; };
 struct Unk_DbEfdPt3 { Unk_DbEfdPt3() {} float x, y, z; };                       // efd::Point3
-struct Unk_DbPt3 : Unk_DbEfdPt3                                                 // NiPoint3
-{
-    Unk_DbPt3();                                                                // 0x1405522f0
-    Unk_DbPt3(const Unk_DbEfdPt3& kRhs);                                        // 0x14027dcf0
-};
 struct Unk_DbInt4
 {
     int a, b, c, d;
@@ -47,7 +43,6 @@ float FUN_140718450(const CStringA& kText);                                     
 CStringA FUN_14028ef00(efd::Point3 kVec);                                            // Point3 formatter
 CStringW FUN_14028efb0(Unk_DbVec3 kVec);                                             // Point3 formatter (wide)
 #define DAT_143b02320 (*(const Unk_DbEfdPt2*)&efd::Point2::ZERO)    // C3: was extern Unk_DbEfdPt2 DAT_143b02320
-#define DAT_143b01a60 (*(Unk_DbEfdPt3*)&efd::Point3::ZERO)          // C3: was extern Unk_DbEfdPt3 DAT_143b01a60
 extern const char DAT_142e36e3c[];                                              // token delimiter (",")
 extern const char DAT_142e36e40[];                                              // token delimiter (",")
 
@@ -64,12 +59,12 @@ Unk_DbPt2 FUN_140db9610(const CStringA& kText)
 }
 
 // @0x140db96a0
-Unk_DbPt3 FUN_140db96a0(const CStringA& kText)
+NiPoint3 FUN_140db96a0(const CStringA& kText)
 {
-    Unk_DbPt3 kVec;
+    NiPoint3 kVec;
     int nParsed = FUN_140db9ca0((const char*)kText, 0x80, "%f, %f, %f", &kVec.x, &kVec.y, &kVec.z);
     if (nParsed != 3)
-        return Unk_DbPt3(DAT_143b01a60);
+        return NiPoint3(efd::Point3::ZERO);
     return kVec;
 }
 

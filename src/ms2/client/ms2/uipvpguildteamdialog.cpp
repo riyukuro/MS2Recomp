@@ -45,6 +45,7 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/cproxygameobject.h"  // C3: UIPopUpMenu::FUN_141a7eb60 takes MS2Ptr<CProxyGameObject>
 class UIMassiveEvent { public: void FUN_1419f6a70(int, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, int); };
 // ---- header statics (dynamic initializers 0x1400ef900..) ----
 #ifndef MS2_HOOK_DLL
@@ -108,10 +109,11 @@ private:
     void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40;
     void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
 };
-class Unk_PopupMenu
+class Unk_PopupMenu;
+class UIPopUpMenu
 {
 public:
-    void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<Unk_PgtActorRef> spTarget, int nType);
+    void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);
 };
 Unk_PopupMenu* FUN_140c30140(int nUiId);
 
@@ -437,7 +439,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 MS2Ptr<Unk_PgtActorRef> spTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bc9d60(strName);
                 if (spTarget.get() != 0) {
                     Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, "", NULL);
-                    pMenu->FUN_141a7eb60(info, spTarget, 0xb);
+                    reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7eb60(info, reinterpret_cast<MS2Ptr<CProxyGameObject>&>(spTarget), 0xb);
                 }
             }
         }

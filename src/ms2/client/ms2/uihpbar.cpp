@@ -58,7 +58,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 extern template CString StringFormat<int>(const char*, const int&);
 float FUN_140bf4fd0(float f);                                               // ceilf
@@ -68,8 +67,7 @@ class Unk_HpNpc : public PCBase
 public:
 };
 class Unk_HpPet : public CPet { };
-struct Unk_HpSeatPos : Unk_GVec3 {};                                    // the returned seat position (copied out through Unk_GVec3)
-class Unk_HpSeat { public: Unk_HpSeatPos FUN_140adf8e0(); };
+class CBreakableObject { public: efd::Point3 GetPtPos(); };           // C3: the seat position 0x140adf8e0 (was an Unk_HpSeat view)
 class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
 class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
 class Unk_RideeData : public CPtred { };
@@ -169,7 +167,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
                     szLabel = "hostile";
                 ((Unk_HpMovie*)render.operator->())->vfunc_15(szLabel);
             }
-            FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+            *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
@@ -478,7 +476,7 @@ void UITombStoneBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (!m_38)
         return;
-    FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+    *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
     pPos->y = pPos->y + vfunc_9();
     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
     ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);
@@ -512,13 +510,13 @@ NiPoint3 UITombStoneBar::Entity::vfunc_10()
     PC* pPc = dynamic_cast<PC*>(FUN_140f49330());
     if (pPc != 0)
     {
-        Unk_HpSeat* pSeat = reinterpret_cast<Unk_HpSeat*>(((Unk_HpActor*)pPc)->FUN_14165ca20());
+        CBreakableObject* pSeat = reinterpret_cast<CBreakableObject*>(((Unk_HpActor*)pPc)->FUN_14165ca20());
         if (pSeat != 0)
         {
             NiPoint3 base = UIHudEntity::Entity::vfunc_10();
-            Unk_GVec3 pos(pSeat->FUN_140adf8e0());
+            NiPoint3 pos(pSeat->GetPtPos());
             pos.z = base.z;
-            return *(NiPoint3*)&pos;
+            return pos;
         }
     }
     return UIHudEntity::Entity::vfunc_10();
@@ -596,7 +594,7 @@ void FUN_141993180(int nActorId)
 
 // @0x1419931c0
 UISlimeEventBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
-    : UIHpBar::Entity(nLayer, clip, nActorId), m_c8(0), m_cc(0), m_d0(*(const Unk_GVec3*)&efd::Point3::ZERO)
+    : UIHpBar::Entity(nLayer, clip, nActorId), m_c8(0), m_cc(0), m_d0(efd::Point3::ZERO)
 {
 }
 
@@ -616,7 +614,7 @@ void UISlimeEventBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+        *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);

@@ -57,11 +57,12 @@ class Unk_AdbPtr
 public:
     Unk_AdbPtr();                                               // 0x14016e320
     Unk_AdbPtr(AdBannerData* p);                                // 0x14016e2f0
+    Unk_AdbPtr(int);                                            // 0x14096b950 the null pointer (adbannermanagercli)
     Unk_AdbPtr(const Unk_AdbPtr& o);                            // 0x14016e2b0
     ~Unk_AdbPtr();                                              // 0x14016e430
     Unk_AdbPtr& operator=(const Unk_AdbPtr& o);                 // 0x14016e520
-    AdBannerData* get() const;                                  // 0x14016e5a0
-    AdBannerData* operator->() const;
+    AdBannerData* get() const;                                  // 0x1409fb8a0 (unit_1409faff0)
+    AdBannerData* operator->() const;                           // 0x14016e5a0
 private:
     void AddRef() const;
     void AddRefImpl(void*) const;

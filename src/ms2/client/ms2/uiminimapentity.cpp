@@ -1960,7 +1960,6 @@ class Unk_MmScript : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2);
-    Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);
     Scaleform::GFx::Value FUN_141a468e0(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4);
 };
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
@@ -1991,7 +1990,7 @@ inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46a60(const char* szMethod, S
 }
 
 // @0x141a46b60
-inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2)
+inline Scaleform::GFx::Value AScript::FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2)
 {
     ASArgList args;
     args.FUN_1409b2800(2);

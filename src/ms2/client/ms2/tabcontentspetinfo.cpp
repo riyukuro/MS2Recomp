@@ -199,7 +199,7 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The exp table: points an (pet class, rank, item class) needs for the next level.
-CExpTable* FUN_1404a1bb0();
+void* FUN_1404a1bb0();
 
 // The pet inventory dialog's selection: the other pet's record and the bag counters.
 struct Unk_PiPetData
@@ -510,7 +510,7 @@ void PetInfoBasic::vfunc_3()
         if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
         {
             __int64 nExp = pet->FUN_140528b90();
-            __int64 nMax = FUN_1404a1bb0()->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
+            __int64 nMax = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
             if (row->m_nFlag == 1)
             {
                 CStringW strExp;

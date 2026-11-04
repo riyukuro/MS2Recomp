@@ -114,7 +114,7 @@ class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, NiPoint3
 
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
-extern Vector3 DAT_143a08ce8;                       // the default direction
+#define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 
 void FUN_140710590(COutPacket& packet);
 void FUN_1401fe9e0(unsigned char* payload, COutputStream& stream);

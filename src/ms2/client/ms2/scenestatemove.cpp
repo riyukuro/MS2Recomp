@@ -5,6 +5,7 @@
 // MS2-PIN: ?SetupClassInfo@CSceneStateMove@@SAXPEAVClassInfo@efd@@_K@Z 0x14174d160
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestatemove.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor
 #include "scenestatemove.h"
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
@@ -17,17 +18,15 @@
 
 CNetworkService* FUN_140714f90();
 void* FUN_140aae430();
-void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 void FUN_141740b00(int, int, int, const CStringW&, const unsigned short*);
 CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_140298ea0(CStringW);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
-void FUN_141b6fcf0(const CStringW&, const CStringW&, int);
+int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned);
 extern void (*DAT_143b03490)(short, unsigned char, const char*);
 extern unsigned char DAT_1430c3b20;
 
@@ -52,7 +51,7 @@ CSceneStateMove::~CSceneStateMove()
 // @0x14174caa0
 void CSceneStateMove::OnEnter(int nPrevState)
 {
-    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
+    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     m_bConnecting = 0;
     m_bFailed = 0;
     CSceneStateBase::OnEnter(nPrevState);

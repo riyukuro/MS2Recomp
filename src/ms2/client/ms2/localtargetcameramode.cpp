@@ -23,7 +23,7 @@
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -304,7 +304,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     else
     {
         Vector3 ptMove = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             m_1f0 = (int)((float)m_1f0 - ptMove.x);
             if (m_1f0 < m_108.m_64)

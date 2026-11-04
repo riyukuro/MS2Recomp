@@ -64,7 +64,6 @@ class Unk_VwWorld
 {
 public:
     GameObject* FUN_141bd0cc0();                            // the local player
-    GameObject* FUN_141bd0fa0(egf::EntityID id);            // the game object of an entity
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // an interact object by name
 };
 class PCBase* FUN_140b120b0(class GameObject*);   // C3: was FUN_140b120b0
@@ -104,7 +103,7 @@ class UIPCInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
     void RefreshProfileImage();
-    void FUN_14132faf0(const CStringW& strFile);                 // show the uploaded image (profile)
+    void ShowProfileImage(const CStringW& strFile);              // 0x14132faf0: show the uploaded image (profile)
 };
 class UIWeddingDialog   // C3: member view for the former free stand-ins
 {
@@ -390,7 +389,7 @@ CUgcViewerCube::~CUgcViewerCube()
 // @0x14189f8b0
 int CUgcViewerCube::vfunc_2()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(FUN_1418a0110()));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
     if (spCube == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spCube->GetUgcMesh();
@@ -427,7 +426,7 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189fcd0
 void CUgcViewerCube::vfunc_4()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(FUN_1418a0110()));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
     if (spCube == 0)
         return;
     spCube->FUN_141085250();
@@ -436,7 +435,7 @@ void CUgcViewerCube::vfunc_4()
 // @0x14189fd80
 void CUgcViewerCube::vfunc_5()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(FUN_1418a0110()));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
     if (spCube == 0)
         return;
     CItemData* pData = spCube->GetItemData().get();
@@ -740,7 +739,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     void* pDialog = ((void*)FUN_140938c30(0x2711));
     if (pDialog == 0)
         return 0;
-    reinterpret_cast<UIPCInfoDialog*>(pDialog)->FUN_14132faf0(strThumb);
+    reinterpret_cast<UIPCInfoDialog*>(pDialog)->ShowProfileImage(strThumb);
     return 1;
 }
 
@@ -1057,7 +1056,7 @@ CUgcViewerRidee::~CUgcViewerRidee()
 // @0x1418a2880
 int CUgcViewerRidee::vfunc_2()
 {
-    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(FUN_1418a2fc0()));
+    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a2fc0())));
     if (spRidee == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spRidee->GetUgcMesh();
@@ -1094,7 +1093,7 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a2ca0
 void CUgcViewerRidee::vfunc_4()
 {
-    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd0fa0(FUN_1418a2fc0()));
+    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a2fc0())));
     if (spRidee == 0)
         return;
     spRidee->FUN_141085250();

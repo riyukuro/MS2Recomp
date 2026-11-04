@@ -40,8 +40,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 class Unk_TexAnimResMgr
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                // load (cached) with the given flags
     efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, void* pDefault);            // look up a loaded texture
+};
+class CNifLoadingService   // C3: member view (nifeffectparam.h)
+{
+public:
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90 load (cached) with the given flags
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
@@ -94,9 +98,9 @@ MS2_REPLACE_METHOD(0x141847560, Unk_TextureFrame, Load, 102, 0x6C83B0D1);
 // @0x1418475d0
 void Unk_TextureFrame::FUN_1418475d0(const CString& strDir, int nFlags)
 {
-    ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(FUN_141847960(strDir), nFlags);
+    ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_141847960(strDir), nFlags);
     if (!m_strControl.IsEmpty())
-        ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(FUN_141847a60(strDir), nFlags);
+        ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_141847a60(strDir), nFlags);
 }
 MS2_REPLACE_METHOD(0x1418475D0, Unk_TextureFrame, FUN_1418475d0, 253, 0xED2DC14D);
 
@@ -260,7 +264,7 @@ efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848110(unsigned int n
 {
     if (nFrame >= m_arrFrames.GetCount())
         return efd::SmartPointer<NiTexture>(0);
-    return ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(m_arrFrames[nFrame].FUN_141847960(strDir), 5);
+    return ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(m_arrFrames[nFrame].FUN_141847960(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848110, CTextureAnimationData, FUN_141848110, 227, 0x8EEC6057);
 
@@ -269,7 +273,7 @@ efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848200(unsigned int n
 {
     if (nFrame >= m_arrFrames.GetCount())
         return efd::SmartPointer<NiTexture>(0);
-    return ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(m_arrFrames[nFrame].FUN_141847a60(strDir), 5);
+    return ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(m_arrFrames[nFrame].FUN_141847a60(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848200, CTextureAnimationData, FUN_141848200, 227, 0xF1FD1EE7);
 

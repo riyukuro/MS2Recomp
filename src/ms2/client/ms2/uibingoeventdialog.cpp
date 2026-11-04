@@ -97,6 +97,7 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/inventoryitemkey.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -143,15 +144,6 @@ namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& a
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1401cdae0(ATL::CAtlArray<int>*, int);
-// The 12 byte item key of the inventory count query (item id, rank, unused).
-struct Unk_BingoItemKey
-{
-    // @0x140bb5a30
-    Unk_BingoItemKey() : m_id(0), m_rank(0), m_extra(0) {}
-    int m_id;
-    int m_rank;
-    int m_extra;
-};
 extern Unk_Inventory g_143ab2a90;
 GFxManager* FUN_14025e7a0();
 
@@ -620,9 +612,9 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         if (Common::FindElement<int>(m_called, m_board[nIndex]) == -1)
             return;
         int nItemId = ref->m_freeItemId;
-        Unk_BingoItemKey key;
+        Unk_InventoryItemKey key;
         key.m_id = nItemId;
-        key.m_rank = FUN_14053feb0(nItemId);
+        key.m_rarity = FUN_14053feb0(nItemId);
         int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
         if (nCount <= 0)
             return;
@@ -639,9 +631,9 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
     else if (m_state == 2)
     {
         int nItemId = ref->m_cashItemId;
-        Unk_BingoItemKey key;
+        Unk_InventoryItemKey key;
         key.m_id = nItemId;
-        key.m_rank = FUN_14053feb0(nItemId);
+        key.m_rarity = FUN_14053feb0(nItemId);
         int nCount = g_143ab2a90.FUN_140a5eda0(&key.m_id);
         if (nCount <= 0)
             return;
@@ -812,12 +804,12 @@ void UIBingoEventDialog::FUN_140bb1d60()
         return;
     int nFreeId = ref->m_freeItemId;
     int nCashId = ref->m_cashItemId;
-    Unk_BingoItemKey freeKey;
+    Unk_InventoryItemKey freeKey;
     freeKey.m_id = nFreeId;
-    freeKey.m_rank = FUN_14053feb0(nFreeId);
-    Unk_BingoItemKey cashKey;
+    freeKey.m_rarity = FUN_14053feb0(nFreeId);
+    Unk_InventoryItemKey cashKey;
     cashKey.m_id = nCashId;
-    cashKey.m_rank = FUN_14053feb0(nCashId);
+    cashKey.m_rarity = FUN_14053feb0(nCashId);
     int nFree = g_143ab2a90.FUN_140a5eda0(&freeKey.m_id);
     int nCash = g_143ab2a90.FUN_140a5eda0(&cashKey.m_id);
     if (m_free.m_text.get() != 0)

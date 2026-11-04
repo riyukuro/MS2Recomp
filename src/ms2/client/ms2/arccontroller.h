@@ -6,17 +6,9 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <efd/Point2.h>
 #include <NiRefObject.h>
 #include <NiRTTI.h>
-
-// cos / sin of the launch angle (ctor 0x14097f3a0).
-struct Unk_ArcAngle
-{
-    Unk_ArcAngle();                                             // 0x14097f3a0
-    float m_cos;
-    float m_sin;
-};
-MS2_CHECK_SIZE(Unk_ArcAngle, 8);
 
 // The solved arc (0x38 bytes); the implicit ctor is the COMDAT 0x1409ab560. Solver: FUN_141479ed0.
 struct Unk_ArcFlight
@@ -27,7 +19,7 @@ struct Unk_ArcFlight
     Vector3 m_target;           // +0x0c
     Vector3 m_direction;        // +0x18 horizontal unit direction
     Vector3 m_origin;           // +0x24
-    Unk_ArcAngle m_angle;               // +0x30
+    efd::Point2 m_angle;                // +0x30 cos (x) / sin (y) of the launch angle
 
     void FUN_141479ed0(Vector3 origin, Vector3 target, float speed, float gravity);
 };
@@ -61,4 +53,4 @@ MS2_CHECK_SIZE(CArcController, 0x68);
 MS2_CHECK_OFFSET(CArcController, m_elapsed, 0x48);
 MS2_CHECK_OFFSET(CArcController, m_position, 0x5c);
 
-extern Vector3 DAT_143b01a60;                           // the zero point constant
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60

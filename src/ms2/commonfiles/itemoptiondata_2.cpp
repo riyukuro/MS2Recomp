@@ -2859,7 +2859,6 @@ int& FUN_1405e6670(int& r)
     return r;
 }
 
-int& FUN_140180c20(int& r);  // the identity forward the pair ctor below applies to its second argument
 
 // This unit's pair<int,int>(int&, int&) copy, called by ItemOptionRandom::FUN_1405d4bb0 / FUN_1405d55e0: the first int
 // through 0x1405e6670, the second through 0x140180c20 (the toolchain's instance is the shared 0x1404d9610).
@@ -2867,6 +2866,6 @@ int& FUN_140180c20(int& r);  // the identity forward the pair ctor below applies
 std::pair<int, int>* FUN_1405dbe80(std::pair<int, int>* pThis, int& a, int& b)
 {
     pThis->first = FUN_1405e6670(a);
-    pThis->second = FUN_140180c20(b);
+    pThis->second = std::forward<int>(b);
     return pThis;
 }

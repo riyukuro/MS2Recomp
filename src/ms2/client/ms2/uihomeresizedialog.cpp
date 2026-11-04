@@ -56,7 +56,7 @@ CStringW FUN_14093bad0(int nWidth, int nLength, CStringW strDefault);   // the t
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 

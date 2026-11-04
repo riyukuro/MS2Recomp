@@ -1608,7 +1608,6 @@ __imp_CrashReporter_SetClientExit	142cce1c0	data
 ??0ICastingEventListener@@QEAA@XZ	140ac2e60	func
 ?GetTypeName@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
 ??0Unk_ClosingCameraData@@QEAA@XZ	140cb13b0	func
-??YUnk_ClosingVector@@QEAAAEAU0@AEBU0@@Z	140a4e560	func
 ??CUnk_ClosingCameraPtr@@QEBAPEAVUnk_ClosingCamera@@XZ	1409f7910	func
 ??1Unk_ClosingCameraPtr@@QEAA@XZ	140cb1460	func
 ??$GetChild@VASUIComponent@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VASUIComponent@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140c02990	func
@@ -8329,6 +8328,7 @@ compress2	142724100	func
 ?CreateProgressEventObject@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@Z	142467dc0	func
 ?CheckExpand@?$HashSetBase@U?$HashNode@PEAVObject@AS3@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS3@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorGH@PEAVObject@AS3@GFx@Scaleform@@$01@2@V?$HashsetNodeEntry@U?$HashNode@PEAVObject@AS3@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS3@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXPEAX@Z	142498ce0	func
 ?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@I@Z	14028de60	func
+?BlockFormat@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBVArgList@fmt@@@Z	14028dee0	func
 ??0efdPhysXSDM@efdPhysX@@QEAA@XZ	1421177a0	func
 ?GetInstanceTraits@VM@AS3@GFx@Scaleform@@QEBAAEBVTraits@InstanceTraits@234@AEBVValue@234@@Z	14250a900	func
 ?AddDynamicSlotValuePair@Object@AS3@GFx@Scaleform@@QEAAXAEBVASString@34@AEBVValue@234@W4Attribute@SlotInfo@234@@Z	1424e7f40	func
@@ -10247,7 +10247,7 @@ DAT_14318f040	14318f040	data
 ?FunctionTable@TextFieldProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214410	data
 ?FunctionTable@KeyCtorFunction@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213a70	data
 ?GetMember@CapabilitiesCtorFunction@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14294de70	func
-?FUN_14277e6e0@@YAXPEAUCefString16@@PEAUcef_string_t@@@Z	14277e6e0	func
+?AttachToUserFree@?$CefStringBase@UCefStringTraitsUTF16@@@@QEAAXPEAU_cef_string_utf16_t@@@Z	14277e6e0	func
 ?Collect@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@QEAA_NPEAUStats@1234@@Z	1423de770	func
 ?ExecuteCompleteEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXXZ	1424422a0	func
 ?ExecuteInitEvent@LoaderInfo@fl_display@Instances@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObject@56@@Z	1424426d0	func
@@ -16666,8 +16666,6 @@ DAT_14313b9c8	14313b9c8	data
 ??0Unk_CbInfoPtr@@QEAA@AEBVUnk_CbNpcDataPtr@@@Z	1406cf850	func
 ??0Unk_CbItemPtr@@QEAA@H@Z	14053f870	func
 ??0Unk_CbPtr@@QEAA@H@Z	140203510	func
-??0Unk_ChTree@@QEAA@XZ	140333290	func
-??1Unk_ChTree@@QEAA@XZ	140333cb0	func
 ??0Unk_McNiPt3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
 ??0Unk_McPoint3@@QEAA@XZ	1402bd040	func
 ??0Unk_McRequest@@QEAA@XZ	140a52ef0	func
@@ -17449,3 +17447,9 @@ _should_initialize_environment	14274aee4	func
 ?DestructArray@?$ConstructorMov@V?$SPtr@VNamespaceSet@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@@Scaleform@@SAXPEAV?$SPtr@VNamespaceSet@AS3@GFx@Scaleform@@@AS3@GFx@2@_K@Z	1424f6c90	func
 ?SetValue@STPtr@AS3@GFx@Scaleform@@QEAAAEAV1234@AEBVValue@234@@Z	14252a640	func
 ?CheckExpand@?$HashSetBase@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorGH@PEAVObject@AS2@GFx@Scaleform@@$01@2@V?$HashsetNodeEntry@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXPEAX@Z	1429339a0	func
+?ms_iGlobalLOD@NiLODNode@@1HA	1439fc854	data
+?ms_defaultQualityOfService@QOSCompare@efd@@1IA	143a0eae0	data
+?ms_configRead@QOSCompare@efd@@1_NA	143b05548	data
+?ms_virtualToPhysical@QOSCompare@efd@@1V?$map@IIU?$less@I@std@@@2@A	143b05550	data
+?ms_bRenderBackfaces@NiDX9ShadowWriteShader@@1_NA	143a4b228	data
+?g_pfnMS2CreateKFMCache@@3P6APEAVKFMCache@egmAnimation@@XZEA	143b094a0	data

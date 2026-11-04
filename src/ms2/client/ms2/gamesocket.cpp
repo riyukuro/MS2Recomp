@@ -45,7 +45,8 @@ template<class T> T Unk_SocketMin(T a,T b) { return a<b?a:b; }
 void* FUN_140aadf80();
 class CLogString* GetLogString(); void Unk_AdditionalLog(class CLogString*,int,int,const wchar_t*);
 CStringW FUN_14016a730(const char*,int);
-void* FUN_140aa6d30(); extern int g_socketClosing;
+class CStateService; extern int g_socketClosing;
+template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
 class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 {
@@ -73,8 +74,7 @@ void FUN_140710b90(COutPacket*,int,unsigned*);   // no return value (rax is left
 void FUN_140710870(COutPacket*,ATL::CAtlList<Unk_BufferPtr>*,unsigned,unsigned*,int);
 CPacketBuffer* FUN_1407138b0(unsigned,const Unk_SocketNew&);
 int FUN_1406516b0();
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 void FUN_140d73aa0(CStringW,int,void*,CStringW);
 void FUN_140d73bc0(int,int,void*,CStringW);
 void FUN_1412676a0(int); void FUN_141267720(); void FUN_1412677b0();
@@ -225,7 +225,7 @@ void CGameSocket::OnClose(CSimpleSocket*,int error)
     Unk_LockGuard guard(m_lock);
     if(guard!=0) {} else {
         if(m_disconnect==0 && error!=0 && m_state==Unk_SocketState::Connected) {
-            if(g_socketClosing==0 && FUN_140aa6d30()!=0) {
+            if(g_socketClosing==0 && TSingleton<CStateService>::GetInstance()!=0) {
                 FUN_141266500(error); PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x465,error,0);
             }
         } else {

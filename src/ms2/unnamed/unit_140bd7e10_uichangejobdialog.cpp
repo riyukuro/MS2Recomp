@@ -17,6 +17,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/questmanager_2.h"
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 
@@ -54,9 +56,6 @@ public:
     static class Unk_AkoCutscene* GetInstance();
 };
 
-// The local player: the world service hands out the actor; a few members used here.
-class Unk_CjQuestMgr : public CQuestManager { };
-Unk_CjQuestMgr* FUN_141523ba0(PCBase* pPC);
 
 // ASObj / ASArray members used here only.
 void FUN_1422bbb50(void* p, int nType);
@@ -165,7 +164,7 @@ int UIChangeJobDialog::FUN_140bd88e0()
     if (CChangeJobTable::GetInstance()->CanChange(reinterpret_cast<PC*>(pPC)->FUN_141654700(), (Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->FUN_141654730(), (unsigned short)pPC->vfunc_78()) == 0)
         return 0;
     int nNext = CChangeJobTable::GetInstance()->GetStartQuestId((Unk_SubJobCode)reinterpret_cast<PC*>(pPC)->FUN_141654730());
-    int nState = FUN_141523ba0(pPC)->GetQuestState(nNext);
+    int nState = reinterpret_cast<MyPC*>(pPC)->FUN_141523ba0()->GetQuestState(nNext);
     if (nState == 1 || nState == 2)
         return 0;
     return 1;

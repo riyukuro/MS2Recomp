@@ -66,8 +66,7 @@ void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
 void FUN_140d73bc0(int nId, int nA, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strExtra);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CStringW FUN_140763e10(int nValue);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010

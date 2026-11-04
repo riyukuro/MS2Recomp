@@ -73,7 +73,6 @@ extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
-int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
@@ -246,7 +245,7 @@ bool UIWeddingPageSkill::vfunc_1()
 {
     if (!UIWeddingPage::vfunc_1())
         return false;
-    int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
+    int nGrade = TSingleton<WeddingManager>::GetInstance()->ApplyHallTicket();
     if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
@@ -336,7 +335,7 @@ void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     MS2Ptr<WeddingSkillData> spPerk = TSingleton<WeddingTable>::GetInstance()->FindSkill(nId);
     if (spPerk == 0)
         return;
-    int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
+    int nGrade = TSingleton<WeddingManager>::GetInstance()->ApplyHallTicket();
     if (spPerk->m_nType == 0)
     {
         unsigned short nSkillLevel = std::max<unsigned short>(spPerk->GetLevel(nGrade), 1);

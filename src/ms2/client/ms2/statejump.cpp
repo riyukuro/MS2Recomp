@@ -41,7 +41,7 @@ int FUN_14028d260(float f);                                // 0x14028d260 round 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);       // 0x1408a9bd0 the flat model of the entity
 efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
-extern efd::Point3 DAT_143a08cf8;                          // the up axis
+#define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                          // the up axis
 
 // The animation service: the sequence id of the model.
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)

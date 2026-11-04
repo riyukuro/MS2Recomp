@@ -4120,11 +4120,11 @@ void ASTooltip::FUN_1409dcf10(int nSkillId, unsigned short nLevel, int bFromDial
             rows.PushValue(row.FUN_1422bb870());
         }
     }
-    Unk_TooltipQuestOwner* pPC = reinterpret_cast<Unk_TooltipQuestOwner*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    MyPC* pPC = reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC != 0 && spRequire->m_requireQuestID != 0)
     {
         CStringW str = FUN_14028dfa0(CStringW(L"s_word_require_quest_completed"), FUN_1416e4df0(spRequire->m_requireQuestID));
-        int bCompleted = reinterpret_cast<CQuestManagerCommon*>(&pPC->FUN_141523ba0()->m_quests)->FUN_140745590(spRequire->m_requireQuestID);
+        int bCompleted = reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_TooltipQuestHolder*>(pPC->FUN_141523ba0())->m_quests)->FUN_140745590(spRequire->m_requireQuestID);
         ASObj row(2);
         row.FUN_1407cbb20("text", str);
         row.FUN_1409c0dc0("color", bCompleted != 0 ? "ffd400" : "ff4040");

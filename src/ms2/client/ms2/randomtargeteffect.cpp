@@ -41,8 +41,8 @@
 unsigned long GetTickCountMs2(void);
 bool FUN_14028d470(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
-void* FUN_141b6ef70(egf::EntityID kId);
-void FUN_140a0b2a0(void* pNode);                            // detach the node from its parent
+NiAVObject* FUN_141b6ef70(egf::EntityID kId);
+void FUN_140a0b2a0(NiAVObject* pNode);                            // detach the node from its parent
 void FUN_14098b3e0(void* pNode, float fScale, int nFlags);  // apply a uniform scale to the node
 void* FUN_140a0b000(void* pNode);                           // parent
 
@@ -182,7 +182,7 @@ void CRandomTargetEffect::Destroy()
 {
     Hide();
     ((CEffectService*)(Unk_1403ed280*)(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a6060(m_nEffectId);
-    FUN_140a0b2a0(FUN_1409475d0(&m_spNode));
+    FUN_140a0b2a0(static_cast<NiAVObject*>(FUN_1409475d0(&m_spNode)));
     m_nEffectId = 0;
     FUN_1409f76f0(&m_spNode, 0);
 }

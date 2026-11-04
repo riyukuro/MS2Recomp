@@ -89,7 +89,7 @@ void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401f
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
 void FUN_140b86230(efd::Point3 const&, NiMatrix3&);   // matrix of euler angles (degrees)
-void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pOut);
+void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kOut);   // C3: was (const Unk_NiMatrix3&, Vector3*)
 
 // Explicit views of the MS2Ptr members instantiated by earlier objs (FunctionCubeData / CFunctionCubeObject).
 template <> MS2Ptr<CFunctionCubeObject>::MS2Ptr();                              // 0x14111e8c0
@@ -230,8 +230,8 @@ void StateUseFurniture::vfunc_3(double fTime)
     int nType = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_n90;
     if (nType != 0)
     {
-        Unk_EntRef kEnt = m_spCube->GetEnt();
-        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.FUN_1408a9090()))));
+        egf::EntityPtr kEnt = m_spCube->GetEnt();
+        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.data()))));
         if (pNode)
         {
             NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
@@ -254,7 +254,7 @@ void StateUseFurniture::vfunc_3(double fTime)
                 FUN_140b86230(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
                 Unk_NiMatrix3 kProd(kRot.FUN_140a33480(kAdd));
                 kRot = kProd;
-                FUN_140a0b1f0(kRot, &kDir);
+                FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kDir));
                 Vector3 kCol0;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(0, reinterpret_cast<efd::Point3&>(kCol0));
                 kCol0.FUN_140968990();

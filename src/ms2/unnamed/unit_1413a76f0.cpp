@@ -94,7 +94,7 @@ int CGuideConditionMovement::vfunc_3()
     Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (m_vLastPos.FUN_140552690(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_vLastPos) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         m_vLastPos = pPC->vfunc_18();
     m_fMoved += m_vLastPos.FUN_140965c40(pPC->vfunc_18()).FUN_140967ac0();
     m_vLastPos = pPC->vfunc_18();

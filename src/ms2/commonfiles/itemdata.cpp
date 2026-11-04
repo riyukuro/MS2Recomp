@@ -73,7 +73,6 @@ private:
 struct Unk_TableHandle : CItemChangeBeautyTable::DataPtr { ~Unk_TableHandle(); };   // dtor 0x1403b87a0
 class Unk_PcBangTable { public: Unk_TableHandle FUN_1403b7c40(int nMode, int nId); };
 Unk_PcBangTable* FUN_140541580();
-extern Unk_PcBangTable* g_pPcBangTable;      // 0x143aaecf8
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned char FUN_1401d1320(CCacheData*);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -96,6 +95,7 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/gamedictionarymanager.h"   // C3: TSingleton<GameDictionaryManager>::s_instance (0x143aaecf8)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -2251,7 +2251,7 @@ ItemUccMesh::~ItemUccMesh()
 // @0x140541580
 Unk_PcBangTable* FUN_140541580()
 {
-    return g_pPcBangTable;
+    return reinterpret_cast<Unk_PcBangTable*>(TSingleton<GameDictionaryManager>::s_instance);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9acc0-0x142c9ad60 .text$yd

@@ -59,7 +59,7 @@ void Unk_SeparateNode::UpdateWorldData()
     if (m_pkParent != 0) {
         NiTransform kParent = m_pkParent->GetWorldTransform();
         if (m_kBits[0]) {
-            FUN_14097fad0(&m_kWorld.m_Translate.x, &kParent.m_Translate.x);
+            m_kWorld.m_Translate = kParent.m_Translate;
         }
         if (m_kBits[1]) {
             m_kWorld.m_Rotate = kParent.m_Rotate;

@@ -12,6 +12,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/questkinds.h"
+#include "ms2/commonfiles/fieldmissiontable.h"   // C3: CFieldMissionTable::GetReward (0x14037c3d0), MS2Ptr<CFieldMissionReward>::get (0x140d73770), GetInstance (0x140d738f0)
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -20,34 +21,12 @@
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
-// the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
-class CFieldMissionTable;
 
 // return types of the getters this unit calls
 class CMentoringManager;
 
 // ---- unit-local views of exe objects ----
 
-// A group reward row (only the fields the field mission reads).
-class Unk_QmGroupReward {
-public:
-    char m_pad_00[0x18];
-    int m_kind;                                 // +0x18 2 = stat point, 3 = skill point
-    int m_point;                                // +0x1c
-    char m_pad_20[0x50 - 0x20];
-    int m_skillKind;                            // +0x50
-};
-class Unk_QmGroupRewardPtr {
-public:
-    ~Unk_QmGroupRewardPtr();                    // 0x14037ea60
-    Unk_QmGroupReward* get() const;             // 0x140d73770
-    Unk_QmGroupReward* operator->() const;      // 0x14037ebf0
-private:
-    void* m_0;
-    Unk_QmGroupReward* m_p;
-};
-class Unk_QmGroupTable { public: Unk_QmGroupRewardPtr FUN_14037c3d0(int group); };
-Unk_QmGroupTable* FUN_140d738f0();
 class CQuestManager;
 void* FUN_140764020();   // C3: was FUN_140764020
 
@@ -174,20 +153,20 @@ void CFieldMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     int nGroup = ((class CQuestManager*)FUN_140764020())->CountCompletedQuests80();
-    Unk_QmGroupRewardPtr row = FUN_140d738f0()->FUN_14037c3d0(nGroup);
+    CFieldMissionTable::RewardPtr row = TSingleton<CFieldMissionTable>::GetInstance()->GetReward(nGroup);
     UIRewardNotify* notify;
     if (row.get() != 0 && (notify = FUN_140938cd0(0x4e5d)) != 0 && row.get() != 0) {
-        switch (row->m_kind) {
+        switch (row->m_nType) {
         case 3: {
-            notify->FUN_141ac1950(row->m_point, row->m_skillKind);
+            notify->FUN_141ac1950(row->m_nValue, row->m_nSubJob);
             CStringW key = L"s_reward_notify_skill_point";
-            if (row->m_skillKind == 2) key = L"s_reward_notify_skill_point_sub_1";
-            FUN_1412751b0(FUN_14028dfa0<int>(key, row->m_point), 0x14);
+            if (row->m_nSubJob == 2) key = L"s_reward_notify_skill_point_sub_1";
+            FUN_1412751b0(FUN_14028dfa0<int>(key, row->m_nValue), 0x14);
         }
             break;
         case 2:
-            notify->FUN_141ac1b50(row->m_point);
-            FUN_1412751b0(FUN_14028dfa0<int>(CStringW(L"s_reward_notify_stat_point"), row->m_point), 0x14);
+            notify->FUN_141ac1b50(row->m_nValue);
+            FUN_1412751b0(FUN_14028dfa0<int>(CStringW(L"s_reward_notify_stat_point"), row->m_nValue), 0x14);
             break;
         }
     }
@@ -284,12 +263,6 @@ void CWeddingMission::ShowRewards(int reward)
         notify->FUN_141ac1580(image, msg, 0);
     }
 }
-
-// @0x140d73770
-Unk_QmGroupReward* Unk_QmGroupRewardPtr::get() const { return m_p; }
-
-// @0x140d738f0
-Unk_QmGroupTable* FUN_140d738f0() { return reinterpret_cast<Unk_QmGroupTable*>(TSingleton<CFieldMissionTable>::s_instance); }
 
 // ---- quest types ----
 

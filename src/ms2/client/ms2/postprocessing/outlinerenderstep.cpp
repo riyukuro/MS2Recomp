@@ -8,6 +8,8 @@
 #include "hook/ms2hook.h"
 #include <string.h>
 #include <errno.h>
+#include <NiTPointerList.h>
+#include <NiRenderClick.h>
 #pragma function(memset, memcpy)
 
 // @0x1400fad00
@@ -30,14 +32,14 @@ bool OutlineRenderStep::vfunc_15(unsigned int a, void* b)
     NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
     unsigned int w = q->GetWidth(0);
     unsigned int h = q->GetHeight(0);
-    Unk_PPFmt fmt;
-    fmt.v = a;
-    m_b8 = (NiRenderedTexture*)FUN_141d61a80(w, h, p, &fmt, 0x100);
+    NiTexture::FormatPrefs fmt;   // 0x140984420
+    fmt.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)a;
+    m_b8 = NiRenderedTexture::Create(w, h, p, fmt, 0x100);
     if (FUN_140c8f680(&m_b8) == 0) {
         vfunc_16();
         return false;
     }
-    m_c0 = (NiRenderedTexture*)FUN_141d61a80(w, h, p, &fmt, 0x100);
+    m_c0 = NiRenderedTexture::Create(w, h, p, fmt, 0x100);
     if (FUN_140c8f680(&m_c0) == 0) {
         vfunc_16();
         return false;
@@ -88,7 +90,7 @@ bool ReloadablePostProcess::vfunc_13() { return false; }
 // @0x141626ac0
 void FUN_141626ac0(void* p)
 {
-    FUN_141475e60((char*)p + 0x50);
+    ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiRenderClick> >*)((char*)p + 0x50))->RemoveAll();
 }
 
 #define MS2_VALIDATE_RETURN_ERRCODE(expr, errorcode)                                                           \

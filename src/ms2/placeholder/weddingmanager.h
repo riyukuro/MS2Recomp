@@ -79,8 +79,8 @@ public:
     void RefreshTickets();                                  // 0x141b89070
     int CanInvite(unsigned __int64 first, unsigned __int64 second, int count);   // 0x141b89860
     int GetInvitedCount();                                  // 0x141b89920
-    void ApplyHallTicket();                                 // 0x141b89950
-    void ApplyPartner();                                    // 0x141b899d0
+    int ApplyHallTicket();                                  // 0x141b89950 the wedding grade
+    bool ApplyPartner();                                    // 0x141b899d0 the partner is online
     bool OnProposeAnswer(int result, const CMsgBoxData& box);           // 0x141b89bd0
     bool OnReservationAnswer(int result, const CMsgBoxData& box);       // 0x141b89d00
     bool OnReservationCancelAnswer(int result, const CMsgBoxData& box); // 0x141b89d90

@@ -13,12 +13,13 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <NiPoint3.h>
 
 extern "C" float (__cdecl* __imp_atan2f)(float, float);      // the exe calls atan2f through its import
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_24)
 
 // The game context (FUN_1403ed2d0).
@@ -147,7 +148,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         FUN_140a4d5f0(fTime);
 
         Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -291,8 +292,8 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        float fDist = ptDelta.Length();
         float fBlend = 0.0f;
         if (m_fc)
         {
@@ -344,7 +345,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
             else
             {
                 m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
-                if (m_c0.m_rot.FUN_140552700(m_d8.m_rot))
+                if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
         }
@@ -366,7 +367,7 @@ MS2_REPLACE_METHOD(0x140a4da10, CTargetLookCenterCameraMode, vfunc_39, 1451, 0x3
 // @0x140a4dfd0
 void CTargetLookCenterCameraMode::vfunc_3(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_c))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_c))
     {
         m_setting.m_c = pt;
         m_pOwner->FUN_140a38dc0(pt);
@@ -377,7 +378,7 @@ MS2_REPLACE_METHOD(0x140a4dfd0, CTargetLookCenterCameraMode, vfunc_3, 113, 0x344
 // @0x140a4e050
 void CTargetLookCenterCameraMode::vfunc_4(Vector3 pt)
 {
-    if (pt.FUN_140552700(m_setting.m_18))
+    if (reinterpret_cast<const efd::Point3&>(pt) != reinterpret_cast<const efd::Point3&>(m_setting.m_18))
     {
         m_setting.m_18 = pt;
         m_pOwner->FUN_140a38e00(pt);
@@ -441,11 +442,11 @@ MS2_REPLACE_METHOD(0x140a4e220, CTargetLookCenterCameraMode, FUN_140a4e220, 18, 
 // @0x140a4e240
 bool CTargetLookCenterCameraMode::FUN_140a4e240()
 {
-    Unk_Point2 ptEye(m_78.x, m_78.y);
-    Unk_Point2 ptCenter(m_114.x, m_114.y);
+    efd::Point2 ptEye(m_78.x, m_78.y);
+    efd::Point2 ptCenter(m_114.x, m_114.y);
     if (m_124 != 0.0f)
     {
-        float fDist = ptEye.FUN_140a4e500(ptCenter).FUN_140a4e630();
+        float fDist = reinterpret_cast<const Unk_Point2&>(ptEye).FUN_140a4e500(reinterpret_cast<const Unk_Point2&>(ptCenter)).FUN_140a4e630();
         if (fDist > m_124 * m_124)
             return false;
     }
@@ -453,7 +454,7 @@ bool CTargetLookCenterCameraMode::FUN_140a4e240()
         return true;
     if (m_120 != 0.0f)
     {
-        float fDist = ptEye.FUN_140a4e500(ptCenter).FUN_140a4e630();
+        float fDist = reinterpret_cast<const Unk_Point2&>(ptEye).FUN_140a4e500(reinterpret_cast<const Unk_Point2&>(ptCenter)).FUN_140a4e630();
         if (fDist < m_120 * m_120)
             return true;
     }

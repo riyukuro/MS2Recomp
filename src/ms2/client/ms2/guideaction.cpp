@@ -102,9 +102,6 @@ struct Unk_GaSidePopupView : public CPtred
 MS2_CHECK_OFFSET(Unk_GaSidePopupView, m_strSound, 0x60);
 #define GA_SIDEPOPUP(sp) reinterpret_cast<Unk_GaSidePopupView*>((sp).operator->())
 
-// NiPoint3's assignment (0x14097faa0) of a point built by Unk_NiPoint3 (nipoint3.h), as the effect spawns use them.
-void FUN_14097faa0(NiPoint3* pDst, const Unk_NiPoint3& kSrc);
-
 // C3: local CameraMgr view (camera.h turns the kENTITY_INVALID initializer 0x1400f2790 into a stub).
 class CameraMgr;
 template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };     // 0x1409478c0
@@ -419,7 +416,7 @@ void CGuideActionEffect::vfunc_3()
     {
         Cube& cube = m_cubes[i];
         NiTransform xf;
-        FUN_14097faa0(&xf.m_Translate, cube.m_pos);
+        xf.m_Translate = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(cube.m_pos))));
         xf.m_Rotate.FromEulerAnglesXYZ((cube.m_rotate.x * 3.1415927f) / 180.0f, (cube.m_rotate.y * 3.1415927f) / 180.0f, (cube.m_rotate.z * 3.1415927f) / 180.0f);
         xf.m_fScale = cube.m_scale;
         Unk_EffectTarget kTarget;

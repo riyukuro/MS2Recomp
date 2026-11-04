@@ -92,36 +92,11 @@ struct Unk_MMResultPacket1                                  // protocol 1 (0x140
     int value;
     Unk_MMResultPacket1() : protocol(1), result(0), value(0) {}
 };
-struct Unk_MMListPacket2                                    // protocol 2 (0x140b730b0)
-{
-    unsigned char protocol;
-    MentorArray entries;
-    Unk_MMListPacket2() : protocol(2) {}
-};
 struct Unk_MMListPacket3                                    // protocol 3 (0x140b73050)
 {
     unsigned char protocol;
     MentorArray entries;
     Unk_MMListPacket3() : protocol(3) {}
-};
-struct Unk_MMNamePacket5                                    // protocol 5 (0x140b73110)
-{
-    unsigned char protocol;
-    __int64 id;
-    CStringW name;
-    Unk_MMNamePacket5() : protocol(5), id(0) {}
-};
-struct Unk_MMIdPacket6                                      // protocol 6 (0x140b73010)
-{
-    unsigned char protocol;
-    __int64 id;
-    Unk_MMIdPacket6() : protocol(6), id(0) {}
-};
-struct Unk_MMIdPacket7                                      // protocol 7 (0x140b73030)
-{
-    unsigned char protocol;
-    __int64 id;
-    Unk_MMIdPacket7() : protocol(7), id(0) {}
 };
 struct Unk_MMValuePacket10                                  // protocol 10 (0x140b731a0)
 {

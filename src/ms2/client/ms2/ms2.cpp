@@ -115,6 +115,7 @@
 #include "ms2physxallocator.h"
 #include "ms2shadowclickgenerator.h"
 #include "networkservice.h"
+#include "rawstring.h"
 #include <efd/ConfigManager.h>
 #include <efd/AssetLocatorService.h>
 #include <efd/AssetFactoryManager.h>
@@ -1514,16 +1515,6 @@ public:
     static int Load();
 };
 
-// The platform error text table InitInstance keeps on its stack (0x48 bytes).
-struct Unk_PlatformErrorTable
-{
-    Unk_PlatformErrorTable();                                   // 0x140c79890
-    ~Unk_PlatformErrorTable();                                  // 0x140c79b50
-    void* m_pad[9];
-};
-MS2_CHECK_SIZE(Unk_PlatformErrorTable, 0x48);
-enum ERawString { };   // C3: enum view (rawstring.h)
-class RawString { public: CStringW Get(const ERawString& code); };   // C3: member view (rawstring.h), the error text of a code
 
 // A "{0}"-style wide text formatter (0x10 bytes).
 class Unk_TextFormat
@@ -1598,7 +1589,7 @@ static const unsigned kClientRevision = 106302;
 BOOL CGameApp::InitInstance()
 {
     FUN_14092f2c0(1);
-    Unk_PlatformErrorTable kErrors;
+    RawString kErrors;
     if (FUN_1414b1230() == 0)
         return FALSE;
     if (!FUN_140d86270())
@@ -1606,7 +1597,7 @@ BOOL CGameApp::InitInstance()
         if (FUN_1406c34c0() != 0)
             FUN_141b6fcf0(g_143ac2fe0, L"", 0);
         else
-            FUN_141b6fcf0(((RawString*)&kErrors)->Get((ERawString)1), L"", 0);
+            FUN_141b6fcf0(kErrors.Get((ERawString)1), L"", 0);
         return FALSE;
     }
     FUN_141b6de20();
@@ -1633,7 +1624,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(11), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(11), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CrashManagerCli>::CreateInstance();
@@ -1725,7 +1716,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFileSystem>::CreateInstance();
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(g_nIgnorePack > 0, g_nIgnorePack) == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x29), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x29), L"", 0);
         return FALSE;
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403981d0())
@@ -1897,7 +1888,7 @@ BOOL CGameApp::InitInstance()
     if (!TSingleton<CLuaClient>::GetInstance()->vfunc_1())
     {
         AfxMessageBox("error lua function");
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x33), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x33), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CContentShutdownManager>::CreateInstance();
@@ -1941,33 +1932,33 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
     if (!TSingleton<CDirWatcher>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x34), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x34), L"", 0);
         return FALSE;
     }
     if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
-            FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x35), L"", 0);
+            FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x35), L"", 0);
             return FALSE;
         }
     }
     Unk_SingletonCreator<CUgcDownloadDown>::CreateInstance();
     if (!TSingleton<CUgcDownloadDown>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x36), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CUgcDownloadLoad>::CreateInstance();
     if (!TSingleton<CUgcDownloadLoad>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x36), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CAsyncImageLoader>::CreateInstance();
     if (!TSingleton<CAsyncImageLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(((RawString*)&kErrors)->Get((ERawString)0)).Arg(0x37), L"", 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.Get((ERawString)0)).Arg(0x37), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CBigDataLogSystem>::CreateInstance();

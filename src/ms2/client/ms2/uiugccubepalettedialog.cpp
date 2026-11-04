@@ -317,17 +317,6 @@ class Unk_CubeHolder : public Unk_PCCubeCraft
 {
 };
 
-class Unk_CubeRenderer : public ASDisplayObject
-{
-public:
-    Unk_CubeRenderer(const Scaleform::GFx::Value& v, int n);   // 0x1422bf7c0 (the exe allocates 0x80 = sizeof(ASDisplayObject))
-};
-
-struct Unk_KmAdd   // efd::Point3::operator+ taking the NiPoint3 offset
-{
-    Vector3 FUN_14097fd50(const NiPoint3& v) const;
-};
-
 class Unk_KmPt   // private members: non-POD, so no /GS cookie
 {
     float x, y, z;
@@ -1377,7 +1366,7 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
             Scaleform::GFx::Value vRow = ((Unk_CubeCtl*)spList.operator->())->Invoke("getRendererAt", i);
             if (((Scaleform::GFx::Value*)(void*)(&vRow))->IsDisplayObject() == 0)
                 return 0;
-            MS2Ptr<ASDisplayObject> spRow(new Unk_CubeRenderer(vRow, m_28));
+            MS2Ptr<ASDisplayObject> spRow(new ASDisplayObject(vRow, m_28));
             pPos->FUN_140a4e560(Vector3(spRow->FUN_1422c10a0(), spRow->FUN_1422c1110(), spRow->GetZ()));
             return 1;
         }
@@ -2036,7 +2025,7 @@ void UGCKeyMode1::vfunc_1()
             }
             NiPoint3 vUp(0, 0, 250.0f);
             Vector3 vPos = *((Vector3*)&static_cast<NiAVObject*>(static_cast<NiMesh*>(pObj))->GetWorldTranslate());
-            Unk_NiPoint3 vEnd(reinterpret_cast<Unk_KmAdd*>(&vPos)->FUN_14097fd50(NiPoint3(0, 0, 75.0f)));
+            Unk_NiPoint3 vEnd(*reinterpret_cast<const Vector3*>(&static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + NiPoint3(0, 0, 75.0f))));
             Unk_Int3 vOff = DAT_143ab2398;
             Unk_KmPt vTo;
             vTo = pPlayer->vfunc_20();
@@ -2128,7 +2117,7 @@ void UGCKeyMode2::vfunc_1()
                 continue;
             NiPoint3 vUp(0, 0, 250.0f);
             Vector3 vPos = *((Vector3*)&static_cast<NiAVObject*>(static_cast<NiMesh*>(pObj))->GetWorldTranslate());
-            Unk_NiPoint3 vEnd(reinterpret_cast<Unk_KmAdd*>(&vPos)->FUN_14097fd50(NiPoint3(0, 0, 75.0f)));
+            Unk_NiPoint3 vEnd(*reinterpret_cast<const Vector3*>(&static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + NiPoint3(0, 0, 75.0f))));
             Unk_Int3 vOff = DAT_143ab2398;
             Unk_KmPt vTo;
             vTo = pPlayer->vfunc_20();

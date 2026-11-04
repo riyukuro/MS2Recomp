@@ -14,18 +14,9 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ccachedata.h"
 
-// The key/value map of the xml (ctor 0x1402bc570 with 10 buckets, dtor 0x1402bd1d0). Its layout is not recovered.
-class Unk_CrKeyMap
-{
-public:
-    Unk_CrKeyMap(int nBuckets);                                 // 0x1402bc570
-    ~Unk_CrKeyMap();                                            // 0x1402bd1d0
-    void RemoveAll();                                           // 0x1402c28d0
-    void SetAt(const CString& strKey, const CString& strValue); // 0x1402c2b10
-    bool Lookup(const CString& strKey, CString& strValue);      // 0x1402c1f40
-private:
-    char m_unk[0x30];
-};
+// The key/value map of the xml: ATL::CRBMap<CString, CString> (ctor 0x1402bc570 with block size 10, dtor 0x1402bd1d0,
+// RemoveAll 0x1402c28d0, SetAt 0x1402c2b10, Lookup 0x1402c1f40).
+typedef ATL::CRBMap<CString, CString> Unk_CrKeyMap;
 MS2_CHECK_SIZE(Unk_CrKeyMap, 0x30);
 
 class CommonResource : public TSingleton<CommonResource>, public CValidData<CommonResource>

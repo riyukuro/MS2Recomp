@@ -305,7 +305,7 @@ class CNpcShopProductCli   // C3: member view (npcshopproductbase.h clashes with
 public:
     __int64 FUN_140db8180();        // 0x140db8180 price (+0xa0)
 };
-int FUN_140718200(CStringW* text);
+int FUN_140718200(const CStringW& text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
@@ -472,8 +472,8 @@ GameEventCashAttend::GameEventCashAttend() : m_i0(0), m_i4(0)
 // @0x1403fbb00
 void GameEventCashAttend::vfunc_2()
 {
-    m_i0 = FUN_140718200(&m_68);
-    m_i4 = FUN_140718200(&m_70);
+    m_i0 = FUN_140718200(m_68);
+    m_i4 = FUN_140718200(m_70);
     m_strDesc = m_78;
     m_entry = FUN_1403fc330()->FUN_1401ae630(m_i0);
 }
@@ -935,7 +935,7 @@ QuestAdditionalRewardContext::QuestAdditionalRewardContext() : m_itemRates(17, 0
 // @0x1403fea10
 void QuestAdditionalRewardContext::Load(CStringW* pValue)
 {
-    unsigned rate = FUN_140718200(pValue);
+    unsigned rate = FUN_140718200(*pValue);
     if (rate != 0) {
         for (size_t i = 0; i < _countof(m_rates); i++)
             m_rates[i] = rate;

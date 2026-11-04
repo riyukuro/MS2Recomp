@@ -28,6 +28,7 @@
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cinstrumentdatatable.h"
 #include "ms2/placeholder/effectquery.h"
@@ -101,12 +102,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strFile);   // dir + "/" + file
 
-// The UI root of the client: whether the local player is hidden.
-class Unk_PiUiRoot
-{
-public:
-    int FUN_140ddcc90();
-};
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 // The tutorial / achievement counter of the played instrument.
@@ -119,7 +114,6 @@ int FUN_140768010(int nRange, int nBase);                    // random number in
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_140ae1240(egf::Entity* pEntity, unsigned nProp, const efd::utf8string* pValue);   // SetProperty(string)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);             // the scene root of an entity
 CString FUN_1409a2360(const char* psz, int n);               // text conversion
 CString FUN_141b6ed00(const CString& str);                   // normalised copy of a model name
@@ -265,7 +259,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
             if ((egf::Entity*)m_spEntity)
             {
                 efd::utf8string kAnim((const char*)FUN_1409a2360(m_spInstrument->m_strAnimationReady, 0));
-                FUN_140ae1240(m_spEntity.operator->(), 0x3ff293c8, &kAnim);
+                m_spEntity.operator->()->SetPropertyValue<efd::utf8string>(0x3ff293c8, kAnim);
                 AvatarPC* pAvatar = FUN_140de0900(m_pOwner);
                 if (pAvatar != 0)
                 {
@@ -277,7 +271,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                     m_bB4 = true;
                     bool bShow = true;
                     FUN_14098c6e0((class Unk_CachedEntity*)m_spEntity.operator->(), 0xa0b6b179, bShow);
-                    if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
+                    if (m_nB0 != 0 && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     {
                         bool bHide = false;
                         FUN_14098c6e0((class Unk_CachedEntity*)m_spEntity.operator->(), 0xa0b6b179, bHide);
@@ -299,7 +293,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                     m_spEffect->UpdateEffects();
                     m_spEffect->UpdateProperties();
                     m_spEffect->Update(0.0f, true);
-                    if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
+                    if (m_nB0 != 0 && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                         m_spEffect->SetAppCulled(1);
                 }
             }
@@ -397,9 +391,9 @@ void StatePlayInstrument::vfunc_3(double fTime)
         m_nB0 = m_pOwner->vfunc_25();
         if (!efd::ClassInfo::IsKindOf(m_pOwner ? m_pOwner->GetClassDesc() : 0, 0x6200044))
         {
-            if (((NiNode*)m_spEffect ? true : false) && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
+            if (((NiNode*)m_spEffect ? true : false) && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                 m_spEffect->SetAppCulled(m_nB0 != 0 ? true : false);
-            if (((egf::Entity*)m_spEntity ? true : false) && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
+            if (((egf::Entity*)m_spEntity ? true : false) && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
             {
                 bool bShow = m_nB0 != 0 ? false : true;
                 FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bShow);

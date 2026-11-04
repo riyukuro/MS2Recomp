@@ -77,9 +77,9 @@ void EditBrush::vfunc_7(float) {}
 // @0x1411987e0
 void EditBrush::vfunc_6(float) {}
 // @0x1411987f0
-void EditBrush::vfunc_9(Unk_BrushVec2) {}
+void EditBrush::vfunc_9(efd::Point2) {}
 // @0x141198800
-void EditBrush::vfunc_8(Unk_BrushVec2) {}
+void EditBrush::vfunc_8(efd::Point2) {}
 
 // @0x141197370
 void EditBrush::vfunc_2()
@@ -263,13 +263,13 @@ float FUN_141198570(float fMin, float fMax)
 // @0x141197f00
 static float NoiseScale(NoiseBrush* pBrush)
 {
-    return FUN_141198570(pBrush->m_vScale.m_x, pBrush->m_vScale.m_y);
+    return FUN_141198570(pBrush->m_vScale.x, pBrush->m_vScale.y);
 }
 
 // @0x141197f30
 static float NoiseAngle(NoiseBrush* pBrush)
 {
-    return FUN_141198570(pBrush->m_vRotation.m_x, pBrush->m_vRotation.m_y) * 3.1415927f / 180.0f;
+    return FUN_141198570(pBrush->m_vRotation.x, pBrush->m_vRotation.y) * 3.1415927f / 180.0f;
 }
 
 // @0x141197cd0
@@ -305,13 +305,13 @@ void NoiseBrush::vfunc_6(float fRadius)
 }
 
 // @0x141197eb0
-void NoiseBrush::vfunc_8(Unk_BrushVec2 v)
+void NoiseBrush::vfunc_8(efd::Point2 v)
 {
     m_vScale = v;
 }
 
 // @0x141197ed0
-void NoiseBrush::vfunc_9(Unk_BrushVec2 v)
+void NoiseBrush::vfunc_9(efd::Point2 v)
 {
     m_vRotation = v;
 }

@@ -39,6 +39,7 @@
 #include <ecr/RenderSurface.h>
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/bigdatalogsystem.h"  // C3: CBigDataLogSystem::SendLog
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 extern char DAT_143d6eb58;
@@ -68,8 +69,6 @@ void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
 void FUN_14151f200();                                       // close the current message box
 void FUN_140d73aa0(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
-class CBigDataLogSystem;
-void FUN_140a1f970(void* pkSink, const CStringA& kName, const CStringA& kArg);
 int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
 std::string FUN_14083fa60(const unsigned char* pcData, unsigned int uiLength);   // encode a byte string
 float FUN_141adbe70(void* pkSettings);                      // UI scale
@@ -1056,7 +1055,7 @@ CStringW TakeScreenshotJpg(int bNotify, int nTarget)
         {
             CStringA kArg("");
             CStringA kName("screenshot");
-            FUN_140a1f970((void*)TSingleton<CBigDataLogSystem>::GetInstance(), kName, kArg);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(kName, kArg);
         }
         return kPath;
     }
@@ -1129,7 +1128,7 @@ void TakeScreenshotPng(int bNotify)
         {
             CStringA kArg("");
             CStringA kName("screenshot");
-            FUN_140a1f970((void*)TSingleton<CBigDataLogSystem>::GetInstance(), kName, kArg);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(kName, kArg);
         }
     }
     else

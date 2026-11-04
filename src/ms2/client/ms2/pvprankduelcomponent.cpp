@@ -90,7 +90,7 @@ public:
 int FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
+void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);

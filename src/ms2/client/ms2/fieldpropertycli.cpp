@@ -71,7 +71,8 @@ public:
 };
 class CEffectService;
 class CUIService;
-void* FUN_1409478c0();
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
@@ -239,9 +240,9 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
 Unk_Vec3f* FUN_140b27c60(FieldPropertyDirectionalLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color1, out); return out; }
 
 // @0x140b27ca0
-void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)FUN_1409478c0())->FUN_140aeb900(m_b); }
+void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)TSingleton<CameraMgr>::GetInstance())->FUN_140aeb900(m_b); }
 // @0x140b27cd0
-void FieldPropertyEnableLocalCameraCli::vfunc_5() { ((CameraMgr*)FUN_1409478c0())->FUN_140aeb900(1); }
+void FieldPropertyEnableLocalCameraCli::vfunc_5() { ((CameraMgr*)TSingleton<CameraMgr>::GetInstance())->FUN_140aeb900(1); }
 
 // @0x140b27d00
 void FieldPropertyPhotoStudioCli::vfunc_4() { (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f8f))); }

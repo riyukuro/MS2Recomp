@@ -116,6 +116,8 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/client/ms2/uimessenger.h"        // C3: UIMessengerBrowser::FUN_141a252a0
+#include "ms2/client/ms2/uigroupmessenger.h"   // C3: UIGroupMessengerBrowser::FUN_141951f70
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"
@@ -257,7 +259,7 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
 CStringW GetStringCommon(int nStringId);                                  // the string of an id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);            // system message
-void FUN_140d73bc0(int nStringId, int nA, int nB, CStringW strText);    // notice by id
+void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strText);    // notice by id
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);   // yes / no box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show a box
@@ -278,10 +280,6 @@ extern const char DAT_142fd116c[];                                      // "y"
 struct Unk_PdScript : AScript
 {
     using AScript::m_value;
-};
-struct Unk_ChaosAS : AScript   // C3: member view (uichaosdpsdialog.cpp)
-{
-    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);   // Invoke(method, number)
 };
 
 // ASObj member setters through an ASData argument (one COMDAT per value type in this unit).
@@ -1275,7 +1273,7 @@ void UIPartyDPSDialog::FUN_141a7b540()
     if (spLast.get() != 0)
     {
         double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
-        static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
+        static_cast<ASArray*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
     {
@@ -1492,7 +1490,6 @@ static UICommon::CMyPCKeyInputController s_pePopupKeyInput;            // 0x1401
 struct Unk_PeOwner : Unk_PopupOwner
 {
 };
-class Unk_HudActor { public: float FUN_140f4a450(); };   // C3: member view (was Unk_PeOwner::FUN_140f4a450), the distance to the camera
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
 egmAnimation::AnimationService* FUN_141b6f910();
 const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);                     // world translate of a node
@@ -1678,7 +1675,7 @@ void UIPopupEntity::FUN_141a7d300()
 float UIPopupEntity::vfunc_61()
 {
     if (m_68 != 0)
-        return reinterpret_cast<Unk_HudActor*>(static_cast<Unk_PeOwner*>(m_68))->FUN_140f4a450();
+        return reinterpret_cast<GameObject*>(static_cast<Unk_PeOwner*>(m_68))->FUN_140f4a450();
     return 1e9f;
 }
 
@@ -1723,7 +1720,6 @@ class Unk_PmUgcEvents;
 MS2Ptr<ASScrollingList> FUN_140bc61d0(int nMovieId, const Scaleform::GFx::Value& v);  // new ASScrollingList
 class Unk_PmRoot { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& obj); };
 void FUN_14028cd00(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int n);   // split
-__int64 FUN_141a02ed0(const CMsgBoxData& data, int nIndex, int nDefault);
 int FUN_1418fd740(__int64 nAccount, __int64 nCharId, int nKind);       // report
 int FUN_1418fd330(__int64 nCharId);
 int FUN_1418fd530(__int64 nCharId);
@@ -1746,13 +1742,11 @@ extern __int64 DAT_143ab2820;                                           // the o
 extern int DAT_143af62d8;                                               // the screen height
 float FUN_140bf4fd0(float f);
 bool FUN_140900550();                                                   // wedding enabled
-void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
 void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show a box
 class Unk_PmMdState { public: char m_00[0x48]; void* m_48; void* m_50; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
-void FUN_141a252a0(void* pWhisper, const CStringW& strName);            // whisper to
-void FUN_141951f70(void* pMail, const CStringW& strName);               // mail to
 class Unk_PmCommunity { public: virtual void s0(); };                   // UICommunityDialog
 class UICommunityDialog* FUN_140ae5990(int);   // C3: was FUN_140ae5990
 class UICommunityQueryDialog* FUN_140ae5a30(int);   // C3: was FUN_140ae5a30
@@ -1946,8 +1940,8 @@ void UIPopUpMenu::vfunc_4(MS2Ptr<CProxyGameObject> spProxy)
 bool UIPopUpMenu::FUN_141a7e020(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0) {
-        auto p0 = FUN_141a02ed0(data, 0, 0);
-        auto p1 = FUN_141a02ed0(data, 1, 0);
+        auto p0 = data.FUN_141a02ed0(0, 0);
+        auto p1 = data.FUN_141a02ed0(1, 0);
         auto n2 = ((class CMsgBoxData*)(class CMsgBoxData const*)(&data))->FUN_141a02e50(2, 0);
         FUN_1418fd740(p0, p1, n2);
     }
@@ -2016,7 +2010,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     {
         MS2Ptr<CProxyGameObject> spProxy = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bc9be0(pTarget->FUN_14123c580());
         if (spProxy.get() != 0)
-            target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(spProxy->FUN_1416c2950())->FUN_140267c10();
+            target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(spProxy->FUN_1416c2950())->Sum();
     }
     m_a0 = ((class PC*)(class PCBase*)(pTarget))->FUN_141656ad0();
     m_a8 = pTarget->FUN_141656a80();
@@ -2092,7 +2086,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
     target.m_strName = strName;
     target.m_bOnline = 1;
     target.m_b38 = true;
-    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(spProxy->FUN_1416c2950())->FUN_140267c10();
+    target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(spProxy->FUN_1416c2950())->Sum();
     target.m_n20 = spProxy->FUN_1416c2370();
     target.m_nJobCode = spProxy->FUN_1416c2390();
     m_a0 = (__int64)spProxy->FUN_1416c2310();
@@ -2147,7 +2141,7 @@ void UIPopUpMenu::PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CParty
     target.m_strName = strName;
     target.m_b38 = 0 < pUser->m_48;
     target.m_bOnline = !pMember->FUN_141637c20();
-    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(&pUser->m_d4)->FUN_140267c10();
+    target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(&pUser->m_d4)->Sum();
     target.m_n20 = pUser->m_3c;
     target.m_nJobCode = pUser->m_40;
     m_a0 = pUser->m_0;
@@ -2179,7 +2173,7 @@ void UIPopUpMenu::PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuild
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = pMember->f158 == 0;
-    target.m_nTrophy = pData->f2c.FUN_140267c10();
+    target.m_nTrophy = pData->f2c.Sum();
     target.m_n20 = pData->f14;
     target.m_nJobCode = pData->f18;
     m_a0 = pData->f00;
@@ -2223,7 +2217,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = pBuddy->FUN_1401cc680();
-    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(pBuddy->FUN_1401cc330())->FUN_140267c10();
+    target.m_nTrophy = reinterpret_cast<Unk_IntTriple*>(pBuddy->FUN_1401cc330())->Sum();
     target.m_n20 = pBuddy->FUN_1401cc290();
     target.m_nJobCode = pBuddy->FUN_1401cc2b0();
     int nOpenType = 2;
@@ -2309,7 +2303,7 @@ void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMe
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = pMember->m_f0 == 0;
-    target.m_nTrophy = rInfo.m_trophy.FUN_140267c10();
+    target.m_nTrophy = rInfo.m_trophy.Sum();
     target.m_n20 = rInfo.m_jobCode;
     target.m_nJobCode = rInfo.m_job;
     int nKind = 2;
@@ -3139,7 +3133,7 @@ void UIPopUpMenu::FUN_141a84d40()
 void UIPopUpMenu::FUN_141a84da0()
 {
     if (((class Unk_PmMdState*)FUN_141482e80())->m_48 != 0)
-        FUN_141a252a0(((class Unk_PmMdState*)FUN_141482e80())->m_48, m_90);
+        reinterpret_cast<UIMessengerBrowser*>(((class Unk_PmMdState*)FUN_141482e80())->m_48)->FUN_141a252a0(m_90);
 }
 
 // @0x141a84df0
@@ -3186,7 +3180,7 @@ void UIPopUpMenu::ConfirmExpelPartyMember()
     if (!m_90.IsEmpty())
     {
         CStringW strTag = StringFormat<CStringW>(L"expelMember:{0}", m_90);
-        FUN_140d73aa0(FormatStringId<CStringW>(0x340, m_90), 1, this, CStringW(strTag));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x340, m_90), 1, static_cast<IMessageListener*>(this), CStringW(strTag));
     }
 }
 
@@ -3196,7 +3190,7 @@ void UIPopUpMenu::ConfirmChangePartyChief()
     if (!m_90.IsEmpty())
     {
         CStringW strTag = StringFormat<CStringW>(L"changeChief:{0}", m_90);
-        FUN_140d73aa0(FormatStringId<CStringW>(0x33f, m_90), 1, this, CStringW(strTag));
+        FUN_140d73aa0(FormatStringId<CStringW>(0x33f, m_90), 1, static_cast<IMessageListener*>(this), CStringW(strTag));
     }
 }
 
@@ -3383,7 +3377,7 @@ void UIPopUpMenu::FUN_141a85760()
 void UIPopUpMenu::FUN_141a86920()
 {
     if (((class Unk_PmMdState*)FUN_141482e80())->m_50 != 0)
-        FUN_141951f70(((class Unk_PmMdState*)FUN_141482e80())->m_50, m_90);
+        reinterpret_cast<UIGroupMessengerBrowser*>(((class Unk_PmMdState*)FUN_141482e80())->m_50)->FUN_141951f70(m_90);
 }
 
 // @0x141a86970
@@ -3567,7 +3561,6 @@ public:
     int GetSubSceneId();
 };
 ecr::SceneGraphService* GetSceneGraphService();
-int FUN_140ae11a0(egf::Entity* pEntity, unsigned int nPropId, int* pValue);   // an int property
 // The second exe copy of SmartPointer<egf::Entity>::operator Entity* (0x1408a9280, identical to 0x1408a9090).
 struct Unk_PpEntityRef { egf::Entity* FUN_1408a9280(); };
 void FUN_1413fb630(egf::Entity* pEntity, efd::vector<unsigned __int64>& meshes);   // the meshes of an entity (grown with the efd allocator)
@@ -3701,7 +3694,7 @@ void FUN_141a8a010(float x, float y)
             GameObject* pObject = 0;
             egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(static_cast<NiAVObject*>(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             int nId = 0;
-            if (FUN_140ae11a0(pEntity, 0x85b708e6, &nId) == 0)
+            if (pEntity->GetPropertyValue<unsigned>(0x85b708e6, reinterpret_cast<unsigned&>(nId)) == 0)
                 pObject = WorldService::GetInstance()->FindObjectById(nId);
             if (pObject != 0 && FUN_141a8ab90(pObject, x, y))
                 return;

@@ -1557,7 +1557,8 @@ void * FUN_14052d200(void);  // C3: the definition's signature
 // Unrecovered helpers of the option / stat text code.
 class Unk_SaInfo { };
 struct Unk_SaTable { };                                 // the special ability table (0x20 byte rows, DAT_143ab1a40)
-extern Unk_SaTable DAT_143ab1a40;
+struct SpecialAbilityInfo;
+extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;   // skilltieroptionmanager.cpp
 struct Unk_SaRow
 {
     void* m_00;
@@ -2135,7 +2136,7 @@ MS2_REPLACE_METHOD(0x140630DC0, CItemStatus, IsRatioStat, 59, 0x69FAA13A);
 CStringW FUN_140630e10(int nSaType)
 {
     CStringW str;
-    str = FUN_140184750(&DAT_143ab1a40, nSaType)->m_strName;
+    str = FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nSaType)->m_strName;
     return str;
 }
 MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
@@ -2233,13 +2234,13 @@ CStringW FUN_140631830(int nStat, int nValue, CItemData* pData)
     if (FUN_14081dcd0(nStat))
     {
         float fValue = (float)nValue / 10.0f;
-        str = StringFormat(FUN_140184750(&DAT_143ab1a40, nStat)->m_strFormat, fValue);
+        str = StringFormat(FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nStat)->m_strFormat, fValue);
     }
     else
     {
         if (FUN_14081d9e0(nStat) != 0)
             return FUN_140630ea0(nStat, nValue, pData);
-        str = StringFormat(FUN_140184750(&DAT_143ab1a40, nStat)->m_strFormat, nValue);
+        str = StringFormat(FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nStat)->m_strFormat, nValue);
     }
     return str;
 }

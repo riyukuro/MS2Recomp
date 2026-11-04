@@ -164,7 +164,7 @@ public:
     virtual ~CGameRankingCli();
     static CGameRankingCli* FUN_140b2e980();                // the singleton
     int FUN_140b2b440(const Unk_RankKey& key, int nPage, ATL::CAtlArray<Unk_RankDataPtr>& rows, CStringW strSearch, int bForce);
-    void FUN_140b2bf30(CGameRankingParam* pParam);          // send the request
+    void Request(const CGameRankingParam* pParam);          // 0x140b2bf30: send the request
     Unk_RankInfoPtr FUN_140b2ac30(const Unk_RankKey& key, int bFlag);
     Unk_RankPageReq FUN_140b2add0(const Unk_RankKey& key, int a1, int a2);
     Unk_RankPageReq FUN_140b2af90(const Unk_RankKey& key, CStringW strSearch, int a1);

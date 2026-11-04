@@ -48,6 +48,7 @@
 #include "ms2/client/ms2/alphacomponent.h"
 #include "ms2/client/ms2/bgtransparencymgr.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/propertycache.h"
 #include "ms2/placeholder/clientconstants.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
@@ -106,13 +107,7 @@ public:
 
 class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_FsOptimizer   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140ddcc90();
-};
 
-class Unk_HudActor { public: float FUN_140f4a450(); };   // C3: member view (0x140f4a450)
 class Unk_GoAnimSvc
 {
 public:
@@ -554,7 +549,7 @@ void GameObject::vfunc_23(int n)
     {
         if (m_unk_40 != 0 && n == 0)
         {
-            if (((class Unk_FsOptimizer*)(Unk_AvModeSvc*)(((Unk_AvModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+            if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                 return;
         }
         bool bHide = n == 0 ? true : false;
@@ -1128,7 +1123,7 @@ MS2_REPLACE_METHOD(0x14123e1a0, GameObject, vfunc_53, 113, 0x1AAE6014);
 // @0x14123e220
 void GameObject::vfunc_54(float f)
 {
-    if (m_unk_40 != 0 && ((class Unk_FsOptimizer*)(Unk_AvModeSvc*)(((Unk_AvModeSvc*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+    if (m_unk_40 != 0 && reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
     {
         vfunc_56(f);
         return;
@@ -1138,7 +1133,7 @@ void GameObject::vfunc_54(float f)
     switch (nMode)
     {
     case 0:
-        fDuration = reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450();
+        fDuration = reinterpret_cast<GameObject*>(this)->FUN_140f4a450();
         break;
     case 1:
         fDuration = FUN_14123ee40();

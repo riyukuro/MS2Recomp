@@ -45,7 +45,7 @@ void XmlSetAttr(class TiXmlElement*, char const*, CString const&);   // C3: was 
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
-void FUN_140874ad0(void* pElem, const char* pszName, const Unk_DummyVec3& kValue);
+void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0
 
 // @0x1416841a0
 CPCEffectDummy::CPCEffectDummy()
@@ -156,8 +156,8 @@ int CPCEffectDummy::Save(const char* pszPath)
             XmlSetAttr((class TiXmlElement*)(pAttach), "parentNode", itRow->GetParentNode());
             XmlSetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", itRow->m_bApplyWorldTransform);
             XmlSetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", itRow->m_bApplyLocalScale);
-            FUN_140874ad0(pTransform, "translate", itRow->GetTranslate());
-            FUN_140874ad0(pTransform, "rotation", itRow->m_vRotation);
+            XmlSetAttr((class TiXmlElement*)(pTransform), "translate", itRow->GetTranslate());
+            XmlSetAttr((class TiXmlElement*)(pTransform), "rotation", itRow->m_vRotation);
             XmlSetAttr((class TiXmlElement*)(pTransform), "scale", itRow->m_fScale);
         }
     }

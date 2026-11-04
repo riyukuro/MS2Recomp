@@ -64,7 +64,8 @@ class Unk_EobSlot : public ASUIComponent { public:
 class Unk_AttendTable { public:                                             // the per-user event value table (global 0x143ab2fc0)
     int FUN_1409617d0(int, unsigned, const int&);
 };
-extern Unk_AttendTable g_attendTable;
+class GameEventUserValue; extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
+#define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
 class Unk_TextFilter : public CServerStringGroup { };   // string-table translation
          // the name / profanity filter
 class Unk_EobPackets { public:                                              // the packet handler table (TSingleton)

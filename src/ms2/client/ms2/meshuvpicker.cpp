@@ -41,8 +41,6 @@
 // ---- out-of-unit callees and globals (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
 NiRenderer* GetNiRenderer();                                    // NiRenderer::GetRenderer
-void* FUN_141d61a80(unsigned uiWidth, unsigned uiHeight, NiRenderer* pRenderer, NiTexture::FormatPrefs* pPrefs,
-                    unsigned short usFlags);                    // NiRenderedTexture::Create
 // efd::SmartPointer<NiRenderedTexture>::operator-> 0x14127c9b0: the pointer held by the smart pointer
 // efd::SmartPointer<NiRenderedTexture>::operator NiRenderedTexture* 0x140c8f680: the same pointer as a truth value
 
@@ -52,12 +50,6 @@ extern NiFixedString DAT_143ae5280;                             // material name
 extern NiFixedString DAT_143ae5288;                             // material name (first pass)
 extern NiFixedString DAT_143ae50f0;                             // extra data key of the clear colour
 extern NiFixedString DAT_143ae5210;                             // material name of the extra meshes
-
-// efd::Point3(x, y, z) shared constructor (0x14097f250); the result binds straight to the assign's Unk_NiPoint3.
-struct Unk_DummyVec3 : public Unk_NiPoint3
-{
-    Unk_DummyVec3(float x, float y, float z);                   // 0x14097f250
-};
 
 // Two helpers that sit between the picker functions (their owners are not recovered).
 struct Unk_UVPair
@@ -127,9 +119,9 @@ bool CMeshUVPicker::PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, 
     RenderPickPass(pMesh, pExtras, pCamera, fX, fY, false);
     Unk_UVTexel kTexel;
     FUN_14147fde0(0, &kTexel);
-    *pPos0 = Unk_DummyVec3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
+    *reinterpret_cast<NiPoint3*>(pPos0) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
     FUN_14147fde0(1, &kTexel);
-    *pPos1 = Unk_DummyVec3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
+    *reinterpret_cast<NiPoint3*>(pPos1) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
     FUN_14147fde0(2, &kTexel);
     *pUV = NiPoint2(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1));
     *pIndex = kTexel.FUN_14135dd50(2);
@@ -260,7 +252,7 @@ bool CMeshUVPicker::CreateResources()
     kPrefs.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)12;
     for (int i = 0; i < 3; i++)
     {
-        m_50[i] = (NiRenderedTexture*)FUN_141d61a80(DAT_1439f7cb4, DAT_1439f7cb8, pRenderer, &kPrefs, 0x100);
+        m_50[i] = NiRenderedTexture::Create(DAT_1439f7cb4, DAT_1439f7cb8, pRenderer, kPrefs, 0x100);
         if ((NiRenderedTexture*)m_50[i] == 0)
         {
             ReleaseResources();

@@ -2759,15 +2759,8 @@ MS2_REPLACE(0x141ade400, CUIService::FUN_141ade400, 32, 0x600272B3);
 class Unk_UisHousingSvc;
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 // The efd::SmartPointer the exe wraps the housing service in (its glue COMDATs live in another unit).
-class Unk_UisHousingSvcPtr
-{
-public:
-    Unk_UisHousingSvcPtr(Unk_UisHousingSvc* p);                 // 0x1401cd0b0
-    ~Unk_UisHousingSvcPtr();                                    // 0x1401cd150
-    operator Unk_UisHousingSvc*() const;                        // 0x140885310
-private:
-    Unk_UisHousingSvc* m_p;
-};
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
@@ -2826,8 +2819,8 @@ void CUIService::FUN_141aecc30()
         pService->FUN_141adb2a0(nScene);
         pService->FUN_141ad9b30();
     }
-    if (Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))))
-        ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())))->FUN_1410bc320();
+    if (efd::SmartPointer<Unk_Service6100017> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)))
+        ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc320();
     ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4d10();
@@ -2960,9 +2953,9 @@ void CUIService::FUN_141aec9c0()
         pService->FUN_141ad9e50(nScene);
         pService->FUN_141adafd0(nScene);
         pService->FUN_141ad9650();
-        Unk_UisHousingSvcPtr spHousing = ((class Unk_UisHousingSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<Unk_Service6100017> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8));
         if (spHousing)
-            ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())))->FUN_1410bc1c0();
+            ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
         ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27e0(0);
     }
@@ -3255,7 +3248,6 @@ CStringW FUN_140719630(int n);
 CStringW FUN_1407196b0(long n);
 CStringW FUN_1407197a0(float f);
 CStringW FUN_141277dd0(class Unk_ConstString* pValue);   // C3: the definition's signature
-Scaleform::GFx::Value FUN_1412dd680(const wchar_t* sz);
 
 // The format arguments of a text (see stringtable.cpp): the type bits of the arguments and their values.
 struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
@@ -3326,7 +3318,7 @@ void FUN_141addb30(long long n)
         }
         else
             strResult = strFormat;
-        kRet.SetMember("text", FUN_1412dd680(strResult));
+        kRet.SetMember("text", Scaleform::GFx::Value((const wchar_t*)strResult));
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

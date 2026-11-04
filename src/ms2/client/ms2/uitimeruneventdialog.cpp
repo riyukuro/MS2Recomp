@@ -54,7 +54,6 @@ class Unk_TrScript
 {
 public:
     Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);  // array, unsigned
-    Scaleform::GFx::Value FUN_140ee5060(const char* szMethod, CString a1, bool a2);             // string, bool
 };
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -305,7 +304,7 @@ void UITimeRunEventDialog::FUN_140ee3580()
         rewards.PushObj(row);
     }
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
-    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>(&spContext->m_item)), nDistance >= (unsigned)spContext->m_1c && nReceived == 0 ? true : false);
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>(&spContext->m_item)), nDistance >= (unsigned)spContext->m_1c && nReceived == 0 ? true : false);
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_totalDistance"))
     {
         CStringW strDistance = FUN_14028dfa0(CStringW(L"s_timerun_total_distance"), nDistance);
@@ -491,13 +490,13 @@ void UITimeRunEventDialog::FUN_140ee4ca0()
 }
 
 // @0x140ee5060
-Scaleform::GFx::Value Unk_TrScript::FUN_140ee5060(const char* szMethod, CString a1, bool a2)
+Scaleform::GFx::Value AScript::FUN_140ee5060(const char* szMethod, CString a1, bool a2)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)a1);
     FUN_1422bcce0(args.FUN_1409b1f70(1), a2);
-    return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

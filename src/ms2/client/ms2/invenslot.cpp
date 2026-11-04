@@ -178,13 +178,8 @@ class Unk_IsKeys : public CInputKeyHandler
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // C3: member view (keytable.cpp)
 // The key bindings (FUN_1409331f0).
-class Unk_IsKeyMap
-{
-public:
-    int FUN_140a700b0();
-};
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); int FUN_140a700b0(); };   // C3: member view (keytable.cpp)
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 
@@ -985,7 +980,7 @@ int InvenSlot::vfunc_14()
                 nUid = 0;
             else
                 nUid = spItem->GetItemUid();
-            int nPage = ((class Unk_IsKeyMap*)FUN_1409331f0())->FUN_140a700b0();
+            int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
             FUN_14092fac0(nSkillId, spItem->FUN_1405276c0(), nUid, nPage);
         }
         break;

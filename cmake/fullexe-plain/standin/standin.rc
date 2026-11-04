@@ -1,0 +1,93 @@
+// MS2Recomp stand-in resources: what the client loads by ID, written for this project. Nothing here comes from the
+// original exe: no icon pixels (mkicon.py draws standin.ico), no dialog text or layout. cmake/fullexe-plain compiles it
+// to <build>/standin.res when MS2_RESOURCES_RES is empty; the exe's own .res (tools/extract_resources.py --compile)
+// gives the original look instead.
+//   icon 2000        CWindowService::RegisterClass (windowservice.cpp): the window's large and small icon
+//   manifest 1       Common Controls 6 (the SysLink in dialog 3000 needs it), asInvoker, DPI aware
+//   dialog 3000      CMemoryDepletionDlg: button 8 (close), SysLink 1034, text 1035 (DDX_Text), button 10 (help)
+//   dialog 3001      CErrorNotificationDlg: button 11 (OK), text 1036 (DDX_Text)
+//   dialogs 148, 150 CCashChargeDialog, CCashUnlockDialog: a WebBrowser control, 1236 and 1237 (DDX_Control)
+#include <windows.h>
+#include <commctrl.h>
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+2000 ICON "standin.ico"
+
+1 24
+BEGIN
+    "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>\r\n"
+    "<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">\r\n"
+    "  <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v3"">\r\n"
+    "    <security><requestedPrivileges><requestedExecutionLevel level=""asInvoker"" uiAccess=""false""/></requestedPrivileges></security>\r\n"
+    "  </trustInfo>\r\n"
+    "  <application xmlns=""urn:schemas-microsoft-com:asm.v3"">\r\n"
+    "    <windowsSettings><dpiAware xmlns=""http://schemas.microsoft.com/SMI/2005/WindowsSettings"">true</dpiAware></windowsSettings>\r\n"
+    "  </application>\r\n"
+    "  <dependency><dependentAssembly>\r\n"
+    "    <assemblyIdentity type=""win32"" name=""Microsoft.Windows.Common-Controls"" version=""6.0.0.0"" processorArchitecture=""amd64"" publicKeyToken=""6595b64144ccf1df"" language=""*""/>\r\n"
+    "  </dependentAssembly></dependency>\r\n"
+    "</assembly>\r\n"
+END
+
+3000 DIALOGEX 0, 0, 260, 96
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MS2Recomp: out of memory"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    LTEXT           "", 1035, 10, 10, 240, 40
+    CONTROL         "<a>Ways to free memory</a>", 1034, "SysLink", WS_TABSTOP, 10, 56, 160, 10
+    DEFPUSHBUTTON   "Close", 8, 146, 74, 50, 14
+    PUSHBUTTON      "Help", 10, 200, 74, 50, 14
+END
+
+3001 DIALOGEX 0, 0, 260, 80
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MS2Recomp: error"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    LTEXT           "", 1036, 10, 10, 240, 40
+    DEFPUSHBUTTON   "OK", 11, 200, 58, 50, 14
+END
+
+148 DIALOGEX 0, 0, 400, 300
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MS2Recomp: web page"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    CONTROL         "", 1236, "{8856F961-340A-11D0-A96B-00C04FD705A2}", WS_TABSTOP, 0, 0, 400, 300
+END
+
+150 DIALOGEX 0, 0, 400, 300
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MS2Recomp: web page"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    CONTROL         "", 1237, "{8856F961-340A-11D0-A96B-00C04FD705A2}", WS_TABSTOP, 0, 0, 400, 300
+END
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     1, 0, 0, 0
+PRODUCTVERSION  1, 0, 0, 0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "MS2Recomp stand-in"
+            VALUE "ProductName", "MS2Recomp stand-in"
+            VALUE "FileVersion", "1.0.0.0"
+            VALUE "ProductVersion", "1.0.0.0"
+            VALUE "Comments", "Built from the MS2Recomp sources without the original resources"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

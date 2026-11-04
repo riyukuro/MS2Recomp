@@ -89,8 +89,8 @@ void CEffectDummy::Parse(Unk_140165cf0* pNode)
     Unk_140165cf0* pXf = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pXf)
     {
-        XmlGetAttr((class TiXmlElement*)(pXf), "translate", *(class NiPoint3*)&static_cast<struct Unk_DummyVec3&>(m_vTranslate));
-        XmlGetAttr((class TiXmlElement*)(pXf), "rotation", *(class NiPoint3*)&static_cast<struct Unk_DummyVec3&>(m_vRotation));
+        XmlGetAttr((class TiXmlElement*)(pXf), "translate", m_vTranslate);
+        XmlGetAttr((class TiXmlElement*)(pXf), "rotation", m_vRotation);
         XmlGetAttr((class TiXmlElement*)(pXf), "scale", m_fScale);
     }
 }
@@ -111,7 +111,7 @@ void CEffectDummy::SetParentNode(const CString& s)
 MS2_REPLACE_METHOD(0x140A51310, CEffectDummy, SetParentNode, 42, 0x02F7F5E3);
 
 // @0x140a51340
-void CEffectDummy::SetTranslate(const Unk_DummyVec3& v)
+void CEffectDummy::SetTranslate(const NiPoint3& v)
 {
     m_vTranslate = v;
 }
@@ -132,7 +132,7 @@ const CString& CEffectDummy::GetParentNode() const
 MS2_REPLACE_METHOD(0x140A51390, CEffectDummy, GetParentNode, 15, 0x676E38F1);
 
 // @0x140a513b0
-const Unk_DummyVec3& CEffectDummy::GetTranslate() const
+const NiPoint3& CEffectDummy::GetTranslate() const
 {
     return m_vTranslate;
 }

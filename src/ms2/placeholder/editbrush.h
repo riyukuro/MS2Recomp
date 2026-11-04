@@ -9,6 +9,7 @@
 #pragma once
 
 #include <NiColor.h>
+#include <efd/Point2.h>
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/timer.h"
 #include "ms2/placeholder/cptred.h"
@@ -18,13 +19,6 @@
 class NiMesh;
 typedef efd::SmartPointer<NiMesh> NiMeshPtr;
 
-// A 2D range / vector (the noise brush keeps a scale range and a rotation range in degrees).
-struct Unk_BrushVec2
-{
-    Unk_BrushVec2(float x, float y);                                // 0x140a0a600 (same as the Point2 ctor of the dialog)
-    float m_x;
-    float m_y;
-};
 
 class EditBrush : public CPtred
 {
@@ -38,14 +32,14 @@ public:
     virtual void vfunc_5();                 // 5  right button: apply the opposite
     virtual void vfunc_6(float fRadius);    // 6  set the radius
     virtual void vfunc_7(float fDensity);   // 7  set the density
-    virtual void vfunc_8(Unk_BrushVec2 v);  // 8  set the scale range
-    virtual void vfunc_9(Unk_BrushVec2 v);  // 9  set the rotation range
+    virtual void vfunc_8(efd::Point2 v);    // 8  set the scale range
+    virtual void vfunc_9(efd::Point2 v);    // 9  set the rotation range
     void SetKColor(const NiColorA& kColor);     // 0x141197470 set the circle colour
     void SetPtPos(Vector3 pt);         // 0x1411974a0 sets the brush point (+0x28)
     Vector3 GetPtPos();                // 0x1411974d0 the brush point
     NiColorA m_kColor;                      // +0x18
     Vector3 m_ptPos;                // +0x28
-    Unk_BrushVec2 m_vUnused;                // +0x34
+    efd::Point2 m_vUnused;                  // +0x34
     Timer m_timer;                          // +0x40
 };
 MS2_CHECK_SIZE(EditBrush, 0x78);
@@ -79,11 +73,11 @@ public:
     virtual void vfunc_4();
     virtual void vfunc_5();
     virtual void vfunc_6(float fRadius);
-    virtual void vfunc_8(Unk_BrushVec2 v);
-    virtual void vfunc_9(Unk_BrushVec2 v);
+    virtual void vfunc_8(efd::Point2 v);
+    virtual void vfunc_9(efd::Point2 v);
     float m_fRadius;                        // +0x78
-    Unk_BrushVec2 m_vScale;                 // +0x7c
-    Unk_BrushVec2 m_vRotation;              // +0x84
+    efd::Point2 m_vScale;                   // +0x7c
+    efd::Point2 m_vRotation;                // +0x84
     NiMeshPtr m_spMesh;                     // +0x90
 };
 MS2_CHECK_SIZE(NoiseBrush, 0x98);

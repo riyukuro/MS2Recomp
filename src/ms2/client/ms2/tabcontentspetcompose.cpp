@@ -120,17 +120,16 @@ Unk_PetRowTable* FUN_14052d210();
 // CItem::FUN_140527840's record (as commonfiles\item.cpp): the item data, of which this unit reads the type and the
 // function arguments (+0x2b0, the arguments of the item's <function>).
 class Unk_ItemEquipData : public CItemData {};
-class Unk_ComposeArgs
+struct Unk_CommandArgs                                                  // C3: member view (usercommandcli.h)
 {
-public:
     unsigned FUN_1408d2380();                                           // the argument count
-    int FUN_1408d1fd0(int nIndex, int nDefault);                        // the nIndex-th argument as a number
+    int FUN_1408d1fd0(unsigned nIndex, int nDefault);                   // the nIndex-th argument as a number
 };
 class Unk_ComposeItemView : public CPtred
 {
 public:
     unsigned char m_pad_18[0x298];
-    Unk_ComposeArgs m_args;                                             // +0x2b0
+    Unk_CommandArgs m_args;                                             // +0x2b0
 };
 
 // The local player: slot 77 is the name; FUN_141663a20 is a counter the compose bonus is derived from.
@@ -153,7 +152,7 @@ class PC { public: int FUN_141663a20(); };   // C3: member view (fittingdollpc.h
 class Unk_PetPlayerMgr { public: Unk_PetPlayer* FUN_141bd0cc0(); };
 
 // Exp table of the pets (the exp a class needs for the next one).
-CExpTable* FUN_1404a1bb0();
+void* FUN_1404a1bb0();
 
 // Recipe table (the compose exp and cost of an ingredient).
 class Unk_PetRecipe : public CLua
@@ -206,9 +205,9 @@ public:
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 // Item bag registry (the section's bag ids).
-void FUN_140b77500(CString* pBag);                                      // release a card bag
+void FUN_140b77500(const CString& strBag);                                      // release a card bag
 void FUN_140b773a0(CString* pBag, ATL::CAtlArray<unsigned __int64>& ids);
-void FUN_140b77e50(CString* pBag);                                      // release an ingredient bag
+void FUN_140b77e50(const CString& strBag);                                      // release an ingredient bag
 void FUN_140b77cf0(CString* pBag, ATL::CAtlArray<TabContentsPetCompose::IdCount>& items);
 
 // UI helpers.
@@ -296,7 +295,7 @@ PetComposePetCard::PetComposePetCard(TabContentsPetCompose* pOwner)
 // @0x140cb1e30
 void PetComposePetCard::vfunc_2()
 {
-    FUN_140b77500(&m_strBag);
+    FUN_140b77500(m_strBag);
 }
 
 // @0x140cb1e60
@@ -311,7 +310,7 @@ void PetComposePetCard::vfunc_4()
     {
         ATL::CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140cb47d0(ids);
-        FUN_140b77500(&m_strBag);
+        FUN_140b77500(m_strBag);
         FUN_140b773a0(&m_strBag, ids);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
@@ -343,7 +342,7 @@ PetComposePetIngredient::PetComposePetIngredient(TabContentsPetCompose* pOwner)
 // @0x140cb2120
 void PetComposePetIngredient::vfunc_2()
 {
-    FUN_140b77e50(&m_strBag);
+    FUN_140b77e50(m_strBag);
 }
 
 // @0x140cb2150
@@ -358,7 +357,7 @@ void PetComposePetIngredient::vfunc_4()
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4830(items);
-        FUN_140b77e50(&m_strBag);
+        FUN_140b77e50(m_strBag);
         FUN_140b77cf0(&m_strBag, items);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
@@ -392,8 +391,8 @@ PetComposePetEnchant::PetComposePetEnchant(TabContentsPetCompose* pOwner)
 // @0x140cb2430
 void PetComposePetEnchant::vfunc_2()
 {
-    FUN_140b77e50(&m_strBag);
-    FUN_140b77500(&m_strTarget);
+    FUN_140b77e50(m_strBag);
+    FUN_140b77500(m_strTarget);
 }
 
 // @0x140cb2470
@@ -425,7 +424,7 @@ void PetComposePetEnchant::vfunc_3()
         m_pOwner->FUN_140cb5300(&nPetClass, &nExp);
         if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
         {
-            __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nPetClass, pet->GetRarity(), reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
+            __int64 nNeed = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nPetClass, pet->GetRarity(), reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
             CStringW strLevel;
             strLevel.Format(L"%s", (LPCWSTR)FUN_14028dfa0<unsigned short>(CStringW(L"s_word_petlevel"), nPetClass));
             CStringW strCount;
@@ -454,7 +453,7 @@ void PetComposePetEnchant::vfunc_4()
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4860(items);
-        FUN_140b77e50(&m_strBag);
+        FUN_140b77e50(m_strBag);
         FUN_140b77cf0(&m_strBag, items);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
@@ -509,7 +508,7 @@ void PetComposePetEnchant::FUN_140cb2fb0()
         return;
     ATL::CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
-    FUN_140b77500(&m_strBag);
+    FUN_140b77500(m_strBag);
     FUN_140b773a0(&m_strTarget, ids);
     int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
         ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
@@ -888,13 +887,13 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
         nExp = 0;
     else
         nExp = nExp + nGain;
-    __int64 nNeed = FUN_1404a1bb0()->GetPetExp(nClass, nRank, reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
+    __int64 nNeed = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nClass, nRank, reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
     unsigned short nUp = 0;
     while (nNeed <= nExp)
     {
         nExp = nExp - nNeed;
         nUp++;
-        nNeed = FUN_1404a1bb0()->GetPetExp(nClass + nUp, nRank, reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
+        nNeed = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nClass + nUp, nRank, reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
     }
     bLevelUp = nUp > 0;
     if (bLevelUp)

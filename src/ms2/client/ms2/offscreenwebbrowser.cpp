@@ -76,7 +76,7 @@ void* FUN_140aadf80();                          // the platform service
 void FUN_1418fe1c0(const CStringA& strUrl);     // open an url in the external browser
 CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
-int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
+unsigned int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
 int FUN_141349e30(const CStringA& strKind);     // banner link kind
 template <class T> T* FindDTDialog(int nId);                   // the dialog of a class id (<UIAttendGiftDialog> 0x140c053e0)
 UIMeratMarketDialog* FUN_140bfed50(int nUIClassID);            // the dialog of a class id

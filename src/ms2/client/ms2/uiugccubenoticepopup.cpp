@@ -38,7 +38,9 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 #define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
-class Unk_UnpCamera { public: bool FUN_140af0700(const Vector3* pWorld, Vector3* pScreen); };
+class Unk_UnpCamera;
+class NiPoint3;
+class CameraMgr { public: bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen); };   // C3: world to screen (was a Unk_UnpCamera view)
 Unk_UnpCamera* FUN_1409478c0();
 
 // The ui scale service: scale of a layer.
@@ -165,13 +167,13 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
     if (m_bVisible != 0)
     {
         Vector3 ptScreen;
-        if (FUN_1409478c0()->FUN_140af0700(&m_ptWorld, &ptScreen))
+        if (reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
         {
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (spEntity.get() != 0)
             {
                 vfunc_8(1);
-                ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 spEntity->SetPositionFloat(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
             }
         }

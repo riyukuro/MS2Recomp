@@ -139,7 +139,7 @@ float FUN_140966f00(Vector3 kA, efd::Point3 kB);    // the same, the second poin
 float FUN_140966f00(Vector3 kA, NiPoint3 kB);       // the same, the second point an NiPoint3 call result
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
-extern Vector3 DAT_143a08ce8;                               // NiPoint3::UNIT_Y
+#define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; NiPoint3::UNIT_Y
 extern Vector3 DAT_143a08cf8;                               // NiPoint3::UNIT_Z
 extern Vector3 DAT_143a08d08;                               // NiPoint3::ALL_ONES
 
@@ -521,7 +521,7 @@ void CDropItem::FUN_14118d9a0(int nState)
 #else
                 NiPoint3 kDir = reinterpret_cast<const efd::Point3&>(FUN_141192780(Vector3(reinterpret_cast<Vector3&>(kBase)), reinterpret_cast<Vector3&>(pOwnerPc->vfunc_18()), true));
 #endif
-                if (reinterpret_cast<Vector3&>(kDir).FUN_140552690(DAT_143b01a60))
+                if (reinterpret_cast<const efd::Point3&>(kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
                 {
                     kDir.y = ((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f + 1.0f;
                     reinterpret_cast<Vector3&>(kDir).FUN_140968990();
@@ -571,8 +571,8 @@ void CDropItem::FUN_14118d9a0(int nState)
                 m_arc.m_target = reinterpret_cast<Vector3&>(kHit);
                 m_arc.m_gravity = -9.8f;
                 m_arc.m_flightScale = 5.0f;
-                m_arc.m_angle.m_cos = 0.0f;
-                m_arc.m_angle.m_sin = 0.0f;
+                m_arc.m_angle.x = 0.0f;
+                m_arc.m_angle.y = 0.0f;
                 m_arc.m_speed = fDropSpeed;
             }
             else
@@ -615,8 +615,8 @@ void CDropItem::FUN_14118d9a0(int nState)
                     m_arc.m_target = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()));
                     m_arc.m_gravity = -9.8f;
                     m_arc.m_flightScale = 0.0f;
-                    m_arc.m_angle.m_cos = 0.0f;
-                    m_arc.m_angle.m_sin = 0.0f;
+                    m_arc.m_angle.x = 0.0f;
+                    m_arc.m_angle.y = 0.0f;
                     m_arc.m_speed = fDropSpeed;
                     m_pfnState = &CDropItem::FUN_141191a10;
                     m_nState = 0;
@@ -1177,8 +1177,8 @@ void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
     else
     {
         m_fElapsed += (float)fTime * 10.0f;
-        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
-        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
+        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_fElapsed, m_arc.m_direction);
+        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.y * m_fElapsed;
         Vector3 kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
         if (m_spItem.get())
@@ -1234,8 +1234,8 @@ void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
 #else
         Vector3 kDir(reinterpret_cast<const efd::Point3&>(FUN_141192780(m_arc.m_origin, reinterpret_cast<Vector3&>(pTarget->vfunc_18()), true)));
 #endif
-        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
-        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
+        Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.x * m_fElapsed, m_arc.m_direction);
+        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.y * m_fElapsed;
 #ifdef __clang__
         NiPoint3 kPull = pTarget->vfunc_18();
         kOffset.FUN_140a4e560(reinterpret_cast<Vector3&>(kPull).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround)));

@@ -15,6 +15,7 @@
 #include "uimessageboxdata.h"
 #include "buddymanager.h"
 #include "ms2/client/ms2/menteesearch.h"
+#include "ms2/client/ms2/mentoringmanager.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/gfxui/uimsg.h"
@@ -38,39 +39,6 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
-
-// The outgoing mentoring packets (0xa1; first byte = the protocol). Their layouts are the CMentoringManager ones.
-struct Unk_MMListPacket2
-{
-    unsigned char protocol;
-    ATL::CAtlArray<Unk_MentorPtr<CMentor> > entries;
-    Unk_MMListPacket2();                                            // 0x140b730b0
-    ~Unk_MMListPacket2();                                           // 0x140b73320
-    void FUN_14069a010(COutPacket& pkt);                            // protocol only
-};
-struct Unk_MMNamePacket5
-{
-    unsigned char protocol;
-    __int64 id;
-    CStringW name;
-    Unk_MMNamePacket5();                                            // 0x140b73110
-    ~Unk_MMNamePacket5();                                           // 0x140b73360
-    void FUN_14069a540(COutPacket& pkt);                            // protocol, id, name
-};
-struct Unk_MMIdPacket6
-{
-    unsigned char protocol;
-    __int64 id;
-    Unk_MMIdPacket6();                                              // 0x140b73010
-    void FUN_14069a630(COutPacket& pkt);
-};
-struct Unk_MMIdPacket7
-{
-    unsigned char protocol;
-    __int64 id;
-    Unk_MMIdPacket7();                                              // 0x140b73030
-    void FUN_14069a6c0(COutPacket& pkt);
-};
 
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160).
 class Unk_MentorSchedule : public CGameEventValueMentoring { };
@@ -100,9 +68,7 @@ CString FUN_140719530(unsigned __int64 n);                      // number to str
 class Unk_InvChat { public: unsigned char m_pad_0[0x48]; class UIMessengerBrowser* m_48; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
-struct Unk_PickXY { float x, y; };                              // dialog offset
-extern Unk_PickXY DAT_143b02320;                                // zero offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 
 class Unk_InvUiMgr { public: };
 
@@ -131,10 +97,10 @@ private:
     Unk_PmA m_infoA;
     Unk_PmB m_infoB;
 };
-class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
+class Unk_PopupMenu {};
 // The cast target only: the exe casts to .?AVUIPopUpMenu@@ (0x143a71720). Casting to Unk_PopupMenu emitted a type
 // descriptor no object carries, so the right click menu lookup always returned NULL.
-class UIPopUpMenu { public: virtual ~UIPopUpMenu(); };
+class UIPopUpMenu { public: virtual ~UIPopUpMenu(); void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
 
 template CStringW FUN_14028dfa0<int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const CStringW&);   // @0x140c2fcc0
 
@@ -184,7 +150,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
         FUN_141925fa0(CString("m_menteeDragBar"));
         COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
         Unk_MMListPacket2 req;
-        req.FUN_14069a010(pkt);
+        reinterpret_cast<Unk_MentorListPacket*>(&req)->FUN_14069a010(reinterpret_cast<Unk_MentorWriter&>(pkt));
         FUN_140710590(pkt);
     }
 }
@@ -223,7 +189,7 @@ void UIInviteMentoringDialog::vfunc_66()
         if (pMentor->vfunc_55() == 0)
         {
             if (pMentor->FUN_1422dc430() != 0)
-                FUN_141275c30(pMentor, this, DAT_143b02320, DAT_143b02320);
+                FUN_141275c30(pMentor, this, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }
@@ -301,7 +267,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
             Unk_MMIdPacket7 req;
             req.id = nSerial;
-            req.FUN_14069a6c0(pkt);
+            reinterpret_cast<Unk_MentorIdPacket*>(&req)->FUN_14069a6c0(reinterpret_cast<Unk_MentorWriter&>(pkt));
             FUN_140710590(pkt);
         }
         return 1;
@@ -359,7 +325,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 10, 0, "", NULL);
-                pMenu->FUN_141a7f090(info, strName, nSerial, NULL, 0, 1);
+                reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7f090(info, strName, nSerial, NULL, 0, 1);
             }
         }
         return 1;
@@ -460,7 +426,7 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
     Unk_MMNamePacket5 req;
     req.name = strName;
     req.id = nMentor;
-    req.FUN_14069a540(pkt);
+    reinterpret_cast<Unk_MentorNamePacket*>(&req)->FUN_14069a540(reinterpret_cast<Unk_MentorWriter&>(pkt));
     FUN_140710590(pkt);
     if (nMentor != 0)
     {
@@ -488,7 +454,7 @@ bool UIInviteMentoringDialog::FUN_140c2fae0(int nResult, const CMsgBoxData& data
     COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MMIdPacket6 req;
     req.id = nSerial;
-    req.FUN_14069a630(pkt);
+    reinterpret_cast<Unk_MentorIdPacket*>(&req)->FUN_14069a630(reinterpret_cast<Unk_MentorWriter&>(pkt));
     FUN_140710590(pkt);
     return true;
 }

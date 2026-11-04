@@ -40,7 +40,8 @@ public:
     static void Load();
 };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-class Unk_SingletonObj* FUN_1414a5720();   // C3: was FUN_1414a5720
+class CNiStreamLoadThread;
+template<> class TSingleton<CNiStreamLoadThread> { public: static CNiStreamLoadThread* GetInstance(); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -89,7 +90,7 @@ void UISceneLogo::OnLoadComplete()
     ((class StateEffectMgr*)(class Unk_SlA*)(reinterpret_cast<Unk_SlA*>(TSingleton<StateEffectMgr>::GetInstance())))->Load();
     ((class CItemOptionTable*)(class Unk_SlB*)(((class Unk_SlB*)FUN_140166430())))->Init();
     CItemDefaultData::Load();
-    ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)FUN_1414a5720())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
+    ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)TSingleton<CNiStreamLoadThread>::GetInstance())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
     if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)FUN_1406aeee0())))->IsPreloadNoThread())
         TSingleton<CFilePreload>::GetInstance()->FUN_141210cc0(false);
     ((class CFilePreload*)(class Unk_SlF*)(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance())))->FUN_14120fcc0();

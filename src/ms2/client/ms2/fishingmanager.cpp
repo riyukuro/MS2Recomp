@@ -189,10 +189,8 @@ void FUN_1412751f0(const CStringW& strText, int a, int b);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW BlockFormat(int nId, const fmt::ArgList& args);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FormatStringId(int nId, const fmt::ArgList& args);
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 CStringW FUN_14016a730(const char* sz, int nCodePage);      // CString -> CStringW
 CString FUN_140390ea0(const wchar_t* sz, int nCodePage);    // CStringW -> CString

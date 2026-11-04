@@ -100,7 +100,7 @@ void CEditCameraMode::vfunc_8(double fTime)
     }
     else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
-        if (ptMove.FUN_140552700(g_143b01a60))
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -124,7 +124,7 @@ void CEditCameraMode::vfunc_8(double fTime)
             }
         }
     }
-    if (m_78.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);

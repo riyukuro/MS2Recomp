@@ -64,6 +64,13 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\triggeractioncli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxVec3.h>       // C3: FUN_141b6e0e0 returns NxVec3
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 #include <atlcoll.h>
 #include <string>
 #include <efd/AssetID.h>
@@ -377,7 +384,7 @@ bool TriggerObject::HasModel(const unsigned& rModelId)
 }
 
 // @0x140de5ef0
-void TriggerObject::Init(int nId, Unk_EntRef ent)
+void TriggerObject::Init(int nId, egf::EntityPtr ent)
 {
     m_nId = nId;
     m_spEntity = ent;
@@ -398,7 +405,7 @@ public:
 };
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
-Unk_CtbVec3 FUN_141b6e0e0(const Vector3& pt);                         // efd::Point3 -> NxVec3
+NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3 (C3: was Unk_CtbVec3 (const Vector3&))
 
 // @0x140de5f60
 bool TriggerObject::Contains(const Vector3& pt)
@@ -425,7 +432,7 @@ bool TriggerObject::Contains(const Vector3& pt)
         ((class NxMat33*)(struct Unk_CtbMat33*)(&pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
         Unk_CtbObb obb;
         NxCreateBox(*(class NxBox*)(&obb), *(class NxBounds3 const*)(&bounds), *(class NxMat34 const*)(&pose));
-        return NxBoxContainsPoint(*(class NxBox const*)(&obb), *(class NxVec3 const*)&static_cast<struct Unk_CtbVec3 const&>(FUN_141b6e0e0(pt)));
+        return NxBoxContainsPoint(*(class NxBox const*)(&obb), static_cast<const NxVec3&>(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(pt))));
     }
     return false;
 }

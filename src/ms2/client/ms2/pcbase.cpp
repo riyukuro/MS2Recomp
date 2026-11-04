@@ -217,7 +217,7 @@ public:
     virtual CString vfunc_1();                                      // the source's name
     virtual MS2Ptr<Unk_PCBaseFxSet> vfunc_2(void* pKey);
 };
-class Unk_HudActor { public: float FUN_140f4a450(); }; class RideeData { public: class Passengers { public: size_t FUN_140784180(); }; };   // C3: real names
+class RideeData { public: class Passengers { public: size_t FUN_140784180(); }; };   // C3: real names
 class CTextureAnimation   // C3: member view (real class not in this TU)
 {
 public:
@@ -983,7 +983,7 @@ MS2_REPLACE_METHOD(0x14166bd70, PCBase, vfunc_26, 83, 0x28C24E0F);
 void PCBase::vfunc_32(bool b)
 {
     if (m_spShadow) {
-        bool bNear = reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450() < 200000.0f ? 1 : 0;
+        bool bNear = reinterpret_cast<GameObject*>(this)->FUN_140f4a450() < 200000.0f ? 1 : 0;
         FUN_14160fe50(m_spShadow.operator->(), bNear);
         FUN_14160feb0(m_spShadow.operator->(), m_unk_9a8, &m_pos9ac, &m_pos9b8, m_f9c8, b);
     }

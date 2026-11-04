@@ -275,6 +275,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/commonfiles/stream.h"
 #include "ms2/commonfiles/timeutil.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/ms2recover.h"
 #include <iterator>
 #include <functional>
@@ -318,25 +319,8 @@ bool FUN_1407183f0(const CStringW& str);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned>* out, const wchar_t* sep);
 
-// The global table of the attend gift values keyed by (kind, id) (0x143ab2fc0; uilongtermattendgiftdialog.cpp has
-// the same types as Unk_Lta*). Only the inline readers of this TU are defined here.
-struct Unk_LtaKey
-{
-    Unk_LtaKey(int n1, int n2);             // 0x14041eee0
-    int m_0; int m_4;
-};
-class Unk_LtaValue;
-class Unk_LtaIter
-{
-public:
-    Unk_LtaIter();
-    ~Unk_LtaIter();
-    Unk_LtaValue* FUN_140420460();          // the entry
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-};
-MS2_CHECK_SIZE(Unk_LtaIter, 0x18);
-class Unk_LtaMap { public: bool FUN_140420bb0(const Unk_LtaKey& key, Unk_LtaIter& it); };
+// The global table of the attend gift values keyed by (kind, id) (0x143ab2fc0, a GameEventUserValue: its map at +0x18
+// holds GameEventVariable entries). Only the inline readers of this TU are defined here.
 class Unk_LtaValue
 {
 public:
@@ -359,17 +343,17 @@ public:
     // @0x1404821d0
     bool FUN_1404821d0(int nKind, int nId, const bool& bDefault)
     {
-        Unk_LtaKey key(nKind, nId);
-        Unk_LtaIter it;
-        if (m_18.FUN_140420bb0(key, it))
-            return it.FUN_140420460()->FUN_1404822b0(bDefault);
+        GameEventVariable::Key key(nKind, nId);
+        GameEventUserValue::VariablePtr it;
+        if (m_18.Lookup(key, it))
+            return reinterpret_cast<Unk_LtaValue*>(it.operator->())->FUN_1404822b0(bDefault);
         return bDefault;
     }
     // @0x140482280
     bool FUN_140482280(int nKind, const bool& bDefault) { return FUN_1404821d0(nKind, 0, bDefault); }
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    Unk_LtaMap m_18;                        // +0x18
+    GameEventUserValue::VariableMap m_18;   // +0x18
 };
 
 // The sort names of a header this TU includes (every includer has its own copy).

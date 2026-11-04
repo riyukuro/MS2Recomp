@@ -13,6 +13,7 @@
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/commonfiles/os.h"   // C3: TSingleton
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/nipoint3.h"   // C3: Unk_NiPoint3 / Unk_NiMatrix3 (the basis temporaries)
 #include <efd/MemoryDefines.h>
 #include <NiNode.h>
@@ -55,12 +56,11 @@ class Unk_ShadowIter { public:                                      // elements 
     virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31();
     virtual void vfunc_32(char flag); };                            // +0x100 (0x141610573 call [rax+0x100])
 
-class CMesh {                                                       // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
+class CMesh : public efd::MemObject {                               // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
 public:
     CMesh(bool bNormals, bool bColors, unsigned int nUVSets, unsigned int nMaxVerts, unsigned int nMaxTris, unsigned char ucFlags);
     virtual ~CMesh();
     virtual void vfunc_1();                                         // 0x141d16bf0
-    static void operator delete(void*, size_t);                     // efd::MemObject::operator delete 0x14208a8f0
     void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 public:
     class NiMesh* GetMesh() const;   // C3: was free FUN_140a0afe0
@@ -151,11 +151,6 @@ public:
 };
 void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_FsOptimizer   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140ddcc90();
-};
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // @0x14160fb10
@@ -327,7 +322,7 @@ void FUN_1416105c0(CObjectShadow* self)
             if (self->m_bEnabled != 0 && self->m_bFlag32 == 0 && self->m_bFlag31 != 0)
                 visible = true;
             if (self->m_pOwner != 0 && self->m_pOwner->vfunc_25() != 0) {
-                if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0)
+                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     visible = false;
             }
         }

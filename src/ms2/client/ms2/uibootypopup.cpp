@@ -33,7 +33,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 CStringW GetStringCommon(int nId);                                    // string table entry
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
@@ -184,7 +183,7 @@ void UIBootyPopup::FUN_141031890()
             if (pEntity.get())
             {
                 vfunc_8(1);
-                FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+                reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 pEntity->SetPositionFloat(screen.x - (float)(pEntity->FUN_1422c1340() / 2),
                                        (screen.y - (float)pEntity->GetHeightCeil()) - 15.0f);
             }

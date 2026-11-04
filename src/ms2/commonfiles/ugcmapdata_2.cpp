@@ -177,15 +177,6 @@ public:
 };
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 
-class Unk_140163940 {
-public:
-    Unk_140163940(CLockCriticalSection&);
-    ~Unk_140163940();
-    operator int() const;
-private:
-    void* m_lock;
-};
-MS2_CHECK_SIZE(Unk_140163940,8);
 class Unk_140165cf0;
 class CLogString* GetLogString();
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -221,7 +212,7 @@ Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
     Unk_UGCMapPtr value(0);
     if(mapId==0) return Unk_UGCMapPtr(0);
     {
-        Unk_140163940 lock(s_lock);
+        Unk_LockGuard lock(s_lock);
         if(static_cast<int>(lock)) {} else if(s_cache.Lookup(mapId,value)) return value;
     }
     return LoadUGCMap(mapId);
@@ -303,7 +294,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         value->floors[id]=floor;
     }
     {
-        Unk_140163940 lock(s_lock);
+        Unk_LockGuard lock(s_lock);
         if(lock) {} else s_cache.SetAt(mapId,value);
     }
     return value;

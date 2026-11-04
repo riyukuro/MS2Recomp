@@ -29,10 +29,17 @@
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/os.h"
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxVec3.h>       // C3: NxVec3 locals (was Unk_CtbVec3)
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 
-extern Vector3 DAT_143b01a60;                               // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 class EntityWorldManager   // C3: member view for the former free stand-ins
 {
@@ -52,7 +59,6 @@ public:
 };
 void NxCreateBox(class NxBox&, class NxBounds3 const&, class NxMat34 const&);   // C3: was FUN_140adc690
 bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was FUN_140adc610
-void FUN_140adbf00(Unk_CtbObb* pObb, const Unk_CtbVec3& pt);        // set the box centre
 
 // The quest-npc table (singleton): lookups by portal.
 class Unk_PortalQuestTable;
@@ -133,15 +139,15 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
     ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
     NxCreateBox(*(class NxBox*)(&m_obb), *(class NxBounds3 const*)(&m_bounds), *(class NxMat34 const*)(&m_pose));
-    Unk_CtbVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
-    FUN_140adbf00(&m_obb, vCenter);
+    NxVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
+    reinterpret_cast<NxVec3&>(m_obb.m_center) += vCenter;   // move the box centre (0x140adbf00)
     return 1;
 }
 
 // @0x14169b2e0
 int Unk_PortalBox::FUN_14169b2e0(const Vector3* pPoint)
 {
-    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), *(class NxVec3 const*)&static_cast<struct Unk_CtbVec3 const&>(Unk_CtbVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
+    return NxBoxContainsPoint(*(class NxBox const*)(&m_obb), static_cast<const NxVec3&>(NxVec3(pPoint->x, pPoint->y, pPoint->z))) != 0;
 }
 
 // @0x14169b350

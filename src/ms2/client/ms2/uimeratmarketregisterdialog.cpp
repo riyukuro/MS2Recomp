@@ -183,7 +183,8 @@ class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 CStringW FUN_140ebd9d0(bool a, __int64 b);
 
 // The slot bag of the movie.
-DragSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
+class ItemSlotBag;
+ItemSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
 DragSlot* FUN_140cfe6c0(DragSlot* pSlot);
 
 // Items of the dialog as the base UI knows them.
@@ -288,7 +289,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         MS2Ptr<CItem> spItem = GetItemAt(nIndex);
         if (spItem == 0)
             return;
-        DragSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(m_strKey));
+        DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(m_strKey)));
         if (pBag != 0)
         {
             DragSlot* pSlot = FUN_140cfe6c0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex));

@@ -108,12 +108,10 @@ public:
 class Unk_GpAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 n);      // Invoke(method, id)
 };
 class Unk_BpAScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140c38f00(const char* szMethod, CString a1, CStringW a2);
 };
 
 // The key state (singleton 0x14025e7c0).
@@ -282,7 +280,6 @@ int FUN_1418d3050(const CStringW& strMemo, CStringW& strResult)
 // ---- UICommunityDialog ----
 
 // Unit-local free functions (the row builders and the manager wrappers).
-class Unk_IntTriple { public: int Sum(); unsigned __int64 Get(int n); };   // C3: member view
 void FUN_1418d7af0(ASObj* pObj, void* pTrophy);
 int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab);
 int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew);
@@ -374,7 +371,7 @@ int UICommunityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             unsigned __int64 nId = FUN_140718350(pMsg->FUN_1422b8d30());
             if (m_30.get() != 0)
-                static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("editMemo", nId);
+                static_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("editMemo", nId);
             return 1;
         }
     }
@@ -390,7 +387,7 @@ int UICommunityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 unsigned __int64 nId = FUN_140718370(parts.GetAt(1));
                 if (nId > 0)
-                    static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("editMemoFail", nId);
+                    static_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("editMemoFail", nId);
                 return 1;
             }
         }
@@ -856,7 +853,7 @@ void UICommunityDialog::vfunc_buddy_11(__int64 nId)
     if (bBanned == 0)
         return;
     CString strId = FUN_140719530(nId);
-    static_cast<Unk_BpAScript*>(m_30.operator->())->FUN_140c38f00("updateBanMemo", CString(strId), CStringW(spBuddy->memo));
+    static_cast<AScript*>(m_30.operator->())->FUN_140c38f00("updateBanMemo", CString(strId), CStringW(spBuddy->memo));
 }
 
 // @0x1418d5c60

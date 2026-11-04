@@ -21,7 +21,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
@@ -265,7 +265,7 @@ float CSkillRecord::FUN_141759ad0()
         return 0;
     if (m_fCooldown != 0)
         return 0;
-    if (m_ptDir.FUN_140552690(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_ptDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         return 0;
     else
         return pMotion->m_fAC;

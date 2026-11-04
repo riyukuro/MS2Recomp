@@ -106,14 +106,13 @@ class CBeautyShopDataCli
 {
 public:
     CBeautyShopDataCli();
-    ~CBeautyShopDataCli();
-    void FUN_1406e3d30();                       // reset
+    virtual ~CBeautyShopDataCli();
     Unk_BSFee* FUN_1406e3dc0();                 // the fee row
     Unk_BSFee* FUN_1406e3de0();                 // the second fee row
     void FUN_1406e5420(CInPacket& packet);      // read the shop
 
     MS2_LAYOUT_FRIEND;
-    char m_pad_00[0x18];
+    char m_pad_08[0x10];
     int m_18;                                   // +0x18 the sale event id
     int m_1c;                                   // +0x1c shop kind (1: hair)
     int m_20;                                   // +0x20 the beauty coupon item id (0: none)

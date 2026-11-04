@@ -42,7 +42,6 @@ public:
     GameObjectControllerHitReport* FUN_141240f20();
     void FUN_141241070();                                                // start falling
 };
-void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
 
 // ---- StateDataGrabTarget ----
 
@@ -135,7 +134,7 @@ void StateGrabTarget::vfunc_3(double fTime)
         efd::Point3 kAngles;
         if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
         {
-            FUN_140ad0c10(&kAngles, -57.2957764f);
+            kAngles *= -57.2957764f;
             m_pOwner->vfunc_21(kAngles);
         }
         efd::Point3 kPos = spNode->GetWorldTranslate();

@@ -108,8 +108,6 @@ void FUN_140cff740(const Scaleform::GFx::Value& obj, CString strMember, unsigned
 
 class ASDialog : public ASDisplayObjectContainer
 {
-public:
-    Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW a1, int a2);   // Invoke(method, string, int)
 };
 
 // MS2: slot 24 of the combo box wrapper (the slot list past ASMovieClip's is not proven): enable the selection list.
@@ -1290,7 +1288,7 @@ void UIPCInfoDialog::vfunc_99(const CStringW& strMemo)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
-        pDialog->FUN_140e0a8c0("setTodayMemo", strMemo, m_spInfo->FUN_140dba260());
+        pDialog->Invoke("setTodayMemo", strMemo, m_spInfo->FUN_140dba260());
 }
 MS2_REPLACE_METHOD(0x141333BB0, UIPCInfoDialog, vfunc_99, 239, 0x328C943C);
 

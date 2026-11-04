@@ -95,7 +95,7 @@ class ASDialog : public ASDisplayObject {
 // An AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).
 class ASFunction : public AScript {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser, int nMovieId);
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);
     ~ASFunction();
 private:
     void* m_40;

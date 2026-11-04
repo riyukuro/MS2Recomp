@@ -62,7 +62,7 @@ public:
     virtual int vfunc_63();
     virtual void vfunc_64();
 
-    void FUN_1422e7950();                                       // 0x1422e7950 the presentation ref has changed
+    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
     void FUN_1422e7a40(int nSceneId);                           // 0x1422e7a40
 
 public:

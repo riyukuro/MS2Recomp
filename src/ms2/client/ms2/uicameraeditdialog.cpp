@@ -1149,8 +1149,7 @@ extern int DAT_1439f4a84;
 
 // The string tables.
 CStringW GetStringCommon(int nStringId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 template <class A> CStringW FormatStringId(int nStringId, const A& a);
 int FUN_141276a30(const CStringW& strName, CStringW& strError);     // validate a character name
 int FUN_141b71a10(const char* sz);                                  // atoi
@@ -1196,6 +1195,8 @@ struct Unk_CcSPDE
     CStringW name;
 };
 
+void FUN_1401f9f20(unsigned char* payload, COutputStream& stream);   // serialise the create request (unit_1401f9eb0)
+
 // The packet of the create request (RTTI CCCharacterManagementPacket::Create, CPtred-derived, 0x78 bytes).
 class CCCharacterManagementPacket
 {
@@ -1205,7 +1206,6 @@ public:
     public:
         Create() : m_nGender(0), m_nJob(1), m_nElapsed(0) { memset(m_anColor, 0, sizeof(m_anColor)); }    // 0x1418e7d80
         // ~Create: implicit (0x1418e7f00 = the members and CPtred::~CPtred; ??_G 0x1418e8090)
-        void FUN_1401f9f20(COutPacket& packet);                     // serialise
         char m_nGender;                                             // +0x18
         int m_nJob;                                                 // +0x1c
         CStringW m_strName;                                         // +0x20
@@ -1711,7 +1711,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     kCreate.m_nElapsed = (int)m_dElapsed;
     COutPacket kPacket(static_cast<int>(SendOp::CharacterManagement), 0);
     kPacket.WriteUInt8(1);
-    kCreate.FUN_1401f9f20(kPacket);
+    FUN_1401f9f20(reinterpret_cast<unsigned char*>(&kCreate), kPacket);
     FUN_140710590(kPacket);
     IClientPlatform* pPlatform = (IClientPlatform*)FUN_140d86260();
     pPlatform->vfunc_22(0x387, "CreateCharacter");

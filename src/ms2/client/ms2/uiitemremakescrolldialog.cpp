@@ -78,17 +78,6 @@ typedef Delegate<bool(int, const CMsgBoxData&)> RmMsgBoxFn;
 void FUN_140d42bc0(ItemScrollSlot* pSlot, RmRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, RmDropFn fn);        // ItemScrollSlot::SetDropFn
 
-// A locked option of the remake request (itemremakeoption.h's record; that header's Unk_RemakeStat clashes with this
-// unit's view). The option list of the request is this vector (citemremakeoptionpacket.h: Unk_RemakeOptionList50).
-struct Unk_RemakeLockOpt
-{
-    Unk_RemakeLockOpt() : m_nIndex(0), m_nValue(0) {}   // 0x140b98d30
-    int m_nIndex;                                       // +0x0 the option index
-    int m_nValue;                                       // +0x4 its value
-};
-MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
-typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
-
 extern Unk_Inventory g_143ab2a90;
 
 class Unk_RmPackets
@@ -166,7 +155,6 @@ class Unk_RmScript : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140f5fe90(const char* szMethod, CStringW strText, int nCount, bool bLock);
-    Scaleform::GFx::Value FUN_140f5ff80(const char* szMethod, CStringW strText, bool bFinal);
 };
 CStringW FUN_140f5f3e0(int nValue);
 CStringW FUN_140f5f4e0(int nKind);
@@ -184,7 +172,7 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5fe90(const char* szMethod, C
 }
 
 // @0x140f5ff80
-inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5ff80(const char* szMethod, CStringW strText, bool bFinal)
+inline Scaleform::GFx::Value AScript::FUN_140f5ff80(const char* szMethod, CStringW strText, bool bFinal)
 {
     ASArgList args;
     args.FUN_1409b2800(2);

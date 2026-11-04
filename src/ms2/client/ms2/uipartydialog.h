@@ -163,7 +163,7 @@ MS2_CHECK_SIZE(UIPerformanceDialog, 0x188);
 #include "ms2/placeholder/uiugceventlistener.h"
 #include "ms2/client/ms2/alphaanimation.h"     // Delegate<void()>
 
-extern efd::Point3 DAT_143b01a60;                           // zero position
+#define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)       // C3: was extern efd::Point3 DAT_143b01a60
 
 class ASScrollingList;
 class PCBase;

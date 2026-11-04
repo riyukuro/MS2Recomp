@@ -311,7 +311,6 @@ public:
     struct Unk_ChaosOpt* FUN_140e09150();
 };
 bool FUN_14125bbe0(struct Unk_InterfaceState const*);   // C3: was FUN_14125bbe0
-class Unk_LockedIntMap { public: void Read(CInputStream*); };   // the counters read from the packet
 CInputStream& operator>>(CInputStream&, Unk_PartyBits&);
 void FUN_141631f30(const CMatchPartyRecruit&, const CMatchPartyRecruit&);
 class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
@@ -581,7 +580,7 @@ bool CPartyManager::CanEnterDungeonRoom(int key)
         return true;
     }
     for (unsigned i = 0; i < members.GetCount(); ++i)
-        if (members[i]->counters.FUN_140268570(key) >= 10) return false;
+        if (members[i]->counters.Get(key) >= 10) return false;
     return true;
 }
 MS2_REPLACE_METHOD(0x14162AC70, CPartyManager, CanEnterDungeonRoom, 177, 0xA0EAF4F7);
@@ -1016,7 +1015,7 @@ void CPartyManager::OnPartyMemberJoin(CInPacket& packet)
     int index = count;
     MS2Ptr<CPartyMember> member(new CPartyMember(index));
     member->user.FUN_1408eeb60(&packet);
-    reinterpret_cast<Unk_LockedIntMap*>(&member->counters)->Read(&static_cast<CInputStream&>(packet));
+    member->counters.Read(&static_cast<CInputStream&>(packet));
     members.Add(member);
     reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->FUN_141637bb0());
     UIDialog* ui = static_cast<UIDialog*>(FUN_140a8a680(0x4e45));
@@ -1134,7 +1133,7 @@ void CPartyManager::OnPartyInfo(CInPacket& packet)
         MS2Ptr<CPartyMember> p(new CPartyMember(i));
         p->offline = static_cast<CInputStream&>(packet).ReadBool();
         p->user.FUN_1408eeb60(&packet);
-        reinterpret_cast<Unk_LockedIntMap*>(&p->counters)->Read(&static_cast<CInputStream&>(packet));
+        p->counters.Read(&static_cast<CInputStream&>(packet));
         if (IsLeaderId(p->user.m_8)) p->SetLeader(1);
         members.Add(p);
         reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(p->FUN_141637bb0());
@@ -1250,8 +1249,8 @@ MS2_REPLACE_METHOD(0x14162E100, CPartyManager, FUN_14162e100, 312, 0x52858474);
 void CPartyManager::OnPartyMemberCounters(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
-    Unk_PartyCounters counters;
-    reinterpret_cast<Unk_LockedIntMap*>(&counters)->Read(&static_cast<CInputStream&>(packet));
+    Unk_LockedIntMap counters;
+    counters.Read(&static_cast<CInputStream&>(packet));
     MS2Ptr<CPartyMember> member = FindMemberByCharId(id);
     if (member.get() != NULL) member->SetCounters(&counters);
 }
@@ -1862,7 +1861,7 @@ Unk_PartyInviteName::~Unk_PartyInviteName() {}
 Unk_PartyJoinRequest::~Unk_PartyJoinRequest() {}
 
 // @0x141634280
-Unk_PartyCounters::~Unk_PartyCounters() {}
+Unk_LockedIntMap::~Unk_LockedIntMap() {}
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb3c10-0x142cb3d10 .text$yd
 // MS2-RANGE: 0x142cb3d30-0x142cb3d50 .text$yd

@@ -65,7 +65,7 @@ namespace egmAnimation { class AnimationService { public: NiActorManager* GetAct
 // ---- exe data ----
 extern unsigned char DAT_143afc898; // assertions throw when set
 extern char DAT_1439fc800;          // texture format preferences
-extern Vector3 DAT_143b01a60;   // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cf8;   // the up axis
 extern Vector3 DAT_143a08cd8;   // reference axis
 
@@ -203,7 +203,7 @@ public:
 
 static inline const NiPoint3& N3(const Vector3& p) { return reinterpret_cast<const NiPoint3&>(p); }
 static inline Vector3 SPV(const NiPoint3& p) { return Vector3(p.x, p.y, p.z); }
-static inline Vector3& SP(Unk_FcPoint3& p) { return reinterpret_cast<Vector3&>(p); }
+static inline Vector3& SP(NiPoint3& p) { return reinterpret_cast<Vector3&>(p); }
 
 void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
 class Unk_PonyPlayer;
@@ -235,7 +235,7 @@ void Unk_PonyPart::Reset()
 {
     m_fValue = 0;
     Unk_NiPoint3 kZero(DAT_143a08cf8);
-    m_kAnchor = kZero;
+    m_kAnchor = static_cast<NiPoint3&&>(reinterpret_cast<NiPoint3&>(kZero));
     m_kRest.MakeIdentity();
     m_kStart.MakeIdentity();
     m_kPose.MakeIdentity();
@@ -706,13 +706,13 @@ void CPonyTailController::FUN_141694650()
         reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_24(kPos);
         reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_26(kEuler);
         FUN_1412021a0((class CEquipModel*)(m_kFirst.m_spModel.operator->()), &m_kFirst.m_kRest);
-        m_kFirst.m_kAnchor = reinterpret_cast<Vector3&>(kAnchor);
+        m_kFirst.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<Vector3&>(kAnchor)))));
     }
     if ((m_kFirst.m_spModel.get() ? true : false) && (m_kSecond.m_spModel.get() ? true : false)
         && reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_9()
         && reinterpret_cast<CEquipModel*>(m_kSecond.m_spModel.operator->())->vfunc_9())
     {
-        m_kSecond.m_kAnchor = DAT_143b01a60;
+        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(DAT_143b01a60))));
         NiPoint3 kRight, kForward;
         FUN_140a01250(pPlayer->vfunc_20(), &kForward, &kRight);
         NiPoint3 kPlayerPos = pPlayer->vfunc_18();
@@ -722,9 +722,9 @@ void CPonyTailController::FUN_141694650()
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_24(reinterpret_cast<const NiPoint3&>(kMirror));
         Vector3 kTip = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))
                                    .FUN_14097fd50(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor).FUN_14097fc90(10.0f));
-        kPlayerPos = pPlayer->vfunc_18();
-        m_kSecond.m_kAnchor = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror);
-        m_kSecond.m_kAnchor.FUN_140968990();
+        static_cast<efd::Point3&>(kPlayerPos) = pPlayer->vfunc_18();   // efd::Point3::operator= (0x140194470)
+        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror)))));
+        reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_140968990();
         Vector3 kEuler = FUN_140a0b080(kMirror, kMirror.FUN_14097fd50(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f)), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_26(reinterpret_cast<const NiPoint3&>(kEuler));
@@ -903,7 +903,7 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
 NiTransform CPonyTailController::FUN_141695ca0(Unk_PickTarget* pModel)
 {
     NiTransform kXf;
-    reinterpret_cast<Unk_FcPoint3&>(kXf.m_Translate) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<CEquipModel*>(pModel)->vfunc_23()));
+    kXf.m_Translate = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<CEquipModel*>(pModel)->vfunc_23()))))));
     NiPoint3 kEuler = reinterpret_cast<CEquipModel*>(pModel)->vfunc_25();
     ((efd::Matrix3*)(Unk_EfdMatrix3*)&(reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate)))->FromEulerAnglesXYZ(kEuler.x * 3.1415927f / 180.0f, kEuler.y * 3.1415927f / 180.0f, kEuler.z * 3.1415927f / 180.0f);
     kXf.m_fScale = reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();

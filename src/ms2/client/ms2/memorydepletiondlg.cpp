@@ -21,7 +21,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);            // 0x14098a440 CDialogEx::DoDataExchange
 
 IMPLEMENT_DYNAMIC(CMemoryDepletionDlg, CDialogEx)
 
@@ -47,7 +46,7 @@ void CMemoryDepletionDlg::FUN_140d53570(CString strText)
 // @0x140d535a0
 void CMemoryDepletionDlg::DoDataExchange(CDataExchange* pDX)
 {
-    FUN_14098a440(this, pDX);
+    CDialogEx::DoDataExchange(pDX);
     DDX_Text(pDX, 0x40b, m_strText);
 }
 
@@ -96,7 +95,7 @@ CErrorNotificationDlg::~CErrorNotificationDlg()
 // @0x140d53850
 void CErrorNotificationDlg::DoDataExchange(CDataExchange* pDX)
 {
-    FUN_14098a440(this, pDX);
+    CDialogEx::DoDataExchange(pDX);
     DDX_Text(pDX, 0x40c, m_strText);
 }
 

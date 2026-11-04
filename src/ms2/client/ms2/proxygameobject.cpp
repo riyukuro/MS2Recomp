@@ -50,11 +50,9 @@ class Unk_AkoPortal;
 template <> Unk_AkoPortal* MS2Ptr<Unk_AkoPortal>::operator->() const;
 template <> MS2Ptr<Unk_AkoPortal>& MS2Ptr<Unk_AkoPortal>::operator=(int);
 template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;
-class Unk_NpcData;
-template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(int);
-template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(const MS2Ptr<Unk_NpcData>&);
-template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::get() const;
-class Unk_IntTriple { public: void Clear(); int Sum(); };
+template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(int);
+template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(const MS2Ptr<NpcDataCli>&);
+template <> NpcDataCli* MS2Ptr<NpcDataCli>::get() const;
 
 class Unk_Tbl1403ed2d0 { };                                         // object table
 class Unk_PosObject                                                 // MS2: slot 18 is GetPosition
@@ -99,7 +97,7 @@ public:
 CProxyGameObject::CProxyGameObject()
 {
     reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
-    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = 0;
+    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = 0;
     m_proxyId = 0;
     m_40 = 0;
     m_48 = 0;
@@ -127,7 +125,7 @@ CProxyGameObject::CProxyGameObject()
 CProxyGameObject::~CProxyGameObject()
 {
     reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
-    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = 0;
+    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = 0;
 }
 
 // @0x1416c1ff0
@@ -368,12 +366,12 @@ MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, FUN_1416c2950, 54, 0x83FAF988)
 int CProxyGameObject::FUN_1416c2990(int nTemplateId)
 {
     m_78 = nTemplateId;
-    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = reinterpret_cast<const MS2Ptr<Unk_NpcData>&>((const MS2Ptr<NpcDataCli>&)reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78));
+    reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28) = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
     m_dc = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nTemplateId);
     m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
     FUN_1416c2a80();
     int r;
-    if (reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28).get()) {
+    if (reinterpret_cast<MS2Ptr<NpcDataCli>&>(m_28).get()) {
         r = 1;
     } else {
         r = 0;

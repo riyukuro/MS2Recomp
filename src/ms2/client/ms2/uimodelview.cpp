@@ -60,9 +60,7 @@ public:
 };
 #define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)          // C3: was extern efd::Point3 DAT_143b01a60
 float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
-NiPoint3& FUN_14097faa0(NiPoint3* pDst, NiPoint3&& kSrc);       // NiPoint3 move assignment (out of line in the exe)
-NiPoint3& FUN_14097fad0(NiPoint3* pDst, const NiPoint3& kSrc);  // NiPoint3 copy assignment (out of line in the exe)
-extern efd::Point3 DAT_143a08cf8;                                // (0, 0, 1)
+#define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                                // (0, 0, 1)
 class CLogString* GetLogString();
 void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB, const float* pC);
 void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ);
@@ -275,8 +273,8 @@ void UIModelView::vfunc_17(const NiPoint3& kPivot)
     m_kRotation = DAT_143b01a60;
     const NiPoint3& kTranslate = m_spCamera->GetTranslate();
     m_kBackupTranslate = static_cast<const efd::Point3&>(kTranslate);
-    FUN_14097fad0(&m_kBackupCenter, kPivot);
-    FUN_14097faa0(&m_kBackupUp, m_spCamera->GetWorldUpVector());
+    m_kBackupCenter = kPivot;
+    m_kBackupUp = m_spCamera->GetWorldUpVector();
     FUN_140e68a40(GetLogString(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",
                   &m_kBackupTranslate.x, &m_kBackupTranslate.y, &m_kBackupTranslate.z);
     FUN_140e68a40(GetLogString(), 0xc, 0x13, L"UIModelView::m_backupCenter: {0}, {1}, {2}",
@@ -353,13 +351,13 @@ void UIModelView::FUN_140e685d0()
                         fDist = (kTarget - kPos).Length();
                         if (fDist <= m_kCamera.m_fMaxDistance)
                         {
-                            FUN_14097fad0(&kPos, m_kFarPosition);
+                            kPos = m_kFarPosition;
                             m_nZoomState = 0;
                         }
                     }
                     else
                     {
-                        FUN_14097fad0(&kPos, m_kFarPosition);
+                        kPos = m_kFarPosition;
                         m_nZoomState = 0;
                     }
                 }
@@ -372,13 +370,13 @@ void UIModelView::FUN_140e685d0()
                         fDist = (kTarget - kPos).Length();
                         if (fDist >= m_kCamera.m_fMinDistance)
                         {
-                            FUN_14097fad0(&kPos, m_kNearPosition);
+                            kPos = m_kNearPosition;
                             m_nZoomState = 0;
                         }
                     }
                     else
                     {
-                        FUN_14097fad0(&kPos, m_kNearPosition);
+                        kPos = m_kNearPosition;
                         m_nZoomState = 0;
                     }
                 }

@@ -87,7 +87,7 @@ public:
 void* FUN_140764020();   // C3: was FUN_140764020
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
-void FUN_141276180(const CString& strA, const CString& strB);
+int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
@@ -98,8 +98,8 @@ public:
     __int64 GetItemUid();
 };
 void FUN_141404930(__int64 nUid);
-void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
-void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
+bool FUN_141404ce0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
+bool FUN_1414050c0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
 MS2Ptr<CItem>* FUN_140c3c720(void* pArr, unsigned nIndex);   // element access
 
 // The pet inventory entry points that are free functions in the exe (the item handle is passed by pointer in rcx).
@@ -359,13 +359,13 @@ int PetSlot::vfunc_8(void* p)
 // @0x140dbbee0
 void PetSlot::vfunc_23(void* p)
 {
-    FUN_141404ce0(FUN_140dbaf10(), p, &m_value18);
+    FUN_141404ce0(FUN_140dbaf10(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x140dbbf30
 void PetSlot::vfunc_24(void* p)
 {
-    FUN_1414050c0(FUN_140dbaf10(), p, &m_value18);
+    FUN_1414050c0(FUN_140dbaf10(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x140dbbf80

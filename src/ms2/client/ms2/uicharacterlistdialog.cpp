@@ -286,11 +286,12 @@ struct Unk_ClId { Unk_ClId(unsigned __int64 nId); Unk_ClId(const Unk_ClId&); voi
 class Unk_ClWorld { public: MyPC* FUN_141bd0cc0(); void FUN_141bbbc60(Unk_ClId id, int n); };   // by-value id: the exe builds it in an argument temp
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-class Unk_GmEvtKey
+// the GameEventUserValue readers of gamerule.cpp / uileveluppackagewidgetdialog.cpp (same view)
+class Unk_AttendTable
 {
 public:
-    bool FUN_140482280(int nKey, const bool& bValue);
-    __int64 FUN_140c5af20(int nKind, int nId, __int64* pnZero);     // the burning level-up event was finished
+    bool FUN_140482280(int nKind, const bool& bDefault);
+    __int64 FUN_140c5af20(int nRow, unsigned nEventId, const __int64& nDefault);   // the burning level-up event was finished
 };
 // The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
 class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
@@ -898,7 +899,7 @@ bool UICharacterListDialog::FUN_1418ed650()
     if (!((class CGameRule*)FUN_1401c0d90())->FUN_14047bb90())
         return false;
     bool bValue = false;
-    if (reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140482280(900, bValue))
+    if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(900, bValue))
         return false;
     return true;
 }
@@ -2020,7 +2021,7 @@ void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, &nZero);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, nZero);
         if (nCharId != nId)
             continue;
         AttachBurningLevelupIcon(nId);
@@ -2049,7 +2050,7 @@ void UICharacterListDialog::FUN_1418ef700()
         if (nDone != 0)
             continue;
         __int64 nZero2 = 0;
-        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, &nZero2);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, nZero2);
         if (nCharId == 0)
             continue;
         AttachBurningLevelupIcon(nCharId);
@@ -2081,7 +2082,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
                 continue;
         }
         __int64 nZero3 = 0;
-        __int64 nCharId = reinterpret_cast<Unk_GmEvtKey&>(DAT_143ab2fc0).FUN_140c5af20(2000, (*it)->m_18, &nZero3);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, (*it)->m_18, nZero3);
         if (nCharId != 0)
             continue;
         if (!((BurningLevelupContext*)(*it).operator->())->HasTarget(spCharacter->FUN_1418e9d70()->m_3c))

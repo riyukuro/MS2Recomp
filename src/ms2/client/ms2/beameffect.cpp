@@ -176,7 +176,7 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
-bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
+bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);   // the two end points coincide
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
@@ -195,7 +195,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
-extern const Vector3 DAT_143a08cf8;
+#define DAT_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern const Vector3 DAT_143a08cf8
 Unk_ResourceMgr* FUN_140a0afd0() { return reinterpret_cast<Unk_ResourceMgr*>(TSingleton<CNifLoadingService>::s_instance); }                                                                // @0x140a0afd0
 
 // @0x140a0adf0
@@ -222,12 +222,12 @@ Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3&
 }
 
 // @0x140a0b1f0 rotation -> euler angles (degrees, negated)
-void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pkEuler)
+void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kEuler)   // C3: was (const Unk_NiMatrix3&, Vector3*)
 {
-    reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(pkEuler->x, pkEuler->y, pkEuler->z);
-    pkEuler->x = pkEuler->x * -57.295776f;
-    pkEuler->y = pkEuler->y * -57.295776f;
-    pkEuler->z = pkEuler->z * -57.295776f;
+    reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
+    kEuler.x = kEuler.x * -57.295776f;
+    kEuler.y = kEuler.y * -57.295776f;
+    kEuler.z = kEuler.z * -57.295776f;
 }
 
 // @0x140a0b2a0 detach a node from its parent
@@ -513,7 +513,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         return false;
     Vector3 kStart = (*m_pPoints)[0];
     Vector3 kEnd = (*m_pPoints)[nPoints - 1];
-    if (FUN_14028d530(kStart, kEnd))
+    if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(kStart), reinterpret_cast<const efd::Point3&>(kEnd)))
         return false;
     switch (spInfo->m_nType)
     {
@@ -551,7 +551,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         float fLength = kDelta.FUN_140968990();
         Vector3 kEuler;
         const NiTransform& kWorld = static_cast<const NiAVObject*>(m_spTarget.operator->())->GetWorldTransform();
-        FUN_140a0b1f0(reinterpret_cast<const Unk_NiMatrix3&>(kWorld.m_Rotate), &kEuler);
+        FUN_140a0b1f0(kWorld.m_Rotate, reinterpret_cast<efd::Point3&>(kEuler));
         Vector3 kAxisA, kAxisB;
         FUN_140a01250(kEuler, &kAxisA, &kAxisB);
         kAxisA.FUN_140968990();

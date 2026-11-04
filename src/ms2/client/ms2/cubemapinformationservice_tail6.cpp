@@ -25,6 +25,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // C3: TSingleton<CubeMapInformationService>::s_instance
 #include "hook/ms2hook.h"
 #include <efd/MessageService.h>
 #include <efd/MemObject.h>
@@ -169,7 +170,6 @@ void FUN_140fac7c0(void* pThis);
 void FUN_140fac7f0(void* pThis);
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
 extern char DAT_142eb3950;            // TSingleton<CubeMapInformationService> vtable
-extern void* DAT_143ab3908;           // TSingleton<CubeMapInformationService>::ms_pInstance
 
 // @0x14111e6e0
 void* FUN_14111e6e0(void* pThis, void* pUnused)
@@ -285,6 +285,6 @@ void* FUN_14111eb20(void* pThis)
 void* FUN_14111eb40(void* pThis)
 {
     *(void**)pThis = (void*)&DAT_142eb3950;
-    DAT_143ab3908 = pThis != 0 ? (char*)pThis - 0x18 : 0;
+    TSingleton<CubeMapInformationService>::s_instance = pThis != 0 ? (CubeMapInformationService*)((char*)pThis - 0x18) : 0;
     return pThis;
 }

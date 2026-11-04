@@ -13,6 +13,7 @@
 #include <NiAVObject.h>
 #include <NiBound.h>
 #include <NiPlane.h>
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
 class Unk_ShadowMgr { public: virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5();
     virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11(); virtual void s12();
     virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
@@ -27,11 +28,18 @@ public:
 };
 
 // ---- unrecovered neighbours -----------------------------------------------------------------------------------------
-extern char DAT_143ae5190;
-class NiLODNode { public: static const NiRTTI ms_RTTI; };          // C3: was extern char DAT_143afb348
+extern NiFixedString DAT_143ae5190;
+class NiLODNode {                                                  // C3: was extern char DAT_143afb348
+public:
+    static const NiRTTI ms_RTTI;
+protected:
+    static int ms_iGlobalLOD;                                      // C3: was DAT_1439fc854
+    friend void FUN_141753c10(int v);                              // NiLODNode::SetGlobalLOD copy
+};
 class NiRenderObject { public: static const NiRTTI ms_RTTI; };     // C3: was extern char DAT_143afa7d0
-extern int DAT_143ae2b34;    extern int DAT_1439fc854;
-void* FUN_1409478c0();                                  // singleton accessor
+extern int DAT_143ae2b34;
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -81,7 +89,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
     unsigned i;
     int k;
     void* node;
-    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed0b0() && obj != 0) {
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed0b0() && obj != 0) {
         node = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(((void*)((class NiAVObject*)(class NiAVObject*)(obj))->GetParent()))));
         while (node != 0) {
             NiProperty* p = ((class NiAVObject*)(class NiAVObject*)((NiAVObject*)node))->GetProperty(0);
@@ -125,7 +133,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
             if (x != 0 && FUN_141568f60((class NiAVObject*)(x)) != 0)
                 obj->OnVisible(*this);
         } else {
-            if (((void*)((class NiObjectNET*)(class NiAVObject*)(obj))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae5190))) != 0)
+            if (((void*)((class NiObjectNET*)(class NiAVObject*)(obj))->GetExtraData(DAT_143ae5190)) != 0)
                 obj->OnVisible(*this);
         }
     }
@@ -163,7 +171,7 @@ void* FUN_141753b80(char* o) { return FUN_141753a90(&((Unk_141753b80*)o)->m_138)
 const NiRTTI* ShadowCullingProcess::GetRTTI() const { return (const NiRTTI*)&NiTerrainCullingProcess::ms_RTTI; }
 
 // @0x141753c10
-void FUN_141753c10(int v) { DAT_1439fc854 = v; }
+void FUN_141753c10(int v) { NiLODNode::ms_iGlobalLOD = v; }
 
 // @0x141753c20
 int FUN_141753c20(const NiBound* b, const NiPlane& pl)

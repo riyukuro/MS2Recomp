@@ -495,7 +495,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
         return;
     NiPoint3 kDir = TSingleton<CameraMgr>::GetInstance()->FUN_140af0340();
     reinterpret_cast<Vector3&>(kDir).FUN_140968990();
-    float fDot = reinterpret_cast<Vector3&>(kDir).FUN_140a00f20(*(const Vector3*)&DAT_143a08cd8);
+    float fDot = reinterpret_cast<const efd::Point3&>(kDir).Dot(*(const efd::Point3*)&DAT_143a08cd8);
     if (m_nCameraFlag != 0)
     {
         float fAngle = CCapRotationController::SafeAcos(fDot);

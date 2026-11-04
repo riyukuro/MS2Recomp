@@ -74,7 +74,7 @@ class Unk_LtPlayer;
 // @0x141448190
 CLiftableTarget::CLiftableTarget() : m_ent(0)
 {
-    m_ent.FUN_1408b6ec0(0);
+    m_ent = 0;
     m_nId = 0;
     m_nFx = 0;
 }
@@ -87,14 +87,14 @@ CLiftableTarget::~CLiftableTarget()
 }
 
 // @0x1414482a0
-int CLiftableTarget::vfunc_1(Unk_EntRef ent)
+int CLiftableTarget::vfunc_1(egf::EntityPtr ent)
 {
     m_ent = ent;
-    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vPos)) != 0)
+    if (m_ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vPos)) != 0)
         return 0;
-    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_vRot)) != 0)
+    if (m_ent->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_vRot)) != 0)
         return 0;
-    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<int>(0x79ec600a, m_nId) != 0)
+    if (m_ent->GetPropertyValue<int>(0x79ec600a, m_nId) != 0)
         return 0;
     return 1;
 }
@@ -169,12 +169,12 @@ CString CLiftableTargetBox::vfunc_2()
 }
 
 // @0x1414489c0
-int CLiftableTargetGuide::vfunc_1(Unk_EntRef ent)
+int CLiftableTargetGuide::vfunc_1(egf::EntityPtr ent)
 {
     if (CLiftableTarget::vfunc_1(ent) == 0)
         return 0;
     efd::utf8string name;
-    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::utf8string>(0x86adffcf, name) != 0)
+    if (m_ent->GetPropertyValue<efd::utf8string>(0x86adffcf, name) != 0)
         return 0;
     m_strGuide = name.c_str();
     return 1;
@@ -187,7 +187,7 @@ CString CLiftableTargetGuide::vfunc_2()
 }
 
 // ---- hooks ----
-// (vfunc_1 takes Unk_EntRef by value and FUN_1414483e0 / CreateEffect go through unrecovered quest/effect views: not hooked)
+// (vfunc_1 takes egf::EntityPtr by value and FUN_1414483e0 / CreateEffect go through unrecovered quest/effect views: not hooked)
 MS2_REPLACE_METHOD(0x141448920, CLiftableTarget, DestroyEffect, 60, 0x767CACA6);
 MS2_REPLACE_METHOD(0x141448970, CLiftableTargetBox, vfunc_2, 68, 0x6C0F74DD);
 MS2_REPLACE_METHOD(0x141448B00, CLiftableTargetGuide, vfunc_2, 66, 0x7D865BC0);

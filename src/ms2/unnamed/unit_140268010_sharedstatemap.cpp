@@ -15,26 +15,10 @@
 #include "ms2/commonfiles/timeutil.h"
 #define MS2_ACCOUNTBLOCKINFO_OWN_LAYOUT
 #include "ms2/client/ms2/blockmanager.h"
+#include "ms2/unnamed/unit_140268010.h"
 
 // The map value: stored in 4 bytes, one byte on the wire; its traits take it by reference (not a primitive).
-enum Unk_LimitValue { Unk_LimitValue_Zero = 0 };
-
-// A lock plus an int -> int map (0x78 bytes; 17 bins, load .75/.25/2.25, block size 10), every access under the lock.
-class Unk_LockedIntMap
-{
-public:
-    Unk_LockedIntMap();                                         // 0x140268010
-    void Clear();                                               // 0x140268090
-    void Write(COutputStream* pOut);                            // 0x1402680f0
-    void Read(CInputStream* pIn);                               // 0x140268210
-    void Assign(Unk_LockedIntMap* pOther);                      // 0x140268300
-    void Set(int nKey, Unk_LimitValue nValue);                             // 0x1402684d0
-    Unk_LimitValue Get(int nKey);                                          // 0x140268570
-
-    CLockCriticalSection m_lock;                                // +0x00
-    ATL::CAtlMap<int, Unk_LimitValue> m_map;                               // +0x30
-};
-MS2_CHECK_SIZE(Unk_LockedIntMap, 0x78);
+enum Unk_LimitValue : int { Unk_LimitValue_Zero = 0 };
 
 // A tick based interval timer: Check() succeeds at most once per interval.
 class Unk_IntervalTimer

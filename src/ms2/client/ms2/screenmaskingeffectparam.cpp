@@ -18,10 +18,11 @@
 class CMainSystem;
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
-class Unk_ResourceMgr
+class Unk_ResourceMgr;
+class CNifLoadingService   // C3: member view (nifeffectparam.h)
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
@@ -39,7 +40,7 @@ public:
 
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
+bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n);         // validated global shader constant
 void FUN_1416ba640(efd::SmartPointer<NiTexture> spTexture);                                     // swap the live step's mask texture
 extern NiFixedString DAT_143ae5340;                                             // mask blend constant name
 
@@ -81,7 +82,7 @@ void ScreenMaskingEffect::vfunc_1()
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-    FUN_1416ba640(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
+    FUN_1416ba640(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
     FUN_1409a5770(DAT_143ae5340, &fBlend, 1);
 }
 MS2_REPLACE_METHOD(0x140dca2a0, ScreenMaskingEffect, vfunc_1, 354, 0x89DB4D6F);
@@ -103,7 +104,7 @@ bool ScreenMaskingEffect::vfunc_6(bool b)
     {
         CString strPath;
         strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-        FUN_1416ba640(FUN_140a0afd0()->FUN_141552f90(strPath, 5));
+        FUN_1416ba640(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strPath, 5));
         vfunc_7(m_nState, m_fAlpha);
     }
     return true;

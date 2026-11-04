@@ -54,8 +54,10 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uigamemenudialog.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/userugcmapinfo.h"   // C3: Unk_BmPtr<UserUGCMapInfo>
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton (the entry button)
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/asobj.h"
@@ -103,6 +105,8 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/gameeventuservaluemanager.h"  // C3: GameEventUserValueManager::RegisterListener/UnregisterListener
 #include "ms2/commonfiles/jobsystem.h"  // C3: JobSystem::GetSkills
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>
+#include "ms2/client/ms2/ridee.h"    // C3: efd::SmartPointer<Ridee>
+#include "ms2/commonfiles/characterability.h"    // C3: CCharacterAbilityTable::FUN_1401e0450, CCharacterAbility
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x140113840
 
@@ -254,7 +258,6 @@ class Unk_AttendTable   // C3: member view (real class not in this TU)
 public:
     int FUN_1409617d0(int, unsigned int, int const&);
 };
-class Unk_GmQuestRec { public:  };
 class Unk_GpCondRef   // C3: member view (real class not in this TU)
 {
 public:
@@ -347,38 +350,14 @@ class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
 class Unk_GmTargetRef
 {
 public:
-    Unk_GmTargetRef(void* p);
-    ~Unk_GmTargetRef();
-    Unk_GmTarget* FUN_14050dee0();
     void* m_0;
     void* m_8;
 };
-class Unk_GmPcInfoPtr
-{
-public:
-    Unk_GmPcInfoPtr(void* p);
-    ~Unk_GmPcInfoPtr();
-    bool FUN_140ba7bb0(int);
-    void* FUN_140975bc0();
-    void* m_p;
-};
 class Unk_GmStatusInfo : public CPtred { public: char m_pad_18[0x6c - 0x18]; int m_6c; };
-class Unk_GmQuestRow { public: char m_pad_0[0x18]; int m_18; int m_1c; unsigned short m_20; };
 class Unk_GmQuestIface { public: virtual void vfunc_0(); virtual int vfunc_1(); virtual void vfunc_2(); virtual int vfunc_3(); };
 class Unk_GmQuest : public CPtred, public Unk_GmQuestIface {};
-class Unk_GmQuestRef { public: Unk_GmQuestRef(void* p); ~Unk_GmQuestRef(); Unk_GmQuestRow* FUN_1401e13a0(); void* m_pad[2]; };
-class Unk_GmQuestIter { public: Unk_GmQuestIter(int n); ~Unk_GmQuestIter(); void* FUN_140f2d120(POSITION pos); POSITION FUN_140f2d200(); void FUN_140f2d260(POSITION& pos); void* m_pad[6]; };
 
 // Base of the movie clips this dialog binds.
-class ASButton   // C3: member view (real class not in this TU)
-{
-public:
-    void FUN_1422ce090(int);
-};
-class Unk_GmButton : public ASMovieClip
-{
-public:
-};
 class Unk_GmCtl : public ASObj { public:  };
 class Unk_GmItem : public ASMovieClip {};
 Unk_GmCtl* FUN_140bc0530(MS2Ptr<Unk_GmItem>* pItem);   // MS2Ptr::operator-> (takes the smart pointer, not the clip)
@@ -568,9 +547,10 @@ extern __int64 DAT_143ab2820;
 extern int DAT_143ab2900;
 extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 extern CUserMail g_143ab2ee0;
-extern Unk_GmEvtKey DAT_143ab2fc0;
-extern Unk_GmQuestRec DAT_143ab3010;
-extern Unk_GmEvtKey DAT_143ab3308;
+class GameEventUserValue;
+extern GameEventUserValue DAT_143ab2fc0;
+extern GameEventUserValue DAT_143ab3010;
+extern std::set<unsigned int> DAT_143ab3308;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was DAT_143b059e8
 
@@ -625,7 +605,6 @@ bool FUN_14028d470(float, float);
 enum Unk_SubJobCode : int;
 class CChangeJobTable { public: int GetStartQuestId(Unk_SubJobCode eJob); };   // C3: the real member (local view, was FUN_1401d6d70)
 int FUN_1401e0800(unsigned short nLevel);
-void FUN_1401e0450(void*, Unk_GmQuestIter* pOut);
 class CCharacterAbilityManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -1361,12 +1340,12 @@ void UIGameMenuDialog::FUN_141938850()
         return;
     int bFound = 0;
     if (TSingleton<CCharacterAbilityManager>::GetInstance()->FUN_140f29e00() > 0u) {
-        Unk_GmQuestIter list(10);
-        FUN_1401e0450(TSingleton<CCharacterAbilityTable>::GetInstance(), &list);
-        for (POSITION pos = list.FUN_140f2d200(); pos != 0; list.FUN_140f2d260(pos)) {
-            Unk_GmQuestRef ref(list.FUN_140f2d120(pos));
-            if (ref.FUN_1401e13a0()->m_20 <= (unsigned short)pPc->vfunc_78()) {
-                if (TSingleton<CCharacterAbilityManager>::GetInstance()->FUN_140f2a0b0(ref.FUN_1401e13a0()->m_18) == 0) {
+        ATL::CAtlList<MS2Ptr<CCharacterAbility> > list(10);
+        TSingleton<CCharacterAbilityTable>::GetInstance()->FUN_1401e0450(&list);
+        for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
+            MS2Ptr<CCharacterAbility> ref(list.GetAt(pos));
+            if (ref->m_nRequireLevel <= (unsigned short)pPc->vfunc_78()) {
+                if (TSingleton<CCharacterAbilityManager>::GetInstance()->FUN_140f2a0b0(ref->m_nId) == 0) {
                     bFound = 1;
                     break;
                 }
@@ -1453,7 +1432,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         if (p != 0)
             nCount = ((class UIRpsEventDialog*)(void*)(p))->FUN_140e841a0();
     } else if (nId == 0x4f87) {
-        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), &DAT_143ab3308);
+        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), reinterpret_cast<Unk_GmEvtKey*>(&DAT_143ab3308));
     } else if (nId == 0x4f71) {
         void* p = ((void*)FUN_140b769d0(0x4f71));
         if (p != 0)
@@ -1463,7 +1442,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         if (p != 0)
             nCount = ((class UIStampEventDialog*)(void*)(p))->FUN_140ed8040();
     } else if (nId == 0x4f67) {
-        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), &DAT_143ab3308);
+        nCount = FUN_140195f70(reinterpret_cast<Unk_GmALTable*>(TSingleton<CAdventureLevelTable>::GetInstance()), pPc->vfunc_141(), reinterpret_cast<Unk_GmEvtKey*>(&DAT_143ab3308));
         void* p = Unk_SSGGetDialog<UIAdventureLevelDialog>(0x4f67);
         if (p != 0)
             nCount = nCount + ((class UIAdventureLevelDialog*)(void*)(p))->FUN_140ba3240();
@@ -1621,9 +1600,9 @@ void UIGameMenuDialog::FUN_141939ec0()
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    Unk_GmPcInfoPtr spInfo(((void*)((class PCBase*)(class PCBase*)(pPc))->FUN_1416764a0()));
-    if (spInfo.FUN_140ba7bb0(0)) {
-        bool bBusy = static_cast<Unk_GmStatusView*>(spInfo.FUN_140975bc0())->FUN_141707750()->m_6c != 0;
+    efd::SmartPointer<Ridee> spInfo(((class PCBase*)(class PCBase*)(pPc))->FUN_1416764a0());
+    if (spInfo != 0) {
+        bool bBusy = reinterpret_cast<Unk_GmStatusView*>(spInfo.operator->())->FUN_141707750()->m_6c != 0;
         if (bBusy)
             nEnable = 0;
     }
@@ -1765,7 +1744,7 @@ void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
         return;
     if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
         if (MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(GetMenuName(nId))) {
-            if (MS2Ptr<Unk_GmButton> spButton = spEntry->FUN_140acce30<Unk_GmButton>("m_button")) {
+            if (MS2Ptr<ASButton> spButton = spEntry->FUN_140acce30<ASButton>("m_button")) {
                 ((ASUIComponent*)(spButton).operator->())->SetFocused(nEnable);
                 ((ASButton*)(spButton).operator->())->FUN_1422ce090(nEnable);
             }
@@ -1934,14 +1913,14 @@ void UIGameMenuDialog::FUN_14193b750()
             FUN_141275260(0x86f, 1, 0);
         return;
     }
-    Unk_GmTargetRef target(((void*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
-    if (FUN_14193fbd0(&target))
+    Unk_BmPtr<UserUGCMapInfo> target(((class UserUGCMapInfo*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
+    if (FUN_14193fbd0(reinterpret_cast<Unk_GmTargetRef*>(&target)))
         return;
     if (((class MyPC*)(class PCBase*)(pPc))->HasNoHome() != 0) {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
             TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f3f);
     } else {
-        if (target.FUN_14050dee0()->m_1c == 0 && ((class MyPC*)(class PCBase*)(pPc))->HasNoHome() == 0) {
+        if (((Unk_GmTarget*)target.operator->())->m_1c == 0 && ((class MyPC*)(class PCBase*)(pPc))->HasNoHome() == 0) {
             FUN_141275260(0x878, 1, 0);
             return;
         }
@@ -2027,7 +2006,7 @@ void UIGameMenuDialog::FUN_14193c000()
         return;
     }
     int nOut = 0;
-    int nRestarted = ((Unk_AttendTable*)(Unk_GmQuestRec*)&(DAT_143ab3010))->FUN_1409617d0(0x44c, nQuest, *(int const*)(int*)(&nOut));
+    int nRestarted = ((Unk_AttendTable*)&(DAT_143ab3010))->FUN_1409617d0(0x44c, nQuest, *(int const*)(int*)(&nOut));
     if (nRestarted != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_restarted"), 1, 1);
     } else {
@@ -2061,7 +2040,7 @@ void UIGameMenuDialog::FUN_14193c3c0()
 // @0x14193c550
 void UIGameMenuDialog::OpenStampEventDialog()
 {
-    MS2Ptr<Unk_GmStampEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047ca40(DAT_143ab2fc0);
+    MS2Ptr<Unk_GmStampEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<const Unk_GmEvtKey&>(DAT_143ab2fc0));
     if (spEvent == NULL) {
         FUN_1412751f0(GetStringCommonByKey(L"s_stampevent_invalid_event"), 1, 1);
         return;
@@ -2253,8 +2232,8 @@ void UIGameMenuDialog::FUN_14193d450()
     TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e76);
     void* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != 0) {
-        Unk_GmTargetRef target(((void*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
-        ((class UIRealEstateDialog*)(void*)(pDlg))->FUN_141ab4000(target.FUN_14050dee0()->m_24, target.FUN_14050dee0()->m_20);
+        Unk_BmPtr<UserUGCMapInfo> target(((class UserUGCMapInfo*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
+        ((class UIRealEstateDialog*)(void*)(pDlg))->FUN_141ab4000(((Unk_GmTarget*)target.operator->())->m_24, ((Unk_GmTarget*)target.operator->())->m_20);
     }
 }
 

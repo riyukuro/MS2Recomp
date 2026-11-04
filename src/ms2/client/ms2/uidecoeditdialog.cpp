@@ -40,14 +40,6 @@ public:
     Scaleform::GFx::Value FUN_14191c3d0(const char* szMethod, const wchar_t* pszArg);
 };
 
-// A 2D vector built in place (the scale / rotation of a brush).
-struct Unk_DeVec2
-{
-    float m_x;
-    float m_y;
-    Unk_DeVec2* FUN_140a0a600(float x, float y);
-};
-
 // The brush interface: slots 6-9 with the types the dialog passes.
 class Unk_DeBrush
 {
@@ -55,8 +47,8 @@ public:
     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5();
     virtual void vfunc_6(float fRadius);
     virtual void vfunc_7(float fDensity);
-    virtual void vfunc_8(Unk_DeVec2 vScale);
-    virtual void vfunc_9(Unk_DeVec2 vRotation);
+    virtual void vfunc_8(efd::Point2 vScale);
+    virtual void vfunc_9(efd::Point2 vRotation);
 };
 
 DecoEditService* BrushService();                                        // the deco edit service
@@ -186,16 +178,14 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();
-            Unk_DeVec2 vScale;
-            FUN_14191c280(*vScale.FUN_140a0a600(fX, fY));
+            FUN_14191c280(efd::Point2(fX, fY));
         }
     }
     else if (_stricmp("OnBrushRotationChange", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         float fX = data.PopFloat();
         float fY = data.PopFloat();
-        Unk_DeVec2 vRotation;
-        FUN_14191c2d0(*vRotation.FUN_140a0a600(fX, fY));
+        FUN_14191c2d0(efd::Point2(fX, fY));
     }
     return 0;
 }
@@ -274,7 +264,7 @@ void UIDecoEditDialog::FUN_14191c230(float fDensity)
 }
 
 // @0x14191c280
-void UIDecoEditDialog::FUN_14191c280(Unk_DeVec2 vScale)
+void UIDecoEditDialog::FUN_14191c280(efd::Point2 vScale)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
@@ -282,7 +272,7 @@ void UIDecoEditDialog::FUN_14191c280(Unk_DeVec2 vScale)
 }
 
 // @0x14191c2d0
-void UIDecoEditDialog::FUN_14191c2d0(Unk_DeVec2 vRotation)
+void UIDecoEditDialog::FUN_14191c2d0(efd::Point2 vRotation)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)

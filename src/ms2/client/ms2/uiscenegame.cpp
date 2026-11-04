@@ -348,17 +348,8 @@ MS2_REPLACE_METHOD(0x141ac78f0, UISceneGame, vfunc_56, 108, 0xF5771772);
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/uigamemenudialog.h"
 #include "ms2/placeholder/clientconstants.h"
+#include <NiDX9Renderer.h>   // NiDX9Renderer::SetDeviceLostHeld
 
-class Unk_GsEnt : public CPortal { };
-class Unk_GsObjRef
-{
-public:
-    ~Unk_GsObjRef();                                    // 0x140964a70
-    Unk_GsEnt* FUN_140965960();
-    void* m_0;
-    void* m_8;
-};
-MS2_CHECK_SIZE(Unk_GsObjRef, 0x10);
 class Unk_GsMode : public Unk_ActionKeyManager { };
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);
 class Unk_GsPlayer                                      // the local player (slots used by the camera code)
@@ -390,12 +381,11 @@ public:
 class Unk_GsWorld : public WorldService
 {
 public:
-    Unk_GsObjRef FUN_141bc2800(int nId);
+    MS2Ptr<CPortal> FUN_141bc2800(int nId);
     int FUN_141bda9f0();
 };
 class Unk_GsGround : public CubeMapInformationService { };
 
-CameraMgr* FUN_1409478c0();
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
 public:
@@ -561,7 +551,7 @@ void UISceneGameBeautyShop::FUN_141ac8660()
 {
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
-    if (FUN_1409478c0()->FUN_140a18070() == 0) return;
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0) return;
     pPlayer->FUN_14166d8e0(Vector3(0.0f, -1.0f, 0.0f));
     pPlayer->vfunc_59(0xe, 0, 0, 0);
 }
@@ -582,48 +572,48 @@ MS2_REPLACE_METHOD(0x141ac8710, UISceneGameBeautyShop, FUN_141ac8710, 154, 0x879
 // @0x141ac87b0
 void UISceneGameBeautyShop::FUN_141ac87b0()
 {
-    if (FUN_1409478c0()->FUN_140a18070() == 0) return;
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0) return;
     Unk_CameraFlyBy param;
     param.m_nKind = 1;
     param.m_fDuration = 0.8f;
-    param.m_from.m_0 = ((Unk_CameraManager*)FUN_1409478c0())->FUN_140ad4b40();
-    param.m_from.m_4 = FUN_1409478c0()->FUN_140af7f00();
-    param.m_from.m_8 = FUN_1409478c0()->FUN_140af7ea0();
-    param.m_from.m_c = FUN_1409478c0()->FUN_140a17e10();
-    param.m_from.m_18 = FUN_1409478c0()->FUN_140af8290();
+    param.m_from.m_0 = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+    param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
+    param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
+    param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    param.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
     param.m_to.m_0 = param.m_from.m_0;
     param.m_to.m_4 = param.m_from.m_4;
     param.m_to.m_8 = param.m_from.m_8;
     FUN_141ac8b00(&param.m_to.m_c, &param.m_to.m_18, &param.m_return.m_c);
-    FUN_1409478c0()->FUN_140aed580(&param, 1, 1.0f);
-    FUN_1409478c0()->FUN_140aed750(4, 0);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 0);
 }
 MS2_REPLACE_METHOD(0x141ac87b0, UISceneGameBeautyShop, FUN_141ac87b0, 319, 0x5E0960A6);
 
 // @0x141ac8900
 void UISceneGameBeautyShop::FUN_141ac8900()
 {
-    if (FUN_1409478c0()->FUN_140a18070() != 0) {
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
         Unk_CameraFlyBy param;
         param.m_nKind = 1;
         param.m_fDuration = 1.0f;
-        param.m_from.m_0 = ((Unk_CameraManager*)FUN_1409478c0())->FUN_140ad4b40();
-        param.m_from.m_4 = FUN_1409478c0()->FUN_140af7f00();
-        param.m_from.m_8 = FUN_1409478c0()->FUN_140af7ea0();
-        param.m_from.m_c = FUN_1409478c0()->FUN_140a17e10();
-        param.m_from.m_18 = FUN_1409478c0()->FUN_140af8290();
+        param.m_from.m_0 = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+        param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
+        param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
+        param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+        param.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0) {
-            param.m_to = FUN_1409478c0()->m_homeSetting;
-            FUN_1409478c0()->FUN_140aed580(&param, 1, 1.0f);
-            FUN_1409478c0()->FUN_140aed750(0x11, 0);
+            param.m_to = TSingleton<CameraMgr>::GetInstance()->m_homeSetting;
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(0x11, 0);
         } else {
             param.m_to = param.m_from;
-            param.m_to.m_0 = FUN_1409478c0()->FUN_140af24f0()->FUN_140ad4b30();
-            param.m_to.m_4 = FUN_1409478c0()->FUN_140af24f0()->FUN_140af7ef0();
-            param.m_to.m_8 = FUN_1409478c0()->FUN_140af24f0()->FUN_140af7e90();
-            param.m_to.m_18 = FUN_1409478c0()->FUN_140af24f0()->FUN_140af8260();
-            FUN_1409478c0()->FUN_140aed580(&param, 1, 1.0f);
-            FUN_1409478c0()->FUN_140aed750(2, 1);
+            param.m_to.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140ad4b30();
+            param.m_to.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af7ef0();
+            param.m_to.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af7e90();
+            param.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af8260();
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&param, 1, 1.0f);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, 1);
         }
     }
 }
@@ -636,8 +626,8 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
     if (pPlayer == 0) return;
     Vector3 kA;
     Vector3 kB;
-    if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0 && FUN_1409478c0()->FUN_140af0210() != 0) {
-        Vector3 kEuler = FUN_1409478c0()->FUN_140af8290().FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+    if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140af0210() != 0) {
+        Vector3 kEuler = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290().FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
         Unk_GsMatrix3 mX;
         ((efd::Matrix3*)(Unk_GsMatrix3*)&(mX))->FromEulerAnglesXYZ(-90.0f, 0.0f, 0.0f);
         Unk_GsMatrix3 mY;
@@ -648,7 +638,7 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
         kA.FUN_140968990();
         kB = kA.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
     } else {
-        FUN_141ac9310(FUN_1409478c0()->FUN_140af8290(), &kA, &kB);
+        FUN_141ac9310(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290(), &kA, &kB);
     }
     kA = kA.FUN_1409f7960();
     Vector3 kP = pPlayer->vfunc_18().FUN_14097fd50(kA.FUN_14097fc90(350.0f));
@@ -675,10 +665,10 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
     if (pPlayer == 0) return;
     int bMoved = 0;
     if (m_b0 != 0) {
-        Unk_GsObjRef ref = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_b0);
-        if (((void*)((MS2Ptr<CPortal>*)(Unk_GsObjRef*)&(ref))->get()) != 0) {
+        MS2Ptr<CPortal> ref = reinterpret_cast<Unk_GsWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_b0);
+        if (((void*)ref.get()) != 0) {
             Vector3 kHit;
-            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ref.FUN_140965960()->FUN_14169d2f0(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
+            if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ref->FUN_14169d2f0(), kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
                 bMoved = 1;
@@ -689,7 +679,7 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
         Unk_GsPlayer* pNpc = reinterpret_cast<Unk_GsPlayer*>(WorldService::GetInstance()->FUN_141bd1320(m_b4));
         if (pNpc != 0) {
             Vector3 kHit;
-            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(FUN_1409478c0()->FUN_140a17e10());
+            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10());
             kDir.FUN_140968990();
             kDir.z = 0.0f;
             Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(kDir.FUN_14097fc90(100.0f));
@@ -1008,7 +998,6 @@ public:
 void FUN_140710590(COutPacket& packet);
 int FUN_141276f80(struct Unk_CommandChat* pCmd);
 void TakeScreenshotPng(int n);
-void FUN_1427d5c10(void* p, unsigned char b);
 class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 class GFxService   // C3: member view for the former free stand-ins
 {
@@ -1372,7 +1361,7 @@ int UISceneGamePlay::FUN_141aca870()
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x42, 1, 0) != 0) {
                 void* pDevice = ((void*)NiRenderer::GetRenderer());
-                FUN_1427d5c10(pDevice, DAT_1439fa00c);
+                ((NiDX9Renderer*)pDevice)->SetDeviceLostHeld(reinterpret_cast<bool&>(DAT_1439fa00c));
                 if (((void*)FUN_1414a56c0()) != 0) {
                     ((void*)FUN_1414a56c0());
                     GFxService::FUN_1422ea210(DAT_1439fa00c);
@@ -1477,8 +1466,8 @@ int UISceneGamePlay::FUN_141aca870()
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493f6, 0, 0)) {
-        if (FUN_1409478c0()->FUN_140a18070() != 0) {
-            FUN_1409478c0()->FUN_140aefa70();
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aefa70();
             UIMinimapDialog* pDlg = FUN_140c9b540(0x4e29);
             if (pDlg != 0) pDlg->FUN_141a39e40();
         }

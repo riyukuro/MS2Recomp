@@ -237,7 +237,7 @@ CStringW GetStringCommon(int nStringId);                          // common stri
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);      // common string by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 CStringW FUN_1416e4df0(int nQuestId);                           // the quest name
-CStringW FUN_1416e5450(unsigned nQuestId);                      // the quest's end text
+CStringW FUN_1416e5450(int nQuestId);                      // the quest's end text
 CStringW FUN_1416e57d0(int nQuestId, int nCondition);
 CString FUN_14016a5c0(const char* psz, int n);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
@@ -716,7 +716,7 @@ void UIQuestDialog::RefreshList()
                 node.FUN_1409c0dc0("rendererClassName", "qd_renderer_continent");
                 nodes.PushObj(node);
             }
-            TPtrValue<ChapterQuests> spGroup(groups.GetValueAt(pos));
+            TPtrValue<ChapterQuests> spGroup(static_cast<const TPtrValue<ChapterQuests>&>(groups.GetValueAt(pos)));   // the add-ref copy (0x141aa34d0)
             for (POSITION pos2 = spGroup->GetStartPosition(); pos2 != 0; spGroup->GetNext(pos2))
             {
                 int nKey = spGroup->GetKeyAt(pos2);

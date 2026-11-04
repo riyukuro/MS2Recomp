@@ -9,9 +9,9 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include <efd/Point2.h>
 
 class ASScrollingList;
-struct Unk_DeVec2;
 
 class UIDecoEditDialog : public UIDialog
 {
@@ -33,8 +33,8 @@ public:
     void FUN_14191c1b0(int nBrush);                             // OnBrushChange
     void FUN_14191c1e0(float fRadius);                          // OnBrushRadiusChange
     void FUN_14191c230(float fDensity);                         // OnBrushDensityChange
-    void FUN_14191c280(Unk_DeVec2 vScale);                      // OnBrushScaleChange
-    void FUN_14191c2d0(Unk_DeVec2 vRotation);                   // OnBrushRotationChange
+    void FUN_14191c280(efd::Point2 vScale);                     // OnBrushScaleChange
+    void FUN_14191c2d0(efd::Point2 vRotation);                  // OnBrushRotationChange
 
 };
 MS2_CHECK_SIZE(UIDecoEditDialog, 0x178);

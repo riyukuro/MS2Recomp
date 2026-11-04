@@ -70,7 +70,7 @@ class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3:
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
-int FUN_140718200(CStringW* text);                                                 // text to number
+int FUN_140718200(const CStringW& text);                                                 // text to number
 
 // The request of packet 0x5c (add effect): FUN_1401fd400 writes it.
 struct Unk_AcEffectReq
@@ -298,7 +298,7 @@ unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
     if (strLabel.IsEmpty())
         return 0;
     CStringW strId = FUN_14083f330(strLabel, L'[', L']');
-    return FUN_140718200(&strId);
+    return FUN_140718200(strId);
 }
 
 // Atexit thunks of this unit's statics (gap1 yd sweep).

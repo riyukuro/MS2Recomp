@@ -135,13 +135,13 @@ MS2_REPLACE(0x1407180B0, FUN_1407180b0, 34, 0x025377C4);
 int FUN_1407180e0(const CStringW& value) { return (int)_wtoi(value); }
 MS2_REPLACE(0x1407180E0, FUN_1407180e0, 34, 0xEFA5A5A7);
 // @0x140718110
-unsigned FUN_140718110(const CString& value) { return (unsigned)atoi(value); }
+unsigned short FUN_140718110(const CString& value) { return (unsigned short)atoi(value); }
 MS2_REPLACE(0x140718110, FUN_140718110, 34, 0xDD3E476F);
 // @0x140718140
 unsigned FUN_140718140(const CStringW& value) { return (unsigned)_wtoi(value); }
 MS2_REPLACE(0x140718140, FUN_140718140, 34, 0x72E13427);
 // @0x140718170
-short FUN_140718170(const CString& value) { return (short)atoi(value); }
+int FUN_140718170(const CString& value) { return atoi(value); }
 MS2_REPLACE(0x140718170, FUN_140718170, 34, 0x6A12126F);
 // @0x1407181a0
 int FUN_1407181a0(const CStringW& value) { return _wtoi(value); }
@@ -150,7 +150,7 @@ MS2_REPLACE(0x1407181A0, FUN_1407181a0, 34, 0x98CF054B);
 unsigned int FUN_1407181d0(const CString& value) { return atoi(value); }
 MS2_REPLACE(0x1407181D0, FUN_1407181d0, 34, 0x50004183);
 // @0x140718200
-unsigned short FUN_140718200(const CStringW& value) { return (unsigned short)_wtoi(value); }
+int FUN_140718200(const CStringW& value) { return _wtoi(value); }
 MS2_REPLACE(0x140718200, FUN_140718200, 34, 0x3EB409CB);
 // @0x140718230
 long FUN_140718230(const CString& value) { return (long)atol(value); }

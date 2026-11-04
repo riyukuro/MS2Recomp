@@ -3,28 +3,17 @@
 // ?\cubespawnobject.cpp (0x140a4e690-0x140a50440). Header name assumed.
 #pragma once
 #include "ms2/client/ms2/pcbase.h"
+#include <efd/SmartPointer.h>
 
-class Unk_NpcData;          // npc table row (MS2Ptr<T>, the table is FUN_1406d6e90()); see cubespawnobject.cpp
+class NpcDataCli;           // npc table row (npcdatacli.h; the table is FUN_1406d6e90())
 class Unk_HpBarFx;          // housing-object gauge effect (lookup FUN_1419936d0(id), removal FUN_141993750(id))
 class Unk_Entity;           // egf entity behind the spawn's entity handle
+// egf/Entity.h is not included here: its ID statics would reorder the dependents' dynamic initializers.
+namespace egf { class Entity; typedef efd::SmartPointer<Entity> EntityPtr; }
 
-// 8-byte entity handle (intrusive). ctor(0) 0x1408b6680, dtor 0x1408a8720.
-struct Unk_EntRef
-{
-    Unk_EntRef(int nNull);                          // 0x1408b6680
-    Unk_EntRef(const Unk_EntRef& o);                // user copy ctor: passed by pointer like the exe
-    ~Unk_EntRef();                                  // 0x1408a8720
-    Unk_EntRef& operator=(int nNull);               // 0x1408b6ec0
-    Unk_EntRef& operator=(const Unk_EntRef& o);     // 0x140964eb0
-    Unk_Entity* FUN_1408a9090() const;              // get
-    Unk_EntRef& FUN_1408b6ec0(Unk_Entity* p);       // assign a raw entity pointer (same body as operator=(int))
-    bool FUN_1408b70b0(Unk_Entity* p) const;        // operator==
-    Unk_Entity* FUN_1408a9280() const;              // operator->
-    Unk_EntRef(Unk_Entity* p);                      // 0x1408b6680 (same body as the null ctor; ridee.cpp)
-    bool operator!=(Unk_Entity* p) const;           // 0x140965490 (ridee.cpp)
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_EntRef, 8);
+// The entity handles are egf::EntityPtr (efd::SmartPointer<egf::Entity>: ctor 0x1408b6680, dtor 0x1408a8720,
+// operator=(T*) 0x1408b6ec0, operator= 0x140964eb0, data / operator T* 0x1408a9090, operator-> 0x1408a9280,
+// operator==(T*) 0x1408b70b0, operator!=(T*) 0x140965490).
 
 // 0xdd0 bytes. vftable 0x142dc7b40 (125 slots: PCBase's 124 + slot 124), CallbackObject vftable 0x142dc7f30.
 // efd: TypeCast 0x140a50110/0x140a500c0, GetClassDesc 0x140a50000, ??_G 0x140a4ff50, ClassInfo 0x143ab69c0
@@ -46,9 +35,9 @@ public:
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85();          // 85  0x140a4f0b0 (lazy chat balloon)
     virtual int vfunc_116();                                // 116 0x140a4efd0 (return 1)
     // new slot 124: binds the npc row and the cube entity (ent is by value: the callee destroys it).
-    virtual int vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGaugeB, const CStringW& strOwner);  // 0x140a4ed00
+    virtual int vfunc_124(int nNpcId, egf::EntityPtr ent, int nGaugeA, int nGaugeB, const CStringW& strOwner);  // 0x140a4ed00
 
-    MS2Ptr<Unk_NpcData> GetNpc();                    // 0x140a4f1b0 copy of m_spNpc
+    MS2Ptr<NpcDataCli> GetNpc();                     // 0x140a4f1b0 copy of m_spNpc
     void FUN_140a4f200(void* p);                            // 0x140a4f200
     void FUN_140a4f230(int a, int b);                       // 0x140a4f230 gauge update
     void FUN_140a4f2b0(unsigned int nState);                // 0x140a4f2b0 play the state's animation
@@ -60,8 +49,8 @@ public:
     unsigned int m_nAnimState;                              // +0xd40
     void* m_pD48;                                           // +0xd48
     ATL::CAtlMap<unsigned int, CString> m_mapAnim;          // +0xd50 state -> animation name
-    MS2Ptr<Unk_NpcData> m_spNpc;                            // +0xd98
-    Unk_EntRef m_entity;                                    // +0xda8
+    MS2Ptr<NpcDataCli> m_spNpc;                             // +0xd98
+    egf::EntityPtr m_entity;                                 // +0xda8
     MS2Ptr<Unk_HpBarFx> m_spFx;                             // +0xdb0
     int m_nGaugeA;                                          // +0xdc0 = 300
     int m_nGaugeB;                                          // +0xdc4 = 500

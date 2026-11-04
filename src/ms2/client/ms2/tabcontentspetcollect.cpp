@@ -91,7 +91,6 @@ class Unk_PcComp : public ASUIComponent
 {
 public:
     Scaleform::GFx::Value FUN_140caf030(const char* szMethod, int a1, AScript a2);      // Invoke(int, AS object)
-    Scaleform::GFx::Value FUN_140caf140(const char* szMethod, ASArray a1);              // Invoke(AS array)
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);                  // Invoke(int)
 };
 #define PC(p) static_cast<Unk_PcComp*>((p).operator->())
@@ -589,7 +588,7 @@ inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf030(const char* szMethod, int
 }
 
 // @0x140caf140 Invoke(name, AS array): the by-value array is destroyed by the callee
-inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf140(const char* szMethod, ASArray a1)
+inline Scaleform::GFx::Value AScript::FUN_140caf140(const char* szMethod, ASArray a1)
 {
     ASArgList args;
     args.FUN_1409b2800(1);

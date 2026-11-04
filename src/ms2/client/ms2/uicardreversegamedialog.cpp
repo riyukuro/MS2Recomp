@@ -43,7 +43,6 @@ class Unk_CRAS : public AScript
 {
 };
 void FUN_140614800(const Scaleform::GFx::Value& v);                // destroy a result value
-Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 
 // The name table (global strings).
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
@@ -215,7 +214,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     obj.FUN_1409c0d20("itemRank", spCard->m_nRank);
                     obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
                     obj.FUN_1407cbb20("itemName", spItem->FUN_140527b10());
-                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
+                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
                     m_1a8.Add(spCard);
                 }
             }
@@ -328,7 +327,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                     obj.FUN_1409c0d20("itemRank", m_1f8->m_nRank);
                     obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
                     obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
-                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
+                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
                     OnCardTweenComplete();
                     m_1f0 = -1;
                     m_1f8 = 0;
@@ -356,7 +355,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         obj.FUN_1409adc90("itemRank", spCard->m_nRank);
                         obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
                         obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCard->m_nItemId));
-                        static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
+                        static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
                     }
                 }
             }

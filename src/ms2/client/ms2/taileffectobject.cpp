@@ -26,8 +26,7 @@
 #include "ms2/client/ms2/effectservice.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
-extern char DAT_143afa4d8;                                  // shadow-node table (see FUN_14098d8d0)
-extern char DAT_143a08cf8;                                  // the up axis handed to FUN_140a0b080
+#define DAT_143a08cf8 (*(char*)&efd::Point3::UNIT_Z)                                  // the up axis handed to FUN_140a0b080
 
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                // entity -> its scene graph root (util.cpp)
 NiAVObject* FUN_141b6efc0(egf::Entity* p);                               // entity -> its scene root key
@@ -166,7 +165,7 @@ void CTailEffectObject::FUN_140acee90()
     Unk_NodePtr spNode(NiNew NiNode(0));
     if (m_pOwner->GetClassID() == 0x6200044)
     {
-        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410())))))));
+        NiNode* pRoot = static_cast<NiNode*>(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(((void*)((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c410())))))));
         pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
     }
     else
@@ -188,7 +187,7 @@ void CTailEffectObject::FUN_140acee90()
     spInfo->m_spNode = spNode;
     spInfo->m_nEffectId = nHandle;
 
-    Unk_NodePtr spBase(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
+    Unk_NodePtr spBase(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
     if (!FUN_1409475d0(&spBase))
         return;
 
@@ -300,7 +299,7 @@ void CTailEffectObject::FUN_140acf8f0()
     float fScale = ((class GameObject*)(class GameObject*)(m_pOwner))->FUN_14123c260();
     float fDist = m_spData->m_fDistance * fScale;
 
-    Unk_NodePtr spPrev(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
+    Unk_NodePtr spPrev(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(m_pOwner->FUN_14123c460())))));
     std::list<MS2Ptr<TailEffectInfo> >& rList = m_listInfo;
     for (std::list<MS2Ptr<TailEffectInfo> >::const_iterator itEnd = rList.end(), it = rList.begin(); it != itEnd; ++it)
     {

@@ -128,7 +128,6 @@ class Unk_SiNpc : public CNpc
 };
 
 // The actor's distance to the local player.
-class Unk_HudActor { public: float FUN_140f4a450(); };
 
 // The world manager: the interact objects and the actors.
 class Unk_SiWorld : public WorldService
@@ -139,7 +138,6 @@ public:
 };
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
-void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
 
 // The quest manager: does the quest state satisfy a mask.
 class Unk_SiQuestEval
@@ -503,7 +501,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 Vector3 kRot = spObject->GetRot();
                 NiTransform kXform;
                 Unk_NiPoint3 kNiPos(spObject->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-                FUN_14097faa0(reinterpret_cast<float*>(&kXform.m_Translate), &kNiPos);
+                *reinterpret_cast<NiPoint3*>(reinterpret_cast<float*>(&kXform.m_Translate)) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&kNiPos)));
                 reinterpret_cast<efd::Matrix3*>(&kXform.m_Rotate)->FromEulerAnglesXYZ((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                                               (kRot.z * 3.1415927f) / 180.0f);
                 kXform.m_fScale = 1.0f;
@@ -640,7 +638,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
                 pNpc->SendInteractNpc();
             else
             {
-                float fDist = reinterpret_cast<Unk_HudActor*>(pNpc)->FUN_140f4a450();
+                float fDist = reinterpret_cast<GameObject*>(pNpc)->FUN_140f4a450();
                 if (*static_cast<Client::Constants*>(FUN_1401d3200())->InteractionDistance.Get() < fDist)
                 {
                     pPC->vfunc_59(1, 0, 0, 0);

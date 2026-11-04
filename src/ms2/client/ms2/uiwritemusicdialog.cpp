@@ -274,9 +274,9 @@ class TiXmlElement
 {
 public:
     TiXmlElement(const char* szName);                                       // 0x14086f2f0
-    ~TiXmlElement();                                                        // 0x14086f450
+    virtual ~TiXmlElement();                                                // 0x14086f450
 private:
-    void* m_pad[0x90 / sizeof(void*)];
+    void* m_pad[(0x90 - 8) / sizeof(void*)];
 public:
     void SetAttribute(char const*, int);   // C3: was free FUN_14086f920
 };
@@ -284,18 +284,18 @@ class TiXmlText
 {
 public:
     TiXmlText(const char* szText);                                          // 0x1408723d0
-    ~TiXmlText();                                                           // 0x140872500
+    virtual ~TiXmlText();                                                   // 0x140872500
     void SetCDATA(bool bCData);                                             // SetCDATA
 private:
-    void* m_pad[0x58 / sizeof(void*)];
+    void* m_pad[(0x58 - 8) / sizeof(void*)];
 };
 class TiXmlDeclaration
 {
 public:
     TiXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone);   // 0x1408704d0
-    ~TiXmlDeclaration();                                                    // 0x14081ad20
+    virtual ~TiXmlDeclaration();                                            // 0x14081ad20
 private:
-    void* m_pad[0x68 / sizeof(void*)];
+    void* m_pad[(0x68 - 8) / sizeof(void*)];
 };
 class TiXmlNode   // C3: member view for the former free stand-ins
 {

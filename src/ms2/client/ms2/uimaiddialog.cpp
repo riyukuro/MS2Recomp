@@ -89,8 +89,7 @@ CommonString* FUN_14025e7d0();                                  // the CommonStr
 extern template class MS2Ptr<CBanTextChecker>;
 
 CStringW GetStringCommon(int nStringId);                          // string table text by id
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CStringW FUN_140763e10(int nNumber);                            // a number with digit grouping
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 __int64 GetServerTime();                                        // the server time

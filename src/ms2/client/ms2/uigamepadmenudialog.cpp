@@ -122,7 +122,6 @@ public:
 class Unk_GpAS : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 n);
 };
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 
@@ -138,7 +137,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 
 // @0x140c1c8c0
-Scaleform::GFx::Value Unk_GpAS::FUN_140c1c8c0(const char* szMethod, unsigned __int64 n)
+Scaleform::GFx::Value AScript::FUN_140c1c8c0(const char* szMethod, unsigned __int64 n)
 {
     ASArgList args;
     args.FUN_1409b2800(1);
@@ -289,7 +288,7 @@ void UIGamePadMenuDialog::FUN_140c1b550()
     FUN_140c1c010(m_menus);
     if (m_menus.GetCount() > 0)
     {
-        static_cast<Unk_GpAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140c1c8c0("updateAlignment", m_menus.GetCount());
+        static_cast<AScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140c1c8c0("updateAlignment", m_menus.GetCount());
         m_timer.FUN_140868750(m_nMoveMs);
     }
 }

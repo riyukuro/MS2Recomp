@@ -164,8 +164,6 @@ private:
 };
 
 // A UGC product uid as the packet writes it (ctor 0x140d64c50 zeroes it).
-struct Unk_MeratOid : public Unk_MeratProductKey { bool operator==(const Unk_MeratOid& o) const; };
-
 struct Unk_MmUid
 {
     Unk_MmUid() : m_n(0) {}
@@ -1175,7 +1173,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d578d0(Unk_MeratProductKey k
         size_t nCount = m_270.GetCount();
         for (size_t i = 0; i < nCount; i++) {
             MS2Ptr<CMeratMarketProduct> spProduct = m_270[i];
-            if (spProduct.get() != 0 && static_cast<const Unk_MeratOid&>(spProduct->m_key) == static_cast<const Unk_MeratOid&>(key))
+            if (spProduct.get() != 0 && spProduct->m_key == key)
                 return spProduct;
         }
     }
@@ -1249,7 +1247,7 @@ MS2Ptr<CMeratMarketProduct> CMeratMarketMan::FUN_140d57f70(Unk_MeratProductKey k
         for (unsigned int i = 0; i < m_basket.GetCount(); i++) {
             MS2Ptr<CMeratMarketBasket> spLine = m_basket[i];
             if (spLine.get() ? true : false) {
-                if ((spLine->m_spProduct.get() ? true : false) && static_cast<const Unk_MeratOid&>(spLine->m_spProduct->m_key) == static_cast<const Unk_MeratOid&>(key))
+                if ((spLine->m_spProduct.get() ? true : false) && spLine->m_spProduct->m_key == key)
                     return spLine->m_spProduct;
             }
         }

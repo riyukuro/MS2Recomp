@@ -40,15 +40,8 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_141901470(int n, int nType);                           // UIObject::vfunc_47's helper
 UIRewardNotify* FUN_140938cd0(int uiType);                      // GetDialog<UIRewardNotify>
 
-// The "setPrologue" call: the page text and the display time.
-class Unk_CbScript : public AScript
-{
-public:
-    Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nTime);
-};
-
 // @0x140e0a8c0
-inline Scaleform::GFx::Value Unk_CbScript::FUN_140e0a8c0(const char* szMethod, CStringW strText, int nTime)
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW strText, int nTime)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
@@ -85,7 +78,7 @@ void UIChapterBook::OnLoadComplete()
         CChapterBookTable::DataPtr spBook = CChapterBookTable::GetInstance()->Get(m_nPrologue);
         if (spBook.get() != 0)
         {
-            static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setPrologue",
+            static_cast<AScript*>(m_30.operator->())->Invoke("setPrologue",
                 TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x39, m_nPrologue), 5000);
         }
     }

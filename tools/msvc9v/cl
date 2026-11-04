@@ -1,0 +1,8 @@
+#!/bin/bash
+# cl 15.00.30729 (VS2008 SP1 x64) for the units that declare `// MS2-TOOLSET: vc9v`: Scaleform Video add-on code that the
+# exe links from VS2008 objs. The rest of the add-on is VS2012 (vc11). This is the vc9 cl and headers (tools/msvc9/cl) with
+# the vc11 options (cmake/ms2-unit-profiles.cmake). Like tools/msvc11/cl it puts src/ on the include path, and it forces
+# in compat.h, which defines away the C++11 keywords the SF headers use.
+R=$(cd "$(dirname "$0")/../.." && pwd)
+[ $# -eq 0 ] && exec "$R/tools/msvc9/cl"    # the banner
+exec "$R/tools/msvc9/cl" "/I$R/src" "/FI$R/tools/msvc9v/compat.h" "$@"

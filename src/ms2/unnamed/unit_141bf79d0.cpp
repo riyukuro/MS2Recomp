@@ -9,6 +9,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/worldservice_real.h"   // C3: the map payload types for pointer_traits::pointer_to
 
 typedef __int64 i64;
 typedef unsigned __int64 u64;
@@ -23,20 +24,10 @@ void* FUN_141bef090(void* pMap, void* pKeyBuf, void* pKey);
 void* FUN_141bef0d0(void* pMap, void* pKeyBuf, void* pKey);
 void* FUN_1403b8210(void* pKey);                               // key normalisation
 
-void* FUN_141c28870(void* pMap);                               // the map's backing array
 void* FUN_141c288b0(void* pMap);
-void* FUN_1413f4420(void* pMap);
 
 // The nine per-type node accessors' callees (payload pointer derived from the node).
-void* FUN_141c2e990(void* pNode);
-void* FUN_141c2e9b0(void* pNode);
-void* FUN_141c2e9d0(void* pNode);
 void* FUN_141c2e9f0(void* pNode);
-void* FUN_141c2ea10(void* pNode);
-void* FUN_141c2ea30(void* pNode);
-void* FUN_141c2ea50(void* pNode);
-void* FUN_141c2ea70(void* pNode);
-void* FUN_141c2ea90(void* pNode);
 
 // ---- forward declarations of this unit's later helpers ----
 void* FUN_141bf7dd0(void* pNode);
@@ -129,7 +120,7 @@ u64 FUN_141bf7b50(void* pMap, void* pKey)
 // @0x141bf7b90
 u64 FUN_141bf7b90(void* pMap, u64 i)
 {
-    return *(u64*)FUN_141c28870(pMap) + i * 0x10;
+    return *(u64*)&((std::vector<std::pair<CString, CStringW> >*)pMap)->_Myfirst() + i * 0x10;
 }
 
 // @0x141bf7bc0
@@ -141,7 +132,7 @@ u64 FUN_141bf7bc0(void* pMap, u64 i)
 // @0x141bf7bf0
 u64* FUN_141bf7bf0(void* pMap, u64 i)
 {
-    return *(u64**)FUN_1413f4420(pMap) + i;
+    return *(u64**)&((std::vector<egf::EntityID>*)pMap)->_Myfirst() + i;
 }
 
 // ---------------------------------------------------------------------------
@@ -246,31 +237,31 @@ u64 FUN_141bf7dc0(void* p) { return *(u64*)((char*)p + 8); }
 // ---------------------------------------------------------------------------
 
 // @0x141bf7dd0
-void* FUN_141bf7dd0(void* pNode) { return FUN_141c2e990((void*)FUN_141bf8080(pNode)); }
+void* FUN_141bf7dd0(void* pNode) { return std::pointer_traits<std::pair<const int, std::pair<egf::EntityID, unsigned int> >*>::pointer_to(*(std::pair<const int, std::pair<egf::EntityID, unsigned int> >*)FUN_141bf8080(pNode)); }
 
 // @0x141bf7df0
-void* FUN_141bf7df0(void* pNode) { return FUN_141c2e9b0((void*)FUN_141bf80a0(pNode)); }
+void* FUN_141bf7df0(void* pNode) { return (void*)&((const std::list<egf::Entity*>*)FUN_141bf80a0(pNode))->_Myhead(); }
 
 // @0x141bf7e10
-void* FUN_141bf7e10(void* pNode) { return FUN_141c2e9d0((void*)FUN_141bf80c0(pNode)); }
+void* FUN_141bf7e10(void* pNode) { return std::pointer_traits<std::pair<const unsigned int, efd::SmartPointer<egf::Entity> >*>::pointer_to(*(std::pair<const unsigned int, efd::SmartPointer<egf::Entity> >*)FUN_141bf80c0(pNode)); }
 
 // @0x141bf7e30
 void* FUN_141bf7e30(void* pNode) { return FUN_141c2e9f0((void*)FUN_141bf80e0(pNode)); }
 
 // @0x141bf7e50
-void* FUN_141bf7e50(void* pNode) { return FUN_141c2ea10((void*)FUN_141bf8100(pNode)); }
+void* FUN_141bf7e50(void* pNode) { return std::pointer_traits<std::pair<const egf::EntityID, efd::SmartPointer<CEntityShower> >*>::pointer_to(*(std::pair<const egf::EntityID, efd::SmartPointer<CEntityShower> >*)FUN_141bf8100(pNode)); }
 
 // @0x141bf7e70
-void* FUN_141bf7e70(void* pNode) { return FUN_141c2ea30((void*)FUN_141bf8120(pNode)); }
+void* FUN_141bf7e70(void* pNode) { return std::pointer_traits<std::pair<const egf::EntityID, efd::SmartPointer<CEntityHider> >*>::pointer_to(*(std::pair<const egf::EntityID, efd::SmartPointer<CEntityHider> >*)FUN_141bf8120(pNode)); }
 
 // @0x141bf7e90
-void* FUN_141bf7e90(void* pNode) { return FUN_141c2ea50((void*)FUN_141bf8140(pNode)); }
+void* FUN_141bf7e90(void* pNode) { return std::pointer_traits<std::pair<const egf::EntityID, WsReal::VisibleObjectRecord>*>::pointer_to(*(std::pair<const egf::EntityID, WsReal::VisibleObjectRecord>*)FUN_141bf8140(pNode)); }
 
 // @0x141bf7eb0
-void* FUN_141bf7eb0(void* pNode) { return FUN_141c2ea70((void*)FUN_141bf8160(pNode)); }
+void* FUN_141bf7eb0(void* pNode) { return std::pointer_traits<std::pair<const egf::EntityID, __int64>*>::pointer_to(*(std::pair<const egf::EntityID, __int64>*)FUN_141bf8160(pNode)); }
 
 // @0x141bf7ed0
-void* FUN_141bf7ed0(void* pNode) { return FUN_141c2ea90((void*)FUN_141bf8180(pNode)); }
+void* FUN_141bf7ed0(void* pNode) { return std::pointer_traits<std::pair<const unsigned __int64, MS2Ptr<WsReal::Recad0> >*>::pointer_to(*(std::pair<const unsigned __int64, MS2Ptr<WsReal::Recad0> >*)FUN_141bf8180(pNode)); }
 
 // ---------------------------------------------------------------------------
 // field-offset readers

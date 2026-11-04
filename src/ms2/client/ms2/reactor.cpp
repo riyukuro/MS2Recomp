@@ -68,18 +68,8 @@ static Unk_1402a9d70 condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders and externals ----
 
-// Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and its transform (NiTransform).
-// Their ctors and dtor are bound in symbols-manual.tsv.
-struct Unk_RxXform
-{
-    Unk_RxXform();                                              // 0x140a332d0
-    Unk_EfdMatrix3 m_rotate;
-    float m_afTranslate[3];
-    float m_fScale;
-};
-MS2_CHECK_SIZE(Unk_RxXform, 0x34);
-void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
-Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);          // NiPoint3(const efd::Point3&)
+// Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0); its transform is a NiTransform (ctor 0x140a332d0).
+// Its ctor and dtor are bound in symbols-manual.tsv.
 struct Unk_RxFxRequest
 {
     Unk_RxFxRequest();                                          // 0x140a52ef0
@@ -88,7 +78,7 @@ struct Unk_RxFxRequest
     int m_nOwnerId;
     int m_pad_0c;
     void* m_pSlot10;
-    Unk_RxXform* m_pXform;
+    NiTransform* m_pXform;
     void* m_pad_20[(0x70 - 0x20) / 8];                          // not a char array: that would add a /GS cookie
 };
 MS2_CHECK_SIZE(Unk_RxFxRequest, 0x70);
@@ -286,10 +276,10 @@ bool CReactor::FUN_140b78ef0(const CString& strEffect)
         return true;
     const NiPoint3& pos = vfunc_18();
     const NiPoint3& rot = vfunc_20();
-    Unk_RxXform xf;
-    Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-    FUN_14097faa0(xf.m_afTranslate, &niTop);
-    ((efd::Matrix3*)(Unk_EfdMatrix3*)&(xf.m_rotate))->FromEulerAnglesXYZ((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f, (rot.z * 3.1415927f) / 180.0f);
+    NiTransform xf;
+    NiPoint3 niTop(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)))));
+    xf.m_Translate = static_cast<NiPoint3&&>(niTop);
+    ((efd::Matrix3*)&(xf.m_Rotate))->FromEulerAnglesXYZ((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f, (rot.z * 3.1415927f) / 180.0f);
     xf.m_fScale = 1.0f;
     NoticeMessage request;   // C3: was Unk_RxFxRequest
     ((Unk_RxFxRequest&)(request)).m_strName = strEffect;

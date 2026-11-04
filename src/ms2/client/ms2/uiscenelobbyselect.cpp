@@ -138,7 +138,6 @@ public:
     virtual void vfunc_61();
     virtual void vfunc_62();
 };
-class Unk_LsBgScript { public: Scaleform::GFx::Value FUN_140e262c0(const char* a, const char* b); };
 typedef UIMsg Unk_LsUIMsg;
 
 class CUIService;
@@ -525,7 +524,7 @@ MS2_REPLACE_METHOD(0x141ACE8B0, UISceneLobbyServer, OnLoadInit, 59, 0x9081FF50);
 void UISceneLobbyServer::vfunc_60(MS2Ptr<AScript> spBackground)
 {
     if (spBackground.get() != 0) {
-        reinterpret_cast<Unk_LsBgScript*>(spBackground.operator->())->FUN_140e262c0("bgGotoAndPlay", "endTitleAni");
+        spBackground.operator->()->FUN_140e262c0("bgGotoAndPlay", "endTitleAni");
     }
 }
 MS2_REPLACE_METHOD(0x141ACE900, UISceneLobbyServer, vfunc_60, 101, 0x9A873225);

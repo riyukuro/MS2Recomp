@@ -19,10 +19,11 @@
 #include "ms2/client/ms2/worldservice.h"
 class NoticeMessage { public: class GameObject * GetOwner(void); };
 // Resource manager (singleton 0x140a0afd0): texture load by path.
-class Unk_ResourceMgr
+class Unk_ResourceMgr;
+class CNifLoadingService   // C3: member view (nifeffectparam.h)
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
@@ -59,7 +60,7 @@ MS2_REPLACE_METHOD(0x14184b590, TextureOverrideEffectParam, vfunc_1, 63, 0x5AA43
 bool TextureOverrideEffectParam::vfunc_5(int nFlags)
 {
     if (FUN_140a0afd0())
-        FUN_140a0afd0()->FUN_141552f90(FUN_140cc2a00("", m_strTexturePath), nFlags);
+        ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_140cc2a00("", m_strTexturePath), nFlags);
     return true;
 }
 MS2_REPLACE_METHOD(0x14184b5e0, TextureOverrideEffectParam, vfunc_5, 161, 0x73218F92);
@@ -105,7 +106,7 @@ bool TextureOverrideEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget
     }
     const TextureOverrideEffectParam* pTexParam = static_cast<const TextureOverrideEffectParam*>(pParam);
     CString strPath = FUN_140cc2a00("", pTexParam->m_strTexturePath);
-    m_spTexture = FUN_140a0afd0()->FUN_141552f90(strPath, 5);
+    m_spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strPath, 5);
     return true;
 }
 MS2_REPLACE_METHOD(0x14184b840, TextureOverrideEffect, vfunc_3, 592, 0xA3D89515);

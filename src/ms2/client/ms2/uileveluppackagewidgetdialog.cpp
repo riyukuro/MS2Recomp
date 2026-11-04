@@ -35,6 +35,7 @@
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/client/ms2/questmanager_2.h"
@@ -120,26 +121,7 @@ void FUN_140710590(COutPacket& packet);
 class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 
 
-// the event tables (0x143ab2fc0): (kind, event id) -> value; the key / iterator / map / entry views are those of the attend table
-struct Unk_AttendKey
-{
-    Unk_AttendKey(int nRow, int nId);                       // 0x14041eee0
-    int m_nRow;
-    int m_nId;
-};
-class Unk_AttendValue;
-class Unk_AttendIter                                        // 16 bytes; ctor 0x140420170, dtor 0x140420290
-{
-public:
-    Unk_AttendIter();
-    ~Unk_AttendIter();
-    Unk_AttendValue* FUN_140420460();                       // the entry
-private:
-    void* m_pad_00;
-    void* m_pad_08;
-};
-MS2_CHECK_SIZE(Unk_AttendIter, 0x10);
-class Unk_AttendMap { public: bool FUN_140420bb0(const Unk_AttendKey& key, Unk_AttendIter& it); };
+// the event tables (0x143ab2fc0, a GameEventUserValue): (kind, event id) -> value; the entry view is that of the attend table
 __int64 GetServerTime();                                    // the server time
 unsigned __int64 FUN_140718370(const CStringW& strValue);   // _wtoi64
 class Unk_AttendValue
@@ -163,9 +145,10 @@ private:
     void* m_pad_00;
     void* m_pad_08;
     void* m_pad_10;
-    Unk_AttendMap m_map;                                    // +0x18
+    GameEventUserValue::VariableMap m_map;                  // +0x18
 };
-extern Unk_AttendTable g_attendTable;                       // 0x143ab2fc0
+extern GameEventUserValue DAT_143ab2fc0;   // userproxy.cpp
+#define g_attendTable (*(Unk_AttendTable*)&DAT_143ab2fc0)   // C3: was extern Unk_AttendTable g_attendTable
 class Unk_DTTable { public: __int64 FUN_140be8f80(int nKind, unsigned nId, const __int64& nDefault); };
 #define g_attendTableDT (*reinterpret_cast<Unk_DTTable*>(&g_attendTable))
 
@@ -620,10 +603,10 @@ MS2_REPLACE_METHOD(0x140C5AB80, UIBurningEventWidgetDialog, FUN_140c5ab80, 67, 0
 // @0x140c5af20
 __int64 Unk_AttendTable::FUN_140c5af20(int nRow, unsigned nEventId, const __int64& nDefault)
 {
-    Unk_AttendKey key(nRow, nEventId);
-    Unk_AttendIter it;
-    if (m_map.FUN_140420bb0(key, it))
-        return it.FUN_140420460()->FUN_140c5afd0(nDefault);
+    GameEventVariable::Key key(nRow, nEventId);
+    GameEventUserValue::VariablePtr it;
+    if (m_map.Lookup(key, it))
+        return reinterpret_cast<Unk_AttendValue*>(it.operator->())->FUN_140c5afd0(nDefault);
     return nDefault;
 }
 

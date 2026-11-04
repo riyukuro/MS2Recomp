@@ -466,7 +466,13 @@ struct CefString16
     }
 };
 void* operator new(size_t size);
-void FUN_14277e6e0(CefString16* s, cef_string_t* userfree);   // AttachToUserFree
+struct CefStringTraitsUTF16;
+struct _cef_string_utf16_t;   // the SDK's name for cef_string_t
+template <class Traits> class CefStringBase
+{
+public:
+    void AttachToUserFree(_cef_string_utf16_t* str);   // 0x14277e6e0 for CefStringTraitsUTF16
+};
 
 static __forceinline CefString16* CefStringFromUserFree(CefString16* out, cef_string_t* userfree)
 {
@@ -474,7 +480,7 @@ static __forceinline CefString16* CefStringFromUserFree(CefString16* out, cef_st
     tmp.vt = DAT_142e1af88;
     tmp.str = nullptr;
     tmp.owner = false;
-    FUN_14277e6e0(&tmp, userfree);
+    reinterpret_cast<CefStringBase<CefStringTraitsUTF16>*>(&tmp)->AttachToUserFree(reinterpret_cast<_cef_string_utf16_t*>(userfree));
     out->vt = DAT_142e1af88;
     out->str = nullptr;
     out->owner = false;

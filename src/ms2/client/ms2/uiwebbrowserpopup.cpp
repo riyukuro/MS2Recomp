@@ -24,7 +24,6 @@ class Unk_WpConsts { public:
     Unk_WpInt m_8a50;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_WpConsts*)
-class Unk_RewardClip { public: Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg); };   // C3: view (uidungeonrewarddialog.h)
 
 // @0x140fc1e20
 UIWebBrowserPopup::UIWebBrowserPopup()
@@ -58,7 +57,7 @@ void UIWebBrowserPopup::OnLoadComplete()
 {
     UIWebBrowser::OnLoadComplete();
     if (m_30.get() != 0)
-        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("changeTitle", "$s_webbrowserpopup_title2");
+        reinterpret_cast<AScript*>(m_30.operator->())->FUN_140e262c0("changeTitle", "$s_webbrowserpopup_title2");
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

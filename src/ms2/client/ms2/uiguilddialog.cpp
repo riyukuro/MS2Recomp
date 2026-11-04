@@ -131,12 +131,9 @@ private:
     void* m_pad[0x88 / 8];                                      // 0x90 bytes; pointer slots: an array of scalars would be a /GS buffer
 };
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
-class Unk_IntTriple { public: int Sum(); };   // C3: member view (0x140267c10)
 class CommonString* FUN_14025e7d0();   // C3: the exe's CommonString instance getter (TSingleton<CommonString>::GetInstance)
 struct Unk_QnTracking;
 class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
-class Unk_GpAS { public: Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 a1); };   // C3: member view
-class Unk_BpAScript { public: Scaleform::GFx::Value FUN_140c38f00(const char* szMethod, CString a1, CStringW a2); };   // C3: member view
 
 // ---- statics (.text$di) ----
 static CString s_strTooltipAlign = "tooltipAlign";
@@ -2011,7 +2008,7 @@ void UIGuildDialog::FUN_14196da70()
     size_t nStart = (m_nAcceptPage - 1) * 7;
     if (m_30 == 0)
         return;
-    reinterpret_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setAcceptMemberCount", arrRequests.GetCount());
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("setAcceptMemberCount", arrRequests.GetCount());
     if (!m_acceptRequestPage)
         return;
     if (arrRequests.GetCount() <= nStart)
@@ -3183,7 +3180,7 @@ void UIGuildDialog::FUN_1419764f0(unsigned __int64 nGuildId, const CString& strC
     if (m_pvpHistoryPage.get() != 0)
     {
         CString strPath = FUN_141029590(nGuildId, FUN_14016a5c0(strCode, 0), "", "");
-        reinterpret_cast<Unk_BpAScript*>(m_pvpHistoryPage.operator->())->FUN_140c38f00("setGuildMark", FUN_140719530(nGuildId), FUN_14016a730(strPath, 0));
+        reinterpret_cast<AScript*>(m_pvpHistoryPage.operator->())->FUN_140c38f00("setGuildMark", FUN_140719530(nGuildId), FUN_14016a730(strPath, 0));
     }
 }
 

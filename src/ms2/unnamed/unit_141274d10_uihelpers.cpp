@@ -551,7 +551,7 @@ struct Unk_AlignOffset { float x, y; };
 
 // Places two dialogs side by side: when they do not fit next to each other, the left one is moved to make room.
 // @0x141275c30
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight)
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight)
 {
     if (pLeft == 0 || pRight == 0)
         return;
@@ -629,17 +629,6 @@ struct Unk_Point2 { float m_x, m_y; public:
 // the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
 // this obj does not instantiate a second copy (LNK2005 in the full-exe link)
 template<> class TSingleton<CameraMgr> { public: static CameraMgr* s_instance; static CameraMgr* GetInstance(); };
-class Unk_Vec2Pair;
-class Unk_Vec2 {
-public:
-    float m_x, m_y;
-    Unk_Vec2* FUN_140a0a600(float x, float y);                                      // constructs in place, returns this
-    Unk_Vec2Pair* FUN_140a4e500(Unk_Vec2Pair* pOut, const Unk_Vec2* pRhs);          // this - rhs
-};
-class Unk_Vec2Pair {
-public:
-    float m_x, m_y;
-};
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -653,7 +642,7 @@ float FUN_141032e60(void*);
 float FUN_14028aed0(float);
 
 // @0x1412762d0
-float FUN_1412762d0(const Unk_Point2* pPos)
+float FUN_1412762d0(const NiPoint3& kPos)
 {
     float fZoomRaw;
     float fLength;
@@ -668,9 +657,7 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() == 0)
         return 0.0f;
     Vector3 vOrigin = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
-    Unk_Vec2 vFromBuf, vToBuf;
-    Unk_Vec2Pair vDelta;
-    fLength = ((struct Unk_Point2*)(class Unk_Vec2Pair*)(vToBuf.FUN_140a0a600(vOrigin.x, vOrigin.y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y))))->FUN_140affe70();
+    fLength = reinterpret_cast<const Unk_Point2&>(static_cast<const efd::Point2&>(efd::Point2(vOrigin.x, vOrigin.y) - efd::Point2(kPos.x, kPos.y))).FUN_140affe70();
     fBase = -40.0f;
     fRange = 70.0f;
     fZoomRaw = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());

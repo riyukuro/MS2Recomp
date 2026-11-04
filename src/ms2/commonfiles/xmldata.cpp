@@ -29,20 +29,23 @@ public:
     Unk_TiXmlAttribute sentinel;
 };
 
-class Unk_TiXmlElement
+enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+class TiXmlParsingData;
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
+    TiXmlElement(const char* pszName);          // 0x14086f2f0
+    virtual ~TiXmlElement();                    // 0x14086f450
+    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0 (virtual slot 2, called directly)
     // @0x14092c880
     Unk_TiXmlAttribute* FirstAttribute() { return attributeSet.First(); }
 private:
-    void* unknown00[5];                         // TiXmlBase, parent, type
+    void* unknown08[4];                         // TiXmlBase (after the vftable), parent, type
     void* firstChild;                           // +0x28
     void* unknown30[4];                         // lastChild, value, prev, next
     Unk_TiXmlAttributeSet attributeSet;         // +0x50
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // The TinyXML members and the string converters this file calls but does not own.
 class TiXmlAttribute   // C3: member view for the former free stand-ins
@@ -51,13 +54,6 @@ public:
     char const* Name() const;
     class TiXmlAttribute const* Next() const;
     char const* Value() const;
-};
-enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
-class TiXmlParsingData;
-class TiXmlElement   // C3: member view (Parse is virtual slot 2, called directly)
-{
-public:
-    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
 };
 
 CStringA FUN_14016a600(const wchar_t* psz, int nLength);                // narrows a wide string
@@ -116,7 +112,7 @@ void CXmlData::FUN_14092c400(const CStringW& strValues)
         return;
 
     CStringA strXml = FUN_14016a600(strValues, 0);
-    Unk_TiXmlElement xmlElement("xmlData");
+    TiXmlElement xmlElement("xmlData");
     void* pParsed = (void*)reinterpret_cast<TiXmlElement*>(&xmlElement)->TiXmlElement::Parse(strXml.GetBuffer(), 0, TIXML_ENCODING_UNKNOWN);
     if (pParsed == 0)
         return;

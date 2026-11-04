@@ -22,7 +22,7 @@ void FUN_1403a1310(void* pLogger, int nLevel, int nId, const wchar_t* pszFormat,
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 CStringW FUN_14016a730(const char* psz, int n);                     // narrow -> wide
 int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);
-void FUN_141b6fc50(const CString& strText, const CString& strCaption, int n);   // message box
+int FUN_141b6fc50(const CString& strText, const CString& strCaption, unsigned n);   // message box
 
 // The event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 

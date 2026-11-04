@@ -19,8 +19,8 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 
 #ifndef MS2_HOOK_DLL
 class CRandomEffect { public: static const NiRTTI ms_RTTI; };
-extern const NiRTTI DAT_143ad1568;   // CEffect::ms_RTTI
-const NiRTTI CRandomEffect::ms_RTTI("CRandomEffect", &DAT_143ad1568);
+class CEffect { public: static const NiRTTI ms_RTTI; };   // C3: was extern const NiRTTI DAT_143ad1568
+const NiRTTI CRandomEffect::ms_RTTI("CRandomEffect", &CEffect::ms_RTTI);
 #endif
 
 static CString s_strSkill2 = "skill";

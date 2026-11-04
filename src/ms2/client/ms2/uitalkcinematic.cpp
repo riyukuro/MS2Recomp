@@ -903,10 +903,6 @@ int FUN_140855cd0(unsigned char nFlags);
 int FUN_140857990(Unk_ScriptPtr<CTalkScript> spScript, int nFlags, int nNpc, int nPage);
 #include "ms2/commonfiles/scriptptr.h"
 template <class T> T* Unk_GaGetUIByName(const CString& strDialog);   // the dialog of a name
-class Unk_TcStrArray : public ATL::CAtlArray<CString>   // dtor 0x1401641d0 = ~CAtlArray<CString>
-{
-public:
-};
 
 // @0x141b1da80
 Unk_TalkIdState::Unk_TalkIdState()
@@ -1335,8 +1331,8 @@ void UITalkManager::FUN_141b1f840(CInPacket& in)
 // @0x141b1f920
 void UITalkManager::FUN_141b1f920(const CString& strArgs)
 {
-    Unk_TcStrArray kParts;
-    Unk_SplitA(const_cast<CString&>(strArgs), (ATL::CAtlArray<CString>*)&kParts, ",");
+    ATL::CAtlArray<CString> kParts;
+    Unk_SplitA(const_cast<CString&>(strArgs), &kParts, ",");
     CString strKind = kParts[0];
     CString strMode;
     if (kParts.GetCount() > 1)

@@ -14,6 +14,7 @@
 #include "hook/ms2hook.h"
 #include <efd/RefCount.h>
 #include <efd/SmartPointer.h>
+#include <efd/ClassInfo.h>
 #include "ms2/placeholder/gameeventmanagercli.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -28,6 +29,7 @@
 #include "ms2/commonfiles/ugcdesigntable.h"
 #include "ms2/placeholder/paybacktable.h"
 #include "ms2/commonfiles/reactordata.h"
+#include "ms2/placeholder/carcadedatatable.h"
 #include "ms2/client/ms2/commoneffectdummy.h"
 #include "ms2/placeholder/setitemtable.h"
 #include "ms2/placeholder/weddingtable.h"
@@ -69,16 +71,10 @@
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/uidialogeventdispatcher.h"
 
-// Typed prefixes for the otherwise opaque getter objects and hash-chain nodes.
+// Typed prefix for the otherwise opaque getter objects.
 struct Unk_ShutdownValue30 { void* m_opaque[6]; int m_value; };
-struct Unk_ShutdownNode18 { void* m_payload[3]; Unk_ShutdownNode18* m_next; };
-struct Unk_ShutdownNode20 { void* m_payload[4]; Unk_ShutdownNode20* m_next; };
 MS2_CHECK_SIZE(Unk_ShutdownValue30, 0x38);
-MS2_CHECK_SIZE(Unk_ShutdownNode18, 0x20);
-MS2_CHECK_SIZE(Unk_ShutdownNode20, 0x28);
 MS2_CHECK_OFFSET(Unk_ShutdownValue30, m_value, 0x30);
-MS2_CHECK_OFFSET(Unk_ShutdownNode18, m_next, 0x18);
-MS2_CHECK_OFFSET(Unk_ShutdownNode20, m_next, 0x20);
 
 // ---- opaque singleton objects ---------------------------------------------------------------------------------------------
 class Unk_SingletonObj { public: virtual ~Unk_SingletonObj(); };                                // deleted via slot 0
@@ -303,11 +299,11 @@ template<> class TSingleton<CTradeManagerEx> { public: static CTradeManagerEx* s
 template<> class TSingleton<Client::Constants> { public: static Client::Constants* s_instance; static Client::Constants* GetInstance(); };
 template<> class TSingleton<CommonString> { public: static CommonString* s_instance; static CommonString* GetInstance(); };
 template<> class TSingleton<GPUManager> { public: static GPUManager* s_instance; static GPUManager* GetInstance(); };
+template<> class TSingleton<ItemGachaBoxTable> { public: static ItemGachaBoxTable* s_instance; };   // 0x143aaf1d0
+template<class T> class SingletonClass { public: static T* ms_pSingleton; };
+class GFxService;
 struct Unk_NametagFlags;
 // ---- exe globals (the singleton pointers) and getters of other units ----------------------------------------------------------
-extern Unk_SingletonObj* DAT_143aaf1d0;
-extern Unk_SingletonObj* DAT_143ac1928;
-extern Unk_SingletonObj* DAT_143ae0748;
 extern Unk_SingletonObj* DAT_143b05988;
 
 CLogString* GetLogString();
@@ -383,7 +379,6 @@ Unk_SingletonObj* FUN_1414a56e0();
 Unk_SingletonObj* FUN_1414a56f0();
 Unk_SingletonObj* FUN_1414a5700();
 Unk_SingletonObj* FUN_1414a5710();
-Unk_SingletonObj* FUN_1414a5720();
 Unk_SingletonObj* FUN_1414a5730();
 Unk_SingletonObj* FUN_1414a5740();
 Unk_SingletonObj* FUN_1414a5750();
@@ -412,46 +407,41 @@ public:
     unsigned long long FUN_1414a55e0(); unsigned long long FUN_1414a55f0(); unsigned long long FUN_1414a5600(); void* FUN_1414a5640(); int* FUN_1414a5650(); int* FUN_1414a5660();
 };
 // ---- misc externs ---------------------------------------------------------------------------------------------------------
-extern char DAT_143ae0130; extern int DAT_143a01f90; extern int DAT_143a284b0; extern char* DAT_143afa980; extern int DAT_143ae2b48;
+extern int DAT_143a284b0; extern int DAT_143ae2b48;
 struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
+class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend CResultObj FUN_1414a58c0(int idx); };
+#define DAT_143afa980 (*reinterpret_cast<char**>(&NiShadowManager::ms_pkShadowManager))   // C3: was extern char* DAT_143afa980
 void* FUN_1414a54f0_ctor(void* mem, void* self);
 void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
 class NiMaterial; class NiTexture;
-class Unk_HashMap1 {
-public:
-    void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
-    void FUN_1414a5450(); void FUN_1414a5540();
-    void FUN_14076d7d0(void* pNode); bool FUN_14076e320(); unsigned int FUN_14076ea00(unsigned long long n); void FUN_14076e0e0(unsigned int n, int b); void FUN_14076d9d0();
-    void FUN_1414a5ac0();
-};
-class Unk_HashMap2 {
-public:
-    void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
-    void FUN_1414a5470(); void FUN_1414a5560();
-    void FUN_14076d8d0(void* pNode); bool FUN_14076e350(); unsigned int FUN_14076eaf0(unsigned long long n); void FUN_14076e200(unsigned int n, int b); void FUN_14076da20();
-    void FUN_1414a5bd0();
-};
-class Unk_HashMap3 {
-public:
-    void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
-    void FUN_1414a5490(); void FUN_1414a5580();
-    void FUN_1401a9940(void* pNode); bool FUN_1401aa520(); unsigned int FUN_1401aae10(unsigned long long n); void FUN_1401aa190(unsigned int n, int b); void FUN_1401a9c40();
-    void FUN_1414a5ce0();
-};
-class Unk_HashMap4 {
-public:
-    void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
-    void FUN_1414a54b0(); void FUN_1414a55a0();
-    void FUN_1401a9a40(void* pNode); bool FUN_1401aa550(); unsigned int FUN_1401aaf00(unsigned long long n); void FUN_1401aa2b0(unsigned int n, int b); void FUN_1401a9c90();
-    void FUN_1414a5df0();
-};
-class Unk_HashMap5 {
-public:
-    void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
-    void FUN_1414a54d0(); void FUN_1414a55c0();
-    void FUN_1401a9b40(void* pNode); bool FUN_1401aa580(); unsigned int FUN_1401aaff0(unsigned long long n); void FUN_1401aa3d0(unsigned int n, int b); void FUN_1401a9ce0();
-    void FUN_1414a5f00();
-};
+// The five CAtlMap::RemoveAll COMDATs below (and their Disable/EnableAutoRehash) belong to CReactorDataTable's and
+// CArcadeDataTable's maps; FreeNode, IsLocked, PickSize, InitHashTable and FreePlexes are the COMDATs of those tables'
+// units, declared here as explicit specializations so this unit does not carry copies of them.
+template <> void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::FreeNode(CNode* pNode);
+template <> bool ATL::CAtlMap<int, MS2Ptr<ReactorData> >::IsLocked() const throw();
+template <> UINT ATL::CAtlMap<int, MS2Ptr<ReactorData> >::PickSize(size_t nElements) const throw();
+template <> bool ATL::CAtlMap<int, MS2Ptr<ReactorData> >::InitHashTable(UINT nBins, bool bAllocNow);
+template <> void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::FreePlexes() throw();
+template <> void ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::FreeNode(CNode* pNode);
+template <> bool ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::IsLocked() const throw();
+template <> UINT ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::PickSize(size_t nElements) const throw();
+template <> bool ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::InitHashTable(UINT nBins, bool bAllocNow);
+template <> void ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::FreePlexes() throw();
+template <> void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::FreeNode(CNode* pNode);
+template <> bool ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::IsLocked() const throw();
+template <> UINT ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::PickSize(size_t nElements) const throw();
+template <> bool ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::InitHashTable(UINT nBins, bool bAllocNow);
+template <> void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::FreePlexes() throw();
+template <> void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::FreeNode(CNode* pNode);
+template <> bool ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::IsLocked() const throw();
+template <> UINT ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::PickSize(size_t nElements) const throw();
+template <> bool ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::InitHashTable(UINT nBins, bool bAllocNow);
+template <> void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::FreePlexes() throw();
+template <> void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::FreeNode(CNode* pNode);
+template <> bool ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::IsLocked() const throw();
+template <> UINT ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::PickSize(size_t nElements) const throw();
+template <> bool ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::InitHashTable(UINT nBins, bool bAllocNow);
+template <> void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::FreePlexes() throw();
 
 // @0x1414a1c30
 void FUN_1414a1c30()
@@ -709,7 +699,7 @@ MS2_REPLACE(0x1414A2650, FUN_1414a2650, 94, 0xA327B3AF);
 void FUN_1414a26b0()
 {
     if (TSingleton<CNiStreamLoadThread>::s_instance != 0) {
-        delete FUN_1414a5720();
+        delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CNiStreamLoadThread>::GetInstance());
         TSingleton<CNiStreamLoadThread>::s_instance = 0;
     }
 }
@@ -1041,9 +1031,9 @@ MS2_REPLACE(0x1414A3430, FUN_1414a3430, 94, 0xF8F04190);
 // @0x1414a3490
 void FUN_1414a3490()
 {
-    if (DAT_143ac1928 != 0) {
+    if (TSingleton<CSoundEventMgr>::s_instance != 0) {
         delete reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSoundEventMgr>::GetInstance());
-        DAT_143ac1928 = 0;
+        TSingleton<CSoundEventMgr>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A3490, FUN_1414a3490, 94, 0xCD8ED2A6);
@@ -1419,9 +1409,9 @@ MS2_REPLACE(0x1414A43F0, FUN_1414a43f0, 94, 0x0E6BA856);
 // @0x1414a4450
 void FUN_1414a4450()
 {
-    if (DAT_143aaf1d0 != 0) {
+    if (TSingleton<ItemGachaBoxTable>::s_instance != 0) {
         delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_14052d230()));
-        DAT_143aaf1d0 = 0;
+        TSingleton<ItemGachaBoxTable>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x1414A4450, FUN_1414a4450, 94, 0x87DBB161);
@@ -1795,15 +1785,15 @@ void FUN_1414a53f0()
 }
 MS2_REPLACE(0x1414A53F0, FUN_1414a53f0, 94, 0xAE08E5EE);
 // @0x1414a5450
-void Unk_HashMap1::FUN_1414a5450() { m_nLockCount++; }
+template void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::DisableAutoRehash() throw();
 // @0x1414a5470
-void Unk_HashMap2::FUN_1414a5470() { m_nLockCount++; }
+template void ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::DisableAutoRehash() throw();
 // @0x1414a5490
-void Unk_HashMap3::FUN_1414a5490() { m_nLockCount++; }
+template void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::DisableAutoRehash() throw();
 // @0x1414a54b0
-void Unk_HashMap4::FUN_1414a54b0() { m_nLockCount++; }
+template void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::DisableAutoRehash() throw();
 // @0x1414a54d0
-void Unk_HashMap5::FUN_1414a54d0() { m_nLockCount++; }
+template void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::DisableAutoRehash() throw();
 // @0x1414a54f0
 void* FUN_1414a54f0(char* self)
 {
@@ -1816,15 +1806,15 @@ void* FUN_1414a54f0(char* self)
     return r;
 }
 // @0x1414a5540
-void Unk_HashMap1::FUN_1414a5540() { do { } while (0); m_nLockCount--; }
+template void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::EnableAutoRehash() throw();
 // @0x1414a5560
-void Unk_HashMap2::FUN_1414a5560() { do { } while (0); m_nLockCount--; }
+template void ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::EnableAutoRehash() throw();
 // @0x1414a5580
-void Unk_HashMap3::FUN_1414a5580() { do { } while (0); m_nLockCount--; }
+template void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::EnableAutoRehash() throw();
 // @0x1414a55a0
-void Unk_HashMap4::FUN_1414a55a0() { do { } while (0); m_nLockCount--; }
+template void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::EnableAutoRehash() throw();
 // @0x1414a55c0
-void Unk_HashMap5::FUN_1414a55c0() { do { } while (0); m_nLockCount--; }
+template void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::EnableAutoRehash() throw();
 // @0x1414a55e0
 unsigned long long Unk_MiscThis::FUN_1414a55e0() { return 0; }
 // @0x1414a55f0
@@ -1834,10 +1824,12 @@ unsigned long long Unk_MiscThis::FUN_1414a5600() { return 0; }
 // @0x1414a5610
 void FUN_1414a5610(char* pThis, char* pDst) { memcpy(pDst, pThis + 0x60, 0x10); }
 MS2_REPLACE(0x1414A5610, FUN_1414a5610, 36, 0x8905C4F3);
+class MS2 { public: static const efd::ClassInfo ms_ClassInfo; };                          // C3: was extern char DAT_143ae0130
+namespace ecr { class PickService { public: static const efd::ClassInfo ms_ClassInfo; }; }   // C3: was extern int DAT_143a01f90
 // @0x1414a5640
-void* Unk_MiscThis::FUN_1414a5640() { return &DAT_143ae0130; }
+void* Unk_MiscThis::FUN_1414a5640() { return (void*)&MS2::ms_ClassInfo; }
 // @0x1414a5650
-int* Unk_MiscThis::FUN_1414a5650() { return &DAT_143a01f90; }
+int* Unk_MiscThis::FUN_1414a5650() { return (int*)&ecr::PickService::ms_ClassInfo; }
 // @0x1414a5660
 int* Unk_MiscThis::FUN_1414a5660() { return &DAT_143a284b0; }
 // @0x1414a5670
@@ -1852,7 +1844,7 @@ MS2_REPLACE(0x1414A5690, FUN_1414a5690, 17, 0x05FDCC0A);
 int FUN_1414a56b0(char* pThis) { return *(int*)(pThis + 8); }
 MS2_REPLACE(0x1414A56B0, FUN_1414a56b0, 14, 0x92BE4827);
 // @0x1414a56c0
-Unk_SingletonObj* FUN_1414a56c0() { return DAT_143ae0748; }
+Unk_SingletonObj* FUN_1414a56c0() { return reinterpret_cast<Unk_SingletonObj*>(SingletonClass<GFxService>::ms_pSingleton); }   // 0x143ae0748
 MS2_REPLACE(0x1414A56C0, FUN_1414a56c0, 8, 0x088FC0A0);
 // @0x1414a56d0
 Unk_SingletonObj* FUN_1414a56d0() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CDynamicBanWordManager>::s_instance); }
@@ -1870,8 +1862,8 @@ MS2_REPLACE(0x1414A5700, FUN_1414a5700, 8, 0x70220B8A);
 Unk_SingletonObj* FUN_1414a5710() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CMicroGameManagerCli>::s_instance); }
 MS2_REPLACE(0x1414A5710, FUN_1414a5710, 8, 0xEDD70F33);
 // @0x1414a5720
-Unk_SingletonObj* FUN_1414a5720() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CNiStreamLoadThread>::s_instance); }
-MS2_REPLACE(0x1414A5720, FUN_1414a5720, 8, 0xA57EC080);
+CNiStreamLoadThread* TSingleton<CNiStreamLoadThread>::GetInstance() { return s_instance; }
+MS2_REPLACE(0x1414A5720, TSingleton<CNiStreamLoadThread>::GetInstance, 8, 0xA57EC080);
 // @0x1414a5730
 Unk_SingletonObj* FUN_1414a5730() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<COnlinePatchManagerCli>::s_instance); }
 MS2_REPLACE(0x1414A5730, FUN_1414a5730, 8, 0x5647EF76);
@@ -1990,117 +1982,12 @@ void FUN_1414a5a80(HANDLE* pThis)
 }
 MS2_REPLACE(0x1414A5A80, FUN_1414a5a80, 63, 0x35494406);
 // @0x1414a5ac0
-void Unk_HashMap1::FUN_1414a5ac0()
-{
-    FUN_1414a5450();
-    if (m_ppBins != 0) {
-        for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
-            while (pNode != 0) {
-                Unk_ShutdownNode18* pKill = pNode;
-                pNode = pNode->m_next;
-                FUN_14076d7d0(pKill);
-            }
-        }
-    }
-    delete[] m_ppBins;
-    m_ppBins = 0;
-    m_nElements = 0;
-    if (!FUN_14076e320()) {
-        FUN_14076e0e0(FUN_14076ea00(m_nElements), 0);
-    }
-    FUN_14076d9d0();
-    FUN_1414a5540();
-}
+template void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::RemoveAll();
 // @0x1414a5bd0
-void Unk_HashMap2::FUN_1414a5bd0()
-{
-    FUN_1414a5470();
-    if (m_ppBins != 0) {
-        for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
-            while (pNode != 0) {
-                Unk_ShutdownNode18* pKill = pNode;
-                pNode = pNode->m_next;
-                FUN_14076d8d0(pKill);
-            }
-        }
-    }
-    delete[] m_ppBins;
-    m_ppBins = 0;
-    m_nElements = 0;
-    if (!FUN_14076e350()) {
-        FUN_14076e200(FUN_14076eaf0(m_nElements), 0);
-    }
-    FUN_14076da20();
-    FUN_1414a5560();
-}
+template void ATL::CAtlMap<int, MS2Ptr<ReactorStateData> >::RemoveAll();
 // @0x1414a5ce0
-void Unk_HashMap3::FUN_1414a5ce0()
-{
-    FUN_1414a5490();
-    if (m_ppBins != 0) {
-        for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
-            while (pNode != 0) {
-                Unk_ShutdownNode18* pKill = pNode;
-                pNode = pNode->m_next;
-                FUN_1401a9940(pKill);
-            }
-        }
-    }
-    delete[] m_ppBins;
-    m_ppBins = 0;
-    m_nElements = 0;
-    if (!FUN_1401aa520()) {
-        FUN_1401aa190(FUN_1401aae10(m_nElements), 0);
-    }
-    FUN_1401a9c40();
-    FUN_1414a5580();
-}
+template void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElementTraits<int> >::RemoveAll();
 // @0x1414a5df0
-void Unk_HashMap4::FUN_1414a5df0()
-{
-    FUN_1414a54b0();
-    if (m_ppBins != 0) {
-        for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            Unk_ShutdownNode20* pNode = (Unk_ShutdownNode20*)m_ppBins[iBin];
-            while (pNode != 0) {
-                Unk_ShutdownNode20* pKill = pNode;
-                pNode = pNode->m_next;
-                FUN_1401a9a40(pKill);
-            }
-        }
-    }
-    delete[] m_ppBins;
-    m_ppBins = 0;
-    m_nElements = 0;
-    if (!FUN_1401aa550()) {
-        FUN_1401aa2b0(FUN_1401aaf00(m_nElements), 0);
-    }
-    FUN_1401a9c90();
-    FUN_1414a55a0();
-}
+template void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::RemoveAll();
 // @0x1414a5f00
-void Unk_HashMap5::FUN_1414a5f00()
-{
-    FUN_1414a54d0();
-    if (m_ppBins != 0) {
-        for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            Unk_ShutdownNode20* pNode = (Unk_ShutdownNode20*)m_ppBins[iBin];
-            while (pNode != 0) {
-                Unk_ShutdownNode20* pKill = pNode;
-                pNode = pNode->m_next;
-                FUN_1401a9b40(pKill);
-            }
-        }
-    }
-    delete[] m_ppBins;
-    m_ppBins = 0;
-    m_nElements = 0;
-    if (!FUN_1401aa580()) {
-        FUN_1401aa3d0(FUN_1401aaff0(m_nElements), 0);
-    }
-    FUN_1401a9ce0();
-    FUN_1414a55c0();
-}
+template void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::RemoveAll();

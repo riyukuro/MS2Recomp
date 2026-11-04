@@ -2,6 +2,7 @@
 """Glue files of the plain full-exe build (cmake/fullexe/plain.cmake: one link, no Python at build time).
     plainglue.py write DIR [--rsp FILE] [--cache DIR]
     plainglue.py stubs EXE STUBS_TSV OBJ
+    plainglue.py pack DIR
     plainglue.py compile DIR [--cache DIR] [--tree CHECKOUT]
   write   from a finished build (FULLEXE_DIR, its closed link link3.rsp; run at each merge, like symbols.tsv) -> DIR/:
             objs.txt   the link's objs in command-line order (plan order with the initorder --before moves applied), as
@@ -12,8 +13,12 @@
           Names, paths and order only: no exe bytes. Stops if the link took a shim stub that is not plain data, since
           `stubs` can only extract plain data.
   stubs   one-shot extraction from the user's exe (like tools/extract_resources.py): the data stubs of STUBS_TSV as a
-          COFF obj with the layout shim.py writes (the exe's bytes; keep it out of the repository). It stops on a stub
-          that holds a pointer slot (a base relocation), which would need the shim's relocation pass.
+          COFF obj with the layout shim.py writes. It stops on a stub that holds a pointer slot (a base relocation),
+          which would need the shim's relocation pass. An obj of zero fill only (g_physXItem lies in the exe's .bss)
+          holds no exe bytes and is committed as data/fullexe/plain/stubs.obj, cmake/fullexe-plain's default; one that
+          holds exe bytes stays out of the repository.
+  pack    DIR/order.txt -> DIR/order.tar.xz (about 1.7 MB; no timestamps or owners, so the same list packs to the same
+          bytes): the committed form of order.txt, which cmake/fullexe-plain unpacks into its build dir at configure.
   compile the cl command of every obj of DIR/objs.txt, as the finished build ran it (tools/progress.py game units with
           their MS2-FLAGS profile or MS2-TOOLSET cl, tools/gbprogress.py engine and library units), checked against the
           flags key that each obj's .deps recorded -> DIR/:
@@ -76,6 +81,21 @@ def write(argv):
     print("%s: objs.txt %d objs (+ %s built by plain.cmake), alias.rsp %d lines, order.txt %d functions, stubs.tsv %d data stub(s)"
           % (d, len(objs), ", ".join(other) or "none", len(alias),
              sum(1 for _ in open(os.path.join(d, "order.txt"), encoding="latin1")), len(stubs)))
+    return 0
+
+
+def pack(argv):
+    import io, lzma, tarfile
+    d = argv[0]
+    data = open(os.path.join(d, "order.txt"), "rb").read()
+    ti = tarfile.TarInfo("order.txt")
+    ti.size, ti.mode = len(data), 0o644
+    buf = io.BytesIO()
+    with tarfile.open(fileobj=buf, mode="w", format=tarfile.USTAR_FORMAT) as t:
+        t.addfile(ti, io.BytesIO(data))
+    with open(os.path.join(d, "order.tar.xz"), "wb") as f:
+        f.write(lzma.compress(buf.getvalue(), preset=9))
+    print("%s: %d B (order.txt %d B)" % (os.path.join(d, "order.tar.xz"), os.path.getsize(os.path.join(d, "order.tar.xz")), len(data)))
     return 0
 
 
@@ -185,6 +205,7 @@ def stubs(argv):
     data = co.section(".data", DATA)
     co.section(".rdata$str", RDATA)
     co.sym("ms2_fullexe_trap")
+    held = []
     for l in open(tsv, encoding="latin1"):
         if not l.strip() or l[0] == "#":
             continue
@@ -201,12 +222,15 @@ def stubs(argv):
         b = s.get_data()[va - BASE - s.VirtualAddress:][:n]
         sec.data += b + b"\0" * (n - len(b))
         co.sym(name, sec, off)
+        if b.strip(b"\0"):
+            held.append(name)
     co.write(obj)
-    print("%s: %d B .data, %d B .rdata" % (obj, len(data.data), len(rdata.data)))
+    print("%s: %d B .data, %d B .rdata, %s" % (obj, len(data.data), len(rdata.data),
+                                             "exe bytes in " + " ".join(held) if held else "zero fill only (no exe bytes)"))
     return 0
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] not in ("write", "stubs", "compile") or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("write", "stubs", "pack", "compile") or (sys.argv[1] == "stubs" and len(sys.argv) < 5):
         sys.exit(__doc__)
-    sys.exit({"write": write, "stubs": stubs, "compile": compile_list}[sys.argv[1]](sys.argv[2:]))
+    sys.exit({"write": write, "stubs": stubs, "pack": pack, "compile": compile_list}[sys.argv[1]](sys.argv[2:]))

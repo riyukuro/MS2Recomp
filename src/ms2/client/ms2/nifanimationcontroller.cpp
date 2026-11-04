@@ -25,7 +25,6 @@ void* FUN_140993f00(void* o);
 #include <ecr/SceneGraphService.h>
 ecr::SceneGraphService* FUN_1413f98b0();
 
-extern char DAT_143afa458;
 
 // @0x1400fa290
 const NiRTTI CNifAnimationController::ms_RTTI("CNifAnimationController", 0);
@@ -140,7 +139,7 @@ void FUN_141545080(int value, void* node)
 {
     for (void* c = ((void*)((class NiObjectNET*)(void*)(node))->GetControllers()); c != 0; c = ((void*)((class NiTimeController*)(void*)(c))->GetNext()))
         ((NiTimeController*)c)->SetAnimType((NiTimeController::AnimType)value);
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(node))) {
+    if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(node))) {
         void* pSwitch = node;   // the exe's static cast to the switch-node type
         void* it = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(void*)(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList())))->GetHeadPos();
         while (it != 0) {

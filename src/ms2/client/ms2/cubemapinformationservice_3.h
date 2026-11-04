@@ -246,7 +246,7 @@ public:
     int FUN_1410c6b90(unsigned nMask, int* pOutGroup, int nMode, Unk_CMISEntityRef* pOutEnt);
     int FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);
     void FUN_1410cbb40(struct Unk_CMISXformVec* pOut, int nMode, int nGroup, Vector3 ptPlayer, Unk_Int3 cell, bool bRot, int nMs);
-    Vector3 FUN_1410c54a0(Unk_EntRef spEnt);
+    Vector3 FUN_1410c54a0(egf::EntityPtr spEnt);
     void FUN_1410ce560();
     bool FUN_1410c1910(const Unk_Int3& pt, int bDefer);
     bool FUN_1410c06b0(MS2Ptr<Cube> spCube);
@@ -347,8 +347,8 @@ public:
     // w138
     int FUN_1410b77e0(int nItemId, struct Unk_CMISStr* pOut);
     int FUN_1410cb980(int nItemId);
-    void GeneratePhysX(Unk_EntRef spEnt, Vector3 pt);
-    void FUN_1410c5570(Unk_EntRef spEnt);
+    void GeneratePhysX(egf::EntityPtr spEnt, Vector3 pt);
+    void FUN_1410c5570(egf::EntityPtr spEnt);
     void FUN_1410c3330(CStringW* pOut);
     void FUN_1410c79a0(int nA, int nB);
     void* FUN_1410c7c20(int nA, int nB);
@@ -379,7 +379,7 @@ public:
     Unk_CMISTree<267> f128;
     Unk_CMISTree<268> f138;
     Unk_CMISTree<269> f148;
-    Unk_EntRef f158;
+    egf::EntityPtr f158;
     bool f160;                                      // cleared by FUN_1410b76d0
     Timer t168;
     Unk_CMISTree<270> f1a0;

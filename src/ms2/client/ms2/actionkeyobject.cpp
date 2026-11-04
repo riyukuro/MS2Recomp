@@ -195,27 +195,6 @@ static CString s_stun("stun");
 CStringW GetStringCommon(int nStringId);                      // the client string table
 CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wide
 
-// A portal of the field (the world service's field objects; class of unit_14169afb0, unrecovered); only the members
-// read here.
-class Unk_AkoPortal : public CPtred
-{
-public:
-    egf::EntityID m_entityId;                               // +0x18 id of the egf entity
-    char m_pad_20[0x14c - 0x20];
-    int m_nFieldId;                                         // +0x14c the target field
-    char m_pad_150[0x158 - 0x150];
-    unsigned __int64 m_nOwnerId;                            // +0x158 the house owner (house portals)
-    int m_nType;                                            // +0x160
-    char m_pad_164[0x18c - 0x164];
-    bool m_bConfirm;                                        // +0x18c ask before moving
-};
-MS2_CHECK_OFFSET(Unk_AkoPortal, m_entityId, 0x18);
-MS2_CHECK_OFFSET(Unk_AkoPortal, m_nFieldId, 0x14c);
-MS2_CHECK_OFFSET(Unk_AkoPortal, m_nOwnerId, 0x158);
-MS2_CHECK_OFFSET(Unk_AkoPortal, m_nType, 0x160);
-MS2_CHECK_OFFSET(Unk_AkoPortal, m_bConfirm, 0x18c);
-
-
 // The cube map service (efd class id 0x06100017; named as in buddy.cpp); FUN_1401cd040 looks it up in the framework's
 // service manager.
 class Unk_Service6100017 : public CubeMapInformationService
@@ -391,7 +370,7 @@ int FUN_141276980();                                        // npc talk is allow
 class Unk_AkoWorldView : public WorldService
 {
 public:
-    MS2Ptr<Unk_AkoPortal> FUN_141bc2800(int nPortalId);     // the portal by id
+    MS2Ptr<CPortal> FUN_141bc2800(int nPortalId);     // the portal by id
 };
 // The quest manager (FUN_140764020).
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -904,7 +883,7 @@ int PortalAction::vfunc_1()
     m_spEntity = 0;
     m_spPortal = 0;
     Vector3 pos = pPlayer->FUN_1416767d0();
-    ATL::CAtlArray<MS2Ptr<Unk_AkoPortal> > aPortals;
+    ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
     WorldService::GetInstance()->FUN_141bc2c90(pos, &aPortals);
     if (aPortals.GetCount() == 0)
     {
@@ -913,9 +892,9 @@ int PortalAction::vfunc_1()
     }
     for (size_t i = 0; i < aPortals.GetCount(); i++)
     {
-        MS2Ptr<Unk_AkoPortal> spPortal = aPortals[i];
+        MS2Ptr<CPortal> spPortal = aPortals[i];
         efd::SmartPointer<egf::Entity> spEntity =
-            TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(spPortal->m_entityId);
+            TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(spPortal->m_idEntity);
         if (!spEntity)
             continue;
         bool bVisible = false;
@@ -960,7 +939,7 @@ void PortalAction::vfunc_2()
         return;
     }
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
-    if (m_spPortal->m_nOwnerId)
+    if (m_spPortal->m_unk_158)
     {
         Vector3 ptFront;
         ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellInFrontOfActor(pPlayer, 0.0f, &ptFront, 1);
@@ -969,7 +948,7 @@ void PortalAction::vfunc_2()
         Cube* pCell = ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCubeAtPoint(ptCell);
         if (m_spPortal->m_nType == 0xb)
         {
-            pPlayer->SendRequestMoveFieldMode2(0, 0, 0, m_spPortal->m_nOwnerId, L"");
+            pPlayer->SendRequestMoveFieldMode2(0, 0, 0, m_spPortal->m_unk_158, L"");
             return;
         }
         else if (pCell)
@@ -1019,12 +998,12 @@ CStringW PortalAction::vfunc_6()
         return FUN_140956e40();
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
     int nMapId = 0;
-    if (m_spPortal->m_nOwnerId)
+    if (m_spPortal->m_unk_158)
     {
         std::map<unsigned __int64, Unk_CubeOwnerPtr>* pOwners = reinterpret_cast<std::map<unsigned __int64, Unk_CubeOwnerPtr>*>(reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d3380());
-        if (pOwners->find(m_spPortal->m_nOwnerId) != pOwners->end())
+        if (pOwners->find(reinterpret_cast<const unsigned __int64&>(m_spPortal->m_unk_158)) != pOwners->end())
         {
-            Unk_CubeOwnerPtr spOwner = (*pOwners)[m_spPortal->m_nOwnerId];
+            Unk_CubeOwnerPtr spOwner = (*pOwners)[reinterpret_cast<const unsigned __int64&>(m_spPortal->m_unk_158)];
             if (spOwner)
                 nMapId = spOwner->mapID;
         }
@@ -1155,7 +1134,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
         return;
     }
-    if (m_spPortal->m_bConfirm)
+    if (m_spPortal->m_b18c)
     {
         CStringW strTitle = GetStringCommon(0xb07);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strTitle, 10);
@@ -1186,7 +1165,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         int nPortalId = 0;
         data.FUN_140961900(0, nTarget);
         data.FUN_140961900(1, nPortalId);
-        MS2Ptr<Unk_AkoPortal> spPortal = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bc2800(nPortalId);
+        MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);

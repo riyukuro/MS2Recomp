@@ -23,7 +23,6 @@ struct Unk_UhPoint3
     Unk_UhPoint3();                                         // 0x1405522f0
     Unk_UhPoint3(const Vector3& pt);                // 0x14027dcf0 (NiPoint3(const efd::Point3&))
     Unk_UhPoint3& operator=(const Unk_UhPoint3& pt);        // 0x14097fad0
-    Unk_UhPoint3& FUN_140ae9270(float f);                   // efd::Point3::operator/=(float)
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_UhPoint3, 12);

@@ -91,6 +91,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/effectquery.h"   // C3: NoticeMessage (ctor 0x140a52ef0, dtor 0x1405a89e0, SetActor 0x140a53190)
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -196,6 +197,7 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool b);
 
 // The achieve manager.
 class CAchieve : public CPtred {};
+class CBeautyShopDataCommon { public: void FUN_1406e3d30(); };   // C3: npcshopdata member (CBeautyShopDataCli base)
 class CAchieveManager   // C3: member view
 {
 public:
@@ -289,23 +291,6 @@ MS2_CHECK_OFFSET(Unk_BSConstants, m_extendCount, 0x6518);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_maxExtend, 0x65c8);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The hair apply effect request (Unk_EffectTarget, effectparam.h). The name is shared with questmanager_2.cpp,
-// whose ctor/dtor are bound in symbols-manual.tsv.
-struct Unk_QmEffectRequest
-{
-    Unk_QmEffectRequest();                      // 0x140a52ef0
-    ~Unk_QmEffectRequest();                     // 0x1405a89e0
-    CString m_strName;                          // +0x00 effect xml
-    int m_n08;                                  // +0x08
-    int m_0c;
-    void* m_pad_10[(0x70 - 0x10) / 8];          // not a char array: that would add a /GS cookie
-};
-MS2_CHECK_SIZE(Unk_QmEffectRequest, 0x70);
-class NoticeMessage   // C3: member view for the former free stand-ins
-{
-public:
-    void SetActor(int);
-};
 struct Unk_BSEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
@@ -384,8 +369,7 @@ enum Unk_BSResult : unsigned int {};
 
 CStringW LocalizedMentorFormat(const CStringW&, const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW, LocalizedMentorFormat, CStringW)
-CStringW BlockFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 
 int FUN_140f011f0();
 UIBillDialog* FUN_140f0a350(int nId);
@@ -488,10 +472,10 @@ void FUN_140f01350()
     if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     ((class PCBase*)(class PCBase*)(pPc))->FUN_14166cc40(0x50);
-    Unk_QmEffectRequest request;
+    NoticeMessage request;
     request.m_strName = ((struct Unk_BSEffectPaths*)FUN_1401d31f0())->m_hairApply;
-    request.m_n08 = 1;
-    ((class NoticeMessage*)(struct Unk_QmEffectRequest*)(&request))->SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
+    request.m_nObject = 1;
+    request.SetActor(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
 }
 
@@ -851,7 +835,7 @@ void UIBeautyShopStyleDialog::vfunc_67()
     m_268 = 0;
     m_198 = 0;
     m_1a8 = 0;
-    m_1b8.FUN_1406e3d30();
+    reinterpret_cast<CBeautyShopDataCommon*>(&m_1b8)->FUN_1406e3d30();
     m_298.clear();
     m_2b0 = 0;
     FUN_140f01430();

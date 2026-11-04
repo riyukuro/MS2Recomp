@@ -311,6 +311,7 @@ class TiXmlNode   // C3: member view (tinyxml.h clashes with the placeholder TiX
 public:
     const TiXmlElement* FirstChildElement(const char* pszName) const;
     const TiXmlElement* NextSiblingElement(const char* pszName) const;
+    virtual ~TiXmlNode();                                   // 0x14086dd00
 };
 class Unk_XmlNode
 {
@@ -396,7 +397,6 @@ int FUN_1408733e0(Unk_XmlNode*, const char*, CString&);
 int FUN_140873420(Unk_XmlNode*, const char*, CStringW&);
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-void FUN_14086dd00(TiXmlDocument*) noexcept;          // ~TiXmlNode (base part)
 
 // ---------------------------------------------------------------------------------------------------------------
 // Inline instances first emitted by this unit (the COMDAT zone).
@@ -466,7 +466,7 @@ public:
 inline TiXmlDocument::~TiXmlDocument()
 {
     reinterpret_cast<Unk_TiXmlString*>(&m_58)->Unk_TiXmlString::~Unk_TiXmlString();
-    FUN_14086dd00(this);
+    reinterpret_cast<TiXmlNode*>(this)->TiXmlNode::~TiXmlNode();
 }
 
 // The table lock shared with the cache code (cachedata.cpp owns it; no named symbol in the unit tables).

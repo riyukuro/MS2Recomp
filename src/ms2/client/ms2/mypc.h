@@ -102,6 +102,8 @@ enum Unk_MyPCLapenSlot { MYPC_LAPEN_SLOT_NONE = 0 };
 // The house setting sent by FUN_141530720 (compared as a byte: a scoped enum over unsigned char).
 enum class Unk_MyPCHouseSetting : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
 
+class CQuestManager;                                        // questmanager_2.h
+
 class MyPC : public PC, public IMessageListener
 {
     EE_DECLARE_CLASS1(MyPC, 0x06200004, PC);   // ClassInfo 0x143ae10b0 (setup 0x141536810)
@@ -161,7 +163,7 @@ public:
     void FUN_14152a640(int nTeam);                          // observe a guild team
     void FUN_14152a2f0(int n);
     CSkillSystem* FUN_141523bc0();                          // the skill system
-    void FUN_141523ba0();
+    CQuestManager* FUN_141523ba0();                         // the quest manager (FUN_140764020)
     Unk_MyPCStateCtl* FUN_141523be0();                      // the state controller
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141523c00();
     Unk_MyPCComp1618* FUN_141523c50();

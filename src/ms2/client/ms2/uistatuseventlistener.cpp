@@ -183,8 +183,7 @@ public:
     void SendNpcTalkMode0();
 };
 void* FUN_140967100();
-struct Unk_AlignOffset { float x, y; };                                     // dialog offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);   // dialog offsets
 
 // The candidate list (setCandidates) values.
 class Unk_StCandList { public: char m_pad[0x40]; };
@@ -528,7 +527,7 @@ void UIStoreDialog::vfunc_66()
         }
         else
         {
-            FUN_141275c30(this, pInv, reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO), reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO));
+            FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }

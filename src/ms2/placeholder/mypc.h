@@ -13,6 +13,11 @@ class UserUGCMapInfo;
 class CHomePrivilege;                             // commonfiles\homeprivilege.cpp
 template <class T> class Unk_BmPtr;               // blackmarketitemoption.h
 
+// The key of the lapenshard slot maps (as in ms2/client/ms2/mypc.h; no unit includes both headers)
+enum Unk_MyPCLapenSlot { MYPC_LAPEN_SLOT_NONE = 0 };
+// The house setting kind (as in ms2/client/ms2/mypc.h)
+enum class Unk_MyPCHouseSetting : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
+
 class MyPC : public PCBase
 {
 public:
@@ -24,6 +29,8 @@ public:
     void StartObserving(PCBase* pTarget);                    // observe pTarget (guild battle, uipvpguildteamdialog)
     void StopObserving();                                   // stop observing
     void FUN_14152a2f0(int n);                              // scenestategame packet 0x35
+    void FUN_141524a80(bool bForce);                        // stop moving for a cast (scenestategame)
+    void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
     class Unk_MyPCSkillSlots* FUN_141523bc0();              // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
     class StatePcGuideObjectController* FUN_141523be0();    // the guide object controller (scenestategame 0x1417127b0)
     MS2Ptr<class Unk_MyPCStatPoints> FUN_140c25130();       // the stat point manager (statpointmanager.cpp)
@@ -35,9 +42,9 @@ public:
     void FUN_141528e50(Vector3 kPos, Vector3 kRot, int nFlag);   // scenestategame 0x141721a30
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // PC member: a worn item by uid (scenestategame 0x14173b420)
     void ClearLapenshards();                                   // begin bulk update (scenestategame 0x14173d2e0)
-    void FUN_14152f530(int nA, int nB, int bBulk);          // set entry nA = nB
+    void EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
     void FUN_14152fa20();                                   // end bulk update
-    void FUN_14152f620(int nA);                             // remove entry nA
+    void UnequipLapenshard(Unk_MyPCLapenSlot nSlot);        // unequip nSlot
     int FUN_1416595d0();                                    // PC member: the cube craft mode (actionkeyobject.cpp)
     class Unk_MyPCEmotion* FUN_14165f100();                 // PC member: the playing emotion (stateemotionidle.cpp)
     class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft (housing build) controller (scenestategame 0x69)

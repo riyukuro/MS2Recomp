@@ -30,8 +30,7 @@ class Unk_BmUIService { public:  void FUN_141adc530(int nClass); };
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW BlockFormat(int nId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strExtra);
 void FUN_141275260(int, int, int);

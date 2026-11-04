@@ -58,21 +58,18 @@ public:
     using ASDisplayObject::Invoke;
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3);                      // 0x1412c8520
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CStringW a4);   // 0x1412c85f0
-    Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float f1, float f2);                   // Invoke(name, float, float)
 };
 class ASDialog : public Unk_HiScript {};
 
-// A button of the panel (ASDisplayObject slot 3 SetVisible, slot 4 SetVisible only on a change).
-class Unk_HiButton : public Unk_HiScript
-{
-public:
-    void FUN_1422c1fe0(unsigned int nEnabled);
-};
+// A button of the panel (ASDisplayObject slot 3 SetVisible, slot 4 SetVisible only on a change); its enable call is
+// ASMovieClip::FUN_1422c1fe0.
+class Unk_HiButton : public Unk_HiScript {};
 
 class ASCoreList   // C3: member view (ascorelist.h clashes with asdropdownmenu.h)
 {
 public:
     void FUN_1422dd1d0();                                           // remove every entry
+    void AddItem(const class ASObj& item);                          // append an entry
 };
 // The list control of the convenient panel.
 class Unk_HiList : public AScript
@@ -85,7 +82,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd230(const ASObj& row);                           // append a row
 };
 // The convenient panel (balance buttons and the visitors list).
 class Unk_HiConv : public ASUIComponent
@@ -103,9 +99,7 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool b);
-    void FUN_1422dfc70(ASObj& obj);                                 // add an item
-    void FUN_1422c1fe0(unsigned int nEnabled);
+    virtual void vfunc_24(bool b);                                  // add an item and enable are ASDropdownMenu's
 };
 // The second panel type the visitors book button is looked up on.
 class Unk_HiPanelB : public AScript
@@ -254,10 +248,10 @@ void UIHomeInfoDialog::OnLoadComplete()
             strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), FUN_14092f640());
             ASObj obj(2);
             obj.FUN_1407cbb20("label", strLabel);
-            spChannel->FUN_1422dfc70(obj);
+            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->AddItemRow(obj);
             spChannel->vfunc_24(true);
             reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->SetSelectedIndex(0);
-            spChannel->FUN_1422c1fe0(0);
+            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->FUN_1422c1fe0(0);
         }
     }
 }
@@ -410,7 +404,7 @@ void UIHomeInfoDialog::FUN_1412c5da0()
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<Unk_HiButton> spButton = spPanel->FUN_140acce30<Unk_HiButton>("m_recommend"))
-            spButton->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
+            reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
     }
 }
 
@@ -460,7 +454,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
             if (MS2Ptr<Unk_HiButton> spBalance = spConv->FUN_140acce30<Unk_HiButton>("m_balance"))
             {
                 bool bOwner = FUN_1418fd280() ? true : false;
-                spBalance->FUN_1422c1fe0(bOwner);
+                reinterpret_cast<ASMovieClip*>(spBalance.operator->())->FUN_1422c1fe0(bOwner);
                 spBalance->vfunc_4(bOwner);
             }
             if (MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620("m_balanceMeso"))
@@ -505,7 +499,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                             ASObj obj(2);
                             obj.FUN_1407cbb20((LPCSTR)s_strCharName, pPlayer->vfunc_77());
                             obj.FUN_1407cbbe0("myHome", FUN_1418fd280() != 0);
-                            spList->FUN_1422dd230(obj);
+                            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(obj);
                         }
                     }
                     spList->vfunc_24(true);
@@ -609,7 +603,7 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             {
                 if (MS2Ptr<Unk_HiButton> spBook = spPanel->FUN_140acce30<Unk_HiButton>("m_visitorsBook"))
                 {
-                    spBook->FUN_1422c1fe0(bBook);
+                    reinterpret_cast<ASMovieClip*>(spBook.operator->())->FUN_1422c1fe0(bBook);
                     spBook->vfunc_3(bBook);
                 }
             }

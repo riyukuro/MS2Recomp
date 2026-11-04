@@ -74,6 +74,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/xmlattr.h"
+#include <efd/Point3.h>
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -337,7 +338,7 @@ CString FUN_14028c210(unsigned uColor)
 
 // "x,y,z" -> three floats; left untouched when the text does not split into three parts.
 // @0x14028c2d0
-void FUN_14028c2d0(CString strText, Unk_CommonVec3* pOut)
+void FUN_14028c2d0(CString strText, efd::Point3* pOut)
 {
     CAtlArray<CString> arrParts;
     if (FUN_14028c3e0(strText, arrParts, ",", 3) == 0)
@@ -682,9 +683,9 @@ bool FUN_14028d4b0(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
 }
 
 // @0x14028d530
-bool FUN_14028d530(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
+bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB)
 {
-    if (FUN_14028d470(pA->x, pB->x) && FUN_14028d470(pA->y, pB->y) && FUN_14028d470(pA->z, pB->z))
+    if (FUN_14028d470(kA.x, kB.x) && FUN_14028d470(kA.y, kB.y) && FUN_14028d470(kA.z, kB.z))
         return true;
     return false;
 }
@@ -1164,14 +1165,13 @@ CStringW FUN_14028efb0(const Unk_CommonVec3* pVec)
     return strOut;
 }
 
-extern const Unk_CommonVec3 g_vCommonZero;                      // 0x143b01a60
 void FUN_1402928e0(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim);
 
 // Parses "x,y,z"; anything else gives the zero vector.
 // @0x14028f060
-Unk_CommonVec3 FUN_14028f060(CString strText)
+efd::Point3 FUN_14028f060(CString strText)
 {
-    Unk_CommonVec3 vResult = g_vCommonZero;
+    efd::Point3 vResult = efd::Point3::ZERO;
     CAtlArray<float> arrParts;
     XmlSplitImpl<float>(strText, arrParts, ",");
     if (arrParts.GetCount() != 3)
@@ -1185,7 +1185,7 @@ Unk_CommonVec3 FUN_14028f060(CString strText)
 // @0x14028f190
 Unk_CommonVec3 FUN_14028f190(CStringW strText)
 {
-    Unk_CommonVec3 vResult = g_vCommonZero;
+    Unk_CommonVec3 vResult = reinterpret_cast<const Unk_CommonVec3&>(efd::Point3::ZERO);   // 0x143b01a60
     CAtlArray<float> arrParts;
     FUN_1402928e0(strText, arrParts, L",");
     if (arrParts.GetCount() != 3)
@@ -1994,10 +1994,8 @@ struct Unk_BstrBlock
     static void* operator new(size_t nBytes);                   // 0x140297a40
 };
 
-extern void FUN_14016ad80(void* pThis, void* pArg);
 extern void FUN_140297790(void* p);
 extern void** FUN_140298fc0(void* pHolder);
-extern void* FUN_140183290(void* pOut);
 extern unsigned long long* FUN_14029dcd0();
 extern void FUN_14029b680(void** pp);
 void* FUN_140297d20(Unk_BstrHolderRef* p);
@@ -2006,7 +2004,7 @@ void* FUN_140297d20(Unk_BstrHolderRef* p);
 void** FUN_1402969f0(void** p, void* pVtbl, void* pArg)
 {
     *p = pVtbl;
-    FUN_14016ad80(p, pArg);
+    reinterpret_cast<std::_Iterator_base0*>(p)->_Adopt(pArg);
     return p;
 }
 
@@ -2014,7 +2012,7 @@ void** FUN_1402969f0(void** p, void* pVtbl, void* pArg)
 void** FUN_140296c30(void** p, void* pVtbl, void* pArg)
 {
     *p = pVtbl;
-    FUN_14016ad80(p, pArg);
+    reinterpret_cast<std::_Iterator_base0*>(p)->_Adopt(pArg);
     return p;
 }
 
@@ -2022,7 +2020,7 @@ void** FUN_140296c30(void** p, void* pVtbl, void* pArg)
 void** FUN_140296c90(void** p, void* pVtbl, void* pArg)
 {
     *p = pVtbl;
-    FUN_14016ad80(p, pArg);
+    reinterpret_cast<std::_Iterator_base0*>(p)->_Adopt(pArg);
     return p;
 }
 
@@ -2213,8 +2211,7 @@ void FUN_14029b680(void** pp)
 // @0x140298ea0
 __declspec(safebuffers) CStringW FUN_140298ea0(CStringW strKey)      // the exe has no /GS cookie here
 {
-    char buf[16];                                       // the fmt::ArgList FUN_140183290 constructs
-    return FUN_14028dfa0(strKey, *(const fmt::ArgList*)FUN_140183290(buf));
+    return FUN_14028dfa0(strKey, fmt::ArgList());
 }
 
 // @0x14029dce0

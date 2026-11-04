@@ -241,9 +241,9 @@ float FUN_1401bcd60()
 }
 
 // @0x1401bcdb0
-void FUN_1401bcdb0(long long n)
+__int64 FUN_1401bcdb0(long long n)
 {
-    FUN_1401c0db0()->CalcBlackMarketRegisterDeposit(n);
+    return FUN_1401c0db0()->CalcBlackMarketRegisterDeposit(n);
 }
 
 // @0x1401bcde0

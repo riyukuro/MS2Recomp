@@ -151,11 +151,6 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_140763e10(int value);                   // the number with digit grouping
 bool FUN_14028d780(unsigned char c);
 void FUN_1404ec5b0(Unk_GuildRef* out, const MS2Ptr<CGuildMember>& member);   // MS2Ptr<CGuildMember> copy into raw storage
-class Unk_IntTriple   // C3: member view for the former free stand-ins
-{
-public:
-    int IsEqual(class Unk_IntTriple const&);
-};
 __int64 GetServerTime();                                    // the server time
 CStringW GetStringCommon(int id);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW separator);
@@ -2276,7 +2271,7 @@ void CGuildManager::FUN_1413c1d30(CInPacket& packet)
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(name);
     if (member == 0)
         return;
-    bool changed = ((class Unk_IntTriple*)(struct Unk_GuildTriple const*)(&member->data.f2c))->IsEqual(*(class Unk_IntTriple const*)(&data.f2c)) ? false : true;
+    bool changed = ((class Unk_IntTriple*)(&member->data.f2c))->IsEqual(*(class Unk_IntTriple const*)(&data.f2c)) ? false : true;
     member->data.FUN_1404ca1a0(data);
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f))) {
         if (changed)

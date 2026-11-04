@@ -24,7 +24,7 @@ struct Unk_PonyPart
     void Swap(Unk_PonyPart& kOther);                            // 0x1416917d0
 
     float m_fValue;                                             // +0x00 angle of the part (180 for the first, 0 for the second)
-    Unk_FcPoint3 m_kAnchor;                                     // +0x04 last anchor point of the drag
+    NiPoint3 m_kAnchor;                                         // +0x04 last anchor point of the drag
     NiTransform m_kRest;                                        // +0x10 rest transform of the model
     NiTransform m_kStart;                                       // +0x44 transform at the start of the drag
     NiTransform m_kPose;                                        // +0x78 transform pushed to the PhysX joint (rotation

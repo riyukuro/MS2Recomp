@@ -70,7 +70,7 @@ struct Unk_AlphaLess
 
 typedef efd::map<NiAlphaProperty*, Unk_BlendState, Unk_AlphaLess> Unk_BlendMap;
 
-extern NiRenderer* DAT_143afa648;               // NiRenderer::ms_pkRenderer
+struct NiRendererStatics : NiRenderer { using NiRenderer::ms_pkRenderer; };   // C3: was extern NiRenderer* DAT_143afa648 (protected static)
 extern int DAT_143ae2b34;                       // 1: the kinds are tested by the shell flags instead of the extra data
 extern int DAT_1439f4a8c;                       // counter of the marking passes
 //                       // counter of the marking passes
@@ -127,7 +127,7 @@ public:
 // @0x140994450
 NiRenderer* GetNiRenderer()
 {
-    return DAT_143afa648;
+    return NiRendererStatics::ms_pkRenderer;
 }
 
 // @0x140993fe0

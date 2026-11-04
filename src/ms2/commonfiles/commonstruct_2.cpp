@@ -16,6 +16,7 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/probability.h"
 #include "ms2/commonfiles/clientreconnectionstructs.h"
+#include "ms2/commonfiles/commonpricerecord.h"
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/fmt/format.h"
 #include <list>
@@ -695,16 +696,14 @@ CIngredientInfo::CIngredientInfo(int a, int b, int c) : m_a(a), m_b(c), m_c(b) {
 // @0x14027d830
 CIngredientInfo::CIngredientInfo() : m_a(0), m_b(0), m_c(0) {}
 
-struct Unk_S0 { int a, b; i64 c; Unk_S0(); Unk_S0(int, int, i64); };
 // @0x14027d900
-Unk_S0::Unk_S0(int a_, int b_, i64 c_) : a(a_), b(b_), c(c_) {}
+Unk_CommonPrice::Unk_CommonPrice(int type, int subType, __int64 amount) : m_type(type), m_subType(subType), m_amount(amount) {}
 // @0x14027d940
-Unk_S0::Unk_S0() : a(0), b(0), c(0) {}
-struct Unk_S0Holder { Unk_S0 s; i64 x; Unk_S0Holder(); Unk_S0Holder(int, int, i64, i64); };
+Unk_CommonPrice::Unk_CommonPrice() : m_type(0), m_subType(0), m_amount(0) {}
 // @0x14027d880
-Unk_S0Holder::Unk_S0Holder(int a, int b, i64 c, i64 x_) : s(a, b, c), x(x_) {}
+Unk_CommonPriceRecord::Unk_CommonPriceRecord(int type, int subType, __int64 amount, __int64 usedTime) : m_price(type, subType, amount), m_usedTime(usedTime) {}
 // @0x14027d8d0
-Unk_S0Holder::Unk_S0Holder() : s(), x(0) {}
+Unk_CommonPriceRecord::Unk_CommonPriceRecord() : m_usedTime(0) {}
 
 struct Unk_InnerA { void* p; };
 struct Unk_InnerB { void* p; };

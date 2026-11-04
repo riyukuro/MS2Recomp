@@ -13,6 +13,7 @@
 #include "ms2/placeholder/cusereventmanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 
 using namespace CommonUserEvent;
 
@@ -132,10 +133,6 @@ CommonUserEvent::DTRewardEventContext::DTRewardEventContext(int id, const CMsTim
 // 0x140316aa0 takes the name by value (the callee destroys it); it registers into an exe-wide table, so the hook DLL
 // leaves it to the exe's own copy.
 // MS2-RANGE: 0x1400b86b0-0x1400b8700 .text$di
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 #ifndef MS2_HOOK_DLL
-static Unk_GEFactoryRegistry s_regDTReward(L"GameEventDTReward", FUN_14041b140);
+static ClassObjectRegistrar s_regDTReward(L"GameEventDTReward", (ClassObjectCreateFn)FUN_14041b140);
 #endif

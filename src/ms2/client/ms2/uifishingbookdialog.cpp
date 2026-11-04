@@ -73,7 +73,6 @@ class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_ItemSlotTable* FUN_140933210();   // C3: was FUN_140933210
 unsigned FUN_140931450(CString strName);
 void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
-const unsigned& FUN_1402cf010(const unsigned& a, const unsigned& b);
 
 // The array of the player's fish records (an exe CAtlArray look-alike; ctor / dtor / GetAt / GetCount are in this unit).
 class Unk_FbItemArray
@@ -501,8 +500,8 @@ int UIFishingBookDialog::FUN_140f436f0(int nFishId)
 // @0x140f437d0
 int UIFishingBookDialog::FUN_140f437d0(int nFishId)
 {
-    unsigned nBest = 0;
-    unsigned nParentBest = 0;
+    unsigned long nBest = 0;
+    unsigned long nParentBest = 0;
     {
         MS2Ptr<CFish> item = TSingleton<CFishingManager>::GetInstance()->FindFish(nFishId);
         if (item.get() != 0)
@@ -513,7 +512,7 @@ int UIFishingBookDialog::FUN_140f437d0(int nFishId)
         if (parent.get() != 0)
             nParentBest = parent->m_nSize;
     }
-    return FUN_1402cf010(nBest, nParentBest);
+    return (std::max)(nBest, nParentBest);
 }
 
 // the exe calls the ucrt wcscmp through its import slot here

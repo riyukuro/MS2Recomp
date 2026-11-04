@@ -124,6 +124,7 @@
 // the shop (CashBannerInfo, TCashShopBillDataParam, ASCashShopBillData) and the COMDAT tail: Delegate instances, the
 // banner map, the page maps of the sale list and the uiswfentity.inl child lookups.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicashshopdialog.cpp"    // assumed
+#define MS2_TPTRVALUE_MOVE   // the page slot maps are copied with the add-ref ctor (0x14103b460)
 
 #define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
@@ -427,7 +428,7 @@ void UICashShopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_nDirty = 0;
     ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> > banners;
-    if (TSingleton<CAdBannerManagerCli>::GetInstance()->FUN_14096b540(1, reinterpret_cast<Unk_AdBannerArray&>(banners)) != 0)
+    if (TSingleton<CAdBannerManagerCli>::GetInstance()->FUN_14096b540(1, reinterpret_cast<ATL::CAtlArray<Unk_AdbPtr>&>(banners)) != 0)
         FUN_141035260(banners);
     m_nCash = 0;
     m_nCategory = 1;
@@ -528,7 +529,7 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa58, 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->Append<int>(nSerial);
-                    spBox->FUN_140534050(nCount);
+                    spBox->Append<unsigned>(nCount);
                     spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
                     FUN_140d73c60(spBox);
                 }
@@ -589,7 +590,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId) == 0) {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa5f, 0, CStringW(L""));
                 if (spBox.get() != 0) {
-                    spBox->FUN_140534050(nProductId);
+                    spBox->Append<unsigned>(nProductId);
                     spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039bf0));
                     FUN_140d73c60(spBox);
                 }
@@ -953,7 +954,7 @@ void UICashShopDialog::FUN_141037360()
                 spGift->SetCountClamped(1);
                 spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->Append<int>(spRow->m_n1c);
-                spBox->FUN_140534050(spRow->m_n18);
+                spBox->Append<unsigned>(spRow->m_n18);
                 spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
                 FUN_140d73c60(spBox);
             }
@@ -1110,7 +1111,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0) {
-                    spBox->FUN_140534050(nProductId);
+                    spBox->Append<unsigned>(nProductId);
                     spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039ca0));
                     FUN_140d73c60(spBox);
                 }
@@ -1201,7 +1202,7 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
         if (spBox.get() != 0) {
-            spBox->FUN_140534050(spGift->m_n18);
+            spBox->Append<unsigned>(spGift->m_n18);
             spBox->FUN_140b76940(strRecipient);
             spBox->FUN_140b76940(strMessage);
             spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));

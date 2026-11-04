@@ -32,14 +32,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 177,766 | 177,455 (99.8%) | 300 (0.2%) | 100.0% |
-| Runtime & middleware | 22,011 | 20,768 (94.4%) | 1,113 (5.1%) | 99.4% |
+| Game · ms2 | 177,607 | 177,299 (99.8%) | 297 (0.2%) | 100.0% |
+| Runtime & middleware | 22,011 | 20,787 (94.4%) | 1,094 (5.0%) | 99.4% |
 | Gamebryo engine | 16,771 | 16,699 (99.6%) | 60 (0.4%) | 99.9% |
-| Game framework · egf | 12,741 | 12,686 (99.6%) | 36 (0.3%) | 99.9% |
+| Game framework · egf | 12,765 | 12,710 (99.6%) | 36 (0.3%) | 99.9% |
 | Libraries | 6,704 | 6,337 (94.5%) | 30 (0.4%) | 95.0% |
-| Foundation | 12,016 | 11,918 (99.2%) | 78 (0.6%) | 99.8% |
+| Foundation | 12,151 | 12,053 (99.2%) | 78 (0.6%) | 99.8% |
 | Imports | 782 | 778 (99.5%) | 1 (0.1%) | 99.6% |
-| **Total** | **248,791** | 246,641 (99.1%) | 1,618 (0.7%) | 99.8% |
+| **Total** | **248,791** | 246,663 (99.1%) | 1,596 (0.6%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
 | Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 70 | | | |

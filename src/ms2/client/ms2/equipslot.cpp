@@ -101,7 +101,6 @@ EquipSlot* FUN_14120d560(NotifyContext::BindData* p);
 EquipSlotBag* FUN_14120e140(NotifyContext::BindData* p);
 void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
 void FUN_14120d8e0(const CString& strName);
-void FUN_1422cc9e0(DragSlotBag* pBag);
 
 // @0x14120c0e0
 EquipSlot::EquipSlot(const CString& strName, int nIndex, MS2Ptr<PCInfo> spPC, int nSlot, int nKind, int nUnk)
@@ -417,7 +416,7 @@ void FUN_14120d8e0(const CString& strName)
     EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
-        FUN_1422cc9e0(pBag);
+        pBag->FUN_1422cc9e0();
         Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }

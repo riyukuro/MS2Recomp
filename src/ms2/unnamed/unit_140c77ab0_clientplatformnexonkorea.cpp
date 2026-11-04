@@ -63,7 +63,9 @@ public:
 // ---- out-of-unit types, functions and globals ----
 extern int DAT_143ac2fd0;                       // the platform failure code (shown by CGameApp::InitInstance)
 extern CStringW g_143ac2fe0;                    // the platform failure message
-extern Unk_LaunchBitset<4> g_launchBits;        // 0x143ae0901
+struct Unk_CmdBitset;                           // unit_1414b1230.cpp
+extern Unk_CmdBitset g_bits;                    // 0x143ae0901 the launch option bits
+#define g_launchBits (*(Unk_LaunchBitset<4>*)&g_bits)
 extern CString g_strPassport;                   // 0x143ae0910 "/passport:"
 extern CString g_strSid;                        // 0x143ae0918 "/sid:"
 extern CString g_strNexonSn;                    // 0x143ae0920 "/nexonsn:"

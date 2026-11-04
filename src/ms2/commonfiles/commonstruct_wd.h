@@ -86,7 +86,7 @@ void FUN_14027a4d0(i64, i64, Unk_StlTag); void FUN_14027a510(i64, i64, Unk_StlTa
 char FUN_14027a520(i64*, i64*); char FUN_14027a550(i64*, i64*); char FUN_14027a580(i64*, i64*); char FUN_14027a5b0(i64*, i64*);
 char FUN_14027a5e0(i64*, i64*); char FUN_14027a610(i64*, i64*); char FUN_14027a640(i64*, i64*); char FUN_14027a670(i64*, i64*);
 void FUN_14027a6a0(i64*, i64); void FUN_14027a6c0(i64*, i64); void FUN_14027a6e0(i64*, i64); void FUN_14027a700(i64*, i64); void FUN_14027a720(i64*, i64);
-void FUN_14027a8c0(void* vec, i64 first, i64 last, i64 dest); void FUN_14027a900(void* vec, i64 first, i64 last, i64 dest);
+i64 FUN_14027a8c0(i64 vec, i64 first, i64 last, i64 dest); void FUN_14027a900(void* vec, i64 first, i64 last, i64 dest);
 void FUN_14027a940(void* vec, i64 first, i64 last, i64 dest);
 void FUN_14027a740(i64 it, i64* p);
 Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key);

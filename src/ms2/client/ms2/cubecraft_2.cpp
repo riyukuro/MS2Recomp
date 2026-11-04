@@ -876,7 +876,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
 {
     if (m_spGuide.operator==(0))
         return;
-    bool bMoved = kPos.FUN_140552700(m_ptCell);
+    bool bMoved = reinterpret_cast<const efd::Point3&>(kPos) != reinterpret_cast<const efd::Point3&>(m_ptCell);
     if (bMoved)
     {
         if (m_svc->HasCubeAtPoint(kPos))
@@ -993,7 +993,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             {
                 NiMatrix3 kRot = m_spGuide->vfunc_5();
                 kRot.ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-                kEuler.FUN_140ad0c10(-57.295776f);
+                reinterpret_cast<efd::Point3&>(kEuler) *= -57.295776f;
             }
             if (kEuler.z < 0.0)   // the exe compares in double
                 kEuler.z = (float)(int)((kEuler.z - 89.0f) / 90.0f) * 90.0f;
@@ -1023,7 +1023,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
                 {
                     NiMatrix3 kRot = m_spGuide->vfunc_5();
                     kRot.ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-                    kEuler.FUN_140ad0c10(-57.295776f);
+                    reinterpret_cast<efd::Point3&>(kEuler) *= -57.295776f;
                 }
                 if (kEuler.z < 0.0)   // the exe compares in double
                     kEuler.z = (float)(int)((kEuler.z - 89.0f) / 90.0f) * 90.0f;
@@ -1578,7 +1578,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
             if (nOldCheck != m_nCheck)
                 FUN_1410a92c0();
         }
-        if (kDown.FUN_140552700(m_ptCell))
+        if (reinterpret_cast<const efd::Point3&>(kDown) != reinterpret_cast<const efd::Point3&>(m_ptCell))
         {
             Vector3 kOld = m_ptCell;
             m_ptLast = reinterpret_cast<Unk_C2GuideSlots*>(m_spGuide.operator->())->vfunc_3();

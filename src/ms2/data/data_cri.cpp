@@ -237,9 +237,9 @@ void FUN_140029a50();
 void FUN_140029ab0();
 void FUN_14002df50();
 void FUN_14002e050();
-long FUN_142ccb000(void*, void*);
-long FUN_142ccb710(void*, void*);
-long FUN_142ccbe90(void*, void*);
+long MPVDEC_DecIpicMb(void*, void*);
+long MPVDEC_DecBpicMb(void*, void*);
+long MPVDEC_DecPpicMb(void*, void*);
 long FUN_142cccba0(void*);
 long FUN_142cccd80(void*);
 long FUN_142cccef0(void*);
@@ -833,9 +833,9 @@ alignas(8) unsigned char DAT_1431ba4f8[0x10] = {
 // 0x1431ba7c8
 alignas(8) Sd_1431ba7c8 DAT_1431ba7c8 = {
     {0},
-    (const void*)&FUN_142ccb000,
-    (const void*)&FUN_142ccbe90,
-    (const void*)&FUN_142ccb710,
+    (const void*)&MPVDEC_DecIpicMb,
+    (const void*)&MPVDEC_DecPpicMb,
+    (const void*)&MPVDEC_DecBpicMb,
     (const void*)&MPVDEC_DecDpicMb,
 };
 // 0x1431ba800

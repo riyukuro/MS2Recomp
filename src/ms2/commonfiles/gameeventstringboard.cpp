@@ -14,15 +14,11 @@
 #include "ms2/placeholder/cgamerule.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 
 // Out-of-unit helpers.
-// Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 // The string id of a GameEvent string field (commonutil).
-int FUN_140718200(CStringW* text);
+int FUN_140718200(const CStringW& text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads, packet.cpp).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
@@ -37,7 +33,7 @@ GameEvent* FUN_14041eb80();
 // The registration of the link event (GameEventStringBoard itself is registered by the neighbouring shut-down unit,
 // which holds 0x14041e930 as an out-of-unit factory).
 #ifndef MS2_HOOK_DLL
-static Unk_GEFactoryRegistry s_regStringBoardLink(L"GameEventStringBoardLink", FUN_14041eb80);   // 0x143aaeed3
+static ClassObjectRegistrar s_regStringBoardLink(L"GameEventStringBoardLink", (ClassObjectCreateFn)FUN_14041eb80);   // 0x143aaeed3
 #endif
 
 // ---- GameEventStringBoard --------------------------------------------------------------------------------------------
@@ -60,7 +56,7 @@ GameEventStringBoard::GameEventStringBoard() : m_nId(0)
 void GameEventStringBoard::vfunc_2()
 {
     if (!m_68.IsEmpty())
-        m_nId = FUN_140718200(&m_68);
+        m_nId = FUN_140718200(m_68);
 }
 
 // @0x14041eaa0

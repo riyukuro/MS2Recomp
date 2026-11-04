@@ -27,7 +27,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 // AS invoker on the label's movie clip (instance of the AScript::Invoke template).
 class ASDialog
@@ -172,7 +171,7 @@ void UICubeUGCHead::FUN_141906b60()
                 vfunc_8(1);
             else
                 vfunc_8(0);
-            FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
+            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
             ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y);
         }
     }

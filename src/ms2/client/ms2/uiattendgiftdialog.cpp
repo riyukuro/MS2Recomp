@@ -189,12 +189,6 @@ void FUN_1418fe220(const CString&);
 void FUN_1418fe1c0(const CString&);
 void FUN_140d73ff0(CStringW);
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int,int,int); };
-class Unk_14016e5a0 { public:
-    void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30;
-    CStringW link; CStringW image;
-};
-MS2_CHECK_OFFSET(Unk_14016e5a0,link,0x38);
-class Unk_1409fb930 { public: MS2Ptr<Unk_14016e5a0> FUN_14096b3e0(int); };
 CString FUN_14016a600(const wchar_t*,int);
 CStringW FUN_14016a730(const char*,int);
 CString FUN_141029ca0(const CString&);
@@ -664,8 +658,8 @@ MS2_REPLACE_METHOD(0x141030FE0, UIBannerAdvertisingDialog, vfunc_43, 170, 0xA0A5
 void UIBannerAdvertisingDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<Unk_14016e5a0> data=reinterpret_cast<Unk_1409fb930*>(TSingleton<CAdBannerManagerCli>::GetInstance())->FUN_14096b3e0(5);
-    if(data.get()) FUN_141031320(data->image,data->link);
+    Unk_AdbPtr data=TSingleton<CAdBannerManagerCli>::GetInstance()->FUN_14096b3e0(5);
+    if(data.get()) FUN_141031320(data->m_str40,data->m_str38);
 }
 MS2_REPLACE_METHOD(0x141031090, UIBannerAdvertisingDialog, OnLoadInit, 138, 0x442960D7);
 // @0x141031120

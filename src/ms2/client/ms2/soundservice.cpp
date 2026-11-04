@@ -107,11 +107,12 @@ public:
 };
 CStringA FUN_14016a600(const wchar_t* pszText, int nCodePage);
 void FUN_1412751b0(const CStringW& rText, int nSeconds);
-int FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, int nFlags);
+int FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, unsigned nFlags);
 void FUN_140399620(CStringA strPattern, CStringA strDirectory, ATL::CAtlArray<CStringA>& rOut, CStringA strExclude, bool bFlag);
 void FUN_140165270(ATL::CAtlArray<CStringA>& rArray, const CStringA& rItem);
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-void* FUN_1409478c0();                                              // the camera manager
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -975,12 +976,12 @@ efd::AsyncResult CSoundService::OnTick()
             m_listMessages.clear();
         }
     }
-    if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60()) != 0)
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60()) != 0)
     {
-        Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
+        Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
         Vector3 kPos = pCam->GetPosition();
-        Vector3 kForward = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0340()));
-        Vector3 kUp = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0250()));
+        Vector3 kForward = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0340()));
+        Vector3 kUp = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0250()));
         if (GetEventSystem() != 0)
         {
             FMOD_VECTOR vPos;

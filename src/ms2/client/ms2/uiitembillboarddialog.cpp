@@ -95,8 +95,7 @@ extern int DAT_143ab2970;
 // The string table and the job table.
 
 // Localized formatters.
-CStringW FormatStringId(int id, const fmt::ArgList& args);      // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a1);
 template <class A> CStringW BlockFormat(int nId, const A& a);
 
@@ -237,17 +236,17 @@ void UIItemBillBoardDialog::OnLoadComplete()
         FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_advertiser"));
         Unk_BbButton* pInstallButton = m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get();
         if (pInstallButton != 0)
-            m_installButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), 0);
+            reinterpret_cast<ASButton*>(m_installButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), nullptr);
     } else {
         m_advertiserMovie->vfunc_4(0);
         m_customerMovie->vfunc_4(1);
         FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_customer"));
         Unk_BbButton* pHomeButton = m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get();
         if (pHomeButton != 0)
-            m_homeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), 0);
+            reinterpret_cast<ASButton*>(m_homeButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), nullptr);
         Unk_BbButton* pRemoveButton = m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get();
         if (pRemoveButton != 0) {
-            m_removeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), 0);
+            reinterpret_cast<ASButton*>(m_removeButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), nullptr);
             if (DAT_143ab2914 >= 0x32)
                 m_removeButton->vfunc_4(1);
             else
@@ -255,14 +254,14 @@ void UIItemBillBoardDialog::OnLoadComplete()
         }
         if (m_info.enabled != 0) {
             if (m_homeButton.get() != 0)
-                m_homeButton->FUN_1422c1fe0(1);
+                reinterpret_cast<ASMovieClip*>(m_homeButton.operator->())->FUN_1422c1fe0(1);
             MS2Ptr<ASMovieClip> icon(0);
             ASMovieClip* pIcon = m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get();
             if (pIcon != 0)
                 icon->vfunc_15("enable");
         } else {
             if (m_homeButton.get() != 0)
-                m_homeButton->FUN_1422c1fe0(0);
+                reinterpret_cast<ASMovieClip*>(m_homeButton.operator->())->FUN_1422c1fe0(0);
             MS2Ptr<ASMovieClip> icon(0);
             ASMovieClip* pIcon = m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get();
             if (pIcon != 0)

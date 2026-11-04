@@ -35,8 +35,7 @@ bool FUN_140900f30(__int64 nTime);                                          // t
 CStringW FUN_140b8e850(const CMsTime& kTime);                               // the date text
 CStringW FUN_1409404f0(__int64 nMerat);                                     // the price text
 
-CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14052bd00 (CStringW)
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 
 // @0x140fdab30
 // The portrait icon of a partner: its UGC profile image when it is in the field, else the default portrait.

@@ -260,8 +260,8 @@ void UIMeratMarketDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> > banners;
-    if (GetAdBannerManagerCli()->FUN_14096b540(2, reinterpret_cast<Unk_AdBannerArray&>(banners)))
-        ApplyBanners(reinterpret_cast<Unk_AdBannerArray&>(banners));
+    if (GetAdBannerManagerCli()->FUN_14096b540(2, reinterpret_cast<ATL::CAtlArray<Unk_AdbPtr>&>(banners)))
+        ApplyBanners(reinterpret_cast<ATL::CAtlArray<Unk_AdbPtr>&>(banners));
 }
 
 // ---- unit-local stand-ins for the services this dialog calls (only the proven members) ----
@@ -313,7 +313,7 @@ class Unk_MeratBanner : public CPtred { public: CStringA m_strBackground; };
 class Unk_MeratEquipEntry : public CMeratMarketProduct { };
 class Unk_MeratFilter : public CPtred { };                                  // the market filter
 class Unk_EquipOutfit : public CPtred { };                                  // uiequipiconcontainer.h (the avatar customize here)
-struct Unk_MeratOid : public Unk_MeratProductKey { void FUN_1409c1640(CStringW strOid); bool operator==(const Unk_MeratOid& o) const; };
+struct Unk_MeratOid : public Unk_MeratProductKey { };   // asitemslot.cpp's name for the key (GetProductOID)
 
 // map, the sellers, the product lists, the basket and the requests to the server.
 typedef ATL::CRBMap<Unk_MeratProductKey, MS2Ptr<CMeratMarketProduct> > Unk_MmProductMap;
@@ -1115,7 +1115,7 @@ void UIMeratMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         return;
     Unk_MeratProductKey key;
     CStringA strName = pArgs->FUN_1422b8d30();
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(FUN_14016a730(strName, 0));
+    key.FUN_1409c1640(FUN_14016a730(strName, 0));
     MS2Ptr<CMeratMarketProduct> spProduct(0);
     if (m_250 == 0) {
         spProduct = ((CMeratMarketMan*)pMan)->FUN_140d57150(key, CurrentSearchId());
@@ -1457,7 +1457,7 @@ void UIMeratMarketDialog::ShowUgcTerms(int nParam, int nKind)
 }
 
 // @0x1412ee610
-void UIMeratMarketDialog::ApplyBanners(Unk_AdBannerArray& banners)
+void UIMeratMarketDialog::ApplyBanners(ATL::CAtlArray<Unk_AdbPtr>& banners)
 {
     m_banner.Clear();
     size_t nCount = reinterpret_cast<ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >&>(banners).GetCount();
@@ -1479,7 +1479,7 @@ void UIMeratMarketDialog::ApplyBanners(Unk_AdBannerArray& banners)
         MS2Ptr<MeratMarketShopBannerInfo> spInfo(new MeratMarketShopBannerInfo());
         if (spInfo == 0)
             continue;
-        spInfo->FUN_141347c30(reinterpret_cast<const Unk_AdBannerPtr&>(spBanner), nType, CStringA(""));
+        spInfo->FUN_141347c30(reinterpret_cast<const Unk_AdbPtr&>(spBanner), nType, CStringA(""));
         m_banner.FUN_141347ed0(MS2Ptr<ShopBannerInfo>((MeratMarketShopBannerInfo*)spInfo));
     }
     if (FUN_1422dc430() != 0) {
@@ -3609,7 +3609,7 @@ void UIMeratMarketDialog::OnUnEquip(ASData& data)
                     Unk_MeratProductKey key;
                     CStringW strOid;
                     icon.TryGetWString("productOID", strOid);
-                    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(strOid);
+                    key.FUN_1409c1640(strOid);
                     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d578d0(key);
                     if (spProduct.get() != 0) {
                         Unk_AvPackageKey pkg;
@@ -4003,7 +4003,7 @@ void UIMeratMarketDialog::OnClickRecipe(ASData& data)
     float fX = data.PopFloat();
     float fY = data.PopFloat();
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
+    key.FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0 || spItem->FUN_14053dd30() <= 0)
         return;
@@ -4065,7 +4065,7 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
     Unk_MeratProductKey key;
     CStringW strOid;
     objSlot.TryGetWString("productOID", strOid);
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+    key.FUN_1409c1640(CStringW(strOid));
     __int64 nSeller = 0;
     if (m_250 == 5)
         nSeller = CurrentSearchId();
@@ -4199,7 +4199,7 @@ void UIMeratMarketDialog::OnProductMessage(const Scaleform::GFx::FunctionHandler
     Unk_MeratOid key;
     CStringW strOid;
     obj.TryGetWString("productOID", strOid);
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+    key.FUN_1409c1640(CStringW(strOid));
     __int64 nSeller = CurrentSearchId();
     MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
     FUN_140ec0b50(spProduct);
@@ -4218,7 +4218,7 @@ void UIMeratMarketDialog::OnProductMessageHouse(const Scaleform::GFx::FunctionHa
     if (obj.IsUndefinedOrNull())
         return;
     obj.TryGetWString("productOID", strOid);
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+    key.FUN_1409c1640(CStringW(strOid));
     __int64 nSeller = CurrentSearchId();
     MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
     if (spProduct == 0 || spProduct->m_ugc.FUN_140896350() == 0)
@@ -4475,7 +4475,7 @@ void UIMeratMarketDialog::OnClickCancelSale(ASData& data)
 {
     CStringW strKey = FUN_14016a730(data.FUN_1422b8d30(), 0);
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
+    key.FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FindProduct(key);
     if (spProduct.get() != 0) {
         int nState = spProduct->m_ugc.m_n28;
@@ -4495,7 +4495,7 @@ void UIMeratMarketDialog::OnClickRemoveSale(ASData& data)
 {
     CStringW strKey = FUN_14016a730(data.FUN_1422b8d30(), 0);
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
+    key.FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FindProduct(key);
     if (spProduct.get() != 0) {
         int nState = spProduct->m_ugc.m_n28;
@@ -4531,7 +4531,7 @@ void UIMeratMarketDialog::OnClickRegisterSale(ASData& data)
 {
     CStringW strKey = FUN_14016a730(data.FUN_1422b8d30(), 0);
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
+    key.FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FindProduct(key);
     if (spProduct.get() != 0) {
         if (spProduct->m_ugc.m_n28 == 2) {
@@ -4555,7 +4555,7 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
     CStringW strKey = FUN_14016a730(data.FUN_1422b8d30(), 0);
     int nCount = data.PopInt();
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
+    key.FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FindProduct(key);
     if (spProduct == 0)
         return;
@@ -4707,7 +4707,7 @@ bool UIMeratMarketDialog::OnAskCancelSale(int nButton, const CMsgBoxData& box)
     if (nButton == 0) {
         CStringW strOid = box.FUN_141a02fd0(0, CStringW());
         Unk_MeratProductKey key;
-        reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+        key.FUN_1409c1640(CStringW(strOid));
         reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->SendMeretMarketMode15(key);
     }
     return true;
@@ -4719,7 +4719,7 @@ bool UIMeratMarketDialog::OnAskRegisterSale(int nButton, const CMsgBoxData& box)
     if (nButton == 0) {
         CStringW strOid = box.FUN_141a02fd0(0, CStringW());
         Unk_MeratProductKey key;
-        reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+        key.FUN_1409c1640(CStringW(strOid));
         reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->SendMeretMarketMode14(key);
     }
     return true;
@@ -4731,7 +4731,7 @@ bool UIMeratMarketDialog::OnAskRemoveSale(int nButton, const CMsgBoxData& box)
     if (nButton == 0) {
         CStringW strOid = box.FUN_141a02fd0(0, CStringW());
         Unk_MeratProductKey key;
-        reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+        key.FUN_1409c1640(CStringW(strOid));
         reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->SendMeretMarketMode19(key);
     }
     return true;
@@ -4747,7 +4747,7 @@ bool UIMeratMarketDialog::OnAskMoveToModelHouse(int nButton, const CMsgBoxData& 
         if (!strOid.IsEmpty())
         {
             Unk_MeratProductKey key;
-            reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strOid));
+            key.FUN_1409c1640(CStringW(strOid));
             __int64 nSeller = CurrentSearchId();
             spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
         }
@@ -6295,7 +6295,7 @@ void UIMeratMarketDialog::OnRemoveItem(MS2Ptr<CMeratMarketProduct> spProduct)
         MS2Ptr<AScript> spPage = GetPage(4);
         if (spPage.get() != 0)
         {
-            int nIndex = reinterpret_cast<const Unk_MeratOid&>(spProduct->m_key) == reinterpret_cast<const Unk_MeratOid&>(m_model.m_key) ? m_model.m_nIndex : -1;
+            int nIndex = spProduct->m_key == m_model.m_key ? m_model.m_nIndex : -1;
             spPage->FUN_141312710("removeItemComplete", FUN_140719530(spProduct->m_ugc.m_n20), nIndex);
         }
     }
@@ -7164,7 +7164,7 @@ void UIMeratMarketDialog::DirtyState::ClearPremiumSale()
 // @0x141315970
 int UIMeratMarketDialog::ModelRef::IndexOf(Unk_MeratProductKey key)
 {
-    return reinterpret_cast<const Unk_MeratOid&>(m_key) == reinterpret_cast<const Unk_MeratOid&>(key) ? m_nIndex : -1;
+    return m_key == key ? m_nIndex : -1;
 }
 
 // @0x1413159d0

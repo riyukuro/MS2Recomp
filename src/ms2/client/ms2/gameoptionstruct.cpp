@@ -100,15 +100,23 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_GsDialog
 {
 public:
-    MS2Ptr<ASButton> FUN_140a57f50(CString name, int nIndex);
-    MS2Ptr<ASSlider> FUN_140a58110(CString name, int nIndex);
-    MS2Ptr<ASDropdownMenu> FUN_140cfcf10(CString name, int nIndex);
     MS2Ptr<ASMovieClip> FUN_1412587a0(CString name, int nIndex);
 
     char m_pad[0x28];
     int m_nId;                                                      // +0x28 the option id
     int m_pad2;
     MS2Ptr<AScript> m_root;                                         // +0x30 the AS root
+};
+
+// The check box and slider lookups as gameoptiongamepad defines them, and the drop down lookup as gameoptionlanguage does.
+struct Unk_GpDialog
+{
+    MS2Ptr<class ASCheckBox> FUN_140a57f50(CString name, int nIndex);
+    MS2Ptr<class ASSlider> FUN_140a58110(CString name, int nIndex);
+};
+struct Unk_LgDialog
+{
+    MS2Ptr<ASDropdownMenu> FUN_140cfcf10(CString name, int nIndex);
 };
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -243,53 +251,53 @@ MS2_REPLACE_METHOD_VIA(0x141255B50, CGameOptionInterface, IMessageListener, OnMe
 void CGameOptionInterface::vfunc_6()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableMouseControl"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableMouseControl"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_flag.m_b);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_closeDialogAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_closeDialogAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_b00);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_autoDesc"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_autoDesc"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_b01);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showTipText"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showTipText"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_b02);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showDamageMeter"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showDamageMeter"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
         {
             sp->FUN_1422c1fe0(m_state.m_b14);
             sp->FUN_1422ce090(m_state.m_b03);
         }
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showChaosDamageMeter"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showChaosDamageMeter"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
         {
             sp->FUN_1422c1fe0(m_state.m_b15);
             sp->FUN_1422ce090(m_state.m_b04);
         }
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sliderUI"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sliderUI"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0(200.0f - m_state.m_f08 * 100.0f);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageTextScaleStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageTextScaleStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_n10);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageEffectAlphaStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageEffectAlphaStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_n0c);
     }
@@ -300,50 +308,50 @@ MS2_REPLACE_METHOD(0x141255C10, CGameOptionInterface, vfunc_6, 1746, 0x6CE23490)
 void CGameOptionInterface::vfunc_7()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableMouseControl"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableMouseControl"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_closeDialogAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_closeDialogAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b00 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_autoDesc"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_autoDesc"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b01 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showTipText"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showTipText"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b02 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showDamageMeter"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showDamageMeter"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b03 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showChaosDamageMeter"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showChaosDamageMeter"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
         {
             if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xbe))
                 m_state.m_b04 = sp->FUN_1422ce0e0() ? true : false;
         }
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sliderUI"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sliderUI"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_f08 = (float)(200 - (int)sp->FUN_1422ce630()) / 100.0f;
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageTextScaleStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageTextScaleStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_n10 = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageEffectAlphaStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_damageEffectAlphaStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_n0c = (int)sp->FUN_1422ce630();
     }
@@ -464,62 +472,62 @@ MS2_REPLACE_METHOD(0x141256E70, CGameOptionSoundDefault, vfunc_5, 23, 0x192A1B0B
 void CGameOptionSoundDefault::vfunc_6()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bMuteAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bMuteAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_b00);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bPlayAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bPlayAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_b01);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableJobSound"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableJobSound"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_flag.m_b);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_mainSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_mainSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nMainSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nEffectSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_enviromentSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_enviromentSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nEnviromentSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_uiSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_uiSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nUiSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_npcSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_npcSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nNpcSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bossSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bossSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nBossSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bgmSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bgmSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nBgmSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_systemSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_systemSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nSystemSoundStep);
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_movieSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_movieSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_nMovieSoundStep);
     }
@@ -542,7 +550,7 @@ void CGameOptionSoundDefault::vfunc_6()
         }
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_charSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_charSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             sp->FUN_1422ce5f0((float)m_state.m_n28);
     }
@@ -553,62 +561,62 @@ MS2_REPLACE_METHOD(0x141256E90, CGameOptionSoundDefault, vfunc_6, 3054, 0x712439
 void CGameOptionSoundDefault::vfunc_7()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bMuteAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bMuteAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b00 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bPlayAll"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bPlayAll"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_b01 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableJobSound"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableJobSound"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_mainSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_mainSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nMainSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nEffectSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_enviromentSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_enviromentSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nEnviromentSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_uiSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_uiSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nUiSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_npcSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_npcSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nNpcSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bossSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bossSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nBossSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bgmSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_bgmSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nBgmSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_systemSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_systemSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nSystemSoundStep = (int)sp->FUN_1422ce630();
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_movieSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_movieSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_nMovieSoundStep = (int)sp->FUN_1422ce630();
     }
@@ -624,7 +632,7 @@ void CGameOptionSoundDefault::vfunc_7()
         }
     }
     {
-        MS2Ptr<ASSlider> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a58110(CString("m_charSoundStep"), -1);
+        MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_charSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
             m_state.m_n28 = (int)sp->FUN_1422ce630();
     }
@@ -734,126 +742,126 @@ MS2_REPLACE_METHOD(0x141258AF0, CGameOptionStatus, vfunc_5, 23, 0x192A1B0B);
 void CGameOptionStatus::vfunc_6()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMyName);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPlayerSymbol"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPlayerSymbol"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayPlayerSymbol);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayFriendlyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayFriendlyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayFriendlyName);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayEnemyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayEnemyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayEnemyName);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNpcName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNpcName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayNpcName);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMonsterName);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPcIllust"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPcIllust"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayPcIllust);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterGaugeValue"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterGaugeValue"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMonsterGaugeValue);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayExpValue"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayExpValue"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayExpValue);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayOnlyMyEffectToMonster"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayOnlyMyEffectToMonster"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayOnlyMyEffectToMonster);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMyHpGauge);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyShieldGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyShieldGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMyShieldGauge);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayPartyHpGauge);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyShieldGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyShieldGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayPartyShieldGauge);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayMonsterHpGauge);
     }
     {
-        MS2Ptr<ASDropdownMenu> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
         if (static_cast<ASDropdownMenu*>(sp) != 0)
             sp->SetSelectedIndex(m_state.m_n18);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNormalChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNormalChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayNormalChatBalloon);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayPartyChatBalloon);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayGuildChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayGuildChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayGuildChatBalloon);
     }
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
     {
         {
-            MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayShowOnlyMyPet"), -1);
-            if (static_cast<ASButton*>(sp) != 0)
+            MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayShowOnlyMyPet"), -1);
+            if (static_cast<ASCheckBox*>(sp) != 0)
                 sp->FUN_1422ce090(m_state.m_bDisplayShowOnlyMyPet);
         }
         {
-            MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideMyPet"), -1);
-            if (static_cast<ASButton*>(sp) != 0)
+            MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideMyPet"), -1);
+            if (static_cast<ASCheckBox*>(sp) != 0)
                 sp->FUN_1422ce090(m_state.m_bDisplayHideMyPet);
         }
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideSmartPush"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideSmartPush"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayHideSmartPush);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayLearningQuest"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayLearningQuest"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_flag.m_b);
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideHighlightMenu"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideHighlightMenu"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_bDisplayHideHighlightMenu);
     }
 }
@@ -863,126 +871,126 @@ MS2_REPLACE_METHOD(0x141258B10, CGameOptionStatus, vfunc_6, 4394, 0xBCEF88D7);
 void CGameOptionStatus::vfunc_7()
 {
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMyName = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPlayerSymbol"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPlayerSymbol"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayPlayerSymbol = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayFriendlyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayFriendlyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayFriendlyName = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayEnemyName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayEnemyName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayEnemyName = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNpcName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNpcName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayNpcName = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterName"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterName"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMonsterName = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPcIllust"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPcIllust"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayPcIllust = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterGaugeValue"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterGaugeValue"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMonsterGaugeValue = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayExpValue"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayExpValue"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayExpValue = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayOnlyMyEffectToMonster"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayOnlyMyEffectToMonster"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayOnlyMyEffectToMonster = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMyHpGauge = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyShieldGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyShieldGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMyShieldGauge = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayPartyHpGauge = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyShieldGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyShieldGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayPartyShieldGauge = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterHpGauge"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMonsterHpGauge"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayMonsterHpGauge = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASDropdownMenu> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
+        MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
         if (static_cast<ASDropdownMenu*>(sp) != 0)
             m_state.m_n18 = sp->GetSelectedIndex();
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNormalChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayNormalChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayNormalChatBalloon = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayPartyChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayPartyChatBalloon = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayGuildChatBalloon"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayGuildChatBalloon"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayGuildChatBalloon = sp->FUN_1422ce0e0() ? true : false;
     }
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
     {
         {
-            MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayShowOnlyMyPet"), -1);
-            if (static_cast<ASButton*>(sp) != 0)
+            MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayShowOnlyMyPet"), -1);
+            if (static_cast<ASCheckBox*>(sp) != 0)
                 m_state.m_bDisplayShowOnlyMyPet = sp->FUN_1422ce0e0() ? true : false;
         }
         {
-            MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideMyPet"), -1);
-            if (static_cast<ASButton*>(sp) != 0)
+            MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideMyPet"), -1);
+            if (static_cast<ASCheckBox*>(sp) != 0)
                 m_state.m_bDisplayHideMyPet = sp->FUN_1422ce0e0() ? true : false;
         }
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideSmartPush"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideSmartPush"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayHideSmartPush = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayLearningQuest"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayLearningQuest"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASButton> sp = ((Unk_GsDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideHighlightMenu"), -1);
-        if (static_cast<ASButton*>(sp) != 0)
+        MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayHideHighlightMenu"), -1);
+        if (static_cast<ASCheckBox*>(sp) != 0)
             m_state.m_bDisplayHideHighlightMenu = sp->FUN_1422ce0e0() ? true : false;
     }
 }
@@ -1826,25 +1834,25 @@ class Unk_GsPostEffectMgr : public ApplyEffect
 {
 public:
 };
-PostProcessingService* FUN_1409a8b20();
+class Unk_AeFeatureMgr { public: static class Unk_AeFeatureMgr* FUN_1409a8b20(); };   // C3: the PostProcessingService getter (applyeffect.cpp)
 bool FUN_1409a5850(NiFixedString& str, const bool* pb, unsigned int n);
 extern NiFixedString DAT_143ae53c0;
-// The renderer's display mode list (see gameoption.cpp).
-struct Unk_GsRawMode
+// The renderer's display mode list (gameoption.cpp defines these views).
+struct Unk_GoRawMode
 {
     int m_nWidth;
     int m_nHeight;
     int m_nFormat;
 };
-struct Unk_GsModeSource
+struct Unk_GoModeSource
 {
-    Unk_GsRawMode* FUN_14124fee0(unsigned int nIndex);          // the nIndex-th mode (or null)
+    Unk_GoRawMode* FUN_14124fee0(unsigned int nIndex);          // the nIndex-th mode (or null)
     unsigned int FUN_14124ff10();                               // count
 };
-class Unk_GsRenderer
+class Unk_GoGfxDevice
 {
 public:
-    Unk_GsModeSource* FUN_14124fea0();                          // +0x728 the display mode source
+    Unk_GoModeSource* GetModes();                               // +0x728 the display mode source
 };
 // The application window.
 class Unk_GsApp
@@ -2086,13 +2094,13 @@ MS2_REPLACE(0x14125E300, FUN_14125e300, 161, 0xABBDCCC4);
 void FUN_14125e3b0(Unk_GraphicState* p, int b)
 {
     p->m_bShimmer = b != 0;
-    if (FUN_1409a8b20()->IsClickActive(6) != p->m_bShimmer)
-        FUN_1409a8b20()->FUN_1416aa450(6, p->m_bShimmer ? true : false);
+    if (((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsClickActive(6) != p->m_bShimmer)
+        ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(6, p->m_bShimmer ? true : false);
     if (!p->m_bShimmer)
     {
-        PostProcessEffect* pStep = FUN_1409a8b20()->GetStep(0xc);
+        PostProcessEffect* pStep = ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(0xc);
         if (pStep != 0 && pStep->GetActive())
-            FUN_1409a8b20()->FUN_1416a37a0(0xc, true);
+            ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a37a0(0xc, true);
         char cOff = 0;
         FUN_1409a5850(DAT_143ae53c0, (const bool*)&cOff, 1);
     }
@@ -2118,7 +2126,7 @@ void FUN_14125e4c0(Unk_GraphicState* p, int b)
     if (p->m_b1a != (b != 0))
     {
         p->m_b1a = p->m_b15;
-        FUN_1409a8b20()->GetDoF()->FUN_141178020(p->m_b1a);
+        ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetDoF()->FUN_141178020(p->m_b1a);
     }
 }
 MS2_REPLACE(0x14125E4C0, FUN_14125e4c0, 222, 0x0F1B671C);
@@ -2181,15 +2189,15 @@ MS2_REPLACE(0x14125E7E0, FUN_14125e7e0, 53, 0xCA567DD9);
 // @0x14125e820
 bool FUN_14125e820(Unk_GraphicState* p, int nWidth, int nHeight)
 {
-    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
+    Unk_GoGfxDevice* pRenderer = (Unk_GoGfxDevice*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
-        Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
+        Unk_GoModeSource* pModes = pRenderer->GetModes();
         if (pModes != 0)
         {
             for (unsigned i = 0; i < pModes->FUN_14124ff10(); i++)
             {
-                Unk_GsRawMode* pMode = pModes->FUN_14124fee0(i);
+                Unk_GoRawMode* pMode = pModes->FUN_14124fee0(i);
                 if (pMode != 0)
                 {
                     int nModeWidth = pMode->m_nWidth;
@@ -2215,16 +2223,16 @@ void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx)
 {
     bool bWindowed = nScreenMode == 0;
     bool bFullWindow = nScreenMode == 2;
-    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
+    Unk_GoGfxDevice* pRenderer = (Unk_GoGfxDevice*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
-        Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
+        Unk_GoModeSource* pModes = pRenderer->GetModes();
         if (pModes != 0)
         {
             bool bApplied = nResIdx >= 0 && nResIdx < (int)pModes->FUN_14124ff10();
             if (bApplied)
             {
-                Unk_GsRawMode* pMode = pModes->FUN_14124fee0(nResIdx);
+                Unk_GoRawMode* pMode = pModes->FUN_14124fee0(nResIdx);
                 if (pMode != 0)
                 {
                     int nWidth = pMode->m_nWidth;
@@ -2255,16 +2263,16 @@ MS2_REPLACE(0x14125E910, FUN_14125e910, 479, 0x48A44F42);
 // @0x14125eb00
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight)
 {
-    Unk_GsRenderer* pRenderer = (Unk_GsRenderer*)NiRenderer::GetRenderer();
+    Unk_GoGfxDevice* pRenderer = (Unk_GoGfxDevice*)NiRenderer::GetRenderer();
     if (pRenderer != 0)
     {
-        Unk_GsModeSource* pModes = pRenderer->FUN_14124fea0();
+        Unk_GoModeSource* pModes = pRenderer->GetModes();
         if (pModes != 0)
         {
             unsigned nFound = 0xffffffff;
             for (unsigned i = 0; i < pModes->FUN_14124ff10(); i++)
             {
-                Unk_GsRawMode* pMode = pModes->FUN_14124fee0(i);
+                Unk_GoRawMode* pMode = pModes->FUN_14124fee0(i);
                 if (pMode != 0)
                 {
                     int nModeWidth = pMode->m_nWidth;

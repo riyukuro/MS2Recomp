@@ -40,7 +40,7 @@ public:
 
             // CUIService
 class CUIService;
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_140764020();   // C3: was FUN_140764020
 
@@ -80,7 +80,7 @@ int CGuideConditionNext::vfunc_3()
         return 1;
     if (TSingleton<CUIService>::GetInstance()->FUN_141adbb00() != 0)
         return 0;
-    if (FUN_14025e7c0()->FUN_14116dcb0(0x493e2, false, 0))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x493e2, false, 0))
         return 1;
     return 0;
 }

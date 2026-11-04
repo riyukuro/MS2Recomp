@@ -37,10 +37,9 @@ void* FUN_141371b20();   // C3: was FUN_141371b20
 CString FUN_14071ae20(const CString& strFile);              // the GFx UI's XML path of a file
 CString FUN_14071a6f0(const CString& strFile);              // the GFx debug XML path of a file
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-struct Unk_PreloadEntry;
 class NiString;
-int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries);   // ms2animationservice.cpp
 class NiTextKey;
+int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries);   // ms2animationservice.cpp
 class NiTextKeyExtraData                                     // C3: view for the engine-side MS2 hook
 {
 public:

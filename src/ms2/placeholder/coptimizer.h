@@ -58,6 +58,7 @@ public:
     void ApplyFlagsToPlayer(PCBase* pPC, int nFlags);
     void SetModeAndLimit(int nFlags, int nLimit);
     int GetEnabled() const;
+    int FUN_140ddcc90() { return m_nMode; }                 // 0x140ddcc90 (inline COMDAT; ?\statefishingdata.cpp)
     void FUN_14109ac50(int n);                              // m_nUpdateOn = n
     std::set<unsigned __int64> m_players;                   // +0x08
     std::set<egf::EntityID> m_suppress;                     // +0x18

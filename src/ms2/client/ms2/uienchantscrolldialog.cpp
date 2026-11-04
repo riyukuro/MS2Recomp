@@ -86,10 +86,10 @@ void FUN_140cd73b0(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 void FUN_140cd74a0(const CString& strName);                                                // clear the slot
 
 // The id-keyed string-table formatter (FUN_14028dee0: looks up the id and formats its "{0}.." text) and its wrappers.
-CStringW FUN_14028dee0(unsigned nId, const fmt::ArgList& args);
+CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 #define ES_ID_WRAP(n) \
     template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
-    inline CStringW FUN_14028dee0(unsigned nId, FMT_GEN(n, FMT_MAKE_ARG)) { \
+    inline CStringW FUN_14028dee0(int nId, FMT_GEN(n, FMT_MAKE_ARG)) { \
         const fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, WC_REF)}; \
         return FUN_14028dee0(nId, fmt::ArgList(fmt::internal::wc_make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
     }

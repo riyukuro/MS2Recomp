@@ -36,7 +36,7 @@ class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3
 void* FUN_1411d15b0(void* p);
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
-extern char DAT_143ae5320;
+extern NiFixedString DAT_143ae5320;
 extern int DAT_1439f823c;
 struct Unk_WFRect {
     Unk_WFRect(int a, int b, int c, int d);     // 0x140a5a400
@@ -202,7 +202,7 @@ bool FUN_1416bafb0(void* a, void* step)
         }
     }
     s_fade = s_fade * s_fade;
-    FUN_1409a5770(*(class NiFixedString*)(&DAT_143ae5320), (float const*)(&s_fade), 1);
+    FUN_1409a5770(DAT_143ae5320, (float const*)(&s_fade), 1);
     return true;
 }
 #endif

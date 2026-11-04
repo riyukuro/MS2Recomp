@@ -73,18 +73,7 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
-void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                    // 0x140ad0c10 scale the angles (radians -> degrees)
-void FUN_1409989e0(void* pOut, const char* psz);                         // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                                          // 0x1408a8900 ~efd::utf8string
 void* FUN_14025e7c0();                                                   // 0x14025e7c0 the key-binding table
-
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_HoldString
-{
-    Unk_HoldString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_HoldString() { FUN_1408a8900(m_buf); }
-    __int64 m_buf[4];
-};
 
 // The cast request of a skill (ctor 0x141763fa0).
 struct Unk_InventorySkillRequest
@@ -251,7 +240,7 @@ void StateHold::vfunc_3(double fTime)
             efd::Point3 kAngles;
             if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
             {
-                FUN_140ad0c10(&kAngles, -57.2957764f);
+                kAngles *= -57.2957764f;
                 m_pOwner->vfunc_21(kAngles);
             }
             efd::Point3 kPos = spNode->GetWorldTranslate();
@@ -307,14 +296,14 @@ void StateHold::vfunc_9(double fTime)
             const int& nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
             if (nNpcId == 0xa7e02a)
             {
-                Unk_HoldString kAnim("Ride_Idle_U");
-                m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
+                efd::utf8string kAnim("Ride_Idle_U");
+                m_pOwner->PlayAnimation(kAnim, m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
             else if (nNpcId == 0xadf341 || nNpcId == 0xadf342)
             {
-                Unk_HoldString kAnim("Idle_A");
-                m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
+                efd::utf8string kAnim("Idle_A");
+                m_pOwner->PlayAnimation(kAnim, m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
         }
@@ -338,50 +327,50 @@ void StateHold::vfunc_9(double fTime)
                 {
                     if (pRidee->FUN_14166cc80() == 0x17 || pRidee->FUN_14166cc80() == 0x85)
                     {
-                        Unk_HoldString kAnim(spModel->m_str50);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str50);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        Unk_HoldString kAnim(spModel->m_str38);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str38);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->GetCurStateId() == 6)
                 {
                     if (pRidee->FUN_14166cc80() == 0x27)
                     {
-                        Unk_HoldString kAnim(spModel->m_str58);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str58);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        Unk_HoldString kAnim(spModel->m_str40);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str40);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->GetCurStateId() == 1 || pRidee->GetCurStateId() == 4)
                 {
                     if (pRidee->FUN_14166cc80() == 0xc || pRidee->FUN_14166cc80() == 0x87)
                     {
-                        Unk_HoldString kAnim(spModel->m_str48);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str48);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
-                        Unk_HoldString kAnim(spModel->m_str30);
-                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        efd::utf8string kAnim(spModel->m_str30);
+                        m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->FUN_141676b70() != 0)
                 {
-                    Unk_HoldString kAnim(spModel->m_str48);
-                    m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                    efd::utf8string kAnim(spModel->m_str48);
+                    m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                 }
                 else
                 {
-                    Unk_HoldString kAnim(spModel->m_str28);
-                    m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                    efd::utf8string kAnim(spModel->m_str28);
+                    m_pOwner->PlayAnimation(kAnim, pRidee->FUN_1416713c0(), false, false);
                 }
             }
         }

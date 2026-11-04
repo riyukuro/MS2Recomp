@@ -25,15 +25,15 @@ CString FUN_14028ef00(efd::Point3 kPoint);                                      
 void TrimCommas(CString& str);                                                  // 0x140552c60
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
-class Unk_TiXmlElement
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
+    TiXmlElement(const char* pszName);          // 0x14086f2f0
+    virtual ~TiXmlElement();                    // 0x14086f450
 private:
-    void* unknown00[18];
+    void* unknown08[17];
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // @0x1408001f0
 Unk_RangeShape::Unk_RangeShape()
@@ -182,7 +182,7 @@ void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
     static Unk_RangeProperty kDefault;
     if (FUN_140800920(kDefault))
     {
-        Unk_TiXmlElement elem(strName);
+        TiXmlElement elem(strName);
         FUN_140800570(&elem);
         if (m_n40 != kDefault.m_n40)
             XmlSetAttr((class TiXmlElement*)(&elem), "includeCaster", m_n40);

@@ -9,6 +9,8 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_14147a2a0.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <NiPoint3.h>     // C3: NiPoint3 assignment (was FUN_14097faa0/FUN_14097fad0)
+#include <NiPoint2.h>     // C3: the circle crossing points
 #include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
 #include <math.h>
 // The statically linked CRT math calls go through the exe's IAT.
@@ -25,20 +27,13 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
 float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& src);    // NiPoint3 assignment
-Vector3* FUN_14097fad0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
 float FUN_1407680d0(class Unk_Random*);   // C3: was FUN_1407680d0
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
 
 // A 2D point and its NiPoint2 / efd::Point2 helpers.
 struct Unk_Pt2 { float x, y; };
-struct Unk_Pt2Pair { float x, y; };
-struct Unk_Pt2Sub { Unk_Pt2 FUN_140a4e500(const Unk_Pt2& kRhs) const; }; // efd::Point2::operator-
-struct Unk_Pt2Add { Unk_Pt2 FUN_141412ca0(const Unk_Pt2& kRhs) const; }; // efd::Point2::operator+
-struct Unk_Pt2Ret : Unk_Pt2 { };                                            // efd::Point2 by value: returned through the hidden pointer
-Unk_Pt2Ret FUN_140c90220(float fScalar, const Unk_Pt2& kPt);                // efd::operator*(float, Point2)
-void FUN_140db9c80(Unk_Pt2* pOut, const Unk_Pt2& kPt);                      // NiPoint2(const efd::Point2&)
+#define AsPoint2(pt) reinterpret_cast<const efd::Point2&>(pt)
 
 // Launch parameters of a parabolic throw from a start to an end point at a given pitch angle (0x38 bytes).
 struct Unk_Parabola
@@ -102,7 +97,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
             if (!bProbe)
             {
                 Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
-                FUN_14097faa0(pOut, kPoint);
+                *reinterpret_cast<NiPoint3*>(pOut) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(kPoint))));
                 return true;
             }
             kInfo.m_origin = kInfo.m_hitPoint.FUN_140965c40(kInfo.m_dir.FUN_14097fc90(30.0f));
@@ -124,7 +119,7 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
         {
             Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
             kPoint.z = kPoint.z + 5.0f;
-            FUN_14097fad0(pOut, &kPoint);
+            *reinterpret_cast<NiPoint3*>(pOut) = *reinterpret_cast<const NiPoint3*>(&kPoint);
             return true;
         }
     }
@@ -135,11 +130,10 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
 // Circle (centre kCenter, radius fRadius) against the line kOrigin + t * kDir; writes both crossing points.
 bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& kCenter, float fRadius, Unk_Pt2* pHit0, Unk_Pt2* pHit1)
 {
-    Unk_Pt2 kLocal;
-    FUN_140db9c80(&kLocal, reinterpret_cast<const Unk_Pt2Sub*>(&kOrigin)->FUN_140a4e500(kCenter));
+    NiPoint2 kLocal(AsPoint2(kOrigin) - AsPoint2(kCenter));
     float fA = FUN_14147aed0(&kDir, &kDir);
-    float fB = FUN_14147aed0(&kLocal, &kDir);
-    float fC = FUN_14147aed0(&kLocal, &kLocal) - fRadius * fRadius;
+    float fB = FUN_14147aed0(reinterpret_cast<const Unk_Pt2*>(&kLocal), &kDir);
+    float fC = FUN_14147aed0(reinterpret_cast<const Unk_Pt2*>(&kLocal), reinterpret_cast<const Unk_Pt2*>(&kLocal)) - fRadius * fRadius;
     float fDisc = fB * fB - fA * fC;
     if (fDisc < 0.0f)
         return false;
@@ -148,12 +142,10 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
     float afT[2];
     afT[0] = (-fB - fRoot) * fInvA;
     afT[1] = (-fB + fRoot) * fInvA;
-    Unk_Pt2 kHit0;
-    FUN_140db9c80(&kHit0, reinterpret_cast<const Unk_Pt2Add*>(&kOrigin)->FUN_141412ca0(FUN_140c90220(afT[0], kDir)));
-    *pHit0 = kHit0;
-    Unk_Pt2 kHit1;
-    FUN_140db9c80(&kHit1, reinterpret_cast<const Unk_Pt2Add*>(&kOrigin)->FUN_141412ca0(FUN_140c90220(afT[1], kDir)));
-    *pHit1 = kHit1;
+    NiPoint2 kHit0(AsPoint2(kOrigin) + afT[0] * AsPoint2(kDir));
+    *pHit0 = reinterpret_cast<const Unk_Pt2&>(kHit0);
+    NiPoint2 kHit1(AsPoint2(kOrigin) + afT[1] * AsPoint2(kDir));
+    *pHit1 = reinterpret_cast<const Unk_Pt2&>(kHit1);
     return true;
 }
 
@@ -165,9 +157,9 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
     Vector3 kUnit = kDir;
     kUnit.FUN_140968990();
     Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
-    float fProj = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(kUnit);
+    float fProj = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kUnit));
     float fProjSqr = fProj * fProj;
-    float fSqr = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Vector3&>(kToCenter));
+    float fSqr = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kToCenter));
     float fRR = fRadius * fRadius;
     if (fProj < 0.0f && fSqr > fRR)
         return 0;
@@ -178,8 +170,8 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
         Unk_NiPoint3 kNear(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fProj, kUnit)));
         Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
         reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
-        FUN_14097faa0(pHit, reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
-            reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(efd::Sqrt(fPerp) - fRadius)));
+        *reinterpret_cast<NiPoint3*>(pHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
+            reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(efd::Sqrt(fPerp) - fRadius))))));
     }
     else
     {
@@ -189,7 +181,7 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
             fT = fProj - fHalf;
         else
             fT = fProj + fHalf;
-        FUN_14097faa0(pHit, kOrigin.FUN_14097fd50(FUN_1409ab5c0(fT, kUnit)));
+        *reinterpret_cast<NiPoint3*>(pHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fT, kUnit))))));
         bHit = 1;
     }
     return bHit;
@@ -202,9 +194,9 @@ bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
     Vector3 kUnit = kDir;
     kUnit.FUN_140968990();
     Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
-    float fProj = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(kUnit);
+    float fProj = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kUnit));
     float fProjSqr = fProj * fProj;
-    float fSqr = reinterpret_cast<const Vector3&>(kToCenter).FUN_140a00f20(reinterpret_cast<const Vector3&>(kToCenter));
+    float fSqr = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kToCenter));
     float fRadiusSqr = fRadius * fRadius;
     if (fProj < 0.0f && fSqr > fRadiusSqr)
         return false;

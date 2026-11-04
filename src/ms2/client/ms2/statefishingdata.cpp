@@ -66,7 +66,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 CString FUN_140b62550(unsigned int n);                       // number -> text
 
-extern Vector3 DAT_143b01a60;                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern Vector3 DAT_143a08cf8;                       // the up vector
 
 class Unk_FishPacket : public CPtred
@@ -130,12 +130,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
 
-// The optimizer with the inline accessor of this unit.
-class Unk_FsOptimizer : public COptimizer
-{
-public:
-    int FUN_140ddcc90() { return m_nMode; }                  // 0x140ddcc90
-};
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 
@@ -296,7 +290,7 @@ void StateFishing::vfunc_3(double fTime)
             m_nB0 = m_pOwner->vfunc_25();
             if (m_spEffect ? true : false)
             {
-                if (((class Unk_FsOptimizer*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
+                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     m_spEffect->SetAppCulled(m_nB0 ? true : false);
             }
         }
@@ -541,7 +535,7 @@ void StateFishing::FUN_140ddb740(int nRod)
                 m_spEffect->UpdateProperties();
                 m_spEffect->Update(0.0f, true);
                 m_nB0 = m_pOwner->vfunc_25();
-                if (((class Unk_FsOptimizer*)FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_nB0 != 0)
+                if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0 && m_nB0 != 0)
                     m_spEffect->SetAppCulled(true);
             }
         }

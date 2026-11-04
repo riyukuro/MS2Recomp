@@ -8,6 +8,7 @@
 #include <NiTransform.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
 
 // ---- unit-local placeholders ----
 class Unk_CameraManager   // C3: member view for the former free stand-ins
@@ -15,7 +16,8 @@ class Unk_CameraManager   // C3: member view for the former free stand-ins
 public:
     class Unk_CameraTargetEntity* FUN_140a38d60();
 };
-void* FUN_1409478c0();                                              // camera manager
+class CameraMgr;
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 namespace egf { class Entity; }
 class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                 // scene root of an entity
@@ -56,7 +58,7 @@ CNodeViewerDlg::~CNodeViewerDlg()
 void CNodeViewerDlg::FUN_140c7f0f0()
 {
     NiNode* pRoot = 0;
-    void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
+    void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
     if (pEntity != 0)
     {
         pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
@@ -178,7 +180,7 @@ MS2_REPLACE_METHOD(0x140C7F680, CNodeViewerDlg, FUN_140c7f680, 225, 0x7CAC0EBA);
 void CNodeViewerDlg::FUN_140c7f770()
 {
     void* pNode = 0;
-    void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
+    void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
     if (pEntity != 0)
     {
         pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));

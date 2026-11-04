@@ -15,7 +15,6 @@
 #include "ms2/placeholder/cguildxmldata.h"
 #include <algorithm>
 // C3: unit-local views of the real classes behind the guilddef_1.h stand-ins
-class Unk_IntTriple { public: void Clear(); int Sum(); void Copy(const Unk_IntTriple&); void Write(COutputStream&); void Read(CInputStream&); int m_v[3]; };   // Unk_GuildTriple (0x140267bd0..)
 class Unk_UserProxy { public: CStringW FUN_1408f19e0(); CString FUN_1408f1a60(); };   // Unk_GuildCharacter's accessors
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // the scoped lock (0x1401b4ec0 / 0x1401b5120)
 class Unk_PetLock { public: Unk_PetLock(CLockCriticalSection&, int); ~Unk_PetLock(); private: void* m_p; };  // ctor 0x140203610
@@ -817,7 +816,7 @@ int CGuildMember::FUN_1404cb370()
 }
 
 // @0x1404cb390
-Unk_GuildTriple* CGuildMember::FUN_1404cb390()
+Unk_IntTriple* CGuildMember::FUN_1404cb390()
 {
     return &data.f2c;
 }

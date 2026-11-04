@@ -249,7 +249,8 @@ struct Unk_RsSceneRoot
     Unk_RsCollector* m_pCollector;      // +0x218
 };
 MS2_CHECK_OFFSET(Unk_RsSceneRoot, m_pCollector, 0x218);
-extern Unk_RsSceneRoot* DAT_143afa980;
+struct NiShadowManagerStatics : NiShadowManager { using NiShadowManager::ms_pkShadowManager; };
+#define DAT_143afa980 (*reinterpret_cast<Unk_RsSceneRoot**>(&NiShadowManagerStatics::ms_pkShadowManager))   // C3: was extern Unk_RsSceneRoot* DAT_143afa980
 // @0x1414f0540
 inline Unk_RsCollector* Unk_RsGetCollector()
 {

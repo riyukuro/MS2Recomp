@@ -24,13 +24,9 @@
 class CInPacket;
 class CMsgBoxData;
 
-// A button of the movie ("m_homeButton" / "m_removeButton" / "m_installButton"): an AS display object.
-class Unk_BbButton : public ASDisplayObject
-{
-public:
-    void FUN_1422c1fe0(int bEnabled);                                                               // enable / disable
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback, int flags);   // click callback
-};
+// A button of the movie ("m_homeButton" / "m_removeButton" / "m_installButton"): an AS display object. Its enable call
+// is ASMovieClip::FUN_1422c1fe0 and its click callback ASButton::FUN_1422ce240.
+class Unk_BbButton : public ASDisplayObject {};
 
 class WorldService;
 

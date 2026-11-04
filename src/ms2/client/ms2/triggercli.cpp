@@ -26,6 +26,8 @@
 #undef TiXmlDocument
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/blockformat.h"     // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0 by its real name
+#include "ms2/placeholder/formatstringid.h"  // C3: FormatStringId<...> over FUN_14028dee0 by its real name
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
@@ -55,10 +57,6 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // String table and fmt helpers.
 CStringW GetStringCommon(int nId);                            // string table entry
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FormatStringId(int id, const fmt::ArgList& args);  // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
 // The service that resolves a cube object id (class id 0x06100017; only one lookup is used here).
 struct Unk_TrgObject

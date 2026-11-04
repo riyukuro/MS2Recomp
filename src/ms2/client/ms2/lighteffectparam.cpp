@@ -97,7 +97,6 @@ public:
     virtual void vfunc_6();
     virtual int GetClassId();
 };
-class Unk_LightWorld { public: Unk_LightWorldObj* FUN_141bd0f50(egf::Entity* pEntity); };
 
 // The effect target (CEffect::vfunc_3's second argument), the part this unit reads.
 struct Unk_LightTarget
@@ -314,7 +313,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
         egf::Entity* pOwner = spService->GetEntityFromSceneGraphNode(pShadow);
         if (pOwner != 0)
         {
-            Unk_LightWorldObj* pObj = reinterpret_cast<Unk_LightWorld*>(WorldService::GetInstance())->FUN_141bd0f50(pOwner);
+            Unk_LightWorldObj* pObj = reinterpret_cast<Unk_LightWorldObj*>(WorldService::GetInstance()->FUN_141bd0f50(reinterpret_cast<class Unk_WsC_GameObj*>(pOwner)));
             if (pObj != 0 && pObj->GetClassId() == 0x6200044)
                 return false;
         }

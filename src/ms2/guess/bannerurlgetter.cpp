@@ -43,7 +43,6 @@ MS2_CHECK_SIZE(CBannerUrlGetter, 0x38);
 // C3: was extern CAdBannerManagerCli* DAT_143ab3920 (TSingleton<CAdBannerManagerCli>::s_instance)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CAdBannerManagerCli* GetAdBannerManagerCli();
-AdBannerData* FUN_14016e5a0(Unk_AdBannerPtr* pPtr);
 CString FUN_14016a600(const wchar_t* psz, int n);           // wide -> narrow
 CString FUN_141029ed0(int nKind, const CString& strUrl);    // the cached file of a url
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
@@ -58,12 +57,12 @@ CBannerUrlGetter::~CBannerUrlGetter()
 // @0x1409fb100
 void CBannerUrlGetter::LoadBanner()
 {
-    Unk_AdBannerPtr spBanner = GetAdBannerManagerCli()->FUN_14096b3e0(m_nKind);
+    Unk_AdbPtr spBanner = GetAdBannerManagerCli()->FUN_14096b3e0(m_nKind);
     if (spBanner.get() != 0)
     {
-        m_strUrl = FUN_14016a600((const wchar_t*)FUN_14016e5a0(&spBanner)->m_str40, 0);
-        m_strLinkType = (const wchar_t*)FUN_14016e5a0(&spBanner)->m_str30;
-        m_strLink = (const wchar_t*)FUN_14016e5a0(&spBanner)->m_str38;
+        m_strUrl = FUN_14016a600((const wchar_t*)spBanner->m_str40, 0);
+        m_strLinkType = (const wchar_t*)spBanner->m_str30;
+        m_strLink = (const wchar_t*)spBanner->m_str38;
         RequestFile();
     }
 }
@@ -137,7 +136,7 @@ template<> Delegate<void(NotifyObject*)>::DelegateImplBase::DelegateImplBase() {
 template<> Delegate<void(NotifyObject*)>::DelegateImplBase::~DelegateImplBase() {}
 
 // @0x1409fb8a0
-AdBannerData* Unk_AdBannerPtr::get() const { return m_p; }
+AdBannerData* Unk_AdbPtr::get() const { return m_p; }
 
 // @0x1409fb930
 CAdBannerManagerCli* GetAdBannerManagerCli() { return TSingleton<CAdBannerManagerCli>::s_instance; }

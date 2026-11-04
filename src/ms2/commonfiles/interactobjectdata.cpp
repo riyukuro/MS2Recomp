@@ -23,12 +23,12 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/commonfiles/filesystem.h"
+#include <efd/Point3.h>
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-struct Unk_CommonVec3;
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -50,7 +50,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_14028c2d0(CStringA, Unk_CommonVec3 *);  // C3: the definition's signature
+void FUN_14028c2d0(CStringA, efd::Point3 *);  // C3: the definition's signature
 int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // data file path
 CString FUN_14016a5c0(const char* psz, int n);
@@ -147,7 +147,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pMesh), "reactableCollision", reinterpret_cast<int&>(m_mesh.m_nReactableCollision));
         XmlGetAttr((class TiXmlElement*)(pMesh), "reactObjectAni", m_mesh.m_strReactObjectAni);
         CString strShape = Unk_ReadString((class Unk_XmlNode*)(pMesh), "shapeDimension", CString(""));
-        FUN_14028c2d0(strShape, (Unk_CommonVec3 *)&m_mesh.m_shapeDimension);
+        FUN_14028c2d0(strShape, (efd::Point3 *)&m_mesh.m_shapeDimension);
     }
     if (Unk_140165cf0* pUi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ui")))
     {

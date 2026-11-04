@@ -27,10 +27,11 @@
 class CMainSystem;
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
-class Unk_ResourceMgr
+class Unk_ResourceMgr;
+class CNifLoadingService   // C3: member view (nifeffectparam.h)
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_14016a5c0(const char* psz, int n);          // path normalise
@@ -53,7 +54,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 
 // Global shader constant setters (validate, then NiShaderFactory::UpdateGlobalShaderConstant). The float one lives in
 // another unit; the NiPoint2 one is emitted here.
-void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
+bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n);
 bool FUN_140c900e0(const NiFixedString& kName, const efd::Point2* pk, int n);
 int FUN_140c902f0(const efd::Point2& k);               // both components finite
 void FUN_140c8f490(efd::SmartPointer<NiTexture> spTexture);             // swap the shimmer texture of the live step
@@ -103,7 +104,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
-    s_shimmerTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
+    s_shimmerTexture = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
         FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", (NiTexture*)s_shimmerTexture, 0, 0));
     if (pkClick == 0)
@@ -264,7 +265,7 @@ void PostShimmerEffect::vfunc_1()
     float fBlend = 0.0f;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-    FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
+    FUN_140c8f490(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
     FUN_1409a5770(DAT_143ae5438, &fBlend, 1);
     efd::Point2 kMove(0.0f, 0.0f);
     FUN_140c900e0(DAT_143ae5448, &kMove, 1);
@@ -300,7 +301,7 @@ bool PostShimmerEffect::vfunc_6(bool b)
     {
         CString strPath;
         strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
-        FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
+        FUN_140c8f490(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString((const char*)strPath), 5));
         vfunc_7(m_nState, m_fAlpha);
     }
     return true;

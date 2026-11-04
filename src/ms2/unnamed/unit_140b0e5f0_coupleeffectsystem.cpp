@@ -17,6 +17,7 @@
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
+#include <NiTransform.h>   // C3: NiTransform default ctor 0x140a332d0 (was FUN_140a332d0)
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 
@@ -44,8 +45,6 @@ public:
     char m_pad_20[0x50];
 };
 MS2_CHECK_SIZE(NoticeMessage, 0x70);
-void* FUN_140a332d0(Unk_CoupleXform* p);                // NiTransform default ctor
-void FUN_14097fad0(float* pDst, const Unk_CoupleVec* pSrc);   // NiPoint3 assignment (translate)
 extern Unk_EfdMatrix3 DAT_143a09600;                    // identity rotation
 
 // Game-wide constants table; the two entries used are 0x58-byte slots with a "set" flag at +8 and the value at +0x50.
@@ -204,9 +203,9 @@ void CoupleEffectSystem::FUN_140b0ed30()
         return;
     m_posEffect.FUN_14097faa0(FUN_140b0f160());
     Unk_CoupleXform xf;
-    FUN_140a332d0(&xf);
+    reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
     xf.m_fScale = 1.0f;
-    FUN_14097fad0(xf.m_afTranslate, &m_posEffect);
+    *reinterpret_cast<NiPoint3*>(xf.m_afTranslate) = *reinterpret_cast<const NiPoint3*>(&m_posEffect);
     Unk_CoupleRot rot;
     reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
     xf.m_rotate = rot;

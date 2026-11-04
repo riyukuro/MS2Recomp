@@ -53,7 +53,8 @@ public:
     static class WorldService* GetInstance();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void* FUN_140aa6d30();                                                  // the scene manager
+class CStateService;
+template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
@@ -149,7 +150,7 @@ void UIGlobalPortalDialog::vfunc_72()
         return;
     }
     m_nRetryTime = 0;
-    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() != 0x620000c)
+    if (((class CStateService*)(void*)(TSingleton<CStateService>::GetInstance()))->FUN_1417e2610() != 0x620000c)
         return;
     if (FUN_141924630() == 0)
         FUN_141924680();

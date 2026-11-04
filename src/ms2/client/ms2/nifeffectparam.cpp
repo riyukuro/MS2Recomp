@@ -222,6 +222,9 @@
 #include <NiLinFloatKey.h>
 #include <NiFloatInterpolator.h>
 #include <efd/ServiceManager.h>
+#include <efd/MessageService.h>
+#include <ecr/SceneGraphService.h>
+#include <ecr/RenderService.h>
 #include "ms2/client/ms2/effectobject.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/citem.h"
@@ -521,7 +524,7 @@ void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 void FUN_140a0b330(void* pObj, bool bOn, short sFlags);
 
 // Transforms (the exe's NiTransform helpers) and node transforms.
-void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
+void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 void FUN_140194470(void* pDst, const void* pSrc);                   // point assign
 
 // The effect manager (singleton 0x1403ed280) and the world.
@@ -582,13 +585,6 @@ inline void FUN_141550050(void* pNode, const char* pszPath)
 
 
 // Scene nodes of the effect system (see swoosheffectparam.cpp / lighteffectparam.cpp).
-class Unk_EffectNode : public NiNode
-{
-public:
-    Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
-    char m_pad_node[400 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_EffectNode, 400);
 class Unk_SeparateNode : public NiNode
 {
 public:
@@ -863,7 +859,7 @@ bool CNifEffect::vfunc_9()
         m_spEffectObject->vfunc_19(kPos);
         efd::Point3 kDir;
         NiMatrix3 kRot = *static_cast<NiMatrix3*>(((void*)&((class NiAVObject*)(void*)(MS2_NODEPTR(m_spRoot).operator->()))->GetWorldRotate()));
-        FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&kRot), (struct Vector3*)(&kDir));
+        FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kDir));
         m_spEffectObject->vfunc_21(kDir);
     }
     if (!CEffect::vfunc_9())
@@ -1609,11 +1605,8 @@ extern CLockCriticalSection DAT_143ae1f28;
 extern CLockCriticalSection DAT_143ae1f58;
 #endif
 
-void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nRequired);
-void FUN_1411ab7a0(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 struct Unk_NifDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
-void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 class GFxService   // C3: member view for the former free stand-ins
@@ -1621,7 +1614,6 @@ class GFxService   // C3: member view for the former free stand-ins
 public:
     int FUN_1422e9e50();
 };
-class Unk_SingletonObj* FUN_1414a5720();   // C3: was FUN_1414a5720
 void FUN_1414a26b0();
 typedef efd::SmartPointer<NiTexture> NiTexturePtr;
 void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData);    // SetRendererData (+0x40)
@@ -1788,11 +1780,11 @@ bool CNifLoadingService::OnDeviceLost(void* pRenderer)
 // @0x141555ce0
 efd::SyncResult CNifLoadingService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
-    FUN_1411ab770(pRegistrar, 1);
-    FUN_1411ab7a0(pRegistrar, 1);
+    pRegistrar->AddDependency<ecr::RenderService>(1);
+    pRegistrar->AddDependency<ecr::SceneGraphService>(1);
     FUN_1411ab740(pRegistrar, 1);
     pRegistrar->AddDependency<Unk_NifDepSix>(1);
-    FUN_1410db4c0(pRegistrar, 1);
+    pRegistrar->AddDependency<efd::MessageService>(1);
     pRegistrar->AddDependency<efd::AssetFactoryManager>(1);
     return efd::SyncResult_Success;
 }
@@ -1832,9 +1824,9 @@ efd::AsyncResult CNifLoadingService::OnShutdown()
     m_bShutdown = 1;
     if (TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/ != 0)
         ((class CFilePreload*)(void*)(TSingleton<CFilePreload>::GetInstance()/*C3:TSingleton<CFilePreload>::GetInstance*/))->FUN_1412102e0();
-    if (((class CNiStreamLoadThread*)FUN_1414a5720()) != 0)
+    if (TSingleton<CNiStreamLoadThread>::GetInstance() != 0)
     {
-        ((class CNiStreamLoadThread*)FUN_1414a5720())->Stop();
+        TSingleton<CNiStreamLoadThread>::GetInstance()->Stop();
         FUN_1414a26b0();
     }
     ClearTextureCache();
@@ -2338,7 +2330,7 @@ MS2_REPLACE_METHOD(0x1415527A0, CNifLoadingService, FindCachedNif, 363, 0x16E26F
 // @0x141552920
 CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, bool bFlag, bool bReloaded)
 {
-    NiStream* pStream = ((class CNiStreamLoadThread*)FUN_1414a5720())->Get(CString(strPath));
+    NiStream* pStream = TSingleton<CNiStreamLoadThread>::GetInstance()->Get(CString(strPath));
     if (pStream == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Stream[{0}]", strPath);

@@ -161,7 +161,7 @@ void CToolCameraMode::vfunc_8(double fTime)
     {
         if (!((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3cd0() || ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd3d10() == 1)
         {
-            if (ptMove.FUN_140552700(g_143b01a60))
+            if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
             {
                 Vector3 ptRot = FUN_140af8260();
                 ptRot.y = ptRot.y - ptMove.y / 512.0f * 90.0f;
@@ -170,7 +170,7 @@ void CToolCameraMode::vfunc_8(double fTime)
             }
         }
     }
-    if (m_78.FUN_140552700(g_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);

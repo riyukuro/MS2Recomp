@@ -2,13 +2,15 @@
 # command line link2 (cmake/fullexe, tools/fullexe/link.py --alias --order --shim --before) builds:
 #   MS2_PLAIN_GLUE/objs.txt    the objs in link order (plan order + the initorder --before moves), relative to MS2_PLAIN_OBJ_ROOT
 #   MS2_PLAIN_GLUE/alias.rsp   the /alternatename lines (alias.rsp + datapair-alias.rsp as link2 took them)
-#   MS2_PLAIN_GLUE/order.txt   the /ORDER list (optional, not committed: MS2_PLAIN_ORDER defaults to off without it)
+#   MS2_PLAIN_GLUE/order.txt   the /ORDER list (optional: MS2_PLAIN_ORDER defaults to off without it); without order.txt,
+#                              MS2_PLAIN_GLUE/order.tar.xz (plainglue.py pack, its committed form) unpacks into the build dir
 #   MS2_PLAIN_GLUE/stubs.tsv   the data stubs the shim took (names and VAs), input of plainglue.py stubs
 # MS2_PLAIN_GLUE defaults to data/fullexe/plain, the committed glue of the newest passing fullexe-latest build.
 #   data/fullexe/imports.tsv   the import names: one .def per DLL here at configure time, lib /def at build time
 # tools/fullexe/plainglue.py write <dir> regenerates the glue from a finished cmake/fullexe build (names, paths and order
-# only); plainglue.py stubs <exe> <dir>/stubs.tsv <obj> extracts the one data stub (g_physXItem, the exe's bytes) once,
-# like tools/extract_resources.py does the resources. Built here: the import libs, CryptoPP's MASM objs, hookglue.lib
+# only); plainglue.py stubs <exe> <dir>/stubs.tsv <obj> extracts the one data stub (g_physXItem) once, like
+# tools/extract_resources.py does the resources. g_physXItem lies in the exe's .bss, so the obj is zero fill and is
+# committed as MS2_PLAIN_GLUE/stubs.obj, the default of MS2_PLAIN_STUBS_OBJ. Built here: the import libs, CryptoPP's MASM objs, hookglue.lib
 # and shim_runtime.obj.
 # The objs: by default MS2_PLAIN_OBJ_ROOT, the obj cache a cmake/fullexe build (build/progress-<tag>) or the gates left.
 # -DMS2_PLAIN_COMPILE=ON compiles them here instead, one cl command per obj from MS2_PLAIN_GLUE/compile.tsv, flags.tsv
@@ -16,7 +18,9 @@
 # their path tokens). Code, data, relocations and symbols come out the same as the cache's; only the /Z7 debug info
 # differs (it records the obj path and command line), and the link drops it.
 #   cmake -S cmake/fullexe-plain -B build/fullexe-plain -G Ninja [-DMS2_PLAIN_GLUE=<dir>] -DMS2_PLAIN_OBJ_ROOT=<cache>
-#         -DMS2_PLAIN_STUBS_OBJ=<obj> -DMS2_RESOURCES_RES=<res>
+#         [-DMS2_PLAIN_STUBS_OBJ=<obj>] [-DMS2_RESOURCES_RES=<res>]
+# Without MS2_RESOURCES_RES, rc compiles standin/standin.rc (our own icon, manifest and the dialogs the client loads, no
+# original resource) to <build>/standin.res and the link takes that: the exe runs, but its .rsrc is not the original's.
 #   cmake --build build/fullexe-plain          -> build/fullexe-plain/out/<MS2_PLAIN_NAME>.exe (+ .map), copied to MapleStory2.exe
 cmake_minimum_required(VERSION 3.20)
 project(ms2_fullexe_plain NONE)
@@ -24,14 +28,27 @@ project(ms2_fullexe_plain NONE)
 set(MS2_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." CACHE PATH "repository root")
 get_filename_component(MS2_ROOT "${MS2_ROOT}" ABSOLUTE)
 set(MS2_PLAIN_OBJ_ROOT "" CACHE PATH "obj cache objs.txt is relative to (build/progress-<tag>)")
-set(MS2_PLAIN_STUBS_OBJ "" CACHE FILEPATH "data-stub obj (tools/fullexe/plainglue.py stubs)")
-set(MS2_RESOURCES_RES "" CACHE FILEPATH "the .res (tools/extract_resources.py --compile)")
+set(MS2_PLAIN_STUBS_OBJ "" CACHE FILEPATH "data-stub obj (tools/fullexe/plainglue.py stubs); empty = MS2_PLAIN_GLUE/stubs.obj")
+set(MS2_RESOURCES_RES "" CACHE FILEPATH "the .res (tools/extract_resources.py --compile); empty = standin/standin.rc's")
 set(MS2_PLAIN_IMPORTS "${MS2_ROOT}/data/fullexe/imports.tsv" CACHE FILEPATH "import names (dll, symbol)")
-set(MS2_PLAIN_GLUE "${MS2_ROOT}/data/fullexe/plain" CACHE PATH "dir with objs.txt, alias.rsp, stubs.tsv [, order.txt] (tools/fullexe/plainglue.py write)")
+set(MS2_PLAIN_GLUE "${MS2_ROOT}/data/fullexe/plain" CACHE PATH "dir with objs.txt, alias.rsp, stubs.tsv [, stubs.obj, order.txt or order.tar.xz] (tools/fullexe/plainglue.py write)")
 if(EXISTS "${MS2_PLAIN_GLUE}/order.txt")
+  set(_orderfile "${MS2_PLAIN_GLUE}/order.txt")
+elseif(EXISTS "${MS2_PLAIN_GLUE}/order.tar.xz")
+  # order.txt is 32 MB: committed as order.tar.xz, unpacked here at configure
+  set(_orderfile "${CMAKE_BINARY_DIR}/glue/order.txt")
+  if(NOT EXISTS "${_orderfile}" OR "${MS2_PLAIN_GLUE}/order.tar.xz" IS_NEWER_THAN "${_orderfile}")
+    file(ARCHIVE_EXTRACT INPUT "${MS2_PLAIN_GLUE}/order.tar.xz" DESTINATION "${CMAKE_BINARY_DIR}/glue" PATTERNS order.txt)
+    file(TOUCH "${_orderfile}")
+  endif()
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${MS2_PLAIN_GLUE}/order.tar.xz")
+else()
+  set(_orderfile "")
+endif()
+if(_orderfile)
   set(_order ON)
 else()
-  set(_order OFF)     # order.txt is not committed (32 MB): plainglue.py write makes it from a cmake/fullexe build
+  set(_order OFF)     # plainglue.py write makes order.txt from a cmake/fullexe build
 endif()
 option(MS2_PLAIN_ORDER "link with MS2_PLAIN_GLUE/order.txt, the exe's function layout (off = the linker's own order)" ${_order})
 option(MS2_PLAIN_LEGACY_STDIO "link legacy_stdio_definitions.lib (link.py adds it when MS2-TOOLSET objs are linked)" ON)
@@ -48,7 +65,13 @@ if(MS2_PLAIN_COMPILE)
   set(MS2_PLAIN_OBJ_ROOT "${CMAKE_BINARY_DIR}/cache")
   file(MAKE_DIRECTORY "${MS2_PLAIN_OBJ_ROOT}")
 endif()
+if(NOT MS2_PLAIN_STUBS_OBJ AND EXISTS "${MS2_PLAIN_GLUE}/stubs.obj")
+  set(MS2_PLAIN_STUBS_OBJ "${MS2_PLAIN_GLUE}/stubs.obj")   # zero fill only: committed, no exe bytes
+endif()
 foreach(v MS2_PLAIN_OBJ_ROOT MS2_PLAIN_STUBS_OBJ MS2_RESOURCES_RES)
+  if("${v}" STREQUAL "MS2_RESOURCES_RES" AND NOT MS2_RESOURCES_RES)
+    continue()      # the stand-in below
+  endif()
   if(NOT ${v} OR NOT EXISTS "${${v}}")
     message(FATAL_ERROR "${v}=${${v}}: missing (see the header of ${CMAKE_CURRENT_LIST_FILE})")
   endif()
@@ -58,8 +81,8 @@ foreach(f objs.txt alias.rsp)
     message(FATAL_ERROR "MS2_PLAIN_GLUE=${MS2_PLAIN_GLUE}: no ${f}")
   endif()
 endforeach()
-if(MS2_PLAIN_ORDER AND NOT EXISTS "${MS2_PLAIN_GLUE}/order.txt")
-  message(FATAL_ERROR "MS2_PLAIN_ORDER=ON: no ${MS2_PLAIN_GLUE}/order.txt (tools/fullexe/plainglue.py write)")
+if(MS2_PLAIN_ORDER AND NOT _orderfile)
+  message(FATAL_ERROR "MS2_PLAIN_ORDER=ON: no ${MS2_PLAIN_GLUE}/order.txt or order.tar.xz (tools/fullexe/plainglue.py write, pack)")
 endif()
 if(MS2_MSVC_ROOT)
   set(_tp "${MS2_MSVC_ROOT}")
@@ -74,7 +97,7 @@ file(MAKE_DIRECTORY "${OUT}/implib" "${OUT}/asm/glue" "${OUT}/shim")
 # Command Prompt's on Windows
 if(CMAKE_HOST_WIN32)
   set(TOOL_ENV "")
-  foreach(t cl link lib ml64)
+  foreach(t cl link lib ml64 rc)
     find_program(MS2_${t} ${t} REQUIRED)
   endforeach()
 else()
@@ -86,7 +109,7 @@ else()
     set(_wp "${MS2_ROOT}/work/wineprefix-msvc")
   endif()
   set(TOOL_ENV ${CMAKE_COMMAND} -E env WINEPREFIX=${_wp} WINEDEBUG=-all)
-  foreach(t cl link lib ml64)
+  foreach(t cl link lib ml64 rc)
     set(MS2_${t} "${_tp}/msvc/bin/x64/${t}")
   endforeach()
 endif()
@@ -99,6 +122,17 @@ function(tp out path)       # the tools' form of a host path
   endif()
   set(${out} "${path}" PARENT_SCOPE)
 endfunction()
+
+# resources: the given .res, or the stand-in's
+if(NOT MS2_RESOURCES_RES)
+  set(_sd "${CMAKE_CURRENT_LIST_DIR}/standin")
+  set(MS2_RESOURCES_RES "${CMAKE_BINARY_DIR}/standin.res")
+  tp(_o "${MS2_RESOURCES_RES}")
+  tp(_i "${_sd}/standin.rc")
+  add_custom_command(OUTPUT "${MS2_RESOURCES_RES}"
+                     COMMAND ${TOOL_ENV} "${MS2_rc}" /nologo "/fo${_o}" "${_i}"
+                     DEPENDS "${_sd}/standin.rc" "${_sd}/standin.ico" WORKING_DIRECTORY "${_sd}" VERBATIM)
+endif()
 
 # import libs: one .def per DLL (implibs.py's format; imports.tsv is in its order), lib /def at build time
 file(STRINGS "${MS2_PLAIN_IMPORTS}" _rows REGEX "^[^#]")
@@ -184,14 +218,24 @@ add_custom_command(OUTPUT "${OUT}/shim/shim_runtime.obj"
                    DEPENDS "${RT_SRC}" VERBATIM)
 
 # the response file, in link.py's order: header, import libs, SDK libs, objs, asm, shim, res, aliases, /ORDER
+# (on Windows the SDK and VC libs are bare names, found through the Developer Command Prompt's LIB)
 set(SDK_UM "${_tp}/msvc/Windows Kits/10/Lib/${WINSDK_VERSION}/um/x64")
 set(LIBS "")
+set(SYSLIBS "")
 foreach(l kernel32 user32 ws2_32 shlwapi oleaut32 shell32 dsound dinput8)
-  list(APPEND LIBS "${SDK_UM}/${l}.lib")
+  if(CMAKE_HOST_WIN32)
+    list(APPEND SYSLIBS "${l}.lib")
+  else()
+    list(APPEND LIBS "${SDK_UM}/${l}.lib")
+  endif()
 endforeach()
 list(APPEND LIBS "${_tp}/dxsdk/DXSDK/Lib/x64/dxguid.lib")
 if(MS2_PLAIN_LEGACY_STDIO)
-  list(APPEND LIBS "${_tp}/msvc/VC/Tools/MSVC/${MSVC_TOOLSET}/lib/x64/legacy_stdio_definitions.lib")
+  if(CMAKE_HOST_WIN32)
+    list(APPEND SYSLIBS "legacy_stdio_definitions.lib")
+  else()
+    list(APPEND LIBS "${_tp}/msvc/VC/Tools/MSVC/${MSVC_TOOLSET}/lib/x64/legacy_stdio_definitions.lib")
+  endif()
 endif()
 tp(_exe "${OUT}/${MS2_PLAIN_NAME}.exe")
 tp(_map "${OUT}/${MS2_PLAIN_NAME}.map")
@@ -243,6 +287,27 @@ if(MS2_PLAIN_COMPILE)
     list(GET t 1 dir)
     if(CMAKE_HOST_WIN32)
       set(MS2_CL_${n} "$ENV{MS2_CL_${n}}" CACHE FILEPATH "cl for the ${n} rows of compile.tsv")
+      if(NOT MS2_CL_${n})   # none of that version: the 14.16 cl builds those rows too (same flags; other codegen)
+        message(WARNING "MS2_CL_${n} not set: the ${n} rows of compile.tsv build with ${MS2_cl}")
+        set(MS2_CL_${n} "${MS2_cl}")
+      endif()
+      # the args the Linux wrappers add (tools/msvc9v/cl, tools/msvc11/cl put src/ on the include path)
+      if(n STREQUAL "vc9v")
+        tp(_src "${MS2_PLAIN_CHECKOUT}/src")
+        tp(_fi "${MS2_PLAIN_CHECKOUT}/tools/msvc9v/compat.h")
+        set(_cl_args_${n} "/I${_src}" "/FI${_fi}")
+      elseif(n STREQUAL "vc11")
+        tp(_src "${MS2_PLAIN_CHECKOUT}/src")
+        set(_cl_args_${n} "/I${_src}")
+      endif()
+      # the vc9/vc11 flag sets name no CRT, so cl 19.16 standing in for them defaults to /MT: its yvals.h then tags the
+      # objs RuntimeLibrary=MT_StaticRelease and pulls libcpmt.lib, which clash with the /MD objs at the link (LNK2038,
+      # LNK2005). The old cl's headers did neither, so build those rows /MD like the rest (CRT calls go through __imp_).
+      # /Zp8 too (the cl rows' MS2_LAYOUT_OPTIONS): at the default /Zp16, cl 19.16 rounds a derived class past a base
+      # with an align(16) member, where VC9 fills the base's tail padding (ShapeDataFloatMP: 0xa0 vs the exe's 0x90)
+      if(MS2_CL_${n} STREQUAL MS2_cl AND n MATCHES "^vc")
+        list(APPEND _cl_args_${n} "/MD" "/Zp8")
+      endif()
     elseif(n MATCHES "^vc")
       set(MS2_CL_${n} "${MS2_PLAIN_CHECKOUT}/tools/${dir}/cl")
     else()
@@ -281,7 +346,7 @@ if(MS2_PLAIN_COMPILE)
     get_filename_component(_d "${MS2_PLAIN_OBJ_ROOT}/${o}" DIRECTORY)
     file(MAKE_DIRECTORY "${_d}")
     add_custom_command(OUTPUT "${MS2_PLAIN_OBJ_ROOT}/${o}"
-                       COMMAND ${TOOL_ENV} "${MS2_CL_${tool}}" ${_flags_${id}} "/Fo${MS2_PLAIN_OBJ_ROOT}/${o}" "${src}"
+                       COMMAND ${TOOL_ENV} "${MS2_CL_${tool}}" ${_cl_args_${tool}} ${_flags_${id}} "/Fo${MS2_PLAIN_OBJ_ROOT}/${o}" "${src}"
                        DEPENDS "${src}" WORKING_DIRECTORY "${cwd}" VERBATIM)
   endforeach()
 endif()
@@ -291,7 +356,14 @@ file(STRINGS "${MS2_PLAIN_GLUE}/objs.txt" _rel)
 foreach(o IN LISTS _rel)
   list(APPEND OBJS "${MS2_PLAIN_OBJ_ROOT}/${o}")
 endforeach()
-foreach(f IN LISTS IMPLIBS LIBS OBJS)
+foreach(f IN LISTS IMPLIBS)
+  tp(_f "${f}")
+  string(APPEND RSP "\"${_f}\"\n")
+endforeach()
+foreach(f IN LISTS SYSLIBS)
+  string(APPEND RSP "${f}\n")
+endforeach()
+foreach(f IN LISTS LIBS OBJS)
   tp(_f "${f}")
   string(APPEND RSP "\"${_f}\"\n")
 endforeach()
@@ -303,8 +375,8 @@ file(READ "${MS2_PLAIN_GLUE}/alias.rsp" _a)
 string(APPEND RSP "${_a}")
 set(_orderdep "")
 if(MS2_PLAIN_ORDER)
-  set(_orderdep "${MS2_PLAIN_GLUE}/order.txt")
-  tp(_f "${MS2_PLAIN_GLUE}/order.txt")
+  set(_orderdep "${_orderfile}")
+  tp(_f "${_orderfile}")
   string(APPEND RSP "\"/order:@${_f}\"\n")
 endif()
 file(WRITE "${OUT}/link.rsp.new" "${RSP}")

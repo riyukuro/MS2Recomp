@@ -182,7 +182,8 @@ template <> struct Unk_CMISTree<496> : std::vector<egf::EntityPtr, efd::CustomAl
 #include "ms2/commonfiles/timer.h"
 
 // ---- small record types -------------------------------------------------------------------------------------------------
-extern Unk_CMISEntityRef DAT_143acf820;                      // the null entity ref
+class Unk_1401cd100; extern Unk_1401cd100 g_cubeMapNone;
+#define DAT_143acf820 (*(Unk_CMISEntityRef*)&g_cubeMapNone)   // C3: the null entity ref is the statics header's g_cubeMapNone (0x143acf820)
 
 // @0x141122f30
 // The mark record of tail.h (Timer + entity pointer vector): the ctor resets the timer and clears the list.

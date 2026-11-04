@@ -27,7 +27,7 @@ enum Unk_LockMode : int { LOCKMODE_LOCK = 0, LOCKMODE_UNLOCK = 1 };
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 int FUN_140534480(const ATL::CAtlArray<unsigned __int64>& aIds, const unsigned __int64& nId);
 bool FUN_140634120(MS2Ptr<CItem> item, int* pReason);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -53,12 +53,8 @@ template <class A> void Unk_LockMessage(int nStringId, int nA, int nB, const A& 
 }
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid.
-class Unk_LockInventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
-};
-extern Unk_LockInventory DAT_143ab2a90;
+class Unk_Inventory;
+extern Unk_Inventory g_143ab2a90;
 
 // The item lock dialog (RTTI .?AVUIItemLockDialog@@, id 0x4f08) and the inventory dialog (id 0x4e2d): only the calls
 // the manager makes.

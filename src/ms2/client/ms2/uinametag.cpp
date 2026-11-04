@@ -99,7 +99,6 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
 bool FUN_14028d470(float a, float b);                                       // a == b (within epsilon)
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
@@ -307,7 +306,7 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
     {
         if (FUN_141a60d30() == 2)
             FUN_141a5f080();
-        FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
+        *pPos *= ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         pPos->y += vfunc_9();
         float fDist = FUN_140f48e20();
         bool bNear = !(700.0f < fDist) || WorldService::GetInstance()->FUN_141bd30a0()->m_nGlobalNameTag != 0;

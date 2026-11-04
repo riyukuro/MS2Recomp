@@ -83,7 +83,7 @@ public:
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PetRow : public CPtred { public: int m_n18; };
-class Unk_PsPetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
+class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 class CMsgBoxData : public CPtred
@@ -262,7 +262,7 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PsPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)

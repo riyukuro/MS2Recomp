@@ -309,7 +309,7 @@ bool CLinearMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    if (m_kDir.FUN_140552690(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
     {
         m_kMove = DAT_143b01a60;
         return false;
@@ -389,7 +389,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         return false;
     }
     m_kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_pTarget->CalcMoveDirectionNoYaw(m_pTarget->FUN_14123c360())));
-    if (m_kDir.FUN_140552690(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(m_kDir) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
     {
         m_kMove = DAT_143b01a60;
         return false;

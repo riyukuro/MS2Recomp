@@ -22,12 +22,13 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <NiPoint3.h>
 
 #pragma intrinsic(abs)
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -255,7 +256,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         }
 
         Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
-        if (ptMove.FUN_140552700(g_143b01a60) || m_108)
+        if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60) || m_108)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
@@ -432,8 +433,8 @@ void CConsoleCameraMode::vfunc_39(double fTime)
 {
     if (m_f0)
     {
-        Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_d8.m_pos.FUN_140965c40(m_c0.m_pos))));
+        float fDist = ptDelta.Length();
         if (fDist <= 1.0f)
         {
             m_c0.m_pos = m_d8.m_pos;

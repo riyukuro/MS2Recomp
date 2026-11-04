@@ -22,8 +22,6 @@
 #include <new>
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
-extern void FUN_141803560(void* self);
-extern void FUN_141803610(void* self);
 extern void FUN_142cc4300();
 extern void FUN_142cc4390();
 extern void FUN_142cc4590();
@@ -146,7 +144,7 @@ void FUN_14012d5e0()
 // @0x14014d124
 void FUN_14014d124()
 {
-    FUN_141803560(&ATL::_AtlComModule);
+    ATL::_AtlComModule.CAtlComModule::CAtlComModule();
     std::atexit(FUN_142cc99b4);
 }
 
@@ -154,7 +152,7 @@ void FUN_14014d124()
 // @0x14014d144
 void FUN_14014d144()
 {
-    FUN_141803610(&ATL::_AtlWinModule);
+    ATL::_AtlWinModule.CAtlWinModule::CAtlWinModule();
     std::atexit(FUN_142cc99d4);
 }
 
@@ -162,7 +160,7 @@ void FUN_14014d144()
 // @0x14014d16c
 void FUN_14014d16c()
 {
-    FUN_141803560(&ATL::_AtlComModule);
+    ATL::_AtlComModule.CAtlComModule::CAtlComModule();
     std::atexit(FUN_142cc9a18);
 }
 
@@ -170,7 +168,7 @@ void FUN_14014d16c()
 // @0x14014d18c
 void FUN_14014d18c()
 {
-    FUN_141803610(&ATL::_AtlWinModule);
+    ATL::_AtlWinModule.CAtlWinModule::CAtlWinModule();
     std::atexit(FUN_142cc9a38);
 }
 

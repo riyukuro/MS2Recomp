@@ -442,7 +442,7 @@ NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
 
         // characters with APPLYMODE set get a world view vector in both stages
         unsigned int uiApplyMode = pkRealMaterialDesc->GetAPPLYMODE();
-        if ((unsigned int)(m_eMaterialType - 1) <= 2 && uiApplyMode)
+        if (uiApplyMode && (unsigned int)(m_eMaterialType - 1) <= 2)
         {
             pkVertexDesc->SetOUTPUTWORLDVIEW(1);
             pkPixelDesc->SetWORLDVIEW(1);

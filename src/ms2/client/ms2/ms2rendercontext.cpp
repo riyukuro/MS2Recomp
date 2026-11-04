@@ -16,16 +16,8 @@
 #include <d3dx9tex.h>
 
 // ---- out-of-unit callees (bound to the exe by name) ----
-class Unk_RendererWrap;
-class Unk_AeGraphicOption { public: unsigned int FUN_1409a8aa0(void) const; unsigned int FUN_1409a8ab0(void) const; }; class Unk_RenderTarget : public Unk_AeGraphicOption {
-public:
-
-
-};
-class Unk_AeGameOption { public: class Unk_AeGraphicOption * FUN_1409a8ac0(void); }; class Unk_RendererWrap : public Unk_AeGameOption {
-public:
-
-};
+class Unk_AeGraphicOption { public: unsigned int FUN_1409a8aa0(void) const; unsigned int FUN_1409a8ab0(void) const; };   // C3: unit-local view (def in applyeffect)
+class Unk_AeGameOption { public: class Unk_AeGraphicOption * FUN_1409a8ac0(void); };   // C3: unit-local view (def in applyeffect)
 class Unk_RenderLog;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
@@ -119,8 +111,8 @@ int MS2RenderContext::CreateRecodeSurface()
         return 0;
     }
     Unk_RecodeSurfaceInfo* pInfo = (Unk_RecodeSurfaceInfo*)m_pInfoMemory->m_pView;
-    pInfo->m_nWidth = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
-    pInfo->m_nHeight = reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
+    pInfo->m_nWidth = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    pInfo->m_nHeight = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     pInfo->m_nFrameSize = pInfo->m_nWidth * pInfo->m_nHeight * 4;
     pInfo->m_nOutWidth = 0x500;
     pInfo->m_nOutHeight = 0x2d0;

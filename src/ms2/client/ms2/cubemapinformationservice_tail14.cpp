@@ -37,7 +37,6 @@ void* FUN_140159860(u64 nSize, void* pWhere);                  // placement oper
 // of the record / handle types (59 bytes: dtor, then operator delete when bit 0 of the flags is set)
 void FUN_140fac610(void* p);
 void FUN_140fac640(void* p);
-void FUN_1411238b0(void* p);
 void FUN_141125970(void* p);
 
 // @0x14112cdec
@@ -140,7 +139,7 @@ void* FUN_14112d020(void* p, unsigned f)
 // @0x14112d060 TSingleton<CubeMapInformationService>
 void* FUN_14112d060(void* p, unsigned f)
 {
-    FUN_1411238b0(p);
+    ((TSingleton<CubeMapInformationService>*)p)->TSingleton<CubeMapInformationService>::~TSingleton();
     if (f & 1)
         operator delete(p, 8);
     return p;
@@ -788,8 +787,8 @@ bool FUN_14112f480(Unk_CMISArr16* a, u64 nNewSize, int nGrowBy)
 
 // ---- small glue: ref counts, class descs, type casts, accessors, message-factory registration ------------------------
 extern int DAT_143ae2b3c;
-extern CCubeMotionManager* DAT_143acf6c8;
-extern void* DAT_143b023e0;
+struct IMessageStatics : efd::IMessage { using efd::IMessage::ms_pParentClassMap; };
+#define DAT_143b023e0 (*reinterpret_cast<void**>(&IMessageStatics::ms_pParentClassMap))   // C3: was extern void* DAT_143b023e0
 
 void* FUN_141128450(void* p);
 u64 FUN_140c20b50(void* a, u64 b);
@@ -833,9 +832,9 @@ void FUN_14112de80(Unk_CMISVDel8* p) { delete p; }
 // @0x14112ded0 destroy the service singleton
 void FUN_14112ded0()
 {
-    if (DAT_143acf6c8 != 0) {
+    if (TSingleton<CCubeMotionManager>::s_instance != 0) {
         delete GetCubeMotionManager();
-        DAT_143acf6c8 = 0;
+        TSingleton<CCubeMotionManager>::s_instance = 0;
     }
 }
 
@@ -1001,7 +1000,7 @@ CMIS_TYPECAST(14112fa40, ecr::SceneGraphMessage::ms_ClassInfo)
 // @0x14112dd30 CCubeMotionManager::GetInstance (creates the manager on first use)
 CCubeMotionManager* FUN_14112dd30()
 {
-    return DAT_143acf6c8 ? GetCubeMotionManager() : new CCubeMotionManager;
+    return TSingleton<CCubeMotionManager>::s_instance ? GetCubeMotionManager() : new CCubeMotionManager;
 }
 
 // the lazily created async send queue; its implicit ctor (0x14111e640) is paired in cubemapinformationservice_tail6.cpp

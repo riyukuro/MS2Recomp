@@ -170,7 +170,6 @@ public:
     CNpcSpawnData* operator->() const;
     void* m_pObj; void* m_pCtrl;
 };
-class Unk_CommonVec3;
 // Model manager (editor side), 0x98 bytes (unit_140a2a0a0_modelpropertycache.cpp).
 class Unk_ModelMgr
 {
@@ -183,7 +182,7 @@ public:
     // Property readers: (entity element, model name, property name, out).
     int FUN_140a2a920(const CString& strModel, CString strFilter);
     int FUN_140a2aab0(Unk_140165cf0* pEntity, CString strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData> >* pOut);
-    int FUN_140a2afd0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, Unk_CommonVec3* pOut);
+    int FUN_140a2afd0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, efd::Point3* pOut);
     int FUN_140a2b270(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
     int FUN_140a2b550(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
     int FUN_140a2b9d0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
@@ -761,7 +760,7 @@ bool FUN_1418226b0(bool bLog)
                         mgr.FUN_140a2aab0(pEntity, CString(strModel), "NpcList", (ATL::CAtlArray<TPtr<CNpcSpawnData> >*)&npcs);
                         _NpcInfo npc;
                         npc.m_nFieldId = nFieldId;
-                        mgr.FUN_140a2afd0(pEntity, strModel, "Position", (Unk_CommonVec3*)&npc.m_pos);
+                        mgr.FUN_140a2afd0(pEntity, strModel, "Position", (efd::Point3*)&npc.m_pos);
                         for (size_t i = 0; i < FUN_1418311c0(&npcs); i++) {
                             TPtr<CNpcSpawnData> ref(*reinterpret_cast<TPtr<CNpcSpawnData>*>(FUN_14182fc10(&npcs, i)));
                             FUN_1418270c0(((Unk_NpcData*)ref.operator->())->m_nId, npc, g_mapNpc);

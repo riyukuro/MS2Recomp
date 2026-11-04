@@ -60,12 +60,11 @@ class Unk_PoCameraUI : public UIDamageText                                      
 class UIDamageText;
 template <class T> T* Unk_DmgFindUI(int nId);
 
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
+int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* pUnused);
 void FUN_14151f200();
 
 CStringW GetStringCommon(int nStringId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 
@@ -180,7 +179,7 @@ int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 0;
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnClose", szMethod) == 0) {
         vfunc_67();
@@ -318,11 +317,11 @@ void UIPvPObserverDialog::FUN_141a91b40()
     bool bCenter = m_1d5 != false && m_1c8 != 0;
     m_30->Invoke("setCenterCameraEnable", bCenter);
     if (m_178.m_nShownWins != m_178.m_nWins) {
-        m_30->FUN_14184af30("setWinMark", true, m_178.m_nWins);
+        m_30->Invoke("setWinMark", true, m_178.m_nWins);
         m_178.m_nShownWins = m_178.m_nWins;
     }
     if (m_1a0.m_nShownWins != m_1a0.m_nWins) {
-        m_30->FUN_14184af30("setWinMark", false, m_1a0.m_nWins);
+        m_30->Invoke("setWinMark", false, m_1a0.m_nWins);
         m_1a0.m_nShownWins = m_1a0.m_nWins;
     }
     if (m_1d5 != false) {

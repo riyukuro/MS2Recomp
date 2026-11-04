@@ -86,6 +86,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include <typeinfo>
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/singletonclass.h"   // C3: SingletonClass<GFxManager>::ms_pSingleton (0x143aaccf8)
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
@@ -1318,7 +1319,6 @@ CStringW FUN_14016a730(const char* psz, int n);                                 
 extern CStringW DAT_143aacc90;                                                  // the shared empty string
 class Unk_AltStringMgr;   // C3: the GFxManager singleton (calls cast to the GFxManager view)
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-extern Unk_AltStringMgr* DAT_143aaccf8;
 class CContentShutdownManager;
 class CInputKeyHandler;
 Unk_AltStringMgr* FUN_14025e7a0();
@@ -1507,7 +1507,7 @@ bool Unk_Vec7::operator!=(const Unk_Vec7& other) const
 // @0x14025e7a0
 Unk_AltStringMgr* FUN_14025e7a0()
 {
-    return DAT_143aaccf8;
+    return reinterpret_cast<Unk_AltStringMgr*>(SingletonClass<GFxManager>::ms_pSingleton);
 }
 
 // @0x14025e7b0

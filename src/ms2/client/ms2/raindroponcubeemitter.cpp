@@ -93,8 +93,8 @@ __declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneG
 
 // ---- unit-local placeholders ----
 
-extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
-extern const Vector3 g_143a08ce8;   // NiPoint3::ZERO
+#define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)   // NiPoint3::UNIT_Z
+#define g_143a08ce8 (*(const Vector3*)&efd::Point3::UNIT_Y) // C3: was extern const Vector3 g_143a08ce8 (0, 1, 0)
 #define g_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 g_143b01a60
 extern const efd::Color g_143a09660; // white
 

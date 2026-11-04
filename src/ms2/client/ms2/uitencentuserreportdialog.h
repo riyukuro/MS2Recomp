@@ -4,33 +4,10 @@
 #include <utility>
 class CMsgBoxData;
 class COutPacket;
-class Unk_ReportEntity;
+class ASGameEntity;
 class ASTextField;
 class ASCheckBox;
 
-// AS wrapper pointers; only this unit's inline copies/comparisons are defined.
-template<class T> class Unk_ReportHandle {
-public:
-    Unk_ReportHandle();
-    Unk_ReportHandle(int nullValue);
-    Unk_ReportHandle(const Unk_ReportHandle& o) : m_p(o.m_p) { AddRef(); }
-    ~Unk_ReportHandle();
-    Unk_ReportHandle& operator=(int);
-    Unk_ReportHandle& operator=(const Unk_ReportHandle& o) {
-        o.AddRef(); Release(); m_p = o.m_p; return *this;
-    }
-    T* get() const;
-    operator T*() const;
-    T* operator->() const;
-    bool IsNull() const { return m_p == 0; }
-    bool operator!() const { return m_p == 0; }
-    bool operator==(T*) const;
-private:
-    void AddRef() const;
-    void Release();
-    void* m_00;
-    T* m_p;
-};
 template<class T> class Unk_ReportOwner
 {
 public:
@@ -107,7 +84,7 @@ private:
 MS2_CHECK_SIZE(UITencentUserReportDialog, 0x270);
 class UITencentUserReportPage : public CPtred {
 public:
-    UITencentUserReportPage(int type, Unk_ReportHandle<Unk_ReportEntity> entity);
+    UITencentUserReportPage(int type, MS2Ptr<ASGameEntity> entity);
     virtual ~UITencentUserReportPage();
     void FUN_140edc3b0();
     void FUN_140edc590(int enabled);
@@ -128,7 +105,7 @@ public:
     int m_itemKind;
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_ReportHandle<Unk_ReportEntity> m_entity;
+    MS2Ptr<ASGameEntity> m_entity;
     MS2Ptr<ASTextField> m_text;
     MS2Ptr<ASCheckBox> m_checks[16]; // real indexed checkbox array, not padding
     int m_type;

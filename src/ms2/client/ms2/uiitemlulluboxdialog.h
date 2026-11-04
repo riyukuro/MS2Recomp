@@ -8,17 +8,13 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
+#include "ms2/commonfiles/itementityless.h"
 class CMsgBoxData;
 class ASMovieClip;
 class ASTextField;
 class ASData;
 class Unk_LulluBoxButton;
 class Unk_LulluBoxCheck;
-// Orders the sets of special items (the comparator is the ItemEntity ordering of commonfiles\commonstruct).
-struct Unk_LulluBoxLess
-{
-    bool operator()(const ItemEntity& a, const ItemEntity& b) const { return FUN_14026aeb0(a, b); }
-};
 class UIItemLulluBoxDialog : public UIDialog
 {
 public:
@@ -60,8 +56,8 @@ private:
     CString m_bagId;                            // +0x180 "bagId" of the key items (ItemLullu_...)
     std::vector<ItemEntity> m_result;           // +0x188 the obtained items
     std::vector<CString> m_slotBinds;            // +0x1a0 the "binding" strings handed to the AS slots
-    std::set<ItemEntity, Unk_LulluBoxLess> m_special1;  // +0x1b8 drops of the box that are special
-    std::set<ItemEntity, Unk_LulluBoxLess> m_special2;  // +0x1c8 items of the second set (flag read from the packet)
+    std::set<ItemEntity, Unk_GachaLess> m_special1;  // +0x1b8 drops of the box that are special
+    std::set<ItemEntity, Unk_GachaLess> m_special2;  // +0x1c8 items of the second set (flag read from the packet)
     bool m_multi;                               // +0x1d8 ten at a time
     bool m_sent;                                // +0x1d9 the open request was sent
     bool m_simple;                              // +0x1da the "OpenItemBoxLulluSimple" variant

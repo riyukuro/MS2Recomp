@@ -36,7 +36,7 @@ void FUN_142cc8c20()
 }
 
 // operator delete / aligned free / __ehvec_dtor as the exe's CRT and Crypto++ expose them
-void FUN_142308be0(void* p);                                                    // CryptoPP::UnalignedDeallocate
+namespace CryptoPP { void UnalignedDeallocate(void* p); }
 // the CRT'"'"'s array-destructor helper, which this link does not provide: destroys the elements in reverse order
 extern "C" __declspec(noinline) void __ehvec_dtor(void* p, size_t size, int count, void (*pDtor)(void*))
 {
@@ -77,7 +77,7 @@ struct CppSecBlock
     static void Deallocate(unsigned long long* p, size_t n)
     {
         __stosq(p, 0, n);
-        FUN_142308be0(p);
+        CryptoPP::UnalignedDeallocate(p);
     }
 };
 struct CppOneBlock { CppSecBlock a; };

@@ -129,6 +129,7 @@
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/placeholder/effectquery.h"
 #include "uimasterydialog.h"
+#include "uipcbangdialog.h"   // C3: NotifyPcBang (OnSetPcbang)
 #include "uiupperhuddialog.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/placeholder/stringidinterface.h"
@@ -183,6 +184,7 @@
 #include "ms2/placeholder/cinstrumentdatatable.h"
 #include <egf/EntityIDFactory.h>
 #include <egf/Entity.h>
+#include <efd/ParseHelper.h>   // ParseHelper<ID128>::ToString
 // the exe calls the unit_1410dbc10 specialization (0x1410dc360, cache refresh + engine write), not an instantiation
 template <> egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::PropertyID propID, const int& data);
 // MS2Ptr<CProxyGameObject>::operator-> / get are the exe's out-of-range copies (0x1406c71d0 / 0x1406c71b0); left
@@ -317,7 +319,6 @@ public:
     virtual void vfunc_125();
     virtual void vfunc_126();
 };
-void FUN_141524a80(MyPC* pPC, int n);
 
 // OnPacket direct dispatch targets
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
@@ -431,11 +432,10 @@ extern int DAT_143ab284c;
 extern int DAT_143ab2850;
 
 // 0x15: field enter
-class Unk_SSGIntList {};
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
-extern Unk_SSGIntList DAT_143ab3078;
-extern Unk_SSGIntList DAT_143ab3098;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3078;
+extern ATL::CAtlArray<unsigned int> DAT_143ab3098;
 void FUN_14092f420();
 int FUN_14092f640();
 void FUN_1412751b0(const CStringW& strMsg, int nType);
@@ -562,7 +562,7 @@ class Unk_SSG9331e0 : public CGuideManager { public:  };
 class Unk_Restrictions* FUN_1409331e0();   // the definer's return type; read through this unit's Unk_SSG9331e0 view
 #define FUN_1409331e0() ((Unk_SSG9331e0*)FUN_1409331e0())
 class Unk_SSGSoundCtl { public: };
-class Unk_SSG931510 : public CMyCharacter { public: MS2Ptr<class Unk_SSGDungeonRecord> FUN_140d9f2c0(); MS2Ptr<class Unk_SSGChatEmoticon> FUN_140d9f8f0(); };
+class Unk_SSG931510 : public CMyCharacter { public: };
 void FUN_1412b9870(int nId, int nType);
 
 // 0x18..0x41: actor packets
@@ -913,22 +913,20 @@ class UIGlobalPortalDialog : public UIDialog { public: void FUN_1412c3020(CInPac
 class UIQuizDialog : public UIDialog { public: void FUN_14129a930(CInPacket& packet); };
 class UIIndividualPvPDialog : public UIDialog { public: void FUN_1412cacc0(); void FUN_1412cb220(); void FUN_1412cb240(); };
 int FUN_141276180(const CString& strA, const CString& strB);    // play a sound event
-class DungeonRecordManagerCli   // C3: member view (real class not in this TU)
+class DungeonRecordManagerCli : public CPtred   // C3: member view (real class not in this TU)
 {
 public:
     void OnPacket(CInPacket&);
 };
-class Unk_SSGDungeonRecord : public CPtred { public:  };
 
 // 0xef..0x138
 extern int DAT_143ab2950;
 extern char DAT_143ab2943;
-class CChatEmoticonCli   // C3: member view (real class not in this TU)
+class CChatEmoticonCli : public CPtred   // C3: member view (real class not in this TU)
 {
 public:
     void DispatchPacket(CInPacket&);
 };
-class Unk_SSGChatEmoticon : public CPtred { public:  };   // CChatEmoticonCli
 void FUN_140e146f0(CInPacket& packet);
                      // HomeBlockManager
 
@@ -1011,14 +1009,13 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 template <> PC* efd::DynamicCast<PC, PCBase>(PCBase* Source);   // DynamicCast<PC> (class id 0x6200003)
 
 class Unk_SSGSkillAttr : public CPtred { };
-class SkillData   // C3: member view (real class not in this TU)
+class SkillData : public CPtred   // C3: member view (real class not in this TU)
 {
 public:
     unsigned int GetRechargeId();
 };
-class Unk_SSGSkillRow : public CPtred { public:  };   // SkillDataTableCli row (base skill id or 0)
-class Unk_SSGSkillTable { public: MS2Ptr<Unk_SSGSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel);
-    MS2Ptr<Unk_SSGSkillRow> FUN_1407ee1d0(int nSkillId); };
+class SkillDataTable { public: MS2Ptr<SkillData> GetSkillData(unsigned nSkillId); };   // C3: member view (0x1407ee1d0)
+class Unk_SSGSkillTable { public: MS2Ptr<Unk_SSGSkillAttr> FUN_140aafef0(int nSkillId, unsigned short nLevel); };
 class SkillDataTableCli;
 class Unk_SSGSkillCollision
 {
@@ -1041,12 +1038,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);              // localized
 class UIShopDialog;
 template <class T> T* Unk_BreakDialog(int nId);   // the dialog of class T
 
-class Unk_SSGNotifyInventory : public NotifyObject
-{
-public:
-    Unk_SSGNotifyInventory();                               // 0x141328cf0 (vftable 0x142eebd58)
-};
-MS2_CHECK_SIZE(Unk_SSGNotifyInventory, 0x18);
 class UIInventoryDialog : public UIDialog { public: void FUN_141999f60(); void FUN_141999e00(); int FUN_141999de0(); void PlayExpandEffect(); };
 class Unk_SSGDlgInv : public UIInventoryDialog {};
 template <class T> T* Unk_BreakDialog(int nId);   // the dialog of class T
@@ -1260,7 +1251,7 @@ public:
 };
 extern int DAT_143ab2954;
 extern Unk_SSGCountMapMap DAT_143ab32e8;
-extern Unk_SSGCountMap DAT_143ab32f8;
+extern std::map<int, long> DAT_143ab32f8;
 // MyPC +0x179c (MyPC's members are unrecovered; this view only carries the inline setter at 0x14174a510).
 class Unk_SSGMyPCScore
 {
@@ -1270,8 +1261,7 @@ private:
     char m_pad_0[0x179c];
     int m_n179c;
 };
-CStringW FormatStringId(int id, const fmt::ArgList& args);  // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 template <class A> CStringW FormatStringId(int nId, const A& a);   // formatted system text
 CStringW FUN_1409404f0(__int64 nAmount);                    // money string
 CStringW BlockFormat(int nId);                                  // 0/1/2 -> same, else 6
@@ -1397,7 +1387,7 @@ void CSceneStateGame::OnUpdate(double fTime)
         if (pRidee != 0)
             pRidee->FUN_141706650(false);
         else
-            FUN_141524a80(pPC, 0);
+            pPC->FUN_141524a80(false);
         for (unsigned __int64 i = 0; i < 3; i++)
         {
             Unk_SSGSubActor* pSub = ((class Unk_SSGSubActor*)((class PC*)(class MyPC*)(pPC))->GetGuide((int)i));
@@ -2143,13 +2133,13 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
         int n = packet.ReadInt32();
         DAT_143ab3058.Add(n);
     }
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(Unk_SSGIntList*)&(DAT_143ab3098))->RemoveAll();
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(Unk_SSGIntList*)&(DAT_143ab3078))->RemoveAll();
+    DAT_143ab3098.RemoveAll();
+    DAT_143ab3078.RemoveAll();
     nCount = (unsigned short)packet.ReadInt16();
     for (int j = 0; j < nCount; j++)
     {
         int n = packet.ReadInt32();
-        ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(Unk_SSGIntList*)&(DAT_143ab3078))->Add(n);
+        DAT_143ab3078.Add(n);
     }
     __int64 nGuildId = packet.ReadInt64();
     CStringW strGuildName = packet.ReadUnicodeString();
@@ -3483,7 +3473,7 @@ void CSceneStateGame::OnSkillUseFailed(CInPacket& packet)
         int nValue = packet.ReadInt32();
         if (fCool > 0.0f)
         {
-            MS2Ptr<Unk_SSGSkillRow> spRow = reinterpret_cast<Unk_SSGSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+            MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
             if (spRow.get() != 0)
             {
                 int nBaseId = ((SkillData*)(spRow).operator->())->GetRechargeId();
@@ -4273,7 +4263,7 @@ void CSceneStateGame::FUN_14172f210(CInPacket& packet)
     int nValue0 = packet.ReadInt32();
     DAT_143ab2954 = nValue0;
     DAT_143ab32e8.FUN_1409353d0();
-    ((std::_Tree<std::_Tmap_traits<int, long, std::less<int>, std::allocator<std::pair<int const, long>>, 0>>*)(Unk_SSGCountMap*)&(DAT_143ab32f8))->clear();
+    DAT_143ab32f8.clear();
     unsigned nGroupCount = packet.ReadInt32();
     for (int i = 0; i < nGroupCount; i++)
     {
@@ -4285,7 +4275,7 @@ void CSceneStateGame::FUN_14172f210(CInPacket& packet)
             int nKey = static_cast<unsigned short>(packet.ReadInt16());
             int nValue = packet.ReadInt32();
             kGroup.FUN_14063ec70(nKey) = nValue;
-            DAT_143ab32f8.FUN_14063ec70(nKey) += nValue;
+            reinterpret_cast<Unk_SSGCountMap&>(DAT_143ab32f8).FUN_14063ec70(nKey) += nValue;
         }
     }
     int nScore = packet.ReadInt32();
@@ -4560,7 +4550,7 @@ MS2_REPLACE_METHOD(0x141736940, CSceneStateGame, FUN_141736940, 2576, 0xC99A41D7
 // @0x141737360
 void CSceneStateGame::OnRoomDungeon(CInPacket& packet)
 {
-    ((DungeonRecordManagerCli*)(Unk_SSGDungeonRecord*)(((class Unk_SSG931510*)FUN_140931510())->FUN_140d9f2c0()))->OnPacket(packet);
+    ((DungeonRecordManagerCli*)(((class Unk_SSG931510*)FUN_140931510())->GetRecord()))->OnPacket(packet);
 }
 MS2_REPLACE_METHOD(0x141737360, CSceneStateGame, OnRoomDungeon, 95, 0x096233CB);
 
@@ -5206,7 +5196,7 @@ void CSceneStateGame::FUN_14173ddf0(CInPacket& packet)
 // @0x14173e440
 void CSceneStateGame::OnChatStamp(CInPacket& packet)
 {
-    ((CChatEmoticonCli*)(Unk_SSGChatEmoticon*)(((class Unk_SSG931510*)FUN_140931510())->FUN_140d9f8f0()))->DispatchPacket(packet);
+    ((CChatEmoticonCli*)(((class Unk_SSG931510*)FUN_140931510())->GetChatEmoticon()))->DispatchPacket(packet);
 }
 MS2_REPLACE_METHOD(0x14173e440, CSceneStateGame, OnChatStamp, 95, 0x9668CF92);
 
@@ -5520,7 +5510,7 @@ struct Unk_MagicTag : public CPtred
     int m_nCasterId;                                                // +0x28
     int m_nOwnerId;                                                 // +0x2c
     int m_nTimeMode;                                                // +0x30
-    MS2Ptr<Unk_SSGSkillRow> m_spSkill;                              // +0x38
+    MS2Ptr<SkillData> m_spSkill;                              // +0x38
     MS2Ptr<Unk_SSGSkillLevel> m_spLevel;                            // +0x48
     int m_nSrcLevel;                                                // +0x58
     int m_nSrcIndex;                                                // +0x5c
@@ -6233,20 +6223,6 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     }
 }
 MS2_REPLACE_METHOD(0x141732B20, CSceneStateGame, OnItemEnchant, 1550, 0x20409A41);
-// The effect play request (0x70 bytes; effectquery.h declares only its first 0x10).
-struct Unk_SSGEffectReq
-{
-    Unk_SSGEffectReq();                                     // 0x140a52ef0
-    ~Unk_SSGEffectReq();                                    // 0x1405a89e0
-    CString m_strName;                                      // +0x00
-    int m_nType;                                            // +0x08
-    int m_pad_0c;
-    void* m_pad_10;
-    Unk_SSGXform* m_pXform;                                 // +0x18
-    void* m_pad_20[10];
-};
-MS2_CHECK_SIZE(Unk_SSGEffectReq, 0x70);
-MS2_CHECK_OFFSET(Unk_SSGEffectReq, m_pXform, 0x18);
 
 // The use result of an interact object (0x63 mode 13; 0 ok, 1.. the failure notices; formatted into notice 0x895).
 enum Unk_SSGInteractResult { SSG_INTERACT_OK };
@@ -6463,10 +6439,10 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
             ((NiTransform*)(Unk_SSGXform*)&(xf))->MakeIdentity();
             NiPoint3 pos(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spObj->GetPos())));
             reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(pos);
-            Unk_SSGEffectReq req;
+            NoticeMessage req;
             req.m_strName = strEffect;
-            req.m_nType = 0;
-            req.m_pXform = &xf;
+            req.m_nObject = 0;
+            req.m_p18 = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&req));   // C3: CEffectService (effectservice.h)
         }
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5d60(strName);
@@ -7960,7 +7936,7 @@ void CSceneStateGame::FUN_141731470(CInPacket& packet)
     if (arrIds.IsEmpty())
         return;
     for (unsigned int i = 0; i < arrIds.GetCount(); i++)
-        ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(Unk_SSGIntList*)&(DAT_143ab3078))->Add(arrIds[i]);
+        DAT_143ab3078.Add(arrIds[i]);
     if (bOpen)
     {
         int nFirst = arrIds[0];
@@ -8018,7 +7994,7 @@ void CSceneStateGame::OnSetPcbang(CInPacket& packet)
         Unk_SSGDlgInv* pDlg = ((Unk_SSGDlgInv*)Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
         if (pDlg != 0)
             pDlg->FUN_141999f60();
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new Unk_SSGNotifyInventory()));
+        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
     }
 }
 MS2_REPLACE_METHOD(0x141733f50, CSceneStateGame, OnSetPcbang, 403, 0xB72802C3);
@@ -8083,18 +8059,6 @@ void CSceneStateGame::OnItemDropNotice(CInPacket& packet)
     FUN_1412751b0(strMsg, 0x14);
 }
 MS2_REPLACE_METHOD(0x1417343f0, CSceneStateGame, OnItemDropNotice, 309, 0x3BC0794C);
-// The recall notice (packet 0xbc mode 1): text, three ints and a uid.
-struct Unk_SSGRecallInfo
-{
-    Unk_SSGRecallInfo();                                    // 0x1408f2300
-    ~Unk_SSGRecallInfo();                                   // 0x1408f2590
-    CStringW m_strText;
-    int m_n8;
-    int m_nC;
-    int m_n10;
-    __int64 m_n18;
-};
-MS2_CHECK_SIZE(Unk_SSGRecallInfo, 0x20);
 class Unk_SSGRecallDlg : public UIRecallScrollNotifyDialog { public: };
 class UIRecallScrollNotifyDialog* FUN_140bc1870(int);   // C3: was FUN_140bc1870
 extern CString DAT_143ae7558;                               // the recall notice sound event name
@@ -8105,12 +8069,12 @@ void CSceneStateGame::OnRecallScroll(CInPacket& packet)
     int nType = packet.ReadUInt8();
     if (nMode != 0)
     {
-        Unk_SSGRecallInfo kInfo;
-        kInfo.m_strText = packet.ReadUnicodeString();
-        kInfo.m_n8 = packet.ReadInt32();
-        kInfo.m_nC = packet.ReadInt32();
-        kInfo.m_n10 = packet.ReadInt32();
-        kInfo.m_n18 = packet.ReadInt64();
+        Unk_UserProxyLabel kInfo;   // the recall notice (packet 0xbc mode 1): text, three ints and a uid
+        kInfo.m_0 = packet.ReadUnicodeString();
+        kInfo.m_8 = packet.ReadInt32();
+        kInfo.m_c = packet.ReadInt32();
+        kInfo.m_10 = packet.ReadInt32();
+        kInfo.m_18 = packet.ReadInt64();
         Unk_SSGRecallDlg* pDlg = ((class Unk_SSGRecallDlg*)FUN_140bc1870(0x4edd));
         if (pDlg == 0)
             return;
@@ -8127,7 +8091,7 @@ void CSceneStateGame::OnRecallScroll(CInPacket& packet)
             strMsg = GetStringCommonByKey(L"s_cash_recall_wedding_notice");
             break;
         }
-        ((UIRecallScrollNotifyDialog*)(Unk_SSGRecallDlg*)(pDlg))->FUN_14129c920(nType, kInfo.m_n18, *(ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>> const*)(Unk_SSGRecallInfo const*)&(kInfo), kInfo.m_nC);
+        ((UIRecallScrollNotifyDialog*)(Unk_SSGRecallDlg*)(pDlg))->FUN_14129c920(nType, kInfo.m_18, *(ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>> const*)(Unk_UserProxyLabel const*)&(kInfo), kInfo.m_c);
         FUN_1412751f0(strMsg, 3, 1);
         FUN_141276180(DAT_143ae7558, "");
     }
@@ -8243,8 +8207,9 @@ private:
 };
 MS2_CHECK_SIZE(NoticeCubeInfo, 0x28);
 extern template class MS2Ptr<Cube>;                          // instances live outside the unit (0x140884fb0...)
-// Unk_PayloadPtr<NoticeCubeInfo>: only operator=(T*) is emitted here (0x141746eb0); the rest are ICF copies elsewhere.
-extern template Unk_PayloadPtr<NoticeCubeInfo>::Unk_PayloadPtr(NoticeCubeInfo* value);
+// Unk_PayloadPtr<NoticeCubeInfo>: operator=(T*) (0x141746eb0) and the T* ctor it calls (0x141745850, the exe's own copy)
+// are emitted here; the rest are ICF copies elsewhere.
+template Unk_PayloadPtr<NoticeCubeInfo>::Unk_PayloadPtr(NoticeCubeInfo* value);
 extern template Unk_PayloadPtr<NoticeCubeInfo>::~Unk_PayloadPtr();
 extern template bool Unk_PayloadPtr<NoticeCubeInfo>::operator==(NoticeCubeInfo* value) const;
 extern template NoticeCubeInfo* Unk_PayloadPtr<NoticeCubeInfo>::operator->() const;
@@ -8819,7 +8784,7 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
         {
             int nA = packet.ReadInt32();
             int nB = packet.ReadInt32();
-            pPC->FUN_14152f530(nA, nB, 1);
+            pPC->EquipLapenshard((Unk_MyPCLapenSlot)nA, nB, 1);
         }
         pPC->FUN_14152fa20();
         FUN_1419f37f0(5);
@@ -8829,7 +8794,7 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
     {
         Unk_SSG5b5dd0 kEntry;
         ((Unk_LapenEquipped*)(Unk_SSG5b5dd0*)&(kEntry))->Read(packet);
-        pPC->FUN_14152f530(kEntry.m_nA, kEntry.m_nB, 0);
+        pPC->EquipLapenshard((Unk_MyPCLapenSlot)kEntry.m_nA, kEntry.m_nB, 0);
         FUN_1419f37f0(5);
         break;
     }
@@ -8837,7 +8802,7 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
     {
         Unk_SSG5b5e70 kEntry;
         ((Unk_LapenUnequip*)(Unk_SSG5b5e70*)&(kEntry))->Read(packet);
-        pPC->FUN_14152f620(kEntry.m_nA);
+        pPC->UnequipLapenshard((Unk_MyPCLapenSlot)kEntry.m_nA);
         FUN_1419f37f0(5);
         break;
     }
@@ -8899,16 +8864,16 @@ void CSceneStateGame::OnPrestige(CInPacket& packet)
             pPC->vfunc_140(kPayload.m_38);
             if (nOldLevel < pPC->vfunc_141())
             {
-                Unk_SSGEffectReq req;
+                NoticeMessage req;
                 req.m_strName = ((class Unk_SSGEffectCfg*)FUN_1401d31f0())->m_str5b0;
-                req.m_nType = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pPC));
+                req.m_nObject = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pPC));
                 if (pPC->FUN_1416764a0() != 0)
                 {
                     efd::SmartPointer<Ridee> spRidee(pPC->FUN_1416764a0());
-                    ((NoticeMessage*)(Unk_SSGEffectReq*)&(req))->SetActor(spRidee->FUN_14123c580());
+                    req.SetActor(spRidee->FUN_14123c580());
                 }
                 else
-                    ((NoticeMessage*)(Unk_SSGEffectReq*)&(req))->SetActor(pPC->FUN_14123c580());
+                    req.SetActor(pPC->FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&req));   // C3: CEffectService (effectservice.h)
             }
             MyPC* pMyPC = FUN_1409613d0(pPC);
@@ -9027,13 +8992,13 @@ void CSceneStateGame::FUN_14173fc40(CInPacket& packet)
     MyPC* pMyPC = ((MyPC*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC == 0)
         return;
-    MS2Ptr<Unk_SSGSkillRow> spRow = reinterpret_cast<Unk_SSGSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+    MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spRow == 0)
         return;
     int nBaseId = ((SkillData*)(spRow).operator->())->GetRechargeId();
     if (nBaseId != 0)
         nSkillId = nBaseId;
-    unsigned int nPoint = ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->GetRechargeUses((SkillData*)(Unk_SSGSkillRow*)(spRow.get()));
+    unsigned int nPoint = ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->GetRechargeUses(spRow.get());
     nPoint -= (std::min)(nPoint, nUsed);
     unsigned int nValue = nPoint;
     if (nPoint < nMin)
@@ -11960,7 +11925,7 @@ void CSceneStateGame::FUN_141739450(bool bFlag)
     }
     else
     {
-        bOpen = Unk_ArrayFind<unsigned int>(reinterpret_cast<const ATL::CAtlArray<unsigned int>&>(DAT_143ab3078), reinterpret_cast<const unsigned int&>(DAT_143ab2870)) >= 0;
+        bOpen = Unk_ArrayFind<unsigned int>(DAT_143ab3078, reinterpret_cast<const unsigned int&>(DAT_143ab2870)) >= 0;
     }
     for (POSITION pos = taxiStations->GetHeadPosition(); pos != 0; taxiStations->GetNext(pos))
     {
@@ -11975,19 +11940,19 @@ void CSceneStateGame::FUN_141739450(bool bFlag)
         reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(kNiPos);
         if (bFlag)
         {
-            Unk_SSGEffectReq req;
+            NoticeMessage req;
             req.m_strName = ((class Unk_SSGEffectCfg*)FUN_1401d31f0())->m_str380;
-            req.m_nType = 0;
-            req.m_pXform = &xf;
+            req.m_nObject = 0;
+            req.m_p18 = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&req));   // C3: CEffectService (effectservice.h)
         }
         if (bOpen)
         {
             static_cast<Unk_SSGCachedEntity*>(static_cast<egf::Entity*>(spEntity))->FUN_141749ed0();
-            Unk_SSGEffectReq req;
+            NoticeMessage req;
             req.m_strName = ((class Unk_SSGEffectCfg*)FUN_1401d31f0())->m_str360;
-            req.m_nType = 0;
-            req.m_pXform = &xf;
+            req.m_nObject = 0;
+            req.m_p18 = &xf;
             m_nTaxiEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&req));   // C3: CEffectService (effectservice.h)
         }
         else
@@ -12004,8 +11969,6 @@ void CSceneStateGame::FUN_141739450(bool bFlag)
 MS2_REPLACE_METHOD(0x141739450, CSceneStateGame, FUN_141739450, 1057, 0x227E65F0);
 
 
-efd::ID128* FUN_140ae1be0(egf::Entity* pEntity);            // the entity's data file id
-void FUN_140ae1f60(efd::ID128* pId, efd::utf8string& strOut);   // the id as text
 void FUN_1401d3700(CString& str);                           // normalise a name
 Unk_Int3 FUN_1408a1430(efd::Point3 kPos);                   // the cube cell of a world position
 
@@ -12050,7 +12013,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
             {
                 egf::Entity* pEntity = list->GetAt(pos);
                 efd::utf8string strId;
-                FUN_140ae1f60(FUN_140ae1be0(pEntity), strId);
+                efd::ParseHelper<efd::ID128>::ToString(pEntity->GetDataFileID(), strId);
                 CString strName(strId.c_str());
                 FUN_1401d3700(strName);
                 if (names.find(strName) == names.end())

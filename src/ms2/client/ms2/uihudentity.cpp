@@ -30,8 +30,6 @@
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 class Unk_HudActor : public PCBase
 {
-public:
-    float FUN_140f4a450();          // distance used by Entity::vfunc_8
 };
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
@@ -104,9 +102,9 @@ void UIHudEntity::Entity::FUN_140f48dc0(int bVisible)
 }
 
 // @0x140f4a450
-float Unk_HudActor::FUN_140f4a450()
+float GameObject::FUN_140f4a450()
 {
-    return (float&)m_unk_bc;
+    return m_unk_bc;
 }
 
 // @0x140f48e20

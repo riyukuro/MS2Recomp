@@ -57,7 +57,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);     // formatte
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // formatted message, two arguments
 CStringW GetStringCommon(int nStringId);                              // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
-int FUN_141654730(PCBase* pPlayer);                                 // the job of a player
+class PC { public: int FUN_141654730(); };   // C3: member view (pc.cpp); the job of a player
 
 bool FUN_14101c5b0(Unk_PvpEntryItem* pA, Unk_PvpEntryItem* pB);
 UIPvPTeamFlagGagueDialog* FUN_14101c7b0(int nClass);
@@ -233,7 +233,7 @@ void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int 
         if (pPlayer != 0)
         {
             strName = pPlayer->vfunc_77();
-            nJob = FUN_141654730(pPlayer);
+            nJob = reinterpret_cast<PC*>(pPlayer)->FUN_141654730();
         }
         pItem = new Unk_PvpEntryItem(nCharId, strName, nJob, nKill, nWin, nLose);
         pTable->FUN_14101eee0(pItem);

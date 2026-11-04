@@ -135,7 +135,6 @@ unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by 
 class CMainSystem;
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
-void FUN_14097fad0(NiPoint3* pDst, const Vector3* pSrc);    // NiPoint3 assignment
 bool FUN_1409a7f70(NiAVObjectPtr* pPtr, int nNull);                 // pointer == NULL?
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 void FUN_1415672e0(NiAVObject* pObj, int n);
@@ -168,7 +167,6 @@ public:
     efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                    // texture load
     void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
-extern Unk_ResourceMgr* DAT_143ab5bc8;
 Unk_ResourceMgr* FUN_140a0afd0();
            // release by path
 
@@ -182,13 +180,6 @@ public:
 
 // Scene nodes of the effect system. EffectNode (400 bytes) carries the effect-space point; SeparateNode (0x138) follows
 // only the selected parts of its parent's transform.
-class Unk_EffectNode : public NiNode
-{
-public:
-    Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
-    char m_pad_node[400 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_EffectNode, 400);
 class Unk_SeparateNode : public NiNode
 {
 public:
@@ -353,7 +344,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     m_nCurveSamples = m_nSegments * pSwoosh->m_nQuality;
     m_fInterval = 1.0f / (float)nSampling;
 
-    NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
+    NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
     FUN_1409f76f0(&m_spRoot, spRoot);
     NiPointer<Unk_SeparateNode> spSeparate = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(0, 0, 0);
@@ -620,9 +611,9 @@ void CSwooshEffect::UpdateTrail()
                                 NiPoint2 kBottom(fV, 1.0f);
                                 pUV[k] = kTop;
                                 pUV[k + nCurve] = kBottom;
-                                FUN_14097fad0(&pPos[k], &m_kCurveA[k]);
+                                pPos[k] = *reinterpret_cast<const NiPoint3*>(&m_kCurveA[k]);
                                 pCol[k] = kWhite;
-                                FUN_14097fad0(&pPos[k + nCurve], &m_kCurveB[k]);
+                                pPos[k + nCurve] = *reinterpret_cast<const NiPoint3*>(&m_kCurveB[k]);
                                 pCol[k + nCurve] = kWhite;
                             }
                             m_spMesh->Unlock(NiCommonSemantics::TEXCOORD(), nSet, 2);

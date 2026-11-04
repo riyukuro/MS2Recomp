@@ -49,7 +49,7 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>), FUN_1401782a0 (std::vector<unsigned>)
 void Unk_ParseExtra(CString strBody, CConditionDict* pDict);                                // "k=v,k=v" into a dictionary
 int FUN_140718170(const CString& str);
-int FUN_1407181d0(const CString& str);
+unsigned int FUN_1407181d0(const CString& str);
 bool FUN_140718390(const CString& str);
 
 // ---------------------------------------------------------------------------------------------------------------

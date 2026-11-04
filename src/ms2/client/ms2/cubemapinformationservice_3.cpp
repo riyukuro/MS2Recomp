@@ -347,7 +347,7 @@ void FUN_1411556d0(Unk_CMISTree<258>*, const Unk_CMISEntityRef*);
 char* FUN_141127ed0(void*, void*);   // C3: was FUN_141127ed0
 bool FUN_14028d470(float, float);
 extern Vector3 DAT_143a08cf8;                                       // up vector
-extern Vector3 DAT_143b01a60;                                       // zero / fall-through direction
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 struct Unk_CMISCubeByKey { int first; MS2Ptr<Cube> second; };                // the node value of the cubes by key
 void FUN_14114dd70(Unk_CMISTree<260>*, Unk_CMISIter<260>*);                 // begin
 bool FUN_1411274c0(Unk_CMISIter<260>*, Unk_CMISIter<260>*);                 // operator!=
@@ -398,7 +398,7 @@ struct Unk_CMISPolyNode { int first; Unk_CMISHousePtr second; };
 Unk_CMISPolyNode* FUN_141128600(Unk_CMISIter<273>*);                        // operator*
 Unk_CMISPolyObj* FUN_1411284c0(Unk_CMISHousePtr*);                          // operator->
 struct Unk_CMISPair { int m_a, m_b; };
-extern Unk_CMISPair DAT_143b02320;                                          // initial cursor pair
+#define DAT_143b02320 (*(Unk_CMISPair*)&efd::Point2::ZERO) // C3: was extern Unk_CMISPair DAT_143b02320; initial cursor pair
 float FUN_14029d220(float f);                                               // fabsf
 Unk_Int3* FUN_14112ca20(Unk_Int3* pA, Unk_Int3* pOut, Unk_Int3* pB);   // point add
 struct Unk_DkPoint : public Unk_Int3 { Unk_Int3 operator+(const Unk_DkPoint& o) const; };   // 0x14112ca20 (unit_14112ab60)
@@ -919,13 +919,13 @@ int CubeMapInformationService::VectorToDirection(Vector3 ptDir)
     Vector3 kSouth(0.0f, -1.0f, 0.0f);
     Vector3 kForward, kRight;
     FUN_140a01250(ptDir, &kForward, &kRight);
-    if (kWest.FUN_140a00f20(kForward) == 1.0f)
+    if (reinterpret_cast<const efd::Point3&>(kWest).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return 1;
-    else if (kNorth.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kNorth).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return 2;
-    else if (kEast.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kEast).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return 3;
-    else if (kSouth.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kSouth).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return 4;
     return 0;
 }
@@ -957,13 +957,13 @@ Unk_Int3 CubeMapInformationService::FUN_1410bac00(Vector3 ptDir)
     Vector3 kSouth(0.0f, -1.0f, 0.0f);
     Vector3 kForward, kRight;
     FUN_140a01250(ptDir, &kForward, &kRight);
-    if (kWest.FUN_140a00f20(kForward) == 1.0f)
+    if (reinterpret_cast<const efd::Point3&>(kWest).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return Unk_Int3(-1, 0, 0);
-    else if (kNorth.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kNorth).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return Unk_Int3(0, 1, 0);
-    else if (kEast.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kEast).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return Unk_Int3(1, 0, 0);
-    else if (kSouth.FUN_140a00f20(kForward) == 1.0f)
+    else if (reinterpret_cast<const efd::Point3&>(kSouth).Dot(reinterpret_cast<const efd::Point3&>(kForward)) == 1.0f)
         return Unk_Int3(0, -1, 0);
     return Unk_Int3(0, 0, 0);
 }
@@ -1406,12 +1406,12 @@ void CubeMapInformationService::FUN_1410c3020(int nField)
     }
 }
 // @0x1410c54a0
-Vector3 CubeMapInformationService::FUN_1410c54a0(Unk_EntRef spEnt)
+Vector3 CubeMapInformationService::FUN_1410c54a0(egf::EntityPtr spEnt)
 {
     Vector3 ptRes(150.0f, 150.0f, 150.0f);
     Vector3 ptProp;
     reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&spEnt))->operator->())->GetPropertyValue<efd::Point3>(0xcb086a2d, (efd::Point3&)(ptProp));
-    if (ptProp.FUN_140552700(DAT_143b01a60))
+    if (reinterpret_cast<const efd::Point3&>(ptProp) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
         ptRes = ptProp;
     return ptRes;
 }
@@ -1693,7 +1693,7 @@ int CubeMapInformationService::FUN_1410b77e0(int nItemId, Unk_CMISStr* pOut)
     return 1;
 }
 // @0x1410c5570
-void CubeMapInformationService::FUN_1410c5570(Unk_EntRef spEnt)
+void CubeMapInformationService::FUN_1410c5570(egf::EntityPtr spEnt)
 {
     bool bFlag = false;
     ((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(spEnt).operator->())->GetPropertyValue(0x38141815, bFlag);
@@ -3309,7 +3309,7 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(Unk_CMISBlock rec)
 
 // ---- w138 batch 13 ----
 struct Unk_CMISRefList;                                                                     // list of entities found near a point
-extern Vector3 DAT_143b01a60;                                                       // the zero point
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 void FUN_14114dbb0(Unk_CMISTree<264>*, Unk_CMISIter<264>*);                                 // begin
 Unk_CMISRefElem* FUN_141128560(Unk_CMISIter<264>*);                                         // operator*
 void* FUN_141129a80(struct Unk_TreeIter*);   // C3: was FUN_141129a80
@@ -3468,7 +3468,7 @@ int CubeMapInformationService::FUN_1410c7110(int* pCell)
     reinterpret_cast<egf::Entity*>(((const egf::EntityPtr*)(&spEnt))->operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptDir));
     Vector3 kForward2, kRight2;
     FUN_140a01250(ptDir, &kForward2, &kRight2);
-    float fDot = efd::Clamp(kForward.FUN_140a00f20(kForward2), -1.0f, 1.0f);
+    float fDot = efd::Clamp(reinterpret_cast<const efd::Point3&>(kForward).Dot(reinterpret_cast<const efd::Point3&>(kForward2)), -1.0f, 1.0f);
     if (fDot > 0.7f) {
         *pCell = FUN_1408a03c0(*(Unk_Int3*)&spCube->position);
         return 1;
@@ -3507,7 +3507,7 @@ int CubeMapInformationService::FUN_1410c7500(CString* pOut)
             float fLen = ptDelta.FUN_140968990();
             if (fLen > 150.0f)
                 continue;
-            float fDot = efd::Clamp(ptDelta.FUN_140a00f20(reinterpret_cast<const Vector3&>(kForward)), -1.0f, 1.0f);
+            float fDot = efd::Clamp(reinterpret_cast<const efd::Point3&>(ptDelta).Dot(reinterpret_cast<const efd::Point3&>(kForward)), -1.0f, 1.0f);
             if (fDot > 0.5f && cellNpc.z > nMinZ)
                 *pOut = static_cast<const CString&>(reinterpret_cast<CLiftableObject*>(spNpc.operator->())->GetName());
         }
@@ -3759,10 +3759,10 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
     if (spCube->field6c != 0) {
         bool bOn = true;
         FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x38141815, *(bool const*)(&bOn));
-        if ((*(Vector3*)&spCube->offset).FUN_140552700(DAT_143b01a60))
-            GeneratePhysX(Unk_EntRef((Unk_Entity*)pEntity), *(Vector3*)&spCube->offset);
+        if (reinterpret_cast<const efd::Point3&>(*(Vector3*)&spCube->offset) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
+            GeneratePhysX(egf::EntityPtr((egf::Entity*)pEntity), *(Vector3*)&spCube->offset);
         else
-            FUN_1410c5570(Unk_EntRef((Unk_Entity*)pEntity));
+            FUN_1410c5570(egf::EntityPtr((egf::Entity*)pEntity));
     }
     if ((const char*)spCube->textA0 == 0) {
         efd::utf8string strName((const char*)spCube->textA0);
@@ -4080,7 +4080,7 @@ void CubeMapInformationService::FUN_1410cf160(egf::Entity* pEntity)
         bool bAnimatable = false;
         pEntity->GetPropertyValue(0x38141815, bAnimatable);
         if (bAnimatable)
-            FUN_1410c5570(Unk_EntRef((Unk_Entity*)pEntity));
+            FUN_1410c5570(egf::EntityPtr((egf::Entity*)pEntity));
         MS2Ptr<Cube> spCube = FUN_1410c1330(*reinterpret_cast<Vector3*>(&pt), 0.0f, 0, nKind, egf::EntityPtr(pEntity), false, nField50);
         if (spCube.get() != 0)
             spCube->field70 = 1;
@@ -4088,7 +4088,7 @@ void CubeMapInformationService::FUN_1410cf160(egf::Entity* pEntity)
         bool bAnimatable = false;
         pEntity->GetPropertyValue(0x38141815, bAnimatable);
         if (bAnimatable)
-            FUN_1410c5570(Unk_EntRef((Unk_Entity*)pEntity));
+            FUN_1410c5570(egf::EntityPtr((egf::Entity*)pEntity));
     }
     if (((egf::FlatModel*)(Unk_CMISFlatModel*)(((class Unk_CMISFlatModel*)((egf::Entity*)(void*)(pEntity))->GetModel())))->ContainsModel(0xe34a6afd)) {
         int nValue = 0;
@@ -4341,10 +4341,10 @@ int CubeMapInformationService::FUN_1410b9e90(__int64 nOwnerId, Unk_CMISCubePtrSe
 #pragma pop_macro("max")
 char* FUN_141128150(void*, void*);   // C3: was FUN_141128150
 bool FUN_141127780(Unk_CMISIter<257>*, Unk_CMISIter<257>*);
-extern Vector3 DAT_143b01a60;
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // @0x1410c5680
-void CubeMapInformationService::GeneratePhysX(Unk_EntRef spEnt, Vector3 pt)
+void CubeMapInformationService::GeneratePhysX(egf::EntityPtr spEnt, Vector3 pt)
 {
     if ((reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->find(*reinterpret_cast<const egf::EntityID*>(((struct Unk_CMISEntityRef const*)&((egf::Entity*)(void*)(((const egf::EntityPtr*)(&spEnt))->operator->()))->GetEntityID()))) != reinterpret_cast<CMISEMap_EntityID_int64*>(&f48)->end()) != 0)
         return;
@@ -5482,7 +5482,8 @@ int CubeMapInformationService::ExportUGCMap(CString strName)
 }
 
 // ---- w142 batch 12 ----
-extern Unk_CMISEntityRef DAT_143acf820;                                                     // the null entity ref (g_cubeMapNone of the statics header)
+class Unk_1401cd100; extern Unk_1401cd100 g_cubeMapNone;
+#define DAT_143acf820 (*(Unk_CMISEntityRef*)&g_cubeMapNone)   // C3: the null entity ref is the statics header's g_cubeMapNone (0x143acf820)
 struct Unk_CMISMarkList { char m_b[0x18]; };                                                // list of the mark entities of a mark record (at +0x38 of the record)
 const Unk_CMISEntityRef* FUN_141128e50(Unk_CMISEntSetIter*);                                // operator*
 void* FUN_14112ab20(Unk_ListNode**);                                                        // operator++

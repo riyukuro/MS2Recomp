@@ -12,8 +12,8 @@
 class Unk_CommonPrice
 {
 public:
-    Unk_CommonPrice() : m_type(0), m_subType(0), m_amount(0) {}                                 // 0x14027d940
-    Unk_CommonPrice(int type, int subType, __int64 amount) : m_type(type), m_subType(subType), m_amount(amount) {}   // 0x14027d900
+    Unk_CommonPrice();                                              // 0x14027d940 (commonstruct_2.cpp)
+    Unk_CommonPrice(int type, int subType, __int64 amount);         // 0x14027d900 (commonstruct_2.cpp)
     void Write(COutputStream* pOut);                                // 0x140269c30
     void Read(CInputStream* pIn);                                   // 0x140269ca0
     void ClearAmount();                                             // 0x140269d10
@@ -43,8 +43,8 @@ MS2_CHECK_SIZE(Unk_CommonPriceList, 0x20);
 class Unk_CommonPriceRecord
 {
 public:
-    Unk_CommonPriceRecord() : m_usedTime(0) {}                              // 0x14027d8d0
-    Unk_CommonPriceRecord(int type, int subType, __int64 amount, __int64 usedTime) : m_price(type, subType, amount), m_usedTime(usedTime) {}   // 0x14027d880
+    Unk_CommonPriceRecord();                                              // 0x14027d8d0 (commonstruct_2.cpp)
+    Unk_CommonPriceRecord(int type, int subType, __int64 amount, __int64 usedTime);   // 0x14027d880 (commonstruct_2.cpp)
     unsigned char IsUsed();                                               // 0x14026a170
     unsigned char IsAvailable();                                                // 0x14026a1b0 priced and not yet used
     __int64 GetAvailableAmount();                                         // 0x14026a1f0 the amount while unused

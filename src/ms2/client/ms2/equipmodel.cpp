@@ -141,6 +141,7 @@ template <> MyPC* DynamicCast<MyPC, GameObject>(GameObject* p);
 }
 class CMainSystem { public: double FUN_141473280(); };   // C3: member view
 class CStateService { public: int FUN_1417e2610(); };    // C3: member view
+template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 
 // the id holder returned by FUN_1411dc7a0 and its accessors
 void FUN_1401bf970(void* out, void* p); char FUN_1401b5240(void* p, int n);
@@ -171,7 +172,6 @@ bool AdvanceCycle();
 };
 
 class CGameOption;
-void* FUN_140aa6d30();      // CStateService singleton (64-bit pointer)
 void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* FUN_140c77560(void* p);
 class ModelGroup   // C3: member view for the former free stand-ins
 {
@@ -1222,9 +1222,9 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
 // @0x1412033e0
 int FUN_1412033e0(CEquipModel* self)
 {
-    if (((class CStateService*)FUN_140aa6d30())->FUN_1417e2610() == 0x620000d)
+    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->FUN_1417e2610() == 0x620000d)
         return 1;
-    if (((class CStateService*)FUN_140aa6d30())->FUN_1417e2610() == 0x6200018)
+    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->FUN_1417e2610() == 0x6200018)
         return 1;
     void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pLocal == 0)

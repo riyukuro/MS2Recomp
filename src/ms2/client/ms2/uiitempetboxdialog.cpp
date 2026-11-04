@@ -133,7 +133,7 @@ public:
 class UIAvatarPet : public Unk_PetBoxAvatar
 {
 public:
-    UIAvatarPet(void*);
+    UIAvatarPet(CItemData* pItemData);
 private:
     unsigned char m_18[0xb0];
 };

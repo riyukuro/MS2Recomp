@@ -64,7 +64,6 @@ extern int DAT_1439f4840;                       // default code page (localepath
 
 // ---- exe functions outside this unit ----
 class Unk_GameClock;
-void FUN_14028b2d0(void* pList, const CString& str);                    // list.push_back
 egmAnimation::AnimationService* FUN_141b6f910();
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 NiActorManager* FUN_1413f9b70(const egf::EntityID& id);                 // actor manager of an entity (via the service)
@@ -359,7 +358,7 @@ void CAnimationManager::FUN_14099e800(void* pList)
         efd::utf8string kName = m_pModelCache->GetAnimationNameFromId(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId2)), pIDs[i]);
         if (kName == efd::utf8string::NullString())
             continue;
-        FUN_14028b2d0(pList, CString(kName.c_str()));
+        reinterpret_cast<std::vector<CString>*>(pList)->push_back(CString(kName.c_str()));
     }
     if (pIDs != 0)
         NiFree(pIDs);

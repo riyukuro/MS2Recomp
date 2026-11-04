@@ -45,6 +45,13 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/client/ms2/ridee.h"  // C3: was a local member view
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include <NxVec3.h>       // C3: NxVec3 (was Unk_UtilNxVec3)
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <efd/File.h>
 #include <efd/Matrix3.h>
@@ -188,13 +195,6 @@ struct Unk_UtilFloat3
     float x, y, z;
 };
 struct Unk_UtilUInt3 { unsigned x, y, z; };
-struct Unk_UtilNxVec3
-{
-    Unk_UtilNxVec3();                                               // 0x140a003a0
-    Unk_UtilNxVec3(const Unk_UtilNxVec3&);                          // 0x140a00300
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_UtilNxVec3, 12);
 
 // @0x141b6db40
 int FUN_141b6db40(size_t nSize)
@@ -242,14 +242,14 @@ void FUN_141b6de20()
 MS2_REPLACE(0x141b6de20, FUN_141b6de20, 118, 0x4043FAA8);
 
 // @0x141b6dea0
-Unk_Vec3Cli FUN_141b6dea0(unsigned uColor)
+NiColor FUN_141b6dea0(unsigned uColor)
 {
     float fScale = 0.003921569f;
     float fR = 0.003921569f * (float)(BYTE)(uColor >> 16);
     float fG = 0.003921569f * (float)(BYTE)(uColor >> 8);
     float fB = 0.003921569f * (float)(BYTE)uColor;
     float fA = 0.003921569f * (float)(BYTE)(uColor >> 24);
-    Unk_Vec3Cli vColor(fR, fG, fB);
+    NiColor vColor(fR, fG, fB);
     return vColor;
 }
 MS2_REPLACE(0x141b6dea0, FUN_141b6dea0, 224, 0xF622B07E);
@@ -284,12 +284,12 @@ Vector3 FUN_141b6e070(const Unk_UtilFloat3* pVec)
 MS2_REPLACE(0x141b6e070, FUN_141b6e070, 105, 0xAE2F521A);
 
 // @0x141b6e0e0
-Unk_UtilNxVec3 FUN_141b6e0e0(const Unk_UtilFloat3* pVec)
+NxVec3 FUN_141b6e0e0(const efd::Point3& kVec)
 {
-    Unk_UtilNxVec3 vCopy;
-    vCopy.x = pVec->x;
-    vCopy.y = pVec->y;
-    vCopy.z = pVec->z;
+    NxVec3 vCopy;
+    vCopy.x = kVec.x;
+    vCopy.y = kVec.y;
+    vCopy.z = kVec.z;
     return vCopy;
 }
 MS2_REPLACE(0x141b6e0e0, FUN_141b6e0e0, 96, 0x9AD7DDE3);
@@ -472,7 +472,7 @@ CStringA FUN_141b6ed00(const CStringA& kPath)
 MS2_REPLACE(0x141b6ed00, FUN_141b6ed00, 58, 0xA43FC783);
 
 // @0x141b6ed40
-void FUN_141b6ed40(const CStringA& kText, Unk_UtilFloat3* pOut)
+void FUN_141b6ed40(const CStringA& kText, Vector3* pOut)
 {
     CAtlArray<CStringA> arrParts;
     if (FUN_14028c3e0(kText, arrParts, ",", 3) == 0)
@@ -1191,7 +1191,7 @@ float FUN_140993fe0(const Vector3& kA, const Vector3& kB);   // dot product
 // @0x141b71390
 Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd, float fT)
 {
-    if (kStart.FUN_140552690(kControl) || kEnd.FUN_140552690(kControl)) {
+    if (reinterpret_cast<const efd::Point3&>(kStart) == reinterpret_cast<const efd::Point3&>(kControl) || reinterpret_cast<const efd::Point3&>(kEnd) == reinterpret_cast<const efd::Point3&>(kControl)) {
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         return kStart.FUN_14097fd50(kDelta.FUN_14097fc90(fT));
     } else {

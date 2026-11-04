@@ -421,7 +421,7 @@ CMsTime FUN_1406c47a0(__int64 nTime);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_141b71a10(const char* sz);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bVisible);
-void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, int bEnable);
+void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);

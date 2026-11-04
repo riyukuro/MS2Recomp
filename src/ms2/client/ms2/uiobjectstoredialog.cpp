@@ -59,9 +59,7 @@ int FUN_1408b6200(int nItemType);                                       // the s
 extern __int64 DAT_143ab28f8;
 CStringW FUN_140719a00(__int64 n);
 
-struct Unk_PickXY { float x, y; };                                      // dialog offset
-extern Unk_PickXY DAT_143b02320;                                        // zero offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
 
 void FUN_140710590(COutPacket& packet);
 void FUN_141901390(int nRelease, int nUiType);
@@ -142,7 +140,7 @@ void UIObjectStoreDialog::vfunc_66()
                 pInv->OnMessage(this, &msg);
             }
         } else {
-            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
+            FUN_141275c30(this, pInv, efd::Point2::ZERO, efd::Point2::ZERO);
         }
     }
 }

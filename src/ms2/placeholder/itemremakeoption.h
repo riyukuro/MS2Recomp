@@ -1,5 +1,5 @@
 // itemremakeoption.h - PLACEHOLDER for the item option remake helpers (?\itemremakescrolldata.cpp, 0x140616b60..0x14061ac50,
-// unrecovered) and the option-lock record of the 0x75 (item remake option) packets. NOT an original header (w475).
+// unrecovered). NOT an original header (w475).
 // The same Unk_RemakeStat is still declared locally in uiitemremakescrolldialog.cpp and unit_14129cfa0.cpp (identical
 // layout); new units should include this header instead.
 #pragma once
@@ -9,25 +9,11 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/citemremakeoptionpacket.h"   // Unk_RemakeLockOpt
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
-
-// A locked option of a remake request: the option index and its value, 8 bytes. The ctor 0x140b98d30 (an inline COMDAT,
-// first emitted by ?\tabcontentspetremakeoption.cpp) zeroes both ints. It is the element of the option list of
-// CCItemRemakeOptionPacket::RemakeOption (citemremakeoptionpacket.h: Unk_RemakeOptionList50 is this std::vector, 0x18
-// bytes; push_back(const&) 0x140b9b410 and its emplace_back glue 0x140b99c40..0x140b9a170 are in the same unit).
-// citemremakeoptionpacket.h's Unk_LockOpt is the same 8-byte record.
-struct Unk_RemakeLockOpt
-{
-    Unk_RemakeLockOpt() : m_nIndex(0), m_nValue(0) {}   // 0x140b98d30
-    int m_nIndex;                                       // +0x0 the option index
-    int m_nValue;                                       // +0x4 its value
-};
-MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
-typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
-MS2_CHECK_SIZE(Unk_RemakeLockOptList, 0x18);
 
 // The remake stat view of an item (the 0x20 byte record the option texts are built from; ctors 0x140617da0 / 0x140617de0,
 // implicit dtor 0x14061ac50). nMode is the option group of CItemOption (2 = the random options a remake changes); bFinal

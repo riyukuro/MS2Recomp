@@ -142,7 +142,7 @@ CStringW FUN_14016a730(const char* sz, int n);                              // n
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, unsigned bOn);
+void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void* FUN_140bb9630(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
 
@@ -158,7 +158,7 @@ extern int DAT_143ab2870;                                                   // t
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
-void FUN_1407105c0(COutPacket& packet, int nA, int nB);                     // send with a throttle
+bool FUN_1407105c0(COutPacket* packet, int nA, int nB);                     // send with a throttle
 
 CFeatureManager* FUN_140166410();
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
@@ -193,7 +193,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873420(void* pNode, const char* szName, CStringW* pstrValue);   // wide string attribute
 
-class CWebBrowserService;
+#include "ms2/placeholder/cwebbrowserservice.h"   // C3: CWebBrowserService::FUN_141b794e0
 void FUN_141b6de20();                                                   // worker thread start-up
 
 // A worker thread's log scope.
@@ -206,7 +206,6 @@ private:
     void* m_p[2];
 };
 
-void FUN_141b794e0(void* pService, CString* pstrOut, const char* szUrl);   // resolve "api:/..."
 
 // @0x140ef5640
 UIArcadeMainDialog::UIArcadeMainDialog()
@@ -224,7 +223,7 @@ UIArcadeMainDialog::UIArcadeMainDialog()
     m_nRequestTick = 0;
     m_pWorker = 0;
     FUN_141924170(1);
-    FUN_141b794e0((void*)TSingleton<CWebBrowserService>::GetInstance(), &m_strUrl, "api:/rank/arcade");
+    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(m_strUrl, "api:/rank/arcade");
 }
 
 // @0x140ef58d0
@@ -566,7 +565,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
     packet.Encode1(10);
     packet.Encode4(nArcadeId);
-    FUN_1407105c0(packet, 10, 1000);
+    FUN_1407105c0(&packet, 10, 1000);
     return true;
 }
 
@@ -731,7 +730,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
         {
             CGameRankingParam request;
             request.m_key.FUN_140b35820(keys[i]);
-            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2bf30(&request);
+            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Request(&request);
         }
     }
     int nAttempt = 0;

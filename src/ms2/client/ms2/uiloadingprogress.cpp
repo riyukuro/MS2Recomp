@@ -23,7 +23,7 @@ class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
           // the input service: (un)lock the mouse for the loading screen
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -42,6 +42,7 @@ class Unk_LpTexture;
 class NiDX9Renderer   // C3: member view for the former free stand-ins
 {
 public:
+    static const NiRTTI ms_RTTI;   // C3: was DAT_143d6eb58
     bool IsDeviceLost() const;
 };
 class Ni2DBuffer* GetScreenshotBuffer(int);   // C3: was FUN_14184e5d0
@@ -54,7 +55,6 @@ public:
 int FUN_141277f50();                                                // next UI layer
 int FUN_1419e0b70(WorldService* pWorld);
 extern int DAT_143af62d4, DAT_143af62d8, DAT_143ab2874;
-extern char DAT_143d6eb58;
 
 // @0x1419df870
 UILoadingProgress::UILoadingProgress()
@@ -85,7 +85,7 @@ MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, GetTypeName, 61, 0xD91F5B27);
 void UILoadingProgress::FUN_1419dfa60(int nMap)
 {
     m_74 = nMap;
-    FUN_14025e7c0()->SetModifier1(1);
+    ((CInputKeyHandler*)FUN_14025e7c0())->SetModifier1(1);
     int bShowGuide = 0;
     Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -114,7 +114,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
 // @0x1419dfd90
 void UILoadingProgress::FUN_1419dfd90()
 {
-    FUN_14025e7c0()->SetModifier1(0);
+    ((CInputKeyHandler*)FUN_14025e7c0())->SetModifier1(0);
     m_70 = FUN_1419e04f0();
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
@@ -307,7 +307,7 @@ void UILoadingProgress::FUN_1419e07a0()
         return;
     if ((NiRenderedTexture*)m_78 == 0)
         return;
-    NiRenderer* pRenderer = ((class NiRenderer*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    NiRenderer* pRenderer = ((class NiRenderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pRenderer == 0)
         return;
     if (((class NiRenderer*)(class NiRenderer*)(pRenderer))->IsRenderTargetGroupActive())
@@ -328,9 +328,9 @@ void UILoadingProgress::FUN_1419e07a0()
 // @0x1419e08b0
 void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
 {
-    Unk_PPFmt fmt;
-    fmt.b = 3;
-    m_78 = (NiRenderedTexture*)FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(((void*)NiRenderer::GetRenderer())), &fmt, 0x100);
+    NiTexture::FormatPrefs fmt;   // 0x140984420
+    fmt.m_eAlphaFmt = NiTexture::FormatPrefs::ALPHA_DEFAULT;
+    m_78 = NiRenderedTexture::Create(nWidth, nHeight, static_cast<NiRenderer*>(((void*)NiRenderer::GetRenderer())), fmt, 0x100);
 }
 
 // @0x1419e0920
