@@ -88,6 +88,7 @@ static CString s_itemPetRank("itemPetRank");
 #include "ms2/commonfiles/exptable.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/cpetmanager.h"
+#include "ms2/placeholder/cpetdatatable.h"   // C3: CPetData / CPetDataTable (the pet row)
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/commonstringtable.h"
@@ -108,49 +109,21 @@ extern template class MS2Ptr<CMsgBoxData>;
 
 class Unk_PetValueView { public: bool FUN_1409b4d40() const; };
 
-// The pet menu button: a movie clip with a state frame and a label.
-class Unk_PetButton : public ASMovieClip
-{
-public:
-    Unk_PetButton(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetButton, 0x88);
-
 
 // A component of the page with the helpers of this unit and the exe.
 class Unk_PiComp : public ASUIComponent
 {
 public:
-    Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);  // Invoke(int) (a copy outside the unit)
     Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);   // Invoke(wchar_t*), the unit's COMDAT
 };
 #define PI(p) static_cast<Unk_PiComp*>((p).operator->())
+// Invoke(name, int) 0x140caf230: the COMDAT of tabcontentspetcollect.cpp's component view.
+class Unk_PcComp { public: Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1); };
 
 class Unk_PiText : public ASTextField
 {
 };
 
-// The skill map of a pet row: a position based map (position 0 = end).
-class Unk_PiSkillMap                                                    // C3: an ATL::CAtlMap<unsigned, unsigned short> (calls cast)
-{
-};
-
-// The pet record of the equip data table.
-class Unk_PetRow : public CPtred
-{
-public:
-    int m_nFlag;                                                        // +0x18 1 = the pet has levels
-    unsigned char m_pad_1c[0x2c];
-    Unk_PiSkillMap m_skills;                                            // +0x48
-    unsigned char m_pad_49[0x57];
-    unsigned m_nSlotMax;                                                // +0xa0 the other pet's inventory slots
-};
-MS2_CHECK_OFFSET(Unk_PetRow, m_skills, 0x48);
-MS2_CHECK_OFFSET(Unk_PetRow, m_nSlotMax, 0xa0);
-class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nKey); };
-Unk_PetRowTable* FUN_14052d210();
 class Unk_ItemEquipData : public CItemData { };
 
 
@@ -220,7 +193,6 @@ CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);        // the s
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_1409e34e0(MS2Ptr<CItem> item);                             // the item's option text
-CStringTable* GetStringTable();
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_140710590(COutPacket& packet);                                 // send
 UIMessageBox* FUN_14151f890();
@@ -241,6 +213,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // Bag registry (GFx bind data).
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/client/ms2/uimodelview.h"  // C3: Unk_ModelViewCamera::ApplyRideeCamera
 void FUN_140dbc420(const CString& strBag);                                    // release the inventory bag
 void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 namespace NotifyContext { class BindData; }
@@ -256,7 +229,6 @@ public:
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();                                             // 0x140cb13b0
-    void FUN_141b48670();
     NiPoint3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
@@ -353,15 +325,15 @@ int FUN_140cbd9d0(int nPet)
 }
 
 // @0x140cbda70
-MS2Ptr<Unk_PetRow> FUN_140cbda70(int nPet)
+MS2Ptr<CPetData> FUN_140cbda70(int nPet)
 {
     MS2Ptr<CItem> pet = FUN_140cbd900(nPet);
     if (pet == 0)
-        return MS2Ptr<Unk_PetRow>(0);
+        return MS2Ptr<CPetData>(0);
     MS2Ptr<CItemData> data(pet->FUN_140527840());
     if (data == 0)
-        return MS2Ptr<Unk_PetRow>(0);
-    return FUN_14052d210()->FUN_1407290f0(data->GetPetId());
+        return MS2Ptr<CPetData>(0);
+    return TSingleton<CPetDataTable>::GetInstance()->Find(data->GetPetId());
 }
 
 // @0x140cbdba0
@@ -388,10 +360,10 @@ unsigned FUN_140cbdc80(int nPet)
 {
     if (nPet != 0)
         return reinterpret_cast<CPetManager*>(FUN_140535320())->GetInventory()->GetSlotCount();
-    MS2Ptr<Unk_PetRow> row = FUN_140cbda70(nPet);
+    MS2Ptr<CPetData> row = FUN_140cbda70(nPet);
     if (row == 0)
         return 0;
-    return row->m_nSlotMax;
+    return row->m_nSlotNum;
 }
 
 // @0x140cbe1c0
@@ -485,7 +457,7 @@ void PetInfoBasic::vfunc_3()
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return;
-    MS2Ptr<Unk_PetRow> row = FUN_140cbda70(m_nPet);
+    MS2Ptr<CPetData> row = FUN_140cbda70(m_nPet);
     if (row == 0)
         return;
     MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>("m_basic");
@@ -498,9 +470,9 @@ void PetInfoBasic::vfunc_3()
         name->SetTextW(pet->FUN_140527b10());
         static_cast<Unk_PiText*>(name.operator->())->SetAutoSize(1);
     }
-    if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
+    if (MS2Ptr<ASButton> change = basic->FUN_140acce30<ASButton>("m_changeName"))
     {
-        reinterpret_cast<ASButton*>(change.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
+        change->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
         change->FUN_1422c1fe0(FUN_140cba220());
     }
     if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
@@ -509,7 +481,7 @@ void PetInfoBasic::vfunc_3()
         {
             __int64 nExp = pet->FUN_140528b90();
             __int64 nMax = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
-            if (row->m_nFlag == 1)
+            if (row->m_nType == 1)
             {
                 CStringW strExp;
                 strExp.Format(L"%s", (const wchar_t*)FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_word_exp_value"), FUN_1409404f0(nExp), FUN_1409404f0(nMax)));
@@ -529,7 +501,7 @@ void PetInfoBasic::vfunc_3()
     if (MS2Ptr<ASMovieClip> bg = basic->FUN_1409b4560("m_slotBg"))
         bg->vfunc_3(FUN_140cba1f0());
     ASObj obj(2);
-    if (row->m_nFlag == 1)
+    if (row->m_nType == 1)
         obj.FUN_1407cbb20(s_itemLevel, FUN_14028dfa0<unsigned short>(CStringW(L"s_word_petlevel"), nPetClass));
     else
         obj.FUN_1409c0dc0(s_itemLevel, "");
@@ -546,9 +518,9 @@ void PetInfoBasic::vfunc_4()
         return;
     if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
         name->SetTextW(L"");
-    if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
+    if (MS2Ptr<ASButton> change = basic->FUN_140acce30<ASButton>("m_changeName"))
     {
-        reinterpret_cast<ASButton*>(change.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
+        change->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
         change->FUN_1422c1fe0(0);
     }
     if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
@@ -886,7 +858,7 @@ MS2_REPLACE_METHOD(0x140cbafe0, PetInfoSkill, vfunc_6, 107, 0x987A440E);
 // @0x140cbb060
 void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
 {
-    MS2Ptr<Unk_PetRow> row = FUN_140cbda70(m_nPet);
+    MS2Ptr<CPetData> row = FUN_140cbda70(m_nPet);
     if (row == 0)
         return;
     CString strDir(".\\Data\\Resource\\Image\\skill\\icon\\");
@@ -921,15 +893,15 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         obj.FUN_1407cba60(s_iconPath, strDir + "pet_Buff_ItemGet.png");
         list->AddItem(obj);
     }
-    for (POSITION pos = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetStartPosition(); pos != 0; reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetNext(pos))
+    for (POSITION pos = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_passiveSkills).GetStartPosition(); pos != 0; reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_passiveSkills).GetNext(pos))
     {
-        unsigned short nLevel = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetValueAt(pos);
-        unsigned nSkillId = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetKeyAt(pos);
+        unsigned short nLevel = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_passiveSkills).GetValueAt(pos);
+        unsigned nSkillId = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_passiveSkills).GetKeyAt(pos);
         MS2Ptr<AdditionalLevelData> rec = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nLevel);
         if (rec == 0)
             continue;
-        CStringW strName = FormatStringId(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, "name"));
-        CStringW strTip = GetStringTable()->FUN_141812290(nSkillId, nLevel, "tooltipDescription");
+        CStringW strName = FormatStringId(0xc18, TSingleton<CStringTable>::GetInstance()->FUN_141812290(nSkillId, nLevel, "name"));
+        CStringW strTip = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nSkillId, nLevel, "tooltipDescription");
         ASObj obj(2);
         obj.FUN_1407cbb20("buffName", CStringW(strName));
         obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
@@ -1042,7 +1014,7 @@ void PetInfoPreview::vfunc_3()
         m_avatar.AssignRaw(new UIAvatarPet(data.get()));
         m_avatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
     }
-    PI(preview)->FUN_140caf230("setGrade", pet->GetRarity());
+    reinterpret_cast<Unk_PcComp*>(PI(preview))->FUN_140caf230("setGrade", pet->GetRarity());
 }
 
 // @0x140cbbe20
@@ -1099,7 +1071,7 @@ void PetInfoPreview::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, vo
         return;
     reinterpret_cast<Unk_PetPreviewAvatar*>(m_avatar.operator->())->vfunc_28(a1, a2, a3, a4);
     Unk_PetBoxCameraData data;
-    data.FUN_141b48670();
+    reinterpret_cast<Unk_ModelViewCamera*>(&data)->ApplyRideeCamera();
     data.n28 = 5;
     data.f20 = 100.0f;
     data.f1c = 500.0f;

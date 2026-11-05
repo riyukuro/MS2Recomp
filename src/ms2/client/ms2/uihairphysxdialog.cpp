@@ -49,21 +49,14 @@
 #include "ms2/client/ms2/uicameraeditdialog.h"
 #include "ms2/client/ms2/uigamerankingdialog.h"
 #include <egf/ScriptContext.h>
-#include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
+#include "ms2/placeholder/asradiobutton.h"   // the "m_left" / "m_position" / "m_rotation" radios
 
-class Unk_HudSlider;
-template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName);
+template <> MS2Ptr<ASSlider> UISwfEntity::GetChild<ASSlider>(const CString& strName);
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);
 template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);   // owned by uibingoeventdialog (0x140bb4cf0)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
-// The AS controls of the page (all are AS UI components).
-class Unk_HpxRadio : public ASButton
-{
-};
-class Unk_HudSlider : public ASSlider {};
-class Unk_RankInput : public ASTextInput {};
 
 // The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
 // equipmodelforceapplier.cpp's, whose accessors were first emitted there.
@@ -94,7 +87,6 @@ public:
     void FUN_141adc530(int nId);                                // open
 };
 class Unk_HpxEquipSet : public CEquipment { };
-class Unk_EquipModelOwner : public CEquipItem {};               // what CEquipModel::FUN_141200a40 hands back
 class PC   // C3: member view for the former free stand-ins
 {
 public:
@@ -102,7 +94,7 @@ public:
 };
 void FUN_141901390(int bRelease, int nLayer);                   // the player key input layer
 class Unk_PonyPlayer;
-void FUN_141695f10(Unk_PonyPlayer* pPlayer, Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony parts
+void FUN_141695f10(Unk_PonyPlayer* pPlayer, CEquipModel** ppFirst, CEquipModel** ppSecond);   // the two pony parts
 void* FUN_141200ab0(CEquipModel* pModel);                       // m_unk_20
 void FUN_141202240(CEquipModel* pModel, void* pXform);          // set the model transform
 void FUN_1412021a0(CEquipModel* pModel, NiTransform* pXform);   // the model transform
@@ -167,19 +159,19 @@ void UIHairPhysxDialog::FUN_141981060()
             kValue = kXform.m_Translate;
         else if (nMode == 2)
             FUN_141984da0(kXform.m_Rotate, kValue);
-        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
+        if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
         {
             CString str;
             str.Format("%f", kValue.x);
             sp->SetTextA(str);
         }
-        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
+        if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
         {
             CString str;
             str.Format("%f", kValue.y);
             sp->SetTextA(str);
         }
-        if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
+        if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
         {
             CString str;
             str.Format("%f", kValue.z);
@@ -587,7 +579,7 @@ void UIHairPhysxDialog::FUN_141983010()
         return;
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
-    Unk_PickTarget* pPart = 0;
+    CEquipModel* pPart = 0;
     FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
@@ -629,7 +621,7 @@ MS2_REPLACE_METHOD(0x141983010, UIHairPhysxDialog, FUN_141983010, 956, 0x2238A03
 // @0x1419833e0
 int UIHairPhysxDialog::FUN_1419833e0()
 {
-    if (MS2Ptr<Unk_HpxRadio> sp = GetChild<Unk_HpxRadio>("m_left"))
+    if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_left"))
     {
         if (sp->FUN_1422ce0e0())
             return 2;
@@ -641,12 +633,12 @@ MS2_REPLACE_METHOD(0x1419833E0, UIHairPhysxDialog, FUN_1419833e0, 177, 0x46A0B2A
 // @0x1419834a0
 int UIHairPhysxDialog::FUN_1419834a0()
 {
-    if (MS2Ptr<Unk_HpxRadio> sp = GetChild<Unk_HpxRadio>("m_position"))
+    if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_position"))
     {
         if (sp->FUN_1422ce0e0())
             return 1;
     }
-    if (MS2Ptr<Unk_HpxRadio> sp = GetChild<Unk_HpxRadio>("m_rotation"))
+    if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_rotation"))
     {
         if (sp->FUN_1422ce0e0())
             return 2;
@@ -674,7 +666,7 @@ void UIHairPhysxDialog::FUN_141983730()
         return;
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
-    Unk_PickTarget* pPart = 0;
+    CEquipModel* pPart = 0;
     FUN_141695f10(((Unk_PonyPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), &pPart, 0);
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel>((CEquipModel*)pPart);
     if (pKfm == 0)
@@ -720,7 +712,7 @@ void UIHairPhysxDialog::FUN_141983af0()
     {
         float fSoft = 0;
         FUN_141984c30(pModel, FUN_141983600(), &fSoft);
-        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_softSlider"))
+        if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_softSlider"))
             sp->FUN_1422ce5f0(fSoft);
     }
 }
@@ -740,11 +732,11 @@ void UIHairPhysxDialog::FUN_141983c60()
         float fY = 0;
         float fZ = 0;
         FUN_141984cd0(pModel, FUN_141983600(), &fX, &fY, &fZ);
-        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_xSlider"))
+        if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_xSlider"))
             sp->FUN_1422ce5f0(fX);
-        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_ySlider"))
+        if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_ySlider"))
             sp->FUN_1422ce5f0(fY);
-        if (MS2Ptr<Unk_HudSlider> sp = GetChild<Unk_HudSlider>("m_zSlider"))
+        if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_zSlider"))
             sp->FUN_1422ce5f0(fZ);
     }
 }
@@ -777,19 +769,19 @@ void UIHairPhysxDialog::FUN_141983f50()
         else if (nMode == 2)
             FUN_141984da0(kXform.m_Rotate, kValue);
     }
-    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
+    if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformX"))
     {
         CString str;
         str.Format("%f", kValue.x);
         sp->SetTextA(str);
     }
-    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
+    if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
     {
         CString str;
         str.Format("%f", kValue.y);
         sp->SetTextA(str);
     }
-    if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
+    if (MS2Ptr<ASTextInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
     {
         CString str;
         str.Format("%f", kValue.z);
@@ -864,8 +856,8 @@ int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    Unk_PickTarget* pFirst = 0;
-    Unk_PickTarget* pSecond = 0;
+    CEquipModel* pFirst = 0;
+    CEquipModel* pSecond = 0;
     FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {
@@ -893,8 +885,8 @@ int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxMo
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
-    Unk_PickTarget* pFirst = 0;
-    Unk_PickTarget* pSecond = 0;
+    CEquipModel* pFirst = 0;
+    CEquipModel* pSecond = 0;
     FUN_141695f10((Unk_PonyPlayer*)pPc, &pFirst, &pSecond);
     switch (nSide)
     {

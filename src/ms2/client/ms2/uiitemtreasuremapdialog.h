@@ -21,7 +21,7 @@
 
 class ASMovieClip;
 class Unk_140acd6e0;
-class Unk_TmBag;
+class ASTileList;
 
 class UIItemTreasureMapDialog : public UIDialog
 {
@@ -61,7 +61,7 @@ private:
     unsigned __int64 m_nTargetUid;                                   // +0x1d0 the map that is being appraised
     MS2Ptr<ASMovieClip> m_board;                                     // +0x1d8 "m_board"
     MS2Ptr<Unk_140acd6e0> m_submit;                                  // +0x1e8 "m_submit"
-    MS2Ptr<Unk_TmBag> m_itemBag;                                     // +0x1f8 "m_itemBag"
+    MS2Ptr<ASTileList> m_itemBag;                                     // +0x1f8 "m_itemBag"
 };
 MS2_CHECK_SIZE(UIItemTreasureMapDialog, 0x208);
 MS2_CHECK_OFFSET(UIItemTreasureMapDialog, m_nState, 0x178);

@@ -18,9 +18,10 @@
 // ---- unit-local views of exe objects ----
 
 // The game option block (the second member of the settings singleton).
+struct Unk_InterfaceState;
+bool FUN_14125bb90(const Unk_InterfaceState* p);          // 0x14125bb90 the meter is enabled (gameoptionstruct.cpp)
 struct Unk_IndOpt
 {
-    bool FUN_14125bb90();                                   // 0x14125bb90 the meter is enabled
     char m_pad_00[3];
     char m_bFlag;                                           // +3 cleared when the dialog is closed
 };
@@ -144,7 +145,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIIndividualDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_IndOpt*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())->FUN_14125bb90() == 0)
+    if (FUN_14125bb90(reinterpret_cast<const Unk_InterfaceState*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())) == 0)
         vfunc_67();
     else
     {

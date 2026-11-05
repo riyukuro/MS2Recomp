@@ -20,14 +20,10 @@
 // ---- unit-local views of exe types ----
 
 // The check box child.
-class Unk_GoCheck : public ASButton
-{
-public:
-};
 class Unk_GoEntity : public UIDialog
 {
 public:
-    MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);
 };
 
 // The auto-loot options as the server gets them: one dword per group and the grade.
@@ -128,23 +124,23 @@ void UIItemGetOptionDialog::vfunc_67()
 void UIItemGetOptionDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (MS2Ptr<Unk_GoCheck> hEquip = ((Unk_GoEntity*)this)->FUN_140e52670("m_equip"))
+    if (MS2Ptr<ASCheckBox> hEquip = ((Unk_GoEntity*)this)->FUN_140e52670("m_equip"))
         hEquip.get()->FUN_1422ce090(m_opt.FUN_1419dae70());
-    if (MS2Ptr<Unk_GoCheck> hConsume = ((Unk_GoEntity*)this)->FUN_140e52670("m_consume"))
+    if (MS2Ptr<ASCheckBox> hConsume = ((Unk_GoEntity*)this)->FUN_140e52670("m_consume"))
         hConsume.get()->FUN_1422ce090(m_opt.FUN_1419dae50());
-    if (MS2Ptr<Unk_GoCheck> hEtc = ((Unk_GoEntity*)this)->FUN_140e52670("m_etc"))
+    if (MS2Ptr<ASCheckBox> hEtc = ((Unk_GoEntity*)this)->FUN_140e52670("m_etc"))
         hEtc.get()->FUN_1422ce090(m_opt.FUN_1419dae60());
-    if (MS2Ptr<Unk_GoCheck> hMeso = ((Unk_GoEntity*)this)->FUN_140e52670("m_meso"))
+    if (MS2Ptr<ASCheckBox> hMeso = ((Unk_GoEntity*)this)->FUN_140e52670("m_meso"))
         hMeso.get()->FUN_1422ce090(m_opt.FUN_1419daea0());
-    if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
+    if (MS2Ptr<ASCheckBox> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         hMerat.get()->FUN_1422ce090(m_opt.FUN_1419dae90());
-    if (MS2Ptr<Unk_GoCheck> hToken = ((Unk_GoEntity*)this)->FUN_140e52670("m_token"))
+    if (MS2Ptr<ASCheckBox> hToken = ((Unk_GoEntity*)this)->FUN_140e52670("m_token"))
         hToken.get()->FUN_1422ce090(m_opt.FUN_1419daed0());
-    if (MS2Ptr<Unk_GoCheck> hOther = ((Unk_GoEntity*)this)->FUN_140e52670("m_other"))
+    if (MS2Ptr<ASCheckBox> hOther = ((Unk_GoEntity*)this)->FUN_140e52670("m_other"))
         hOther.get()->FUN_1422ce090(m_opt.FUN_1419daeb0());
-    if (MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
+    if (MS2Ptr<ASCheckBox> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
         hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
-    if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
+    if (MS2Ptr<ASCheckBox> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
     if (MS2Ptr<ASDropdownMenu> hRank = ((UISwfEntity*)this)->GetChild<ASDropdownMenu>("m_equipRank"))
     {
@@ -305,26 +301,26 @@ int UIItemGetOptionDialog::vfunc_46()
 {
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8d))
     {
-        if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
+        if (MS2Ptr<ASCheckBox> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         {
-            Unk_GoCheck* pCheck = hPet.get();
+            ASCheckBox* pCheck = hPet.get();
             pCheck->vfunc_4(false);
             hPet.get()->FUN_1422c1fe0(0);
         }
     }
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e))
     {
-        if (MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
+        if (MS2Ptr<ASCheckBox> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
         {
-            Unk_GoCheck* pCheck = hGem.get();
+            ASCheckBox* pCheck = hGem.get();
             pCheck->vfunc_3(0);
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN() == true)
     {
-        if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
+        if (MS2Ptr<ASCheckBox> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         {
-            Unk_GoCheck* pCheck = hMerat.get();
+            ASCheckBox* pCheck = hMerat.get();
             pCheck->vfunc_3(0);
         }
     }

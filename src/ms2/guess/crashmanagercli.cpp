@@ -59,7 +59,7 @@ CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
 void* FUN_140d86260();   // C3: was FUN_140d86260
 int FUN_141b6db40(size_t nSize);
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 void FUN_140a43b20();
 void FUN_140a43d40();
 void FUN_140a43f00();
@@ -160,7 +160,7 @@ void FUN_140a43b10(void*)
 void FUN_140a43b20()
 {
     FUN_140a439d0();
-    if (FUN_140166410()->IsRegionCN())
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionCN())
     {
         int nStart = 0;
         CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();

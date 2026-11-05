@@ -44,9 +44,8 @@ public:
 };
 class Unk_AdvCfgLevel
 {
-public:
-    unsigned short FUN_140ba4b30();
 };
+unsigned short FUN_140ba4b30(class Unk_ALConstU16* p);   // C3: was a Unk_AdvCfgLevel member view (uiadventureleveldialog.cpp)
 class Unk_AdvGlobals
 {
 public:
@@ -59,7 +58,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 int FUN_1412755a0();
 int FUN_1418dd0c0();                                                // height of the exp bar
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
@@ -144,7 +143,7 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
         nGain = 0;
     if (nGain > FUN_140ba6fc0() - FUN_140ba6fa0())
         nGain = FUN_140ba6fc0() - FUN_140ba6fa0();
-    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_9298.FUN_140ba4b30());
+    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_140ba4b30(reinterpret_cast<class Unk_ALConstU16*>(&reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_9298)));
 }
 
 // @0x140ba6fa0

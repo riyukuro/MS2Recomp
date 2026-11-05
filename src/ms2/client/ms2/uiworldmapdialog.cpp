@@ -177,7 +177,7 @@ template <class A> CStringW BlockFormat(int nStrId, const A& a);           // Bl
 template <class A, class B, class C> CStringW BlockFormat(int nStrId, const A& a, const B& b, const C& c);
 CStringW FUN_14028dee0(int nStrId, const fmt::ArgList& args);               // a string table text by id, formatted
 int FUN_14092f640();                                                        // the current channel
-float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                             // the quest's data record
 int FUN_14074b050(CQuestData* pData);                                       // the quest's state
 bool FUN_1407640c0(CQuestData* pData);
@@ -976,7 +976,7 @@ void UIWorldMapDialog::FUN_141b57870()
             MS2Ptr<UIWorldMap::MapTile> spTile = tiles[i];
             efd::Point3 kTile((float)spTile->m_24, (float)spTile->m_28, (float)spTile->m_2c);
             efd::Point3 kCur((float)FUN_141b5d120()->m_24, (float)FUN_141b5d120()->m_28, (float)FUN_141b5d120()->m_2c);
-            float fDistance = FUN_140966f00(kTile, kCur);
+            float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(kTile), reinterpret_cast<const Vector3&>(kCur));
             spTile->m_50 = (unsigned)fDistance;
             sorted.push_back(spTile);
             if (spTile->m_24 > nMaxX)
@@ -1300,11 +1300,11 @@ MS2_REPLACE_METHOD(0x141B59A80, UIWorldMapDialog, FUN_141b59a80, 686, 0xDA37BB0B
 // @0x141b59d40
 void UIWorldMapDialog::FUN_141b59d40()
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest> > quests;
+    ATL::CAtlArray<MS2Ptr<CQuest> > quests;
     ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(quests, 1, 0xb, -1);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         if (spQuest.IsNull())
             continue;
         if (m_display.FUN_141b95080(spQuest->GetData()) == 0)
@@ -1365,13 +1365,6 @@ void UIWorldMapDialog::FUN_141b5a290()
 }
 MS2_REPLACE_METHOD(0x141B5A290, UIWorldMapDialog, FUN_141b5a290, 698, 0xF358CB3C);
 
-// WorldService::FUN_141bcfd30 as the exe calls it: the position is a Vector3 by value (copied from the NiPoint3).
-class Unk_AkoWsPointView
-{
-public:
-    egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
-};
-
 // @0x141b5a550
 void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
 {
@@ -1383,7 +1376,7 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
     if (pPlayer->GetCurStateId() == 0x25 || pPlayer->GetCurStateId() == 0x2a)
         return;
     const float& fRange = *TSingleton<Client::Constants>::GetInstance()->TaxiStationFindDistance.Get();
-    if (reinterpret_cast<Unk_AkoWsPointView*>(TSingleton<WorldService>::GetInstance())->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(), fRange, 1, 0) == 0)
+    if (TSingleton<WorldService>::GetInstance()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(), fRange, 1, 0) == 0)
     {
         FUN_140d73bc0(0x89, 0, 0, CStringW(L""));
         return;
@@ -2169,7 +2162,7 @@ void UIWorldMapDialog::FUN_141b5f740(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         {
-            Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(quests[i]);
+            MS2Ptr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(quests[i]);
             if (spQuest.get() != 0)
             {
                 if (spQuest->GetState() == 2 || static_cast<CQuestCommon&>(*spQuest.operator->()).IsComplete() != 0)

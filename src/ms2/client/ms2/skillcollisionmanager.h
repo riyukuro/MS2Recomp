@@ -13,8 +13,8 @@
 class PCBase;
 class Unk_SkillSrc;
 class Unk_ColInfo;
-class Unk_ClubSkillAttr;
-struct Unk_SkPoint;
+class AdditionalLevelData;
+struct Vector3;
 
 class CSkillCollisionManager : public TSingleton<CSkillCollisionManager>
 {
@@ -37,7 +37,7 @@ public:
     void Touch(__int64 nHandle);                        // 0x141755bd0: restarts the shape's display time
     CollisionPtr Get(__int64 nHandle);                  // 0x141755c50
     // 0x141755cd0: shows the skill's shape at a position / direction (`this` unused).
-    void Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSkill, const Unk_SkPoint* pPos, const Unk_SkPoint* pDir);
+    void Show(PCBase* pActor, MS2Ptr<AdditionalLevelData> spSkill, const Vector3& kPos, const Vector3& kDir);
 
     MS2_LAYOUT_FRIEND;
     CacheMap m_mapCache;                                // +0x08

@@ -63,7 +63,7 @@ template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service61000
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-Unk_Int3 FUN_1408a1430(Vector3 pt);
+Unk_Int3 FUN_1408a1430(NiPoint3 kPos);   // C3: actionkeyobject.cpp's declaration (0x1408a1430)
 int FUN_1408a03c0(Unk_Int3 pt);
 
 // The "lift state changed" notice posted through the notify manager.
@@ -203,7 +203,7 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
         Vector3 pt;
         reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
         efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
-        Unk_Int3 cell = FUN_1408a1430(pt);
+        Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(pt));
         Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(FUN_1408a03c0(cell));
         if (pCube != 0)
             m_nA8 = pCube->FUN_1408b4f20();

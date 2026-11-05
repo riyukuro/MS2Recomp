@@ -29,7 +29,7 @@ class Unk_HpActor;                                              // the local pla
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_MyPCComp1618* FUN_141523c50();
+    class UserUGCMapInfo* FUN_141523c50();
 };
 __int64 GetServerTime();                                        // server time
 CStringW GetStringCommon(int nStringId);
@@ -86,7 +86,7 @@ void UIHomePasswordDialog::OnLoadComplete()
     Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50());
         if (ref.get() != 0)
         {
             __int64 nExpire = ref->m_n38;
@@ -145,7 +145,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
         {
-            Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+            Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50());
             if (ref.get() != 0)
             {
                 __int64 nExpire = ref->m_n38;
@@ -201,7 +201,7 @@ void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int 
     Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50());
         if (ref.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);

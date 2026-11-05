@@ -37,6 +37,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cequipitem.h"
@@ -63,11 +64,7 @@
 class TShopPaymentAttr { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const & GetIconTag(void) const; enum ePaymentType FUN_1406dc510(void) const; unsigned int GetItemId(void) const; };
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
-class Unk_140acd6e0 : public ASDisplayObject                    // the button wrapper
-{
-public:
-    void FUN_1422ce240(const Unk_ClickDelegate& cb, void* pUser);   // click callback
-};
+class Unk_140acd6e0 : public ASButton {};                       // the button wrapper; its click callback is ASButton::FUN_1422ce240
 
 
 CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narrow

@@ -187,4 +187,5 @@ MS2_CHECK_OFFSET(CKeyTable, m_nQuickSlotPage, 0x198);
 MS2_CHECK_OFFSET(CKeyTable, m_quickSlots, 0x1a0);
 MS2_CHECK_OFFSET(CKeyTable, m_settings, 0x260);
 
-CKeyTable* FUN_1409331f0();                                     // the instance
+class Unk_SoundSink* FUN_1409331f0();   // the instance (0x1409331f0, the definer's signature: it returns TSingleton<CKeyTable>::s_instance)
+#define FUN_1409331f0() (reinterpret_cast<CKeyTable*>(FUN_1409331f0()))   // read as the CKeyTable

@@ -9,6 +9,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 
 #include <new>
 
@@ -84,7 +85,6 @@ public:
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factories not defined here belong
 // to the other guide-condition code units.
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 
 // The initialized marker: no storage, so the dynamic initializer is the registration call and nothing else.
 struct Unk_RegMarker {};
@@ -93,42 +93,42 @@ struct Unk_RegMarker {};
 // @0x1400f3420
 static char s_regDialog;
 static Unk_RegMarker s_initDialog =
-    (FUN_140316aa0(&s_regDialog, CStringW(L"CGuideConditionDialog"), &CGuideConditionDialog::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regDialog)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionDialog"), &CGuideConditionDialog::CreateObject), Unk_RegMarker());
 
 // @0x1400f3470
 static char s_regEnterDungeon;
 static Unk_RegMarker s_initEnterDungeon =
-    (FUN_140316aa0(&s_regEnterDungeon, CStringW(L"CGuideConditionEnterDungeon"), &CGuideConditionEnterDungeon::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regEnterDungeon)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionEnterDungeon"), &CGuideConditionEnterDungeon::CreateObject), Unk_RegMarker());
 
 // @0x1400f34c0
 static char s_regEquipItem;
 static Unk_RegMarker s_initEquipItem =
-    (FUN_140316aa0(&s_regEquipItem, CStringW(L"CGuideConditionEquipItem"), &CGuideConditionEquipItem::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regEquipItem)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionEquipItem"), &CGuideConditionEquipItem::CreateObject), Unk_RegMarker());
 
 // @0x1400f3510
 static char s_regEquipSkill;
 static Unk_RegMarker s_initEquipSkill =
-    (FUN_140316aa0(&s_regEquipSkill, CStringW(L"CGuideConditionEquipSkill"), &CGuideConditionEquipSkill::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regEquipSkill)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionEquipSkill"), &CGuideConditionEquipSkill::CreateObject), Unk_RegMarker());
 
 // @0x1400f3560
 static char s_regExistItem;
 static Unk_RegMarker s_initExistItem =
-    (FUN_140316aa0(&s_regExistItem, CStringW(L"CGuideConditionExistItem"), &CGuideConditionExistItem::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regExistItem)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionExistItem"), &CGuideConditionExistItem::CreateObject), Unk_RegMarker());
 
 // @0x1400f35b0
 static char s_regExistShortcut;
 static Unk_RegMarker s_initExistShortcut =
-    (FUN_140316aa0(&s_regExistShortcut, CStringW(L"CGuideConditionExistShortcut"), &CGuideConditionExistShortcut::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regExistShortcut)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionExistShortcut"), &CGuideConditionExistShortcut::CreateObject), Unk_RegMarker());
 
 // @0x1400f3600
 static char s_regFalse;
 static Unk_RegMarker s_initFalse =
-    (FUN_140316aa0(&s_regFalse, CStringW(L"CGuideConditionFalse"), &CGuideConditionFalse::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regFalse)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionFalse"), &CGuideConditionFalse::CreateObject), Unk_RegMarker());
 
 // @0x1400f3650
 static char s_regFieldId;
 static Unk_RegMarker s_initFieldId =
-    (FUN_140316aa0(&s_regFieldId, CStringW(L"CGuideConditionFieldId"), &CGuideConditionFieldId::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regFieldId)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionFieldId"), &CGuideConditionFieldId::CreateObject), Unk_RegMarker());
 #endif
 
 // ---- CGuideConditionPosition ----------------------------------------------------------------------------------------------

@@ -157,8 +157,6 @@ CStringW GetStringCommon(int);
 UIMessageBox* FUN_14151f890();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
-void* FUN_140534fc0(const Unk_MessageBoxPtr&);
-void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 
 class Unk_LobbyChar;
 namespace egf { class Entity; }
@@ -195,19 +193,11 @@ public:
 };
 
 // ---- the game-option block (OnEnter) ----
-struct Unk_C9B8B0 { void* m_0; void* m_8; };
 struct Unk_AE6540 { bool m_0, m_1, m_2; };
-class Unk_GameOptionA : public CGameOption { public: Unk_C9B8B0* FUN_140c9b8b0(); Unk_AE6540* FUN_140ae6540(); };
+struct Unk_BuddySettings;
+class Unk_BuddyOptions { public: Unk_BuddySettings& GetSettings(); };   // C3: was Unk_GameOptionA::FUN_140ae6540 (buddymanager.cpp)
 
-class Unk_1402a9d70
-{
-public:
-    Unk_1402a9d70(int, float, float, float, int);               // 0x1402a9d70
-    ~Unk_1402a9d70();                                           // 0x1402aa1d0
-private:
-    char m_pad[0x50];
-};
-MS2_CHECK_SIZE(Unk_1402a9d70, 0x50);
+#include "ms2/placeholder/unk_1402a9d70.h"   // C3: the real ATL::CAtlMap<UINT, CString>
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateMulti);
 
@@ -363,11 +353,11 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_reconnectTimer.FUN_1408687f0();
     if (reinterpret_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsRegionNA())
     {
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_8 = 0;
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_0 = true;
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_1 = true;
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540()->m_2 = true;
-        reinterpret_cast<Unk_GameOptionA*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
+        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n08 = 0;
+        reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_0 = true;
+        reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_1 = true;
+        reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_2 = true;
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
 }
 
@@ -754,9 +744,9 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
     if (pBox != 0)
     {
         Unk_MessageBoxPtr current = pBox->FUN_1419f8470();
-        if (FUN_140534fc0(current) != 0)
+        if (current.operator CMsgBoxData*() != 0)
         {
-            if (operator==(reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(current))->GetExtra(), L"waitingticketdialog"))
+            if (operator==(reinterpret_cast<CMsgBoxData*>(current.operator->())->GetExtra(), L"waitingticketdialog"))
             {
                 pBox->UpdateMessage(text);
                 return;
@@ -764,11 +754,11 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
-    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetButtonLabels(GetStringCommon(0xac1), L"", L"");
-    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetExtra(L"waitingticketdialog");
+    reinterpret_cast<CMsgBoxData*>(box.operator->())->SetButtonLabels(GetStringCommon(0xac1), L"", L"");
+    reinterpret_cast<CMsgBoxData*>(box.operator->())->SetExtra(L"waitingticketdialog");
     UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
     if (pList != 0)
-        reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
+        reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
     FUN_140d73c60(Unk_MessageBoxPtr(box));
 }
 

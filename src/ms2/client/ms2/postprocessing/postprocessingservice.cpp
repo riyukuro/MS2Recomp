@@ -1236,7 +1236,7 @@ public:
     void SetEnabled(bool);
 };
 NiViewRenderClick* FUN_1413f99a0();                         // the main scene click
-struct Unk_EsAppService { static const efd::ClassID CLASS_ID = 0x06100001; };   // C3: the MS2 service AddDependency<> is instantiated on (effectservice.cpp)
+#include "ms2/client/ms2/ms2.h"   // C3: MS2 (CLASS_ID 0x06100001), the service AddDependency<> is instantiated on
 
 // The graphics options block (reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())); only the plane-reflection flag is known.
 class Unk_PPGraphicsOptions
@@ -1728,7 +1728,7 @@ efd::SyncResult PostProcessingService::OnPreInit(efd::IDependencyRegistrar* pReg
 {
     pRegistrar->AddDependency<ecr::RenderService>(1);
     pRegistrar->AddDependency<egf::FlatModelManager>(1);
-    pRegistrar->AddDependency<Unk_EsAppService>(1);
+    pRegistrar->AddDependency<MS2>(1);
     pRegistrar->AddDependency<Unk_PPEffectServiceDep>(1);
     return efd::SyncResult_Success;
 }

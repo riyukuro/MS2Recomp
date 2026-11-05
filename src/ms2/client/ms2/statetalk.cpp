@@ -59,11 +59,6 @@ class Unk_CinTalk : public UITalkManager
 {
 public:
 };
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 
 class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
 class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
@@ -107,7 +102,7 @@ void StateTalk::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     Unk_TalkAnimSvc* pAnim = ((class Unk_TalkAnimSvc*)FUN_1413f9b10());
-    Unk_CinNpc* pNpc = (Unk_CinNpc*)((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalkNpc();
+    Unk_CinNpc* pNpc = (Unk_CinNpc*)((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->GetTalkNpc();
     int bFirst = 0;
     int bSecond = 0;
     bool bTalk = pNpc != 0 && reinterpret_cast<Unk_TalkNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_bTalkable != 0;
@@ -147,8 +142,8 @@ void StateTalk::vfunc_4(StateData* pData)
 void StateTalk::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking() && FUN_1417b8560())
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+    if (((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->GetTalking() && FUN_1417b8560())
+        ((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->SendNpcTalkMode0();
     if (m_n44 != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_n44);
 }
@@ -206,8 +201,8 @@ void StateTalk::vfunc_9(double fTime)
 // @0x1417fc960
 void StateTalk::vfunc_6()
 {
-    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking() && FUN_1417b8560())
-        ((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+    if (((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->GetTalking() && FUN_1417b8560())
+        ((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->SendNpcTalkMode0();
 }
 
 // @0x1417fc9a0
@@ -270,7 +265,7 @@ StateTalkNpc::~StateTalkNpc()
 void StateTalkNpc::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    if (((class Unk_CinTalk*)Unk_AkoCutscene::GetInstance())->GetTalking())
+    if (((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->GetTalking())
     {
         m_n10 = 0x48;
         efd::utf8string strAnim(m_pOwner->vfunc_123(0x2e));

@@ -9,7 +9,7 @@
 // MS2-PIN: ??__Es_strSortValue@@YAXXZ 0x1400cb500 ; probe
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400cb530 ; probe
 // MS2-PIN: ??__Es_strTabIndex@@YAXXZ 0x1400cb560 ; probe
-// MS2-PIN: ?IsNull@?$Unk_PayloadPtr@VCQuest@@@@QEBA_NXZ 0x140bfc310 ; prop
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCQuest@@@@QEBA_NXZ 0x140bfc310 ; prop
 // MS2-PIN: ?FindNextNode@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140bfc3f0 ; unique
 // MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBAAEBW4Unk_FameAlliance@@PEAU__POSITION@@@Z 0x140bfc4c0 ; unique
 // MS2-PIN: ?GetNext@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140bfc530 ; unique
@@ -203,7 +203,7 @@ int FUN_140bfa200(int nQuest)
     int nDone = ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0);
     if (nDone != 0)
         return 0;
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     if (spQuest.IsNull() && nDone == 0)
         return 1;
     return ((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest);
@@ -473,7 +473,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             continue;
         if (FUN_14074b070(spData.operator->()) == 0)
         {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
             if (spQuest.IsNull() && ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
                 continue;
             if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest) != 0)
@@ -481,7 +481,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
         }
         else if (FUN_14074b070(spData.operator->()) == 2)
         {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
             if (spQuest.IsNull() && ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuest, 0) == 0)
                 continue;
             if (((class CQuestManager*)FUN_140764020())->GetDailyCompletedFlag(nQuest) == 0)
@@ -810,7 +810,7 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
             TSingleton<QuestDataTable>::GetInstance()->FUN_14074e6c0(spData->m_require.m_groupId, nSelector, nSeed, picked);
             for (size_t j = 0; j < picked.GetCount(); j++)
             {
-                Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(picked[j]);
+                MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(picked[j]);
                 if (spQuest.IsNull())
                     continue;
                 return spQuest->FUN_140bfc580();

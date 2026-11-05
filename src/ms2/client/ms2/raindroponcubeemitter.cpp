@@ -124,8 +124,8 @@ public:
 };
 class CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
-int FUN_1408a13d0(Vector3 kPos);                            // column key of a position
-Unk_Int3 FUN_1408a1430(Vector3 kPos);                       // cube cell of a position (all 3 ints)
+int FUN_1408a13d0(NiPoint3 kPos);                           // column key of a position (C3: ridee.cpp / mypc.cpp's declaration)
+Unk_Int3 FUN_1408a1430(NiPoint3 kPos);                      // cube cell of a position (all 3 ints; C3: actionkeyobject.cpp's declaration)
 Vector3 FUN_1408a15b0(Unk_Int3 kCube, Vector3* pOut);   // position of a column (also in pOut)
 unsigned int FUN_1408a03c0(Unk_Int3 kCube);                      // key of a column
 
@@ -136,7 +136,7 @@ struct Unk_RainPaths
     CString m_strTexture;
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
 ecr::SceneGraphService* FUN_1413f98b0();
@@ -183,7 +183,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
     const int nHalf = 10;
     CubeMapInformationService* pService = GetCubeMapService();
     Unk_CMISTree<277>* pWorld = pService->FUN_1410b9e70();
-    Unk_Int3 kCell = FUN_1408a1430(kPos);
+    Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
     for (int dx = -nHalf; dx < nHalf; dx++)
     {
         for (int dy = -nHalf; dy < nHalf; dy++)
@@ -255,7 +255,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
     Unk_RainActor* pActor = ((Unk_RainActor*)((WorldService*)(Unk_RainContext*)(reinterpret_cast<Unk_RainContext*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor)
         kPos = pActor->GetPosition();
-    m_nCenterKey = FUN_1408a13d0(kPos);
+    m_nCenterKey = FUN_1408a13d0(reinterpret_cast<const NiPoint3&>(kPos));
 
     ATL::CAtlArray<Unk_Int3> arrCube;
     FillColumns(kPos, arrCube);
@@ -285,7 +285,7 @@ void RainDropOnCubeEmitter::Refresh()
         return;
 
     Vector3 kPos = pActor->GetPosition();
-    int nKey = FUN_1408a13d0(kPos);
+    int nKey = FUN_1408a13d0(reinterpret_cast<const NiPoint3&>(kPos));
     if (!m_bDirty)
     {
         if ((int)m_nCenterKey == nKey)
@@ -375,7 +375,7 @@ void RainDropSystem::Create()
     {
         CString strName;
         strName.Format("%sRainDrop%d.dds", (const char*)((struct Unk_RainPaths*)FUN_1401d31f0())->m_strTexture, i);
-        m_arrTexture.Add(FUN_140a0afd0()->GetTexture(strName, 5));
+        m_arrTexture.Add(reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->GetTexture(strName, 5));
     }
 
     m_spSystem = NiPSParticleSystem::Create(0x200, (NiPSParticleSystem::AlignMethod)2, AsPoint(g_143a08cf8),

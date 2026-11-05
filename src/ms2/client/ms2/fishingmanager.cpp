@@ -908,7 +908,7 @@ struct Unk_RayCastInfo                                       // physxhelper.h's 
     efd::Point3 m_hitNormal;                                // +0x58
 };
 MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
-class CPhysXHelper { public: int FUN_14168a310(const Vector3& kFrom, Vector3& kTo, Unk_RayCastInfo* pHit, float fLen, Vector3* b, int c); };
+class CPhysXHelper { public: int RayCastFixedDirection(const Vector3& kFrom, Vector3& kTo, Unk_RayCastInfo* pHit, float fLen, Vector3* b, int c); };   // C3: physxhelper.h (0x14168a310)
 int FUN_1408a01e0(CStringA kText);                          // the liquid type of a cube name (0x40 = none)
 
 template <class T> bool Common::Constants::Values<T>::Get(ATL::CAtlArray<T>& out)
@@ -1162,7 +1162,7 @@ int CFishingManager::FUN_140cdc520()
     Unk_RayCastInfo kHit;
     efd::Point3 kFrom = static_cast<const efd::Point3&>(pPC->vfunc_18()) + efd::Point3(0.0f, 0.0f, 10.0f);
     efd::Point3 kTo = efd::Point3::ZERO;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<Vector3&>(kFrom), reinterpret_cast<Vector3&>(kTo), &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<Vector3&>(kFrom), reinterpret_cast<Vector3&>(kTo), &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
     {
         efd::utf8string kName("None");
         kHit.m_hitEntity->GetPropertyValue(0x15014205, kName);

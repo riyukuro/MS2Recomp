@@ -72,7 +72,7 @@
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
 CInputStream& FUN_14070f440(CInputStream&, long&);              // packet.cpp stream operators
-CInputStream& FUN_14070f480(CInputStream&, unsigned int&);
+// 0x14070f480 = Unk_OSInput::Read6 (os.cpp)
 COutputStream& FUN_14070f960(COutputStream&, long);
 COutputStream& FUN_14070f9a0(COutputStream&, unsigned int);
 COutputStream& FUN_14070f9e0(COutputStream&, __int64);
@@ -577,7 +577,7 @@ void FUN_1407a70f0(Unk_1407a7040& v, CInputStream& in)
 {
     FUN_1407a6fe0(v.m_28, in);
     int count = 0;
-    FUN_14070f480(in, static_cast<Unk_1407a71a0&>(v).m_00);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(static_cast<Unk_1407a71a0&>(v).m_00);
     FUN_14070f440(in, (long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
@@ -597,7 +597,7 @@ void FUN_1407a71a0(Unk_1407a71a0& v, COutputStream& out)
 void FUN_1407a7230(Unk_1407a71a0& v, CInputStream& in)
 {
     int count = 0;
-    FUN_14070f480(in, v.m_00);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(v.m_00);
     FUN_14070f440(in, (long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;

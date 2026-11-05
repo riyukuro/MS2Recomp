@@ -54,7 +54,8 @@ TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValue
 void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
 PC* FUN_140aac420(const TPtr<PC>& spRef);                           // the actor
 PC* FUN_140aac440(const TPtr<PC>& spRef);                           // operator->
-void* FUN_1409613d0(PCBase* pActor);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -78,7 +79,7 @@ class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 class CrashManagerCli;
 template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
 struct IDirect3D9* GetIDirect3D9();   // C3: was FUN_14151e7e0
-class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
+class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
@@ -795,7 +796,7 @@ void COptimizer::ApplyFlagsToPlayer(PCBase* pPC, int nFlags)
 {
     if (pPC != 0)
     {
-        if (FUN_1409613d0(pPC) != 0)
+        if (efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC) != 0)
         {
             return;
         }

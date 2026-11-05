@@ -96,9 +96,7 @@ class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CStrin
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& kRef, int nKind, unsigned __int64 n);
 
-class Unk_GalleryAS;
-void GallerySet(Scaleform::GFx::Value*, int);
-void GallerySet(Scaleform::GFx::Value*, const Unk_GalleryAS&);
+void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);   // set an object value (as uiachievedialog)
 
 template <class T> T* UgcFindDialog(eUIClassID nId);
 void FUN_14151f200();
@@ -136,8 +134,8 @@ inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36aa0(const char* szMethod, 
 {
     ASArgList args;
     args.FUN_1409b2800(2);
-    GallerySet(args.FUN_1409b1f70(0), n);
-    GallerySet(args.FUN_1409b1f70(1), (const Unk_GalleryAS&)arr);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), n);
+    FUN_1422bce40(args.FUN_1409b1f70(1), arr);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -146,10 +144,10 @@ inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36b60(const char* szMethod, 
 {
     ASArgList args;
     args.FUN_1409b2800(4);
-    GallerySet(args.FUN_1409b1f70(0), n);
-    GallerySet(args.FUN_1409b1f70(1), (const Unk_GalleryAS&)arr);
-    GallerySet(args.FUN_1409b1f70(2), nA);
-    GallerySet(args.FUN_1409b1f70(3), nB);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), n);
+    FUN_1422bce40(args.FUN_1409b1f70(1), arr);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), nA);
+    FUN_1422bccb0(args.FUN_1409b1f70(3), nB);
     return FUN_1422bb8f0(szMethod, args);
 }
 

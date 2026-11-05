@@ -11,6 +11,8 @@
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <NiColor.h>   // NiColorA: ctors 0x14097f220 / 0x14097f1d0
+#include <efd/Point3.h>   // Common::FUN_140db9570 returns it
 
 // ---- nps64.dll imports (the exe calls through their IAT slots, 0x142cd1488 / 0x142cd1480) ----
 extern "C" __declspec(dllimport) void __cdecl OpenSurveyWindowA(const char* pszUrl, int nFlags, const char* pszParam, const char* pszExtra);
@@ -18,15 +20,13 @@ extern "C" void (__cdecl* __imp_AddSurveyParameterA)(const char* pszName, const 
 
 // ---- unit-local colour types (names invented) ----
 struct Unk_NpColor3 { float r, g, b; Unk_NpColor3(); };   // ctor 0x1409f72f0
-struct Unk_NpColor4 { float r, g, b, a; Unk_NpColor4(); };   // ctor 0x14097f220
 
 // ---- exe callees ----
 #include "ms2/ms2format.h"   // C3: StringFormat<unsigned __int64> (was FUN_1401d9af0)
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);
-void FUN_14028f060(void* pOut, CStringA kText);
+efd::Point3 FUN_14028f060(CString strText);   // commonutil.cpp
 void FUN_14028f190(void* pOut, CStringW kText);
 Unk_NpColor3 FUN_140a56db0(float r, float g, float b);
-Unk_NpColor4 FUN_14097f1d0(float r, float g, float b, float a);
 int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...);
 
 extern const char DAT_142e36cd4[];                              // "{0}"
@@ -152,23 +152,23 @@ Unk_NpColor3 FUN_140db9270(CStringA& strText)
 
 // @0x140db93e0
 // The components are addressed off r with pointer arithmetic, as in FUN_140db9270.
-Unk_NpColor4 FUN_140db93e0(CStringA& strText)
+NiColorA FUN_140db93e0(const CStringA& strText)
 {
-    static Unk_NpColor4 kDefault = FUN_14097f1d0(1.0f, 0.0f, 1.0f, 1.0f);
+    static NiColorA kDefault(1.0f, 0.0f, 1.0f, 1.0f);
     if (strText.IsEmpty())
         return kDefault;
-    Unk_NpColor4 kColor;
+    NiColorA kColor;
     int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f, %f", &kColor.r, &kColor.r + 1, &kColor.r + 2, &kColor.r + 3);
     if (nParsed != 4)
-        return Unk_NpColor4();
+        return NiColorA();
     return kColor;
 }
 
-// @0x140db9570
-void* FUN_140db9570(void* pOut, CStringA& strText)
+// @0x140db9570 (declared by its caller unit_1402ab440_constantsblocks.cpp as Common::)
+namespace Common { efd::Point3 FUN_140db9570(const CString& strText); }
+efd::Point3 Common::FUN_140db9570(const CString& strText)
 {
-    FUN_14028f060(pOut, CStringA(strText));
-    return pOut;
+    return FUN_14028f060(CString(strText));
 }
 
 // @0x140db95c0

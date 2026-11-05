@@ -5,6 +5,7 @@
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"
 class CQuest;
 class Unk_QuestCondition;
 class CQuest;
@@ -14,7 +15,7 @@ public:
     virtual int vfunc_o10_0(int, int) = 0;
     virtual int vfunc_o10_1(int) = 0;
     virtual int vfunc_o10_2(int) = 0;
-    virtual Unk_PayloadPtr<CQuest> vfunc_o10_3(int) = 0;
+    virtual MS2Ptr<CQuest> vfunc_o10_3(int) = 0;
     virtual unsigned short vfunc_o10_4() = 0;
     virtual int vfunc_o10_5() = 0;
     virtual int vfunc_o10_6() = 0;

@@ -12,7 +12,7 @@ class CLogString;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
+bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 class Unk_CriticalSectionLock;
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins (shared by the includers)
 {
@@ -37,7 +37,7 @@ int DataTable<T>::Load(CString strDir, CString strFile, CString strElement)
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strElement)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strElement)))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
         MS2Ptr<T> spRow = Create(pNode);
         if (spRow == 0)

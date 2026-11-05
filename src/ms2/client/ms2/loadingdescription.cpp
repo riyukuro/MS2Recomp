@@ -49,7 +49,8 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071ae20(const CString& strFile);                              // path of a table file
 CString FUN_14016a5c0(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+struct Unk_XmlElement;
+void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
 class CReservedWordTable;
 unsigned char FUN_1401d1320(CCacheData* pCache);                            // file changed since load
@@ -179,7 +180,7 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
             return 0;
         }
         std::vector<Unk_140165cf0*> nodes;
-        FUN_14028faa0(pRoot, "tip", "id", &nodes);
+        FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pRoot), "tip", "id", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
         for (size_t i = 0; i < nodes.size(); i++)
         {
             Unk_140165cf0* pNode = nodes[i];

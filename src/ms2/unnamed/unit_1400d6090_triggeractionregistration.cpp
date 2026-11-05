@@ -13,7 +13,6 @@ class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };  
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factory is defined by the
 // TriggerActionCli code unit.
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 class TriggerActionCli;
 TriggerActionCli* FUN_140de4cb0();                 // C3: was ClassObject* FUN_140de4cb0()
 
@@ -49,7 +48,7 @@ struct Unk_RegMarker {};
 // @0x1400d6690
 static char s_regTriggerAction;
 static Unk_RegMarker s_initTriggerAction =
-    (FUN_140316aa0(&s_regTriggerAction, CStringW(L"TriggerActionCli"), (ClassObject* (*)())FUN_140de4cb0), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regTriggerAction)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerActionCli"), (ClassObject* (*)())FUN_140de4cb0), Unk_RegMarker());
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca5c90-0x142ca5ed0 .text$yd

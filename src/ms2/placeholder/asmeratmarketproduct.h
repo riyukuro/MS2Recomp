@@ -13,7 +13,7 @@
 
 class Unk_MeratEquipEntry;      // the market product record (asequipicon.h forward declares it)
 class Unk_MeratPremium;         // its premium (coin shop) part, +0x30
-class Unk_MeratBanner;          // a banner of the market (a CString background at +0x18)
+class ShopBannerInfo;           // a banner of the market (shopbannerinfo.h; the background image path at +0x18)
 class Unk_MeratFilter;          // the market's job / level filter
 struct Unk_MeratOid;            // the product id ("P<n>" / "U<n>" on the AS side)
 
@@ -44,7 +44,7 @@ public:
 
     void SetIndex(int nIndex);                                         // m_nIndex = nIndex
     void SetBgPath(const CString& strBg);                               // "bgPath"
-    void SetBanner(MS2Ptr<Unk_MeratBanner> spBanner);                   // m_spBanner = spBanner
+    void SetBanner(MS2Ptr<ShopBannerInfo> spBanner);                   // m_spBanner = spBanner
     void FUN_1409bc540(const int& nIndex);                                  // "index"
     void SetProductOid(MS2Ptr<Unk_MeratEquipEntry> spEntry);                // "productOID" of a record
     void SetProductOID(const Unk_MeratOid& oid);                            // "productOID"
@@ -62,7 +62,7 @@ public:
 protected:
     MS2_LAYOUT_FRIEND;
     int m_nIndex;                                                           // +0x40
-    MS2Ptr<Unk_MeratBanner> m_spBanner;                                     // +0x48
+    MS2Ptr<ShopBannerInfo> m_spBanner;                                     // +0x48
     int m_nProductType;                                                     // +0x58 0 plain, 1 limited, 2 home
 };
 MS2_CHECK_SIZE(ASMeratMarketProductBase, 0x60);

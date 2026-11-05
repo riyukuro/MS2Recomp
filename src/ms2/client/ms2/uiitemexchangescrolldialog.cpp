@@ -56,11 +56,8 @@ private:
 };
 
 // The inventory (global 0x143ab2a90); its count queries take an Unk_InventoryItemKey (id, +8 kind 1 = by item id).
-class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); int FUN_140a5f780(int nTypeId, int n); }; class Unk_IesInventory : public Unk_Inventory {
-public:
-
-    int FUN_140a5eda0(Unk_InventoryItemKey* pKey);           // how many items match
-};
+class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); int FUN_140a5f780(int nTypeId, int n); int FUN_140a5eda0(const int* filter); };   // C3: FUN_140a5eda0 = inventory.h's signature
+class Unk_IesInventory : public Unk_Inventory {};
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_IesInventory
 extern __int64 DAT_143ab2898;                           // the player's mesos
@@ -266,7 +263,7 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
         Unk_InventoryItemKey key;
         key.m_id = pRef->m_nId;
         key.m_extra = 1;
-        int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key);
+        int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
         int nBase = pRef->m_nCount;
         int nNeed = nMul * nBase;
         CStringW strCount;
@@ -343,7 +340,7 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
             Unk_InventoryItemKey key;
             key.m_id = pIng->FUN_14026b500();
             key.m_extra = 1;
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
         }
         int nBase = pIng->m_c;
         int nNeed = nMul * nBase;
@@ -400,7 +397,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
     key.m_id = pRecipe->m_nId;
     key.m_extra = 1;
     int nNeed = pRecipe->m_nCount * nCount;
-    if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key) < nNeed)
+    if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id) < nNeed)
         return 1;
     for (unsigned __int64 i = 0; i < pRequire->FUN_14026bf10(); i++)
     {
@@ -418,7 +415,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
             Unk_InventoryItemKey ingKey;
             ingKey.m_id = ref->FUN_14026b500();
             ingKey.m_extra = 1;
-            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey) < nNeedIng)
+            if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey.m_id) < nNeedIng)
                 return 4;
         }
     }
@@ -553,7 +550,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
             Unk_InventoryItemKey key;
             key.m_id = pIng->FUN_14026b500();
             key.m_extra = 1;
-            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key);
+            nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
         }
         int nBase = pIng->m_c;
         int nNeed = nMake * nBase;
@@ -768,7 +765,7 @@ int UIItemExchangeScrollDialog::FUN_140f55220()
     Unk_InventoryItemKey key;
     key.m_id = pRecipe->m_nId;
     key.m_extra = 1;
-    int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key);
+    int nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&key.m_id);
     int nNeed = pRecipe->m_nCount;
     int nCraft = nNeed > 0 ? nHave / nNeed : 0;
     nMax = nCraft;
@@ -789,7 +786,7 @@ int UIItemExchangeScrollDialog::FUN_140f55220()
                 Unk_InventoryItemKey ingKey;
                 ingKey.m_id = ref->FUN_14026b500();
                 ingKey.m_extra = 1;
-                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey);
+                nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5eda0(&ingKey.m_id);
             }
             int nNeedIng = ref->m_c;
             nMin = nNeedIng > 0 ? nHaveIng / nNeedIng : 0;

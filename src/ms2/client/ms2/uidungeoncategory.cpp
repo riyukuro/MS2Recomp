@@ -5,7 +5,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: memmove_s 0x140c0ad80 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonControlCenter@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140c0e290 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_DcRecord@@@@QEBAPEAVUnk_DcRecord@@XZ 0x140c0e5d0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VDungeonRecordManagerCli@@@@QEBAPEAVDungeonRecordManagerCli@@XZ 0x140c0e5d0 ; unique
 // MS2-PIN: ?vfunc_48@UIDungeonControlCenter@@UEAAHXZ 0x140c0e760 ; unique
 // MS2-PIN: ?_Swap_all@?$_Tree_comp_alloc@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEAAXAEAV12@@Z 0x140c0e870 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonControlCenter@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c0e990 ; unique
@@ -16,10 +16,10 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7UIDungeonCategoryTable@@6B?$TSingleton@VUIDungeonCategoryTable@@@@@ 0x142dfb1e0
 // MS2-PIN: ??_7UIDungeonCategoryTable@@6B?$CValidData@VUIDungeonCategoryTable@@@@@ 0x142dfb1f0
-// MS2-PIN: ??1?$MS2Ptr@VUnk_DcRecord@@@@QEAA@XZ 0x140c0e410
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_DcRecord@@@@AEAAXXZ 0x140c0e7e0
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_DcRecord@@@@AEAAXPEAX@Z 0x140c0e820
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_DcRecord@@@@CAXPEAVUnk_DcRecord@@@Z 0x140c0e7b0
+// MS2-PIN: ??1?$MS2Ptr@VDungeonRecordManagerCli@@@@QEAA@XZ 0x140c0e410
+// MS2-PIN: ?Release@?$MS2Ptr@VDungeonRecordManagerCli@@@@AEAAXXZ 0x140c0e7e0
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VDungeonRecordManagerCli@@@@AEAAXPEAX@Z 0x140c0e820
+// MS2-PIN: ?Reference@?$MS2Ptr@VDungeonRecordManagerCli@@@@CAXPEAVDungeonRecordManagerCli@@@Z 0x140c0e7b0
 // MS2-PIN: ?get@?$MS2Ptr@VDungeonUnitedWeeklyReward@@@@QEBAPEAVDungeonUnitedWeeklyReward@@XZ 0x140c0e5c0
 // MS2-PIN: ?empty@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEBA_NXZ 0x140c0e9f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeoncategory.cpp"
@@ -46,6 +46,7 @@
 #include <map>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/client/ms2/dungeonrecordcli.h"
+#include "ms2/placeholder/cmycharacter.h"  // C3: CMyCharacter::GetRecord (0x140d9f2c0)
 #include "ms2/commonfiles/rewardcontentstable.h"
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/placeholder/xmlattr.h"  // C3: XmlSplit was FUN_140177db0
@@ -154,14 +155,6 @@ MS2_CHECK_OFFSET(Unk_DcRoom, m_strBanner, 0x148);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_bHidden, 0x1b1);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_nGroupId, 0x1ec);
 
-class Unk_DcRecord : public CPtred
-{
-public:
-    bool FUN_140b22530();
-    float FUN_140b22620();
-    float FUN_140b22640();
-};
-class Unk_DcSession { public: MS2Ptr<Unk_DcRecord> FUN_140d9f2c0(); };
 class CMyCharacter* FUN_140931510();
 __int64 GetServerTime();
 class Unk_140166410* FUN_140166410();
@@ -470,7 +463,7 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     ASObj obj(2);
     int nWeekly = 0;
     int nWeeklyMax = 0;
-    if (DungeonRecordCliPtr pMission = reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRecord(0x3ee)) {
+    if (DungeonRecordCliPtr pMission = FUN_140931510()->GetRecord().operator->()->GetRecord(0x3ee)) {
         nWeekly = pMission->GetBonusRewardCountNow();
         nWeeklyMax = pMission->GetMaxCount();
         obj.FUN_1407cbb20("weekly", FUN_14028dfa0(L"s_dungeon_control_center_reward_weekly", reinterpret_cast<const unsigned&>(nWeekly), reinterpret_cast<const unsigned&>(nWeeklyMax)));
@@ -508,9 +501,9 @@ void UIDungeonControlCenter::FUN_140c0bab0()
         __int64 nMeso = rewards.m_nMeso;
         __int64 nExp = rewards.m_nExp;
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb9)) {
-            if (reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->IsBoostActive()) {
-                nMeso *= reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRateB();
-                nExp *= reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRateA();
+            if (FUN_140931510()->GetRecord().operator->()->IsBoostActive()) {
+                nMeso *= FUN_140931510()->GetRecord().operator->()->GetRateB();
+                nExp *= FUN_140931510()->GetRecord().operator->()->GetRateA();
             }
         }
         obj.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));

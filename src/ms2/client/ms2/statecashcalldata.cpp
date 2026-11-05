@@ -44,7 +44,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 CString FUN_1405a7e80(int n);                            // number -> text
 int FUN_140718170(const CString& str);                   // text -> number
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_14028d260(float f);                              // seconds -> ms
+__int64 FUN_14028d260(float f);                              // seconds -> ms  (C3: the definition's __int64 return, read as int)
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -231,7 +231,7 @@ void StateCashCall::vfunc_3(double fTime)
     State::vfunc_3(fTime);
     __declspec(align(16)) Vector3 kPoint = DAT_143b01a60;
     m_pOwner->vfunc_68(&kPoint, fTime, 0, 0, 0);
-    m_nElapsed += FUN_14028d260((float)fTime);
+    m_nElapsed += (int)FUN_14028d260((float)fTime);
     if (m_nElapsed >= m_nEnd)
     {
         switch (m_n10) {
@@ -346,7 +346,7 @@ void StateCashCall::OnLeave(double fTime)
         nWait = 3000;
         break;
     case 5:
-        nWait = FUN_14028d260(*((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->FUN_140298f40()));
+        nWait = (int)FUN_14028d260(*((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->FUN_140298f40()));
         if (FUN_1417b8560() != 0)
             FUN_1412751f0(GetStringCommon(0x98), 1, 1);
         break;

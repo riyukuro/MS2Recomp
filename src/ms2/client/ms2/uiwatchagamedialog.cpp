@@ -42,7 +42,7 @@ class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(
 class Unk_HsInfo : public CPtred { };
 
 // The trigger service: the camera steps.
-CTriggerService* FUN_140ad4b90();
+class Unk_McEntityRules* FUN_140ad4b90();   // C3: the definer's signature (0x140ad4b90, unit_140ad1860); the trigger service
 static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel the camera triggers show (0x142e91444)
 
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
@@ -152,7 +152,7 @@ void UIWatchAGameDialog::OnLoadComplete()
         CString strIcon("./Data/Resource/Image/skill/icon/Clap.png");
         FUN_140fc1560(3, strIcon, GetStringCommonByKey(strKey));
     }
-    FUN_140ad4b90()->FUN_1418637a0(s_nCameraModel, m_cameras);
+    ((CTriggerService*)FUN_140ad4b90())->FUN_1418637a0(s_nCameraModel, m_cameras);
     FUN_140fc0b60(m_bFlag);
 }
 
@@ -232,7 +232,7 @@ void UIWatchAGameDialog::FUN_140fc1710()
     if (nNext >= (int)m_cameras.size())
         m_nCamera = 0;
     int nObject = m_cameras[m_nCamera];
-    FUN_140ad4b90()->QueueCameraStep(nObject, 1);
+    ((CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 1);
 }
 
 // @0x140fc17d0
@@ -241,7 +241,7 @@ void UIWatchAGameDialog::FUN_140fc17d0()
     if (m_nCamera < 0 || m_nCamera >= (int)m_cameras.size())
         return;
     int nObject = m_cameras[m_nCamera];
-    FUN_140ad4b90()->QueueCameraStep(nObject, 0);
+    ((CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 0);
 }
 
 // @0x140fc1850

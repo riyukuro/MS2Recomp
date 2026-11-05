@@ -62,11 +62,9 @@ public:
     virtual ~UISceneGameBeautyShop();
 };
 
-// A button child of the page.
+// A button child of the page; "is enabled" is ASMovieClip::FUN_1422c2030.
 class Unk_140acd6e0 : public ASMovieClip
 {
-public:
-    int FUN_1422c2030();                                        // is enabled
 };
 
 // The hair apply effect request.
@@ -170,11 +168,6 @@ public:
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 class UICameraEditDialog { public: void SetEnableFlagIfHidden(int n); };   // C3: view of uicameraeditdialog.h
 UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
 class Unk_IESound;
@@ -229,8 +222,8 @@ void UIItemEditDialog::vfunc_67()
     ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
-    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() != 0)
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+    if (TSingleton<UITalkManager>::GetInstance()->GetTalking() != 0)
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
     m_198 = 0;
     m_1a8 = 0;
     m_1b0 = 0;

@@ -70,7 +70,7 @@ public:
     int vfunc_o10_0(int, int) override;
     int vfunc_o10_1(int) override;
     int vfunc_o10_2(int) override;
-    Unk_PayloadPtr<CQuest> vfunc_o10_3(int) override;
+    MS2Ptr<CQuest> vfunc_o10_3(int) override;
     unsigned short vfunc_o10_4() override;
     int vfunc_o10_5() override;
     int vfunc_o10_6() override;
@@ -112,11 +112,11 @@ public:
     void FUN_1416d3250();
     void OnNotifyPlayerChanged(NotifyObject*);
     int GetQuestState(int);
-    void AddQuest(Unk_PayloadPtr<CQuest>);
+    void AddQuest(MS2Ptr<CQuest>);
     void GetQuestIdsFiltered(ATL::CAtlArray<unsigned>&, int, int, int);
     void GetQuestIdsByStates(std::vector<unsigned>&, std::vector<Unk_QmQuestState>, int, int);
-    void GetQuestsFiltered(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int, int);
-    void GetQuestsFilteredVec(std::vector<Unk_PayloadPtr<CQuest>>&, int, int, int);
+    void GetQuestsFiltered(ATL::CAtlArray<MS2Ptr<CQuest>>&, int, int, int);
+    void GetQuestsFilteredVec(std::vector<MS2Ptr<CQuest>>&, int, int, int);
     void ShowQuestErrorMessage(int);
     void FUN_1416ce140(int, int);
     int IsItemUsedByQuest(MS2Ptr<CItem>);
@@ -136,7 +136,7 @@ public:
     void FUN_1416cf980(int, int);
     int IsQuestPinned(int);
     void FUN_1416cfc60(int);
-    void FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int);
+    void FUN_1416cfc70(ATL::CAtlArray<MS2Ptr<CQuest>>&, int, int);
     int CountCompletedDailyMissionQuests();
     int CountCompletedLevelGuideQuests();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
@@ -172,14 +172,14 @@ public:
     int FUN_1416d0800(int);
     int FUN_1416d0e60(int);
     bool SendQuestMode20(int, const class CMsgBoxData&);
-    void FUN_1416d1060(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&);
+    void FUN_1416d1060(ATL::CAtlArray<MS2Ptr<CQuest>>&);
     void FUN_1416d3220();
     int FUN_1416d3430();
     int FUN_1416d3510();
     int FUN_1416d3af0(const ATL::CAtlArray<unsigned>&);
-    void FUN_1416d3d50(Unk_PayloadPtr<CQuest>);
+    void FUN_1416d3d50(MS2Ptr<CQuest>);
 
-    using QuestMap = ATL::CRBMap<unsigned, Unk_PayloadPtr<CQuest>>;
+    using QuestMap = ATL::CRBMap<unsigned, MS2Ptr<CQuest>>;
     QuestMap m_quests20, m_quests50, m_quests80, m_questsb0;
     QuestMap m_questse0, m_quests110, m_quests140;
     int m_levelDirty;          // +170
@@ -198,10 +198,10 @@ public:
     ATL::CAtlMap<int, int> m_weeklyCounts; // +208
     std::map<unsigned, std::set<unsigned __int64>> m_targets250;   // key unsigned: the exe tree calls less<unsigned>
     // +260: only the ctor and dtor reach it. Its tree nodes are 0x38 bytes and the element dtor releases an
-    // Unk_PayloadPtr<CQuest> at +8 (0x1416dbfa0), so the element is pair<const int, Unk_PayloadPtr<CQuest>>; the
+    // MS2Ptr<CQuest> at +8 (0x1416dbfa0), so the element is pair<const int, MS2Ptr<CQuest>>; the
     // mangled-name order of its deallocate COMDATs (0x1416e2840 before the map<int, set> one at 0x1416e2870) fixes
     // the key as int.
-    std::map<int, Unk_PayloadPtr<CQuest>> m_quests260;
+    std::map<int, MS2Ptr<CQuest>> m_quests260;
 };
 MS2_CHECK_SIZE(CQuestManager, 0x270);
 MS2_CHECK_OFFSET(CQuestManager, m_quests20, 0x20);

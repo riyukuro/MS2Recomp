@@ -12,7 +12,6 @@ class CItem;
 class CInPacket;
 class ItemScrollSlot;
 class DragSlot;
-class Unk_PetRow;
 
 class UIItemPetTrainingDialog : public UIDialog
 {

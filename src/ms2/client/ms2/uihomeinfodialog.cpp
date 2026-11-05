@@ -23,6 +23,7 @@
 #include "pcbase.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ascorelist.h"   // C3: ASDropdownMenu::SetSelectedIndex, ASCoreList, ASScrollingList
+#include "ms2/placeholder/asbutton.h"   // C3: the panel buttons (MS2Ptr<ASButton>)
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
@@ -61,9 +62,6 @@ public:
 };
 class ASDialog : public Unk_HiScript {};
 
-// A button of the panel (ASDisplayObject slot 3 SetVisible, slot 4 SetVisible only on a change); its enable call is
-// ASMovieClip::FUN_1422c1fe0.
-class Unk_HiButton : public Unk_HiScript {};
 
 // The list control of the convenient panel.
 class Unk_HiList : public AScript
@@ -307,7 +305,7 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
+        if (MS2Ptr<ASButton> spBank = spPanel->FUN_140acce30<ASButton>("m_bank"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
             spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank)->Get() * 0.001f);
@@ -320,7 +318,7 @@ void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
+        if (MS2Ptr<ASButton> spDoctor = spPanel->FUN_140acce30<ASButton>("m_doctor"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
             spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor)->Get() * 0.001f);
@@ -341,9 +339,9 @@ void UIHomeInfoDialog::FUN_1412c5690()
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
+        if (MS2Ptr<ASButton> spBank = spPanel->FUN_140acce30<ASButton>("m_bank"))
         {
-            spBank->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
+            reinterpret_cast<Unk_HiScript*>(spBank.operator->())->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
             unsigned int nRemain = FUN_1412c81d0();
             if (nRemain > 0)
                 FUN_1412c5330(nRemain);
@@ -351,9 +349,9 @@ void UIHomeInfoDialog::FUN_1412c5690()
     }
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
+        if (MS2Ptr<ASButton> spDoctor = spPanel->FUN_140acce30<ASButton>("m_doctor"))
         {
-            spDoctor->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
+            reinterpret_cast<Unk_HiScript*>(spDoctor.operator->())->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
             unsigned int nRemain = FUN_1412c8280();
             if (nRemain > 0)
                 FUN_1412c54e0(nRemain);
@@ -380,8 +378,8 @@ void UIHomeInfoDialog::FUN_1412c5da0()
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (MS2Ptr<Unk_HiButton> spButton = spPanel->FUN_140acce30<Unk_HiButton>("m_recommend"))
-            reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
+        if (MS2Ptr<ASButton> spButton = spPanel->FUN_140acce30<ASButton>("m_recommend"))
+            spButton->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
     }
 }
 
@@ -428,10 +426,10 @@ void UIHomeInfoDialog::FUN_1412c6220()
         {
             bool bMerat = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d710(0x61);
             spConv->Invoke("setMeratIcon", bMerat);
-            if (MS2Ptr<Unk_HiButton> spBalance = spConv->FUN_140acce30<Unk_HiButton>("m_balance"))
+            if (MS2Ptr<ASButton> spBalance = spConv->FUN_140acce30<ASButton>("m_balance"))
             {
                 bool bOwner = FUN_1418fd280() ? true : false;
-                reinterpret_cast<ASMovieClip*>(spBalance.operator->())->FUN_1422c1fe0(bOwner);
+                spBalance->FUN_1422c1fe0(bOwner);
                 spBalance->vfunc_4(bOwner);
             }
             if (MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620("m_balanceMeso"))
@@ -578,9 +576,9 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             int bBook = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0x3e);
             if (MS2Ptr<Unk_HiPanelB> spPanel = FUN_140ede180("m_homeInfoPanel"))
             {
-                if (MS2Ptr<Unk_HiButton> spBook = spPanel->FUN_140acce30<Unk_HiButton>("m_visitorsBook"))
+                if (MS2Ptr<ASButton> spBook = spPanel->FUN_140acce30<ASButton>("m_visitorsBook"))
                 {
-                    reinterpret_cast<ASMovieClip*>(spBook.operator->())->FUN_1422c1fe0(bBook);
+                    spBook->FUN_1422c1fe0(bBook);
                     spBook->vfunc_3(bBook);
                 }
             }

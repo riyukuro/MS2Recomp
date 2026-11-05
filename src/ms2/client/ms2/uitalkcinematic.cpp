@@ -125,13 +125,8 @@ UISwfEntityManager* FUN_140b632f0();
 
 
 
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
 class Unk_TcSettings { public: char m_pad[0xe0f8]; };
@@ -215,13 +210,13 @@ void UITalkCinematic::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     FUN_141b1bfa0();
-    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() == 0)
+    if (TSingleton<UITalkManager>::GetInstance()->GetTalking() == 0)
     {
         ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(m_nKeyGroup);
     }
     else if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
     {
-        MS2Ptr<CCinematicContent> spContent = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetCurrentContent();
+        MS2Ptr<CCinematicContent> spContent = TSingleton<UITalkManager>::GetInstance()->GetCurrentContent();
         if (spContent.IsNull())
             return;
         ASObj page(2);
@@ -280,8 +275,8 @@ int UITalkCinematic::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp("OnLoadComplete", szMethod) == 0)
     {
         m_nLoaded = 1;
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b204d0();
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21a30();
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b204d0();
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b21a30();
         return 1;
     }
     else if (_stricmp("OnCloseComplete", szMethod) == 0)
@@ -350,13 +345,13 @@ int UITalkCinematic::FUN_141b1a8e0(const CStringW& strScript, const CString& str
             }
             else
             {
-                FUN_141b1bfe0(page, ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetCurrentContent().get());
+                FUN_141b1bfe0(page, TSingleton<UITalkManager>::GetInstance()->GetCurrentContent().get());
             }
             page.FUN_1407cbb20("script", Unk_ArcWide(strScript, 0));
             spEntity->Invoke("modifyScript", page);
             if (strSound.GetLength() != 0)
             {
-                Unk_TcNpc* pNpc = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalkNpc();
+                Unk_TcNpc* pNpc = TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
                 if (pNpc != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(strSound), pNpc->vfunc_18());
             }
@@ -448,7 +443,7 @@ int UITalkCinematic::FUN_141b1b440(CCinematicContent* pContent, int bLast)
         {
             m_spContent.AssignRaw(pContent);
             m_nTalkComplete = 0;
-            m_spComponent = FUN_141b1c960(((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b1d810());
+            m_spComponent = FUN_141b1c960(TSingleton<UITalkManager>::GetInstance()->FUN_141b1d810());
             if (m_spComponent.get() != 0)
             {
                 ASObj page(2);
@@ -459,7 +454,7 @@ int UITalkCinematic::FUN_141b1b440(CCinematicContent* pContent, int bLast)
                 spEntity->Invoke("setScript", page);
                 if (m_spContent->m_unk20.GetLength() != 0)
                 {
-                    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0)
+                    if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0)
                     {
                         MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                         if (pPC != 0)
@@ -467,7 +462,7 @@ int UITalkCinematic::FUN_141b1b440(CCinematicContent* pContent, int bLast)
                     }
                     else
                     {
-                        Unk_TcNpc* pNpc = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalkNpc();
+                        Unk_TcNpc* pNpc = TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
                         if (pNpc != 0)
                             TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(m_spContent->m_unk20), pNpc->vfunc_18());
                     }
@@ -591,7 +586,7 @@ int UITalkCinematic::GetLoaded() { return m_nLoaded; }
 void UITalkCinematic::FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pContent)
 {
     ASObj illust(2);
-    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0)
+    if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0)
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e89) == 0)
         {
@@ -629,9 +624,9 @@ void UITalkCinematic::FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pCont
         illust.FUN_1407cba60("rNpc", GetNpcIllustPath(pContent->m_otherNpcTalk));
         illust.FUN_1407cb9c0("rNpcSpeak", 1);
     }
-    else if (pContent->m_speakerNpc == 0 || pContent->m_speakerNpc == (int)((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0())
+    else if (pContent->m_speakerNpc == 0 || pContent->m_speakerNpc == (int)TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0())
     {
-        illust.FUN_1407cba60("lNpc", GetNpcIllustPath((unsigned)((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0()));
+        illust.FUN_1407cba60("lNpc", GetNpcIllustPath((unsigned)TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0()));
         illust.FUN_1407cb9c0("lNpcSpeak", 1);
     }
     rPage.FUN_1409eb270("illust", illust);
@@ -727,7 +722,7 @@ MS2Ptr<CCinematicComponent> UITalkCinematic::FUN_141b1c960(int nButtonSet)
     case 1: return MS2Ptr<CCinematicComponent>(new CEmptyCinematicComponent(this));
     case 2: return MS2Ptr<CCinematicComponent>(new CStopCinematicComponent(this));
     default:
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
         return MS2Ptr<CCinematicComponent>(0);
     }
 }
@@ -1092,7 +1087,7 @@ void UITalkManager::FUN_141b1e8a0(CInPacket& in)
         UIMsg kMsg;
         kMsg.AddString("moveMyPC");
         kMsg.AddInt(nValue);
-        kMsg.FUN_1422b8030(((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetNpcId());
+        kMsg.FUN_1422b8030(TSingleton<UITalkManager>::GetInstance()->GetNpcId());
         pEntity->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
     }
 }
@@ -1365,7 +1360,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
     MS2Ptr<UITalkCinematic> spUi(FUN_140a7b2b0(0x4e40));
     if (spUi == 0)
         return;
-    unsigned nNpc = (unsigned)((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
+    unsigned nNpc = (unsigned)TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
     spUi->FUN_141b1bfa0();
     if (nDialogId == 0x4e24 && !FUN_141b1fa60())
     {
@@ -1600,7 +1595,7 @@ void UITalkManager::FUN_141b20790(int nNpcId, int nFriendly)
     if ((spScript.get() ? true : false) && spScript->m_contents.FUN_14078fae0() > 0)
     {
         pNpc->ShowChatBalloon(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
-        if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
+        if (TSingleton<UITalkManager>::GetInstance()->GetTalking() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spScript->m_contents.FUN_14078f350(0)->m_unk20), pNpc->vfunc_18());
     }
 }

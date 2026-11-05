@@ -83,7 +83,7 @@ class Unk_PtItemEvents
 {
 public:
 };
-Unk_PtItemEvents* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // the item event hub (0x140a6a840, the definer's signature)
 
 // ---- out-of-unit callees ----
 
@@ -191,7 +191,7 @@ void PortraitPC::vfunc_33(int nClass, int n)
 // @0x14169a040
 void PortraitPC::vfunc_14()
 {
-    ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
 }
 
@@ -215,7 +215,7 @@ int PortraitPC::vfunc_10()
         if (m_pSourcePC->FUN_14123c580() == pMyPC->FUN_14123c580())
         {
             reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
-            ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+            reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
         }
     }
     return 1;

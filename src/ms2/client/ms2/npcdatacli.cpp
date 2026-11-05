@@ -42,6 +42,11 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
+class TiXmlNode   // C3: TiXmlNode::NextSiblingElement (0x14086e770) view
+{
+public:
+    const class TiXmlElement* NextSiblingElement() const;
+};
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -189,7 +194,7 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
         Unk_140165cf0* pDummies = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effectdummy"));
         if (pDummies != 0)
         {
-            for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummies))->FirstChild("dummy")); pNode != 0; pNode = pNode->NextSiblingElement())
+            for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummies))->FirstChild("dummy")); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pNode)->NextSiblingElement())))
             {
                 bool bFound = false;
                 CStringA strName;

@@ -130,24 +130,13 @@ class Unk_NtPet : public CPet
 {
 public:
 };
-struct Unk_NtMountSeat;                             // the seat's hud entity (UIHudEntity::Entity)
-class Unk_NtMountSeatPtr
-{
-public:
-    ~Unk_NtMountSeatPtr() { FUN_141666960(); }
-    void* FUN_1416676b0() const;                        // get
-    Unk_NtMountSeat* FUN_141667740() const;             // operator->
-    void FUN_141666960();                               // release
-    void* m_pad_00;
-    Unk_NtMountSeat* m_p;
-};
+extern template class MS2Ptr<Unk_PCLinkFD8>;              // the mount seat record (pc.cpp)
 class Unk_NtSeatSub { public: };
 // PC with its virtuals after slot 132 (PC itself declares 124..132).
 class Unk_NtPC : public PC
 {
 public:
     // slots 133-146 are declared by PC (placeholder/fittingdollpc.h)
-    Unk_NtMountSeatPtr FUN_141657730();
 };
 CStringW FUN_141b720b0(int nTitle, __int64 nPc);
 class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view
@@ -158,7 +147,7 @@ public:
     CStringW FUN_1406c6360(unsigned short nId, PC* pPc, int n);
 };
 class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
-CStringW FUN_140b8f730(const NiPoint3& pt);
+CStringW FUN_140b8f730(const Vector3& kPos);   // "x,y,z" (unit_140b8e760_clientdatetimehelpers.cpp)
 CStringW FUN_14016a730(const char* sz, int n);
 CStringW GetStringCommon(int nStringId);
 
@@ -371,8 +360,8 @@ float UINameTag::Entity::vfunc_9()
     Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor));
     if (pPc != 0)
     {
-        bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
-            && reinterpret_cast<UIHudEntity::Entity*>(pPc->FUN_141657730().FUN_141667740())->FUN_140f48d40() != 0;
+        bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 && (pPc->FUN_141657730().get() ? true : false)
+            && reinterpret_cast<UIHudEntity::Entity*>(pPc->FUN_141657730().operator->())->FUN_140f48d40() != 0;
         if (bSeated)
             return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)FUN_1401d3200())->m_848)->Read();
     }
@@ -419,8 +408,8 @@ void UINameTag::Entity::FUN_141a5f080()
             strInfo = StringFormat(L"{0} state:[{1}] pos:[{2}] rot:[{3}] {4}",
                                    pPc->vfunc_77(),
                                    FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pPc))->GetCurStateId(), s_gosNames), 0),
-                                   FUN_140b8f730(pPc->vfunc_18()),
-                                   FUN_140b8f730(pPc->vfunc_20()),
+                                   FUN_140b8f730(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_18()))),
+                                   FUN_140b8f730(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_20()))),
                                    pPc->vfunc_134());
         }
         else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))

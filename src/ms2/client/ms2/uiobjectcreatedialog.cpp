@@ -47,15 +47,12 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
-// The text input control of the movie.
-class Unk_ObjectCreateInput : public AScript
-{
-public:
-};
+// The "m_search" text input of the movie.
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // The exe inlines MS2Ptr<T>'s dtor / conversion / arrow for these two unit-local controls; the generic bodies of
 // ms2ptr_impl.h cannot be included here (they would instantiate every other MS2Ptr<T> of mypc.h), so write these three
-// (inline for ASScrollingList: other units instantiate the same COMDATs).
+// (inline: other units instantiate the same COMDATs).
 template <> inline MS2Ptr<ASScrollingList>::~MS2Ptr()
 {
     if (m_p)
@@ -70,7 +67,7 @@ template <> inline MS2Ptr<ASScrollingList>::~MS2Ptr()
 }
 template <> inline MS2Ptr<ASScrollingList>::operator ASScrollingList*() const { return m_p; }
 template <> inline ASScrollingList* MS2Ptr<ASScrollingList>::operator->() const { return m_p; }
-template <> MS2Ptr<Unk_ObjectCreateInput>::~MS2Ptr()
+template <> inline MS2Ptr<ASTextInput>::~MS2Ptr()
 {
     if (m_p)
     {
@@ -82,8 +79,8 @@ template <> MS2Ptr<Unk_ObjectCreateInput>::~MS2Ptr()
         m_p = 0;
     }
 }
-template <> MS2Ptr<Unk_ObjectCreateInput>::operator Unk_ObjectCreateInput*() const { return m_p; }
-template <> Unk_ObjectCreateInput* MS2Ptr<Unk_ObjectCreateInput>::operator->() const { return m_p; }
+template <> inline MS2Ptr<ASTextInput>::operator ASTextInput*() const { return m_p; }
+template <> inline ASTextInput* MS2Ptr<ASTextInput>::operator->() const { return m_p; }
 
 // The key input state (singleton).
 class Unk_14025e7c0 : public CInputKeyHandler {};
@@ -218,8 +215,8 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UIObjectCreateDialog::FUN_14131ff70()
 {
     CStringW strSearch;
-    if (MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0("m_search"))
-        strSearch = reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
+    if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_search"))
+        strSearch = input.operator->()->GetText();
     if (MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_objects"))
     {
         list->FUN_1422dd1d0();

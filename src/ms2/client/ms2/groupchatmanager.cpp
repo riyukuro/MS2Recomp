@@ -161,8 +161,6 @@ Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
-void* FUN_140534fc0(const Unk_MessageBoxPtr&);
-void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 Unk_MessageBoxPtr FUN_14151f820();
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 
@@ -509,20 +507,20 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
         return;
     if (chat->HasMemberByName(name)) {
         Unk_MessageBoxPtr box = FUN_140d73d20(0, GetStringCommon(0x816), 0, CStringW(L""));
-        if (FUN_140534fc0(box) != 0)
+        if (box.operator CMsgBoxData*() != 0)
             FUN_140d73c60(box);
         return;
     }
     if (chat->FUN_14137bad0() >= 0x14) {
         CStringW text = GetStringCommon(0x814);
         Unk_MessageBoxPtr active = FUN_14151f820();
-        if ((FUN_140534fc0(active) ? true : false)
-            && static_cast<CMsgBoxData*>(FUN_140534fe0(active))->GetExtra() == text)
+        if ((active.operator CMsgBoxData*() ? true : false)
+            && static_cast<CMsgBoxData*>(active.operator->())->GetExtra() == text)
         {
             return;
         }
         Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
-        if (FUN_140534fc0(box) != 0)
+        if (box.operator CMsgBoxData*() != 0)
             FUN_140d73c60(box);
     }
     int len = name.GetLength();

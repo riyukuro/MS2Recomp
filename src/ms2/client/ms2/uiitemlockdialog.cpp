@@ -13,6 +13,7 @@
 
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/imessagelistener.h"
@@ -40,12 +41,8 @@ public:
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 
-// A button of the movie ("m_lock" / "m_unLock").
-class Unk_LdButton : public ASDisplayObject
-{
-public:
-    Unk_LdButton(const Scaleform::GFx::Value& v, int nMovieId);
-};
+// The "m_lock" / "m_unLock" buttons.
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 // The item lock manager (global 0x143aaf308, CItemLockManager of unit_1406125d0).
 class Unk_LdLockMgr
@@ -134,10 +131,10 @@ void UIItemLockDialog::FUN_140f56c80()
 // @0x140f56e00
 void UIItemLockDialog::FUN_140f56e00()
 {
-    if (MS2Ptr<Unk_LdButton> spLock = GetChild<Unk_LdButton>("m_lock"))
-        reinterpret_cast<ASMovieClip*>(spLock.operator->())->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
-    if (MS2Ptr<Unk_LdButton> spUnLock = GetChild<Unk_LdButton>("m_unLock"))
-        reinterpret_cast<ASMovieClip*>(spUnLock.operator->())->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+    if (MS2Ptr<ASButton> spLock = GetChild<ASButton>("m_lock"))
+        spLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+    if (MS2Ptr<ASButton> spUnLock = GetChild<ASButton>("m_unLock"))
+        spUnLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
 }
 
 // @0x140f56f50

@@ -50,9 +50,6 @@ public:
 };
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(long);                               // number -> text
-class Unk_AsBuffInfo : public AdditionalLevelData
-{
-};
 MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, int a2);   // new flash class object as a clip
 
 // ---- Delegate<void(const Params&)>: the out-of-line pieces (first used here) ----
@@ -72,13 +69,13 @@ template<> Unk_AsDelegate::~Delegate()
 template<> Unk_AsDelegate::DelegateImplBase::~DelegateImplBase() {}
 
 // @0x1409b2d70
-ASEffect::ASEffect(MS2Ptr<Unk_AsBuff> spBuff)
+ASEffect::ASEffect(MS2Ptr<AdditionalCli> spBuff)
     : ASMovieClip(DAT_143b0ae18, 2), m_buff(spBuff), m_94(), m_a0(), m_b0(), m_c0(), m_d0()
 {
     m_e0 = 0;
     m_e4 = 0;
     m_e9 = true;
-    m_e8 = reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->IsActive();
+    m_e8 = m_buff->IsActive();
 }
 
 // @0x1409b2ec0
@@ -131,16 +128,16 @@ void ASEffect::Update()
             m_a0->vfunc_14(nFrame);
         return;
     }
-    if (m_buff->m_1c == m_buff->m_20 || reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsHideBuffIcon())
+    if (m_buff->m_nStartTick == m_buff->m_nEndTick || m_buff->FUN_14096d810()->IsHideBuffIcon())
     {
         if (m_a0->FUN_1422c2300() != 0x1e)
             m_a0->vfunc_14(0x1e);
         return;
     }
-    float fRemain = FUN_14028d280(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
+    float fRemain = FUN_14028d280(m_buff->GetRemainTicks());
     if (fRemain > 0.0f)
     {
-        float fTotal = FUN_14028d280(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d330());
+        float fTotal = FUN_14028d280(m_buff->FUN_14096d330());
         int nFrame = (int)(30.0f + (120.0f * (fTotal - fRemain)) / fTotal);
         if (m_a0->FUN_1422c2300() != nFrame)
             m_a0->vfunc_14(nFrame);
@@ -170,11 +167,11 @@ void ASEffect::SetE4(int n)
 MS2_REPLACE_METHOD(0x1409B3720, ASEffect, SetE4, 25, 0x2DE8A103);
 
 // @0x1409b3740
-void ASEffect::SetBuff(MS2Ptr<Unk_AsBuff> spBuff)
+void ASEffect::SetBuff(MS2Ptr<AdditionalCli> spBuff)
 {
     m_buff = spBuff;
     m_e9 = true;
-    m_e8 = reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->IsActive();
+    m_e8 = m_buff->IsActive();
 }
 
 // @0x1409b37c0
@@ -187,7 +184,7 @@ MS2_REPLACE_METHOD(0x1409B37C0, ASEffect, SetStartTime, 25, 0xDF53FE3F);
 // @0x1409b37e0
 bool ASEffect::IsBuffType()
 {
-    return reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsBuff();
+    return m_buff->FUN_14096d810()->IsBuff();
 }
 MS2_REPLACE_METHOD(0x1409B37E0, ASEffect, IsBuffType, 49, 0xE1E26C20);
 
@@ -203,11 +200,11 @@ bool ASEffect::IsOwnerAlive()
 {
     if (m_buff == 0)
         return false;
-    if (reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetOwner() == 0)
+    if (m_buff->GetOwner() == 0)
         return false;
-    if (FUN_140930110(((class GameObject*)(void*)(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetOwner()))->FUN_14123c580()) == 1)
+    if (FUN_140930110(((class GameObject*)(void*)(m_buff->GetOwner()))->FUN_14123c580()) == 1)
         return false;
-    if (FUN_140930110(m_buff->m_18) == 0)
+    if (FUN_140930110(m_buff->m_nCasterId) == 0)
         return false;
     return true;
 }
@@ -216,7 +213,7 @@ MS2_REPLACE_METHOD(0x1409B3840, ASEffect, IsOwnerAlive, 179, 0xC4BB8535);
 // @0x1409b3900
 void ASEffect::FUN_1409b3900()
 {
-    reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetKey();
+    m_buff->GetKey();
 }
 MS2_REPLACE_METHOD(0x1409B3900, ASEffect, FUN_1409b3900, 41, 0x66FBE713);
 
@@ -231,7 +228,7 @@ MS2_REPLACE_METHOD(0x1409B3930, ASEffect, GetE4, 17, 0x798679FF);
 void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()), m_e0, reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, m_buff->GetRemainTicks());
     *params.pRetVal = tip.FUN_1422bb870();
 }
 
@@ -242,19 +239,19 @@ void ASEffect::UpdateIcon()
         return;
     if (!m_e9)
         return;
-    if (reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsBuff())
+    if (m_buff->FUN_14096d810()->IsBuff())
         m_b0->vfunc_15("none");
     else if (IsOwnerAlive())
         m_b0->vfunc_15("yellow");
     else
         m_b0->vfunc_15("red");
 
-    if (m_buff->m_24 > 1)
-        m_d0->SetTextW(FUN_1407196b0(m_buff->m_24));
-    else if (m_buff->m_24 <= 1)
+    if (m_buff->m_nOverlapCount > 1)
+        m_d0->SetTextW(FUN_1407196b0(m_buff->m_nOverlapCount));
+    else if (m_buff->m_nOverlapCount <= 1)
         m_d0->SetTextW(L"");
     m_c0->SetTextW(L"");
-    Invoke("setIcon", reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->GetIcon());
+    Invoke("setIcon", m_buff->FUN_14096d810()->GetIcon());
     m_e9 = false;
 }
 
@@ -418,20 +415,20 @@ void ASEffectManager::SetFilter(bool b)
 MS2_REPLACE_METHOD(0x1409B58F0, ASEffectManager, SetFilter, 61, 0xDE8229EC);
 
 // @0x1409b5940
-void ASEffectManager::AddEffect(MS2Ptr<Unk_AsBuff> spBuff)
+void ASEffectManager::AddEffect(MS2Ptr<AdditionalCli> spBuff)
 {
     MS2Ptr<ASEffect> spEffect(new ASEffect(spBuff));
     spEffect->SetE0(m_a0);
     spEffect->SetStartTime(GetTickCountMs2());
-    spEffect->SetE4(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->FUN_14096d350());
-    m_b8.SetAt(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->GetKey(), spEffect);
+    spEffect->SetE4(spBuff->FUN_14096d350());
+    m_b8.SetAt(spBuff->GetKey(), spEffect);
 }
 
 // @0x1409b5aa0
-void ASEffectManager::UpdateEffect(MS2Ptr<Unk_AsBuff> spBuff)
+void ASEffectManager::UpdateEffect(MS2Ptr<AdditionalCli> spBuff)
 {
     MS2Ptr<ASEffect> spEffect;
-    if (m_b8.Lookup(reinterpret_cast<MS2Ptr<AdditionalCli>&>(spBuff)->GetKey(), spEffect))
+    if (m_b8.Lookup(spBuff->GetKey(), spEffect))
         spEffect->SetBuff(spBuff);
     m_a8 = true;
 }

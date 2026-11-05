@@ -71,7 +71,6 @@ struct Unk_LsEquipRequest
     int m_n10;                                          // +0x10
     Unk_LsEquipRequest();                               // 0x140a6ffe0
 };
-void FUN_1405b5cc0(Unk_LsEquipRequest* pRequest, COutPacket& packet);   // write the request
 
 int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
 void FUN_141404930(__int64 nItemUid);
@@ -94,6 +93,7 @@ static CString s_strItemCount = "itemCount";
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/commonfiles/itemlapensharddata.h"   // C3: Unk_LapenEquip::Write
 
 // @0x140a6e830
 LapenshardSlot::LapenshardSlot(const CString& strName, int nIndex, MS2Ptr<CItem> spItem, int nSlot, int nKind)
@@ -309,7 +309,7 @@ void LapenshardSlot::SendLapenshard(int nSlot, __int64 nItemUid)
     Unk_LsEquipRequest request;
     request.m_nSlot = nSlot;
     request.m_nItemUid = nItemUid;
-    FUN_1405b5cc0(&request, packet);
+    reinterpret_cast<Unk_LapenEquip*>(&request)->Write(&packet);   // C3: 0x1405b5cc0
     FUN_140710590(packet);
 }
 

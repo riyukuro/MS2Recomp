@@ -59,7 +59,7 @@ class Unk_ShutdownEventValue;
 class CGameEventValueManager;
 
 // The comma splitter (commonstringtable.cpp) and the token reader.
-void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);
+void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);
 int Parse_140218e60(const CStringW& str);
 
@@ -95,7 +95,7 @@ GameEventShutdown::GameEventShutdown(int nId) : m_nId(nId)
 }
 
 // @0x14041d540
-void GameEventShutdown::vfunc_2() { FUN_140274fc0(m_68, m_items, L","); }
+void GameEventShutdown::vfunc_2() { FUN_140274fc0(m_68, &m_items, L","); }
 
 // @0x14041d580
 void GameEventShutdown::OnStart()

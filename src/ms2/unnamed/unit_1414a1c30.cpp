@@ -289,7 +289,6 @@ class Unk_PcFieldTable;
 class Unk_PetRowTable;
 class Unk_PriceTable;
 class Unk_QgNavi;
-class Unk_QuestTable;
 class Unk_RankTable;
 class Unk_SoundSink;
 class WeddingManager;
@@ -329,18 +328,13 @@ class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void* FUN_140764020();   // C3: was FUN_140764020
 void* FUN_140764030();   // C3: was FUN_140764030
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
-class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
+CMasteryInteriorTable* FUN_140933200();
 class Unk_ItemSlotTable* FUN_140933210();   // C3: was FUN_140933210
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
 Unk_SingletonObj* FUN_140939a00();
 Unk_SingletonObj* FUN_140939a10();
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -378,7 +372,7 @@ public:
 };
 void* FUN_141371b30();   // C3: was FUN_141371b30
 // ---- in-unit getters (defined below)
-Unk_SingletonObj* FUN_1414a56c0();
+GFxService* FUN_1414a56c0();
 Unk_SingletonObj* FUN_1414a56d0();
 Unk_SingletonObj* FUN_1414a56e0();
 Unk_SingletonObj* FUN_1414a56f0();
@@ -1712,7 +1706,7 @@ MS2_REPLACE(0x1414A5070, FUN_1414a5070, 94, 0x1C7FB274);
 void FUN_1414a50d0()
 {
     if (TSingleton<UITalkManager>::s_instance != 0) {
-        delete ((class Unk_SingletonObj*)Unk_AkoCutscene::GetInstance());
+        delete ((class Unk_SingletonObj*)TSingleton<UITalkManager>::GetInstance());
         TSingleton<UITalkManager>::s_instance = 0;
     }
 }
@@ -1848,7 +1842,7 @@ MS2_REPLACE(0x1414A5690, FUN_1414a5690, 17, 0x05FDCC0A);
 int FUN_1414a56b0(char* pThis) { return *(int*)(pThis + 8); }
 MS2_REPLACE(0x1414A56B0, FUN_1414a56b0, 14, 0x92BE4827);
 // @0x1414a56c0
-Unk_SingletonObj* FUN_1414a56c0() { return reinterpret_cast<Unk_SingletonObj*>(SingletonClass<GFxService>::ms_pSingleton); }   // 0x143ae0748
+GFxService* FUN_1414a56c0() { return SingletonClass<GFxService>::ms_pSingleton; }   // 0x143ae0748
 MS2_REPLACE(0x1414A56C0, FUN_1414a56c0, 8, 0x088FC0A0);
 // @0x1414a56d0
 Unk_SingletonObj* FUN_1414a56d0() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CDynamicBanWordManager>::s_instance); }

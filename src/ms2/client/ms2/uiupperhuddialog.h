@@ -20,7 +20,7 @@ class ASTextField;
 class ASData;
 class NotifyObject;
 class Unk_HudButton;
-class Unk_HudInput;
+class ASTextInput;
 class ASTextField;
 class CMsTime;
 class UIPcBangDialog;
@@ -87,8 +87,7 @@ public:
     void SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount);
     void SetPcBangState(int nState);
 
-    MS2Ptr<Unk_HudButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_HudButton>& out);
-    MS2Ptr<Unk_HudInput> FUN_14129a040(const CString& strName, MS2Ptr<Unk_HudInput>& out);
+    MS2Ptr<ASTextInput> FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out);
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -107,7 +106,7 @@ private:
     MS2Ptr<Unk_HudButton> m_gamePadOn;          // +0x118 "m_gamePadOn"
     MS2Ptr<Unk_HudButton> m_gamePadOff;         // +0x128 "m_gamePadOff"
     MS2Ptr<Unk_HudButton> m_search;             // +0x138 "m_searchButton"
-    MS2Ptr<Unk_HudInput> m_searchInput;         // +0x148 "m_searchInput"
+    MS2Ptr<ASTextInput> m_searchInput;         // +0x148 "m_searchInput"
     MS2Ptr<ASMovieClip> m_searchDungeon;        // +0x158 "m_searchDungeon"
     MS2Ptr<ASMovieClip> m_eventText;            // +0x168 "m_eventText" (notice ticker clip)
     MS2Ptr<ASTextField> m_noticeText;           // +0x178 its "textField"

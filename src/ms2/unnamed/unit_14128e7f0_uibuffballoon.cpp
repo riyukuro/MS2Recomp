@@ -47,11 +47,6 @@ class Unk_BuffMgr;
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 class Unk_BuffUIMgr { };   // C3: FUN_141adcea0 is CUIService's
-class Unk_BuffInfoAS : public AScript
-{
-public:
-    Unk_BuffInfoAS(int nMovieId);
-};
 UIBuffBalloon* FUN_14128f650(int nUiId);
 
 // @0x14128e7f0
@@ -98,8 +93,8 @@ void UIBuffBalloon::Entity::vfunc_5()
         return;
     if (m_38.get() != 0)
     {
-        Unk_BuffInfoAS info(m_18);
-        reinterpret_cast<AScript*>(&info)->FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_14128edf0(), 0));
+        AScript info(m_18);
+        info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_14128edf0(), 0));
         m_38->Invoke("open", info);
     }
 }

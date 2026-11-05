@@ -37,8 +37,8 @@ class CMeshUVPicker : public efd::MemObject
 {
 public:
     CMeshUVPicker();                                                    // 0x14147e6e0
-    bool FUN_14147ea50(void* pMesh, void* pCam, float fX, float fY, Vector3* pHit, Vector3* pNormal,
-                       efd::Point2* pUV, unsigned* pTri, void* pSkins);   // pick
+    bool PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, struct Unk_FcPoint3* pPos0, struct Unk_FcPoint3* pPos1,
+                       class NiPoint2* pUV, float* pIndex, CAtlArray<NiRenderObject*>* pExtras);   // 0x14147ea50 (meshuvpicker.h)
     char m_pad[0x98];
 };
 MS2_CHECK_SIZE(CMeshUVPicker, 0x98);
@@ -239,8 +239,8 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                             if (((struct Unk_DbgApp*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.x + 1) == 0)
                                 return;
                             unsigned nTri;
-                            if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, pView->GetCamera(),
-                                                                          kCursor.x, kCursor.y, &kHit, &kNormal, &kUV, &nTri, 0))
+                            if (m_spPicker.FUN_141286290()->PickUVAndPosition((NiRenderObject*)pMesh, pView->GetCamera(), kCursor.x, kCursor.y, (struct Unk_FcPoint3*)&kHit,
+                                                                              (struct Unk_FcPoint3*)&kNormal, (class NiPoint2*)&kUV, (float*)&nTri, 0))
                             {
                                 m_bPicking = 0;
                                 if (m_nTargetId != 0 || m_nMarkerId != 0)

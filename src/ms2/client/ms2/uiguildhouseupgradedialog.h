@@ -16,7 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 class CMsgBoxData;
-class Unk_MentorTab;
+class ASButtonBar;
 class ASTileList;
 class Unk_140acd6e0;
 
@@ -46,7 +46,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_MentorTab> m_tab;                                    // +0x178 "m_tab" house level strip
+    MS2Ptr<ASButtonBar> m_tab;                                      // +0x178 "m_tab" house level strip
     MS2Ptr<ASTileList> m_themeList;                              // +0x188 "m_themeList"
     MS2Ptr<Unk_140acd6e0> m_upgradeButton;                          // +0x198 "m_upgradeButton"
     std::map<int, std::vector<int> > m_themes;                      // +0x1a8 level -> theme ids

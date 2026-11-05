@@ -144,7 +144,7 @@
 #include "beameffect.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
-#include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
+#include "ms2/client/ms2/cameramode.h"              // CCameraMode, Unk_CameraSetting
 #include "ms2/client/ms2/camera.h"                  // CameraMgr
 #include "ms2/client/ms2/nifeffectparam.h"          // CNifLoadingService
 #include <efd/MemoryDefines.h>
@@ -176,7 +176,7 @@
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);   // the two end points coincide
-void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
+void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pkOut1, efd::Point3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
 class Unk_ResourceMgr;   // the loading service as FUN_140a0afd0 returns it
@@ -522,7 +522,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Unk_NiMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
-        Vector3 kMid(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint)))));
+        Vector3 kMid(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Point3&>(pInfo->m_kPassThroughPoint)))))));
         efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
@@ -551,7 +551,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         const NiTransform& kWorld = static_cast<const NiAVObject*>(m_spTarget.operator->())->GetWorldTransform();
         FUN_140a0b1f0(kWorld.m_Rotate, reinterpret_cast<efd::Point3&>(kEuler));
         Vector3 kAxisA, kAxisB;
-        FUN_140a01250(kEuler, &kAxisA, &kAxisB);
+        FUN_140a01250(reinterpret_cast<const efd::Point3&>(kEuler), reinterpret_cast<efd::Point3*>(&kAxisA), reinterpret_cast<efd::Point3*>(&kAxisB));
         kAxisA.FUN_140968990();
         Vector3 kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));
         kBend.FUN_140968990();

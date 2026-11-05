@@ -63,7 +63,7 @@ public:
     __int64 m_selectedUid;                              // +0xd8
     __int64 m_highlightUid;                             // +0xe0
     MS2Ptr<Unk_SocketPageBag> m_sourceControl, m_ingredientControl;   // +0xe8, +0xf8
-    MS2Ptr<Unk_SocketPageButton> m_actionButton, m_debugButton, m_debugFillButton;   // +0x108, +0x118, +0x128
+    MS2Ptr<ASButton>             m_actionButton, m_debugButton, m_debugFillButton;   // +0x108, +0x118, +0x128
 };
 MS2_CHECK_SIZE(ItemSocketSystemPageSocketUnlock, 0x138);
 MS2_CHECK_OFFSET(ItemSocketSystemPageSocketUnlock, m_state, 0x38);

@@ -238,17 +238,9 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 int FUN_140930190();
-class Unk_UcGridRef                                                 // CComPtrBase<> over the cube service
-{
-public:
-    Unk_UcGridRef(Unk_UcCubeSvc* p) : m_p(p) {}
-    ~Unk_UcGridRef();                                               // 0x1401cd150
-    void* FUN_140885310();                                          // the service, tested for null
-    Unk_UcCubeSvc* m_p;
-};
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-void FUN_1401cd150(Unk_UcGridRef* p);
-Unk_UcGridRef::~Unk_UcGridRef() { FUN_1401cd150(this); }
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 
 // The map data kept behind the world's counted pointer (field +0x5c: the max player count?).
 class Unk_UcMapData : public CPtred
@@ -399,8 +391,8 @@ int FUN_1418fd330(__int64 nOwner)
         return 0;
     }
     int nValue = 0;
-    Unk_UcGridRef grid(((class Unk_UcCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext))));
-    if ((grid.FUN_140885310() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410c35c0())
+    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    if ((grid.operator Unk_Service6100017*() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410c35c0())
     {
         nValue = 1;
     }
@@ -699,7 +691,7 @@ bool FUN_1418fe120()
         return false;
     if (pPC->FUN_14152e950() == 0)
         return false;
-    Unk_BmPtr<UserUGCMapInfo> stat(((class UserUGCMapInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50()));   // the house info
+    Unk_BmPtr<UserUGCMapInfo> stat(((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50());   // the house info
     if (stat == 0)
         return false;
     return true;
@@ -1490,7 +1482,7 @@ MS2_CHECK_OFFSET(Unk_UcRegionRec, m_strEmblem, 0x18);
 class UIRegionListDialog* FUN_1418f6130(int);   // C3: was FUN_1418f6130
 
 // ---- the game and combat controllers touched by the key blocks ----
-CKeyTable* FUN_1409331f0();
+// FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 int FUN_1410af7a0(class PC*);   // C3: was FUN_1410af7a0
 
 // @0x141900750

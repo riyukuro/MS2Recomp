@@ -233,7 +233,7 @@ class ASArray;
 class CMsgBoxData;
 class CInPacket;
 template <class T> class Unk_PayloadPtr;
-struct HomeBlockInfo;
+class HomeBlockInfo;                                               // commonfiles/commonstruct_wa.h
 class Unk_PmUserEntry;
 
 enum Unk_PmMenuId : unsigned int {};                                // a popup menu entry id

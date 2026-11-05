@@ -22,8 +22,8 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCQuestData@@@@AEBAXPEAX@Z 0x14075f120
 // MS2-PIN: ?Create@?$Unk_SocketRef@VNavigationData@CQuestData@@@@SAPEAVNavigationData@CQuestData@@PEAX@Z 0x14075f180
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?IsNull@?$Unk_PayloadPtr@VUnk_EventEntry@@@@QEBA_NXZ 0x1407475e0 ; unique
-// MS2-PIN: ?get@?$Unk_PayloadPtr@VCQuest@@@@QEBAPEAVCQuest@@XZ 0x140747690 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VTermTagContext@@@@QEBA_NXZ 0x1407475e0 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCQuest@@@@QEBAPEAVCQuest@@XZ 0x140747690 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCQuestData@@@@QEBAPEAVCQuestData@@XZ 0x1407476a0 ; unique
 // MS2-PIN: memmove_s 0x1407477f0 ; unique
 // MS2-PIN: ??$?0AEAHAEAI$0A@@?$pair@HI@std@@QEAA@AEAHAEAI@Z 0x140751870 ; unique
@@ -179,8 +179,7 @@ private:
 
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
-class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); };
-class CGameRule { public: bool HasTermTag(const CStringW& name); };   // C3: member view (gamerule.h)
+class CGameRule { public: bool HasTermTag(const CStringW& name); MS2Ptr<TermTagContext> GetTermTag(const CStringW& name); };   // C3: member view (gamerule.h)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // One <questCondition> pair of the quest manager query (0x1407470f0): the quests whose state is checked.
@@ -196,7 +195,7 @@ public:
     unsigned m_result;
     Unk_Arr16 m_list;
 };
-int FUN_140764480(Unk_PayloadPtr<CQuest> pQuest, int nState);
+int FUN_140764480(MS2Ptr<CQuest> pQuest, int nState);
 
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -274,16 +273,16 @@ __int64 CQuestCommon::FUN_1407448a0()
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        Unk_PayloadPtr<Unk_EventEntry> event = ((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_140479410(&data->m_schedule);
+        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetTermTag(data->m_schedule);
         if (event == 0)
             return 0;
         __int64 tStart = GetStartTime();
         if (tStart != 0)
         {
-            if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866880((__int64 const*)(&tStart)))
+            if (!event.operator->()->FUN_140866880((__int64 const*)(&tStart)))
                 return 0;
         }
-        tEvent = reinterpret_cast<TermTagContext*>(event.operator->())->FUN_140866720().Get();
+        tEvent = event.operator->()->FUN_140866720().Get();
     }
     if (tPeriod != 0 && tEvent != 0)
         return std::min<__int64>(tPeriod, tEvent);
@@ -348,7 +347,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     }
     __int64 tStart = 0;
     int nState = 4;
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.get() != 0)
     {
         tStart = quest->GetStartTime();
@@ -356,19 +355,19 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        Unk_PayloadPtr<Unk_EventEntry> event = ((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_140479410(&data->m_schedule);
+        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetTermTag(data->m_schedule);
         if (event.IsNull())
             return 0;
-        if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866820(now))
+        if (!event.operator->()->FUN_140866820(now))
             return 0;
-        if (((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866760())
+        if (event.operator->()->FUN_140866760())
         {
-            if (vfunc_o10_8() < reinterpret_cast<TermTagContext*>(event.operator->())->FUN_1408666e0().Get())
+            if (vfunc_o10_8() < event.operator->()->FUN_1408666e0().Get())
                 return 0;
         }
         if (tStart != 0)
         {
-            if (!((class TermTagContext*)(class Unk_EventEntry*)(event.operator->()))->FUN_140866880((__int64 const*)(&tStart)))
+            if (!event.operator->()->FUN_140866880((__int64 const*)(&tStart)))
                 return 1;
         }
     }
@@ -419,7 +418,7 @@ MS2_REPLACE_METHOD(0x140744D40, CQuestManagerCommon, vfunc_o10_21, 2115, 0x2D2D1
 // @0x140745590
 int CQuestManagerCommon::FUN_140745590(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 0;
     return quest->IsRewarded();
@@ -428,7 +427,7 @@ int CQuestManagerCommon::FUN_140745590(int questId)
 // @0x140745630
 int CQuestManagerCommon::IsQuestActive(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 0;
     return quest->IsActive();
@@ -437,7 +436,7 @@ int CQuestManagerCommon::IsQuestActive(int questId)
 // @0x1407456d0
 int CQuestManagerCommon::IsQuestComplete(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 0;
     return quest->IsComplete();
@@ -446,7 +445,7 @@ int CQuestManagerCommon::IsQuestComplete(int questId)
 // @0x140745770
 bool CQuestManagerCommon::FUN_140745770(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return false;
     return (bool)quest->FUN_1407447c0();
@@ -624,7 +623,7 @@ MS2_REPLACE_METHOD(0x140745820, CQuestManagerCommon, FUN_140745820, 4129, 0xBBD4
 // @0x140746850
 int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 0;
     if (!quest->GetData())
@@ -653,7 +652,7 @@ MS2_REPLACE_METHOD(0x140746850, CQuestManagerCommon, FUN_140746850, 827, 0xB2C49
 // @0x140746ba0
 int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, bool bSkip)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 6;
     if (bSkip == 0 && quest->FUN_1407447c0() != 0)
@@ -728,8 +727,8 @@ unsigned CQuestManagerCommon::vfunc_o10_23(const Unk_QuestCondition& condition)
         return 1;
     for (unsigned __int64 i = 0; i < FUN_1402815b0(&const_cast<Unk_QuestCondition&>(condition).m_list); ++i)
     {
-        Unk_PayloadPtr<CQuest> questA = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questA);
-        Unk_PayloadPtr<CQuest> questB = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questB);
+        MS2Ptr<CQuest> questA = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questA);
+        MS2Ptr<CQuest> questB = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questB);
         int nA = FUN_140764480(questA, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateA);
         int nB = FUN_140764480(questB, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateB);
         if (nA == 2)
@@ -745,7 +744,7 @@ MS2_REPLACE_METHOD(0x1407470F0, CQuestManagerCommon, vfunc_o10_23, 584, 0xAEEEA5
 // @0x140747350
 bool CQuestManagerCommon::FUN_140747350(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest == 0)
         return true;
     if (quest->GetState() == 0)

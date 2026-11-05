@@ -41,16 +41,11 @@ struct Unk_EffDesc
     int m_pad_00[34];
     int m_nKind;                                                    // +0x88
 };
-struct Unk_EffDescHolder
-{
-    void* m_p;
-};
 class CStateManager   // C3: member view for the former free stand-ins
 {
 public:
     class State* GetState();
 };
-Unk_EffDesc* FUN_14063ed50(Unk_EffDescHolder* pHolder);                          // descriptor of a holder
 // MS2Ptr<CSkillRecord> members instantiated by earlier objs.
 template <> CSkillRecord* MS2Ptr<CSkillRecord>::get() const;         // 0x140975ba0
 template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                         // 0x140975740
@@ -185,7 +180,7 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
             if (pState)
             {
                 CSkillRecord* pTarget = pState->GetRecord().get();
-                if (pTarget && FUN_14063ed50(reinterpret_cast<Unk_EffDescHolder*>(&pTarget->m_spSkill))->m_nKind == 2)
+                if (pTarget && reinterpret_cast<Unk_EffDesc*>(pTarget->m_spSkill.operator->())->m_nKind == 2)
                     return;
             }
         }

@@ -41,18 +41,11 @@ CStringW FUN_14062ad80(MS2Ptr<CItem> spItem);               // the gemstone desc
 // Registry of named bags/slots (GFx bind data).
 
 
-// gfxutil.h: a Value wrapped as a display object container (ctor 0x1422c6570 with the movie id, dtor 0x1422c65c0) and
-// the child lookups instantiated per wrapper type.
-class Unk_GemText : public ASTextField {};
-class Unk_GemNode : public ASDisplayObjectContainer
-{
-public:
-    MS2Ptr<Unk_GemText> FUN_140bc7450(const CString& strName);
-};
 // The child lookups of the AS container wrappers (defined in unit_140cff310_gfxutilwrappers).
 class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
+    MS2Ptr<ASMovieClip> FUN_140bc7450(const CString& strName);                      // child clip by name
     MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
     MS2Ptr<ASDisplayObjectContainer> FUN_140d01d80(const CString& strName);         // child container
 };
@@ -275,7 +268,7 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<Unk_GemText> spText = static_cast<Unk_GemNode&>(node).FUN_140bc7450(strName);
+    MS2Ptr<ASMovieClip> spText = static_cast<Unk_Finder&>(node).FUN_140bc7450(strName);
     if (spText == 0)
         return;
     static_cast<ASObj*>(static_cast<AScript*>(spText.get()))->FUN_1407cbb20("text", strText);

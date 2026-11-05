@@ -35,7 +35,8 @@ class Unk_PCSkillTree : public CPtred { public:  };   // the tier option level (
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/fittingdollpc.h"   // C3: PC::FUN_1409eee00
 class Unk_JscPlayer;
-Unk_JscPlayer* FUN_1409613d0(PCBase* pPC);                      // the MyPC of a PC, or 0
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 
 
 void FUN_1401fdb50(unsigned char* payload, COutputStream& stream);
@@ -56,7 +57,7 @@ void JobSystemCli::SetOwner(PCBase* pOwner)
 // @0x140a6d910
 MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
 {
-    Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
+    Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer != 0)
     {
         MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
@@ -84,7 +85,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
         return false;
     if (!((SkillData*)(spRow).operator->())->FUN_1407e9f30())
         return true;
-    Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
+    Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer != 0)
     {
         MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
@@ -129,7 +130,7 @@ void JobSystemCli::vfunc_4(unsigned short nLevel)
 // MS2-FUNCTIONAL: after each tree lookup the exe spills the level to a temp, releases the tree, zeroes a dead word temp and only then copies the level (frame 0xd8 vs 0xc8); the same shape is open in UISkillBookTreeDialog::GetLevelText
 unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
 {
-    Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
+    Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer == 0)
         return 0;
     unsigned short nLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId);

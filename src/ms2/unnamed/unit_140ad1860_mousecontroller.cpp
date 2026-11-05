@@ -276,7 +276,7 @@ MS2_CHECK_OFFSET(Unk_McCameraView, m_mode, 0x118);
 
 ecr::SceneGraphService* GetSceneGraphService();
 Unk_McEntityRules* FUN_140ad4b90();
-void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue);
+void FUN_140ad4ff0(CameraMgr* pCam, float fValue);
 
 // @0x140ad1860
 CMouseController::CMouseController()
@@ -411,8 +411,8 @@ int CMouseController::FUN_140ad20f0(int bEnable)
         return 0;
     m_nMode = bEnable ? 1 : 0;
     float fScale = reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bcfc50();
-    if (Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40() != fScale)
-        FUN_140ad4ff0(Unk_CameraManager::FUN_1409478c0(), fScale);
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40() != fScale)
+        FUN_140ad4ff0(TSingleton<CameraMgr>::GetInstance(), fScale);
     if (bEnable == 0)
     {
         FUN_140ad2070();
@@ -639,7 +639,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         return 0;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (!TSingleton<CameraMgr>::GetInstance()->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -810,7 +810,7 @@ int CMouseController::FUN_140ad3550(int nX, int nY, Vector3* pOut)
     FUN_140ad40b0();
     Vector3 vOrigin;
     Vector3 vDir;
-    if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (!TSingleton<CameraMgr>::GetInstance()->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_MouseRay ray;
     *reinterpret_cast<efd::Point3*>(&ray.vOrigin) = *reinterpret_cast<const efd::Point3*>(&vOrigin);
@@ -832,7 +832,7 @@ MS2_REPLACE_METHOD(0x140AD3550, CMouseController, FUN_140ad3550, 488, 0x5FC70789
 // @0x140ad3740
 Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
 {
-    efd::SmartPointer<ecr::PickService::PickRecord> spPick = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0850((float)nX, (float)nY, true, true, false, 0);
+    efd::SmartPointer<ecr::PickService::PickRecord> spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850((float)nX, (float)nY, true, true, false, 0);
     if ((ecr::PickService::PickRecord*)spPick == 0)
         return DAT_143b01a60;
     if (spPick->GetPickResult() == 0)
@@ -878,7 +878,7 @@ Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
         return DAT_143b01a60;
     Vector3 vOrigin;
     Vector3 vDir;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
+    if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay((class NiPoint2 const&)(const efd::Point2&)efd::Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
     {
         efd::Point3 vA;   // efd::Point3 locals: the default ctor 0x1402bd040, not Vector3's 0x1405522f0
         efd::Point3 vB;
@@ -1040,13 +1040,13 @@ Unk_RayCastInfo::Unk_RayCastInfo()
 }
 
 // @0x140ad4b40
-float Unk_CameraManager::FUN_140ad4b40()
+float CameraMgr::FUN_140ad4b40()   // C3: was Unk_CameraManager::FUN_140ad4b40
 {
     if (reinterpret_cast<Unk_McCameraView*>(this)->m_mode.get() != 0)
         return reinterpret_cast<Unk_McCameraView*>(this)->m_mode.operator->()->FUN_140ad4b30();
     return 0.0f;
 }
-MS2_REPLACE_METHOD(0x140AD4B40, Unk_CameraManager, FUN_140ad4b40, 70, 0x8A6FD2BB);
+MS2_REPLACE_METHOD(0x140AD4B40, CameraMgr, FUN_140ad4b40, 70, 0x8A6FD2BB);
 
 // @0x140ad4b90
 Unk_McEntityRules* FUN_140ad4b90()
@@ -1102,7 +1102,7 @@ RECT Unk_McApp::FUN_140ad4c30()
 }
 
 // @0x140ad4ff0
-void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue)
+void FUN_140ad4ff0(CameraMgr* pCam, float fValue)
 {
     if (reinterpret_cast<Unk_McCameraView*>(pCam)->m_mode.get() != 0)
     {

@@ -32,6 +32,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <egf/Entity.h>   // C3: egf::Entity::GetPropertyValue<efd::Point3>
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- types local to this unit (all member names invented) ----
 
@@ -129,9 +131,21 @@ public:
 void* FUN_14025e7c0();
 void FUN_140710590(COutPacket& p);                      // send
 
+// The fly-by request (camera.h; 0x80 bytes).
+struct Unk_CameraFlyBy
+{
+    Unk_CameraFlyBy();                                                  // 0x140947440
+
+    int m_nKind;                                                        // +0x00
+    float m_fDuration;                                                  // +0x04
+    Unk_CameraSetting m_from;                                           // +0x08
+    Unk_CameraSetting m_to;                                             // +0x30
+    Unk_CameraSetting m_return;                                         // +0x58
+};
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
+    Unk_CameraFlyBy MakeFlyBy(float fDuration, const Unk_CameraSetting& to);  // 0x140aeffd0 a fly-by from the current view
     int GetModeSetting(struct Unk_CameraSetting&);
     CCameraMode* FUN_140af24f0();
     float FUN_140af0c70();
@@ -143,8 +157,6 @@ public:
 public:
     void FUN_140aed750(int, int);   // C3: was free FUN_140aed750
 };
-struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[15]; };
-void FUN_140aeffd0(Unk_CameraManager* cam, Unk_TaxiCamMove* out, float t, Unk_CameraSetting* setting);
 float FUN_14029cc60(float f);
 float FUN_14029dba0(float f);
 
@@ -160,10 +172,10 @@ Unk_TaxiResTable* FUN_1409f24a0() { return reinterpret_cast<Unk_TaxiResTable*>(T
 Unk_TaxiTimer* FUN_1409f24b0() { return reinterpret_cast<Unk_TaxiTimer*>(TSingleton<OnceCallbackTimer>::s_instance); }
 // @0x1409f2430
 // The current mode's distance (slot 19; FUN_140b67d10 is the same shape over slot 17).
-float FUN_1409f2430(Unk_CameraManager* cam)
+float FUN_1409f2430(CameraMgr* cam)
 {
-    if (static_cast<Unk_CameraManagerData*>(cam)->m_118.get())
-        return static_cast<Unk_CameraManagerData*>(cam)->m_118->vfunc_19();
+    if (reinterpret_cast<Unk_CameraManagerData*>(cam)->m_118.get())
+        return reinterpret_cast<Unk_CameraManagerData*>(cam)->m_118->vfunc_19();
     return 0.0f;
 }
 
@@ -236,13 +248,13 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                         {
                             efd::SmartPointer<egf::Entity> ent(reinterpret_cast<const efd::SmartPointer<egf::Entity>&>(list->GetAt(pos)));
                             Unk_CameraSetting setting;
-                            if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
+                            if (TSingleton<CameraMgr>::GetInstance()->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
                             {
                                 Vector3 base;
                                 ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(base));
-                                float fDist = FUN_1409f2430(Unk_CameraManager::FUN_1409478c0());
-                                float fYaw = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0c70();
-                                float fPitch = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d30();
+                                float fDist = FUN_1409f2430(TSingleton<CameraMgr>::GetInstance());
+                                float fYaw = TSingleton<CameraMgr>::GetInstance()->FUN_140af0c70();
+                                float fPitch = TSingleton<CameraMgr>::GetInstance()->FUN_140af0d30();
                                 float x = fDist * FUN_1409f25a0(fYaw) + base.x;
                                 float y = fDist * FUN_1409f2310(fYaw) + base.y;
                                 float z = fDist * FUN_1409f2310(fPitch) + base.z;
@@ -250,11 +262,10 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 setting.m_c = Vector3(x, y, z);
                                 float fTime = delta.FUN_140967ac0() * 0.8f;
 
-                                Unk_TaxiCamMove mv;
-                                FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fTime / 1000.0f, &setting);
+                                Unk_CameraFlyBy mv = TSingleton<CameraMgr>::GetInstance()->MakeFlyBy(fTime / 1000.0f, setting);
                                 mv.m_nKind = 2;
-                                ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
-                                ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(4, 0);
+                                TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&mv, 1, 1.0f);
+                                TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(4, 0);
                                 reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
@@ -309,7 +320,7 @@ void CAutoFindTaxiStation::FUN_1409f1a00()
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
     {
         m_nDone = 1;
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(2);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
         FUN_1409f1a70();
     }
 }
@@ -332,22 +343,21 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 void CAutoFindTaxiStation::FUN_1409f1af0()
 {
     Unk_CameraSetting setting;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
+    if (TSingleton<CameraMgr>::GetInstance()->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
     {
-        Vector3 delta = setting.m_c.FUN_140965c40(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_1409f2540());
+        Vector3 delta = setting.m_c.FUN_140965c40(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540());
         float fLen = delta.FUN_140967ac0() * 0.5f;
-        setting.m_c = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_1409f2540();
-        Unk_TaxiCamMove mv;
-        FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fLen / 1000.0f, &setting);
+        setting.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540();
+        Unk_CameraFlyBy mv = TSingleton<CameraMgr>::GetInstance()->MakeFlyBy(fLen / 1000.0f, setting);
         mv.m_nKind = 2;
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, 1);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&mv, 1, 1.0f);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, 1);
         reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fLen,
                       Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
     }
     else
     {
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(2);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(2);
         FUN_1409f1a70();
     }
 }

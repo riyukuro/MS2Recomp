@@ -319,7 +319,7 @@ public:
     void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message);
 };
 class CLogString* GetLogString();
-Unk_NpcEventTag FUN_14021bc30(const CStringA& name);    // commonenum.cpp
+int Parse_14021bc30(const CStringA& value);    // commonenum.cpp
 
 // The event factories (registered by name below each class).
 GameEvent* FUN_1403bb510();
@@ -2157,7 +2157,7 @@ void GameEventNpcEventDrop::vfunc_2()
     XmlTokenList(pNode, "customNpcId", spContext->m_customNpcIds);
     XmlGetAttr((class TiXmlElement*)(pNode), "isShow", reinterpret_cast<bool&>(spContext->m_isShow));
     XmlTokenList(pNode, "dropId", spContext->m_dropIds);
-    XmlEnumName<Unk_NpcEventTag, FUN_14021bc30>(pNode, "eventTags", spContext->m_eventTag);
+    XmlEnumName<int, Parse_14021bc30>(pNode, "eventTags", reinterpret_cast<int&>(spContext->m_eventTag));
     m_d0 = spContext;
 }
 MS2_REPLACE_METHOD(0x1403C1F30, GameEventNpcEventDrop, vfunc_2, 598, 0xB54C8D81);

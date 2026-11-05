@@ -14,6 +14,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/intervaltimer.h"
+#include "ms2/commonfiles/meratproductkey.h"   // C3: the product key (Unk_MeratProductKey::FUN_1409b0470)
 
 class NotifyObject;
 class ASMovieClip;
@@ -51,12 +52,6 @@ protected:
 MS2_CHECK_SIZE(AdPushEntityBase, 0x28);
 
 // The market item (the pointee of the bundle's MS2Ptr at +0x58); only the fields the dialog reads are named.
-class Unk_AdSn {
-public:
-    CStringW FUN_1409b0470() const;             // the serial as text
-private:
-    char m_b[0x10];
-};
 class Unk_AdItemInfo {                          // its icon path is CDBPremiumProduct::GetIconPath (0x1406a0160)
 private:
     char m_pad_00[0x18];
@@ -64,7 +59,7 @@ private:
 class Unk_AdMarketItem : public CPtred {
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_AdSn m_id;                              // +0x18 the 16-byte market serial (copied into the lookup key)
+    Unk_MeratProductKey m_id;                   // +0x18 the market product key (copied into the lookup key)
     char m_pad_28[8];
     Unk_AdItemInfo m_info;                      // +0x30 (0x18 bytes, up to m_nSn)
     int m_nSn;                                  // +0x48

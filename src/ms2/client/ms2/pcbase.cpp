@@ -286,7 +286,6 @@ int IsPercentStat(int nType);                                       // stat kind
 class Unk_PCBaseBody : public GameObjectController
 {
 public:
-    void FUN_14123fe70(NiPoint3 kPos);
 
 };
 
@@ -765,7 +764,7 @@ NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kRot);      // facing angles -> rotation
 extern NiFixedString DAT_143ae5ce0[50];                             // "Hold_PointNN" dummy names (unit_1416bc380)
 bool FUN_14028d470(float fA, float fB);                             // float equality
-float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
+float FUN_140966f00(Vector3 kA, Vector3 kB);                        // distance
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
 
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);
@@ -1345,7 +1344,7 @@ MS2_REPLACE_METHOD(0x14166cf40, PCBase, vfunc_67, 730, 0x7C8F1331);
 void PCBase::FUN_14166d260()
 {
     if (Unk_PCBaseBody* pBody = GetPhysicsBody())
-        pBody->FUN_14123fe70(vfunc_18());
+        pBody->GameObjectController::FUN_14123fe70(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())));
 }
 MS2_REPLACE_METHOD(0x14166d260, PCBase, FUN_14166d260, 98, 0x6C91CBAE);
 
@@ -1863,7 +1862,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
     GameObject::vfunc_19(kBodyPos);
     bool bMoved = kBodyPos != kOldPos;
     if (reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->IsLocalTargetMode() != 0) {
-        if (((GameObject*)((Unk_CameraManager*)(Unk_PCBaseCameraMgr*)(reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60()) == this && reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed3e0())
+        if (((GameObject*)((CameraMgr*)(Unk_PCBaseCameraMgr*)(reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60()) == this && reinterpret_cast<Unk_PCBaseCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aed3e0())
             TurnTowardTargetYaw((float)dTime);
     } else {
         TurnTowardTargetYaw((float)dTime);
@@ -2686,7 +2685,7 @@ void PCBase::vfunc_101(MS2Ptr<CSkillRecord> spSkill, int n, void* pRot)
         SetTargetYaw(kAngles.z);
     *static_cast<efd::Point3*>(pRot) = kAngles;
     if (spSkill->m_sp30->m_n16c) {
-        spSkill->m_f74 = FUN_140966f00(pObj->vfunc_30(this), vfunc_18());
+        spSkill->m_f74 = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pObj->vfunc_30(this))), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
         if (spSkill->m_f74 > 100.0f)
             spSkill->m_f74 -= 100.0f;
     }
@@ -3823,7 +3822,7 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
         if (fDot < cos(((fAngle / 2.0f) * 3.1415927f) / 180.0f))
             continue;
         {
-            float fDist = FUN_140966f00(kPos, vfunc_18());
+            float fDist = FUN_140966f00(reinterpret_cast<const Vector3&>(kPos), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
             int nDead = 0;
             PCBase* pPC = efd::DynamicCast<PCBase, GameObject>(pTarget);
             if (pPC != 0)
@@ -4004,7 +4003,7 @@ void PCBase::FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord)
 MS2_REPLACE_METHOD(0x1416721d0, PCBase, FUN_1416721d0, 997, 0x69395726);
 
 // @0x1416725c0
-int PCBase::FUN_1416725c0(NiPoint3& kDir, float fDist, float fHeight, float fUp)
+int PCBase::FUN_1416725c0(NiPoint3 kDir, float fDist, float fHeight, float fUp)
 {
     kDir.Unitize();
     if (kDir == efd::Point3::ZERO)
@@ -4163,7 +4162,7 @@ void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     if (nKind == 2) {
         Unk_PCBaseWorldObj* pAttacker = ((Unk_PCBaseWorldObj*)WorldService::GetInstance()->FUN_141bd1200(spRecord->m_n2c));
         if (pAttacker)
-            fSpeed = efd::Min<float>((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
+            fSpeed = efd::Min<float>((FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pAttacker->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))) - 150.0f) * 0.01f, fSpeed);
     }
     else if (nKind == 4) {
         spRecord->m_kPushDir = spRecord->m_kOrigin - vfunc_18();

@@ -80,9 +80,8 @@ int FUN_140ad02f0(int nMax, int n);                         // min
 // The search keywords of an action id: CDynamicActionData::Find (dynamicactiondata.h), m_reserved at +0x38.
 
 // The skill system (action list, mode, reset) and the player.
-void FUN_1417691a0(CSkillSystem* p, ATL::CAtlArray<MS2Ptr<Unk_Emotion> >& list);
 void FUN_14151f200();
-NotifySystem* FUN_140939a10();                              // the notify system
+class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
 // Input state, the movie manager, the key binds.
 class Unk_DaInputState : public CInputKeyHandler {};
@@ -180,8 +179,8 @@ void UIDynamicActionDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     FUN_14192c6b0();
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c630));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyClearAchieve"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c660));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c630));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyClearAchieve"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c660));
 }
 MS2_REPLACE_METHOD(0x14192AFF0, UIDynamicActionDialog, OnLoadInit, 452, 0);
 
@@ -202,8 +201,8 @@ void UIDynamicActionDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     reinterpret_cast<MS2Ptr<Unk_CoupleInput>&>(m_1a0).AssignRaw(0);   // the exe calls the twin at 0x140bf1810
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c630));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyClearAchieve"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c660));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c630));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyClearAchieve"), Delegate<void(NotifyObject*)>(this, &UIDynamicActionDialog::FUN_14192c660));
 }
 MS2_REPLACE_METHOD(0x14192B340, UIDynamicActionDialog, vfunc_26, 463, 0);
 
@@ -417,7 +416,7 @@ void UIDynamicActionDialog::FUN_14192c6b0()
     if (pPlayer == 0)
         return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
+    pPlayer->FUN_141523bc0()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));   // C3: CSkillSystem::FUN_1417691a0 (skillsystem.h)
     int nMode = pPlayer->FUN_141523bc0()->SetShowError(0);
     pPlayer->FUN_141523bc0()->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;

@@ -30,7 +30,7 @@ public:
     virtual void vfunc_9(CString strKey, Scaleform::GFx::Value vRoot, float fTime); // 0x1422d2a30 swf "loadComplete"
 };
 
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 class CLogString* GetLogString();
 template<class T, class U> void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format,

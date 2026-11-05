@@ -49,7 +49,6 @@ public:
     void OnCloseDialog();                                           // check and save
     int FUN_141944250();                                            // 1 when nothing is pending
     int FUN_141944330();                                            // 1 when no page differs
-    MS2Ptr<class Unk_GoButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
     MS2Ptr<CBaseOption> FUN_141944460(int nIndex);                  // the nIndex-th page (1-based, map order)
     void FUN_141944590(int n);                                      // FUN_1419445c0(0x10, n)
     void FUN_1419445c0(int nKey, int n);                            // n == 0: drop the page nKey

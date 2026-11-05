@@ -1828,13 +1828,12 @@ int CItem::FUN_140526390()
 MS2_REPLACE_METHOD(0x140526390, CItem, FUN_140526390, 213, 0xDBB250D2);
 
 // @0x140526470
-void CItem::FUN_140526470(unsigned nSlot)
+int CItem::FUN_140526470(unsigned nSlot)
 {
     unsigned nResult;
     if (IsPetItem())
-        FUN_140526670(nSlot, &nResult);
-    else
-        FUN_1405264c0(nSlot, &nResult);
+        return FUN_140526670(nSlot, &nResult);
+    return FUN_1405264c0(nSlot, &nResult);
 }
 MS2_REPLACE_METHOD(0x140526470, CItem, FUN_140526470, 72, 0x8C36A151);
 

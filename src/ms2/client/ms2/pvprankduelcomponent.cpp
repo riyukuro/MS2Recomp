@@ -70,6 +70,8 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unrecovered helpers (declarations only; the addresses are in the names) ----
+// The record reader at 0x14026b250; its real name is the ingredient reader (commonstruct_wa.h).
+class CIngredientInfo { public: void FUN_14026b250(CInPacket&); };   // C3: was RankDuelStatisticalData::FUN_14026b250
 // The rank-duel lobby dialog (RTTI .?AVUIRankPvPDialog@@, ui id 0x4f04).
 class UIRankPvPDialog : public UIDialog
 {
@@ -91,7 +93,7 @@ int FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_RankClientState { public: };
@@ -257,7 +259,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             {
                 pDialog->FUN_140f94390();
                 CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete"));
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, pDialog, DAT_143ac4878);
+                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4878);
                 if (box.get())
                 {
                     box->SetTimer(0xf, 1, GetStringCommon(0x2b8));
@@ -300,7 +302,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<RankDuelStatisticalData> spRecord(new RankDuelStatisticalData);
-            spRecord->FUN_14026b250(packet);
+            reinterpret_cast<CIngredientInfo*>(spRecord.operator->())->FUN_14026b250(packet);
             m_records[spRecord->m_key] = spRecord;
             m_total2c += spRecord->m_value1c;
             m_total30 += spRecord->m_value20;
@@ -322,7 +324,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog == 0)
                 return;
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strText, pDialog, DAT_143ac4890);
+            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4890);
             if (box.get())
             {
                 box->SetTimer(0xf, 1, GetStringCommon(0x2b8));

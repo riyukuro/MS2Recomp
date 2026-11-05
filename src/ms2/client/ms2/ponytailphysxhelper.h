@@ -30,7 +30,7 @@ struct Unk_PonyPart
     NiTransform m_kStart;                                       // +0x44 transform at the start of the drag
     NiTransform m_kPose;                                        // +0x78 transform pushed to the PhysX joint (rotation
                                                                 //       +0x78, translation +0x9c, scale +0xa8)
-    MS2Ptr<Unk_PickTarget> m_spModel;                           // +0xb0 the hair part model (a CEquipModel)
+    MS2Ptr<CEquipModel> m_spModel;                           // +0xb0 the hair part model (a CEquipModel)
 };
 MS2_CHECK_SIZE(Unk_PonyPart, 0xc0);
 
@@ -43,7 +43,7 @@ public:
     virtual void vfunc_2(CItemCustomizeController* pController, float fValue, int nIndex) = 0;
     virtual void vfunc_3() = 0;
     virtual void vfunc_4() = 0;
-    virtual void vfunc_5(CItemCustomizeController* pController, Unk_PickTarget* pPart) = 0;
+    virtual void vfunc_5(CItemCustomizeController* pController, CEquipModel* pPart) = 0;
 };
 
 class CPonyTailController;
@@ -51,7 +51,7 @@ class Unk_PonyPlayer;
 // Pose callback of FUN_1416955b0 (a 16-byte pointer to member: code + this adjustment). Called with the part, the
 // scene root, two values of the caller, and returns the part's position, euler angles and scale.
 #pragma pointers_to_members(full_generality, multiple_inheritance)
-typedef void (CPonyTailController::*Unk_PonyPoseFn)(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
+typedef void (CPonyTailController::*Unk_PonyPoseFn)(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nValue, int nSecond,
                                                     Vector3& kPos, Vector3& kEuler, float& fScale);
 
 class CPonyTailController : public CItemCustomizeController
@@ -81,17 +81,17 @@ public:
 
     // non-virtual (names invented)
     void FUN_141694650();                                           // reset both parts and rebuild them from the item
-    void FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget** ppSecond);   // the two pony models in drag order
-    void FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
+    void FUN_141694ea0(CEquipModel** ppFirst, CEquipModel** ppSecond);   // the two pony models in drag order
+    void FUN_141694fb0(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nValue, int nSecond,
                        Vector3& kPos, Vector3& kEuler, float& fScale);   // pose: current model transform
-    void FUN_141695120(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nIndex, int nSecond,
+    void FUN_141695120(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nIndex, int nSecond,
                        Vector3& kPos, Vector3& kEuler, float& fScale);   // pose: stored preset nIndex
     void FUN_141695220();                                           // puts the parts to their rest pose once
     void FUN_1416952c0(Unk_PonyPart* pPart);                        // applies a part's rest pose to its model
     void FUN_1416955b0(int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue);   // runs the pose callback for both parts
     void FUN_141695710(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue, int bSecond);
     Vector3 FUN_141695bc0(const Vector3& kOrigin, const Vector3& kPoint, const Vector3& kPlane);
-    NiTransform FUN_141695ca0(Unk_PickTarget* pModel);              // the transform of a part model
+    NiTransform FUN_141695ca0(CEquipModel* pModel);              // the transform of a part model
 
     float m_fSensitivity;                                           // +0xb8 drag speed (client config)
     int m_bBusy;                                                    // +0xbc 1 once the parts are in the rest pose
@@ -111,5 +111,5 @@ MS2_CHECK_OFFSET(CPonyTailController, m_kSecond, 0x190);
 class CPonyTailPhysXHelper
 {
 public:
-    static void UpdateModelPhysXValues(Unk_PickTarget* pModel, const void* pJoints);   // 0x1416962d0
+    static void UpdateModelPhysXValues(CEquipModel* pModel, const void* pJoints);   // 0x1416962d0
 };

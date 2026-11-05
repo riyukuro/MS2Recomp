@@ -230,6 +230,7 @@ struct Unk_WsVad0 { void* p0; void* p1; };
 // Target of the MS2Ptr members (some CPtred subclass; TYPE? per member).
 class Unk_WsPtred : public CPtred {};
 class CPortal;                                           // m_350 value (FindPortalByDestMap)
+class NiPoint3;                                          // FUN_141bc2c90 position (by value)
 class CFieldDataCli;                                     // m_298 value (FUN_141bd30a0, fielddatacli.h)
 class Unk_WsRec708;                                      // m_708 value (defined in worldservice.cpp#1 / #4)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
@@ -366,7 +367,7 @@ public:
     void* GetRegionSkillObject(int id);                                                       // m_3a0 lookup, or null
     void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
     void FUN_141bc3470(Unk_WsR3f0Val value, Unk_WsR3f0Key key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
-    void FUN_141bc2c90(Vector3 pt, void* outRefs);                             // field objects containing pt appended to the ref array, sorted nearest first
+    void FUN_141bc2c90(NiPoint3 pt, ATL::CAtlArray<MS2Ptr<CPortal> >* outRefs);                            // field objects containing pt appended to the ref array, sorted nearest first
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0
     void FUN_141bc4b10(MS2Ptr<class Unk_WsB_Marker> marker); // 0x141bc4b10
@@ -443,7 +444,7 @@ public:
     int FUN_141bcfc10();                                // m_prevState == 4 && m_state == 6
     float FUN_141bcfc50();                              // scale from the local player
     int GetState();                                // return m_state
-    egf::Entity* FUN_141bcfd30(unsigned key, const Vector3& pos, float maxDist, int nearest, int flat);
+    egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
     int FUN_141bcfff0(int id, struct Unk_WsC_NpcAnim* out);
     egf::Entity* FUN_141bd0220(const Vector3& pos, float maxDist);
     struct Unk_WsC_TagPtr FUN_141bd0420(unsigned key);

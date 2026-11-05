@@ -52,7 +52,7 @@
 // MS2-PIN: ??$Unk_SSGGetDialog@VUIApartmentDialog@@@@YAPEAVUIApartmentDialog@@H@Z 0x141742450 ; w131 manual (RTTI)
 // MS2-PIN: ??$Unk_SSGGetDialog@VUIAdventureLevelDialog@@@@YAPEAVUIAdventureLevelDialog@@H@Z 0x141742310 ; w131 manual (RTTI)
 // MS2-PIN: ??$Unk_SSGGetDialog@VUIAdventureLevelOldDialog@@@@YAPEAVUIAdventureLevelOldDialog@@H@Z 0x1417423b0 ; w131 manual (RTTI)
-// MS2-PIN: ??0?$Unk_BmPtr@VUserUGCMapInfo@@@@QEAA@AEBV0@@Z 0x1417459d0 ; w120 manual (call site)
+// MS2-PIN: ??0?$MS2Ptr@VUserUGCMapInfo@@@@QEAA@AEBV0@@Z 0x1417459d0 ; w120 manual (call site)
 // MS2-PIN: ?get@?$Unk_PayloadPtr@VObjectWeaponInfo@@@@QEBAPEAVObjectWeaponInfo@@XZ 0x1417472b0 ; w120 manual (call site)
 // MS2-PIN: ??_GNotifyChangeMyJob@@UEAAPEAXI@Z 0x141747850 ; w125 manual
 // MS2-PIN: ??1NotifyChangeMyJob@@UEAA@XZ 0x141746bc0 ; w125 manual
@@ -62,7 +62,7 @@
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCInteractObject@@@@QEBA_NXZ 0x140a7b5e0 ; w125 manual (call site 0x14172d0f0; the in-range look-alike 0x141747040 is called only by stubs 0x14171dc40/0x141732b20)
 // MS2-PIN: ?get@?$MS2Ptr@VCInteractObjectData@@@@QEBAPEAVCInteractObjectData@@XZ 0x1411926f0 ; w125 manual (call site 0x14172d0f0; look-alike 0x141747280 is called by stub 0x141732b20)
 // MS2-PIN: ??0?$MS2Ptr@VNotifyChangeBuff@@@@QEAA@PEAVNotifyChangeBuff@@@Z 0x141745880 ; w131 manual (call sites 0x141720480; the look-alike 0x141745850 is called by 0x141746eb0)
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_SnowmanContext@@@@QEBAPEAVUnk_SnowmanContext@@XZ 0x1417472c0 ; w131 manual (only caller 0x141736240; the look-alike 0x141747350 is called by stub 0x141732b20)
+// MS2-PIN: ?get@?$MS2Ptr@VSnowmanContext@@@@QEBAPEAVSnowmanContext@@XZ 0x1417472c0 ; w131 manual (only caller 0x141736240; the look-alike 0x141747350 is called by stub 0x141732b20)
 // MS2-PIN: ??1NotifyLearnEmotion@@UEAA@XZ 0x141746c60 ; w131 manual (called by its ??_G 0x141747950)
 // MS2-PIN: ??1NotifyKillPlayer@@UEAA@XZ 0x141746c20 ; w131 manual (called by its ??_G 0x141747910)
 // MS2-PIN: ??1NotifyChangedTokenMoney@@UEAA@XZ 0x141746c00 ; w131 manual (called by its ??_G 0x1417478d0)
@@ -205,11 +205,13 @@ public:
     void FUN_140ade420(int, unsigned int);
     void FUN_140adeaa0(int, int, int);
 };
-class Unk_RideeFieldObj : public CPtred { public:   };
+// C3: the named field object WorldService::FUN_141bc4e70 (0x141bc4e70) returns: the same pointee as WorldService's
+// MS2Ptr<Unk_WsB_Marker> (same ~MS2Ptr/get/operator-> VAs, as in ridee.cpp).
+class Unk_WsB_Marker : public CPtred { public:   };
+typedef class Unk_WsB_Marker Unk_RideeFieldObj;
 class Unk_SSGWorld : public WorldService
 {
 public:
-    MS2Ptr<Unk_RideeFieldObj> FUN_141bc4e70(CString strName);
     void FUN_141bc5ab0(efd::SmartPointer<CSkillMagicControlGuide> spGuide);   // keep the skill guide alive
     void FUN_141bc9020(CString strName, MS2Ptr<Unk_PCBaseComp_b18> spSkill, CString strBone, unsigned char nFlag);   // 0x75 start a named field skill
     void FUN_141bd3d70(Vector3 pos, Vector3 rot);
@@ -255,6 +257,7 @@ class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
     double FUN_141473280();
+    DWORD GetTimeByKind(int nKind);   // 0x1414732f0 (was Unk_ServerClock::FUN_1414732f0)
 };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
@@ -342,6 +345,7 @@ public:
 #include "ms2/client/ms2/skillsystem.h"
 #include "ms2/client/ms2/statpointmanager.h"
 #include "ms2/commonfiles/gamerule.h"
+#include "ms2/commonfiles/gameevent.h"   // SnowmanContext
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/placeholder/cguidemanager.h"
@@ -485,7 +489,7 @@ public:
     void SendTokenToBrowser(int nIndex, const CStringA& strToken);   // 0x141b78cf0
 };
 void* FUN_14136f520(int nId);
-class Unk_SSG1c0d90 : public CGameRule { public: MS2Ptr<class Unk_SnowmanContext> FUN_14047d050(); };   // game rules (the two are pet-taming event checks)
+class Unk_SSG1c0d90 : public CGameRule { };   // game rules (the two are pet-taming event checks)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class Unk_140166410* FUN_140166410();   // the definer's return type; read through this unit's CFeatureManager view
 #define FUN_140166410() ((CFeatureManager*)FUN_140166410())
@@ -554,7 +558,6 @@ extern int DAT_143ab2878;
 extern int DAT_143ab287c;
 extern int DAT_143ab2880;
 extern int DAT_143ab2890;
-class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };   // C3: the talk manager singleton (was FUN_140967100)
 class Unk_SSG9331e0 : public CGuideManager { public:  };
 class Unk_Restrictions* FUN_1409331e0();   // the definer's return type; read through this unit's Unk_SSG9331e0 view
 #define FUN_1409331e0() ((Unk_SSG9331e0*)FUN_1409331e0())
@@ -570,18 +573,11 @@ public:
 };
 class Unk_SSG9f7c90 { public:  };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-// The npc / monster class (class id 0x06200011).
-class CNpcData : public CPtred   // C3: member view (real class not in this TU; npcdata.h)
-{
-public:
-    bool HasPropertyTag(int) const;
-    bool IsBoss() const;
-    char m_pad_18[0x8c - sizeof(CPtred)];
-    bool m_bBossNotify;                                     // +0x8c
-};
-MS2_CHECK_OFFSET(CNpcData, m_bBossNotify, 0x8c);
-class Unk_SSGNpcData : public CPtred { public:   char m_pad[0x60 - sizeof(CPtred)]; int m_n60; char m_pad_64[0x8c - 0x64]; bool m_b8c; };   // the npc table row
-MS2_CHECK_OFFSET(Unk_SSGNpcData, m_n60, 0x60);
+#include "ms2/client/ms2/npcdatacli.h"   // NpcDataCli : CNpcData, the npc table row (CNpc::GetNpcData)
+// MS2Ptr<NpcDataCli> members instantiated by other objs.
+template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(const MS2Ptr<NpcDataCli>&);   // 0x140a4fe50
+template <> NpcDataCli* MS2Ptr<NpcDataCli>::get() const;                              // 0x140a4ff10
+template <> MS2Ptr<NpcDataCli>::~MS2Ptr();                                            // 0x1406d5390
 // The drop item (class id 0x06200011; its members live in client\ms2\dropitem.cpp 0x14118c730-0x141192960). w95: split
 // from Unk_SSGNpc, whose +0x150/+0x1a0 do not fit PCBase.
 // The DoT damage record (?\skillrecord.cpp; new(0xe0)); only the members the DoT handler uses.
@@ -611,8 +607,8 @@ class CDamageRecord : public CPtred
 {
 public:
     CDamageRecord();
-    int FUN_14175a610(__int64 nCasterUid, __int64 nCastUid, int nOwnerId, int nCasterId, int nSkillId, short nLevel,
-                      int nMotion, int nAttack, Vector3 kPos, Vector3 kAim, Vector3 kDir);
+    int Init(unsigned long long nCasterUid, unsigned long long nCastUid, int nOwnerId, int nCasterId, int nSkillId,
+             short nLevel, int nMotion, int nAttack, Vector3 kPos, Vector3 kAim, Vector3 kDir);   // 0x14175a610
     void AddDamage(int nFlag, __int64 nDamage);
     int FUN_14175acc0();                                    // nonzero: the skill tracks its target
     SkillMotionData* GetMotionData();                       // the motion
@@ -633,7 +629,8 @@ class CSplashDamageRecord : public CDamageRecord
 public:
     CSplashDamageRecord();                                  // 0x14175b180
     virtual ~CSplashDamageRecord();                         // 0x14175b5f0
-    int FUN_14175b1c0(int nOwnerId, int n, __int64 nSkillUid, int nSkillId, short nLevel, int a, int b, Vector3 kDir, Vector3 kPos);
+    int Init(int nOwnerId, int n, unsigned long long nSkillUid, int nSkillId, short nLevel, int a, int b, Vector3 kDir,
+             Vector3 kPos);                                  // 0x14175b1c0
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);
 template <> MS2Ptr<CSplashDamageRecord>::MS2Ptr(CSplashDamageRecord* p);   // out-of-unit COMDAT (0x141099d10)
@@ -668,7 +665,6 @@ public:
     int vfunc_116() override;                               // 116 (CNpc)
     virtual int vfunc_124(int nNpcId);                      // 124 (0x3e0): set up from the npc table
     virtual void vfunc_125(int n);                          // 125 (called with 1 on packet 0x57)
-    MS2Ptr<Unk_SSGNpcData> FUN_141093270();                 // the npc table row
     void FUN_14174a560(char c) { m_ce50 = c; }
     void FUN_14174a580(unsigned short n) { m_ne58 = n; }
     void FUN_14174a4f0(int n) { m_nea8 = n; }
@@ -954,10 +950,10 @@ class CLogString
 public:
     void FUN_1406530d0(int nCat, int nLevel, const wchar_t* pszFormat, const fmt::ArgList& args);
 };
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was Unk_SSGCommandLog::FUN_14015eb90
 class Unk_SSGCommandLog : public CLogString
 {
 public:
-    void FUN_14015eb90(int nCat, int nLevel, const wchar_t* pszFormat, const CString& strArg);
     // fmt log line with two arguments (0x141740800 = <unsigned, Unk_SSGSkillUseError>).
     template <class A, class B> void Log(int nCat, int nLevel, const wchar_t* pszFormat, const A& a, const B& b)
     {
@@ -1014,11 +1010,7 @@ public:
 };
 class SkillDataTable { public: MS2Ptr<SkillData> GetSkillData(unsigned nSkillId); };   // C3: member view (0x1407ee1d0)
 class SkillDataTableCli { public: MS2Ptr<AdditionalLevelData> FUN_140aafef0(int nSkillId, unsigned short nLevel); };   // C3: member view (real class not in this TU)
-class Unk_SSGSkillCollision
-{
-public:
-    void FUN_141755cd0(PCBase* pActor, MS2Ptr<AdditionalLevelData> spSkill, const Vector3& kPos, const Vector3& kDir);
-};
+#include "ms2/client/ms2/skillcollisionmanager.h"   // CSkillCollisionManager::Show (0x141755cd0)
 class CSkillCollisionManager* FUN_141469a90();   // C3: was FUN_141469a90
 class Unk_SSGMyPCV : public PC
 {
@@ -2356,7 +2348,7 @@ void CSceneStateGame::FUN_14170f930(CInPacket& packet)
         WorldService::GetInstance()->FUN_141bbbe40(DAT_143ab2870, 1, nPortal);
         ((Unk_SSGUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adc400();
         DAT_143ab2890 = 0;
-        ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21390();
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b21390();
         ((CGuideManager*)(Unk_SSG9331e0*)(FUN_1409331e0()))->QueueOccurrence((CGuideManager::Occurrence)(1), DAT_143ab2870);
     }
     else
@@ -3510,6 +3502,7 @@ class CNpc : public Unk_SSGNpc
 public:
     CNpc();
     void SetOwnerId(int nOwnerId);                          // m_nOwnerId = nOwnerId
+    MS2Ptr<NpcDataCli> GetNpcData();                        // 0x141093270, a copy of the npc row
     void FUN_1410932c0(bool b);
     void FUN_1410918e0(CByteBuffer& buf);                   // apply a sync block
     void FUN_141092c50(CInPacket& packet);
@@ -3597,7 +3590,7 @@ void CSceneStateGame::FUN_1417195f0(CInPacket& packet)
     Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bd1320(nId));
     if (pNpc == 0)
         return;
-    int n = pNpc->FUN_141093270()->m_n60;
+    int n = static_cast<CNpc*>(pNpc)->GetNpcData()->m_model.m_nSpawnAlphaAnimation;
     if (n != 0)
         pNpc->vfunc_40(1.0f, 0.0f, 0.0f, 0.5f);
     static_cast<CNpc*>(pNpc)->FUN_1410932c0(false);
@@ -3651,7 +3644,7 @@ MS2_REPLACE_METHOD(0x141719990, CSceneStateGame, OnInteractNpc, 142, 0xE0A802D1)
 // @0x141719a30
 void CSceneStateGame::FUN_141719a30(CInPacket& packet)
 {
-    ((UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b1ddd0(packet);
+    TSingleton<UITalkManager>::GetInstance()->FUN_141b1ddd0(packet);
 }
 MS2_REPLACE_METHOD(0x141719a30, CSceneStateGame, FUN_141719a30, 37, 0xEF938A5F);
 
@@ -3685,7 +3678,7 @@ void CSceneStateGame::FUN_1417212d0(CInPacket& packet)
         int nA = packet.ReadUInt8();
         int nB = packet.ReadInt32();
         int nC = packet.ReadInt32();
-        MS2Ptr<Unk_RideeFieldObj> spObj = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc4e70(strName);
+        MS2Ptr<Unk_RideeFieldObj> spObj = WorldService::GetInstance()->FUN_141bc4e70(strName);
         if (spObj.get() != 0)
         {
             ((CBreakableObject*)(spObj).operator->())->FUN_140ade420(nState, 0);
@@ -3770,12 +3763,12 @@ void CSceneStateGame::OnWebOpen(CInPacket& packet)
         if (pBrowser == 0)
             return;
         pBrowser->FUN_14135ec00(strTarget, true);
-        ((class Unk_SSGCommandLog*)GetLogString())->FUN_14015eb90(0xc, 0x13, L"Open URL in Maview: {0}", strUrl);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 0xc, 0x13, L"Open URL in Maview: {0}", strUrl);
     }
     else if (nType == 0)
     {
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd9950(strTarget);
-        ((class Unk_SSGCommandLog*)GetLogString())->FUN_14015eb90(0xc, 0x13, L"Open URL in External Browser: {0}", strUrl);
+        Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 0xc, 0x13, L"Open URL in External Browser: {0}", strUrl);
     }
     else if (nType == 2)
     {
@@ -3785,7 +3778,7 @@ void CSceneStateGame::OnWebOpen(CInPacket& packet)
             if (pBrowser == 0)
                 return;
             pBrowser->FUN_14135ec00(strTarget, true);
-            ((class Unk_SSGCommandLog*)GetLogString())->FUN_14015eb90(0xc, 0x13, L"Open URL in AdventureBar: {0}", strUrl);
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 0xc, 0x13, L"Open URL in AdventureBar: {0}", strUrl);
         }
     }
 }
@@ -4697,7 +4690,7 @@ struct Unk_SSGCharNameResult
 };
 void FUN_1407a5fd0(struct Unk_1407a5f60&, class CInputStream&);   // C3: was FUN_1407a5fd0
 void FUN_14151f200();                                       // show the next queued message box (messageboxqueue.cpp)
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x141737db0
@@ -5539,7 +5532,7 @@ void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
     if (bServer != 0)
     {
         int nTimeMode = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pOwner));
-        nStartTick = Unk_ServerClock::GetInstance()->FUN_1414732f0(nTimeMode);
+        nStartTick = reinterpret_cast<CMainSystem*>(Unk_ServerClock::GetInstance())->GetTimeByKind(nTimeMode);
     }
 
     ATL::CAtlArray<Unk_MagicTagPtr> arrRoots;
@@ -5627,7 +5620,7 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
         int nCasterId = packet.ReadInt32();
         int nHits = packet.ReadUInt8();
         MS2Ptr<CDamageRecord> spRecord(new CDamageRecord());
-        if (!spRecord->FUN_14175a610(nCasterUid, nCastUid, nOwnerId, nCasterId, nSkillId, nLevel, nMotion, nAttack, kPos,
+        if (!spRecord->Init(nCasterUid, nCastUid, nOwnerId, nCasterId, nSkillId, nLevel, nMotion, nAttack, kPos,
                                      DAT_143b01a60, kDir))
             return;
         for (int j = 0; j < nHits; j++)
@@ -5648,7 +5641,7 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
             Unk_SSGNpc* pNpc = ((class Unk_SSGNpc*)FUN_140a38a00((class Unk_BossObject*)(pCaster)));
             if (pNpc != 0)
             {
-                if (((CNpcData*)(Unk_SSGNpcData*)(pNpc->FUN_141093270()))->HasPropertyTag(0x11))
+                if (((CNpcData*)static_cast<CNpc*>(pNpc)->GetNpcData().operator->())->HasPropertyTag(0x11))
                     spRecord->m_kPos = ptPos;
             }
             Unk_MagicXform kXform;
@@ -5746,7 +5739,7 @@ void CSceneStateGame::FUN_14171e440(CInPacket& packet)
         Vector3 kDir = packet.ReadVector3Short();
         Vector3 kPos = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
-        if (!spRecord->FUN_14175b1c0(nOwnerId, 0, nSkillUid, nSkillId, nLevel, 0, 0, kDir, kPos))
+        if (!spRecord->Init(nOwnerId, 0, nSkillUid, nSkillId, nLevel, 0, 0, kDir, kPos))
             return;
         for (int j = 0; j < nHits; j++)
         {
@@ -5789,7 +5782,7 @@ void CSceneStateGame::OnUserMoveByPortal(CInPacket& packet)
         return;
     MyPC* pMyPC = FUN_1409613d0(pPC);
     if (pMyPC != 0)
-        pMyPC->FUN_141528e50(kPos, kRot, nFlag);
+        pMyPC->FUN_141528e50(reinterpret_cast<const efd::Point3&>(kPos), reinterpret_cast<const efd::Point3&>(kRot), nFlag);
     else
         pPC->FUN_1416629d0(kPos, kRot);
     if (pMyPC != 0 && ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
@@ -6046,7 +6039,6 @@ struct Unk_SSGXform
     float m_fScale;                                         // +0x30
 };
 MS2_CHECK_SIZE(Unk_SSGXform, 0x34);
-void FUN_140a33240(Unk_SSGRot* pDst, const Unk_EfdMatrix3* pSrc);   // NiMatrix3 from efd::Matrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                        // identity rotation
 
 // ---- 0x63: interact objects of the field (create / update / remove, use results) --------------------------------
@@ -7168,7 +7160,7 @@ void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
             return;
         PCBase* pOwner = ((PCBase*)WorldService::GetInstance()->FUN_141bd1200(nOwnerId));
         int nTimeMode = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pOwner));
-        int nStartTick = Unk_ServerClock::GetInstance()->FUN_1414732f0(nTimeMode);
+        int nStartTick = reinterpret_cast<CMainSystem*>(Unk_ServerClock::GetInstance())->GetTimeByKind(nTimeMode);
         spTag->m_nStartTick = nStartTick;
         Unk_SocketPtr<CMagicModel> spModel = FUN_1410a7630()->FindModel(nTagId, 0);
         if (spModel == 0)
@@ -7693,7 +7685,7 @@ void CSceneStateGame::FUN_141720c60(CInPacket& packet)
     MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nLevel);
     if (spSkill == 0)
         return;
-    ((class Unk_SSGSkillCollision*)FUN_141469a90())->FUN_141755cd0(pActor, spSkill, kPos, kDir);
+    FUN_141469a90()->Show(pActor, spSkill, kPos, kDir);
 }
 MS2_REPLACE_METHOD(0x141720c60, CSceneStateGame, FUN_141720c60, 479, 0x10631625);
 // The skill of a region skill object (id 0x140803dc0, level 0x140803df0).
@@ -7787,7 +7779,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
         Vector3 kOrigin = packet.ReadVector3Short();
         Vector3 kDir = packet.ReadVector3();
         MS2Ptr<CSplashDamageRecord> spRecord(new CSplashDamageRecord());
-        if (!spRecord->FUN_14175b1c0(nTargetId, nOwnerId, nSkillUid, ((SkillLevelData*)(Unk_InventorySkillLevel*)(spRegion->m_spSkill))->FUN_140803dc0(),
+        if (!spRecord->Init(nTargetId, nOwnerId, nSkillUid, ((SkillLevelData*)(Unk_InventorySkillLevel*)(spRegion->m_spSkill))->FUN_140803dc0(),
                                      ((SkillLevelData*)(Unk_InventorySkillLevel*)(spRegion->m_spSkill))->GetLevel(), 0, nAttack, kOrigin, kDir))
             return;
         for (int j = 0; j < nHits; j++)
@@ -7800,7 +7792,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
         if (pTarget != 0)
         {
             CNpc* pNpc = dynamic_cast<CNpc*>(pTarget);
-            if (pNpc != 0 && ((CNpcData*)(Unk_SSGNpcData*)(pNpc->FUN_141093270()))->HasPropertyTag(0x1d))
+            if (pNpc != 0 && ((CNpcData*)static_cast<CNpc*>(pNpc)->GetNpcData().operator->())->HasPropertyTag(0x1d))
             {
                 Vector3 kBest = kOrigin;
                 ATL::CAtlArray<Unk_GoAnchorPtr> kAnchors;
@@ -9279,9 +9271,6 @@ void CSceneStateGame::FUN_141728c20(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141728C20, CSceneStateGame, FUN_141728c20, 1567, 0x47A4AE53);
 
-// The current snowman event context (FUN_1401c0d90()->FUN_14047d050()).
-class Unk_SnowmanContext : public CPtred { public: char m_pad_18[0x40 - 0x18]; CStringW m_strName; };
-MS2_CHECK_OFFSET(Unk_SnowmanContext, m_strName, 0x40);
 CStringW FUN_140298ea0(CStringW strKey);                    // localized text for a string key
 
 // @0x141736240
@@ -9311,11 +9300,11 @@ void CSceneStateGame::FUN_141736240(CInPacket& packet)
         break;
     case 4:
     {
-        MS2Ptr<Unk_SnowmanContext> spSnowman = ((class Unk_SSG1c0d90*)FUN_1401c0d90())->FUN_14047d050();
+        MS2Ptr<SnowmanContext> spSnowman = ((CGameRule*)FUN_1401c0d90())->GetSnowman();   // C3: was Unk_SSG1c0d90::FUN_14047d050
         if (spSnowman.get() != 0)
         {
-            strImage = StringFormat(L"./Data/Resource/Image/ETC/snow_{0}.png", spSnowman->m_strName);
-            strKey = StringFormat(L"s_snowman_{0}_promotion_reward", spSnowman->m_strName);
+            strImage = StringFormat(L"./Data/Resource/Image/ETC/snow_{0}.png", spSnowman->m_strTitle);
+            strKey = StringFormat(L"s_snowman_{0}_promotion_reward", spSnowman->m_strTitle);
             break;
         }
     }
@@ -9627,7 +9616,7 @@ void CSceneStateGame::FUN_14171a2e0(CInPacket& packet)
     CPet* pObj = ((CPet*)((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bd13a0(nId));
     if (pObj == 0)
         return;
-    int n = pObj->FUN_141093270()->m_n60;
+    int n = static_cast<CNpc*>(static_cast<Unk_SSGNpc*>(pObj))->GetNpcData()->m_model.m_nSpawnAlphaAnimation;
     if (n != 0)
         pObj->vfunc_40(1.0f, 0.0f, 0.0f, 0.5f);
     static_cast<CNpc*>(static_cast<Unk_SSGNpc*>(pObj))->FUN_1410932c0(false);
@@ -9641,7 +9630,7 @@ void CSceneStateGame::FUN_14171a2e0(CInPacket& packet)
         NiPoint3 pos(static_cast<const efd::Point3&>(pTarget->vfunc_18()));
         reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(pos);
         Unk_SSGRot rot;
-        FUN_140a33240(&rot, &DAT_143a09600);
+        reinterpret_cast<NiMatrix3*>(&rot)->NiMatrix3::NiMatrix3(reinterpret_cast<const efd::Matrix3&>(DAT_143a09600));
         xf.m_rotate = rot;
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143ae7990), CString(""), 1, reinterpret_cast<NiTransform*>(&xf), 1.0f, 0);
     }
@@ -9676,7 +9665,7 @@ void CSceneStateGame::OnTombstone(CInPacket& packet)
                 NiPoint3 pos(static_cast<const efd::Point3&>(pOwner->vfunc_18()));
                 reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(pos);
                 Unk_SSGRot rot;
-                FUN_140a33240(&rot, &DAT_143a09600);
+                reinterpret_cast<NiMatrix3*>(&rot)->NiMatrix3::NiMatrix3(reinterpret_cast<const efd::Matrix3&>(DAT_143a09600));
                 xf.m_rotate = rot;
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143ae7998), CString(""), 1,
                     reinterpret_cast<NiTransform*>(&xf), 1.0f, 0);
@@ -9734,7 +9723,7 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
         NiPoint3 pos(static_cast<const efd::Point3&>(pOwner->vfunc_18()));
         reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(pos);
         Unk_SSGRot rot;
-        FUN_140a33240(&rot, &DAT_143a09600);
+        reinterpret_cast<NiMatrix3*>(&rot)->NiMatrix3::NiMatrix3(reinterpret_cast<const efd::Matrix3&>(DAT_143a09600));
         xf.m_rotate = rot;
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143ae7988), CString(""), 1, reinterpret_cast<NiTransform*>(&xf), 1.0f, 0);
     }
@@ -10228,7 +10217,7 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
                 if (spCur == 0)
                 {
                     spCur.AssignRaw(new UserUGCMapInfo);
-                    pMyPC->FUN_141524880(spCur);
+                    pMyPC->FUN_141524880(reinterpret_cast<const MS2Ptr<UserUGCMapInfo>&>(spCur));
                 }
                 else if (pMyPC->HasNoHome() == 0)
                 {
@@ -11331,10 +11320,6 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14170FDA0, CSceneStateGame, OnAddUser, 8209, 0xDFA14B88);
 
 // ---- 0x7e: field object proxies (mode 3..5 players, 6..8 template objects, 9..11 spawn points) -----------------
-class NpcDataTableCli { public: MS2Ptr<NpcDataCli> Find(unsigned nId); };   // member view (npcdatacli.h clashes with the local CNpcData)
-template <> MS2Ptr<NpcDataCli>& MS2Ptr<NpcDataCli>::operator=(const MS2Ptr<NpcDataCli>&);   // 0x140a4fe50
-template <> NpcDataCli* MS2Ptr<NpcDataCli>::get() const;                              // 0x140a4ff10
-template <> MS2Ptr<NpcDataCli>::~MS2Ptr();                                            // 0x1406d5390
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 class Unk_SSGProxyListener
 {
@@ -11368,7 +11353,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         spProxy->m_c0 = packet.ReadUnicodeString();
         spProxy->m_c8 = packet.ReadInt32();
         spProxy->m_cc = (unsigned short)packet.ReadInt16();
-        spProxy->m_d0.FUN_140267e70(static_cast<CInputStream&>(packet));
+        reinterpret_cast<Unk_IntTriple&>(spProxy->m_d0).ReadFrom(static_cast<CInputStream&>(packet));
         if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
             spProxy->m_50 = "";
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
@@ -11947,7 +11932,7 @@ MS2_REPLACE_METHOD(0x141739450, CSceneStateGame, FUN_141739450, 1057, 0x227E65F0
 
 
 void FUN_1401d3700(CString& str);                           // normalise a name
-Unk_Int3 FUN_1408a1430(efd::Point3 kPos);                   // the cube cell of a world position
+Unk_Int3 FUN_1408a1430(NiPoint3 kPos);                      // the cube cell of a world position (C3: actionkeyobject.cpp's declaration)
 
 // Packet 0x73: named field objects (state sync, remove).
 // @0x141729250
@@ -11998,7 +11983,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
                     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
                     efd::Point3 kPos = efd::Point3::ZERO;
                     pEntity->GetPropertyValue(0xfd95ca52, kPos);
-                    Unk_Int3 kCell = FUN_1408a1430(kPos);
+                    Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
                     ((CubeMapInformationService*)(spService).operator->())->FUN_1410c4b50(kCell, 0);
                     ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5830(strName);
                 }
@@ -12298,7 +12283,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
         else if (nType == 2)
         {
             int nTimeMode = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pOwner));
-            int nStartTick = Unk_ServerClock::GetInstance()->FUN_1414732f0(nTimeMode);
+            int nStartTick = reinterpret_cast<CMainSystem*>(Unk_ServerClock::GetInstance())->GetTimeByKind(nTimeMode);
             MS2Ptr<Unk_SkillMagicInfo> spInfo(new Unk_SkillMagicInfo);
             spInfo->m_nTagId = packet.ReadInt64();
             spInfo->m_nSkillId = packet.ReadInt32();

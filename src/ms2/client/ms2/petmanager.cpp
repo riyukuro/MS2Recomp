@@ -108,8 +108,6 @@ class Unk_PmWorld
 public:
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-class Unk_PetRowTable : public CPtred { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 struct Unk_PmConfig { char m_pad_0[0x328]; CString m_strLevelUpEffect; };      // +0x328 the pet level up effect
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class CEquipment   // C3: member view for the former free stand-ins
@@ -172,9 +170,9 @@ void CPetInventory::ResetSlots()
         void* pPet = pPlayer->FUN_141676a10();
         if (pPet != 0)
         {
-            MS2Ptr<Unk_PetRow> spRow = static_cast<CPet*>(pPet)->GetRow();
+            MS2Ptr<CPetData> spRow = static_cast<CPet*>(pPet)->GetRow();
             if (spRow.get() != 0)
-                nSlots = spRow->m_nSlots;
+                nSlots = spRow->m_nSlotNum;
         }
     }
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -809,9 +807,9 @@ void CPetManager::OnPetSummoned(CInPacket& in)
         Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
         {
-            MS2Ptr<Unk_PetRow> spRow = ((class CPetManager*)FUN_140535320())->GetSummonedPetRow();
+            MS2Ptr<CPetData> spRow = ((class CPetManager*)FUN_140535320())->GetSummonedPetRow();
             if (spRow.get() != 0)
-                ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(1, spRow->m_nF18 == 1, m_nAuto);
+                ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(1, spRow->m_nType == 1, m_nAuto);
         }
     }
 }
@@ -1142,15 +1140,15 @@ CCPetInfoPacket::Info* CPetManager::GetInfo()
     return &m_info;
 }
 // @0x140c8b470
-MS2Ptr<Unk_PetRow> CPetManager::GetSummonedPetRow()
+MS2Ptr<CPetData> CPetManager::GetSummonedPetRow()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetSummonUid());
     if (spItem == 0)
-        return MS2Ptr<Unk_PetRow>(0);
+        return MS2Ptr<CPetData>(0);
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
     if (spData == 0)
-        return MS2Ptr<Unk_PetRow>(0);
-    return FUN_14052d210()->FUN_1407290f0(spData->GetPetId());
+        return MS2Ptr<CPetData>(0);
+    return TSingleton<CPetDataTable>::GetInstance()->Find(spData->GetPetId());
 }
 // @0x140c8b5c0
 void* CPetManager::GetPlayerPet(int nObjectId)

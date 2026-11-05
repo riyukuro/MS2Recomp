@@ -186,7 +186,7 @@ int UILevelUpPackageDialog::FUN_140ea4b70()
         return 0;
     BOOL bAllIdle = TRUE;
     for (size_t i = 0; i < ids.GetCount(); i++) {
-        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(ids[i]);
+        MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(ids[i]);
         if (spQuest.IsNull())
             return 0;
         if (spQuest->IsActive() != 0)
@@ -253,7 +253,7 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
 // @0x140ea52d0
 void UILevelUpPackageDialog::SendQuest(int nQuest)
 {
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -278,7 +278,7 @@ void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     CString strState;
     if ((bool)spQuest.get() && spQuest->IsComplete() != 0)
         strState = "active";

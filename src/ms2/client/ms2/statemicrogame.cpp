@@ -8,7 +8,6 @@
 // MS2-PIN: ??8?$MS2Ptr@VRpsGameData@@@@QEBA_NPEAVRpsGameData@@@Z 0x140b8bb30 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VUnk_StateArg22@@@@QEBA_NPEAVUnk_StateArg22@@@Z 0x140b8bbf0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_MgDanceEvent@@@@AEAAXPEAX@Z 0x140b8c090 ; merge-bind
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameCoupleDance@@@@YAPEAVUIMicroGameCoupleDance@@H@Z 0x140b8b5c0
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameCoupleDanceMessage@@@@YAPEAVUIMicroGameCoupleDanceMessage@@H@Z 0x140b8b660
@@ -48,6 +47,7 @@
 #include "ms2/placeholder/formatstringid.h"      // C3: FormatStringId<...>
 #include "ms2/placeholder/wcformat.h"            // C3: FUN_14028dfa0<...>
 #include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::GetCoupleDance
+#include "ms2/commonfiles/gameeventvalue.h"           // C3: CGameEventValueCoupleDance::Get
 #include "ms2/client/ms2/uiemoticon.h"              // C3: UIEmoticon::Entity (the slot 83 component)
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
@@ -122,19 +122,6 @@ struct Unk_MgDanceText
     CStringW m_strMessage;                               // +0x08 the message
 };
 MS2_CHECK_SIZE(Unk_MgDanceText, 0x10);
-class Unk_MgDanceEvent : public CPtred
-{
-public:
-    // C3: the stage text is the real CoupleDanceContext::GetStep (0x140402080)
-    char m_pad_18[0x30 - sizeof(CPtred)];
-    int m_nMinScore;                                     // +0x30 the score needed for the good result
-    int m_nStages;                                       // +0x34 the number of stages
-    char m_pad_38[0x80 - 0x38];
-    std::vector<CStringW> m_aDances;                     // +0x80
-};
-MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_nMinScore, 0x30);
-MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_aDances, 0x80);
-class Unk_MgEventHolder { public: MS2Ptr<Unk_MgDanceEvent> FUN_140428700(); };
 
 // Actor helpers (the bodies are in the earlier objs).
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
@@ -153,12 +140,12 @@ class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);
-    bool FUN_14168a770(const efd::Point3* pPoint);
-    int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, Vector3* pNormal, int nA);
+    bool FUN_14168a770(const Vector3* pPoint);
+    int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);   // 0x14168a310
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class Unk_MgEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
-// The ray cast record FUN_14168a310 fills (0x68, ctor 0x140ad4440; as in state.cpp, physxhelper.h needs NOMINMAX).
+// The ray cast record RayCastFixedDirection fills (0x68, ctor 0x140ad4440; as in state.cpp, physxhelper.h needs NOMINMAX).
 struct Unk_RayCastInfo
 {
     Unk_RayCastInfo();                                  // 0x140ad4440
@@ -649,11 +636,11 @@ bool FUN_140b884e0(Vector3& kPoint)
     float fDist = 0.0f;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const efd::Point3*)&kPoint))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const Vector3*)&kPoint))
         return false;
     Vector3 kDown = DAT_143b01a60;
-    Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    Unk_RayCastInfo kHit;           // 0x68: RayCastFixedDirection fills it up to the hit normal (+0x64)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
@@ -869,14 +856,14 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
         return;
     }
     FUN_140b8b020(aStages);
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
     // The exe tests the stage count unsigned.
-    if (!((unsigned int)spEvent->m_nStages > 0))
+    if (!(spEvent->m_maxRound > 0))
     {
         MS2_ASSERT_AT(0x3bd, 0);
         pRider->vfunc_59(1, 0, 0, 0);
@@ -886,7 +873,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
         return;
     m_spDance->m_b1c = false;
     pRider->FUN_14166cc40(0xaa);
-    Unk_MgDanceText* pText = (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(0);
+    Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(0);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
@@ -909,7 +896,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -929,13 +916,13 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
     }
     pUI->Hide();
     m_nStage = nStage;
-    if (nDance < 0 || nDance >= (int)spEvent->m_aDances.size())
+    if (nDance < 0 || nDance >= (int)spEvent->m_dances.size())
     {
         MS2_ASSERT_AT(0x451, 0);
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    if (nPartnerDance < 0 || nPartnerDance >= (int)spEvent->m_aDances.size())
+    if (nPartnerDance < 0 || nPartnerDance >= (int)spEvent->m_dances.size())
     {
         MS2_ASSERT_AT(0x458, 0);
         pRider->vfunc_59(1, 0, 0, 0);
@@ -944,11 +931,11 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
     m_spDance->m_b1c = bGood;
     if (bGood)
         m_nScore = m_nScore + 1;
-    Unk_MgDanceText* pText = (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(3);
+    Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(3);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
-    m_spDance->m_str = (const wchar_t*)spEvent->m_aDances[nDance];
+    m_spDance->m_str = (const wchar_t*)spEvent->m_dances[nDance];
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
     pRider->FUN_14166cc40(0xad);
@@ -997,13 +984,13 @@ void StateMicroGameCoupleDance::FUN_140b89ed0(double)
 // @0x140b89f90
 bool StateMicroGameCoupleDance::FUN_140b89f90()
 {
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0x2f1, 0);
         return false;
     }
-    return m_nStage >= spEvent->m_nStages - 1;
+    return m_nStage >= (int)spEvent->m_maxRound - 1;
 }
 
 // @0x140b8a060
@@ -1012,7 +999,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1074,7 +1061,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1083,7 +1070,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
     if (m_spDance == 0)
         return;
     m_spDance->m_b1c = false;
-    Unk_MgDanceText* pText = (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(1);
+    Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(1);
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
         pMessage->FUN_140e65ce0(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
@@ -1107,7 +1094,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1115,7 +1102,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
     }
     if (m_spDance == 0)
         return;
-    Unk_MgDanceText* pText = (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(2);
+    Unk_MgDanceText* pText = (Unk_MgDanceText*)&spEvent->GetStep(2);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
     m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     UIMicroGameCoupleDance* pUI = Unk_MgGetDialog<UIMicroGameCoupleDance>(0x4f70);
@@ -1144,7 +1131,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1156,7 +1143,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
         return;
     }
     // The exe copies the picked text once more before using it.
-    Unk_MgDanceText* pPick = m_spDance->m_b1c ? (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(4) : (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(5);
+    Unk_MgDanceText* pPick = m_spDance->m_b1c ? (Unk_MgDanceText*)&spEvent->GetStep(4) : (Unk_MgDanceText*)&spEvent->GetStep(5);
     Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
@@ -1181,14 +1168,14 @@ void StateMicroGameCoupleDance::FUN_140b8acc0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
     // The exe copies the picked text once more before using it.
-    Unk_MgDanceText* pPick = m_nScore >= spEvent->m_nMinScore ? (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(7) : (Unk_MgDanceText*)&reinterpret_cast<CoupleDanceContext*>(spEvent.operator->())->GetStep(6);
+    Unk_MgDanceText* pPick = m_nScore >= (int)spEvent->m_goodEndCount ? (Unk_MgDanceText*)&spEvent->GetStep(7) : (Unk_MgDanceText*)&spEvent->GetStep(6);
     Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)

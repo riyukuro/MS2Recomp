@@ -15,6 +15,7 @@
 #include <afx.h>
 
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/billboardinfo.h"
@@ -23,10 +24,6 @@
 
 class CInPacket;
 class CMsgBoxData;
-
-// A button of the movie ("m_homeButton" / "m_removeButton" / "m_installButton"): an AS display object. Its enable call
-// is ASMovieClip::FUN_1422c1fe0 and its click callback ASButton::FUN_1422ce240.
-class Unk_BbButton : public ASDisplayObject {};
 
 class WorldService;
 
@@ -60,9 +57,9 @@ private:
     __int64 m_nItemUid;                                                     // +0x208 the billboard item being installed
     MS2Ptr<ASMovieClip> m_customerMovie;                                    // +0x210 "customerMovie"
     MS2Ptr<ASMovieClip> m_advertiserMovie;                                  // +0x220 "advertiserMovie"
-    MS2Ptr<Unk_BbButton> m_homeButton;                                      // +0x230 "m_homeButton"
-    MS2Ptr<Unk_BbButton> m_removeButton;                                    // +0x240 "m_removeButton"
-    MS2Ptr<Unk_BbButton> m_installButton;                                   // +0x250 "m_installButton"
+    MS2Ptr<ASButton> m_homeButton;                                          // +0x230 "m_homeButton"
+    MS2Ptr<ASButton> m_removeButton;                                        // +0x240 "m_removeButton"
+    MS2Ptr<ASButton> m_installButton;                                       // +0x250 "m_installButton"
 };
 MS2_CHECK_SIZE(UIItemBillBoardDialog, 0x260);
 MS2_CHECK_OFFSET(UIItemBillBoardDialog, m_info, 0x178);

@@ -12,6 +12,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cptred.h"
+#include <efd/utf8string.h>   // C3: efd::utf8string::operator= (0x1409a10d0)
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"  // the two element vectors the range assigns take
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -138,7 +139,6 @@ struct Unk_Block12
 {
     char m_b[12];
 };
-void FUN_1409a10d0(void* pDst, const void* pSrc);
 
 class Unk_Row3c
 {
@@ -146,7 +146,7 @@ public:
     // @0x141126970
     Unk_Row3c& operator=(const Unk_Row3c& o)
     {
-        FUN_1409a10d0(&m_base, &o.m_base);
+        *reinterpret_cast<efd::utf8string*>(&m_base) = *reinterpret_cast<const efd::utf8string*>(&o.m_base);   // C3: was free FUN_1409a10d0
         m_block = o.m_block;
         *reinterpret_cast<efd::Point3*>(&m_pos) = *reinterpret_cast<const efd::Point3*>(&o.m_pos);
         return *this;

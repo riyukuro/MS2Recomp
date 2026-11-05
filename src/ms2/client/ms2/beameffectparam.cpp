@@ -34,7 +34,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (point attribute)
 float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
@@ -150,7 +150,7 @@ bool BeamPointCurveInfo::vfunc_1(Unk_140165cf0* pNode)
         return false;
     if (!BeamInfo::vfunc_1(pNode))
         return false;
-    if (FUN_140874670(pNode, "passThroughPoint", m_kPassThroughPoint) != 0)
+    if (XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "passThroughPoint", reinterpret_cast<efd::Point3&>(m_kPassThroughPoint)) != 0)
         return false;
     return true;
 }

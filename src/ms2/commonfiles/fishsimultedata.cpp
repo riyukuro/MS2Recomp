@@ -47,7 +47,7 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
 template <class C> void XmlSplit(const CString&, C&, const char*);    // split into numbers
-void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);   // split a list of ids
+void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 class CReservedWordTable { public: void ReplaceBoldWords(CStringW&); };   // post-process a UI text
 
 // The unit's exe globals are in symbols-manual.tsv; the hook DLL binds the exe's.

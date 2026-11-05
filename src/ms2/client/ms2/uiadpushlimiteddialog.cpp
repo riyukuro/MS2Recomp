@@ -88,7 +88,6 @@ class Unk_LpWorld : public CMeratMarketMan
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
-void FUN_1409bc4f0(ASMeratMarketProductBase* pProduct, MS2Ptr<ShopBannerInfo> spBanner);   // set the banner (the banner is the Unk_MeratBanner of the AS side)
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
 int FUN_14069c3e0(int nType);                                               // currency type -> payment flag
 int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spItem, AScript* pBuyBtn);       // the price kind of a click
@@ -134,7 +133,7 @@ void UIAdPushLimitedDialog::OnLoadComplete()
         bool bMinimize = false;
         ASMeratMarketLimitedProduct product(FUN_1422db730());
         if (m_spBanner.get() != 0)
-            FUN_1409bc4f0(&product, m_spBanner);
+            product.SetBanner(m_spBanner);
         {
             MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
             product.vfunc_1(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spItem), 0);

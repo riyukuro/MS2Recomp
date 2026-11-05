@@ -28,6 +28,7 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetremakeoption.cpp"
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "tabcontentspetremakeoption.h"
@@ -83,6 +84,7 @@ static CStringW s_remakeOptionBindPet(L"remakeOptionBindPet");
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/ascript.h"
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -92,34 +94,14 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #endif
 
 // ---- unit-local placeholders (the names of the classes shared with tabcontentspetevolution.cpp must stay identical:
-// the Unk_PetButton / Unk_PetItemBag members it instantiates are the ones this unit calls) ----
+// the ASButton / ASTileList members it instantiates are the ones this unit calls) ----
 using ATL::CAtlArray;
 typedef MS2Ptr<CItem> ItemPtr;
 typedef TabContentsPetRemakeOption::IdCount IdCount;
 
-// A pet menu button (m_submit, m_debug, ...): a movie clip with a frame setter and a label.
-class Unk_PetButton : public ASMovieClip
-{
-public:
-    Unk_PetButton(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetButton, 0x88);
-
-// The item bag control inside a section clip.
-class Unk_PetItemBag : public ASMovieClip
-{
-public:
-    Unk_PetItemBag(const Scaleform::GFx::Value& v, int nMovieId);       // 0x1422cf330
-#define PB_V(n) virtual void vfunc_##n();
-    PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
-#undef PB_V
-    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetItemBag, 0x88);
+// The item bag control inside a section clip is an ASTileList. Its binder specialization is defined in
+// tabcontentspetevolution.cpp.
+template <> MS2Ptr<ASTileList> AScript::FUN_140accef0<ASTileList>(const CString& strName);
 
 // CItem::FUN_140527840's record: the item data (its <function> name at +0x290 and arguments at +0x2b0).
 class Unk_ItemEquipData : public CItemData {};
@@ -181,7 +163,6 @@ public:
     bool IsDebugMode();
 };
 
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 // The pet system dialog (window 0x4f38) and the pet socket page (0x2711).
@@ -198,7 +179,6 @@ public:
 // The item of an uid in the inventory or the equipment.
 ItemPtr FUN_1419be700(unsigned __int64 uid);
 // CItem members the header declares with another signature.
-int FUN_140526470(CItem* pItem, unsigned nMode);                        // the item may be remade in nMode
 int FUN_14053feb0(int nItemId);                                         // the default rank of an item id
 // The CItem sub-objects: the binding state (CItemTransfer) and the status record (its option at +0x18).
 class Unk_ItemOwnerRef : public CItemTransfer {};
@@ -308,7 +288,7 @@ void PetRemakeOptionPetCard::vfunc_4()
         m_strBag.Empty();
     }
     m_strBag = "PetRemakeOptionPetCard";
-    if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> bag = card->FUN_140accef0<ASTileList>("m_itemBag"))
     {
         CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140b95220(ids);
@@ -357,7 +337,7 @@ void PetRemakeOptionPetIngredient::vfunc_4()
     if (ingredient == 0)
         return;
     {
-        if (MS2Ptr<Unk_PetItemBag> bag = ingredient->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+        if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
         {
             CAtlArray<IdCount> items;
             m_pOwner->FUN_140b95250(items);
@@ -415,20 +395,20 @@ void PetRemakeOptionBoard::vfunc_3()
     if (board == 0)
         return;
     {
-        if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_submit");
-            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
     bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
     {
-        if (MS2Ptr<Unk_PetButton> debug = board->FUN_140acce30<Unk_PetButton>("m_debug"))
+        if (MS2Ptr<ASButton> debug = board->FUN_140acce30<ASButton>("m_debug"))
             debug->vfunc_4(bDebug);
     }
     bDebug = false;
     {
-        if (MS2Ptr<Unk_PetButton> compare = board->FUN_140acce30<Unk_PetButton>("m_compareEnchant"))
+        if (MS2Ptr<ASButton> compare = board->FUN_140acce30<ASButton>("m_compareEnchant"))
             compare->vfunc_4(bDebug);
     }
     {
@@ -447,7 +427,7 @@ void PetRemakeOptionBoard::vfunc_4()
     if (board == 0)
         return;
     {
-        if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
             reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(0);
     }
     board->Invoke("ClearData");
@@ -489,10 +469,10 @@ void PetRemakeOptionBoard::vfunc_6(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
     obj.FUN_1407cb9c0("selectedStatIndex", nSelected);
     board->Invoke("setRemakeResult", obj.FUN_1422bb870());
     {
-        if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_apply");
-            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
 }
@@ -532,10 +512,10 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
     board->Invoke("selectComplete", obj.FUN_1422bb870());
     m_pOwner->FUN_140b96960(ItemPtr(picked));
     {
-        if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         {
             CStringW strKey(L"s_pet_remake_option_retry");
-            reinterpret_cast<MS2Ptr<ASButton>&>(submit)->FUN_1422cdfb0(GetStringCommonByKey(strKey));
+            submit->FUN_1422cdfb0(GetStringCommonByKey(strKey));
         }
     }
 }
@@ -576,7 +556,7 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     obj.FUN_1407cbb20("remakeCount", strCount);
     unsigned nFrame = (FUN_140b937c0(obj, ItemPtr(pet)) != 0 || ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode() != 0) ? 1 : 0;
     {
-        if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
             reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(nFrame);
     }
     unsigned nOptionCount = 0;
@@ -626,7 +606,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     int nRemakeCount = item->FUN_140527300();
     CItemRemakeOptionIngredient ingredient;
     MS2Ptr<CItemData> data(item->FUN_140527840());
-    MS2Ptr<CPetData> pet = ((class CPetDataTable*)FUN_14052d210())->Find(item->FUN_140527840()->GetPetId());
+    MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->FUN_140527840()->GetPetId());
     if (pet == 0)
         return 0;
     ((class CItemOptionTable*)FUN_140166430())->CalcPetRemakeCost(nRemakeCount, item->GetRarity(), ingredient);
@@ -1092,7 +1072,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    if (FUN_140526470(pet.operator->(), 2) == 0)
+    if (pet.operator->()->FUN_140526470(2) == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_pet_remake_error_server_impossible");
         FUN_1412751f0(strMsg, 1, 1);
@@ -1172,7 +1152,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_remakeOptionIngredient");
         if (ingredient)
         {
-            if (MS2Ptr<Unk_PetButton> bag = ingredient->FUN_140accef0<Unk_PetButton>("m_itemBag"))
+            if (MS2Ptr<ASButton> bag = ingredient->FUN_140accef0<ASButton>("m_itemBag"))
                 reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(1);
         }
     }
@@ -1181,7 +1161,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_remakeOptionIngredient");
         if (ingredient)
         {
-            if (MS2Ptr<Unk_PetButton> bag = ingredient->FUN_140accef0<Unk_PetButton>("m_itemBag"))
+            if (MS2Ptr<ASButton> bag = ingredient->FUN_140accef0<ASButton>("m_itemBag"))
                 reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(0);
         }
     }
@@ -1268,10 +1248,10 @@ void TabContentsPetRemakeOption::FUN_140b96ca0()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<CPetData> pet = ((class CPetDataTable*)FUN_14052d210())->Find(item->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->FUN_140527840()->GetPetId());
         if (pet == 0)
             continue;
-        if (FUN_140526470(item.operator->(), 2) == 0)
+        if (item.operator->()->FUN_140526470(2) == 0)
             continue;
         m_petCards.Add(item->GetItemUid());
     }
@@ -1330,7 +1310,7 @@ void TabContentsPetRemakeOption::FUN_140b97170(int nIndex)
     ItemPtr item = FUN_1419be700(uid);
     if (item == 0)
         return;
-    if (FUN_140526470(item.operator->(), 2) == 0)
+    if (item.operator->()->FUN_140526470(2) == 0)
         return;
     m_pet = item;
     m_nPetIndex = nIndex;
@@ -1418,8 +1398,8 @@ void TabContentsPetRemakeOption::OnClickRetry()
     MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>("m_remakeOptionCard");
     if (card)
     {
-        if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
-            reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(m_nPetIndex);
+        if (MS2Ptr<ASTileList> bag = card->FUN_140accef0<ASTileList>("m_itemBag"))
+            bag->SetSelectedIndex(m_nPetIndex);
     }
     FUN_140b96520(2);
     vfunc_2(0xe);
@@ -1490,7 +1470,7 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
         FUN_140b96520(1);
         return;
     }
-    if (FUN_140526470(item.operator->(), 2) == 0)
+    if (item.operator->()->FUN_140526470(2) == 0)
     {
         CStringW strError = FUN_140298ea0(CStringW(L"s_itemremake_error_server_impossible"));
         FUN_1412751f0(strError, 1, 1);
@@ -1518,7 +1498,7 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
     if (board)
     {
         {
-            if (MS2Ptr<Unk_PetButton> submit = board->FUN_140acce30<Unk_PetButton>("m_submit"))
+            if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
                 reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(1);
         }
         CAtlArray<unsigned __int64> ids;

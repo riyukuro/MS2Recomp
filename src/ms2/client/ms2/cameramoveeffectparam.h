@@ -11,7 +11,6 @@ class Unk_CamMoveBits
 {
 public:
     Unk_CamMoveBits() { FUN_140afee90(0); }
-    Unk_CamMoveBits& FUN_140314670(int nPos, bool bValue);     // Set
     // @0x140afee90
     void FUN_140afee90(unsigned char ucValue)                   // Fill
     {

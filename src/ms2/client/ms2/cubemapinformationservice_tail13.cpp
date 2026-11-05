@@ -13,20 +13,20 @@
 #include <ecr/CoreRuntimeMessages.h>
 
 class NoticeCubeInfo;
-namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
+// (egfPhysX::EntityActorData member view: cubemapinformationservice_tail.h)
 
-Unk_CMISPropPtr& Unk_CMISPropPtr::operator=(const Unk_CMISPropPtr& o)
-{
-    if (m_p != o.m_p)
-    {
-        if (m_p != 0)
-            reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->DecRefCount();
-        m_p = o.m_p;
-        if (m_p != 0)
-            reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->IncRefCount();
-    }
-    return *this;
-}
+// (Unk_CMISPropPtr::operator= is gone: the stand-in is efd::SmartPointer<egfPhysX::EntityActorData>, whose SDK operator=
+// is the exe 0x141126090)
+
+
+
+
+
+
+
+
+
+
 
 void Unk_CMISDriveTail13()
 {
@@ -39,7 +39,7 @@ void Unk_CMISDriveTail13()
     { MS2Ptr<SaleStateData> a, b; a = b; }
     { MS2Ptr<UICubeUGCHead> a; a.AssignRaw(0); }
     { MS2Ptr<CFunctionCubeObject> a; a.AssignRaw(0); }
-    { Unk_CMISPropPtr a, b; a = b; }
+    { efd::SmartPointer<egfPhysX::EntityActorData> a, b; a = b; }
     { Unk_PayloadPtr<NoticeCubeInfo> a, b; a = b; }
     { MS2Ptr<CFunctionCubeObject> a; a = 0; }
     { Unk_PayloadPtr<CubeOwner> a; a = 0; }

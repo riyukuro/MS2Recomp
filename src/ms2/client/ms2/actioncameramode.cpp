@@ -145,7 +145,7 @@ CameraMgr* TSingleton<CameraMgr>::GetInstance()
 void Unk_CameraOwner::FUN_140947940(float f)
 {
     if (m_10)
-        m_10->FUN_1409457c0(0x88b558f6, f);
+        reinterpret_cast<Unk_CachedEntity*>(m_10)->SetPropertyValue<float>(0x88b558f6, f);
 }
 
 // Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).

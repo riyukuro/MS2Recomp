@@ -55,13 +55,6 @@ CPushControl::~CPushControl()
         delete m_pCalc;
 }
 
-// The exe's PCBase::FUN_1416725c0 takes the direction by value (pcbase.h binds it as NiPoint3&), so the call goes
-// through a view; the call site copies m_kDir into the outgoing argument slot after fDist * 100.
-struct Unk_PushStepView
-{
-    int FUN_1416725c0(efd::Point3 kDir, float fDist, float fHeight, float fUp);
-};
-
 // @0x1413fcb30
 bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
 {
@@ -86,7 +79,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
                 fUp = -(kPos.z - kHit.z);
         }
     }
-    int nStep = reinterpret_cast<Unk_PushStepView*>(pActor)->FUN_1416725c0(m_kDir, fDist * 100.0f, 150.0f, fUp);
+    int nStep = reinterpret_cast<PCBase*>(pActor)->FUN_1416725c0(reinterpret_cast<NiPoint3&>(m_kDir), fDist * 100.0f, 150.0f, fUp);
     if (nStep == 0 ||
         static_cast<PCBase*>(pActor)->GetPrevState() == 0x20 || m_n34 != 0) {
         efd::Point3 kMove = m_kDir * fDist;

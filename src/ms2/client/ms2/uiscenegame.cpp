@@ -137,11 +137,6 @@ public:
 class Unk_GsDlg2 { public:  };
 class Unk_GsDlg3 : public UIClosetDialog { public:  };
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 UIRecallScrollNotifyDialog* FUN_140bc1870(int nUiId);
 template <class T> T* Unk_SSGGetDialog(int nUiId);
 class UIClosetDialog* FUN_141815ed0();   // C3: was FUN_141815ed0
@@ -239,7 +234,7 @@ MS2_REPLACE_METHOD(0x141ac74f0, UISceneGame, vfunc_49, 298, 0x93FAE665);
 void UISceneGame::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20af0();
+    TSingleton<UITalkManager>::GetInstance()->FUN_141b20af0();
 }
 MS2_REPLACE_METHOD(0x141ac7620, UISceneGame, vfunc_15, 37, 0x043AEAC5);
 
@@ -276,7 +271,7 @@ int UISceneGame::vfunc_13()
         TakeScreenshotJpg(0, 0);
         return 1;
     }
-    return ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20ac0();
+    return TSingleton<UITalkManager>::GetInstance()->FUN_141b20ac0();
 }
 MS2_REPLACE_METHOD(0x141ac7650, UISceneGame, vfunc_13, 467, 0xEE67B3FF);
 
@@ -307,7 +302,7 @@ void UISceneGame::vfunc_56()
     UISceneEntity::vfunc_56();
     if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d) {
         FUN_1422e7a40(0x620001d);
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
     }
     TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)0x4e55);
     TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)0x4e41);
@@ -376,7 +371,6 @@ public:
     virtual void vfunc_59(int a, int b, int c, int d);  // 0x1d8 state change
     virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62();
     virtual int vfunc_63();                             // 0x1f8
-    void FUN_14166d8e0(Vector3 kDir);
 };
 class Unk_GsGround : public CubeMapInformationService { };
 
@@ -546,7 +540,7 @@ void UISceneGameBeautyShop::FUN_141ac8660()
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0) return;
-    pPlayer->FUN_14166d8e0(Vector3(0.0f, -1.0f, 0.0f));
+    reinterpret_cast<PCBase*>(pPlayer)->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));   // C3: PCBase::FUN_14166d8e0 (pcbase.h)
     pPlayer->vfunc_59(0xe, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x141ac8660, UISceneGameBeautyShop, FUN_141ac8660, 160, 0xC0E3A86A);
@@ -556,7 +550,7 @@ void UISceneGameBeautyShop::FUN_141ac8710()
 {
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) {
-        pPlayer->FUN_14166d8e0(Vector3(0.0f, -1.0f, 0.0f));
+        reinterpret_cast<PCBase*>(pPlayer)->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));   // C3: PCBase::FUN_14166d8e0 (pcbase.h)
         reinterpret_cast<PCBase*>(pPlayer)->FUN_14166cc40(0x4d);
         pPlayer->vfunc_59(1, 0, 0, 0);
     }
@@ -570,7 +564,7 @@ void UISceneGameBeautyShop::FUN_141ac87b0()
     Unk_CameraFlyBy param;
     param.m_nKind = 1;
     param.m_fDuration = 0.8f;
-    param.m_from.m_0 = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+    param.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
     param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
     param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
     param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
@@ -591,7 +585,7 @@ void UISceneGameBeautyShop::FUN_141ac8900()
         Unk_CameraFlyBy param;
         param.m_nKind = 1;
         param.m_fDuration = 1.0f;
-        param.m_from.m_0 = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+        param.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
         param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
         param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
         param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
@@ -991,7 +985,7 @@ public:
 void FUN_140710590(COutPacket& packet);
 int FUN_141276f80(struct Unk_CommandChat* pCmd);
 void TakeScreenshotPng(int n);
-class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
+class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:

@@ -44,7 +44,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_1403ed280;                                                    // the effect service
 class CEffectService;
@@ -174,7 +174,7 @@ void CGemTombStoneData::TModelAttr::FUN_1405ac670()
 bool CGemTombStoneData::vfunc_1(Unk_140165cf0* pElem)
 {
     const CString& strRotation = "rotation";
-    FUN_140874670(pElem, strRotation, m_ptRotation);
+    XmlGetAttr((class TiXmlElement*)(pElem), strRotation, reinterpret_cast<efd::Point3&>(m_ptRotation));
     m_attrA.FUN_1405ac3b0(pElem, "");
     m_attrB.FUN_1405ac3b0(pElem, "dark_");
     return true;

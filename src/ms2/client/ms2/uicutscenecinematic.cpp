@@ -86,11 +86,6 @@ public:
 CSoundService* FUN_140c9cb10();
 
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table: the key name of a binding
 class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
@@ -279,8 +274,8 @@ void UICutSceneCinematic::SetCinematicKeyMode(bool bOn)
 {
     if (bOn)
     {
-        if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+        if (TSingleton<UITalkManager>::GetInstance()->GetTalking())
+            TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
         ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
     }
     else

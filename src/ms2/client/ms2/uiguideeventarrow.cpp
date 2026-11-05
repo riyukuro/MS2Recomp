@@ -5,12 +5,12 @@
 // MS2-RANGE: 0x142cbe500-0x142cbe5b0 .text$yd
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
-// MS2-PIN: ??1?$MS2Ptr@VUnk_GuideMarker@@@@QEAA@XZ 0x141960970 ; hand: MS2Ptr dtors of identical shape are ambiguous; the minimap marker pointer is the one this unit owns
-// MS2-PIN: ??C?$MS2Ptr@VUnk_GuideMarker@@@@QEBAPEAVUnk_GuideMarker@@XZ 0x141960a80 ; hand: get
-// MS2-PIN: ?IsNull@?$MS2Ptr@VUnk_GuideMarker@@@@QEBA_NXZ 0x141960a10 ; hand: IsNull
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_GuideMarker@@@@CAXPEAVUnk_GuideMarker@@@Z 0x141960b10 ; hand: AddRef
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_GuideMarker@@@@AEAAXXZ 0x141960b30 ; hand: Release
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_GuideMarker@@@@AEAAXPEAX@Z 0x141960b70 ; hand: ReleaseImpl
+// MS2-PIN: ??1?$MS2Ptr@VUIMinimapEntity@@@@QEAA@XZ 0x141960970 ; hand: MS2Ptr dtors of identical shape are ambiguous; the minimap marker pointer is the one this unit owns
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntity@@@@QEBAPEAVUIMinimapEntity@@XZ 0x141960a80 ; hand: get
+// MS2-PIN: ?IsNull@?$MS2Ptr@VUIMinimapEntity@@@@QEBA_NXZ 0x141960a10 ; hand: IsNull
+// MS2-PIN: ?Reference@?$MS2Ptr@VUIMinimapEntity@@@@CAXPEAVUIMinimapEntity@@@Z 0x141960b10 ; hand: AddRef
+// MS2-PIN: ?Release@?$MS2Ptr@VUIMinimapEntity@@@@AEAAXXZ 0x141960b30 ; hand: Release
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUIMinimapEntity@@@@AEAAXPEAX@Z 0x141960b70 ; hand: ReleaseImpl
 // MS2-PIN: ??__Es_guideSound@@YAXXZ 0x140113ff0 ; initpin: a header's look-alike initializer must not make these ambiguous
 // MS2-PIN: ??__Es_sortNames@@YAXXZ 0x140114020
 // MS2-PIN: ??__Es_skill@@YAXXZ 0x1401140e0
@@ -40,6 +40,8 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/portal.h"   // C3: CPortal (WorldService::FUN_141bc2800)
+#include "ms2/placeholder/cproxygameobject.h"   // C3: CProxyGameObject (WorldService::FindProxyObject)
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
@@ -227,12 +229,9 @@ class Unk_GuideItem : public CItem { public: bool FUN_140525f10(); bool FUN_1405
 extern Unk_Inventory g_143ab2a90;
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_GuideInventory* FUN_1405344f0 (calls cast back)
-class Unk_GuideMarker : public CPtred { public: MS2Ptr<ASMovieClip> m_18; };
-class Unk_GuideMinimap : public UISwfEntity { public: MS2Ptr<Unk_GuideMarker> FUN_141a3b510(MS2Ptr<CPtred>); };
+class Unk_GuideMinimap : public UISwfEntity { };   // C3: the minimap dialog (UIMinimapDialog) seen as its UISwfEntity
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
-class Unk_GuideWorld : public WorldService { public: MS2Ptr<CPtred> FUN_141bc9be0(unsigned);};
-class Unk_GuidePortal : public CPtred { public: char m_pad_18[0x134]; unsigned m_14c; };
-class Unk_GuidePortalMgr { public: MS2Ptr<Unk_GuidePortal> FUN_141bc2800(int); };
+class Unk_GuideWorld : public WorldService { };
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
@@ -786,9 +785,9 @@ unsigned UIGuideEventArrowDialog::FUN_14195f7b0(int kind)
         if (actor != 0)
             return ((class GameObject*)(void*)(actor))->FUN_14123c580();
     } else if (kind == 8) {
-        MS2Ptr<Unk_GuidePortal> portal = reinterpret_cast<Unk_GuidePortalMgr*>(((void*)WorldService::GetInstance()))->FUN_141bc2800(m_param);
+        MS2Ptr<CPortal> portal = WorldService::GetInstance()->FUN_141bc2800(m_param);
         if (portal.get() != 0)
-            return portal->m_14c;
+            return portal->m_unk_14c;
     }
     return 0;
 }
@@ -802,14 +801,14 @@ int UIGuideEventArrowDialog::FUN_14195eee0(void* out)
     int objectId = FUN_14195f7b0(m_kind);
     if (objectId == 0)
         return 0;
-    MS2Ptr<CPtred> object = reinterpret_cast<Unk_GuideWorld*>(((void*)WorldService::GetInstance()))->FUN_141bc9be0(objectId);
+    MS2Ptr<CProxyGameObject> object = WorldService::GetInstance()->FindProxyObject(objectId);
     if (object.IsNull())
         return 0;
-    MS2Ptr<Unk_GuideMarker> marker = minimap->FUN_141a3b510(MS2Ptr<CPtred>(object));
+    MS2Ptr<UIMinimapEntity> marker = reinterpret_cast<UIMinimapDialog*>(minimap)->FindEntityByProxy(MS2Ptr<CProxyGameObject>(object));
     if (marker.IsNull())
         return 0;
-    ((Vector3*)out)->x = (float)minimap->FUN_1422dba00()->Invoke("getGlobalX", marker->m_18->FUN_1422bb870()).GetNumber();
-    ((Vector3*)out)->y = (float)minimap->FUN_1422dba00()->Invoke("getGlobalY", marker->m_18->FUN_1422bb870()).GetNumber();
+    ((Vector3*)out)->x = (float)minimap->FUN_1422dba00()->Invoke("getGlobalX", marker->m_clip->FUN_1422bb870()).GetNumber();
+    ((Vector3*)out)->y = (float)minimap->FUN_1422dba00()->Invoke("getGlobalY", marker->m_clip->FUN_1422bb870()).GetNumber();
     ((Vector3*)out)->z = 0.0f;
     if (((Vector3*)out)->x == 0.0f || ((Vector3*)out)->y == 0.0f)
         return 0;

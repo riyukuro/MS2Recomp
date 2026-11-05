@@ -48,11 +48,6 @@ class Unk_GbTalk
 public:
     Unk_GbReward* FUN_141082d60();
 };
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
@@ -147,7 +142,7 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "OnResult") == 0) {
-        reinterpret_cast<UITalkManager*>(((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance()))->SendNpcTalkMode2(0);
+        reinterpret_cast<UITalkManager*>(((class Unk_GbTalk*)TSingleton<UITalkManager>::GetInstance()))->SendNpcTalkMode2(0);
         return 1;
     }
     else if (_stricmp(szMethod, "OnHideComplete") == 0) {
@@ -162,7 +157,7 @@ int UIGambleDialog::FUN_141935710()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        Unk_GbReward* pReward = ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082d60();
+        Unk_GbReward* pReward = ((class Unk_GbTalk*)TSingleton<UITalkManager>::GetInstance())->FUN_141082d60();
         if (reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount() <= 0)
             return 0;
         reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount());

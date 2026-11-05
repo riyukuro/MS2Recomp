@@ -132,7 +132,6 @@ class Unk_BingoSlot : public ASItemSlot
 class Unk_BingoClip : public ASMovieClip
 {
 public:
-    MS2Ptr<Unk_140acd6e0> FUN_140acce30(const CString&);
     MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString&);
 };
 class UIMessageBox { public: void FUN_1419f8120(); };
@@ -145,7 +144,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1401cdae0(ATL::CAtlArray<int>*, int);
 extern Unk_Inventory g_143ab2a90;
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 // Client globals: the account's bingo event record (singleton 0x140302b00 -> member +0xd78).
 class Unk_BingoMgr;
@@ -171,7 +170,7 @@ template <> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CSt
 {
     if (m_30 == 0)
         return MS2Ptr<Unk_140acd6e0>(0);
-    return static_cast<Unk_BingoClip*>(m_30.operator->())->FUN_140acce30(strName);
+    return reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>(strName);
 }
 
 // @0x140bb4a60
@@ -312,7 +311,7 @@ void UIBingoEventDialog::OnLoadComplete()
         }
         else
             text->SetTextW(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
-        MS2Ptr<Unk_140acd6e0> receive = BINGO_CLIP(list)->FUN_140acce30("m_receiveButton");
+        MS2Ptr<Unk_140acd6e0> receive = reinterpret_cast<AScript*>(list.operator->())->FUN_140acce30<Unk_140acd6e0>("m_receiveButton");
         if (receive.IsNull())
             continue;
         reinterpret_cast<ASButton*>(receive.operator->())->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), FUN_140bb9630(i));
@@ -929,7 +928,7 @@ void UIBingoEventDialog::FUN_140bb2720()
         MS2Ptr<ASMovieClip> panel = m_rewardLists[i];
         if (panel == 0)
             continue;
-        MS2Ptr<Unk_140acd6e0> button = BINGO_CLIP(panel)->FUN_140acce30("m_receiveButton");
+        MS2Ptr<Unk_140acd6e0> button = reinterpret_cast<AScript*>(panel.operator->())->FUN_140acce30<Unk_140acd6e0>("m_receiveButton");
         if (button == 0)
             continue;
         int nIndex = i;

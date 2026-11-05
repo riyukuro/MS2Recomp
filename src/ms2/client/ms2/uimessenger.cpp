@@ -340,6 +340,7 @@
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/commonfiles/dynamicactiondata.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -544,17 +545,8 @@ int FUN_141482f00(int nChannel);                                    // the line 
 
 int FUN_141276f80(Unk_CommandChat* chat);                       // sends a chat line
 
-// The search keywords of an emotion (uidynamicactiondialog.cpp's Unk_EmotionKeywords).
-class Unk_MsgEmotionKeywords : public CPtred
-{
-public:
-    char m_pad_18[0x34 - 0x18];
-    int m_nAction;                                                  // +0x34
-    ATL::CAtlArray<CStringW> m_keywords;                            // +0x38
-};
-MS2Ptr<Unk_MsgEmotionKeywords> FUN_140347050(int nEmotionId);
 
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_140d86260();   // C3: was GetClientPlatform
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
@@ -2012,15 +2004,15 @@ bool UIMessenger::FUN_141a148b0(const CStringW& strText)
         strCommand.TrimRight();
         for (size_t i = 0; i < emotions.GetCount(); i++)
         {
-            MS2Ptr<Unk_MsgEmotionKeywords> spKeywords = FUN_140347050(emotions[i]->m_id);
+            MS2Ptr<CDynamicActionData> spKeywords = CDynamicActionData::Find(emotions[i]->m_id);
             if (spKeywords == 0)
                 return false;
-            for (size_t j = 0; j < spKeywords->m_keywords.GetCount(); j++)
+            for (size_t j = 0; j < spKeywords->m_reserved.GetCount(); j++)
             {
-                CStringW strKeyword = spKeywords->m_keywords[j];
+                CStringW strKeyword = spKeywords->m_reserved[j];
                 if (strKeyword.CompareNoCase(strCommand) == 0)
                 {
-                    pPlayer->FUN_141525480(spKeywords->m_nAction, 0);
+                    pPlayer->FUN_141525480(spKeywords->m_nSkillId, 0);
                     return true;
                 }
             }
@@ -2624,10 +2616,10 @@ class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was BlindManager*
 class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 
 // The game options: the community switches and the chat balloon switches.
-class Unk_MbBalloons { public: int FUN_14125c820(int nType); };   // the balloon shows the chat type
+struct Unk_StatusState;
+int FUN_14125c820(const Unk_StatusState* p, int nType);   // the balloon shows the chat type (C3: gameoptionstruct's free function; was a Unk_MbBalloons member)
 
                // UITalkManager: a talk is running
-class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };   // C3: was FUN_140967100
                // ClientLogManager::Flush
 class Unk_MbConfig { public: char m_pad_00[0x60]; CString m_strRoot; };   // +0x60 the client root
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was Unk_MbConfig*
@@ -2645,8 +2637,9 @@ int FUN_141276180(const CString& strSound, const CString& strB);    // plays a s
 void FUN_141275150(CItem* pItem, int nCount, int nOld, int nManyId, int nOneId);   // inventory count message
 void FUN_1412750f0(CItem* pItem, int nSlot, int nManyId, int nOneId);
 CStringW TranslateEnumDungeonGroup(unsigned int nGroupType);                             // the dungeon group name
-CStringW FUN_14183f310(const Unk_1407a5330& line, const CStringW& strText, int nFontSize);   // the html line
-CStringW FUN_141841180(const Unk_1407a5330& line, const Unk_1407a5820& extra, const CStringW& strText, int nFontSize);
+struct Unk_ThMsg; struct Unk_ThWedding;   // C3: texttohtml's names of the line / extra block (Unk_1407a5330 / Unk_1407a5820 here)
+CStringW FUN_14183f310(const Unk_ThMsg& line, const CStringW& strText, unsigned nFontSize);   // the html line
+CStringW FUN_141841180(const Unk_ThMsg& line, const Unk_ThWedding& extra, const CStringW& strText, unsigned nFontSize);
 CStringW FUN_14183f080(const CStringW& strText, int n, unsigned nFontSize);   // the html system line
 CStringW FUN_141841fd0(CStringW strText, unsigned nFontSize);            // the html notice line
 CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nFontSize);   // the html item link
@@ -2957,11 +2950,11 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
             return;
         Unk_1407a5820 extra;
         FUN_1407a5960(extra, packet);
-        strHtml = FUN_141841180(line, extra, strText, DAT_143adda48.m_nFontSize);
+        strHtml = FUN_141841180(reinterpret_cast<const Unk_ThMsg&>(line), reinterpret_cast<const Unk_ThWedding&>(extra), strText, DAT_143adda48.m_nFontSize);
     }
     else
     {
-        strHtml = FUN_14183f310(line, strText, DAT_143adda48.m_nFontSize);
+        strHtml = FUN_14183f310(reinterpret_cast<const Unk_ThMsg&>(line), strText, DAT_143adda48.m_nFontSize);
     }
     FUN_141a26e00(strHtml, FUN_141482f00(nType));
     FUN_141a271b0(strName, strHtml, FUN_141482f00(nType));
@@ -3755,9 +3748,9 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     PCBase* pSpeaker = ((PCBase*)WorldService::GetInstance()->FUN_141bd1420(strName));
     if (pSpeaker == 0)
         return 0;
-    if (pSpeaker == pMe && ((UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking())
+    if (pSpeaker == pMe && TSingleton<UITalkManager>::GetInstance()->GetTalking())
         return 1;
-    int bShow = reinterpret_cast<Unk_MbBalloons*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->FUN_14125c820(nType);
+    int bShow = FUN_14125c820(reinterpret_cast<const Unk_StatusState*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()), nType);
     CStringW strBalloon;
     if (nType == 7 && bShow)
         strBalloon = GetStringCommon(0xaa7);
@@ -4834,6 +4827,6 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbfeb0-0x142cc01c0 .text$yd
-// MS2-PIN: ??8?$MS2Ptr@VUnk_MsgEmotionKeywords@@@@QEBA_NPEAVUnk_MsgEmotionKeywords@@@Z 0x141a1bd00
+// MS2-PIN: ??8?$MS2Ptr@VCDynamicActionData@@@@QEBA_NPEAVCDynamicActionData@@@Z 0x141a1bd00
 // MS2-PIN: ??8?$MS2Ptr@VTalkTab@MessengerData@@@@QEBA_NPEAVTalkTab@MessengerData@@@Z 0x141a1bcc0
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$MS2Ptr@VChatEmoticonData@@@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@V?$MS2Ptr@VChatEmoticonData@@@@PEAX@std@@@2@QEAU?$_List_node@V?$MS2Ptr@VChatEmoticonData@@@@PEAX@2@_K@Z 0x141a300e0 ; mt7: the list node free in the catch funclets; byte-identical to the allocator deallocate copies, so the name-order guess lost it

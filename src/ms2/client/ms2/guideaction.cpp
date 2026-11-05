@@ -144,10 +144,10 @@ void FUN_141a5d0a0(int bUse);                               // the tutorial weap
 
 class TiXmlElement { public: const char* Attribute(const char* pszName) const; };   // C3: member view
 class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 int Parse_14021abf0(const CStringA& strName);   // the side popup ui type (commonenum.cpp)
 unsigned FUN_141389420(const CStringA& strName, unsigned nDefault);      // the limit kind of a name
-CGuideControllerType FUN_14021ade0(const CStringA& strName);
+int Parse_14021ade0(const CStringA& value);                         // commonenum.cpp: the guide controller type
 MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem);              // the condition of a <condition> element
 int FUN_1413a5570(CGuideCondition* pCond);                               // the condition passes
 
@@ -421,8 +421,8 @@ void CGuideActionEffect::vfunc_2(Unk_140165cf0* pElem)
         cube.m_rotate = DAT_143b01a60;
         cube.m_scale = 1.0f;
         cube.m_handle = 0;
-        FUN_140874670(pCube, "pos", cube.m_pos);
-        FUN_140874670(pCube, "rotate", cube.m_rotate);
+        XmlGetAttr((class TiXmlElement*)(pCube), "pos", reinterpret_cast<efd::Point3&>(cube.m_pos));
+        XmlGetAttr((class TiXmlElement*)(pCube), "rotate", reinterpret_cast<efd::Point3&>(cube.m_rotate));
         XmlGetAttr((class TiXmlElement*)(pCube), "scale", reinterpret_cast<float&>(cube.m_scale));
         m_cubes.Add(cube);
     }
@@ -705,7 +705,7 @@ void CGuideActionUITextBase::vfunc_2(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "entityId", reinterpret_cast<int&>(m_entityId));
     XmlGetAttr((class TiXmlElement*)(pElem), "textId", m_textId);
     XmlGetAttr((class TiXmlElement*)(pElem), "isNotClose", reinterpret_cast<int&>(m_isNotClose));
-    XmlEnumName<CGuideControllerType, FUN_14021ade0>(pElem, "controllerType", m_controllerType);
+    XmlEnumName<int, Parse_14021ade0>(pElem, "controllerType", reinterpret_cast<int&>(m_controllerType));
 }
 MS2_REPLACE_METHOD(0x141384130, CGuideActionUITextBase, vfunc_2, 198, 0xED9DD14F);
 
@@ -802,7 +802,7 @@ void CGuideActionUIArrow::vfunc_2(Unk_140165cf0* pElem)
     m_offset = DAT_143b01a60;
     m_direction = 0;
     m_align = 1;
-    FUN_140874670(pElem, "offset", m_offset);
+    XmlGetAttr((class TiXmlElement*)(pElem), "offset", reinterpret_cast<efd::Point3&>(m_offset));
     XmlGetAttr((class TiXmlElement*)(pElem), "direction", m_direction);
     XmlGetAttr((class TiXmlElement*)(pElem), "align", m_align);
     if (m_entityId == 0)

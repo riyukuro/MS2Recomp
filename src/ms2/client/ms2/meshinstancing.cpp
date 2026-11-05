@@ -17,7 +17,7 @@
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-efd::IBase* FUN_14098c5b0(void* framework);
+class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 efd::Color FUN_1413fa320(egf::Entity*);
@@ -40,9 +40,8 @@ public:
     bool FUN_141bc7b20(unsigned __int64 const&);   // C3: was free FUN_141bc7b20
 };
 ecr::RenderService* FUN_1413f9890();
-class CameraMgr;
+class CameraMgr { public: bool IsSphereInFrustum(const efd::Point3& kPos, float fRadius); };   // C3: view of camera.h (was free FUN_140af0aa0)
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
-bool FUN_140af0aa0(void* cam, const NiPoint3& center, float radius);
 void FUN_14147dae0(NiNode*, bool);
 const efd::utf8string& FUN_14112e120(egf::Entity*);
 
@@ -62,7 +61,7 @@ void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned c
         entity->GetPropertyValue(0x2a7fd9f4, flag2a);
         entity->GetPropertyValue(0xd9f313f2, flag26);
         entity->GetPropertyValue(0x861681cb, flag28);
-        efd::SmartPointer<efd::IBase> guard(FUN_14098c5b0(&DAT_143b059e8));
+        efd::SmartPointer<efd::IBase> guard((efd::IBase*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         capacity = cap;
         flag27 = entity->GetModel()->ContainsModel(0xd8dea70d);
         NiTransform identity;
@@ -114,7 +113,7 @@ void MeshInstancing::vfunc_1() {
 // @0x14147c730
 void MeshInstancing::UpdateIfVisible(double dt) {
     if (!unknown24 && root && (flag26 || dirty)) {
-        if (FUN_140af0aa0(TSingleton<CameraMgr>::GetInstance(), root->GetWorldBound().GetCenter(), root->GetWorldBound().GetRadius()))
+        if (TSingleton<CameraMgr>::GetInstance()->IsSphereInFrustum(reinterpret_cast<const efd::Point3&>(root->GetWorldBound().GetCenter()), root->GetWorldBound().GetRadius()))
             UpdateNodes(dt);
     }
 }

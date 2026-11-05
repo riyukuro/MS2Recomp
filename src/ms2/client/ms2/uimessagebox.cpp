@@ -246,7 +246,7 @@ class CWebBrowserService;
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CPartyManager;
 class CItemLockManager { public: int SendRequestItemLockMode3(); };   // C3: member view (unit_1406125d0.h)
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_MessageBoxShutdown { public: int FUN_1402c4c90(int nId); };
 class Unk_MessageBoxContents { public: void* m_0; Unk_MessageBoxShutdown m_shutdown; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -264,7 +264,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
 
 class Unk_MessageBoxGameOption { public: char m_pad_00[0x10]; __time64_t m_nFuncItemAsk; __time64_t m_nCurrencyAsk; };
-class Unk_MessageBoxGameOptions : public CGameOption { public: Unk_MessageBoxGameOption* FUN_140c9b8b0(); };
+class Unk_MessageBoxGameOptions : public CGameOption { public: };
 
 // Game constants table slots (0x58 bytes each: Common::Constants::Value<T>).
 struct Unk_MessageBoxConstSlot { char m_pad_00[0x58]; };
@@ -341,7 +341,6 @@ public:
 class Unk_MessageBoxWorld
 {
 public:
-    void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<CPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
 };
 extern Unk_Inventory g_143ab2a90;
@@ -1168,7 +1167,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
-            reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_nFuncItemAsk = tNow;
+            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_nFuncItemAsk = tNow;
             reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
         }
         if (FUN_1419fc810(nButton))
@@ -1180,7 +1179,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
-            reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_nCurrencyAsk = tNow;
+            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_nCurrencyAsk = tNow;
             reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
         }
         if (FUN_1419ffe20(nButton))
@@ -1193,7 +1192,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (tokens[0] == s_143af3db0)
     {
-        if (!FUN_140166410()->FUN_14036d570(0xd4))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xd4))
             return 0;
         if (FUN_1419fc140(nButton, strTag))
             return 1;
@@ -1897,7 +1896,7 @@ int UIMessageBox::HandleUseBindEquipItemButton(int nButton)
         int nArg1 = m_data->FUN_141a02e90(1, 0);
         nResult = g_143ab2a90.FUN_140a62270(spItem.get(), nArg0, nArg1, 1);
     }
-    if (FUN_140166410()->FUN_14036d570(0xe8) && nResult == 0 && g_143ab2a90.FUN_140a66f20() == nUid)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe8) && nResult == 0 && g_143ab2a90.FUN_140a66f20() == nUid)
         g_143ab2a90.FUN_140a66f40(0);
     return 1;
 }
@@ -2210,7 +2209,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         if (!pPlayer)
             return 0;
         ATL::CAtlArray<MS2Ptr<CPortal> > portals;
-        reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2c90(pPlayer->vfunc_18(), portals);
+        WorldService::GetInstance()->FUN_141bc2c90(pPlayer->vfunc_18(), &portals);
         if (portals.GetCount() > 0)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);

@@ -36,9 +36,9 @@ public:
     virtual void vfunc_56();
     virtual void vfunc_57();
     virtual void vfunc_58();
-    virtual void vfunc_59();
+    virtual void vfunc_59(void* p, int a, int b);
     virtual void vfunc_60(MS2Ptr<AScript> spBackground);        // 60 the scene's background AS object
-    virtual void vfunc_61();
+    virtual void vfunc_61(MS2Ptr<AScript> spBackground, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual int vfunc_62();
     virtual int vfunc_63();
     virtual void vfunc_64();

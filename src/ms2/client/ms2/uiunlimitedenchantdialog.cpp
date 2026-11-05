@@ -77,12 +77,10 @@ public:
 };
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);              // the inventory item with this uid
-int FUN_140a5f780_1(Unk_Inventory* pInv, int nTag, int nRarity); // how many of the ingredient the player has
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
-MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void FUN_14141f970(const CString& strBag);                       // drop an item bag
-void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items,
-                   MS2Ptr<CItem>(*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int n1, int n2);
+void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
 void FUN_140710590(COutPacket& packet);                          // send
 unsigned __int64 FUN_140718370(const CStringW& str);             // text -> uid
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
@@ -253,7 +251,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 Unk_IngRef ref = ingredients.FUN_14026bdc0(i);
                 const int& nIngredientId = ref->FUN_14026b500();
                 const int& nCount = +ref->m_c;
-                int nHave = FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0);
+                int nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
                 int nIngredientRank = FUN_14053feb0(nIngredientId);
                 CItem* pIngredient = new CItem();   // raw and never released, as in the exe
                 if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
@@ -348,8 +346,8 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
             m_items.Add(spItem);
         }
         FUN_14141f970(GetTypeName());
-        MS2Ptr<CItem> (*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
-        FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x535, 8);
+        MS2Ptr<CItem> (*pfnGetItem)(void*, int) = FUN_141420330;
+        FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x535, 8);
         if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
         {
             reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);

@@ -8,7 +8,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_EsButton;
+class ASButton;
 class ASMovieClip;
 
 class UIEnchantSelectDialog : public UIDialog
@@ -25,9 +25,8 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_EsButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_EsButton>& out);   // 0x140bc6d10 returns by value (hidden return pointer)
 
-    MS2Ptr<Unk_EsButton> m_type1Button;                         // +0x178 "m_type1Button"
-    MS2Ptr<Unk_EsButton> m_type2Button;                         // +0x188 "m_type2Button"
+    MS2Ptr<ASButton> m_type1Button;                             // +0x178 "m_type1Button"
+    MS2Ptr<ASButton> m_type2Button;                             // +0x188 "m_type2Button"
 };
 MS2_CHECK_SIZE(UIEnchantSelectDialog, 0x198);

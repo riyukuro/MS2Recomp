@@ -72,8 +72,8 @@ class Unk_VwWearer : public PC
 };
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-float FUN_140966f00(NiPoint3 kA, Vector3 kB);           // the distance
-float FUN_140966ea0(NiPoint3 kA, Vector3 kB);           // the planar distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -552,7 +552,7 @@ void CUgcViewerBanner::vfunc_1()
     Vector3 kBanner = DAT_143b01a60;
     static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBanner));
     int bPlanar = 0;
-    float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);
+    float fDistance = bPlanar ? FUN_140966ea0(reinterpret_cast<const Vector3&>(kPlayer), kBanner) : FUN_140966f00(reinterpret_cast<const Vector3&>(kPlayer), kBanner);
     float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
         TSingleton<CUgcManager>::GetInstance()->FUN_14187f1f0();

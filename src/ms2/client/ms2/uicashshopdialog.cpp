@@ -127,6 +127,8 @@
 #define MS2_TPTRVALUE_MOVE   // the page slot maps are copied with the add-ref ctor (0x14103b460)
 
 #define MS2_PTR_MOVE_CONVERT
+// The ASUIComponent slot list (validateNow = 24) for the sale/basket list calls.
+#define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/astilelist.h"
 
@@ -191,20 +193,6 @@ public:
     CStringW m_strValue;                                            // +0x38
     CStringW m_strImage;                                            // +0x40
 };
-
-// The list control behind "m_saleProduct" / "m_basketProduct" (the AS list with append).
-class Unk_CashList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
-// Rows are appended with the real ASCoreList::AddItem (0x1422dd230); the list's vtable is still the local view.
 
 class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
@@ -836,13 +824,13 @@ void UICashShopDialog::FUN_141035e40()
 // @0x1410360c0
 void UICashShopDialog::FUN_1410360c0()
 {
-    MS2Ptr<Unk_CashList> spList = FUN_14103a890("m_saleProduct");
+    MS2Ptr<ASTileList> spList = FUN_14103a890("m_saleProduct");
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");
     ASObj header(2);
     ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(header.FUN_1422bb870()))->SetNull();
-    reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(header);
+    spList->AddItem(header);
     Unk_CashPageMap pages(10);
     for (size_t nPage = 1; nPage <= 3; nPage++) {
         TPtrValue<Unk_CashSlotMap> spNew(Unk_GrNewTag(0));
@@ -892,7 +880,7 @@ void UICashShopDialog::FUN_1410360c0()
         size_t nAdded = 0;
         for (POSITION posSlot = spSlots->GetHeadPosition(); posSlot != 0; spSlots->GetNext(posSlot)) {
             MS2Ptr<AScript> spRow = spSlots->GetValueAt(posSlot);
-            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(static_cast<const ASObj&>(*spRow));
+            spList->AddItem(static_cast<const ASObj&>(*spRow));
             nAdded++;
             if (nAdded >= nCapacity)
                 break;
@@ -900,7 +888,7 @@ void UICashShopDialog::FUN_1410360c0()
         for (size_t j = nAdded; j < nCapacity; j++) {
             ASObj filler(2);
             ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value&>(filler.FUN_1422bb870()))->SetNull();
-            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(filler);
+            spList->AddItem(filler);
         }
     }
     spList->vfunc_24(true);
@@ -909,7 +897,7 @@ void UICashShopDialog::FUN_1410360c0()
 // @0x141036ca0
 void UICashShopDialog::FUN_141036ca0()
 {
-    MS2Ptr<Unk_CashList> spList = FUN_14103a890("m_basketProduct");
+    MS2Ptr<ASTileList> spList = FUN_14103a890("m_basketProduct");
     spList->Invoke("resetRenderer");
     int nPayType = 0;
     for (POSITION pos = m_basket.GetHeadPosition(); pos != 0; m_basket.GetNext(pos)) {
@@ -932,7 +920,7 @@ void UICashShopDialog::FUN_141036ca0()
         spRow->FUN_1407cbb20("salePrice", strSale);
         spRow->FUN_1407cbb20("price", strOriginal);
         spRow->FUN_1407cb9c0("tooltip", 1);
-        reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(static_cast<const ASObj&>(*spRow));
+        spList->AddItem(static_cast<const ASObj&>(*spRow));
     }
     spList->vfunc_24(true);
 }
@@ -1402,16 +1390,16 @@ template <class T> MS2Ptr<T> Unk_CashChildFinder::FUN_14103a840(const CString& s
 }
 
 // @0x14103a890
-MS2Ptr<Unk_CashList> UICashShopDialog::FUN_14103a890(const CString& strName)
+MS2Ptr<ASTileList> UICashShopDialog::FUN_14103a890(const CString& strName)
 {
     if (m_30 == NULL)
-        return MS2Ptr<Unk_CashList>(0);
+        return MS2Ptr<ASTileList>(0);
     MS2Ptr<ASDisplayObjectContainer> spContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)m_30));
     if (spContainer == 0) {
         UICASHSHOP_INL_ASSERT_0();
-        return MS2Ptr<Unk_CashList>(0);
+        return MS2Ptr<ASTileList>(0);
     }
-    return static_cast<Unk_CashChildFinder*>(spContainer.operator->())->FUN_14103a840<Unk_CashList>(strName);
+    return static_cast<Unk_CashChildFinder*>(spContainer.operator->())->FUN_14103a840<ASTileList>(strName);
 }
 
 // @0x14103a9d0
@@ -1438,4 +1426,4 @@ template <class T> MS2Ptr<T> Unk_CashChildFinder::FUN_14103a9d0(const Scaleform:
 }
 
 // instantiations
-template MS2Ptr<Unk_CashList> Unk_CashChildFinder::FUN_14103a840<Unk_CashList>(const CString&);
+template MS2Ptr<ASTileList> Unk_CashChildFinder::FUN_14103a840<ASTileList>(const CString&);

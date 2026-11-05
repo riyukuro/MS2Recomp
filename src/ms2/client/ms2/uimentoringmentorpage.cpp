@@ -440,8 +440,6 @@ public:
 };
 class Unk_MentorQuestGlobal { public: void* m_0; void* m_8; Unk_MentorQuestState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
-// The tab control of the mission swf.
-class Unk_MentorTab : public AScript { };      // the "m_tab" ASButtonBar
 // The page script (a movie clip root) with the children it hands out.
 class Unk_MentorMissionScript : public AScript
 {

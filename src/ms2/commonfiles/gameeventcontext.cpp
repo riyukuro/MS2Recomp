@@ -334,8 +334,8 @@ CString FUN_140223380(int result);                    // rps result node name: d
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* rOut, const char* pszSep);  // split into strings
 CString CoupleDanceStepName(int step);
 // Enum name parsers (commonenum.cpp).
-Unk_BlueMarbleSlotType FUN_140218100(const CStringA& name);
-Unk_DungeonCooldownType FUN_1402199e0(const CStringA& name);
+int Parse_140218100(const CStringA& value);                         // commonenum.cpp: the blue marble slot type
+int Parse_1402199e0(const CStringA& value);                         // commonenum.cpp: the dungeon cooldown type
 
 // XmlEnumName (enum attribute given by name): placeholder/xmlattr.h.
 
@@ -563,7 +563,7 @@ BonusGameBlueMarbleSlot::BonusGameBlueMarbleSlot() : m_type((Unk_BlueMarbleSlotT
 // @0x1403fc6a0
 void BonusGameBlueMarbleSlot::Load(Unk_140165cf0* pElem)
 {
-    XmlEnumName<Unk_BlueMarbleSlotType, FUN_140218100>(pElem, "type", m_type);
+    XmlEnumName<int, Parse_140218100>(pElem, "type", reinterpret_cast<int&>(m_type));
     XmlGetAttr((class TiXmlElement*)(pElem), "arg1", reinterpret_cast<int&>(m_arg1));
     XmlGetAttr((class TiXmlElement*)(pElem), "arg2", reinterpret_cast<int&>(m_arg2));
 }
@@ -714,7 +714,7 @@ void DungeonExtraRewardCountCtx::Load(Unk_140165cf0* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dungeonID", reinterpret_cast<unsigned int&>(m_dungeonID));
     XmlGetAttr((class TiXmlElement*)(pElem), "count", reinterpret_cast<unsigned int&>(m_count));
-    XmlEnumName<Unk_DungeonCooldownType, FUN_1402199e0>(pElem, "cooldownType", m_cooldownType);
+    XmlEnumName<int, Parse_1402199e0>(pElem, "cooldownType", reinterpret_cast<int&>(m_cooldownType));
     XmlGetAttr((class TiXmlElement*)(pElem), "cooldownValue", reinterpret_cast<int&>(m_cooldownValue));
 }
 MS2_REPLACE_METHOD(0x1403fd750, DungeonExtraRewardCountCtx, Load, 135, 0x7AA036E1);
@@ -1144,11 +1144,11 @@ void SnowmanContext::Write(COutputStream& out)
         const ATL::CAtlArray<ItemEntity>& items = spSnowman->m_items;
         out.WriteInt16(items.GetCount());
         for (size_t j = 0; j < items.GetCount(); j++)
-            items[j].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
+            const_cast<ItemEntity&>(items[j]).FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
         const ATL::CAtlArray<ItemEntity>& bonusItems = spSnowman->m_bonusItems;
         out.WriteInt16(bonusItems.GetCount());
         for (size_t j = 0; j < bonusItems.GetCount(); j++)
-            bonusItems[j].FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
+            const_cast<ItemEntity&>(bonusItems[j]).FUN_14026b030(reinterpret_cast<Unk_GiftOutput&>(out));
     }
     out.WriteInt64(m_endTime);
 }

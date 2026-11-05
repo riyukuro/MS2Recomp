@@ -22,7 +22,7 @@ using Scaleform::GFx::Video::VideoPC;
 using Scaleform::GFx::Video::VideoVMSupportAll;
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 void* FUN_1422cf0f0();   // the GFx renderer's texture manager
 

@@ -22,7 +22,7 @@
 // MS2-PIN: ??$Call@VUIAttendGiftDialog@@P81@EAAXPEAVGameEventVariable@@@Z@?$DelegateImpl@U?$pair@PEAVUIAttendGiftDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@CAXAEAU?$pair@PEAVUIAttendGiftDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@PEAVGameEventVariable@@@Z 0x141030bc0
 // MS2-PIN: ??$Call@VUIAttendGiftDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIAttendGiftDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIAttendGiftDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141030c00
 // MS2-PIN: ??$?0VUIAttendGiftDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIAttendGiftDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x14102f450
-// MS2-PIN: ?get@?$Unk_AttendPtr@VUnk_AttendReward@@@@QEBAPEAVUnk_AttendReward@@XZ 0x14102ffa0
+// MS2-PIN: ?get@?$MS2Ptr@UItemGift@@@@QEBAPEAUItemGift@@XZ 0x14102ffa0
 // MS2-PIN: ??_GUIBannerAdvertisingDialog@@UEAAPEAXI@Z 0x1410313e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiattendgiftdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -48,6 +48,8 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/gameevent.h"   // C3: GameEvent::GetID
+#include "ms2/commonfiles/itemgift.h"   // ItemGift (GetGiftByDay)
+template <> inline ItemGift* MS2Ptr<ItemGift>::get() const { return m_p; }   // 0x14102ffa0, this unit's COMDAT
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -93,17 +95,6 @@ private:
 };
 MS2_CHECK_SIZE(CItem,0x1a0);
 // One reward entry of an event; the slot data lives in an embedded object at +0x18 with its own vftable.
-class Unk_AttendItem { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
-class Unk_AttendReward : public CPtred { public: Unk_AttendItem m_item; };
-// Smart pointer to a reward: get() is this unit's COMDAT (0x14102ffa0), the rest are shared.
-template<class T> class Unk_AttendPtr {
-public:
-    ~Unk_AttendPtr();
-    T* operator->() const;
-    T* get() const { return m_p; }
-private:
-    void* m_0; T* m_p;
-};
 class GameEventAttendGiftCli : public GameEvent   // C3: member view (gameeventcli.h clashes in this TU)
 {
 public:
@@ -124,12 +115,13 @@ public:
     CMsTime FUN_140ce3ae0();
     CStringW GetTitleWithPoints();
     CStringA GetDesc();
+    MS2Ptr<ItemGift> GetGiftByDay(unsigned nDay);   // C3: was Unk_140ce3510::FUN_140ce3710
 };
 class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
-    Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
 };
 class Unk_140acd6e0 : public ASButton { public:
 };
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 // The scrolling list at +0x178: slots 24/25 take the visibility and the slot array.
 class Unk_140bfc2e0 : public ASDisplayObject { public:
     virtual void pad_6();virtual void pad_7();virtual void pad_8();virtual void pad_9();virtual void pad_10();virtual void pad_11();
@@ -413,7 +405,7 @@ void UIAttendGiftDialog::OnLoadComplete()
     m_buttons.RemoveAll();
     for(unsigned int i=0;i<3;i++) {
         MS2Ptr<Unk_140acd6e0> button;
-        if(FUN_140bc6d10(StringFormat("m_eventButton{0}",i),button).get()) {
+        if(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>(StringFormat("m_eventButton{0}",i),button).get()) {
             button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::SelectEventByIndex),FUN_140bd09d0(i));
             m_buttons.Add(button);
         }
@@ -528,15 +520,15 @@ void UIAttendGiftDialog::FUN_14102da40()
             continue;
         }
         {
-            Unk_AttendPtr<Unk_AttendReward> reward=m_selected->FUN_140ce3710(i);
+            MS2Ptr<ItemGift> reward=m_selected->GetGiftByDay(i);
             if(reward.get()!=0) {
                 unsigned int index=i+1;
-                Unk_AttendItem* it0=&reward->m_item;
-                int id=it0->vfunc_0();
+                ItemAble* it0=&static_cast<ItemAble&>(*reward.operator->());
+                int id=it0->vfunc_o18_0();
                 ASSlot slot(2);
-                Unk_AttendItem* it1=&reward->m_item;
-                Unk_AttendItem* it2=&reward->m_item;
-                slot.FUN_1409c4510(id,it2->vfunc_1(),it1->vfunc_2());
+                ItemAble* it1=&static_cast<ItemAble&>(*reward.operator->());
+                ItemAble* it2=&static_cast<ItemAble&>(*reward.operator->());
+                slot.FUN_1409c4510(id,it2->vfunc_o18_1(),it1->vfunc_o18_2());
                 slot.FUN_1409c0d20("index",index);
                 bool darken=false; bool check=false; bool border=false;
                 if(index<attended) { darken=true; check=true; }
@@ -546,8 +538,8 @@ void UIAttendGiftDialog::FUN_14102da40()
                 slot.FUN_1407cbbe0("isBorder",border);
                 {
                     MS2Ptr<CItem> item(new CItem);
-                    Unk_AttendItem* it3=&reward->m_item;
-                    if(item->FUN_14052b130(id,it3->vfunc_1(),0)) {
+                    ItemAble* it3=&static_cast<ItemAble&>(*reward.operator->());
+                    if(item->FUN_14052b130(id,it3->vfunc_o18_1(),0)) {
                         ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(),8,2);
                         if(tip.FUN_1409e0d40(item.get())) {
                             tip.SetTooltipAlign(1);

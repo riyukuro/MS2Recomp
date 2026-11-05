@@ -32,7 +32,6 @@ public:
     void FUN_1412c32a0(CInPacket& packet);                      // packet case 0: read the notice
     void FUN_1412c3640(CInPacket& packet);                      // packet case 1: the event is over
 
-    MS2Ptr<Unk_GpButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_GpButton>& out);   // bind a button
 
 private:
     MS2_LAYOUT_FRIEND;

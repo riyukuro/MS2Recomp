@@ -10,7 +10,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 
-CNifLoadingService* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 extern int DAT_1439f4a78;
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLoading);
@@ -31,7 +31,7 @@ CSceneStateLoading::~CSceneStateLoading()
 void CSceneStateLoading::OnEnter(int nPrevState)
 {
     DAT_1439f4a78 = -1;
-    FUN_140a0afd0()->PreloadEffectNifs();
+    reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->PreloadEffectNifs();
     CSceneStateBase::OnEnter(nPrevState);
 }
 

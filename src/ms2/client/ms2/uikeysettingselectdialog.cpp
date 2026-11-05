@@ -18,17 +18,14 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"  // C3: was a local member view
 #include "ms2/client/ms2/gameoptioninputdefault.h"  // C3: was a local member view
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> KsClickDelegate;
-
-class Unk_KsButton : public ASButton
-{
-public:
-};
 
 // The click event: the pressed button's index is read from the second pointer (+0x30).
 struct Unk_KsParams { char m_pad[0x30]; void* m_pButton; };
@@ -88,12 +85,12 @@ void UIKeySettingSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)FUN_1409331f0())))->GetLocked() == 0;
-    if (FUN_140bc6d10("m_button1", m_button1))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_button1", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_button1)))
     {
         m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
         m_button1->FUN_1422c1fe0(bOn);
     }
-    if (FUN_140bc6d10("m_button2", m_button2))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_button2", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_button2)))
     {
         m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
         m_button2->FUN_1422c1fe0(bOn);

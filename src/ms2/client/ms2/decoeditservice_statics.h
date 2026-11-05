@@ -4,5 +4,5 @@
 #pragma once
 
 static const efd::Category s_cat(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_1401cd100)
+static Unk_BuddyHandle s_pointer(NULL);

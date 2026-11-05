@@ -13,7 +13,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_GmStartButton;
+class ASButton;
 
 class UIGameModeSelectDialog : public UIDialog
 {
@@ -34,6 +34,6 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_GmStartButton> m_178;                            // +0x178 "m_start"
+    MS2Ptr<ASButton> m_178;                                   // +0x178 "m_start"
 };
 MS2_CHECK_SIZE(UIGameModeSelectDialog, 0x188);

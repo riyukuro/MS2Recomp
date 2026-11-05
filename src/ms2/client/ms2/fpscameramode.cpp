@@ -17,6 +17,9 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
+template <class T> class TSingleton;
+class CameraMgr { public: Vector3 FUN_140a38d00(); void FUN_140a38d90(Vector3 pt); };   // C3: member view (was Unk_CameraManager)
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- unit-local placeholders ----
 
@@ -123,7 +126,7 @@ void CFPSCameraMode::vfunc_9()
         int nCenterY = ((rc.bottom - rc.top) >> 1) + rc.top;
         SetCursorPos(nCenterX, nCenterY);
     }
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x1412214e0, CFPSCameraMode, vfunc_9, 348, 0xC7783C36);
 
@@ -137,7 +140,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
     }
     Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
     m_d8.m_pos = ptEye;
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptNew = g_143b01a60;
@@ -166,7 +169,7 @@ void CFPSCameraMode::vfunc_8(double fTime)
             m_setting.m_c = m_d8.m_pos;
             m_setting.m_18 = m_d8.m_rot;
         }
-        Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
     }
     m_setting.m_c = m_d8.m_pos;
     m_setting.m_18 = m_d8.m_rot;

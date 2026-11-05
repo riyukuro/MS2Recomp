@@ -8,7 +8,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_KsButton;
+class ASButton;
 
 class UIKeySettingSelectDialog : public UIDialog
 {
@@ -23,8 +23,7 @@ public:
     void FUN_140c58690(const Scaleform::GFx::FunctionHandler::Params& params);   // a button was clicked
 
 private:
-    MS2Ptr<Unk_KsButton> m_button1;                             // +0x178 "m_button1"
-    MS2Ptr<Unk_KsButton> m_button2;                             // +0x188 "m_button2"
-    MS2Ptr<Unk_KsButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_KsButton>& out);   // 0x140bc6d10 returns by value (hidden return pointer)
+    MS2Ptr<ASButton> m_button1;                                 // +0x178 "m_button1"
+    MS2Ptr<ASButton> m_button2;                                 // +0x188 "m_button2"
 };
 MS2_CHECK_SIZE(UIKeySettingSelectDialog, 0x198);

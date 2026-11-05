@@ -64,7 +64,6 @@ class CObjectShadow : public NiRefObject
 {
 public:
     CObjectShadow(void* pOwner, int nLodHi, int nLodLo, float fSize, float fAlpha);   // 0x14160fc90 (the owner GameObject)
-    void FUN_14160feb0(int nActive, const efd::Point3& kPos, const efd::Point3& kDir, float fTime, bool bForce);
     bool FUN_14109a720();                                           // 0x14109a720
     bool FUN_141192820();                                           // 0x141192820 the dirty flag
     bool FUN_141192830();                                           // 0x141192830 the enabled flag
@@ -135,8 +134,8 @@ class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 extern Unk_Inventory g_143ab2a90;
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 float FUN_140966f00(Vector3 kA, Vector3 kB);        // the horizontal distance
+void FUN_14160feb0(CObjectShadow* pShadow, int nActive, const void* pPos, const void* pDir, float fTime, bool bForce);   // C3: the real free signature (unit_14160fb10)
 float FUN_140966f00(Vector3 kA, efd::Point3 kB);    // the same, the second point sliced from an NiPoint3
-float FUN_140966f00(Vector3 kA, NiPoint3 kB);       // the same, the second point an NiPoint3 call result
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; NiPoint3::UNIT_Y
@@ -371,7 +370,7 @@ void CDropItem::vfunc_32(bool bForce)
                     nHit = ((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
-            m_spShadow->FUN_14160feb0(nHit, reinterpret_cast<efd::Point3&>(kHit), reinterpret_cast<efd::Point3&>(kNormal), kInfo.m_hitDist, bForce);
+            FUN_14160feb0(m_spShadow.operator->(), nHit, &kHit, &kNormal, kInfo.m_hitDist, bForce);
         }
     }
 }
@@ -513,7 +512,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                 kBase = NiPoint3(kCenter.x, kCenter.y, kCenter.z);
                 vfunc_19(kBase);
                 float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
-                m_f27c = FUN_140966f00(m_posOrigin, NiPoint3(kTargetPos));
+                m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(NiPoint3(kTargetPos))));
 #ifdef __clang__
                 NiPoint3 kOwnerPos = pOwnerPc->vfunc_18();
                 const Vector3& kDirRaw = FUN_141192780(reinterpret_cast<Vector3&>(kBase), reinterpret_cast<Vector3&>(kOwnerPos), true);
@@ -536,7 +535,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             NiPoint3 kDir = efd::Point3::UNIT_Y * kRot;
             float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
             kTargetPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kBase).FUN_14097fd50(reinterpret_cast<Vector3&>(kDir).FUN_14097fc90(fDistance))));
-            m_f27c = FUN_140966f00(m_posOrigin, NiPoint3(kTargetPos));
+            m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(NiPoint3(kTargetPos))));
         }
         NxGroupsMask kMask;
         kMask.bits0 = 0xffffffff;
@@ -1209,7 +1208,7 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
                 vfunc_19(reinterpret_cast<efd::Point3&>(m_arc.m_target.FUN_14097fd50(Vector3(0.0f, 0.0f, fZ))));
 #endif
             }
-            m_f27c = FUN_140966f00(m_posOrigin, vfunc_18()) + 10.0f;
+            m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))) + 10.0f;
         }
     }
     if (m_spItem.get())

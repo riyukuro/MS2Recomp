@@ -108,15 +108,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemEnchantSlotBag);
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-class Unk_1402a9d70
-{
-public:
-    Unk_1402a9d70(int, float, float, float, int);
-    ~Unk_1402a9d70();
-private:
-    void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48;
-};
-MS2_CHECK_SIZE(Unk_1402a9d70, 0x50);
+#include "ms2/placeholder/unk_1402a9d70.h"   // C3: the real ATL::CAtlMap<UINT, CString>
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(ItemInfoSlot);

@@ -24,6 +24,7 @@
 #include "ms2/client/ms2/uiservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uiitemautouseoptiondialog.h"   // C3: UIItemAutoUseOptionDialog::Slot::SetupClassInfo (0x140f50a40)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -32,7 +33,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class ASDialog : public ASDisplayObject { };   // set the position
    // ItemFunctionArgs::GetString
 // efd::ClassInfo (ctor 0x1409f2d20): the setup callback fills a count + 32 parent entries of 0x20 (0x408 bytes).
-void FUN_140f50a40(void*, void*);
 class Unk_IpWorld;
 class Unk_IpActor;
 class Unk_IpUIMgr { public: void FUN_141adc530(int nClass); };
@@ -51,7 +51,7 @@ static CString s_strItemPackageList("itemPackageList");             // @0x1400df
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400dfc60
 static CString s_strSkill("skill");                                 // @0x1400dfd20
 static CString s_strStun("stun");                                   // @0x1400dfd50
-static efd::ClassInfo s_reg(reinterpret_cast<efd::ClassInfo::CLASSINFO_FUNC>(FUN_140f50a40));                            // @0x1400dfd80
+static efd::ClassInfo s_reg(&UIItemAutoUseOptionDialog::Slot::SetupClassInfo);                            // @0x1400dfd80
 
 // @0x140f4cc50
 UIInteriorPreviewDialog::UIInteriorPreviewDialog()

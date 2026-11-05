@@ -199,10 +199,9 @@ Unk_CMISCubeTimer::Unk_CMISCubeTimer()
     m_id = reinterpret_cast<const egf::EntityID&>(DAT_143acf820);
 }
 
-void FUN_141122050(void* p);                             // 0x141122050 the Unk_CMISTree<4097> ctor (the exe calls it, not efd::utf8string())
 struct Unk_CMISDeadString
 {
-    Unk_CMISDeadString() { FUN_141122050(m_buf); }
+    Unk_CMISDeadString() { reinterpret_cast<Unk_CMISTree<4097>*>(m_buf)->Unk_CMISTree<4097>::Unk_CMISTree(); }   // 0x141122050: the exe calls the Unk_CMISTree<4097> ctor, not efd::utf8string()
     ~Unk_CMISDeadString() { reinterpret_cast<efd::utf8string*>(m_buf)->~utf8string(); }
     char m_buf[0x20];
 };

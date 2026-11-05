@@ -20,6 +20,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/client/ms2/additionalcli.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -347,17 +348,6 @@ public:
     unsigned char m_pad_2a8[8];
     unsigned m_nSkillId;                                            // +0x2b0
 };
-class Unk_LsBuff : public CPtred
-{
-public:
-    unsigned FUN_14096d2e0();                                       // the time left in ms (0 when none or elapsed)
-
-    unsigned char m_pad_18[8];
-    unsigned m_nEnd;                                                // +0x20 end tick
-    unsigned char m_pad_24[0xc];
-    __int64 m_nId;                                                  // +0x30
-};
-Unk_LsBuffInfo* FUN_14096d810(Unk_LsBuff* pBuff);                   // the buff's info (the object at +0x68)
 
 class Unk_LsEntityEvents;
 
@@ -377,14 +367,14 @@ public:
     virtual void vfunc_43();                                        // 43 0x140c5f2a0
     virtual int vfunc_48() { return 0x4f73; }                       // 48 0x140c607c0
 
-    void FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff);                  // show a buff (by value: the callee destroys it)
-    MS2Ptr<Unk_LsBuff> GetBuff();                             // the shown buff
+    void FUN_140c5f8f0(MS2Ptr<AdditionalCli> spBuff);                  // show a buff (by value: the callee destroys it)
+    MS2Ptr<AdditionalCli> GetBuff();                          // the shown buff
     CStringW FUN_140c5f9e0();                                       // "mm:ss" left
     void FUN_140c5faf0();                                           // play "end"
     int FUN_140c5fbb0();                                            // the buff ended
     void FUN_140c5fbd0();                                           // bind the skill slot and play "open"
 
-    MS2Ptr<Unk_LsBuff> m_spBuff;                                    // +0x78
+    MS2Ptr<AdditionalCli> m_spBuff;                                 // +0x78
     int m_nPending;                                                 // +0x88 the buff changed, "open" is due
     CString m_strBind;                                              // +0x90 the skill slot's bind id
     Unk_IntervalTimer m_tick;                                              // +0x98

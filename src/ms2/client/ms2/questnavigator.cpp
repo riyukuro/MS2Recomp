@@ -51,19 +51,16 @@ public:
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
-// The tracked quest id lives in the player settings block at +0x160 (field +0x30).
-struct Unk_QnTracking { char m_pad_00[0x30]; int m_30; };
-class Unk_QnState
+// The tracked quest id lives in the player settings block (CGameOption +0x160, field +0x30).
+// @0x140c9b8b0
+Unk_GoEtc* CGameOption::FUN_140c9b8b0()
 {
-public:
-    Unk_QnTracking* FUN_140c9b8b0() { return &m_160; }              // 0x140c9b8b0
-    char m_pad_00[0x160];
-    Unk_QnTracking m_160;
-};
+    return &m_etc;
+}
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -88,9 +85,8 @@ class Unk_QnUIMgr { public:  };
 
 // engine helpers (non-inlined in the exe)
 Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
-void FUN_140b86230(const Vector3* pTarget, NiTransform* pXf);
+void FUN_140b86230(const efd::Point3& kTarget, NiMatrix3& kRot);   // C3: the definer's signature (0x140b86230)
 float FUN_140966f00(Vector3 a, Vector3 b);
-float FUN_140966f00(NiPoint3 a, Vector3 b);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)      // the zero point
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)    // the up axis
 
@@ -130,16 +126,16 @@ void FUN_142ca3a50() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrM
 // @0x140c99700
 CQuestNavigator::CQuestNavigator()
 {
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
     FUN_140bfc4b0()->FUN_141aa87c0(this);
 }
 
 // @0x140c99990
 CQuestNavigator::~CQuestNavigator()
 {
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
     FUN_140bfc4b0()->FUN_141aa8850(this);
 }
 
@@ -235,7 +231,7 @@ void CQuestNavigator::FUN_140c99ee0()
             NiTransform xf;
             xf.MakeIdentity();
             xf.m_Translate = static_cast<const efd::Point3&>(pPC->vfunc_18());
-            FUN_140b86230(reinterpret_cast<Vector3*>(&m_18.m_2c), &xf);
+            FUN_140b86230(reinterpret_cast<const efd::Point3&>(m_18.m_2c), xf.m_Rotate);
             m_10->SetLocalTransform(xf);
         }
     }
@@ -252,8 +248,8 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 {
     m_18.Clear();
     m_18.m_18 = 0;
-    int nQuestId = reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30;
-    Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(nQuestId);
+    int nQuestId = TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30;
+    MS2Ptr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(nQuestId);
     if (spQuest.get() != 0 ? true : false)
     {
         if (spQuest->GetTrackingState() != 0)
@@ -265,7 +261,7 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 // @0x140c9a1c0
 void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x77))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x77))
         return;
     if (m_10 == 0)
     {
@@ -295,10 +291,10 @@ void CQuestNavigator::SelectQuest(int nQuestId)
 {
     m_18.Clear();
     m_18.m_18 = nQuestId;
-    if (reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 != nQuestId)
+    if (TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30 != nQuestId)
     {
-        reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_30 = nQuestId;
-        ((CGameOption*)(Unk_QnState*)(reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
+        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30 = nQuestId;
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
 }
 
@@ -315,7 +311,7 @@ int CQuestNavigator::IsSelected(int nQuestId)
 // @0x140c9a4c0
 int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x77))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x77))
         return 1;
     if (FUN_140c9b8e0()->FUN_140c9b8d0() == 0)
     {
@@ -427,11 +423,11 @@ void CQuestNavigator::FUN_140c9ac80()
     m_70.m_30.clear();
     m_70.m_40.clear();
     int nMapId = WorldService::GetInstance()->FUN_141bd3060();
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest> > aQuests;
+    ATL::CAtlArray<MS2Ptr<CQuest> > aQuests;
     ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(aQuests, 1, 0xb, -1);
     for (size_t i = 0; i < aQuests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = aQuests[i];
+        MS2Ptr<CQuest> spQuest = aQuests[i];
         FUN_140c9b8e0()->FUN_140c92fc0(spQuest, nMapId, m_70);
     }
 }
@@ -505,7 +501,7 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;
-    int nDist = (int)FUN_140966f00(pPC->vfunc_18(), pos);
+    int nDist = (int)FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())), pos);
     if (nDist > 100000)
     {
         int nKm = nDist / 100000;

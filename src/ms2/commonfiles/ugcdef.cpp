@@ -2419,7 +2419,7 @@ void ReserveBannerInfo::Read(CInputStream& stream)
     m_nState = stream.ReadUInt8();
 }
 
-void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* pszSep);
+void FUN_140274fc0(CStringW& str, void* out, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 
 // @0x1408975c0
 CUgcBannerRollingImage::CUgcBannerRollingImage()
@@ -2438,7 +2438,7 @@ int CUgcBannerRollingImage::FUN_140897740()
 {
     m_strIds.Trim();
     ATL::CAtlArray<unsigned> ids;
-    FUN_140274fc0(m_strIds, ids, L",");
+    FUN_140274fc0(m_strIds, &ids, L",");
     int nCount = (int)ids.GetCount();
     for (int i = 0; i < nCount; i++)
     {

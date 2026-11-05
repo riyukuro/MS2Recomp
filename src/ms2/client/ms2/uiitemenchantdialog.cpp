@@ -151,9 +151,6 @@ public:
 };
 
 // AS script views.
-class Unk_EnButton : public ASButton
-{
-};
 class ASDialog : public ASDisplayObject
 {
 };
@@ -231,11 +228,6 @@ unsigned __int64 FUN_140718350(const CString& s);
 // Misc singletons.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 int FUN_141276180(const CString& a, const CString& b);
 void FUN_14151f460(int v);
 int FUN_141902660(MS2Ptr<CItem> item);
@@ -245,16 +237,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // Scroll table.
 class Unk_EnScroll : public CPtred { public: char m_pad[0x1c - 0x18]; int m_1c; };
-class Unk_EnScrollRef
-{
-public:
-    ~Unk_EnScrollRef();
-    Unk_EnScroll* operator->() const { return m_p; }
-    Unk_EnScroll* get() const { return m_p; }
-    void* m_00;                            // an MS2Ptr: 16 bytes, m_p at +8
-    Unk_EnScroll* m_p;
-};
-class Unk_PreloadServiceC { public: Unk_EnScrollRef FUN_14034e360(unsigned id); };
 
 // Item sub-objects returned by the CItem accessors.
 class Unk_ItemEnchantData : public CItemStatus
@@ -380,12 +362,12 @@ void UIItemModifyDialogBase::OnLoadComplete()
         vfunc_67();
     } else {
         int bShow = reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode();
-        if (MS2Ptr<Unk_EnButton> forceEnchant = m_enchantAni->FUN_140acce30<Unk_EnButton>("m_forceEnchant"))
+        if (MS2Ptr<ASButton> forceEnchant = m_enchantAni->FUN_140acce30<ASButton>("m_forceEnchant"))
             forceEnchant->vfunc_3(bShow);
         // The exe clears the flag first, so the compare and count controls
         // are always hidden; the mode test below does not change that.
         bShow = 0;
-        if (MS2Ptr<Unk_EnButton> compareEnchant = m_enchantAni->FUN_140acce30<Unk_EnButton>("m_compareEnchant")) {
+        if (MS2Ptr<ASButton> compareEnchant = m_enchantAni->FUN_140acce30<ASButton>("m_compareEnchant")) {
             if (m_mode != 2)
                 bShow = 0;
             compareEnchant->vfunc_3(bShow);
@@ -581,8 +563,8 @@ int UIItemEnchantDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x1419bfca0
 void UIItemEnchantDialog::vfunc_85(int nType)
 {
-    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0) {
-        int id = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
+    if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0) {
+        int id = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
         pkt.Encode1(6);
         pkt.Encode4(id);
@@ -762,8 +744,8 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
         m_enchantAni->Invoke("initEnchantSlot");
     }
     COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
-    if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213c0() != 0) {
-        int id = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
+    if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0) {
+        int id = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         pkt.Encode1(6);
         pkt.Encode4(id);
         pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0)->Get());
@@ -977,7 +959,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     int mode = (unsigned short)pkt.ReadInt16();
     if (m_expMode != mode) {
         vfunc_67();
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
         return;
     }
     m_selectedUid = pkt.ReadInt64();
@@ -1024,28 +1006,28 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     if (MS2Ptr<ASMovieClip> list = m_enchantAni->FUN_1409b4560("enchantListSelected")) {
         unsigned char bDebugMode = reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode();
         int bDebug = bDebugMode ? 1 : 0;
-        m_debugBtnFillIngredientUnit = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredientUnit");
+        m_debugBtnFillIngredientUnit = list->FUN_140acce30<ASButton>("m_debugBtnFillIngredientUnit");
         if (m_debugBtnFillIngredientUnit) {
             m_debugBtnFillIngredientUnit->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillIngredientUnit->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c6270), 0);
         }
-        m_debugBtnFillIngredient = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredient");
+        m_debugBtnFillIngredient = list->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
         if (m_debugBtnFillIngredient) {
             m_debugBtnFillIngredient->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillIngredient->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c6160), 0);
         }
-        m_debugBtnFillFailStack = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillFailStack");
+        m_debugBtnFillFailStack = list->FUN_140acce30<ASButton>("m_debugBtnFillFailStack");
         if (m_debugBtnFillFailStack) {
             m_debugBtnFillFailStack->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillFailStack->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::SendRequestItemEnchantMode17), 0);
         }
-        m_debugBtnUseAllFailStack = list->FUN_140acce30<Unk_EnButton>("m_debugBtnUseAllFailStack");
+        m_debugBtnUseAllFailStack = list->FUN_140acce30<ASButton>("m_debugBtnUseAllFailStack");
         if (m_debugBtnUseAllFailStack) {
             m_debugBtnUseAllFailStack->vfunc_3(bDebug);
             if (bDebug)
@@ -1868,9 +1850,9 @@ int UIItemEnchantDialog::GetProtectorRank(int itemId)
     if (data->function.name == L"EnchantSuperProtect") {
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0);
     } else if (data->function.name == L"EnchantScroll") {
-        Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
+        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
-            return reinterpret_cast<CEnchantScrollData*>(ref.operator->())->GetMaxRank();
+            return ref.operator->()->GetMaxRank();
     }
     return 0;
 }
@@ -1884,9 +1866,9 @@ int UIItemEnchantDialog::GetProtectorCount(int itemId)
     if (data->function.name == L"EnchantSuperProtect") {
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(1, 0);
     } else if (data->function.name == L"EnchantScroll") {
-        Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
+        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
-            return ref.operator->()->m_1c;
+            return reinterpret_cast<Unk_EnScroll*>(ref.operator->())->m_1c;
     }
     return 0;
 }

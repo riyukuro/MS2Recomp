@@ -52,7 +52,7 @@ class CGameEventValueMentoring   // C3: member view (the mentoring schedule)
 public:
     BOOL HasId(unsigned id);   // 0x140424f20
 };
-class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
+class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3: was Unk_MentorScheduleHolder::FUN_14041d160 (gameeventreturnuser.cpp)
 
 UIRewardNotify* FUN_140938cd0(int uiType);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -229,7 +229,7 @@ void CMentoringMission::ShowExpired() {}
 int CMentoringMission::FUN_1407447c0()
 {
     if (CQuestCommon::FUN_1407447c0()) return 1;
-    if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160())->HasId(FUN_140bfc580()) == 0) return 1;
+    if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->HasId(FUN_140bfc580()) == 0) return 1;
     if (((class CMentoringManager*)(void*)(TSingleton<CMentoringManager>::GetInstance()))->FUN_140b71580() != 2) return 1;
     return 0;
 }

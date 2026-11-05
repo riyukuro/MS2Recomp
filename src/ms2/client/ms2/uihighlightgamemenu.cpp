@@ -107,23 +107,15 @@ public:
     static WorldService* GetInstance();
     void* FUN_141bd0cc0();
 };
-// reference-counted stat-point record at player+0x1120 (copy, release)
-class Unk_HlRef
-{
-public:
-    Unk_HlRef(const Unk_HlRef& o);
-    ~Unk_HlRef();
-    P FUN_140c24af0();
-
-    void* m_unk_00;
-    P m_p;
-};
+// The stat point manager at player+0x1120 is held in an MS2Ptr<CStatPointManager> (copy ctor 0x140c24920, dtor
+// 0x140c24a50, operator-> 0x140c24af0, AddRef 0x140c25e00, AddRefImpl 0x140c25e50, Reference 0x140c25e30, Release
+// 0x140c25e80, ReleaseImpl 0x140c25ec0: the ms2ptr_impl.h bodies).
 
 // The local player: slot 78 returns the level.
 class Unk_HlPc
 {
 public:
-    Unk_HlRef FUN_140c25130();                             // copy of the stat-point record
+    MS2Ptr<CStatPointManager> FUN_140c25130();             // copy of the stat point manager handle
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
@@ -205,7 +197,7 @@ public:
     virtual unsigned short vfunc_78();
 
     char m_pad_08[0x1120 - 8];
-    Unk_HlRef m_statRef;                                   // +0x1120
+    MS2Ptr<CStatPointManager> m_statRef;                   // +0x1120
 };
 int FUN_1418dd0d0();
 
@@ -237,7 +229,6 @@ public:
 P FUN_140c24650();
 int FUN_140c25190();
 
-P FUN_140ba7c60(MS2Ptr<AScript>* p);
 
 // item handles / records
 
@@ -293,66 +284,8 @@ int FUN_140c25190()
     return 0x4f0a;
 }
 
-// @0x140c25e30
-void FUN_140c25e30(P p)
-{
-    CPtred::AddRefPtred((CPtred*)p);
-}
-
-// @0x140c25e50
-void FUN_140c25e50(Unk_HlRef* p, void*)
-{
-    FUN_140c25e30(p->m_p);
-}
-
-// @0x140c25e00
-void FUN_140c25e00(Unk_HlRef* p)
-{
-    if (p->m_p != 0)
-        FUN_140c25e50(p, 0);
-}
-
-// @0x140c25ec0
-void FUN_140c25ec0(Unk_HlRef* p, void*)
-{
-    if (CPtred::ReleasePtred((class CPtred*)(p->m_p)) == 0)
-    {
-        FUN_140c25e30(p->m_p);
-        CPtred::DeletePtred((class CPtred*)(p->m_p));
-    }
-}
-
-// @0x140c25e80
-void FUN_140c25e80(Unk_HlRef* p)
-{
-    if (p->m_p != 0)
-    {
-        FUN_140c25ec0(p, 0);
-        p->m_p = 0;
-    }
-}
-
-// @0x140c24a50
-Unk_HlRef::~Unk_HlRef()
-{
-    FUN_140c25e80(this);
-}
-
-// @0x140c24af0
-P Unk_HlRef::FUN_140c24af0()
-{
-    return m_p;
-}
-
-// @0x140c24920
-Unk_HlRef::Unk_HlRef(const Unk_HlRef& o)
-{
-    m_p = o.m_p;
-    FUN_140c25e00(this);
-}
-
 // @0x140c25130
-Unk_HlRef Unk_HlPc::FUN_140c25130()
+MS2Ptr<CStatPointManager> Unk_HlPc::FUN_140c25130()
 {
     return m_statRef;
 }
@@ -768,7 +701,7 @@ int UIHighlightGameMenu::FUN_140c236f0()
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    bool bPoint = (unsigned)((CStatPointManager*)pPc->FUN_140c25130().FUN_140c24af0())->GetRemaining() > 0;
+    bool bPoint = (unsigned)pPc->FUN_140c25130()->GetRemaining() > 0;
     if (bPoint)
         return true;
     return false;
@@ -960,12 +893,8 @@ P FUN_140c24650()
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE(0x140c25190, FUN_140c25190, 6, 0x4D711B71);
-MS2_REPLACE(0x140c25e50, FUN_140c25e50, 33, 0x1EA40ECB);
-MS2_REPLACE(0x140c25e00, FUN_140c25e00, 38, 0x1C445F68);
-MS2_REPLACE(0x140c25ec0, FUN_140c25ec0, 65, 0xB416172D);
-MS2_REPLACE(0x140c25e80, FUN_140c25e80, 51, 0x0B73E489);
-MS2_REPLACE_DTOR(0x140c24a50, Unk_HlRef, 34, 0x1248047C);
-MS2_REPLACE_IMPL(0x140c24920, static_cast<Unk_HlRef* (*)(Unk_HlRef*, const Unk_HlRef&)>([](Unk_HlRef* self, const Unk_HlRef& o) -> Unk_HlRef* { return ::new (static_cast<void*>(self)) Unk_HlRef(o); }), "Unk_HlRef::Unk_HlRef", 52, 0x30756183);
+MS2_REPLACE_DTOR(0x140c24a50, MS2Ptr<CStatPointManager>, 34, 0x1248047C);
+MS2_REPLACE_IMPL(0x140c24920, static_cast<MS2Ptr<CStatPointManager>* (*)(MS2Ptr<CStatPointManager>*, const MS2Ptr<CStatPointManager>&)>([](MS2Ptr<CStatPointManager>* self, const MS2Ptr<CStatPointManager>& o) -> MS2Ptr<CStatPointManager>* { return ::new (static_cast<void*>(self)) MS2Ptr<CStatPointManager>(o); }), "MS2Ptr<CStatPointManager>::MS2Ptr", 52, 0x30756183);
 MS2_REPLACE(0x140c25330, FUN_140c25330, 46, 0xDB14FB29);
 MS2_REPLACE_IMPL(0x140c249d0, static_cast<Unk_HlBitRef* (*)(Unk_HlBitRef*, Unk_HlBits*, int)>([](Unk_HlBitRef* self, Unk_HlBits* pBits, int nPos) -> Unk_HlBitRef* { return ::new (static_cast<void*>(self)) Unk_HlBitRef(pBits, nPos); }), "Unk_HlBitRef::Unk_HlBitRef", 46, 0xDE5FA628);
 MS2_REPLACE_METHOD(0x140c24ac0, Unk_HlBitRef, FUN_140c24ac0, 35, 0x60FDC12E);

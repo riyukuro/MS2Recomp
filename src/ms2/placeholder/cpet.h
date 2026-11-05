@@ -5,19 +5,10 @@
 #pragma once
 
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/cpetdatatable.h"
 #include "ms2/placeholder/ccpetinfopacket.h"
 #include "ms2/placeholder/intervaltimer.h"
 #include "ms2/client/ms2/uitamingbar.h"
-
-// A row of the pet table (FUN_14052d210()->FUN_1407290f0(nPetId)); only the proven field is named.
-class Unk_PetRow : public CPtred
-{
-public:
-    int m_nF18;                                             // +0x18 (1: the pet takes part in the summon button state; petmanager.cpp)
-    char m_pad_1c[0x9c - 0x1c];
-    float m_fScaleBonus;                                    // +0x9c added to the pet's body height (vfunc_89)
-    int m_nSlots;                                           // +0xa0 the pet inventory's slot count (petmanager.cpp)
-};
 
 class CPet : public CNpc
 {
@@ -44,7 +35,7 @@ public:
     int FUN_140b10150();                                    // the pet is unusable by its owner (hidden / forbidden)
     void FUN_140b10210(int nPetId);                         // m_nPetId + its table row
     int GetPetId();                                    // m_nPetId
-    MS2Ptr<Unk_PetRow> GetRow();                     // copy of the row
+    MS2Ptr<CPetData> GetRow();                     // copy of the row
     int FUN_140b10300();                                    // m_nF44
     PCBase* FUN_140b10320();                                // the owner as a PC (null when it is not one)
     PCBase* FUN_140b10360();                                // the owner (class 0x6200003 cast helper 0x1409613d0)
@@ -70,7 +61,7 @@ public:
 
     int m_nPetId;                                           // +0xf40
     int m_nF44;                                             // +0xf44 = 1
-    MS2Ptr<Unk_PetRow> m_spRow;                             // +0xf48
+    MS2Ptr<CPetData> m_spRow;                             // +0xf48
     CCPetInfoPacket::Info m_info;                           // +0xf58
     Timer m_timer1030;                                      // +0x1030 (armed 1000 ms)
     Unk_IntervalTimer m_tm1068;                             // +0x1068

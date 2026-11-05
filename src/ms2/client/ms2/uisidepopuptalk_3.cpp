@@ -106,7 +106,7 @@ CSidePopupConditionQuestSatisfied::CSidePopupConditionQuestSatisfied()
 // @0x140e8da80
 int CSidePopupConditionQuestSatisfied::vfunc_4()
 {
-    Unk_PayloadPtr<CQuest> spQuest = TSingleton<CQuestManager>::GetInstance()->vfunc_o10_3(m_nId);
+    MS2Ptr<CQuest> spQuest = TSingleton<CQuestManager>::GetInstance()->vfunc_o10_3(m_nId);
     if (spQuest.IsNull())
         return 0;
     return spQuest->IsComplete();
@@ -195,7 +195,7 @@ MS2_REPLACE_METHOD(0x140E8DE80, CSidePopupConditionQuestProgress, vfunc_4, 24, 0
 // @0x140e8dea0
 int CSidePopupConditionQuestProgress::FUN_140e8dea0()
 {
-    Unk_PayloadPtr<CQuest> spQuest = TSingleton<CQuestManager>::GetInstance()->vfunc_o10_3(m_nId);
+    MS2Ptr<CQuest> spQuest = TSingleton<CQuestManager>::GetInstance()->vfunc_o10_3(m_nId);
     if (spQuest.IsNull())
         return 0;
     for (size_t i = 0; i < m_args.GetCount(); i++)

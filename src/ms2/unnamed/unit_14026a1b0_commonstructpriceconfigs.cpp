@@ -14,7 +14,7 @@
 
 __int64 GetServerTime();                                            // the current server time
 __int64 FUN_14028d0e0();                                            // a new tab id
-void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* pszSep);   // split into numbers
+void FUN_140274fc0(CStringW& str, void* out, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 
 // @0x14026a1b0
 unsigned char Unk_CommonPriceRecord::IsAvailable()
@@ -168,7 +168,7 @@ Unk_CommonIntPair::Unk_CommonIntPair() : m_first(0), m_second(0) {}
 void Unk_CommonIntPair::Parse(CStringW strText)
 {
     ATL::CAtlArray<unsigned> values;
-    FUN_140274fc0(strText, values, L",");
+    FUN_140274fc0(strText, &values, L",");
     if (values.GetCount() >= 1)
         m_first = values[0];
     if (values.GetCount() >= 2)

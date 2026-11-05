@@ -57,6 +57,7 @@ static CString s_strMaviewOpen("System_MaviewOpen");                        // @
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_140acd6e0 : public ASDisplayObject { public:
 };
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class ASDialog : public ASDisplayObject {};
 class Unk_SingletonObj* FUN_140939a10();
 class Unk_WbBrowser : public COffscreenWebBrowser { public:                                               // one browser page of the manager
@@ -64,7 +65,7 @@ class Unk_WbBrowser : public COffscreenWebBrowser { public:                     
 class Unk_WbBrowserMgr : public CWebBrowserService { public:                                            // the browser manager
 };
 class Unk_WbPages { public: MS2Ptr<WebGuide> FUN_141927640(CString strKey); };   // the web guide of a dialog
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_WbWorld { public: PCBase* FUN_141bd0cc0(); };
 class Unk_WbInt { public: int m_n; char m_pad_04[0x54]; };                  // one value of the client constants
 class Unk_WbBool { public: bool m_b; char m_pad_01[0x57]; };
@@ -79,7 +80,6 @@ class Unk_WbConsts { public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
 float FUN_14028aed0(float f);
-AScript* FUN_140ba7c60(void* pRef);                                         // the movie root
 float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
 // @0x14011f460
@@ -142,17 +142,17 @@ void UIWebBrowser::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141b507b0(m_nWidth, m_nHeight);
-    if (FUN_140bc6d10("m_btnHome", m_btnHome).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnHome", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnHome)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), 0);
-    if (FUN_140bc6d10("m_btnPrev", m_btnPrev).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnPrev", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnPrev)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnPrev)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)2);
-    if (FUN_140bc6d10("m_btnNext", m_btnNext).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnNext", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnNext)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnNext)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)1);
-    if (FUN_140bc6d10("m_btnRefresh", m_btnRefresh).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnRefresh", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnRefresh)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnRefresh)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), (void*)3);
-    if (FUN_140bc6d10("m_btnMinSize", m_btnMinSize).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnMinSize", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnMinSize)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMinSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50890), 0);
-    if (FUN_140bc6d10("m_btnMaxSize", m_btnMaxSize).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnMaxSize", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_btnMaxSize)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
     FUN_141b509b0();
     float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
@@ -161,7 +161,7 @@ void UIWebBrowser::OnLoadComplete()
     FUN_14135eda0(nWidth, nHeight);
     if (m_b18d != 0)
         reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(1, m_nBrowserId);
-    ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
         float x = 0;
@@ -171,7 +171,7 @@ void UIWebBrowser::OnLoadComplete()
         y = FUN_14028aed0(y);
         pDlg->SetPositionFloat(x, y);
     }
-    if (FUN_140166410()->FUN_14036d570(0x5c) == 0)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x5c) == 0)
     {
         if (m_strUrl.IsEmpty())
             m_strUrl = m_strStored;

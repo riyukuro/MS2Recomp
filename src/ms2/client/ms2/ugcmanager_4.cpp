@@ -126,7 +126,6 @@ extern __int64 DAT_143ab2828;                               // my character id
 extern int DAT_143ab2914;                                   // my level
 
 // The player and its effect points (the profile shot).
-const efd::Point3& FUN_140947900(NiAVObject* pObject);      // the world translate of a node
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);   // ugcmanager.cpp#1
 CStringW FUN_141026ab0();                                   // ".\Custom\Thumbnail"
 CStringW FUN_141026920(int nType);                          // the upload directory of an upload kind
@@ -348,12 +347,12 @@ extern Unk_Inventory g_143ab2a90;
 #include "ms2/placeholder/uiugceventdispatcher.h"
 
 // The blueprint create dialog (0x4f7b; uiitemblueprintcreatedialog.cpp).
-class Unk_UgcBlueprintDialog : public UIDialog
+class Unk_BpItem;
+class UIItemBlueprintCreateDialog : public UIDialog
 {
 public:
-    void FUN_140c36b40(CItem* pItem);
+    void FUN_140c36b40(Unk_BpItem*);   // 0x140c36b40 (uiitemblueprintcreatedialog.h's signature)
 };
-class UIItemBlueprintCreateDialog;
 template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d27260 (<UIItemBlueprintCreateDialog>)
 
 // The UGC events (vfunc_1: a character's profile image changed).
@@ -904,7 +903,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     efd::Point3 kTop;
     efd::Point3 kBottom;
     NiRect<unsigned int> kRect;
-    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(FUN_140947900(pUI), reinterpret_cast<NiPoint3&>(kTop)) || !TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(FUN_140947900(pBody), reinterpret_cast<NiPoint3&>(kBottom)))
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(pUI->GetWorldTranslate()), reinterpret_cast<NiPoint3&>(kTop)) || !TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(pBody->GetWorldTranslate()), reinterpret_cast<NiPoint3&>(kBottom)))
         return;
     int n = (int)(kBottom.y - kTop.y);
     int nMargin = (int)(n * 0.2f);
@@ -3689,9 +3688,9 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     if (pItem == 0)
         return;
     pItem->SetUgcLook(&look);
-    Unk_UgcBlueprintDialog* pDialog = reinterpret_cast<Unk_UgcBlueprintDialog*>(GetItemUseDialog<UIItemBlueprintCreateDialog>(0x4f7b));
+    UIItemBlueprintCreateDialog* pDialog = GetItemUseDialog<UIItemBlueprintCreateDialog>(0x4f7b);
     if (pDialog != 0 && pDialog->vfunc_55() == 0)
-        pDialog->FUN_140c36b40(pItem);
+        pDialog->FUN_140c36b40(reinterpret_cast<Unk_BpItem*>(pItem));
 }
 MS2_REPLACE_METHOD(0x14188e930, CUgcManager, FUN_14188e930, 498, 0xB307819A);
 

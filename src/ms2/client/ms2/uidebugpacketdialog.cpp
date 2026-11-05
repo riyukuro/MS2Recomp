@@ -20,6 +20,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
+class COutputStream;
+void FUN_1401fa700(unsigned char* payload, COutputStream& stream);   // C3: unit_1401f9eb0_packetpayloadserializers.cpp
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/placeholder/asdropdownmenu.h"
@@ -36,14 +38,6 @@ static CString s_strSkill = "skill";
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
 
-class Unk_DpControl : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5();
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-};
-class Unk_DpCheck : public Unk_DpControl { };
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
@@ -196,7 +190,7 @@ void UIDebugPacketDialog::vfunc_72()
         while (m_nRandomRemain > 0 && uNow > m_nRandomNext)
         {
             int nId = m_range.FUN_141291f20();
-            if (((Unk_DpCheck*)m_ignoreAdminPacket ? true : false) && (nId == 0x50 || nId == 0x24 || nId == 0x15))
+            if (((ASCheckBox*)m_ignoreAdminPacket ? true : false) && (nId == 0x50 || nId == 0x24 || nId == 0x15))
             {
                 // admin packets are skipped
             }
@@ -263,7 +257,7 @@ void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::P
     if (m_bPacketCounter)
         chat.message = L"/PacketCounter 1";
     chat.target = L"";
-    chat.FUN_1401fa700(packet);
+    FUN_1401fa700(reinterpret_cast<unsigned char*>(&chat), reinterpret_cast<COutputStream&>(packet));
     FUN_140710590(packet);
     if (m_bPacketCounter)
         m_bPacketCounter = false;
@@ -281,7 +275,7 @@ void UIDebugPacketDialog::OnCloseFromPacket(const Scaleform::GFx::FunctionHandle
     if (m_bCloseFromPacket)
         chat.message = L"/CloseFromPacket 1";
     chat.target = L"";
-    chat.FUN_1401fa700(packet);
+    FUN_1401fa700(reinterpret_cast<unsigned char*>(&chat), reinterpret_cast<COutputStream&>(packet));
     FUN_140710590(packet);
     if (m_bCloseFromPacket)
         m_bCloseFromPacket = false;

@@ -50,12 +50,10 @@
 // MS2-PIN: ?GetNext@?$CAtlList@V?$Unk_RankPtr@VGameRankingCategory@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingCategory@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_RankPtr@VGameRankingCategory@@@@AEAPEAU__POSITION@@@Z 0x140e37ab0
 // MS2-PIN: ?AddRef@?$Unk_RankPtr@VGameRankingCategory@@@@AEBAXXZ 0x140e39030
 // MS2-PIN: ?AddRefImpl@?$Unk_RankPtr@VGameRankingCategory@@@@AEBAXPEAX@Z 0x140e39120
-// MS2-PIN: ??0?$MS2Ptr@VUnk_RankInput@@@@QEAA@H@Z 0x140e363b0
 // MS2-PIN: ??0?$MS2Ptr@VUnk_RankList@@@@QEAA@H@Z 0x140e36510
 // MS2-PIN: ??0?$Unk_RankPtr@VGameRankingTabData@@@@QEAA@H@Z 0x140e36470
 // MS2-PIN: ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@XZ 0x140e36490
 // MS2-PIN: ??8?$Unk_RankPtr@VGameRankingTabData@@@@QEBA_NPEAVGameRankingTabData@@@Z 0x140e36d10
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_RankInput@@@@QEBAPEAVUnk_RankInput@@XZ 0x140e36e40
 // MS2-PIN: ??0?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@QEAA@XZ 0x140e35fe0
 // MS2-PIN: ??0?$TPtrValue@UCGameRankingData@@@@QEAA@XZ 0x140e36530
 // MS2-PIN: ??7?$Unk_RankPtr@VGameRankingCategory@@@@QEBA_NXZ 0x140e36c40
@@ -132,11 +130,6 @@ public:
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
 };
-// "m_searchInput": the search text input.
-class Unk_RankInput : public ASDisplayObject
-{
-public:
-};
 
 // The AS array helpers (push an int / an object).
 class Unk_RankArr : public ASArray
@@ -151,11 +144,6 @@ class Unk_RankAS : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140e35c60(const char* szMethod, int n);                   // @0x140e35c60
-};
-class Unk_RankMovie : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
 };
 class ASDialog : public ASDisplayObject {};
 
@@ -398,10 +386,10 @@ int UIGameRankingDialog::vfunc_13()
                 if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
                     return 0;
             }
-            if (MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0("m_searchInput"))
+            if (MS2Ptr<ASTextInput> spInput = FUN_140e35bd0("m_searchInput"))
             {
-                if (((class ASUIComponent*)(class Unk_RankInput*)(spInput.operator->()))->GetFocused() != 0)
-                    FUN_140e34d50(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
+                if (((class ASUIComponent*)(spInput.operator->()))->GetFocused() != 0)
+                    FUN_140e34d50(spInput->GetText());
             }
             return 1;
         }
@@ -1408,11 +1396,11 @@ bool UIGameRankingDialog::FUN_140e359e0(int nBtn, const CMsgBoxData& data)
 // ---- the inline helpers of the unit ----
 
 // @0x140e35bd0
-MS2Ptr<Unk_RankInput> UIGameRankingDialog::FUN_140e35bd0(const CString& strName)
+MS2Ptr<ASTextInput> UIGameRankingDialog::FUN_140e35bd0(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_RankInput>(0);
-    return static_cast<Unk_RankMovie*>(m_30.operator->())->FUN_140bbe880<Unk_RankInput>(strName);
+        return MS2Ptr<ASTextInput>(0);
+    return m_30.operator->()->FUN_140bbe880<ASTextInput>(strName);   // C3: AScript::FUN_140bbe880
 }
 
 // @0x140e35c60

@@ -31,7 +31,7 @@ void Unk_MentorListPacket::FUN_14069a0b0(Unk_MentorReader& stream) {
     MS2_ASSERT_AT(35,nProtocol == PROTOCOL_MENTORING::MENTOR_LIST);
     unsigned int count=0; reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(count));
     entries.SetCount(count);
-    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; stream.FUN_14070f770(*entries[i].operator->()); }
+    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
 }
 // Hook deferred: constructs persistent objects with DLL-local vftables/RTTI.
 
@@ -39,7 +39,7 @@ void Unk_MentorListPacket::FUN_14069a0b0(Unk_MentorReader& stream) {
 void Unk_MentorListPacket::FUN_14069a1f0(Unk_MentorWriter& stream) {
     FUN_14070f860(reinterpret_cast<COutputStream&>(stream), nProtocol);
     unsigned int count=static_cast<unsigned int>(entries.GetCount()); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), count);
-    for(unsigned int i=0;i<count;++i) stream.FUN_14070fc40(*entries[i].operator->());
+    for(unsigned int i=0;i<count;++i) FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A1F0, Unk_MentorListPacket, FUN_14069a1f0, 149, 0x6BD3A5D2);
 
@@ -49,7 +49,7 @@ void Unk_MentorListPacket::FUN_14069a290(Unk_MentorReader& stream) {
     MS2_ASSERT_AT(64,nProtocol == PROTOCOL_MENTORING::MENTEE_LIST);
     unsigned int count=0; reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(count));
     entries.SetCount(count);
-    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; stream.FUN_14070f770(*entries[i].operator->()); }
+    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
 }
 // Hook deferred: constructs persistent objects with DLL-local vftables/RTTI.
 
@@ -131,13 +131,13 @@ Unk_MentorDetailPacket::Unk_MentorDetailPacket() : protocol(14), mentor(new CMen
 
 // @0x14069a7e0
 void Unk_MentorDetailPacket::FUN_14069a7e0(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), name); stream.FUN_14070fc40(*mentor.operator->());
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), name); FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*mentor.operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A7E0, Unk_MentorDetailPacket, FUN_14069a7e0, 93, 0xD146895C);
 
 // @0x14069a850
 void Unk_MentorDetailPacket::FUN_14069a850(Unk_MentorReader& stream) {
-    reinterpret_cast<Unk_OSInput&>(stream).Read1(protocol); reinterpret_cast<Unk_OSInput&>(stream).Read11(name); stream.FUN_14070f770(*mentor.operator->());
+    reinterpret_cast<Unk_OSInput&>(stream).Read1(protocol); reinterpret_cast<Unk_OSInput&>(stream).Read11(name); FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*mentor.operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A850, Unk_MentorDetailPacket, FUN_14069a850, 93, 0x19B07424);
 
@@ -240,6 +240,6 @@ MS2_REPLACE_METHOD(0x14069AF00, CMentor, FUN_14069af00, 217, 0x42428FFF);
 void Unk_MentorListPacket::FUN_14069a010(Unk_MentorWriter& stream) {
     FUN_14070f860(reinterpret_cast<COutputStream&>(stream), nProtocol);
     unsigned int count=static_cast<unsigned int>(entries.GetCount()); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), count);
-    for(unsigned int i=0;i<count;++i) stream.FUN_14070fc40(*entries[i].operator->());
+    for(unsigned int i=0;i<count;++i) FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A010, Unk_MentorListPacket, FUN_14069a010, 149, 0xBE8887DB);

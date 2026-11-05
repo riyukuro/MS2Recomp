@@ -45,8 +45,6 @@ public:
 };
 
 class Unk_WsC_GameObj : public GameObject {};
-// The buff icon record of UINpcDuelHPBarDialog (an AdditionalCli; uinpcduelhpbardialog.cpp).
-class Unk_NdBuff : public CPtred {};
 // The shield bar entity behind PCBase vfunc_81 (UIShieldBar::Entity, uishieldbar.h).
 class Unk_PCBaseComp_a68 : public CPtred
 {
@@ -564,7 +562,7 @@ void AdditionalCli::FUN_14096d430()
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(20063);
             if (pInfo)
-                pInfo->UpdateBuffEffect(MS2Ptr<Unk_AsBuff>(reinterpret_cast<Unk_AsBuff*>(this)));
+                pInfo->UpdateBuffEffect(MS2Ptr<AdditionalCli>(this));
         }
         else if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
         {
@@ -572,11 +570,11 @@ void AdditionalCli::FUN_14096d430()
             {
                 UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
                 if (pBar)
-                    pBar->FUN_141b4cfd0(MS2Ptr<Unk_AsBuff>(reinterpret_cast<Unk_AsBuff*>(this)));
+                    pBar->FUN_141b4cfd0(MS2Ptr<AdditionalCli>(this));
             }
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)
-                pDuel->FUN_140e6c540(MS2Ptr<Unk_NdBuff>(reinterpret_cast<Unk_NdBuff*>(this)));
+                pDuel->FUN_140e6c540(MS2Ptr<AdditionalCli>(this));
         }
     }
 }

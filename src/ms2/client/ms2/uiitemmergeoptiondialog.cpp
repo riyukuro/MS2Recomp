@@ -212,8 +212,7 @@ public:
     static class WorldService* GetInstance();
 };
 
-// The npc talk state (FUN_140967100) and the local player's record (FUN_1401d3200).
-UITalkManager* FUN_140967100();
+// The npc talk state is TSingleton<UITalkManager>; the local player's record (FUN_1401d3200).
 class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Common::Constants::Value<int> m_talk; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
@@ -1029,9 +1028,9 @@ void UIItemMergeOptionDialog::RequestMaterial()
 void UIItemMergeOptionDialog::RequestResultTalk()
 {
     COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-    if (FUN_140967100()->FUN_141b213c0() != 0)
+    if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0)
     {
-        int nTalkId = FUN_140967100()->FUN_141b212f0();
+        int nTalkId = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         packet.WriteUInt8(6);
         packet.WriteInt32(nTalkId);
         packet.WriteInt32(*((class Unk_MergePlayerCfg*)FUN_1401d3200())->m_talk.Get());

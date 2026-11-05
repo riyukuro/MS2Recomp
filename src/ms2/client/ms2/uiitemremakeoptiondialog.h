@@ -12,7 +12,7 @@ class ASData;
 class CInPacket;
 class CMsgBoxData;
 class NotifyObject;
-class Unk_EnButton;
+class ASButton;
 class Unk_EnSlot;
 
 class UIItemRemakeOptionDialog : public UIItemModifyDialogBase, public UIItemEventListener {
@@ -71,8 +71,8 @@ protected:
     MS2Ptr<CItem> m_new;                                        // +0x1e8 the remade item
     int m_state;                                                // +0x1f8
     int m_remakeMode;                                           // +0x1fc (init 2)
-    MS2Ptr<Unk_EnButton> m_debugBtnFillIngredientUnit;          // +0x200
-    MS2Ptr<Unk_EnButton> m_debugBtnFillIngredient;              // +0x210
+    MS2Ptr<ASButton>     m_debugBtnFillIngredientUnit;          // +0x200
+    MS2Ptr<ASButton>     m_debugBtnFillIngredient;              // +0x210
     int m_optionCount;                                           // +0x220
 };
 MS2_CHECK_SIZE(UIItemRemakeOptionDialog, 0x228);

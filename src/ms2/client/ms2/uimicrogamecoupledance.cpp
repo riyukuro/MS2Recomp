@@ -34,7 +34,9 @@ MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEnt
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // Singleton at 0x1401d3200 (a huge manager); two members at +0xc768 / +0xc7c0 give the screen origin.
-class Unk_14025a620 { public: int FUN_14025a620(); void* m_unknown; };
+class Unk_ConstVal;
+int FUN_14025a620(Unk_ConstVal* p);   // a Constants::Value<int> slot's value (commonstringtable.cpp)
+class Unk_14025a620 { public: void* m_unknown; };
 class Unk_1402056b0 { public: void* m_unknown; };
 class Unk_1401d3200
 {
@@ -975,7 +977,7 @@ MS2_REPLACE_METHOD(0x140E64860, UIMicroGameCoupleDance, vfunc_41, 99, 0x54B24861
 void UIMicroGameCoupleDance::UpdatePosition() {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL) return;
-    int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
+    int nX = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c768));
     int nY = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0)->Get() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
     int nHeight = (int)(((ASDisplayObject*)pEntity.operator->())->FUN_1422c1530() * 0.5f + nY);

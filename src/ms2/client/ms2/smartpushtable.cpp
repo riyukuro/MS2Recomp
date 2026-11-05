@@ -44,7 +44,7 @@ CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 unsigned int FUN_1407181d0(const CString& str);                                       // string to int
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // split into a std::vector<CString>
 int Parse_140219650(const CStringA& value);
 
@@ -128,17 +128,17 @@ void CSmartPushTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), "requireItem", strItem);
         if (strItem.GetLength() != 0)
         {
-            Unk_StrVec parts;
+            std::vector<CString> parts;   // C3: was Unk_StrVec
             FUN_140275080(strItem, &parts, ",");
-            if (parts.FUN_14028b4c0() != 3)
+            if (parts.size() != 3)
                 continue;
-            Unk_StrVec idTag;
-            FUN_140275080(*parts.FUN_14027f1c0(0), &idTag, ":");
-            if (idTag.FUN_14028b4c0() > 0)
-                spData->m_requireItem.m_a = FUN_1407181d0(*idTag.FUN_14027f1c0(0));
-            if (idTag.FUN_14028b4c0() > 1)
-                spData->m_requireItem.m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*idTag.FUN_14027f1c0(1));
-            spData->m_requireItem.m_c = FUN_1407181d0(*parts.FUN_14027f1c0(2));
+            std::vector<CString> idTag;   // C3: was Unk_StrVec
+            FUN_140275080(parts[0], &idTag, ":");
+            if (idTag.size() > 0)
+                spData->m_requireItem.m_a = FUN_1407181d0(idTag[0]);
+            if (idTag.size() > 1)
+                spData->m_requireItem.m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(idTag[1]);
+            spData->m_requireItem.m_c = FUN_1407181d0(parts[2]);
         }
         m_data.SetAt(spData->m_nId, spData);
     }
@@ -262,7 +262,7 @@ unsigned CSmartPushTable::GetPackageCount(const CStringW& strName)
 // @0x140811640
 bool FUN_140811640(int n)
 {
-    if (!FUN_140166410()->FUN_14036d710(0x10c))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x10c))
         return false;
     switch (n)
     {

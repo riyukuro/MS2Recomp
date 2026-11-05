@@ -52,6 +52,8 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/cpetdatatable.h"   // C3: CPetData / CPetDataTable (the pet row)
 
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -91,31 +93,14 @@ static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FU
 #endif
 
 // ---- unit-local placeholders (the names of the classes shared with tabcontentspetevolution.cpp must stay identical:
-// the Unk_PetButton / ASTileList members it instantiates are the ones this unit calls) ----
+// the ASButton / ASTileList members it instantiates are the ones this unit calls) ----
 
 // A Scaleform value seen through its "is this an object" test (the exe calls one shared function on it).
 class Unk_PetValueView { public: bool FUN_1409b4d40() const; };
 
-// A pet menu button (m_submit, ...): a movie clip with a frame setter.
-class Unk_PetButton : public ASMovieClip
-{
-public:
-    Unk_PetButton(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetButton, 0x88);
 
-
-// A record of the equip data table; the int at +0x18 is zero for plain items.
-class Unk_PetRow : public CPtred
-{
-public:
-    int m_nFlag;                                                        // +0x18
-};
-extern template class MS2Ptr<Unk_PetRow>;
-class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nKey); };
-Unk_PetRowTable* FUN_14052d210();
+// The pet row is CPetData (cpetdatatable.h); m_nType (+0x18) is zero for plain items.
+extern template class MS2Ptr<CPetData>;
 
 // CItem::FUN_140527840's record (as commonfiles\item.cpp): the item data, of which this unit reads the type and the
 // function arguments (+0x2b0, the arguments of the item's <function>).
@@ -179,13 +164,13 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The item picked in the inventory dialog.
-class Unk_PetSelected;
+class Unk_BreakSelected;
 class CPetManager   // C3: member view (cpetmanager.h redefines Unk_PetFlags)
 {
 public:
     __int64 GetSummonUid();   // 0x140c8b2e0
 };
-Unk_PetSelected* FUN_140535320();
+Unk_BreakSelected* FUN_140535320();                      // C3: the real function (0x140535320, itembreakmanager.cpp): the CPetManager singleton
 
 // CItem accessors the exe calls as free functions.
                     // item name (CItem member: this=rcx, hidden return=rdx)
@@ -206,9 +191,9 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 // Item bag registry (the section's bag ids).
 void FUN_140b77500(const CString& strBag);                                      // release a card bag
-void FUN_140b773a0(CString* pBag, ATL::CAtlArray<unsigned __int64>& ids);
+void FUN_140b773a0(const CString& strBag, const ATL::CAtlArray<unsigned __int64>& ids);
 void FUN_140b77e50(const CString& strBag);                                      // release an ingredient bag
-void FUN_140b77cf0(CString* pBag, ATL::CAtlArray<TabContentsPetCompose::IdCount>& items);
+void FUN_140b77cf0(const CString& strBag, const ATL::CAtlArray<TabContentsPetCompose::IdCount>& items);
 
 // UI helpers.
 int FUN_141276180(const CString& strSound, const CString& strArg);     // play a UI sound
@@ -234,7 +219,7 @@ typedef TabContentsPetCompose::IdCount IdCount;
 
 // ---- glue: AS child control binding (the specializations and the Value helpers are COMDATs of the evolution unit) ----
 
-template <> MS2Ptr<Unk_PetButton> AScript::FUN_140acce30<Unk_PetButton>(const CString& strName);       // 0x140acce30
+template <> MS2Ptr<ASButton> AScript::FUN_140acce30<ASButton>(const CString& strName);       // 0x140acce30
 template <> MS2Ptr<ASTileList> AScript::FUN_140accef0<ASTileList>(const CString& strName);     // 0x140accef0
 template <> MS2Ptr<ASUIComponent> AScript::FUN_140accfb0<ASUIComponent>(const CString& strName);        // 0x140accfb0
 
@@ -311,7 +296,7 @@ void PetComposePetCard::vfunc_4()
         ATL::CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140cb47d0(ids);
         FUN_140b77500(m_strBag);
-        FUN_140b773a0(&m_strBag, ids);
+        FUN_140b773a0(m_strBag, ids);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
     }
@@ -358,7 +343,7 @@ void PetComposePetIngredient::vfunc_4()
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4830(items);
         FUN_140b77e50(m_strBag);
-        FUN_140b77cf0(&m_strBag, items);
+        FUN_140b77cf0(m_strBag, items);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
     }
@@ -409,7 +394,7 @@ void PetComposePetEnchant::vfunc_3()
     __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
     unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     {
-        if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
+        if (MS2Ptr<ASButton> submit = ench->FUN_140acce30<ASButton>("m_submit"))
         {
             ATL::CAtlArray<IdCount> selected;
             m_pOwner->FUN_140cb4860(selected);
@@ -454,11 +439,11 @@ void PetComposePetEnchant::vfunc_4()
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140cb4860(items);
         FUN_140b77e50(m_strBag);
-        FUN_140b77cf0(&m_strBag, items);
+        FUN_140b77cf0(m_strBag, items);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
     }
-    if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = ench->FUN_140acce30<ASButton>("m_submit"))
         submit->FUN_1422c1fe0(0);
     ASObj obj(2);
     obj.FUN_1409c0dc0("sale", "");
@@ -509,7 +494,7 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     ATL::CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
     FUN_140b77500(m_strBag);
-    FUN_140b773a0(&m_strTarget, ids);
+    FUN_140b773a0(m_strTarget, ids);
     int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
         ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
     ASObj obj(2);
@@ -923,10 +908,10 @@ void TabContentsPetCompose::FUN_140cb5600()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(pets[i]);
         if (item == 0)
             continue;
-        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
+        MS2Ptr<CPetData> row = TSingleton<CPetDataTable>::GetInstance()->Find(((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
         if (row == 0)
             continue;
-        if (row->m_nFlag == 0)
+        if (row->m_nType == 0)
             continue;
         m_petCards.Add(item->GetItemUid());
     }

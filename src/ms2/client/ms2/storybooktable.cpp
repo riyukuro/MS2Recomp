@@ -47,7 +47,8 @@ class Unk_CommonLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+struct Unk_XmlElement;
+void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
@@ -100,7 +101,7 @@ void CStoryBookTable::Load()
         return;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "book", "id", &nodes);
+    FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pRoot), "book", "id", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pBook = nodes[i];

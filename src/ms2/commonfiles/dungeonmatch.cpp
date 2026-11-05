@@ -18,7 +18,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 
 // ---- statics of a shared header (sort names, skill, stun) ----
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -41,8 +41,8 @@ void ItemDummyInfo::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "worldmode", reinterpret_cast<bool&>(worldmode));
     XmlGetAttr((class TiXmlElement*)(pElem), "worldlerp", reinterpret_cast<bool&>(worldlerp));
     XmlGetAttr((class TiXmlElement*)(pElem), "step", reinterpret_cast<float&>(step));
-    FUN_140874670(pElem, "rotation", rotation);
-    FUN_140874670(pElem, "translation", translation);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rotation", reinterpret_cast<efd::Point3&>(rotation));
+    XmlGetAttr((class TiXmlElement*)(pElem), "translation", reinterpret_cast<efd::Point3&>(translation));
 }
 MS2_REPLACE_METHOD(0x140314350, ItemDummyInfo, Load, 247, 0xAF1AC415);
 

@@ -150,7 +150,6 @@ int XmlGetAttr(TiXmlElement* pElem, const char* pszName, CStringW& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, __int64& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, int& out);
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, bool& out);
-void FUN_14166d2d0(PCBase* pUser, const efd::Point3& pos, int n);   // face towards a position
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -1189,9 +1188,8 @@ void WeddingManager::FacePartner(PCBase* user)
     PCBase* partner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1420(m_strTarget));
     if (!partner)
         return;
-    // the NiPoint3 result is sliced into its efd::Point3 base (12-byte rep movsb at 0x141b8a558)
-    efd::Point3 position = partner->vfunc_18();
-    FUN_14166d2d0(user, position, 1);
+    // the NiPoint3 result is sliced into the by-value efd::Point3 param (12-byte rep movsb at 0x141b8a558)
+    user->LookAtPoint(static_cast<const efd::Point3&>(partner->vfunc_18()), 1);
 }
 
 // @0x141b867e0

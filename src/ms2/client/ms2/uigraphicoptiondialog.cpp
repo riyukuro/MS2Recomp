@@ -26,12 +26,6 @@
 
 // ---- unit-local stand-ins for classes whose units are not recovered yet ----
 
-// A check box AS entity of the option dialog.
-class Unk_GoCheck : public ASButton
-{
-public:
-};
-
 // The graphics option block (Unk_AeGameOption::FUN_1409a8ac0): HDR, shimmer, mirror flags and the shadow quality.
 class Unk_GoGraphics
 {
@@ -81,7 +75,7 @@ public:
     virtual int vfunc_48() { return 0x4e34; }                                       // 48 (COMDAT 0x1419477f0)
     virtual int vfunc_65();                                                         // 65 0x141946cf0
 
-    MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);                      // child lookup (ICF'd GetChild instance)
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);                      // child lookup (ICF'd GetChild instance)
     void FUN_1419475a0(int bHdr);                                                  // HDR on/off
     void FUN_141947600(int bShimmer);                                              // shimmer on/off
     void FUN_141947710(int bMirror);                                               // mirror on/off
@@ -118,11 +112,11 @@ MS2_REPLACE_METHOD(0x141946cf0, UIGraphicOptionDialog, vfunc_65, 37, 0xE40486DA)
 // @0x141946d20
 int UIGraphicOptionDialog::vfunc_5()
 {
-    if (MS2Ptr<Unk_GoCheck> spHdr = FUN_140e52670("m_hdr"))
+    if (MS2Ptr<ASCheckBox> spHdr = FUN_140e52670("m_hdr"))
         spHdr->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bHdr);
-    if (MS2Ptr<Unk_GoCheck> spShimmer = FUN_140e52670("m_shimmer"))
+    if (MS2Ptr<ASCheckBox> spShimmer = FUN_140e52670("m_shimmer"))
         spShimmer->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bShimmer);
-    if (MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670("m_mirror"))
+    if (MS2Ptr<ASCheckBox> spMirror = FUN_140e52670("m_mirror"))
         spMirror->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bMirror);
     if (MS2Ptr<ASDropdownMenu> spShadow = GetChild<ASDropdownMenu>("m_shadow"))
         spShadow->SetSelectedIndex(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_nShadow);

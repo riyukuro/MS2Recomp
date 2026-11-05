@@ -36,19 +36,15 @@
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/aslabel.h"
+#include "ms2/placeholder/ms2ptr_impl.h"  // MS2Ptr<ASLabel> members are COMDATs of this unit
 #include "ms2/placeholder/asitemslot.h"
 #include "ms2/commonfiles/rewardcontentstable.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/placeholder/mstime.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
-class Unk_WcTitle {};
-// MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of this unit (explicit specializations, defined last).
-template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
-template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=(int);
-template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_WcTitle>(const MS2Ptr<Unk_WcTitle>&);
-template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString&, MS2Ptr<Unk_WcTitle>&);
-class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CString&); };
+// The AScript child binder for ASLabel is a COMDAT of this unit (explicit specialization, defined last).
+template <> MS2Ptr<ASLabel> AScript::FUN_140bbe640<ASLabel>(const CString&, MS2Ptr<ASLabel>&);
 class CInputStream;
 template <class T> CInputStream& operator>>(CInputStream& in, std::vector<T>& vec);   // C3: def in gameeventcontext
 class CInPacket { public: void* p0; Unk_OSInput stream; };   // C3: the stream is os.h's Unk_OSInput
@@ -322,12 +318,12 @@ void UIWorldChampionRewardDialog::FUN_140febc40() {
     if (!avatar) return;
     size_t index = m_selected - 1;
     if (index >= m_rewardVector.size()) {
-        reinterpret_cast<ASLabel*>(m_title.operator->())->FUN_1422e4a50(FUN_140298ea0(L"s_world_champion_clear_title"));
+        m_title->FUN_1422e4a50(FUN_140298ea0(L"s_world_champion_clear_title"));
         m_area->vfunc_4(false);
         FUN_140cff840(FUN_1422dbb40(), "m_clearIcon", 1);
         return;
     }
-    reinterpret_cast<ASLabel*>(m_title.operator->())->FUN_1422e4a50(FUN_14028dfa0(L"s_world_champion_reward_title", m_selected));
+    m_title->FUN_1422e4a50(FUN_14028dfa0(L"s_world_champion_reward_title", m_selected));
     m_area->vfunc_4(true);
     FUN_140cff840(FUN_1422dbb40(), "m_clearIcon", 0);
     RewardContentsTable::Result rewards;
@@ -405,20 +401,15 @@ MS2_REPLACE_METHOD(0x140fec540, UIWorldChampionRewardDialog, FUN_140fec540, 472,
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 // @0x140fecae0
-template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString& name, MS2Ptr<Unk_WcTitle>& outChild) {
+template <> MS2Ptr<ASLabel> AScript::FUN_140bbe640<ASLabel>(const CString& name, MS2Ptr<ASLabel>& outChild) {
     MS2_ASCRIPT_INL_ASSERT(0xd5, outChild == NULL);
-    outChild.operator=<Unk_WcTitle>(reinterpret_cast<Unk_WcTitleFinder*>(this)->FUN_140c436d0(name));
+    outChild = FUN_140c436d0<ASLabel>(name);
     return outChild;
 }
 // @0x140fed2f0
-template <> MS2Ptr<Unk_WcTitle>::MS2Ptr() { m_p = 0; }
+template MS2Ptr<ASLabel>::MS2Ptr();
 // @0x140fed370
-template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_WcTitle>(const MS2Ptr<Unk_WcTitle>& o) {
-    o.AddRef();
-    Release();
-    m_p = o.m_p;
-    return *this;
-}
+template MS2Ptr<ASLabel>& MS2Ptr<ASLabel>::operator=(const MS2Ptr<ASLabel>&);
 // @0x140fed3b0
-template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=(int) { Release(); return *this; }
+template MS2Ptr<ASLabel>& MS2Ptr<ASLabel>::operator=(int);
 MS2_EMIT_CRT_MEMMOVE_S();

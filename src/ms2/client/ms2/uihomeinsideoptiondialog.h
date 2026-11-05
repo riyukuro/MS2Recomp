@@ -24,6 +24,5 @@ public:
     bool FUN_140c28000(int nResult, const CMsgBoxData& box);    // 0x140c28000 confirm box answered: apply and close
     void FUN_140c280d0();                                       // 0x140c280d0 send the three selections
     template <class T> MS2Ptr<T> FUN_140c28560(const CString& strName);   // 0x140c28560 bind a child of the movie
-    MS2Ptr<class Unk_HioButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
 };
 MS2_CHECK_SIZE(UIHomeInsideOptionDialog, 0x178);

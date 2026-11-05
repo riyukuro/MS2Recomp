@@ -47,7 +47,7 @@ public:
     CStringA GetName() const;                                   // 0x1414472a0: the liftable's name
     int FUN_141447cc0() const;                                      // its id
     int GetState() const;                                           // nonzero: already carried
-    Vector3 FUN_141447c80();                            // its position
+    Vector3 FUN_141447c80() const;                      // its position (C3: liftableobject.h is const)
 };
 class Unk_SSGNamedObj : public CLiftableObject {};
 class Unk_SSGWorld : public WorldService
@@ -69,11 +69,11 @@ public:
     float FUN_1422afec0(int);
 };
 int FUN_141277f40();
-float FUN_1412762d0(const Vector3& pt);                 // the screen y offset of a world point
+float FUN_1412762d0(const NiPoint3& pt);                 // the screen y offset of a world point
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 class Unk_AuCfgValue
 {
 public:
-    const float& FUN_140298f40();
     char m_pad[0x58];
 };
 struct Unk_AuConfig
@@ -181,7 +181,7 @@ Vector3 NavigationEntity::vfunc_7()
 // @0x140e78a40
 float NavigationEntity::vfunc_8()
 {
-    return FUN_1412762d0(vfunc_7());
+    return FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(vfunc_7())));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +307,7 @@ Vector3 NpcNavigationEntity::vfunc_7()
 // @0x140e790f0
 float NpcNavigationEntity::vfunc_8()
 {
-    return NavigationEntity::vfunc_8() - (((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0.FUN_140298f40() + 30.0f);
+    return NavigationEntity::vfunc_8() - (reinterpret_cast<const float&>(reinterpret_cast<Unk_IntOptionEntry&>(((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0).FUN_140298f40()) + 30.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

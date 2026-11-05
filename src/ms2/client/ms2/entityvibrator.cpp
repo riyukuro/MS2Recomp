@@ -88,8 +88,7 @@ bool Unk_IsFinite(const efd::Point3& kPoint);   // C3: was FUN_140a33ff0(const V
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned nProp, efd::AssetID* pValue);
 
 
-struct Unk_VibInt3 { Unk_VibInt3(); int x, y, z; };
-Unk_VibInt3 FUN_1408a1430(Vector3 pt);                      // point -> cube cell
+Unk_Int3 FUN_1408a1430(NiPoint3 pt);                        // point -> cube cell (C3: actionkeyobject.cpp's declaration)
 class Unk_VibCubeSub : public Unk_CubeHeightIndex { };
 CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
@@ -98,8 +97,6 @@ struct Unk_VibMat : Unk_NiMatrix3
 {
     Unk_VibMat() {}
     Unk_VibMat(const Unk_EfdMatrix3& m) : Unk_NiMatrix3(m) {}
-    void FUN_14109aa30(unsigned nCol, const Vector3& v);    // set column
-    Vector3 FUN_140a00720(const Vector3& v) const;  // matrix * vector
 };
 // Rotation, translation and scale (0x34 bytes).
 struct Unk_VibXform
@@ -160,7 +157,7 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, MS2Ptr<CSkillRecord> param
         m_7c = 1;
         CubeMapInformationService* pCubeSvc = GetCubeMapService();
         Unk_VibCubeSub* pCube = reinterpret_cast<Unk_VibCubeSub*>(pCubeSvc->FUN_1410b9e70());
-        Unk_VibInt3 cell = FUN_1408a1430(m_ac);
+        Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
         pCube->FUN_1410b25a0(cell.x, cell.y, cell.z);
         if (m_ab != 0) {
             bool bOff = false;
@@ -287,7 +284,7 @@ int CEntityVibrator::FUN_1411cba60()
                 Unk_VibCubeSvc* pCube = static_cast<Unk_VibCubeSvc*>(GetCubeMapService());
                 if (pCube->FUN_1410b8be0(m_entity.operator->()->GetEntityID()) != 0) {
                     Unk_VibCubeSub* pSub = reinterpret_cast<Unk_VibCubeSub*>(pCube->FUN_1410b9e70());
-                    Unk_VibInt3 cell = FUN_1408a1430(m_ac);
+                    Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
                     pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
                 }
                 return 0;
@@ -374,12 +371,12 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
     ptDir.FUN_140968990();
     efd::Point3 ptSide = reinterpret_cast<const efd::Point3&>(ptDir).UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
     Vector3 ptNeg = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8)))).FUN_1409f7960();
-    basis.FUN_14109aa30(0, reinterpret_cast<const Vector3&>(ptSide));
-    basis.FUN_14109aa30(1, ptNeg);
-    basis.FUN_14109aa30(2, g_143a08cf8);
+    reinterpret_cast<efd::Matrix3&>(basis).SetCol(0, ptSide);
+    reinterpret_cast<efd::Matrix3&>(basis).SetCol(1, reinterpret_cast<const efd::Point3&>(ptNeg));
+    reinterpret_cast<efd::Matrix3&>(basis).SetCol(2, reinterpret_cast<const efd::Point3&>(g_143a08cf8));
     Unk_VibMat comb = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(*(efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis) * *(efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot)));
     float fSpeed = (1.0f * fScale) / (fTime * 2.0f);
-    Vector3 vel = comb.FUN_140a00720(DAT_143a08ce8).FUN_14097fc90(fSpeed);
+    Vector3 vel = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(comb) * reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))).FUN_14097fc90(fSpeed);
     NxVec3 vSize(m_98.x, m_98.y, m_98.z);
     vSize -= NxVec3(1.0f, 1.0f, 1.0f);
     NxBoxShapeDesc boxDesc;
@@ -548,7 +545,7 @@ void CEntityVibrator::SetPosition(Vector3 pos)
             return;
         }
         m_ac = pos;
-        reinterpret_cast<Unk_Entity*>(m_entity.operator->())->FUN_140a38a50(0xfd95ca52, m_ac);
+        m_entity.operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(m_ac));
     }
 }
 MS2_REPLACE_METHOD(0x1411CDA60, CEntityVibrator, SetPosition, 144, 0x24E4DCF5);
@@ -561,7 +558,7 @@ void CEntityVibrator::SetRotation(Vector3 rot)
             return;
         }
         m_b8 = rot;
-        reinterpret_cast<Unk_Entity*>(m_entity.operator->())->FUN_140a38a50(0x68c7c29d, m_b8);
+        m_entity.operator->()->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(m_b8));
     }
 }
 MS2_REPLACE_METHOD(0x1411CDB00, CEntityVibrator, SetRotation, 144, 0xD81E790E);
@@ -583,7 +580,7 @@ void CEntityVibrator::FUN_1411cdba0()
     m_a9 = true;
     CubeMapInformationService* pSvc = GetCubeMapService();
     Unk_VibCubeSub* pSub = reinterpret_cast<Unk_VibCubeSub*>(pSvc->FUN_1410b9e70());
-    Unk_VibInt3 cell = FUN_1408a1430(m_ac);
+    Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
     pSub->FUN_1410b25a0(cell.x, cell.y, cell.z);
 }
 MS2_REPLACE_METHOD(0x1411CDBA0, CEntityVibrator, FUN_1411cdba0, 489, 0x0468E30C);

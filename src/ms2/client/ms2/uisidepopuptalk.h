@@ -215,7 +215,6 @@ public:
     void FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "SuperWorldChat" items of the inventory
     void FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "WeddingChat" items
     MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>& out);  // bind a child
-    MS2Ptr<ASButton> FUN_140bc6d10(const CString& strName, MS2Ptr<ASButton>& out);   // bind a child (COMDAT of uicashattenddialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

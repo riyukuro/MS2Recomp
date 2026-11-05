@@ -73,7 +73,7 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
 

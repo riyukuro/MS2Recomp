@@ -27,8 +27,9 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemcustomizecontroller_1.h"
 #include "itempickinghelper.h"
+#include "equipmodel.h"   // C3: the picking target is a CEquipModel (was Unk_PickTarget)
 
-struct Unk_PickTargetView : public Unk_PickTarget {};   // layout-identical view of the picker target element
+struct Unk_PickTargetView : public CEquipModel {};   // layout-identical view of the picker target element
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 #include <efd/ServiceManager.h>
@@ -49,17 +50,10 @@ struct Unk_PickTargetView : public Unk_PickTarget {};   // layout-identical view
 
 // ---- out-of-unit callees ----
 
-// The part's UGC mesh view (MS2Ptr-held, built from the part by the converting copy 0x1411de2a0).
-class Unk_CustomizeMesh : public CPtred
-{
-};
-// One customizable part of the equipped item model (MS2Ptr-held; ?\itemugcmesh.cpp).
-class Unk_CustomizePart : public Unk_CustomizeMesh
-{
-public:
-    float FUN_141422340(int nIndex);                            // customize value nIndex of the part
-};
-void FUN_1414225d0(MS2Ptr<Unk_CustomizeMesh> spMesh, int nIndex, float fValue);   // stores value nIndex
+float FUN_141422340(CEquipModel* pPart, int nIndex);        // customize value nIndex of the part (C3: itemugcmesh's free function)
+class CEquipModel;
+void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLocal, void* pTrans, void* pRot);   // C3: equipmodel's free function (the target's anchor and frame)
+void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex (itemugcmesh.cpp)
 
 class CEquipItem : public CPtred
 {
@@ -68,7 +62,7 @@ public:
     int FUN_1411dc820();                                        // customize value of the item
     struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
-    MS2Ptr<Unk_CustomizePart> FUN_1411dc950(const CString& strPart);
+    MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
 };
 
 struct Unk_ICCPlayer : public PC
@@ -100,11 +94,12 @@ public:
 };
 
 // Picking mesh hits of the customize UV picker (?\meshuvpicker.cpp); only the call used here.
+class NiRenderObject;
 class CMeshUVPicker
 {
 public:
-    bool FUN_14147ea50(NiAVObject* pMesh, NiCamera* pCamera, float x, float y, efd::Point3* pHit, efd::Point3* pNormal,
-                       NiPoint2* pUV, float* pT, void* pSkins);
+    bool PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, struct Unk_FcPoint3* pPos0, struct Unk_FcPoint3* pPos1,
+                       NiPoint2* pUV, float* pIndex, CAtlArray<NiRenderObject*>* pExtras);   // 0x14147ea50 (meshuvpicker.h)
 };
 
 
@@ -337,9 +332,9 @@ void CItemCustomizeController::ApplyValues()
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
     if (m_bEnabled && aParts.GetCount() > 0)
     {
-        MS2Ptr<Unk_CustomizePart> spPart = m_spEquipItem->FUN_1411dc950(aParts[0]);
+        MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts[0]);
         for (int i = 0; i < 2; i++)
-            FUN_1414225d0(spPart, i, m_afValue[i]);   // converting copy 0x1411de2a0 into the by-value arg
+            FUN_1414225d0(spPart, i, m_afValue[i]);   // MS2Ptr<CEquipModel> copy 0x1411de2a0 into the by-value arg
     }
 }
 
@@ -354,10 +349,10 @@ void CItemCustomizeController::ReadValues()
         m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
         if (aParts.GetCount() > 0)
         {
-            MS2Ptr<Unk_CustomizePart> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+            MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             for (int i = 0; i < 2; i++)
             {
-                float fValue = spPart.get()->FUN_141422340(i);
+                float fValue = FUN_141422340(spPart.get(), i);
                 float fMin, fMax;
                 vfunc_26(i, &fMin, &fMax);
                 m_afValue[i] = efd::Clamp(fValue, fMin, fMax);
@@ -405,7 +400,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
     m_spPicker->SetMode(1);
     m_bDragging1 = 1;
     SetDragging(1);
-    Unk_PickTarget* pTarget = m_spPicker->GetPickedTarget();
+    CEquipModel* pTarget = m_spPicker->GetPickedTarget();
     if (pTarget)
     {
         if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
@@ -419,7 +414,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
         if (pRenderer && (pTarget2 = pRenderer->GetDefaultRenderTargetGroup()) != 0)
         {
             efd::Point3 kAnchor, kP1, kP2, kP3;
-            pTarget->FUN_141202480(&kAnchor, &kP1, &kP2, &kP3, 0);
+            FUN_141202480(pTarget, reinterpret_cast<NiPoint3*>(&kAnchor), reinterpret_cast<float*>(&kP1), &kP2, &kP3, 0);
             NiPoint3 kWorld(kAnchor);
             ((class Ni3DRenderView*)(void*)(pCameraManager))->GetCamera()->WorldPtToScreenPt(kWorld, m_kScreenStart.x, m_kScreenStart.y);
             m_kScreenStart.x *= (float)pTarget2->GetWidth(0);
@@ -468,8 +463,8 @@ void CItemCustomizeController::UpdateDrag()
         float fT;
         NiPoint2 kDelta = kCursor - m_kCursorStart;
         NiPoint2 kScreen = m_kScreenStart + kDelta;
-        if (m_spPicker->GetUVPicker()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCameraManager))->GetCamera(), kScreen.x, kScreen.y, &kHit,
-                                                     &kNormal, &kUV, &fT, 0))
+        if (m_spPicker->GetUVPicker()->PickUVAndPosition((NiRenderObject*)pMesh, ((class Ni3DRenderView*)(void*)(pCameraManager))->GetCamera(), kScreen.x, kScreen.y,
+                                                         (struct Unk_FcPoint3*)&kHit, (struct Unk_FcPoint3*)&kNormal, &kUV, &fT, 0))
         {
             vfunc_32(*(NiPoint3*)&kHit, *(NiPoint3*)&kNormal, kUV, fT);
             break;
@@ -545,7 +540,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
     CAtlArray<MS2Ptr<Unk_PickTargetView> >& aTargets = (CAtlArray<MS2Ptr<Unk_PickTargetView> >&)m_spPicker->GetTargets();
     for (size_t i = 0; i < aTargets.GetCount(); i++)
     {
-        Unk_PickTarget* pTarget = aTargets[i].get();
+        CEquipModel* pTarget = aTargets[i].get();
         if (pTarget == 0)
             continue;
         if (!reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547170())

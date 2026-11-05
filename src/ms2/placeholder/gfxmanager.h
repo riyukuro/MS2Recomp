@@ -185,4 +185,5 @@ MS2_CHECK_OFFSET(GFxManager, m_180, 0x180);
 MS2_CHECK_OFFSET(GFxManager, m_mapFiles, 0x1b0);
 MS2_CHECK_OFFSET(GFxManager, m_1e8, 0x1e8);
 MS2_CHECK_SIZE(GFxManager, 0x1f0);
-GFxManager* FUN_14025e7a0();                                        // the singleton
+class Unk_AltStringMgr* FUN_14025e7a0();   // the singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+#define FUN_14025e7a0() (reinterpret_cast<GFxManager*>(FUN_14025e7a0()))

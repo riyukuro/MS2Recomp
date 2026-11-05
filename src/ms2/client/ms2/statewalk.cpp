@@ -36,9 +36,9 @@ class Unk_CubeSelection;
         // the cube selection is in the craft mode
 
 // The animation service: the sequence id of the model / the model's animation name by the entity id.
-class Unk_WkAnimSvc
+struct Unk_EmModelLoader   // C3: as equipmodel.cpp defines it
 {
-public:
+
     efd::utf8string FUN_141206030(const egf::EntityID& kId);
 };
 namespace egmAnimation { class AnimationService; }
@@ -460,7 +460,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         pMount->vfunc_95();
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        const efd::utf8string& strName = reinterpret_cast<Unk_WkAnimSvc*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460());
+        const efd::utf8string& strName = reinterpret_cast<Unk_EmModelLoader*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460());
         efd::utf8string strAnim(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strName))->c_str());
         m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
     }

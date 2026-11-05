@@ -134,6 +134,7 @@ private:
     void* m_pad[0x88 / 8];                                      // 0x90 bytes; pointer slots: an array of scalars would be a /GS buffer
 };
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
+class TiXmlNode { public: const TiXmlElement* NextSiblingElement() const; };   // C3: member view (tinyxml)
 struct Unk_QnTracking;
 class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
 
@@ -198,7 +199,6 @@ __int64 GetServerTime();                                        // GetServerTime
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 CStringW GetStringCommon(int nStringId);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-bool FUN_140bb6090(const MS2Ptr<ASButton>* p, int n);
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // split
 bool FUN_14028d780(unsigned char c);                                   // c != 0
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);      // set a Boolean value
@@ -233,7 +233,7 @@ void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   
 // The guild storage items (CGuildStorage::f18, opaque in guilddef_1.h): std::map<(item id, rank), ItemEntity> (see
 // CGuildStorage::FUN_1404cc210, which builds the key from vfunc_o18_0 / vfunc_o18_1).
 typedef std::map<std::pair<int, int>, ItemEntity> Unk_GdStorageItems;
-void FUN_14141f860(const CString& strName, int nSlots, ATL::CAtlArray<MS2Ptr<CItem> >* pItems, MS2Ptr<ItemSlotBag::CreateParam> spParam);   // register an item slot bag
+void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<ItemSlotBag::CreateParam> spParam);   // register an item slot bag (C3: the definer's void* items)
 MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);          // ItemSlotBag: the item at an index of a CAtlArray<MS2Ptr<CItem>>
 // The guild storage history (CGuildStorage::f38, opaque in guilddef_1.h; guildmanager.cpp clears it as this deque).
 typedef std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> > Unk_GdStorageHistory;
@@ -3120,7 +3120,7 @@ void UIGuildDialog::PurgeExpiredRequests()
 // @0x1419761f0
 void UIGuildDialog::FUN_1419761f0()
 {
-    if (FUN_140bb6090(&m_button368, 0) || FUN_140bb6090(&m_button378, 0))
+    if (m_button368 == nullptr || m_button378 == nullptr)
         return;
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x78))
     {
@@ -3262,7 +3262,7 @@ void UIGuildDialog::FUN_141976e00(CString strXml)
     if (pEnd == 0)
         return;
     std::vector<std::pair<unsigned __int64, CString> > marks;
-    for (Unk_140165cf0* pGuild = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&root)->FirstChild("guild")); pGuild != 0; pGuild = pGuild->NextSiblingElement())
+    for (Unk_140165cf0* pGuild = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&root)->FirstChild("guild")); pGuild != 0; pGuild = reinterpret_cast<Unk_140165cf0*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pGuild)->NextSiblingElement())))
     {
         unsigned __int64 nGuildId = FUN_140718350(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("sn"));
         CString strMark = FUN_1407185b0(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("mark"));

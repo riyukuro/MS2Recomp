@@ -13,7 +13,7 @@
 // MS2-PIN: ?vfunc_ugc_6@UIUGCEventListener@@UEAAXXZ 0x140bc0af0 ; unique
 // MS2-PIN: ?vfunc_ugc_7@UIUGCEventListener@@UEAAXH@Z 0x140bc0b00 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VTMarketBillDataParam@@@@AEAAXXZ 0x140bc0db0 ; prop
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASButton@@@@AEAAXPEAX@Z 0x140bc0df0 ; prop
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VTMeratMarketBillDataParam@@@@AEAAXPEAX@Z 0x140bc0df0 ; prop
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1000 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlueprintMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140bc1060 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@P6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z 0x140bc1140 ; unique
@@ -137,7 +137,6 @@ struct Unk_ConfigPaths
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The row fill's record and the market banner (views of uimeratmarketdialog.cpp; the record is the product).
-class Unk_MeratBanner : public CPtred { public: CStringA m_strBackground; };
 class Unk_MeratEquipEntry : public CMeratMarketProduct { };
 
 // The NotifyBlindTarget members this unit reads.

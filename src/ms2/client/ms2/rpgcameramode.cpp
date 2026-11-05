@@ -22,6 +22,9 @@
 #include <NiPick.h>
 #include <ecr/PickService.h>
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
+template <class T> class TSingleton;
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- the unit's header statics (header_statics_a.h order plus a pointer holder before the map) ----
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -36,16 +39,7 @@ private:
     void* m_p;
 };
 static Unk_1401cd100 s_pointer(NULL);
-class Unk_1402a9d70
-{
-public:
-    Unk_1402a9d70(int, float, float, float, int);
-    ~Unk_1402a9d70();
-
-private:
-    void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48;
-};
-MS2_CHECK_SIZE(Unk_1402a9d70, 0x50);
+#include "ms2/placeholder/unk_1402a9d70.h"   // C3: the real ATL::CAtlMap<UINT, CString>
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
@@ -79,9 +73,12 @@ public:
 class CameraMgr   // C3: member view (real class not in this TU)
 {
 public:
+    Vector3 FUN_140a38d00();   // C3: was Unk_CameraManager
+    void FUN_140a38d90(Vector3 pt);   // C3: was Unk_CameraManager
     efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
         NiAVObject* pRoot);                                         // pick the scene under a window point
     void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
+    class Unk_CameraTargetEntity* FUN_140a38d60();   // C3: bosstargetcamera.cpp
 };
 class WorldService   // C3: static member view for the former free stand-ins
 {
@@ -165,7 +162,7 @@ void CRPGCameraMode::vfunc_9()
         ptMove.y = 1.0f;
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x34, false, 0))
         ptMove.y = -1.0f;
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x141709a20, CRPGCameraMode, vfunc_9, 474, 0xF518D54F);
 
@@ -175,7 +172,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
     int nLoop = 100;
     for (int i = 0; i < nLoop; ++i)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (!pTarget)
             break;
         m_78 = pTarget->vfunc_17();
@@ -241,7 +238,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
             vfunc_37();
         }
 
-        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
@@ -275,7 +272,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
                 m_d8.m_rot = FUN_14170b320(ptPos);
                 vfunc_37();
             }
-            Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
         }
         vfunc_39(fTime);
         m_setting.m_c = m_d8.m_pos;
@@ -292,7 +289,7 @@ void CRPGCameraMode::vfunc_6(int n)
     CCameraMode::vfunc_6(n);
     m_68 = m_48;
     m_6c = m_4c;
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
         m_78 = pTarget->vfunc_17();
@@ -329,7 +326,7 @@ void CRPGCameraMode::vfunc_30()
     float fX;
     float fY;
     ((CWindowService*)(Unk_Cursor*)(((class Unk_Cursor*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
-    efd::SmartPointer<ecr::PickService::PickRecord> pList = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0850(fX, fY, true, true, false, NULL);
+    efd::SmartPointer<ecr::PickService::PickRecord> pList = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!(ecr::PickService::PickRecord*)pList)
         return;
     WorldService* pContext = WorldService::GetInstance();
@@ -340,7 +337,7 @@ void CRPGCameraMode::vfunc_30()
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {
-            reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(pActor, 1);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(pActor, 1);
             break;
         }
     }

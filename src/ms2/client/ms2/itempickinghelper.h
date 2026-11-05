@@ -35,28 +35,10 @@ struct Unk_PickPartInfo
     int m_nKind;
 };
 
-// One pickable attach part of the item model (CPtred-derived, held in MS2Ptr; methods in unit_1411673f0 /
-// ?\equipmodel.cpp). Only the members recovered code calls are declared.
-struct Unk_PickTarget : public CPtred
-{
-    MS2Ptr<CItem> FUN_141200940() const;                        // the item the slot shows
-    void* FUN_141200850() const;                                // the slot's game object (owns the model)
-    Unk_PickPartInfo* FUN_141200ab0() const;                    // the part's model facts
-    MS2Ptr<CEquipItem> FUN_141200a40() const;                   // the equip item the part belongs to (caprotationcontroller.cpp)
-    MS2Ptr<Unk_PickTarget> FUN_1411de2e0();                     // an MS2Ptr to this part (itemugcmesh.cpp)
-    void FUN_1412014f0(Vector3 kOffset);                // stores the offset (itemugcmesh.cpp)
-    void FUN_141201620(Vector3 kEuler);                 // stores the euler (itemugcmesh.cpp)
-    void FUN_141201cb0(std::set<NiAVObjectPtr>& kOut);          // copies the node set of the part (itemugcmesh.cpp)
-    std::set<NiAVObjectPtr>& FUN_141201c90() const;                // the part's node set (itemugcmesh.cpp)
-    void FUN_141200160(Vector3 kOffset);                // sets the part's model offset
-    void FUN_141200100(Vector3 kEuler);                 // sets the part's model rotation (euler degrees)
-    NiAVObject* FUN_1411673f0(const CString* pName) const;      // the scene node named pName (unit_1411673f0)
-    NiAVObject* FUN_1411676d0(const CString* pPartName) const;  // the model node of one attach part (w22: NiRenderObject**)
-    // highlight: fScale/fMode from CItemCustomizeController::vfunc_39, pNode = the picked mesh or NULL
-    void FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode);
-    // four points of the part's screen anchor (the first one is projected by CItemCustomizeController::BeginDrag)
-    void FUN_141202480(efd::Point3* pP0, efd::Point3* pP1, efd::Point3* pP2, efd::Point3* pP3, void* pUnused);
-};
+// A pickable attach part of the item model is a CEquipModel (equipmodel.h; MS2Ptr<CEquipModel> binds the same
+// ctor/copy/dtor/operator==/operator-> VAs, and CEquipItem::FindModelByName 0x1411dc950 returns it). Its scene-node
+// helpers (0x1411673f0, 0x1411676d0, 0x1411679d0) are CEquipModel members defined in unit_1411673f0.
+class CEquipModel;
 
 // Smart pointer to a scene node (NiRefObject::IncRefCount 0x140980460 / DecRefCount 0x1405a93d0). 8 bytes.
 struct Unk_PickMeshPtr
@@ -92,19 +74,19 @@ public:
 
     int CreatePicker();                                         // 0x141418d60 (CItemCustomizeController::Initialize tests eax)
     void ClearTargets();                                        // 0x141418e00
-    void AddTarget(Unk_PickTarget* pTarget);                    // 0x141418e30
-    Unk_PickTarget* GetPickedTarget();                          // 0x141418e90
+    void AddTarget(CEquipModel* pTarget);                    // 0x141418e30
+    CEquipModel* GetPickedTarget();                          // 0x141418e90
     int GetPickedIndex() const;                                 // 0x141418ef0
     // pHit; parts = CItemCustomizeController::m_aPartNames (CAtlArray<CString>, see itemcustomizecontroller_1.h)
     int Pick(efd::Point3* pHit, CAtlArray<CString>& parts);     // 0x141418f10
     void Reset();                                               // 0x141419210
     // unit-internal (#4): ray-pick one target's part / one mesh; skins = the FA_Skin/FA_EA render objects
-    int PickTarget(Unk_PickTarget* pTarget, const CString* pPartName, NiPoint3* pHit);    // 0x141419250
+    int PickTarget(CEquipModel* pTarget, const CString* pPartName, NiPoint3* pHit);    // 0x141419250
     int PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& skins, NiPoint3* pHit);    // 0x1414194b0
 
     // inline accessors (COMDATs first emitted by ?\itemcustomizecontroller.cpp#1)
     CMeshUVPicker* GetUVPicker() { return m_spPicker.FUN_141412c80(); }                 // 0x141412e40
-    CAtlArray<MS2Ptr<Unk_PickTarget> >& GetTargets() { return m_targets; }              // 0x141412e60
+    CAtlArray<MS2Ptr<CEquipModel> >& GetTargets() { return m_targets; }              // 0x141412e60
     int GetMode() { return m_nMode; }                                                   // 0x141412e70
     void SetMode(int nMode) { m_nMode = nMode; }                                        // 0x1414131c0
     void SetPrevMesh(NiAVObject* pMesh) { m_spLast.FUN_141418a00(pMesh); }              // 0x141478060 (first emitted by ?\makeupcontroller.cpp)
@@ -112,7 +94,7 @@ public:
     Unk_PickMeshPtr m_spMesh;                                   // +0x10 mesh hit by the last successful pick
     int m_nMode;                                                // +0x18 (w22: m_nUnk18) 0 = idle, 1 = dragging
     Unk_UVPickerPtr m_spPicker;                                 // +0x20
-    CAtlArray<MS2Ptr<Unk_PickTarget> > m_targets;               // +0x28
+    CAtlArray<MS2Ptr<CEquipModel> > m_targets;               // +0x28
     int m_nPicked;                                              // +0x48 index into m_targets, -1 = none
     efd::Point2 m_kUv0;                                         // +0x4c
     efd::Point2 m_kUv1;                                         // +0x54

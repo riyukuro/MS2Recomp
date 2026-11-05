@@ -4,8 +4,10 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?vfunc_48@UIHomeInfoEditDialog@@UEAAHXZ 0x140c27100 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??B?$MS2Ptr@VUnk_HmInput@@@@QEBAPEAVUnk_HmInput@@XZ 0x140c270a0
-// MS2-PIN: ??C?$MS2Ptr@VUnk_HmInput@@@@QEBAPEAVUnk_HmInput@@XZ 0x140c270b0
+// MS2-PIN: ??B?$MS2Ptr@VASTextArea@@@@QEBAPEAVASTextArea@@XZ 0x140c270a0
+// MS2-PIN: ??C?$MS2Ptr@VASTextArea@@@@QEBAPEAVASTextArea@@XZ 0x140c270b0
+// MS2-PIN: ??$?0VASTextArea@@@?$MS2Ptr@VASTextInput@@@@QEAA@$$QEAV?$MS2Ptr@VASTextArea@@@@@Z 0x140c26dc0 ; hand: converting move (MS2_PTR_MOVE_CONVERT)
+#define MS2_PTR_MOVE_CONVERT
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uihomeinfoeditdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uihomeinfoeditdialog.h"
@@ -19,6 +21,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/astextarea.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
@@ -26,30 +29,8 @@ class ASDialog : public ASDisplayObject
 {
 };
 
-// The two text inputs (m_homeName / m_homeNotice); they share the input base.
-class Unk_HmInput : public ASDisplayObject
-{
-public:
-    Unk_HmInput(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e4570
-private:
-    char m_pad_40[0x88 - sizeof(ASDisplayObject)];
-};
-
-// The handle the home name input is moved into: MS2Ptr<ASTextInput> (its get / release live in the unit that owns the
-// shared instance; -> goes through the real MS2Ptr<ASTextInput>). The move ctor 0x140c26dc0 is defined under this name.
-struct Unk_HmPtrView { void* m_0; void* m_8; };                    // the layout of an MS2Ptr
-struct Unk_HmNameRef
-{
-    Unk_HmNameRef(MS2Ptr<Unk_HmInput>&& o)                          // 0x140c26dc0
-    {
-        m_8 = reinterpret_cast<Unk_HmPtrView&>(o).m_8;
-        reinterpret_cast<Unk_HmPtrView&>(o).m_8 = 0;
-    }
-    ~Unk_HmNameRef();                                               // 0x140bbfdd0 release
-    operator Unk_HmInput*() const;                                  // 0x140bc0500
-    void* m_0;
-    void* m_8;
-};
+// The two text inputs (m_homeName / m_homeNotice) are ASTextArea children (MS2Ptr<ASTextArea> COMDATs 0x140c270a0 /
+// 0x140c270b0). The home name is moved into an MS2Ptr<ASTextInput> by the converting move 0x140c26dc0.
 
 // ---- out-of-unit callees ----
 UIHomeInfoDialog* FUN_140bbea00(int nId);                           // dialog by its ui id
@@ -84,20 +65,20 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 }
 
 // @0x140c26ea0
-template <> MS2Ptr<Unk_HmInput> AScript::FUN_140accef0<Unk_HmInput>(const CString& strName)
+template <> MS2Ptr<ASTextArea> AScript::FUN_140accef0<ASTextArea>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return Unk_ASCreate<Unk_HmInput>(m_nMovieId, v);
-    return MS2Ptr<Unk_HmInput>(0);
+        return Unk_ASCreate<ASTextArea>(m_nMovieId, v);
+    return MS2Ptr<ASTextArea>(0);
 }
 
 // @0x140c26f60
-template <> MS2Ptr<Unk_HmInput> UISwfEntity::GetChild<Unk_HmInput>(const CString& strName)
+template <> MS2Ptr<ASTextArea> UISwfEntity::GetChild<ASTextArea>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_HmInput>(0);
-    return m_30->FUN_140accef0<Unk_HmInput>(strName);
+        return MS2Ptr<ASTextArea>(0);
+    return m_30->FUN_140accef0<ASTextArea>(strName);
 }
 
 // @0x140c26850
@@ -160,15 +141,15 @@ MS2_REPLACE_METHOD(0x140C264F0, UIHomeInfoEditDialog, GetTypeName, 61, 0x94107E3
 void UIHomeInfoEditDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
+    if (MS2Ptr<ASTextInput> spName = GetChild<ASTextArea>("m_homeName"))
     {
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->SetMaxChars(FUN_140c26920());
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->SetTextW(FUN_140c268d0());
+        spName->SetMaxChars(FUN_140c26920());
+        spName->SetTextW(FUN_140c268d0());
     }
-    if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
+    if (MS2Ptr<ASTextArea> spNotice = GetChild<ASTextArea>("m_homeNotice"))
     {
-        reinterpret_cast<ASTextInput*>(spNotice.operator->())->SetMaxChars(100);
-        reinterpret_cast<ASTextInput*>(spNotice.operator->())->SetTextW(FUN_140c26850());
+        spNotice->SetMaxChars(100);
+        spNotice->SetTextW(FUN_140c26850());
     }
 }
 MS2_REPLACE_METHOD(0x140C26540, UIHomeInfoEditDialog, OnLoadComplete, 548, 0x8AF667C3);
@@ -200,12 +181,12 @@ void UIHomeInfoEditDialog::OnConfirm()
 {
     if (UIHomeInfoDialog* pInfo = FUN_140bbea00(0x4ed8))
     {
-        if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
+        if (MS2Ptr<ASTextInput> spName = GetChild<ASTextArea>("m_homeName"))
         {
             if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker().get())
             {
                 CStringW strMessage;
-                CStringW strName = reinterpret_cast<MS2Ptr<ASTextInput>&>(spName)->GetText();
+                CStringW strName = spName->GetText();
                 strName.Trim(L",");
                 if (pChecker->CheckHomeName(strName, strMessage) == 0)
                 {
@@ -223,11 +204,11 @@ void UIHomeInfoEditDialog::OnConfirm()
                 }
             }
         }
-        if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
+        if (MS2Ptr<ASTextArea> spNotice = GetChild<ASTextArea>("m_homeNotice"))
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.WriteUInt8(0x1d);
-            packet.WriteUnicodeString(reinterpret_cast<ASTextInput*>(spNotice.operator->())->GetText());
+            packet.WriteUnicodeString(spNotice->GetText());
             FUN_140710590(packet);
         }
     }

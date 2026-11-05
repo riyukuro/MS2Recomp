@@ -137,7 +137,7 @@ private:
 int FUN_141b938f0(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
-class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
+class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 
 class CLoadingDialog;
 extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;     // 0x143ac2bd0, loadingdialog.cpp

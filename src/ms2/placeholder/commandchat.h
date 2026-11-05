@@ -14,7 +14,6 @@ struct Unk_CommandChat
 {
     Unk_CommandChat();                                      // 0x140acd570: state 1, kind 0, value 0
     ~Unk_CommandChat();                                     // 0x140acd770
-    void FUN_1401fa700(COutPacket& packet);                 // 0x1401fa700 write the chat packet body
 
     int state;                                              // +0x00
     int kind;                                               // +0x04 (4 = whisper)

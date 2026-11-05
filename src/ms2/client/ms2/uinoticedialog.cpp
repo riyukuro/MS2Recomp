@@ -28,15 +28,6 @@
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 
 // ---- exe callees ----
-class Unk_AasSource;
-struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
-{
-    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
-    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
-    ~Unk_AasSourcePtr();                                                    // 0x140d03100
-    void* m_0;
-    void* m_p;
-};
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
 {
 public:
@@ -73,7 +64,6 @@ public:
 };
 
 Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
-void FUN_1422e5530(Unk_AasImage* pImage, Unk_AasSourcePtr spSource);
 
 // ---- AScript::FUN_141009c70 ----
 
@@ -177,7 +167,7 @@ void UINoticeDialog::vfunc_85()
         return;
     vfunc_86();
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2))));
+    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
     reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->SetBrowserKeyboard(m_nBrowserId, 0);
 }

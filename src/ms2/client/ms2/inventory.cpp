@@ -238,7 +238,6 @@ public:
 };
 Unk_InventoryListener* FUN_140a6a840();
    // ItemFunctionArgs: copy of the parameter text
-int FUN_14053fd90(CItemData*);
 MS2Ptr<CItemData> FUN_14053f870(int);
 // Constructor141763fa0 initializes the full request through item+40.
 struct Unk_InventorySkillRequest {
@@ -652,7 +651,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
     if (itemId == 0) return ItemPtr(0);
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return ItemPtr(0);
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return ItemPtr(0);
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return ItemPtr(0);
@@ -675,7 +674,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
     if (player == nullptr) return ItemPtr(0);
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return ItemPtr(0);
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return ItemPtr(0);
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
@@ -695,7 +694,7 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
     if (itemId == 0) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return 0;
     { if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
@@ -747,7 +746,7 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
     if (player == nullptr) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(*filter);
     if (data == nullptr) return 0;
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
@@ -786,7 +785,7 @@ int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
     if (player == nullptr) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
@@ -811,7 +810,7 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
     if (player == nullptr) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
-    int category = FUN_14053fd90(data.operator->());
+    int category = data.operator->()->FUN_14053fd90();
     if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
@@ -1149,7 +1148,7 @@ MS2_REPLACE_METHOD(0x140a617f0, Unk_Inventory, FUN_140a617f0, 107, 0xFDCE65E4);
 int Unk_Inventory::FUN_140a61870(MS2Ptr<CItemData> data) {
     int type;
     if (data.get() != nullptr)
-        type = FUN_14053fd90(data.operator->());
+        type = data.operator->()->FUN_14053fd90();
     else
         type = 7;
     return type;

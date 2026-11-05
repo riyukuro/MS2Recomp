@@ -38,7 +38,7 @@ public:
 };
 
       // the content switches
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_HrBlockFlags { public: int FUN_1402c4c90(int nFlag); };       // blocked-action flag set
 struct Unk_HrConfig { char m_pad[8]; Unk_HrBlockFlags m_flags; };
 struct Unk_BanConfig* FUN_14025e7b0();                                  // global client config
@@ -131,7 +131,7 @@ void UIHomeResizeDialog::OnShrinkArea()
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
-        if (FUN_140166410()->FUN_14036d570(0xe4)) {
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4)) {
             int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
             MS2Ptr<ExtendAreaInfo> spPrev = FUN_140933200()->GetPreviousArea(nArea);
             if (spPrev == 0) {
@@ -156,7 +156,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
-        if (FUN_140166410()->FUN_14036d570(0xe4)) {
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4)) {
             int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
             MS2Ptr<ExtendHeightInfo> spPrev = FUN_140933200()->GetPreviousHeight(nHeight);
             if (spPrev == 0) {
@@ -271,7 +271,7 @@ void UIHomeResizeDialog::vfunc_84()
         return;
     bool bShrink = true;
     bool bExtend = true;
-    if (!FUN_140166410()->FUN_14036d570(0xe4))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4))
         bShrink = false;
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;

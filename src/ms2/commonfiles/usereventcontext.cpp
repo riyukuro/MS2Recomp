@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1408d5470-0x1408d6b30 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\usereventcontext.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 #include "usereventcontext.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/ms2recover.h"
@@ -115,7 +116,7 @@ MS2_REPLACE_METHOD(0x1408D5BE0, Unk_EventRewards, FUN_1408d5be0, 65, 0xFB81EE39)
 // @0x1408d5c30
 void Unk_EventRewardList::FUN_1408d5c30(const ATL::CAtlArray<unsigned int>& fields) {
     if (fields.GetCount() != 9) return;
-    Unk_EventPtr<EventStruct::DTReward> reward(new EventStruct::DTReward);
+    MS2Ptr<EventStruct::DTReward> reward(new EventStruct::DTReward);
     reward->a=fields[0]; reward->b=fields[1]; reward->c=fields[2]; reward->d=fields[3];
     reward->e=fields[4]; reward->f=fields[5]; reward->g=fields[6]; reward->h=fields[7]; reward->i=fields[8];
     rewards.Add(reward);

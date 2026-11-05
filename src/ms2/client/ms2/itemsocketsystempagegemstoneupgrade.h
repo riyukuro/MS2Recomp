@@ -87,9 +87,9 @@ public:
     __int64 m_selectedUid;                                      // +0x108
     __int64 m_highlightUid;                                     // +0x110
     MS2Ptr<Unk_SocketPageBag> m_bag;                            // +0x118
-    MS2Ptr<Unk_SocketPageButton> m_debugAction;                 // +0x128
-    MS2Ptr<Unk_SocketPageButton> m_debugFill;                   // +0x138
-    MS2Ptr<Unk_SocketPageButton> m_debugFillUnit;               // +0x148
+    MS2Ptr<ASButton>             m_debugAction;                 // +0x128
+    MS2Ptr<ASButton>             m_debugFill;                   // +0x138
+    MS2Ptr<ASButton>             m_debugFillUnit;               // +0x148
 };
 MS2_CHECK_SIZE(ItemSocketSystemPageGemStoneUpgrade, 0x158);
 MS2_CHECK_OFFSET(ItemSocketSystemPageGemStoneUpgrade, m_gemsName, 0x38);

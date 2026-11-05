@@ -60,7 +60,7 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   // int attribute with default
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
-void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
+void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -73,11 +73,6 @@ int FUN_14074b070(CQuestData* pData);                                   // the r
 void* FUN_140764020();   // C3: was FUN_140764020
                   // the local player (NULL outside the field)
                   // the npc id of the open talk
-class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 extern int DAT_143ae0fc0;                                               // debug switch: show ids
 
 // ---- the unit's statics ---------------------------------------------------------------------------------------------
@@ -431,7 +426,7 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
         if (!spData)
             return 0;
-        int nNpcId = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
+        int nNpcId = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId))
         {
             return 0x5dc;
@@ -551,7 +546,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(m_nQuestId);
+        MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(m_nQuestId);
         if (spQuest.get() != 0)
         {
             __int64 nGoal = spData->m_conditions[nIndex]->m_nGoal;

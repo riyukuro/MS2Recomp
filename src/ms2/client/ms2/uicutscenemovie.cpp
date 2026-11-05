@@ -39,7 +39,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
 class Unk_1403ed2d0 : public WorldService { public: };
@@ -53,7 +53,7 @@ struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0
 class Unk_140298f40 { public: };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-CKeyTable* FUN_1409331f0();
+// FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_1419e04b0 : public UILoadingProgress { };
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).

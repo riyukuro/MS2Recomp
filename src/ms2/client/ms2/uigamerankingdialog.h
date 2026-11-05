@@ -26,7 +26,7 @@ class CMsgBoxData;
 class CSeasonData;
 class ASScrollingList;
 class ASButtonBar;
-class Unk_RankInput;
+class ASTextInput;
 
 // ---- the data of the boards ----
 
@@ -267,7 +267,7 @@ public:
     void FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType);                           // party member tooltip
     bool FUN_140e359e0(int nBtn, const CMsgBoxData& data);                                         // move-home confirm result
 
-    MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);                                  // find the search input
+    MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);                                  // find the search input
 
 private:
     MS2_LAYOUT_FRIEND;

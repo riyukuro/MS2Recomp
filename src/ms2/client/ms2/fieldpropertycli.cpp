@@ -31,15 +31,20 @@
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // clang-cl: assert.h hides it under NDEBUG
 #endif
 #include <atlbase.h>
+#include <atlcoll.h>        // C3: the entity list of the handle
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<egf::Entity>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 #include "ms2/commonfiles/os.h"
 
 // ---- unit-local stand-ins for helpers of other units (opaque) ----
-struct Unk_Handle {                 // 16 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
-    ~Unk_Handle();
+namespace egf { class Entity; }
+typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_FpEntityList;
+struct Unk_PCEntListPtr {           // 16 byte handle filled by FUN_141bd0420 (C3: was Unk_Handle; pc.cpp defines it)
+    ~Unk_PCEntListPtr();                            // 0x1409f20e0
+    Unk_FpEntityList* operator->() const;           // 0x1409f2190
     void* m_a; void* m_p;
 };
+struct Unk_SSGEntListPtr { bool operator==(Unk_FpEntityList* p) const; };   // 0x1409f2130 (scenestategame defines it)
 struct Unk_Rec24 { char b[24]; };
 struct Unk_MapIt { void* p; };                   // map iterator scratch
 struct Unk_MapPair { void* a[4]; };              // 32 byte (key, value) pair scratch
@@ -97,11 +102,9 @@ class CameraMgr   // C3: member view
 public:
     void FUN_140aeb900(bool b);
 };
-struct Unk_FpWorld {                // the world service (FUN_1403ed2d0)
-    Unk_Handle FUN_141bd0420(unsigned hash);    // the entities of a model
+struct Unk_PCWorld {                // the world service (FUN_1403ed2d0; the view name pc.cpp uses)
+    Unk_PCEntListPtr FUN_141bd0420(unsigned hash);    // the entities of a model
 };
-bool FUN_1409f2130(Unk_Handle* h, int n);
-void* FUN_1409f2190(Unk_Handle* h);
 void* FUN_140b285a0(void* p);
 void* FUN_140b285b0(void* p);
 Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
@@ -198,10 +201,10 @@ void FieldPropertyWeatherCli::vfunc_5() { TSingleton<CEffectService>::GetInstanc
 // @0x140b27930
 void FieldPropertyAmbientLightCli::vfunc_4()
 {
-    Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x169ea355);
-    if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
+    Unk_PCEntListPtr h = static_cast<Unk_PCWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x169ea355);
+    if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
         return;
-    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(FUN_1409f2190(&h)));
+    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));
     if (m_bFlag)
     {
         m_bCached = true;
@@ -218,10 +221,10 @@ Unk_Vec3f* FUN_140b27a80(FieldPropertyAmbientLightCli* p, Unk_Vec3f* out) { FUN_
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
 {
-    Unk_Handle h = static_cast<Unk_FpWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x628f2cf9);
-    if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
+    Unk_PCEntListPtr h = static_cast<Unk_PCWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x628f2cf9);
+    if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
         return;
-    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(FUN_1409f2190(&h)));
+    efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));
     if (m_bFlag)
     {
         m_bCached = true;
@@ -250,7 +253,10 @@ void FieldPropertyPhotoStudioCli::vfunc_5() { TSingleton<CUIService>::GetInstanc
 void* FUN_1409481f0(void* map, void* it);
 void* FUN_140948250(void* map, void* it, unsigned* key);
 bool FUN_140947540(void* a, void* b);
-void* FUN_140947490(void* it, unsigned id, void* pVal, unsigned type);
+struct Unk_PropertyCacheEntry {     // C3: was the free FUN_140947490 (the inline ctor of alphaanimation's view)
+    Unk_PropertyCacheEntry(unsigned nId, void* pValue, unsigned nType);   // 0x140947490
+    unsigned m_id; void* m_pValue; unsigned m_type;
+};
 void* FUN_140947580(void* map, unsigned* key);
 
 // Remembers the entity's original value for a property before it is overwritten (map find/insert).
@@ -264,8 +270,7 @@ void FUN_140b27d50(egf::Entity* pEntity, unsigned id, void* pNew)
         {
             Unk_Vec3f old(0, 0, 0);
             ((Unk_EntityAccess*)pEntity)->Get(id, &old, FUN_140b27eb0());
-            Unk_MapPair it3;
-            *(Unk_Rec24*)FUN_140947580((char*)pEntity + 0xd0, &id) = *(Unk_Rec24*)FUN_140947490(&it3, id, new Unk_Vec3f(old), FUN_140b27eb0());
+            *(Unk_Rec24*)FUN_140947580((char*)pEntity + 0xd0, &id) = reinterpret_cast<const Unk_Rec24&>(static_cast<const Unk_PropertyCacheEntry&>(Unk_PropertyCacheEntry(id, new Unk_Vec3f(old), FUN_140b27eb0())));
         }
     }
 }

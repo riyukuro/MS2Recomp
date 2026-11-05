@@ -318,7 +318,6 @@ public:
     MS2Ptr<Unk_WsB_Prop> FUN_141bc6090(Vector3 pos, int skipDisabled);
     efd::SmartPointer<Unk_WsB_Spawn> FUN_141bc6c60(Vector3 pos, int skipUnusable);
     egf::Entity* FUN_141bd0220(Vector3 pos, float maxDist);
-    egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
 };
 // A world game object as WorldService returns it (an npc here); only the slots used here are named.
 class Unk_WsC_GameObj
@@ -351,16 +350,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_WsC_GameObj, m_bTalkable, 0xe50);
 // The client string tables.
-// The cutscene service: UITalkManager, viewed through the calls made here. Its singleton slot (0x143ab3900) is the one
-// TSingleton<UITalkManager>::s_instance every UITalkManager user shares (a TSingleton<Unk_AkoCutscene> of its own would
-// be a second copy).
-class UITalkManager;
-class Unk_AkoCutscene
-{
-public:
-    static Unk_AkoCutscene* GetInstance()
-    { return reinterpret_cast<Unk_AkoCutscene*>(TSingleton<UITalkManager>::s_instance); }
-};
 int FUN_141276980();                                        // npc talk is allowed
 
 // The world service's portal / current field lookups with their true return types (worldservice.h spells them with
@@ -396,7 +385,7 @@ class Unk_AkoMyPC : public MyPC
 public:
     enum { CLASS_ID = 0x06200004 };
 };
-float FUN_140966ea0(NiPoint3 ptA, NiPoint3 ptB);            // planar distance (nipoint3.h's, called with NiPoint3s)
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: the definition below (0x140966ea0), planar distance
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);   // a center notice
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);   // a new message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show a message box
@@ -788,7 +777,7 @@ int TaxiStationAction::vfunc_1()
         return 0;
     if (pPlayer->GetCurStateId() == 0x25)
         return 0;
-    egf::Entity* pStation = reinterpret_cast<Unk_AkoWsPointView*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(),
+    egf::Entity* pStation = WorldService::GetInstance()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(),
         *FUN_1401d3200()->TaxiStationFindDistance.Get(), 1, 0);
     if (!pStation)
         return 0;
@@ -881,7 +870,7 @@ int PortalAction::vfunc_1()
     m_spPortal = 0;
     Vector3 pos = pPlayer->FUN_1416767d0();
     ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
-    WorldService::GetInstance()->FUN_141bc2c90(pos, &aPortals);
+    WorldService::GetInstance()->FUN_141bc2c90(reinterpret_cast<NiPoint3&>(pos), &aPortals);
     if (aPortals.GetCount() == 0)
     {
         DAT_143ab288c = 0;
@@ -1383,7 +1372,7 @@ int TalkAction::vfunc_1()
         return 0;
     if (((class Unk_AkoGuide*)FUN_1409331e0())->IsRestricted(2))
         return 0;
-    if (!reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->IsTalkIntervalElapsed())
+    if (!TSingleton<UITalkManager>::GetInstance()->IsTalkIntervalElapsed())
         return 0;
     if (pPlayer->GetCurStateId() == 8 || pPlayer->GetCurStateId() == 9)
         return 0;
@@ -1428,7 +1417,7 @@ void TalkAction::vfunc_2()
         return;
     if (pPlayer->GetCurStateId() == 0x16)
         return;
-    if (reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->GetTalking() != 0)
+    if (TSingleton<UITalkManager>::GetInstance()->GetTalking() != 0)
         return;
     if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
         return;
@@ -2851,7 +2840,7 @@ PCBase* BannerAction::FUN_14095edf0()
             continue;
         if (fHeight < -50.0f)
             continue;
-        float fDist = FUN_140966ea0(ptMine, pPC->vfunc_18());
+        float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(ptMine), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())));
         if (fDist > fMaxDist)
             continue;
         if (fDist < fNearest)
@@ -3150,7 +3139,7 @@ int TreeWateringAction::vfunc_1()
         return 0;
     NiPoint3 ptTree = reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO);
     spTree->GetPropertyValue(0xfd95ca52, static_cast<efd::Point3&>(ptTree));
-    float fDist = FUN_140966ea0(pPlayer->vfunc_18(), ptTree);
+    float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())), reinterpret_cast<const Vector3&>(ptTree));
     if (fDist < 400.0f)
     {
         int nDefaultWater = 0;

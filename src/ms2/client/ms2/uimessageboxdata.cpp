@@ -9,7 +9,7 @@
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x141a07b10 ; prop
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141a07b60 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@XZ 0x141a08610 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@XZ 0x141a07330 ; look-alike group (CItem/Unk_MsgCheck/Unk_MsgInput default ctors)
+// MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@XZ 0x141a07330 ; look-alike group (CItem/ASCheckBox/ASTextInput default ctors)
 // MS2-PIN: ??8?$MS2Ptr@VCMsgBoxDataItem@@@@QEBA_NPEAVCMsgBoxDataItem@@@Z 0x141a07980 ; unique (fx18: not CItem's 0x1401c0050)
 // MS2-PIN: ??4?$MS2Ptr@VCItem@@@@QEAAAEAV0@H@Z 0x141a07950 ; unique (p = NULL of ~CMsgBoxData, uimessagebox.cpp)
 // MS2-PIN: ??R?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEBA_NHAEBVCMsgBoxData@@@Z 0x141a07c10 ; unique
@@ -59,19 +59,9 @@ extern CString DAT_143af3e30;
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
-// The check box / text input controls of the movie ("m_checkbox0", "m_textInput").
-class Unk_MsgDisplay : public ASDisplayObject
+// The dialog the message box is placed on.
+class ASDialog : public ASDisplayObject   // CMsgBoxData::FUN_141a04f80 takes it by value
 {
-};
-class ASDialog : public Unk_MsgDisplay   // CMsgBoxData::FUN_141a04f80 takes it by value
-{
-};
-class Unk_MsgCheck : public ASButton
-{
-};
-class Unk_MsgInput : public ASDisplayObject
-{
-public:
 };
 
 // The AS object `obj` keys. Free functions of other units.
@@ -89,7 +79,7 @@ class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
 
 class Unk_140166410* FUN_140166410();
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-GFxManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 typedef Common::Constants::Value<int> Unk_MsgOption;
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -305,8 +295,8 @@ bool CMsgBoxData::IsCheckbox0Checked()
         return false;
     }
     ASMovieClip root(m_movie, 2);
-    MS2Ptr<Unk_MsgCheck> check;
-    Unk_MsgCheck* pCheck = root.FUN_140c12010("m_checkbox0", check).get();
+    MS2Ptr<ASCheckBox> check;
+    ASCheckBox* pCheck = root.FUN_140c12010("m_checkbox0", check).get();
     if (pCheck != 0)
         return check->FUN_1422ce0e0();
     return false;
@@ -321,8 +311,8 @@ bool CMsgBoxData::IsCheckbox1Checked()
         return false;
     }
     ASMovieClip root(m_movie, 2);
-    MS2Ptr<Unk_MsgCheck> check;
-    Unk_MsgCheck* pCheck = root.FUN_140c12010("m_checkbox1", check).get();
+    MS2Ptr<ASCheckBox> check;
+    ASCheckBox* pCheck = root.FUN_140c12010("m_checkbox1", check).get();
     if (pCheck != 0)
         return check->FUN_1422ce0e0();
     return false;
@@ -337,23 +327,23 @@ CStringW CMsgBoxData::FUN_141a04da0()
         return CStringW(L"");
     }
     ASMovieClip root(m_movie, 2);
-    MS2Ptr<Unk_MsgInput> input;
-    Unk_MsgInput* pInput = root.FUN_140bbe940("m_textInput", input).get();
+    MS2Ptr<ASTextInput> input;
+    ASTextInput* pInput = root.FUN_140bbe940("m_textInput", input).get();
     if (pInput != 0)
-        return reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
+        return input->GetText();
     return CStringW(L"");
 }
 
 // @0x141a04f80
 void CMsgBoxData::FUN_141a04f80(MS2Ptr<ASDialog> spDialog)
 {
-    if (reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422bb870().IsNull() == 0)
+    if (spDialog->FUN_1422bb870().IsNull() == 0)
     {
         Unk_MsgPoint2& stage = g_messageBoxState.m_stage;
-        stage.x = (float)reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422c1500();
-        stage.y = (float)reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->FUN_1422c1530();
+        stage.x = (float)spDialog->FUN_1422c1500();
+        stage.y = (float)spDialog->FUN_1422c1530();
         Unk_MsgPoint2& pos = g_messageBoxState.m_pos;
-        reinterpret_cast<MS2Ptr<Unk_MsgDisplay>&>(spDialog)->GetPosition(&pos.x, &pos.y);
+        spDialog->GetPosition(&pos.x, &pos.y);
         g_messageBoxState.m_bSaved = 1;
     }
 }
@@ -525,13 +515,13 @@ void CMsgBoxData::FillUgcNoticeObj(ASObj& obj)
 // @0x141a05930
 void CMsgBoxData::FUN_141a05930(ASObj& obj)
 {
-    CStringW strEnable = FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_enable");
+    CStringW strEnable = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_enable");
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x38) == true)
-        strEnable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_enable_repacking");
-    CStringW strDisable = FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable");
+        strEnable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_enable_repacking");
+    CStringW strDisable = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable");
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
-        strDisable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable_socket");
-    strDisable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
+        strDisable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable_socket");
+    strDisable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
     CStringW strDesc = StringFormat<CStringW, CStringW>(L"{0}\n\n{1}", strEnable, strDisable);
     obj.FUN_1407cbb20("itemLockConfirmDesc", strDesc);
 }

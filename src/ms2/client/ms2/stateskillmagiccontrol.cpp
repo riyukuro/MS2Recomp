@@ -16,14 +16,7 @@
 
 // ---- unit-local placeholders ----
 
-// The controlled target (a GameObject-derived actor; FUN_140ac06f0 asks the owner for the component 0x6200081).
-class Unk_ControlTarget : public CSkillMagicControlGuide
-{
-public:
-    NiPoint3 FUN_1410a6750();                    // destination
-};
-
-float FUN_140966ea0(NiPoint3 a, NiPoint3 b);                        // horizontal distance
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 
 // PCBase seen with Vector3 points (as in statefloat.cpp): slots 19, 22 and 68 take the point by value, and the
@@ -46,13 +39,14 @@ public:
 #undef MS2_SF_SLOTS
     virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
     virtual bool vfunc_68(Vector3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
-    Vector3 FUN_141674b60(efd::Point3 kDir);                                // 0x141674b60 local dir -> world dir
+    // 0x141674b60 local dir -> world dir: C3: PCBase::CalcMoveDirectionNoYaw (pcbase.h)
 };
 
 // @0x140ac06f0
-Unk_ControlTarget* FUN_140ac06f0(PCBase* p)
+// The controlled target: asks the owner for the component 0x6200081 (CSkillMagicControlGuide).
+CSkillMagicControlGuide* FUN_140ac06f0(PCBase* p)
 {
-    Unk_ControlTarget* r = 0;
+    CSkillMagicControlGuide* r = 0;
     if (p && p->TypeCast(0x6200081, (void**)&r))
         return r;
     else
@@ -93,17 +87,17 @@ void StateSkillMagicControl::vfunc_3(double fTime)
     State::vfunc_3(fTime);
     if (!m_pOwner->vfunc_63())
         return;
-    Unk_ControlTarget* pTarget = FUN_140ac06f0(m_pOwner);
+    CSkillMagicControlGuide* pTarget = FUN_140ac06f0(m_pOwner);
     if (!pTarget)
         return;
-    Vector3 kWorld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->FUN_141674b60(m_pOwner->FUN_14123c360());
-    kWorld.FUN_140968990();
-    Vector3 kSpeed = kWorld.FUN_14097fc90(pTarget->FUN_1410a6790());
+    efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
+    reinterpret_cast<Vector3&>(kWorld).FUN_140968990();
+    Vector3 kSpeed = reinterpret_cast<Vector3&>(kWorld).FUN_14097fc90(pTarget->FUN_1410a6790());
     Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
     Vector3 kOld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_18();
     reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(kStep, fTime, 0, 0, 1);
-    float fDist = FUN_140966ea0(pTarget->FUN_1410a6750(), pTarget->vfunc_18());
-    if (fDist >= pTarget->FUN_1410a67d0() || pTarget->FUN_1410a6750().z != pTarget->vfunc_18().z)
+    float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pTarget->GetOriginPosition())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
+    if (fDist >= pTarget->FUN_1410a67d0() || pTarget->GetOriginPosition().z != pTarget->vfunc_18().z)
         reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_19(kOld);
 }
 

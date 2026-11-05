@@ -19,7 +19,7 @@
 // MS2-PIN: ??$?8PEAVCQuestManager@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVCQuestManager@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x1416d4a40 ; prop
 // MS2-PIN: ??$?8PEAVCQuestManager@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x1416d4ab0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x1416daf60 ; unique
-// MS2-PIN: ??0?$Unk_PayloadPtr@VCQuest@@@@QEAA@PEAVCQuest@@@Z 0x1416db050 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VCQuest@@@@QEAA@PEAVCQuest@@@Z 0x1416db050 ; unique
 // MS2-PIN: ?IsEmpty@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEBA_NXZ 0x1416dc1d0 ; unique
 // MS2-PIN: ?SetStartTime@CQuest@@QEAAX_J@Z 0x1416ded20 ; unique
 // MS2-PIN: ?Set68@CQuest@@QEAAXH@Z 0x1416dedb0 ; unique
@@ -34,16 +34,16 @@
 // MS2-PINS-END tplpin
 // destroy<list<unsigned>> has no copy in this range: the exe folds it with destroy<list<int>> 0x141370410 (ICF,
 // usercommandcli; calls list<int>'s ??_G 0x141371390, size 0x10). 0x1416da140 is destroy<pair<int const,
-// Unk_PayloadPtr<CQuest>>> (called from the map's _Tree code; calls the pair's ??_G 0x1416dd010, size 0x18).
-// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@1@@Z 0x1416da140
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1416d4530
+// MS2Ptr<CQuest>>> (called from the map's _Tree code; calls the pair's ??_G 0x1416dd010, size 0x18).
+// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@1@@Z 0x1416da140
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1416d4530
 // MS2-PIN: ??$_Insert_at@_KU_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@IEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@1@_NPEAU?$_Tree_node@_KPEAX@1@$$QEA_KU_Not_a_node_tag@1@@Z 0x1416d6b40
 // MS2-PIN: ??$_Insert_nohint@_KU_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@std@@_N@1@_N$$QEA_KU_Not_a_node_tag@1@@Z 0x1416d7ef0
 // MS2-PIN: ?_Swap_all@?$_Tree_comp_alloc@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAAXAEAV12@@Z 0x1416e18d0
 // MS2-PIN: ?FUN_1416d40a0@CQuestManager@@QEAAHHIIAEAV?$list@IV?$allocator@I@std@@@std@@AEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@3@PEAV43@@Z 0x1416d40a0
 // MS2-PIN: ??$_Insert_range@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@@std@@@?$list@IV?$allocator@I@std@@@std@@QEAAXV?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@U_Iterator_base0@2@@1@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@@1@1Uforward_iterator_tag@1@@Z 0x1416d8300
 // MS2-PIN: ??$_Insert_range@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@@std@@@?$list@IV?$allocator@I@std@@@std@@QEAAXV?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@U_Iterator_base0@2@@1@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@@1@1Uforward_iterator_tag@1@@Z 0x1416d83c0
-// MS2-PIN: ??0?$Unk_PayloadPtr@VCQuest@@@@QEAA@PEAVCQuest@@@Z 0x1416db050
+// MS2-PIN: ??0?$MS2Ptr@VCQuest@@@@QEAA@PEAVCQuest@@@Z 0x1416db050
 // MS2-PIN: ?SetStartTime@CQuest@@QEAAX_J@Z 0x1416ded20
 // MS2-PIN: ?Set68@CQuest@@QEAAXH@Z 0x1416dedb0
 // MS2-PIN: ?_Assign_rv@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x1416df0c0
@@ -71,9 +71,9 @@
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x1416e31e0
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1416e3290
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCQuestManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1416e32f0
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@std@@@std@@QEAA@XZ 0x1416db570
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@@std@@@std@@QEAA@XZ 0x1416db570
 // MS2-PIN: ?_Unchecked_erase@?$list@IV?$allocator@I@std@@@std@@QEAAXV?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@I@std@@@std@@U_Iterator_base0@2@@2@@Z 0x1416e1e90
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCQuest@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1416d4310
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1416d4310
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\questmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "questmanager_2.h"
@@ -137,8 +137,8 @@ class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view
 
 // These instances belong to earlier objects, not the look-alike destructors
 // for other quest pointer types in this object's COMDAT tail.
-template<> Unk_PayloadPtr<CQuest>::~Unk_PayloadPtr();
-template<> bool Unk_PayloadPtr<CQuest>::IsNull() const;
+template<> MS2Ptr<CQuest>::~MS2Ptr();
+template<> bool MS2Ptr<CQuest>::IsNull() const;
 template<> ATL::CAtlArray<unsigned>::CAtlArray() throw();
 template<> ATL::CAtlArray<unsigned>::~CAtlArray() throw();
 template<> size_t ATL::CAtlArray<unsigned>::GetCount() const throw();
@@ -148,6 +148,24 @@ template<> size_t ATL::CAtlArray<unsigned>::GetCount() const throw();
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/commonfiles/gameeventuservalue.h"
+// C3: only MS2Ptr<CQuest> takes the generic bodies here; the other pointees stay external, as before.
+extern template class MS2Ptr<class CAchieve>;
+extern template class MS2Ptr<class CChapterBookData>;
+extern template class MS2Ptr<class CConditionCommonData>;
+extern template class MS2Ptr<class CEquipItem>;
+extern template class MS2Ptr<class CFieldMissionReward>;
+extern template class MS2Ptr<class CGuildMember>;
+extern template class MS2Ptr<class CItem>;
+extern template class MS2Ptr<class CLearningQuestData>;
+extern template class MS2Ptr<class CPortal>;
+extern template class MS2Ptr<class CProxyGameObject>;
+extern template class MS2Ptr<class CQuestData>;
+extern template class MS2Ptr<class CTalkScript>;
+extern template class MS2Ptr<class DungeonRoom>;
+extern template class MS2Ptr<class SidePopupTalkParam>;
+extern template class MS2Ptr<class StampEventContext>;
+extern template class MS2Ptr<class UIObject>;
+#include "ms2/placeholder/ms2ptr_impl.h"
 
 
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -158,11 +176,6 @@ static CString s_progressSound = "quest_progress";
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 // The npc talk manager.
 class Unk_QmTalkManager : public UITalkManager {};
-class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 // The group reward row handle.
 class Unk_QmRewardGrade { public: virtual void vfunc_0(); virtual int vfunc_1(); };
 class Unk_QmGroupReward {
@@ -236,7 +249,7 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 MS2Ptr<CQuestData> FUN_14074bc40(int questId);
 int FUN_14074b050(CQuestData* data);
 int FUN_14074b030(CQuestData* data);
-float FUN_140966f00(NiPoint3 a, NiPoint3 b);   // distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 void FUN_1412751b0(const CStringW& text, int type);   // system chat line
 int FUN_1418fd280();
 int FUN_14074b070(CQuestData* data);
@@ -576,9 +589,9 @@ int CQuestManager::vfunc_1(int questId, int flag)
 MS2_REPLACE_METHOD(0x1416c9e10, CQuestManager, vfunc_1, 921, 0x96684B95);
 
 // @0x1416ca1c0
-Unk_PayloadPtr<CQuest> CQuestManager::vfunc_o10_3(int id)
+MS2Ptr<CQuest> CQuestManager::vfunc_o10_3(int id)
 {
-    Unk_PayloadPtr<CQuest> quest(0);
+    MS2Ptr<CQuest> quest(0);
     m_quests140.Lookup(id, quest);
     return quest;
 }
@@ -663,7 +676,7 @@ void CQuestManager::UpdateQuests()
         FUN_1416d3010();
         FUN_1416d3430();
         for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-            Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+            MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
             quest->FUN_140d73960();
         }
     }
@@ -702,7 +715,7 @@ void CQuestManager::FUN_1416ca670()
 {
     m_field180 = 0;
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         quest->FUN_140d73950();
     }
     FUN_1416d3220();
@@ -819,14 +832,14 @@ MS2_REPLACE_METHOD(0x1416ca9d0, CQuestManager, CreateQuestByType, 1049, 0x486EE3
 // @0x1416cae20
 int CQuestManager::GetQuestState(int id)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(id);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(id);
     if (quest.IsNull()) return 0;
     return quest->GetState();
 }
 MS2_REPLACE_METHOD(0x1416cae20, CQuestManager, GetQuestState, 149, 0x7D595639);
 
 // @0x1416caec0
-void CQuestManager::AddQuest(Unk_PayloadPtr<CQuest> quest)
+void CQuestManager::AddQuest(MS2Ptr<CQuest> quest)
 {
     if (quest.IsNull()) return;
     int type = quest->GetQuestType();
@@ -846,7 +859,7 @@ MS2_REPLACE_METHOD(0x1416caec0, CQuestManager, AddQuest, 511, 0x74E17A65);
 // @0x1416cb0d0
 void CQuestManager::RemoveQuest(int questId, int force)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     reinterpret_cast<CGuideManager*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)7, 0);
     reinterpret_cast<CGuideManager*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)8, 0);
@@ -868,7 +881,7 @@ MS2_REPLACE_METHOD(0x1416cb0d0, CQuestManager, RemoveQuest, 390, 0x79B0B7B3);
 void CQuestManager::GetQuestIdsFiltered(ATL::CAtlArray<unsigned>& ids, int state, int type, int group)
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
         if (group != -1 && quest->GetData()->m_28 != group) continue;
@@ -885,7 +898,7 @@ void CQuestManager::GetQuestIdsByStates(std::vector<unsigned>& ids, std::vector<
         std::find_if(states.begin(), states.end(), [](int state) { return state == 4 || state == 5; }) != states.end())
         all = true;
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (!all) {
             int state = quest->GetState();
             if (std::find(states.begin(), states.end(), state) == states.end()) continue;
@@ -898,10 +911,10 @@ void CQuestManager::GetQuestIdsByStates(std::vector<unsigned>& ids, std::vector<
 MS2_REPLACE_METHOD(0x1416cb4d0, CQuestManager, GetQuestIdsByStates, 976, 0x80ADF2C6);
 
 // @0x1416cb8b0
-void CQuestManager::GetQuestsFiltered(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, int state, int type, int group)
+void CQuestManager::GetQuestsFiltered(ATL::CAtlArray<MS2Ptr<CQuest>>& out, int state, int type, int group)
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
         if (group != -1 && quest->GetData()->m_28 != group) continue;
@@ -911,10 +924,10 @@ void CQuestManager::GetQuestsFiltered(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& ou
 MS2_REPLACE_METHOD(0x1416cb8b0, CQuestManager, GetQuestsFiltered, 603, 0x59020450);
 
 // @0x1416cbb20
-void CQuestManager::GetQuestsFilteredVec(std::vector<Unk_PayloadPtr<CQuest>>& out, int state, int type, int group)
+void CQuestManager::GetQuestsFilteredVec(std::vector<MS2Ptr<CQuest>>& out, int state, int type, int group)
 {
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (state != 4 && state != quest->GetState()) continue;
         if (type != 11 && FUN_14074b050(quest->GetData().operator->()) != type) continue;
         if (group != -1 && quest->GetData()->m_28 != group) continue;
@@ -951,7 +964,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
             __int64 startTime = packet.ReadInt64();
             __int64 completeTime = packet.ReadInt64();
             int tracking = packet.ReadUInt8();
-            Unk_PayloadPtr<CQuest> quest(CreateQuestByType(questId));
+            MS2Ptr<CQuest> quest(CreateQuestByType(questId));
             if (static_cast<bool>(quest.get())) {
                 if (quest->Init(questId, state) != 0) {
                     quest->Set68(value68);
@@ -980,7 +993,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         }
         FUN_1416cef90(1);
     } else if (mode == 1) {
-        ((class Unk_QmTalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b217b0();
+        ((class Unk_QmTalkManager*)TSingleton<UITalkManager>::GetInstance())->FUN_141b217b0();
         int npcId = packet.ReadInt32();
         int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
@@ -991,7 +1004,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         int questId = packet.ReadInt32();
         __int64 startTime = packet.ReadInt64();
         int tracking = packet.ReadUInt8();
-        Unk_PayloadPtr<CQuest> quest(CreateQuestByType(questId));
+        MS2Ptr<CQuest> quest(CreateQuestByType(questId));
         if (static_cast<bool>(quest.get())) {
             if (quest->Init(questId, 1) != 0) {
                 quest->SetStartTime(startTime);
@@ -1008,7 +1021,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         reinterpret_cast<CGuideManager*>(FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x1c, questId, 0);
     } else if (mode == 3) {
         int questId = packet.ReadInt32();
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetState(1);
         quest->DecodeProgress(packet);
@@ -1021,7 +1034,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         int questId = packet.ReadInt32();
         int value68 = packet.ReadInt32();
         __int64 completeTime = packet.ReadInt64();
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetState(2);
         quest->Set68(value68);
@@ -1043,7 +1056,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         refresh = 1;
     } else if (mode == 6) {
         int questId = packet.ReadInt32();
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         RemoveQuest(questId, 0);
         FUN_140bfc4b0()->vfunc_5(quest.get());
@@ -1052,7 +1065,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
             int questId = packet.ReadInt32();
-            Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+            MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
             if (quest.IsNull()) continue;
             quest->ShowExpired();
             RemoveQuest(questId, 0);
@@ -1062,7 +1075,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
     } else if (mode == 9) {
         int questId = packet.ReadInt32();
         int tracking = packet.ReadUInt8();
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) return;
         quest->SetTrackingState(tracking);
         FUN_140bfc4b0()->vfunc_6(quest.get());
@@ -1072,7 +1085,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         while (pos != 0) {
             POSITION cur = pos;
             m_quests50.GetNext(pos);
-            Unk_PayloadPtr<CQuest> quest = m_quests50.GetValueAt(cur);
+            MS2Ptr<CQuest> quest = m_quests50.GetValueAt(cur);
             MS2Ptr<CQuestData> data = quest->GetData();
             if (!data) continue;
             int expired = 0;
@@ -1160,7 +1173,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         while (pos != 0) {
             POSITION cur = pos;
             m_quests110.GetNext(pos);
-            Unk_PayloadPtr<CQuest> quest = m_quests110.GetValueAt(cur);
+            MS2Ptr<CQuest> quest = m_quests110.GetValueAt(cur);
             m_quests110.RemoveAt(cur);
             m_quests140.RemoveKey(quest->FUN_140bfc580());
         }
@@ -1188,14 +1201,14 @@ void CQuestManager::ShowQuestErrorMessage(int error)
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, name)),
                       1, 1);
     }
-    ((class UITalkManager*)(void*)(((class Unk_QmTalkManager*)Unk_AkoCutscene::GetInstance())))->SendNpcTalkMode0();
+    ((class UITalkManager*)(void*)(((class Unk_QmTalkManager*)TSingleton<UITalkManager>::GetInstance())))->SendNpcTalkMode0();
 }
 MS2_REPLACE_METHOD(0x1416cde50, CQuestManager, ShowQuestErrorMessage, 744, 0x7BF47F0A);
 
 // @0x1416ce140
 void CQuestManager::FUN_1416ce140(int questId, int)
 {
-    ((class UITalkManager*)(void*)(((class Unk_QmTalkManager*)Unk_AkoCutscene::GetInstance())))->FUN_141b217e0(questId);
+    ((class UITalkManager*)(void*)(((class Unk_QmTalkManager*)TSingleton<UITalkManager>::GetInstance())))->FUN_141b217e0(questId);
 }
 MS2_REPLACE_METHOD(0x1416ce140, CQuestManager, FUN_1416ce140, 40, 0x655404CF);
 
@@ -1240,7 +1253,7 @@ int CQuestManager::AreGroupQuestsComplete(int group)
         MS2Ptr<CQuestData> data = FUN_14074bc40(ids[i]);
         if (!data) continue;
         if (data->m_2f != 0) continue;
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(ids[i]);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(ids[i]);
         if (quest.IsNull()) return 0;
         if (quest->GetState() != 2) return 0;
     }
@@ -1253,7 +1266,7 @@ int CQuestManager::CountTrackedActiveQuests()
 {
     int count = 0;
     for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
         if (quest->GetState() != 1) continue;
         if (quest->GetTrackingState() == 0) continue;
         count++;
@@ -1310,7 +1323,7 @@ void CQuestManager::GetQuestItemLinks(MS2Ptr<CItem> item, ATL::CAtlArray<Unk_Que
             Unk_QuestItemLink link;
             link.m_questId = questId;
             link.m_kind = static_cast<int>(kind);
-            Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+            MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
             if (quest.IsNull()) {
                 link.m_state = 0;
             } else if (quest->GetState() == 2) {
@@ -1327,10 +1340,10 @@ MS2_REPLACE_METHOD(0x1416ce860, CQuestManager, GetQuestItemLinks, 896, 0x5366C6F
 // @0x1416cebf0
 int CQuestManager::HasTalkScriptForNpc(int npcId)
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     GetQuestsFiltered(quests, 1, 11, -1);
     for (size_t i = 0; i < quests.GetCount(); i++) {
-        Unk_PayloadPtr<CQuest> quest = quests[i];
+        MS2Ptr<CQuest> quest = quests[i];
         if (quest->GetData()->m_2e8 == npcId) {
             CTalkScript* script = FUN_1408564b0(quest->FUN_140bfc580(), 200).get();
             if (script != 0) return 1;
@@ -1344,11 +1357,11 @@ MS2_REPLACE_METHOD(0x1416cebf0, CQuestManager, HasTalkScriptForNpc, 480, 0x0CA9A
 int CQuestManager::FUN_1416cede0(int value, unsigned* questId)
 {
     *questId = 0;
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     GetQuestsFiltered(quests, 1, 11, -1);
     FUN_1416cfc70(quests, 1, 0);
     for (size_t i = 0; i < quests.GetCount(); i++) {
-        Unk_PayloadPtr<CQuest> quest = quests[i];
+        MS2Ptr<CQuest> quest = quests[i];
         int found = FUN_14074b0e0(quest->GetData().operator->(), value, 1);
         if (found != 0) {
             *questId = quest->FUN_140bfc580();
@@ -1366,7 +1379,7 @@ void CQuestManager::FUN_1416cef90(int silent)
     if (player == 0) return;
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001b) return;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests140.GetValueAt(pos);
         if (quest->GetState() != 1) continue;
         MS2Ptr<CQuestData> data = quest->GetData();
         for (size_t i = 0; i < data->m_conditions.GetCount(); i++) {
@@ -1418,7 +1431,7 @@ MS2_REPLACE_METHOD(0x1416cef90, CQuestManager, FUN_1416cef90, 1381, 0x06014A2F);
 // @0x1416cf510
 void CQuestManager::SendQuestMode12(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     if (quest->FUN_1407441f0(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
@@ -1431,7 +1444,7 @@ MS2_REPLACE_METHOD(0x1416cf510, CQuestManager, SendQuestMode12, 275, 0x1A371415)
 // @0x1416cf630
 void CQuestManager::SendQuestMode13(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     if (quest->FUN_1407443e0(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
@@ -1444,7 +1457,7 @@ MS2_REPLACE_METHOD(0x1416cf630, CQuestManager, SendQuestMode13, 275, 0x5B9A8BE1)
 // @0x1416cf750
 void CQuestManager::SendQuestMode19(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     if (quest->FUN_140744670(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
@@ -1457,7 +1470,7 @@ MS2_REPLACE_METHOD(0x1416cf750, CQuestManager, SendQuestMode19, 275, 0x3F46AE05)
 // @0x1416cf870
 void CQuestManager::FUN_1416cf870(int questId)
 {
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     if (quest->FUN_140d738d0() != 0) {
         UIPopupNpcTalkDialog* dialog = Unk_QmFindDialog<UIPopupNpcTalkDialog>(0x4f4d);
@@ -1471,7 +1484,7 @@ MS2_REPLACE_METHOD(0x1416cf870, CQuestManager, FUN_1416cf870, 255, 0x3C816F04);
 // @0x1416cf980
 void CQuestManager::FUN_1416cf980(int questId, int leave)
 {
-    Unk_PayloadPtr<CQuest> quest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(questId);
     if (quest.IsNull()) return;
     if (quest->HasMultiUserRoom(WorldService::GetInstance()->FUN_141bd3060()) == 0) return;
     MS2Ptr<CQuestData> data = quest->GetData();
@@ -1509,10 +1522,10 @@ void CQuestManager::FUN_1416cfc60(int)
 MS2_REPLACE_METHOD(0x1416cfc60, CQuestManager, FUN_1416cfc60, 10, 0x96F6F902);
 
 // @0x1416cfc70
-void CQuestManager::FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, int state, int grade)
+void CQuestManager::FUN_1416cfc70(ATL::CAtlArray<MS2Ptr<CQuest>>& out, int state, int grade)
 {
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests50.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests50.GetValueAt(pos);
         if (state != 4 && state != quest->GetState()) continue;
         if (grade != 0 && quest->GetData()->m_338.m_value != grade) continue;
         out.Add(quest);
@@ -1525,7 +1538,7 @@ int CQuestManager::CountCompletedDailyMissionQuests()
 {
     int count = 0;
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests50.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests50.GetValueAt(pos);
         if (quest->IsComplete() == 0) continue;
         switch (quest->GetData()->m_338.m_value) {
         case 3: case 4: case 5:
@@ -1542,7 +1555,7 @@ int CQuestManager::CountCompletedLevelGuideQuests()
 {
     int count = 0;
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests50.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests50.GetValueAt(pos);
         if (quest->IsComplete() == 0) continue;
         switch (quest->GetData()->m_338.m_value) {
         case 1: case 2:
@@ -1576,7 +1589,7 @@ int CQuestManager::CountCompletedQuests80()
 {
     int count = 0;
     for (POSITION pos = m_quests80.GetHeadPosition(); pos != 0; m_quests80.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests80.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests80.GetValueAt(pos);
         if (quest->GetState() == 2) {
             count = count + 1;
         }
@@ -1837,10 +1850,10 @@ unsigned CQuestManager::FUN_1416d1100(int npcId, int questId, int* state)
 MS2_REPLACE_METHOD(0x1416d1100, CQuestManager, FUN_1416d1100, 449, 0x7A2F3290);
 
 // @0x1416d1060
-void CQuestManager::FUN_1416d1060(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out)
+void CQuestManager::FUN_1416d1060(ATL::CAtlArray<MS2Ptr<CQuest>>& out)
 {
     for (POSITION pos = m_quests110.GetHeadPosition(); pos != 0; m_quests110.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests110.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests110.GetValueAt(pos);
         out.Add(quest);
     }
 }
@@ -1947,7 +1960,7 @@ void CQuestManager::FUN_1416d1a30(unsigned questId)
 {
     WorldService* world = WorldService::GetInstance();
     if (world == 0) return;
-    Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+    MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull()) {
         MS2_ASSERT_AT(0x963, 0);
         return;
@@ -1976,7 +1989,7 @@ void CQuestManager::FUN_1416d1d00(PCBase* pc)
     for (std::map<unsigned, std::set<unsigned __int64>>::const_iterator it = targets.begin(); it != itEnd; ++it) {
         const std::pair<const unsigned, std::set<unsigned __int64>>& entry = *it;
         unsigned questId = entry.first;
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) continue;
         if (quest->CheckUserFind(pc) == 0) continue;
         m_targets250[questId].insert(pc->FUN_141656a80());
@@ -1998,7 +2011,7 @@ std::pair<unsigned, __int64> CQuestManager::FUN_1416d1e90()
     std::list<unsigned> stale;
     for (std::map<unsigned, std::set<unsigned __int64>>::iterator it = m_targets250.begin(); it != m_targets250.end(); ++it) {
         const unsigned questId = it->first;
-        Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
+        MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
         if (quest.IsNull()) {
             stale.push_back(questId);
             continue;
@@ -2030,7 +2043,7 @@ std::pair<unsigned, __int64> CQuestManager::FUN_1416d1e90()
             }
             if (pc->FUN_141670a00(4) <= 0) continue;
             if (pc->FUN_141674bc0() != 0) continue;
-            float distance = FUN_140966f00(playerPos, pc->vfunc_18());
+            float distance = FUN_140966f00(reinterpret_cast<const Vector3&>(playerPos), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pc->vfunc_18())));
             if (distance < bestDistance) {
                 bestDistance = distance;
                 best = std::pair<unsigned, __int64>(questId, userId);
@@ -2137,7 +2150,7 @@ void CQuestManager::FUN_1416d3010()
     if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c) return;
     ATL::CAtlArray<unsigned> changed;
     for (POSITION pos = m_quests140.GetHeadPosition(); pos != 0; m_quests140.GetNext(pos)) {
-        Unk_PayloadPtr<CQuest> quest = m_quests140.GetValueAt(pos);
+        MS2Ptr<CQuest> quest = m_quests140.GetValueAt(pos);
         if (quest->GetState() != 1) continue;
         int tracked = quest->FUN_1407447c0();
         if (tracked != 0) {
@@ -2198,7 +2211,7 @@ int CQuestManager::FUN_1416d3430()
     if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d) return 0;
     {
         for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
-            Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(pos);
+            MS2Ptr<CQuest> quest = m_quests20.GetValueAt(pos);
             CQuest* current = quest.operator->();
             if (current->FUN_140d73970() != 0) {
                 return 1;
@@ -2237,7 +2250,7 @@ int CQuestManager::FUN_1416d3510()
         if (vfunc_1(FUN_14074b030(data.operator->()), 0) == 0) continue;
         Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
         if (script.IsNull()) continue;
-        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
         return 1;
     }
     return 0;
@@ -2265,7 +2278,7 @@ void CQuestManager::FUN_1416d38a0(int type, int state, int skipGrouped)
     while (pos != 0) {
         POSITION cur = pos;
         m_quests20.GetNext(pos);
-        Unk_PayloadPtr<CQuest> quest = m_quests20.GetValueAt(cur);
+        MS2Ptr<CQuest> quest = m_quests20.GetValueAt(cur);
         MS2Ptr<CQuestData> data = quest->GetData();
         if (!data) continue;
         if (FUN_14074b050(data.operator->()) != type) continue;
@@ -2306,7 +2319,7 @@ int CQuestManager::FUN_1416d3af0(const ATL::CAtlArray<unsigned>& itemIds)
 MS2_REPLACE_METHOD(0x1416d3af0, CQuestManager, FUN_1416d3af0, 596, 0x3F41CBCE);
 
 // @0x1416d3d50
-void CQuestManager::FUN_1416d3d50(Unk_PayloadPtr<CQuest> quest)
+void CQuestManager::FUN_1416d3d50(MS2Ptr<CQuest> quest)
 {
     if (quest.IsNull()) return;
     unsigned questId = quest->FUN_140bfc580();

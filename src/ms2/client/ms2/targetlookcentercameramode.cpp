@@ -14,6 +14,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <NiPoint3.h>
+template <class T> class TSingleton;
+class CameraMgr { public: Vector3 FUN_140a38d00(); void FUN_140a38d90(Vector3 pt); class Unk_CameraTargetEntity* FUN_140a38d60(); };   // C3: member view (bosstargetcamera.cpp)
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 extern "C" float (__cdecl* __imp_atan2f)(float, float);      // the exe calls atan2f through its import
 
@@ -85,7 +88,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
     int nLoop = 1;
     for (int i = 0; i < nLoop && i < 100; ++i)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (!pTarget)
             return;
         m_78 = pTarget->vfunc_17();
@@ -147,7 +150,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         }
         FUN_140a4d5f0(fTime);
 
-        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
@@ -189,7 +192,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
                     FUN_140a4d5f0(fTime);
                 }
             }
-            Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
         }
         vfunc_39(fTime);
         if (m_f4)
@@ -213,7 +216,7 @@ MS2_REPLACE_METHOD(0x140a4d320, CTargetLookCenterCameraMode, vfunc_31, 88, 0xCC6
 // @0x140a4d380
 void CTargetLookCenterCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget && n)
     {
         m_f0 = 0;

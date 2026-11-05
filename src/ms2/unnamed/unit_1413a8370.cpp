@@ -9,6 +9,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 
 #include <new>
 
@@ -509,29 +510,28 @@ MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 
 
 #ifndef MS2_HOOK_DLL
 
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 struct Unk_RegMarker {};
 
 // @0x1400f4460
 static char s_regTrigger;
 static Unk_RegMarker s_initTrigger =
-    (FUN_140316aa0(&s_regTrigger, CStringW(L"CGuideConditionTrigger"), CGuideConditionTrigger::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regTrigger)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionTrigger"), CGuideConditionTrigger::CreateObject), Unk_RegMarker());
 
 // @0x1400f44b0
 static char s_regUgcCollectMoney;
 static Unk_RegMarker s_initUgcCollectMoney =
-    (FUN_140316aa0(&s_regUgcCollectMoney, CStringW(L"CGuideConditionUgcCollectMoney"), CGuideConditionUgcCollectMoney::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regUgcCollectMoney)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionUgcCollectMoney"), CGuideConditionUgcCollectMoney::CreateObject), Unk_RegMarker());
 
 // @0x1400f4500
 static char s_regUgcManagementTab;
 static Unk_RegMarker s_initUgcManagementTab =
-    (FUN_140316aa0(&s_regUgcManagementTab, CStringW(L"CGuideConditionUgcManagementTab"), CGuideConditionUgcManagementTab::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regUgcManagementTab)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionUgcManagementTab"), CGuideConditionUgcManagementTab::CreateObject), Unk_RegMarker());
 
 // @0x1400f4550
 static char s_regUgcProductExpireDays;
 static Unk_RegMarker s_initUgcProductExpireDays =
-    (FUN_140316aa0(&s_regUgcProductExpireDays, CStringW(L"CGuideConditionUgcProductExpireDays"), CGuideConditionUgcProductExpireDays::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regUgcProductExpireDays)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionUgcProductExpireDays"), CGuideConditionUgcProductExpireDays::CreateObject), Unk_RegMarker());
 
 // @0x1400f45a0
 static CStringA s_EnumNamesA[8] = { "None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd" };

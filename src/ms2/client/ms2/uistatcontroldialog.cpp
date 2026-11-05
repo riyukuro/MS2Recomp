@@ -55,7 +55,7 @@ public:
 };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat&);
+int FUN_141276f80(Unk_CommandChat*);   // C3: the definer's signature (0x141276f80)
 
 const CString& GetStatName(unsigned nStat);             // the xml name of a stat
 CStringW GetStatCommonText(unsigned nStat);             // the display name of a stat
@@ -146,7 +146,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = (const char*)strCommand;
-                FUN_141276f80(chat);
+                FUN_141276f80(&chat);
             }
         }
         return 1;
@@ -180,7 +180,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = (const char*)strCommand;
-                FUN_141276f80(chat);
+                FUN_141276f80(&chat);
             }
         }
         return 1;
@@ -195,7 +195,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             Unk_CommandChat chat;
             chat.kind = 0;
             chat.message = (const char*)strCommand;
-            FUN_141276f80(chat);
+            FUN_141276f80(&chat);
         }
         return 1;
     }

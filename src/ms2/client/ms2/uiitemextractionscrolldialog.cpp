@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x1400d8300-0x1400d84b0 .text$di
 // MS2-RANGE: 0x140e497d0-0x140e4c050 .text$mn
 // MS2-PIN: ??1UIItemExtractionScrollDialog@@UEAA@XZ 0x140e4b9c0
+// MS2-PIN: ??8?$MS2Ptr@VCExtractionItemInfo@@@@QEBA_NPEAVCExtractionItemInfo@@@Z 0x140e4b9f0
 // MS2-PIN: ??_7Slot@UIItemExtractionScrollDialog@@6BBindData@NotifyContext@@@ 0x142e4bef8 ; hand: primary vftable
 //
 // File name assumed (the class name; the exe has no assert path for it).
@@ -26,6 +27,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/itemextractiontable.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <efd/MemHint.h>
@@ -43,17 +45,8 @@ class ASDialog : public ASDisplayObject
 extern Unk_Inventory g_143ab2a90;
 
 // The feature switches (FUN_140166410 returns the manager).
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 
-// A row of the item extraction table: the scroll item (+0x20) and the text argument (+0x18).
-class Unk_ExtractionRow : public CPtred
-{
-public:
-    int m_nConsume;                                     // +0x18 (CPtred is 0x18 bytes)
-    int m_1c;
-    int m_nScrollId;                                    // +0x20
-};
-class Unk_ExtractionTable { public: MS2Ptr<Unk_ExtractionRow> FUN_140597580(int nItemId); };
 void* FUN_14052d1f0();   // C3: was FUN_14052d1f0
 
 // The item data proxy has more slots than the shared header lists; slot 8 reads the item from a packet.
@@ -242,7 +235,7 @@ void UIItemExtractionScrollDialog::vfunc_67()
 void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    if (!FUN_140166410()->FUN_14036d570(0x8f))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x8f))
         return;
     if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() == 0x107)
     {
@@ -345,14 +338,14 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
         return;
     }
-    MS2Ptr<Unk_ExtractionRow> spRow = ((class Unk_ExtractionTable*)FUN_14052d1f0())->FUN_140597580(spItem->FUN_1405276c0());
+    CExtractionItemInfoPtr spRow = ((CItemExtractionTable*)FUN_14052d1f0())->GetData(spItem->FUN_1405276c0());
     if (spRow == 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
         return;
     }
     MS2Ptr<CItem> spScroll(new CItem);
-    if (!spScroll->FUN_140523c40(spRow->m_nScrollId, FUN_14053feb0(spRow->m_nScrollId), 0))
+    if (!spScroll->FUN_140523c40(spRow->m_nResultItemId, FUN_14053feb0(spRow->m_nResultItemId), 0))
         return;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spScroll->FUN_140527840()));
     if (spData == 0)
@@ -375,7 +368,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
         ((class AScript&)(objTarget)).FUN_1407cbb20("name", FUN_14183e9c0(spItem->FUN_140527b10(), spItem->GetRarity()));
-        ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_consume"), reinterpret_cast<const unsigned&>(spRow->m_nConsume)));
+        ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_consume"), spRow->m_nScrollCount));
         items.PushValue(objTarget.FUN_1422bb870());
         ASObj objScroll(2);
         objScroll.FUN_1407cba60("binding", m_strBag);
@@ -413,11 +406,11 @@ void UIItemExtractionScrollDialog::OnOk()
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nTargetUid);
     if (spItem == 0)
         return;
-    MS2Ptr<Unk_ExtractionRow> spRow = ((class Unk_ExtractionTable*)FUN_14052d1f0())->FUN_140597580(spItem->FUN_1405276c0());
+    CExtractionItemInfoPtr spRow = ((CItemExtractionTable*)FUN_14052d1f0())->GetData(spItem->FUN_1405276c0());
     if (spRow == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(
-        1, FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_conform"), reinterpret_cast<const unsigned&>(spRow->m_nConsume)), 0, CStringW(L""));
+        1, FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_conform"), spRow->m_nScrollCount), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::SendItemExtractionScroll));

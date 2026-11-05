@@ -74,7 +74,6 @@ void* FUN_140876480(void* out, int cat);
 void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 class NiPixelData* ConvertToRGBA32(class NiPixelData*, unsigned int, unsigned int);   // C3: was FUN_14184d8c0
 struct Unk_TexColor;
-void FUN_141047040(Unk_CtiPixel* p, unsigned char a, unsigned char b, unsigned char c, unsigned char d);
 int SamplePixelData(NiPixelData* pkPixels, NiPoint2 kUV, Unk_TexColor* pkOut, bool bBilinear);   // textureutil.cpp
 void FUN_14015b310(void* p, unsigned __int64 sz);
 
@@ -238,7 +237,7 @@ CString Unk_CtiCacheName::FUN_141166ca0(CCustomizedTexInfo* pA, CCustomizedTexIn
 // @0x141166d20
 Unk_CtiPixel* FUN_141166d20(Unk_CtiPixel* pPix)
 {
-    FUN_141047040(pPix, 0, 0, 0, 0);
+    reinterpret_cast<efd::ColorA_UInt8*>(pPix)->ColorA_UInt8::ColorA_UInt8(0, 0, 0, 0);   // C3: 0x141047040
     return pPix;
 }
 

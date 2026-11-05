@@ -49,8 +49,7 @@ template <> MS2Ptr<ASEffectManager>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddR
 class Unk_UpperActor {public:
  virtual ~Unk_UpperActor();virtual void vfunc_1();virtual void vfunc_2();virtual void vfunc_3();virtual void vfunc_4();virtual void vfunc_5();virtual void* vfunc_6();};
 CStringW FUN_1401aa6a0(int);
-class Unk_LsBuff;
-class UILapenshardShieldBar : public UIHeadUpDisplay {public:void FUN_140c5f8f0(MS2Ptr<AdditionalCli>);MS2Ptr<Unk_LsBuff> GetBuff();void FUN_140c5faf0();};
+class UILapenshardShieldBar : public UIHeadUpDisplay {public:void FUN_140c5f8f0(MS2Ptr<AdditionalCli>);MS2Ptr<AdditionalCli> GetBuff();void FUN_140c5faf0();};
 template<class T> T* Unk_AcFindUI(eUIClassID);
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 void FUN_1422bcdd0(Scaleform::GFx::Value*,__int64);void FUN_1422bcea0(Scaleform::GFx::Value*,const wchar_t*);void FUN_1422bccb0(Scaleform::GFx::Value*,int);
@@ -122,10 +121,10 @@ bool UpperHpBarEntity::DestroyEntity(const int& id){if(m_id!=id)return false;m_i
 MS2_REPLACE_METHOD(0x141B4AB70, UpperHpBarEntity, DestroyEntity, 215, 0xE47BB395);
 
 // @0x141b4ac50
-void UpperHpBarEntity::FUN_141b4ac50(MS2Ptr<Unk_AsBuff> buff){
- if(buff==0||reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()==0){MS2_ASSERT_AT(89,0);return;}
-  if(m_clip==0){m_pending.SetAt(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetKey(),buff);return;}
-  const int& key=((class GameObject*)(void*)(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()))->FUN_14123c580();
+void UpperHpBarEntity::FUN_141b4ac50(MS2Ptr<AdditionalCli> buff){
+ if(buff==0||buff.operator->()->GetOwner()==0){MS2_ASSERT_AT(89,0);return;}
+  if(m_clip==0){m_pending.SetAt(buff.operator->()->GetKey(),buff);return;}
+  const int& key=((class GameObject*)(void*)(buff.operator->()->GetOwner()))->FUN_14123c580();
   MS2Ptr<ASEffectManager> obj;
   if(!m_buffs.Lookup(key,obj)){
    obj=FUN_140e6cd80(2,"flash.display.MovieClip",0,0);
@@ -133,7 +132,7 @@ void UpperHpBarEntity::FUN_141b4ac50(MS2Ptr<Unk_AsBuff> buff){
    else if(m_kind==1){((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetPosA(0x48, -32);((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetPosB(0x48, 0x56);}
    else{((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetPosA(0x2e, -42);((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetPosB(0x2e, 0x34);}
    ((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetMax(0xf);
-   if(efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()?reinterpret_cast<Unk_UpperActor*>(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner())->vfunc_6():0),0x6200028)){Unk_UpperConfigData* cfg=reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0());((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetFilter(cfg->m_buff);}
+   if(efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(buff.operator->()->GetOwner()?reinterpret_cast<Unk_UpperActor*>(buff.operator->()->GetOwner())->vfunc_6():0),0x6200028)){Unk_UpperConfigData* cfg=reinterpret_cast<Unk_UpperConfigData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0());((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->SetFilter(cfg->m_buff);}
    m_gauge->FUN_1422c6900(obj->FUN_1422bb870());
    m_buffs.SetAt(key,obj);
   }
@@ -145,11 +144,11 @@ void UpperHpBarEntity::FUN_141b4b3f0(){for(POSITION pos=m_buffs.GetStartPosition
 MS2_REPLACE_METHOD(0x141B4B3F0, UpperHpBarEntity, FUN_141b4b3f0, 259, 0x54C4F728);
 
 // @0x141b4b0d0
-void UpperHpBarEntity::FUN_141b4b0d0(MS2Ptr<Unk_AsBuff> buff){
- if(buff==0||reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()==0){MS2_ASSERT_AT(140,0);return;}
- if(m_clip==0){m_pending.SetAt(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetKey(),buff);return;}
+void UpperHpBarEntity::FUN_141b4b0d0(MS2Ptr<AdditionalCli> buff){
+ if(buff==0||buff.operator->()->GetOwner()==0){MS2_ASSERT_AT(140,0);return;}
+ if(m_clip==0){m_pending.SetAt(buff.operator->()->GetKey(),buff);return;}
  MS2Ptr<ASEffectManager> obj;
- if(m_buffs.Lookup(((class GameObject*)(void*)(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()))->FUN_14123c580(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->UpdateEffect(buff);
+ if(m_buffs.Lookup(((class GameObject*)(void*)(buff.operator->()->GetOwner()))->FUN_14123c580(),obj))((class ASEffectManager*)(class ASDisplayObject*)(obj.operator->()))->UpdateEffect(buff);
 }
 MS2_REPLACE_METHOD(0x141B4B0D0, UpperHpBarEntity, FUN_141b4b0d0, 354, 0x44015F7B);
 // @0x141b4b240
@@ -164,8 +163,8 @@ void UpperHpBarEntity::FUN_141b4b240(PCBase* actor,const int& id){
     UILapenshardShieldBar* ui=Unk_AcFindUI<UILapenshardShieldBar>((eUIClassID)0x4f73);
     if(ui!=0){
      if(ui->FUN_141986d30()!=0){
-      MS2Ptr<Unk_LsBuff> cur=ui->GetBuff();
-      if(cur.get()!=0){if(reinterpret_cast<AdditionalCli*>(cur.operator->())->GetKey()==ref->GetKey())ui->FUN_140c5faf0();}
+      MS2Ptr<AdditionalCli> cur=ui->GetBuff();
+      if(cur.get()!=0){if(cur->GetKey()==ref->GetKey())ui->FUN_140c5faf0();}
      }
     }
    }
@@ -331,7 +330,7 @@ void UIUpperHpBar::FUN_141b4c510(PCBase* actor,int kind){
  UILapenshardShieldBar* ui=Unk_AcFindUI<UILapenshardShieldBar>((eUIClassID)0x4f73);
  if(ui!=0){
   MS2Ptr<AdditionalCli> buff=reinterpret_cast<AdditionalCliList*>(((class PCBase*)(void*)(actor))->FUN_1416749a0())->GetShield();
-  bool changed=ui->FUN_141986d30()!=0&&reinterpret_cast<Unk_LsBuff*>(buff.get())!=ui->GetBuff().get();
+  bool changed=ui->FUN_141986d30()!=0&&buff.get()!=ui->GetBuff().get();
   if(changed)ui->vfunc_3();
   if(buff.get()!=0){
    if(*(int*)((char*)buff.operator->()->FUN_14096d810()+0x2b0)!=0)ui->FUN_140c5f8f0(buff);
@@ -353,11 +352,11 @@ void UIUpperHpBar::FUN_141b4ceb0(bool show){if(m_30==0)return;{UpperHpBarEntity*
 MS2_REPLACE_METHOD(0x141B4CEB0, UIUpperHpBar, FUN_141b4ceb0, 132, 0xE3C6703A);
 
 // @0x141b4cf40
-void UIUpperHpBar::FUN_141b4cf40(MS2Ptr<Unk_AsBuff> buff){FUN_141b4d170(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()).FUN_141b4ac50(buff);}
+void UIUpperHpBar::FUN_141b4cf40(MS2Ptr<AdditionalCli> buff){FUN_141b4d170(buff.operator->()->GetOwner()).FUN_141b4ac50(buff);}
 MS2_REPLACE_METHOD(0x141B4CF40, UIUpperHpBar, FUN_141b4cf40, 124, 0xCE7E3D09);
 
 // @0x141b4cfd0
-void UIUpperHpBar::FUN_141b4cfd0(MS2Ptr<Unk_AsBuff> buff){FUN_141b4d170(reinterpret_cast<AdditionalCli*>(buff.operator->())->GetOwner()).FUN_141b4b0d0(buff);}
+void UIUpperHpBar::FUN_141b4cfd0(MS2Ptr<AdditionalCli> buff){FUN_141b4d170(buff.operator->()->GetOwner()).FUN_141b4b0d0(buff);}
 MS2_REPLACE_METHOD(0x141B4CFD0, UIUpperHpBar, FUN_141b4cfd0, 124, 0xCF63FB8F);
 
 // @0x141b4d060

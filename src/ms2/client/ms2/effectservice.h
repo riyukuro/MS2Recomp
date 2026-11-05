@@ -255,7 +255,7 @@ public:
     unsigned FUN_1411a4f40(CString strName, const NiPoint3& kPos);          // play a voice sound at kPos
     unsigned FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, NiTransform* pXform,
         float fVolume, int nOwner);                             // play a sound event: its id, 0 when skipped
-    unsigned FUN_1411a5580(int nA, int nB, int nKind, const NiPoint3& kPos, float fVolume);    // play a hit sound
+    unsigned FUN_1411a5580(int nA, int nB, int nKind, NiPoint3 kPos, float fVolume);    // play a hit sound
     unsigned FUN_1411a5770(int nId, GameObject* pActor);        // play an actor voice
     unsigned FUN_1411a5a60(const CString& strName, const CString& strArg);  // play a field sound
     unsigned FUN_1411a5d80(const CString& strName);             // play a local player voice

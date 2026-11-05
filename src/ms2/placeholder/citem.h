@@ -280,7 +280,7 @@ public:
   int FUN_140525f60();
   int FUN_140525fc0();
   int FUN_140526160();
-  void FUN_140526470(unsigned);
+  int FUN_140526470(unsigned);
   void FUN_140526640(unsigned);
   bool FUN_140526850();
   unsigned AddCount(int);

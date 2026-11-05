@@ -125,7 +125,8 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 // Content switches (feature ids).
 MS2Ptr<CItemData> FUN_14053f870(int itemId);
 void FUN_140d73aa0(CStringW text, int type, void* data, CStringW tag);
-void* FUN_1409613d0(PCBase* pc);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 void FUN_140d73ff0(CStringW text);
 extern __int64 DAT_143ab2828;                       // the local character id
 extern __int64 DAT_143ad9140;                       // the character the guild notice was last shown to
@@ -148,6 +149,7 @@ CStringW BlockFormat(int id);
 CStringW BlockFormat(int id, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 #include "ms2/placeholder/formatstringid.h"
+class Unk_GFRecord { public: void FUN_1404c5be0(CInputStream* in); };   // C3: the guild history record reader's signature (0x1404c5be0)
 CStringW FUN_140763e10(int value);                   // the number with digit grouping
 bool FUN_14028d780(unsigned char c);
 void FUN_1404ec5b0(Unk_GuildRef* out, const MS2Ptr<CGuildMember>& member);   // MS2Ptr<CGuildMember> copy into raw storage
@@ -1378,7 +1380,7 @@ int CGuildManager::FUN_1413bcbc0(std::map<unsigned __int64, PCBase*>& out)
                 MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
                 if (member.get() != 0) {
                     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(member->data.f08);
-                    if (pc != 0 && FUN_1409613d0(pc) == 0)
+                    if (pc != 0 && efd::DynamicCast<Unk_AkoMyPC, PCBase>(pc) == 0)
                         out[reinterpret_cast<const unsigned __int64&>(member->data.f08)] = pc;   // the key binds the member directly (unsigned map key)
                 }
             }
@@ -2987,8 +2989,8 @@ void CGuildManager::FUN_1413c5dc0(CInPacket& packet)
             ItemEntity item;
             Unk_GuildHist from;
             Unk_GuildHist to;
-            from.FUN_1404c5be0(packet);
-            to.FUN_1404c5be0(packet);
+            reinterpret_cast<Unk_GFRecord*>(&from)->FUN_1404c5be0(&static_cast<CInputStream&>(packet));
+            reinterpret_cast<Unk_GFRecord*>(&to)->FUN_1404c5be0(&static_cast<CInputStream&>(packet));
             item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
             __int64 time = packet.ReadInt64();
             FUN_1404d2e90(&from, &to, &item, time);

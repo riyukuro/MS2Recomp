@@ -319,28 +319,14 @@ void Sfr33PtrArrayForEachChildGC(unsigned char *, void *, void (__cdecl *)(void 
 void Sfr33QueueOwnerObject(unsigned char *);
 ::Scaleform::String & Sfr33AvmBitmapGetASClassName(void const *, ::Scaleform::String *);
 ::Scaleform::GFx::DrawingContext * Sfr33GetDrawingContext(::Scaleform::GFx::DisplayObject *);
-bool Sfr33ArrayGetElement(unsigned char const *, unsigned char *, unsigned int, ::Scaleform::GFx::Value *);
 char * Sfr27ForwardVirtual1b8(void *, char *);
 bool Sfr27TextFieldHasStyleSheet(unsigned __int64);
 bool FUN_142518480(::Scaleform::GFx::AS3::MovieRoot const *, ::Scaleform::GFx::InteractiveObject *, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType, ::Scaleform::GFx::ProcessFocusKeyInfo *);
-bool Sfr31SetCxform(unsigned __int64, unsigned __int64, ::Scaleform::Render::Cxform const *);
-bool Sfr31SetDisplayMatrix(unsigned __int64, unsigned __int64, float const *);
-bool Sfr31SetElement(unsigned __int64, unsigned __int64, unsigned long, void const *);
 void Sfr31ShapeObjectSetRatio(unsigned __int64, float);
-void Sfr31ToString(unsigned __int64, ::Scaleform::String *, void const *);
 void * DeleteAs3_1424e2610(void *, unsigned int);
 void * DeleteAs3_1424e26d0(void *, unsigned int);
 void * DeleteAs3_1424e2a10(void *, unsigned int);
 class Object;
-bool Sfr33ObjectInterfaceSetObject(::Scaleform::GFx::Value::ObjectInterface *, ::Scaleform::GFx::Value *, ::Scaleform::GFx::AS3::Object *);
-bool Sfr33DeleteNamedProperty(void *, ::Scaleform::GFx::AS3::Object *, char const *);
-bool Sfr27ObjectInterfaceSetArraySize(void *, unsigned __int64, unsigned long);
-bool Sfr31SetDisplayMatrix3D(unsigned __int64, unsigned __int64, float const *);
-bool Sfr31ValueSetMember(unsigned __int64, ::Scaleform::GFx::AS3::Object *, char const *, void const *);
-bool Sfr31SetTextOnObjectUtf8(unsigned __int64 *, unsigned __int64, char const *, bool);
-bool Sfr31SetTextOnObject(unsigned __int64 *, unsigned __int64, wchar_t const *, bool);
-void Sfr31ArrayToGfxValues(unsigned __int64, unsigned __int64, unsigned __int64, unsigned long, int);
-void Sfr31ValueVisitMembers(unsigned __int64, ::Scaleform::GFx::AS3::Object *, unsigned __int64);
 void * DeleteAs3_1424e2ac0(void *, unsigned int);
 void * DeleteAs3_1424e2c90(void *, unsigned int);
 void * DeleteAs3_1424e2e70(void *, unsigned int);
@@ -1139,7 +1125,9 @@ extern unsigned char DAT_1424ede80[];
 extern unsigned char DAT_1424f2400[];
 extern unsigned char DAT_1424f33d0[];
 extern unsigned char DAT_1424f39c0[];
+extern unsigned char DAT_1424f3d20[];
 extern unsigned char DAT_1424f3f40[];
+extern unsigned char DAT_1424f4780[];
 extern unsigned char DAT_1424f4a40[];
 extern unsigned char DAT_1424f7180[];
 extern unsigned char DAT_1424f74c0[];
@@ -1171,6 +1159,7 @@ extern unsigned char DAT_1425094e0[];
 extern unsigned char DAT_142509850[];
 extern unsigned char DAT_142509990[];
 extern unsigned char DAT_142509a80[];
+extern unsigned char DAT_142509ad0[];
 extern unsigned char DAT_142509da0[];
 extern unsigned char DAT_14250b3c0[];
 extern unsigned char DAT_14250b4a0[];
@@ -1219,16 +1208,27 @@ extern unsigned char DAT_14251f3a0[];
 extern unsigned char DAT_14251f780[];
 extern unsigned char DAT_1425227e0[];
 extern unsigned char DAT_142525c90[];
+extern unsigned char DAT_1425265d0[];
+extern unsigned char DAT_1425266c0[];
 extern unsigned char DAT_142526730[];
+extern unsigned char DAT_1425270e0[];
+extern unsigned char DAT_142527300[];
+extern unsigned char DAT_1425278d0[];
+extern unsigned char DAT_142527d60[];
 extern unsigned char DAT_142528740[];
 extern unsigned char DAT_142528a50[];
 extern unsigned char DAT_142528d90[];
 extern unsigned char DAT_142529f40[];
+extern unsigned char DAT_14252a230[];
+extern unsigned char DAT_14252a360[];
 extern unsigned char DAT_14252a4f0[];
 extern unsigned char DAT_14252b580[];
 extern unsigned char DAT_14252f250[];
 extern unsigned char DAT_14252f400[];
 extern unsigned char DAT_14252f480[];
+extern unsigned char DAT_14252fd40[];
+extern unsigned char DAT_142531550[];
+extern unsigned char DAT_142531630[];
 extern unsigned char DAT_14256e2e0[];
 extern unsigned char DAT_14256e350[];
 extern unsigned char DAT_1425ab870[];
@@ -4878,16 +4878,16 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
     DAT_142518570,
     DAT_142510e70,
     DAT_14250b4a0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ValueSetMember,
+    DAT_142527d60,
     DAT_142512870,
     DAT_142513920,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33DeleteNamedProperty,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ValueVisitMembers,
+    DAT_1424f4780,
+    DAT_142531630,
     DAT_142507540,
-    (const void*)&::Scaleform::GFx::AS3::Sfr27ObjectInterfaceSetArraySize,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ArrayGetElement,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetElement,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ArrayToGfxValues,
+    DAT_1425265d0,
+    DAT_142509ad0,
+    DAT_142527300,
+    DAT_142531550,
     DAT_14251f780,
     DAT_14251cbe0,
     DAT_1425227e0,
@@ -4896,22 +4896,22 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
     DAT_142526730,
     DAT_142510a70,
     DAT_142509850,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetDisplayMatrix,
+    DAT_1425270e0,
     DAT_14250b3c0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetDisplayMatrix3D,
+    DAT_1425278d0,
     DAT_142508560,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetCxform,
+    DAT_1425266c0,
     DAT_14250f110,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetTextOnObject,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31SetTextOnObjectUtf8,
+    DAT_14252a360,
+    DAT_14252a230,
     DAT_1424f33d0,
     DAT_1424ede80,
     DAT_142510b70,
     DAT_142510c30,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31ToString,
+    DAT_14252fd40,
     DAT_14252a4f0,
     DAT_14250f980,
-    (const void*)&::Scaleform::GFx::AS3::Sfr33ObjectInterfaceSetObject,
+    DAT_1424f3d20,
     DAT_1425071d0,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79,
@@ -8853,7 +8853,9 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_1424f2400@@3PAEA=?CreateASInstance@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAI_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f33d0@@3PAEA=?CreateEmptyMovieClip@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEAVValue@23@PEBDJ@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f39c0@@3PAEA=?CreateObject@Sfr33MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVValue@34@PEBDPEBV534@I@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424f3d20@@3PAEA=?CreateObjectValue@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAVValue@23@PEAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f3f40@@3PAEA=?CreateRenderNode@Sfr33ShapeObject@AS3@GFx@Scaleform@@QEAA?AV?$Ptr@VTreeNode@Render@Scaleform@@@4@AEAVContext@ContextImpl@Render@4@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1424f4780@@3PAEA=?DeleteMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f4a40@@3PAEA=?DeleteProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f7180@@3PAEA=?DetachChild@AvmDisplayObj@AS3@GFx@Scaleform@@UEAA_NPEAVDisplayObjectBase@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1424f74c0@@3PAEA=?DoDisplayCallback@DisplayObject@GFx@Scaleform@@UEAAXXZ")
@@ -8874,6 +8876,7 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_142509850@@3PAEA=?GetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEAV?$Matrix2x4@M@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509990@@3PAEA=?GetDrawingContext@DisplayObject@GFx@Scaleform@@UEAAPEAVDrawingContext@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_142509a80@@3PAEA=?GetDynamicProperty@Object@AS3@GFx@Scaleform@@UEAAXVAbsoluteIndex@234@AEAVValue@234@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142509ad0@@3PAEA=?GetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXIPEAVValue@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142509da0@@3PAEA=?GetFontManager@DisplayObjectBase@GFx@Scaleform@@UEBAPEAVFontManager@23@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14250b3c0@@3PAEA=?GetMatrix3D@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEAV?$Matrix3x4@M@Render@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14250b4a0@@3PAEA=?GetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEBA_NPEAXPEBDPEAVValue@23@_N@Z")
@@ -8922,16 +8925,27 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14251f780@@3PAEA=?PushBack@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXAEBVValue@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425227e0@@3PAEA=?RemoveElements@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXIH@Z")
 #pragma comment(linker, "/alternatename:?DAT_142525c90@@3PAEA=?Restart@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ")
+#pragma comment(linker, "/alternatename:?DAT_1425265d0@@3PAEA=?SetArraySize@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXI@Z")
+#pragma comment(linker, "/alternatename:?DAT_1425266c0@@3PAEA=?SetCxform@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVCxform@Render@3@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142526730@@3PAEA=?SetDisplayInfo@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBVDisplayInfo@Value@23@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1425270e0@@3PAEA=?SetDisplayMatrix@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix2x4@M@Render@3@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142527300@@3PAEA=?SetElement@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXIAEBVValue@23@@Z")
+#pragma comment(linker, "/alternatename:?DAT_1425278d0@@3PAEA=?SetMatrix3D@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXAEBV?$Matrix3x4@M@Render@3@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142527d60@@3PAEA=?SetMember@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBDAEBVValue@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528740@@3PAEA=?SetMovie@ASMovieRootBase@GFx@Scaleform@@UEAAXPEAVMovieImpl@23@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528a50@@3PAEA=?SetProperty@Object@AS3@GFx@Scaleform@@UEAA?AVCheckResult@234@AEBVMultiname@234@AEBVValue@234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_142528d90@@3PAEA=?SetRatio@DisplayObjectBase@GFx@Scaleform@@UEAAXM@Z")
 #pragma comment(linker, "/alternatename:?DAT_142529f40@@3PAEA=?SetStateChangeFlags@DisplayObjectBase@GFx@Scaleform@@UEAAXE@Z")
+#pragma comment(linker, "/alternatename:?DAT_14252a230@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEBD_N@Z")
+#pragma comment(linker, "/alternatename:?DAT_14252a360@@3PAEA=?SetText@AS3ValueObjectInterface@GFx@Scaleform@@EEAA_NPEAXPEB_W_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252a4f0@@3PAEA=?SetUserData@AS3ValueObjectInterface@GFx@Scaleform@@EEAAXPEAXPEAVASUserData@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252b580@@3PAEA=?SetVisible@DisplayObjectBase@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14252f250@@3PAEA=?ToAvmButttonBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmButtonBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f400@@3PAEA=?ToAvmSpriteBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmSpriteBase@34@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14252f480@@3PAEA=?ToAvmTextFieldBase@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAPEAVAvmTextFieldBase@34@XZ")
+#pragma comment(linker, "/alternatename:?DAT_14252fd40@@3PAEA=?ToString@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAVString@3@AEBVValue@23@@Z")
+#pragma comment(linker, "/alternatename:?DAT_142531550@@3PAEA=?VisitElements@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVArrVisitor@ObjectInterface@Value@23@IH@Z")
+#pragma comment(linker, "/alternatename:?DAT_142531630@@3PAEA=?VisitMembers@AS3ValueObjectInterface@GFx@Scaleform@@EEBAXPEAXPEAVObjVisitor@ObjectInterface@Value@23@_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e2e0@@3PAEA=?ConstructCopy@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAPEAVEntryData@234@AEAVLinearHeap@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_14256e350@@3PAEA=?CopyTo@?$ContextData_ImplMixin@VNodeData@TreeRoot@Render@Scaleform@@V1TreeContainer@34@@ContextImpl@Render@Scaleform@@UEBAXPEAX@Z")
 #pragma comment(linker, "/alternatename:?DAT_1425ab870@@3PAEA=?OnAbandon@Task@GFx@Scaleform@@UEAAX_N@Z")
@@ -9033,5 +9047,6 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14317afe8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317afe8@@3USd_14317afe8@@A")
 #pragma comment(linker, "/alternatename:?DAT_1432153a0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_1432153a0@@3USd_1432153a0@@A")
 #pragma comment(linker, "/alternatename:?DAT_143215ab0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143215ab0@@3USd_143215ab0@@A")
+#pragma comment(linker, "/alternatename:?Sfr31ButtonSwitchState@AS3@GFx@Scaleform@@YAX_KH@Z=?SwitchState@AvmButton@AS3@GFx@Scaleform@@UEAAXW4MouseState@ButtonRecord@34@@Z")
 
 #endif // MS2_HOOK_DLL

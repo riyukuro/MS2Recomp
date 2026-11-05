@@ -85,7 +85,6 @@ class JobTable;
 
 // The hot key label of the movie and the tab buttons.
 class Unk_140acd6e0 : public ASButton {};
-class Unk_ScButtonView : public AScript { public: MS2Ptr<Unk_140acd6e0> FUN_140acce30(const CString& strName); };
 void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
 
 // The movie root of the dialog (RTTI .?AVASDialog@@).
@@ -94,7 +93,6 @@ class ASDialog : public ASDisplayObject {};
 void* FUN_140d86260();   // C3: was FUN_140d86260
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommon(int nId);
-CStringTable* GetStringTable();
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, void* pListener, CStringW tag);
@@ -303,10 +301,10 @@ int UISkillCompactControlDialog::vfunc_13()
                     unsigned __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
                     CStringW strName;
                     if (FUN_1409331f0()->IsQuickSlotAction(nAction) != 0)
-                        strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0(FUN_1409331f0()->GetKeyAction(nKey)),
+                        strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0(FUN_1409331f0()->GetKeyAction(nKey)),
                                                 FUN_1409331f0()->GetKeyName(nKey));
                     else
-                        strName = GetStringTable()->FUN_1418125b0((unsigned)nAction);
+                        strName = TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)nAction);
                     if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
                     {
                         FUN_140d73aa0(FormatStringId(0x84f, strName), 1, static_cast<IMessageListener*>(this), CStringW(L""));
@@ -569,7 +567,7 @@ void UISkillCompactControlDialog::OnLoadComplete()
     if (m_30.get() != 0)
     {
         m_spButtonBar = m_30->FUN_140be23c0<ASButtonBar>("m_buttonBar");
-        m_spAddButton = static_cast<Unk_ScButtonView*>(m_30.operator->())->FUN_140acce30("m_addButton");
+        m_spAddButton = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>("m_addButton");
     }
     COutPacket packet(static_cast<int>(SendOp::SkillMacro), 0);
     packet.Encode1(0);
@@ -817,7 +815,7 @@ void UISkillCompactControlDialog::FUN_140fa1ff0()
 void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 {
     int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
-    MS2Ptr<Unk_140acd6e0> spHotKey = static_cast<Unk_ScButtonView*>(m_30.operator->())->FUN_140acce30("m_hotKey");
+    MS2Ptr<Unk_140acd6e0> spHotKey = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>("m_hotKey");
     if (spHotKey)
     {
         CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);

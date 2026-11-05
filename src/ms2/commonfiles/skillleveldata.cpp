@@ -70,7 +70,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);     
 float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault);    // float attribute with a default
 float FUN_14028d280(unsigned uMilliseconds);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-void FUN_14015f0b0(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);  // split into strings
+void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* pszSep);  // split into strings (achievedata.cpp; C3: was FUN_14015f0b0)
 class Unk_LaunchOptions
 {
 public:
@@ -1182,7 +1182,7 @@ void SkillMotionData::Load(Unk_140165cf0* pElem)
     for (unsigned i = 0; i < arrTags.GetCount(); i++)
     {
         ATL::CAtlArray<CString> arrPair;
-        FUN_14015f0b0(arrTags[i], arrPair, "=");
+        Unk_SplitImplA(arrTags[i], &arrPair, "=");
         if (arrPair.GetCount() == 2)
             m_mapTagEffects.SetAt(arrPair[0], arrPair[1]);
     }

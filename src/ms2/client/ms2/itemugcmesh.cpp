@@ -12,7 +12,7 @@
 // MS2-PIN: ??8?$MS2Ptr@VCItem@@@@QEBA_NPEAVCItem@@@Z 0x1414276c0 ; manual
 // MS2-PIN: ??B?$SmartPointer@VNiTexture@@@efd@@QEBAPEAVNiTexture@@XZ 0x141427740 ; manual
 // MS2-PIN: ??C?$MS2Ptr@VCItem@@@@QEBAPEAVCItem@@XZ 0x141427750 ; manual
-// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@UUnk_PickTarget@@@@V?$CElementTraits@V?$MS2Ptr@UUnk_PickTarget@@@@@ATL@@@ATL@@QEBA_KXZ 0x141427770 ; manual
+// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCEquipModel@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipModel@@@@@ATL@@@ATL@@QEBA_KXZ 0x141427770 ; manual
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemUgcMesh@@@@V?$CElementTraits@V?$MS2Ptr@VCItemUgcMesh@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemUgcMesh@@@@_K@Z 0x141427a10 ; manual
 // MS2-PIN: ??_GCItemUgcMesh@@UEAAPEAXI@Z 0x141427800 ; manual
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCItemUgcMesh@@@@AEBAXPEAX@Z 0x1414280a0 ; manual
@@ -28,6 +28,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemugcmesh.h"
 #include "itempickinghelper.h"
+#include "equipmodel.h"   // C3: the picking target is a CEquipModel (was Unk_PickTarget)
 #include <map>
 #include <vector>
 #include <set>
@@ -83,7 +84,7 @@ public:
     void FUN_1411dd150();
     void FUN_1411dcd00();
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);      // attach part names of an equip slot
-    void FUN_1411dcc80(CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts); // the item's model parts
+    void GetModels(CAtlArray<MS2Ptr<CEquipModel> >& aOut);  // 0x1411dcc80 the item's model parts (C3: was FUN_1411dcc80)
 };
 
 // The proxy data record of an item (CItem::FUN_140527870, a CPtred; ?\\userproxy.cpp). Customize floats are read here.
@@ -158,10 +159,10 @@ MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);
 int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex);
-void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
+void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale);
 NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName);
-class CEquipModel;                                                  // equipmodel.cpp: the real type of Unk_PickTarget
+class CEquipModel;                                                  // equipmodel.cpp: the real type of CEquipModel
 void FUN_1412014f0(CEquipModel* pPart, void* pOffset);              // stores the offset
 void FUN_141201620(CEquipModel* pPart, void* pEuler);               // stores the euler
 void* FUN_141200ab0(CEquipModel* pPart);                            // the part's model facts
@@ -243,8 +244,8 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
         return "";
     if (strSuffix.GetLength() > 1)
         return "";
-    CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
-    spItem->FUN_1411dcc80(aParts);
+    CAtlArray<MS2Ptr<CEquipModel> > aParts;
+    spItem->GetModels(aParts);
     if (aParts.IsEmpty())
         return "";
     CAtlArray<CString> aNames;
@@ -255,8 +256,8 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
     int nIndex = 0;
     FUN_141421740(strFirst, &nIndex);
     CString strMapped(strSuffix);
-    std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)aParts[0].operator->()))->m_names.find(strSuffix);
-    if (it != ((Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)aParts[0].operator->()))->m_names.end())
+    std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)FUN_141200ab0(aParts[0].operator->()))->m_names.find(strSuffix);
+    if (it != ((Unk_UgcPartInfo*)FUN_141200ab0(aParts[0].operator->()))->m_names.end())
         strMapped = it->second;
     CString strOut;
     strOut = strFirst.Left(nIndex);
@@ -317,7 +318,7 @@ unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObj
 }
 
 // @0x141422340
-float FUN_141422340(Unk_PickTarget* pPart, int nIndex)
+float FUN_141422340(CEquipModel* pPart, int nIndex)
 {
     if (pPart == 0)
         return 1.0f;
@@ -346,7 +347,7 @@ float FUN_141422340(Unk_PickTarget* pPart, int nIndex)
 }
 
 // @0x1414225d0
-void FUN_1414225d0(MS2Ptr<Unk_PickTarget> spPart, int nIndex, float fValue)
+void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue)
 {
     if (!spPart)
         return;
@@ -373,15 +374,15 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 }
 
 // @0x141422840
-void FUN_141422840(Unk_PickTarget* pPart, Vector3 kPos, Vector3 kEuler, float fScale)
+void FUN_141422840(CEquipModel* pPart, Vector3 kPos, Vector3 kEuler, float fScale)
 {
     if (pPart == 0)
         return;
-    FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 0, fScale);
-    FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 1, fScale);
-    FUN_1412014f0((CEquipModel*)pPart, &kPos);
-    FUN_141201620((CEquipModel*)pPart, &kEuler);
-    FUN_141422b30(pPart, *FUN_141201c90((CEquipModel*)pPart), kPos, kEuler, fScale);
+    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 0, fScale);
+    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 1, fScale);
+    FUN_1412014f0(pPart, &kPos);
+    FUN_141201620(pPart, &kEuler);
+    FUN_141422b30(pPart, *FUN_141201c90(pPart), kPos, kEuler, fScale);
 }
 
 // @0x141422950 - transform -> euler angles in degrees
@@ -394,22 +395,22 @@ void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler)
 }
 
 // @0x141422a00
-void FUN_141422a00(Unk_PickTarget* pPart, Vector3 kPos, const NiMatrix3& kRot, float fScale)
+void FUN_141422a00(CEquipModel* pPart, Vector3 kPos, const NiMatrix3& kRot, float fScale)
 {
     if (pPart == 0)
         return;
     Vector3 kEuler;
     FUN_141422950(kRot, &kEuler);
-    FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 0, fScale);
-    FUN_1414225d0(MS2Ptr<Unk_PickTarget>(pPart), 1, fScale);
-    FUN_1412014f0((CEquipModel*)pPart, &kPos);
-    FUN_141201620((CEquipModel*)pPart, &kEuler);
-    FUN_141422b30(pPart, *FUN_141201c90((CEquipModel*)pPart), kPos, kEuler, fScale);
+    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 0, fScale);
+    FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 1, fScale);
+    FUN_1412014f0(pPart, &kPos);
+    FUN_141201620(pPart, &kEuler);
+    FUN_141422b30(pPart, *FUN_141201c90(pPart), kPos, kEuler, fScale);
 }
 
 
 // @0x141422b30 - applies a pose to every node of the part's node set
-void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
+void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale)
 {
     if (pPart == 0)
@@ -417,7 +418,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     MS2Ptr<CEquipItem> spItem = pPart->FUN_141200a40();
     if (spItem.IsNull())
         return;
-    Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)FUN_141200ab0((CEquipModel*)pPart);
+    Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)FUN_141200ab0(pPart);
     if (pInfo == 0)
         return;
     efd::Point3 kShift = (const efd::Point3&)kPos;
@@ -848,12 +849,12 @@ int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, 
     pPick->SetFrontOnly(true);
     pPick->SetCoordinateType(NiPick::COORDINATES_WORLD);
     pPick->SetIntersectType(NiPick::INTERSECT_TRIANGLE);
-    CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
-    spItem->FUN_1411dcc80(aParts);
+    CAtlArray<MS2Ptr<CEquipModel> > aParts;
+    spItem->GetModels(aParts);
     *pbEmpty = 1;
     for (size_t i = 0; i < aParts.GetCount(); i++)
     {
-        std::set<NiAVObjectPtr>& kSet = *FUN_141201c90((CEquipModel*)aParts[i].operator->());
+        std::set<NiAVObjectPtr>& kSet = *FUN_141201c90(aParts[i].operator->());
         std::set<NiAVObjectPtr>& rSet = kSet;
         std::set<NiAVObjectPtr>::iterator itEnd = rSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = rSet.begin(); it != itEnd; ++it)
@@ -1150,14 +1151,14 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
     GetPartNames(aNames, pData);
     if (aNames.IsEmpty())
         return false;
-    CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
-    spItem->FUN_1411dcc80(aParts);
+    CAtlArray<MS2Ptr<CEquipModel> > aParts;
+    spItem->GetModels(aParts);
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
         CString& strName = aNames[i];
         for (unsigned j = 0; j < aParts.GetCount(); j++)
         {
-            MS2Ptr<Unk_PickTarget> spPart = aParts[j];
+            MS2Ptr<CEquipModel> spPart = aParts[j];
             std::set<NiAVObjectPtr> kNodes;
             FUN_141201cb0((CEquipModel*)spPart.operator->(), kNodes);
             std::set<NiAVObjectPtr>& rNodes = kNodes;

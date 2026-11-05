@@ -428,7 +428,7 @@ public:
 MS2_CHECK_SIZE(Unk_InstanceEvent, 0x30);
 
 
-// Unk_1401cd100 (ctor 0x1401cd100) comes from cubemapinformationservice_3.h.
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_1401cd100 from cubemapinformationservice_3.h)
 
 // The UI scenes: UISceneEntity subclasses registered with the UISwfEntityManager (?\uiscene*.cpp, not recovered).
 class UISceneEntity : public UISwfEntity { };
@@ -486,7 +486,7 @@ class Unk_GFxManager
 public:
     void FUN_1414a61c0(Unk_GFxImageCallback fnCallback);        // the image creator callback (+0x138)
 };
-Unk_GFxManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 class GFxManager { public: void FUN_1422af0b0(int bArchive, int bRelease); };   // loads ./Data/Resource/gfx/fontconfig.txt
 Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtocol,
     Scaleform::Render::TextureManager* pTextureManager);       // ?\asyncimageloader.cpp
@@ -543,7 +543,7 @@ static CString s_strStun = "stun";
 // @0x1400f85c0
 static efd::Category s_kPrecacheCategory(0);
 // @0x1400f85f0
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 // @0x1400f8610
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x1400f8660
@@ -553,7 +553,7 @@ static CString s_strSkill2 = "skill";
 // @0x1400f86c0
 static CString s_strStun2 = "stun";
 // @0x1400f86f0
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 
 // ---- MS2
 // @0x141489aa0
@@ -1057,7 +1057,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
 
     int n = 0;
     reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
-    FUN_14025e7a0()->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
+    reinterpret_cast<Unk_GFxManager*>(FUN_14025e7a0())->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
     RegisterUIScenes();
     efd::SmartPointer<DecoEditService> spDecoEdit = EE_NEW DecoEditService;
     m_spServiceManager->RegisterSystemService(spDecoEdit, 0x6100014);

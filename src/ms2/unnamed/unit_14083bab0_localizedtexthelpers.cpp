@@ -26,8 +26,8 @@ int FUN_1406514e0(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<i
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
 CStringA FUN_14016a5c0(const char* psz, int n);
 class Unk_Be790Xml;
-Unk_Be790Xml* FUN_140345b40(TiXmlDocument* pDoc);                      // first child element
-Unk_Be790Xml* FUN_140345b40(Unk_Be790Xml* pNode);
+class Unk_140165cf0;
+Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 void FUN_140873420(Unk_Be790Xml* pElem, const char* pszName, CStringW& rOut);   // string attribute
 class Unk_Be790Loader : public CFileSystem { };
 CFileSystem* GetFileSystem();
@@ -337,10 +337,10 @@ CStringW FUN_14083d340(CStringW str)
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->LoadXmlFromString(&doc, str) == 0)
         return str;
-    Unk_Be790Xml* pRoot = FUN_140345b40(&doc);
+    Unk_Be790Xml* pRoot = reinterpret_cast<Unk_Be790Xml*>(FUN_140345b40(&doc));
     if (pRoot == NULL)
         return str;
-    Unk_Be790Xml* pElem = FUN_140345b40(pRoot);
+    Unk_Be790Xml* pElem = reinterpret_cast<Unk_Be790Xml*>(FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pRoot)));
     if (pElem == NULL)
         return str;
     CStringW strText;

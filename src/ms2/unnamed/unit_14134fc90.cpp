@@ -66,7 +66,7 @@ public:
 };
 
 // The notice dispatcher (FUN_140939a10).
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
 // The string table (FUN_1409331f0).
 class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> GetActionKeyName(int, int); }; class Unk_DemolishTable : public CKeyTable {
@@ -137,8 +137,8 @@ void UIHouseDemolishDialog::vfunc_26()
     m_bRefreshed = false;
     m_nDirty = 0;
     m_tick.Init();
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }
 MS2_REPLACE_METHOD(0x14134FE70, UIHouseDemolishDialog, vfunc_26, 509, 0xF36A0F20);
 
@@ -153,8 +153,8 @@ MS2_REPLACE_METHOD(0x141350080, UIHouseDemolishDialog, vfunc_67, 24, 0x526E4F64)
 void UIHouseDemolishDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }
 MS2_REPLACE_METHOD(0x1413500A0, UIHouseDemolishDialog, OnLoadComplete, 439, 0xA6D31912);
 

@@ -23,8 +23,7 @@ class ItemCustom;
 class CEquipItem;
 class ASTextField;
 class UICameraEditDialog;
-class Unk_HpxRadio;         // a radio button child ("m_left", "m_position", "m_rotation")
-class Unk_HudSlider;        // a slider child ("m_softSlider", "m_xSlider" ...)
+class ASRadioButton;        // a radio button child ("m_left", "m_position", "m_rotation")
 class Unk_RankInput;         // a text input child ("m_transformX" ...)
 class Unk_IbDropdown;         // a combo box child ("m_joints")
 

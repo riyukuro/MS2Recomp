@@ -82,9 +82,9 @@ public:
 };
 // The drop entries (commonfiles\itemdroptable.h).
 typedef ItemDropResult Unk_GachaDrop;
-#define GACHA_ITEMS reinterpret_cast<std::vector<ItemEntity>&>(m_result)
-#define GACHA_BINDS reinterpret_cast<std::vector<CString>&>(m_slotBinds)
-#define GACHA_BAGS reinterpret_cast<std::vector<CString>&>(m_bagIds)
+#define GACHA_ITEMS (m_result)
+#define GACHA_BINDS (m_slotBinds)
+#define GACHA_BAGS (m_bagIds)
 #define GACHA_PARAMS(p) reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>((p).operator->()) + 0x2b0)
 class Unk_GachaText;
 class Unk_GachaClip : public ASMovieClip
@@ -488,7 +488,7 @@ bool UIItemGachaBoxDialog::FUN_140c42fd0(int result, const CMsgBoxData&)
 void UIItemGachaBoxDialog::FUN_140c43010()
 {
     for (size_t i = 0; i < GACHA_BINDS.size(); ++i)
-        FUN_141415600(*m_slotBinds.FUN_14027f1c0(i));
+        FUN_141415600(m_slotBinds[i]);
     GACHA_BINDS.clear();
 }
 
@@ -496,7 +496,7 @@ void UIItemGachaBoxDialog::FUN_140c43010()
 void UIItemGachaBoxDialog::FUN_140c43090()
 {
     for (size_t i = 0; i < GACHA_BAGS.size(); ++i)
-        FUN_14141f970(*m_bagIds.FUN_14027f1c0(i));
+        FUN_14141f970(m_bagIds[i]);
     GACHA_BAGS.clear();
 }
 

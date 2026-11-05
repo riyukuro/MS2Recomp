@@ -56,14 +56,10 @@
 class Unk_ItemEquipData : public CItemData { };
 
 // The item-data rows the summon packet path reads (item.cpp owns the real MS2Ptr instances).
-class Unk_PetRow : public CPtred { };
 class Unk_PCBaseComp_aa8 : public CPtred { };
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
 extern Unk_Inventory g_143ab2a90;
-
-// The item-data tables.
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 // The world service, its effect manager and the field objects it hands out.
 class WorldService   // C3: member view for the former free stand-ins
@@ -110,7 +106,7 @@ public:
     class PCBase* FUN_140b10360();
     int FUN_140b11180();
     void FUN_140b114e0(int);
-    MS2Ptr<Unk_PetRow> GetRow();                                           // the pet's row (by value)
+    MS2Ptr<CPetData> GetRow();                                           // the pet's row (by value)
     PCBase* FUN_140b10320();                                               // the owner
 };
 int FUN_140b11e90(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FUN_140b11e90
@@ -218,7 +214,7 @@ void StateSummon::vfunc_4(StateData* pData)
             if (spItem->IsPetItem() != 0)
             {
                 int nPetId = spItem->FUN_140527840()->GetPetId();
-                MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(nPetId);
+                MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
@@ -316,7 +312,7 @@ void StateSummon::vfunc_8(double fTime)
                 if (spItem->IsPetItem() != 0)
                 {
                     int nPetId = spItem->FUN_140527840()->GetPetId();
-                    MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(nPetId);
+                    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
                     if (spRow.get() != 0)
                     {
                         if (m_spData.get()->m_b18 != 0)
@@ -870,7 +866,7 @@ void StateSummonExpire::vfunc_3(double fTime)
     if (pPet == 0)
         return;
 
-    MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<CPet*>(pPet)->GetRow();
+    MS2Ptr<CPetData> spRow = reinterpret_cast<CPet*>(pPet)->GetRow();
     if (spRow == 0)
         return;
     if (m_t40.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)

@@ -67,6 +67,7 @@ void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat n
 // The actor's buff set: the airborne check.
 
 // The actor's buff view: the movement direction.
+#include "ms2/commonfiles/ugcmappackageinfo.h"   // C3: Unk_Int3
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
 class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
 class Unk_GlideBuff { public: };
@@ -74,9 +75,8 @@ class Unk_GlideBuff { public: };
 // The actor's player character (+ the buff based speed bonus).
 
 // The cube grid: the cell of a cube key and the centre point of a cell.
-struct Unk_GlCell { Unk_GlCell(); int x, y, z; };
-Unk_GlCell FUN_1408a0400(int nKey);
-efd::Point3 FUN_1408a15b0(Unk_GlCell kCell, efd::Point3& kCentre);     // fills kCentre with the cell centre
+Unk_Int3 FUN_1408a0400(int nKey);                                    // C3: the definer's signature (ugcmapdata_1)
+efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, efd::Point3& kCentre);     // fills kCentre with the cell centre (the exe copies the cell: by value)
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0

@@ -110,7 +110,6 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 struct Unk_AvBox;
-class Unk_PetRowTable;
 struct Unk_XmlElement;
 
 // Unrecovered helpers.
@@ -297,7 +296,6 @@ void* FUN_14182fd90(Unk_Ref* pRef);
 Unk_SpawnGroup* FUN_1406d5cb0(Unk_Ref* pRef);
 typedef ATL::CAtlArray<MS2Ptr<CRegionSpawnProb> > Unk_ProbArray;   // CRegionSpawnResult::m_aProb
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 MS2Ptr<CNpcData> FUN_1406cd330(int nId);   // the npc data row
 
 // TinyXML nodes written by the export (stack objects of 0x90 bytes).
@@ -806,7 +804,7 @@ bool FUN_1418226b0(bool bLog)
                                             _NpcInfo npc;
                                             npc.m_nFieldId = nFieldId;
                                             FUN_1418270c0(nNpcId, npc, g_mapNpc);
-                                            CPetDataTable::PetPtr model = ((CPetDataTable*)(void*)FUN_14052d210())->Find(CString(((Unk_NpcRow*)npcRow.operator->())->m_strModel));
+                                            CPetDataTable::PetPtr model = TSingleton<CPetDataTable>::GetInstance()->Find(CString(((Unk_NpcRow*)npcRow.operator->())->m_strModel));
                                             if (model.get() != 0)
                                                 FUN_141826e40(model->GetId(), nFieldId, g_mapPet);
                                         }

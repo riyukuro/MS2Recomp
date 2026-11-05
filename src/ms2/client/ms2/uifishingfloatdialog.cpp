@@ -22,6 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/fishcube.h"
 #include "ms2/commonfiles/fishsimultedata.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -42,17 +43,18 @@ public:
 static CString s_143aca738("System_Fishing_ActionFail");
 static CString s_143aca6e8("System_Fishing_ActionPopup");
 
-// The AS movie of the float: three more Invoke instances (an int argument each) the exe has per translation unit.
+// The AS movie of the float: the Invoke instances (an int argument each) the exe has per translation unit.
 class ASArgList;
 class Unk_FishAS
 {
 public:
     Scaleform::GFx::Value FUN_140f446c0(const char* szMethod, int a1);      // 0x140f446c0 Invoke(name, int)
-    Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);      // 0x140caf230 Invoke(name, int)
 };
+// Invoke(name, int) 0x140caf230: the COMDAT of tabcontentspetcollect.cpp's component view.
+class Unk_PcComp { public: Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
-struct Unk_GpSettings;
+class Unk_GpSettings;
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
 class CFeatureManager { public: bool FUN_14036d570(int n); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -82,16 +84,7 @@ public:
     int FUN_14123c580();
 };
 
-// The "fish info" message the size / rank are taken from, and the fish table it is resolved against.
-class Unk_FishPacket : public CPtred
-{
-public:
-    int m_18;
-    int m_1c;                           // +0x1c the fish id
-    int m_20;                           // +0x20 rank key
-    int m_24;
-    int m_28;                           // +0x28 fish size
-};
+// C3: the fish info is CFishCube (fishcube.h; was the Unk_FishPacket view: +0x1c fish id, +0x20 rank key, +0x28 size).
 class CFishingManager;
 
 // @0x1400df560, @0x1400df590 (the two static CStrings above)
@@ -133,7 +126,7 @@ void UIFishingFloatDialog::OnLoadComplete()
         int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
         m_30.operator->()->Invoke("setKeyText", TSingleton<CKeyTable>::GetInstance()->GetActionKeyName(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
-        reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
+        reinterpret_cast<Unk_PcComp*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }
     FUN_140f44520(0);
     FUN_141276180(s_143aca6e8, "");
@@ -206,15 +199,15 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x140f443d0
-void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<Unk_FishPacket> spInfo)
+void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<CFishCube> spInfo)
 {
-    Unk_FishPacket* pInfo = spInfo.operator->();
-    CFishDataPtr ref = TSingleton<CFishingTable>::GetInstance()->GetFish(pInfo->m_1c);
+    CFishCube* pInfo = spInfo.operator->();
+    CFishDataPtr ref = TSingleton<CFishingTable>::GetInstance()->GetFish(pInfo->m_a);
     if (ref.get())
     {
-        m_17c = spInfo.operator->()->m_28;
-        Unk_FishPacket* pInfo2 = spInfo.operator->();
-        m_178 = ref.operator->()->FUN_1403b1520(pInfo2->m_20);
+        m_17c = spInfo.operator->()->m_d;
+        CFishCube* pInfo2 = spInfo.operator->();
+        m_178 = ref.operator->()->FUN_1403b1520(pInfo2->m_b);
     }
 }
 

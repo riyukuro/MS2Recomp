@@ -29,12 +29,12 @@ struct Unk_HomeCameraPose
 };
 MS2_CHECK_SIZE(Unk_HomeCameraPose, 0x18);
 
-// The camera manager's data that the home camera reads, past Unk_CameraManager's own members (reached by a downcast;
+// The camera manager's data that the home camera reads, as a raw layout view (reached by a reinterpret_cast of CameraMgr;
 // the object is the singleton at 0x143ab3700).
-class Unk_CameraManagerData : public Unk_CameraManager
+class Unk_CameraManagerData
 {
 public:
-    char m_pad_00[0xc8 - sizeof(Unk_CameraManager)];
+    char m_pad_00[0xc8];
     Unk_HomeNiPoint3 m_c8;               // +0xc8 zoom axis
     Unk_HomeNiPoint3 m_d4;               // +0xd4 up vector
     Unk_CameraSetting m_e0;             // +0xe0 the setting the engine camera is built from

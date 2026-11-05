@@ -99,9 +99,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // The pet table singleton and the pet collect table inside it.
-class Unk_PetRowTable : public CPetDataTable { };
 class Unk_BreakSelected : public CPetManager { };
-Unk_PetRowTable* FUN_14052d210();
 Unk_BreakSelected* FUN_140535320();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -203,7 +201,7 @@ void TabContentsPetCollect::FUN_140cac6a0()
     if (m_ui == 0)
         return;
     {
-        std::map<DWORD, int>& rPets = FUN_14052d210()->GetCollect()->PetGroups();
+        std::map<DWORD, int>& rPets = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->PetGroups();
         int nCount = 0;
         for (std::map<DWORD, int>::iterator it = rPets.begin(), itEnd = rPets.end(); it != itEnd; ++it)
         {
@@ -231,10 +229,10 @@ void TabContentsPetCollect::FUN_140cac8a0()
         objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(L"s_pet_collect_total_category"));
         objAll.FUN_1407cb9c0("groupId", 0);
         arrTabs.PushValue(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
-        std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+        std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
         for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
-            PetGroupInfoPtr spInfo = FUN_14052d210()->GetCollect()->Find(it->first);
+            PetGroupInfoPtr spInfo = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->Find(it->first);
             if (spInfo == 0)
                 continue;
             ASObj objTab(2);
@@ -255,7 +253,7 @@ void TabContentsPetCollect::FUN_140cacc30()
         return;
     {
         FUN_140cacce0();
-        std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+        std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
         for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
             FUN_140cad2b0(it->first);
@@ -269,7 +267,7 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
 #define PC_PET_ROW(vec, i, arrPets) \
         ASObj objPet(2); \
         const unsigned* pPet = &(vec)[i]; \
-        MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(*pPet); \
+        MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(*pPet); \
         if (spPet == 0) \
             continue; \
         MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
@@ -292,7 +290,7 @@ void TabContentsPetCollect::FUN_140cacce0()
 {
     if (m_ui == 0)
         return;
-    std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+    std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
     std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin();
     std::map<int, std::vector<unsigned> >::iterator itEnd = rGroups.end();
     if (it == itEnd)
@@ -322,7 +320,7 @@ void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
         return;
     if (nGroup == 0)
         return;
-    std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+    std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
     std::map<int, std::vector<unsigned> >::iterator it = rGroups.find(nGroup);
     if (it == rGroups.end())
         return;
@@ -373,7 +371,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
     if ((strType == "collect_pet"))
     {
         int nPet = static_cast<ASData*>(pData)->PopInt();
-        MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
+        MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(nPet);
         if (spPet == 0)
             return;
         MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));
@@ -464,7 +462,7 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nPet = data.PopUInt();
-            MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
+            MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(nPet);
             if (spPet == 0)
                 return 0;
             MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));

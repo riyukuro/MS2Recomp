@@ -293,7 +293,7 @@ void* FUN_14112d460(void* p, unsigned f)
 // @0x14112d4a0
 void* FUN_14112d4a0(void* p, unsigned f)
 {
-    static_cast<std::pair<const egf::EntityID, Unk_InteractPropPtr>*>(p)->std::pair<const egf::EntityID, Unk_InteractPropPtr>::~pair();
+    static_cast<std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>>*>(p)->std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>>::~pair();
     if (f & 1)
         operator delete(p, 0x10);
     return p;

@@ -109,7 +109,7 @@ public:
     int FUN_1416c2090();                                            // has a template id
     int FUN_1416c20d0();                                            // has a portal
     int FUN_1416c2110();                                            // the portal is shown on the minimap
-    Unk_QmNpcQuestState* FUN_1416c2200();                         // the quest guide (+0x88)
+    class Unk_ProxyValue88* FUN_1416c2200();                      // the quest guide (+0x88; cproxygameobject.h's return type)
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     void* FUN_1416c22f0();                                          // the owner character id
     int FUN_1416c2350();                                            // the template (npc) id
@@ -119,7 +119,7 @@ public:
     bool FUN_1416c2b30();                                           // visible on the minimap
     bool FUN_1416c2b70();                                           // the visibility follows the actor
     int FUN_1416c21c0();                                            // a pet
-    efd::Point3 FUN_1416c2270();                                    // the position
+    Vector3 FUN_1416c2270();                                        // the position (C3: cproxygameobject.h's return type)
 
     MS2Ptr<CPortal> m_portal;                                       // +0x18
     MS2Ptr<NpcDataCli> m_npc;                                       // +0x28
@@ -136,10 +136,10 @@ public:
     int m_cc;                                                       // +0xcc the actor state (0x3f: hidden)
 };
 
-// The entity list a world model lookup returns (the same view as uiworldmapdialog.cpp).
-struct Unk_MmEntityList
+// The entity list a world model lookup returns (worldservice.h declares it incomplete; the same view as uiworldmapdialog.cpp).
+struct Unk_WsC_TagPtr
 {
-    ~Unk_MmEntityList();                                                    // 0x1409f20e0
+    ~Unk_WsC_TagPtr();                                                    // 0x1409f20e0
     ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2170() const;  // get
     ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2190() const;  // operator->
     void* m_0;
@@ -148,7 +148,6 @@ struct Unk_MmEntityList
 class Unk_MmWorld : public WorldService                                                   // the world service (FUN_1403ed2d0)
 {
 public:
-    Unk_MmEntityList FUN_141bd0420(unsigned nModel);                // the entities of a model
 };
 
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -158,7 +157,9 @@ class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 CStringW FUN_1401aa6a0(int nNpcId);                                 // the npc name
 CStringW FUN_14183e930(const CStringW& strText, unsigned nColor);       // a coloured text
-class Unk_MmConfig { public: int FUN_140a7d630(); };                // the colour option block
+class Unk_MmConfig { };                                            // the colour option block
+template <class T> struct Unk_NpcConstant;
+unsigned NpcConstantValue(Unk_NpcConstant<unsigned>* p);         // npcdatacli.cpp
 class Unk_MmConfigValue { public: };    // Value<unsigned int>::Get
 class Unk_MmGameConfig                                              // Client::Constants (only the members read here)
 {
@@ -206,7 +207,7 @@ UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
 class ASDialog : public ASUIComponent {};                             // the dialog root clip (UIDialog::m_90)
 
-// The quest payload pointer (Unk_PayloadPtr<CQuest>).
+// The quest payload pointer (MS2Ptr<CQuest>).
 class CQuest;
 class Unk_MmQuestData                                               // the quest's data interface (CQuest +0x18)
 {
@@ -436,7 +437,7 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
 {
     CStringW strFunction = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, pNpc->GetId());
     if (!strFunction.IsEmpty()) {
-        int nColor = pNpc->GetFriendly() > 0 ? ((class Unk_MmGameConfig*)FUN_1401d3200())->m_colors.FUN_140a7d630() : ((class NpcDataCli*)(class NpcDataCli*)(pNpc))->GetClassConstant();
+        int nColor = pNpc->GetFriendly() > 0 ? (int)NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&((class Unk_MmGameConfig*)FUN_1401d3200())->m_colors)) : ((class NpcDataCli*)(class NpcDataCli*)(pNpc))->GetClassConstant();
         CStringW strColored = FUN_14183e930(strFunction, nColor);
         CStringW strKey = bMultiRow ? L"s_minimap_tooltip_function_npc" : L"s_minimap_tooltip_function_npc_1row";
         const CStringW& strFormat = strKey;
@@ -450,7 +451,7 @@ MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 648, 0xB42DAA1D)
 bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer)
 {
     if (pGuide->m_icon != 0xb) {
-        Unk_PayloadPtr<CQuest> spQuest(0);
+        MS2Ptr<CQuest> spQuest(0);
         bool bSuffix = true;
         int nState = pGuide->m_state;
         int nQuestId = pGuide->m_questId;
@@ -727,7 +728,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
-        Unk_QmNpcQuestState* pInfo = spProxy->FUN_1416c2200();
+        Unk_QmNpcQuestState* pInfo = reinterpret_cast<Unk_QmNpcQuestState*>(spProxy->FUN_1416c2200());
         if (pInfo->m_icon != 0xb) {
             strText = pInfo->m_text;
         } else {
@@ -1894,7 +1895,7 @@ void UIMinimapDialog::FUN_141a39e60()
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC == 0 || pPC->FUN_140967010()->FUN_14050da30() == 0)
         bDisabled = true;
-    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
+    Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
         if (spObject) {
@@ -2266,7 +2267,7 @@ void UIMinimapDialog::FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity)
         return;
     FUN_141a43ac0(spProxy, spEntity);
     if (spEntity->m_visible) {
-        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip))
+        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270())), spEntity->m_clip))
             spEntity->m_visible = false;
     }
     if (!spEntity->m_64)
@@ -2633,7 +2634,6 @@ MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 364, 0x1CEEB35C)
 class Unk_MmCamera;                                                 // the field camera
 class Unk_MmSpatial;                                                // the field's collision space
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-int FUN_14168a230(Unk_MmSpatial* pSpatial, NiPoint3 kOrigin, NiPoint3& kHit, NiPoint3 kDir, float fRange, int nMask);   // ray cast
 
 // @0x141a451b0
 bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut)
@@ -2659,7 +2659,7 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
                 NiPoint3 kDir(efd::Point3::ZERO);
                 if (((class CameraMgr*)(class Unk_MmCamera*)(reinterpret_cast<Unk_MmCamera*>(TSingleton<CameraMgr>::GetInstance())))->ScreenToRay(kCursor, kOrigin, kDir)) {
                     NiPoint3 kHit(efd::Point3::ZERO);
-                    if (FUN_14168a230(((class Unk_MmSpatial*)FUN_1409f7ca0()), NiPoint3(kOrigin), kHit, NiPoint3(kDir), 10000.0f, 0x201)) {
+                    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(kOrigin)), reinterpret_cast<Vector3&>(kHit), Vector3(reinterpret_cast<const Vector3&>(kDir)), 10000.0f, 0x201)) {
                         m_viewport->FUN_141486410(kHit, kOut);
                         return true;
                     }
@@ -2712,7 +2712,7 @@ MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486)
 // @0x141a3dbb0
 void UIMinimapDialog::FUN_141a3dbb0()
 {
-    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
+    Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
         if (spObject) {
@@ -2790,7 +2790,7 @@ CStringW GetStringCommon(int nStringId);                               // a comm
 // @0x141a3df40
 void UIMinimapDialog::FUN_141a3df40()
 {
-    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x62f7a42c);
+    Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x62f7a42c);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
@@ -2845,14 +2845,14 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
 // @0x141a3ef80
 void UIMinimapDialog::FUN_141a3ef80()
 {
-    Unk_MmEntityList first = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x74b363a7);
+    Unk_WsC_TagPtr first = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x74b363a7);
     if (static_cast<bool>(first.FUN_1409f2170()) && !first.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = first.FUN_1409f2190()->GetHeadPosition(); pos != 0; first.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = first.FUN_1409f2190()->GetAt(pos);
             FUN_141a3e4e0(spObject);
         }
     }
-    Unk_MmEntityList second = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x4714f9ea);
+    Unk_WsC_TagPtr second = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x4714f9ea);
     if (static_cast<bool>(second.FUN_1409f2170()) && !second.FUN_1409f2190()->IsEmpty()) {
         for (POSITION pos = second.FUN_1409f2190()->GetHeadPosition(); pos != 0; second.FUN_1409f2190()->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = second.FUN_1409f2190()->GetAt(pos);
@@ -2867,7 +2867,7 @@ void FUN_1401d3700(CString& str);                                    // normalis
 // @0x141a3f1c0
 void UIMinimapDialog::FUN_141a3f1c0()
 {
-    Unk_MmEntityList list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x6fb4d420);
+    Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x6fb4d420);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         int nId = 0;
         for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
@@ -2967,7 +2967,7 @@ void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
     if (n == 4)
         return;
     if (spEntity->m_visible && (static_cast<ASMovieClip*>(spEntity->m_clip) ? true : false)) {
-        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip)) {
+        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270())), spEntity->m_clip)) {
             spEntity->m_visible = false;
             spEntity->m_clip->vfunc_4(spEntity->m_visible);
         }
@@ -3044,7 +3044,6 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
     }
 }
 
-class Unk_MmObjectPos { public: efd::Point3 FUN_1409673c0(); };    // CInteractObject: position copy
 
 // @0x141a40d90
 void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
@@ -3085,14 +3084,13 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
         }
     }
     if (spEntity->m_visible) {
-        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip))
+        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270())), spEntity->m_clip))
             spEntity->m_visible = false;
     }
     if (!spEntity->m_64)
         spEntity->m_clip->vfunc_4(spEntity->m_visible);
 }
 
-class Unk_MmPvPPlayer { public: MS2Ptr<CPvPInfo> FUN_140967420(); };   // PC: the pvp info (+0x1240)
 class Unk_HsInfo : public CPtred { };   // hide and seek: the player is a seeker
 class Unk_PvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
 class Unk_PvPRankService                                                 // the pvp ranking service (FUN_140f97ef0)
@@ -3133,7 +3131,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
         if (nPkMode != 0) {
             bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->FUN_1416c22f0()) == 1 : false;
         } else {
-            MS2Ptr<CPvPInfo> spPvP = reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420();
+            MS2Ptr<CPvPInfo> spPvP = pPC->FUN_140967420();
             if (spPvP.get() != 0) {
                 if (spPvP->FUN_1407435d0() || spPvP->IsOnePunchMode()) {
                     __int64 nCharId = reinterpret_cast<__int64>(spProxy->FUN_1416c22f0());
@@ -3159,7 +3157,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                 } else if (spPvP->FUN_140743610()) {
                     PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
                     if (pOther != 0) {
-                        bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->GetPoint() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->GetPoint();
+                        bVisible = pOther->FUN_140967420()->GetPoint() == pPC->FUN_140967420()->GetPoint();
                         if (bVisible) {
                             const CString& strTeam = spPvP->GetPoint() == 0xc9 ? s_strLayerRedTeam : s_strLayerBlueTeam;
                             spClip->vfunc_15(strTeam);
@@ -3184,7 +3182,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
     if (spProxy->m_cc == 0x3f)
         bVisible = false;
     if (bVisible) {
-        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spClip))
+        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270())), spClip))
             bVisible = false;
     }
     spEntity->m_visible = bVisible;
@@ -3234,7 +3232,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
 {
     spEntity->m_64 = false;
     spEntity->m_showGuide = false;
-    const Unk_QmNpcQuestState* pGuide = spProxy->FUN_1416c2200();
+    const Unk_QmNpcQuestState* pGuide = reinterpret_cast<Unk_QmNpcQuestState*>(spProxy->FUN_1416c2200());
     bool bBoss = false;
     if (pGuide->m_icon != 0xb) {
         CString strState;
@@ -3270,7 +3268,6 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
     }
 }
 
-class Unk_MmPortalPos { public: efd::Point3 FUN_14169d2f0(); };    // CPortal: the entity position
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // the entity app framework
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
@@ -3311,7 +3308,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
         if (nDest == nField)
             return;
         spEntity->SetFromPortal(spPortal);
-        spEntity->m_position = reinterpret_cast<Unk_MmPortalPos*>(spPortal.operator->())->FUN_14169d2f0();
+        spEntity->m_position = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(spPortal->FUN_14169d2f0()));
     }
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
@@ -3350,7 +3347,7 @@ void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr 
     bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->GetRowId()) == 1 && spObject->FUN_1413b5600() == 1;
     spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->GetRow()->m_display.m_strMinimapIcon;
     spEntity->m_layer = s_strLayerInteract;
-    spEntity->m_position = reinterpret_cast<Unk_MmObjectPos*>(spObject.operator->())->FUN_1409673c0();
+    spEntity->m_position = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(spObject->GetPos()));
     spEntity->m_text = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x10, spObject->GetRowId());
     spEntity->m_64 = bOverlap;
     if (!spEntity->m_64)
@@ -3555,14 +3552,14 @@ void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 0));
         spEntity->m_icon = s_strPlayer;
         spEntity->m_layer = s_strLayerPlayer;
-        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270()));
         spEntity->m_visible = true;
         spEntity->m_state = s_strIdle;
         m_player = spEntity;
     } else if (spProxy->FUN_1416c2040()) {
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 1));
         spEntity->m_icon = s_strOther;
-        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270()));
         spEntity->m_visible = true;
         spEntity->m_text = spProxy->FUN_1416c23b0();
         spEntity->m_showText = false;
@@ -3572,13 +3569,13 @@ void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 2));
         if (MS2Ptr<CNpcData> spNpc = spProxy->FUN_1416c2220()) {
             spEntity->m_text = spProxy->FUN_1416c23b0();
-            spEntity->m_position = spProxy->FUN_1416c2270();
+            spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270()));
             FUN_141a43680(spProxy, spEntity);
         }
     } else if (spProxy->FUN_1416c21c0()) {
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 3));
         spEntity->m_text = spProxy->FUN_1416c23b0();
-        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->FUN_1416c2270()));
         FUN_141a43ac0(spProxy, spEntity);
     } else if (spProxy->FUN_1416c20d0()) {
         spEntity.AssignRaw(new UIMinimapEntityProxyPortal(spProxy->m_proxyId));

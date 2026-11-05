@@ -20,6 +20,7 @@
 #include "uihomeinsideoptiondialog.h"
 #include "ugchomebgdata.h"
 #include "uimessageboxdata.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/asdata.h"
@@ -60,7 +61,8 @@ public:
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                    // add an item
 };
-class Unk_HioButton : public ASMovieClip {};                   // its "enabled" read is ASMovieClip::FUN_1422c2030
+// The "m_apply" button.
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 // The selected row of each table (3 bytes), as the exe copies it out of the home setting.
 struct Unk_CMISFlags3
@@ -183,7 +185,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
+        if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
         {
             if (spApply.operator->()->FUN_1422c2030() != 0)
             {
@@ -216,7 +218,7 @@ bool UIHomeInsideOptionDialog::FUN_140c28000(int nResult, const CMsgBoxData& box
 {
     if (nResult == 0)
     {
-        if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
+        if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
         {
             if (spApply.operator->()->FUN_1422c2030() != 0)
                 FUN_140c280d0();
@@ -253,7 +255,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
+    if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
         spApply.operator->()->FUN_1422c1fe0(0);
 }
 

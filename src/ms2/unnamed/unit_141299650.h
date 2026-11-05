@@ -11,8 +11,8 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/imessagelistener.h"
 
-class Unk_SumButton;
-class Unk_SumText;
+class ASButton;
+class ASTextInput;
 
 class UIHomeSummonDialog : public UIDialog
 {
@@ -30,15 +30,14 @@ public:
     void OnConfirmClick(const Scaleform::GFx::FunctionHandler::Params&);   // 0x141299bb0
     void Summon();                                              // 0x141299be0 send the typed name
     void SetName(CString strName);                              // 0x141299eb0 m_178 = strName
-    MS2Ptr<Unk_SumText> FUN_14129a040(const CString& strName, MS2Ptr<Unk_SumText>& out);    // 0x14129a040 bind a text input
-    MS2Ptr<Unk_SumText> FUN_140e35bd0(const CString& strName);  // text input child lookup (UIDialog member)
-    MS2Ptr<Unk_SumButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_SumButton>& out);   // bind a button
+    MS2Ptr<ASTextInput> FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out);    // 0x14129a040 bind a text input
+    MS2Ptr<ASButton> FUN_140bc6d10(const CString& strName, MS2Ptr<ASButton>& out);   // bind a button
 
 private:
     MS2_LAYOUT_FRIEND;
     CString m_178;                                              // +0x178 the name shown / preset
-    MS2Ptr<Unk_SumButton> m_180;                                // +0x180 "m_confirmButton"
-    MS2Ptr<Unk_SumText> m_190;                                  // +0x190 "m_textInput"
+    MS2Ptr<ASButton> m_180;                                    // +0x180 "m_confirmButton"
+    MS2Ptr<ASTextInput> m_190;                                  // +0x190 "m_textInput"
 };
 MS2_CHECK_SIZE(UIHomeSummonDialog, 0x1a0);
 MS2_CHECK_OFFSET(UIHomeSummonDialog, m_178, 0x178);

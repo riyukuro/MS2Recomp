@@ -6,7 +6,7 @@
 // ASEffect (0xf0) : ASMovieClip shows one buff (its icon, a cooldown sweep clip, a border colour, a remaining-time
 // text and a stack-count text). ASEffectManager (0x120) : ASMovieClip owns the effects of the local player, keyed by
 // the buff id, and lays them out in two rows (own buffs / debuffs) under two container clips.
-// The buff object itself is AdditionalCli (RTTI; unit additionalcli.cpp, not recovered yet): Unk_AsBuff stands in.
+// The buff object itself is AdditionalCli (additionalcli.h).
 #pragma once
 
 #include "ms2/placeholder/intervaltimer.h"
@@ -20,28 +20,8 @@
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/ascript.h"
 
-// The buff record (AdditionalCli, RTTI base CPtred). Only the members ASEffect reads.
-class Unk_AsBuffInfo;
-class Unk_AsActor;
-class Unk_AsBuff : public CPtred
-{
-public:
-    int FUN_14096d260();                // buff id (+0x48)
-    Unk_AsActor* FUN_14096d280();       // the actor it sits on
-    Unk_AsBuffInfo* FUN_14096d810();    // the table row of the buff
-    unsigned FUN_14096d2e0();           // remaining time in ms (m_20 - now; 0 when unlimited or over)
-    unsigned FUN_14096d330();           // total duration in ms
-    int FUN_14096d350();                // the list sort key of the strip
-    bool FUN_14096d7a0();               // shows a timer sweep
-    int m_18;                           // +0x18 buff id
-    int m_1c;                           // +0x1c
-    unsigned m_20;                      // +0x20 expiry time (ms clock)
-    unsigned m_24;                      // +0x24 stack count
-};
-MS2_CHECK_OFFSET(Unk_AsBuff, m_18, 0x18);
-MS2_CHECK_OFFSET(Unk_AsBuff, m_1c, 0x1c);
-MS2_CHECK_OFFSET(Unk_AsBuff, m_20, 0x20);
-MS2_CHECK_OFFSET(Unk_AsBuff, m_24, 0x24);
+// The buff record: AdditionalCli (additionalcli.h).
+class AdditionalCli;
 
 // 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870 re-arms).
 typedef Unk_IntervalTimer Unk_AsTimer;
@@ -49,7 +29,7 @@ typedef Unk_IntervalTimer Unk_AsTimer;
 class ASEffect : public ASMovieClip
 {
 public:
-    explicit ASEffect(MS2Ptr<Unk_AsBuff> spBuff);                   // 0x1409b2d70 (the argument is destroyed by the callee)
+    explicit ASEffect(MS2Ptr<AdditionalCli> spBuff);                   // 0x1409b2d70 (the argument is destroyed by the callee)
     virtual ~ASEffect();                                            // 0x1409b2ec0
 
     void BindChildren();                                            // 0x1409b2fb0 create the AS object, bind its children
@@ -59,7 +39,7 @@ public:
     CStringW FormatRemain(float fSeconds);                          // 0x1409b3d50 "{0}{1}" count + unit
     void SetE0(int n);                                              // 0x1409b3700
     void SetE4(int n);                                              // 0x1409b3720
-    void SetBuff(MS2Ptr<Unk_AsBuff> spBuff);                        // 0x1409b3740 (by value: callee destroys)
+    void SetBuff(MS2Ptr<AdditionalCli> spBuff);                        // 0x1409b3740 (by value: callee destroys)
     void SetStartTime(int nTime);                                   // 0x1409b37c0
     bool IsBuffType();                                              // 0x1409b37e0
     bool IsTimed();                                                 // 0x1409b3820
@@ -70,7 +50,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_AsBuff> m_buff;                                      // +0x80
+    MS2Ptr<AdditionalCli> m_buff;                                      // +0x80
     int m_90;                                                       // +0x90 start time (ms clock)
     Unk_AsTimer m_94;                                               // +0x94 text refresh timer
     MS2Ptr<ASMovieClip> m_a0;                                       // +0xa0 m_cooldown
@@ -103,8 +83,8 @@ public:
     void SetColumns(int n);                                         // 0x1409b58b0
     void SetUp(bool b);                                             // 0x1409b58d0
     void SetFilter(bool b);                                         // 0x1409b58f0
-    void AddEffect(MS2Ptr<Unk_AsBuff> spBuff);                      // 0x1409b5940 (by value: callee destroys)
-    void UpdateEffect(MS2Ptr<Unk_AsBuff> spBuff);                   // 0x1409b5aa0
+    void AddEffect(MS2Ptr<AdditionalCli> spBuff);                      // 0x1409b5940 (by value: callee destroys)
+    void UpdateEffect(MS2Ptr<AdditionalCli> spBuff);                   // 0x1409b5aa0
     void RemoveEffect(int nBuffId);                                 // 0x1409b5b60
     void Clear();                                                   // 0x1409b5c20
 

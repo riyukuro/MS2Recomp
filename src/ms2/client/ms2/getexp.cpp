@@ -99,7 +99,6 @@ public:
     void AddColorBoost(float, float, float);
     NiAVObject* FUN_141675150(const CString& strNode);
 };
-const Vector3& FUN_140947900(NiAVObject* pNode);            // node translate
 __int64 FUN_14028d0e0();                                            // seed counter
 
 // The world service (0x1403ed2d0) and its object lookups.
@@ -212,9 +211,9 @@ void CExpEffectInfo::UpdateOrientation()
         vUp = vNeg.FUN_14109adc0(DAT_143a08cf8);
     }
     Vector3 vSide = vUp.FUN_14109adc0(vNeg);
-    kMat.FUN_14109aa30(0, vUp);
-    kMat.FUN_14109aa30(1, vNeg);
-    kMat.FUN_14109aa30(2, vSide);
+    reinterpret_cast<efd::Matrix3&>(kMat).SetCol(0, reinterpret_cast<const efd::Point3&>(vUp));
+    reinterpret_cast<efd::Matrix3&>(kMat).SetCol(1, reinterpret_cast<const efd::Point3&>(vNeg));
+    reinterpret_cast<efd::Matrix3&>(kMat).SetCol(2, reinterpret_cast<const efd::Point3&>(vSide));
     m_rot = kMat;
     ((class NiAVObject*)(void*)(m_spNode.operator->()))->SetRotate(*(class NiMatrix3 const*)(&kMat));
     ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
@@ -395,7 +394,7 @@ void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut)
     NiAVObject* pDummy = reinterpret_cast<PCBase*>(pActor)->FUN_141675150(s_strEffDummy);
     if (pDummy != 0)
     {
-        FUN_140194470(pOut, (void*)&FUN_140947900(pDummy));
+        FUN_140194470(pOut, (void*)&pDummy->GetWorldTranslate());
     }
     else
     {

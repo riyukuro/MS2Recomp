@@ -88,10 +88,9 @@ public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& a1);      // invoke with an object
 };
 
-// The page buttons of the movie.
-class Unk_MlButton : public ASMovieClip { public: };
+// The page buttons of the movie ("m_prev" / "m_next").
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 // "m_checkAll".
-class Unk_MlCheckBox : public ASButton { public: };
 
 class Unk_PopupMenuInfo
 {
@@ -885,7 +884,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             FUN_1419e5190();
             FUN_1419e73f0();
             m_mapChecked.RemoveAll();
-            if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+            if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
                 spCheck->FUN_1422ce090(0);
         }
     }
@@ -897,7 +896,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             FUN_1419e5190();
             FUN_1419e73f0();
             m_mapChecked.RemoveAll();
-            if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+            if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
                 spCheck->FUN_1422ce090(0);
         }
     }
@@ -1253,11 +1252,11 @@ void UIMailListDialog::FUN_1419e5190()
         spList->SetSelectedIndex(nSelect);
     }
     FUN_1419e5900();
-    if (MS2Ptr<Unk_MlButton> spPrev = FUN_140bb4b10("m_prev"))
+    if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_prev"))
         spPrev->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage - 1));
-    if (MS2Ptr<Unk_MlButton> spNext = FUN_140bb4b10("m_next"))
+    if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_next"))
         spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
-    if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
         spCheck->FUN_1422ce090(0);
 }
 MS2_REPLACE_METHOD(0x1419E5190, UIMailListDialog, FUN_1419e5190, 1889, 0x75FE8B86); // FUN_1419e5190

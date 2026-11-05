@@ -61,7 +61,7 @@
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@V?$CustomAllocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124440 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124470 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x1411244a0 ; prop
-// MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x1411244d0 ; prop
+// MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@4@$0A@@std@@@std@@QEAA@XZ 0x1411244d0 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124500 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124530 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$allocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x141124560 ; prop
@@ -114,8 +114,8 @@
 // MS2-PIN: ??1?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@efd@@@std@@QEAA@XZ 0x1411256f0 ; prop
 // MS2-PIN: ??1?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125710 ; prop
 // MS2-PIN: ??1?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@@std@@QEAA@XZ 0x141125730 ; prop
-// MS2-PIN: ??1?$map@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125750 ; prop
-// MS2-PIN: ??1?$map@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@@std@@QEAA@XZ 0x141125770 ; prop
+// MS2-PIN: ??1?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125750 ; prop
+// MS2-PIN: ??1?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@4@@std@@QEAA@XZ 0x141125770 ; prop
 // MS2-PIN: ??1?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125790 ; prop
 // MS2-PIN: ??1?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@@std@@QEAA@XZ 0x1411257b0 ; prop
 // MS2-PIN: ??1?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@@efd@@QEAA@XZ 0x1411257d0 ; prop
@@ -198,8 +198,8 @@
 // MS2-PIN: ??1?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@efd@@@std@@QEAA@XZ 0x1411256f0
 // MS2-PIN: ??1?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125710
 // MS2-PIN: ??1?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@@std@@QEAA@XZ 0x141125730
-// MS2-PIN: ??1?$map@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125750
-// MS2-PIN: ??1?$map@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@@std@@QEAA@XZ 0x141125770
+// MS2-PIN: ??1?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125750
+// MS2-PIN: ??1?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@4@@std@@QEAA@XZ 0x141125770
 // MS2-PIN: ??1?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125790
 // MS2-PIN: ??1?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@@std@@QEAA@XZ 0x1411257b0
 // MS2-PIN: ??1?$map@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@@efd@@QEAA@XZ 0x1411257d0
@@ -246,7 +246,7 @@
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@V?$CustomAllocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124440
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124470
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x1411244a0
-// MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x1411244d0
+// MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@4@$0A@@std@@@std@@QEAA@XZ 0x1411244d0
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124500
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124530
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindA@@HU?$less@W4Unk_CMISKindA@@@std@@V?$allocator@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x141124560
@@ -367,8 +367,8 @@ typedef efd::map<__int64, MS2Ptr<Cube> > Unk_CMISMapCubeById;
 typedef efd::map<int, Unk_CMISMapCubeById> Unk_CMISMapCubeGroupsById;
 typedef std::map<__int64, Unk_PayloadPtr<CubeOwner> > Unk_CMISOwnerById;
 typedef std::map<int, Unk_PayloadPtr<CubeOwner> > Unk_CMISStdMapOwner;
-// the entity -> prop object table: its node pair dtor (0x141125b10) calls ~Unk_InteractPropPtr 0x140ae16b0 directly
-typedef efd::map<egf::EntityID, Unk_InteractPropPtr> Unk_CMISMapPropObj;
+// the entity -> prop object table: its node pair dtor (0x141125b10) calls ~SmartPointer<EntityActorData> 0x140ae16b0 directly
+typedef efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> Unk_CMISMapPropObj;
 typedef std::map<int, Unk_CMISStdMapOwner> Unk_CMISMapOwners;
 typedef efd::vector<NiTransform> Unk_CMISXformVec15;
 
@@ -465,7 +465,7 @@ void Unk_CMISDriveTail15(void* p)
 
 // second tplpin --simulate pass (w560) after the prop table / int table types were corrected
 // MS2-PIN: ??1?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x1411237f0 ; mt11: Release 0x1411493e0 (leaf 0x14112fc40); callers ExportUGCMap and ??_G 0x14112cf60
-// MS2-PIN: ??1?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@VUnk_InteractPropPtr@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_InteractPropPtr@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123b70
+// MS2-PIN: ??1?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123b70
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@QEAA@XZ 0x141125990
 // MS2-PIN: ??1?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@QEAA@XZ 0x1411259b0
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@QEAA@XZ 0x1411259f0

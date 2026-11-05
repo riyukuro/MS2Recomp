@@ -11,6 +11,9 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
+class CameraMgr { public: Vector3 FUN_140a38d00(); void FUN_140a38d90(Vector3 pt); };   // C3: member view (was Unk_CameraManager)
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real accessor (0x1409478c0; actioncameramode.cpp defines it)
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
@@ -90,7 +93,7 @@ CEditCameraMode::~CEditCameraMode()
 void CEditCameraMode::vfunc_8(double fTime)
 {
     vfunc_9();
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0) && ((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
         Vector3 ptPos = FUN_1409f2540();
@@ -173,6 +176,6 @@ void CEditCameraMode::vfunc_9()
                 m_78.x = -15.0f;
         }
     }
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x141198f00, CEditCameraMode, vfunc_9, 487, 0x048DBDFC);

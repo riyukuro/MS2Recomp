@@ -46,11 +46,12 @@ void* FUN_141200820(class CEquipModel*);   // C3: was FUN_141200820
 void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
 void FUN_1412029d0(void* self, CString* out);   void FUN_141202ea0(class CEquipModel* self, CString* s);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
-float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
+float FUN_141422340(class CEquipModel*, int);   // C3: was FUN_141422340
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
-std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
+std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* self);
+void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);   // itemugcmesh.cpp
 void FUN_1402bd040(float* p);
 void FUN_141203db0(class CEquipModel*);   // C3: was FUN_141203db0
 void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f30
@@ -101,10 +102,6 @@ void* FUN_141566d90(void* p);
 void* FUN_141566db0(void* p);
 void* FUN_141566d30(void** p);
 
-// The model's owner (the equipped item; held in MS2Ptr). Only the members this unit calls.
-class Unk_EquipModelOwner : public CEquipItem
-{
-};
 class CItem : public CPtred
 {
 public:
@@ -118,7 +115,7 @@ public:
 };
 
 // @0x141565560
-CNifModel::CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
+CNifModel::CNifModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20)
     : CEquipModel(spOwner, p18, p20)
 {
     m_i118 = 0;
@@ -202,9 +199,9 @@ void CNifModel::vfunc_10()
         Unk_NifNodeSet& nodes = NODESET(this);
         for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
-            FUN_141167840(sp, "HR:0", FUN_141422340((struct Unk_PickTarget*)(this), 0));
-            FUN_141167840(sp, "HR0:0", FUN_141422340((struct Unk_PickTarget*)(this), 0));
-            FUN_141167840(sp, "HR1:1", FUN_141422340((struct Unk_PickTarget*)(this), 1));
+            FUN_141167840(sp, "HR:0", FUN_141422340((class CEquipModel*)(this), 0));
+            FUN_141167840(sp, "HR0:0", FUN_141422340((class CEquipModel*)(this), 0));
+            FUN_141167840(sp, "HR1:1", FUN_141422340((class CEquipModel*)(this), 1));
         }
     }
 }
@@ -377,7 +374,7 @@ void CNifModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
     NiPoint3 b = *(NiPoint3*)pRotDeg;
     vfunc_26(b);
     vfunc_22(fScale);
-    FUN_141422b30(this, FUN_141201c90(this), pPos, pRotDeg, fScale);
+    FUN_141422b30((class CEquipModel*)this, *FUN_141201c90(this), *(const struct Vector3*)pPos, *(const struct Vector3*)pRotDeg, fScale);
 }
 
 // @0x141566aa0

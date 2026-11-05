@@ -18,6 +18,8 @@
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -61,7 +63,6 @@ public:
     int FUN_1417e2610();
 };
 int FUN_1418dd0d0();                                                    // the screen margin
-AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 
 // ---- statics (.text$di) ----
 
@@ -99,13 +100,13 @@ void UIGlobalPortalDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    Unk_GpButton* pButton1 = FUN_140bc6d10("m_enterButton1", m_enterButton1).get();
+    Unk_GpButton* pButton1 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_enterButton1", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_enterButton1)).get());
     if (pButton1)
         ((class ASButton*)(m_enterButton1))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(0));
-    Unk_GpButton* pButton2 = FUN_140bc6d10("m_enterButton2", m_enterButton2).get();
+    Unk_GpButton* pButton2 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_enterButton2", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_enterButton2)).get());
     if (pButton2)
         ((class ASButton*)(m_enterButton2))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(1));
-    Unk_GpButton* pButton3 = FUN_140bc6d10("m_enterButton3", m_enterButton3).get();
+    Unk_GpButton* pButton3 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_enterButton3", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_enterButton3)).get());
     if (pButton3)
         ((class ASButton*)(m_enterButton3))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(2));
     FUN_1412c2980();
@@ -115,7 +116,7 @@ void UIGlobalPortalDialog::OnLoadComplete()
 void UIGlobalPortalDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
     {
         int nMargin = FUN_1418dd0d0() + 0x3c;

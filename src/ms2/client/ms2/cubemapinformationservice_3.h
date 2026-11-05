@@ -49,7 +49,7 @@ template <class T> class TSingleton;
 template <> class TSingleton<CubeMapInformationService>
 {
 public:
-    TSingleton();                                   // 0x1410b69e0 (inline in the ctor)
+    TSingleton();                                   // 0x14111eb40 (cubemapinformationservice_tail6)
     virtual ~TSingleton() { s_instance = 0; }       // 0x14112d060
     static CubeMapInformationService* s_instance;
 };
@@ -308,7 +308,7 @@ public:
     void FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube> spCube);
     Cube* FUN_1410badf0(int nGroup, struct Unk_CMISPawn* pPawn);
     void FUN_1410c9db0();
-    void FUN_1410cb4c0(struct Unk_CMISBlock rec);
+    void FUN_1410cb4c0(MS2Ptr<FittingDollData> rec);
     void FUN_1410c8a90();
     int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount);
     unsigned __int64 FUN_1410d4940();
@@ -316,7 +316,7 @@ public:
     int FUN_1410c7500(CString* pOut);
     void FUN_1410c93c0();
     void FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube);
-    void FUN_1410bb610(unsigned nMask, struct Unk_CMISPawn* pPawn, float fDist, struct Unk_CMISRefList* pOut);
+    void FUN_1410bb610(unsigned nMask, PCBase* pPawn, float fDist, std::vector<egf::EntityPtr>* pOut);
     void FUN_1410caf20(Cube* pCube, int nTime);
     void FUN_1410bbf20(int nGroup, egf::EntityID id);
     void FUN_1410bf470();
@@ -332,7 +332,7 @@ public:
     void FUN_1410d4cb0(int nItemId, bool bFlag);
     bool FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float fRot, class CubeItemInfo* pInfo, const efd::utf8string& strName,
         int nField50, int nField54, unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
-    egf::EntityPtr FUN_1410bc3d0(struct Unk_CMISBlock rec);
+    egf::EntityPtr FUN_1410bc3d0(MS2Ptr<FittingDollData> rec);
     egf::EntityPtr FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId);
     bool FUN_1410c3600(int v);
     void FUN_1410c3630(int v);

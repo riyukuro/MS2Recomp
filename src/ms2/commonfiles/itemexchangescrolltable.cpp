@@ -36,7 +36,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // 
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-ExchangeItemType FUN_14021a270(const CStringA& str);        // the "type" name -> enum
+int Parse_14021a270(const CStringA& value);                 // commonenum.cpp: the "type" name -> enum (C3: was FUN_14021a270)
 
 // The discount service chain: the discount rate (per 10000) of an item grade.
 class Unk_140302b00 { public: };
@@ -105,7 +105,7 @@ void CItemExchangeScrollTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         CExchangeItemInfoPtr spInfo(new CExchangeItemInfo);
         spInfo->m_nId = nId;
-        XmlEnumName<ExchangeItemType, FUN_14021a270>(pNode, "type", spInfo->m_eType);
+        XmlEnumName<int, Parse_14021a270>(pNode, "type", reinterpret_cast<int&>(spInfo->m_eType));
         XmlGetAttr((class TiXmlElement*)(pNode), "maxGrade", reinterpret_cast<int&>(spInfo->m_nMaxGrade));
         XmlGetAttr((class TiXmlElement*)(pNode), "tradableCountDeduction", reinterpret_cast<int&>(spInfo->m_nTradableCountDeduction));
         Unk_140165cf0* pReceipe = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("receipe"));

@@ -199,8 +199,6 @@ template class TPtrValue<std::set<unsigned> >;
 
 // Full-executable aliases for existing dynamic-action lookup helpers.
 // MS2-PIN: ?Find@CDynamicActionData@@SA?AV?$MS2Ptr@VCDynamicActionData@@@@H@Z 0x140347050
-// MS2-PIN: ?FUN_140347050@@YA?AV?$MS2Ptr@VUnk_EmotionKeywords@@@@H@Z 0x140347050
-// MS2-PIN: ?FUN_140347050@@YA?AV?$MS2Ptr@VUnk_MsgEmotionKeywords@@@@H@Z 0x140347050
 // MS2-PIN: ?Load@CDynamicActionData@@SAXXZ 0x140347180
 // MS2-PIN: ?FUN_140347180@@YAXXZ 0x140347180
 // MS2-PIN: ?IsListed@CDynamicActionData@@SA_NI@Z 0x140347960

@@ -146,7 +146,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CBuddyManager;
-CBlockManager* FUN_140a6a830();
+class Unk_InventoryStateManager* FUN_140a6a830();   // C3: the real function (0x140a6a830, inventory.cpp): the CBlockManager singleton
 class HomeBlockManager;
 template <class T> T* Unk_MMDialog(int nId);   // C3: mentoringmanager.cpp
 class UIDamageText;
@@ -212,7 +212,7 @@ void UISceneLobby::vfunc_48(int n)
     TSingleton<CUIService>::GetInstance()->SetMode(0x3ef);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(m_6c);
     TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5190();
-    FUN_140a6a830()->ClearBlocks();
+    reinterpret_cast<CBlockManager*>(FUN_140a6a830())->ClearBlocks();
     TSingleton<HomeBlockManager>::GetInstance()->FUN_140a47940();
     {
         MS2Ptr<UIHeadUpDisplay> spTutorial(reinterpret_cast<UIHeadUpDisplay*>(Unk_DmgFindUI<UIDamageText>(0x4e32)));

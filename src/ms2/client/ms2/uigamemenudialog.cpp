@@ -97,6 +97,7 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/commonfiles/gameeventvalue.h"   // C3: CGameEventValueCoupleDance::Get
+#include "ms2/client/ms2/statpointmanager.h"   // C3: CStatPointManager::GetRemaining
 #include "ms2/client/ms2/fielddatacli.h"   // C3: CFieldData::m_nHomeReturnable
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"
@@ -620,9 +621,7 @@ public:
     int GetAuto();
     int SendRequestPet();
 };
-class CStatPointManager { public: int GetRemaining(); };   // C3: the real member (local view, was FUN_140caa1a0)
-class Unk_HlRef { public: ~Unk_HlRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
-class Unk_HlPc { public: Unk_HlRef FUN_140c25130(); };
+class Unk_HlPc { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };
 
 // ---- exe functions: dialogs ----
 
@@ -729,7 +728,7 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_MyPCComp1618* FUN_141523c50();
+    class UserUGCMapInfo* FUN_141523c50();   // the house record (+0x1618)
     int FUN_141527160(int);
     int HasNoHome();
     int FUN_141527ed0();
@@ -1107,7 +1106,7 @@ void UIGameMenuDialog::vfunc_oa0_29()
     if (pPc == NULL)
         return;
     int bHas = 0;
-    bool bLeft = (unsigned)reinterpret_cast<CStatPointManager*>(reinterpret_cast<Unk_HlPc*>(pPc)->FUN_140c25130().FUN_140c24af0())->GetRemaining() > 0;
+    bool bLeft = (unsigned)reinterpret_cast<Unk_HlPc*>(pPc)->FUN_140c25130()->GetRemaining() > 0;
     if (bLeft)
         bHas = 1;
     SetMenuNotifyUp(8, bHas);
@@ -1512,7 +1511,7 @@ void UIGameMenuDialog::FUN_141939910()
     if (pPc != NULL) {
         CPet* pPet = (CPet*)((class PCBase*)(class PCBase*)(pPc))->FUN_141676a10();
         if (pPet != NULL)
-            InitPetInfo(1, pPet->GetRow()->m_nF18 == 1, ((class CPetManager*)(void*)(((void*)FUN_140535320())))->GetAuto());
+            InitPetInfo(1, pPet->GetRow()->m_nType == 1, ((class CPetManager*)(void*)(((void*)FUN_140535320())))->GetAuto());
     }
     FUN_141939ec0();
     FUN_14193a120();
@@ -1856,7 +1855,7 @@ void UIGameMenuDialog::FUN_14193b750()
             FUN_141275260(0x86f, 1, 0);
         return;
     }
-    Unk_BmPtr<UserUGCMapInfo> target(((class UserUGCMapInfo*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
+    Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50());
     if (FUN_14193fbd0(reinterpret_cast<Unk_GmTargetRef*>(&target)))
         return;
     if (((class MyPC*)(class PCBase*)(pPc))->HasNoHome() != 0) {
@@ -2175,7 +2174,7 @@ void UIGameMenuDialog::FUN_14193d450()
     TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e76);
     void* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != 0) {
-        Unk_BmPtr<UserUGCMapInfo> target(((class UserUGCMapInfo*)((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50()));
+        Unk_BmPtr<UserUGCMapInfo> target(((class MyPC*)(class PCBase*)(pPc))->FUN_141523c50());
         ((class UIRealEstateDialog*)(void*)(pDlg))->FUN_141ab4000(((Unk_GmTarget*)target.operator->())->m_24, ((Unk_GmTarget*)target.operator->())->m_20);
     }
 }

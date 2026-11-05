@@ -47,7 +47,7 @@ public:
 #undef MS2_SF_SLOTS
     virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
     virtual bool vfunc_68(Vector3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
-    Vector3 FUN_141674b60(efd::Point3 kDir);                                // 0x141674b60 local dir -> world dir
+    // 0x141674b60 local dir -> world dir: C3: PCBase::CalcMoveDirectionNoYaw (pcbase.h)
 };
 
 // @0x1417c8240
@@ -77,8 +77,8 @@ void StateFloat::vfunc_3(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Vector3* pVel = reinterpret_cast<Vector3*>(m_pOwner->FUN_141671920());
-    Vector3 kWorld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->FUN_141674b60(m_pOwner->FUN_14123c360());
-    Vector3 kSpeed = kWorld.FUN_14097fc90(pVel->z);
+    efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
+    Vector3 kSpeed = reinterpret_cast<Vector3&>(kWorld).FUN_14097fc90(pVel->z);
     Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
     kStep = FUN_1417c85d0(kStep, fTime);
     reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(kStep, fTime, 0, 0, 1);

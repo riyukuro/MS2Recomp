@@ -25,17 +25,8 @@ class Unk_AasImage : public AScript                                         // t
 public:
     char m_pad_ascript[0x90 - sizeof(AScript)];
 };
-class Unk_AasSource;
 typedef Unk_AasImage Unk_CashImage;
 typedef Unk_AasImagePtr Unk_CashImagePtr;                                   // its smart pointer (uitencentaas2dialog.h)
-struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
-{
-    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
-    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
-    ~Unk_AasSourcePtr();                                                    // 0x140d03100
-    void* m_0;
-    void* m_p;
-};
 class Unk_CashConstInt { public: int m_n; char m_pad_04[0x54]; };                                // one value of the client constants
 class Unk_StringOptionEntry { public: CString& FUN_140298f80(); char m_pad_00[0x60]; };
 class Unk_CashConsts
@@ -58,7 +49,6 @@ public:
 void FUN_141901470(int n, int nTypeId);
 bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
-void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/os.h"
 
@@ -180,7 +170,7 @@ void UITencentCashChargeDialog::vfunc_26()
 void UITencentCashChargeDialog::vfunc_85()
 {
     ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw(new ASLoader(2)));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2))));
+    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());

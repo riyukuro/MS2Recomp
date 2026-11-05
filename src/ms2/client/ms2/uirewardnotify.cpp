@@ -833,11 +833,6 @@ public:
 class Unk_RLPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 UIRewardNotify* FUN_140938cd0(int nId);
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
@@ -964,7 +959,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0)
                 { bool bDebug = static_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode(); pDlg->Invoke("spin", m_spins[m_spinIndex].m_slot + 1, bDebug); }
-            CStringW strResult = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20ed0();
+            CStringW strResult = TSingleton<UITalkManager>::GetInstance()->FUN_141b20ed0();
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
@@ -982,7 +977,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         }
     } else if (_stricmp(szMethod, "onHideComplete") == 0) {
         UIDialog::vfunc_67();
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
     }
     return 0;
 }
@@ -1084,7 +1079,7 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
             m_counts.Add(nCnt);
         }
         m_178 = pkt.ReadInt32();
-        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b21ae0("RouletteDialog");
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b21ae0("RouletteDialog");
     } else if (nMode == 2) {
         if (FUN_141924630() == 0)
             return;

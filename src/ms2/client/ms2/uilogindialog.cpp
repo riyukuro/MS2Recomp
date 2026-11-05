@@ -35,6 +35,8 @@
 #include "ms2/guess/machineidmanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/commonfiles/os.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
 CString DAT_143af37a0;
@@ -149,7 +151,6 @@ class Unk_LoginMovie : public AScript
 public:
     int FUN_1422b9620();
 };
-void FUN_140ba7c60();
 
 extern CString g_strServerAddr;                                 // the web page address
 extern int g_nPort;
@@ -475,7 +476,7 @@ MS2Ptr<ASTextInput> UILoginDialog::FUN_1419e25e0()
 bool UILoginDialog::FUN_1419e2690(int, const CMsgBoxData&)
 {
     MS2Ptr<ASCheckBox> spLocale;
-    FUN_140bc6d10("m_chkLocaledName", spLocale);
+    reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_chkLocaledName", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(spLocale));
     spLocale->FUN_1422ce090(1);
     return true;
 }
@@ -489,7 +490,7 @@ bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
     else
     {
         MS2Ptr<ASCheckBox> spLocale;
-        FUN_140bc6d10("m_chkLocaledName", spLocale);
+        reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_chkLocaledName", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(spLocale));
         spLocale->FUN_1422ce090(1);
     }
     return true;

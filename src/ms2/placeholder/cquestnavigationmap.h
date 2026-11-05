@@ -16,7 +16,7 @@
 
 class CConditionCommonData;
 class CQuest;
-template <class T> class Unk_PayloadPtr;
+template <class T> class MS2Ptr;
 
 namespace QuestNavigation {
 
@@ -110,7 +110,7 @@ public:
     int ClassifyCondition(int nType);                       // 0x140c92620 (0 npc, 1 interact, 2 liftable, 3 none)
     MS2Ptr<QuestNavigation::TraceContext> TraceQuest(int nQuestId);         // 0x140c92730
     // Adds the targets of the quest's open conditions on map nMapId to the context.
-    void FUN_140c92fc0(Unk_PayloadPtr<CQuest> spQuest, int nMapId, QuestNavigation::TraceContext& context);
+    void FUN_140c92fc0(MS2Ptr<CQuest> spQuest, int nMapId, QuestNavigation::TraceContext& context);
 
 private:
     MS2_LAYOUT_FRIEND;

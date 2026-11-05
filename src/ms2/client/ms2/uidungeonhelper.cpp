@@ -45,6 +45,7 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchUnitedReward@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e17570 ; unique
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeonhelper.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#define MS2_ASUICOMPONENT_SLOTS   // C3: slots 3 and 16-24 are ASUIComponent's (ASItemSlot::vfunc_16/17 were aliases of them)
 #include <algorithm>
 #include "uidungeonhelper.h"
 #include "ms2/placeholder/header_statics_a.h"

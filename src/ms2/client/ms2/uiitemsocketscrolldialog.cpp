@@ -92,7 +92,7 @@ public:
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 
 // The unit's three packet records (the item socket system util reads / writes them with these shapes).
 struct Unk_SsdUidIntByte
@@ -155,7 +155,6 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 void FUN_140710590(COutPacket& packet);                         // send
 
 // @0x140f64630
@@ -255,7 +254,7 @@ int UIItemSocketScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 // @0x140f650a0
 void UIItemSocketScrollDialog::FUN_140f650a0(ItemScrollSlot& slot)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == nullptr)
         return;
     m_spItem = 0;
     m_30->Invoke("selectItem");
@@ -265,7 +264,7 @@ void UIItemSocketScrollDialog::FUN_140f650a0(ItemScrollSlot& slot)
 // @0x140f65130
 void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    if (FUN_140ba28d0(&m_30, 0) != 0)
+    if (m_30 == nullptr)
         return;
     if (m_nScrollUid == 0)
     {
@@ -408,7 +407,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
         }
     }
     CStringW strUse;
-    if (FUN_140166410()->FUN_14036d570(0x5e))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x5e))
     {
         if ((spRow->m_nUnk1c & 1) != 0)
             strUse.Append(GetStringCommonByKey(L"s_word_game"));

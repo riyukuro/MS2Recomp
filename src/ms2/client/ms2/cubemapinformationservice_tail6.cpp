@@ -169,7 +169,6 @@ void FUN_14112fb80(void* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISD
 void FUN_140fac7c0(void* pThis);
 void FUN_140fac7f0(void* pThis);
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
-extern char DAT_142eb3950;            // TSingleton<CubeMapInformationService> vtable
 
 // @0x14111e6e0
 void* FUN_14111e6e0(void* pThis, void* pUnused)
@@ -282,9 +281,4 @@ void* FUN_14111eb20(void* pThis)
 }
 
 // @0x14111eb40
-void* FUN_14111eb40(void* pThis)
-{
-    *(void**)pThis = (void*)&DAT_142eb3950;
-    TSingleton<CubeMapInformationService>::s_instance = pThis != 0 ? (CubeMapInformationService*)((char*)pThis - 0x18) : 0;
-    return pThis;
-}
+TSingleton<CubeMapInformationService>::TSingleton() { s_instance = static_cast<CubeMapInformationService*>(this); }

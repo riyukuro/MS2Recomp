@@ -22,6 +22,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
+#include "ms2/commonfiles/additionalactionadditional.h"
 
 // ---- unit-local placeholders ----
 
@@ -49,17 +50,6 @@ public:
     Unk_ColInfo* FUN_1408040d0(int nLevel, int nIndex);
     Unk_ColCfg* FUN_140803f60(int nLevel, int nIndex);
 };
-
-// The club skill attribute: embeds a shape description at +0x340.
-class Unk_ClubSkillAttr : public CPtred
-{
-public:
-    char m_pad_18[0x340 - 0x18];
-    Unk_ColInfo m_col;
-};
-MS2_CHECK_OFFSET(Unk_ClubSkillAttr, m_col, 0x340);
-
-struct Unk_SkPoint { float x, y, z; };
 
 // Shapes whose classes live in unrecovered units: only the constructor and the touched fields.
 class CBoxCollision : public CBaseCollision
@@ -382,8 +372,8 @@ struct Unk_SkColView                                                // collision
 };
 
 // @0x141755cd0
-void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSkill, const Unk_SkPoint* pPos,
-    const Unk_SkPoint* pDir)
+void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<AdditionalLevelData> spSkill, const Vector3& kPos,
+    const Vector3& kDir)
 {
     if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
     {
@@ -395,13 +385,14 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
         if ((efd::DynamicCast<PC, PCBase>(pActor) != 0 || ((void*)FUN_141468360((struct Unk_MagicEntity*)(pActor))) != 0) && DAT_143ae95e0 == 0)
             return;
     }
-    Unk_ColInfo* pInfo = &spSkill->m_col;
+    // The spread's range shape (+0x340) has the Unk_ColInfo layout.
+    Unk_ColInfo* pInfo = reinterpret_cast<Unk_ColInfo*>(&spSkill->m_spread.m_rangeProperty);
     if (pInfo == 0)
         return;
     CollisionPtr spShape = TSingleton<CSkillCollisionManager>::GetInstance()->CreateFromInfo(pInfo, 0.0f);
     if (spShape == 0)
         return;
-    reinterpret_cast<Unk_SkColView*>(spShape.operator->())->vfunc_3(*reinterpret_cast<const efd::Point3*>(pPos), *reinterpret_cast<const efd::Point3*>(pDir), 1.0f);
+    reinterpret_cast<Unk_SkColView*>(spShape.operator->())->vfunc_3(*reinterpret_cast<const efd::Point3*>(&kPos), *reinterpret_cast<const efd::Point3*>(&kDir), 1.0f);
     spShape->m_n58 = GetTickCountMs2();
     TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);
 }

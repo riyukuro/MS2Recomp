@@ -119,6 +119,7 @@ public:
     int FUN_140a18070();
     NiPoint3 FUN_140af0250();                                       // camera world direction
     NiPoint3 FUN_140af0340();                                       // camera world up vector
+    class Unk_CameraTargetEntity* FUN_140a38d60();                  // C3: bosstargetcamera.cpp
 };
 class Unk_AudioCam
 {
@@ -129,11 +130,6 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual Vector3 GetPosition();                         // slot 18
-};
-class Unk_CameraManager   // C3: member view for the former free stand-ins
-{
-public:
-    class Unk_CameraTargetEntity* FUN_140a38d60();
 };
 // the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47).
 // NiPoint3 : efd::Point3 sliced into the local, hence the rep movsb copy.
@@ -976,9 +972,9 @@ efd::AsyncResult CSoundService::OnTick()
             m_listMessages.clear();
         }
     }
-    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60()) != 0)
+    if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60()) != 0)
     {
-        Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
+        Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60());
         Vector3 kPos = pCam->GetPosition();
         Vector3 kForward = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0340()));
         Vector3 kUp = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0250()));

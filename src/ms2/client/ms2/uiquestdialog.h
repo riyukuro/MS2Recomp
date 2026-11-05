@@ -16,6 +16,7 @@
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/questdata.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"
 
 class ASArray;
 class ASObj;
@@ -24,7 +25,7 @@ class CMsgBoxData;
 class CQuest;
 class ASScrollingList;
 class Unk_QdInfo;
-class Unk_QdCheck;
+class ASCheckBox;
 
 class UIQuestDialog : public UIDialog, public UIQuestEventListener
 {
@@ -65,7 +66,7 @@ public:
     int HasPinned(int nQuestId);                                // 0x141a9c430
     int IsInCurrentTab(int nQuestId);                           // 0x141a9c470
     void RemovePinned(int nQuestId);                            // 0x141a9c4d0
-    void CollectQuests(ATL::CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsigned nChapter);   // 0x141a9c560
+    void CollectQuests(ATL::CAtlArray<MS2Ptr<CQuest> >& rOut, unsigned nChapter);   // 0x141a9c560
     int GetTab();                                               // 0x141a9c6d0 "m_tab" (4 without the strip)
     int GetSubTab();                                            // 0x141a9c780 "m_subTab" (3 without the strip)
     int GetSubTabFilter();                                      // 0x141a9c830
@@ -90,7 +91,7 @@ public:
     void AddRewardInfo(int nQuestId, ASObj& rOut);              // 0x141a9f3c0
     void AddConditions(int nQuestId, ASObj& rOut);              // 0x141a9fab0
     int AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes);   // 0x141a9fe50
-    void AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut);       // 0x141aa02b0
+    void AddButtons(MS2Ptr<CQuest> spQuest, ASObj& rOut);       // 0x141aa02b0
     void GetChapterIDs(ATL::CAtlArray<int>& rOut);              // 0x141aa06f0
     void CollectEpisodes(ATL::CAtlArray<int>& rOut);            // 0x141aa07f0
     void GroupChapters(QuestGroups& rOut);                      // 0x141aa0a00
@@ -111,7 +112,7 @@ public:
 
     // child lookups (one COMDAT per wrapper class; defined in other units)
     MS2Ptr<Unk_QdInfo> FUN_140c02990(const CString& strName);      // "m_questInfo"
-    MS2Ptr<Unk_QdCheck> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -65,7 +65,7 @@ void criErr_Notify(long level, const char* msg);   // sfr_cri_02c, 0x140038ddc
 void criErr_NotifyGeneric(long level, const char* code, long err);   // sfr_cri_02c, 0x140038e24
 long criUtfRtv_GetCellVal(struct CriUtfRtvView const*, unsigned long, unsigned long, struct CriUtfRtvCell*);   // C3: was FUN_14003af50
 char const* criUtfRtv_GetDataStr(struct CriUtfRtvView const*, unsigned long, unsigned long);   // C3: was FUN_14003a7f4
-unsigned long criUtfRtv_GetNumRecord(struct CriUtfRtvView const*);   // sfr_cri_03a, 0x14003a45c
+extern "C" unsigned long criUtfRtv_GetNumRecord(struct CriUtfRtvView const*);   // sfr_cri_03a, 0x14003a45c
 void* criUtfHeap_Alloc(void*, unsigned long, char const*, long, long);   // C3: was FUN_14003a0d0
 void FUN_14003a0ec(void* heap, void* p);
 unsigned FUN_140047158(unsigned type);

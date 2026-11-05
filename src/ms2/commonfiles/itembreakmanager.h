@@ -9,22 +9,6 @@
 class Unk_BreakInput { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); virtual unsigned short vfunc_2(); virtual unsigned vfunc_3(); virtual __int64 vfunc_4(); };
 class Unk_BreakPacket { public: void* p0; Unk_BreakInput input; };
 class Unk_BreakOutput { public: virtual void vfunc_0(); virtual void vfunc_1(unsigned char); virtual void vfunc_2(unsigned short); virtual void vfunc_3(unsigned); };
-template<class T> class Unk_BreakPtr {
-public:
-    Unk_BreakPtr() : p(0) {} Unk_BreakPtr(T* value) : p(value) { AddRef(); }
-    Unk_BreakPtr(const Unk_BreakPtr& o) : p(o.p) { AddRef(); }
-    ~Unk_BreakPtr() { Release(); }
-    Unk_BreakPtr& operator=(const Unk_BreakPtr& o) { o.AddRef(); Release(); p=o.p; return *this; }
-    bool operator==(T* v) const { return p==v; }
-    operator T*() const { return p; } T* get() const { return p; } T* operator->() const { return p; }
-private:
-    void AddRef() const { if(p) AddRefImpl(0); }
-    static void Reference(T* v) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(v)); }
-    void AddRefImpl(void*) const { Reference(p); }
-    void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p))==0) { Reference(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p)); } }
-    void* pad; T* p;
-};
 namespace ItemBreakCommon {
 class BreakItem : public CPtred {
 public:
@@ -41,7 +25,7 @@ public:
     int FUN_140530990() const; int FUN_1405309d0() const;
     int low,high;
 };
-typedef Unk_BreakPtr<BreakItem> Ptr;
+typedef MS2Ptr<BreakItem> Ptr;   // C3: was the Unk_BreakPtr stand-in (same COMDATs as MS2Ptr<CMsgBoxData>)
 typedef ATL::CAtlArray<Ptr> Items;
 int FUN_140530a10(const Items&,__int64); void FUN_140530b00(Items&,unsigned); bool FUN_140530b40(Items&,int,__int64,int);
 }

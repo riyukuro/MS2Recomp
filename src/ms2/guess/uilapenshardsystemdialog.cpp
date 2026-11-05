@@ -875,8 +875,6 @@ class UIRewardNotify;
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
-class AdditionalLevelData;
-class AdditionalCli { public: unsigned GetRemainTicks(); AdditionalLevelData* FUN_14096d810(); };   // C3: member view of the buff
 #ifdef __clang__
 // FUN_140c60920 passes the address of the temporary CStringW from vfunc_77 (an MSVC extension).
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
@@ -994,16 +992,16 @@ void UILapenshardShieldBar::vfunc_15()
             return;
         if (m_bImpending == 0)
         {
-            if (reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->GetRemainTicks() < 5000)
+            if (m_spBuff.operator->()->GetRemainTicks() < 5000)
             {
                 m_30->Invoke("impending");
                 m_bImpending = 1;
             }
         }
-        if (reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->GetRemainTicks() <= 0)
+        if (m_spBuff.operator->()->GetRemainTicks() <= 0)
             return;
         CStringW strLeft = FUN_140c5f9e0();
-        m_30->Invoke("setValue", m_spBuff->m_nId, reinterpret_cast<Unk_LsBuffInfo*>(reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->FUN_14096d810())->m_nValue, strLeft);
+        m_30->Invoke("setValue", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nValue, strLeft);
     }
 }
 
@@ -1021,7 +1019,7 @@ int UILapenshardShieldBar::vfunc_28(const char* szMethod, const Scaleform::GFx::
 }
 
 // @0x140c5f8f0
-void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff)
+void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<AdditionalCli> spBuff)
 {
     if (m_spBuff == spBuff.get())
         return;
@@ -1032,7 +1030,7 @@ void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff)
 }
 
 // @0x140c5f990
-MS2Ptr<Unk_LsBuff> UILapenshardShieldBar::GetBuff()
+MS2Ptr<AdditionalCli> UILapenshardShieldBar::GetBuff()
 {
     return m_spBuff;
 }
@@ -1052,7 +1050,7 @@ CStringW UILapenshardShieldBar::FUN_140c5f9e0()
 {
     if (m_spBuff == 0)
         return L"";
-    ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEnd)) - CMsTime((__int64)FUN_14028d280(FUN_141472bc0()));
+    ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEndTick)) - CMsTime((__int64)FUN_14028d280(FUN_141472bc0()));
     int nSeconds = span.GetSeconds();
     int nMinutes = span.GetMinutes();
     return Unk_Fmt2(L"{0:02}:{1:02}", nMinutes, nSeconds);
@@ -1068,7 +1066,7 @@ void UILapenshardShieldBar::FUN_140c5faf0()
     if (m_spBuff == 0)
         return;
     m_bEnded = 1;
-    m_30->Invoke("end", m_spBuff->m_nId);
+    m_30->Invoke("end", m_spBuff->m_nShieldValue);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -2234,20 +2232,20 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
     if (!m_strBind.IsEmpty())
         Unk_NotifyContext::FUN_1422c8f70(m_strBind);
     m_strBind = "LapenshardShieldBarSkillBindID";
-    int nSkill = reinterpret_cast<Unk_LsBuffInfo*>(reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->FUN_14096d810())->m_nSkillId;
+    int nSkill = reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nSkillId;
     SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, nSkill, 0, 0);
     if (pSlot == 0)
         return;
     pSlot->SetFixed(1);
     Unk_NotifyContext::FUN_1422c8f10(m_strBind, pSlot);
     CStringW strLeft = FUN_140c5f9e0();
-    m_30->Invoke("open", m_spBuff->m_nId, reinterpret_cast<Unk_LsBuffInfo*>(reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->FUN_14096d810())->m_nValue, strLeft, m_strBind);
+    m_30->Invoke("open", m_spBuff->m_nShieldValue, reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_nValue, strLeft, m_strBind);
     UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
     if (pReward != 0)
     {
-        if (!reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->FUN_14096d810())->m_skills).empty())
+        if (!reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_skills).empty())
         {
-            unsigned nSkillId = *reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(reinterpret_cast<AdditionalCli*>(m_spBuff.operator->())->FUN_14096d810())->m_skills).begin();
+            unsigned nSkillId = *reinterpret_cast<std::set<unsigned>&>(reinterpret_cast<Unk_LsBuffInfo*>(m_spBuff.operator->()->FUN_14096d810())->m_skills).begin();
             CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_lapenshard_skill_possible_msg"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkillId));
             pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
         }

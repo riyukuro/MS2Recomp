@@ -93,12 +93,6 @@ extern int DAT_143ab2884;                               // the dungeon room id
 extern int DAT_143ab2950;
 extern __int64 DAT_143ab2898;                           // the free revival limit
 
-// The check box child (the coupon).
-class Unk_PetBoxCheck : public ASButton
-{
-public:
-};
-
 // The movie root: the data calls.
 class Unk_RsScript : public AScript
 {
@@ -108,7 +102,7 @@ public:
 class UIItemPetBoxDialog : public UIDialog
 {
 public:
-    MS2Ptr<Unk_PetBoxCheck> FindCheckBox(const CString& strName);
+    MS2Ptr<ASCheckBox> FindCheckBox(const CString& strName);
 };
 // The game entity clip (slot 13 = goto label, slot 25 = resize).
 class Unk_RevEntity : public ASGameEntity
@@ -612,7 +606,7 @@ int UIRevivalDialog::FUN_141abc9d0()
 {
     if (m_30 == 0)
         return 0;
-    MS2Ptr<Unk_PetBoxCheck> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
+    MS2Ptr<ASCheckBox> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
     if (spCoupon == 0)
         return 0;
     if (spCoupon->FUN_1422c2030() == 0)
@@ -754,7 +748,7 @@ void UIRevivalDialog::FUN_141abd640()
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<Unk_PetBoxCheck> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
+    MS2Ptr<ASCheckBox> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
     if (spCoupon == 0)
         return;
     MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(4);

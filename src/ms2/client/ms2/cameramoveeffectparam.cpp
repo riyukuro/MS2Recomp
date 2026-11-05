@@ -17,6 +17,8 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
+template <int T> class Unk_Bitset;
+template <> class Unk_Bitset<3> { public: Unk_Bitset& Set(int pos, bool value); };   // C3: was Unk_CamMoveBits::FUN_140314670 (0x140314670, bitset.h's Unk_Bitset<3>::Set)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -32,7 +34,7 @@ public:
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
 
@@ -55,8 +57,8 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
     Unk_140165cf0* pTransform = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pTransform)
     {
-        FUN_140874670(pTransform, "translate", m_kTranslate);
-        FUN_140874670(pTransform, "rotation", m_kRotation);
+        XmlGetAttr((class TiXmlElement*)(pTransform), "translate", reinterpret_cast<efd::Point3&>(m_kTranslate));
+        XmlGetAttr((class TiXmlElement*)(pTransform), "rotation", reinterpret_cast<efd::Point3&>(m_kRotation));
     }
     Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
     if (pAttach)
@@ -81,9 +83,9 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
         XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bUpdateRotation);
     }
     if (bUpdateTranslate)
-        m_update.FUN_140314670(0, true);
+        reinterpret_cast<Unk_Bitset<3>*>(&m_update)->Set(0, true);
     if (bUpdateRotation)
-        m_update.FUN_140314670(1, true);
+        reinterpret_cast<Unk_Bitset<3>*>(&m_update)->Set(1, true);
 }
 MS2_REPLACE_METHOD(0x140afe8f0, CCameraMoveEffectParam, vfunc_1, 502, 0xF46663CF);
 

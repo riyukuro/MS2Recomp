@@ -214,7 +214,7 @@ class CDropItem;
 
 // The m_848 effect table streaming (FUN_141bd42f0): the count, then key / MS2Ptr pairs, each value a fresh object
 // (same templates as gameevent.cpp's TU-local copies).
-CInputStream& FUN_14070f480(CInputStream& in, unsigned& value);
+// 0x14070f480 = Unk_OSInput::Read6 (os.cpp, ms2/commonfiles/os.h)
 template <class T> CInputStream& operator>>(CInputStream& in, MS2Ptr<T>& sp)
 {
     sp.AssignRaw(new T);
@@ -229,7 +229,7 @@ CInputStream& operator>>(CInputStream& in, ATL::CAtlMap<K, V, KTraits, VTraits>&
     {
         V value;
         K key;
-        FUN_14070f480(in, key) >> value;
+        reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(key)) >> value;
         map.SetAt(key, value);
     }
     return in;

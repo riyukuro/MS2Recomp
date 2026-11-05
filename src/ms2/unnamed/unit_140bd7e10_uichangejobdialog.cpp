@@ -50,11 +50,6 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nJobCode);
 int FUN_14074b030(CQuestData* pData);
 Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nId, int nRate);
 class UITalkManager { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 
 
 // ASObj / ASArray members used here only.
@@ -179,7 +174,7 @@ void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
     Unk_ScriptPtr<CTalkScript> kNotice = FUN_1408564b0(FUN_14074b030(spJob.operator->()), 100);
     if (kNotice.IsNull())
         return;
-    reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(reinterpret_cast<const MS2Ptr<CTalkScript>&>(kNotice), reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->m_n2e8, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<const MS2Ptr<CTalkScript>&>(kNotice), reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->m_n2e8, 4, 0);
 }
 
 // @0x140bd8af0

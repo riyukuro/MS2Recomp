@@ -49,11 +49,6 @@ MS2_CHECK_OFFSET(CItemData, m_nEffectId, 0x1e0);
 static_assert(offsetof(CObjectData, m_cube.m_firstEffect.m_nEffectId) == 0x188, "the skill id read at +0x188");
 static_assert(offsetof(CObjectData, m_cube.m_firstEffect.m_nLevel) == 0x18c, "the skill level read at +0x18c");
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-// AS invoker on the popup's movie clip (instance of the AScript::Invoke template).
-class ASDialog { public: class Scaleform::GFx::Value FUN_140e78470(char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_BootyMovie : public ASDialog {
-public:
-
-};
 
 // @0x141031430
 UIBootyPopup::UIBootyPopup()
@@ -222,7 +217,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                     }
                 }
             }
-            reinterpret_cast<Unk_BootyMovie*>(m_30.operator->())->FUN_140e78470("setText", strName, strDesc);
+            m_30.operator->()->Invoke("setText", strName, strDesc);
         }
         m_30.operator->()->Invoke("setShow", bShow);
     }

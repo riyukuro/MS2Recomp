@@ -14,7 +14,6 @@
 
 class CMsgBoxData;
 class ASObj;
-class Unk_MrdInput;
 class CItemData;
 
 class UIMeratMarketRegisterDialog : public UIModalDialog
@@ -62,7 +61,6 @@ public:
     void FUN_14131c570(ASData& data);                                   // "OnChangeSelectedIndex"
     void OnGetAlreadyRegistIndex(ASData& data);                                   // "GetAlreadyRegistIndex"
     int FUN_14131ca80();                                                // tag input limit
-    MS2Ptr<Unk_MrdInput> FUN_140e35bd0(const CString& strName);          // text input child lookup (UIDialog member)
 
 private:
     MS2_LAYOUT_FRIEND;

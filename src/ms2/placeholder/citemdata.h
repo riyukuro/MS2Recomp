@@ -473,7 +473,7 @@ public:
     double FUN_14053f620(int nIdx);    // 0x14053f620
     bool FUN_14053f750(long long nParam);    // 0x14053f750
     int FUN_14053f7c0();    // 0x14053f7c0
-    void FUN_14053fd90();    // 0x14053fd90
+    int FUN_14053fd90();    // 0x14053fd90
     // @ITEMDATA-MEMBERS-END
 
     int id;                  // +0x20

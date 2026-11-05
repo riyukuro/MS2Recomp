@@ -63,6 +63,7 @@
 // MS2-PIN: ?get@?$MS2Ptr@VTriggerTransitionCli@@@@QEBAPEAVTriggerTransitionCli@@XZ 0x140deb850
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\triggeractioncli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/classobject.h"   // C3: ClassObjectRegistrar (0x140316aa0)
 #include <efd/Point3.h>
 #pragma push_macro("min")
 #pragma push_macro("max")
@@ -141,7 +142,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // registrar of ClassObject factories, atexit helpers
 ClassObject* FUN_140de5570();
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
 struct Unk_RegMarker {};                // empty: the initializer stores nothing after the call
 
@@ -149,7 +149,7 @@ struct Unk_RegMarker {};                // empty: the initializer stores nothing
 // @0x1400d66e0
 #ifndef MS2_HOOK_DLL   // registers into the exe's ClassObject registrar at DllMain time, before the exe's CRT/locks exist (startup hang)
 static char s_dat_143ac4e79;
-static Unk_RegMarker s_dat_143ac4e79_init = (FUN_140316aa0(&s_dat_143ac4e79, CStringW(L"TriggerConditionCli"), FUN_140de5570), Unk_RegMarker());
+static Unk_RegMarker s_dat_143ac4e79_init = (((ClassObjectRegistrar*)&s_dat_143ac4e79)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerConditionCli"), FUN_140de5570), Unk_RegMarker());
 #endif
 // @0x1400d6730
 static CStringA s_strSkill("skill");
@@ -975,7 +975,7 @@ void TriggerObjectCamera::vfunc_4()
             Unk_CameraFlyBy fb;
             fb.m_fDuration = fDur;
             fb.m_nKind = nType;
-            fb.m_from.m_0 = reinterpret_cast<Unk_CameraManager*>(CameraMgr::GetInstance())->FUN_140ad4b40();
+            fb.m_from.m_0 = CameraMgr::GetInstance()->FUN_140ad4b40();
             fb.m_from.m_4 = CameraMgr::GetInstance()->FUN_140af7f00();
             fb.m_from.m_8 = CameraMgr::GetInstance()->FUN_140af7ea0();
             fb.m_from.m_c = CameraMgr::GetInstance()->FUN_140a17e10();

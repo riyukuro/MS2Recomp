@@ -3,8 +3,8 @@
 // MS2-UNIT: ?\uicharacterabilitydialog.cpp
 // MS2-RANGE: 0x140f29a20-0x140f2e3c0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$CAtlList@V?$MS2Ptr@VUnk_CaAbilityRow@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_CaAbilityRow@@@@@ATL@@@ATL@@QEAA@I@Z 0x140f2c7e0 ; unique
-// MS2-PIN: ??8?$MS2Ptr@VUnk_CaAbilityRow@@@@QEBA_NPEAVUnk_CaAbilityRow@@@Z 0x140f2cbf0 ; unique
+// MS2-PIN: ??0?$CAtlList@V?$MS2Ptr@VCCharacterAbility@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterAbility@@@@@ATL@@@ATL@@QEAA@I@Z 0x140f2c7e0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCCharacterAbility@@@@QEBA_NPEAVCCharacterAbility@@@Z 0x140f2cbf0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicharacterabilitydialog.cpp"    // assumed
@@ -103,7 +103,7 @@ public:
 };
 UIGameMenuDialog* FUN_140938b90(int nId);
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: the notify-system getter, the definer's return type
 
 // 0x141746230: the level change notification (as in scenestategame.cpp).
 class NotifyChangeMyLevel : public NotifyObject
@@ -128,7 +128,7 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The singletons.
 CCharacterAbilityManager* FUN_140f2d240();
-Unk_CaTable* FUN_140f2d250();
+CCharacterAbilityTable* FUN_140f2d250();
 
 // ---- the formatter of the pending-quest text (one template instance) -------------------------------------------------
 
@@ -170,9 +170,9 @@ CCharacterAbilityManager* FUN_140f2d240()
 }
 
 // @0x140f2d250
-Unk_CaTable* FUN_140f2d250()
+CCharacterAbilityTable* FUN_140f2d250()
 {
-    return (Unk_CaTable*)reinterpret_cast<void*>(TSingleton<CCharacterAbilityTable>::s_instance);
+    return TSingleton<CCharacterAbilityTable>::s_instance;
 }
 
 // @0x140f2c530
@@ -242,7 +242,7 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
-    MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
     if (ref == NULL)
         return;
     m_abilities.AddTail(nId);
@@ -287,7 +287,7 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
 }
 
 // @0x140f29f90
-int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<Unk_CaAbilityRow> ref)
+int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<CCharacterAbility> ref)
 {
     if (FUN_140f29e00() == 0)
         return 0;
@@ -310,7 +310,7 @@ int CCharacterAbilityManager::FUN_140f2a0b0(int nId)
 // @0x140f2a100
 int CCharacterAbilityManager::FUN_140f2a100(int nId)
 {
-    MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
     if (ref == NULL)
         return 1;
     PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -353,7 +353,7 @@ int UICharacterAbilityDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140939a10()->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::FUN_140f2b000));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::FUN_140f2b000));
     return 1;
 }
 
@@ -416,7 +416,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             int nId = data.PopUInt();
             if (FUN_140f2d240()->FUN_140f2a0b0(nId))
                 return 1;
-            MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+            MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
             if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
@@ -465,10 +465,10 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     if (strKind == "ability")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+        MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
-        MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
+        MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(ref->m_nAdditionalEffectId, ref->m_nAdditionalEffectLevel);
         if (skill == 0)
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -477,7 +477,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     else if (strKind == "CategoryIcon")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<Unk_CaCategoryRow> cat = FUN_140f2d250()->FUN_1401e0560(nId);
+        MS2Ptr<CCharacterAbilityCategory> cat = FUN_140f2d250()->FUN_1401e0560(nId);
         if (cat == NULL)
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -536,10 +536,10 @@ void UICharacterAbilityDialog::FUN_140f2b0f0()
 }
 
 // @0x140f2b110
-void UICharacterAbilityDialog::FUN_140f2b110(MS2Ptr<Unk_CaAbilityRow> ref)
+void UICharacterAbilityDialog::FUN_140f2b110(MS2Ptr<CCharacterAbility> ref)
 {
     if (m_30.get())
-        m_30->Invoke("LearnAbility", ref->m_nCategory, ref->m_nSkillId);
+        m_30->Invoke("LearnAbility", (int)ref->m_nCategoryId, (int)ref->m_nAdditionalEffectId);
     FUN_140f2b760();
 }
 
@@ -548,28 +548,28 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
 {
     if (m_30 == NULL)
         return;
-    ATL::CAtlList<MS2Ptr<Unk_CaCategoryRow> > cats(10);
-    reinterpret_cast<CCharacterAbilityTable*>(FUN_140f2d250())->FUN_1401e0350(reinterpret_cast<ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >*>(&cats));
+    ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> > cats(10);
+    FUN_140f2d250()->FUN_1401e0350(&cats);
     if (cats.IsEmpty())
         return;
     for (POSITION pos = cats.GetHeadPosition(); pos != NULL; cats.GetNext(pos))
     {
-        MS2Ptr<Unk_CaCategoryRow> cat = cats.GetAt(pos);
+        MS2Ptr<CCharacterAbilityCategory> cat = cats.GetAt(pos);
         m_30->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
-        ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >& abilities = reinterpret_cast<ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >&>(cat->m_abilities);
+        ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >& abilities = cat->m_abilities;
         if (abilities.IsEmpty())
             continue;
-        ATL::CRBMap<unsigned short, MS2Ptr<Unk_CaAbilityRow> > byLevel(10);
+        ATL::CRBMap<unsigned short, MS2Ptr<CCharacterAbility> > byLevel(10);
         for (POSITION p = abilities.GetStartPosition(); p != NULL; abilities.GetNext(p))
         {
-            MS2Ptr<Unk_CaAbilityRow> a = reinterpret_cast<const MS2Ptr<Unk_CaAbilityRow>&>(abilities.GetValueAt(p));
+            MS2Ptr<CCharacterAbility> a = abilities.GetValueAt(p);
             byLevel.SetAt(a->m_nRequireLevel, a);
         }
         ASArray arr(2);
         for (POSITION p = byLevel.GetHeadPosition(); p != NULL; byLevel.GetNext(p))
         {
-            MS2Ptr<Unk_CaAbilityRow> a = byLevel.GetValueAt(p);
-            MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(a->m_nSkillId, a->m_nSkillLevel);
+            MS2Ptr<CCharacterAbility> a = byLevel.GetValueAt(p);
+            MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(a->m_nAdditionalEffectId, a->m_nAdditionalEffectLevel);
             if (skill == 0)
                 continue;
             ASObj item(2);
@@ -657,12 +657,12 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 // @0x140f2bee0
 void UICharacterAbilityDialog::FUN_140f2bee0(unsigned short nLevel)
 {
-    ATL::CAtlList<MS2Ptr<Unk_CaAbilityRow> > abilities(10);
-    reinterpret_cast<CCharacterAbilityTable*>(FUN_140f2d250())->FUN_1401e0450(reinterpret_cast<ATL::CAtlList<MS2Ptr<CCharacterAbility> >*>(&abilities));
+    ATL::CAtlList<MS2Ptr<CCharacterAbility> > abilities(10);
+    FUN_140f2d250()->FUN_1401e0450(&abilities);
     int bNew = 0;
     for (POSITION pos = abilities.GetHeadPosition(); pos != NULL; abilities.GetNext(pos))
     {
-        MS2Ptr<Unk_CaAbilityRow> a = abilities.GetAt(pos);
+        MS2Ptr<CCharacterAbility> a = abilities.GetAt(pos);
         if (a->m_nRequireLevel == nLevel && !FUN_140f2d240()->FUN_140f2a0b0(a->m_nId))
         {
             bNew = 1;

@@ -21,11 +21,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> GmClickDelegate;
 
-class Unk_GmStartButton : public ASButton
-{
-public:
-};
-
 // The constants table: the two movie paths.
 class Unk_GmGlobals
 {
@@ -75,7 +70,7 @@ void UIGameModeSelectDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
-    m_178 = m_30->FUN_140acce30<Unk_GmStartButton>("m_start");
+    m_178 = m_30->FUN_140acce30<ASButton>("m_start");
     if (m_178.get() != 0)
         m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::FUN_140c1a510), 0);
     ASObj obj(2);

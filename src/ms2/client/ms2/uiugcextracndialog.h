@@ -10,7 +10,6 @@
 #include "ms2/placeholder/ascript.h"
 
 class CMsgBoxData;
-class Unk_UgcCameraButton;
 
 class UIUGCExtraCNDialog : public UIDialog
 {
@@ -29,7 +28,6 @@ public:
     bool FUN_140fad0a0(int nResult, const CMsgBoxData& box);    // 0x140fad0a0 screenshot confirm answered
     void FUN_140fad2b0();                                       // 0x140fad2b0 the camera mode button's label and icon
     void FUN_140fad4f0(bool bCameraMode);                       // 0x140fad4f0 switch the camera mode
-    MS2Ptr<Unk_UgcCameraButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
 private:
     MS2_LAYOUT_FRIEND;
     bool m_bCameraMode;                                         // +0x178 the free camera is on

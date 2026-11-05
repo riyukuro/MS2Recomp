@@ -62,16 +62,27 @@ extern AssignIntFn g_pAssignIntToInteger;
 void UnalignedDeallocate(void* p);
 class NameValuePairs { public: static void ThrowIfTypeMismatch(const char* name, const std::type_info& stored, const std::type_info& retrieving); };
 class DL_GroupParameters_IntegerBased { public: virtual void AssignFrom(const NameValuePairs& source); };
+class AlgorithmParametersBase { public: AlgorithmParametersBase(const AlgorithmParametersBase& x); };
+template <class T> class DL_PrivateKey { public: void AssignFrom(const NameValuePairs& source); };
+template <class T> class DL_PublicKey { public: void AssignFrom(const NameValuePairs& source); };
+class RandomNumberGenerator;
 class Integer
 {
 public:
+    enum RandomNumberType { ANY, PRIME };
+    Integer();
+    Integer(const Integer& t);
+    Integer(const char* str);
+    Integer(RandomNumberGenerator& rng, const Integer& min, const Integer& max, RandomNumberType rnType, const Integer& equiv, const Integer& mod);
     Integer& operator=(const Integer& t);
+    static void Divide(unsigned long long& remainder, Integer& quotient, const Integer& dividend, unsigned long long divisor);
+    static const Integer& Zero();
+    static const Integer& One();
 };
 }
 extern const std::type_info DAT_143a57d68;        // typeid(int)
 extern const std::type_info DAT_143aa1220;        // typeid(T) of the first instantiation
 extern const std::type_info DAT_143aa7a80;        // typeid(T) of the second instantiation
-void FUN_14038dff0(void* dst, const void* src);   // AlgorithmParametersBase copy ctor
 extern char DAT_14311ee90[];                      // vftable of the first instantiation
 extern char DAT_14312dbf8[];                      // vftable of the second instantiation
 
@@ -98,7 +109,7 @@ void FUN_14235df70(CppIntParam* self, const char* name, const std::type_info& va
 // @0x1423140b0
 void FUN_1423140b0(CppIntParam* self, CppIntParam* dst)
 {
-    FUN_14038dff0(dst, self);
+    new (dst) CryptoPP::AlgorithmParametersBase(*reinterpret_cast<const CryptoPP::AlgorithmParametersBase*>(self));
     dst->vptr = DAT_14311ee90;
     dst->m_value = self->m_value;
 }
@@ -106,7 +117,7 @@ void FUN_1423140b0(CppIntParam* self, CppIntParam* dst)
 // @0x1423697c0
 void FUN_1423697c0(CppIntParam* self, CppIntParam* dst)
 {
-    FUN_14038dff0(dst, self);
+    new (dst) CryptoPP::AlgorithmParametersBase(*reinterpret_cast<const CryptoPP::AlgorithmParametersBase*>(self));
     dst->vptr = DAT_14312dbf8;
     dst->m_value = self->m_value;
 }
@@ -189,8 +200,6 @@ extern const std::type_info DAT_143aa1e90;
 extern const std::type_info DAT_143aa7e20;
 extern const std::type_info DAT_143aa1de0;
 extern const std::type_info DAT_143aa1d00;
-void FUN_14232fe10(void* pObject, const CppNameValuePairs* source);
-void FUN_1423306d0(void* pObject, const CppNameValuePairs* source);
 
 // NameValuePairs::GetThisObject: GetValue("ThisObject:" + typeid(T).name(), object)
 static __forceinline bool CppGetThisObject(const CppNameValuePairs* source, const std::type_info& t, void* pObject)
@@ -210,7 +219,7 @@ CppAssignHelper* FUN_1423729e0(CppAssignHelper* self, void* pObject, const CppNa
     if (CppGetThisObject(source, DAT_143aa7e90, pObject))
         self->m_done = true;
     else if (DAT_143aa1e90 != DAT_143aa7e90)
-        FUN_14232fe10(pObject, source);
+        static_cast<CryptoPP::DL_PrivateKey<CryptoPP::Integer>*>(pObject)->AssignFrom(*reinterpret_cast<const CryptoPP::NameValuePairs*>(source));
     return self;
 }
 
@@ -224,7 +233,7 @@ CppAssignHelper* FUN_142372d60(CppAssignHelper* self, void* pObject, const CppNa
     if (CppGetThisObject(source, DAT_143aa7e20, pObject))
         self->m_done = true;
     else if (DAT_143aa1de0 != DAT_143aa7e20)
-        FUN_1423306d0(pObject, source);
+        static_cast<CryptoPP::DL_PublicKey<CryptoPP::Integer>*>(pObject)->AssignFrom(*reinterpret_cast<const CryptoPP::NameValuePairs*>(source));
     return self;
 }
 
@@ -257,9 +266,6 @@ struct CppInteger
         CryptoPP::UnalignedDeallocate(m_ptr);
     }
 };
-CppInteger* FUN_14235a970(CppInteger* out, void* rng, const CppInteger* min, const CppInteger* max, int type, const CppInteger* equiv, const CppInteger* mod); // Integer(rng, min, max, type, equiv, mod)
-const CppInteger* FUN_14236a270();   // Integer::One()
-const CppInteger* FUN_14236cea0();   // Integer::Zero()
 
 struct CppGroupParams
 {
@@ -297,7 +303,7 @@ static __forceinline void CppDLGenerateRandom(CppDLPrivateKey& key, void* rng, c
     CppInteger maxExp;
     key.GetAbstractGroupParameters()->GetMaxExponent(&maxExp);
     CppInteger x;
-    FUN_14235a970(&x, rng, FUN_14236a270(), &maxExp, 0, FUN_14236cea0(), FUN_14236a270());
+    new (&x) CryptoPP::Integer(*static_cast<CryptoPP::RandomNumberGenerator*>(rng), CryptoPP::Integer::One(), reinterpret_cast<const CryptoPP::Integer&>(maxExp), CryptoPP::Integer::ANY, CryptoPP::Integer::Zero(), CryptoPP::Integer::One());
     key.SetPrivateExponent(&x);
 }
 
@@ -431,9 +437,6 @@ std::ostream& FUN_14237bef0(std::ostream& out, const CryptoPP::PolynomialMod2& a
     return r;
 }
 
-CppInteger* FUN_14235adf0(CppInteger* self, const CppInteger* t);                       // Integer(const Integer&)
-CppInteger* FUN_14235b7f0(CppInteger* self);                                            // Integer()
-unsigned long long FUN_142366480(unsigned long long* remainder, CppInteger* quotient, const CppInteger* dividend, unsigned long long divisor);  // Integer::Divide(word&, Integer&, const Integer&, word)
 
 static size_t CppIntegerWords(const CppInteger& v)
 {
@@ -477,9 +480,9 @@ std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
     default:            base = 10; suffix = '.'; break;
     }
     CppInteger temp1;
-    FUN_14235adf0(&temp1, &a);
+    new (&temp1) CryptoPP::Integer(reinterpret_cast<const CryptoPP::Integer&>(a));
     CppInteger temp2;
-    FUN_14235b7f0(&temp2);
+    new (&temp2) CryptoPP::Integer;
     if (a.sign == 1)
     {
         out << '-';
@@ -498,7 +501,7 @@ std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
     while (temp1.sign == 1 || CppIntegerWords(temp1) != 0)
     {
         unsigned long long digit;
-        FUN_142366480(&digit, &temp2, &temp1, base);
+        CryptoPP::Integer::Divide(digit, reinterpret_cast<CryptoPP::Integer&>(temp2), reinterpret_cast<const CryptoPP::Integer&>(temp1), base);
         s[i++] = vec[digit];
         CppIntegerSwap(temp1, temp2);
     }
@@ -511,7 +514,6 @@ std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
     return r;
 }
 
-CppInteger* FUN_142359280(CppInteger* out, const char* str);                            // Integer(const char*)
 
 static bool CppIsIntegerTextChar(char c)
 {
@@ -550,7 +552,7 @@ std::istream& FUN_14235c2d0(std::istream& in, CppInteger& a)
         in.putback(c);
     str[length - 1] = '\0';
     CppInteger value;
-    FUN_142359280(&value, str);
+    new (&value) CryptoPP::Integer(str);
     *(CryptoPP::Integer*)&a = *(const CryptoPP::Integer*)&value;
     for (size_t i = 0; i < cap; ++i)
         str[i] = 0;

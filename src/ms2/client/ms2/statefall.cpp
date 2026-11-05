@@ -67,8 +67,7 @@ public:
 };
 
 // The casting skill record (CSkillRecord); +0x30 holds the table row of its skill.
-class Unk_FallRow : public SkillData { };
-class Unk_FallTable { public: Unk_FallRow* FUN_14063ed50(); };
+class Unk_FallTable { };   // C3: the 16-byte MS2Ptr<SkillData>; was a FUN_14063ed50 member view (MS2Ptr<SkillData>::operator->)
 class Unk_PCBaseComp_b18 : public CPtred
 {
 public:
@@ -173,9 +172,9 @@ void StateFall::vfunc_8(double fTime)
     MS2Ptr<Unk_PCBaseComp_b18> spRec = m_pOwner->vfunc_104(true, false, false);
     if (spRec.get() != 0)
     {
-        if (spRec->m_table30.FUN_14063ed50()->FUN_1407e9bd0() == 0x1d ||
-            spRec->m_table30.FUN_14063ed50()->FUN_1407e9bd0() == 0x20 ||
-            spRec->m_table30.FUN_14063ed50()->FUN_1407e9d70())
+        if (reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9bd0() == 0x1d ||
+            reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9bd0() == 0x20 ||
+            reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9d70())
             m_pOwner->vfunc_102(reinterpret_cast<const MS2Ptr<CSkillRecord>&>(spRec));
     }
     else if (pPC->FUN_1416764a0() != 0)

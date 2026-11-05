@@ -68,6 +68,9 @@
 #include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/client/ms2/effectservice.h"   // C3: EffectNode::ms_RTTI
+template <class T> class TSingleton;
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- RTTI ----
 #ifdef __clang__
@@ -160,6 +163,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_140af0d80();
+    class Unk_CameraTargetEntity* FUN_140a38d60();   // C3: bosstargetcamera.cpp
 };
 
 // ---- MS2ShadowClickGenerator ----
@@ -449,8 +453,8 @@ bool MS2ShadowClickGenerator::HandleDirectionalLight(NiShadowGenerator* pkGenera
         return false;
 
     // With a camera target and a following camera mode the shadow camera tracks the player.
-    if (Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60() != 0 &&
-        !((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d80())
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60() != 0 &&
+        !TSingleton<CameraMgr>::GetInstance()->FUN_140af0d80())
         return HandleCameraFollowDirectionalLight(pkGenerator, pkDirLight, bRegenerateViews, bUpdateShadowMaps);
 
     NiShadowRenderClick* pkShadowClick = pkShadowMap->GetRenderClick();
@@ -608,7 +612,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
 
     // The shadow camera hovers 10000 units against the light direction over the camera target, pushed 1500 units
     // along the scene camera's direction flattened onto the ground plane (z dropped, not renormalized).
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     NiPoint3 kCameraPos(MS2_SC_POINT(efd::Point3,
         pTarget->vfunc_18().FUN_140965c40(MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
     ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();

@@ -139,6 +139,7 @@ class PC;   // C3: completed by fittingdollpc.h further down; efd::DynamicCast<P
 
 
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
+void FUN_140ad4ff0(class CameraMgr* pCam, float fValue);   // the camera scale setter; C3: the definer's signature (unit_140ad1860_mousecontroller)
 
 // The camera manager's "move the current camera mode to a point" helper (a CameraMgr inline).
 // @0x1418df360
@@ -267,7 +268,7 @@ void UICameraEditDialog::vfunc_67()
     m_1f0 = 0;
     m_1f4 = 1;
     if (CameraMgr::GetInstance()->FUN_140a18070() != 0)
-        CameraMgr::GetInstance()->FUN_140ad4ff0(m_fSavedCamera);
+        FUN_140ad4ff0(CameraMgr::GetInstance(), m_fSavedCamera);
 }
 
 // @0x1418dda30
@@ -577,7 +578,7 @@ public:
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
 // The key block list (what keys the UI swallows).
-CKeyTable* FUN_1409331f0();
+// FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -1176,7 +1177,7 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass);
-UIDialog* FUN_140b72de0(int nClass);
+template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 class UICharacterListDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -1283,8 +1284,8 @@ void UICharacterCreateDialog::OnLoadComplete()
     ASObj kInit(2);
     FUN_141900750(&kInit);
     m_30->Invoke("initData", nGender, Scaleform::GFx::Value(kInit.FUN_1422bb870()));
-    UIDialog* pSelect = FUN_140b72de0(0x4ef1);
-    if (pSelect != 0 && ((class UICharacterListDialog*)(class UIDialog*)(pSelect))->FUN_1418f1c20() == 0 && m_bGuideOpened == 0)
+    UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
+    if (pSelect != 0 && pSelect->FUN_1418f1c20() == 0 && m_bGuideOpened == 0)
     {
         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ea7);
         m_bGuideOpened = 1;

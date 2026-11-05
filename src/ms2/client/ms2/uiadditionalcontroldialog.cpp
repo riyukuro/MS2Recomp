@@ -38,6 +38,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/unnamed/unit_1401f9eb0.h"
 
+#include "ms2/placeholder/asevent.h"   // C3: ASListEvent (dtor 0x140f83bb0)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
@@ -54,20 +55,12 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // The click event of a list row (ctor 0x1422e2740, dtor 0x140f83bb0: symbols-manual.tsv).
-class ASListEvent
-{
-public:
-    ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params);
-    ~ASListEvent();
-    Scaleform::GFx::Value FUN_1422e2780();                  // the row object
-    void* m_pad[8];
-};
 class Unk_AcRow : public ASObj
 {
 };
 
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-GFxManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
 int FUN_140718200(const CStringW& text);                                                 // text to number
@@ -225,13 +218,13 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             int nPassive = 0;
             strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141812290(nId, level->GetLevel(), CString("name")));
             if (level->m_nKeepCondition == 99) {
-                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_passive"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_passive"));
                 nPassive = 1;
             }
             if (level->IsBuff())
-                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_buff"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_buff"));
             else
-                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_debuff"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_debuff"));
             ASObj row(2);
             ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c0d20("effectCode", nId);

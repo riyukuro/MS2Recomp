@@ -139,7 +139,7 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
         return 0;
     if (((class CameraMgr*)(class Unk_SkipHost*)(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070() == 0)
         return 0;
-    Unk_SkipActor* pActor = ((class Unk_SkipActor*)((class Unk_CameraManager*)(class Unk_SkipHost*)(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60());
+    Unk_SkipActor* pActor = ((class Unk_SkipActor*)((class CameraMgr*)(class Unk_SkipHost*)(reinterpret_cast<Unk_SkipHost*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60());
     if (pActor == 0)
         return 0;
     Unk_SkipActorPos pos;

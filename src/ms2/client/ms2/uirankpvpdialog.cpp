@@ -73,7 +73,7 @@ CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x140
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 template <class A, class B> CStringW StringFormat(const wchar_t* szFormat, const A& a, const B& b);
 template <class A> CString StringFormat(const char* szFormat, const A& a);
-CString FUN_140e10af0(const char* szFormat, const Unk_JobCode& job);
+enum Unk_ClosingJob { Unk_ClosingJob_None };   // uidungeonclosingphotodialog's job enum (StringFormat<Unk_ClosingJob> 0x140e10af0)
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);     // toast
@@ -369,7 +369,7 @@ void UIRankPvPDialog::FUN_140f94840()
         MS2Ptr<RankDuelStatisticalData> spRecord = CPVPManager::GetInstance()->GetRankDuel()->FindRecord(nJobGroup);
         if (spRecord == 0)
             spRecord.AssignRaw(new RankDuelStatisticalData);
-        FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", FUN_140e10af0("_{0}", TSingleton<JobTable>::GetInstance()->GetSubJob1(nJobGroup)));
+        FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", StringFormat<Unk_ClosingJob>("_{0}", (Unk_ClosingJob)TSingleton<JobTable>::GetInstance()->GetSubJob1(nJobGroup)));
         FUN_140cfee80((*spRow).FUN_1422bb890(), "jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4d, nJobGroup));
         MS2Ptr<ASTextField> spWinRate = spRow->FUN_1409b4620("winRate");
         CStringW strNone(L"-");

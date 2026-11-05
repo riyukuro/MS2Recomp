@@ -56,7 +56,7 @@ public:
 class CKfmModel : public CEquipModel, public NiActorManager::CallbackObject
 {
 public:
-    CKfmModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20);   // 0x14143d580
+    CKfmModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20);   // 0x14143d580
     virtual ~CKfmModel();                                                    // 0x14143d680, ??_G 0x141442670
 
     EE_DECLARE_CLASS1(CKfmModel, 0x0620004a, CEquipModel);   // slots 1-3 (0x141442890/0x141442960/0x1414429b0)

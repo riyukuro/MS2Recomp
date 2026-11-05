@@ -83,7 +83,6 @@ void* FUN_14052d200();                // TSingleton<CItemSocketTable>::GetInstan
 #include "ms2/placeholder/unlimitedenchantinfo.h"
 #include "ms2/commonfiles/exptable.h"
 #include "ms2/commonfiles/itemenchantlimittable.h"
-class Unk_PetRowTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
 void* FUN_1404a1bb0();                    // 0x1404a1bb0 TSingleton<CExpTable>::GetInstance (exe copy)
 int FindStatByName(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
 unsigned FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
@@ -120,7 +119,6 @@ CStringW FUN_1409404f0(__int64 nValue);           // a number with separators (a
 #include "ms2/placeholder/cpetdatatable.h"
 class PCBase;
 class Unk_ItemOwnerRef : public CItemTransfer {};                     // CItem::FUN_140527930's record (the item's CItemTransfer)
-class Unk_PetRowTable* FUN_14052d210();                                       // TSingleton<CPetDataTable>::GetInstance (exe copy)
 CStringW FUN_14016a730(const char* sz, int nCodePage);                // a multi-byte text as a wide string (achievedata.cpp)
 class Unk_140166410* FUN_140166410();                                     // TSingleton<CFeatureManager>::GetInstance (exe copy)
 CReservedWordTable* FUN_1403b4750();                                  // 0x1403b4750 the reserved word table
@@ -250,8 +248,6 @@ void* FUN_14052d1f0();                   // 0x14052d1f0 TSingleton<CItemExtracti
 bool FUN_140634230(MS2Ptr<CItem> spItem);                   // the item is excluded from repacking (itemsocketsystemutil.cpp)
 
 CStringW GetStringCommonByKey(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
-// CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
-struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
 #include "ms2/client/ms2/questmanager_2.h"
 void* FUN_140764020();                          // 0x140764020 TSingleton<CQuestManager>::GetInstance (exe copy)
 CStringW FUN_1416e5210(int nQuestId, CStringW strKey); // the quest name formatted with a string-table key (by value)
@@ -467,7 +463,6 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest);   // th
 #include <cmath>
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/cpetdatatable.h"
-class Unk_PetRowTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
 int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
 __int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)

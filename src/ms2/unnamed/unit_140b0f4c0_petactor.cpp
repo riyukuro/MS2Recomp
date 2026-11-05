@@ -48,6 +48,8 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/scriptptr.h"   // C3: Unk_TalkContentPtr (CAtlArray::GetAt 0x140a4ffc0)
+class CScriptContent;
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
@@ -72,10 +74,6 @@ class Unk_BreakSelected;
 // The world objects the owner / local player lookups hand out (worldservice.h only forward-declares the type).
 class Unk_WsC_GameObj : public GameObject { };
 
-// The pet table (item.cpp owns the real instance).
-class Unk_PetRowTable : public CPtred { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
-Unk_PetRowTable* FUN_14052d210();                                           // the pet-data table
-
 // The singletons.
 
 // The game options: the status flags at +0x34 (m_bDisplayShowOnlyMyPet +0x12, m_bDisplayHideMyPet +0x13).
@@ -95,7 +93,6 @@ class Unk_PCBaseBuffs : public AdditionalCliList { };
 class Unk_OwnerPC : public PC { };
 
 // The pet-skill service (skill table, skill service, pet food table).
-class Unk_SkillObj : public SkillLevelData { };
 class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<SkillActionAdditional> > m_vElems; };
 SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p);   // .get() (in-unit copy, defined below)
 struct Unk_PetFoodRule { int m_nKey; float m_fRate; int m_nItemId; };       // key +0, rate +4, item +8
@@ -111,8 +108,6 @@ struct Unk_PetAnimLines
     void* m_p00;
     MS2Ptr<Unk_PetAnimLine>* m_pData;                                       // +8
     bool FUN_140b123c0() const { return m_pData == 0; }                     // @0x140b123c0
-    const MS2Ptr<Unk_PetAnimLine>& FUN_140a4ffc0(unsigned __int64 nIdx) const;
-    MS2Ptr<Unk_PetAnimLine>& FUN_14078f350(__int64 nIdx);                  // the non-const element
 };
 class Unk_PetAnimRow : public CPtred { public: char m_pad_18[0x68 - sizeof(CPtred)]; Unk_PetAnimLines m_lines; };
 MS2Ptr<Unk_PetAnimRow> FUN_140856fa0(int nNpcId, int nAnimId);
@@ -157,7 +152,8 @@ public:
     void FUN_141191330(int);
     class CItem* FUN_140b12380();
 };
-PCBase* FUN_1409613d0(GameObject* p);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 
 // The field object of an actor keeps an item pointer at +0x1a0.
 struct Unk_PetFieldObj { char m_pad_00[0x1a0]; MS2Ptr<CItem> m_spItem; };
@@ -312,7 +308,7 @@ float CPet::vfunc_89()
 {
     float fRow = 0.0f;
     if (m_spRow.get() != 0)
-        fRow = m_spRow->m_fScaleBonus;
+        fRow = m_spRow->m_fNameTagOffsetY;
     do
     {
         Unk_OwnerPC* pOwner = static_cast<Unk_OwnerPC*>(FUN_141094f60());
@@ -321,10 +317,10 @@ float CPet::vfunc_89()
         CGemPetSkin* pGem = pOwner->GetPetSkinGem().get();
         if (pGem == 0)
             break;
-        MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pGem->m_nPetId);
+        MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(pGem->m_nPetId);
         if (spRow.IsNull())
             break;
-        fRow = spRow->m_fScaleBonus;
+        fRow = spRow->m_fNameTagOffsetY;
     } while (0);
     return m_f16c + m_f170 + fRow;
 }
@@ -409,7 +405,7 @@ int CPet::FUN_140b10150()
 void CPet::FUN_140b10210(int nPetId)
 {
     m_nPetId = nPetId;
-    m_spRow = FUN_14052d210()->FUN_1407290f0(nPetId);
+    m_spRow = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
 }
 
 // @0x140b10290
@@ -419,7 +415,7 @@ int CPet::GetPetId()
 }
 
 // @0x140b102b0
-MS2Ptr<Unk_PetRow> CPet::GetRow()
+MS2Ptr<CPetData> CPet::GetRow()
 {
     return m_spRow;
 }
@@ -439,7 +435,7 @@ PCBase* CPet::FUN_140b10320()
 // @0x140b10360
 PCBase* CPet::FUN_140b10360()
 {
-    return FUN_1409613d0(WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
+    return (PCBase*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)WorldService::GetInstance()->FUN_141bd1290(m_nOwnerId));
 }
 
 // @0x140b103a0
@@ -731,7 +727,7 @@ void CPet::FUN_140b114e0(int nAnimId)
         return;
     if (spRow->m_lines.FUN_140b123c0())
         return;
-    MS2Ptr<Unk_PetAnimLine> spLine = spRow->m_lines.FUN_140a4ffc0(0);
+    MS2Ptr<Unk_PetAnimLine> spLine = reinterpret_cast<const MS2Ptr<Unk_PetAnimLine>&>(reinterpret_cast<const ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> >&>(spRow->m_lines).GetAt(0));   // C3: 0x140a4ffc0
     if (spLine == 0)
         return;
     CStringW strText(spLine->m_strText);
@@ -742,7 +738,7 @@ void CPet::FUN_140b114e0(int nAnimId)
         m_nIdleMs = 0;
     }
     if (spLine->m_strEffect.GetLength() > 0)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spRow->m_lines.FUN_14078f350(0)->m_strEffect), vfunc_18());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<Unk_PetAnimLine>&>(reinterpret_cast<ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> >&>(spRow->m_lines)[0])->m_strEffect), vfunc_18());
 }
 
 // @0x140b11760
@@ -767,7 +763,7 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
         MS2Ptr<SkillLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(nSkillId, nLevel);
         if (spLevel.get() != 0 ? true : false)
         {
-            if (reinterpret_cast<Unk_SkillObj*>(spLevel.operator->())->FUN_140804450() != 0)
+            if (spLevel.operator->()->FUN_140804450() != 0)
                 return 0;
         }
     }

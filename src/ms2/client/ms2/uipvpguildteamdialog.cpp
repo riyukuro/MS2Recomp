@@ -65,13 +65,11 @@ static UICommon::CMyPCKeyInputController s_keyInputController2;
 
 // ---- unit-local views of exe types ----
 
-class Unk_PgtActorRef : public CPtred {};                          // a visible character (popup menu target)
-
 class Unk_PgtWorld                                                  // the world service
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    MS2Ptr<Unk_PgtActorRef> FUN_141bc9d60(const CStringW& strName);
+    MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);   // the proxy of a visible character by name (popup menu target)
 };
 
 class Unk_PgtGuildSvc                                               // the guild service: the own guild at +8
@@ -91,7 +89,7 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class Unk_140acd6e0 : public ASDisplayObject                        // the observe button
 {
 public:
-    void FUN_1422c1fe0(unsigned int bVisible);
+    // FUN_1422c1fe0 (set "enabled", 0x1422c1fe0) is ASMovieClip::FUN_1422c1fe0(int), asdisplayobject.h
 };
 
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
@@ -436,10 +434,10 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             CStringW strName = data.FUN_1422b8f40();
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
             if (pMenu != 0) {
-                MS2Ptr<Unk_PgtActorRef> spTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bc9d60(strName);
+                MS2Ptr<CProxyGameObject> spTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bc9d60(strName);
                 if (spTarget.get() != 0) {
                     Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, "", NULL);
-                    reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7eb60(info, reinterpret_cast<MS2Ptr<CProxyGameObject>&>(spTarget), 0xb);
+                    reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7eb60(info, spTarget, 0xb);
                 }
             }
         }
@@ -511,10 +509,10 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
     if (spButton == 0)
         return;
     if (bPlaying) {
-        spButton->FUN_1422c1fe0(0);
+        reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(0);
     }
     else {
-        spButton->FUN_1422c1fe0(1);
+        reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(1);
         reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(bObserved);
     }
 }

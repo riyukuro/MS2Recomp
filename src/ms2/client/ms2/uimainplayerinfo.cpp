@@ -2,17 +2,18 @@
 // 0x1419ee140-0x1419f55d0, .text$di 0x140116360-0x1401166e0).
 //
 // UIMainPlayerInfo: the HUD panel of the local player (see uimainplayerinfo.h). The tail of the unit is template glue:
-// the CAtlMap<int, MS2Ptr<Unk_AsBuff> > of the pending buffs, the Delegate<void(NotifyObject*)> impl of the three
+// the CAtlMap<int, MS2Ptr<AdditionalCli> > of the pending buffs, the Delegate<void(NotifyObject*)> impl of the three
 // notice handlers, UISwfEntity::GetChild<ASEffectManager> and the (CStringW, float) localized-string formatter.
 // MS2-UNIT: ?\uimainplayerinfo.cpp
 // MS2-RANGE: 0x140116360-0x1401166e0 .text$di
 // MS2-RANGE: 0x1419ee140-0x1419f55d0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VUnk_AsBuff@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_AsBuff@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1419f4670 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VAdditionalCli@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAdditionalCli@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1419f4670 ; unique
 // MS2-PIN: ?vfunc_48@UIMainPlayerInfo@@UEAAHXZ 0x1419f4800 ; unique
 // MS2-PINS-END tplpin
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uimainplayerinfo.h"
+#include "ms2/client/ms2/additionalcli.h"   // AdditionalCli / AdditionalCustomCli (the buff records)
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/imessagelistener.h"
@@ -72,10 +73,10 @@ class Unk_MpScript : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1);
-    Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
-    
     MS2Ptr<ASEffectManager> FUN_1419f3a40(const CString& strName);
 };
+// The (int, int, int) invoke helper, defined as Unk_EpEntity:: by uiepprogress.cpp.
+class Unk_EpEntity { public: Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3); };
 #define MP_AS(p) reinterpret_cast<Unk_MpScript*>((p).operator->())
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
@@ -159,7 +160,8 @@ int Unk_MpKeyTable::FUN_1419f4760()
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 struct Unk_MpCfgData { bool m_bExpand; bool m_bShowSkillName; };
-class Unk_MpCfg { public: Unk_MpCfgData* FUN_140a58500(); };
+struct Unk_GpState; class Unk_GpSettings;
+Unk_GpState* FUN_140a58500(Unk_GpSettings* p);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
 class CMyCharacter   // C3: member view (cmycharacter.h needs MS2_THIS_FILE via stream.h)
 {
@@ -262,27 +264,12 @@ public:
 };
 class Unk_MpStat { public:   };
 
-class AdditionalCustomCli;
 class Unk_MpPC : public MyPC
 {
 public:
 };
 class Unk_MpWorld : public WorldService { public: Unk_MpPC* FUN_141bd0cc0();};
 
-// The buff object behind MS2Ptr<Unk_AsBuff> (AdditionalCustomCli, new 0x78).
-class AdditionalCustomCli : public Unk_AsBuff
-{
-public:
-    AdditionalCustomCli(PCBase* pOwner, int nKey, int nId, unsigned int nLevel, unsigned int n);   // 0x14096b490
-    __int64 m_28[10];
-};
-MS2_CHECK_SIZE(AdditionalCustomCli, 0x78);
-class AdditionalCli   // C3: member view for the former free stand-ins
-{
-public:
-    int IsValid();
-    int GetKey();
-};
 
 // The achievement of a progress notice.
 class CAchieve   // C3: member view (real class not in this TU)
@@ -305,7 +292,7 @@ class CItemData;
 class CItem
 {
 public:
-    CItemData* FUN_140527840();
+    class Unk_ItemEquipData* FUN_140527840();   // citem.h's return type; the callers cast to CItemData
     __int64 GetItemUid();
     int FUN_1405276c0();
     int HasCubeTextureMesh();
@@ -523,7 +510,7 @@ void UIMainPlayerInfo::OnLoadComplete()
         return;
     m_nSlotMode = 0;
     m_playerInfo = GetChild<ASUIComponent>("m_playerInfo");
-    FUN_1419f1da0(reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand);
+    FUN_1419f1da0(reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand);
     FUN_1419f2eb0();
     FUN_1419f19c0();
     vfunc_oa0_20(pPc->FUN_1416764d0());
@@ -769,7 +756,7 @@ void UIMainPlayerInfo::vfunc_oa0_5(int nCur, int nMax)
         return;
     if (m_playerInfo.get() != 0)
     {
-        MP_AS(m_playerInfo)->FUN_141931d80("setEP", m_nEP[0], nCur, nMax);
+        reinterpret_cast<Unk_EpEntity*>(m_playerInfo.operator->())->FUN_141931d80("setEP", m_nEP[0], nCur, nMax);
         m_nEP[0] = nCur;
         m_nEP[1] = nMax;
     }
@@ -933,22 +920,22 @@ void UIMainPlayerInfo::AppendMessage(const CStringW& strMessage, const CString& 
 }
 
 // @0x1419f0fe0
-void UIMainPlayerInfo::AddBuffEffect(MS2Ptr<Unk_AsBuff> spBuff)
+void UIMainPlayerInfo::AddBuffEffect(MS2Ptr<AdditionalCli> spBuff)
 {
     if (m_effectManager.get() != 0)
         m_effectManager->AddEffect(spBuff);
     else
-        m_pending.SetAt(((AdditionalCli*)(Unk_AsBuff*)spBuff.operator->())->GetKey(), spBuff);
+        m_pending.SetAt(spBuff.operator->()->GetKey(), spBuff);
     FUN_1419f37f0(5);
 }
 
 // @0x1419f10b0
-void UIMainPlayerInfo::UpdateBuffEffect(MS2Ptr<Unk_AsBuff> spBuff)
+void UIMainPlayerInfo::UpdateBuffEffect(MS2Ptr<AdditionalCli> spBuff)
 {
     if (m_effectManager.get() != 0)
         m_effectManager->UpdateEffect(spBuff);
     else
-        m_pending.SetAt(((AdditionalCli*)(Unk_AsBuff*)spBuff.operator->())->GetKey(), spBuff);
+        m_pending.SetAt(spBuff.operator->()->GetKey(), spBuff);
     FUN_1419f37f0(5);
 }
 
@@ -969,8 +956,8 @@ void UIMainPlayerInfo::FUN_1419f1200(int nId, int nLevel)
     if (pPc == 0)
         return;
     FUN_1419f1370(nId);
-    MS2Ptr<Unk_AsBuff> spBuff(new AdditionalCustomCli((PCBase*)pPc, FUN_1419f3400(nId), nId, nLevel, 1));
-    if ((bool)spBuff.get() && ((class AdditionalCli*)(class Unk_AsBuff*)(spBuff.operator->()))->IsValid())
+    MS2Ptr<AdditionalCli> spBuff(new AdditionalCustomCli((PCBase*)pPc, FUN_1419f3400(nId), nId, nLevel, 1));
+    if ((bool)spBuff.get() && spBuff.operator->()->IsValid())
         AddBuffEffect(spBuff);
     FUN_1419f37f0(5);
 }
@@ -1086,7 +1073,7 @@ void UIMainPlayerInfo::FUN_1419f19c0()
     FUN_1417634a0(GetSlotName());
     FUN_1417633f0(GetSlotName(), 0x19);
     if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
-        spSlot->Invoke("updateBindSlot", reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand);
+        spSlot->Invoke("updateBindSlot", reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand);
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
@@ -1147,7 +1134,7 @@ void UIMainPlayerInfo::FUN_1419f1e60()
 {
     if (m_30 == 0)
         return;
-    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand)
     {
         int nKey1 = ((CKeyTable*)FUN_1409331f0())->FUN_14142c940(800001, 2);
         int nKey2 = ((CKeyTable*)FUN_1409331f0())->FUN_14142c940(800002, 2);
@@ -1170,7 +1157,7 @@ void UIMainPlayerInfo::FUN_1419f21b0()
         return;
     int x = -395;
     int y = -12;
-    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand)
     {
         x = -478;
         y = -60;
@@ -1178,7 +1165,7 @@ void UIMainPlayerInfo::FUN_1419f21b0()
     m_effectManager->SetPosA(x, y);
     x = 0x48;
     y = -12;
-    if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
+    if (reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bExpand)
     {
         x = 0x5d;
         y = -60;
@@ -1197,7 +1184,7 @@ void UIMainPlayerInfo::FUN_1419f22a0(int nKey, int bPress)
     ASObj obj(2);
     obj.FUN_1407cb9c0("index", nIndex);
     obj.FUN_1407cb9c0("bPress", bPress);
-    obj.FUN_1407cbbe0("showSkillName", reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bShowSkillName);
+    obj.FUN_1407cbbe0("showSkillName", reinterpret_cast<Unk_MpCfgData*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bShowSkillName);
     ASArray names(2);
     for (int i = nFirst; i < nFirst + 8; i++)
     {

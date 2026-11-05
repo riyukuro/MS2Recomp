@@ -21,7 +21,7 @@
 int FUN_140718200(const CStringW& text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads, packet.cpp).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
-Unk_GEOut* FUN_14070fae0(Unk_GEOut* out, const CStringW* text);
+COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The factories of this unit (they are defined further down, in exe order).
@@ -63,7 +63,7 @@ void GameEventStringBoard::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
     FUN_14070f9a0(*(COutputStream *)out, m_nId);
-    FUN_14070fae0(out, &m_80);
+    FUN_14070fae0(*(COutputStream *)out, m_80);
 }
 
 // @0x14041eb00
@@ -102,7 +102,7 @@ void GameEventStringBoardLink::vfunc_2() {}
 void GameEventStringBoardLink::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070fae0(out, &m_68);
+    FUN_14070fae0(*(COutputStream *)out, m_68);
 }
 
 // @0x14041ece0

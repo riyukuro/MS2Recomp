@@ -51,7 +51,7 @@ public:
 };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat&);
+int FUN_141276f80(Unk_CommandChat*);   // C3: the definer's signature (0x141276f80)
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
 void FUN_140841420(CStringW& str);                                              // trim
@@ -119,7 +119,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = StringFormat(L"/MoveField {0}", strField);
-                FUN_141276f80(chat);
+                FUN_141276f80(&chat);
             }
         }
         return 1;
@@ -134,7 +134,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             Unk_CommandChat chat;
             chat.kind = 0;
             chat.message = StringFormat(L"/AddField {0}", strField);
-            FUN_141276f80(chat);
+            FUN_141276f80(&chat);
         }
         return 1;
     } else if (_stricmp("OnSearchField", szMethod) == 0) {

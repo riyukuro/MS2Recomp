@@ -101,4 +101,5 @@ private:
 };
 MS2_CHECK_SIZE(GFxSceneService, 0x40);
 
-GFxSceneService* FUN_1408e57f0();                                   // the GFxSceneService instance
+// The GFxSceneService instance getter at 0x1408e57f0 is CUserMail::FUN_1408e57f0 (usermail.h, static __int64,
+// returns the scene-service global DAT_143ab25e8); callers cast its result to GFxSceneService*.

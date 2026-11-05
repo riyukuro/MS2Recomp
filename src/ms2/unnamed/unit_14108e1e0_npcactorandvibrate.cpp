@@ -145,7 +145,7 @@ class Unk_PCBaseComp_a98 : public UIBuffBalloon::Entity {};
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity {};
 MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // new hp bar
 MS2Ptr<Unk_PCBaseComp_a78> FUN_141a60da0(int nObjectId);           // new name tag
-MS2Ptr<Unk_PCBaseComp_a88> FUN_14192fd40(int nObjectId);           // new emoticon
+MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nObjectId);           // new emoticon (uiemoticon.cpp)
 MS2Ptr<Unk_PCBaseComp_a98> FUN_14128ef70(int nObjectId);           // new buff balloon
 MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nObjectId);           // new chat balloon
 
@@ -171,7 +171,6 @@ class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class CEmotionTable { public: void LoadTextures(unsigned int nId, CString strDir); };   // preload the npc's effects
 class CEmotionManager { public: CEmotionTable* GetNpcTable(); };
-CEmotionManager* FUN_140a50010();
 class CLua { public: float CalcNpcAsiR(long long a, float b); };
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 bool FUN_14028d470(float a, float b);                               // a != b (with epsilon)
@@ -195,11 +194,6 @@ class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, in
 template<class T> T* Unk_DmgFindUI(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 // The views of pc.cpp: the world's object relation, the effect service's hit sounds / event effects, the local player.
-class Unk_PCFxMgr
-{
-public:
-    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, NiPoint3 kPos, float fVolume);   // hit sound
-};
 class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned n); };
 struct Unk_WsC_NpcAnim;
 // The world service: the spawn animation of a spawn id (worldservice.h).
@@ -331,7 +325,6 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int FUN_1422b9ea0();
 };
-class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };
 class UITalkManager { public: int GetTalking(); void FUN_141b20790(int nObjectId, int nFriendly); };                // a talk is open
 __int64 FUN_14028d260(float f);                                         // float -> int (ms)
 float FUN_14028d5b0(float fAngle);                                  // normalise an angle
@@ -669,7 +662,7 @@ int CNpc::vfunc_58()
 // @0x14108fd60
 Unk_PCBaseFxLib* CNpc::vfunc_70()
 {
-    return reinterpret_cast<Unk_PCBaseFxLib*>(FUN_140a50010()->GetNpcTable());
+    return reinterpret_cast<Unk_PCBaseFxLib*>(TSingleton<CEmotionManager>::GetInstance()->GetNpcTable());
 }
 
 // @0x14108fd90
@@ -748,7 +741,7 @@ MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
     if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a88>(0);
     if (m_spA88.IsNull() && vfunc_116() > 0)
-        m_spA88 = FUN_14192fd40(m_unk_70);
+        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
     return m_spA88;
 }
 
@@ -991,7 +984,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             }
         }
     } else if (nState == 0x16) {
-        int nTalking = reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->GetTalking();
+        int nTalking = TSingleton<UITalkManager>::GetInstance()->GetTalking();
         if (FUN_14166cc80() == 0x49 && nTalking == 0) {
             if (GetNpcData()->m_bLookAtMyPCWhenTalking) {
                 if (reinterpret_cast<CQuestManager*>(FUN_140764020())->IsPortalSummonRequestActive() != 0) {
@@ -1882,7 +1875,7 @@ void CNpc::vfunc_33(void* a, void* b)
         if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->FUN_14123c580()) {
             Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
             float fVolume = pVolume->Read();
-            reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
                 m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         }
     }
@@ -1937,7 +1930,7 @@ void CNpc::vfunc_34(void* p)
             break;
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
-        reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
             nOwnerRel, vfunc_18(), fVolume);
     } while (0);
     if (IsDead() == 0 && FUN_141670a00(4) == 0) {
@@ -1985,7 +1978,7 @@ void CNpc::vfunc_35(void* p)
         FUN_14166ccb0()->vfunc_6();
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
-        reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
             m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         m_spSkillRow = static_cast<CSplashDamageRecord*>(p)->m_spLevel;
         m_nD80 = static_cast<CSplashDamageRecord*>(p)->GetAttackData()->m_nDirection;
@@ -2071,7 +2064,7 @@ void CNpc::FUN_141099370(float fTime)
     } else {
         m_nDE0 += (int)FUN_14028d260(fTime);
         if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(FUN_1401d3200()->MonologueInterval.Get()) + nRandom)) {
-            reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b20790(FUN_14123c580(), vfunc_116());
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b20790(FUN_14123c580(), vfunc_116());
             FUN_141099580();
         }
     }
@@ -2290,7 +2283,7 @@ void FUN_1410917a0(unsigned int nNpcId)
             const std::pair<unsigned int, unsigned short>& kSkill = spData->m_skill.GetSkill(i);
             ((class SkillDataTableCli*)(class SkillDataTableCli*)(TSingleton<SkillDataTableCli>::GetInstance()))->PreloadSkill(kSkill.first, kSkill.second, 4);
         }
-        FUN_140a50010()->GetNpcTable()->LoadTextures(spData->GetId(), "");
+        TSingleton<CEmotionManager>::GetInstance()->GetNpcTable()->LoadTextures(spData->GetId(), "");
     }
 }
 

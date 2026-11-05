@@ -95,8 +95,7 @@ public:
     void FUN_141a02480(int n);
     void FUN_141a024a0(int n);
 };
-template <class T> class Unk_BreakPtr { public: operator T*() const; T* operator->() const; };   // C3: view of itembreakmanager.h
-#define TM_BOX(p) reinterpret_cast<const Unk_BreakPtr<CMsgBoxData>&>(p)
+#define TM_BOX(p) reinterpret_cast<const MS2Ptr<CMsgBoxData>&>(p)   // C3: was a view of itembreakmanager.h's Unk_BreakPtr (same COMDATs 0x140534fc0 / 0x140534fe0)
 int FUN_14025a620(class Unk_ConstVal*);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);

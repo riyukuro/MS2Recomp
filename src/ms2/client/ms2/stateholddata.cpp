@@ -195,7 +195,7 @@ void StateHold::vfunc_5(int n)
     if (pPC != 0)
     {
         pPC->FUN_141676060(pPC->vfunc_18());
-        if (((void*)(reinterpret_cast<Unk_CameraManager*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60())) != pPC)
+        if (((void*)(reinterpret_cast<CameraMgr*>(reinterpret_cast<Unk_HoldCamera*>(TSingleton<CameraMgr>::GetInstance()))->FUN_140a38d60())) != pPC)
             pPC->SendRequestRideMode4();
     }
 }

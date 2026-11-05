@@ -12,7 +12,6 @@
 #include "ms2/placeholder/intervaltimer.h"
 
 class ASTextField;
-class Unk_TrList;
 class UITimeRunEventDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -38,7 +37,6 @@ public:
     int FUN_140ee4b00();                                                    // selected day tab + 1, -1 when unbound
     int FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext);               // elapsed days, at most 6
     void FUN_140ee4ca0();                                                   // setTabCount per day
-    MS2Ptr<Unk_TrList> FUN_140c02900(const CString& strName);               // list child lookup
 
 private:
     MS2_LAYOUT_FRIEND;

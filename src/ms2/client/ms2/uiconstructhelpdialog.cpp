@@ -31,11 +31,11 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
 // The home (cube map information) service.
-class CubeMapInformationService { public: bool FUN_1410c35c0(); };
+template <int N> struct Unk_CMISTree;   // the visitor id tree (a std::set<unsigned __int64>, cubemapinformationservice_3.h)
+class CubeMapInformationService { public: bool FUN_1410c35c0(); void FUN_1410d5930(Unk_CMISTree<0x11e>* pOut); };   // FUN_1410d5930: collect the visitors
 class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    void FUN_1410d5930(std::set<unsigned __int64>* pOut);       // collect the visitors
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
@@ -125,7 +125,7 @@ void UIConstructHelpDialog::vfunc_43()
         if (WorldService::GetInstance()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
         {
             std::set<unsigned __int64> kVisitors;
-            reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d5930(&kVisitors);
+            reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d5930((Unk_CMISTree<0x11e>*)&kVisitors);
             if (kVisitors.empty() != 0)
                 pEntity->vfunc_2(6, 0, 0x21);
             else

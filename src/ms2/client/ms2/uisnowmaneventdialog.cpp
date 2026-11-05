@@ -35,8 +35,8 @@ public:
     void FUN_140159ba0();
     void FUN_141901b20(int alignment, float x, float y);
     void FUN_141901880(MS2Ptr<AScript>, float, float, float, float);
-    void FUN_1419015e0(void*);
-    bool FUN_141901660(void*);
+    void FUN_1419015e0(class Unk_140165cf0* pNode);   // C3: uicommon.h's signatures
+    bool FUN_141901660(class Unk_140165cf0* pNode);
     void FUN_141901c10(MS2Ptr<AScript>, int, int);
 private:
     float m_x; float m_y; int m_align; float m_defaultX; float m_defaultY; int m_defaultAlign;
@@ -235,7 +235,7 @@ int UISnowmanEventDialog::vfunc_53(void* cfg)
             float x = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1500();
             float y = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1530();
             m_alignInfo->FUN_141901880(m_30, (float)dialog->FUN_1422e6310(), (float)dialog->FUN_1422e6270(), x, y);
-            m_alignInfo->FUN_1419015e0(cfg);
+            m_alignInfo->FUN_1419015e0((class Unk_140165cf0*)cfg);
         }
         return 1;
     }
@@ -249,7 +249,7 @@ int UISnowmanEventDialog::vfunc_54(void* cfg)
     if (UIDialog::vfunc_54(cfg)) {
         ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if ((m_alignInfo.get() ? true : false) && dialog) {
-            if (!m_alignInfo->FUN_141901660(cfg))
+            if (!m_alignInfo->FUN_141901660((class Unk_140165cf0*)cfg))
                 m_alignInfo->FUN_141901b20(m_alignment, (float)m_offsetX, (float)m_offsetY);
         }
         return 1;

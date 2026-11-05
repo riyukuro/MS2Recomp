@@ -82,7 +82,7 @@ public:
     void FUN_1418dda30(int n);
 };
 
-// The shop fee row (CBeautyShopDataCli::FUN_1406e3dc0).
+// The shop fee row (CBeautyShopDataCommon::FUN_1406e3dc0).
 class Unk_BSFee : public CPtred
 {
 public:
@@ -107,7 +107,7 @@ class CBeautyShopDataCli
 public:
     CBeautyShopDataCli();
     virtual ~CBeautyShopDataCli();
-    Unk_BSFee* FUN_1406e3dc0();                 // the fee row
+    // the fee row: CBeautyShopDataCommon::FUN_1406e3dc0 (npcshopdata.h), called through the base
     Unk_BSFee* FUN_1406e3de0();                 // the second fee row
     void FUN_1406e5420(CInPacket& packet);      // read the shop
 

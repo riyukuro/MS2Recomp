@@ -69,10 +69,11 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 };
 
 
-efd::Point3 FUN_141b6e150(const NxVec3& v);                         // NxVec3 -> efd::Point3
+struct Unk_UtilFloat3;
+Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
 NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
 float FUN_14059d930(float f);                                       // fabsf
-float FUN_140966ea0(efd::Point3 kA, efd::Point3 kB);                // planar distance
+float FUN_140966ea0(Vector3 kA, Vector3 kB);   // C3: the definer's signature (0x140966ea0), planar distance
 
 static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFlags, unsigned int nNpcKinds);
 static void ShuffleTargets(ATL::CAtlArray<efd::SmartPointer<GameObject> >& arr);
@@ -584,7 +585,7 @@ int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 
         }
         if (!bHit && pTargetBox->FUN_140adad80() < pRing->GetTop() && pTargetBox->FUN_140adad00() > pRing->GetBottom())
         {
-            NiPoint3 kBoxCenter(FUN_141b6e150(pTargetBox->m_kBox.center));
+            NiPoint3 kBoxCenter(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&pTargetBox->m_kBox.center)))));
             kBoxCenter.z = 0.0f;
             NiPoint3 kRingCenter(*(const efd::Point3*)&pRing->m_ptCenter);
             kRingCenter.z = 0.0f;
@@ -600,8 +601,8 @@ int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 
             bHit = fLimit > fDistSq;
         }
         if (bHit)
-            pHit->m_kMetric.z = FUN_140966ea0(*(const efd::Point3*)&pRing->m_ptCenter,
-                                              FUN_141b6e150(pTargetBox->m_kBox.center));
+            pHit->m_kMetric.z = FUN_140966ea0(*(const Vector3*)&pRing->m_ptCenter,
+                                              FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&pTargetBox->m_kBox.center)));
     }
     else if (pShape->m_nShape == 3 && pBox->m_nShape == 1)
     {
@@ -718,7 +719,7 @@ int CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
             }
             if (!bHit && pBox->FUN_140adad80() < pRing->GetTop() && pBox->FUN_140adad00() > pRing->GetBottom())
             {
-                NiPoint3 kBoxCenter(FUN_141b6e150(pBox->m_kBox.center));
+                NiPoint3 kBoxCenter(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&pBox->m_kBox.center)))));
                 kBoxCenter.z = 0.0f;
                 NiPoint3 kRingCenter(*(const efd::Point3*)&pRing->m_ptCenter);
                 kRingCenter.z = 0.0f;

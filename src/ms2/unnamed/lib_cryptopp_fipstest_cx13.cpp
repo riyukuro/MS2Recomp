@@ -9,12 +9,27 @@
 
 #include <cstdint>
 
-extern void FUN_1423739b0(void* temporary, void* group, void* name,
-                           void* valueType, void* output, std::uint64_t flags);
-extern void* FUN_1423759b0(void* temporary);
-extern void FUN_142373ef0(void* temporary, void* group, void* name,
-                           void* valueType, void* output, std::uint64_t flags);
-extern void* FUN_142375d80(void* temporary);
+#include <new>
+#include <typeinfo>
+
+namespace CryptoPP   // C3: views of the GetValueHelperClass members these adapters call
+{
+class Integer;
+class NameValuePairs;
+class DL_GroupParameters_DSA;
+template <class T> class DL_PrivateKey;
+template <class T> class DL_PublicKey;
+template <class GP> class DL_PrivateKeyImpl;
+template <class GP> class DL_PublicKeyImpl;
+template <class T, class BASE> class GetValueHelperClass
+{
+public:
+    GetValueHelperClass(const T* pObject, const char* name, const std::type_info& valueType, void* pValue, const NameValuePairs* searchFirst);
+    GetValueHelperClass& Assignable();
+};
+}
+typedef CryptoPP::GetValueHelperClass<CryptoPP::DL_PrivateKeyImpl<CryptoPP::DL_GroupParameters_DSA>, CryptoPP::DL_PrivateKey<CryptoPP::Integer>> Cx13PrivateKeyHelper;
+typedef CryptoPP::GetValueHelperClass<CryptoPP::DL_PublicKeyImpl<CryptoPP::DL_GroupParameters_DSA>, CryptoPP::DL_PublicKey<CryptoPP::Integer>> Cx13PublicKeyHelper;
 
 namespace {
 // GetValueHelperClass-shaped temporary: object, name, type, value pointers, then the found flag at 0x20.
@@ -29,9 +44,9 @@ struct Cx13GetValueTemp
 bool GetVoidValueCx13Ec2n(void* self, void* name, void* valueType, void* output)
 {
     Cx13GetValueTemp temporary;
-    FUN_1423739b0(&temporary, static_cast<std::uint8_t*>(self) - 0x178,
-                  name, valueType, output, 0);
-    auto* result = static_cast<std::uint8_t*>(FUN_1423759b0(&temporary));
+    new (&temporary) Cx13PrivateKeyHelper(reinterpret_cast<const CryptoPP::DL_PrivateKeyImpl<CryptoPP::DL_GroupParameters_DSA>*>(static_cast<std::uint8_t*>(self) - 0x178),
+                  static_cast<const char*>(name), *static_cast<const std::type_info*>(valueType), output, nullptr);
+    auto* result = reinterpret_cast<std::uint8_t*>(&reinterpret_cast<Cx13PrivateKeyHelper*>(&temporary)->Assignable());
     return *reinterpret_cast<bool*>(result + 0x20);
 }
 
@@ -39,8 +54,8 @@ bool GetVoidValueCx13Ec2n(void* self, void* name, void* valueType, void* output)
 bool GetVoidValueCx13Ecp(void* self, void* name, void* valueType, void* output)
 {
     Cx13GetValueTemp temporary;
-    FUN_142373ef0(&temporary, static_cast<std::uint8_t*>(self) - 0x170,
-                  name, valueType, output, 0);
-    auto* result = static_cast<std::uint8_t*>(FUN_142375d80(&temporary));
+    new (&temporary) Cx13PublicKeyHelper(reinterpret_cast<const CryptoPP::DL_PublicKeyImpl<CryptoPP::DL_GroupParameters_DSA>*>(static_cast<std::uint8_t*>(self) - 0x170),
+                  static_cast<const char*>(name), *static_cast<const std::type_info*>(valueType), output, nullptr);
+    auto* result = reinterpret_cast<std::uint8_t*>(&reinterpret_cast<Cx13PublicKeyHelper*>(&temporary)->Assignable());
     return *reinterpret_cast<bool*>(result + 0x20);
 }

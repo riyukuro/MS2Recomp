@@ -104,6 +104,7 @@
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/blockformat.h"
 #include "ms2/commonfiles/ugcmappackageinfo.h"   // C3: Unk_Int3, the cube cell
+#include "ms2/placeholder/cube.h"   // C3: Cube (was the unit-local views Cube/Unk_CubeInfo)
 
 // ---- statics (the .di initializers; the strings are the AS member names) ----
 
@@ -280,19 +281,6 @@ class Unk_ItemData
 {
 };
 
-class Cube   // C3: member view (real class not in this TU)
-{
-public:
-    int FUN_1408b4f20();
-};
-class Unk_CubeInfo : public CPtred
-{
-public:
-    void* m_18;
-    char pad_20[0x30];
-    int m_50;
-    int m_54;
-};
 
 class Unk_CubeKind
 {
@@ -2349,8 +2337,8 @@ void FUN_140ef3840()
     bool bShown = false;
     if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()) != 0)
     {
-        MS2Ptr<Unk_CubeInfo> spCube((Unk_CubeInfo*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()));
-        void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetOwnerId(spCube.get()->m_50, spCube.get()->m_54);
+        MS2Ptr<Cube> spCube(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()));
+        void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetOwnerId(spCube.get()->field50, spCube.get()->field54);
         if ((void*)((class PC*)pWorld)->FUN_141656ad0() == pLayer)
         {
             if (FUN_1408b5570(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
@@ -2369,7 +2357,7 @@ void FUN_140ef3840()
                     bShown = true;
                 }
                 if (((class Unk_UserSvc*)FUN_140166410())->FUN_14036d570(0xd4) != 0 && !bShown)
-                    ((class MyPC*)(void*)(pWorld))->FUN_14152f140((__int64)spCube.get()->m_18);
+                    ((class MyPC*)(void*)(pWorld))->FUN_14152f140((__int64)spCube.get()->field18);
             }
             else
             {

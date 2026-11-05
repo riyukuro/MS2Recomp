@@ -82,7 +82,7 @@ MS2_CHECK_OFFSET(StateWeddingEmotionData, m_strAnim, 0x20);
 class WeddingEmotionData : public CPtred
 {
 public:
-    Unk_StrVec m_names;                                     // +0x18
+    std::vector<CString> m_names;                           // +0x18 (C3: was Unk_StrVec)
 };
 MS2_CHECK_OFFSET(WeddingEmotionData, m_names, 0x18);
 

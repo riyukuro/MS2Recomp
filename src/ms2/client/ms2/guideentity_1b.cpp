@@ -168,7 +168,7 @@ public:
     bool HasValue() const;
 };
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                 // Nullable<int>::GetValue
-Unk_GcCondRef FUN_1413a5420(CStringA strTag);                       // the condition class of a tag
+MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag);             // the condition class of a tag
 void FUN_140710590(COutPacket& kPacket);                            // sends the packet
 
 typedef CGuideManager::Occurrence GmOcc;
@@ -674,10 +674,10 @@ void CGuideManager::TestEntity(int nMode, int nId)
 // @0x14138d090
 void CGuideManager::TestCondition(CStringA strName)
 {
-    Unk_GcCondRef ref = FUN_1413a5420(CStringA(strName));
-    if (ref.FUN_141387b90() != 0)
+    MS2Ptr<CGuideCondition> ref = FUN_1413a5420(CStringA(strName));
+    if (ref.get() != 0)
     {
-        ref.FUN_141387bb0()->vfunc_5();
+        ref->vfunc_5();
     }
     else
     {

@@ -265,23 +265,8 @@ class ASDialog : public ASUIComponent
 {
 };
 
-// "m_itemBagEx": the tile list of the bag. Slot 24 (+0xc0) redraws it, slot 25 (+0xc8) sets the data provider.
-class Unk_InvItemBag : public ASTileList
-{
-public:
-#define INV_V(n) virtual void vfunc_##n();
-    INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) validateNow (bool: the exe passes dl)
-    virtual void vfunc_25(const Scaleform::GFx::Value& provider);   // 25 (+0xc8) dataProvider
-};
-
-// "m_expand": the slot count label.
-class Unk_InvExpandLabel : public ASUIComponent
-{
-public:
-    INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) (bool: the exe passes dl)
-};
+// "m_itemBagEx" (m_210) is an ASTileList. Its AssignRaw COMDAT is defined in uiitemdropinfodialog.cpp.
+template <> MS2Ptr<ASTileList>& MS2Ptr<ASTileList>::AssignRaw(ASTileList* p);
 
 // The search input's extra calls.
 class Unk_InvInput : public ASTextInput
@@ -348,7 +333,7 @@ class Unk_InvKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The localized "$s_..." strings.
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 // The text filter of the common strings.
 
@@ -377,12 +362,7 @@ extern bool DAT_143af62d0;                                          // the UI de
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // Talk scripts.
-MS2Ptr<CTalkScript> FUN_140856820(int nNpcId, int nKind);
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
+Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nKind);   // C3: the definer's return type (scriptptr.h)
 
 // Message boxes, notices and strings.
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
@@ -401,6 +381,7 @@ CStringW BlockFormat(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0
+#include "ms2/commonfiles/scriptptr.h"
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
@@ -465,11 +446,11 @@ template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString
     return m_30->FUN_140bbe880<ASTextInput>(strName);
 }
 // exe 0x140e6d820: the text getter 0x140c436d0.
-template <> MS2Ptr<Unk_InvExpandLabel> UISwfEntity::GetChild<Unk_InvExpandLabel>(const CString& strName)
+template <> inline MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString& strName)   // inline: uiotherpetsystemdialog defines it too
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_InvExpandLabel>(0);
-    return m_30->FUN_140c436d0<Unk_InvExpandLabel>(strName);
+        return MS2Ptr<ASLabel>(0);
+    return m_30->FUN_140c436d0<ASLabel>(strName);
 }
 
 // ---- statics (.text$di, in init order): the headers' statics, the user list keys, the break sounds ----------------------
@@ -917,8 +898,8 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         int nScriptId = 0xa7dabf;
         if (CTalkScript* pScript = FUN_140856820(nScriptId, nNpcId).get())
         {
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CString("ItemEnchantTransformDialog"), CString(""));
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b1eb90(CString("ItemEnchantTransformDialog"), CString(""));
         }
         return 1;
     }
@@ -928,8 +909,8 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         int nScriptId = 0xa7eb82;
         if (CTalkScript* pScript = FUN_140856820(nScriptId, nNpcId).get())
         {
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CString("UnlimitedEnchantDialog"), CString(""));
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b1eb90(CString("UnlimitedEnchantDialog"), CString(""));
         }
         return 1;
     }
@@ -953,8 +934,8 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         int nScriptId = 0xa7e618;
         if (CTalkScript* pScript = FUN_140856820(nScriptId, nNpcId).get())
         {
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
-            ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CString("ItemMergeOptionDialog"), CString(""));
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nScriptId, 2, 0);
+            TSingleton<UITalkManager>::GetInstance()->FUN_141b1eb90(CString("ItemMergeOptionDialog"), CString(""));
         }
         return 1;
     }
@@ -1601,9 +1582,9 @@ void UIInventoryDialog::UpdateExpandLabel()
 {
     unsigned int nUsed = g_143ab2a90.FUN_140a5cf30(m_194);
     unsigned int nTotal = g_143ab2a90.FUN_140a5d050(m_194);
-    if (MS2Ptr<Unk_InvExpandLabel> spLabel = GetChild<Unk_InvExpandLabel>("m_expand"))
+    if (MS2Ptr<ASLabel> spLabel = GetChild<ASLabel>("m_expand"))
     {
-        ((ASLabel*)spLabel.operator->())->FUN_1422e4a50(StringFormat(L"{0}/{1}", nUsed, nTotal));
+        spLabel->FUN_1422e4a50(StringFormat(L"{0}/{1}", nUsed, nTotal));
         spLabel->vfunc_24(true);
     }
     m_19c &= ~2;
@@ -1634,7 +1615,7 @@ void UIInventoryDialog::FUN_14199c2b0(CStringW strText)
             int nSlot = pBag->FindSlotBySearch(CStringW(strText));
             if (nSlot > -1)
             {
-                if (m_210.operator Unk_InvItemBag*() != 0)
+                if (m_210.operator ASTileList*() != 0)
                     m_210->FUN_1422cf4f0(nSlot / 6);
             }
             else
@@ -2285,6 +2266,7 @@ typedef UIMsg Unk_IbUIMsg;
 class Unk_IbDropdown : public ASDropdownMenu
 {
 public:
+#define INV_V(n) virtual void vfunc_##n();
     INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
     virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) validateNow (bool: the exe passes dl)
 };

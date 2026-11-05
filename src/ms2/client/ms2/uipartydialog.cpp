@@ -257,7 +257,7 @@ CStringW GetStringCommon(int nStringId);                                  // the
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);            // system message
 void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strText);    // notice by id
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);   // yes / no box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show a box
 void FUN_140710590(COutPacket& packet);                                 // send
@@ -676,7 +676,7 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 return 1;
             }
             ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, false, 1000);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, this, CStringW(L"buy_scroll"));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, static_cast<IMessageListener*>(this), CStringW(L"buy_scroll"));
             if (spBox == 0)
                 return 1;
             FUN_140d73c60(spBox);
@@ -1489,11 +1489,10 @@ struct Unk_PeOwner : Unk_PopupOwner
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
 egmAnimation::AnimationService* FUN_141b6f910();
-const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);                     // world translate of a node
 int FUN_141277f40();                                                      // the popup entity ui layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
-GFxManager* FUN_14025e7a0();
-float FUN_1412762d0(const Unk_PopupPos& pt);                              // height offset of a position
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
+float FUN_1412762d0(const NiPoint3& pt);                              // height offset of a position
 
 // @0x141a7caf0
 UIPopupEntity::UIPopupEntity(Unk_PopupOwner* pOwner)
@@ -1542,7 +1541,7 @@ void UIPopupEntity::OnLoadComplete()
 }
 
 float FUN_141032df0(void*);   // C3: was Unk_PmCamera::FUN_141032df0
-float FUN_1409f2430(class Unk_CameraManager*);   // C3: was Unk_PmCamera::FUN_1409f2430
+float FUN_1409f2430(class CameraMgr*);   // C3: was Unk_PmCamera::FUN_1409f2430
 
 // @0x141a7cdf0
 void UIPopupEntity::vfunc_15()
@@ -1561,7 +1560,7 @@ void UIPopupEntity::vfunc_15()
             vfunc_52();
         kScreen *= FUN_14025e7a0()->FUN_1422afec0(m_28);
         kScreen.y = kScreen.y + vfunc_59();
-        kScreen.y = kScreen.y + FUN_1412762d0(vfunc_60());
+        kScreen.y = kScreen.y + FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_PopupPos&>(vfunc_60())));
         vfunc_53(kScreen);
     }
     else
@@ -1655,7 +1654,7 @@ Unk_PopupPos UIPopupEntity::vfunc_60()
         if (m_70 == 0)
             m_70 = reinterpret_cast<PCBase*>(m_68)->FUN_141675150(m_78);
         if (m_70 != 0)
-            return FUN_140947900(static_cast<NiAVObject*>(m_70));
+            return reinterpret_cast<const Unk_PopupPos&>(static_cast<NiAVObject*>(m_70)->GetWorldTranslate());
     }
     return Unk_PopupPos(efd::Point3::ZERO);
 }
@@ -1759,8 +1758,7 @@ public:
 };
 
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
-float FUN_1412762d0(const Unk_PopupPos& pt);
-const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);
+float FUN_1412762d0(const NiPoint3& pt);
 void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);        // notice of a blocked action
 
 // The log call with one argument (0x141a876e0; FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
@@ -2052,7 +2050,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
         target.m_pos = pTarget->vfunc_18();
         NiAVObject* pNode = pTarget->FUN_141675150("Eff_UI");
         if (pNode != 0)
-            target.m_pos.y = target.m_pos.y + FUN_1412762d0(FUN_140947900(pNode));
+            target.m_pos.y = target.m_pos.y + FUN_1412762d0(pNode->GetWorldTranslate());
     }
     target.m_nLevel = (unsigned short)pTarget->vfunc_78();
     target.m_strImage = "";
@@ -2797,9 +2795,9 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
 float UIPopUpMenu::FUN_141a83db0()
 {
     float fNear = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
-    float fFar = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10();
+    float fFar = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
     float fDepth = fFar - fNear;
-    float fHeight = FUN_1409f2430(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()));
+    float fHeight = FUN_1409f2430(TSingleton<CameraMgr>::GetInstance());
     float fOffset = 0;
     if (fDepth != 0.0f)
     {
@@ -3558,7 +3556,7 @@ struct Unk_PdCursor
     bool operator()(GameObject* pA, GameObject* pB) const;               // the sort predicate: nearer to the cursor first
     efd::Point3 m_pt;
 };
-float FUN_140966f00(Unk_PdCursor kA, NiPoint3 kB);                      // the distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00), the distance
    // CStateService
 extern int DAT_143ab0248;                                               // the client country
 struct Unk_PpInteract : CInteractObjectData
@@ -3613,7 +3611,8 @@ bool Unk_PdCursor::operator()(GameObject* pA, GameObject* pB) const
         return false;
     if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pB->vfunc_18(), kScreenB))
         return false;
-    return FUN_140966f00(*this, kScreenA) < FUN_140966f00(*this, kScreenB);
+    return FUN_140966f00(reinterpret_cast<const Vector3&>(m_pt), reinterpret_cast<const Vector3&>(kScreenA))
+         < FUN_140966f00(reinterpret_cast<const Vector3&>(m_pt), reinterpret_cast<const Vector3&>(kScreenB));
 }
 
 // @0x141a8a010

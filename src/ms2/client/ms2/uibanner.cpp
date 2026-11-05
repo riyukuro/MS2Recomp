@@ -20,6 +20,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
 
 // The unit's statics: the shared header statics.
 #include "ms2/placeholder/header_statics_a.h"
@@ -54,13 +55,12 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-class Unk_BannerMgr;
-Unk_BannerMgr* FUN_1409478c0();                                             // singleton accessor
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
 };
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real accessor (0x1409478c0; actioncameramode.cpp defines it)
 class Unk_BannerActor : public PCBase
 {
 };
@@ -109,7 +109,7 @@ void UIBanner::Entity::vfunc_4()
 void UIBanner::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (((class CameraMgr*)(class Unk_BannerMgr*)(FUN_1409478c0()))->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)

@@ -106,6 +106,7 @@ static CStringW s_strChangeInvalidCharName(L"changeInvalidCharName");
 #include "ms2/commonfiles/gameeventuservalue.h"   // C3: GameEventUserValue
 #include <set>
 #include "ms2/commonfiles/itemgift.h"   // C3: ItemEntity
+#include "ms2/commonfiles/gameevent.h"   // C3: BurningLevelupContext
 
 // @0x1401115d0
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -127,8 +128,8 @@ class Unk_ClItemReader
 {
 public:
     Unk_ClItemReader();                                 // 0x141272280
-    MS2Ptr<CItem> FUN_1401fce40(CInputStream& s);
 };
+class Unk_PayloadItemWire { public: MS2Ptr<CItem> FUN_1401fce40(CInputStream& s); };   // C3: the item-wire reader's signature (packetpayloadserializers)
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_ClIdSet : public ATL::CAtlArray<unsigned __int64> { public: bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
 class Unk_ClUserInfo
@@ -145,8 +146,8 @@ public:
 class Unk_ClUserMgr { public: Unk_ClUserInfo* FUN_140cfd260(); };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 unsigned char* FUN_140c58ac0(Unk_ClUserMgr* p);
-void FUN_14125f670(unsigned char* p, unsigned char n, bool b);
-void FUN_14125bd20(unsigned char* p, unsigned char n);
+void FUN_14125f670(struct Unk_GpState* p, bool bUse, bool bNotify);   // C3: the definer's signature (gameoptionstruct.cpp)
+void FUN_14125bd20(struct Unk_InterfaceFlag* p, bool b);   // C3: was (unsigned char*, unsigned char) (gameoptionstruct.cpp)
 extern bool DAT_143ab2946;
 extern unsigned short DAT_143ab2944;                    // the highest character level
 extern bool DAT_143ab2942;
@@ -222,11 +223,11 @@ class Unk_ClPopupInfo                                   // 0x30 bytes: the popup
 public:
     Unk_ClPopupInfo();                                  // 0x141540eb0
     ~Unk_ClPopupInfo();                                 // 0x141541190
-    void FUN_1407a4c60(CInputStream& packet);
     bool m_bEmpty;
     char m_1, m_2, m_3, m_4, m_5, m_6, m_7;                         // the members are opaque here (no array: /GS)
     __int64 m_8, m_10, m_18, m_20, m_28;
 };
+class Unk_SPDI { public: void FUN_1407a4c60(CInputStream* in); };   // C3: serverpacketdef.h's signature
 class CInputKeyHandler { public: bool FUN_14116d890(bool bAlt); };   // C3: member view (placeholder/cinputkeyhandler.h)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class ASDialog : public ASDisplayObjectContainer { };
@@ -292,28 +293,12 @@ public:
 // The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
 class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
 struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
-struct Unk_ClRewardList { char m_p[0x10]; Unk_ClRewardEntry* FUN_1403e8aa0(); };   // an MS2Ptr<ItemEntity> (get() tested)
-struct Unk_ClRewardList2 { char m_p[0x1c]; };   // std::vector<ItemEntity> at +0
-class Unk_ClBurnEvent : public CPtred
-{
-public:
-    int m_18;
-    char m_pad1c[0x2c];
-    CStringW m_48;
-    CStringW m_50;
-    CStringW m_58;
-    char m_pad60[0x10];
-    Unk_ClRewardList2 m_70;
-    unsigned short m_8c;
-    char m_pad8e[2];
-    Unk_ClRewardList m_90;
-    CStringW m_a0;
-};
-typedef std::list<MS2Ptr<Unk_ClBurnEvent> > BurnEvents;                 // CGameEventValueBurningLevelup::GetAll fills a list
+// The events are BurningLevelupContext rows (commonfiles/gameevent.h); a reward item is read through Unk_ClRewardEntry.
+typedef std::list<MS2Ptr<BurningLevelupContext> > BurnEvents;           // CGameEventValueBurningLevelup::GetAll fills a list
 class Unk_ClCountEvent : public Unk_GameEventValue408 { };   // IsSet / GetValue (+0x408)
 class Unk_ClBurnMgr { public: Unk_ClCountEvent* FUN_14041cb30(); };
 int FUN_1418fc810();   // C3: was FUN_1418fc810
-void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox);   // attach the reward items to the box
+void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> spBox);   // attach the reward items to the box
 namespace efd { class Win32PlatformService { public: HWND GetWindowRef() const; }; }   // C3: member view
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CUserMail { public: static __int64 FUN_1408e57f0(); };   // C3: member view (commonfiles/usermail.h)
@@ -382,7 +367,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
     Unk_ClItemReader reader;
     for (int i = 0; i < nCount; ++i)
     {
-        MS2Ptr<CItem> spItem = reader.FUN_1401fce40(s);
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_PayloadItemWire*>(&reader)->FUN_1401fce40(s);
         if (!(spItem == 0))
             m_state.m_240.Add(spItem);
     }
@@ -605,7 +590,7 @@ void UICharacterListDialog::vfunc_79(void* p)
     case 0xe:
     {
         Unk_ClPopupInfo info;
-        info.FUN_1407a4c60(*(CInPacket*)p);
+        reinterpret_cast<Unk_SPDI*>(&info)->FUN_1407a4c60(&static_cast<CInputStream&>(*(CInPacket*)p));
         if (info.m_bEmpty)
             ShowPopup();
         else
@@ -1060,8 +1045,8 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
         DAT_143ab2828 = spPreview->FUN_1418e9cb0();
         FUN_141b70290();
         TSingleton<CGameOption>::GetInstance()->LoadCharacterOption();
-        FUN_14125f670(reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), *reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
-        FUN_14125bd20(FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())), *FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())));
+        FUN_14125f670(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), *reinterpret_cast<bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
+        FUN_14125bd20(reinterpret_cast<struct Unk_InterfaceFlag*>(FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance()))), *reinterpret_cast<bool*>(FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance()))));
     }
     else
     {
@@ -2007,14 +1992,14 @@ void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
     if (m_30 == 0)
         return;
     BurnEvents events;
-    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(reinterpret_cast<std::list<MS2Ptr<BurningLevelupContext> >&>(events));
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
     for (BurnEvents::const_iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
+        MS2Ptr<BurningLevelupContext> spEvent(*it);
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, nZero);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_eventId, nZero);
         if (nCharId != nId)
             continue;
         AttachBurningLevelupIcon(nId);
@@ -2032,18 +2017,18 @@ void UICharacterListDialog::FUN_1418ed860()
 void UICharacterListDialog::FUN_1418ef700()
 {
     BurnEvents events;
-    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(reinterpret_cast<std::list<MS2Ptr<BurningLevelupContext> >&>(events));
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
     for (BurnEvents::const_iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
+        MS2Ptr<BurningLevelupContext> spEvent(*it);
         if (spEvent == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, spEvent->m_18, nZero);
+        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, spEvent->m_eventId, nZero);
         if (nDone != 0)
             continue;
         __int64 nZero2 = 0;
-        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_18, nZero2);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, spEvent->m_eventId, nZero2);
         if (nCharId == 0)
             continue;
         AttachBurningLevelupIcon(nCharId);
@@ -2056,26 +2041,26 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     CharPtr spCharacter = FindCharacter(nId);
     if (spCharacter == 0)
         return;
-    MS2Ptr<Unk_ClBurnEvent> spFound(0);
+    MS2Ptr<BurningLevelupContext> spFound(0);
     BurnEvents events;
-    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(reinterpret_cast<std::list<MS2Ptr<BurningLevelupContext> >&>(events));
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
     for (BurnEvents::const_iterator it = events.begin(); it != events.end(); ++it)
     {
         if (*it == 0)
             continue;
         __int64 nZero = 0;
-        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, (*it)->m_18, nZero);
+        __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, (*it)->m_eventId, nZero);
         if (nDone != 0)
             continue;
-        if ((*it)->m_8c > 0 && reinterpret_cast<MS2Ptr<ItemEntity>&>((*it)->m_90).get())
+        if ((*it)->m_8c > 0 && (*it)->m_spJumpingItem.get())
         {
             __int64 nZero2 = 0;
-            __int64 nDone2 = DAT_143ab2fc0.GetValue<__int64>(0x7d4, (*it)->m_18, nZero2);
+            __int64 nDone2 = DAT_143ab2fc0.GetValue<__int64>(0x7d4, (*it)->m_eventId, nZero2);
             if (nDone2 != 0)
                 continue;
         }
         __int64 nZero3 = 0;
-        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, (*it)->m_18, nZero3);
+        __int64 nCharId = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140c5af20(2000, (*it)->m_eventId, nZero3);
         if (nCharId != 0)
             continue;
         if (!((BurningLevelupContext*)(*it).operator->())->HasTarget(spCharacter->FUN_1418e9d70()->m_3c))
@@ -2086,14 +2071,14 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     if (spFound == 0)
         return;
     // the texts are {0} templates: the exe fills them with FUN_1401e8510, not CStringW::Format
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, StringFormat<CStringW>(GetStringCommonByKey(spFound->m_48), spCharacter->FUN_1418e9cd0()), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, StringFormat<CStringW>(GetStringCommonByKey(spFound->m_setCharacterPopupStringKey), spCharacter->FUN_1418e9cd0()), 0, L"");
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(2);
     FUN_1418f4df0(spFound, spBox);
     spBox->Append<__int64>(spCharacter->FUN_1418e9cb0());
-    if (!spFound->m_50.IsEmpty())
-        static_cast<Unk_ClBox*>(spBox.operator->())->SetTitle(StringFormat<CStringW>(GetStringCommonByKey(spFound->m_50), spCharacter->FUN_1418e9cd0()));
+    if (!spFound->m_setCharacterPopupBottomStringKey.IsEmpty())
+        static_cast<Unk_ClBox*>(spBox.operator->())->SetTitle(StringFormat<CStringW>(GetStringCommonByKey(spFound->m_setCharacterPopupBottomStringKey), spCharacter->FUN_1418e9cd0()));
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::SendEventReward));
     FUN_140d73c60(spBox);
 }
@@ -2114,8 +2099,8 @@ bool UICharacterListDialog::SendEventReward(int nResult, const CMsgBoxData& box)
 void UICharacterListDialog::OnClickBurningLevelupDescBtn()
 {
     BurnEvents events;
-    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(reinterpret_cast<std::list<MS2Ptr<BurningLevelupContext> >&>(events));
-    MS2Ptr<Unk_ClBurnEvent> spFound(0);
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
+    MS2Ptr<BurningLevelupContext> spFound(0);
     for (BurnEvents::const_iterator it = events.begin(); it != events.end(); ++it)
     {
         if (*it == 0)
@@ -2125,7 +2110,7 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
     }
     if (spFound == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(spFound->m_58), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(spFound->m_descPopupStringKey), 0, CStringW(L""));
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(3);
@@ -2139,10 +2124,10 @@ void UICharacterListDialog::FUN_1418f0400()
     if (m_30 == 0)
         return;
     BurnEvents events;
-    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(reinterpret_cast<std::list<MS2Ptr<BurningLevelupContext> >&>(events));
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
     for (BurnEvents::const_iterator it = events.begin(); it != events.end(); ++it)
     {
-        MS2Ptr<Unk_ClBurnEvent> spEvent(*it);
+        MS2Ptr<BurningLevelupContext> spEvent(*it);
         if (spEvent == 0)
             continue;
         m_30->Invoke("attachBurningLevelupDescBtn");
@@ -2178,27 +2163,27 @@ bool UICharacterListDialog::OrderCharacters(CharPtr spA, CharPtr spB)
 }
 
 // @0x1418f4df0
-void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
+void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> spBox)
 {
     MS2Ptr<CMsgBoxDataItem> spFirst(0);
     MS2Ptr<CMsgBoxDataItem> spSecond(0);
-    if (reinterpret_cast<MS2Ptr<ItemEntity>&>(spEvent->m_90).get())
+    if (spEvent->m_spJumpingItem.get())
     {
         spFirst.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
-        spItem->FUN_140523c40((&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_0(), (&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_1(), 0);
-        spItem->SetCountClamped((&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_2());
+        spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_1(), 0);
+        spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_2());
         spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spFirst->m_spItem = spItem;
         spFirst->m_nCount = spItem->GetCount();
         spFirst->m_48 = 0x411;
     }
-    if (!reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).empty())
+    if (!spEvent->m_rewardItems.empty())
     {
         spSecond.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
-        spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_1(), 0);
-        spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(reinterpret_cast<std::vector<ItemEntity>&>(spEvent->m_70).begin().operator->())->m_ref)->vfunc_2());
+        spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_1(), 0);
+        spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_2());
         spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spSecond->m_spItem = spItem;
         spSecond->m_nCount = spItem->GetCount();
@@ -2207,7 +2192,7 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
     if (spFirst.get())
     {
         spBox->SetItem(spFirst);
-        static_cast<Unk_ClBox*>(spBox.operator->())->SetMsg2(StringFormat(GetStringCommonByKey(spEvent->m_a0)));
+        static_cast<Unk_ClBox*>(spBox.operator->())->SetMsg2(StringFormat(GetStringCommonByKey(spEvent->m_jumpingItemDescPopupStringKey)));
         if (spSecond.get())
             spBox->SetSecondItem(spSecond);
         return;

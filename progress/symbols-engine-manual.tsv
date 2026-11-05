@@ -637,3 +637,14 @@ big2_prologTok	1423bf1f0	func
 ??$BinaryStreamSave@E@efd@@YA_NAEAVBinaryStream@0@PEBEI@Z	141fda890	alias	niphysxscenedesc
 ??$_Reallocate_grow_by@V<lambda_319d5e083f45f90dcdce5dce53cbb275>@@D@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@_KV<lambda_319d5e083f45f90dcdce5dce53cbb275>@@D@Z	142390cc0	alias	hrtimer
 ??$_Reallocate_grow_by@V<lambda_65e615be2a453ca0576c979606f46740>@@PEBD_K@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@_KV<lambda_65e615be2a453ca0576c979606f46740>@@PEBD_K@Z	142390e20	alias	hrtimer
+# merge 60 fix (ua13, 2026-11-04): pin engine copies that game-unit rows (symbols-manual / symbols.tsv) bind to other VAs.
+# Integer(const char*) calls StringToInteger<char> (0x142359280), Integer(const wchar_t*) calls <wchar_t> (0x142359890);
+# the DSA private-key GetValueHelperClass ctor has a dll.cpp copy (0x1423258b0, called by GetVoidValue 0x14233e220) and
+# the fipstest copy 0x1423739b0 that symbols.tsv names for lib_cryptopp_fipstest_cx13 (that copy stays functional: its
+# chained tail refers to its own name, which resolves through this table to 0x1423258b0). Assignable likewise: dll
+# 0x1423313a0 (called by 0x14233e220), fipstest 0x1423759b0.
+??0Integer@CryptoPP@@QEAA@PEBD@Z	14235b020	func
+??0Integer@CryptoPP@@QEAA@PEB_W@Z	14235b360	func
+??0?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAA@PEBV?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	1423258b0	func
+?GetVoidValue@?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@UEBA_NPEBDAEBVtype_info@@PEAX@Z	14233e220	func
+?Assignable@?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAAAEAV12@XZ	1423313a0	func

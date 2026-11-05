@@ -464,8 +464,8 @@ CDamageRecord::CDamageRecord()
 
 // @0x14175a610
 int CDamageRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId,
-    int nSkillId, short nLevel, int nMotion, int nAttack, const Vector3& ptPos,
-    const Vector3& ptDir, const Vector3& ptHit)
+    int nSkillId, short nLevel, int nMotion, int nAttack, Vector3 ptPos,
+    Vector3 ptDir, Vector3 ptHit)
 {
     m_nTagId = nTagId;
     m_nTagSub = nTagSub;
@@ -675,7 +675,7 @@ CSplashDamageRecord::CSplashDamageRecord()
 
 // @0x14175b1c0
 int CSplashDamageRecord::Init(int nCasterId, int nOwnerId, unsigned long long nTagId, int nSkillId, short nLevel,
-    int nMotion, int nAttack, const Vector3& ptPos, const Vector3& ptDir)
+    int nMotion, int nAttack, Vector3 ptPos, Vector3 ptDir)
 {
     m_nCasterId = nCasterId;
     m_nOwnerId = nOwnerId;

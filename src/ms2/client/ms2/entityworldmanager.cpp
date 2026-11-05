@@ -333,10 +333,10 @@ bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& 
     return false;
 }
 // @0x1411cf2d0
-void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* args) {
+bool EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* args) {
     worlds[currentMap].createdEntities[entity->GetEntityID()] = entity;
     worlds[currentMap].allEntities[entity->GetEntityID()] = entity;
-    entities->AddEntity(entity, args);
+    return entities->AddEntity(entity, args);
 }
 // @0x1411cf3d0
  egf::EntityPtr EntityWorldManager::FUN_1411cf3d0(const egf::EntityID& id) {

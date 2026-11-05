@@ -48,14 +48,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
-// The level guide bar of the movie (an ASUIComponent in the exe). ctor 0x1422c7100.
-class Unk_DmGuideBar : public AScript
-{
-public:
-    Unk_DmGuideBar(const Scaleform::GFx::Value& v, int nMovieId);
-private:
-    void* m_unrecovered_40[9];
-};
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);   // 0x140c02990, defined below
 
 template<class T> MS2Ptr<T> Unk_DmCreate(int nMovieId, const Scaleform::GFx::Value& v)
 {
@@ -327,7 +320,7 @@ int UIDailyMissionDialog::FUN_140bffff0()
 // @0x140c00070
 void UIDailyMissionDialog::SendQuest(int nQuestId)
 {
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -348,12 +341,12 @@ void UIDailyMissionDialog::FUN_140c001d0()
     if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_recommendList"))
     {
         spList->FUN_1422dd1d0();
-        ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+        ATL::CAtlArray<MS2Ptr<CQuest>> quests;
         ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
         ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
-            Unk_PayloadPtr<CQuest> spQuest = quests[i];
+            MS2Ptr<CQuest> spQuest = quests[i];
             switch (spQuest->GetData()->m_338.m_value)
             {
             case 1:
@@ -377,7 +370,7 @@ void UIDailyMissionDialog::FUN_140c00500()
 {
     if (m_30.IsNull())
         return;
-    if (MS2Ptr<Unk_DmGuideBar> spBar = FUN_140c02990("m_guideBar"))
+    if (MS2Ptr<ASUIComponent> spBar = GetChild<ASUIComponent>("m_guideBar"))
         spBar->Invoke("removeAll");
     ATL::CAtlArray<MS2Ptr<CQuestData>> datas;
     TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(datas, 5);
@@ -511,7 +504,7 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return 0;
     if (spQuest->GetState() == 3)
@@ -577,12 +570,12 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
 // @0x140c01b50
 int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 2, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         if (spQuest->GetData().IsNull())
             continue;
         if (spQuest->GetData()->m_338.m_4 != nGroup)
@@ -596,12 +589,12 @@ int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
 // @0x140c01d30
 int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 1, 0);
     int nCount = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         if (spQuest->GetData().IsNull())
             continue;
         if (spQuest->GetData()->m_338.m_4 != nGroup)
@@ -617,12 +610,12 @@ int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
 // @0x140c01f50
 int UIDailyMissionDialog::FUN_140c01f50()
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         MS2Ptr<CQuestData> spData = spQuest->GetData();
         if (spData.IsNull())
             continue;
@@ -642,12 +635,12 @@ int UIDailyMissionDialog::FUN_140c020d0()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 5);
     int nBest = 0;
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         if (spQuest->IsActive() == 0 && spQuest->IsRewarded() == 0)
             continue;
         MS2Ptr<CQuestData> spData = spQuest->GetData();
@@ -665,11 +658,11 @@ int UIDailyMissionDialog::FUN_140c020d0()
 // @0x140c02320
 int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 {
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->FUN_1416cfc70(quests, 4, 0);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest = quests[i];
+        MS2Ptr<CQuest> spQuest = quests[i];
         if (spQuest->GetData().IsNull())
             continue;
         MS2Ptr<CQuestData> spData = spQuest->GetData();
@@ -705,11 +698,11 @@ MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strNa
 }
 
 // @0x140c02990
-MS2Ptr<Unk_DmGuideBar> UIDailyMissionDialog::FUN_140c02990(const CString& strName)
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
-        return MS2Ptr<Unk_DmGuideBar>(0);
-    return m_30->FUN_140accfb0<Unk_DmGuideBar>(strName);
+        return MS2Ptr<ASUIComponent>(0);
+    return m_30->FUN_140accfb0<ASUIComponent>(strName);
 }
 
 // The default slot of the quest event listener (shared by every listener without an override).

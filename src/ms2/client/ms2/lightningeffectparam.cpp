@@ -21,7 +21,7 @@
 #include "lightningeffectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
-#include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
+#include "ms2/client/ms2/cameramode.h"              // CCameraMode, Unk_CameraSetting
 #include <efd/MemoryDefines.h>
 #include <NiNode.h>
 #include <NiAVObject.h>
@@ -46,6 +46,8 @@
 #include "ms2/placeholder/xmlattr.h"         // C3: XmlTokenList
 #include <NiTexturingProperty.h>
 #include <NiAVObject.h>
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element and attribute helpers (commonfiles\tinyxmlhelper.cpp).
@@ -444,7 +446,7 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
     Vector3 kFlat = kDelta;
     kFlat.z = 0.0f;
     kFlat.FUN_140968990();
-    Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0250()));
+    Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));
     Vector3 kSide = kFlat.FUN_140a00e10(kCamera);
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)
     {

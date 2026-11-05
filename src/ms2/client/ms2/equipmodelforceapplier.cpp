@@ -50,8 +50,6 @@ public:
 };
 
 // The owner record's entity reference: a smart pointer to an object that carries the world id (+0x58).
-// The model seen as the owner holder: FUN_141200a40 copies CEquipModel::m_spOwner (a member in the exe).
-class Unk_EquipModelOwner : public CEquipItem { };
 
 // The world object table (singleton FUN_1403ed2d0) and its game objects (slot 20 = rotation in degrees).
 class Unk_WindObj
@@ -155,8 +153,8 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (pModel->vfunc_8() == 0) {
         return;
     }
-    MS2Ptr<Unk_EquipModelOwner> spOwner = reinterpret_cast<CEquipModel*>(pModel)->FUN_141200a40();
-    if (spOwner == (Unk_EquipModelOwner*)0) {
+    MS2Ptr<CEquipItem> spOwner = reinterpret_cast<CEquipModel*>(pModel)->FUN_141200a40();
+    if (spOwner == (CEquipItem*)0) {
         return;
     }
     Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FindObjectById(spOwner->GetItem()->FUN_140526b10()));

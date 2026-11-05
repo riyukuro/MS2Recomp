@@ -189,13 +189,13 @@ changes `.rsrc`). For this project's reference builds that is
 the checkout `z:/home/riyu/Documents/MS2_decomp/work/up1/wt` (as the exe's `__FILE__` strings spell it), with its
 `third_party` and `engine` under it.
 
-A full `-DMS2_PLAIN_COMPILE=ON` build on Linux (10-31, 73b439ad5's glue: 3637 steps, about 85 minutes at `-j16`) of a
+A full `-DMS2_PLAIN_COMPILE=ON` build on Linux (the 10-31 glue: 3637 steps, about 85 minutes at `-j16`) of a
 clean worktree with that build's glue
 and `-DMS2_PLAIN_NAME=fullexe3` gave an exe identical to `link2`'s `fullexe3.exe` except for 4 bytes, the link
 timestamps in the COFF header and the debug directory. The objs are not byte-identical files. That would need the same `/Fo`
 dir, the same `${GEN}` dir and `/showIncludes`.
 
-A second full build (3ce41dab9, the same checkout path, no exe anywhere: the committed `stubs.obj` default, `order.txt`
+A second full build (the 11-03 glue, the same checkout path, no exe anywhere: the committed `stubs.obj` default, `order.txt`
 unpacked from `order.tar.xz`, a supplied `.res`) gave the same symbol set and section list as the reference
 `fullexe3.exe` but was 512 bytes larger (`.text$mn` +0xd0, `.xdata` -0x20). Of its 3390 objs that could be compared
 (283 reference objs had been rebuilt since), 3329 were identical outside the debug and `.chks64` sections. The 61 that
@@ -206,7 +206,7 @@ not from reading the exe. Relinking the reference objs with the committed `stubs
 the reference exe except for the 4 timestamp bytes.
 
 On Windows with Visual Studio (tested on Windows 10 with VS 2022 Community from the VS GUI's Open Folder, step 5
-below: on 11-03 it built all 3731 steps of 6c1b0a955's glue with every `MS2_CL_<tool>` on the 14.16 fallback, and the
+below: on 11-03 it built all 3731 steps of that day's later glue with every `MS2_CL_<tool>` on the 14.16 fallback, and the
 exe logged in on a local server and entered a field):
 
 - Install VS 2022 (Community is enough) with the "Desktop development with C++" workload and these individual

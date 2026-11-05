@@ -59,7 +59,7 @@ extern "C" void (__cdecl* __imp_CrashReporter_SetStrInfoA)(const wchar_t*, const
 extern "C" void (__cdecl* __imp_CrashReporter_SetClientExit)(int);
 
 // The feature-flag holder; FUN_14036e510 tells whether the full-dump mode is switched on.
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 
 // The CrashManagerCli singleton (client\ms2\ms2.cpp), seen from its CCrashManager base.
 class Unk_CrashSingleton
@@ -245,7 +245,7 @@ void CCrashManager::FUN_1401ceb50()
 // @0x1401ceb60
 void FUN_1401ceb60()
 {
-    if (FUN_140166410()->IsRegionCN())
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionCN())
     {
         int nStart = 0;
         CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();

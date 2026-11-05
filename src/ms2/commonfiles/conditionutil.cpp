@@ -43,7 +43,7 @@ class Unk_ConditionXml;
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-CString FUN_14015f710(Unk_ConditionXml* pNode, const char* pszName, CString strDefault);   // string with default
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 CLogString* GetLogString();                                                                // the log singleton
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>), FUN_1401782a0 (std::vector<unsigned>)
@@ -321,7 +321,7 @@ int ConditionHasTarget(int nType);                          // 0x14029f330
 // @0x14029ea20
 int CConditionCommonData::Load(Unk_ConditionXml* pNode, CStringW strTag, unsigned nId)
 {
-    CString strType = FUN_14015f710(pNode, "type", CString(""));
+    CString strType = Unk_ReadString((class Unk_XmlNode*)(pNode), "type", CString(""));
     m_nType = ConditionTypeFromName(strType);
     if (m_nType == 0)
         return 0;

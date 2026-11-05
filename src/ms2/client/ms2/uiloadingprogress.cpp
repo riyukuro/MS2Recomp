@@ -36,7 +36,7 @@ class Unk_LpConstants;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CString FUN_141900b70();
 class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
-class Unk_LpMovie { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
+class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
 // efd::SmartPointer<NiRenderedTexture>::operator-> 0x14127c9b0: smart pointer -> texture
@@ -141,7 +141,7 @@ void UILoadingProgress::FUN_1419dff50(const CStringW& strMsg, int a, int b)
 {
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
-        reinterpret_cast<Unk_LpMovie*>(pClip.operator->())->FUN_1412c4930("progress", CStringW(strMsg), a, b);
+        reinterpret_cast<Unk_FtEntity*>(pClip.operator->())->FUN_1412c4930("progress", CStringW(strMsg), a, b);
 }
 MS2_REPLACE_METHOD(0x1419DFF50, UILoadingProgress, FUN_1419dff50, 248, 0xF6585DC6);
 

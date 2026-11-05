@@ -83,7 +83,6 @@ public:
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------------------
 class Unk_SingletonObj;
 class Unk_AmPC;
-class Unk_AmMainInfo;
 class UIMyInfoDialog : public UIObject {public:
     void FUN_141a5a560();   // C3: was free FUN_141a5a560
 };                      // stand-in: the class is not recovered (dialog id 0x2711)
@@ -104,7 +103,12 @@ public:
 };
 
 class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
-void FUN_1419f0bb0(Unk_AmMainInfo* pInfo, CAchieve* pAchieve);
+class Unk_MpAchieve;   // uimainplayerinfo.h's view of the achievement
+class UIMainPlayerInfo   // only the call used here (uimainplayerinfo.h)
+{
+public:
+    void FUN_1419f0bb0(Unk_MpAchieve* pAchieve);   // 0x1419f0bb0
+};
 
 // Notice plumbing.
 class CMeratMarketMan   // C3: member view for the former free stand-ins
@@ -298,7 +302,7 @@ inline __int64 CAchieve::GetProgress()
 // @0x140935c20
 CAchieveManager::CAchieveManager() : m_map(10)
 {
-    m_tally.FUN_140267ba0();
+    reinterpret_cast<Unk_IntTriple*>(&m_tally)->Unk_IntTriple::Unk_IntTriple();
 }
 
 // @0x140935c90
@@ -542,9 +546,9 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
                 UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
                 if (pMenu != 0)
                     ((class UIGameMenuDialog*)(class UIGameMenuDialog*)(pMenu))->FUN_141937ea0((void*)(pAchieve.get()), bNotified);
-                Unk_AmMainInfo* pInfo = ((class Unk_AmMainInfo*)FUN_140931900(0x4e5f));
+                UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
                 if (pInfo != 0)
-                    FUN_1419f0bb0(pInfo, pAchieve.get());
+                    pInfo->FUN_1419f0bb0(reinterpret_cast<Unk_MpAchieve*>(pAchieve.get()));
                 UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
                 if (pMyInfo != 0)
                     ((class UIMyInfoDialog*)(class UIMyInfoDialog*)(pMyInfo))->FUN_141a5a560();

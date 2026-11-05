@@ -9,6 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/commonfiles/probability.h"
 
 // The item option pointers (MS2Ptr<CItemOption>; the members are the exe's out-of-line copies in commonstruct_2.cpp).
 class CItemOption;
@@ -22,11 +23,10 @@ struct Unk_RemakeOptionList50 {
 };
 MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);
 
-// std::vector of 16-byte refcounted handles.
+// The +0x68 member is a std::vector<MS2Ptr<Probability::LogContext> > (ctor 0x14027d750, dtor 0x14027e4b0). This view
+// carries the copy and clear the exe keeps out of line. C3: was the member type (rows 214/380).
 void FUN_1402876b0(void* list, void* first, void* last);    // vector<MS2Ptr<CPtred>>::_Destroy
 struct Unk_RemakeOptionList68 {
-    Unk_RemakeOptionList68() noexcept;                              // 0x14027d750 (std::vector default ctor, noexcept)
-    ~Unk_RemakeOptionList68();                                      // 0x14027e4b0
     Unk_RemakeOptionList68& operator=(const Unk_RemakeOptionList68& o); // 0x14027ebb0
     // 0x14028a690 (commonstruct.cpp's vector::clear; no other definition): _Destroy(_Myfirst, _Mylast), _Mylast = _Myfirst
     void clear() { FUN_1402876b0(this, m_p[0], m_p[1]); m_p[1] = m_p[0]; }
@@ -49,7 +49,7 @@ public:
     int m_value48;                      // +0x48
     int m_value4c;                      // +0x4c
     Unk_RemakeOptionList50 m_list50;    // +0x50
-    Unk_RemakeOptionList68 m_list68;    // +0x68
+    std::vector<MS2Ptr<Probability::LogContext> > m_list68;    // +0x68 (C3: was Unk_RemakeOptionList68)
 };
 MS2_CHECK_SIZE(RemakeOptionContext, 0x80);
 MS2_CHECK_OFFSET(RemakeOptionContext, m_option28, 0x28);
@@ -72,7 +72,7 @@ RemakeOptionContext::RemakeOptionContext(const RemakeOptionContext& other)
     m_value48 = other.m_value48;
     m_value4c = other.m_value4c;
     m_list50 = other.m_list50;
-    m_list68 = other.m_list68;
+    reinterpret_cast<Unk_RemakeOptionList68&>(m_list68) = reinterpret_cast<const Unk_RemakeOptionList68&>(other.m_list68);
 }
 
 // @0x1402675b0
@@ -80,5 +80,5 @@ RemakeOptionContext::~RemakeOptionContext()
 {
     m_option28 = 0;
     m_option38 = 0;
-    m_list68.clear();
+    reinterpret_cast<Unk_RemakeOptionList68&>(m_list68).clear();
 }

@@ -93,13 +93,13 @@ unsigned FUN_14081d260(const CStringA& strName);            // special option na
 bool IsStatKindTwo(int nStat);                              // the stat value is a percent
 bool FUN_14081dcd0(int nSaType);                            // the SA value is a percent
 CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a stat option
-CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);    // the text of a special stat option
+CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);    // the text of a special stat option
 CStringW GetStringCommon(int nStringId);                      // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                // a string table text
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name coloured by rank
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
 unsigned FUN_140482050(unsigned nAmount, unsigned nScale);  // scaled amount
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 int FUN_1406198a0(int nValue, float fRate);
 
 // The option list of the remake records (Unk_RemakeOptionList50) is a vector of (option index, value) pairs.

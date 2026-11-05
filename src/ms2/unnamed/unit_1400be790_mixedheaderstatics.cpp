@@ -30,7 +30,15 @@
     };
 
 UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40, 0x10)
-UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0, 0x30)
+// the UGC cube stock (ugcmapitem.h's Unk_CubeStock, defined there): only its ctor/dtor are called here
+class Unk_CubeStock
+{
+public:
+    Unk_CubeStock();                                        // 0x140dfc480
+    ~Unk_CubeStock();                                       // 0x140dfc4b0
+private:
+    char m_pad[0x30];
+};
 
 // 0x143ab2e80 is trademanagerex.h's Unk_TradeItemTable (0x58): the exe's dynamic init / atexit call its own ctor/dtor
 // (0x14185b130 / 0x14185b170, pinned in trademanagerex_1). The dtor runs ~CAtlArray<MS2Ptr<CItem>> (0x1408f2340), so the
@@ -126,7 +134,7 @@ Unk_TradeItemTable DAT_143ab2e80;
 #else
 extern Unk_TradeItemTable DAT_143ab2e80;
 #endif
-static Unk_Be790H s_obj2e50;
+static Unk_CubeStock s_obj2e50;
 #ifndef MS2_HOOK_DLL   // s_tree3288: the exe's object at 0x143ab3288, which other units reach as DAT_143ab3288 (the hook DLL binds it)
 Unk_Be790TreeA DAT_143ab3288(10);
 #else

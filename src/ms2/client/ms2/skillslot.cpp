@@ -1686,7 +1686,7 @@ static CSkillRecord* Unk_AsSkillRecord(const MS2Ptr<Unk_PCBaseComp_b18>& sp)
 }
 extern float DAT_143aea120;                               // the equip stat 0x23 of the player
 int FUN_141472bc0();   // C3: was FUN_141472bc0
-int FUN_14028d260(float fTime);                           // seconds to milliseconds
+__int64 FUN_14028d260(float fTime);                       // seconds to milliseconds (C3: the definition's __int64 return, read as int)
 float FUN_14028d280(unsigned uMilliseconds);              // milliseconds to seconds
 bool FUN_14028d470(float a, float b);                     // a == b (within epsilon)
 class Unk_SsBody;
@@ -1707,7 +1707,7 @@ Unk_SkillCooltime::Unk_SkillCooltime()
 Unk_SkillCooltime::Unk_SkillCooltime(unsigned nStart, float fDuration)
     : m_nKey(0), m_fCombo(0), m_bCombo(0), m_f10(0), m_f14(0), m_nStart(nStart)
 {
-    m_nEnd = FUN_14028d260(fDuration) + m_nStart;
+    m_nEnd = (int)FUN_14028d260(fDuration) + m_nStart;
     m_nState = 0;
 }
 
@@ -1735,7 +1735,7 @@ float Unk_SkillCooltime::GetTotal()
 void Unk_SkillCooltime::Set(unsigned nStart, float fDuration)
 {
     m_nStart = nStart;
-    m_nEnd = FUN_14028d260(fDuration) + m_nStart;
+    m_nEnd = (int)FUN_14028d260(fDuration) + m_nStart;
 }
 
 // @0x141764280
@@ -2229,7 +2229,8 @@ public:
     bool FUN_141682fe0(int);
 };
 
-class Unk_SsValueI { public: int FUN_14025a620(); int m_n; };
+class Unk_SsValueI { public: int m_n; };
+int FUN_14025a620(class Unk_ConstVal* slot);   // a Constants::Value<int> slot's value (commonstringtable.cpp)
 class Unk_SsValueF { public: float m_f; };
 // The global constants of the game (0x1401d3200).
 class Unk_SsConst
@@ -2761,7 +2762,7 @@ int CSkillSystem::CanUseRechargeSkill(MS2Ptr<CSkillRecord> spRecord)
         return 0;
     unsigned nNow = FUN_141472bc0();
     int nLast = FUN_141768dd0(spRecord->m_spSkill);
-    int nGap = FUN_14028d260(spRecord->m_spSkill->m_condition.m_fDefaultRechargingCooldownTime);
+    int nGap = (int)FUN_14028d260(spRecord->m_spSkill->m_condition.m_fDefaultRechargingCooldownTime);
     if (nNow < (unsigned)(nLast + nGap))
         return 0;
     return 1;
@@ -3023,7 +3024,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         if (pBody != 0)
         {
             nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping() && reinterpret_cast<GameObjectController*>(pBody)->FUN_1412407a0();
-            static int s_nFlyCast = ((class Unk_SsConst*)FUN_1401d3200())->m_kFlyCast.FUN_14025a620();
+            static int s_nFlyCast = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)FUN_1401d3200())->m_kFlyCast));
             if (s_nFlyCast != 0)
                 nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping();
         }
@@ -3037,7 +3038,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         double dLimit = (double)(m_fLastCastTime + s_fCastReuse);
         if (dLimit >= TSingleton<CMainSystem>::GetInstance()->FUN_141473280())
         {
-            int nRepeat = ((class Unk_SsConst*)FUN_1401d3200())->m_kCastRepeat.FUN_14025a620();
+            int nRepeat = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)FUN_1401d3200())->m_kCastRepeat));
             if (nRepeat == 0)
                 return 1;
             if (m_nLastCastSkill == (int)spLevel->FUN_140803dc0())

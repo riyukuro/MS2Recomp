@@ -17,6 +17,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+template <class T> class TSingleton;
+class CameraMgr { public: Vector3 FUN_140a38d00(); void FUN_140a38d90(Vector3 pt); class Unk_CameraTargetEntity* FUN_140a38d60(); };   // C3: member view (bosstargetcamera.cpp)
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- unit-local placeholders ----
 
@@ -111,7 +114,7 @@ void CPVPCameraMode::vfunc_8(double fTime)
     Vector3 ptPos = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
     Vector3 ptCenter = FUN_1416c5d30();
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptInput = ptMove;
@@ -131,7 +134,7 @@ void CPVPCameraMode::vfunc_8(double fTime)
     ptRot = CCameraMode::FUN_140afdd40(ptCenter, ptPos, g_143a08cf8);
     m_d8.m_rot = ptRot;
     vfunc_39(fTime);
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
 }
 MS2_REPLACE_METHOD(0x1416c5230, CPVPCameraMode, vfunc_8, 772, 0x4DA24B45);
 
@@ -214,7 +217,7 @@ MS2_REPLACE_METHOD(0x1416c5540, CPVPCameraMode, vfunc_39, 1330, 0x2AEDBD94);
 // @0x1416c5a80
 void CPVPCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget && n)
         vfunc_6(0);
 }

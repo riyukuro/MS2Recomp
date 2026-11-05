@@ -292,7 +292,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 struct Unk_EntityAppFramework;
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pKey);
-float FUN_140966ea0(efd::Point3 a, efd::Point3 b);     // distance
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pRight, efd::Point3* pSide);
 
 // The actor's physics body and its hit report.
@@ -373,7 +373,7 @@ template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
 struct Unk_MagicEntity;
 struct Unk_MagicRidee;
 Unk_MagicRidee* FUN_141468360(Unk_MagicEntity* pOwner);          // as Ridee holder
-int FUN_14028d260(float f);                             // round to ms
+__int64 FUN_14028d260(float f);                             // round to ms  (C3: the definition's __int64 return, read as int)
 float FUN_14028d3a0(float fDeg);
 int FUN_140718170(const CStringA& str);
 
@@ -425,10 +425,10 @@ MS2_REPLACE_METHOD(0x1417b7490, StatePcGuideObjectController, FUN_1417b7490, 157
 // @0x1417b7540
 int StatePcGuideObjectController::FUN_1417b7540()
 {
-    int nTotal = m_spCurrent.get() ? FUN_14028d260(m_spCurrent->m_fTime) : 0;
+    int nTotal = m_spCurrent.get() ? (int)FUN_14028d260(m_spCurrent->m_fTime) : 0;
     for (POSITION pos = m_records.GetHeadPosition(); pos; m_records.GetNext(pos)) {
         Unk_GuideRecord* pRec = m_records.GetAt(pos).get();
-        nTotal += FUN_14028d260(pRec->m_fTime);
+        nTotal += (int)FUN_14028d260(pRec->m_fTime);
     }
     return nTotal;
 }
@@ -1289,7 +1289,7 @@ int StateClimb::FUN_1417bd420(void* pWall)
                     kEdge.x = m_pOwner->vfunc_18().x;
                 else
                     kEdge.y = m_pOwner->vfunc_18().y;
-                if (FUN_140966ea0(kEdge, MS2_ST_POINT(m_pOwner->vfunc_18())) < 100.0f)
+                if (FUN_140966ea0(reinterpret_cast<const Vector3&>(kEdge), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18()))) < 100.0f)
                     return 0;
             }
         }
@@ -1698,7 +1698,7 @@ void StateCrawl::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = reinterpret_cast<PCBase*>(m_pOwner)->FUN_141675ed0();
-    static int s_nFallDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
+    static int s_nFallDelay = (int)FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     if (bFalling) {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
     } else if (m_pOwner->vfunc_99(s_nFallDelay)) {
@@ -1814,7 +1814,7 @@ void StateDash::vfunc_3(double fTime)
     case 0x20: {
         efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
-        float fStep = FUN_140966ea0(m_posLast, MS2_ST_POINT(m_pOwner->vfunc_18()));
+        float fStep = FUN_140966ea0(reinterpret_cast<const Vector3&>(m_posLast), reinterpret_cast<const Vector3&>(MS2_ST_POINT(m_pOwner->vfunc_18())));
         m_fDist += fStep;
         m_posLast = m_pOwner->vfunc_18();
         if (fStep < 2.0f) {

@@ -10,9 +10,10 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
-#include "ms2/placeholder/abilitytable.h"
+#include "ms2/placeholder/ascript.h"
 
 class CInPacket;
+class CCharacterAbility;                                     // characterability.h
 
 class CCharacterAbilityManager : public TSingleton<CCharacterAbilityManager>
 {
@@ -26,7 +27,7 @@ public:
     int FUN_140f29e00();                                    // the points left
     unsigned FUN_140f29e40();                               // the points of the level
     ATL::CTimeSpan FUN_140f29ea0();                         // the time left until the next reset
-    int FUN_140f29f90(MS2Ptr<Unk_CaAbilityRow> ref);        // the ability can be learned now (by value: callee destroys)
+    int FUN_140f29f90(MS2Ptr<CCharacterAbility> ref);       // the ability can be learned now (by value: callee destroys)
     int FUN_140f2a0b0(int nId);                             // learned
     int FUN_140f2a100(int nId);                             // the level is too low
     int FUN_140f2a210();                                    // something is learned

@@ -9,20 +9,15 @@
 // MS2-PIN: ??A?$CAtlArray@U?$pair@_KH@std@@V?$CElementTraits@U?$pair@_KH@std@@@ATL@@@ATL@@QEAAAEAU?$pair@_KH@std@@_K@Z 0x140ace000 ; unique
 // MS2-PIN: ?vfunc_5@PetEvolutionBase@@UEAAXH@Z 0x140ace4e0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??0?$MS2Ptr@VUnk_PetButton@@@@QEAA@H@Z 0x140acd3b0
-// MS2-PIN: ??0?$MS2Ptr@VUnk_PetItemBag@@@@QEAA@H@Z 0x140acd430
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_PetButton@@@@QEBAPEAVUnk_PetButton@@XZ 0x140acd9c0
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_PetItemBag@@@@QEBAPEAVUnk_PetItemBag@@XZ 0x140acd9d0
-// MS2-PIN: ??C?$MS2Ptr@VUnk_PetButton@@@@QEBAPEAVUnk_PetButton@@XZ 0x140acd9e0
-// MS2-PIN: ??C?$MS2Ptr@VUnk_PetItemBag@@@@QEBAPEAVUnk_PetItemBag@@XZ 0x140acd9f0
+// MS2-PIN: ??0?$MS2Ptr@VASButton@@@@QEAA@H@Z 0x140acd3b0
+// MS2-PIN: ?get@?$MS2Ptr@VASButton@@@@QEBAPEAVASButton@@XZ 0x140acd9c0
+// MS2-PIN: ??C?$MS2Ptr@VASButton@@@@QEBAPEAVASButton@@XZ 0x140acd9e0
 // MS2-PIN: ??C?$MS2Ptr@VPetEvolutionBase@@@@QEBAPEAVPetEvolutionBase@@XZ 0x140acda00
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_PetButton@@@@AEBAXXZ 0x140ace8e0
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_PetItemBag@@@@AEBAXXZ 0x140ace910
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_PetButton@@@@CAXPEAVUnk_PetButton@@@Z 0x140ace970
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PetButton@@@@AEBAXPEAX@Z 0x140ace9d0
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_PetButton@@@@AEAAXXZ 0x140acea60
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_PetItemBag@@@@AEAAXXZ 0x140aceaa0
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_PetButton@@@@AEAAXPEAX@Z 0x140aceb20
+// MS2-PIN: ?AddRef@?$MS2Ptr@VASButton@@@@AEBAXXZ 0x140ace8e0
+// MS2-PIN: ?Reference@?$MS2Ptr@VASButton@@@@CAXPEAVASButton@@@Z 0x140ace970
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VASButton@@@@AEBAXPEAX@Z 0x140ace9d0
+// MS2-PIN: ?Release@?$MS2Ptr@VASButton@@@@AEAAXXZ 0x140acea60
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASButton@@@@AEAAXPEAX@Z 0x140aceb20
 // MS2-PIN: ??0?$CAtlArray@_KV?$CElementTraits@_K@ATL@@@ATL@@QEAA@XZ 0x140acd2e0
 // MS2-PIN: ??1?$MS2Ptr@VPetEvolutionBase@@@@QEAA@XZ 0x140acd740
 // MS2-PIN: ??__Es_itemLevel@@YAXXZ 0x1400c5c20
@@ -50,6 +45,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/asbutton.h"
 
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -85,16 +81,6 @@ static CString s_strStun = "stun";
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
-// A pet menu button (m_submit, m_debug, ...): a movie clip with a frame setter.
-class Unk_PetButton : public ASMovieClip
-{
-public:
-    Unk_PetButton(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_PetButton, 0x88);
-
 
 // The pet part of an item (item->FUN_1405278a0()->m_pet).
 class Unk_PetItemInfo : public CPtred
@@ -104,7 +90,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_PetItemInfo, m_pet, 0x18);
 
-class Unk_PetRowTable* FUN_14052d210();
 
 // The local player: slot 77 is the name.
 class Unk_PetPlayer
@@ -246,12 +231,12 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 // @0x140acc910 @0x140acc9c0 @0x140acca70 (Unk_ASCreate for the button, the bag and the component)
 
 // @0x140acce30
-template <> MS2Ptr<Unk_PetButton> AScript::FUN_140acce30<Unk_PetButton>(const CString& strName)
+template <> MS2Ptr<ASButton> AScript::FUN_140acce30<ASButton>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return Unk_ASCreate<Unk_PetButton>(m_nMovieId, v);
-    return MS2Ptr<Unk_PetButton>(0);
+        return Unk_ASCreate<ASButton>(m_nMovieId, v);
+    return MS2Ptr<ASButton>(0);
 }
 
 // @0x140accef0
@@ -471,7 +456,7 @@ void PetEvolutionPetEnchant::vfunc_3()
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
-    if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = ench->FUN_140acce30<ASButton>("m_submit"))
     {
         ATL::CAtlArray<IdCount> selected;
         m_pOwner->FUN_140acaf20(selected);
@@ -482,9 +467,9 @@ void PetEvolutionPetEnchant::vfunc_3()
         else
             submit->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_PetButton> debug = ench->FUN_140acce30<Unk_PetButton>("m_debug"))
+    if (MS2Ptr<ASButton> debug = ench->FUN_140acce30<ASButton>("m_debug"))
         debug->vfunc_4(bDebug);
-    if (MS2Ptr<Unk_PetButton> debug30 = ench->FUN_140acce30<Unk_PetButton>("m_debug30"))
+    if (MS2Ptr<ASButton> debug30 = ench->FUN_140acce30<ASButton>("m_debug30"))
         debug30->vfunc_4(bDebug);
     if (MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>("m_pointBar"))
     {
@@ -514,7 +499,7 @@ void PetEvolutionPetEnchant::vfunc_4()
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(true);
     }
-    if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = ench->FUN_140acce30<ASButton>("m_submit"))
         submit->FUN_1422c1fe0(0);
     ASObj obj(2);
     obj.FUN_1407cbb20(s_meso, FormatStringId<int>(0x986, 0));
@@ -1023,7 +1008,7 @@ void TabContentsPetEvolution::FUN_140acb850()
         ItemPtr item = g_143ab2a90.FUN_140a5d680(ids[i]);
         if (item == 0)
             continue;
-        MS2Ptr<CPetData> row = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find((unsigned)((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
+        MS2Ptr<CPetData> row = TSingleton<CPetDataTable>::GetInstance()->Find((unsigned)((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId());
         if (row == 0)
             continue;
         if (row->m_nType == 0)

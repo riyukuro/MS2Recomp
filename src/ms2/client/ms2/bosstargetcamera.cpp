@@ -20,6 +20,7 @@
 #include <NiPoint3.h>
 #include <list>
 #include <map>
+#include "ms2/client/ms2/camera.h"   // C3: TSingleton<CameraMgr>::GetInstance (0x1409478c0)
 #include "ms2/client/ms2/chatemoticoncli.h"   // C3: ChatEmoticonGroupInfo (the +0x38 map clear)
 
 // ---- unit-local placeholders ----
@@ -126,7 +127,6 @@ struct Unk_ClientConfig
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-unsigned FUN_1409614a0();                                           // property type id of NiPoint3 (0xf000000f)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -176,7 +176,7 @@ void CBossTargetCamera::vfunc_8(double fTime)
     Vector3 ptEye = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
     Vector3 ptTarget = FUN_140a38570();
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptInput = ptMove;
@@ -196,7 +196,7 @@ void CBossTargetCamera::vfunc_8(double fTime)
     ptRot = CCameraMode::FUN_140afdd40(ptTarget, ptEye, g_143a08cf8);
     m_d8.m_rot = ptRot;
     vfunc_39(fTime);
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
 }
 MS2_REPLACE_METHOD(0x140a37ac0, CBossTargetCamera, vfunc_8, 772, 0xEFDF51B9);
 
@@ -304,7 +304,7 @@ MS2_REPLACE_METHOD(0x140a37dd0, CBossTargetCamera, vfunc_39, 1577, 0xE3FFB635);
 // @0x140a38400
 void CBossTargetCamera::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_CameraTargetEntity* pCur = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pCur = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pCur != NULL && n != 0)
         vfunc_6(0);
 }
@@ -413,8 +413,8 @@ static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Vector3
         if (pEntity->m_d0.FUN_140948250(nId).FUN_140947540(pEntity->m_d0.FUN_1409481f0()))
         {
             Vector3 ptOld;
-            pEntity->GetPropertyValueUnsafe(nId, &ptOld, FUN_1409614a0());
-            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, ::new Vector3(ptOld), FUN_1409614a0());
+            pEntity->GetPropertyValueUnsafe(nId, &ptOld, efd::GetClassIDFromType<efd::Point3>());
+            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, ::new Vector3(ptOld), efd::GetClassIDFromType<efd::Point3>());
         }
     }
 }
@@ -423,25 +423,25 @@ static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Vector3
 static void FUN_140a38a50(Unk_CachedEntity* pEntity, unsigned nId, const Vector3& pt)
 {
     FUN_140a388b0(pEntity, nId, pt);
-    pEntity->SetPropertyValueUnsafe(nId, const_cast<Vector3*>(&pt), FUN_1409614a0());
+    pEntity->SetPropertyValueUnsafe(nId, const_cast<Vector3*>(&pt), efd::GetClassIDFromType<efd::Point3>());
 }
 
 // ---- inline accessors of the camera owner and the camera manager ----
 
 // @0x140a38d00
-Vector3 Unk_CameraManager::FUN_140a38d00()
+Vector3 CameraMgr::FUN_140a38d00()   // C3: was Unk_CameraManager::FUN_140a38d00
 {
     return reinterpret_cast<Unk_CameraManagerView*>(this)->m_138;
 }
 
 // @0x140a38d60
-Unk_CameraTargetEntity* Unk_CameraManager::FUN_140a38d60()
+Unk_CameraTargetEntity* CameraMgr::FUN_140a38d60()
 {
     return reinterpret_cast<Unk_CameraManagerView*>(this)->m_1c0;
 }
 
 // @0x140a38d90
-void Unk_CameraManager::FUN_140a38d90(Vector3 pt)
+void CameraMgr::FUN_140a38d90(Vector3 pt)   // C3: was Unk_CameraManager::FUN_140a38d90
 {
     reinterpret_cast<Unk_CameraManagerView*>(this)->m_138 = pt;
 }
@@ -481,7 +481,7 @@ void Unk_TwoLists::FUN_140a38f60()
 MS2_REPLACE(0x140a38cd0, FUN_140a38cd0, 26, 0x621EDF76);
 MS2_REPLACE(0x140a38a00, FUN_140a38a00, 73, 0x90816278);
 MS2_REPLACE(0x140a38a50, FUN_140a38a50, 69, 0x42B5A958);
-MS2_REPLACE_METHOD(0x140a38d60, Unk_CameraManager, FUN_140a38d60, 18, 0x7817FBF0);
+MS2_REPLACE_METHOD(0x140a38d60, CameraMgr, FUN_140a38d60, 18, 0x7817FBF0);
 MS2_REPLACE_METHOD(0x140a38550, CBossTargetCamera, FUN_140a38550, 25, 0x7D8CAC3E);
 MS2_REPLACE_METHOD(0x140a38f60, Unk_TwoLists, FUN_140a38f60, 48, 0x024294FF);
 

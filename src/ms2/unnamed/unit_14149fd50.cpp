@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/MemObject.h>
 #include <efd/RefCount.h>
+#include <ecr/SceneGraphCache.h>
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/magicdata.h"
@@ -181,11 +182,15 @@ template<> class TSingleton<CFilePreload> { public: static CFilePreload* s_insta
 // the 0x90 block to the wrong FixedSizeAllocator.
 struct Unk_SceneCacheData : public efd::MemObject
 {
-    ~Unk_SceneCacheData();
     efd::AtomicRefCount m_refCount;
     char m_aRest[0x8c];             // status, llid/physicalID/filePath, objects, request list (not touched here)
 };
 MS2_CHECK_SIZE(Unk_SceneCacheData, 0x90);
+// Protected view of the scene graph cache's data type (as ms2animationservice.cpp).
+struct Unk_SGCacheView : public ecr::SceneGraphCache
+{
+    typedef SceneGraphCacheData Data;
+};
 // Class whose virtual destructor sits in vftable slot 8.
 struct Unk_Slot8Delete
 {
@@ -248,11 +253,6 @@ class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
-class Unk_GoUpdateList   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_GoUpdateList* FUN_14123ee80();
-};
 void* FUN_141371b20();
 
 void FUN_14149fe70(Unk_SceneCacheData* p);
@@ -289,7 +289,7 @@ MS2_REPLACE(0x14149FE20, FUN_14149fe20, 79, 0x0838999B);
 // @0x14149fe70
 void FUN_14149fe70(Unk_SceneCacheData* p)
 {
-    delete p;
+    delete reinterpret_cast<Unk_SGCacheView::Data*>(p);   // C3: the real ~SceneGraphCacheData (was ~Unk_SceneCacheData, an alias of it)
 }
 MS2_REPLACE(0x14149FE70, FUN_14149fe70, 73, 0x032D49BB);
 
@@ -338,7 +338,7 @@ void FUN_1414a0000()
 {
     if (TSingleton<BGTransparencyMgr>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)Unk_GoUpdateList::FUN_14123ee80());
+        delete (Unk_VirtualDtor*)((void*)TSingleton<BGTransparencyMgr>::GetInstance());
         TSingleton<BGTransparencyMgr>::s_instance = 0;
     }
 }

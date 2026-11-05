@@ -116,7 +116,7 @@ public:
 };
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 
-Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);             // the actor's action key set
+struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer* pPlayer);   // the actor's action key set (mouseinteract.cpp)
 void FUN_141274f50();
 class Unk_SingletonObj;
 Unk_SingletonObj*FUN_140939a10();
@@ -402,7 +402,7 @@ void StateObserver::FUN_140ac45e0()
     if (pPC == 0)
         return;
     FUN_141274f50();
-    FUN_140a7b810(pPC)->SetEnabled(0);
+    reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->SetEnabled(0);
     UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910660();
@@ -422,7 +422,7 @@ void StateObserver::FUN_140ac4760()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    FUN_140a7b810(pPC)->SetEnabled(1);
+    reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->SetEnabled(1);
     UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910700();

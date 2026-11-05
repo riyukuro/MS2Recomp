@@ -123,7 +123,7 @@ public:
     void SetSelectedIndex(int nIndex);                                     // select an entry
     int GetSelectedIndex();                                                // the selected entry
     // Registers the selection-change callback; pUser comes back in Params::pUserData.
-    void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
+    void AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);   // 0x1422df9a0
     void AddItemLabel(const CStringW& strLabel);                       // append an entry
     void ClearItems();                                               // remove every entry
     unsigned GetItemCount();                                           // the entry count (0 without a data provider)

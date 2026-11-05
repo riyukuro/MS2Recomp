@@ -62,15 +62,18 @@ public:
     unsigned char protocol; ATL::CAtlArray<CPairMode> entries;
 };
 MS2_CHECK_SIZE(CMentorPairModePacket::CPairMode,0x18);
+class CInputStream; class COutputStream; class Unk_PktSerializable;
+CInputStream& FUN_14070f770(CInputStream& in, Unk_PktSerializable& item);          // packet.cpp
+COutputStream& FUN_14070fc40(COutputStream& out, const Unk_PktSerializable& item);  // packet.cpp
 class Unk_MentorReader {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual unsigned int vfunc_3();
     void FUN_14070f300(bool&); void FUN_14070f340(unsigned char&); void FUN_14070f380(unsigned short&);
     void FUN_14070f480(unsigned int&); void FUN_14070f480(int&); void FUN_14070f4c0(__int64&);
-    void FUN_14070f5f0(CStringW&); void FUN_14070f770(CInOutStreamInterface&);
+    void FUN_14070f5f0(CStringW&);
     template<class T> Unk_MentorReader& ReadItems(ATL::CAtlArray<T>& output) {
         unsigned int count=vfunc_3();
-        for(unsigned int i=0;i<count;++i) { T item; FUN_14070f770(item); output.Add(item); }
+        for(unsigned int i=0;i<count;++i) { T item; ::FUN_14070f770(reinterpret_cast<CInputStream&>(*this), reinterpret_cast<Unk_PktSerializable&>(item)); output.Add(item); }
         return *this;
     }
 };
@@ -79,10 +82,9 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(unsigned int);
     void FUN_14070f820(bool); void FUN_14070f860(unsigned char); void FUN_14070f8a0(unsigned short);
     void FUN_14070f9a0(unsigned int); void FUN_14070f9e0(__int64); void FUN_14070fae0(const CStringW&);
-    void FUN_14070fc40(const CInOutStreamInterface&);
     template<class T> Unk_MentorWriter& WriteItems(const ATL::CAtlArray<T>& input) {
         vfunc_3(static_cast<unsigned int>(input.GetCount()));
-        for(size_t i=0;i<input.GetCount();++i) FUN_14070fc40(input[i]);
+        for(size_t i=0;i<input.GetCount();++i) ::FUN_14070fc40(reinterpret_cast<COutputStream&>(*this), reinterpret_cast<const Unk_PktSerializable&>(input[i]));
         return *this;
     }
 };

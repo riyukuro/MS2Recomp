@@ -128,32 +128,9 @@ MS2_CHECK_SIZE(Unk_FlyByCameraData, 0x80);
 
 class CCameraMode;
 
-// The camera manager singleton (0x143ab3700). Its methods are inline COMDATs of other objs.
-class Unk_CameraManager
-{
-public:
-    static Unk_CameraManager* FUN_1409478c0();          // inline, ?\actioncameramode.cpp obj
-    Unk_CameraTargetEntity* FUN_140a38d60();            // m_1c0 (the camera target)
-    void FUN_140af0170(float f, bool b);                // applies f to the current mode (CCameraMode::FUN_140afe270)
-    int FUN_140af01d0();                                // camera control type (0: normal, 1: ...)
-    float FUN_140b67d10();                              // distance of the current mode (0 without one)
-    float FUN_140ad4b40();                              // current mode: setting m_0 (0 without one)
-    float FUN_140af7f00();                              // current mode: setting m_4
-    float FUN_140af7ea0();                              // current mode: setting m_8
-    Vector3 FUN_140a17e10();                    // current mode: setting m_c (zero without one)
-    Vector3 FUN_140af8290();                    // current mode: setting m_18
-    Vector3 FUN_140af0250();                    // camera world direction (by value: this, hidden return)
-    Vector3 FUN_140af0340();                    // camera world up vector
-    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);
-    CCameraMode* FUN_140af24f0();                       // the current camera mode
-    Vector3 FUN_140a38d00();                    // m_138 (pending move input)
-    void FUN_140a38d90(Vector3 pt);             // m_138 = pt
-    Unk_FlyByCameraData* FUN_1412201a0();               // &m_34 (inline, ?\flybycameramode.cpp obj)
-private:
-    Unk_CameraManager();                                // never built here (the camera manager is camera.cpp's CameraMgr)
-    int m_n0[0xd];                                      // +0x00
-    Unk_FlyByCameraData m_34;                           // +0x34 the fly-by request
-};
+// The camera manager singleton (0x143ab3700) is CameraMgr (camera.h); the former Unk_CameraManager view
+// was the same object (TSingleton<CameraMgr>::GetInstance is its FUN_1409478c0).
+class CameraMgr;
 
 // Argument of vfunc_36 (a camera preset row).
 struct Unk_CameraPreset

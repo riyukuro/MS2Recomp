@@ -197,7 +197,8 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool b);
 
 // The achieve manager.
 class CAchieve : public CPtred {};
-class CBeautyShopDataCommon { public: void FUN_1406e3d30(); };   // C3: npcshopdata member (CBeautyShopDataCli base)
+class TShopPaymentAttr;
+class CBeautyShopDataCommon { public: void FUN_1406e3d30(); TShopPaymentAttr& FUN_1406e3dc0(); };   // C3: npcshopdata members (CBeautyShopDataCli base)
 class CAchieveManager   // C3: member view
 {
 public:
@@ -208,9 +209,6 @@ class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
 
 // The player and its equipment.
-class Unk_InventoryEquipment : public CEquipItem
-{
-};
 class Unk_BSPlayer : public PCBase
 {
 public:
@@ -297,7 +295,7 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 // Misc singletons.
 class Unk_140166410* FUN_140166410();
 void* FUN_1401c0d90();
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();
 class Unk_SingletonObj* FUN_140939a10();
 class Unk_140bccd50
@@ -1569,14 +1567,14 @@ void UIBeautyShopStyleDialog::FUN_140f07e20()
 // @0x140f08160
 int UIBeautyShopStyleDialog::FUN_140f08160()
 {
-    return reinterpret_cast<TShopPaymentAttr*>(m_1b8.FUN_1406e3dc0())->GetAmount();
+    return reinterpret_cast<CBeautyShopDataCommon*>(&m_1b8)->FUN_1406e3dc0().GetAmount();   // C3: CBeautyShopDataCommon::FUN_1406e3dc0 (npcshopdata.cpp)
 }
 
 // The fee row; *pPrice: the fee when a change is billable.
 // @0x140f08190
 Unk_BSFee* UIBeautyShopStyleDialog::FUN_140f08190(unsigned* pPrice)
 {
-    Unk_BSFee* pFee = m_1b8.FUN_1406e3dc0();
+    Unk_BSFee* pFee = (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1b8)->FUN_1406e3dc0();   // C3: as uibeautyshopdialog
     *pPrice = 0;
     if (m_198 == 0)
         return pFee;

@@ -97,6 +97,7 @@
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::GetArcadeOpen (0x1403ecfe0)
 namespace GameRanking { class Page; }
 template <> MS2Ptr<GameRanking::Page>::~MS2Ptr();                   // 0x140b2db30
 class CGameRankingCli;
@@ -125,18 +126,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ArcClickD
 typedef Delegate<bool(int, const CMsgBoxData&)> ArcBoxDelegate;
 
 // The game buttons and the enter button.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-    void FUN_1422ce240(const ArcClickDelegate& onClick, void* pUserData);   // click callback
-};
-
-// The ranking view movie clip (the enter button is one of its children).
-class Unk_ArcRankClip : public ASMovieClip
-{
-public:
-    MS2Ptr<Unk_140acd6e0> FUN_140acce30(const CString& strName);            // child button by name
-};
+class Unk_140acd6e0 : public ASButton {};   // its click callback is ASButton::FUN_1422ce240
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140763e10(int nScore);                                         // the score as text
@@ -150,7 +140,6 @@ int FUN_140bd09c0(void* pUserData);                                         // t
 
 class CArcadeDataTable* FUN_140e37aa0();
 
-class Unk_ArcGameRule { public: CGameEventValueArcadeOpen* FUN_1403ecfe0(); };
 class CGameEventValueManager;
 
 class Unk_ArcWorld { public: MyPC* FUN_141bd0cc0(); };
@@ -162,7 +151,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CSt
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
 bool FUN_1407105c0(COutPacket* packet, int nA, int nB);                     // send with a throttle
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_ArcConfigRoot { char m_pad_00[8]; Unk_ArcConfig m_config; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -280,7 +269,7 @@ void UIArcadeMainDialog::OnLoadComplete()
         if (m_buttons[i].get() != 0)
             m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), FUN_140bb9630(i));
     }
-    m_enter = static_cast<Unk_ArcRankClip*>(m_rankView.operator->())->FUN_140acce30("m_enter");
+    m_enter = reinterpret_cast<AScript*>(m_rankView.operator->())->FUN_140acce30<Unk_140acd6e0>("m_enter");
     if (m_enter.get() != 0)
         m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
@@ -297,7 +286,7 @@ void UIArcadeMainDialog::OnLoadComplete()
             continue;
         if (spGame->m_bIsEventArcade == 1)
         {
-            if (reinterpret_cast<Unk_ArcGameRule*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ecfe0()->Get(spGame->m_nId) == (ArcadeOpenContext*)0)
+            if (((CGameEventValueArcadeOpen*)(TSingleton<CGameEventValueManager>::GetInstance()->GetArcadeOpen()))->Get(spGame->m_nId) == (ArcadeOpenContext*)0)
                 continue;
         }
         m_games.push_back(spGame);
@@ -335,7 +324,7 @@ void UIArcadeMainDialog::vfunc_72()
 {
     if (m_pWorker == 0)
         return;
-    if (FUN_140166410()->FUN_14036d570(0x3f) == true)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f) == true)
     {
         FUN_140ef67f0();
     }
@@ -611,13 +600,13 @@ void UIArcadeMainDialog::FUN_140ef7ea0()
     m_nRequestTick = GetTickCountMs2();
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_ArcConfigRoot*)FUN_14025e7b0())->m_config).Get((CContentShutdown::Content)(0x32)) == 0)
     {
-        if (FUN_140166410()->FUN_14036d570(0x3f) == true)
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f) == true)
         {
             m_pWorker = AfxBeginThread(OnRequestRankingFromInGameRanking, this, 0, 0, 0, 0);
             return;
         }
     }
-    if (FUN_140166410()->FUN_14036e4c0() != 0)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e4c0() != 0)
         m_pWorker = AfxBeginThread(OnRequestRanking, this, 0, 0, 0, 0);
 }
 
@@ -715,6 +704,17 @@ unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
     return 0;
 }
 
+// The real ranking key (client/ms2/gamerankingcli.h). The placeholder only forward-declares it; this unit needs the
+// ctor/dtor for its key array. C3: was Unk_RankKey (rows 209/377: its ctor/dtor were aliases of these).
+struct CGameRankingParam::Key
+{
+    Key();                                              // 0x140b356e0
+    ~Key();                                             // 0x140b35780
+    int m_type;
+    int m_sub;
+    int m_date;
+};
+MS2_CHECK_SIZE(CGameRankingParam::Key, 0xc);
 // @0x140ef87e0
 // MS2-FUNCTIONAL: the ranking service handles are the placeholder views of gamerankingcli.h
 unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
@@ -724,17 +724,17 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     UIArcadeMainDialog* pDialog = (UIArcadeMainDialog*)pArg;
     if (pDialog == 0)
         return 0;
-    Unk_RankKey keys[6];
+    CGameRankingParam::Key keys[6];   // C3: was Unk_RankKey
     int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
     for (int i = 1; i < 6; i++)
-        reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b870(&keys[i], 10, i, 0, nRegion);
+        reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b870(reinterpret_cast<Unk_RankKey*>(&keys[i]), 10, i, 0, nRegion);
     for (int i = 1; i < 6; i++)
     {
-        MS2Ptr<GameRanking::Page> req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Query(reinterpret_cast<const CGameRankingParam::Key&>(keys[i]), 1, 1);
+        MS2Ptr<GameRanking::Page> req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Query(keys[i], 1, 1);
         if (req == 0)
         {
             CGameRankingParam request;
-            request.m_key.FUN_140b35820(keys[i]);
+            request.m_key.FUN_140b35820(reinterpret_cast<const Unk_RankKey&>(keys[i]));
             reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Request(&request);
         }
     }
@@ -748,7 +748,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
             if (completed.Lookup(i) != 0)
                 continue;
             RankingList rows(Unk_GrNewTag(0));
-            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b440(keys[i], 1, *rows.get(), CStringW(L""), 0);
+            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b440(reinterpret_cast<const Unk_RankKey&>(keys[i]), 1, *rows.get(), CStringW(L""), 0);
             if (rows->GetCount() != 0)
                 completed.SetAt(i, rows);
         }

@@ -23,8 +23,6 @@ CStringW FUN_1409404f0(__int64 n);                              // the number as
 // The SWF dialog object handed around by the UI library (the exe's dynamic_cast targets).
 class ASDialog : public ASDisplayObject
 {
-public:
-    Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);
 };
 
 // FUN_140e78380 is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
@@ -87,12 +85,12 @@ void FUN_140e78380(UIPrizeMoneyDialog* pDialog)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_PrizeDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
-        pDlg->FUN_140e78470("setPrizeMoney", FUN_1409404f0(pDialog->m_nPrize1), FUN_1409404f0(pDialog->m_nPrize2));
+        pDlg->Invoke("setPrizeMoney", FUN_1409404f0(pDialog->m_nPrize1), FUN_1409404f0(pDialog->m_nPrize2));
 }
 MS2_REPLACE(0x140e78380, FUN_140e78380, 235, 0xB1158841);
 
 // @0x140e78470
-Scaleform::GFx::Value ASDialog::FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2)
+Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2)   // C3: ascript.h's Invoke (was ASDialog::FUN_140e78470)
 {
     ASArgList args;
     args.FUN_1409b2800(2);

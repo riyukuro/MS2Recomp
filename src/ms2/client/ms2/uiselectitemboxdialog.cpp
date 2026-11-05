@@ -40,24 +40,19 @@ static CString s_strStun2 = "stun";
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100 (C3: the name other units use)
 static Unk_BuddyHandle s_dat_143acbc50(NULL);                                       // @0x1400e1640
 
+#include "ms2/placeholder/asevent.h"   // C3: ASListEvent (dtor 0x140f83bb0)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/fittingdollpc.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // The list event handed to the change handler (ctor 0x1422e2740, dtor 0x140f83bb0) and the row's button wrapper
 // (ctor 0x1422cdde0 shared with tabcontentspetevolution.cpp, dtor 0x1422cde30).
-class ASListEvent
-{
-public:
-    ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params);
-    ~ASListEvent();
-    Scaleform::GFx::Value FUN_1422e27d0();                              // the clicked row
-    void* m_pad[8];
-};
 // The clicked row is an ASButton (asbutton.h, 0x88; ctor 0x1422cdde0, FUN_1422ce090 sets "selected").
 
 // The item record's properties (+0x320) and argument table (+0x2b0).
@@ -131,13 +126,13 @@ void UISelectItemBoxDialog::OnLoadComplete()
     if (item == 0)
         return;
     {
-        Unk_SibButton* ok = FUN_140bc6d10("m_okButton", &m_okButton).get();
+        ASButton* ok = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_okButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_okButton)).get());
         if (ok != 0) {
-            reinterpret_cast<ASButton*>(m_okButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a230), (void*)0);
+            m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a230), (void*)0);
         }
     }
     {
-        Unk_SibList* list = FUN_140e8d030("m_selectItemList", &m_selectItemList).get();
+        ASMultiSelectTileCacheList* list = FUN_140e8d030("m_selectItemList", &m_selectItemList).get();
         if (list != 0) {
             reinterpret_cast<ASCoreList*>(m_selectItemList.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a5f0), (void*)0);
         }
@@ -191,9 +186,9 @@ void UISelectItemBoxDialog::OnLoadComplete()
     int nNext = reinterpret_cast<Unk_CommandArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(4, 1);
     int nHave = g_143ab2a90.FUN_140a5f180(item->FUN_1405276c0(), 0);
     if (nNext == 1 && 1 < nHave)
-        reinterpret_cast<ASButton*>(m_okButton.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_next"));
+        m_okButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_next"));
     else
-        reinterpret_cast<ASButton*>(m_okButton.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_ok"));
+        m_okButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_ok"));
     FUN_140f9a700();
 }
 
@@ -224,7 +219,7 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
     if (item == 0)
         return;
     ATL::CAtlArray<unsigned> selected;
-    reinterpret_cast<ASMultiSelectTileCacheList*>(m_selectItemList.operator->())->FUN_1422cfa30(selected);
+    m_selectItemList->FUN_1422cfa30(selected);
     if (selected.GetCount() != m_nSelectCount)
         return;
     CStringW strIndices;
@@ -246,7 +241,7 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
 // @0x140f9a5f0
 void UISelectItemBoxDialog::FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    unsigned nSelected = reinterpret_cast<ASMultiSelectTileCacheList*>(m_selectItemList.operator->())->FUN_1422cf920();
+    unsigned nSelected = m_selectItemList->FUN_1422cf920();
     if (nSelected > m_nSelectCount) {
         ASListEvent evt(params);
         Scaleform::GFx::Value value = evt.FUN_1422e27d0();
@@ -265,18 +260,18 @@ void UISelectItemBoxDialog::FUN_140f9a700()
     if (item == 0)
         return;
     ATL::CAtlArray<unsigned> selected;
-    reinterpret_cast<ASMultiSelectTileCacheList*>(m_selectItemList.operator->())->FUN_1422cfa30(selected);
+    m_selectItemList->FUN_1422cfa30(selected);
     if (selected.IsEmpty()) {
         m_selectedCount->vfunc_3(false);
         for (unsigned i = 0; i < m_selectedSlots.size(); ++i)
             ((Unk_SibSlot*)m_selectedSlots[i])->vfunc_3(false);
         m_selectNotice->vfunc_3(true);
-        reinterpret_cast<ASTextField*>(m_selectNotice.operator->())->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_notice"), m_nSelectCount));
+        m_selectNotice->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_notice"), m_nSelectCount));
     } else {
         m_selectNotice->vfunc_3(false);
         m_selectedCount->vfunc_3(true);
         size_t nCount = selected.GetCount();
-        reinterpret_cast<ASTextField*>(m_selectedCount.operator->())->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_itemCount"), nCount, m_nSelectCount));
+        m_selectedCount->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_itemCount"), nCount, m_nSelectCount));
         m_binderSel.FUN_140d43990();
         for (unsigned i = 0; i < m_selectedSlots.size(); ++i) {
             if (i >= selected.GetCount()) {

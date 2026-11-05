@@ -11,6 +11,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimanufacturedialog.cpp"    // assumed
 #define MS2_TPTRVALUE_MOVE   // the recipe book entries are copied with the add-ref ctor (0x1406889c0)
 
+#define MS2_ASUICOMPONENT_SLOTS   // ASUIComponent slot 24 (validateNow) for the "m_scrollList" refresh
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/mstime.h"
 
@@ -52,6 +53,7 @@
 #include "ms2/client/ms2/inventory.h"
 #include <algorithm>
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02900 (the "m_scrollList" getter)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -161,22 +163,6 @@ public:
 };
 void* FUN_140d86260();   // ms2actormanager.cpp: the client platform
 
-// The list child "m_scrollList" of the movie (slot 24 refreshes it).
-class Unk_UmCtl : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8();
-    virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
-    virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
-    virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool b);
-};
-class Unk_UmList : public Unk_UmCtl
-{
-public:
-};
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
 
@@ -507,9 +493,9 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
     CMaidRecipeGroupTable::RecipeList spBook = ((class CMaidRecipeGroupTable*)FUN_1412db940())->Find(spMaid->m_nMaidId);
     if (spBook == 0)
         return;
-    if (MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>("m_scrollList"))
+    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_scrollList"))   // the list getter of UIDailyMissionDialog
     {
-        reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
+        spList->FUN_1422dd1d0();
         int nFirst = 0;
         for (size_t i = 0; i < spBook->GetCount(); i++)
         {
@@ -532,7 +518,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 if (bAvailable != 0)
                     nFirst = (int)i;
                 row.FUN_1407cb9c0("available", bAvailable);
-                reinterpret_cast<ASCoreList*>(spList.get())->AddItem(row);
+                spList.get()->AddItem(row);
                 int nItemId = spRecipe->productItemId;
                 int nRarity = spRecipe->productRank;
                 int nAmount = spRecipe->productCount;
@@ -556,7 +542,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
         spList->vfunc_24(true);
         if (bSelect != 0)
         {
-            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(nFirst);
+            spList->SetSelectedIndex(nFirst);
             m_nSelected = nFirst;
             FUN_1412e48a0();
         }

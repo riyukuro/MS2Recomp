@@ -108,18 +108,18 @@ struct Unk_CMISCubeTimer
 };
 MS2_CHECK_SIZE(Unk_CMISCubeTimer, 0x48);
 
-// 8-byte smart pointer to a PhysX prop object (node value of f58; its dtor wraps ~Unk_InteractPropPtr)
-class Unk_CMISPropPtr
-{
-public:
-    Unk_CMISPropPtr(int nNull = 0);                             // = Unk_InteractPropPtr(int) 0x140ae1340
-    Unk_CMISPropPtr(const Unk_CMISPropPtr&);
-    Unk_CMISPropPtr& operator=(const Unk_CMISPropPtr&);
-    ~Unk_CMISPropPtr();
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_CMISPropPtr, 8);
+// node value of f58: efd::SmartPointer<egfPhysX::EntityActorData> (ctor(T*) 0x140ae1340, dtor 0x140ae16b0, operator= 0x141126090;
+// those three rows carry only the SmartPointer<EntityActorData> name and the old Unk_CMISPropPtr / Unk_InteractPropPtr views)
+namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
+MS2_CHECK_SIZE(efd::SmartPointer<egfPhysX::EntityActorData>, 8);
+
+
+
+
+
+
+
+
 
 // 0x34-byte element of an efd::vector. An efd::MemObject: CustomAllocator<T>::construct's placement new (0x1411503d0)
 // calls MemObject::operator new(size_t, void*) (0x140993c70) instead of the inline global one.
@@ -159,7 +159,7 @@ typedef efd::map<unsigned __int64, MS2Ptr<Unk_CMISUidRecord> > Unk_CMISMapUid;
 typedef efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> > Unk_CMISMapSaleState;       // fe8
 typedef efd::map<CStringA, int> Unk_CMISMapName;                                           // f1a0 f358
 typedef efd::map<egf::EntityID, __int64> Unk_CMISMapEntityVal;                             // f48
-typedef efd::map<egf::EntityID, Unk_CMISPropPtr> Unk_CMISMapProp;                          // f58
+typedef efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> Unk_CMISMapProp;                          // f58
 typedef efd::map<egf::EntityID, MS2Ptr<Cube> > Unk_CMISMapEntityCube;                      // f78 fa8
 typedef efd::map<Unk_CMISKindA, int> Unk_CMISMapKindCount;                                 // f3c8
 typedef std::map<Unk_CMISKindA, int> Unk_CMISStdMapKindCount;                              // local counts

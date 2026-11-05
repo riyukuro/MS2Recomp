@@ -52,7 +52,7 @@ public:
 // The string table (TSingleton<CStringTable>::GetInstance).
 
 // The notice dispatcher (FUN_140939a10).
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
 template <class A> CStringW FormatStringId(int nId, const A& a);            // formatted system text
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a message box
@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x140F3FC50, UIEnterEventFieldDialog, vfunc_65, 37, 0xAB784FE
 void UIEnterEventFieldDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
     m_tick.Init();
     UpdateVisible();
 }

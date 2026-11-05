@@ -52,7 +52,6 @@ public:
     void FUN_1412e6af0(int nResult);                                        // 0x1412e6af0 result of the cancel request
     void FUN_1412e6c30(int nItemId, int nRarity, int nAmount, int nExp, int nBonus, int nJackpot, int nMerat);   // 0x1412e6c30 the reward page
     int FUN_1412e7170(int nResult);                                         // 0x1412e7170 the result is 2 or 3
-    template <class T> MS2Ptr<T> FUN_140c02900(const CString& strName);     // bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

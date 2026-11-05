@@ -34,11 +34,6 @@
 struct Unk_PbQuestView { void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_vftable_common; };
 
 Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int n);   // the quest's talk script (id, 100)
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
@@ -134,7 +129,7 @@ void UIQuestPostBoxDialog::FUN_140e7f920(int nQuest)
     if (data.IsNull()) return;
     Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
     if (script.IsNull()) return;
-    reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
 }
 MS2_REPLACE_METHOD(0x140E7F920, UIQuestPostBoxDialog, FUN_140e7f920, 282, 0x7DFA22B7);
 

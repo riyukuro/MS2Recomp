@@ -56,17 +56,13 @@ public:
 };
 bool FUN_14053f8c0(unsigned);
 bool FUN_14053f940(unsigned);
-Unk_Int3* FUN_1408850a0(Unk_Int3*);
 float FUN_14059d930(float);
 class PCBase;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_UgcPhysSvc {
+class CubeMapInformationService {   // C3: member view (cubemapinformationservice_3.h)
 public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    void FUN_1410bb610(int mode,PCBase* player,float distance,std::vector<efd::SmartPointer<egf::Entity> >& hits);
+    void FUN_1410bb610(unsigned nMask, PCBase* pPawn, float fDist, std::vector<efd::SmartPointer<egf::Entity> >* pOut);
 };
 template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
@@ -116,7 +112,7 @@ int FUN_1408a03c0(const Unk_Int3& p) { return FUN_1408a0370(p.x,p.y,p.z); }
 MS2_REPLACE(0x1408a03c0, FUN_1408a03c0, 43, 0xFDC1CB50);
 // @0x1408a0400
 Unk_Int3 FUN_1408a0400(int packed) {
-    Unk_Int3 p; FUN_1408850a0(&p);
+    Unk_Int3 p; static_cast<Unk_CubePoint*>(&p)->Unk_CubePoint::Unk_CubePoint();
     p.x=(char)(packed&0xff); p.y=(char)((packed>>8)&0xff); p.z=(char)((packed>>16)&0xff);
     return p;
 }
@@ -272,14 +268,14 @@ int FUN_1408a13d0(NiPoint3 p) { Unk_Int3 cube; cube=FUN_1408a1430(p); return FUN
 MS2_REPLACE(0x1408a13d0, FUN_1408a13d0, 81, 0x560BD7D8);
 // @0x1408a1430
 Unk_Int3 FUN_1408a1430(NiPoint3 p) {
-    Unk_Int3 result; FUN_1408850a0(&result);
+    Unk_Int3 result; static_cast<Unk_CubePoint*>(&result)->Unk_CubePoint::Unk_CubePoint();
     result.x=(int)(p.x/150.0f); result.y=(int)(p.y/150.0f); result.z=(int)(p.z/150.0f);
     return result;
 }
 MS2_REPLACE(0x1408a1430, FUN_1408a1430, 135, 0xE7BE9A17);
 // @0x1408a14c0
 Unk_Int3 FUN_1408a14c0(NiPoint3 p) {
-    Unk_Int3 result; FUN_1408850a0(&result);
+    Unk_Int3 result; static_cast<Unk_CubePoint*>(&result)->Unk_CubePoint::Unk_CubePoint();
     result.x=(int)((FUN_14059d930(p.x)+75.0f)/150.0f);
     result.y=(int)((FUN_14059d930(p.y)+75.0f)/150.0f);
     result.z=(int)(p.z/150.0f);
@@ -311,15 +307,15 @@ void FUN_1408a1640(Cube* cube) {
     result=entity->GetPropertyValue(0xe599ffe5,field74);
     cube->field64=unchangeable;
     cube->field74=field74;
-    Unk_IntArr types;
+    ATL::CAtlArray<int> types;   // C3: was Unk_IntArr
     CString typeText("");
     efd::utf8string typeNames;
     FUN_1402237c0((Unk_LevelArray *)&types);
     entity->GetPropertyValue(0x6b780e9d,typeNames);
     typeText=typeNames.c_str();
-    XmlSplit(typeText,*reinterpret_cast<ATL::CAtlArray<int>*>(&types),",");
-    for(size_t i=0;i<reinterpret_cast<ATL::CAtlArray<int>*>(&types)->GetCount();i++) {
-        int type=(*reinterpret_cast<ATL::CAtlArray<int>*>(&types))[i];
+    XmlSplit(typeText,types,",");
+    for(size_t i=0;i<types.GetCount();i++) {
+        int type=(types)[i];
         cube->field5c|=FUN_1408a0190(type);
     }
     cube->fieldB4=objCode;
@@ -339,7 +335,7 @@ int FUN_1408a18d0(__int64 charID) {
         if(charID==((class PCBase*)(class PCBase*)(player))->FUN_141656a80()) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
-            reinterpret_cast<Unk_UgcPhysSvc*>(service.operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
+            reinterpret_cast<CubeMapInformationService*>(service.operator->())->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),&hits);
             if(hits.size()>0) {
                 efd::SmartPointer<egf::Entity> first=hits[0];
                 first->GetPropertyValue(0x85ef19e7,style);

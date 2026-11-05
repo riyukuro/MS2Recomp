@@ -8,7 +8,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_DxButton;
+class ASButton;
 
 class UIDungeonExpenseRewardDialog : public UIDialog
 {
@@ -27,9 +27,8 @@ public:
     void FUN_140f3af10(const Scaleform::GFx::FunctionHandler::Params& params);   // cancel clicked
 
 private:
-    MS2Ptr<Unk_DxButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_DxButton>& out);   // 0x140bc6d10 returns by value (hidden return pointer)
     CStringW m_178;                                             // +0x178 the message
-    MS2Ptr<Unk_DxButton> m_acceptButton;                        // +0x180 "m_acceptButton"
-    MS2Ptr<Unk_DxButton> m_cancelButton;                        // +0x190 "m_cancelButton"
+    MS2Ptr<ASButton> m_acceptButton;                            // +0x180 "m_acceptButton"
+    MS2Ptr<ASButton> m_cancelButton;                            // +0x190 "m_cancelButton"
 };
 MS2_CHECK_SIZE(UIDungeonExpenseRewardDialog, 0x1a0);

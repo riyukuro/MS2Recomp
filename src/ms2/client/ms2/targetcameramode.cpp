@@ -123,7 +123,7 @@ CTargetCameraMode::CTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode
       m_fc(0),
       m_100(0.0f)
 {
-    if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         CTargetCameraMode::vfunc_31();
     m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
 }
@@ -139,13 +139,13 @@ void CTargetCameraMode::vfunc_6(int n)
     CCameraMode::vfunc_6(n);
     if (m_f8 == 0)
     {
-        m_50 = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
+        m_50 = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
         m_fc = 0;
         m_100 = 0.0f;
     }
     if (n == 0)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (pTarget)
         {
             m_78 = pTarget->vfunc_17();
@@ -191,7 +191,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
     int nLoop = 1;
     for (int i = 0; i < nLoop && i < nMaxLoop; ++i)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (!pTarget)
             break;
         m_78 = pTarget->vfunc_17();
@@ -253,7 +253,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
             vfunc_37();
         }
 
-        Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+        Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             Vector3 ptInput = ptMove;
@@ -295,7 +295,7 @@ void CTargetCameraMode::vfunc_8(double fTime)
                     vfunc_37();
                 }
             }
-            Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(g_143b01a60);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
         }
         vfunc_39(fTime);
         m_setting.m_c = m_d8.m_pos;
@@ -327,7 +327,7 @@ void CTargetCameraMode::vfunc_9()
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x15, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 - 5.0f, m_64 - 5.0f);
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x14183b270, CTargetCameraMode, vfunc_9, 758, 0x07F55314);
 
@@ -335,7 +335,7 @@ MS2_REPLACE_METHOD(0x14183b270, CTargetCameraMode, vfunc_9, 758, 0x07F55314);
 void CTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x14183b570, CTargetCameraMode, vfunc_10, 74, 0x9E7A33EE);
 
@@ -356,14 +356,14 @@ MS2_REPLACE_METHOD(0x14183b5e0, CTargetCameraMode, vfunc_23, 16, 0x1BE201AE);
 // @0x14183b600
 Unk_CameraTargetEntity* CTargetCameraMode::vfunc_25()
 {
-    return Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    return TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
 }
 MS2_REPLACE_METHOD(0x14183b600, CTargetCameraMode, vfunc_25, 27, 0x0A0B42EA);
 
 // @0x14183b630
 void CTargetCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget && n)
     {
         m_f0 = 0;
@@ -393,7 +393,7 @@ MS2_REPLACE_METHOD(0x14183b630, CTargetCameraMode, vfunc_24, 949, 0x714D6F1E);
 // @0x14183b9f0
 Vector3 CTargetCameraMode::vfunc_26()
 {
-    vfunc_24(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
+    vfunc_24(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
     return m_78.FUN_14097fd50(FUN_14183c370());
 }
 MS2_REPLACE_METHOD(0x14183b9f0, CTargetCameraMode, vfunc_26, 112, 0x8A79092F);
@@ -401,7 +401,7 @@ MS2_REPLACE_METHOD(0x14183b9f0, CTargetCameraMode, vfunc_26, 112, 0x8A79092F);
 // @0x14183ba70
 void CTargetCameraMode::vfunc_11(float f)
 {
-    if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         f = m_ac;
     m_setting.m_0 = f;
     m_pOwner->FUN_140947940(f);
@@ -411,7 +411,7 @@ MS2_REPLACE_METHOD(0x14183ba70, CTargetCameraMode, vfunc_11, 92, 0x587F1513);
 // @0x14183bae0
 void CTargetCameraMode::vfunc_12(float fDegree)
 {
-    float fOffset = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0() == 1 ? m_a8 : 0.0f;
+    float fOffset = TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0() == 1 ? m_a8 : 0.0f;
     m_48 = (fDegree + fOffset) * 3.14159265f / 180.0f + 3.14159265f;
 }
 MS2_REPLACE_METHOD(0x14183bae0, CTargetCameraMode, vfunc_12, 126, 0x7DE2A65C);
@@ -419,7 +419,7 @@ MS2_REPLACE_METHOD(0x14183bae0, CTargetCameraMode, vfunc_12, 126, 0x7DE2A65C);
 // @0x14183bb70
 void CTargetCameraMode::vfunc_16(float f)
 {
-    m_54 = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0() ? m_b0 : f;
+    m_54 = TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0() ? m_b0 : f;
     if (-1.0f != m_5c)
         m_98 = efd::Clamp(m_98, m_58, m_54 + m_b4);
 }
@@ -476,7 +476,7 @@ void CTargetCameraMode::vfunc_33()
     if (reinterpret_cast<Unk_CameraOption*>(spOption.get()))
     {
         float fRotation = reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_154;
-        if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         {
             vfunc_31();
             vfunc_16(m_b0);
@@ -555,14 +555,14 @@ MS2_REPLACE_METHOD(0x14183c3b0, CTargetCameraMode, FUN_14183c3b0, 31, 0xE932FCE8
 // @0x14183c3e0
 bool CTargetCameraMode::FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot)
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
-        float fYaw = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_23();
-        float fPitch = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_22();
-        float fDist = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
+        float fYaw = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_23();
+        float fPitch = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_22();
+        float fDist = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
         Vector3 ptTarget = pTarget->vfunc_17();
-        ptTarget.z += reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_27();
+        ptTarget.z += TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->vfunc_27();
         float fX = fDist * FUN_1409f25a0(fYaw) + ptTarget.x;
         float fY = fDist * FUN_1409f2310(fYaw) + ptTarget.y;
         float fZ = fDist * FUN_1409f2310(fPitch) + ptTarget.z;
@@ -619,7 +619,7 @@ void CTargetCameraMode::FUN_14183c670(float fDist, BOOL bSmooth)
         unsigned int nLoop = 0;
         while (!bDone)
         {
-            m_78 = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60()->vfunc_17();
+            m_78 = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60()->vfunc_17();
             m_78.z += vfunc_27();
             ptCenter = m_78;
             Vector3 ptDir = ptCenter.FUN_140965c40(ptPos);
@@ -641,7 +641,7 @@ void CTargetCameraMode::FUN_14183c670(float fDist, BOOL bSmooth)
                 ptRot = CCameraMode::FUN_140afdd40(ptCenter, ptPos, g_143a08cf8);
                 m_d8.m_rot = ptRot;
                 vfunc_4(ptRot);
-                m_78 = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60()->vfunc_17();
+                m_78 = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60()->vfunc_17();
                 m_78.z += vfunc_27();
                 vfunc_37();
                 break;

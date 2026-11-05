@@ -104,6 +104,8 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/client/ms2/uiupperhuddialog.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 class PCBase;
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_TeBoxDelegate;
@@ -136,10 +138,12 @@ public:
 class Unk_TeScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_141931d80(const char* szMethod, unsigned int a1, unsigned int a2, unsigned int a3);
-    Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3);   // a1 by value
     Scaleform::GFx::Value FUN_141b2fee0(const char* szMethod, const AScript& a1, CStringW a2);   // inline COMDAT below
 };
+// The (int, int, int) invoke helper, defined as Unk_EpEntity:: by uiepprogress.cpp.
+class Unk_EpEntity { public: Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3); };
+// The (string, int, int) invoke helper, defined as Unk_FtEntity:: by uiguildflagtooltip.cpp.
+class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };   // a1 by value
 
 extern int g_bAppActive;                                                // 0x143af7d40
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
@@ -284,7 +288,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
         FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
-    static_cast<Unk_TeScript*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
+    reinterpret_cast<Unk_EpEntity*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionActionMax.Get());
@@ -298,11 +302,11 @@ void UITriggerEditorDialog::OnLoadComplete()
         packet.WriteInt32(m_nCubeId);
         FUN_140710590(packet);
     }
-    if (FUN_140bc6d10("m_newStateButton", m_spButton1).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_newStateButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton1)).get())
         m_spButton1->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba00), 0);
-    if (FUN_140bc6d10("m_rollbackButton", m_spButton2).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_rollbackButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton2)).get())
         m_spButton2->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba30), 0);
-    if (FUN_140bc6d10("m_clearContentButton", m_spButton3).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_clearContentButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton3)).get())
         m_spButton3->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2bb10), 0);
 }
 MS2_REPLACE_METHOD(0x141B2AA10, UITriggerEditorDialog, OnLoadComplete, 1827, 0x93A07744);
@@ -967,7 +971,7 @@ void UITriggerEditorDialog::FUN_141b2f510()
         if (nY + state.GetHeightCeil() >= 1500)
             nY = m_30->Invoke("screenCanvasPosY").GetInt();
     }
-    static_cast<Unk_TeScript*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
+    reinterpret_cast<Unk_FtEntity*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
 }
 MS2_REPLACE_METHOD(0x141B2F510, UITriggerEditorDialog, FUN_141b2f510, 1279, 0xE813195F);
 

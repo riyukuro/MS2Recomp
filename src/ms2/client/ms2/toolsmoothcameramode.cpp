@@ -59,9 +59,12 @@ class Unk_RpgActor : public Unk_CameraTargetEntity
 class CameraMgr   // C3: member view (real class not in this TU)
 {
 public:
+    Vector3 FUN_140a38d00();   // C3: was Unk_CameraManager::FUN_140a38d00
+    void FUN_140a38d90(Vector3 pt);   // C3: was Unk_CameraManager::FUN_140a38d90
     efd::SmartPointer<ecr::PickService::PickRecord> FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
         NiAVObject* pRoot);                                         // pick the scene under a window point
     void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
+    class Unk_CameraTargetEntity* FUN_140a38d60();   // C3: bosstargetcamera.cpp
 };
 class Unk_GameContext
 {
@@ -91,6 +94,9 @@ float FUN_14059d930(float f);                       // fabs
 bool FUN_14028d470(float a, float b);               // nearly equal
 void FUN_1412751f0(const CStringW& str, int a, int b);     // chat/debug log line
 #include "ms2/ms2format.h"
+template <class T> class TSingleton;
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
@@ -174,7 +180,7 @@ void CToolSmoothCameraMode::vfunc_9()
                 m_130.x = -300.0f;
         }
     }
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x141856F60, CToolSmoothCameraMode, vfunc_9, 1292, 0xF2E237FE);
 
@@ -203,7 +209,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
                 FUN_1412751f0(StringFormat<float>(L"move accelerate rate:{0}", m_160), 1, 1);
         }
     }
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     float fRate = 15.0f;
     float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
     float fScale = fStep;
@@ -258,7 +264,7 @@ void CToolSmoothCameraMode::vfunc_6(int n)
     m_68 = m_48;
     m_6c = m_4c;
     CConsoleCameraMode::vfunc_6(n);
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
         float fRotation = reinterpret_cast<Unk_CameraOption*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_154;
@@ -337,7 +343,7 @@ void CToolSmoothCameraMode::vfunc_30()
     float fX;
     float fY;
     ((class Unk_Cursor*)FUN_140aadf80())->GetCursorClientPos(&fX, &fY);
-    efd::SmartPointer<ecr::PickService::PickRecord> pList = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0850(fX, fY, true, true, false, NULL);
+    efd::SmartPointer<ecr::PickService::PickRecord> pList = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!(ecr::PickService::PickRecord*)pList)
         return;
     Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
@@ -348,7 +354,7 @@ void CToolSmoothCameraMode::vfunc_30()
         Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pObject)));
         if (pActor)
         {
-            reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(pActor, 1);
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(pActor, 1);
             break;
         }
     }

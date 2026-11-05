@@ -18,7 +18,7 @@
 #include "ribboneffectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
-#include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
+#include "ms2/client/ms2/cameramode.h"              // CCameraMode, Unk_CameraSetting
 #include <errno.h>
 #include <new>
 #include <string.h>
@@ -44,6 +44,9 @@
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/effectservice.h"   // C3: EffectNode (the ribbon root)
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+template <class T> class TSingleton;
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -67,7 +70,6 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 bool FUN_14028d470(float a, float b);                               // nearly equal
 // The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its Vector3 local.
 class CameraMgr { public: NiPoint3 FUN_140af0250(); };
-const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
@@ -354,7 +356,7 @@ void CRibbonEffect::vfunc_10(bool bVisible)
 // @0x141702c50
 int CRibbonEffect::vfunc_8(void* p)
 {
-    *static_cast<Vector3*>(p) = FUN_140947900(m_spRoot.operator->());
+    *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(m_spRoot->GetWorldTranslate());   // C3: NiAVObject::GetWorldTranslate (0x140947900)
     return 1;
 }
 
@@ -377,7 +379,7 @@ void CRibbonEffect::UpdateMesh()
                 kCurve.push_back(FUN_140a0adf0((*m_pPoints)[i], (*m_pPoints)[i + 1], (*m_pPoints)[i + 2], (*m_pPoints)[i + 3], fT));
             }
         }
-        Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(((CameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250()));
+        Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));
         efd::vector<Vector3> kMinus;
         efd::vector<Vector3> kPlus;
         for (unsigned i = 0; i < kCurve.size(); ++i)

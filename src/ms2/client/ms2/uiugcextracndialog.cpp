@@ -27,11 +27,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe objects ----
 
-// The camera mode button (a button with a label and an "m_icon" movie clip).
-class Unk_UgcCameraButton : public ASMovieClip
-{
-public:
-};
+// The camera mode button "m_cameraMode" (a button with a label and an "m_icon" movie clip).
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 // The screenshot service: slot 2 says whether a screenshot can be taken, slot 54 takes it and returns 1 when it was sent.
 class Unk_UgcShot
 {
@@ -189,7 +186,7 @@ void UIUGCExtraCNDialog::FUN_140facfa0(bool bCameraMode)
 {
     if (bCameraMode)
         FUN_140fad4f0(false);
-    if (MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10("m_cameraMode"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_cameraMode"))
         spButton.operator->()->FUN_1422c1fe0(bCameraMode == 0);
 }
 
@@ -228,12 +225,12 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
 // @0x140fad2b0
 void UIUGCExtraCNDialog::FUN_140fad2b0()
 {
-    if (MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10("m_cameraMode"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_cameraMode"))
     {
         if (m_bCameraMode)
-            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422cdf50("$s_camera_default");
+            spButton.operator->()->FUN_1422cdf50("$s_camera_default");
         else
-            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422cdf50("$s_camera_free");
+            spButton.operator->()->FUN_1422cdf50("$s_camera_free");
         if (MS2Ptr<ASMovieClip> spIcon = spButton.operator->()->FUN_1409b4560("m_icon"))
         {
             if (m_bCameraMode)

@@ -93,8 +93,8 @@ void FUN_140d73aa0(CStringW strText, int nType, void* pOwner, CStringW strTag); 
 void* FUN_140aae430();   // C3: was FUN_140aae430
 
 // camera manager members (exe functions of other objs)
-float FUN_1409f2430(class Unk_CameraManager*);   // C3: was FUN_1409f2430
-void FUN_140ad4ff0(class Unk_CameraManager*, float);
+float FUN_1409f2430(class CameraMgr*);   // C3: was FUN_1409f2430
+void FUN_140ad4ff0(class CameraMgr*, float);
 float FUN_141032e60(void*);   // C3: was FUN_141032e60
 void FUN_141032ed0(void*, float);   // C3: was FUN_141032ed0
 void FUN_141032f30(void*, float);   // C3: was FUN_141032f30
@@ -221,14 +221,14 @@ void UIMinimapEditDialog::OnLoadComplete()
     {
         spFov->FUN_1422ce750(0);
         spFov->FUN_1422ce6a0(90.0f);
-        spFov->FUN_1422ce5f0(((Unk_CameraManager*)(CameraMgr::GetInstance()))->FUN_140ad4b40());
+        spFov->FUN_1422ce5f0(CameraMgr::GetInstance()->FUN_140ad4b40());
         spFov->FUN_1422c1fe0(0);
     }
     if (MS2Ptr<Unk_HudSlider> spDistance = GetChild<Unk_HudSlider>("m_sliderDistance"))
     {
         spDistance->FUN_1422ce750(10.0f);
         spDistance->FUN_1422ce6a0(20000.0f);
-        spDistance->FUN_1422ce5f0(FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
+        spDistance->FUN_1422ce5f0(FUN_1409f2430(CameraMgr::GetInstance()));
         spDistance->FUN_1422c1fe0(0);
     }
     if (MS2Ptr<Unk_HudSlider> spVAngle = GetChild<Unk_HudSlider>("m_sliderVAngle"))
@@ -242,13 +242,13 @@ void UIMinimapEditDialog::OnLoadComplete()
     if (MS2Ptr<ASLabel> spLabelFov = GetChild<ASLabel>("m_labelFov"))
     {
         CString strText;
-        strText.Format("Camera Fov [%f]", (double)((Unk_CameraManager*)(CameraMgr::GetInstance()))->FUN_140ad4b40());
+        strText.Format("Camera Fov [%f]", (double)CameraMgr::GetInstance()->FUN_140ad4b40());
         spLabelFov->FUN_1422e4a00(strText);
     }
     if (MS2Ptr<ASLabel> spLabelDistance = GetChild<ASLabel>("m_labelDistance"))
     {
         CString strText;
-        strText.Format("Camera Distance [%f]", (double)FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
+        strText.Format("Camera Distance [%f]", (double)FUN_1409f2430(CameraMgr::GetInstance()));
         spLabelDistance->FUN_1422e4a00(strText);
     }
     if (MS2Ptr<ASLabel> spLabelVAngle = GetChild<ASLabel>("m_labelVAngle"))
@@ -301,7 +301,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.SetArgsIfAny(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             float fFov = data.PopFloat();
-            FUN_140ad4ff0((Unk_CameraManager*)(CameraMgr::GetInstance()), fFov);
+            FUN_140ad4ff0(CameraMgr::GetInstance(), fFov);
             FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
     }

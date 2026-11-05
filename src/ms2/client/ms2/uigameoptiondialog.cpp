@@ -5,6 +5,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigameoptiondialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uigameoptiondialog.h"
+#include "ms2/placeholder/asbutton.h"
 #include "gameoptioncamera.h"
 #include "gameoptioninterface.h"
 #include "gameoptionstatus.h"
@@ -42,10 +43,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 extern unsigned int DAT_143ab2914;                              // the client build level
 
 // The "m_apply" button of the option swf.
-class Unk_GoButton : public ASMovieClip
-{
-public:
-};
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 // The tooltip image paths (the hdr one at +0xe0, the shimmer one at +0xe8).
 struct Unk_GoTipPaths
@@ -396,7 +394,7 @@ void UIGameOptionDialog::OnCloseTab(int nTab)
 // @0x141943820
 void UIGameOptionDialog::FUN_141943820(int n)
 {
-    MS2Ptr<Unk_GoButton> spApply = FUN_140bb4b10("m_apply");
+    MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply");
     if (spApply)
         spApply->FUN_1422c1fe0(n);
 }

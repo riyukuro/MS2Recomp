@@ -19,7 +19,7 @@ static CString s_strStun2 = "stun";
 static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 
-void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // the movie of a UI layer (ascript.cpp)
 CStringW GetStatCommonText(unsigned nStat);                            // stat display text
 CStringW GetStringCommon(int nId);                                       // string table text
 template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b);
@@ -27,15 +27,15 @@ template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b
 // @0x1409f01a0
 ASStat::ASStat(int nType) : ASObj(nType)
 {
-    void* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
     if (pMovie != 0)
     {
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_title);
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_hidden);
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_random);
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_special);
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_compare);
-        ((Scaleform::GFx::Movie*)(void*)(pMovie))->CreateArray(&m_essential);
+        pMovie->CreateArray(&m_title);
+        pMovie->CreateArray(&m_hidden);
+        pMovie->CreateArray(&m_random);
+        pMovie->CreateArray(&m_special);
+        pMovie->CreateArray(&m_compare);
+        pMovie->CreateArray(&m_essential);
     }
     FUN_1409adbe0("title", m_title);
     FUN_1409adbe0("hidden", m_hidden);

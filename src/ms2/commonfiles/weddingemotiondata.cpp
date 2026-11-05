@@ -36,7 +36,7 @@ template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
+void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool WeddingEmotionTable::s_bInit;
@@ -97,7 +97,7 @@ int WeddingEmotionTable::Load()
         if (strAnim.IsEmpty())
             continue;
         std::vector<CString> unused;
-        FUN_1402c8940(strAnim, spData->m_anim, ",");
+        Unk_CoupleEmotionSplit(strAnim, spData->m_anim, ",");
         if (spData->m_anim.empty())
             continue;
         m_map.insert(std::make_pair(nCode, spData));

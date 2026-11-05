@@ -97,7 +97,7 @@ public:
         efd::ParameterList*, efd::ParameterList*, egf::EntityID, bool);
     egf::EntityPtr FUN_1411ce7c0(efd::utf8string, efd::utf8string, efd::Point3, efd::Point3, float, int, int);
     bool FUN_1411cf0b0(efd::utf8string, efd::AssetID&, bool&);
-    void FUN_1411cf2d0(egf::Entity*, efd::ParameterList*);
+    bool FUN_1411cf2d0(egf::Entity*, efd::ParameterList*);   // returns AddEntity's result (CKfmModel reads it)
     egf::EntityPtr FUN_1411cf3d0(const egf::EntityID&);
     egf::Entity* FUN_1411cf440(const egf::EntityID&);
     void FUN_1411cf540(egf::EntityID id);                    // by value

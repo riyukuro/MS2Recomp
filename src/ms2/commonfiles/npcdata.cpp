@@ -1394,17 +1394,18 @@ static int Unk_ParsePropertyTag(const CStringA& strTag)
 MS2_REPLACE(0x1406CEFB0, Unk_ParsePropertyTag, 1023, 0x6D7FA8CF);
 
 // --- CNpcData::LoadXml ------------------------------------------------------------------------------------------------
-bool FUN_1403d8350(Unk_140165cf0* pElem, const char* pszName, int& nOut);               // npc class reader
+enum Unk_NpcRank {};                                                                    // the npc class (gameevent.h)
+extern template int XmlValue<Unk_NpcRank>(Unk_140165cf0* pElem, const char* pszName, Unk_NpcRank& eOut);   // 0x1403d8350
 unsigned FUN_14021c7c0(const CString& str);                                             // the id of a string key
 int Parse_14021bc30(const CStringA& strName);                                           // event tag by name
 const CString& GetStatName(unsigned nStat);                                             // xml name of the nStat-th stat
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);
+void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);
 template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
 template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 int FUN_1403759c0(Unk_140165cf0*, const char*, std::vector<short>&);
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
@@ -1418,7 +1419,7 @@ int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString
     CStringA str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet == 0)
-        FUN_1402c8940(str, rOut, ",");
+        Unk_CoupleEmotionSplit(str, rOut, ",");
     return nRet;
 }
 MS2_REPLACE(0x1406CFAA0, FUN_1406cfaa0, 121, 0x2DA8BB28);
@@ -1456,7 +1457,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "hitImmune", reinterpret_cast<int&>(m_nHitImmune));
     XmlGetAttr((class TiXmlElement*)(pElem), "abnormalImmune", reinterpret_cast<int&>(m_nAbnormalImmune));
     XmlGetAttr((class TiXmlElement*)(pElem), "level", reinterpret_cast<unsigned short&>(m_nLevel));
-    FUN_1403d8350(pElem, "class", m_nClass);
+    XmlValue<Unk_NpcRank>(pElem, "class", reinterpret_cast<Unk_NpcRank&>(m_nClass));
     XmlGetAttr((class TiXmlElement*)(pElem), "rotationDisabled", reinterpret_cast<bool&>(m_bRotationDisabled));
     XmlGetAttr((class TiXmlElement*)(pElem), "carePathToEnemy", reinterpret_cast<bool&>(m_bCarePathToEnemy));
     XmlGetAttr((class TiXmlElement*)(pElem), "rankIcon", m_strRankIcon);
@@ -1520,7 +1521,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pModel), "scale", reinterpret_cast<float&>(m_model.m_fScale));
         XmlGetAttr((class TiXmlElement*)(pModel), "anispeed", reinterpret_cast<float&>(m_model.m_fAniSpeed));
         XmlGetAttr((class TiXmlElement*)(pModel), "spawnAlphaAnimation", reinterpret_cast<int&>(m_model.m_nSpawnAlphaAnimation));
-        FUN_140874670(pModel, "offset", m_model.m_vOffset);
+        XmlGetAttr((class TiXmlElement*)(pModel), "offset", reinterpret_cast<efd::Point3&>(m_model.m_vOffset));
         XmlGetAttr((class TiXmlElement*)(pModel), "shadowScale", reinterpret_cast<float&>(m_fShadowScale));
         XmlGetAttr((class TiXmlElement*)(pModel), "rotationSpeed", reinterpret_cast<float&>(m_fRotationSpeed));
         XmlGetAttr((class TiXmlElement*)(pModel), "walkSpeed", reinterpret_cast<float&>(m_fWalkSpeed));
@@ -1577,7 +1578,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlSplit(strLevels, m_effect.m_aLevels, ",");
         CString strGroup = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "group", CString(""));
         std::vector<CString> groups;
-        FUN_1402c8940(strGroup, groups, ":");
+        Unk_CoupleEmotionSplit(strGroup, groups, ":");
         for (size_t i = 0; i < groups.size(); ++i)
         {
             std::vector<int> pair;
@@ -1619,8 +1620,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             XmlGetAttr((class TiXmlElement*)(pNode), "targetNode", spNode->m_strTargetNode);
-            FUN_140874670(pNode, "volume", spNode->m_vVolume);
-            FUN_140874670(pNode, "offset", spNode->m_vOffset);
+            XmlGetAttr((class TiXmlElement*)(pNode), "volume", reinterpret_cast<efd::Point3&>(spNode->m_vVolume));
+            XmlGetAttr((class TiXmlElement*)(pNode), "offset", reinterpret_cast<efd::Point3&>(spNode->m_vOffset));
             m_aNodeCollision.Add(spNode);
         }
     }
@@ -1630,8 +1631,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNodeServerCollisions))->FirstChild("collision")))
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
-            FUN_140874670(pNode, "volume", spNode->m_vVolume);
-            FUN_140874670(pNode, "offset", spNode->m_vOffset);
+            XmlGetAttr((class TiXmlElement*)(pNode), "volume", reinterpret_cast<efd::Point3&>(spNode->m_vVolume));
+            XmlGetAttr((class TiXmlElement*)(pNode), "offset", reinterpret_cast<efd::Point3&>(spNode->m_vOffset));
             m_aNodeServerCollision.Add(spNode);
         }
     }

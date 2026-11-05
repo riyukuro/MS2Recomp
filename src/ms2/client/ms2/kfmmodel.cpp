@@ -110,7 +110,7 @@ void FUN_141202280(class CEquipModel*, class NiTransform*);   // C3: was FUN_141
 bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409475f0(void* sp);   void* FUN_1409475d0(void* sp);
 void* FUN_1409478e0(void* p);
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);
-float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
+float FUN_141422340(class CEquipModel*, int);   // C3: was FUN_141422340
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
 unsigned FUN_1405258b0(void* p);
 class CItemExtraData   // C3: member view for the former free stand-ins
@@ -140,7 +140,7 @@ typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_Nod
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void FUN_1402bd040(float* p);
 void FUN_1411dde50(void* owner, void* self);
-void FUN_141422b30(struct Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
+void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
@@ -154,7 +154,6 @@ void FUN_1408b6ec0(void* sp, void* v);   void FUN_140964eb0(void* sp, const egf:
 void FUN_1414737d0(egf::Entity* e);
 class EntityWorldManager;
 egf::Entity* FUN_1411cf440(egf::EntityManager* m, const egf::EntityID& id);
-bool FUN_1411cf2d0(egf::EntityManager* m, egf::Entity* e, int n);
 void* FUN_1411f91c0();   void FUN_141419f50(void* reg, void* model);   void FUN_14141a000(void* reg, void* model);
 bool FUN_1413e9750(const efd::AssetID& a, const efd::AssetID& b);
 class CPhysXHelper;
@@ -171,7 +170,7 @@ public:
 class CPonyTailPhysXHelper   // C3: member view for the former free stand-ins
 {
 public:
-    static void UpdateModelPhysXValues(struct Unk_PickTarget*, void const*);
+    static void UpdateModelPhysXValues(class CEquipModel*, void const*);
 };
 efd::SmartPointer<Unk_KfmPhysics> FUN_141209640(CEquipModel* p);
 void FUN_140a332d0(NiTransform* p);
@@ -301,7 +300,7 @@ efd::Category g_catKfm(0ull);
 // ---- CKfmModel ----
 
 // @0x14143d580
-CKfmModel::CKfmModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
+CKfmModel::CKfmModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20)
     : CEquipModel(spOwner, p18, p20), m_nUpdateHR(0), m_nUpdateTransform(0), m_bPhysicsLoaded(0), m_spEntity(0),
       m_pPhysics(0)
 {
@@ -338,7 +337,7 @@ int CKfmModel::vfunc_4(CString strPath)
     if (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()) != 0)
         return 1;
     ApplyAnimNames();
-    if (FUN_1411cf2d0(reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()), m_spEntity.operator egf::Entity*(), 0) != 0)
+    if (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(m_spEntity.operator egf::Entity*(), 0) != 0)
         (reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->AddModel(this);
     return 1;
 }
@@ -459,15 +458,15 @@ void CKfmModel::vfunc_10()
     if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->FUN_1411dc7f0()))->FUN_14053cfd0()) {
         {
             CString s("HR:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR0:0");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 0));
         }
         {
             CString s("HR1:1");
-            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 1));
+            FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((class CEquipModel*)(this), 1));
         }
     }
 }
@@ -743,7 +742,7 @@ void CKfmModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
     vfunc_22(fScale);
     std::set<NiAVObjectPtr> kSet;
     FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &kSet);
-    FUN_141422b30((struct Unk_PickTarget*)this, kSet, *(const struct Vector3*)&efd::Point3::ZERO, *(const struct Vector3*)&efd::Point3::ZERO, 1.0f);
+    FUN_141422b30((class CEquipModel*)this, kSet, *(const struct Vector3*)&efd::Point3::ZERO, *(const struct Vector3*)&efd::Point3::ZERO, 1.0f);
 }
 
 // @0x14143fc70
@@ -784,7 +783,7 @@ void CKfmModel::vfunc_31()
     kMask.bits0 = 0; kMask.bits1 = 0; kMask.bits2 = 0; kMask.bits3 = 0;
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(FUN_14143ff70()), 0, &kMask, 0);
     if (CFG->m_bPhysics != 0)
-        CPonyTailPhysXHelper::UpdateModelPhysXValues((struct Unk_PickTarget*)(this), (void const*)((char*)m_unk_20 + 0xb8));
+        CPonyTailPhysXHelper::UpdateModelPhysXValues((class CEquipModel*)(this), (void const*)((char*)m_unk_20 + 0xb8));
 }
 
 // @0x14143ff20

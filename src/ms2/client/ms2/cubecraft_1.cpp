@@ -91,6 +91,7 @@
 #include "ms2/commonfiles/fishsimultedata.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/godmodeinfo.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
 #include "ms2/client/ms2/magicdata.h"
 #include "ms2/placeholder/fishingmanager.h"
@@ -114,7 +115,7 @@ inline R CallSlot(void* pObj, int nSlot, A... args)
     return (*(Fn**)pObj)[nSlot](pObj, args...);
 }
 
-extern efd::Point3 DAT_143ab2398;                               // down vector
+extern struct Unk_Int3 DAT_143ab2398;                           // down vector (C3: was efd::Point3, as the definer and mypc type it)
 extern efd::Point3 DAT_143a08d08;                               // forward vector
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
@@ -147,20 +148,10 @@ void FUN_14098c6e0(class Unk_CachedEntity*, unsigned, const bool&);   // C3: was
 void FUN_1410a77c0(void** pDst, void* pValue);
 void FUN_1410a7800(NiAVObject*, float, float, float);
 
-class CGodModeInfo : public CPtred
-{
-public:
-    CGodModeInfo();
-    void FUN_141374d10(int n);
-    void FUN_141374dd0(void* p);
-    void FUN_141374d40(NiPoint3 kPos);
-    void FUN_141374b80(NiPoint3 kPos);
-    char m_pad_18[0x30 - 0x18];
-};
 int FUN_1408a18d0(__int64);
 
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-Unk_Int3 FUN_1408a1430(Vector3);
+Unk_Int3 FUN_1408a1430(NiPoint3 kPos);   // C3: actionkeyobject.cpp's declaration (0x1408a1430)
 
 class Unk_CubeGridSvc : public CubeMapInformationService {
 public:
@@ -170,7 +161,7 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
 Unk_AnimSvc* FUN_1410a68d0();
 struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
-Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell);
+ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell* pCell);   // service 0x7002000 = kCLASSID_SceneGraphService
 CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 CStringW GetStringCommon(int);
 void* FUN_14025e7c0();                       // singleton pointers: 64-bit, not int
@@ -208,15 +199,7 @@ MS2Ptr<Unk_MagicTarget>* FUN_1410a7520(Unk_MagicTargetList*, void*);
 MS2Ptr<Unk_MagicTarget>* FUN_1410a7640(Unk_MagicTargetList*, void**);
 void FUN_141467500(CMagicModel*, MS2Ptr<Unk_MagicTarget>, MS2Ptr<Unk_GuideEntity>, NiPoint3, int, int, int);
 long long FUN_1410a7630();
-struct Unk_SkillRow { char m_pad_00[0x154]; float m_fDc8Src; char m_pad_158[4]; float m_fDccSrc; };
-class Unk_SkillRowRef
-{
-public:
-    void* m_pad_00; void* m_p;                              // a 16-byte MS2Ptr<SkillData>
-    Unk_SkillRow* FUN_14063ed10();
-    Unk_SkillRow* FUN_14063ed50();
-    ~Unk_SkillRowRef();                                     // MS2Ptr<SkillData>::~MS2Ptr 0x14063e5c0
-};
+MS2_CHECK_OFFSET(SkillData, m_block150, 0x150);   // C3: the skill row read by CSkillMagicControlGuide::FUN_1410a5ea0 (was the row view Unk_SkillRow)
 void FUN_1409f7320(efd::Matrix3*);
 #include "ms2/client/ms2/gameobject.h"
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
@@ -236,8 +219,7 @@ public:
     virtual Unk_CcSvcIf* GetService(int nId);
 };
 void* FUN_1410a6920(Unk_CcSvcIf*);
-float FUN_140966f00(efd::Point3, efd::Point3);
-float FUN_140966f00(NiPoint3, NiPoint3);
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 // the exe takes the PCBase as this and the hidden return slot in rdx (a free declaration swapped them)
 struct Unk_CcActorPos { char m_pad[0xbf4]; efd::Point3 m_posBF4; efd::Point3 FUN_1410a7590() const; };   // PCBase's +0xbf4 position
 float FUN_1410a7600(PCBase*);
@@ -485,7 +467,7 @@ void CGuideObject::vfunc_128()
     MyPC* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC>(FUN_1410a1310());
     if (pHost)
     {
-        if ((CGuideObject*)(void*)((Unk_CameraManager*)(reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60() == this)
+        if ((CGuideObject*)(void*)((CameraMgr*)(reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60() == this)
             pHost->FUN_14152a700(this);
     }
 }
@@ -758,7 +740,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     }
     if (nAttach != 0)
     {
-        Unk_Int3 kLocal = FUN_1408a1430(pSel->GetPtCell());
+        Unk_Int3 kLocal = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pSel->GetPtCell())));
         efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         int nCell = spGrid->FUN_1410ba5f0(kLocal, reinterpret_cast<const Vector3&>(kA));
         kB.z = spGrid->DirectionToAngle(nCell);
@@ -841,7 +823,7 @@ int CConstructionGuideObject::vfunc_11()
             m_spLiftNode = pLift;
     }
     if (m_spGod.get() != 0)
-        m_spGod->FUN_141374b80(vfunc_18());
+        m_spGod->FUN_141374b80(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
     return 1;
 }
 
@@ -891,7 +873,7 @@ bool CConstructionGuideObject::vfunc_68(void* a, double t, int b, unsigned c, in
     if (*(efd::Point3*)a != efd::Point3::ZERO && m_bLocal)
     {
         efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-        if (((Unk_CubeGridSvc*)spGrid.operator->())->FUN_1410cdd80(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_20())), 200.0f, reinterpret_cast<const Unk_Int3&>(DAT_143ab2398)) == 0)
+        if (((Unk_CubeGridSvc*)spGrid.operator->())->FUN_1410cdd80(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_20())), 200.0f, DAT_143ab2398) == 0)
         {
             vfunc_19(reinterpret_cast<const efd::Point3&>(kBefore));
             m_bBusy = true;
@@ -924,7 +906,7 @@ void CConstructionGuideObject::vfunc_53(float f)
         pOwner->LookAtPoint(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_18())), 0);
     FUN_1410a2440();
     if (m_spGod.get())
-        m_spGod->FUN_141374d40(vfunc_18());
+        m_spGod->FUN_141374d40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())));
     if (m_spBirdHead.get())
     {
         m_spBirdHead->vfunc_15();
@@ -1150,7 +1132,7 @@ void CFishingGuideObject::vfunc_24(int)
         m_unk_40 = pOwner->vfunc_25();
         if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
-            efd::SmartPointer<ecr::SceneGraphService> spSvc((ecr::SceneGraphService*)FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
+            efd::SmartPointer<ecr::SceneGraphService> spSvc(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
             if (m_unk_40 != 0)
             {
                 if (m_unk_80 != 0)
@@ -1333,10 +1315,10 @@ int CSkillMagicControlGuide::FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::
     m_kAim = kPos;
     MS2Ptr<SkillData> kRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(m_spInfo->m_nSkillId);
     // (the row is returned by value)
-    if (reinterpret_cast<Unk_SkillRow*>(kRow.get()) != 0)
+    if (kRow.get() != 0)
     {
-        m_fDc8 = reinterpret_cast<Unk_SkillRow*>(kRow.operator->())->m_fDc8Src;
-        m_fDcc = reinterpret_cast<Unk_SkillRow*>(kRow.operator->())->m_fDccSrc;
+        m_fDc8 = kRow.operator->()->m_block150.m_fMoveSpeed;
+        m_fDcc = kRow.operator->()->m_block150.m_fMaxDistance;
     }
     // kRow released by its dtor
     return 1;
@@ -1434,7 +1416,7 @@ int CSkillMagicControlGuide::FUN_1410a65f0(int nSkill)
     if (pLocal == 0)
         return 0;
     const NiPoint3& kLocalPos = pLocal->vfunc_18();
-    float fDist = FUN_140966f00(vfunc_18(), kLocalPos);
+    float fDist = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), reinterpret_cast<const Vector3&>(kLocalPos));
     return fDist > *FUN_1410a71d0(pRange);
 }
 
@@ -1493,9 +1475,9 @@ Unk_AnimSvc* FUN_1410a68d0()
 }
 
 // @0x1410a68f0
-Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell)
+ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell* pCell)
 {
-    return (Unk_AnimSvc*)FUN_1410a6920((Unk_CcSvcIf*)pCell->m_spManager.operator->());
+    return (ecr::SceneGraphService*)FUN_1410a6920((Unk_CcSvcIf*)pCell->m_spManager.operator->());
 }
 
 // @0x1410a6920
@@ -1639,10 +1621,6 @@ void FUN_1410a7fd0(Unk_SPtr*);
 void FUN_1410a8050(Unk_SPtr*);
 void FUN_1410a8170(Unk_SPtr*, void*);
 void FUN_1410a8210(Unk_SPtr*, void*);
-Unk_SPtr* FUN_1410a6a70(Unk_SPtr*, void*);
-Unk_SPtr* FUN_1410a6b60(Unk_SPtr*, void*);
-void FUN_1410a6cb0(Unk_SPtr*);
-void FUN_1410a6d70(Unk_SPtr*);
 
 // @0x1410a69b0
 Unk_CcSvcIf** FUN_1410a69b0(Unk_CcSvcIf** p, Unk_CcSvcIf* v)
@@ -1683,29 +1661,9 @@ void FUN_1410a6ce0(Unk_SPtr* p) noexcept { FUN_1410a7fd0(p); }
 void FUN_1410a6d40(Unk_SPtr* p) noexcept { FUN_1410a8050(p); }
 
 // @0x1410a6ee0
-Unk_SPtr* FUN_1410a6ee0(Unk_SPtr* self, void* v)
-{
-    Unk_SPtr kTmp;
-    FUN_1410a6a70(&kTmp, v);
-    void* pOld = self->m_p;
-    self->m_p = kTmp.m_p;
-    kTmp.m_p = pOld;
-    Unk_SPtr* pRet = self;                                  // the return value is taken before kTmp's destructor
-    FUN_1410a6cb0(&kTmp);
-    return pRet;
-}
+template MS2Ptr<CGodModeInfo>& MS2Ptr<CGodModeInfo>::AssignRaw(CGodModeInfo*);
 // @0x1410a6fc0
-Unk_SPtr* FUN_1410a6fc0(Unk_SPtr* self, void* v)
-{
-    Unk_SPtr kTmp;
-    FUN_1410a6b60(&kTmp, v);
-    void* pOld = self->m_p;
-    self->m_p = kTmp.m_p;
-    kTmp.m_p = pOld;
-    Unk_SPtr* pRet = self;                                  // the return value is taken before kTmp's destructor
-    FUN_1410a6d70(&kTmp);
-    return pRet;
-}
+template MS2Ptr<UIBirdHead>& MS2Ptr<UIBirdHead>::AssignRaw(UIBirdHead*);
 
 // @0x1410a7030
 bool FUN_1410a7030(Unk_SPtr* p) { return p->m_p == 0; }

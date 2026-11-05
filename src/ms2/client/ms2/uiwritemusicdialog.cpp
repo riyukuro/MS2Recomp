@@ -178,18 +178,10 @@ public:
 };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
-// The play bar "m_playBar" (a slider).
-class Unk_WmSlider : public ASUIComponent
-{
-public:
-    void FUN_1422ce870(float f);                                            // set the maximum
-};
-
 // The root AS object of the movie with the binders this unit needs.
 class Unk_WmScript : public AScript
 {
 public:
-    template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);    // bind a component by name
     // "setTabFromText" (Invoke(string, value, wide string, int); inline COMDAT of this unit; a1..a3 by value)
     Scaleform::GFx::Value FUN_140ff70d0(const char* szMethod, CString a1, Scaleform::GFx::Value a2, CStringW a3, int a4);
 };
@@ -1376,8 +1368,8 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
         if (m_spPlayBar)
         {
             int nPos = nMinutes * 60 + nSeconds;
-            if (reinterpret_cast<ASSlider*>(m_spPlayBar.operator->())->FUN_1422ce840() != (float)nPos)
-                reinterpret_cast<ASSlider*>(m_spPlayBar.operator->())->FUN_1422ce800((float)nPos);
+            if (m_spPlayBar->FUN_1422ce840() != (float)nPos)
+                m_spPlayBar->FUN_1422ce800((float)nPos);
         }
     }
 }
@@ -1389,7 +1381,7 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
     {
         if (MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560("m_playingMusic"))
             m_spTotalTimer = spPlaying->FUN_1409b4620("m_totalTimer");
-        if (m_spPlayBar = static_cast<Unk_WmScript*>(m_30.operator->())->FUN_140fafed0<Unk_WmSlider>("m_playBar"))
+        if (m_spPlayBar = m_30->FUN_140fafed0<ASSlider>("m_playBar"))
         {
             ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWriteMusicDialog::FormatPlayBarTooltip), 0,
                                FUN_1422db730());
@@ -1403,7 +1395,7 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
         CStringW strText = FUN_14028dfa0(CStringW(L"s_writemusic_text_playtimer_total"), nMinutes, nSeconds);
         m_spTotalTimer->SetTextW(strText);
         if (m_spPlayBar)
-            reinterpret_cast<ASSlider*>(m_spPlayBar.operator->())->FUN_1422ce800(0);
+            m_spPlayBar->FUN_1422ce800(0);
     }
 }
 

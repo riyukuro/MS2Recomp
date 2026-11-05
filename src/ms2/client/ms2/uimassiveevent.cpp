@@ -24,8 +24,7 @@
 // ---- unit-local views of exe objects ----
 
 
-class Unk_140a87690 : public CServerStringGroup { };      // the text filter
-class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
+class Unk_PatchTextOwner { public: class Unk_PatchTextFilter* FUN_140a87690(); };   // C3: CServerString accessor view (onlinepatchmanagercli.cpp)
 
 class GFxManager { public: float FUN_1422afec0(int); }; class Unk_ExpUiScale : public GFxManager {};
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_ExpUiScale (calls cast back)
@@ -255,7 +254,7 @@ void UIMassiveEvent::FUN_1419f6180(CInPacket* pPacket)
 void UIMassiveEvent::FUN_1419f6240(CInPacket* pPacket)
 {
     CStringW strText = pPacket->ReadUnicodeString();
-    strText = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strText);
+    strText = reinterpret_cast<CServerStringGroup*>(reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690())->GetString(strText);
     int nStep = pPacket->ReadInt32();
     int nDuration = pPacket->ReadInt32();
     int nType = pPacket->ReadInt32();
@@ -293,7 +292,7 @@ void UIMassiveEvent::FUN_1419f66a0(CInPacket* pPacket)
 {
     int nSubType = pPacket->ReadUInt8();
     CStringW strRaw = pPacket->ReadUnicodeString();
-    CStringW strText = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strRaw);
+    CStringW strText = reinterpret_cast<CServerStringGroup*>(reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690())->GetString(strRaw);
     int nDuration = pPacket->ReadInt32();
     FUN_1419f6810(nSubType, strText, nDuration);
 }

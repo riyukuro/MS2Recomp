@@ -33,7 +33,7 @@ ecr::RenderService* Unk_GetRenderService(char* pCell);           // C3: was FUN_
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 // The two Ptr<> arguments of vfunc_9/10 (gfxmovie.h): the Render HAL and the Renderer2D. Only the release functions
 // are needed here (GFxMovieBackground's unit spells out more of it).

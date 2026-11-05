@@ -107,12 +107,6 @@ class Unk_AclSkillTable : public SkillDataTable
 };
 // The current field data.
 
-// the exe passes the entity id by value here (the callee's own header takes it by reference; same ABI)
-class Unk_AclEffect : public CEffectService
-{
-public:
-    void FUN_1411a6f00(egf::EntityID id);
-};
 
 
 class Unk_Gauge   // C3: the InvokeEffectOption setters are this class's
@@ -1036,7 +1030,7 @@ void AdditionalCliList::FUN_140972770()
             m_pOwner->AddHideReason(3);
         else
         {
-            static_cast<Unk_AclEffect*>(CEffectService::GetInstance())->FUN_1411a6f00(m_pOwner->FUN_14123c460());
+            CEffectService::GetInstance()->RemoveTracked(m_pOwner->FUN_14123c460());
             m_pOwner->RemoveHideReason(3);
             m_pOwner->vfunc_42(fAlpha, true);
         }

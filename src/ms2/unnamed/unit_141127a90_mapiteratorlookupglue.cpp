@@ -27,6 +27,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
+#include <utility>
 
 // Tree-node iterator: the node pointer; the pair value starts 0x20 (IterA) or 0x1c (IterB) into the node.
 template <int N>
@@ -212,7 +213,9 @@ void* FUN_14111d530(Unk_Key*);
 Unk_IterB<22>* FUN_14111dee0(void*, Unk_IterB<22>*, void*);
 Unk_IterB<23>* FUN_14111df20(void*, Unk_IterB<23>*, void*);
 Unk_IterB<23>* FUN_14111df60(void*, Unk_IterB<23>*, void*);
-char* FUN_140885360(Unk_Cursor*);
+class Cube;
+template <class T> class MS2Ptr;
+std::pair<const int, MS2Ptr<Cube> >* FUN_140885360(void* pIter);   // ugcbuildvalidator.cpp
 Unk_Cursor* FUN_14111dfa0(void*, Unk_Cursor*, void*);
 Unk_Elem52** FUN_141148ff0(Unk_Array52*);
 int** FUN_141149030(Unk_ArrayInt*);
@@ -616,7 +619,7 @@ char* FUN_141128310(void* pMap, void* key)
 char* FUN_141128350(void* pMap, void* key)
 {
     Unk_InsPair<Unk_Cursor> it;
-    return (FUN_140885360(FUN_14111dfa0(pMap, &it.first, key)) + 8);
+    return (reinterpret_cast<char*>(FUN_140885360(FUN_14111dfa0(pMap, &it.first, key))) + 8);
 }
 
 // @0x141128390

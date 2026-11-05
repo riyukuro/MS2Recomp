@@ -57,7 +57,8 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
-void FUN_1403d7960(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nA, const int& nB);
+class Unk_CommonLog;
+template <class A, class B> void Unk_BurningLevelupLog(Unk_CommonLog*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_1403d7960
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
 class TiXmlElement   // C3: unit-local view of the real class
@@ -378,7 +379,8 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         if (model == 0) {
             int nModelId = GetItemPreset();
             int nItemId = GetItemId();
-            FUN_1403d7960(GetLogString(), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}", nItemId, nModelId);
+            Unk_BurningLevelupLog<unsigned, unsigned>(reinterpret_cast<Unk_CommonLog*>(GetLogString()), 2, 0x21, L"Not Found ItemID:{0} ItemModelID:{1}",
+                reinterpret_cast<const unsigned&>(nItemId), reinterpret_cast<const unsigned&>(nModelId));
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
@@ -2053,9 +2055,9 @@ bool FUN_14053fd50(int nSub)
 }
 
 // @0x14053fd90
-void CItemData::FUN_14053fd90()
+int CItemData::FUN_14053fd90()
 {
-    FUN_14053e530();
+    return FUN_14053e530();
 }
 
 // @0x14053fdb0

@@ -11,6 +11,7 @@
 #include <atlcoll.h>
 
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/nipoint3.h"
@@ -453,31 +454,16 @@ MS2_CHECK_SIZE(CGuideConditionExistItem, 0x38);
 
 // ---- helper values of the conditions below (layouts proven from the XML readers and the condition checks) ----------------
 
-// The conditions of a nested condition (AnyOne / AllOf): the smart pointers hold the condition built by 0x1413a52c0.
-// A refcounted condition handle: the exe's MS2Ptr<CGuideCondition> (16 bytes, pointer at +8; get 0x141387b90,
-// operator-> 0x141387bb0, AddRef 0x141388ed0). A real RAII value: `return ref;` is the move ctor.
-class Unk_GcCondRef
-{
-public:
-    Unk_GcCondRef();                                        // 0x1413a4750 null
-    explicit Unk_GcCondRef(CGuideCondition* pCond);         // 0x1413b28b0 holds a new pointer (AddRef)
-    Unk_GcCondRef(Unk_GcCondRef&& rhs);                     // 0x1413b2880 move: takes the pointer of rhs
-    Unk_GcCondRef& operator=(const Unk_GcCondRef& rhs);     // 0x1413a4770 copy: AddRef rhs, release this, take rhs's pointer
-    ~Unk_GcCondRef();                                       // 0x141387660 release (MS2Ptr<CGuideCondition> dtor)
-    CGuideCondition* FUN_141387bb0();                       // the held condition
-    CGuideCondition* FUN_141387b90();                       // get(): the held pointer (tested for null)
-    void FUN_141388ed0();                                   // creates the refcount block
-    void* m_pRc;
-    CGuideCondition* m_p;
-};
-MS2_CHECK_SIZE(Unk_GcCondRef, 0x10);
+// The conditions of a nested condition (AnyOne / AllOf): the MS2Ptr<CGuideCondition> handles hold the condition built
+// by 0x1413a52c0 (default ctor 0x1413a4750, CGuideCondition* ctor 0x1413b28b0, move 0x1413b2880, operator= 0x1413a4770,
+// dtor 0x141387660, get 0x141387b90, operator-> 0x141387bb0, AddRef 0x141388ed0, Release 0x141389060).
 
 class Unk_GcCondList
 {
 public:
     // count / [] / Add: the exe's CAtlArray<MS2Ptr<CGuideCondition>> members (0x1413886d0 / 0x141387b40 / 0x141388460),
     // called through a reinterpret_cast of m_arr (GE_CONDS)
-    CAtlArray<Unk_GcCondRef> m_arr;                         // dtor 0x1413875d0 releases the conditions
+    CAtlArray<MS2Ptr<CGuideCondition> > m_arr;              // dtor 0x1413875d0 releases the conditions
 };
 MS2_CHECK_SIZE(Unk_GcCondList, 0x20);
 

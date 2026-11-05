@@ -98,13 +98,9 @@ public:
     virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
 };
 
-// The list of objects updated every frame (0x143ab5c68).
-class Unk_GoUpdateList
-{
-public:
-    // @0x14123ee80
-    static BGTransparencyMgr* FUN_14123ee80() { return TSingleton<BGTransparencyMgr>::s_instance; }
-};
+// The BG transparency manager singleton (0x143ab5c68). C3: was Unk_GoUpdateList::FUN_14123ee80.
+// @0x14123ee80
+inline BGTransparencyMgr* TSingleton<BGTransparencyMgr>::GetInstance() { return TSingleton<BGTransparencyMgr>::s_instance; }
 
 class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -127,7 +123,6 @@ struct Unk_GoCamEvent
 };
 
 // Anchor handles collected by vfunc_27 (16-byte smart handle over the array element).
-struct Unk_GoFloat3 { float x, y, z; };
 class NxVec3;
 // The anchor handle is MS2Ptr<CBoxCollision>; the stand-in stays as vfunc_27's array element type.
 class Unk_GoAnchorPtr
@@ -136,8 +131,9 @@ public:
     ~Unk_GoAnchorPtr();                 // 0x140a00490
     void* m_pad[2];
 };
-efd::Point3 FUN_141b6e150(const Unk_GoFloat3* p);
-float FUN_140966f00(NiPoint3 a, efd::Point3 b);
+struct Unk_UtilFloat3;
+Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
 // Scene picking (FUN_1413f98f0).
 struct Unk_McPickHit { Vector3* FUN_140ad4bd0(); };
@@ -283,7 +279,7 @@ void GameObject::vfunc_14()
 {
     if (m_bUnk10C)
     {
-        Unk_GoUpdateList::FUN_14123ee80()->RemoveObject(this);
+        TSingleton<BGTransparencyMgr>::GetInstance()->RemoveObject(this);
         m_bUnk10C = false;
     }
     m_spAnimMgr->FUN_14099e7d0(this);
@@ -563,9 +559,9 @@ void GameObject::SetKeepVisibleForBGTransparency(bool b)
     {
         m_bUnk10C = b;
         if (b)
-            Unk_GoUpdateList::FUN_14123ee80()->AddObject(this);
+            TSingleton<BGTransparencyMgr>::GetInstance()->AddObject(this);
         else
-            Unk_GoUpdateList::FUN_14123ee80()->RemoveObject(this);
+            TSingleton<BGTransparencyMgr>::GetInstance()->RemoveObject(this);
     }
 }
 MS2_REPLACE_METHOD(0x14123c680, GameObject, SetKeepVisibleForBGTransparency, 102, 0x86FCEE12);
@@ -613,8 +609,8 @@ int GameObject::vfunc_29(GameObject* pTarget, efd::Point3* pOut)
         MS2Ptr<CBoxCollision> spAnchor(reinterpret_cast<MS2Ptr<CBoxCollision>&>(kAnchors[i]));
         if (spAnchor == NULL)
             continue;
-        NiPoint3 kPt(FUN_141b6e150(reinterpret_cast<const Unk_GoFloat3*>(&spAnchor->m_kBox.GetCenter())));
-        float fDist = FUN_140966f00(pTarget->vfunc_18(), kPt);
+        NiPoint3 kPt(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&spAnchor->m_kBox.GetCenter())))));
+        float fDist = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(efd::Point3(kPt))));
         if (fMin > fDist)
         {
             fMin = fDist;

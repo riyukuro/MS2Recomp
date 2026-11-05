@@ -3,9 +3,9 @@
 // MS2-RANGE: 0x1400b9410-0x1400b9690 .text$di
 // MS2-RANGE: 0x140530640-0x140535bc0 .text$mn
 // MS2-RANGE: 0x142c9ab70-0x142c9ac70 .text$yd
-// MS2-PIN: ??0?$Unk_BreakPtr@VCMsgBoxData@@@@QEAA@AEBV0@@Z 0x140534b80
-// MS2-PIN: ??1?$Unk_BreakPtr@VCMsgBoxData@@@@QEAA@XZ 0x140534d60
-// MS2-PIN: ??B?$Unk_BreakPtr@VCMsgBoxData@@@@QEBAPEAVCMsgBoxData@@XZ 0x140534fc0
+// MS2-PIN: ??0?$MS2Ptr@VCMsgBoxData@@@@QEAA@AEBV0@@Z 0x140534b80
+// MS2-PIN: ??1?$MS2Ptr@VCMsgBoxData@@@@QEAA@XZ 0x140534d60
+// MS2-PIN: ??B?$MS2Ptr@VCMsgBoxData@@@@QEBAPEAVCMsgBoxData@@XZ 0x140534fc0
 // MS2-PIN: ??_G?$TSingleton@VCItemBreakManager@@@@UEAAPEAXI@Z 0x140535070
 // MS2-PIN: ?FUN_1405352d0@UIItemBreakDialog@@QEAAHXZ 0x1405352d0
 // MS2-PIN: ?Id@UIItemBreakDialog@@SAHXZ 0x140535330
@@ -33,6 +33,8 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"  // C3: CItemData members
 #include "ms2/commonfiles/luautil.h"
+#include "ms2/placeholder/ms2ptr_impl.h"  // C3: MS2Ptr<CMsgBoxData> bodies (COMDATs 0x140534b80..0x140535920)
+#include "ms2/client/ms2/uimessageboxdata.h"  // C3: the real CMsgBoxData (was a unit-local 0x2a0 view, args at +0x228)
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/item.h"   // C3: CItemBreakIngredientTable::GetBreakItem
@@ -88,6 +90,7 @@ public:   // C3: GetSkinType, GetSellPrice, FUN_14053cbc0 are CItemData's (cast 
 };
 class Unk_BreakEnhance : public CItemSocket { };
 class CIngredientInfo;
+template <> MS2Ptr<CIngredientInfo>::~MS2Ptr();   // C3: defined elsewhere (CIngredientInfo is incomplete here; keeps ms2ptr_impl.h from instantiating it)
 class Unk_BreakIngredient { public: void* p0; void* p8; void* p10; int p18,id; unsigned count; };
 class Unk_BreakIngredients {
 public: MS2Ptr<CIngredientInfo>& FUN_14027f1f0(size_t);   // C3: size/empty are std::vector<MS2Ptr<CIngredientInfo>>'s
@@ -183,92 +186,13 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
     format_str = f.format(format_str, arg);
 }
 CStringW FUN_140719630(int); CStringW FUN_1407196b0(long); CStringW FUN_140719a80(unsigned __int64);
-class CMsgBoxData {
-public:
-    int FUN_141a02e50(int,int) const; __int64 FUN_141a02f10(int,__int64) const; CStringW FUN_141a02d50() const;
-    void SetInput(int,const CStringW&,unsigned,int,int);
-    void SetCallback(Delegate<bool(int,const CMsgBoxData&)>);
-    void FUN_141a01600(__int64); void FUN_141a01ee0(Unk_BreakItemPtr,const CStringW&,int,int,int,int,int); void SetButtonLabelIds(int,int,int);
-    template<class T> void Append(T value);
-    void* p0;
-    void* p8;
-    void* p10;
-    void* p18;
-    void* p20;
-    void* p28;
-    void* p30;
-    void* p38;
-    void* p40;
-    void* p48;
-    void* p50;
-    void* p58;
-    void* p60;
-    void* p68;
-    void* p70;
-    void* p78;
-    void* p80;
-    void* p88;
-    void* p90;
-    void* p98;
-    void* pa0;
-    void* pa8;
-    void* pb0;
-    void* pb8;
-    void* pc0;
-    void* pc8;
-    void* pd0;
-    void* pd8;
-    void* pe0;
-    void* pe8;
-    void* pf0;
-    void* pf8;
-    void* p100;
-    void* p108;
-    void* p110;
-    void* p118;
-    void* p120;
-    void* p128;
-    void* p130;
-    void* p138;
-    void* p140;
-    void* p148;
-    void* p150;
-    void* p158;
-    void* p160;
-    void* p168;
-    void* p170;
-    void* p178;
-    void* p180;
-    void* p188;
-    void* p190;
-    void* p198;
-    void* p1a0;
-    void* p1a8;
-    void* p1b0;
-    void* p1b8;
-    void* p1c0;
-    void* p1c8;
-    void* p1d0;
-    void* p1d8;
-    void* p1e0;
-    void* p1e8;
-    void* p1f0;
-    void* p1f8;
-    void* p200;
-    void* p208;
-    void* p210;
-    void* p218;
-    void* p220;
-    ATL::CAtlArray<CStringW> args;
-};
-MS2_CHECK_OFFSET(CMsgBoxData,args,0x228);
 MS2_CHECK_OFFSET(Unk_BreakTemplate,category,0x138);
 MS2_CHECK_OFFSET(Unk_BreakIngredient,count,0x20);
-template<> inline void CMsgBoxData::Append(int v) { args.Add(FUN_140719630(v)); }
-template<> inline void CMsgBoxData::Append(unsigned v) { args.Add(FUN_1407196b0(v)); }
-template<> inline void CMsgBoxData::Append(__int64 v) { args.Add(FUN_140719a80(v)); }
-Unk_BreakPtr<CMsgBoxData> FUN_140d73d20(int,CStringW,void*,CStringW);
-void FUN_140d73c60(Unk_BreakPtr<CMsgBoxData>);
+template<> inline void CMsgBoxData::Append(int v) { m_args.Add(FUN_140719630(v)); }
+template<> inline void CMsgBoxData::Append(unsigned v) { m_args.Add(FUN_1407196b0(v)); }
+template<> inline void CMsgBoxData::Append(__int64 v) { m_args.Add(FUN_140719a80(v)); }
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int,CStringW,void*,CStringW);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 int FUN_141902660(Unk_BreakItemPtr);
 void FUN_1409e4950(Unk_BreakItemPtr,CStringW&,bool*);
 // @0x140530640
@@ -531,7 +455,7 @@ MS2_REPLACE_METHOD(0x140533340, CItemBreakManager, RequestRemoveItem, 248, 0x31B
 void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
     if(item==0) return; if(FUN_141902660(item)!=0) return;
     if(item->IsStackable()!=0 && ((unsigned)item->GetCount())>1) {
-        if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
+        if(MS2Ptr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=((unsigned)item->GetCount()); CStringW text; text.Format(L"%d",count);
             box->SetInput(1,text,count,0,0);
             box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnDismantleCountMsgBox));
@@ -541,7 +465,7 @@ void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
         CStringW option; bool flag=false; FUN_1409e4950(item,option,&flag);
         if(item->GetRarity()>=5 && flag==1) {
             CStringW warning=GetStringCommonByKey(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
-            Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
+            MS2Ptr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
             if(box) { box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnConfirmMessageBoxResult));
                 box->FUN_141a01600(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
                 box->Append(arg); box->Append(item->GetItemUid()); box->Append(((unsigned)item->GetCount())); FUN_140d73c60(box);

@@ -238,6 +238,7 @@ class RenderNotify;
 class RTHandle
 {
 public:
+    ~RTHandle();                                    // 0x14257ec50
     bool   NextCapture(RenderNotify* render);
     Entry* GetRenderEntry() const;
 private:
@@ -297,9 +298,7 @@ public:
     ~Unk_BgDispHandle();                                                    // 0x14127c530
     void* GetObj();                                                         // 0x14127cc80
 };
-void FUN_14257ec50(Unk_BgDispHandle* p) throw();   // RTHandle::~RTHandle: an explicit dtor call emits ??_G at /Od
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
-class Unk_BgWorldMgr : public WorldService { public: NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
 {
 public:
@@ -322,7 +321,7 @@ Unk_BgDispBase::Unk_BgDispBase(const Unk_BgDispBase& r) : m_ref(r.m_ref) {}
 // @0x14127c130
 Unk_BgDispHandle::Unk_BgDispHandle(const Unk_BgDispHandle& r) : Unk_BgDispBase(r) {}
 // @0x14127c530
-Unk_BgDispHandle::~Unk_BgDispHandle() { FUN_14257ec50(this); }
+Unk_BgDispHandle::~Unk_BgDispHandle() { reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle*>(this)->RTHandle::~RTHandle(); }
 // @0x14127cc80
 void* Unk_BgDispHandle::GetObj() { return reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle*>(this)->GetRenderEntry(); }
 // @0x14127cb10
@@ -503,7 +502,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
     }
     if (m_nPosFlag != 0)
     {
-        PCBase* pPC = static_cast<PCBase*>(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd0cc0());
+        PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC != 0)
         {
             NiPoint3 kScreen;
@@ -518,7 +517,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
             NiPoint3 kScreen;
             if (m_spViewport ? true : false)
             {
-                if (m_spViewport->FUN_141486450(static_cast<const efd::Point3&>(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd3dc0()), kScreen, 1.0f))
+                if (m_spViewport->FUN_141486450(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(WorldService::GetInstance()->FUN_141bd3dc0())), kScreen, 1.0f))
                     m_spScript->Invoke("updatePos", kScreen.x);
             }
         }

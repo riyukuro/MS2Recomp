@@ -17,6 +17,9 @@
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include <NiPoint3.h>
 #include "ms2/client/ms2/fielddatacli.h"   // C3: MS2Ptr<CFieldDataCli>, the option row
+template <class T> class TSingleton;
+class CameraMgr { public: Vector3 FUN_140a38d00(); void FUN_140a38d90(Vector3 pt); };   // C3: member view (was Unk_CameraManager)
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // ---- unit-local placeholders ----
 
@@ -82,7 +85,7 @@ CFreeCameraMode::~CFreeCameraMode()
 // @0x1412222c0
 void CFreeCameraMode::vfunc_8(double fTime)
 {
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
         Vector3 ptPos = FUN_1409f2540();
@@ -190,7 +193,7 @@ void CFreeCameraMode::vfunc_9()
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;
     }
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
 MS2_REPLACE_METHOD(0x141222b80, CFreeCameraMode, vfunc_9, 395, 0x1B154723);
 

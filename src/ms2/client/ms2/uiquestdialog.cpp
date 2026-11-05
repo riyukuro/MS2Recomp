@@ -121,10 +121,10 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- out-of-unit callees (names describe uses) ----
 using ATL::CAtlArray;
-template<> Unk_PayloadPtr<CQuest>::~Unk_PayloadPtr();
-template<> CQuest* Unk_PayloadPtr<CQuest>::get() const;
-template<> CQuest* Unk_PayloadPtr<CQuest>::operator->() const;
-template<> Unk_PayloadPtr<CQuest>::Unk_PayloadPtr(const Unk_PayloadPtr&);
+template<> MS2Ptr<CQuest>::~MS2Ptr();
+template<> CQuest* MS2Ptr<CQuest>::get() const;
+template<> CQuest* MS2Ptr<CQuest>::operator->() const;
+template<> MS2Ptr<CQuest>::MS2Ptr(const MS2Ptr&);
 
 // The local player: only the level getter (slot 78) is used.
 class Unk_QdActor
@@ -266,11 +266,6 @@ public:
 };
 // "m_questInfo".
 class Unk_QdInfo : public Unk_QdCtl { };
-// "m_properLevel" / "m_progressOnly".
-class Unk_QdCheck : public Unk_QdCtl
-{
-public:
-};
 class ASDialog : public ASDisplayObject
 {
 public:
@@ -282,7 +277,6 @@ struct Unk_QdFlags { char m_pad_00[0x20]; bool m_20; bool m_21; bool m_22; };
 class Unk_QdOptions : public CGameOption
 {
 public:
-    Unk_QdFlags* FUN_140c9b8b0();
 };
 class Unk_QdPane : public UIDialog { public: };
 class Unk_QdGuide : public UIWorldMapDialog { public: int IsFloating(); };
@@ -338,9 +332,9 @@ void UIQuestDialog::OnLoadInit()
     m_188 = 0;
     if (m_30.get() != 0)
     {
-        m_30->Invoke("initializeSetting", "epic", reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_20);
-        m_30->Invoke("initializeSetting", "world", reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_21);
-        m_30->Invoke("initializeSetting", "repeat", reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_22);
+        m_30->Invoke("initializeSetting", "epic", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_20);
+        m_30->Invoke("initializeSetting", "world", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_21);
+        m_30->Invoke("initializeSetting", "repeat", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_22);
     }
 }
 
@@ -403,7 +397,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pPlayer == 0)
                     return 0;
-                Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+                MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
                 if (spQuest.get() != 0)
                     spQuest.operator->()->RequestTrackingState(bRegist);
             }
@@ -451,9 +445,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             ASData dataSetting;
             if (dataSetting.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_20 = dataSetting.PopBool();
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_21 = dataSetting.PopBool();
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_22 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_20 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_21 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_22 = dataSetting.PopBool();
                 Unk_QdGuide* pGuide = static_cast<Unk_QdGuide*>(Unk_GetUI<UIWorldMapDialog>(0x4e42));
                 if (pGuide != 0 && pGuide->FUN_141924630() != 0)
                     pGuide->FUN_141b5bd30();
@@ -802,13 +796,13 @@ void UIQuestDialog::SelectQuest(int nQuestId)
         }
         else
         {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (spQuest.IsNull())
                 return;
             info.FUN_1407cbb20("date", QuestDate(FUN_141aa4980(spQuest.operator->())));
             info.FUN_1407cbb20("story", QuestProgressStory(spQuest.get()));
             info.FUN_1407cbbe0("progress", spQuest->IsRewarded() == 0);
-            AddButtons(Unk_PayloadPtr<CQuest>(spQuest), info);
+            AddButtons(MS2Ptr<CQuest>(spQuest), info);
             AddConditions(nQuestId, info);
         }
         AddRewardInfo(nQuestId, info);
@@ -902,14 +896,14 @@ void UIQuestDialog::RemovePinned(int nQuestId)
 }
 
 // @0x141a9c560
-void UIQuestDialog::CollectQuests(CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsigned nChapter)
+void UIQuestDialog::CollectQuests(CAtlArray<MS2Ptr<CQuest> >& rOut, unsigned nChapter)
 {
     int nState = IsSubTabOne() ? 4 : 2;
-    CAtlArray<Unk_PayloadPtr<CQuest> > quests;
+    CAtlArray<MS2Ptr<CQuest> > quests;
     ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(quests, nState, 0xb, nChapter);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spQuest(quests[i]);
+        MS2Ptr<CQuest> spQuest(quests[i]);
         if (IsInCurrentTab(spQuest->FUN_140bfc580()) == 0)
             continue;
         if (spQuest->FUN_1407447c0() != 0)
@@ -1264,26 +1258,26 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     if (FUN_1416e8060(nChapter) != 0)
         return 0;
     unsigned bProgressOnly = 0;
-    if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->GetVisible())
-            bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
+        if (spCheck->GetVisible())
+            bProgressOnly = spCheck->FUN_1422ce0e0();
     }
     int nAdded = 0;
     ASObj chapter(2);
     ASArray children(2);
     CAtlArray<unsigned> chapterQuests;
-    CAtlArray<Unk_PayloadPtr<CQuest> > quests;
+    CAtlArray<MS2Ptr<CQuest> > quests;
     TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, chapterQuests);
     for (size_t i = 0; i < chapterQuests.GetCount(); i++)
     {
-        Unk_PayloadPtr<CQuest> spItem = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(chapterQuests[i]);
+        MS2Ptr<CQuest> spItem = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(chapterQuests[i]);
         if (spItem.get() != 0)
             quests.Add(spItem);
     }
     for (size_t j = 0; j < quests.GetCount(); j++)
     {
-        Unk_PayloadPtr<CQuest> spQuest(quests[j]);
+        MS2Ptr<CQuest> spQuest(quests[j]);
         if (spQuest->IsRewarded() != 0)
         {
             bool bRepeat = FUN_14074b070(spQuest->GetData().operator->()) == 2
@@ -1486,7 +1480,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
 int Unk_ClubBuffTypeOf(int n);
 
 // @0x141aa02b0
-void UIQuestDialog::AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut)
+void UIQuestDialog::AddButtons(MS2Ptr<CQuest> spQuest, ASObj& rOut)
 {
     if (spQuest == (CQuest*)0)
         return;
@@ -1557,7 +1551,7 @@ void UIQuestDialog::CollectEpisodes(CAtlArray<int>& rOut)
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
         int nChapter = chapters[i];
-        CAtlArray<Unk_PayloadPtr<CQuest> > quests;
+        CAtlArray<MS2Ptr<CQuest> > quests;
         CollectQuests(quests, nChapter);
         if (quests.GetCount() > 0)
         {
@@ -1584,22 +1578,22 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     CAtlArray<int> chapters;
     GetChapterIDs(chapters);
     unsigned bProgressOnly = 0;
-    if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->GetVisible())
-            bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
+        if (spCheck->GetVisible())
+            bProgressOnly = spCheck->FUN_1422ce0e0();
     }
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
         unsigned nChapter = chapters[i];
         if (FUN_1416e8060(nChapter) != 0)
             continue;
-        CAtlArray<Unk_PayloadPtr<CQuest> > quests;
-        CAtlArray<Unk_PayloadPtr<CQuest> > kept;
+        CAtlArray<MS2Ptr<CQuest> > quests;
+        CAtlArray<MS2Ptr<CQuest> > kept;
         CollectQuests(quests, nChapter);
         for (size_t j = 0; j < quests.GetCount(); j++)
         {
-            Unk_PayloadPtr<CQuest> spQuest(quests[j]);
+            MS2Ptr<CQuest> spQuest(quests[j]);
             if (spQuest->IsRewarded() != 0)
             {
                 bool bRepeat = FUN_14074b070(spQuest->GetData().operator->()) == 2
@@ -1609,7 +1603,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
             }
             if (bProgressOnly != 0 && spQuest->GetState() != 1)
                 continue;
-            ((ATL::CAtlArray<Unk_PayloadPtr<CQuest>, ATL::CElementTraits<Unk_PayloadPtr<CQuest>>>*)&(kept))->Add(spQuest);
+            ((ATL::CAtlArray<MS2Ptr<CQuest>, ATL::CElementTraits<MS2Ptr<CQuest>>>*)&(kept))->Add(spQuest);
         }
         if (kept.GetCount() > 0)
         {
@@ -1642,8 +1636,8 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
     unsigned bProperLevel = 1;
     CAtlArray<int> chapters;
     CRBMultiMap<int, MS2Ptr<CQuestData> > sorted(10);
-    if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_properLevel"))
-        bProperLevel = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_properLevel"))
+        bProperLevel = spCheck->FUN_1422ce0e0();
     int nFocusChapter = 0;
     if (m_188 != 0)
     {
@@ -1797,7 +1791,7 @@ int UIQuestDialog::TabOfQuest(int nQuestId)
 // @0x141aa1b50
 void UIQuestDialog::GiveUpQuest(int nQuestId)
 {
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return;
     if (!spQuest->GetData())
@@ -1854,15 +1848,15 @@ void UIQuestDialog::ResetFilters()
 // @0x141aa2130
 void UIQuestDialog::ChangeTab(int nTab)
 {
-    if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_properLevel"))
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_properLevel"))
     {
         if (nTab != 4)
-            reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(m_filterA[nTab]);
+            spCheck->FUN_1422ce090(m_filterA[nTab]);
     }
-    if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
     {
         if (nTab != 4)
-            reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(m_filterB[nTab]);
+            spCheck->FUN_1422ce090(m_filterB[nTab]);
     }
 }
 

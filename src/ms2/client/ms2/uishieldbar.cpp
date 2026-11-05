@@ -55,10 +55,10 @@ float FUN_1412762d0(const NiPoint3& pt);
 class Unk_ShieldActor : public PCBase
 {
 };
-class Unk_ShieldPlayer
+class MyPC   // C3: member view (mypc.h needs CHomePrivilege)
 {
 public:
-    int FUN_1415278d0(__int64 nId);
+    int FUN_1415278d0(void* p);
 };
 class Unk_ShieldWorld;
 class WorldService   // C3: member view for the former free stand-ins
@@ -250,7 +250,7 @@ void UIShieldBar::Entity::FUN_140e86090()
 // @0x140e860f0
 int UIShieldBar::Entity::FUN_140e860f0()
 {
-    Unk_ShieldPlayer* pPlayer = ((class Unk_ShieldPlayer*)((class WorldService*)(class Unk_ShieldWorld*)(((class Unk_ShieldWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
+    MyPC* pPlayer = ((class MyPC*)((class WorldService*)(class Unk_ShieldWorld*)(((class Unk_ShieldWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     PCBase* pActor = FUN_140f49330();
@@ -263,7 +263,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(pActor);
         if (pPc != 0)
         {
-            if (pPlayer->FUN_1415278d0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
+            if (pPlayer->FUN_1415278d0((void*)((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
                 return 0;
             return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_d;
         }

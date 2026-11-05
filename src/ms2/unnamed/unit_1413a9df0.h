@@ -140,7 +140,7 @@ CStringA StringFormat(const char* format);
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;         // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 
-Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem);      // builds the condition of a <condition> element
+MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem); // builds the condition of a <condition> element
 int FUN_1413a5570(CGuideCondition* pCond);              // runs a nested condition's test
 
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);

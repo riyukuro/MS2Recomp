@@ -51,8 +51,6 @@ public:
 
 class ASDialog : public ASDisplayObject
 {
-public:
-    Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2);   // Invoke(name, wide, wide)
 };
 
 // The xml reader of the exe (see achievemanager.cpp).
@@ -310,7 +308,7 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
                 spDescText->SetTextW(spDesc->m_strSpecific);
             if (MS2Ptr<ASTextField> spHistoryText = GetChild<ASTextField>("m_jobHistory"))
                 spHistoryText->SetTextW(spDesc->m_strHistory);
-            reinterpret_cast<ASDialog*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strMain, spDesc->m_strSub);
+            pDlg->Invoke("setJobName", spDesc->m_strMain, spDesc->m_strSub);
             reinterpret_cast<AScript*>(pDlg)->Invoke("setJob", nJob);
             reinterpret_cast<AScript*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
         }

@@ -40,7 +40,6 @@
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/creservedwordtable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-class Unk_MeratProductKey { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> FUN_1409b0470(void) const; };
 // return types of the getters this unit calls
 class CReservedWordTable;
 
@@ -850,7 +849,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 CString FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item)
 {
     if (item.get() != 0)
-        return StringFormat<CString>("limited_{0}", CString(((class Unk_MeratProductKey&)(item->m_id)).FUN_1409b0470()));
+        return StringFormat<CString>("limited_{0}", CString(item->m_id.FUN_1409b0470()));
     return CString("");
 }
 

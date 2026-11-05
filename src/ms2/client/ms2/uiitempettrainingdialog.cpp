@@ -57,7 +57,6 @@ class Unk_PtValue { public: };
 class Unk_PtConfig { public: unsigned char m_pad[0x84c0]; Unk_PtValue m_petMaxLevel; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 #define PT_ATTR(p) reinterpret_cast<CXmlData*>(reinterpret_cast<char*>((p)) + 0x320)
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 class CMsgBoxData : public CPtred
 {
@@ -248,7 +247,7 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
-    MS2Ptr<CPetData> spRow = ((class CPetDataTable*)FUN_14052d210())->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)

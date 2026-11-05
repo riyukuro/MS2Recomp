@@ -29,6 +29,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/equipmodel.h"
 
 // ---- out-of-unit callees ----
 
@@ -41,10 +42,13 @@ class CEquipItem : public CPtred
 public:
     struct Unk_EquipItemData* FUN_1411dc7f0();                           // the item
     int FUN_1411dc670();                                        // item is a hat (hides hair)
-    void FUN_1411dcc80(CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
+    void GetModels(CAtlArray<MS2Ptr<CEquipModel> >& aOut);      // 0x1411dcc80 the item's models (equipitem.h)
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
-    MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
+    MS2Ptr<CEquipModel> FindModelByName(const CString& strName);  // 0x1411dc950 the model of one part (equipitem.h)
 };
+
+// equipmodel.cpp: the model's part facts (+0x20), read through itempickinghelper.h's Unk_PickPartInfo.
+void* FUN_141200ab0(CEquipModel* self);
 
 // The local player (a world actor). FUN_141655e10 is its equipment lookup (slot -> item).
 struct Unk_FactoryPlayer : public PC
@@ -110,10 +114,10 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
             if (nParts <= 0)
                 return ControllerPtr(0);
             size_t iLast = nParts - 1;
-            MS2Ptr<Unk_PickTarget> spPart = spHair->FUN_1411dc950(aHairParts.GetAt(iLast));
+            MS2Ptr<CEquipModel> spPart = spHair->FindModelByName(aHairParts.GetAt(iLast));
             if (spPart == 0)
                 return ControllerPtr(0);
-            if (spPart->FUN_141200ab0()->m_nKind != 0)
+            if (static_cast<Unk_PickPartInfo*>(FUN_141200ab0(spPart.operator->()))->m_nKind != 0)
             {
                 CItemMorphController* pMorph = new (efd::MemHint(efd::MemHint::NONE)) CItemMorphController;
                 if (pMorph->Initialize(1) == 0)
@@ -142,8 +146,8 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomi
         {
             if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
             {
-                CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
-                spItem->FUN_1411dcc80(aParts);
+                CAtlArray<MS2Ptr<CEquipModel> > aParts;
+                spItem->GetModels(aParts);
                 CItemMorphController* pMorph = new (efd::MemHint(efd::MemHint::NONE)) CItemMorphController;
                 if (pMorph->Initialize(6) == 0)
                 {

@@ -42,7 +42,7 @@ extern Unk_Inventory g_143ab2a90;
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW FUN_1418fe5d0(int nPayType);                   // pay type name
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool);   // money text by pay type
-void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);     // the pay type rows of a pool
+bool FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >* pOut);     // the pay type rows of a pool (unit_14092f420's signature)
 unsigned char FUN_140930200(int nKind);
 
 // ---- statics (init order: the cost, the pending cost, the sort type names of the shared header, the key controller) ----
@@ -121,7 +121,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
             if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) || !bAlt)
             {
                 std::vector<std::pair<int, __int64> > vecRows;
-                FUN_140930590(nAmount, vecRows);
+                FUN_140930590(nAmount, &vecRows);
                 if (!vecRows.empty())
                 {
                     if (vecRows.size() > 1)

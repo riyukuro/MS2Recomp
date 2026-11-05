@@ -44,7 +44,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 CString FUN_1405a7e80(int n);                            // number -> text
 float FUN_140768090();                                   // random 0..1
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_14028d260(float f);                              // seconds -> ms
+__int64 FUN_14028d260(float f);                              // seconds -> ms  (C3: the definition's __int64 return, read as int)
 int FUN_141276180(const CString& strTarget, const CString& str);
 int FUN_141b71c00(unsigned short n);
 
@@ -110,7 +110,6 @@ MS2_CHECK_SIZE(Unk_TcXform, 0x34);
 
 // The world: the taxi stop entity near a position, its properties.
 class Unk_TcEntity;
-class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, NiPoint3 kPos, float fRange, int nA, int nB); };
 
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
@@ -240,14 +239,14 @@ void StateTaxiCall::vfunc_5(int n)
 void StateTaxiCall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    m_nElapsed += FUN_14028d260((float)fTime);
+    m_nElapsed += (int)FUN_14028d260((float)fTime);
     if (m_nElapsed >= m_nEnd)
     {
         switch (m_n10)
         {
         case 0x65:
         {
-            FUN_1417fdbc0(0x66, FUN_14028d260(1.9f));
+            FUN_1417fdbc0(0x66, (int)FUN_14028d260(1.9f));
             FUN_1417fdc00(m_strCall);
             m_pOwner->PlayAnimationById(0);
             if (m_bSurprise)
@@ -259,25 +258,25 @@ void StateTaxiCall::vfunc_3(double fTime)
         }
         case 0x66:
         {
-            FUN_1417fdbc0(0x67, FUN_14028d260(0.45f));
+            FUN_1417fdbc0(0x67, (int)FUN_14028d260(0.45f));
             FUN_1417fdc00(m_strArrive);
             break;
         }
         case 0x67:
         {
-            FUN_1417fdbc0(0x68, FUN_14028d260(0.45f));
+            FUN_1417fdbc0(0x68, (int)FUN_14028d260(0.45f));
             FUN_1417b8370()->vfunc_23(1);
             break;
         }
         case 0x68:
         {
-            FUN_1417fdbc0(0x69, FUN_14028d260(1.0f));
+            FUN_1417fdbc0(0x69, (int)FUN_14028d260(1.0f));
             FUN_1417fdc00(m_strLeave);
             break;
         }
         case 0x69:
         {
-            FUN_1417fdbc0(0x6a, FUN_14028d260(3.0f));
+            FUN_1417fdbc0(0x6a, (int)FUN_14028d260(3.0f));
             if (FUN_1417b8560() != 0)
             {
                 Unk_TaxiReq kReq;
@@ -348,7 +347,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     Vector3 kPos;
     Vector3 kRot;
     NiTransform xf;
-    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, FUN_1417b8370()->vfunc_18(), *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f, 1, 0);
+    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcEntity*>(WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_18())), *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f, 1, 0));
     if (pStop == 0)
     {
         kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));

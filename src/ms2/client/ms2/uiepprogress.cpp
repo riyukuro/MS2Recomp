@@ -26,11 +26,7 @@ struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
 class GFxSceneService { public: int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 
 // The target's name-tag anchor record.
-class Unk_PopupTarget : public CPtred
-{
-public:
-    void FUN_141a5e5d0(NiPoint3* pPos);                             // the anchor position
-};
+class Unk_PopupTarget : public CPtred {};   // a UINameTag::Entity (its anchor getter FUN_141a5e5d0 is called through that class)
 class MyPC; class PCBase;
 template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
 
@@ -99,7 +95,7 @@ void UIEpProgress::vfunc_53(const NiPoint3& kPos)
                 {
                     if (reinterpret_cast<UINameTag::Entity*>(pTarget)->FUN_141a5e690() != 0)
                     {
-                        pTarget->FUN_141a5e5d0(&pt);
+                        reinterpret_cast<UINameTag::Entity*>(pTarget)->FUN_141a5e5d0(reinterpret_cast<Unk_NtPos*>(&pt));   // the anchor position
                         pt.x -= reinterpret_cast<ASDisplayObject*>(static_cast<Unk_EpEntity*>(pClip.operator->()))->FUN_1422c1340() * 0.5 + 10.0;
                     }
                 }

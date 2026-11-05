@@ -46,7 +46,7 @@ MS2_CHECK_SIZE(NotifyDebugMode, 0x20);
 class Unk_KhUI : public CUIService { };   // CUIService (C3: FUN_141adbd10 is CUIService's)
 class Unk_KhCamera : public CInstrumentManager { };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
-CKeyTable* FUN_1409331f0();
+// FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10

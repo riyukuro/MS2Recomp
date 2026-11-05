@@ -854,7 +854,7 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_effectDataMemcpyS)(void*
 // ======== second CU: EffectNode ========
 #include "effectdummy.h"
 
-// The ground probe: physxhelper.h's Unk_RayCastInfo / CPhysXHelper::FUN_14168a310 with efd::Point3 points.
+// The ground probe: physxhelper.h's Unk_RayCastInfo / CPhysXHelper::RayCastFixedDirection with efd::Point3 points.
 struct Unk_RayCastInfo
 {
     Unk_RayCastInfo();                                        // 0x140ad4440
@@ -879,7 +879,7 @@ public:
 class CPhysXHelper
 {
 public:
-    int FUN_14168a310(const Vector3& kFrom, Vector3& kHit, Unk_RayCastInfo* pInfo, float fMaxDist,
+    int RayCastFixedDirection(const Vector3& kFrom, Vector3& kHit, Unk_RayCastInfo* pInfo, float fMaxDist,   // C3: physxhelper.h (0x14168a310)
                       Vector3* pNormal, int nMask);
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -971,7 +971,7 @@ void EffectNode::UpdateWorldData()
     if (m_bOnGround) {
         Unk_RayCastInfo kInfo;
         efd::Point3 kHit;
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(*reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f))), reinterpret_cast<Vector3&>(kHit), &kInfo, 0, 0, 0)) {
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(*reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f))), reinterpret_cast<Vector3&>(kHit), &kInfo, 0, 0, 0)) {
             m_kWorld.m_Translate = kHit;
             m_kWorld.m_Translate.z += 1.0f;
             if (kInfo.m_hitEntity != 0) {
@@ -1158,7 +1158,7 @@ public:
 };
 
 // The application service (class id 0x06100001, physxhelper.cpp); only its dependency id is used here.
-struct Unk_EsAppService { static const efd::ClassID CLASS_ID = 0x06100001; };
+#include "ms2/client/ms2/ms2.h"   // C3: MS2 (CLASS_ID 0x06100001), the service AddDependency<> is instantiated on
 // egfPhysX::SceneService (kCLASSID_SceneService; its header pulls in PhysX).
 struct Unk_EsSceneService { static const efd::ClassID CLASS_ID = 0x07001008; };
 
@@ -1352,7 +1352,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
 }
 
 // @0x1411a5580
-unsigned CEffectService::FUN_1411a5580(int nA, int nB, int nKind, const NiPoint3& kPos, float fVolume)
+unsigned CEffectService::FUN_1411a5580(int nA, int nB, int nKind, NiPoint3 kPos, float fVolume)
 {
     unsigned nHit = TSingleton<SoundPropertyMgr>::GetInstance()->GetHitSound(nA, nB);
     if (nHit != 0) {
@@ -2161,7 +2161,7 @@ void CEffectService::FUN_1411a8cb0(const CString& strName)
         return;
     if (((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return;
-    GameObject* pTarget = reinterpret_cast<GameObject*>(((class Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+    GameObject* pTarget = reinterpret_cast<GameObject*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
     if (pTarget == NULL)
         return;
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
@@ -2223,7 +2223,7 @@ efd::SyncResult CEffectService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
     pRegistrar->AddDependency<ecr::RenderService>(1);
     pRegistrar->AddDependency<ecr::SceneGraphService>(1);
     pRegistrar->AddDependency<ecr::LightService>(1);
-    pRegistrar->AddDependency<Unk_EsAppService>(1);
+    pRegistrar->AddDependency<MS2>(1);
     pRegistrar->AddDependency<efd::MessageService>(1);
     pRegistrar->AddDependency<Unk_EsSceneService>(1);
     return efd::SyncResult_Success;

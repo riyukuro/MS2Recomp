@@ -86,7 +86,6 @@ public:
     bool FUN_1409991a0(const egf::EntityID& kId, Unk_DecoAnimRec** ppRec);
 };
 class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
-class Unk_DecoAnimFx { public: void FUN_1409a1fc0(egf::EntityID& kId, void* pName, float fSpeed, bool bLoop); };
 struct Unk_DecoModelCache { char m_pad[0x10]; };
 
 // ---- entities ----
@@ -141,11 +140,8 @@ void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN
 struct Unk_PickXY { float x, y; };                                  // cursor position
 struct Unk_DecoCursor : public CWindowService { };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
+class CPhysXHelper { public: int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask); };   // physxhelper.h (NxMath.h needs NOMINMAX)
 struct Unk_DecoCamera : public CameraMgr { };
-struct Unk_DecoCollision
-{
-    int FUN_14168a230(Unk_DecoPoint3 ptFrom, Vector3& ptHit, Unk_DecoPoint3 ptDir, float fLen, int nMask);
-};
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // ---- static initializers (.text$di, in this order) ----
@@ -161,7 +157,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(DecoItem);
 static CString s_aSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
@@ -421,7 +417,7 @@ efd::AsyncResult DecoEditService::OnTick()
                 if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->ScreenToRay(*reinterpret_cast<const NiPoint2*>(&kCursor), *reinterpret_cast<NiPoint3*>(&kOrigin), *reinterpret_cast<NiPoint3*>(&kDir)) != 0)
                 {
                     Vector3 kHit;
-                    if (((struct Unk_DecoCollision*)FUN_1409f7ca0())->FUN_14168a230(Unk_DecoPoint3(kOrigin), kHit, Unk_DecoPoint3(kDir), 10000.0f, 0x201) != 0)
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(kOrigin)), kHit, Vector3(reinterpret_cast<const Vector3&>(kDir)), 10000.0f, 0x201) != 0)
                     {
                         spBrush->SetPtPos(kHit);
                         spBrush->vfunc_2();

@@ -35,9 +35,9 @@
 class Unk_CubeSelection;
         // the cube selection is in the craft mode
 float FUN_14059d930(float f);                              // 0x14059d930 fabs
-int FUN_14028d260(float f);                                // 0x14028d260 round to ms
+__int64 FUN_14028d260(float f);                                // 0x14028d260 round to ms  (C3: the definition's __int64 return, read as int)
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, const efd::Point3& kUp);   // 0x140a0b080 look-at angles
+Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
 #define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                          // the up axis
 
 // The animation service: the sequence id of the model.
@@ -185,8 +185,8 @@ void StateJump::vfunc_3(double fTime)
             if (m_spJump)
             {
                 efd::Point3 kJump = m_spJump->m_pos;
-                efd::Point3 kRot = FUN_140a0b080(kJump, static_cast<const efd::Point3&>(m_pOwner->vfunc_18()), DAT_143a08cf8);
-                m_pOwner->SetRotationAndTargetYaw(kRot);
+                Vector3 kRot = FUN_140a0b080(reinterpret_cast<const Vector3&>(kJump), reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_pOwner->vfunc_18())), reinterpret_cast<const Vector3&>(DAT_143a08cf8));
+                m_pOwner->SetRotationAndTargetYaw(reinterpret_cast<efd::Point3&>(kRot));
             }
         }
         else
@@ -272,11 +272,11 @@ void StateJump::vfunc_8(double fTime)
 // MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
 void StateJump::vfunc_9(double fTime)
 {
-    static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
+    static int s_nDelay = (int)FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     State::vfunc_9(fTime);
     unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
-    nLimit += FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
+    nLimit += (int)FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
     if (m_pOwner->FUN_141671a30() != 0)
     {
         m_pOwner->vfunc_59(4, 0, 0, 0);

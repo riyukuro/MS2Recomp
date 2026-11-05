@@ -18,7 +18,7 @@ class CInPacket;
 class CMsgBoxData;
 class NotifyObject;
 class CEnchantOption;
-class Unk_EnButton;
+class ASButton;
 class UIItemEnchantDialog;
 class Unk_EnSlot;
 class Unk_EnSlotArgs;
@@ -151,10 +151,10 @@ private:
     unsigned __int64 m_220;                                     // +0x220
     float m_228, m_22c, m_230, m_234, m_238, m_23c;             // +0x228
     CIngredientContainer m_ingredients;                         // +0x240
-    MS2Ptr<Unk_EnButton> m_debugBtnFillIngredientUnit;          // +0x270
-    MS2Ptr<Unk_EnButton> m_debugBtnFillIngredient;              // +0x280
-    MS2Ptr<Unk_EnButton> m_debugBtnFillFailStack;               // +0x290
-    MS2Ptr<Unk_EnButton> m_debugBtnUseAllFailStack;             // +0x2a0
+    MS2Ptr<ASButton>     m_debugBtnFillIngredientUnit;          // +0x270
+    MS2Ptr<ASButton>     m_debugBtnFillIngredient;              // +0x280
+    MS2Ptr<ASButton>     m_debugBtnFillFailStack;               // +0x290
+    MS2Ptr<ASButton>     m_debugBtnUseAllFailStack;             // +0x2a0
     unsigned m_2b0;                                             // +0x2b0
     float m_2b4;                                                // +0x2b4
     unsigned m_2b8;                                             // +0x2b8

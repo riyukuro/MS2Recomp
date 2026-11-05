@@ -24,7 +24,7 @@ namespace egf { class Entity; }
 namespace egfPhysX { class EntityActorData; }
 
 struct Unk_InteractMsg;         // the message handed to vfunc_2 (a stream sits at +8)
-class Unk_PhysPropObj;          // prop object behind a physics prop pointer
+// (the mesh object's prop pointer is m_spProp: efd::SmartPointer<egfPhysX::EntityActorData>)
 template <class T> class TPtrValue;
 struct CGameRankingData;
 
@@ -36,18 +36,18 @@ struct Unk_InteractCursor
     CStringW m_strHint;         // +0x28
 };
 
-// Smart pointer to the prop object of a mesh interact object (the same shape as the one physxhelper.cpp declares).
-class Unk_InteractPropPtr
-{
-public:
-    Unk_InteractPropPtr(int nNull);                             // 0x140ae1340
-    ~Unk_InteractPropPtr();                                     // 0x140ae16b0
-    void FUN_140ae17e0(Unk_PhysPropObj* p);                     // assign (0 releases)
-    Unk_PhysPropObj* FUN_140ae1920() const;                     // the object
-private:
-    Unk_PhysPropObj* m_p;
-};
-MS2_CHECK_SIZE(Unk_InteractPropPtr, 8);
+// (the unused Unk_InteractPropPtr stand-in is gone: its members 0x140ae1340/0x140ae16b0/0x140ae17e0/0x140ae1920
+//  are efd::SmartPointer<egfPhysX::EntityActorData>'s ctor, dtor, operator=(T*) and operator T*)
+
+
+
+
+
+
+
+
+
+
 
 class CInteractObject : public CPtred
 {

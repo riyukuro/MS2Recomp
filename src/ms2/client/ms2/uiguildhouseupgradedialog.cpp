@@ -47,17 +47,11 @@ static CString s_strStun = "stun";
 // ---- out-of-unit callees (names describe uses) ----
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
-// The level strip of the movie: the selected tab is a 0-based index.
-class Unk_MentorTab : public AScript
-{
-public:
-};
 // The upgrade button.
 class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422cdf20(bool b);
-    void FUN_1422ce240(const ParamsDelegate& cb, void* pUser);
     void FUN_1422c1fe0(unsigned n);
 };
 class Unk_GpAS : public AScript
@@ -74,7 +68,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 bool FUN_14028d780(unsigned char c);
 template<> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString&);
 template<> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString&);
-template<> MS2Ptr<Unk_MentorTab> UISwfEntity::GetChild<Unk_MentorTab>(const CString&);
+template<> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString&);
 template<> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&);
 template<> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString&);
 
@@ -110,8 +104,8 @@ void UIGuildHouseUpgradeDialog::vfunc_67()
 void UIGuildHouseUpgradeDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140e3b650<Unk_MentorTab>("m_tab", m_tab).get())
-        reinterpret_cast<ASButtonBar*>(m_tab.operator->())->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
+    if (FUN_140e3b650<ASButtonBar>("m_tab", m_tab).get())
+        m_tab->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
     if (FUN_140e3b6e0<ASTileList>("m_themeList", m_themeList).get())
         reinterpret_cast<ASCoreList*>(m_themeList.operator->())->AddListIndexChangeHandler(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
     if (FUN_140bc6d10<Unk_140acd6e0>("m_upgradeButton", m_upgradeButton).get())
@@ -131,7 +125,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
 {
     if (m_30 == 0)
         return;
-    int nLevel = reinterpret_cast<ASButtonBar*>(m_tab.operator->())->GetSelectedIndex() + 1;
+    int nLevel = m_tab->GetSelectedIndex() + 1;
     int nTheme = reinterpret_cast<ASCoreList*>(m_themeList.operator->())->GetSelectedIndex() + 1;
     Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
     if (house == 0)
@@ -213,7 +207,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
     for (size_t i = 0; i < list.size(); i++)
         m_themes[list[i].first].push_back(list[i].second);
     static_cast<AScript*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
-    reinterpret_cast<ASButtonBar*>(m_tab.operator->())->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() - 1);
+    m_tab->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90() - 1);
     reinterpret_cast<ASCoreList*>(m_themeList.operator->())->SetSelectedIndex(TSingleton<CGuildManager>::GetInstance()->FUN_1404d2030() - 1);
 }
 
@@ -222,7 +216,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a910(const Scaleform::GFx::FunctionHand
 {
     if (m_tab == 0)
         return;
-    int nLevel = reinterpret_cast<ASButtonBar*>(m_tab.operator->())->GetSelectedIndex() + 1;
+    int nLevel = m_tab->GetSelectedIndex() + 1;
     ASArray arr(2);
     std::map<int, std::vector<int> >::iterator it = m_themes.find(nLevel);
     if (it == m_themes.end())
@@ -252,7 +246,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
 {
     if (m_30 == 0)
         return;
-    int nLevel = reinterpret_cast<ASButtonBar*>(m_tab.operator->())->GetSelectedIndex() + 1;
+    int nLevel = m_tab->GetSelectedIndex() + 1;
     int nTheme = reinterpret_cast<ASCoreList*>(m_themeList.operator->())->GetSelectedIndex() + 1;
     int nGuildLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d1f90();
     if (nLevel < nGuildLevel)

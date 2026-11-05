@@ -1120,7 +1120,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
     int bPet = pItem->IsPetItem();
     MS2Ptr<CPetData> spPet(0);
     if (bPet != 0)
-        spPet = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(pItem->FUN_140527840()->GetPetId());
+        spPet = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
     for (unsigned __int64 i = 0; i < 5; i++)
     {
         if (i == 1)
@@ -1381,7 +1381,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
     }
     if (pItem->IsPetItem())
     {
-        MS2Ptr<CPetData> spPetData = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(pItem->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spPetData = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
         if (spPetData.get() != 0 && spPetData->m_nType == 1)
         {
             __int64 nExp = pItem->FUN_140528b90();
@@ -1822,7 +1822,7 @@ void ASTooltip::FUN_1409cd9c0(CItem* pItem)
     }
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x8d) && pItem->IsPetItem() != 0)
     {
-        MS2Ptr<CPetData> spPet = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(pItem->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
         if ((spPet.get() != 0 ? true : false) && spPet->m_nType == 0)
         {
             if (!strText.IsEmpty())
@@ -2394,7 +2394,7 @@ void ASTooltip::FUN_1409d1d80(CItem* pItem)
     }
     if (pItem->IsPetItem() != 0)
     {
-        MS2Ptr<CPetData> spPet = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(pItem->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
         if ((bool)spPet.get() && spPet->m_nType == 1)
         {
             CStringW strText;
@@ -2462,7 +2462,7 @@ void ASTooltip::FUN_1409d26d0(CItem* pItem)
     }
     if (pItem->IsPetItem() != 0)
     {
-        MS2Ptr<CPetData> spPet = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(pItem->FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(pItem->FUN_140527840()->GetPetId());
         if ((bool)spPet.get() && spPet->m_nType == 1)
         {
             CStringW strText;
@@ -3470,7 +3470,7 @@ void ASTooltip::FUN_1409d9330(CItem* pItem, CStringW& strOut)
 {
     if (pItem == 0)
         return;
-    if (static_cast<Unk_TooltipItemView*>(pItem)->FUN_140526470(2) == 1)
+    if (pItem->FUN_140526470(2) == 1)
     {
         if (!strOut.IsEmpty())
             strOut.Append(L"\n");
@@ -5118,7 +5118,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
     int bPet = spItem->IsPetItem();
     MS2Ptr<CPetData> spPet(0);
     if (bPet != 0)
-        spPet = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(spItem->FUN_140527840()->GetPetId());
+        spPet = TSingleton<CPetDataTable>::GetInstance()->Find(spItem->FUN_140527840()->GetPetId());
     for (unsigned __int64 i = 0; i < 5; i++)
     {
         if (i == 1)

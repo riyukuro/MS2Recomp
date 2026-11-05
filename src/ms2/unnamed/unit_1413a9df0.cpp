@@ -138,9 +138,9 @@ void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
-        Unk_GcCondRef ref = FUN_1413a52c0(pChild);
-        if (ref.FUN_141387b90())
-            GE_CONDS(m_conds).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
+        MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pChild);
+        if (ref.get())
+            GE_CONDS(m_conds).Add(ref);
     }
 }
 
@@ -182,9 +182,9 @@ void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
-        Unk_GcCondRef ref = FUN_1413a52c0(pChild);
-        if (ref.FUN_141387b90())
-            GE_CONDS(m_conds).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
+        MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pChild);
+        if (ref.get())
+            GE_CONDS(m_conds).Add(ref);
     }
 }
 

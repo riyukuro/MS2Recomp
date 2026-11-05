@@ -191,7 +191,7 @@ int FUN_140d74f70(CStringW& strTag);                                // the "term
 inline int FUN_140d74f70(CStringW&& strTag) { return FUN_140d74f70(strTag); }
 #endif
 int FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
-Unk_NetworkCallbacks* FUN_140d86260();
+// FUN_140d86260 (the client platform) is declared in networkservice.h
 
 // ---- the ItemPreviewCommon obj ----
 using UIMeratMarketCommon::WeaponType;

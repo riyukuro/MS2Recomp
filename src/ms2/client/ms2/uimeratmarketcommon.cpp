@@ -153,7 +153,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_140ec2b60(void* pValue);
 __int64 FUN_14028d0e0();
 extern Unk_Inventory g_143ab2a90;
-CStringTable* GetStringTable();
 int FUN_140ec2ac0(MS2Ptr<CItemData> spData);
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade);
 CStringW FUN_141277dd0(class Unk_ConstString* pValue);
@@ -416,7 +415,7 @@ int FUN_140ebc850(MS2Ptr<ASArray> spItems)
         int nNeed = counts[nTab];
         if (0 < nNeed && g_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
-            FUN_140d73aa0(FormatStringId<CStringW, int>(0xa01, GetStringTable()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FormatStringId<CStringW, int>(0xa01, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
             return 0;
         }
     }
@@ -448,7 +447,7 @@ bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds)
         int nNeed = counts.GetAt(nTab);
         if (0 < nNeed && g_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
-            FUN_140d73aa0(FormatStringId<CStringW, int>(0xa01, GetStringTable()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FormatStringId<CStringW, int>(0xa01, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
             return false;
         }
     }
@@ -912,7 +911,7 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
     FUN_140222a70(pProduct->m_n98, (struct Unk_LevelArray*)&arrJobs);
     for (size_t i = 0; i < arrJobs.GetCount(); ++i)
     {
-        CStringW strName = GetStringTable()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(arrJobs[i]));
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(arrJobs[i]));
         if (strName.IsEmpty())
             continue;
         if (!strJobs.IsEmpty())

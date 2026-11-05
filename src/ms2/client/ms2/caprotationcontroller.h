@@ -42,7 +42,7 @@ public:
     static float SafeAcos(float fCos);                              // 0x140b02b90
 
     efd::SmartPointer<NiMesh> m_spMesh;                             // +0xb8 the cap mesh
-    MS2Ptr<Unk_PickTarget> m_spPart;                                // +0xc0 the cap attach part
+    MS2Ptr<CEquipModel> m_spPart;                                // +0xc0 the cap attach part
     float m_fSpeed;                                                 // +0xd0 = 0.5
     float m_fRadius;                                                // +0xd4
     Vector3 m_kDragDir;                                            // +0xd8

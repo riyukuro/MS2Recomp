@@ -21,16 +21,14 @@ class CEquipItem;
 class CItem;
 class CGetExp;              // RTTI CGetExp (0x50): the exp gain popup (?\getexp.cpp)
 class CHomePrivilege;       // commonfiles\homeprivilege.cpp (0x20, CPtred)
-class Unk_MyPCComp1618;     // MS2Ptr at +0x1618 (null ctor 0x1415324e0, dtor 0x14050de40)
+class UserUGCMapInfo;       // userugcmapinfo.h; MS2Ptr at +0x1618 (null ctor 0x1415324e0, dtor 0x14050de40)
 
 // The member at +0x12e8: a StateLocalController (the records live on the base).
-// Ctor 0x1417b73c0, implicit dtor 0x1410a6dc0 (COMDAT in cubecraft_1).
+// View over MyPC::m_kStateCtl (a StateLocalController, ctor 0x1417b73c0, implicit dtor 0x1410a6dc0).
 class Unk_StateArg22;
 class Unk_MyPCStateCtl : public StateLocalController
 {
 public:
-    Unk_MyPCStateCtl();                                     // 0x1417b73c0
-    ~Unk_MyPCStateCtl();                                    // 0x1410a6dc0
     void FUN_1417b7430(PCBase* pOwner);                     // init with the owner
     void FUN_1417b7450();                                   // drop the current and queued records
     void FUN_1417b76b0(float fTime);                        // advance with the game time
@@ -164,7 +162,7 @@ public:
     CQuestManager* FUN_141523ba0();                         // the quest manager (FUN_140764020)
     Unk_MyPCStateCtl* FUN_141523be0();                      // the state controller
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141523c00();
-    Unk_MyPCComp1618* FUN_141523c50();
+    UserUGCMapInfo* FUN_141523c50();
     void FUN_141523c80();                                   // pick the housing cube under the player
     int FUN_141527120();
     int FUN_141527160(int nNext);
@@ -282,10 +280,10 @@ public:
     void SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd);   // portal move
     int FUN_1415271e0(PCBase* pActor, struct Unk_MyPCSkillUse* pSkill);   // can the skill be used on pActor
     void SendRequestMoveFieldMode6();                                   // request the field leave (packet 0x6c 6)
-    void FUN_141524880(MS2Ptr<Unk_MyPCComp1618> sp);        // set m_sp1618
+    void FUN_141524880(MS2Ptr<UserUGCMapInfo> sp);        // set m_sp1618
     int FUN_1415248d0(int nSide, int nType);                // sit (0xbadf0a13) or lie (0xc13e30c8) on a nearby object
 
-    Unk_MyPCStateCtl m_kStateCtl;                           // +0x12e8
+    StateLocalController m_kStateCtl;                       // +0x12e8
     Unk_MyPCActionKeys m_kActionKeys;                       // +0x1338
     CSkillSystem m_kSkillSystem;                            // +0x13d8
     CGetExp* m_pGetExp;                                     // +0x15c8 (created on the first exp gain)
@@ -302,7 +300,7 @@ public:
     int m_n15f0;                                            // +0x15f0
     std::set<unsigned> m_set15f8;                                // +0x15f8
     MS2Ptr<Unk_PCBaseComp_b18> m_sp1608;                    // +0x1608
-    MS2Ptr<Unk_MyPCComp1618> m_sp1618;                      // +0x1618
+    MS2Ptr<UserUGCMapInfo> m_sp1618;                      // +0x1618
     MS2Ptr<CHomePrivilege> m_spHomePrivilege;               // +0x1628
     PCBase* m_pObserved;                                    // +0x1638 the observed actor
     int m_n1640;                                            // +0x1640

@@ -15,6 +15,10 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+// MS2Ptr<ASButtonGroup>'s own chain (uimeratmarketdialog's 0x1413164a0 / 0x141316800 are ICF-folded with six other T)
+// MS2-PIN: ?Reference@?$MS2Ptr@VASButtonGroup@@@@CAXPEAVASButtonGroup@@@Z 0x140fe4570
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VASButtonGroup@@@@AEBAXPEAX@Z 0x140fe4590
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASButtonGroup@@@@AEAAXPEAX@Z 0x140fe4600
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/commonfiles/os.h"
 
@@ -65,35 +69,7 @@ public:
     bool FUN_1422e8ce0(int nValue, bool bFlag);
 };
 
-// The smart pointer of the group wrapper (16 bytes, the pointer at +8).
-template <class T> class Unk_WedPtr
-{
-public:
-    Unk_WedPtr() : p(0) {}
-    Unk_WedPtr(int) : p(0) {}
-    Unk_WedPtr(T* q) : p(q) { AddRef(); }
-    Unk_WedPtr(Unk_WedPtr&& q) : p(q.p) { q.p = 0; }
-    ~Unk_WedPtr() { Release(); }
-    T* get() const { return p; }
-    operator T*() const { return p; }
-private:
-    void AddRef() const { if (p) ReferenceImpl((void*)0); }
-    static void Reference(T* q) { CPtred::AddRefPtred(q); }
-    void ReferenceImpl(void*) const { Reference(p); }
-    void Release() { if (p) { ReleaseImpl((void*)0); p = 0; } }
-    void ReleaseImpl(void*) { if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); } }
-    void* m_0;
-    T* p;
-};
-
-template <class T> Unk_WedPtr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v);
-
-// The AScript with this unit's child getter (one COMDAT per wrapper class).
-class Unk_SchedScript : public AScript
-{
-public:
-    template <class T> Unk_WedPtr<T> FUN_140fe4370(const CString& strName);
-};
+template <class T> MS2Ptr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v);
 
 class UIWeddingHallReservationPageSchedule : public UIWeddingHallReservationPage
 {
@@ -143,11 +119,11 @@ bool UIWeddingHallReservationPageSchedule::vfunc_1()
         TruncateToDay(m_date);
     }
     FUN_140fe3c40(this);
-    if (Unk_WedPtr<ASButtonGroup> spPublic = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<ASButtonGroup>("m_publicGroup"))
+    if (MS2Ptr<ASButtonGroup> spPublic = m_pScript->FUN_140fe4370<ASButtonGroup>("m_publicGroup"))
         spPublic.get()->FUN_1422e8ce0(m_bPrivate ? 0 : 1, true);
     if (m_nTime != 0)
     {
-        if (Unk_WedPtr<ASButtonGroup> spTime = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<ASButtonGroup>("m_timeGroup"))
+        if (MS2Ptr<ASButtonGroup> spTime = m_pScript->FUN_140fe4370<ASButtonGroup>("m_timeGroup"))
         {
             CMsTime tTime(m_nTime);
             int nHour = tTime.GetHour();
@@ -319,17 +295,17 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
 }
 
 // @0x140fe42c0
-template <class T> Unk_WedPtr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v)
+template <class T> MS2Ptr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v)
 {
-    Unk_WedPtr<T> sp(new T(v, nMovieId));
+    MS2Ptr<T> sp(new T(v, nMovieId));
     return sp;
 }
 
 // @0x140fe4370
-template <class T> Unk_WedPtr<T> Unk_SchedScript::FUN_140fe4370(const CString& strName)
+template <class T> MS2Ptr<T> AScript::FUN_140fe4370(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140fe42c0<T>(m_nMovieId, v);
-    return Unk_WedPtr<T>(0);
+    return MS2Ptr<T>(0);
 }

@@ -18,6 +18,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton ("m_addFriend")
 #include "ms2/placeholder/cinpacket.h"
 #include "buddymanager.h"
 #include "ms2/ms2format.h"
@@ -176,7 +177,6 @@ public:
     Unk_ClosingSelf* FUN_141bd0cc0();
 };
 class Unk_ClosingUIMgr { public: void FUN_141adc530(int); };
-class Unk_ClosingButton : public ASMovieClip { public: };
 class Unk_ClosingClip : public ASUIComponent
 {
 public:
@@ -579,7 +579,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e10010(int& x, int& y, unsigned& scale,
 void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
 {
     if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
-        if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend")) {
+        if (MS2Ptr<ASButton> btn = info->FUN_140acce30<ASButton>("m_addFriend")) {
             Unk_ClosingSelf* self = ((Unk_ClosingSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             bool isSelf = self ? self->FUN_141656a80() == e->m_uid : false;
             bool buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid);
@@ -616,7 +616,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         if (e->m_clip == 0)
             return;
         if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
-            if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend"))
+            if (MS2Ptr<ASButton> btn = info->FUN_140acce30<ASButton>("m_addFriend"))
                 btn->FUN_1422c1fe0(0);
         }
         Unk_BuddyRequest req;

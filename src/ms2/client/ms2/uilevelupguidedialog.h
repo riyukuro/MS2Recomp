@@ -24,9 +24,9 @@
 class ASData;
 class UIObject;
 class CMsgBoxData;
-class Unk_LgCheck;
+class ASCheckBox;
 class ASTileList;
-class Unk_LgEvent;
+class ASDialog;
 class ASTextField;
 
 class UILevelUpGuideDialog : public UIDialog, public UIQuestEventListener, public UIStatusEventListener
@@ -76,8 +76,8 @@ public:
     void FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // plain text tooltip
     int FUN_140f87a30(MS2Ptr<RecommendContnets> spRow);             // the row's level range holds the selected levels
     void FUN_140f87af0(unsigned short nLevel);                      // pick the shown level range around nLevel
-    MS2Ptr<Unk_LgEvent> FUN_140f880c0(const CString& strName);      // the "m_eventDialog" child
-    MS2Ptr<Unk_LgCheck> FUN_140e52670(const CString& strName);      // check box child lookup (UIDialog member, shared)
+    MS2Ptr<ASDialog> FUN_140f880c0(const CString& strName);      // the "m_eventDialog" child
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);      // check box child lookup (UIDialog member, shared)
 
 private:
     MS2_LAYOUT_FRIEND;

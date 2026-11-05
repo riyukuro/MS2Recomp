@@ -8,6 +8,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemcustomizecontroller_1.h"
 #include "itempickinghelper.h"
+#include "equipmodel.h"   // C3: the picking target is a CEquipModel (was Unk_PickTarget)
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -31,8 +32,8 @@ class CMeshUVPicker : public efd::MemObject
 public:
     CMeshUVPicker();                                                    // 0x14147e6e0
     int Init();                                                // init
-    bool FUN_14147ea50(NiAVObject* pMesh, NiCamera* pCam, float x, float y, efd::Point3* pHit, efd::Point3* pNormal,
-                       NiPoint2* pUV, unsigned __int64* pTri, CAtlArray<NiRenderObject*>* pSkins);   // pick
+    bool PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, struct Unk_FcPoint3* pPos0, struct Unk_FcPoint3* pPos1,
+                       NiPoint2* pUV, float* pIndex, CAtlArray<NiRenderObject*>* pExtras);   // 0x14147ea50 (meshuvpicker.h)
     char m_pad[0x98];
 };
 MS2_CHECK_SIZE(CMeshUVPicker, 0x98);
@@ -45,6 +46,8 @@ struct Unk_PickRenderer
     char m_pad[0x850];
     bool m_bFlag;                                                       // +0x850
 };
+class CEquipModel;
+void* FUN_141200850(CEquipModel* self);   // C3: was the CEquipModel member view (equipmodel.cpp)
 class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class Ni3DRenderView   // C3: member view for the former free stand-ins
 {
@@ -52,7 +55,7 @@ public:
     class NiCamera* GetCamera() const;
 };
 class CItemData { public: bool FUN_14053cfd0(); };   // C3: member view (itemdata.h)
-class CItem : public CPtred { public: CItemData* FUN_140527840(); };                         // item -> item data
+class CItem : public CPtred { public: class Unk_ItemEquipData* FUN_140527840(); };          // item -> item data (citem.h's return type)
 class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
@@ -101,17 +104,17 @@ void CItemPickingHelper::ClearTargets()
 }
 
 // @0x141418e30
-void CItemPickingHelper::AddTarget(Unk_PickTarget* pTarget)
+void CItemPickingHelper::AddTarget(CEquipModel* pTarget)
 {
     if (pTarget != 0)
     {
-        MS2Ptr<Unk_PickTarget> sp(pTarget);
+        MS2Ptr<CEquipModel> sp(pTarget);
         m_targets.Add(sp);
     }
 }
 
 // @0x141418e90
-Unk_PickTarget* CItemPickingHelper::GetPickedTarget()
+CEquipModel* CItemPickingHelper::GetPickedTarget()
 {
     if (m_nPicked < 0 || m_nPicked >= (int)m_targets.GetCount())
         return 0;
@@ -134,7 +137,7 @@ int CItemPickingHelper::Pick(efd::Point3* pHit, CAtlArray<CString>& parts)
     m_nPicked = -1;
     for (unsigned i = 0; i < m_targets.GetCount(); i++)
     {
-        MS2Ptr<Unk_PickTarget> spTarget(m_targets[i]);
+        MS2Ptr<CEquipModel> spTarget(m_targets[i]);
         if (spTarget == 0)
             continue;
         for (unsigned j = 0; j < parts.GetCount(); j++)
@@ -176,7 +179,7 @@ void CItemPickingHelper::Reset()
 }
 
 // @0x141419250
-int CItemPickingHelper::PickTarget(Unk_PickTarget* pTarget, const CString* pPart, NiPoint3* pHit)
+int CItemPickingHelper::PickTarget(CEquipModel* pTarget, const CString* pPart, NiPoint3* pHit)
 {
     m_spMesh.FUN_141418a00(0);
     if (pTarget == 0)
@@ -191,10 +194,10 @@ int CItemPickingHelper::PickTarget(Unk_PickTarget* pTarget, const CString* pPart
     if (pMesh == 0)
         return 0;
     CAtlArray<NiRenderObject*> skins;
-    bool bSkin = pTarget->FUN_141200940()->FUN_140527840()->FUN_14053cfd0();
+    bool bSkin = reinterpret_cast<CItemData*>(pTarget->FUN_141200940()->FUN_140527840())->FUN_14053cfd0();
     if (bSkin)
     {
-        void* pObject = pTarget->FUN_141200850();
+        void* pObject = FUN_141200850(pTarget);
         FUN_141419670(pObject, &skins);
     }
     return PickMesh(pMesh, skins, pHit);
@@ -219,7 +222,7 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     efd::Point3 hit;
     efd::Point3 normal;
     NiPoint2 uv;
-    if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, ((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera(), xy.x, xy.y, &hit, &normal, &uv, reinterpret_cast<unsigned __int64*>(&tri), &skins))
+    if (m_spPicker.FUN_141286290()->PickUVAndPosition((NiRenderObject*)pMesh, ((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera(), xy.x, xy.y, (struct Unk_FcPoint3*)&hit, (struct Unk_FcPoint3*)&normal, &uv, &tri, &skins))
     {
         if (pHit != 0)
             *pHit = *(NiPoint3*)&hit;

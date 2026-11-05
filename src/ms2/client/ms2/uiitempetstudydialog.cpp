@@ -55,6 +55,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cpetdatatable.h"   // C3: CPetData / CPetDataTable (the pet row)
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/itemsocket.h"
 #include "ms2/ms2recover.h"
@@ -80,9 +81,6 @@ public:
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_PetRow : public CPtred { public: int m_n18; };
-class Unk_PetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 class CMsgBoxData : public CPtred
 {
@@ -260,14 +258,14 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spRow->m_n18 != 1)
+    if (spRow->m_nType != 1)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);

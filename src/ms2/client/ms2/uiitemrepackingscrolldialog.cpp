@@ -88,7 +88,6 @@ Unk_RpTable* FUN_140f64150();
 class CItemRePackingScrollTable;
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
-extern CStringTable* GetStringTable();
 unsigned __int64 FUN_140718370(const CStringW& value);
 void FUN_140710590(COutPacket&);                                    // send
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_RpInvDlg* FUN_1405344f0 (calls cast back)
@@ -230,7 +229,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     for (unsigned __int64 i = 0; i < spRow->m_arrRank.GetCount(); i++)
     {
         unsigned nRank = spRow->m_arrRank[i];
-        CStringW strRank = FUN_14183e9c0(GetStringTable()->GetRankName(nRank), nRank);
+        CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->GetRankName(nRank), nRank);
         strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
     }
     strRanks.TrimRight(L", ");
@@ -240,7 +239,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     case 0:
         strDesc = L"s_item_repacking_item_limit_desc";
         for (unsigned __int64 i = 0; i < spRow->m_arrSlot.GetCount(); i++)
-            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, spRow->m_arrSlot[i]));
+            strLimit.AppendFormat(L"%s, ", (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, spRow->m_arrSlot[i]));
         strLimit.TrimRight(L", ");
         break;
     case 1:

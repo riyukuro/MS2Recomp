@@ -175,8 +175,8 @@ public:
     CDamageRecord();                                        // 0x14175a4e0 (the implicit dtor is 0x14175b530)
     virtual int vfunc_1();                                  // 0x14175af50
     int Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
-        short nLevel, int nMotion, int nAttack, const Vector3& ptPos, const Vector3& ptDir,
-        const Vector3& ptHit);                      // 0x14175a610
+        short nLevel, int nMotion, int nAttack, Vector3 ptPos, Vector3 ptDir,
+        Vector3 ptHit);                             // 0x14175a610
     SkillData* FUN_14175a820();                             // the skill
     SkillMotionData* GetMotionData();                       // the motion
     SkillAttackData* GetAttackData();                       // the attack
@@ -236,6 +236,6 @@ class CSplashDamageRecord : public CDamageRecord
 public:
     CSplashDamageRecord();                                  // 0x14175b180 (the implicit dtor is 0x14175b5f0)
     int Init(int nCasterId, int nOwnerId, unsigned long long nTagId, int nSkillId, short nLevel, int nMotion,
-        int nAttack, const Vector3& ptPos, const Vector3& ptDir);   // 0x14175b1c0
+        int nAttack, Vector3 ptPos, Vector3 ptDir);                 // 0x14175b1c0
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);

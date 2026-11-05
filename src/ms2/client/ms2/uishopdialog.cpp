@@ -178,7 +178,6 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 class CShopCategoryTable;
 
 // The talk (npc conversation) manager and the network service (npc talk state).
-class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };
 class CNetworkService { public: void SendSystemShop(int nNpcObject, int nState); };
 CNetworkService* FUN_140714f90();
 
@@ -709,7 +708,7 @@ void UIShopDialog::vfunc_67()
     m_spPreview = 0;
     m_spEquip = 0;
     m_dirty.Reset();
-    reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
+    TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
     if (m_nSortKind > 0)
         FUN_140714f90()->SendSystemShop(m_nSortKind, 0);
     m_nSortKind = 0;

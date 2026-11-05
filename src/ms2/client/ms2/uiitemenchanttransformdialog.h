@@ -17,7 +17,6 @@
 #include "ms2/placeholder/citem.h"
 
 class CMsgBoxData;
-class Unk_TfBoard;
 
 class UIItemEnchantTransformDialog : public UIDialog
 {
@@ -35,7 +34,6 @@ public:
     virtual void vfunc_67();                                            // 67 0x140c3d190 reset and close
     virtual void vfunc_79(void* pPacket);                               // 79 0x140c3d3d0 transform result packet
 
-    MS2Ptr<Unk_TfBoard> FUN_140c02990(const CString& strName);          // bind the child "m_board" / "m_targetItems"
     void FUN_140c3d420();                                               // refill the targets, relabel the submit button
     void FUN_140c3d5a0();                                               // collect the transformable items into m_targets
     void FUN_140c3d960(int nIndex);                                     // "OnSelectTargetItem": confirm / pick

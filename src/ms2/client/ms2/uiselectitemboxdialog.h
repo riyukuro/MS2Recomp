@@ -19,45 +19,18 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/itemslotbinder.h"
 
-// ---- the movie's controls (unit-local placeholders; the wrapper classes are unrecovered) ----
-// A button of the movie.
-class Unk_SibButton : public AScript
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // click handler
-    void FUN_1422cdfb0(const CStringW& strLabel);
-    void FUN_1422c1fe0(int bEnable);
-};
+// ---- the movie's controls ----
+class ASButton;
+class ASMultiSelectTileCacheList;
+class ASTextField;
 
-// The list of selectable items.
-class Unk_SibList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // +0xc8: set the data provider
-    void FUN_1422cfa30(ATL::CAtlArray<unsigned>& out);                  // the selected indices
-    unsigned FUN_1422cf920();                                           // the selection count
-    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // change handler
-    Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const wchar_t* sz);
-};
 
-// A slot / text of the movie.
+
+// A slot of the movie.
 class Unk_SibSlot : public AScript
 {
 public:
     virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(int bVisible);
-};
-class Unk_SibText : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(int bVisible);
-    void FUN_1422c4cd0(const CStringW& strText);
 };
 
 
@@ -76,18 +49,17 @@ public:
     void FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler::Params& params);   // list selection changed
     void FUN_140f9a700();                                               // refresh the slots, counters and the ok label
 
-    MS2Ptr<Unk_SibButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_SibButton>* pOut);   // bind children
-    MS2Ptr<Unk_SibList> FUN_140e8d030(const CString& strName, MS2Ptr<Unk_SibList>* pOut);
-    MS2Ptr<Unk_SibText> FUN_140e48d80(const CString& strName, MS2Ptr<Unk_SibText>* pOut);
+    MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>* pOut);
+    MS2Ptr<ASTextField> FUN_140e48d80(const CString& strName, MS2Ptr<ASTextField>* pOut);
 
 protected:
     MS2_LAYOUT_FRIEND;
     unsigned __int64 m_uItemUid;                                        // +0x178
-    MS2Ptr<Unk_SibButton> m_okButton;                                   // +0x180
-    MS2Ptr<Unk_SibList> m_selectItemList;                               // +0x190
+    MS2Ptr<ASButton> m_okButton;                                       // +0x180
+    MS2Ptr<ASMultiSelectTileCacheList> m_selectItemList;               // +0x190
     std::vector<MS2Ptr<Unk_SibSlot> > m_selectedSlots;                  // +0x1a0 six "m_selectedSlot<n>"
-    MS2Ptr<Unk_SibText> m_selectedCount;                                // +0x1b8
-    MS2Ptr<Unk_SibText> m_selectNotice;                                 // +0x1c8
+    MS2Ptr<ASTextField> m_selectedCount;                                // +0x1b8
+    MS2Ptr<ASTextField> m_selectNotice;                                 // +0x1c8
     std::vector<ItemDropResult> m_rewards;                              // +0x1d8 the box's reward entries
     unsigned m_nSelectCount;                                            // +0x1f0 how many the player may take
     ItemSlotBinder m_binder;                                            // +0x1f8 "SelectItemBoxDialog"

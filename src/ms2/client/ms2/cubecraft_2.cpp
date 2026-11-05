@@ -115,7 +115,7 @@ MS2_CHECK_OFFSET(Unk_C2Consts, m_liftDown, 0x3b50);
 extern int DAT_143ae0fb4;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, const efd::Point3& kUp);   // look-at angles
+Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
 void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);
 
 __int64 FUN_14028d0e0();
@@ -136,7 +136,7 @@ public:
     bool FUN_1415302e0(int);
 };
 int FUN_1408a03c0(Unk_Int3 point);
-int FUN_1408a13d0(efd::Point3 kPos);
+int FUN_1408a13d0(NiPoint3 kPos);   // C3: ridee.cpp / mypc.cpp's declaration (0x1408a13d0)
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 #include "ms2/placeholder/unk_1402a9d70.h"
 // File statics of this TU (initialised by the .text$di entries; the hook build uses the exe's copies).
@@ -162,11 +162,6 @@ struct Unk_C2Ease
 };
 void FUN_141275260(int nA, int nB, int nC);
 int FUN_141276180(const CString& str, const CString& strArg);
-// CCubeMotionManager::FUN_14115b500 as this unit calls it: the entity id goes by value.
-bool FUN_14115b500(CCubeMotionManager* pMgr, egf::EntityID kId, Unk_CmRotate& rOut);
-// AddScale (0x14115b1e0) and FUN_14115b4c0 the same way: the exe copies the id into a by-value temp.
-void FUN_14115b1e0(CCubeMotionManager* pMgr, egf::EntityID kId, float fFrom, float fTo, unsigned nMs);
-bool FUN_14115b4c0(CCubeMotionManager* pMgr, egf::EntityID kId, Unk_CmScale& rOut);
 void FUN_140291b70(float* pfDegrees);
 
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
@@ -408,7 +403,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
             MS2Ptr<Cube> spCube(m_svc->GetCubeAtPoint(m_ptCell));
             float fScale;
             spCube->entity->GetPropertyValue<float>(0x2d7cad2d, fScale);
-            FUN_14115b1e0(GetCubeMotionManager(), spCube->entity->GetEntityID(), fScale, m_fScale, 200);
+            GetCubeMotionManager()->AddScale(spCube->entity->GetEntityID(), fScale, m_fScale, 200);
         }
         FUN_1410add30();
         PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -801,9 +796,9 @@ MS2_REPLACE_METHOD(0x1410AF0D0, Unk_PCCubeCraft, ReleaseGuide3, 99, 0xA27E20ED);
 // @0x1410af140
 void Unk_PCCubeCraft::UpdateGuide3Rotation()
 {
-    efd::Point3 kAngles = FUN_140a0b080((const efd::Point3&)m_ptOffset, (const efd::Point3&)m_ptCell, efd::Point3::UNIT_Z);
+    Vector3 kAngles = FUN_140a0b080(m_ptOffset, m_ptCell, reinterpret_cast<const Vector3&>(efd::Point3::UNIT_Z));
     NiMatrix3 kRot;
-    FUN_140b86230(kAngles, kRot);
+    FUN_140b86230(reinterpret_cast<efd::Point3&>(kAngles), kRot);
     m_spGuide3->vfunc_4(kRot);
 }
 MS2_REPLACE_METHOD(0x1410AF140, Unk_PCCubeCraft, UpdateGuide3Rotation, 165, 0xDD10B97A);
@@ -883,7 +878,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
             MS2Ptr<Cube> spOld(m_svc->GetCubeAtPoint(kPos));
             float fScale;
             spOld->entity->GetPropertyValue<float>(0x2d7cad2d, fScale);
-            FUN_14115b1e0(GetCubeMotionManager(), spOld->entity->GetEntityID(), fScale, m_fScale, 200);
+            GetCubeMotionManager()->AddScale(spOld->entity->GetEntityID(), fScale, m_fScale, 200);
         }
     }
     MS2Ptr<Cube> spCell(m_svc->GetCubeAtPoint(m_ptCell));
@@ -903,17 +898,17 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
             float fCur;
             spCell->entity->GetPropertyValue<float>(0x2d7cad2d, fCur);
             Unk_CmScale kScale;
-            if (FUN_14115b4c0(GetCubeMotionManager(), spCell->entity->GetEntityID(), kScale))
+            if (GetCubeMotionManager()->FUN_14115b4c0(spCell->entity->GetEntityID(), kScale))
                 m_fScale = kScale.m_fTo;
             else
                 m_fScale = fCur;
             if (bGrow)
             {
-                FUN_14115b1e0(GetCubeMotionManager(), spCell->entity->GetEntityID(), fCur, m_fScale + 0.05f, 200);
+                GetCubeMotionManager()->AddScale(spCell->entity->GetEntityID(), fCur, m_fScale + 0.05f, 200);
             }
             else if (((class CFeatureManager*)FUN_140166410())->IsRegionCN() && m_bVisible)
             {
-                FUN_14115b1e0(GetCubeMotionManager(), spCell->entity->GetEntityID(), fCur, m_fScale - 0.05f, 200);
+                GetCubeMotionManager()->AddScale(spCell->entity->GetEntityID(), fCur, m_fScale - 0.05f, 200);
             }
         }
     }
@@ -1002,7 +997,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             CubeItemInfo kInfo(*m_spItem.get());
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.Encode1(10);
-            packet.Encode4(FUN_1408a13d0((const efd::Point3&)m_ptCell));
+            packet.Encode4(FUN_1408a13d0((const NiPoint3&)m_ptCell));
             kInfo.FUN_1408b39c0(packet);
             packet.WriteFloat(kEuler.z);
             FUN_140710590(packet);
@@ -1097,7 +1092,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(bool bNotice)
                 return;
             }
             Unk_CmRotate kRot;
-            if (FUN_14115b500(GetCubeMotionManager(), spCube->entity->GetEntityID(), kRot))
+            if (GetCubeMotionManager()->FUN_14115b500(spCube->entity->GetEntityID(), kRot))
                 return;
             Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)kCell);
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -1281,7 +1276,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.Encode1(0xd);
-    packet.Encode4(FUN_1408a13d0((const efd::Point3&)kCell));
+    packet.Encode4(FUN_1408a13d0((const NiPoint3&)kCell));
     FUN_140710590(packet);
 }
 
@@ -1495,12 +1490,12 @@ void Unk_PCCubeCraft::FUN_1410af1f0()
         return;
     if (pPC != m_pOwner)
         return;
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     reinterpret_cast<CQuestManager*>(FUN_140764020())->GetQuestsFiltered(quests, 1, 0xb, -1);
     int nLiftId = 0;
     for (size_t i = 0; i < quests.GetCount(); ++i)
     {
-        Unk_PayloadPtr<CQuest> spQuest(quests[i]);
+        MS2Ptr<CQuest> spQuest(quests[i]);
         if (spQuest.IsNull())
             continue;
         MS2Ptr<CQuestData> spData = spQuest->GetData();

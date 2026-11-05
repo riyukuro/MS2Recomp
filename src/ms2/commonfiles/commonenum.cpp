@@ -164,7 +164,7 @@
 
 // Unrecovered helpers.
 CStringA FUN_14016a600(wchar_t const *, int);  // C3: the definition's signature
-CStringA FUN_14016a5c0(const char* psz, unsigned nFlags);      // undecorated class name
+CStringA FUN_140188f50(const char* psz, int nCodePage);      // CString from a multibyte string (0x140188f50, additionalactionadditional.cpp)
 
 struct CommonEnumNoCaseLess {
     bool operator()(const CStringA& left, const CStringA& right) const { return left.CompareNoCase(right) < 0; }
@@ -1394,7 +1394,7 @@ int Lookup(const CStringA& value, const std::pair<const char*, int> (&table)[75]
     return 0;
 }
 // @0x14021b830
-int Parse_14021b830(const CStringA& value) { return Lookup(FUN_14016a5c0(static_cast<const char*>(value),0),lookupTable); }
+int Parse_14021b830(const CStringA& value) { return Lookup(FUN_140188f50(static_cast<const char*>(value),0),lookupTable); }
 // sfr36: full-exe link: itemdatastruct/banktable call it as FUN_14021bdc0(CString&)
 #pragma comment(linker, "/alternatename:?FUN_14021bdc0@@YAHAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?Parse_14021bdc0@@YAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
 // @0x14021bdc0

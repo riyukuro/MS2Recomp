@@ -49,7 +49,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_1402929a0(const CStringW& str, std::vector<unsigned int>& rOut, const wchar_t* pszSep);          // split into ints
+void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);          // split into ints (the definer's signature, commonutil.cpp)
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
@@ -135,7 +135,7 @@ bool CPetData::Load(Unk_140165cf0* pNode)
         XmlGetAttr((class TiXmlElement*)(pNode), "additionalEffectLevel", strLevels);
         std::vector<unsigned int> ids;
         std::vector<unsigned short> levels;
-        FUN_1402929a0(strIds, ids, L",");
+        FUN_1402929a0(strIds, reinterpret_cast<std::vector<int>&>(ids), L",");
         FUN_140729390(strLevels, levels, L",");
         int nCount = (int)(std::min)(ids.size(), levels.size());
         for (int i = 0; i < nCount; ++i)

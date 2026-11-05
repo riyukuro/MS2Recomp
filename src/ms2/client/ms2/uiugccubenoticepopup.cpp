@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
 
 // ---- header statics (.text$di): a shared header's condition keys and a null pointer holder ----
 // @0x1400e21b0
@@ -38,10 +39,9 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 #define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
-class Unk_UnpCamera;
 class NiPoint3;
 class CameraMgr { public: bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen); };   // C3: world to screen (was a Unk_UnpCamera view)
-Unk_UnpCamera* FUN_1409478c0();
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real accessor (0x1409478c0; actioncameramode.cpp defines it)
 
 // The ui scale service: scale of a layer.
 class Unk_UnpScale;
@@ -167,7 +167,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
     if (m_bVisible != 0)
     {
         Vector3 ptScreen;
-        if (reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
         {
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (spEntity.get() != 0)

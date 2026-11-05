@@ -103,8 +103,7 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool IsDebugMode();
 };
-struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
-struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
+class Unk_GsClip { public: MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };   // C3: gemstoneswappage's Unk_GsClip (0x140c4bc60)
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 v);
 CStringW FUN_1419021b0(unsigned a, unsigned b);
@@ -242,7 +241,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     MS2Ptr<ASMovieClip> slots0 = m_root->FUN_1409b4560("m_slots0");
     {
         if (slots0.get() != 0) {
-            m_sourceControl = reinterpret_cast<Unk_TrFindBag*>(slots0.operator->())->FUN_140c4bc60("m_itemBag");
+            m_sourceControl = reinterpret_cast<Unk_GsClip*>(slots0.operator->())->FUN_140c4bc60("m_itemBag");
             if (m_sourceControl.get() != 0)
                 reinterpret_cast<ASCoreList*>(m_sourceControl.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d50), 0);
         }
@@ -259,22 +258,22 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
             }
         }
     }
-    m_actionButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_btnAction");
+    m_actionButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_btnAction");
     if (m_actionButton.get() != 0)
-        reinterpret_cast<ASButton*>(m_actionButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
+        m_actionButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
     bool isDebug = ((class CInputKeyHandler*)(class Unk_TrDebug*)(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0())))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
-    m_debugButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
+    m_debugButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnAction");
     if (m_debugButton.get() != 0) {
         m_debugButton->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14), 0);
+            m_debugButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14), 0);
     }
-    m_debugFillButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
+    m_debugFillButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
     if (m_debugFillButton.get() != 0) {
         m_debugFillButton->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugFillButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16), 0);
+            m_debugFillButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16), 0);
     }
     FUN_140f6d450(m_slots0Name, m_sourceItems, 0x435, 0x20);
     FUN_140f6d450(m_slots1Name, m_ingredientEquips, 0x415, 0x20);

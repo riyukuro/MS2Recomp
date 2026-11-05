@@ -31,19 +31,8 @@ MS2_CHECK_OFFSET(Unk_RsAttr, m_strEffect, 0x28);
 MS2_CHECK_OFFSET(Unk_RsAttr, m_strLateEffect, 0x98);
 MS2_CHECK_OFFSET(Unk_RsAttr, m_bAlways, 0xa0);
 
-// A skill level (id, level, attributes) and its row, as handed out by the skill table.
-class Unk_InventorySkillLevel : public CPtred
-{
-public:
-    unsigned FUN_140803dc0();
-    unsigned short FUN_140803df0();
-    Unk_RsAttr* FUN_140803f00(int nIndex);              // attributes of one entry
-};
-class Unk_SkillRow : public CPtred
-{
-public:
-    MS2Ptr<Unk_InventorySkillLevel> FUN_1407e90a0(unsigned short nLevel);
-};
+class SkillData;        // commonfiles/skilloverlapcompare.h
+class SkillLevelData;   // commonfiles/skilloverlapcompare.h
 
 class CRegionSkillObject : public CPtred
 {
@@ -61,8 +50,8 @@ public:
     void FUN_1416f6f50();                                   // per frame: respawn the culled effects
     void FUN_1416f7790();                                   // the late effect
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_SkillRow> m_spRow;                           // +0x18
-    MS2Ptr<Unk_InventorySkillLevel> m_spSkill;              // +0x28 the skill (id, level)
+    MS2Ptr<SkillData> m_spRow;                              // +0x18 the skill row
+    MS2Ptr<SkillLevelData> m_spSkill;                       // +0x28 the skill level
     Unk_RsAttr* m_pAttr;                                    // +0x38
     int m_nId;                                              // +0x40
     int m_nOwnerId;                                         // +0x44

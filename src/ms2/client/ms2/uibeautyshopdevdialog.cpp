@@ -122,7 +122,6 @@ class CEmotionManager
 public:
     CEmotionTable* GetItemTable();
 };
-class Unk_CsoSpawnMgr* FUN_140a50010();   // C3: was FUN_140a50010
 
 class Unk_ItemEventSystem
 {
@@ -734,7 +733,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
         if (pPc)
         {
             m_2a0.clear();
-            CEmotionTable* pLib = ((class CEmotionManager*)FUN_140a50010())->GetItemTable();
+            CEmotionTable* pLib = TSingleton<CEmotionManager>::GetInstance()->GetItemTable();
             MS2Ptr<CEmotionGroup> spSet = pLib->GetGroup(pPc->vfunc_69());
             if (strSearch.IsEmpty())
             {

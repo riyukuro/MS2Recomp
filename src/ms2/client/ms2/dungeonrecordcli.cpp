@@ -7,7 +7,7 @@
 // MS2-RANGE: 0x140b206b0-0x140b26ff0 .text$mn
 // MS2-RANGE: 0x1400c7d40-0x1400c7e00 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??8?$MS2Ptr@VUnk_DungeonEvent@@@@QEBA_NPEAVUnk_DungeonEvent@@@Z 0x140b246a0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VDungeonExtraRewardCountCtx@@@@QEBA_NPEAVDungeonExtraRewardCountCtx@@@Z 0x140b246a0 ; unique
 // MS2-PIN: ??0?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@XZ 0x140b240b0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\dungeonrecordcli.cpp"
@@ -26,6 +26,8 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read6..Read9
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gamerule.h"
 
 // ---- unit-local stand-ins ----
 
@@ -44,19 +46,6 @@ public:
     void FUN_140e0eb40(CInPacket& packet);
 };
 
-// The game event that grants extra dungeon rewards (looked up by room id).
-class Unk_DungeonEvent : public CPtred
-{
-public:
-    unsigned m_pad_18[2];
-    unsigned m_extraRewardCount;            // +0x20
-};
-typedef MS2Ptr<Unk_DungeonEvent> Unk_DungeonEventPtr;
-
-struct Unk_GEManagerA
-{
-    Unk_DungeonEventPtr FUN_14047a5b0(unsigned nRoomID);
-};
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Free functions of the exe, bound by their FUN_<va> names.
@@ -171,10 +160,10 @@ bool DungeonRecordCli::HasCountLeft()
 // @0x140b20990
 bool DungeonRecordCli::IsExtraExhausted()
 {
-    Unk_DungeonEventPtr spEvent = ((struct Unk_GEManagerA*)FUN_1401c0d90())->FUN_14047a5b0(m_dungeonRoomID);
+    MS2Ptr<DungeonExtraRewardCountCtx> spEvent = ((CGameRule*)FUN_1401c0d90())->GetDungeonExtraRewardCount(m_dungeonRoomID);
     if (spEvent == 0)
         return false;
-    return GetExtraCountNow() < spEvent->m_extraRewardCount;
+    return GetExtraCountNow() < spEvent->m_count;
 }
 
 // @0x140b20a40

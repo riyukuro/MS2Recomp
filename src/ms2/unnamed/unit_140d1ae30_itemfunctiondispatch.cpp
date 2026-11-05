@@ -122,7 +122,6 @@ class Unk_IuWorld : public WorldService
 {
 public:
     MyPC* FUN_141bd0cc0();                                  // the local player
-    void FUN_141bc2c90(NiPoint3 kPos, ATL::CAtlArray<MS2Ptr<CPortal> >& arrOut);   // the portals containing a position (AddRef'd)
 };
 
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
@@ -167,7 +166,7 @@ int FUN_1403bafd0(int nItemId);                             // the inventory tab
 bool FUN_141900510(int nTab, __int64* pnAmount, __int64* pnCap);   // a currency-like tab and its amount/cap
 
 // The quest scroll: the quest client manager.
-class Unk_IuQuest : public CPtred {};                       // CQuest (Unk_PayloadPtr<CQuest> in the exe: get 0x140747690, dtor 0x140747580)
+class Unk_IuQuest : public CPtred {};                       // CQuest (MS2Ptr<CQuest> in the exe: get 0x140747690, dtor 0x140747580)
 class Unk_IuQuestList
 {
 public:
@@ -1788,7 +1787,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     }
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
-    reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2c90(pPlayer->vfunc_18(), arrPortals);
+    WorldService::GetInstance()->FUN_141bc2c90(pPlayer->vfunc_18(), &arrPortals);
     if (arrPortals.GetCount() > 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);

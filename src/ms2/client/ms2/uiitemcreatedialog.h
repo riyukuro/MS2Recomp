@@ -26,8 +26,7 @@ class CCCreateItemPacket;
 class CCCompareItemPacket;
 class ASButton;
 class ASScrollingList;
-class Unk_IcCheck;
-class Unk_IcInput;
+class ASCheckBox;
 class TiXmlElement;
 
 class UIItemCreateDialog : public UIDialog
@@ -57,8 +56,7 @@ public:
     void FUN_1419b5730(const CString& strGroup, const CStringW& strSearch);   // fill the item list
     void FUN_1419b6350();                                       // build the context menu
     void FillFunctionList();                                       // fill the function list
-    MS2Ptr<Unk_IcInput> FUN_140e35bd0(const CString& strName);  // child "m_periodInput"
-    MS2Ptr<Unk_IcCheck> FUN_140e52670(const CString& strName);  // child "m_checkJob" / "m_checkGender"
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);  // child "m_checkJob" / "m_checkGender"
 
 protected:
     MS2_LAYOUT_FRIEND;

@@ -110,7 +110,7 @@ int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 // The string splitters (commonstringtable.cpp / chapterbooktable.cpp).
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);
-void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* pszDelims);
+void FUN_1401d9a30(CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* pszDelims);
 
 // @0x1402e1b80
 GameEvent::GameEvent()
@@ -496,7 +496,7 @@ bool GameEvent::ParseDayOfWeek(const CStringW& text, std::set<int>& days)
         return true;
     {
         ATL::CAtlArray<int> values;
-        FUN_1401d9a30(text, values, L",");
+        FUN_1401d9a30(const_cast<CStringW&>(text), values, L",");
         for (int i = 0; i < (int)values.GetCount(); i++) {
             int day = values[i];
             if (day < 1 || 7 < day) {

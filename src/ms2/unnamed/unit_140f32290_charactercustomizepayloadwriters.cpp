@@ -46,10 +46,10 @@ class Unk_CustomizeView : public Customize
 // The part handle (an efd::SmartPointer<CItemCustomizeController>, 8 bytes).
 
 // The worn item / colour helpers of the avatar units.
-MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, void* pPc);                 // the worn item of the kind
+MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, class AvatarPC* pPc);       // the worn item of the kind (C3: the definer's signature, unit_1414210f0)
 int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
-void FUN_141424580(MS2Ptr<CEquipItem> spEquip, int* pnColor, int n);        // the colour of the worn item (spEquip by value)
-void FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int n, void* pPc);   // the colour of an item (spItem by value)
+int FUN_141424580(MS2Ptr<CEquipItem> spEquip, unsigned int* pnColor, int n);        // the colour of the worn item (spEquip by value; itemugcmesh.cpp's signature)
+int FUN_141424760(MS2Ptr<CItem> spItem, unsigned int* pnColor, int n, struct Unk_UgcPlayer* pPlayer);   // the colour of an item (spItem by value; itemugcmesh.cpp's signature)
 bool FUN_140f026f0(MS2Ptr<ItemColorEx> spColor, bool* pbLocked);            // the colour is locked
 
 typedef ATL::CAtlArray<MS2Ptr<ItemColorEx> > ColorArray;
@@ -334,13 +334,13 @@ void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
     }
     else
     {
-        MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), pPc);
+        MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), (class AvatarPC*)pPc);
         if (spEquip.get() != 0)
         {
             if (spEquip->GetItem()->FUN_1405276c0() == spData->GetItemId())
             {
-                FUN_141424580(MS2Ptr<CEquipItem>(spEquip), pnColor1, 0);
-                FUN_141424580(MS2Ptr<CEquipItem>(spEquip), pnColor2, 2);
+                FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)(pnColor1), 0);
+                FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)(pnColor2), 2);
             }
         }
     }
@@ -365,8 +365,8 @@ void FUN_140f337a0(MS2Ptr<CItem> spItem, int* pnColor1, int* pnColor2)
     }
     else
     {
-        FUN_141424760(MS2Ptr<CItem>(spItem), pnColor1, 0, pPc);
-        FUN_141424760(MS2Ptr<CItem>(spItem), pnColor2, 2, pPc);
+        FUN_141424760(MS2Ptr<CItem>(spItem), (unsigned int*)(pnColor1), 0, (struct Unk_UgcPlayer*)(pPc));
+        FUN_141424760(MS2Ptr<CItem>(spItem), (unsigned int*)(pnColor2), 2, (struct Unk_UgcPlayer*)(pPc));
     }
 }
 MS2_REPLACE(0x140F337A0, FUN_140f337a0, 422, 0x0424A80D);

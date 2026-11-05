@@ -73,12 +73,12 @@ template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FU
 void FUN_140720e50(void* pDest, void* pSrc, unsigned __int64 nCount);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 Unk_SSGDlg4e47* FUN_140de48d0(int nId);
-extern char DAT_143ab2a90;
+class Unk_Inventory; extern Unk_Inventory g_143ab2a90;   // C3: was extern char DAT_143ab2a90 (the inventory)
 extern __int64 DAT_143ab2828;
 extern int DAT_143ab2864;
 extern __int64 DAT_143ab28f8;
 // /Ob0: the exe reads these globals inline, so they are macros
-#define Unk_Inventory() (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90))
+#define Unk_Inventory() (&g_143ab2a90)
 #define Unk_StoreInstance() (&DAT_143ab2d80)
 
 // ---- CStore -----------------------------------------------------------------------------------------------------

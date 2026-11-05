@@ -598,10 +598,10 @@ class Unk_SlotPc : public MyPC
 {
 public:
 };
-Unk_SlotPc* FUN_1409613d0(void* pPc);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 int FUN_141275a10(CItem* pItem);                                // the usable state of an item (1 locked, 2 disabled, 3 condition)                           // PCBase -> MyPC (NULL for others)
-class Unk_SlotSkillRowEx : public SkillData {};   // the row type the skill lookup hands back (moved into an MS2Ptr<SkillData>)
-MS2Ptr<Unk_SlotSkillRowEx> FUN_140639210(int nSkillId);
+class JobSystem { public: static MS2Ptr<SkillData> GetSkillData(unsigned nSkillId); };   // C3: member view (0x140639210, jobsystem.h)
 
 
 // The equip set of a PC (FUN_1416561a0).
@@ -692,7 +692,6 @@ ItemGachaBoxTable* FUN_14052d230();
 class Unk_SlotLapenTable : public CItemLapenshardTable
 {
 };
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 class CItemLockManager   // C3: unit-local view (def in unit_1406125d0)
 {
 public:
@@ -1036,11 +1035,11 @@ void ASSlot::FUN_1409c2af0(CItem* pItem, void* pPlayer)
         return;
     if (pItem->FUN_140527840()->FUN_14053dc20() == 0)
         return;
-    Unk_SlotPc* pPc = FUN_1409613d0(pPlayer);
+    Unk_SlotPc* pPc = (Unk_SlotPc*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)pPlayer);
     if (pPc == NULL)
         return;
     ((class Unk_SlotSkillBook*)((class PC*)(class Unk_SlotPc*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spRow(FUN_140639210(pItem->FUN_140527840()->FUN_14053dc20()));
+    MS2Ptr<SkillData> spRow(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(pItem->FUN_140527840()->FUN_14053dc20()))));   // moved through a reference to the temporary (2-slot chain, move ctor 0x1407f4f80)
     if (spRow.IsNull())
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
@@ -1218,7 +1217,7 @@ void ASSlot::FUN_1409c34e0(CItem* pItem)
                 break;
             }
             int nPetId = pItem->FUN_140527840()->GetPetId();
-            MS2Ptr<CPetData> spPet = ((CPetDataTable*)FUN_14052d210())->Find(nPetId);
+            MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
             if (spPet.IsNull())
             {
                 SetItemSeal(1);
@@ -1306,7 +1305,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         SetItemName(pItem->FUN_140527b10());
     if ((nFlags & 0x20) && pPlayer != NULL)
     {
-        Unk_SlotPc* pPc = FUN_1409613d0(pPlayer);
+        Unk_SlotPc* pPc = (Unk_SlotPc*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)pPlayer);
         if (pPc != NULL)
         {
             BOOL bEquipped = FALSE;
@@ -1337,7 +1336,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         FUN_1409c0d20("level", pItem->GetRequiredLevel());
         if (pPlayer != NULL)
         {
-            Unk_SlotPc* pPc = FUN_1409613d0(pPlayer);
+            Unk_SlotPc* pPc = (Unk_SlotPc*)efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)pPlayer);
             if (pPc != NULL && pItem->FUN_140527840()->FUN_14053c8b0())
             {
                 int nUsable = FUN_141275a10(pItem);
@@ -1741,12 +1740,7 @@ MS2_CHECK_OFFSET(Unk_MeratEquipEntry, m_oid, 0x18);
 MS2_CHECK_OFFSET(Unk_MeratEquipEntry, m_premium, 0x30);
 MS2_CHECK_OFFSET(Unk_MeratEquipEntry, m_ugc, 0x268);
 
-class Unk_MeratBanner : public CPtred
-{
-public:
-    CString m_strBg;                                            // +0x18
-};
-MS2_CHECK_OFFSET(Unk_MeratBanner, m_strBg, 0x18);
+#include "ms2/client/ms2/shopbannerinfo.h"   // ShopBannerInfo, the banner behind ASMeratMarketProductBase::m_spBanner
 
 class Unk_MeratFilter : public CPtred
 {
@@ -1916,7 +1910,7 @@ void ASMeratMarketProductBase::SetBgPath(const CString& strBg)
 }
 
 // @0x1409bc4f0
-void ASMeratMarketProductBase::SetBanner(MS2Ptr<Unk_MeratBanner> spBanner)
+void ASMeratMarketProductBase::SetBanner(MS2Ptr<ShopBannerInfo> spBanner)
 {
     m_spBanner = spBanner;
 }
@@ -2218,7 +2212,7 @@ bool ASMeratMarketLimitedProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, c
     if (m_spBanner.get() != NULL)
     {
         FUN_1409c0dc0("type", "banner");
-        SetBgPath(m_spBanner->m_strBg);
+        SetBgPath(m_spBanner->m_strImgPath);
     }
     else
     {

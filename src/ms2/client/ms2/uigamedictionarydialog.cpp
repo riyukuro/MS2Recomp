@@ -59,10 +59,7 @@ public:
     virtual void vfunc_24(bool b);
 };
 // "m_inputSearch": the search text input.
-class Unk_DictInput : public ASDisplayObject
-{
-public:
-};
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 class ASDialog : public ASDisplayObject {};
 
 // The dictionary data: GameDictionaryManager::GetAll (0x1403b7af0) returns a std::list of TPtrValue<GameDictionaryData>
@@ -191,8 +188,8 @@ void UIGameDictionaryDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140f452e0();
-    if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
+        spInput->SetTextW(m_180);
     if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
         spTab->SetSelectedIndex(m_178);
     if (m_17c != 0)
@@ -255,10 +252,10 @@ int UIGameDictionaryDialog::vfunc_13()
     {
         if (FUN_140b632f0() != 0 && FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
             return 0;
-        if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
+        if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
         {
-            if (((class ASUIComponent*)(class Unk_DictInput*)(spInput.operator->()))->GetFocused() != 0)
-                FUN_140f46c90(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
+            if (spInput.operator->()->GetFocused() != 0)
+                FUN_140f46c90(spInput.operator->()->GetText());
         }
         return 1;
     }
@@ -427,8 +424,8 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
 {
     m_17c = bSelectFirst;
     m_180 = strSearch;
-    if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
+        spInput->SetTextW(m_180);
     if (vfunc_55() == 0)
     {
         if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))

@@ -55,6 +55,7 @@
 #include "worldservice.h"
 #include "pcbase.h"
 #include "ms2/commonfiles/filebuffer_1.h"
+#include "ms2/unnamed/payloadptr_1401f9eb0.h"   // C3: CFileSystem::BufferPtr, UITriggerEditorDialog::FUN_141b2b7e0's argument
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/sidepopuptalkparam.h"
 #include "ms2/placeholder/statetriggeremotiondata.h"
@@ -68,6 +69,8 @@
 #include "ms2/client/ms2/uisidepopuptalk.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/cguidemanager.h"
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 // The exe's handle map is CRBMap<int, int>: Lookup stores the found value as an int (out address loaded first).
 template <>
@@ -117,6 +120,7 @@ public:
     void FUN_140aed750(int, int);
     class CCameraMode* FUN_140af2520();
     int FUN_140af7e30();
+    float FUN_140ad4b40();   // C3: was Unk_CameraManager::FUN_140ad4b40
     float FUN_140af7f00();
     float FUN_140af7ea0();
     Vector3 FUN_140a17e10();
@@ -141,8 +145,7 @@ public:
     virtual void vfunc_84();
     void FUN_140ee57b0(int nA, int nB);
 };
-class Unk_TrigTextUI { public: void FUN_141b2b7e0(MS2Ptr<CFileBuffer> spText); };
-class UITriggerEditorDialog;
+class UITriggerEditorDialog { public: int FUN_141b2b7e0(Unk_PayloadPtr<CFileBuffer> spBuffer); };   // C3: member view (uitriggereditordialog.h); 0x141b2b7e0 shows a downloaded script
 template <class T> T* Unk_FcDialog(int nId);   // C3: the dialog of a UI id (functioncubeobject.cpp)
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
@@ -455,14 +458,14 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         Vector3 ptCenter = pEvent->FUN_1407140d0();
         float fOuter = (float)(unsigned)pEvent->ReadInt32();
         float fInner = (float)(unsigned)pEvent->ReadInt32();
-        if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7e30() != 0x13)
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() != 0x13)
         {
-            Unk_CameraSetting* pSetting = FUN_140947880(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
-            ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(pSetting));
-            ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(0x13, true);
+            Unk_CameraSetting* pSetting = FUN_140947880(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(*(struct Unk_CameraSetting const*)(pSetting));
+            TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(0x13, true);
         }
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e0d0(ptCenter);
@@ -474,7 +477,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
     {
         bool bCheck = pEvent->ReadBool();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e180(bCheck);
@@ -485,7 +488,7 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         bool bFixed = pEvent->ReadBool();
         float fAngle = pEvent->ReadFloat();
         CTargetLookCenterCameraMode* pMode =
-            dynamic_cast<CTargetLookCenterCameraMode*>(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af2520());
+            dynamic_cast<CTargetLookCenterCameraMode*>(TSingleton<CameraMgr>::GetInstance()->FUN_140af2520());
         if (pMode == 0)
             break;
         pMode->FUN_140a4e110(fAngle);
@@ -515,9 +518,9 @@ void CTriggerService::OnTextPopup(CInPacket* pEvent)
     CStringW strWide = XmlWide(pEvent->ReadString());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
     spBuffer->SetText(strWide);
-    Unk_TrigTextUI* pUi = reinterpret_cast<Unk_TrigTextUI*>(Unk_FcDialog<UITriggerEditorDialog>(0x4e6b));
+    UITriggerEditorDialog* pUi = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
     if (pUi != 0)
-        pUi->FUN_141b2b7e0(spBuffer);
+        pUi->FUN_141b2b7e0(reinterpret_cast<Unk_PayloadPtr<CFileBuffer>&>(spBuffer));   // MS2Ptr<CFileBuffer> and the payload pointer share their copy 0x1403a58f0
 }
 
 // @0x141862110
@@ -806,7 +809,7 @@ void CTriggerService::QueueCameraStep(int nObject, int bStart)
     kStep.m_nObject = nObject;
     kStep.m_bStart = bStart;
     m_listCamera.AddTail(kStep);
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7e30() != 3)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() != 3)
         FUN_141863260();
 }
 
@@ -834,7 +837,7 @@ void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEn
         return;
     if (aObjects.GetCount() == 1 && aObjects[0] == 0)
     {
-        ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, false);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, false);
     }
     else
     {
@@ -860,21 +863,21 @@ void CTriggerService::FUN_141863460(float fFade)
         Unk_FlyByCameraData kData;
         kData.m_fDuration = fFade;
         kData.m_nKind = 1;
-        kData.m_from.m_0 = Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40();
-        kData.m_from.m_4 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7f00();
-        kData.m_from.m_8 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7ea0();
-        kData.m_from.m_c = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a17e10();
-        kData.m_from.m_18 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af8290();
+        kData.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
+        kData.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
+        kData.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
+        kData.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+        kData.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         kData.m_to = kData.m_from;
-        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140ad4b30();
-        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140af7ef0();
-        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140af7e90();
-        kData.m_to.m_18 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_140af8260();
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
+        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140ad4b30();
+        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140af7ef0();
+        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140af7e90();
+        kData.m_to.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_140af8260();
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aed580((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
         bFade = 1;
     }
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed1c0();
-    ((class CameraMgr*)(void*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, bFade);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aed1c0();
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aed750(2, bFade);
 }
 
 // Create or release the effect shown for a trigger object.

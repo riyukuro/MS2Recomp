@@ -52,7 +52,6 @@ public:
 };
 
 DecoEditService* BrushService();                                        // the deco edit service
-AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 CString FUN_140188f50(const char* psz, int nCodePage);                  // narrow string from a char*
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);               // narrow string from a wide one
 CStringW FUN_141b6e360(const CStringW& strInitialDir, const wchar_t* pszFilter, const CStringW& strDefaultFile);   // open-file dialog
@@ -92,7 +91,7 @@ void UIDecoEditDialog::vfunc_67()
 void UIDecoEditDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
     {
         if (MS2Ptr<ASScrollingList> spLayers = GetChild<ASScrollingList>("m_layers"))
@@ -207,7 +206,7 @@ void UIDecoEditDialog::FUN_14191bd30(CString strFile)
             _wsplitpath_s(strPath, 0, 0, 0, 0, szFile, 256, szExt, 256);
             FUN_14191c320(strPath);
             CString strAsset = FUN_1401d4330(strPath, 0);
-            ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
+            ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog)
             {
                 DecoLayer* pLayer = BrushService()->GetLayer();

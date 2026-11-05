@@ -49,7 +49,7 @@ extern __int64 DAT_143ab2820;                       // the own account id
 extern __int64 DAT_143ab2828;                       // the own character id
 
      // the content switches
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_MenteeBanFlags { public: int FUN_1402c4c90(int nFlag); };         // blocked-action flag set
 struct Unk_MenteeConfig { char m_pad[8]; Unk_MenteeBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -154,7 +154,7 @@ CMenteeSearchManager::~CMenteeSearchManager()
 // @0x140b6e3e0
 void CMenteeSearchManager::ProcessResponse()
 {
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f))
         return;
     FUN_140b6eae0();
 }
@@ -214,7 +214,7 @@ void CMenteeSearchManager::RequestSearch(const CMenteeSearchParam* pParam)
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_MenteeConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x41)) == 1)
         return;
-    if (!FUN_140166410()->FUN_14036d570(0x3f))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f))
         return;
     SetParam(pParam);
     MS2Ptr<CMenteeSearchParam> spParam = GetParam();

@@ -92,7 +92,6 @@ void Sfr33ThrowNotConstructor(unsigned char const *);
 void Sfr33ForEachChildGC_38_48(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
 void Sfr33ForEachChildGC_c0a(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
 void Sfr33ForEachChildGC_c0b(unsigned char *, void *, void (__cdecl *)(void *, void *, void *));
-bool Sfr31TracerHasTraits(unsigned __int64, unsigned __int64);
 }
 }
 }
@@ -231,6 +230,7 @@ void * FUN_140002e40(void *, unsigned int);
 void * FUN_14000a010(void *, unsigned int);
 void * FUN_14000a020(void *, unsigned int);
 extern unsigned char DAT_14000a110[];
+extern unsigned char DAT_14252e480[];
 void * FUN_14000a880(void *, unsigned int);
 unsigned int FUN_14000d320(void *);
 extern unsigned char DAT_14000d760[];
@@ -2535,7 +2535,7 @@ alignas(16) Sd_1431b71b0 DAT_1431b71b0 = {
     DAT_1425117e0,
     (const void*)&FUN_1400155d0,
     DAT_1424e42a0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31TracerHasTraits,
+    DAT_14252e480,
 };
 // 0x1431b7260
 alignas(16) Sd_1431b7260 DAT_1431b7260 = {
@@ -2699,7 +2699,7 @@ alignas(16) Sd_1431b7c70 DAT_1431b7c70 = {
     DAT_1425117e0,
     (const void*)&FUN_14001a860,
     DAT_1424e42a0,
-    (const void*)&::Scaleform::GFx::AS3::Sfr31TracerHasTraits,
+    DAT_14252e480,
 };
 // 0x1431b7d50
 alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
@@ -2885,6 +2885,7 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_1423df430@@3PAEA=?GetAS3ObjectName@Object@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df460@@3PAEA=?GetAS3ObjectName@Traits@AS3@GFx@Scaleform@@UEBA?AVString@4@XZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df4a0@@3PAEA=?GetAS3ObjectName@Traits@ClassTraits@AS3@GFx@Scaleform@@UEBA?AVString@5@XZ")
+#pragma comment(linker, "/alternatename:?DAT_14252e480@@3PAEA=?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423df580@@3PAEA=?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_1423df590@@3PAEA=?InitInstance@Object@AS3@GFx@Scaleform@@UEAAX_N@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423df5a0@@3PAEA=?IsAS3Object@?$RefCountBaseGC@$0BED@@AS3@GFx@Scaleform@@UEBA_NXZ")

@@ -16,6 +16,7 @@
 
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/citem.h"
@@ -72,12 +73,8 @@ class Unk_FdDlgEvents;
 // The "openWindowPos" UI message.
 typedef UIMsg Unk_LdUIMsg;
 
-// A button of the movie ("m_transform").
-class Unk_LdButton : public ASDisplayObject
-{
-public:
-    Unk_LdButton(const Scaleform::GFx::Value& v, int nMovieId);
-};
+// The "m_transform" button.
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
 
 // The player's inventory (global 0x143ab2a90) and the item behind a drag source.
 extern Unk_Inventory g_143ab2a90;
@@ -188,10 +185,10 @@ void UIFittingDollDialog::SendFittingDoll()
     packet.WriteUInt8(3);
     packet.WriteInt64(DAT_143af25f0);
     FUN_140710590(packet);
-    if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_transform"))
     {
         m_nTransforming = 1;
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(spButton)->FUN_1422c1fe0(0);
+        spButton->FUN_1422c1fe0(0);
     }
 }
 
@@ -402,10 +399,10 @@ void UIFittingDollDialog::FUN_141934340()
         return;
     if (((class PCBase*)(class PC*)(pMe))->GetCurStateId() == 0x22)
         return;
-    if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_transform"))
     {
         m_nTransforming = 0;
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(spButton)->FUN_1422c1fe0(1);
+        spButton->FUN_1422c1fe0(1);
     }
 }
 

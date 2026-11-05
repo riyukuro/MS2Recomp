@@ -130,6 +130,7 @@
 #include "ms2/placeholder/coptimizer.h"
 #include "ms2/client/ms2/pvpmanager.h"
 #include <egf/EntityIDFactory.h>
+#include <egf/Entity.h>   // C3: egf::Entity::GetPropertyValue<efd::Point3>
 #include "ms2/placeholder/csetitemmanager.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/jobsystemcli.h"
@@ -253,7 +254,15 @@
 #include "ms2/commonfiles/timeutil.h"   // C3: GetServerTime
 #include "ms2/client/ms2/uinametag.h"   // C3: UINameTag::Entity
 #include "ms2/client/ms2/uihpbar.h"   // C3: UITombStoneBar::Entity
-class NoticeMessage { public: void SetActor(int nActor); };   // C3: unit-local view (0x140a53190; was Unk_EffectTarget::FUN_140a53190)
+#include "ms2/client/ms2/uiemoticon.h"   // C3: UIEmoticon::Entity (FUN_14192fd40)
+class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes; SetActor 0x140a53190)
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    void SetActor(int nActor);   // 0x140a53190 (was Unk_EffectTarget::FUN_140a53190)
+    void* m_storage[14];
+};
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
@@ -303,7 +312,6 @@ class Unk_PCWorld : public WorldService
 public:
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     struct Unk_PCEntListPtr FUN_141bd0420(unsigned int nModel);     // the entities of a model
-    egf::Entity* FUN_141bcfd30(unsigned int nModel, NiPoint3 kPos, float fRange, int a, int b);  // the nearest entity of a model
 };
 void FUN_1419f37f0(unsigned int);   // C3: was FUN_1419f37f0
 // CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
@@ -328,7 +336,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17();
     virtual efd::Point3 vfunc_18();
 };
-efd::Point3 FUN_14123cc80(efd::Point3 kRot);                        // GameObject: the direction of a rotation (static)
 void FUN_140a01250(efd::Point3 kRot, efd::Point3* pForward, efd::Point3* pRight);   // the forward / right axes of a rotation
 class CCapRotationController   // C3: static member view for the former free stand-ins
 {
@@ -336,13 +343,11 @@ public:
     static float SafeAcos(float);
 };
 float FUN_1409f2310(float f);                                       // sin
-void FUN_140e68a40(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB,
-    const float* pC);                                               // Log<float, float, float> (uimodelview.cpp)
+class CLogString;
+template <class A, class B, class C> void Unk_EquipLog(CLogString*, int, int, const wchar_t*, const A&, const B&, const C&);   // C3: was FUN_140e68a40 (equipment.cpp)
 // The effect service (FUN_1403ed280).
 class Unk_PCFxMgr : public CEffectService
 {
-public:
-    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, NiPoint3 kPos, float fVolume);   // play a hit sound
 };
 // The controller body (PCBase +0x150; unit_14123f5b0.cpp's GameObjectController).
 class Unk_PCBaseBody : public GameObjectController
@@ -365,8 +370,7 @@ public:
 // The content switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The entity property reads (as pcbase.cpp).
-void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
-float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                  // the horizontal distance
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 void Unk_SplitA(CString& str, CAtlArray<CString>* paParts, const char* pszSep);   // split
 CString FUN_141425540(int nGender, int nAction);                    // the default swim effect of an action (itemugcmesh.cpp)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item record of an id
@@ -496,7 +500,7 @@ class Unk_PCBaseComp_a58 : public CPtred {};                        // UIHpBar::
 MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nActorId);            // UIHpBar::Entity
 MS2Ptr<Unk_PCBaseComp_a68> FUN_140e86320(int nActorId);
 MS2Ptr<Unk_PCBaseComp_a78> FUN_141a60da0(int nActorId);            // UINameTag
-MS2Ptr<Unk_PCBaseComp_a88> FUN_14192fd40(int nActorId);
+MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nActorId);            // UIEmoticon (uiemoticon.cpp)
 MS2Ptr<Unk_PCBaseComp_a98> FUN_14128ef70(int nActorId);            // UIBuffBalloon
 MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nActorId);            // UIChatBalloon
 MS2Ptr<Unk_PCBaseComp_ab8> FUN_141a8fb50(int nActorId);            // UIPopupProfileImage
@@ -949,8 +953,7 @@ void PC::vfunc_33(void* a, void* b)
         AddColorBoost(fX, fY, fZ);
         Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
-        efd::Point3 kPos = vfunc_18();
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, static_cast<const NiPoint3&>(kPos), fVolume);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
     FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
     if (IsDead())
@@ -1611,7 +1614,7 @@ MS2Ptr<Unk_PCBaseComp_ac8> PC::vfunc_87()
 MS2Ptr<Unk_PCBaseComp_a88> PC::vfunc_83()
 {
     if (m_spA88 == 0)
-        m_spA88 = FUN_14192fd40(m_unk_70);
+        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
     return m_spA88;
 }
 
@@ -3140,8 +3143,8 @@ void PC::FUN_1416599b0()
             return;
         efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
         efd::Point3 kEntPos = efd::Point3::ZERO;
-        FUN_1409618c0(pEntity, 0xfd95ca52, reinterpret_cast<NiPoint3&>(kEntPos));
-        if (FUN_140966ea0(kEntPos, kPos) > 70.0f)
+        pEntity->GetPropertyValue<efd::Point3>(0xfd95ca52, kEntPos);
+        if (FUN_140966ea0(reinterpret_cast<const Vector3&>(kEntPos), reinterpret_cast<const Vector3&>(kPos)) > 70.0f)
             m_entityDB0 = egf::EntityID::kENTITY_INVALID;
     }
 }
@@ -3184,10 +3187,10 @@ egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
         spEntity->GetPropertyValue(0xfd95ca52, kPos);
         spEntity->GetPropertyValue(0x68c7c29d, kRot);
         spEntity->GetPropertyValue(0xf8b99313, fScale);
-        efd::Point3 kDir = ::FUN_14123cc80(kRot);
+        efd::Point3 kDir = GameObject::RotationToDirection(reinterpret_cast<const NiPoint3&>(kRot));
         kDir.Unitize();
         kPos += kDir * fScale;
-        if (FUN_140966ea0(kMy, kPos) >= fRange)
+        if (FUN_140966ea0(reinterpret_cast<const Vector3&>(kMy), reinterpret_cast<const Vector3&>(kPos)) >= fRange)
             continue;
         if (nKind == 0 && nModel == 0xc13e30c8 &&
             !static_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141683100(0x30d41) &&
@@ -3213,7 +3216,7 @@ egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
 // @0x141659f80
 egf::Entity* PC::FUN_141659f80()
 {
-    egf::Entity* pEntity = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bcfd30(0xd116ab46, vfunc_18(), 500.0f, 1, 0);
+    egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bcfd30(0xd116ab46, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), 500.0f, 1, 0);
     if (pEntity)
     {
         efd::Point3 kPos;
@@ -3226,7 +3229,7 @@ egf::Entity* PC::FUN_141659f80()
         efd::Point3 kRight;
         FUN_140a01250(kRot, &kForward, &kRight);
         efd::Point3 kTo = vfunc_18() - kPos;
-        float fDist = FUN_140966ea0(kPos, reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18());
+        float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(kPos), reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18())));
         kForward.Unitize();
         kTo.Unitize();
         kRight.Unitize();
@@ -3241,7 +3244,7 @@ egf::Entity* PC::FUN_141659f80()
         float fSide = fDist * FUN_1409f2310(fAngle);
         float fSin = FUN_1409f2310(fAngle);
         float fDegree = fAngle * 180.0f / 3.1415927f;
-        FUN_140e68a40(((void*)GetLogString()), 0xc, 0x13, L"Degree = {0}, {1}, {2}", &fDegree, &fSide, &fSin);
+        Unk_EquipLog<float, float, float>(GetLogString(), 0xc, 0x13, L"Degree = {0}, {1}, {2}", fDegree, fSide, fSin);
         if (efd::Abs(fSide) > kSize.x * 0.5f)
             return 0;
         kPos = kPos + kRight * fSide;
@@ -3410,11 +3413,11 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
         m_n106c = nNow;
         m_n1064 = nNow;
         m_n1058 = nFlag;
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = ((struct Unk_PCConfig*)FUN_1401d31f0())->m_strInvincibleEffect;
-        kTarget.m_nKind = 0;
-        reinterpret_cast<NoticeMessage&>(kTarget).SetActor(FUN_14123c580());
-        m_n1060 = ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kTarget);
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PCConfig*)FUN_1401d31f0())->m_strInvincibleEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+        kTarget.SetActor(FUN_14123c580());
+        m_n1060 = ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
     else
     {
@@ -3769,7 +3772,7 @@ int PC::FUN_14165a540()
                 kDir.Unitize();
                 // nothing may block the way from the cube's centre to the spot
                 NiPoint3 kEntPos;
-                FUN_1409618c0(pFound->entity.operator->(), 0xfd95ca52, kEntPos);
+                pFound->entity.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kEntPos));
                 Unk_RayCastInfo kInfo;
                 kInfo.m_origin = kEntPos;
                 kInfo.m_origin.z = kPos.z - 20.0f;
@@ -4096,7 +4099,7 @@ extern unsigned DAT_143ab2830;                                      // the own c
 extern NiFixedString DAT_143ae50f8;                                 // the skin colour extra data key
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pnCharId);  // the item is bound to the character
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
-float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);                                      // the special ability is shown (specialability.cpp)
 
 // The proxy object view: FUN_1416c2920 returns an int here (the shared header declares it void).
@@ -4317,7 +4320,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     if (nKind == 2) {
         PCBase* pAttacker = ((PCBase*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1200(spRecord->m_nOwnerId));
         if (pAttacker)
-            fSpeed = efd::Min<float>((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
+            fSpeed = efd::Min<float>((FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pAttacker->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))) - 150.0f) * 0.01f, fSpeed);
     }
     else if (nKind == 4) {
         PC_RECORD_PT(m_ptDir) = PC_RECORD_PT(m_ptPos) - vfunc_18();

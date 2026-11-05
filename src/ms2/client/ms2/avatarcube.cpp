@@ -31,11 +31,6 @@
 
 // ---- unit-local views of exe objects ----
 
-// The model key as the exe stack holds it: 8 bytes (GameObject::FUN_14123c460 fills it; the 16-byte Unk_GoModelKey of
-// gameobject.h is only its out-parameter view).
-struct Unk_AcKey { unsigned __int64 m_id; };
-#define AC_KEY(k) reinterpret_cast<Unk_GoModelKey&>(k)
-
 // The animation service (singleton behind FUN_141b6f910); same object as kfmmodel.cpp's view.
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
 class Unk_AcAnimSvc : public Unk_AnimSvc
@@ -94,11 +89,9 @@ void AvatarCube::vfunc_12()
     if (m_unk_80 != 0)
     {
         efd::utf8string kIdle((const char*)FUN_1409a2360("Idle_A", 0));
-        Unk_AcKey kId1;
-        if (FUN_141b6f910()->GetAnimationIdFromName(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId1))), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
+        if (FUN_141b6f910()->GetAnimationIdFromName(FUN_14123c460(), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
-            Unk_AcKey kId2;
-            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((class egf::EntityID const &)(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId2)))), kIdle, 1.0f, true);
+            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(), kIdle, 1.0f, true);
         }
     }
 }

@@ -221,12 +221,6 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   /
 class Unk_EqPC : public PC
 {
 };
-// The pet row's stat growth rate (+0xa8, past cpet.h's Unk_PetRow).
-class Unk_EqPetRow : public Unk_PetRow
-{
-public:
-    float m_fStatRate;                                  // +0xa8
-};
 class Unk_MyPCEquip : public PCGemEquip {};
 // The changed set effect groups of 0x1411ec480 (commonfiles\bitset.inl, T = 3; as cameramoveeffectparam.h's
 // Unk_CamMoveBits: fill 0x140afee90, all 0x140afc5a0, set / test 0x140314670 / 0x140314790).
@@ -341,7 +335,7 @@ public:
     void FUN_141200100(NiPoint3 kRot);                              // by value (the exe copies; the definition takes const&)
     void FUN_141200160(NiPoint3 kPos);
     MS2Ptr<CEquipItem> FUN_141200a40();                             // the owner item
-    NiAVObject* FUN_1411673f0(const CString& strName) const;        // the scene node of the part (unit_1411673f0)
+    // FUN_1411673f0: CEquipModel's own (const CString*) member, the scene node of the part (unit_1411673f0)
 };
 #define MODEL(sp) static_cast<Unk_EquipModelCalls*>((sp).operator->())
 
@@ -2553,10 +2547,10 @@ void CEquipment::FUN_1411ed270()
     CString strCPA("CPA");
     for (unsigned i = 0; i < capModels.GetCount(); i++) {
         const MS2Ptr<CEquipModel>& spModel = capModels[i];
-        pCapNode = static_cast<Unk_EquipModelCalls*>(spModel.get())->FUN_1411673f0(strCP);
+        pCapNode = static_cast<Unk_EquipModelCalls*>(spModel.get())->FUN_1411673f0(&strCP);
         if (pCapNode != NULL)
             break;
-        pCapNode = static_cast<Unk_EquipModelCalls*>(spModel.get())->FUN_1411673f0(strCPA);
+        pCapNode = static_cast<Unk_EquipModelCalls*>(spModel.get())->FUN_1411673f0(&strCPA);
         if (pCapNode != NULL)
             break;
     }
@@ -3024,7 +3018,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
     CPet* pPet = static_cast<CPet*>(m_pPC->FUN_141676a10());
     MS2Ptr<CItem> spPetItem = static_cast<Unk_EqPC*>(m_pPC)->FUN_141663450();
     if (spPetItem.get() != NULL && pPet != NULL && pPet->GetRow().get() != NULL) {
-        float fRate = static_cast<Unk_EqPetRow*>(pPet->GetRow().operator->())->m_fStatRate;
+        float fRate = pPet->GetRow()->m_fConstantOptionFactor;
         for (unsigned k = 0; k < 0x23; k++) {
             Unk_EquipAttrType eType = (Unk_EquipAttrType)k;
             m_attrs[eType] += reinterpret_cast<CItemStatus*>(spPetItem->FUN_1405278a0())->GetStatValue(eType, 3, 5);

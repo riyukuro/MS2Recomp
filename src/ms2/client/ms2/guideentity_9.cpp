@@ -7,6 +7,7 @@
 // MS2-RANGE: 0x1413a49a0-0x1413a5130 .text$mn
 // MS2-RANGE: 0x1413a5130-0x1413a54e0 .text$mn
 // MS2-RANGE: 0x1413a54e0-0x1413a6010 .text$mn
+// MS2-RANGE: 0x1413b2880-0x1413b28e0 .text$mn
 // MS2-RANGE: 0x1413b4200-0x1413b4240 .text$mn
 // MS2-RANGE: 0x1413b5380-0x1413b53c0 .text$mn
 // MS2-RANGE: 0x1413b5400-0x1413b5440 .text$mn
@@ -20,6 +21,7 @@
 #include "ms2/client/ms2/guideentity.h"
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/placeholder/cguideaction.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/ms2format.h"
@@ -61,10 +63,10 @@ const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                     // Nulla
 Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nullable<int>()
 
 class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
-Unk_GcCondRef FUN_1413a5420(CStringA strTag);                           // the condition class of a tag
+MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag);                 // the condition class of a tag
 void* FUN_141395500(void* pNode);
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
-#define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>((list).m_arr)
+#define GE_REFS(list) ((list).m_arr)
 // The condition lists are the exe's CAtlArray<MS2Ptr<CGuideCondition>> (count / [] / Add are its members).
 #define GE_CONDS(list) reinterpret_cast<ATL::CAtlArray<MS2Ptr<CGuideCondition> >&>(list)   // m_arr is at +0
 
@@ -97,7 +99,6 @@ void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotat
 void FUN_1413a4e30(void* pMap, Unk_GeNode* pNode);                      // frees a node
 void* FUN_141398a90(void* pIter);
 void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
-void FUN_141389060(Unk_GcCondRef* pRef);
 unsigned __int64 FUN_1413a5140(void* pMap);
 void* FUN_1413a5160(void* pNode);
 
@@ -210,21 +211,6 @@ void FUN_1413a4620(void* pAlloc, std::pair<int, int>* pDst, const std::pair<int,
     FUN_1413a3d00(static_cast<std::pair<int, int>*>(pNew), &std::forward<const std::pair<int, int>&>(rVal));
 }
 
-// @0x1413a4750
-Unk_GcCondRef::Unk_GcCondRef()
-{
-    m_p = 0;
-}
-
-// @0x1413a4770
-Unk_GcCondRef& Unk_GcCondRef::operator=(const Unk_GcCondRef& rhs)
-{
-    const_cast<Unk_GcCondRef&>(rhs).FUN_141388ed0();
-    FUN_141389060(this);
-    m_p = rhs.m_p;
-    return *this;
-}
-
 // @0x1413a47b0
 bool FUN_1413a47b0(const MS2Ptr<CGuideAction>& ref)
 {
@@ -233,9 +219,10 @@ bool FUN_1413a47b0(const MS2Ptr<CGuideAction>& ref)
 }
 
 // @0x1413a47e0
-bool FUN_1413a47e0(const Unk_GcCondRef& ref)
+bool FUN_1413a47e0(const MS2Ptr<CGuideCondition>& ref)
 {
-    return ref.m_p == 0;
+    struct Layout { void* m_unk_00; CGuideCondition* m_p; };   // MS2Ptr (m_p is private)
+    return reinterpret_cast<const Layout&>(ref).m_p == 0;
 }
 
 // @0x1413a4810
@@ -295,22 +282,22 @@ tm* FUN_1413a52a0(const __time64_t* pTime)
 }
 
 // @0x1413a52c0
-Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem)
+MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem)
 {
     CStringA strTag(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("type"));
-    Unk_GcCondRef ref = FUN_1413a5420(strTag);
-    if (ref.FUN_141387b90())
-        ref.FUN_141387bb0()->vfunc_2(pElem);
+    MS2Ptr<CGuideCondition> ref = FUN_1413a5420(strTag);
+    if (ref.get())
+        ref->vfunc_2(pElem);
     else
         throw std::exception(StringFormat<CStringA>("Unknown Guide Condition Tag({0})", strTag));
     return ref;
 }
 
 // @0x1413a5420
-Unk_GcCondRef FUN_1413a5420(CStringA strTag)
+MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag)
 {
     CStringW strClass = StringFormat<CStringA>(L"CGuideCondition{0}", strTag);
-    Unk_GcCondRef ref(static_cast<CGuideCondition*>(FUN_1401f7f50(strClass)));
+    MS2Ptr<CGuideCondition> ref(static_cast<CGuideCondition*>(FUN_1401f7f50(strClass)));
     return ref;
 }
 
@@ -755,10 +742,10 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
 {
     for (Unk_140165cf0* pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
-        Unk_GcCondRef ref = FUN_1413a52c0(pCond);
+        MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pCond);
         (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
-        if (ref.FUN_141387b90())
-            GE_CONDS(list).Add(reinterpret_cast<const MS2Ptr<CGuideCondition>&>(ref));
+        if (ref.get())
+            GE_CONDS(list).Add(ref);
     }
 }
 
@@ -783,8 +770,8 @@ void CGuideEntity::PruneConditions(Unk_GcCondList& list)
         if (!GE_CONDS(list)[i]->vfunc_6(&keep))
             GE_CONDS(keep).Add(GE_CONDS(list)[i]);
     }
-    reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).RemoveAll();
-    reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>(list).Append(GE_REFS(keep));
+    GE_CONDS(list).RemoveAll();
+    GE_CONDS(list).Append(GE_REFS(keep));
 }
 
 // @0x1413a3be0

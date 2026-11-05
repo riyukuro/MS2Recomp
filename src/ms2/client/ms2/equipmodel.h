@@ -35,7 +35,7 @@
 
 // Key of CEquipModel::m_effects (passed by const& through CElementTraits, so not a primitive int; 4 bytes).
 enum Unk_EquipEffectSlot { };
-class Unk_EquipModelOwner;     // MS2Ptr<T> at +0x28 (copy ctor 0x140884f30, dtor 0x1405a85f0, get 0x1405a8ed0)
+class CEquipItem;     // MS2Ptr<T> at +0x28, the owner item (copy ctor 0x140884f30, dtor 0x1405a85f0, get 0x1405a8ed0)
 class CItem;
 namespace efd { class utf8string; }
 
@@ -43,7 +43,7 @@ namespace efd { class utf8string; }
 class CEquipModel : public CPtred
 {
 public:
-    CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20);   // 0x1411ffa10
+    CEquipModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20);   // 0x1411ffa10
     virtual ~CEquipModel();                                                    // 0x1411ffcb0
 
     // slots 1-3: GetClassDesc 0x141205e10, TypeCast 0x141208280 / 0x1412082d0; ms_ClassInfo 0x143ad2360,
@@ -85,17 +85,22 @@ public:
     CString FUN_1412028f0();                                // 0x1412028f0 return m_str38
     CString FUN_141203830();                               // 0x141203830 status text (owner's template summary)
     MS2Ptr<CItem> FUN_141200940();                          // 0x141200940 the owner's item (null without an owner)
-    MS2Ptr<Unk_EquipModelOwner> FUN_141200a40();            // 0x141200a40 return m_spOwner
+    MS2Ptr<CEquipItem> FUN_141200a40();            // 0x141200a40 return m_spOwner
     CString FUN_1412029d0();                                // 0x1412029d0 the part name (left/right swapped for the off hand)
     NiAVObjectPtr FUN_141201920(CString kName);             // 0x141201920 the attached scene object named kName (or containing it)
     NiNodePtr FUN_141201bd0(const CString& kName);          // 0x141201bd0 FUN_141201920 as a NiNode
     efd::utf8string FUN_141201780();                        // 0x141201780 the model's entity model name
+    // scene-node helpers of a pickable part (defined in unit_1411673f0_equipmodelpartscenehelpers.cpp)
+    NiAVObject* FUN_1411673f0(const CString* pName) const;      // 0x1411673f0 the scene node named pName
+    NiAVObject* FUN_1411676d0(const CString* pPartName) const;  // 0x1411676d0 the model node of one attach part
+    // highlight: fScale/fMode from CItemCustomizeController::vfunc_39, pNode = the picked mesh or NULL
+    void FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode);   // 0x1411679d0
 
 public:
     MS2_LAYOUT_FRIEND;
     void* m_unk_18;                                 // +0x18 ctor arg 2
     void* m_unk_20;                                 // +0x20 ctor arg 3
-    MS2Ptr<Unk_EquipModelOwner> m_spOwner;          // +0x28
+    MS2Ptr<CEquipItem> m_spOwner;          // +0x28
     CString m_str38;                                // +0x38 = ""
     int m_nState;                                   // +0x40 (CNifModel vfunc_6 sets 1, vfunc_9 returns it)
     float m_fScale44;                               // +0x44 = 1.0

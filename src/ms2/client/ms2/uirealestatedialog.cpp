@@ -82,7 +82,11 @@ MS2_CHECK_SIZE(CUserReportData, 0x118);
 
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
 struct Unk_EntityAppFramework;
-class Unk_Service6100017;
+class Unk_Service6100017   // the house service (CLASS_ID 0x06100017); FUN_1410d5d80 is defined in cubemapinformationservice_head.cpp
+{
+public:
+    CStringW FUN_1410d5d80(int nStringId);
+};
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 class Unk_HoService : public efd::ISystemService
@@ -90,7 +94,6 @@ class Unk_HoService : public efd::ISystemService
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     Unk_CubeOwners* FUN_1410d3360();                                // the owners of the plots
-    CStringW FUN_1410d5d80(int nStringId);
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
@@ -454,7 +457,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         if (DAT_143ab2898 < nPrice)
                         {
                             efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
-                            FUN_140d73aa0(reinterpret_cast<Unk_HoService*>(spSvc.operator->())->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                            FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
                     }
@@ -469,7 +472,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     else if (g_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
                         efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040(&DAT_143b059e8));
-                        FUN_140d73aa0(reinterpret_cast<Unk_HoService*>(spSvc.operator->())->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
+                        FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);

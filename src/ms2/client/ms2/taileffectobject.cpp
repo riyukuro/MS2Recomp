@@ -24,6 +24,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, FUN_140a0b080's type
 
 // ---- exe callees (recovered elsewhere / not yet) ----
 #define DAT_143a08cf8 (*(char*)&efd::Point3::UNIT_Z)                                  // the up axis handed to FUN_140a0b080
@@ -39,7 +40,7 @@ bool FUN_14028d470(float a, float b);                       // nearly equal
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool bFlag);  // apply an alpha to the node tree
 void FUN_140a01250(efd::Point3 kAngles, efd::Point3* pForward, efd::Point3* pRight);   // euler angles -> axes
-NiPoint3 FUN_140a0b080(const NiPoint3& kFrom, const NiPoint3& kTo, const void* pUp);  // look-at angles
+Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // look-at angles; C3: the definer's signature (beameffect)
 
 // Spawn request handed to the effect manager (0x70 bytes, the frames of FUN_140acf570 / FUN_140acee90 leave no more).
 struct Unk_TeRequest
@@ -320,7 +321,7 @@ void CTailEffectObject::FUN_140acf8f0()
         if (fDist - fLength >= -1.0f)
             continue;
 
-        NiPoint3 kLook = FUN_140a0b080(kPrev.m_Translate, kCur.m_Translate, &DAT_143a08cf8);
+        Vector3 kLook = FUN_140a0b080(reinterpret_cast<const Vector3&>(kPrev.m_Translate), reinterpret_cast<const Vector3&>(kCur.m_Translate), reinterpret_cast<const Vector3&>(DAT_143a08cf8));
         efd::Point3 kDir = kPrev.m_Translate - kCur.m_Translate;
         kDir.Unitize();
         float fOver = fLength - fDist;

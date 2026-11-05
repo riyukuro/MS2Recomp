@@ -108,8 +108,7 @@ struct Unk_GemItemDataFlags
 };
 
 
-// The pet table (FUN_14052d210) and its row (cpetdatatable.h).
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
+// The pet table (TSingleton<CPetDataTable>, 0x14052d210) and its row (cpetdatatable.h).
 template <> MS2Ptr<CPetData>::~MS2Ptr();                            // 0x14052c420
 template <> CPetData* MS2Ptr<CPetData>::operator->() const;         // 0x14052ceb0
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // 0x14053f870
@@ -895,7 +894,7 @@ MS2_REPLACE_METHOD(0x1405A6BD0, CGemPetSkin, vfunc_3, 58, 0xB7D8DF08);
 // @0x1405a6c10
 CString CGemPetSkin::vfunc_10()
 {
-    MS2Ptr<CPetData> spPet = ((class CPetDataTable*)FUN_14052d210())->Find(m_nPetId);
+    MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(m_nPetId);
     if (spPet.IsNull())
         return "";
     unsigned int nItemId = spPet->GetItemId(1);

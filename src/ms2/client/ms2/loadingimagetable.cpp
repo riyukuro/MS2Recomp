@@ -52,23 +52,11 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);    // <dir>/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 __int64 GetServerTime();                                                 // the server time
 int FUN_140768010(int nMax, int nMin);                                   // random index
 unsigned int FUN_1407181d0(const CString& str);                                        // string to int
 
-// A std::vector<CString> the exe keeps out of line (ctor 0x14027d6f0, dtor 0x14027e450).
-class Unk_StrVec
-{
-public:
-    Unk_StrVec();                          // 0x14027d6f0
-    ~Unk_StrVec();                         // 0x14027e450
-    size_t FUN_14028b4c0();
-    CString* FUN_14027f1c0(size_t);
-    void* m_begin; void* m_end; void* m_cap;
-};
-MS2_CHECK_SIZE(Unk_StrVec, 24);
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // splits into a std::vector<CString>
 
 // The maps whose movie has already played (playOneTime).
@@ -142,12 +130,15 @@ int CLoadingImageTable::LoadingImage::IsInPeriod() const
     return 1;
 }
 
+// The interval test at 0x1403b4ef0 (defined in fishsimultedata.cpp).
+struct Unk_FishRange { bool FUN_1403b4ef0(unsigned n) const; };   // C3: was CLoadingImageTable::Unk_MapRange::FUN_1403b4ef0
+
 // @0x140d44390
 int CLoadingImageTable::LoadingImage::IsExceptMap(int nMapCode) const
 {
     for (size_t i = 0; i < m_exceptMaps.GetCount(); i++)
     {
-        if (m_exceptMaps[i].FUN_1403b4ef0(nMapCode))
+        if (reinterpret_cast<const Unk_FishRange&>(m_exceptMaps[i]).FUN_1403b4ef0(nMapCode))
             return 1;
     }
     return 0;
@@ -197,22 +188,22 @@ int CLoadingImageTable::Load()
         if (strMovie.GetLength() != 0)
         {
             MoviePtr spMovie(new LoadingMovie);
-            Unk_StrVec tokens;
+            std::vector<CString> tokens;   // C3: was Unk_StrVec
             FUN_140275080(strMovie, &tokens, ",");
-            for (size_t i = 0; i < tokens.FUN_14028b4c0(); i++)
+            for (size_t i = 0; i < tokens.size(); i++)
             {
-                tokens.FUN_14027f1c0(i)->Trim();
-                Unk_StrVec parts;
-                FUN_140275080(*tokens.FUN_14027f1c0(i), &parts, ":");
-                if (parts.FUN_14028b4c0() == 2)
+                tokens[i].Trim();
+                std::vector<CString> parts;   // C3: was Unk_StrVec
+                FUN_140275080(tokens[i], &parts, ":");
+                if (parts.size() == 2)
                 {
-                    int nIndex = FUN_1407181d0(*parts.FUN_14027f1c0(0));
-                    CString strFile(parts.FUN_14027f1c0(1)->Trim());
+                    int nIndex = FUN_1407181d0(parts[0]);
+                    CString strFile(parts[1].Trim());
                     spMovie.get()->m_files.insert(std::make_pair(nIndex, strFile));
                 }
-                else if (parts.FUN_14028b4c0() == 1)
+                else if (parts.size() == 1)
                 {
-                    CString strFile(parts.FUN_14027f1c0(0)->Trim());
+                    CString strFile(parts[0].Trim());
                     spMovie.get()->m_files.insert(std::make_pair(0u, strFile));
                 }
             }
@@ -327,7 +318,7 @@ int CLoadingImageTable::ParseExceptMap(Unk_140165cf0* pElem, const char* pszName
         for (size_t i = 0; i < tokens.GetCount(); i++)
         {
             ATL::CAtlArray<int> parts;
-            FUN_140177e10(tokens[i], parts, "-");
+            XmlSplit(tokens[i], reinterpret_cast<ATL::CAtlArray<unsigned>&>(parts), "-");   // C3: was FUN_140177e10
             if (parts.GetCount() == 1)
             {
                 int* pFrom = &parts[0];

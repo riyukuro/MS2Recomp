@@ -7,7 +7,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class ASEffectManager;
-class Unk_NdBuff;
+class AdditionalCli;
 
 class UINpcDuelHPBarDialog : public UIDialog
 {
@@ -23,8 +23,8 @@ public:
 
     void StartDuelBar(int nObjectId, int nDurationMs, int nBarCount);   // start a duel (npc id, time, bars)
     void FUN_140e6bc10();                               // refresh both profiles, hp bars and the npc buffs
-    void FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff);        // add a buff icon (when it belongs to the npc)
-    void FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff);        // remove a buff icon
+    void FUN_140e6c440(MS2Ptr<AdditionalCli> buff);        // add a buff icon (when it belongs to the npc)
+    void FUN_140e6c540(MS2Ptr<AdditionalCli> buff);        // remove a buff icon
     void RemoveBuffEffect(int nBuffId);                    // update a buff icon
     void UpdateRemainingTime();                               // "setTime" mmss
     void UpdatePlayerHpBar();                               // "setHpBarLeft" (local player hp, max hp)

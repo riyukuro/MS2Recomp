@@ -45,7 +45,7 @@ struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_MyPCComp1618* FUN_141523c50();
+    class UserUGCMapInfo* FUN_141523c50();
     static class PCBase* FUN_141530930();
     MS2Ptr<CStatPointManager> FUN_140c25130();          // the stat point manager
 };

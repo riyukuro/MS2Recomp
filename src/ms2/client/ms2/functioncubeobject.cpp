@@ -139,6 +139,8 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
 #include "functioncubeobject.h"
+unsigned FUN_14112e110(char* p);   // C3: the item id at +0x40 (cubemapinformationservice_tail14); was a CFunctionCubeObject member view
+unsigned FUN_14112e290(char* p);   // C3: the state at +0x38 (cubemapinformationservice_tail14); was a Unk_FcStateMsg member view
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -217,14 +219,8 @@ private:
 };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-Unk_FcItemSvc* FUN_1401cd040(char* pCell);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework* pFramework);   // the service 0x6100017 lookup (0x1401cd040, the definer's signature)
 
-// The game-wide effect / sound manager (a request is the 0x78-byte Unk_FcSoundReq).
-class Unk_FcFxMgr
-{
-public:
-    int FUN_1411a5580(int nId, int nOwner, int bFlag, Vector3 vPos, float fRange);      // the exe copies vPos to a temp (rep movsb)
-};
 // The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the block as pointers, no /GS buffer; the exe frame leaves 0x70 bytes for the local).
 struct Unk_FcSoundReqL
 {
@@ -258,7 +254,7 @@ public:
 struct Unk_FcAnimName { alignas(8) char m_pad[0x20]; };   // efd::utf8string, 0x20 bytes
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float, bool bForce);
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // C3: play (animationmanager.cpp's view)
 // reactor.cpp's view of the animation service: the current animation name.
 class Unk_RxAnimSvc
 {
@@ -591,10 +587,10 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
 // @0x141226340
 CStringW CFunctionCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (spSvc.FUN_140ef4cb0(0))
         return L"";
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110()));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return L"";
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
@@ -651,7 +647,7 @@ void CFunctionCubeObject::vfunc_10(int nState, bool bFlag)
     {
         int nPick = rand() % arrAnims.GetCount();
         efd::utf8string kName(arrAnims[nPick]);
-        FUN_1409a1fc0(reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910()), m_ent->GetEntityID(), reinterpret_cast<Unk_FcAnimName*>(&kName), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(m_ent->GetEntityID(), kName, 1.0f, true);
     }
     vfunc_11(nState);
 }
@@ -689,7 +685,7 @@ void CFunctionCubeObject::vfunc_12(int nState, bool bFlag)
 // @0x141226b20
 void CFunctionCubeObject::vfunc_14(MS2Ptr<Unk_FcStateMsg> sp)
 {
-    vfunc_12(sp->FUN_14112e290(), false);
+    vfunc_12(FUN_14112e290(reinterpret_cast<char*>(sp.operator->())), false);
 }
 
 // @0x141226b80
@@ -805,7 +801,7 @@ void CFunctionCubeObject::PlayHitSoundAtPosition(int nSound)
     Vector3 vPos;
     m_ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
     float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_range)->Read();
-    reinterpret_cast<Unk_FcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nSound, m_n60, 1, vPos, fRange);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nSound, m_n60, 1, reinterpret_cast<NiPoint3&>(vPos), fRange);
 }
 
 // @0x1412271c0
@@ -852,10 +848,10 @@ void CFunctionCubeObject::FUN_1412273b0()
 {
     if (FUN_140966fc0() != 0xc)
         return;
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (spSvc.FUN_140ef4cb0(0))
         return;
-    MS2Ptr<Unk_FcItemRow> spRow(reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110())));
+    MS2Ptr<Unk_FcItemRow> spRow(reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this)))));
     if (spRow == 0)
         return;
     MS2Ptr<Unk_FcItemText> spText(spRow->m_spText);
@@ -1046,7 +1042,7 @@ void CFunctionCubeObject::OpenTriggerEditor()
 // @0x141228100
 void CFunctionCubeObject::OpenObjectStore()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(m_nArg));
     if (pRow == 0)
         return;
@@ -1525,7 +1521,7 @@ void CBreedingCubeObject::vfunc_3()
     if (bDiff)
     {
         efd::utf8string kName(m_strAnim);
-        FUN_1409a1fc0(reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910()), kId, reinterpret_cast<Unk_FcAnimName*>(&kName), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(kId, kName, 1.0f, true);
     }
 }
 
@@ -1547,10 +1543,10 @@ CStringW CBreedingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc((Unk_FcItemSvc*)FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr kSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (kSvc.FUN_140ef4cb0(0))
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(FUN_14112e110()));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
@@ -1629,7 +1625,7 @@ void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
             int nPick = rand() % arrAnims.GetCount();
             m_strAnim = arrAnims[nPick];
             efd::utf8string kName(m_strAnim);
-            FUN_1409a1fc0(reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910()), m_entPet->GetEntityID(), reinterpret_cast<Unk_FcAnimName*>(&kName), 1.0f, true);
+            reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(m_entPet->GetEntityID(), kName, 1.0f, true);
         }
     }
     vfunc_11(nState);
@@ -1684,10 +1680,10 @@ CStringW CFarmingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc((Unk_FcItemSvc*)FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr kSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (kSvc.FUN_140ef4cb0(0))
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(FUN_14112e110()));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
@@ -1888,10 +1884,10 @@ void CNurturingCubeObject::vfunc_5(float fZ)
 // @0x14122bab0
 CStringW CNurturingCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (spSvc.FUN_140ef4cb0(0))
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110()));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reinterpret_cast<Cube*>(pRow)->FUN_1408b4f20());
@@ -1930,10 +1926,10 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
     if (spSvc.FUN_140ef4cb0(0))
         return 0;
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(FUN_14112e110()));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return 0;
     if (m_obj.m_strQuestTag != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
@@ -2617,7 +2613,7 @@ void CFunctionCubeService::FUN_141230310(CInPacket* pPacket)
     if (spCube.get() != 0)
     {
         spCube->vfunc_1(reinterpret_cast<Unk_FcMsg*>(pPacket));
-        int nState = reinterpret_cast<Unk_FcStateMsg*>(spCube.operator->())->FUN_14112e290();
+        int nState = FUN_14112e290(reinterpret_cast<char*>(spCube.operator->()));
         int bFlag = pPacket->ReadUInt8() != 0;
         if (bFlag)
             nState = FUN_141239e40(nState);
@@ -2945,7 +2941,7 @@ void CFunctionCubeService::FUN_141232330(int nItem, float fValue)
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
         if (spCube == 0)
             continue;
-        if (spCube->FUN_14112e110() == nItem)
+        if (FUN_14112e110(reinterpret_cast<char*>(spCube.operator->())) == nItem)
         {
             spCube->vfunc_5(fValue);
             return;

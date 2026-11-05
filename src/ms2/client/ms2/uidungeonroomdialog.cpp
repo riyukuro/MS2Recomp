@@ -207,9 +207,10 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CStringW TranslateEnumDungeonGroup(unsigned nType);                                      // the dungeon group name (translateenum)
 CStringW GetStringCommonByKey(const CStringW& strKey);                                         // localized string by key
-size_t FUN_140e20940(const std::vector<MS2Ptr<ASButton> >* pButtons);          // vector<MS2Ptr<ASButton>>::size (the folded copy OnSubTab calls)
-void FUN_140e20070(std::vector<MS2Ptr<ASLabel> >* pLabels);                     // vector<MS2Ptr<ASLabel>>::clear (the folded copy Clear calls)
-void FUN_140e20870(std::vector<MS2Ptr<ASLabel> >* pLabels, const MS2Ptr<ASLabel>& spLabel); // vector<MS2Ptr<ASLabel>>::push_back (the folded copy AddText calls)
+// The label / button vectors call the vector<MS2Ptr<Unk_DsLabel>> / vector<MS2Ptr<Unk_DsButton>> instances
+// (uidungeonsearchdialog.cpp's element types) that the exe folded theirs into.
+class Unk_DsLabel : public ASDisplayObject {};
+class Unk_DsButton : public ASDisplayObject {};
 CStringW FUN_140298ea0(CStringW strKey);                                                // localized string by key (by value)
 CStringW FUN_140719b50(short nScore);                                                   // a score as text
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                                // color-tagged text
@@ -504,7 +505,7 @@ void UIDungeonRoomLimitTextGroup::AddText(const CStringW& strText, int nColor, c
 {
     MS2Ptr<ASLabel> spLabel(new ASLabel(CString("UIDungeonRoomLimitLabel"), 2));
     spLabel->FUN_1422e4c60("none");
-    FUN_140e20870(&m_labels, spLabel);
+    reinterpret_cast<std::vector<MS2Ptr<Unk_DsLabel> >&>(m_labels).push_back(reinterpret_cast<const MS2Ptr<Unk_DsLabel>&>(spLabel));
     m_spPanel->FUN_1422c6900((*spLabel).FUN_1422bb890());
     spLabel->FUN_1422e4b80(FUN_14183e930(strText, nColor));
     spLabel->SetPositionInt(m_x, m_y);
@@ -524,7 +525,7 @@ void UIDungeonRoomLimitTextGroup::Clear()
         MS2Ptr<ASLabel> spLabel = *it;
         spLabel->ASDisplayObjectContainer::FUN_1422c6eb0();
     }
-    FUN_140e20070(&m_labels);
+    reinterpret_cast<std::vector<MS2Ptr<Unk_DsLabel> >&>(m_labels).clear();
 }
 MS2_REPLACE_METHOD(0x1412A98D0, UIDungeonRoomLimitTextGroup, Clear, 189, 0x141DEC1D);
 
@@ -582,7 +583,7 @@ UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovie
     }
     if (MS2Ptr<ASTextField> spText = m_requireCondition->FUN_1409b4620("textField"))
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
-    for (unsigned i = 0; i < FUN_140e20940(&m_subTabButtons); i++)
+    for (unsigned i = 0; i < reinterpret_cast<const std::vector<MS2Ptr<Unk_DsButton> >&>(m_subTabButtons).size(); i++)
         m_subTabButtons[i]->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnSubTab), FUN_140bd09d0(i));
     m_subTabButtons[3]->SetTooltipOffset(300, 0);
     m_enterSoloButton->FUN_1422ce240(Delegate<void(const ASParams&)>(this, &UIDungeonRoomInfo::OnEnterSolo), 0);
@@ -1182,7 +1183,6 @@ void UIDungeonRoomInfo::FUN_1412b3890()
 MS2_REPLACE_METHOD(0x1412B3890, UIDungeonRoomInfo, FUN_1412b3890, 678, 0x9084A40D);
 
 // The exe lays the buttons out through the vector<MS2Ptr<Unk_DsButton>> instantiation (uidungeonsearchdialog.cpp's button type).
-class Unk_DsButton : public ASDisplayObject {};
 
 // @0x1412b3b40
 void UIDungeonRoomInfo::FUN_1412b3b40()
@@ -1389,7 +1389,7 @@ MS2_REPLACE_METHOD(0x1412B49D0, UIDungeonRoomInfo, OnChangeExpert, 349, 0x41F829
 void UIDungeonRoomInfo::OnSubTab(const ASParams& params)
 {
     size_t nTab = (size_t)params.pUserData;
-    if (nTab >= FUN_140e20940(&m_subTabButtons))
+    if (nTab >= reinterpret_cast<const std::vector<MS2Ptr<Unk_DsButton> >&>(m_subTabButtons).size())
         return;
     m_subTabButtons[nTab]->FUN_1422ce090(!m_subTabButtons[nTab]->FUN_1422ce0e0());
     LayoutSubPanels();
@@ -1870,7 +1870,7 @@ void UIDungeonRoomDialog::OnLoadComplete()
         if (m_220 == 0)
             throw DR_SWF_ERROR(0x6df);
     } while (0);
-    m_dungeonGroupCombo->FUN_1422df9a0(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnGroupChanged), 0);
+    m_dungeonGroupCombo->AddListIndexChangeHandler(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnGroupChanged), 0);
     m_dungeonList->AddListIndexChangeHandler(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnRoomSelected), 0);
     for (unsigned i = 0; i < m_240.size(); ++i)
         m_240[i]->FUN_1422e1f50(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnListItemData), FUN_140bd09d0(i));

@@ -18,20 +18,16 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/questdata.h"   // C3: CQuestData, the quest's data
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
 // The quest manager: its condition interface sits at +0x10, a quest's own interface at +0x18.
-class Unk_LtQuestData : public CPtred
-{
-public:
-    void* m_pad[0x6e];
-    ATL::CAtlArray<MS2Ptr<CConditionCommonData> > m_conds;                                          // +0x388
-};
+MS2_CHECK_OFFSET(CQuestData, m_conditions, 0x388);   // C3: was the unit-local view Unk_LtQuestData
 class Unk_LtQuestIf
 {
 public:
-    virtual MS2Ptr<Unk_LtQuestData> vfunc_0();                      // 0 the quest's data
+    virtual MS2Ptr<CQuestData> vfunc_0();                      // 0 the quest's data
     virtual int vfunc_1();                                          // 1 finished
 };
 class Unk_LtQuest : public CPtred
@@ -119,16 +115,16 @@ void CLiftableTarget::FUN_1414483e0()
             continue;
         if ((&spQuest->m_if)->vfunc_1() != 0)
             continue;
-        MS2Ptr<Unk_LtQuestData> spData = (&spQuest->m_if)->vfunc_0();
-        for (unsigned __int64 j = 0; j < spData->m_conds.GetCount(); j++)
+        MS2Ptr<CQuestData> spData = (&spQuest->m_if)->vfunc_0();
+        for (unsigned __int64 j = 0; j < spData->m_conditions.GetCount(); j++)
         {
-            if (spData->m_conds[j]->m_nType != 0x9c)
+            if (spData->m_conditions[j]->m_nType != 0x9c)
                 continue;
-            if (spData->m_conds[j]->m_target.GetIdCount() != 1)
+            if (spData->m_conditions[j]->m_target.GetIdCount() != 1)
                 continue;
-            if (spData->m_conds[j]->m_target.Matches((__int64)m_nId) == 0)
+            if (spData->m_conditions[j]->m_target.Matches((__int64)m_nId) == 0)
                 continue;
-            if (spData->m_conds[j]->m_code.Matches((unsigned __int64)(unsigned)reinterpret_cast<MyPC*>(pActor)->GetActiveCubeCraft()->FUN_1410ad610()) == 0)
+            if (spData->m_conditions[j]->m_code.Matches((unsigned __int64)(unsigned)reinterpret_cast<MyPC*>(pActor)->GetActiveCubeCraft()->FUN_1410ad610()) == 0)
                 continue;
             CreateEffect();
             return;

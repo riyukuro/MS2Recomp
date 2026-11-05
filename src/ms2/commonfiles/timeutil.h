@@ -149,7 +149,7 @@ __time64_t GetNthWeekStart(__int64* time, unsigned n);
 __time64_t GetNthMonthStart(__int64* time, unsigned n);
 CString FormatCompileDate(CString text);
 int IsOlderThanDays(__int64 time, int days);
-__int64 GetDaysBetweenDays(CMsTime& from, CMsTime& to);
+int GetDaysBetweenDays(CMsTime from, CMsTime to);
 unsigned MsToSeconds(unsigned ms);
 unsigned MsToMinutes(unsigned ms);
 int SecondsToMs(int seconds);

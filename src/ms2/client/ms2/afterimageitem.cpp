@@ -115,7 +115,7 @@ public:
     int GetActor();
 };
 
-float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
 // The object table (singleton 0x1403ed2d0) and an actor's position (vtable slot 18).
 class Unk_AfterImageActor                                           // MS2: slot 18 is GetPosition
@@ -418,7 +418,7 @@ bool CAfterImageEffect::ShouldCapture()
         return false;
     NiPoint3 kActor(pActor->vfunc_18());
     efd::Point3 kLast = m_kPos;
-    return FUN_140966f00(kActor + NiPoint3(0.0f, 0.0f, 75.0f), kLast) > m_kParam->GetMoveInterval();
+    return FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(kActor + NiPoint3(0.0f, 0.0f, 75.0f))), reinterpret_cast<const Vector3&>(kLast)) > m_kParam->GetMoveInterval();
 }
 
 // @0x14097db30

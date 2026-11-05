@@ -233,6 +233,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/filepreload_1.h"
+#include "ms2/placeholder/bitset.h"   // C3: Unk_Bitset<3>::Test (0x140314790)
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
@@ -262,7 +263,6 @@ class Unk_CamMoveBits   // C3: member view for the former free stand-ins
 public:
     bool FUN_140afc5a0() const;
 };
-bool FUN_140314790(Unk_LightUpdateBits* pBits, unsigned nPos);
 void FUN_14154fda0(void* pObj);
 class Unk_SetEffectBits   // C3: member view for the former free stand-ins
 {
@@ -635,7 +635,7 @@ template<class T, class U, class V> inline void Unk_NifLog3(CLogString* log, int
 // @0x14154f4b0
 Unk_BitRef::operator bool() const
 {
-    return FUN_140314790(m_pBits, m_nPos);
+    return reinterpret_cast<const Unk_Bitset<3>*>(m_pBits)->Test(m_nPos);
 }
 
 // The exe's 0x14154f540 / 0x14154f560 are std::map<NiAVObject*, NiString>'s _Tree_const_iterator / _Tree_iterator
@@ -1594,10 +1594,10 @@ extern CLockCriticalSection DAT_143ae1f28;
 extern CLockCriticalSection DAT_143ae1f58;
 #endif
 
-void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nRequired);
+#include "ms2/client/ms2/ms2.h"   // C3: MS2 (CLASS_ID 0x06100001), the service AddDependency<> is instantiated on
 struct Unk_NifDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
+class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1771,7 +1771,7 @@ efd::SyncResult CNifLoadingService::OnPreInit(efd::IDependencyRegistrar* pRegist
 {
     pRegistrar->AddDependency<ecr::RenderService>(1);
     pRegistrar->AddDependency<ecr::SceneGraphService>(1);
-    FUN_1411ab740(pRegistrar, 1);
+    pRegistrar->AddDependency<MS2>(1);
     pRegistrar->AddDependency<Unk_NifDepSix>(1);
     pRegistrar->AddDependency<efd::MessageService>(1);
     pRegistrar->AddDependency<efd::AssetFactoryManager>(1);

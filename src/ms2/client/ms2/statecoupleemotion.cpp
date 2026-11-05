@@ -81,13 +81,7 @@ public:
 // Time and client services.
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
-// The emotion table (0x1401958b0) and its rows.
-class Unk_EmoRow : public CPtred
-{
-public:
-    char m_pad_18[0x18];
-    int m_n30;                                                             // +0x30 the actor's height offset
-};
+MS2_CHECK_OFFSET(SkillData, m_nOffsetNameTag, 0x30);   // C3: the emotion skill row read below (was the row view Unk_EmoRow)
 
 // World service lookups.
 
@@ -102,7 +96,7 @@ class CPhysXHelper
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);                            // closest hit distance
     bool FUN_14168a770(const Vector3* pPoint);                                                    // the point is blocked
-    int FUN_14168a230(efd::Point3 ptFrom, efd::Point3& ptHit, efd::Point3 ptDir, float fLen, int nMask);   // line is blocked (RayCastFromPoint; Vector3 by value drops the Point3 copies)
+    int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);       // 0x14168a230 line is blocked
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -370,14 +364,14 @@ Unk_TargetPtr::Unk_TargetPtr(NiObjectNET* p)
     : m_p(p)
 {
     if (m_p != 0)
-        FUN_140980460(m_p);
+        static_cast<NiRefObject*>(m_p)->IncRefCount();
 }
 
 // @0x140b85b20
 Unk_TargetPtr::~Unk_TargetPtr()
 {
     if (m_p != 0)
-        FUN_1405a93d0(m_p);
+        static_cast<NiRefObject*>(m_p)->DecRefCount();
 }
 
 // @0x140b85cd0
@@ -386,10 +380,10 @@ Unk_TargetPtr& Unk_TargetPtr::operator=(NiObjectNET* p)
     if (m_p != p)
     {
         if (m_p != 0)
-            FUN_1405a93d0(m_p);
+            static_cast<NiRefObject*>(m_p)->DecRefCount();
         m_p = p;
         if (m_p != 0)
-            FUN_140980460(m_p);
+            static_cast<NiRefObject*>(m_p)->IncRefCount();
     }
     return *this;
 }
@@ -442,7 +436,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
         return;
     if (reinterpret_cast<SkillData*>(spRow.operator->())->GetMainType() != 0xf)
         return;
-    m_pOwner->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
+    m_pOwner->FUN_141670330((float)spRow.operator->()->m_nOffsetNameTag);
     bool bRequester = IsRequester();
     if (!m_spAnimInfo->Init(reinterpret_cast<SkillData*>(spRow.operator->())->GetParam1(), reinterpret_cast<PC*>(pOwnerPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60(), bRequester))
         return;
@@ -615,11 +609,11 @@ void StateCoupleEmotion::vfunc_24()
         NiTransform kXf;
         kXf.MakeIdentity();
         kXf.m_Translate = kPos;
-        Unk_EffectTarget kTarget;
-        kTarget.m_strName = m_spAnimInfo->m_strTeleportEffect;
-        kTarget.m_nKind = 0;
-        kTarget.m_pXform = &kXf;
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(kTarget);
+        NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+        ((Unk_EffectTarget&)(kTarget)).m_strName = m_spAnimInfo->m_strTeleportEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+        ((Unk_EffectTarget&)(kTarget)).m_pXform = &kXf;
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
     } while (0);
 }
 
@@ -889,7 +883,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         efd::Point3 kHit;
         NiPoint3 kDir(ptPeer - ptOwner);
         float fLen = ((struct Vector3*)&static_cast<class NiPoint3 const&>(kDir))->FUN_140968990();
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptOwner, kHit, kDir, fLen, 0) != 0)
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(ptOwner)), reinterpret_cast<Vector3&>(kHit), Vector3(reinterpret_cast<const Vector3&>(kDir)), fLen, 0) != 0)
             continue;
         NiPoint3 kAngles;
         if (kParentXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
@@ -1101,12 +1095,12 @@ bool StateCoupleEmotion::AddEffect(CStringA strName)
         return false;
     }
     bool bMine = (reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() == reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580() || reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() == GetPartnerId()) ? true : false;
-    Unk_EffectTarget kTarget;
-    kTarget.m_strName = strName;
-    kTarget.m_nKind = 0;
-    kTarget.m_spObject = (NiAVObject*)(NiNode*)m_spLoopEffectNode;
-    reinterpret_cast<NoticeMessage&>(kTarget).SetActor(bMine ? reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() : reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
-    unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(kTarget);
+    NoticeMessage kTarget;   // C3: was Unk_EffectTarget
+    ((Unk_EffectTarget&)(kTarget)).m_strName = strName;
+    ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
+    ((Unk_EffectTarget&)(kTarget)).m_spObject = (NiAVObject*)(NiNode*)m_spLoopEffectNode;
+    kTarget.SetActor(bMine ? reinterpret_cast<GameObject*>(pMyPC)->FUN_14123c580() : reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
+    unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     m_effects.SetAt(strName, nHandle);
     return true;
 }

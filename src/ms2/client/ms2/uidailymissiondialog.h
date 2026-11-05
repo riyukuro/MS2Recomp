@@ -12,7 +12,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"     // UIQuestEventListener (13 slots)
-#include "ms2/client/ms2/questmanager_1.h"           // CQuest, Unk_PayloadPtr<CQuest>
+#include "ms2/client/ms2/questmanager_1.h"           // CQuest, MS2Ptr<CQuest>
 
 class ASData;
 class ASMovieClip;
@@ -21,7 +21,6 @@ class CInPacket;
 class NotifyObject;
 class ASButtonBar;
 class ASScrollingList;
-class Unk_DmGuideBar;
 
 class UIDailyMissionDialog : public UIDialog, public UIQuestEventListener, public UIStatusEventListener
 {
@@ -58,7 +57,6 @@ public:
     int FUN_140c02320(int nGroup);                              // 0x140c02320 the group has a quest that can be received
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);     // 0x140c02870 bind a tab child
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 bind a list child
-    MS2Ptr<Unk_DmGuideBar> FUN_140c02990(const CString& strName);   // 0x140c02990 bind the guide bar child
 
 private:
     MS2_LAYOUT_FRIEND;

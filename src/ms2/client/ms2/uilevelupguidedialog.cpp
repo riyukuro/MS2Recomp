@@ -22,6 +22,7 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/aswindow.h"   // C3: ASDialog (the "m_eventDialog" child)
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -53,18 +54,11 @@
 
 // ---- unit-local views of exe types ----
 
-class Unk_LgCheck : public ASButton
-{
-public:
-};
-// the event dialog child (m_eventDialog): a display object with the same Invoke targets as the movie root
-class Unk_LgEvent : public ASDisplayObject {};
-// the movie root: Invoke("setPC", level) and the child lookup of the event dialog
+// the movie root: Invoke("setPC", level)
 class Unk_LgRoot : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1);
-    template <class T> MS2Ptr<T> FUN_140e44410(const CString& strName);
 };
 #define LG_ROOT(p) static_cast<Unk_LgRoot*>((p).operator->())
 
@@ -185,11 +179,11 @@ void UILevelUpGuideDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
         FUN_141415600(m_1a8.GetAt(i));
-    if (MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc"))
+    if (MS2Ptr<ASCheckBox> spEtc = FUN_140e52670("m_contentsEtc"))
         m_1cc[0] = spEtc->FUN_1422ce0e0();
-    if (MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss"))
+    if (MS2Ptr<ASCheckBox> spBoss = FUN_140e52670("m_contentsBoss"))
         m_1cc[1] = spBoss->FUN_1422ce0e0();
-    if (MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon"))
+    if (MS2Ptr<ASCheckBox> spDungeon = FUN_140e52670("m_contentsDungeon"))
         m_1cc[2] = spDungeon->FUN_1422ce0e0();
     UIDialog::vfunc_67();
 }
@@ -203,11 +197,11 @@ void UILevelUpGuideDialog::OnLoadComplete()
         return;
     unsigned short nLevel = Unk_LgActorLevel(pPlayer);
     FUN_140f85330(nLevel);
-    if (MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc"))
+    if (MS2Ptr<ASCheckBox> spEtc = FUN_140e52670("m_contentsEtc"))
         spEtc->FUN_1422ce090(m_1cc[0]);
-    if (MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss"))
+    if (MS2Ptr<ASCheckBox> spBoss = FUN_140e52670("m_contentsBoss"))
         spBoss->FUN_1422ce090(m_1cc[1]);
-    if (MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon"))
+    if (MS2Ptr<ASCheckBox> spDungeon = FUN_140e52670("m_contentsDungeon"))
         spDungeon->FUN_1422ce090(m_1cc[2]);
     FUN_140f85f90();
     FUN_140f861c0();
@@ -289,7 +283,7 @@ void UILevelUpGuideDialog::vfunc_o178_8(void* pQuestRaw)
     }
         break;
     case 2: {
-        if (MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog")) {
+        if (MS2Ptr<ASDialog> spEvent = FUN_140f880c0("m_eventDialog")) {
             ASObj obj(2);
             if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->FUN_140bfc580()) != 0)
                 spEvent->Invoke("addLevelGuide", obj);
@@ -385,7 +379,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
 // @0x140f857e0
 void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
 {
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -509,7 +503,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
                 break;
             }
             {
-                MS2Ptr<Unk_LgCheck> spCheck = FUN_140e52670(strCheck);
+                MS2Ptr<ASCheckBox> spCheck = FUN_140e52670(strCheck);
                 if (spCheck.get() != 0 && !spCheck->FUN_1422ce0e0())
                     continue;
             }
@@ -531,13 +525,13 @@ void UILevelUpGuideDialog::FUN_140f869f0()
     void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog")) {
+    if (MS2Ptr<ASDialog> spEvent = FUN_140f880c0("m_eventDialog")) {
         int bAdded = 0;
         ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
         TSingleton<QuestDataTable>::GetInstance()->CollectType3QuestsByGuideType(quests, 2);
         for (size_t i = 0; i < quests.GetCount(); i++) {
             MS2Ptr<CQuestData> spData = quests[i];
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(FUN_14074b030(spData.operator->()));
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(FUN_14074b030(spData.operator->()));
             if (spQuest.IsNull())
                 continue;
             if (spQuest->FUN_1407447c0() != 0)
@@ -570,7 +564,7 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
         return 0;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuest);
     CString strState;
     if ((spQuest.get() ? true : false) && spQuest->IsComplete() != 0)
         strState = "active";
@@ -715,11 +709,11 @@ static bool LgRowOrder(MS2Ptr<UILevelUpGuideDialog::RecommendContnets> spA, MS2P
 }
 
 // @0x140f880c0
-MS2Ptr<Unk_LgEvent> UILevelUpGuideDialog::FUN_140f880c0(const CString& strName)
+MS2Ptr<ASDialog> UILevelUpGuideDialog::FUN_140f880c0(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_LgEvent>(0);
-    return static_cast<Unk_LgRoot*>(m_30.operator->())->FUN_140e44410<Unk_LgEvent>(strName);
+        return MS2Ptr<ASDialog>(0);
+    return m_30.operator->()->FUN_140e159f0<ASDialog>(strName);   // C3: AScript::FUN_140e159f0 (was Unk_LgRoot::FUN_140e44410)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

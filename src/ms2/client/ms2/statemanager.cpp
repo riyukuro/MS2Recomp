@@ -149,20 +149,20 @@ class Unk_SMField690 { public: char m_pad[0x18]; efd::Point3 m_pos18; };
 struct Unk_MagicEntity;
 struct Unk_MagicRidee* FUN_141468360(Unk_MagicEntity* p);   // as Ridee (0x6200045)
 class CFishingGuideObject* FUN_140ddc910(GameObject* p);    // 0x6200064
-class Unk_ControlTarget* FUN_140ac06f0(PCBase* p);          // 0x6200081
+class CSkillMagicControlGuide* FUN_140ac06f0(PCBase* p);    // 0x6200081
 void FUN_1410a77e0(class CGuideObject* p, float f);
 float FUN_14029d220(float f);               // fabs
 class CTrafficOptimizer;
 float FUN_14028d280(unsigned n);            // milliseconds -> seconds
 
-// The helper component of vfunc_103 (a skill record holder): +0x30 table row.
-class Unk_SkillRow : public CPtred { public: char m_pad[0x95]; unsigned char m_bAd; };
+// The helper component of vfunc_103 (a skill record holder): +0x30 the skill row (CSkillRecord::m_spSkill).
 class Unk_PCBaseComp_b18 : public CPtred
 {
 public:
     char m_pad_18[0x18];
-    MS2Ptr<Unk_SkillRow> m_table30;
+    MS2Ptr<SkillData> m_table30;
 };
+MS2_CHECK_OFFSET(Unk_SkillBlockA4, m_bChargingSkill, 0x09);   // C3: SkillData +0xad, read below (was the row view Unk_SkillRow)
 
 // efd::ClassInfo layout (m_Classes is protected; the exe reads m_Classes[0].m_ID inline)
 struct Unk_SMClassDef { efd::ClassID m_ID; const char* m_Name; const efd::ClassInfo* m_ClassInfo; efd::UInt32 m_Offset; };
@@ -414,7 +414,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
                 }
                 if (pReq->m_nState != 0x10)
                 {
-                    if (spComp->m_table30->m_bAd != 0)
+                    if (spComp->m_table30->m_blockA4.m_bChargingSkill != 0)
                         bApply = 1;
                 }
             }

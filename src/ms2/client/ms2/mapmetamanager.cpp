@@ -11,6 +11,7 @@
 #include <egf/Entity.h>
 #include <egf/EntityManager.h>
 #include <efd/Point3.h>
+#include "ms2/placeholder/nipoint3.h"   // Vector3
 #include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
 #include <math.h>
 
@@ -69,9 +70,9 @@ egf::EntityID CMapMetaManager::FUN_141478180(efd::utf8string key)
 const NiRTTI* CMapMetaManager::GetRTTI() const { return &ms_RTTI; }
 
 // ---- ballistic arc solver (not part of CMapMetaManager; sits in this unit's range) ----
-float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                           // distance in the xy plane
+float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 bool FUN_14028d470(float a, float b);                                        // nearly equal
-efd::Point3 FUN_141192780(efd::Point3 from, efd::Point3 to, bool flatten);   // direction from -> to
+Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // direction from -> to (dropitem.cpp)
 
 // Launch solution for a projectile of the given speed under gravity: the low-angle arc from origin to target.
 struct Unk_ArcSolution
@@ -91,7 +92,7 @@ struct Unk_ArcSolution
 // @0x141479ed0
 void Unk_ArcSolution::FUN_141479ed0(efd::Point3 origin, efd::Point3 target, float speed, float gravity)
 {
-    float distance = FUN_140966ea0(target, origin);
+    float distance = FUN_140966ea0(reinterpret_cast<const Vector3&>(target), reinterpret_cast<const Vector3&>(origin));
     if (FUN_14028d470(distance, 0.0f)) {
         m_speed = speed;
         return;
@@ -110,7 +111,12 @@ void Unk_ArcSolution::FUN_141479ed0(efd::Point3 origin, efd::Point3 target, floa
         float tangent = speedSq * ((-distance - efd::Sqrt(discriminant)) / (gravity * distSq));
         float angle = __imp_atanf(tangent);
         m_speed = speed;
-        m_direction = FUN_141192780(origin, target, true);
+#ifdef __clang__
+        const Vector3& kDir = FUN_141192780(reinterpret_cast<Vector3&>(origin), reinterpret_cast<Vector3&>(target), true);
+        m_direction = reinterpret_cast<const efd::Point3&>(kDir);
+#else
+        m_direction = reinterpret_cast<const efd::Point3&>(FUN_141192780(reinterpret_cast<Vector3&>(origin), reinterpret_cast<Vector3&>(target), true));
+#endif
         m_target = target;
         m_origin = origin;
         m_gravity = gravity;

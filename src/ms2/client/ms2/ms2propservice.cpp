@@ -115,7 +115,7 @@
 inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-efd::ISystemService* FUN_1401cd040(char*);
+class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // the system service (0x1401cd040, the definer's signature)
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -191,7 +191,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                     bool cube = false;
                     entity->GetPropertyValue(0x38141815, cube);
                     if (cube) {
-                        efd::SmartPointer<efd::ISystemService> service(FUN_1401cd040(&DAT_143b059e8));
+                        efd::SmartPointer<efd::ISystemService> service(reinterpret_cast<efd::ISystemService*>(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
                         NxActor* actor = FUN_1410c5420(service, entity->GetEntityID());
                         if (actor != NULL) {
                             ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);

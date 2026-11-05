@@ -26,7 +26,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/uiservice.h"
-#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/placeholder/asradiobutton.h"   // the "m_radioRecommend" radio (ASButton::FUN_1422ce240)
 
 // ---- statics (.text$di): the shared header statics a second time (another header of the unit pulls them in) and a bare
 // sort-name table ----
@@ -40,12 +40,6 @@ static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "Pric
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
-// The radio ("recommend") and the check boxes of the rows.
-class Unk_SdToggle : public ASButton
-{
-};
-class Unk_SdRadio : public Unk_SdToggle {};
-
             // the local player
 class Unk_SdUIManager { public: };
 
@@ -58,7 +52,7 @@ public:
 };
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
-MS2Ptr<Unk_SdRadio> FUN_140a463d0(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
+MS2Ptr<ASRadioButton> FUN_140a463d0(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
 template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                            // wrap in a color tag
@@ -77,11 +71,11 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
 // ---- the radio's MS2Ptr and child-binding COMDATs (first instantiated here) ----
 
 // @0x140e28f30
-template <> MS2Ptr<Unk_SdRadio>::MS2Ptr() { m_p = 0; }
+template <> inline MS2Ptr<ASRadioButton>::MS2Ptr() { m_p = 0; }
 // @0x140e28ef0
-template <> MS2Ptr<Unk_SdRadio>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddRef(); }
+template <> inline MS2Ptr<ASRadioButton>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddRef(); }
 // @0x140e28f70
-template <> MS2Ptr<Unk_SdRadio>& MS2Ptr<Unk_SdRadio>::operator=(const MS2Ptr& o)
+template <> inline MS2Ptr<ASRadioButton>& MS2Ptr<ASRadioButton>::operator=(const MS2Ptr& o)
 {
     o.AddRef();
     Release();
@@ -89,27 +83,27 @@ template <> MS2Ptr<Unk_SdRadio>& MS2Ptr<Unk_SdRadio>::operator=(const MS2Ptr& o)
     return *this;
 }
 // @0x140e28fb0
-template <> MS2Ptr<Unk_SdRadio>& MS2Ptr<Unk_SdRadio>::operator=(int)
+template <> inline MS2Ptr<ASRadioButton>& MS2Ptr<ASRadioButton>::operator=(int)
 {
     Release();
     return *this;
 }
 // @0x140e28fe0
-template <> bool MS2Ptr<Unk_SdRadio>::operator==(Unk_SdRadio* p) const { return m_p == p; }
+template <> inline bool MS2Ptr<ASRadioButton>::operator==(ASRadioButton* p) const { return m_p == p; }
 
 // @0x140e28bc0
-template <> MS2Ptr<Unk_SdRadio> AScript::FUN_140e159f0<Unk_SdRadio>(const CString& strName)
+template <> MS2Ptr<ASRadioButton> AScript::FUN_140e159f0<ASRadioButton>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
         return FUN_140a463d0(m_nMovieId, v);
-    return MS2Ptr<Unk_SdRadio>(0);
+    return MS2Ptr<ASRadioButton>(0);
 }
 // @0x140e28c80
-template <> MS2Ptr<Unk_SdRadio> AScript::FUN_140bbe640<Unk_SdRadio>(const CString& strName, MS2Ptr<Unk_SdRadio>& outChild)
+template <> MS2Ptr<ASRadioButton> AScript::FUN_140bbe640<ASRadioButton>(const CString& strName, MS2Ptr<ASRadioButton>& outChild)
 {
     MS2_ASCRIPT_INL_ASSERT(0xd5, outChild == NULL);
-    outChild = FUN_140e159f0<Unk_SdRadio>(strName);
+    outChild = FUN_140e159f0<ASRadioButton>(strName);
     return outChild;
 }
 
@@ -139,7 +133,7 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
     UIModalDialog::OnLoadComplete();
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
-    SD_BIND(m_30->FUN_140bbe640<Unk_SdRadio>("m_radioRecommend", m_radio), m_radio, 0x27);
+    SD_BIND(m_30->FUN_140bbe640<ASRadioButton>("m_radioRecommend", m_radio), m_radio, 0x27);
     SD_BIND(m_30->FUN_140bc71c0<ASMovieClip>("m_customPage", m_page), m_page, 0x28);
     SD_BIND(m_30->FUN_140bbe640<ASButton>("m_okButton", m_okButton), m_okButton, 0x29);
     SD_BIND(m_page->FUN_140bc7340<ASScrollingList>("m_customList", m_list), m_list, 0x2b);

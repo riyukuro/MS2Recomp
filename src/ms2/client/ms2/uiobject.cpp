@@ -76,7 +76,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 class Unk_1403ed2b0 { public: };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 int FUN_140651920(CString str);
 int FUN_1406516a0();
 
@@ -183,7 +183,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         p->FUN_141924680();
     } else if (strMethod == "isEnableLocale") {
         CStringW strLocale = pArgs->FUN_1422b8f40();
-        bool bEnable = FUN_140166410()->IsLocaleInList(strLocale);
+        bool bEnable = reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsLocaleInList(strLocale);
         Scaleform::GFx::Value value(bEnable);
         *pRetVal = value;
     } else if (strMethod == "isEnableLanguage") {

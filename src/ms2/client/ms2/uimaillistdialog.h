@@ -21,8 +21,7 @@
 class ASTextField;
 class CMsgBoxData;
 class CMailInfo;
-class Unk_MlButton;
-class Unk_MlCheckBox;
+class ASCheckBox;
 class ASScrollingList;
 class ASTextInput;
 template <class T> class Unk_MailPtr;
@@ -99,8 +98,7 @@ public:
     void SendMailMode0();                                           // ask the server for the list (packet 0x2d / 0)
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
-    MS2Ptr<Unk_MlButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button
-    MS2Ptr<Unk_MlCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
 
 private:
     MS2_LAYOUT_FRIEND;

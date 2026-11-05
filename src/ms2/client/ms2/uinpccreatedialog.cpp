@@ -91,7 +91,7 @@ public:
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat&);   // FUN_141276f80 takes a pointer and returns int: kept
+int FUN_141276f80(Unk_CommandChat*);   // C3: the chat-command sender, the definer's signature
 CString FUN_1411c0aa0(const char* szText);                   // a text without arguments
 
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
@@ -106,7 +106,6 @@ class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 int FUN_140718200(const CStringW& str);          // the npc id of an id text
 CStringW FUN_1401aa6a0(int nNpc);
 void FUN_140841420(CStringW& str);                      // trim
-CStringTable* GetStringTable();
 
 // xml file helpers
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
@@ -221,7 +220,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         Unk_CommandChat chat;
         chat.kind = 0;
         chat.message = (const char*)FUN_1411c0aa0("/ReleasePet");
-        FUN_141276f80(chat);
+        FUN_141276f80(&chat);
         return 1;
     } else if (_stricmp("OnSearchNpc", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
@@ -248,7 +247,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     Unk_CommandChat chat;
                     chat.kind = 0;
                     chat.message = (const char*)static_cast<const CString&>(Unk_SocketFormat("/MoveField {0}", nField));
-                    FUN_141276f80(chat);
+                    FUN_141276f80(&chat);
                     m_nPendingNpc = nNpc;
                 }
             } else {
@@ -375,7 +374,7 @@ void UINpcCreateDialog::FUN_141a6b8f0()
         if (row.IsNull())
             continue;
         CStringW strKind = FUN_141a6b6a0(row->m_nClass, row->GetFriendly());
-        CStringW strName = GetStringTable()->FUN_141811980(10, nNpc);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, nNpc);
         CStringW strNpc = FUN_1401aa6a0(nNpc);
         CStringW strEmpty(L"");
         CStringW strLine = FUN_14028dfa0(CStringW(L"s_npccreate_render_name_format"), strKind, row->GetLevel(), strEmpty, row->GetClassConstant(), strName, strNpc);

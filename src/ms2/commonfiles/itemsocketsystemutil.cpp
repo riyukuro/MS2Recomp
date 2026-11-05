@@ -1556,10 +1556,9 @@ void * FUN_14052d200(void);  // C3: the definition's signature
 // ---- CItemStatus ------------------------------------------------------------------------------------------------
 // Unrecovered helpers of the option / stat text code.
 class Unk_SaInfo { };
-struct Unk_SaTable { };                                 // the special ability table (0x20 byte rows, DAT_143ab1a40)
 struct SpecialAbilityInfo;
 extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;   // skilltieroptionmanager.cpp
-struct Unk_SaRow
+struct Unk_SATypeInfo                                   // uiitemmergeoptiondialog's view of a DAT_143ab1a40 row
 {
     void* m_00;
     int m_nValueType;                                   // +0x08 eOptionValue (0 none, 2 percent)
@@ -1567,7 +1566,6 @@ struct Unk_SaRow
     CStringW m_strFormat;                               // +0x10
     CStringW m_strName;                                 // +0x18
 };
-Unk_SaRow* FUN_140184750(Unk_SaTable* pTable, __int64 nIndex);
 bool FUN_14081dcd0(int nSaType);                        // the SA value is a percent
 int FUN_14081d9e0(int nSaType);                         // the SA is a skill level up tier (0x4d - 0x5a)
 int FUN_14081da20(int nSaType);                         // the tier of it
@@ -2134,7 +2132,7 @@ MS2_REPLACE_METHOD(0x140630DC0, CItemStatus, IsRatioStat, 59, 0x69FAA13A);
 CStringW FUN_140630e10(int nSaType)
 {
     CStringW str;
-    str = FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nSaType)->m_strName;
+    str = reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nSaType].m_strName;
     return str;
 }
 MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
@@ -2232,13 +2230,13 @@ CStringW FUN_140631830(int nStat, int nValue, CItemData* pData)
     if (FUN_14081dcd0(nStat))
     {
         float fValue = (float)nValue / 10.0f;
-        str = StringFormat(FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nStat)->m_strFormat, fValue);
+        str = StringFormat(reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nStat].m_strFormat, fValue);
     }
     else
     {
         if (FUN_14081d9e0(nStat) != 0)
             return FUN_140630ea0(nStat, nValue, pData);
-        str = StringFormat(FUN_140184750(reinterpret_cast<Unk_SaTable*>(&DAT_143ab1a40), nStat)->m_strFormat, nValue);
+        str = StringFormat(reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nStat].m_strFormat, nValue);
     }
     return str;
 }

@@ -131,7 +131,7 @@ class ASDialog : public ASDisplayObject {};
 
 
 
-class Unk_RpsASObj { public: template <class T> void Set(const char* szName, T n); }; class Unk_MdBookTable {};
+class Unk_MdBookTable {};
 
 // @0x1412db940
 Unk_MdBookTable* FUN_1412db940() { return reinterpret_cast<Unk_MdBookTable*>(TSingleton<CMaidRecipeGroupTable>::s_instance); }
@@ -250,7 +250,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
             if (spRecipe.get())
             {
                 ASObj row(2);
-                reinterpret_cast<Unk_RpsASObj&>(row).Set<unsigned __int64>("id", i + 1);
+                row.FUN_140e846b0("id", i + 1);
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
                 row.FUN_1407cb9c0("recipeID", spRef->recipeId);
                 if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180)->Get())   // exe: add rax, 0x5180
@@ -824,7 +824,7 @@ bool FUN_14083d890(CStringW str);                     // show a notice
 // The AS controls the edit window binds.
 class Unk_MdText : public ASTextField { public: };
 class Unk_MdShopPanel : public AScript {};
-MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
+MS2Ptr<AScript> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
 
 template <class T> struct Unk_McValue { T* FUN_1412788b0(); };   // the palette of the designer colours
 
@@ -941,7 +941,7 @@ int UIMDEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0 && strTag.Find(L"exportMerat", 0) != -1)
         {
             Scaleform::GFx::Value vExport = m_30->Invoke("getExportData");
-            MS2Ptr<ASObj> spData = FUN_1409e7dc0(m_28, vExport);
+            MS2Ptr<AScript> spData = FUN_1409e7dc0(m_28, vExport);
             if (spData.get())
             {
                 FUN_1412df350(this);
@@ -1466,38 +1466,38 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             Scaleform::GFx::Value vRow = data.PopValue();
-            MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, vRow);
+            MS2Ptr<AScript> spObj = FUN_1409e7dc0(m_28, vRow);
             if (spObj.get())
             {
-                int nSn = FUN_1412df3b0(reinterpret_cast<AScript*>(spObj.operator->())->GetWString("sn"));
+                int nSn = FUN_1412df3b0(spObj.operator->()->GetWString("sn"));
                 unsigned nItemId = FUN_141b71a10(reinterpret_cast<const Unk_SfValueView&>(static_cast<const Scaleform::GFx::Value&>(spObj->GetMember("itemID"))).FUN_142576d50().ToCStr());
                 MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
                 if (item.get() != 0)
                 {
-                    spObj->FUN_1407cba60(s_strIconPath, reinterpret_cast<Unk_MdItemInfo*>(item.operator->())->GetIconPath());
-                    spObj->FUN_1407cbb20(s_strItemName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1407cba60(s_strIconPath, reinterpret_cast<Unk_MdItemInfo*>(item.operator->())->GetIconPath());
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1407cbb20(s_strItemName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                     CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >& rMap = m_180 == 2 ? s_shop.m_productMap : *TSingleton<CMeratMarketPremium>::GetInstance()->GetProductMap();
                     MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
                     if (rMap.Lookup(nSn, spProduct))
                     {
-                        spObj->FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
-                        spObj->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
-                        spObj->FUN_1409c1180("price", spProduct->GetPriceOf(0));
-                        spObj->FUN_1407cb9c0("priceDay", spProduct->GetB4(0));
+                        static_cast<ASObj*>(spObj.operator->())->FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
+                        static_cast<ASObj*>(spObj.operator->())->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
+                        static_cast<ASObj*>(spObj.operator->())->FUN_1409c1180("price", spProduct->GetPriceOf(0));
+                        static_cast<ASObj*>(spObj.operator->())->FUN_1407cb9c0("priceDay", spProduct->GetB4(0));
                     }
                     ASTooltip tip(4, 2);
                     if (tip.FUN_1409e1770(nItemId, 0) != 0)
-                        spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
+                        static_cast<ASObj*>(spObj.operator->())->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
                 }
                 else
                 {
-                    spObj->FUN_1409c0dc0(s_strIconPath, "");
-                    spObj->FUN_1409c0dc0(s_strItemName, "");
-                    spObj->FUN_1407cb9c0("salePrice", 0);
-                    spObj->FUN_1407cb9c0("saleTag", 0);
-                    spObj->FUN_1407cb9c0("price", 0);
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1409c0dc0(s_strIconPath, "");
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1409c0dc0(s_strItemName, "");
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1407cb9c0("salePrice", 0);
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1407cb9c0("saleTag", 0);
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1407cb9c0("price", 0);
                     ASTooltip tip(4, 2);
-                    spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
+                    static_cast<ASObj*>(spObj.operator->())->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
                 }
             }
         }

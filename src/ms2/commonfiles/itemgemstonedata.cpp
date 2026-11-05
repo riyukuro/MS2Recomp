@@ -171,12 +171,12 @@ int CItemGemStoneUpgradeTable::Load()
                     int nId = 0;
                     int nTag = 0;
                     {
-                        Unk_StrVec tokens;
+                        std::vector<CString> tokens;   // C3: was Unk_StrVec
                         FUN_140275080(strValue, &tokens, ":");
-                        if (tokens.FUN_14028b4c0() > 0)
-                            nId = FUN_1407181d0(*tokens.FUN_14027f1c0(0));
-                        if (tokens.FUN_14028b4c0() > 1)
-                            nTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*tokens.FUN_14027f1c0(1));
+                        if (tokens.size() > 0)
+                            nId = FUN_1407181d0(tokens[0]);
+                        if (tokens.size() > 1)
+                            nTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tokens[1]);
                     }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_GemIngredientTag(info.operator->(), nTag);

@@ -252,8 +252,7 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 void FUN_140cfe1b0(const CString&);
-struct Unk_SpFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
-struct Unk_SpFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
+class Unk_GsClip { public: MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };   // C3: gemstoneswappage's Unk_GsClip (0x140c4bc60)
 class Unk_SocketPageDebug;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -874,19 +873,19 @@ void ItemSocketSystemPageGemStoneManage::vfunc_7(MS2Ptr<AScript> root)
     FUN_140f70ad0();
     {
         if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0"))
-            m_equipmentControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+            m_equipmentControl = reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
     }
     {
         if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
-            m_gemControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+            m_gemControl = reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
     }
     bool isDebug = ((class CInputKeyHandler*)(class Unk_SocketPageDebug*)(reinterpret_cast<Unk_SocketPageDebug*>(((class Unk_SocketPageDebug*)FUN_14025e7c0()))))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
-    m_debugButton = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
+    m_debugButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
     if (m_debugButton.get() != 0) {
         m_debugButton->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16), 0);
+            m_debugButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16), 0);
     }
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
     param->m_nIconType = 0x415;
@@ -1530,26 +1529,26 @@ void ItemSocketSystemPageGemStoneUpgrade::vfunc_7(MS2Ptr<AScript> root)
     if (m_root == 0)
         return;
     FUN_140f75c50();
-    m_bag = reinterpret_cast<Unk_SpFindBag*>(m_root.operator->())->FUN_140c4bc60("m_itemBag");
+    m_bag = reinterpret_cast<Unk_GsClip*>(m_root.operator->())->FUN_140c4bc60("m_itemBag");
     bool isDebug = ((class CInputKeyHandler*)(class Unk_SocketPageDebug*)(reinterpret_cast<Unk_SocketPageDebug*>(((class Unk_SocketPageDebug*)FUN_14025e7c0()))))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
-    m_debugAction = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
+    m_debugAction = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnAction");
     if (m_debugAction.get() != 0) {
         m_debugAction->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugAction.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::SendItemSocketSystemMode15), 0);
+            m_debugAction->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::SendItemSocketSystemMode15), 0);
     }
-    m_debugFill = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
+    m_debugFill = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnFillIngredient");
     if (m_debugFill.get() != 0) {
         m_debugFill->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugFill.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f798e0), 0);
+            m_debugFill->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f798e0), 0);
     }
-    m_debugFillUnit = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredientUnit");
+    m_debugFillUnit = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnFillIngredientUnit");
     if (m_debugFillUnit.get() != 0) {
         m_debugFillUnit->vfunc_3(debug);
         if (debug != 0)
-            reinterpret_cast<ASButton*>(m_debugFillUnit.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f799d0), 0);
+            m_debugFillUnit->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f799d0), 0);
     }
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
     param->m_nIconType = 0x415;

@@ -137,13 +137,13 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_MouseCursorType 
 // @0x1422cf060
 Unk_GFxUIHal* FUN_1422cf060()
 {
-    return FUN_1422cf080()->FUN_1425822a0();
+    return reinterpret_cast<Unk_GFxUIHal*>(reinterpret_cast<Scaleform::Render::Renderer2D*>(FUN_1422cf080())->GetHAL());
 }
 
 // @0x1422cf080
 Unk_GFxUIRenderer2D* FUN_1422cf080()
 {
-    return FUN_14025e7a0()->FUN_1422b02b0();
+    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetRenderer2D();
 }
 
 // @0x1422cf0a0

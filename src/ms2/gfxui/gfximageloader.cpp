@@ -33,7 +33,7 @@ using Scaleform::Render::ImageSource;
 using Scaleform::Render::TextureManager;
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
 // The image a UI movie receives in vfunc_25 (uiswfentity.h names the TPtr pointee Unk_UISwfEntity_25): a Scaleform
 // render image.

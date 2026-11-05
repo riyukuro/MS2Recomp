@@ -29,8 +29,6 @@
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
-// The buff record of the dialog's by-value parameters (additionalcli_1.cpp passes it under this name).
-class Unk_NdBuff : public AdditionalCli { };
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
@@ -159,13 +157,13 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
             bool bFlag = FUN_140930110(buff->m_nCasterId);
             if (!buff->FUN_14096d810()->m_ui.FUN_1401927c0(bFlag))
                 continue;
-            FUN_140e6c440(reinterpret_cast<MS2Ptr<Unk_NdBuff>&>(buff));
+            FUN_140e6c440(buff);
         }
     }
 }
 
 // @0x140e6c440
-void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff)
+void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<AdditionalCli> buff)
 {
     if (m_30 == 0)
         return;
@@ -173,11 +171,11 @@ void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
         return;
-    m_effects->AddEffect(reinterpret_cast<MS2Ptr<Unk_AsBuff>&>(buff));
+    m_effects->AddEffect(buff);
 }
 
 // @0x140e6c540
-void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff)
+void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<AdditionalCli> buff)
 {
     if (m_30 == 0)
         return;
@@ -185,7 +183,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<Unk_NdBuff> buff)
         return;
     if (buff->GetOwner()->FUN_14123c580() != m_nObjectId)
         return;
-    m_effects->UpdateEffect(reinterpret_cast<MS2Ptr<Unk_AsBuff>&>(buff));
+    m_effects->UpdateEffect(buff);
 }
 
 // @0x140e6c640

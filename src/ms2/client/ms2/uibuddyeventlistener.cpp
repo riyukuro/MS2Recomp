@@ -74,6 +74,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/formatstringid.h"   // C3
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/astilelist.h"   // C3: ASTileList ("m_list", the buddy list)
 #include "ms2/commonfiles/serverpacketdef.h"
 #include "ms2/client/ms2/addresstable.h"
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -117,12 +118,6 @@ public:
 // The key state (singleton 0x14025e7c0).
 // the exe reads the buddy level as an int
 void* FUN_14025e7c0();
-
-// "m_list": the buddy list.
-class Unk_BdList : public ASDisplayObject
-{
-public:
-};
 
 class Unk_BdStream { public: virtual void vfunc_0(); virtual unsigned char vfunc_1(); };
 class Unk_BuddyInput { public: virtual unsigned vfunc_0(); Unk_BdStream m_stream; };
@@ -331,9 +326,9 @@ void UICommunityDialog::vfunc_72()
     m_198 = 0;
     if (m_19c != 0)
     {
-        if (MS2Ptr<Unk_BdList> spList = ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_140accef0<Unk_BdList>("m_list"))
+        if (MS2Ptr<ASTileList> spList = ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_140accef0<ASTileList>("m_list"))
         {
-            int nCount = reinterpret_cast<ASCoreList*>(spList.operator->())->GetDataProvider()->GetLength();
+            int nCount = spList->GetDataProvider()->GetLength();
             FUN_1418d77f0(m_194, nCount);
         }
     }

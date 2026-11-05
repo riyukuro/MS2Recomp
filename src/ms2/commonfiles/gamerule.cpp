@@ -317,7 +317,7 @@ public:
 __int64 GetServerTime();                                // the server time
 bool FUN_1407183f0(const CStringW& str);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
-void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned>* out, const wchar_t* sep);
+void FUN_140274fc0(CStringW& str, void* out, const wchar_t* sep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 
 // The global table of the attend gift values keyed by (kind, id) (0x143ab2fc0, a GameEventUserValue: its map at +0x18
 // holds GameEventVariable entries). Only the inline readers of this TU are defined here.
@@ -2127,7 +2127,7 @@ void CGameRule::SetLevelUpPackage(int level, const CStringW& str)
 {
     Unk_1401b4ec0 lock(m_8, 1);
     m_b40 = level;
-    FUN_140274fc0(str, &m_b48, L",");
+    FUN_140274fc0(const_cast<CStringW&>(str), &m_b48, L",");
 }
 MS2_REPLACE_METHOD(0x14047C740, CGameRule, SetLevelUpPackage, 118, 0xC30BD58F);
 

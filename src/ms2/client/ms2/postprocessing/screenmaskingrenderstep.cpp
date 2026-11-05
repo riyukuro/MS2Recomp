@@ -22,7 +22,7 @@ class CNifLoadingService   // C3: member view (nifeffectparam.h)
 public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
-Unk_SMMgr* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:

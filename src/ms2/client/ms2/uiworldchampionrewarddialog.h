@@ -7,7 +7,7 @@ class CInPacket;
 class CMsgBoxData;
 class ASButton;
 class ASMovieClip;
-class Unk_WcTitle;
+class ASLabel;
 class ASItemSlot;
 class UIWorldChampionRewardDialog : public UIDialog {
 public:
@@ -42,7 +42,7 @@ private:
     std::vector<MS2Ptr<ASMovieClip>> m_stepSlotVecotr;
     std::vector<MS2Ptr<ASButton>> m_stepSlotButtonVecotr;
     MS2Ptr<ASButton> m_prev, m_next, m_move;
-    MS2Ptr<Unk_WcTitle> m_title;
+    MS2Ptr<ASLabel> m_title;
     MS2Ptr<ASMovieClip> m_area;
     std::vector<MS2Ptr<ASItemSlot>> m_items;
 };

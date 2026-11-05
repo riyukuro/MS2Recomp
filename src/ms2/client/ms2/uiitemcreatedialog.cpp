@@ -87,6 +87,7 @@ template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strN
 
 template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // ---- unit-local views of exe objects ----
 
@@ -117,12 +118,6 @@ class Unk_IcCombo : public Unk_IcControl
 {
 public:
     void FUN_1419b9990(const CString& strName, int& nOut);  // a member of the selected row
-};
-class Unk_IcInput : public Unk_IcControl
-{
-};
-class Unk_IcCheck : public ASCheckBox
-{
 };
 
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
@@ -518,9 +513,9 @@ void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
         FUN_1418fc840(combo, nItemId, nRank);
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if ((CItemData*)item) {
-        if (MS2Ptr<Unk_IcInput> input = FUN_140e35bd0("m_periodInput")) {
-            reinterpret_cast<ASTextInput*>(input.operator->())->SetTextW(L"0");
-            reinterpret_cast<ASTextInput*>(input.operator->())->FUN_1422c1fe0(1);
+        if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_periodInput")) {
+            input.operator->()->SetTextW(L"0");
+            input.operator->()->FUN_1422c1fe0(1);
         }
     }
 }
@@ -537,10 +532,10 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_items");
     if (list == 0)
         return;
-    MS2Ptr<Unk_IcCheck> checkJob = FUN_140e52670("m_checkJob");
+    MS2Ptr<ASCheckBox> checkJob = FUN_140e52670("m_checkJob");
     if (checkJob == 0)
         return;
-    MS2Ptr<Unk_IcCheck> checkGender = FUN_140e52670("m_checkGender");
+    MS2Ptr<ASCheckBox> checkGender = FUN_140e52670("m_checkGender");
     if (checkGender == 0)
         return;
     bool bJob = checkJob->FUN_1422ce0e0();

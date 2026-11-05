@@ -158,7 +158,6 @@ public:
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // The item lock manager (FUN_140535310).
-class Unk_IsLockMgr;
 class CItemLockManager  // C3: unit-local view (unit_1406125d0.h clashes with this unit's views)
 {
 public:
@@ -167,7 +166,7 @@ public:
     int FUN_1406130e0(__int64 nItemUid);
     int FUN_140613160(CItem* pItem);                      // the item may be used (not locked)
 };
-Unk_IsLockMgr* FUN_140535310();
+class Unk_BreakRules* FUN_140535310();   // C3: the definer's return type (itembreakmanager)
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 
 // The feature switches.
@@ -238,9 +237,9 @@ class Unk_IsInstrumentMgr
 {
 public:
     bool FUN_140d09d90(int nMode);                        // a pre-listening is running
-    __int64 FUN_140c8dab0();                              // the uid of the score being played
 };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+__int64 FUN_140c8dab0(struct Unk_PmFixedItem* pMgr);   // the uid of the score being played (petmanager.cpp)
 struct Unk_IsAccountFlags
 {
     void* m_0;
@@ -439,10 +438,9 @@ void FUN_141404930(__int64 nUid)
 }
 MS2_REPLACE(0x141404930, FUN_141404930, 128, 0xBA442799);
 
-// The skill lookup as the exe calls it here: a row of a SkillData-derived type that the converting MS2Ptr ctor
-// (folded with the move ctor, 0x1407f4f80) takes, as in asitemslot.
-class Unk_SlotSkillRowEx : public SkillData {};
-MS2Ptr<Unk_SlotSkillRowEx> FUN_140639210(int nSkillId);
+// The skill lookups below move the returned row into the local through a reference to the temporary (the exe's
+// 2-slot rax chain, then the move ctor 0x1407f4f80, then the temporary's dtor): written as a const-ref cast
+// followed by a const_cast to an rvalue reference.
 
 // @0x1414049c0
 // Append the cooldown key (group, skill) of a skill that shows its cooldown.
@@ -455,7 +453,7 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
         return;
     int nId = nSkillId;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(FUN_140639210(nId));
+    MS2Ptr<SkillData> spSkill(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(nId))));
     if (!spSkill)
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
@@ -500,7 +498,7 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(FUN_140639210(nSkillId));
+    MS2Ptr<SkillData> spSkill(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(nSkillId))));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
@@ -548,7 +546,7 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(FUN_140639210(nSkillId));
+    MS2Ptr<SkillData> spSkill(const_cast<MS2Ptr<SkillData>&&>(static_cast<const MS2Ptr<SkillData>&>(JobSystem::GetSkillData(nSkillId))));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
@@ -1427,7 +1425,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
         return 0;
     }
-    if (spItem->FUN_140527840()->FUN_14053cd10() && ((class Unk_IsInstrumentMgr*)FUN_140c8dac0())->FUN_140c8dab0() == spItem->GetItemUid())
+    if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dab0(FUN_140c8dac0()) == spItem->GetItemUid())
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, L"");
         return 0;
@@ -1696,7 +1694,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
         FUN_1412751f0(strError, 1, 1);
         return 0;
     }
-    if (spItem->FUN_140527840()->FUN_14053cd10() && ((class Unk_IsInstrumentMgr*)FUN_140c8dac0())->FUN_140c8dab0() == spItem->GetItemUid())
+    if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dab0(FUN_140c8dac0()) == spItem->GetItemUid())
     {
         {
             CStringW strKey(L"s_trade_tradelimit_playing_score");

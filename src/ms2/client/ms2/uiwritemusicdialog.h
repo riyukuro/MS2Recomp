@@ -31,7 +31,7 @@ class ASButtonBar;
 class ASUIComponent;
 class ASDropdownMenu;
 class MMLToken;
-class Unk_WmSlider;
+class ASSlider;
 class Unk_140165cf0;
 class UISwfEntity;
 class UIMsg;
@@ -123,7 +123,7 @@ private:
     MS2Ptr<CItem> m_spItem;                                                 // +0x188 the score item
     MS2Ptr<ASTextField> m_spTimer;                                          // +0x198 "m_playingMusic.m_timer"
     MS2Ptr<ASTextField> m_spTotalTimer;                                     // +0x1a8 "m_playingMusic.m_totalTimer"
-    MS2Ptr<Unk_WmSlider> m_spPlayBar;                                       // +0x1b8 "m_playBar"
+    MS2Ptr<ASSlider> m_spPlayBar;                                           // +0x1b8 "m_playBar"
     MS2Ptr<ASButtonBar> m_spTabs;                                           // +0x1c8 "m_tabMusic"
     MS2Ptr<ASMovieClip> m_spPlayLine;                                       // +0x1d8 "m_playLine"
     int m_nMode;                                                            // +0x1e8 0 none, 1 write, 2 view

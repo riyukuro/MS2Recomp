@@ -4,6 +4,7 @@
 #include <atlcoll.h>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/mstime.h"
+template <class T> class MS2Ptr;
 struct Unk_EventPayload { void* value; };
 struct Unk_EventHolder : CPtred, Unk_EventPayload {};
 namespace EventStruct {
@@ -112,7 +113,7 @@ public:
     void FUN_1408d5c30(const ATL::CAtlArray<unsigned int>&);
     void* p0; void* p8; void* p10; void* p18; void* p20; void* p28; void* p30;
     // The reward-array and pointer accessors belong to different original classes.
-    ATL::CAtlArray<Unk_EventPtr<EventStruct::DTReward>> rewards;
+    ATL::CAtlArray<MS2Ptr<EventStruct::DTReward> > rewards;   // DTRewardEventContext::m_rewards (+0x38)
 };
 class Unk_EventReward40 {
 public:

@@ -92,7 +92,7 @@ MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 // Out-of-line vector helpers and the XML attribute accessors of the game's TinyXML wrapper.
 class Unk_140165cf0;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
+int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
 // The exe passes a NiPoint3 built implicitly from the efd::Point3 member (0x14027dcf0): XmlSetAttr's NiPoint3 view.
 void FUN_140874ad0(class TiXmlElement* pElem, const char* pszName, const NiPoint3& pt);   // XmlSetAttr, NiPoint3 view
@@ -141,8 +141,8 @@ ItemCustom::ItemCustom() : unknown18(0.0f, 0.0f, 0.0f), unknown24(0.0f, 0.0f, 0.
 void ItemCustom::FUN_140266aa0(Unk_140165cf0* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "icon", name);
-    FUN_140874670(pElem, "position", unknown18);
-    FUN_140874670(pElem, "rotation", unknown24);
+    XmlGetAttr((class TiXmlElement*)(pElem), "position", reinterpret_cast<efd::Point3&>(unknown18));
+    XmlGetAttr((class TiXmlElement*)(pElem), "rotation", reinterpret_cast<efd::Point3&>(unknown24));
 }
 
 // @0x140266b10

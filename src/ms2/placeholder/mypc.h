@@ -12,6 +12,7 @@ struct Vector3;
 class UserUGCMapInfo;
 class CHomePrivilege;                             // commonfiles\homeprivilege.cpp
 template <class T> class Unk_BmPtr;               // blackmarketitemoption.h
+template <class T> class MS2Ptr;
 
 // The key of the lapenshard slot maps (as in ms2/client/ms2/mypc.h; no unit includes both headers)
 enum Unk_MyPCLapenSlot { MYPC_LAPEN_SLOT_NONE = 0 };
@@ -30,6 +31,7 @@ public:
     void StopObserving();                                   // stop observing
     void FUN_14152a2f0(int n);                              // scenestategame packet 0x35
     void FUN_141524a80(bool bForce);                        // stop moving for a cast (scenestategame)
+    int FUN_141525480(int nSkillId, bool bRemap);           // the skill (switched by buffs) may be cast (as ms2/client/ms2/mypc.h)
     void FUN_141530720(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
     class CSkillSystem* FUN_141523bc0();                    // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
     class StatePcGuideObjectController* FUN_141523be0();    // the guide object controller (scenestategame 0x1417127b0)
@@ -39,7 +41,7 @@ public:
     void FUN_141662850(__int64 nValue);                     // PC member (scenestategame packet 0xe0)
     void FUN_141662890(__int64 nValue);                     // PC member
     Unk_PCEquipSet* FUN_1416561a0();                        // PC member: the equip holder (scenestategame 0x141712fb0)
-    void FUN_141528e50(Vector3 kPos, Vector3 kRot, int nFlag);   // scenestategame 0x141721a30
+    void FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera);   // warp (mypc.cpp); scenestategame 0x141721a30
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // PC member: a worn item by uid (scenestategame 0x14173b420)
     void ClearLapenshards();                                   // begin bulk update (scenestategame 0x14173d2e0)
     void EquipLapenshard(Unk_MyPCLapenSlot nSlot, unsigned nItemId, int bBulk);   // equip nItemId in nSlot
@@ -51,7 +53,7 @@ public:
     bool FUN_1415302e0(int nItemId);                        // the cube item is locked (housing level, achievement)
     int FUN_141659690();                                    // PC member
     class UserUGCMapInfo* FUN_141523c50();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
-    void FUN_141524880(Unk_BmPtr<UserUGCMapInfo> spInfo);   // set it
+    void FUN_141524880(MS2Ptr<UserUGCMapInfo> spInfo);   // set it (mypc.cpp)
     int HasNoHome();
     int FUN_141527ed0();                                    // 0x141527ed0 (uirealestatedialog.cpp)
     CStringW GetHomeName();                                 // 0x141528330 the house name

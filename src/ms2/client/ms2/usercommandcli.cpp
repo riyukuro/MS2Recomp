@@ -243,7 +243,7 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_MyPCComp1618* FUN_141523c50();
+    class UserUGCMapInfo* FUN_141523c50();
     static void FUN_141530910(int);
     void SendRequestMoveFieldMode4();
     void SendRequestMoveFieldMode2(int, int, int, __int64, CStringW);
@@ -1067,7 +1067,7 @@ int CUserCommandCli::SetHomePassword(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()>2) flag=args.FUN_1408d1f60(2,0);
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_BmPtr<UserUGCMapInfo> ref(((class UserUGCMapInfo*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->FUN_141523c50());
         if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x18); packet.WriteUInt8((unsigned char)mode);
             packet.WriteUnicodeString(name); packet.WriteUInt8((unsigned char)flag); FUN_140710590(packet);
@@ -1096,7 +1096,7 @@ int CUserCommandCli::SetHomeNotice(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()>0) name=args.FUN_1408d21c0(0,L"");
     void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if(actor) {
-        Unk_BmPtr<UserUGCMapInfo> ref(((class UserUGCMapInfo*)((class MyPC*)(void*)(actor))->FUN_141523c50()));
+        Unk_BmPtr<UserUGCMapInfo> ref(((class MyPC*)(void*)(actor))->FUN_141523c50());
         if(ref.get()) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube),0); packet.WriteUInt8(0x1d); packet.WriteUnicodeString(name); FUN_140710590(packet);
         }

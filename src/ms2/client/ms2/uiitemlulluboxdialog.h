@@ -13,8 +13,8 @@ class CMsgBoxData;
 class ASMovieClip;
 class ASTextField;
 class ASData;
-class Unk_LulluBoxButton;
-class Unk_LulluBoxCheck;
+class ASButton;
+class ASCheckBox;
 class UIItemLulluBoxDialog : public UIDialog
 {
 public:
@@ -48,8 +48,7 @@ public:
     void FUN_140e9f540();
     void FUN_140e9f870(const CStringW&, unsigned);
     MS2Ptr<ASTextField> FUN_140e48d80(const CString&, MS2Ptr<ASTextField>&);
-    MS2Ptr<Unk_LulluBoxCheck> FUN_140e52700(const CString&, MS2Ptr<Unk_LulluBoxCheck>&);
-    MS2Ptr<Unk_LulluBoxButton> FUN_140bc6d10(const CString&, MS2Ptr<Unk_LulluBoxButton>&);
+    MS2Ptr<ASCheckBox> FUN_140e52700(const CString&, MS2Ptr<ASCheckBox>&);
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened
@@ -62,12 +61,12 @@ private:
     bool m_sent;                                // +0x1d9 the open request was sent
     bool m_simple;                              // +0x1da the "OpenItemBoxLulluSimple" variant
     MS2Ptr<ASTextField> m_title;                // +0x1e0
-    MS2Ptr<Unk_LulluBoxButton> m_singleOpen;    // +0x1f0
-    MS2Ptr<Unk_LulluBoxButton> m_multiOpen;     // +0x200
-    MS2Ptr<Unk_LulluBoxButton> m_itemBreak;     // +0x210
-    MS2Ptr<Unk_LulluBoxButton> m_styleShop;     // +0x220
-    MS2Ptr<Unk_LulluBoxCheck> m_skipEffect;     // +0x230
-    MS2Ptr<Unk_LulluBoxCheck> m_autoPay;        // +0x240
+    MS2Ptr<ASButton> m_singleOpen;            // +0x1f0
+    MS2Ptr<ASButton> m_multiOpen;             // +0x200
+    MS2Ptr<ASButton> m_itemBreak;             // +0x210
+    MS2Ptr<ASButton> m_styleShop;             // +0x220
+    MS2Ptr<ASCheckBox> m_skipEffect;     // +0x230
+    MS2Ptr<ASCheckBox> m_autoPay;        // +0x240
     MS2Ptr<ASMovieClip> m_itemBox;              // +0x250
     MS2Ptr<ASMovieClip> m_resultItem;           // +0x260
 };

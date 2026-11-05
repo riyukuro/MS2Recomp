@@ -34,24 +34,24 @@
 // MS2-PIN: ??$sort@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@std@@UUnk_UgcpNameLess@@@std@@YAXV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@0@0UUnk_UgcpNameLess@@@Z 0x140fb3bb0 ; unique
 // MS2-PIN: ??$sort@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@std@@@std@@@std@@UUnk_UgcpStrLess@@@std@@YAXV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@std@@@std@@@0@0UUnk_UgcpStrLess@@@Z 0x140fb3c30 ; unique
 // MS2-PIN: ??0?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3ce0 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VUnk_UgcpEntry@@@@QEAA@AEBV0@@Z 0x140fb3d20 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VMapTile@UIWorldMap@@@@QEAA@AEBV0@@Z 0x140fb3d20 ; unique
 // MS2-PIN: ??1?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3f00 ; unique
-// MS2-PIN: ??9?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140fb4010 ; prop
+// MS2-PIN: ??9?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140fb4010 ; prop
 // MS2-PIN: ??A?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x140fb4050 ; unique
-// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@1@XZ 0x140fb40c0 ; unique
-// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@1@XZ 0x140fb40e0 ; prop
-// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4110 ; prop
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140fb4130 ; unique
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4180 ; prop
-// MS2-PIN: ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4230 ; unique
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@1@XZ 0x140fb40c0 ; unique
+// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@1@XZ 0x140fb40e0 ; prop
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4110 ; prop
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140fb4130 ; unique
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4180 ; prop
+// MS2-PIN: ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4230 ; unique
 // MS2-PIN: ??_GUIUGCPortalDialog@@UEAAPEAXI@Z 0x140fb4360 ; unique
 // MS2-PIN: ?CallDestructors@?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@CAXPEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x140fb43a0 ; unique
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_UgcpEntry@@@@AEBAXXZ 0x140fb4420 ; unique
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_UgcpEntry@@@@AEBAXPEAX@Z 0x140fb4450 ; unique
+// MS2-PIN: ?AddRef@?$MS2Ptr@VMapTile@UIWorldMap@@@@AEBAXXZ 0x140fb4420 ; unique
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VMapTile@UIWorldMap@@@@AEBAXPEAX@Z 0x140fb4450 ; unique
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@V?$allocator@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@2@@std@@@std@@QEAAAEAPEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@2@XZ 0x140fb4550 ; prop
-// MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@2@XZ 0x140fb46c0 ; by hand
+// MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@XZ 0x140fb46c0 ; by hand
 // MS2-PIN: ??$_Emplace_reallocate@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@?$vector@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@V?$allocator@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@2@@std@@QEAAPEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@1@QEAV21@$$QEAV21@@Z 0x140fb1cd0 ; by hand
-// MS2-PIN: ?end@?$vector@V?$MS2Ptr@VUnk_UgcpEntry@@@@V?$allocator@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_UgcpEntry@@@@@std@@@std@@@2@XZ 0x140fb4870 ; prop
+// MS2-PIN: ?end@?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@XZ 0x140fb4870 ; prop
 // MS2-PINS-END tplpin
 //
 // File name assumed (the class name; the exe has no assert path for it).
@@ -85,24 +85,6 @@ static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "
 // ---- unit-local views of exe objects ----
 
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // the target drop down (0x140c28560)
-// One portal target of the UGC manager (a map type with its owner).
-class Unk_UgcpEntry : public CPtred
-{
-public:
-    int m_18;
-    int m_1c;
-    void* m_20;
-    void* m_28;
-    int m_30;
-    int m_34;
-};
-typedef std::vector<MS2Ptr<Unk_UgcpEntry> > Unk_UgcpEntryList;
-typedef std::map<int, Unk_UgcpEntryList> Unk_UgcpEntryMap;
-class Unk_UgcpMgr
-{
-public:
-    Unk_UgcpEntryMap* FUN_141b978c0();                          // +0x18 the entries by map type
-};
 class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;              // ids already remembered
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
@@ -313,23 +295,23 @@ void UIUGCPortalDialog::FUN_140fb1040()
         spCombo.operator->()->AddItemRow(none);
     }
     std::set<int>* pRemembered = reinterpret_cast<std::set<int>*>(&reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->GetPortalFields());
-    Unk_UgcpEntryMap* pEntries = ((class Unk_UgcpMgr*)FUN_140cb17d0())->FUN_141b978c0();
-    Unk_UgcpEntryMap::iterator it;
+    WorldMapManager::TileGroups* pEntries = &reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->GetTileGroups();   // C3: was Unk_UgcpMgr::FUN_141b978c0
+    WorldMapManager::TileGroups::iterator it;
     std::vector<int> ids;
     for (it = pEntries->begin(); it != pEntries->end(); it++)
     {
         if (!FUN_140fb1860(it->first))
             continue;
-        Unk_UgcpEntryList& list = it->second;
-        Unk_UgcpEntryList::const_iterator jEnd = list.end();
-        for (Unk_UgcpEntryList::const_iterator j = list.begin(); j != jEnd; ++j)
+        WorldMapManager::TileVector& list = it->second;
+        WorldMapManager::TileVector::const_iterator jEnd = list.end();
+        for (WorldMapManager::TileVector::const_iterator j = list.begin(); j != jEnd; ++j)
         {
-            MS2Ptr<Unk_UgcpEntry> spEntry = *j;
+            MS2Ptr<UIWorldMap::MapTile> spEntry = *j;
             if (spEntry.operator->()->m_18 != 0)
                 continue;
-            if (Unk_ArrayFind<unsigned int>(DAT_143ab3058, reinterpret_cast<const unsigned int&>(spEntry.operator->()->m_34)) == -1)
+            if (Unk_ArrayFind<unsigned int>(DAT_143ab3058, spEntry.operator->()->m_34) == -1)
                 continue;
-            ids.push_back(spEntry.operator->()->m_34);
+            ids.push_back(reinterpret_cast<const int&>(spEntry.operator->()->m_34));
         }
     }
     std::set<int>& remembered = *pRemembered;

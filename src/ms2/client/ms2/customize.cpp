@@ -81,7 +81,7 @@ int FUN_141423760(const ItemColorEx& kColor, PC* pPc);              // dye the b
 int FUN_141423cf0(__int64, struct Unk_UgcExtra const&, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423cf0
 int FUN_141423fb0(__int64, void*, int, struct Unk_UgcPlayer*, int);   // C3: was FUN_141423fb0
 int FUN_141424230(__int64, struct Unk_UgcPlayer*);   // C3: was FUN_141424230
-int FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int nSlot, PC* pPc);
+int FUN_141424760(MS2Ptr<CItem> spItem, unsigned int* pnColor, int nSlot, struct Unk_UgcPlayer* pPlayer);   // itemugcmesh.cpp's signature
 NiPointer<CItemCustomizeController> FUN_1414131e0(MS2Ptr<CEquipItem> spEquip, PC* pPc, IItemCustomizeEventListener* pListener);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData of an item id
 __int64 FUN_14028d0e0();                                            // a new uid
@@ -480,7 +480,7 @@ int Customize::EditItems::GetColors(int* pnColor, int nSlot)
         return 0;
     if (m_spData->IsAvatarColorItem())
         return FUN_1414239e0((unsigned int*)(pnColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
-    return FUN_141424760(m_spItem, pnColor, nSlot, pPc);
+    return FUN_141424760(m_spItem, (unsigned int*)(pnColor), nSlot, (struct Unk_UgcPlayer*)(pPc));
 }
 MS2_REPLACE_METHOD(0x140CCBCC0, Customize::EditItems, GetColors, 199, 0x8E4E989E);
 

@@ -5,8 +5,8 @@
 // MS2-RANGE: 0x140a45d40-0x140a46ab0 .text$mn
 // MS2-PIN: ??_GCGameOptionPersonalInfoAgreement@@UEAAPEAXI@Z 0x140a46820
 // MS2-PIN: ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46640
-// MS2-PIN: ?FUN_140a463d0@@YA?AV?$MS2Ptr@VUnk_PiCheck@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140a463d0
-// MS2-PIN: ?FUN_140a46480@Unk_PiDialog@@QEAA?AV?$MS2Ptr@VUnk_PiCheck@@@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
+// MS2-PIN: ?FUN_140a463d0@@YA?AV?$MS2Ptr@VASRadioButton@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140a463d0
+// MS2-PIN: ?FUN_140a46480@Unk_PiDialog@@QEAA?AV?$MS2Ptr@VASRadioButton@@@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z 0x140a46480
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoptionpersonalinfoagreement.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameoptionpersonalinfoagreement.h"
@@ -18,20 +18,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <string.h>
-#include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/asradiobutton.h"   // the option radio buttons (ASButton::FUN_1422ce090/0e0)
 
 // ---- unit-local placeholders ----
 static CString s_stun = "stun";     // 0x143ab6740 (dynamic initializers 0x1400c3670 / 0x1400c36a0)
 static CString s_skill = "skill";   // 0x143ab6748
-
-// A checkbox-like AS entity of the option dialog (0x88 bytes).
-class Unk_PiCheck : public CPtred
-{
-public:
-    Unk_PiCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ce4b0
-private:
-    char m_pad[0x88 - sizeof(CPtred)];
-};
 
 // The agreement state (member at +0x30 of the option); helper calls only.
 class Unk_PiState : public Unk_PiAgreeState
@@ -68,7 +59,7 @@ struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Constants::Comm
 struct Unk_PiDialog
 {
     // The check box child of a tab by name (a member: this in rcx, the return slot in rdx).
-    MS2Ptr<Unk_PiCheck> FUN_140a46480(CString name, int nIndex);
+    MS2Ptr<ASRadioButton> FUN_140a46480(CString name, int nIndex);
     char m_pad[0x28];
     int m_nDialogId;    // +0x28, handed to each check box
     char m_pad2c[4];
@@ -87,24 +78,24 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nI
     return FUN_1422bb8f0(szMethod, args);
 }
 
-MS2Ptr<Unk_PiCheck> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
+MS2Ptr<ASRadioButton> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
 {
-    MS2Ptr<Unk_PiCheck> sp(new Unk_PiCheck(v, nId));
+    MS2Ptr<ASRadioButton> sp(new ASRadioButton(v, nId));
     return sp;
 }
 
-MS2Ptr<Unk_PiCheck> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0x140a46480
+MS2Ptr<ASRadioButton> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0x140a46480
 {
     if (m_root.IsNull())
-        return MS2Ptr<Unk_PiCheck>(0);
+        return MS2Ptr<ASRadioButton>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (child.IsDisplayObject())
     {
-        MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(m_nDialogId, child);
+        MS2Ptr<ASRadioButton> check = FUN_140a463d0(m_nDialogId, child);
         if (check.get())
             return check;
     }
-    return MS2Ptr<Unk_PiCheck>(0);
+    return MS2Ptr<ASRadioButton>(0);
 }
 
 // ---- CGameOptionPersonalInfoAgreement ----
@@ -140,30 +131,30 @@ int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, i
 void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 {
     {
-        MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
-            reinterpret_cast<ASButton*>(agree.operator->())->FUN_1422ce090(m_state.m_bAgree);
+            agree->FUN_1422ce090(m_state.m_bAgree);
     }
-    MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
+    MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
-        reinterpret_cast<ASButton*>(deny.operator->())->FUN_1422ce090(m_state.m_bAgree == 0);
+        deny->FUN_1422ce090(m_state.m_bAgree == 0);
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
 {
     {
-        MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
         {
-            if (reinterpret_cast<ASButton*>(agree.operator->())->FUN_1422ce0e0())
+            if (agree->FUN_1422ce0e0())
                 m_state.m_bAgree = true;
         }
     }
     {
-        MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
+        MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
         if (deny.get() != 0)
         {
-            if (reinterpret_cast<ASButton*>(deny.operator->())->FUN_1422ce0e0())
+            if (deny->FUN_1422ce0e0())
                 m_state.m_bAgree = false;
         }
     }

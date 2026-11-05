@@ -25,17 +25,15 @@ public:
 };
 class Unk_BuddyInput : public Unk_BuddyInputBase { public: Unk_BuddyReadStream stream; };
 
-// The application service (class id 0x06100017) looked up through the global service manager cell; the unit only
+// CubeMapInformationService (class id 0x06100017) looked up through the global service manager cell; the unit only
 // calls one lookup method of it. DAT_143b059e8 is the framework (ms2entitymanagerservice.cpp keeps the same view).
-class Unk_Service6100017 : public efd::ISystemService {
-public:
-    static const efd::ClassID CLASS_ID = 0x06100017;
-};
-class CubeMapInformationService   // C3: member view (cubemapinformationservice_3.h brings header statics that move this unit's initializer)
+class CubeMapInformationService : public efd::ISystemService   // C3: member view (cubemapinformationservice_3.h brings header statics that move this unit's initializer)
 {
 public:
+    static const efd::ClassID CLASS_ID = 0x06100017;
     int TryGetHouseMarkPosition(int nKey, Vector3* pOut);       // 0x1410d33a0
 };
+class Unk_Service6100017 : public CubeMapInformationService { };   // the return type the callers of FUN_1401cd040 declare
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
@@ -125,7 +123,7 @@ int CBuddy::FUN_1401cc400(Vector3* out) {
     *out = DAT_143b01a60;
     if ((unsigned)m_b8 > 0) {
         efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040(&DAT_143b059e8));
-        if (reinterpret_cast<CubeMapInformationService*>(service.operator->())->TryGetHouseMarkPosition(m_bc, out)) return 1;
+        if (service->TryGetHouseMarkPosition(m_bc, out)) return 1;
     }
     return 0;
 }
@@ -219,7 +217,7 @@ void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
 MS2_REPLACE_METHOD(0x1401CC7C0, CBuddy, FUN_1401cc7c0, 2087, 0x6A3E5EB7);
 // @0x1401cd040
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework) {
-    return framework->manager->GetSystemServiceAs<Unk_Service6100017>();
+    return static_cast<Unk_Service6100017*>(framework->manager->GetSystemServiceAs<CubeMapInformationService>());
 }
 MS2_REPLACE(0x1401CD040, FUN_1401cd040, 35, 0x3CF7DD05);
 MS2_EMIT_CRT_MEMMOVE_S();

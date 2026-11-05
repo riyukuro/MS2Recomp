@@ -58,7 +58,7 @@
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/fittingdollpc.h"
-#include "ms2/placeholder/asslider.h"   // C3: ASSlider (was Unk_HudSlider members)
+#include "ms2/placeholder/asslider.h"   // C3: ASSlider (was the Unk_HudSlider stand-in)
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/weaponattachtransformnode.h"
@@ -99,6 +99,8 @@
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/placeholder/astextinput.h"  // C3: ASTextInput::FUN_1422e0ab0
 #include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 class PCBase;
 class UIPcBangDialog;
@@ -139,14 +141,6 @@ class Unk_HudButton : public ASButton
 {
 };
 
-class Unk_HudInput : public ASDisplayObject
-{
-public:
-    virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
-    virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
-    virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
-    virtual void vfunc_24(bool bFocus);                                          // 24 set the focus
-};
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -263,9 +257,9 @@ void UIUpperHudDialog::OnLoadComplete()
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__));
     m_nNoticeY = (int)m_noticeText->FUN_1422c1110();
     m_eventText->FUN_1422c2a70(HudClickDelegate(this, &UIUpperHudDialog::OpenEventBrowser), (void*)0);
-    if (FUN_140bc6d10("m_tokenPocketButton", m_tokenPocket))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_tokenPocketButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_tokenPocket)))
         m_tokenPocket->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356cd0), 0);
-    if (FUN_140bc6d10("m_maidStatusButton", m_maidStatus))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_maidStatusButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_maidStatus)))
         m_maidStatus->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d00), 0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBang)); if (m_pcBang == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(101), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButtonCn1", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBangCn1)); if (m_pcBangCn1 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(102), __FUNCTION__)); } while (0);
@@ -273,11 +267,11 @@ void UIUpperHudDialog::OnLoadComplete()
     m_pcBang->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
     m_pcBangCn1->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
     m_pcBangCn2->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
-    if (FUN_140bc6d10("m_fishingBookButton", m_fishingBook))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_fishingBookButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_fishingBook)))
         m_fishingBook->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356dc0), 0);
-    if (FUN_140bc6d10("m_keyboardGuideButton", m_keyboardGuide))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_keyboardGuideButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_keyboardGuide)))
         m_keyboardGuide->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356df0), 0);
-    if (FUN_140bc6d10("m_searchButton", m_search))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_searchButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_search)))
     {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f) == true)
             m_search->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_gamedictionary_tooltip_search"));
@@ -290,12 +284,12 @@ void UIUpperHudDialog::OnLoadComplete()
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xaf) == true)
     {
-        if (FUN_140bc6d10("m_keyboardMode", m_keyboardMode))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_keyboardMode", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_keyboardMode)))
         {
             m_keyboardMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
             m_keyboardMode->vfunc_4(TSingleton<CMouseController>::GetInstance()->HasMode() == 0);
         }
-        if (FUN_140bc6d10("m_mouseMode", m_mouseMode))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_mouseMode", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_mouseMode)))
         {
             m_mouseMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
             m_mouseMode->vfunc_3(TSingleton<CMouseController>::GetInstance()->HasMode());
@@ -303,9 +297,9 @@ void UIUpperHudDialog::OnLoadComplete()
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
-        if (FUN_140bc6d10("m_gamePadOn", m_gamePadOn))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_gamePadOn", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_gamePadOn)))
             m_gamePadOn->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOnClick), 0);
-        if (FUN_140bc6d10("m_gamePadOff", m_gamePadOff))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_gamePadOff", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_gamePadOff)))
             m_gamePadOff->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOffClick), 0);
         SetGamePadMode(*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))));
     }
@@ -406,19 +400,19 @@ int UIUpperHudDialog::vfunc_13()
 {
     if (UISwfEntity::vfunc_13() != 0)
         return 1;
-    if (reinterpret_cast<ASUIComponent*>(m_searchInput.get())->GetFocused() != 0)
+    if (m_searchInput.get()->GetFocused() != 0)
     {
         if (((class Unk_HudKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         {
-            CStringW strText = reinterpret_cast<ASTextInput*>(m_searchInput.get())->GetText();
+            CStringW strText = m_searchInput.get()->GetText();
             if (!strText.IsEmpty())
                 CUserCommandCli::GetInstance()->Execute(StringFormat<CStringW>(L"/search {0}", strText));
-            reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(0);
+            m_searchInput.get()->SetFocused(0);
             return 1;
         }
         else if (((class Unk_HudKeys*)FUN_14025e7c0())->FUN_14116d840())
         {
-            reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(0);
+            m_searchInput.get()->SetFocused(0);
             return 1;
         }
     }
@@ -557,7 +551,7 @@ void UIUpperHudDialog::FUN_141356f90(const Scaleform::GFx::FunctionHandler::Para
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f0b)));
     else
     {
-        reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(1);
+        m_searchInput.get()->SetFocused(1);
         m_searchInput->vfunc_3(1);
         m_search->FUN_1422c1fe0(false);
     }
@@ -568,10 +562,10 @@ void UIUpperHudDialog::FUN_141357050(const Scaleform::GFx::FunctionHandler::Para
 {
     if (m_searchInput->GetVisible())
     {
-        if (reinterpret_cast<ASUIComponent*>(m_searchInput.get())->GetFocused() == 0)
+        if (m_searchInput.get()->GetFocused() == 0)
         {
             m_searchInput->vfunc_3(0);
-            reinterpret_cast<ASTextInput*>(m_searchInput.operator->())->SetTextW(L"");
+            m_searchInput.operator->()->SetTextW(L"");
             m_searchInput->vfunc_24(1);
             m_search->FUN_1422c1fe0(true);
         }
@@ -1320,15 +1314,6 @@ int UIVisitorsBookDialog::vfunc_48()
 
 // ==== UIVisualEffectDialog ====
 
-class Unk_HudSlider : public ASDisplayObject
-{
-public:
-    virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
-    virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
-    virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
-    virtual void vfunc_24(bool b);
-};
-
 class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; bool m_bOutGlow; };      // +0x1e outer glow
 
 // The post process service (0x1409a8b20) and the post effect manager (0x1409a8b00).
@@ -1547,10 +1532,10 @@ void UIVisualEffectDialog::OnLoadComplete()
         }
     }
     m_30->Invoke("initData", obj.FUN_1422bb870());
-    if (MS2Ptr<Unk_HudSlider> spSlider = m_30->FUN_140accef0<Unk_HudSlider>("m_sliderGaussianBlur"))
+    if (MS2Ptr<ASSlider> spSlider = m_30->FUN_140fafed0<ASSlider>("m_sliderGaussianBlur"))
     {
-        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce6a0(3.0f);
-        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce8b0(0.1f);
+        spSlider->FUN_1422ce6a0(3.0f);
+        spSlider->FUN_1422ce8b0(0.1f);
         spSlider->vfunc_24(true);
     }
 }
@@ -1896,9 +1881,9 @@ void UIVisualEffectDialog::FUN_14135d730(ASData& data)
 // @0x14135d960
 void UIVisualEffectDialog::SetSliderValue(const CString& strName, float fValue)
 {
-    MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>(strName);
-    if (static_cast<Unk_HudSlider*>(spSlider) != 0)
-        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce5f0(fValue);
+    MS2Ptr<ASSlider> spSlider = GetChild<ASSlider>(strName);
+    if (static_cast<ASSlider*>(spSlider) != 0)
+        spSlider->FUN_1422ce5f0(fValue);
 }
 
 // @0x14135d9d0

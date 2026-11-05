@@ -166,9 +166,9 @@ public:
     virtual ~DungeonRewardInfo();          // 0x14026c610
     void FUN_14026c660(COutputStream& out);
     void FUN_14026c900(CInPacket& in);
-    unsigned FUN_14026cbf0();
+    __int64 FUN_14026cbf0();               // the exe callers read all of rax (signed compare)
     unsigned FUN_14026cc70();
-    unsigned FUN_14026ccf0();
+    __int64 FUN_14026ccf0();               // the exe callers read all of rax (signed compare)
     unsigned FUN_14026cd70(unsigned key);
     void Clear();
     bool FUN_14026ce30();

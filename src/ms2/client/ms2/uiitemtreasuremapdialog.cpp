@@ -7,6 +7,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemtreasuremapdialog.cpp"    // assumed
 
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList slot 24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uiitemtreasuremapdialog.h"
@@ -19,6 +20,7 @@ static CString s_sndChoice = "Enchant_ItemChoice";
 
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cinpacket.h"
@@ -40,19 +42,6 @@ static CString s_sndChoice = "Enchant_ItemChoice";
 class ASDialog : public ASDisplayObject {};
 class Unk_140acd6e0 : public ASDisplayObject {};                            // the button wrapper
 
-// The item list control of the movie.
-class Unk_TmBag : public ASMovieClip
-{
-public:
-    Unk_TmBag(const Scaleform::GFx::Value& v, int nMovieId);                // 0x1422cf330
-#define TM_V(n) virtual void vfunc_##n();
-    TM_V(16) TM_V(17) TM_V(18) TM_V(19) TM_V(20) TM_V(21) TM_V(22) TM_V(23)
-#undef TM_V
-    virtual void vfunc_24(bool bRefresh);                                   // 24 (+0xc0) refresh
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_TmBag, 0x88);
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
@@ -65,9 +54,8 @@ void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW 
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 void FUN_14141f970(const CString& strBag);                                  // drop an item bag
-void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items,
-                   MS2Ptr<CItem>(*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int n1, int n2);
-MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
+void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void FUN_141415600(const CString& strBindID);                               // release the item bound to the name
 void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int n1, int n2, int n3);   // bind an item to the name
 int FUN_141276180(const CString& strName, const CString& strArg);          // play a system sound
@@ -148,7 +136,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
     FUN_140c55ea0();
     if (m_itemBag.get() != 0)
-        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
+        m_itemBag->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
@@ -235,7 +223,7 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
         return;
     if (m_nState != 0)
         return;
-    size_t nIndex = reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->GetSelectedIndex();
+    size_t nIndex = m_itemBag->GetSelectedIndex();
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return;
     MS2Ptr<CItem> spItem = m_items.GetAt(nIndex);
@@ -310,12 +298,12 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
         m_items.Add(spItem);
     }
     FUN_14141f970(m_strBag);
-    MS2Ptr<CItem> (*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
-    FUN_14141f770(m_strBag, (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x415, 8);
+    MS2Ptr<CItem> (*pfnGetItem)(void*, int) = FUN_141420330;
+    FUN_14141f770(m_strBag, (unsigned)m_items.GetCount(), (void*)&m_items, pfnGetItem, 0x415, 8);
     if (m_itemBag.get() != 0)
     {
-        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->SetSelectedIndex(-1);
-        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->FUN_1422dd1d0();
+        m_itemBag->SetSelectedIndex(-1);
+        m_itemBag->FUN_1422dd1d0();
         m_itemBag->FUN_1407cba60("bagId", m_strBag);
         m_itemBag->vfunc_24(true);
     }

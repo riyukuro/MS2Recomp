@@ -63,7 +63,7 @@ typedef std::_Tree_val<std::_Tree_simple_types<std::pair<unsigned int const, std
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<std::pair<int, int> const, MS2Ptr<SaleStateData> > > > Unk_Tv_141148bc0;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > > const, int> > > Unk_Tv_141148bf0;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<egf::EntityID const, MS2Ptr<Cube> > > > Unk_Tv_141148c20;
-typedef std::_Tree_val<std::_Tree_simple_types<std::pair<egf::EntityID const, Unk_CMISPropPtr> > > Unk_Tv_141148c50;
+typedef std::_Tree_val<std::_Tree_simple_types<std::pair<egf::EntityID const, efd::SmartPointer<egfPhysX::EntityActorData>> > > Unk_Tv_141148c50;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int const, Unk_CMISKindA> > > Unk_Tv_141148c80;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<Unk_CMISKindA const, int> > > Unk_Tv_141148cb0;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<int, int> > > Unk_Tv_141148ce0;

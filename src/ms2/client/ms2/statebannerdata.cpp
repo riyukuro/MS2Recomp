@@ -148,8 +148,7 @@ void StateBanner::vfunc_8(double fTime)
 void StateBanner::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    efd::UInt64 qwId;                   // the exe never constructs the entity-id out-param
-    int nState = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId)));
+    int nState = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     FUN_140b7f320(nState);
 }
 

@@ -18,7 +18,7 @@ class ASTextField;
 class ASButton;
 class ASTextInput;
 class ASDropdownMenu;
-class Unk_DpCheck;
+class ASCheckBox;
 
 // The random packet id range (min, max): Get() returns a random id in the range.
 struct Unk_DpRange
@@ -50,7 +50,7 @@ public:
     void OnDoubleClick(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291440
     bool FUN_141291470();                                       // 0x141291470 read the fixed packet and arm the loop
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
-    MS2Ptr<Unk_DpCheck> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
+    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -74,7 +74,7 @@ private:
     MS2Ptr<ASTextInput> m_randomLoopDelay;                      // +0x300 "m_randomLoopDelay"
     MS2Ptr<ASTextInput> m_randomLoopLength;                     // +0x310 "m_randomLoopLength"
     MS2Ptr<ASTextField> m_randomRemain;                         // +0x320 "m_randomRemain"
-    MS2Ptr<Unk_DpCheck> m_ignoreAdminPacket;                    // +0x330 "m_ignoreAdminPacket"
+    MS2Ptr<ASCheckBox> m_ignoreAdminPacket;                    // +0x330 "m_ignoreAdminPacket"
     MS2Ptr<ASButton> m_usePacketCount;                      // +0x340 "m_usePacketCount"
     MS2Ptr<ASButton> m_usePostClose;                        // +0x350 "m_usePostClose"
     Unk_DpRange m_range;                                        // +0x360 random packet ids

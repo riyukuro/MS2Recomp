@@ -1995,7 +1995,6 @@ struct Unk_BstrBlock
 
 extern void FUN_140297790(void* p);
 extern void** FUN_140298fc0(void* pHolder);
-extern unsigned long long* FUN_14029dcd0();
 extern void FUN_14029b680(void** pp);
 void* FUN_140297d20(Unk_BstrHolderRef* p);
 
@@ -2216,7 +2215,7 @@ __declspec(safebuffers) CStringW FUN_140298ea0(CStringW strKey)      // the exe 
 // @0x14029dce0
 void FUN_14029dce0(const char* pszBuf, const char* pszFormat, _locale_t pLocale, va_list args)
 {
-    __stdio_common_vsscanf(*FUN_14029dcd0() | 1, pszBuf, (size_t)-1, pszFormat, pLocale, args);
+    __stdio_common_vsscanf(*__local_stdio_scanf_options() | 1, pszBuf, (size_t)-1, pszFormat, pLocale, args);
 }
 
 MS2_REPLACE(0x14028B820, FUN_14028b820, 25, 0x5B243679);

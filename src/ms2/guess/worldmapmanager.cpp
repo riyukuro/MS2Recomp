@@ -221,7 +221,6 @@ int FUN_140d01040(CString& strAlign);                                       // t
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-CStringTable* GetStringTable();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pQuest);                                      // the quest id
 int FUN_14074b050(CQuestData* pQuest);                                      // the quest type
@@ -534,7 +533,7 @@ int WorldMapManager::LoadFieldTiles()
         MS2Ptr<UIWorldMap::FieldSearchInfo> spInfo(Unk_BmNewTag(0));
         unsigned nId = spRow->m_nFieldID;
         spInfo->m_18 = nId;
-        spInfo->m_20 = GetStringTable()->FUN_141811980(3, nId);
+        spInfo->m_20 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nId);
         spInfo->m_2c = spRow->m_nContinentCode;
         spInfo->m_2c = spRow->m_bMapSearch;
         unsigned nMapped = 0;
@@ -1009,7 +1008,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             for (size_t i = 0; i < rooms.GetCount(); i++)
             {
                 MS2Ptr<DungeonRoom> spRoom = rooms[i];
-                CStringW strType = GetStringTable()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
+                CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
                 if (FUN_14083fec0(strType, search) != -1)
                 {
                     CStringW strName = FUN_140e14b70(spRoom);
@@ -1061,7 +1060,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             CJobConditionTable::NpcJobDataPtr spGate = CJobConditionTable::GetInstance()->GetData(nNpcId);
             if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
             {
-                CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
+                CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spGate->m_nMoveFieldId));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLabel);
                 if (FUN_14083fec0(strLabel, search) == -1)
                     continue;
@@ -1223,11 +1222,11 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
     if ((spNpc.get() ? true : false) && spNpc->GetFriendly() == 0)
     {
         unsigned short nLevel = spNpc->GetLevel();
-        strText = LocalizedMentorFormat<CStringW, unsigned short, CStringW>(CStringW(L"s_worldmap_search_monster"), FUN_1401aa6a0(npc), nLevel, GetStringTable()->FUN_141811980(0x11, spNpc->GetRace()));
+        strText = LocalizedMentorFormat<CStringW, unsigned short, CStringW>(CStringW(L"s_worldmap_search_monster"), FUN_1401aa6a0(npc), nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, spNpc->GetRace()));
     }
     else
     {
-        CStringW strTitle = GetStringTable()->FUN_141811980(10, npc);
+        CStringW strTitle = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, npc);
         if (strTitle.GetLength() > 0)
             strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_worldmap_search_npc_function"), strTitle, FUN_1401aa6a0(npc));
         else
@@ -1238,7 +1237,7 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
     {
         unsigned nOutdoor = 0;
         if (CFieldMetaTable::GetInstance()->FUN_1406fc110(field, &nOutdoor) != 0)
-            return FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_worldmap_search_npc_indoor"), strText, GetStringTable()->FUN_141811980(3, field));
+            return FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_worldmap_search_npc_indoor"), strText, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field));
     }
     return strText;
 }
@@ -1278,7 +1277,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         {
             MS2Ptr<DungeonRoom> spRoom = rooms[i];
             CStringW strName = FUN_140e14b70(MS2Ptr<DungeonRoom>(spRoom));
-            CStringW strType = GetStringTable()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
+            CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
             ASObj item(2);
             item.FUN_1407cbb20("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
             item.FUN_1409c0d20("id", field);
@@ -1318,7 +1317,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                     MS2Ptr<CFieldDataCli> spTarget = CFieldDataCli::Find(spGate->m_nMoveFieldId);
                     if (spTarget)
                     {
-                        CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
+                        CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spGate->m_nMoveFieldId));
                         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLabel);
                         ASObj item(2);
                         item.FUN_1407cbb20("text", strLabel);
@@ -1380,15 +1379,15 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         if (field == nConnected)
             continue;
         ASObj item(2);
-        item.FUN_1407cbb20("text", GetStringTable()->FUN_141811980(3, nConnected));
+        item.FUN_1407cbb20("text", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nConnected));
         indoors.PushObj(item);
     }
-    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
+    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
     script->FUN_1409c0d20("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);
     script->FUN_1407cbb20("fishingSpot", strFishing);
-    script->FUN_1407cbb20("mapDesc", GetStringTable()->FUN_141811980(0x4b, field));
+    script->FUN_1407cbb20("mapDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4b, field));
     script->FUN_140c16160("dungeon", dungeons);
     script->FUN_140c16160("monster", monsters);
     script->FUN_140c16160("bossMonster", bosses);
@@ -1421,7 +1420,7 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
             missions.PushObj(item);
         }
     }
-    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
+    CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
     script->FUN_1409c0d20("fieldSN", field);
     script->FUN_1407cbb20("title", strTitle);

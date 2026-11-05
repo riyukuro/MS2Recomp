@@ -64,10 +64,10 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 // Out-of-line instantiations (questmanager_2.cpp pattern): the exe calls these rather than inlining them.
-template<> Unk_PayloadPtr<CQuest>::~Unk_PayloadPtr();
-template<> CQuest* Unk_PayloadPtr<CQuest>::get() const;
-template<> CQuest* Unk_PayloadPtr<CQuest>::operator->() const;
-template<> Unk_PayloadPtr<CQuest>::Unk_PayloadPtr(const Unk_PayloadPtr&);
+template<> MS2Ptr<CQuest>::~MS2Ptr();
+template<> CQuest* MS2Ptr<CQuest>::get() const;
+template<> CQuest* MS2Ptr<CQuest>::operator->() const;
+template<> MS2Ptr<CQuest>::MS2Ptr(const MS2Ptr&);
 template<> CStringA StringFormat<int, unsigned int>(const char* format, const int& v0, const unsigned int& v1);   // 0x141aaf900 below
 
 class Unk_140165cf0;
@@ -460,7 +460,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp(szMethod, "onClose") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
             if (spQuest.get())
                 spQuest->RequestTrackingState(0);
         }
@@ -485,7 +485,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     } else if (_stricmp(szMethod, "onEntityOverflow") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
             if (spQuest.get()) {
                 spQuest->RequestTrackingState(0);
                 FUN_141275260(0x5f1, 1, 1);
@@ -495,7 +495,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nQuestId = data.PopUInt();
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+            MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (spQuest.get()) {
                 if (!spQuest->GetTrackingState())
                     return 0;
@@ -710,11 +710,11 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
     int nMode = packet.ReadUInt8();
     switch (nMode) {
     case 2: case 3: case 7: case 8: case 9: case 0x1e: {
-        ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+        ATL::CAtlArray<MS2Ptr<CQuest>> quests;
         ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
         int nMapId = WorldService::GetInstance()->FUN_141bd3060();
         for (size_t i = 0; i < quests.GetCount(); ++i) {
-            Unk_PayloadPtr<CQuest> spQuest(quests[i]);
+            MS2Ptr<CQuest> spQuest(quests[i]);
             if (!spQuest->GetTrackingState())
                 continue;
             if (!spQuest->HasMultiUserRoom(nMapId))
@@ -733,11 +733,11 @@ void UIQuestGuideDialog::FUN_141aaba00()
         return;
     m_30->Invoke("clearAll");
     FUN_141aabcb0();
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
     ASArray list(2);
     for (size_t i = 0; i < quests.GetCount(); ++i) {
-        Unk_PayloadPtr<CQuest> spQuest(quests[i]);
+        MS2Ptr<CQuest> spQuest(quests[i]);
         if (!spQuest->GetTrackingState())
             continue;
         ASObj obj(2);
@@ -993,7 +993,7 @@ MS2_REPLACE_METHOD(0x141aad300, UIQuestGuideDialog, FUN_141aad300, 88, 0x5AE2D51
 
 // @0x141aaf410
 // The chapter sort: by start time.
-static bool FUN_141aaf410(Unk_PayloadPtr<CQuest> a, Unk_PayloadPtr<CQuest> b)
+static bool FUN_141aaf410(MS2Ptr<CQuest> a, MS2Ptr<CQuest> b)
 {
     return a->GetStartTime() <= b->GetStartTime();
 }
@@ -1002,12 +1002,12 @@ static bool FUN_141aaf410(Unk_PayloadPtr<CQuest> a, Unk_PayloadPtr<CQuest> b)
 int UIQuestGuideDialog::FUN_141aad360(int nChapter, int nQuestId)
 {
     int nIndex = 0;
-    std::vector<Unk_PayloadPtr<CQuest>> quests;
+    std::vector<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFilteredVec(quests, 4, 0xb, nChapter);
     std::sort(quests.begin(), quests.end(), FUN_141aaf410);
-    for (std::vector<Unk_PayloadPtr<CQuest>>::iterator it = quests.begin(); it != quests.end(); ++it) {
+    for (std::vector<MS2Ptr<CQuest>>::iterator it = quests.begin(); it != quests.end(); ++it) {
         ++nIndex;
-        Unk_PayloadPtr<CQuest> spQuest(*it);
+        MS2Ptr<CQuest> spQuest(*it);
         if (spQuest->FUN_140bfc580() == nQuestId)
             return nIndex;
     }
@@ -1108,7 +1108,7 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
     ASArray conditions(2);
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         int nQuestId = quests[i];
-        Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+        MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
         for (size_t j = 0; j < spData->m_conditions.GetCount(); ++j) {
             MS2Ptr<CConditionCommonData> spCond(spData->m_conditions[j]);
@@ -1196,7 +1196,7 @@ int UIQuestGuideDialog::FUN_141aae6d0()
     PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (!pActor)
         return 0;
-    ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
+    ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0, -1);
     if (quests.GetCount())
         return 0;

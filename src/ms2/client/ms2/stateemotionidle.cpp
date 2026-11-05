@@ -80,13 +80,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateArg22, m_n64, 0x64);
 
-// Emotion table row (looked up by emotion id).
-class Unk_EmoRow : public CPtred
-{
-public:
-    char m_pad_18[0x18];
-    int m_n30;                                           // +0x30 animation speed
-};
+MS2_CHECK_OFFSET(SkillData, m_nOffsetNameTag, 0x30);   // C3: the emotion skill row read below (was the row view Unk_EmoRow)
 
 class RideOffAction : public CPtred
 {
@@ -233,8 +227,8 @@ void StateEmotion::vfunc_4(StateData* pData)
         if (reinterpret_cast<SkillData*>(spRow.operator->())->GetMainType() != 0xe)
             return;
         m_strAnim = reinterpret_cast<SkillData*>(spRow.operator->())->GetParamStr();
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)spRow.operator->()->m_nOffsetNameTag);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)spRow.operator->()->m_nOffsetNameTag);
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ef10(m_strAnim, 1, 0, false);
         FUN_1417b92a0();
         m_strLoop.Empty();
@@ -681,8 +675,8 @@ void StateEmotionIdle::vfunc_4(StateData* pData)
         }
         m_strAnim = reinterpret_cast<SkillData*>(spRow.operator->())->GetParamStr();
         reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166ef10(m_strAnim, 1, 0, false);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)reinterpret_cast<Unk_EmoRow*>(spRow.operator->())->m_n30);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670330((float)spRow.operator->()->m_nOffsetNameTag);
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_141670360((float)spRow.operator->()->m_nOffsetNameTag);
         m_strNext.Empty();
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strNext, 1))
         {

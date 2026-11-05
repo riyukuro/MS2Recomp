@@ -69,7 +69,7 @@ void CToolCameraMode::vfunc_6(int n)
     CCameraMode::vfunc_6(n);
     if (m_84 == 0)
     {
-        Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+        Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (pTarget)
         {
             m_84 = 1;
@@ -132,9 +132,9 @@ void CToolCameraMode::vfunc_8(double fTime)
 {
     if (m_88)
     {
-        vfunc_24(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), m_8c);
+        vfunc_24(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), m_8c);
     }
-    Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
+    Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     unsigned int bShift = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0);
     unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0);
     unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
@@ -221,9 +221,9 @@ void CToolCameraMode::vfunc_9()
                 m_78.x = -15.0f;
         }
     }
-    Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
     if (FUN_140af8140())
-        reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0170(m_70, true);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140af0170(m_70, true);
 }
 MS2_REPLACE_METHOD(0x141853780, CToolCameraMode, vfunc_9, 687, 0x270105CE);
 

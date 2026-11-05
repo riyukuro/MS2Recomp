@@ -116,11 +116,11 @@ void BlackMarketPageMesoSearch::OnInit()
         }
         m_spSearchBegin->SetDataProvider(list.FUN_1422bb870());
         m_spSearchBegin->SetSelectedIndex(0);
-        m_spSearchBegin->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnRangeDropdownChanged), (ASDropdownMenu*)m_spSearchBegin);
+        m_spSearchBegin->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnRangeDropdownChanged), (ASDropdownMenu*)m_spSearchBegin);
         m_spSearchBegin->vfunc_24(true);
         m_spSearchEnd->SetDataProvider(list.FUN_1422bb870());
         m_spSearchEnd->SetSelectedIndex(list.GetLength() - 1);
-        m_spSearchEnd->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnRangeDropdownChanged), (ASDropdownMenu*)m_spSearchEnd);
+        m_spSearchEnd->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoSearch::OnRangeDropdownChanged), (ASDropdownMenu*)m_spSearchEnd);
         m_spSearchEnd->vfunc_24(true);
     }
     if (m_spSearchButton)
@@ -432,7 +432,7 @@ void BlackMarketPageMesoRegister::OnInit()
     BlackMarketPage::OnInit();
     do { m_30->FUN_140bbe940("m_afterTaxMerat", m_spAfterTaxMerat); if (m_spAfterTaxMerat == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(381), __FUNCTION__)); } while (0);
     if (m_30->FUN_140bbe7c0("m_mesoDropdown", m_spMesoDropdown))
-        m_spMesoDropdown->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c900), 0);
+        m_spMesoDropdown->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c900), 0);
     m_30->FUN_140bbe940("m_mesoSingleRange", m_spSingleRange);
     if (m_30->FUN_140bbe940("m_buyMerat", m_spBuyMerat))
         m_spBuyMerat->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c930));

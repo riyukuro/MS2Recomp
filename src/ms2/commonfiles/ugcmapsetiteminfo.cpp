@@ -49,7 +49,7 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
+CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -145,10 +145,10 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         data = new CUGCMapSetItemData;
         XmlGetAttr((class TiXmlElement*)(pNode), "group", *(unsigned int*)&static_cast<int&>(data->m_nGroup));
         ATL::CAtlArray<unsigned int> arrItemId;
-        CString strItemId = FUN_14015f710(pNode, "itemID", CString(""));
+        CString strItemId = Unk_ReadString((class Unk_XmlNode*)(pNode), "itemID", CString(""));
         XmlSplit(strItemId, arrItemId, ",");
         ATL::CAtlArray<unsigned int> arrItemCount;
-        CString strItemCount = FUN_14015f710(pNode, "itemCount", CString(""));
+        CString strItemCount = Unk_ReadString((class Unk_XmlNode*)(pNode), "itemCount", CString(""));
         XmlSplit(strItemCount, arrItemCount, ",");
         if (arrItemId.GetCount() != arrItemCount.GetCount())
         {
@@ -157,7 +157,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         }
         XmlGetAttr((class TiXmlElement*)(pNode), "minCount", *(unsigned int*)&static_cast<int&>(data->m_nMinCount));
         ATL::CAtlArray<CString> arrAniIdle;
-        CString strAniIdle = FUN_14015f710(pNode, "aniIdle", CString(""));
+        CString strAniIdle = Unk_ReadString((class Unk_XmlNode*)(pNode), "aniIdle", CString(""));
         Unk_SplitA(strAniIdle, (ATL::CAtlArray<CStringA>*)&(arrAniIdle), ",");
         if (arrItemId.GetCount() != arrAniIdle.GetCount())
         {
@@ -165,7 +165,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
             continue;
         }
         ATL::CAtlArray<CString> arrAniWork;
-        CString strAniWork = FUN_14015f710(pNode, "aniWork", CString(""));
+        CString strAniWork = Unk_ReadString((class Unk_XmlNode*)(pNode), "aniWork", CString(""));
         Unk_SplitA(strAniWork, (ATL::CAtlArray<CStringA>*)&(arrAniWork), ",");
         if (arrItemId.GetCount() != arrAniWork.GetCount())
         {
@@ -173,10 +173,10 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
             continue;
         }
         ATL::CAtlArray<CString> arrEffect;
-        CString strEffect = FUN_14015f710(pNode, "effect", CString(""));
+        CString strEffect = Unk_ReadString((class Unk_XmlNode*)(pNode), "effect", CString(""));
         Unk_SplitA(strEffect, (ATL::CAtlArray<CStringA>*)&(arrEffect), ",");
         ATL::CAtlArray<CString> arrEffectNode;
-        CString strEffectNode = FUN_14015f710(pNode, "effectNode", CString(""));
+        CString strEffectNode = Unk_ReadString((class Unk_XmlNode*)(pNode), "effectNode", CString(""));
         Unk_SplitA(strEffectNode, (ATL::CAtlArray<CStringA>*)&(arrEffectNode), ",");
         for (size_t i = 0; i < arrItemId.GetCount(); ++i)
         {

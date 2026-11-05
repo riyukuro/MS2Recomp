@@ -171,7 +171,7 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 class UIWebBrowser* FUN_140c43790(int nId);
 
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-GFxManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 
 // The 8-byte min/max pair constructed (and unused) by the record builder.
 struct Unk_PciRange
@@ -193,7 +193,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
-CStringTable* GetStringTable();
 CStringW FUN_141b720b0(int nTitle, __int64 n);
 CStringW FUN_141b72150(int nTitle, int nGender);
 CStringW GetStatCommonText(unsigned nStat);
@@ -907,7 +906,7 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strValue = StringFormat(L"{0}", (unsigned int)m_spInfo->m_3cc);
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
-        spItemLevel->Invoke("changeTooltipText", FUN_14025e7a0()->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
+        spItemLevel->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
     if (MS2Ptr<ASLabel> spAttack = GetChild<ASLabel>("m_attackInfo"))
     {
@@ -918,7 +917,7 @@ void UIPCInfoDialog::vfunc_86()
         FUN_140cfee80((*spAttack).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->Localize("$s_myInfo_label_attackScore"));
+            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_attackScore");
@@ -937,7 +936,7 @@ void UIPCInfoDialog::vfunc_86()
         FUN_140cfee80((*spDefense).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->Localize("$s_myInfo_label_defenseScore"));
+            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_defenseScore");
@@ -1175,7 +1174,7 @@ void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
         spImage->vfunc_13(strFrame);
     }
     if (MS2Ptr<ASLabel> spJob = GetChild<ASLabel>("m_job"))
-        spJob->FUN_1422e4a50(GetStringTable()->FUN_141811980(6, nJob));
+        spJob->FUN_1422e4a50(TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
 }
 MS2_REPLACE_METHOD(0x141333180, UIPCInfoDialog, vfunc_94, 437, 0x6E3D79C9);
 
@@ -1922,12 +1921,12 @@ CStringW FUN_14132ba90(const int& nLayer)
     switch (nLayer)
     {
     case 0:
-        return FUN_14025e7a0()->Localize("$s_myInfo_game");
+        return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_game");
     case 1:
-        return FUN_14025e7a0()->Localize("$s_myInfo_skin");
+        return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_skin");
     case 2:
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e))
-            return FUN_14025e7a0()->Localize("$s_myInfo_codi");
+            return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_codi");
         break;
     }
     return L"";

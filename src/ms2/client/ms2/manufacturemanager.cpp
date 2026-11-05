@@ -8,7 +8,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?IsNull@?$Unk_MfValuePtr@UUnk_MfIngredient@@@@QEBA_NXZ 0x140d51d00 ; unique
 // MS2-PIN: ?IsNull@?$Unk_MfValuePtr@UUnk_MfMaidMsg@@@@QEBA_NXZ 0x140d51d30 ; prop
-// MS2-PIN: ?IsNull@?$MS2Ptr@VUnk_MfMaid@@@@QEBA_NXZ 0x140d51d60 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCMaid@@@@QEBA_NXZ 0x140d51d60 ; unique
 // MS2-PIN: ?FUN_140d52020@CManufacture@@QEAA_JXZ 0x140d52020 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\manufacturemanager.cpp"
@@ -24,6 +24,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cmaid.h"
+#include "ms2/placeholder/cnpc.h"   // C3: CNpc::FUN_141093800 (the npc's maid)
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/socketptr.h"
 #include "ms2/placeholder/uiobject.h"
@@ -109,15 +110,7 @@ struct Unk_MfRecipe                                             // maid recipe (
 };
 MS2_CHECK_OFFSET(Unk_MfRecipe, m_aIngredients, 0x38);
 
-class Unk_MfMaid : public CPtred                                // the maid object of an npc (only the message id is used)
-{
-public:
-    char m_pad_18[0x34 - 0x18];
-    int m_nMsgId;                                               // +0x34
-};
-MS2_CHECK_OFFSET(Unk_MfMaid, m_nMsgId, 0x34);
-
-class Unk_MfNpc { public: MS2Ptr<Unk_MfMaid> FUN_141093800(); };    // npc: its maid (empty when it has none)
+class Unk_MfNpc;                                                // the npc (a CNpc; FUN_141093800 is its maid)
 
 class Unk_MfRecipeTable { public: Unk_MfValuePtr<Unk_MfRecipe> FUN_1406855c0(int nRecipeId); };
 class Unk_MfMsgTable { public: Unk_MfValuePtr<Unk_MfMaidMsg> FUN_14067fd60(int nMaidId); };
@@ -471,10 +464,10 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
     CStringW strText(L"");
     if (pNpc == 0)
         return strText;
-    MS2Ptr<Unk_MfMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = reinterpret_cast<CNpc*>(pNpc)->FUN_141093800();
     if (spMaid.IsNull())
         return strText;
-    Unk_MfValuePtr<Unk_MfMaidMsg> spMsg = reinterpret_cast<Unk_MfMsgTable*>(CMaidManufactureMsgTable::GetInstance())->FUN_14067fd60(spMaid.get()->m_nMsgId);
+    Unk_MfValuePtr<Unk_MfMaidMsg> spMsg = reinterpret_cast<Unk_MfMsgTable*>(CMaidManufactureMsgTable::GetInstance())->FUN_14067fd60(spMaid.get()->m_nMaidId);
     if (spMsg.IsNull())
         return strText;
     switch (nType)

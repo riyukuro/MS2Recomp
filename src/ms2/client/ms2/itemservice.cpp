@@ -63,12 +63,10 @@ CLogString* GetLogString();
 template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                     const T& first);                // 0x1403a1280 for T = const char*
 
-class Unk_TrigAnimSvc2 { public: efd::Category FUN_141235eb0(); };
+class Unk_FcAnimSvc { public: efd::Category GetCatAnim(); };   // C3: functioncubeobject.cpp's view (0x141235eb0)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
-// The model owner of CEquipModel is the CEquipItem (its MS2Ptr copy is the CPtred-generic 0x140884f30).
-class Unk_EquipModelOwner : public CPtred {};
 
 void* FUN_141200820(CEquipModel* self);                             // the owner PC (0 when none; equipmodel.cpp)
 #define IsModel(p) static_cast<CEquipModel*>(p)
@@ -209,7 +207,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
                 strPath = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411ea5d0(strPath);
             if (pPart->isNif == 0)
             {
-                MS2Ptr<CKfmModel> spModel(new CKfmModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
+                MS2Ptr<CKfmModel> spModel(new CKfmModel(spEquip,
                                                         const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
                 if (!spModel->vfunc_4(strPath))
                 {
@@ -220,7 +218,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
             }
             else
             {
-                MS2Ptr<CNifModel> spModel(new CNifModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
+                MS2Ptr<CNifModel> spModel(new CNifModel(spEquip,
                                                         const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
                 NiAVObjectPtr spRoot(0);
                 if (nCache != 0)
@@ -365,7 +363,7 @@ efd::AsyncResult CItemService::OnInit()
     m_spMessages->Subscribe(this, m_catGlobal, 0, false);
     m_spMessages->Subscribe(this, m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()->GetEntityLoadCategory(), 0, false);
     m_spMessages->Subscribe(this, s_catAnimationChannel, 0, false);
-    m_spMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
+    m_spMessages->Subscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0, false);
     return efd::AsyncResult_Complete;
 }
 
@@ -391,7 +389,7 @@ efd::AsyncResult CItemService::OnShutdown()
         m_spMessages->Unsubscribe(this, m_catGlobal, 0);
         m_spMessages->Unsubscribe(this, m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()->GetEntityLoadCategory(), 0);
         m_spMessages->Unsubscribe(this, s_catAnimationChannel, 0);
-        m_spMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc2*>(FUN_141b6f910())->FUN_141235eb0(), 0);
+        m_spMessages->Unsubscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0);
     }
     return efd::AsyncResult_Complete;
 }

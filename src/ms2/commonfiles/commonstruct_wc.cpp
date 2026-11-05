@@ -737,4 +737,6 @@ void FUN_1402789b0(i64 al, i64 list, i64 v)
 #include "ms2/placeholder/tptrvalue.h"
 class CUserLimitHistory;
 template TPtredDummy<ATL::CAtlList<MS2Ptr<CUserLimitHistory> > >* TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory> > >::Allocate(void*);
+// The exe's RTTI names this class TPtredDummy<CAtlList<TPtr<CUserLimitHistory>>>, so the vftable is pinned.
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@6B@ 0x142d15c08
 // MS2-PIN: ?Allocate@?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@CAPEAV?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@PEAX@Z 0x140276880

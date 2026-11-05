@@ -248,7 +248,6 @@ bool GuideTriggerEventGroup::HasSubValue(int nValue)
 // ---- dynamic initializers (.text$di) -------------------------------------------------------------------------------------
 
 #ifndef MS2_HOOK_DLL
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 struct Unk_RegMarker {};
 
 // @0x1400f2de0
@@ -258,12 +257,12 @@ static Unk_1402a9d70 s_8ee0(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_
 // @0x1400f2e30
 static char s_regAchieveExistTrophy;
 static Unk_RegMarker s_initAchieveExistTrophy =
-    (FUN_140316aa0(&s_regAchieveExistTrophy, CStringW(L"CGuideConditionAchieveExistTrophy"), CGuideConditionAchieveExistTrophy::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regAchieveExistTrophy)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionAchieveExistTrophy"), CGuideConditionAchieveExistTrophy::CreateObject), Unk_RegMarker());
 
 // @0x1400f2e80
 static char s_regAchieveTab;
 static Unk_RegMarker s_initAchieveTab =
-    (FUN_140316aa0(&s_regAchieveTab, CStringW(L"CGuideConditionAchieveTab"), CGuideConditionAchieveTab::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regAchieveTab)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionAchieveTab"), CGuideConditionAchieveTab::CreateObject), Unk_RegMarker());
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb10d0-0x142cb11a0 .text$yd

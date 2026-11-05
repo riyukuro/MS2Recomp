@@ -295,7 +295,7 @@ public:
 };
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
-void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);  // split into ids
+void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);           // unsigned attribute
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);  // the document's first child element
 __int64 FUN_14028d0e0();                            // the current server time
@@ -948,14 +948,14 @@ void CGameEventValueBattlePetSpawn::AddSpawn(int eventId, const CStringW& strVal
     if (strFields.IsEmpty())
         return;
     ATL::CAtlArray<unsigned> fields;
-    FUN_140274fc0(strFields, fields, L",");
+    FUN_140274fc0(strFields, &fields, L",");
     if (fields.IsEmpty())
         return;
     CStringW strProbabilities = spXml->FUN_14042cad0(L"spawnProbabilities", L"");
     if (strProbabilities.IsEmpty())
         return;
     ATL::CAtlArray<unsigned> probabilities;
-    FUN_140274fc0(strProbabilities, probabilities, L",");
+    FUN_140274fc0(strProbabilities, &probabilities, L",");
     if (probabilities.IsEmpty())
         return;
     if (fields.GetCount() != probabilities.GetCount())
@@ -964,7 +964,7 @@ void CGameEventValueBattlePetSpawn::AddSpawn(int eventId, const CStringW& strVal
     if (strCounts.IsEmpty())
         return;
     ATL::CAtlArray<unsigned> counts;
-    FUN_140274fc0(strCounts, counts, L",");
+    FUN_140274fc0(strCounts, &counts, L",");
     if (counts.IsEmpty())
         return;
     if (fields.GetCount() != counts.GetCount())
@@ -973,7 +973,7 @@ void CGameEventValueBattlePetSpawn::AddSpawn(int eventId, const CStringW& strVal
     if (strPets.IsEmpty())
         return;
     ATL::CAtlArray<unsigned> pets;
-    FUN_140274fc0(strPets, pets, L",");
+    FUN_140274fc0(strPets, &pets, L",");
     if (pets.IsEmpty())
         return;
     if (Unk_LockGuard guard = m_lock) {} else
@@ -1003,7 +1003,7 @@ void CGameEventValueBattlePetSpawn::RemoveSpawn(int eventId, const CStringW& str
     if (strFields.IsEmpty())
         return;
     ATL::CAtlArray<unsigned> fields;
-    FUN_140274fc0(strFields, fields, L",");
+    FUN_140274fc0(strFields, &fields, L",");
     if (fields.IsEmpty())
         return;
     if (Unk_LockGuard guard = m_lock) {} else
@@ -1041,12 +1041,12 @@ void CGameEventValueBattlePetSpawn::AddImprove(unsigned eventId, const CStringW&
         return;
     CStringW strFields = spXml->FUN_14042cad0(L"targetFieldIDs", L"");
     ATL::CAtlArray<unsigned> fields;
-    FUN_140274fc0(strFields, fields, L",");
+    FUN_140274fc0(strFields, &fields, L",");
     if (fields.IsEmpty())
         return;
     CStringW strProbabilities = spXml->FUN_14042cad0(L"improveProbabilities", L"");
     ATL::CAtlArray<unsigned> probabilities;
-    FUN_140274fc0(strProbabilities, probabilities, L",");
+    FUN_140274fc0(strProbabilities, &probabilities, L",");
     if (fields.GetCount() != probabilities.GetCount())
         return;
     if (Unk_LockGuard guard = m_lock) {} else
@@ -1067,7 +1067,7 @@ void CGameEventValueBattlePetSpawn::RemoveImprove(int eventId, const CStringW& s
         return;
     CStringW strFields = spXml->FUN_14042cad0(L"targetFieldIDs", L"");
     ATL::CAtlArray<unsigned> fields;
-    FUN_140274fc0(strFields, fields, L",");
+    FUN_140274fc0(strFields, &fields, L",");
     if (fields.IsEmpty())
         return;
     if (Unk_LockGuard guard = m_lock) {} else

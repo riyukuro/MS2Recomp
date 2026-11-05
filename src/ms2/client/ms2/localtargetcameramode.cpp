@@ -164,7 +164,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else if (m_17c != 0)
     {
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
         if (!pTarget)
         {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aec8a0(false);
@@ -178,7 +178,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else if (m_180 != 0)
     {
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
         if (!pTarget)
         {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aec8a0(false);
@@ -190,7 +190,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         }
     }
 
-    Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+    Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
     if (!pTarget)
         return;
 
@@ -223,11 +223,11 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 m_d8.m_pos = m_108.m_setting.m_c;
                 vfunc_39(fTime);
                 m_178 = 0;
-                ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_108));
+                (TSingleton<CameraMgr>::GetInstance())->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_108));
                 if (m_1ec == 0 || m_1ec == 2)
-                    ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140947980(2);
+                    (TSingleton<CameraMgr>::GetInstance())->FUN_140947980(2);
                 else
-                    ((class CameraMgr*)(class Unk_CameraManager*)(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140947980(m_1ec);
+                    (TSingleton<CameraMgr>::GetInstance())->FUN_140947980(m_1ec);
                 vfunc_11(m_108.m_setting.m_0);
             }
             else
@@ -298,7 +298,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
     }
     else
     {
-        Vector3 ptMove = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d00();
+        Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
             m_1f0 = (int)((float)m_1f0 - ptMove.x);
@@ -325,7 +325,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
 void CLocalTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B);
 
@@ -358,7 +358,7 @@ void CLocalTargetCameraMode::FUN_140d4f680(const Unk_CameraSetup& setup)
     m_108 = setup;
     m_178 = 1;
     m_1f0 = 0;
-    Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60())));
+    Unk_TargetRpg* pRpg = reinterpret_cast<Unk_TargetRpg*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60())));
     if (pRpg)
     {
         m_1ac = pRpg->vfunc_20();
@@ -412,7 +412,7 @@ bool CLocalTargetCameraMode::FUN_140d4fa60(const Unk_CameraSetup& setup)
     if (m_178 == 0)
     {
         Vector3 ptPos = setup.m_setting.m_c;
-        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+        Unk_TargetEnt* pTarget = static_cast<Unk_TargetEnt*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
         if (pTarget)
             ptPos = pTarget->vfunc_18();
         m_108 = setup;

@@ -22,20 +22,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/asbutton.h"
 
 // ---- unit-local views of exe types ----
 
-// The confirm button (click callback binding).
-class Unk_SumButton : public ASDisplayObject
-{
-public:
-};
-
-// The text input control.
-class Unk_SumText : public ASDisplayObject
-{
-public:
-};
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // Keyboard state (FUN_14025e7c0).
 class Unk_SumKeys : public CInputKeyHandler {};
@@ -84,10 +75,10 @@ void UIHomeSummonDialog::OnLoadComplete()
         return;
     FUN_141925ec0("m_closeButton");
     FUN_140bc6d10("m_confirmButton", m_180);
-    static_cast<ASMovieClip*>((ASDisplayObject*)m_180.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
+    m_180->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
     FUN_14129a040("m_textInput", m_190);
-    reinterpret_cast<ASTextInput*>(m_190.operator->())->SetEditable(1);
-    reinterpret_cast<ASTextInput*>(m_190.operator->())->SetFocused(1);
+    m_190.operator->()->SetEditable(1);
+    m_190.operator->()->SetFocused(1);
     FUN_141901390(0, vfunc_48());
 }
 MS2_REPLACE_METHOD(0x141299880, UIHomeSummonDialog, OnLoadComplete, 553, 0x9A682978);
@@ -111,7 +102,7 @@ int UIHomeSummonDialog::vfunc_13()
     }
     else if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0)
     {
-        CStringW strText = reinterpret_cast<ASTextInput*>(m_190.operator->())->GetText();
+        CStringW strText = m_190.operator->()->GetText();
         if (!strText.IsEmpty())
             Summon();
     }
@@ -133,13 +124,13 @@ void UIHomeSummonDialog::Summon()
         return;
     if (m_190 == 0)
         return;
-    CStringW strText = reinterpret_cast<ASTextInput*>(m_190.operator->())->GetText();
+    CStringW strText = m_190.operator->()->GetText();
     if (strText.IsEmpty())
         return;
     if (strText.GetLength() < 2)
     {
-        reinterpret_cast<ASTextInput*>(m_190.operator->())->SetTextW(L"");
-        reinterpret_cast<ASTextInput*>(m_190.operator->())->FocusAndSetSelection(0, 0);
+        m_190.operator->()->SetTextW(L"");
+        m_190.operator->()->FocusAndSetSelection(0, 0);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -176,8 +167,8 @@ void UIHomeSummonDialog::SetName(CString strName)
 MS2_REPLACE_METHOD(0x141299EB0, UIHomeSummonDialog, SetName, 65, 0x05FDD060);
 
 // @0x14129a040
-MS2Ptr<Unk_SumText> UIHomeSummonDialog::FUN_14129a040(const CString& strName, MS2Ptr<Unk_SumText>& out)
+MS2Ptr<ASTextInput> UIHomeSummonDialog::FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out)
 {
-    out = FUN_140e35bd0(strName);
+    out = GetChild<ASTextInput>(strName);
     return out;
 }

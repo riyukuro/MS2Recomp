@@ -37,7 +37,6 @@ public:
     void FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50890 "min size" button
     void FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50910 "max size" button
     void FUN_141b509b0();                                       // 0x141b509b0 show the min / max size button that applies
-    template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out);   // 0x140bc6d10 bind a child
 
 protected:
     MS2_LAYOUT_FRIEND;

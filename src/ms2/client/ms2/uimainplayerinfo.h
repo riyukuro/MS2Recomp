@@ -106,8 +106,8 @@ public:
     // ---- non-virtual members, sorted by address ----
     void FUN_1419f0bb0(Unk_MpAchieve* pAchieve);
     void AppendMessage(const CStringW& strMessage, const CString& strType);
-    void AddBuffEffect(MS2Ptr<Unk_AsBuff> spBuff);
-    void UpdateBuffEffect(MS2Ptr<Unk_AsBuff> spBuff);
+    void AddBuffEffect(MS2Ptr<AdditionalCli> spBuff);
+    void UpdateBuffEffect(MS2Ptr<AdditionalCli> spBuff);
     void RemoveBuffEffect(int nBuffId);
     void FUN_1419f1200(int nId, int nLevel);
     void FUN_1419f1370(int nId);
@@ -156,7 +156,7 @@ private:
 
     MS2Ptr<ASUIComponent> m_playerInfo;                 // +0x188 "m_playerInfo"
     MS2Ptr<ASEffectManager> m_effectManager;            // +0x198 "m_effectManager"
-    ATL::CAtlMap<int, MS2Ptr<Unk_AsBuff> > m_pending;   // +0x1a8 buff id -> buff, kept until the strip is bound
+    ATL::CAtlMap<int, MS2Ptr<AdditionalCli> > m_pending;   // +0x1a8 buff id -> buff, kept until the strip is bound
     int m_nHP[2];                                       // +0x1f0 [0] current, [1] max
     int m_nSP[2];                                       // +0x1f8
     int m_nEP[2];                                       // +0x200

@@ -31,6 +31,7 @@
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/itemremakeoption.h"   // C3: FUN_140615ca0
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2format.h"
@@ -67,16 +68,6 @@ public:
     int m_nValue;       // +0x20
 };
 MS2_CHECK_SIZE(Unk_StatRow, 0x28);
-
-// The chat panel's text input (a Scaleform text field with an html getter/setter).
-class Unk_ChatInput : public ASDisplayObject
-{
-public:
-    virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
-    virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
-    virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
-    virtual void vfunc_24(bool bFocus);                     // 24 set the focus
-};
 
 class Unk_ChatLog;
 class Unk_ChatMessenger;
@@ -120,7 +111,6 @@ int FUN_140718200(const CStringW& str);
 unsigned __int64 FUN_140718370(const CStringW& str);
 bool FUN_14053f8c0(unsigned nUid);
 bool FUN_14053f940(unsigned nUid);
-void FUN_140615ca0(MS2Ptr<CItem> spItem, int nMode, ATL::CAtlArray<MS2Ptr<Unk_StatRow> >& rows);
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca4bc0();                                       // the exe's atexit destructors of the string arrays / marker
@@ -346,7 +336,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
     CStringW strLines;
     CStringW strSeparator(L", ");
     ATL::CAtlArray<MS2Ptr<Unk_StatRow> > rows;
-    FUN_140615ca0(spItem, 2, rows);
+    FUN_140615ca0(spItem, 2, reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItemRemakeOptionUtil::TStatInfo> >&>(rows));
     if (!rows.IsEmpty())
     {
         std::vector<std::pair<int, int> > wanted;
@@ -430,13 +420,13 @@ bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW st
 
 // Removes the links from the chat input that were not taken from the list (hand-typed links are not allowed).
 // @0x140d2c2a0
-void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrLinks)
+void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& arrLinks)
 {
-    if (reinterpret_cast<MS2Ptr<ASUIComponent>&>(spInput)->GetFocused() == 0)
+    if (spInput->GetFocused() == 0)
         return;
     if (arrLinks.IsEmpty())
         return;
-    CStringW strHtml = reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->GetHtmlText();
+    CStringW strHtml = spInput->GetHtmlText();
     if (strHtml.IsEmpty())
         return;
 
@@ -455,13 +445,13 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
         }
         if (bChanged)
         {
-            reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetHtmlTextW(strHtml);
+            spInput->SetHtmlTextW(strHtml);
             spInput->vfunc_24(true);
-            CStringW strText = reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
+            CStringW strText = spInput->GetText();
             if (strText.IsEmpty())
             {
                 CStringW strEmpty(L"<Font></Font>");
-                reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetHtmlTextW(strEmpty);
+                spInput->SetHtmlTextW(strEmpty);
                 spInput->vfunc_24(true);
             }
         }

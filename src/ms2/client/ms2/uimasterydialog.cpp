@@ -52,6 +52,7 @@
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/asradiobutton.h"   // the "m_grade00".. toggles
 
 #include "uimasterydialog.h"
 #include "uidailymissiondialog.h"   // C3: UIDailyMissionDialog::FUN_140c02870 (the tab strip lookup)
@@ -192,13 +193,10 @@ public:
     virtual void vfunc_24(bool b);
     void FUN_1409c0dc0(const char* szName, const char* szValue);     // the ASObj setters, applied to the control
     void FUN_1407cb9c0(const char* szName, int n);
-    MS2Ptr<class Unk_MToggle> FUN_140e28bc0(const CString& strName);
 };
 
 // "m_mainTab" / "m_gradeGroup" (a button group: selectedIndex).
 template<> MS2Ptr<ASEventDispatcher> AScript::FUN_140eb9cf0<ASEventDispatcher>(const CString& strName);
-// "m_grade00" ... (a toggle button).
-class Unk_MToggle : public Unk_MCtl { };
 // "m_guideBar" of the level control.
 using Unk_MGuide = ASUIComponent;   // C3 type identity: Unk_MGuide stood in for ASUIComponent
 // "m_levelControl" / "m_magicScrollControl".
@@ -244,7 +242,8 @@ int FUN_140eb8eb0(MS2Ptr<ItemHousing> spFurn);
 bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsInt
 unsigned int FUN_140889fd0(const void* p);                          // the map key hash
 // ---- housing / furniture / scroll tables ----
-class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
+class CMasteryInteriorTable;
+CMasteryInteriorTable* FUN_140933200();
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
 extern ATL::CAtlArray<int> DAT_143ab32b8;   // scenestategame.cpp
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
@@ -939,16 +938,16 @@ void UIMasteryDialog::FUN_140eb24a0()
         ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_mastery))->FUN_140d43990();
         spLevel->Invoke("removeGradeAll");
         unsigned short nCur = DAT_143ab291c;
-        unsigned short nMax = ((CMasteryInteriorTable*)FUN_140933200())->FUN_140ebb020();
+        unsigned short nMax = FUN_140933200()->FUN_140ebb020();
         int nSum = 0;
         unsigned int nSumCur = 0;
         ASArray rows(2);
         for (int nLevel = 1; nLevel <= (int)nMax; nLevel++) {
             Unk_MItemArray items;
-            ((CMasteryInteriorTable*)FUN_140933200())->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), items);
+            FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), items);
             if (nLevel != 1 && items.GetCount() == 0)
                 continue;
-            int nAdd = ((CMasteryInteriorTable*)FUN_140933200())->GetMasteryValue(nLevel);
+            int nAdd = FUN_140933200()->GetMasteryValue(nLevel);
             nSum += nAdd;
             if (nLevel <= (int)nCur)
                 nSumCur += nAdd;
@@ -971,10 +970,10 @@ void UIMasteryDialog::FUN_140eb24a0()
         }
         spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
         CStringW strGrade = StringFormat(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
-        if (DAT_143ab291c == ((CMasteryInteriorTable*)FUN_140933200())->FUN_140ebb020()) {
+        if (DAT_143ab291c == FUN_140933200()->FUN_140ebb020()) {
             spLevel->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
         } else {
-            MS2Ptr<MasteryInteriorInfo> spNext = ((CMasteryInteriorTable*)FUN_140933200())->GetMastery((unsigned short)(DAT_143ab291c + 1));
+            MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery((unsigned short)(DAT_143ab291c + 1));
             if (spNext)
                 spLevel->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_nValue, CStringW(strGrade), 0);
         }
@@ -1065,11 +1064,11 @@ void UIMasteryDialog::FUN_140eb3460()
             if (nG2 == 0 && nSel == 2)
                 spGroup->Invoke("setSelectedButtonByIndex", 0);
         }
-        if (MS2Ptr<Unk_MToggle> spT0 = spCtrl->FUN_140e28bc0("m_grade00"))
+        if (MS2Ptr<ASRadioButton> spT0 = spCtrl->FUN_140e159f0<ASRadioButton>("m_grade00"))
             spT0->vfunc_3(nG0);
-        if (MS2Ptr<Unk_MToggle> spT1 = spCtrl->FUN_140e28bc0("m_grade01"))
+        if (MS2Ptr<ASRadioButton> spT1 = spCtrl->FUN_140e159f0<ASRadioButton>("m_grade01"))
             spT1->vfunc_3(nG1);
-        if (MS2Ptr<Unk_MToggle> spT2 = spCtrl->FUN_140e28bc0("m_grade02"))
+        if (MS2Ptr<ASRadioButton> spT2 = spCtrl->FUN_140e159f0<ASRadioButton>("m_grade02"))
             spT2->vfunc_3(nG2);
     }
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {

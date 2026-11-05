@@ -42,7 +42,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160).
 class Unk_MentorSchedule : public CGameEventValueMentoring { };
-class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
+class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3: was Unk_MentorScheduleHolder::FUN_14041d160 (gameeventreturnuser.cpp)
 class CGameEventValueManager;
 
 // The blocked-action flags.
@@ -136,7 +136,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
         }
         FUN_141925fa0(CString("m_mentorDragBar"));
         CMenteeSearchParam param;
-        param.m_nOption30 = reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetId();
+        param.m_nOption30 = reinterpret_cast<Unk_MentorSchedule*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->GetId();
         CMenteeSearchManager::GetInstance()->RequestSearch(&param);
     }
     else
@@ -235,7 +235,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
+            CMsTime tEnd(reinterpret_cast<Unk_MentorSchedule*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->GetEndTime());
             int nDay = tEnd.GetDay();
             int nMonth = tEnd.GetMonth();
             int nYear = tEnd.GetYear();

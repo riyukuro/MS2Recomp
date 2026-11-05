@@ -5,7 +5,7 @@
 #include "ms2/placeholder/cgemstoneitem.h"
 class ASSlot;
 class CMsgBoxData;
-class Unk_SocketPageButton : public ASUIComponent {};
+#include "ms2/placeholder/asbutton.h"   // C3: the page buttons (MS2Ptr<ASButton>)
 
 class ItemSocketSystemPageGemStoneManage : public ItemSocketSystemPageBase, public UIItemEventListener {
 public:
@@ -45,7 +45,7 @@ public:
     CAtlArray<MS2Ptr<CItem>> m_gems;
     CAtlArray<MS2Ptr<CGemStoneItem>> m_sockets;
     MS2Ptr<Unk_SocketPageBag> m_equipmentControl, m_gemControl;
-    MS2Ptr<Unk_SocketPageButton> m_debugButton;
+    MS2Ptr<ASButton>             m_debugButton;
     int m_selectedType;
 };
 MS2_CHECK_SIZE(ItemSocketSystemPageGemStoneManage, 0x150);

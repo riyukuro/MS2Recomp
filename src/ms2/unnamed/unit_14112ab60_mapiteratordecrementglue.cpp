@@ -172,7 +172,7 @@ void Unk_DkLessAnchor(const void* a, const void* b, const int& c, const int& d)
 
 // Sorts entities by their distance to the player (the lambda's capture) from the banner-style point property 0xfd95ca52.
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-float FUN_140966f00(NiPoint3 kA, Vector3 kB);       // the distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
 struct Unk_DkNearer
 {
@@ -185,8 +185,8 @@ struct Unk_DkNearer
         Vector3 kPosB = DAT_143b01a60;
         kA->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosA));
         kB->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosB));
-        float fA = FUN_140966f00(kPlayer, kPosA);
-        return fA < FUN_140966f00(kPlayer, kPosB);
+        float fA = FUN_140966f00(reinterpret_cast<const Vector3&>(kPlayer), kPosA);
+        return fA < FUN_140966f00(reinterpret_cast<const Vector3&>(kPlayer), kPosB);
     }
 };
 bool Unk_DkNearerAnchor(GameObject* pPlayer, egf::EntityPtr kA, egf::EntityPtr kB)

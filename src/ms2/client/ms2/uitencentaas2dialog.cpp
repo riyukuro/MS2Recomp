@@ -29,15 +29,6 @@ class Unk_AasImage : public AScript                                         // t
 public:
     char m_pad_ascript[0x90 - sizeof(AScript)];
 };
-class Unk_AasSource;
-struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
-{
-    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
-    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
-    ~Unk_AasSourcePtr();                                                    // 0x140d03100
-    void* m_0;
-    void* m_p;
-};
 class Unk_AasConstInt { public: int m_n; char m_pad_04[0x54]; };            // one value of the client constants
 class Unk_AasConsts
 {
@@ -62,7 +53,6 @@ CString FUN_14016a600(const wchar_t* psz, int n);                           // w
 void FUN_140d03450(Unk_AasImagePtr* p);                                     // p = NULL (releases)
 void FUN_140d03320(Unk_AasImage* p);                                        // add a reference
 Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
-void FUN_1422e5530(Unk_AasImage* pImage, Unk_AasSourcePtr spSource);
 void FUN_1416a0e70();
 CNetworkService* FUN_140714f90();
 
@@ -230,8 +220,8 @@ MS2_REPLACE_METHOD(0x140E98F20, UITencentAas2Dialog, vfunc_26, 66, 0x3FE26FC5);
 void UITencentAas2Dialog::vfunc_85()
 {
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
-        FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2))));
+    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
+        FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(m_spImage->FUN_1422bb890());

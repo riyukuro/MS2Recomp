@@ -479,7 +479,7 @@ void UIClosetDialog::OnLoadComplete()
     if (m_putOn.get() != 0)
         m_putOn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnPutOn), 0);
     if (m_inputKey.get() != 0)
-        m_inputKey->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputKey), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputKey), 0, 0);
     if (m_tabAdd.get() != 0)
         m_tabAdd->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnTabAdd), 0);
     if (m_tab.get() != 0)
@@ -488,7 +488,7 @@ void UIClosetDialog::OnLoadComplete()
         m_tab->FUN_1422e4270(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnTabMenu), 0);
     }
     if (m_equipLayer.get() != 0)
-        m_equipLayer->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnEquipLayer), 0);
+        m_equipLayer->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnEquipLayer), 0);
 
     ASObj obj(2);
     {
@@ -1083,7 +1083,7 @@ void UIClosetDialog::OnInputKey(const Scaleform::GFx::FunctionHandler::Params& p
         return;
     if (m_inputKey.get() != 0)
     {
-        m_inputKey->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0, 0);
         m_inputKey->FUN_1422cdfb0(L"");
         m_inputKey->vfunc_24(false);
     }
@@ -1110,7 +1110,7 @@ void UIClosetDialog::OnInputEnd(const Scaleform::GFx::FunctionHandler::Params& p
     if (m_30 == 0)
         return;
     if (m_inputKey.get() != 0)
-        m_inputKey->FUN_1422de960(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0);
+        reinterpret_cast<ASInteractiveObject*>(m_inputKey.operator->())->FUN_1422de960(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIClosetDialog::OnInputEnd), 0);
     if (static_cast<bool>(m_pendingKey.get()) && !m_pendingKey->FUN_140be4f00())
         m_pendingKey->Clear();
 }

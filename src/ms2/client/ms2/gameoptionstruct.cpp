@@ -73,6 +73,7 @@
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <string.h>
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -126,8 +127,8 @@ void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag
 void FUN_14151f200();
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
 UIDamageEffect* FUN_140ac55a0(int nId);
-class Unk_GsInputSvc : public CInstrumentManager { };   // reloads the sound settings
-Unk_GsInputSvc* FUN_140c8dac0();
+
+struct Unk_PmFixedItem* FUN_140c8dac0();   // the CInstrumentManager instance (definer's form, petmanager.cpp)
 
 // The state blocks' methods (this unit).
 void FUN_14125b430(Unk_CameraState* p);
@@ -365,7 +366,7 @@ void CGameOptionInterface::vfunc_10()
     CBaseOption::vfunc_10();
     if (FUN_14125bb90(&m_state))
     {
-        if (FUN_1408e57f0()->GetSubSceneId() == 0x620001d)
+        if (reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x620001d)
             CUIService::GetInstance()->OpenDialog((eUIClassID)0x4edf);
     }
     else if (!FUN_14125bb90(&m_state))
@@ -646,7 +647,7 @@ void CGameOptionSoundDefault::vfunc_10()
     FUN_14125fe20(&m_state);
     FUN_14125fdf0(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), &m_state);
     FUN_141260450(TSingleton<CGameOption>::GetInstance()->FUN_1411b1f30(), &m_flag);
-    FUN_140c8dac0()->UpdateVolume(true);
+    ((CInstrumentManager*)FUN_140c8dac0())->UpdateVolume(true);
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x1412585A0, CGameOptionSoundDefault, vfunc_10, 155, 0x23023006);
@@ -2726,7 +2727,7 @@ float FUN_141260110(Unk_SoundState* p, int nCategory);
 void FUN_14125fe20(Unk_SoundState* p)
 {
     float fBgm = FUN_141260110(p, 2);
-    if (p->m_b30 && FUN_140c8dac0() != 0 && FUN_140c8dac0()->GetRefs() > 0)
+    if (p->m_b30 && FUN_140c8dac0() != 0 && ((CInstrumentManager*)FUN_140c8dac0())->GetRefs() > 0)
         fBgm = 0.0f;
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(0, FUN_141260110(p, 0));
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(9, FUN_141260110(p, 0));
@@ -2744,7 +2745,7 @@ void FUN_14125fe20(Unk_SoundState* p)
     {
         TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(1);
         if (FUN_140c8dac0() != 0)
-            FUN_140c8dac0()->Mute();
+            ((CInstrumentManager*)FUN_140c8dac0())->Mute();
     }
     if (FUN_140c9cb10() != 0)
         FUN_140c9cb10()->FUN_1417ae760((float)(p->m_nMainSoundStep * 10) / 100.0f);

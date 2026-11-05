@@ -17,7 +17,7 @@
 class ASButtonBar;
 class ASTextInput;
 class CMsgBoxData;
-class Unk_InvItemBag;
+class ASTileList;
 
 class UIInventoryDialog : public UIDialog, public UIStatusEventListener, public UIItemEventListener
 {
@@ -115,7 +115,7 @@ private:
     CStringW m_1d8;                                             // +0x1d8 the search text
     MS2Ptr<ASTextInput> m_1e0;                                  // +0x1e0 "m_inputSearch"
     ATL::CAtlArray<std::pair<CString, int> > m_1f0;             // +0x1f0 the tabs (name, tab)
-    MS2Ptr<Unk_InvItemBag> m_210;                               // +0x210 "m_itemBagEx"
+    MS2Ptr<ASTileList> m_210;                                   // +0x210 "m_itemBagEx"
     void* m_220;                                                // +0x220
 };
 MS2_CHECK_SIZE(UIInventoryDialog, 0x228);

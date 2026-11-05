@@ -11,6 +11,7 @@
 
 #include "ms2/placeholder/cguidecondition.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <NiPoint3.h>                            // C3: WorldService::FUN_141bc2c90 takes a NiPoint3
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
@@ -230,7 +231,7 @@ int CGuideConditionPortalEnable::vfunc_3()
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
-    ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(pPC->vfunc_18(), &arrPortals);
+    ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pPC->vfunc_18())), &arrPortals);
     return FUN_1413a5600(arrPortals.GetCount() != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

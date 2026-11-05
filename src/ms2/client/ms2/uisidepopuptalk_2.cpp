@@ -25,6 +25,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 // ---- the unit's header statics: header_statics_a.h above, then a key controller ------------------------------------------
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -81,9 +83,9 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
         return;
     FUN_141925ec0("m_close");
     FUN_140e8d030("m_selectItemList", m_list);
-    if (FUN_140bc6d10("m_okButton", m_okButton).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_okButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_okButton)).get())
         m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c790), 0);
-    if (FUN_140bc6d10("m_close", m_closeButton).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_close", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_closeButton)).get())
         m_closeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c8e0), 0);
     m_slotItems.RemoveAll();
     m_binder.FUN_140d43990();

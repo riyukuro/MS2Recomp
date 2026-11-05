@@ -32,7 +32,7 @@ struct Unk_Point2
     float x, y;
 };
 
-void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation (degrees)
+void FUN_140a01250(efd::Point3 ptRot, efd::Point3* pForward, efd::Point3* pRight);   // basis from a z rotation (degrees; C3: the definer types it on efd::Point3)
 bool NxComputeBoxPoints(class NxBox const&, class NxVec3*);   // C3: was FUN_140adc650
 
 // Free reinterpretations: the exe calls the efd::Point2 / NiPoint3 helpers on the members directly.
@@ -55,7 +55,7 @@ CFrustumCollision::~CFrustumCollision()
 void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
     Vector3 ptRot = ptDir;
-    FUN_140a01250(ptRot, &m_ptForward, &m_ptRight);
+    FUN_140a01250(reinterpret_cast<efd::Point3&>(ptRot), reinterpret_cast<efd::Point3*>(&m_ptForward), reinterpret_cast<efd::Point3*>(&m_ptRight));
     m_ptForward.FUN_140968990();
     m_ptRight.FUN_140968990();
 

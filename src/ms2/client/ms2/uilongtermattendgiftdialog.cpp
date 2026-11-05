@@ -47,6 +47,7 @@
 #include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/commonfiles/gameevent.h"    // LongTermAttendGiftContext
 #include "ms2/commonfiles/gamerule.h"     // CGameRule::GetLongTermAttendGift
+#include "ms2/commonfiles/timeutil.h"     // GetDaysBetweenDays
 #include "ms2/client/ms2/uidailymissiondialog.h"   // UIDailyMissionDialog::FUN_140c02900
 #include <algorithm>
 
@@ -160,9 +161,8 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
-int FUN_14086bd40(CMsTime a, CMsTime b);
 CString FUN_14016a600(const wchar_t*, int);             // narrow copy of a wide string
-void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
+void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }
 void FUN_140710590(COutPacket&);
 
@@ -559,7 +559,7 @@ int UILongTermAttendGiftDialog::GetDayState(unsigned int nDay)
 int UILongTermAttendGiftDialog::GetMissedDayCount()
 {
     unsigned int nCur = FUN_140c6d570();
-    int nDays = FUN_14086bd40(CMsTime(m_178->m_beginTime), CMsTime(GetServerTime())) + 1;
+    int nDays = GetDaysBetweenDays(CMsTime(m_178->m_beginTime), CMsTime(GetServerTime())) + 1;
     int nMax = 0x50;
     unsigned int nLimit = *(const unsigned int*)&std::min<int>(nMax, nDays);
     if (nCur < nLimit)

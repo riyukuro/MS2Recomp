@@ -198,7 +198,6 @@ private:
 };
 typedef Unk_NodeQueue Unk_MeshWalker;   // C3: was a local stand-in for Unk_NodeQueue
 
-void* FUN_1411a3f30(void* p); void FUN_1411a3e30(void* p); void FUN_1411a4080(void* p);
 // The animation service's protected actor table (ContainsEntity, ActorEntry, AssetData), opened up for the model loader.
 struct Unk_EmAnimAccess : egmAnimation::AnimationService
 {
@@ -298,15 +297,11 @@ struct Unk_PartAttach
 };
 MS2_CHECK_SIZE(Unk_PartAttach, 0x38);
 
-// The counted handle held at +0x140 of the attach dummy (the pointer at +8 is reference counted by 0x1411a4080).
-struct Unk_HoldHandle
-{
-    Unk_HoldHandle(const Unk_HoldHandle& o);    // 0x1412051d0
-    ~Unk_HoldHandle();                          // 0x1411a3e30
-    void* FUN_1411a3f30();                      // 0x1411a3f30 operator->
-    void* m_p0;
-    void* m_p8;
-};
+// The counted handle held at +0x140 of the attach dummy: the attach node's movement (MS2Ptr<INodeMovement>, dtor
+// 0x1411a3e30, operator-> 0x1411a3f30, AddRef 0x1411a4080). Its copy ctor 0x1412051d0 is defined below.
+class INodeMovement;
+typedef MS2Ptr<INodeMovement> Unk_HoldHandle;
+template <> MS2Ptr<INodeMovement>::MS2Ptr(const MS2Ptr& o);    // 0x1412051d0
 
 // The dummy attach node class (DAT_143af77a8; 0x188 bytes, NiNode + the follow state below). The NiAVObject local
 // transform is at +0x50 (rotate) / +0x74 (translate).
@@ -398,7 +393,7 @@ void FUN_141203db0(CEquipModel* self);
 // ---- CEquipModel ----
 
 // @0x1411ffa10
-CEquipModel::CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
+CEquipModel::CEquipModel(MS2Ptr<CEquipItem> spOwner, void* p18, void* p20)
     : m_unk_18(p18), m_unk_20(p20), m_spOwner(spOwner), m_str38(""), m_nState(0), m_map78(17, 0.75f, 0.25f, 2.25f, 10),
       m_listC0(10), m_unk_f0(0), m_spNode(0), m_b110(false), m_b111(false)
 {
@@ -602,7 +597,7 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetFollowNode((NiAVObject*)pRoot);
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetMode(e->m_bFollow);
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetUseMovement(e->m_bFlag);
-            FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().FUN_1411a3f30(), e->m_fScale);
+            FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().operator->(), e->m_fScale);
         }
         pDummy->Update((float)((class CMainSystem*)(void*)TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     }
@@ -647,7 +642,7 @@ void* FUN_1412009d0(CEquipModel* self)
 }
 
 // @0x141200a40
-MS2Ptr<Unk_EquipModelOwner> CEquipModel::FUN_141200a40()
+MS2Ptr<CEquipItem> CEquipModel::FUN_141200a40()
 {
     return m_spOwner;
 }
@@ -816,7 +811,7 @@ void FUN_141201180(CEquipModel* self, const CString& kName)
 // @0x1412014f0
 void FUN_1412014f0(CEquipModel* self, void* pPt)
 {
-    MS2Ptr<Unk_EquipModelOwner> spOwn = self->FUN_141200a40();
+    MS2Ptr<CEquipItem> spOwn = self->FUN_141200a40();
     if (spOwn == NULL)
         return;
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
@@ -833,7 +828,7 @@ void FUN_1412014f0(CEquipModel* self, void* pPt)
 // @0x141201620
 void FUN_141201620(CEquipModel* self, void* pPt)
 {
-    MS2Ptr<Unk_EquipModelOwner> spOwn = self->FUN_141200a40();
+    MS2Ptr<CEquipItem> spOwn = self->FUN_141200a40();
     if (spOwn == NULL)
         return;
     Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
@@ -1395,10 +1390,10 @@ void* FUN_141204220(void* p)
 }
 
 // @0x1412051d0
-Unk_HoldHandle::Unk_HoldHandle(const Unk_HoldHandle& o)
+template <> inline MS2Ptr<INodeMovement>::MS2Ptr(const MS2Ptr& o)
 {
-    m_p8 = o.m_p8;
-    FUN_1411a4080(this);
+    m_p = o.m_p;
+    AddRef();
 }
 
 // @0x141205a40
@@ -1470,11 +1465,11 @@ void FUN_141205570(void* p);
 
 // Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
 // this unit's .CRT$XCU slot.
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100
 #ifndef MS2_HOOK_DLL   // the exe's object at 0x143ad2288 (the hook DLL binds it)
-Unk_1401cd100 DAT_143ad2288(NULL);
+Unk_BuddyHandle DAT_143ad2288(NULL);
 #else
-extern Unk_1401cd100 DAT_143ad2288;
+extern Unk_BuddyHandle DAT_143ad2288;
 #endif
 
 // @0x141204e70

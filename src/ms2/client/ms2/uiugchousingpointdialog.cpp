@@ -99,7 +99,7 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 
-class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
+CMasteryInteriorTable* FUN_140933200();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 int FUN_1418fd280();
 bool FUN_1409301c0();
@@ -254,7 +254,7 @@ void UIUGCHousingPointDialog::RefreshInfo()
     unsigned short nNext = nGrade + 1;
     __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
     __int64 nMaxPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d50c0();
-    bool bMaster = ((class CMasteryInteriorTable*)FUN_140933200())->FUN_140ebb020() < nNext ? true : false;
+    bool bMaster = FUN_140933200()->FUN_140ebb020() < nNext ? true : false;
     ASObj obj(2);
     obj.FUN_1409c48f0("interiorLevel", nGrade);
     obj.FUN_1407cbb20("interiorTitle", FormatStringId(0x6fe, nGrade));
@@ -263,10 +263,10 @@ void UIUGCHousingPointDialog::RefreshInfo()
     obj.FUN_1409c1180("interiorMaxPoint", nMaxPoint);
     obj.FUN_1407cbbe0("interiorMaster", bMaster);
     obj.FUN_1407cbbe0("receiveItem", bReceive);
-    MS2Ptr<MasteryInteriorInfo> spNext = ((class CMasteryInteriorTable*)FUN_140933200())->GetMastery(nNext);
+    MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery(nNext);
     if (spNext.get() != 0)
         obj.FUN_1409c0d20("interiorMaxExp", spNext->m_nValue);
-    MS2Ptr<InteriorPointReward> spReward = ((class CMasteryInteriorTable*)FUN_140933200())->GetPointReward(nPoint);
+    MS2Ptr<InteriorPointReward> spReward = FUN_140933200()->GetPointReward(nPoint);
     if (spReward.get() != 0) {
         obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
         obj.FUN_1407cbb20(s_strItemDesc, GetStringCommonByKey(FUN_14016a730(spReward->m_strKey, 0)));
@@ -381,7 +381,7 @@ bool UIUGCHousingPointDialog::CanReceiveReward()
     if (((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
         return false;
     __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
-    unsigned int nBox = ((class CMasteryInteriorTable*)FUN_140933200())->GetDropBox(nPoint);
+    unsigned int nBox = FUN_140933200()->GetDropBox(nPoint);
     if (nBox > 0)
         return true;
     return false;

@@ -485,7 +485,7 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
 {
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
         return MS2Ptr<QuestNavigation::TraceContext>(0);
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return MS2Ptr<QuestNavigation::TraceContext>(0);
     if (!spQuest->IsActive())
@@ -550,7 +550,7 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
 }
 
 // @0x140c92fc0
-void CQuestNavigationMap::FUN_140c92fc0(Unk_PayloadPtr<CQuest> spQuest, int nMapId, QuestNavigation::TraceContext& context)
+void CQuestNavigationMap::FUN_140c92fc0(MS2Ptr<CQuest> spQuest, int nMapId, QuestNavigation::TraceContext& context)
 {
     if (spQuest.IsNull())
         return;

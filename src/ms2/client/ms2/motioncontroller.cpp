@@ -42,7 +42,6 @@ public:
 };
 bool FUN_14028d470(float a, float b);                               // nearly equal
 __int64 FUN_14028d260(float f);                                     // float -> fixed
-int FUN_1416725c0(PCBase* p, Vector3 kDir, float fSpeed, float fMax, float fZero);  // move is blocked
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
 Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -314,7 +313,7 @@ bool CLinearMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    if (FUN_1416725c0(m_pTarget, m_kDir, m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
+    if (m_pTarget->FUN_1416725c0(reinterpret_cast<NiPoint3&>(m_kDir), m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
     {
         m_kMove = m_kDir.FUN_14097fc90(m_fSpeed);
     }
@@ -394,7 +393,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    if (FUN_1416725c0(m_pTarget, m_kDir, m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
+    if (m_pTarget->FUN_1416725c0(reinterpret_cast<NiPoint3&>(m_kDir), m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
     {
         m_kMove = m_kDir.FUN_14097fc90(m_fSpeed);
     }

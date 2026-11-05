@@ -27,7 +27,6 @@ class UIMsg;
 class ASTileList;
 class Unk_CashBannerRecord;
 class Unk_CashButton;
-class Unk_CashList;
 
 // One banner of the shop (the left / right image): the narrowed strings of the banner record.
 class CashBannerInfo : public CPtred
@@ -139,7 +138,7 @@ public:
     bool FUN_141039e80(int nButton, const CMsgBoxData& rData);      // 0x141039e80 send the gift
     bool FUN_14103a040(int nButton, const CMsgBoxData& rData);      // 0x14103a040 open the charge page on "ok"
     MS2Ptr<ASUIComponent> FUN_14103a700(const CString& strName);    // 0x14103a700 child lookup (uiswfentity.inl)
-    MS2Ptr<Unk_CashList> FUN_14103a890(const CString& strName);     // 0x14103a890 child lookup (uiswfentity.inl)
+    MS2Ptr<ASTileList> FUN_14103a890(const CString& strName);     // 0x14103a890 child lookup (uiswfentity.inl)
 
 private:
     MS2_LAYOUT_FRIEND;

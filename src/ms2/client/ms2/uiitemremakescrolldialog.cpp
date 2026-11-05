@@ -109,8 +109,8 @@ CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked)
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 
 // The scroll item's data: the <function> name and parameters.
-class Unk_PetData : public CPtred {};
-struct Unk_RmEnchant { char m_pad_00[0x18]; MS2Ptr<Unk_PetData> m_spPet; };
+#include "ms2/commonfiles/item.h"         // C3: CItemStatus, CItem::FUN_1405278a0's record (was the view Unk_RmEnchant)
+#include "ms2/commonfiles/itemoption.h"   // C3: CItemOption (was the stand-in Unk_PetData)
 
 struct Unk_CommandArgs { int FUN_1408d1f60(unsigned nIndex, int nDefault); };
 
@@ -643,7 +643,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
             int nLockId = FUN_140616dd0(MS2Ptr<CItem>(m_spTarget));
             if (nLockId == 0)
                 return;
-            MS2Ptr<Unk_PetData> spPet(reinterpret_cast<Unk_RmEnchant*>(m_spTarget->FUN_1405278a0())->m_spPet);
+            MS2Ptr<CItemOption> spPet(reinterpret_cast<CItemStatus*>(m_spTarget->FUN_1405278a0())->m_spOption);
             if (spPet == 0)
                 return;
             Unk_RemakeStat stat(2, MS2Ptr<CItem>(m_spTarget), false);

@@ -124,7 +124,8 @@ public:
 CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_140166410* FUN_140166410();   // C3: the real return type; callers cast to CFeatureManager
 MS2InputService* FUN_140a58540();
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
+struct Unk_XmlElement;
+void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode&); TiXmlNode* LinkEndChild(TiXmlNode*); };   // C3: member view (0x14086e000, 0x14086e090)
 CString FUN_14028d1f0(const char* psz);
 CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
@@ -443,7 +444,7 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
         reinterpret_cast<TiXmlNode*>(pRoot)->LinkEndChild(reinterpret_cast<TiXmlNode*>(reinterpret_cast<TiXmlElement*>(pConfig)));
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pConfig, "key", "keyCode", &nodes);
+    FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pConfig), "key", "keyCode", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
     std::map<int, Unk_140165cf0*> byKey;
     for (size_t i = 0; i < nodes.size(); i++)
     {
@@ -514,7 +515,7 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
         reinterpret_cast<TiXmlNode*>(pRoot)->LinkEndChild(reinterpret_cast<TiXmlNode*>(reinterpret_cast<TiXmlElement*>(pConfig)));
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pConfig, "key", "keyCode", &nodes);
+    FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pConfig), "key", "keyCode", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
     std::map<int, Unk_140165cf0*> byKey;
     for (size_t i = 0; i < nodes.size(); i++)
     {

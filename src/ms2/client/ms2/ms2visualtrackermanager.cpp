@@ -390,7 +390,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         // Position, animation and speed of the camera target.
         if (reinterpret_cast<Unk_VtmCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         {
-            GameObject* pTarget = reinterpret_cast<GameObject*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
+            GameObject* pTarget = reinterpret_cast<GameObject*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60());
             Unk_VtmMover* pMover = reinterpret_cast<Unk_VtmMover*>(efd::DynamicCast<PCBase, GameObject>(pTarget));
             if (pTarget != 0)
             {

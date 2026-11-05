@@ -33,18 +33,14 @@ class Unk_PvpWorld                                                  // the world
 public:
 };
 
-// The player's PvP info proxy (PC method 0x140967420): operator-> 0x140965970, release 0x140964aa0.
+// A view of the player's MS2Ptr<CPvPInfo> (PC method 0x140967420) for its pinned operator== COMDAT.
 class Unk_PvInfoPtr
 {
 public:
-    ~Unk_PvInfoPtr() { FUN_140964aa0(); }
-    CPvPInfo* FUN_140965970() const;                                // operator->
     bool FUN_14101ec80(const CPvPInfo* p) const { return m_p == p; }   // operator== (0x14101ec80)
-    void FUN_140964aa0();                                           // release
     void* m_pad_00;
     CPvPInfo* m_p;
 };
-class Unk_PvActor { public: Unk_PvInfoPtr FUN_140967420(); };
 
 class UIObject;
 class Unk_PvpUiService                                              // the UI service
@@ -57,7 +53,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);     // formatte
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // formatted message, two arguments
 CStringW GetStringCommon(int nStringId);                              // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
-class PC { public: int FUN_141654730(); };   // C3: member view (pc.cpp); the job of a player
+class PC { public: int FUN_141654730(); MS2Ptr<CPvPInfo> FUN_140967420(); };   // C3: member view (pc.cpp / fittingdollpc.h); the job of a player, the PvP info
 
 bool FUN_14101c5b0(Unk_PvpEntryItem* pA, Unk_PvpEntryItem* pB);
 UIPvPTeamFlagGagueDialog* FUN_14101c7b0(int nClass);
@@ -114,12 +110,12 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
         if (pPlayer != 0)
         {
-            Unk_PvInfoPtr info = ((Unk_PvActor*)pPlayer)->FUN_140967420();
-            if (info.FUN_14101ec80(0))
+            MS2Ptr<CPvPInfo> info = reinterpret_cast<PC*>(pPlayer)->FUN_140967420();
+            if (reinterpret_cast<Unk_PvInfoPtr&>(info).FUN_14101ec80(0))
                 return;
-            info.FUN_140965970()->ReadRecordFromPacket(packet);
-            FUN_14101c220(info.FUN_140965970()->m_nPoint, nCharId, info.FUN_140965970()->m_nWin,
-                          info.FUN_140965970()->m_nLose, info.FUN_140965970()->m_nKill);
+            info->ReadRecordFromPacket(packet);
+            FUN_14101c220(info->m_nPoint, nCharId, info->m_nWin,
+                          info->m_nLose, info->m_nKill);
             UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
             if (pResult != 0)
                 pResult->FUN_1413454b0();

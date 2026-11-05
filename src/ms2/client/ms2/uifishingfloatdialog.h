@@ -13,7 +13,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/uidialog.h"
 
-class Unk_FishPacket;
+class CFishCube;
 
 class UIFishingFloatDialog : public UIDialog
 {
@@ -30,7 +30,7 @@ public:
     virtual void vfunc_67();                                        // 67 0x140f44120 close: stop the sounds and the rumble
     virtual int vfunc_48();                                         // 48 0x140f447c0 UI type id
 
-    void FUN_140f443d0(MS2Ptr<Unk_FishPacket> spInfo);              // remember the fish size and rank
+    void FUN_140f443d0(MS2Ptr<CFishCube> spInfo);              // remember the fish size and rank
     int FUN_140f44490();                                            // the movie's "getResult"
     void FUN_140f44520(int nSound);                                 // start sound loop 0..2
     void FUN_140f44650(int nSound);                                 // stop sound loop 0..2

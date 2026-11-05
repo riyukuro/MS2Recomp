@@ -14,7 +14,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
-#include "ms2/placeholder/abilitytable.h"
+#include "ms2/commonfiles/characterability.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/intervaltimer.h"
 
@@ -42,7 +42,7 @@ public:
 
     void FUN_140f2b000(NotifyObject* pNotify);          // the level changed
     void FUN_140f2b0f0();                               // all abilities arrived
-    void FUN_140f2b110(MS2Ptr<Unk_CaAbilityRow> ref);   // one ability learned (by value: callee destroys)
+    void FUN_140f2b110(MS2Ptr<CCharacterAbility> ref);   // one ability learned (by value: callee destroys)
     void FUN_140f2b1e0();                               // send the whole table
     void FUN_140f2b760();                               // send the points text
     void FUN_140f2b850();                               // send the reset cooldown button

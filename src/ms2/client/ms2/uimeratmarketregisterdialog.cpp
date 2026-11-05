@@ -71,8 +71,8 @@ class PCBase;
 class CMeratMarketMan;
 class CUgcItemLook;
 
-// The text input child (m_inputTag1..3).
-class Unk_MrdInput : public CPtred { };
+// The text input children (m_inputTag1..3).
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // The product registry singleton (a record of the market, found by key / by the offered item's uid).
 class Unk_MrdMarket : public CMeratMarketMan
@@ -115,7 +115,7 @@ public:
     static class WorldService* GetInstance();
 };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 
 // The inventories (globals).
 extern Unk_Inventory g_143ab2a90;
@@ -466,23 +466,23 @@ void UIMeratMarketRegisterDialog::FUN_141318aa0(MS2Ptr<CMeratMarketProduct> spPr
 // @0x141318cc0
 void UIMeratMarketRegisterDialog::FUN_141318cc0()
 {
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag1"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag2"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag3"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag1"))
+        spTag.operator->()->SetTextW(L"");
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag2"))
+        spTag.operator->()->SetTextW(L"");
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag3"))
+        spTag.operator->()->SetTextW(L"");
 }
 
 // @0x141318ef0
 void UIMeratMarketRegisterDialog::FUN_141318ef0(int nMaxChars)
 {
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag1"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetMaxChars(nMaxChars);
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag2"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetMaxChars(nMaxChars);
-    if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag3"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetMaxChars(nMaxChars);
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag1"))
+        spTag.operator->()->SetMaxChars(nMaxChars);
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag2"))
+        spTag.operator->()->SetMaxChars(nMaxChars);
+    if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag3"))
+        spTag.operator->()->SetMaxChars(nMaxChars);
 }
 
 // @0x1413190c0
@@ -627,11 +627,11 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
     g_143ab2a90.FUN_140a61010(0, &owner.m_nAccount, arrCandidates);
     g_143ab2a90.FUN_140a61010(1, &owner.m_nAccount, arrCandidates);
     g_143ab2a90.FUN_140a61010(2, &owner.m_nAccount, arrCandidates);
-    if (FUN_140166410()->FUN_14036d570(0xe9) && FUN_140166410()->FUN_14036d570(0xec))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe9) && reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xec))
         g_143ab2a90.FUN_140a61010(7, &owner.m_nAccount, arrCandidates);
     DAT_143ab2e20.FUN_1408fbd30(&owner, arrCandidates);
     DAT_143ab2e50.FUN_140dfcd00(&owner, arrCandidates);
-    if (FUN_140166410()->FUN_14036d570(0xa9))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xa9))
         g_143ab2a90.FUN_140a61010(4, &owner.m_nAccount, arrCandidates);
     ATL::CAtlList<MS2Ptr<CEquipItem> > listEquip(10);
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());

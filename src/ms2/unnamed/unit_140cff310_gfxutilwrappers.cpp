@@ -9,11 +9,13 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$MS2Ptr@VASDisplayObject@@@@QEAA@H@Z 0x140d02f80 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VASDisplayObjectContainer@@@@QEAA@H@Z 0x140d02fd0 ; unique
-// MS2-PIN: ??0Unk_AasSourcePtr@@QEAA@PEAVUnk_AasSource@@@Z 0x140d03040 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VASURLRequest@@@@QEAA@PEAVASURLRequest@@@Z 0x140d03040 ; prop
 // MS2-PIN: ??1Unk_AasImagePtr@@QEAA@XZ 0x140d030a0 ; prop
+// MS2-PIN: ??C?$MS2Ptr@VASURLRequest@@@@QEBAPEAVASURLRequest@@XZ 0x140d03260
 // MS2-PIN: ?AddRef@Unk_TextFieldExPtr@@AEBAXXZ 0x140d032a0 ; prop
-// MS2-PIN: ?AddRefImpl@Unk_AasSourcePtr@@AEBAXPEAX@Z 0x140d033e0 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VASURLRequest@@@@AEBAXPEAX@Z 0x140d033e0 ; prop
 // MS2-PIN: ?Release@Unk_AasImagePtrView@@QEAAXXZ 0x140d03450 ; prop
+// MS2-PIN: ?get@?$MS2Ptr@VASURLRequest@@@@QEBAPEAVASURLRequest@@XZ 0x140d03240
 // MS2-PINS-END tplpin
 #define MS2_ASSLOT_COPY_EXTERN
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\gfxutil.cpp"    // assumed
@@ -37,54 +39,13 @@
 
 // ---- unit-local views of exe objects ----
 
-
-// A button (the wrapper class of 0x140acd6e0).
-class Unk_140acd6e0 : public ASButton
-{
-public:
-};
-
-// A check box (the wrapper class of 0x140a58300).
-class Unk_GpCheck : public ASButton
-{
-public:
-};
-
-// A title text (the wrapper class of 0x140c45e20).
-class Unk_WcTitle : public ASDisplayObject
-{
-public:
-};
-
 // The clip whose children are searched by name; the name of the clip itself.
 class Unk_NamedClip : public ASMovieClip
 {
 };
 
-// Image holder of the web page (0x90 bytes) and its source object / handle.
+// Image holder of the web page (0x90 bytes). Its source handle is MS2Ptr<ASURLRequest> (instantiated below).
 class Unk_AasImage : public AScript {};
-class Unk_AasSource : public CPtred
-{
-public:
-    char m_pad[0x40 - sizeof(CPtred)];
-};
-class Unk_AasSourcePtr
-{
-public:
-    Unk_AasSourcePtr(Unk_AasSource* p);
-    Unk_AasSourcePtr(const Unk_AasSourcePtr&);         // never called: keeps the by-value argument built in place
-    ~Unk_AasSourcePtr();
-    Unk_AasSource* get() const;
-    Unk_AasSource* operator->() const;
-    void* m_0;
-    Unk_AasSource* m_p;
-private:
-    void AddRef() const;
-    void AddRefImpl(void*) const;
-    void Release();
-    void ReleaseImpl(void*);
-    static void Reference(Unk_AasSource* p);
-};
 
 // The TextFieldEx / InteractiveObjectEx extension holders.
 class Unk_TextFieldEx : public AScript
@@ -125,18 +86,18 @@ class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
     MS2Ptr<ASMovieClip> FUN_140bc7450(const CString& strName);                      // child clip by name (another unit)
-    MS2Ptr<Unk_140acd6e0> FUN_140d01c90(const CString& strName);                    // child button
-    MS2Ptr<Unk_GpCheck> FUN_140d01ce0(const CString& strName);                      // child check box
+    MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);                    // child button
+    MS2Ptr<ASCheckBox> FUN_140d01ce0(const CString& strName);                      // child check box
     MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
     MS2Ptr<ASDisplayObjectContainer> FUN_140d01d80(const CString& strName);         // child container
-    MS2Ptr<Unk_WcTitle> FUN_140d01dd0(const CString& strName);                      // child title
+    MS2Ptr<ASLabel> FUN_140d01dd0(const CString& strName);                      // child title
     MS2Ptr<ASTextField> FUN_140d01e20(const CString& strName);                      // child text field
 
-    MS2Ptr<Unk_140acd6e0> FUN_140d01e70(const Scaleform::GFx::Value& root, const CString& strName);
-    MS2Ptr<Unk_GpCheck> FUN_140d02140(const Scaleform::GFx::Value& root, const CString& strName);
+    MS2Ptr<ASButton> FUN_140d01e70(const Scaleform::GFx::Value& root, const CString& strName);
+    MS2Ptr<ASCheckBox> FUN_140d02140(const Scaleform::GFx::Value& root, const CString& strName);
     MS2Ptr<ASDisplayObject> FUN_140d02410(const Scaleform::GFx::Value& root, const CString& strName);
     MS2Ptr<ASDisplayObjectContainer> FUN_140d026e0(const Scaleform::GFx::Value& root, const CString& strName);
-    MS2Ptr<Unk_WcTitle> FUN_140d029b0(const Scaleform::GFx::Value& root, const CString& strName);
+    MS2Ptr<ASLabel> FUN_140d029b0(const Scaleform::GFx::Value& root, const CString& strName);
     MS2Ptr<ASTextField> FUN_140d02c80(const Scaleform::GFx::Value& root, const CString& strName);
 };
 
@@ -155,19 +116,18 @@ private:
 // ---- out-of-unit callees ----
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<Unk_140acd6e0> FUN_140acc910(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<Unk_GpCheck> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<Unk_WcTitle> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASButton> FUN_140acc910(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASLabel> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
 
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
 
 
-void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
 CStringW FUN_1422e5b80(CStringW str);
 
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 class Unk_AsEx : public AScript
 {
 public:
@@ -201,7 +161,7 @@ void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<Unk_140acd6e0> spChild = static_cast<Unk_Finder&>(node).FUN_140d01c90(strName);
+    MS2Ptr<ASButton> spChild = static_cast<Unk_Finder&>(node).FUN_140d01c90(strName);
     if (spChild == 0)
         return;
     static_cast<ASButton*>(spChild.operator->())->FUN_1422cdfb0(strText);
@@ -213,7 +173,7 @@ void FUN_140cff610(const Scaleform::GFx::Value& root, CString strName, CStringW 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<Unk_WcTitle> spChild = static_cast<Unk_Finder&>(node).FUN_140d01dd0(strName);
+    MS2Ptr<ASLabel> spChild = static_cast<Unk_Finder&>(node).FUN_140d01dd0(strName);
     if (spChild == 0)
         return;
     reinterpret_cast<ASLabel*>(spChild.operator->())->FUN_1422e4a50(strText);
@@ -402,7 +362,7 @@ void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<Unk_GpCheck> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
+    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
     if (spChild == 0)
         return;
     spChild->FUN_1422ce090(n);
@@ -414,7 +374,7 @@ void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<Unk_GpCheck> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
+    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
     if (spChild == 0)
         return;
     *pOut = spChild->FUN_1422ce0e0();
@@ -549,7 +509,7 @@ void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
     if (spImage == 0)
         return;
     ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->UnloadAndStop(bFlag);
-    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2))));
+    ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2)));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"
@@ -649,13 +609,13 @@ MS2Ptr<ASDisplayObject> FUN_140d01be0(int nMovieId, const Scaleform::GFx::Value&
 }
 
 // @0x140d01c90
-MS2Ptr<Unk_140acd6e0> Unk_Finder::FUN_140d01c90(const CString& strName)
+MS2Ptr<ASButton> Unk_Finder::FUN_140d01c90(const CString& strName)
 {
     return FUN_140d01e70(m_value, strName);
 }
 
 // @0x140d01ce0
-MS2Ptr<Unk_GpCheck> Unk_Finder::FUN_140d01ce0(const CString& strName)
+MS2Ptr<ASCheckBox> Unk_Finder::FUN_140d01ce0(const CString& strName)
 {
     return FUN_140d02140(m_value, strName);
 }
@@ -673,7 +633,7 @@ MS2Ptr<ASDisplayObjectContainer> Unk_Finder::FUN_140d01d80(const CString& strNam
 }
 
 // @0x140d01dd0
-MS2Ptr<Unk_WcTitle> Unk_Finder::FUN_140d01dd0(const CString& strName)
+MS2Ptr<ASLabel> Unk_Finder::FUN_140d01dd0(const CString& strName)
 {
     return FUN_140d029b0(m_value, strName);
 }
@@ -711,15 +671,15 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
     }
 
 // @0x140d01e70
-MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, Unk_140acd6e0, FUN_140acc910)
+MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, ASButton, FUN_140acc910)
 // @0x140d02140
-MS2_FINDER_DEEP(140d02140, FUN_140d02140, Unk_GpCheck, FUN_140a57df0)
+MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, FUN_140a57df0)
 // @0x140d02410
 MS2_FINDER_DEEP(140d02410, FUN_140d02410, ASDisplayObject, FUN_140d01be0)
 // @0x140d026e0
 MS2_FINDER_DEEP(140d026e0, FUN_140d026e0, ASDisplayObjectContainer, FUN_140bc5fc0)
 // @0x140d029b0
-MS2_FINDER_DEEP(140d029b0, FUN_140d029b0, Unk_WcTitle, FUN_140c43580)
+MS2_FINDER_DEEP(140d029b0, FUN_140d029b0, ASLabel, FUN_140c43580)
 // @0x140d02c80
 MS2_FINDER_DEEP(140d02c80, FUN_140d02c80, ASTextField, FUN_1409b41a0)
 
@@ -786,7 +746,16 @@ void FUN_140d03320(Unk_AasImage* p) { Unk_AasImagePtrView::Reference(p); }
 
 Unk_TextFieldExPtr::Unk_TextFieldExPtr(int) { m_p = 0; }
 MS2_UNK_PTR_IMPL(Unk_TextFieldExPtr, Unk_TextFieldEx)
-MS2_UNK_PTR_IMPL(Unk_AasSourcePtr, Unk_AasSource)
+// The image source handle: MS2Ptr<ASURLRequest> (the ASLoader::Load argument, 0x1422e5530 destroys it with 0x140d03100).
+template MS2Ptr<ASURLRequest>::MS2Ptr(ASURLRequest*);
+template MS2Ptr<ASURLRequest>::~MS2Ptr();
+template ASURLRequest* MS2Ptr<ASURLRequest>::get() const;
+template ASURLRequest* MS2Ptr<ASURLRequest>::operator->() const;
+template void MS2Ptr<ASURLRequest>::AddRef() const;
+template void MS2Ptr<ASURLRequest>::Reference(ASURLRequest*);
+template void MS2Ptr<ASURLRequest>::AddRefImpl(void*) const;
+template void MS2Ptr<ASURLRequest>::Release();
+template void MS2Ptr<ASURLRequest>::ReleaseImpl(void*);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

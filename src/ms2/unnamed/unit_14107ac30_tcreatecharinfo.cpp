@@ -37,6 +37,8 @@
 #include "ms2/client/ms2/equipment.h"
 #include <NiNode.h>
 #include <NiPSParticleSystem.h>
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -99,6 +101,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
+    NiPoint3 FUN_140af0250();   // camera world direction; C3: the definer's signature (camera.cpp)
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
@@ -250,8 +253,8 @@ void TCreateCharInfo::FUN_14107ae00()
 // @0x14107b010
 void FUN_14107b010()
 {
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() != 0)
-        FUN_14107b050(Unk_CameraManager::FUN_1409478c0()->FUN_140af0250());
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
+        FUN_14107b050(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250())));
     FUN_14107b2d0();
 }
 MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);

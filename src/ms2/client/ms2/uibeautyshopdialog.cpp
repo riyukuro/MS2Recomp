@@ -217,11 +217,10 @@ public:
 class CItemDataTable;
 template <> class TSingleton<CItemDataTable> { public: static CItemDataTable* GetInstance(); };   // C3: was FUN_140281980
 
-// The price row of a beauty shop entry.
+// The price row of a beauty shop entry (a CBeautyShopItem, made with its ctor).
 class Unk_BSPriceRow : public CPtred
 {
 public:
-    Unk_BSPriceRow();                           // 0x1406e3690
     ~Unk_BSPriceRow();                          // 0x1406ef4f0
     void FUN_1406e37f0(CInPacket& packet);      // read the row
     unsigned FUN_1406e3bc0();                   // the price in merets
@@ -275,19 +274,20 @@ public:
     TShopPaymentAttr& FUN_1406e3dc0();
     TShopPaymentAttr& FUN_1406e3de0();
 };
-class CBeautyShopItem
+class CBeautyShopItem : public CPtred
 {
 public:
+    CBeautyShopItem();                               // 0x1406e3690
     void FUN_1406e37f0(CInPacket& in);
     __int64 FUN_1406e3bc0();
+private:
+    char m_body[0x68 - sizeof(CPtred)];
 };
+MS2_CHECK_SIZE(CBeautyShopItem, 0x68);
 
 // The player and its equipment.
-class Unk_InventoryEquipment : public CEquipItem { };
 class Unk_BSPlayer : public PCBase
 {
-public:
-    MS2Ptr<Unk_InventoryEquipment> FUN_141655c30(__int64 nItemUid);
 };
 class Unk_BSPlayerCap : public PCGemEquip { };
 class Unk_BSEquipSet : public CEquipment { };
@@ -1523,7 +1523,7 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
         {
             for (size_t i = 0; i < nCount; i++)
             {
-                MS2Ptr<Unk_BSPriceRow> spRow(new Unk_BSPriceRow);
+                MS2Ptr<Unk_BSPriceRow> spRow(reinterpret_cast<Unk_BSPriceRow*>(new CBeautyShopItem));
                 if (spRow.get() != 0)
                 {
                     reinterpret_cast<CBeautyShopItem*>(spRow.operator->())->FUN_1406e37f0(packet);
@@ -2208,7 +2208,7 @@ int UIBeautyShopDialog::FUN_1418cbdc0(int nItemId)
 // @0x1418cbeb0
 MS2Ptr<Unk_BSPriceRow> UIBeautyShopDialog::CreatePriceRow(int nItemId)
 {
-    MS2Ptr<Unk_BSPriceRow> spRow(new Unk_BSPriceRow());
+    MS2Ptr<Unk_BSPriceRow> spRow(reinterpret_cast<Unk_BSPriceRow*>(new CBeautyShopItem()));
     spRow->m_id = nItemId;
     return spRow;
 }

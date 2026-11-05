@@ -283,7 +283,7 @@ void* FUN_14136f290(int);   // C3: was FUN_14136f290
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
    // member (this=rcx, hidden return=rdx)
-CKeyTable* FUN_1409331f0();
+// FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
 class Unk_IoUiMgr { public: void FUN_141adc530(int n); };
 UISwfEntityManager* FUN_140b632f0();
 DWORD GetTickCountMs2();

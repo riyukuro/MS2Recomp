@@ -52,7 +52,7 @@
 // MS2-PIN: ?get@?$MS2Ptr@VCAvatarPackageEquip@@@@QEBAPEAVCAvatarPackageEquip@@XZ 0x141314e80 ; unique
 // MS2-PIN: ?GetIconMap@UIEquipIconContainer@@QEAAPEAV?$CAtlMap@HV?$MS2Ptr@VASEquipIcon@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VASEquipIcon@@@@@3@@ATL@@XZ 0x1413157e0 ; unique
 // MS2-PIN: ?AddRef@?$MS2Ptr@VWeaponType@UIMeratMarketCommon@@@@AEBAXXZ 0x141316360 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_MeratBanner@@@@AEBAXPEAX@Z 0x141316550 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VShopBannerInfo@@@@AEBAXPEAX@Z 0x141316550 ; prop
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316850 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1413168b0 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316910 ; unique
@@ -307,7 +307,6 @@ public:
     CString m_strProfile;                                                   // +0x30
 };
 // A banner of the market (asmeratmarketproduct.h forward declares it).
-class Unk_MeratBanner : public CPtred { public: CStringA m_strBackground; };
 // The market product record the equip icon data carries: ASMeratMarketEquipData (asequipicon.h) only forward declares
 // the pointee as Unk_MeratEquipEntry; it is the CMeratMarketProduct of this dialog.
 class Unk_MeratEquipEntry : public CMeratMarketProduct { };
@@ -2950,7 +2949,7 @@ int UIMeratMarketDialog::FillBannerProducts(const int& nType, ASArray& rows, Unk
             MS2Ptr<ShopBannerInfo> spBanner = m_banner.FUN_1413480a0(pPremium->GetCategory());
             if (spBanner.get() != 0)
             {
-                spRow->SetBanner(reinterpret_cast<MS2Ptr<Unk_MeratBanner>&>(spBanner));
+                spRow->SetBanner(spBanner);
                 MS2Ptr<MeratMarketShopBannerInfo> spInfo(dynamic_cast<MeratMarketShopBannerInfo*>((ShopBannerInfo*)spBanner));
                 if (spInfo.get() != 0)
                 {
@@ -6439,7 +6438,7 @@ void UIMeratMarketDialog::AddBasket(MS2Ptr<CMeratMarketBasket> spEntry, int nCou
 }
 
 // @0x14130f310
-void UIMeratMarketDialog::RemoveBasket(const Unk_MeratProductKey& key, int nCount)
+void UIMeratMarketDialog::RemoveBasket(Unk_MeratProductKey key, int nCount)
 {
     if (m_30 == 0)
         return;
@@ -7226,35 +7225,9 @@ void UIMeratMarketDialog::DirtyState::AddPremiumSale(const int& nId)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cafa70-0x142cafbd0 .text$yd
-class Unk_MmDialog
-{
-public:
-    void FUN_14130c670(int kind);
-    void FUN_14130ce70(bool force);
-    void FUN_14130d390(int category, int page, int sort, int order, bool limited);
-    void FUN_141310970();
-};
-
-// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered item-list builder.
-void Unk_MmDialog::FUN_14130c670(int kind)
-{ reinterpret_cast<UIMeratMarketDialog*>(this)->BuildItemList(kind); }
-// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered limited-tab refresh.
-void Unk_MmDialog::FUN_14130ce70(bool force)
-{ reinterpret_cast<UIMeratMarketDialog*>(this)->RefreshLimitedTab(force); }
-// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered search-page display.
-void Unk_MmDialog::FUN_14130d390(int category, int page, int sort, int order, bool limited)
-{ reinterpret_cast<UIMeratMarketDialog*>(this)->ShowSearchPage(category, page, sort, order, limited); }
-// MS2-FUNCTIONAL: legacy dialog spelling forwards to the recovered search input reset.
-void Unk_MmDialog::FUN_141310970()
-{ reinterpret_cast<UIMeratMarketDialog*>(this)->ClearSearchInput(); }
-
 // Full-executable aliases for existing UIMeratMarketDialog methods.
 // MS2-PIN: ?BuildItemList@UIMeratMarketDialog@@QEAAXH@Z 0x14130c670
 // MS2-PIN: ?RefreshLimitedTab@UIMeratMarketDialog@@QEAAX_N@Z 0x14130ce70
 // MS2-PIN: ?ShowSearchPage@UIMeratMarketDialog@@QEAAXHHHH_N@Z 0x14130d390
 // MS2-PIN: ?ClearSearchInput@UIMeratMarketDialog@@QEAAXXZ 0x141310970
-// MS2-PIN: ?FUN_14130c670@Unk_MmDialog@@QEAAXH@Z 0x14130c670
-// MS2-PIN: ?FUN_14130ce70@Unk_MmDialog@@QEAAX_N@Z 0x14130ce70
-// MS2-PIN: ?FUN_14130d390@Unk_MmDialog@@QEAAXHHHH_N@Z 0x14130d390
-// MS2-PIN: ?FUN_141310970@Unk_MmDialog@@QEAAXXZ 0x141310970
 // MS2-PIN: ?AddRef@?$MS2Ptr@VUIAvatarRidee@@@@AEBAXXZ 0x1413163f0 ; mt7: byte-identical COMDAT fold (was the look-alike guess); Unk_MpRideePtr::AddRef is bound to the same body

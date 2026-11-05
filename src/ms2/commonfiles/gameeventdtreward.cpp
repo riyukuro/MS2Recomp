@@ -25,7 +25,7 @@ using namespace CommonUserEvent;
 
 // Out-of-unit helpers.
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);   // split
-void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);    // split ids
+void FUN_140274fc0(CStringW& text, void* pOut, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 bool FUN_1407183f0(const CStringW& value);
 int FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).

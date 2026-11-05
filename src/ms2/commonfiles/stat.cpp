@@ -60,7 +60,8 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+class Unk_XmlNode { public: Unk_XmlNode* NextSibling(const char*); };   // C3: the next-sibling view (0x140168650)
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // the string table directory
@@ -157,7 +158,7 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
     {
         CStringW strName;
         CStringW strUnused;
@@ -183,7 +184,7 @@ int LoadStatDefinitions()
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
     {
         CStringA strOption;
         int nId;
@@ -227,7 +228,7 @@ int LoadUserStats(int nJob)
     if (pRoot == 0)
         return 0;
     StatLevelValues values;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat"); pNode != 0; pNode = pNode->FUN_140168650("stat"))
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("stat")))
     {
         int nLevel = 1;
         if (XmlGetAttr((class TiXmlElement*)(pNode), "lev", nLevel) != 1)

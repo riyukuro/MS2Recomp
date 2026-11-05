@@ -91,7 +91,7 @@ class Unk_EdChat : public Unk_MdNames { };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The notify manager.
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
@@ -502,7 +502,7 @@ MS2_REPLACE_METHOD(0x140BD27E0, UIChatEmoticonDialog, SelectTab, 187, 0x7E8060C4
 void UIChatEmoticonDialog::PostEmoticonSelected(int nEmoticonId)
 {
     const CStringW& strTarget = ((class Unk_EdChat*)FUN_141482e80())->FUN_1414829e0();
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChatEmoticonSelected(strTarget, nEmoticonId)));
 }
 MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, PostEmoticonSelected, 205, 0x4516C159);
 

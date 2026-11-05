@@ -155,7 +155,7 @@ public:
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
-Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
+Unk_Int3 FUN_1408a14c0(NiPoint3 pt);   // C3: the definer's signature (0x1408a14c0), cell of a point
 int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
@@ -626,7 +626,7 @@ int FUN_140b7a650(PCBase* pPc)
     pWorld->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
     Unk_Int3 cellOfPc;
-    cellOfPc = FUN_1408a14c0(*reinterpret_cast<Vector3*>(&posPc));   // the exe's sret temp is copied in
+    cellOfPc = FUN_1408a14c0(posPc);   // the exe's sret temp is copied in
     int nCellId = FUN_1408a03c0(cellOfPc);
     Unk_Int3 cell = FUN_1408a0400(nCellId);
     Vector3 ptCenter;
@@ -647,7 +647,7 @@ int FUN_140b7a650(PCBase* pPc)
     void* pSpawn = pWorld->FindSpawnByName(strName).data();
     if (pSpawn != 0) return 1;
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
-    pWorld->FUN_141bc2c90(ptCenter, &arrField);
+    pWorld->FUN_141bc2c90(reinterpret_cast<NiPoint3&>(ptCenter), reinterpret_cast<ATL::CAtlArray<MS2Ptr<CPortal> >*>(&arrField));
     if (arrField.GetCount() > 0)
         return 1;
 
@@ -667,7 +667,7 @@ int FUN_140b7a650(PCBase* pPc)
         Vector3 pt;
         // the exe copies the vfunc_18 result straight into the by-value arg
         Unk_Int3 cellOfActor;
-        cellOfActor = FUN_1408a14c0(reinterpret_cast<Vector3&&>(static_cast<NiPoint3&&>(((GameObject*)spActor.get())->vfunc_18())));
+        cellOfActor = FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18());
         int nActorCell = FUN_1408a03c0(cellOfActor);
         FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
         float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
@@ -734,7 +734,7 @@ int FUN_140b7a650(PCBase* pPc)
     arrIds.push_back(DAT_142de269c);
     for (size_t i = 0; i < arrIds.size(); ++i)
     {
-        Vector3 pos = ptCenter; egf::Entity* pEnt = pWorld->FUN_141bcfd30(arrIds[i], pos, 230.0f, 0, 0);
+        egf::Entity* pEnt = pWorld->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0);
         if (pEnt != 0) return 1;
     }
     }

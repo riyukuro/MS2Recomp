@@ -38,7 +38,7 @@ public:
     static bool FUN_140374410(int);
     static bool FUN_1403744a0(int);
 };
-bool IsSameStringArray(const ATL::CAtlArray<CString>& a, const ATL::CAtlArray<CString>& b);    // 0x1406cfe10
+template <class T> bool IsSameArray(const ATL::CAtlArray<T>& a, const ATL::CAtlArray<T>& b);   // 0x1406cfe10 = IsSameArray<CString> (defined in additionalactionadditional.cpp)
 template <class T> bool IsSameVector(const std::vector<T>& a, const std::vector<T>& b)
 {
     if (a.size() != b.size())
@@ -518,7 +518,7 @@ bool SkillAttackData::operator!=(const SkillAttackData& o)
     if (m_nBrokenOffence != o.m_nBrokenOffence) return true;
     if (m_fBrokenForce != o.m_fBrokenForce) return true;
     if (m_eGrabTargetType != o.m_eGrabTargetType) return true;
-    if (!IsSameStringArray(m_arrGrabNodeCategory, o.m_arrGrabNodeCategory)) return true;
+    if (!IsSameArray(m_arrGrabNodeCategory, o.m_arrGrabNodeCategory)) return true;
     if (m_strCompulsionType != o.m_strCompulsionType) return true;
     if (m_compulsionType != o.m_compulsionType) return true;
     if (m_eUnrideOnHit != o.m_eUnrideOnHit) return true;

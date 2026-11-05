@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "sounddatatable.h"
 #include "ms2/placeholder/tixmldocument.h"
+#include "ms2/placeholder/tixmlprinter.h"   // C3: TiXmlString (dtor 0x1401646b0)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
@@ -19,7 +20,8 @@ public:
 };
 
 // Unrecovered helpers (same ones the other xml table loaders use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140345b40(); Unk_140165cf0* NextSiblingElement(); };
+class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
+Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -41,7 +43,6 @@ public:
 private:
     void* m_data[0x11];
 };
-class Unk_TiXmlString { public: ~Unk_TiXmlString(); void* m_rep; };    // dtor 0x1401646b0
 class TiXmlNode
 {
 public:
@@ -102,14 +103,14 @@ public:
     virtual bool Accept(class TiXmlVisitor*) const;             // 0x140870920, commonfiles/tinyxml.cpp
     virtual void Print(FILE*, int, class TiXmlString*) const;   // 0x140870700, commonfiles/tinyxml.cpp
 private:
-    Unk_TiXmlString m_version, m_encoding, m_standalone;
+    TiXmlString m_version, m_encoding, m_standalone;
 };
 MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
 
 // @0x14081b310
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc)
 {
-    return reinterpret_cast<Unk_140165cf0*>(pDoc)->FUN_140345b40();
+    return FUN_140345b40(pDoc);
 }
 
 // @0x1408179d0
@@ -319,7 +320,7 @@ int CSoundDataTable::ParseSection(Unk_140165cf0* pRoot, const char* pszTag, int 
     Unk_140165cf0* pSection = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszTag));
     if (pSection == 0)
         return 0;
-    for (Unk_140165cf0* pElem = pSection->FUN_140345b40(); pElem != 0; pElem = pElem->NextSiblingElement())
+    for (Unk_140165cf0* pElem = FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pSection)); pElem != 0; pElem = pElem->NextSiblingElement())
     {
         CString strId;
         strId = Unk_ReadString((class Unk_XmlNode*)(pElem), "id", CString(""));

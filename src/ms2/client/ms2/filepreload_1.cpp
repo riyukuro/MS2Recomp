@@ -394,7 +394,7 @@ void CFilePreload::FUN_1412102e0() {
             backgroundThread=0;
         }
         if(semaphore) ReleaseSemaphore(semaphore,1,0);
-        if(WaitForExit(INFINITE)) job.Clear();
+        if(FUN_1401d3510(INFINITE)) job.Clear();
         FUN_1401d2fa0();
     }
 }
@@ -476,7 +476,7 @@ int CFilePreload::FUN_141210b60(unsigned id) {
 }
 MS2_REPLACE_METHOD(0x141210b60, CFilePreload, FUN_141210b60, 174, 0xBD7D11C6);
 // @0x141210c20
-void CFilePreload::FUN_141210c20() { if(GetThreadId()!=0) WaitForExit(INFINITE); }
+void CFilePreload::FUN_141210c20() { if(GetThreadId()!=0) FUN_1401d3510(INFINITE); }
 MS2_REPLACE_METHOD(0x141210c20, CFilePreload, FUN_141210c20, 43, 0x0152E27A);
 // @0x141210c60
 int CFilePreload::FUN_141210c60() { return dataReady; }
@@ -552,7 +552,6 @@ void FUN_1410917a0(unsigned);
 bool FUN_1411a4800(CStringA const&, int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
-struct Unk_PreloadSkillTable { Unk_PayloadPtr<SkillData> FUN_140aafd60(unsigned); };
 class EffectDataManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -681,7 +680,7 @@ void CFilePreload::FUN_1412119e0(void*) {
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) {
             if(TSingleton<SkillDataTableCli>::GetInstance()!=0) {
-                ((Unk_PreloadSkillTable*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafd60(*it);
+                TSingleton<SkillDataTableCli>::GetInstance()->GetAdditional(*it);
             }
         }
         else return;

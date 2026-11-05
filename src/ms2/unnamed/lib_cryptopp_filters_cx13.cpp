@@ -9,16 +9,20 @@
 #include <cstddef>
 #include <cstdint>
 #include <new>
+#include <string>
 
-extern void* FUN_1423103b0(void* self, std::size_t firstSize, std::size_t blockSize,
-                           std::size_t lastSize, void* attachment);
-extern void* FUN_1423049e0(void* self, int initializeCpu);
-extern void* FUN_1423106b0(void* self, void* hashModule, void* attachment,
-                           std::uint32_t flags, int digestSize);
-extern void* FUN_1423104c0(void* self, void* hashModule, void* attachment, bool passMessage,
-                           int digestSize, const void* firstChannel, const void* secondChannel);
-extern void* FUN_142311070(void* self, void* cipher, void* attachment,
-                           int padding, bool authenticated);
+namespace CryptoPP   // C3: views of the CryptoPP constructors these helpers call
+{
+class BufferedTransformation;
+class HashTransformation;
+class StreamTransformation;
+struct BlockPaddingSchemeDef { enum BlockPaddingScheme { NO_PADDING, ZEROS_PADDING, PKCS_PADDING, ONE_AND_ZEROS_PADDING, DEFAULT_PADDING }; };
+class Algorithm { public: Algorithm(bool checkSelfTestStatus); };
+class FilterWithBufferedInput { public: FilterWithBufferedInput(std::size_t firstSize, std::size_t blockSize, std::size_t lastSize, BufferedTransformation* attachment); };
+class HashVerificationFilter { public: HashVerificationFilter(HashTransformation& hm, BufferedTransformation* attachment, unsigned int flags, int truncatedDigestSize); };
+class HashFilter { public: HashFilter(HashTransformation& hm, BufferedTransformation* attachment, bool putMessage, int truncatedDigestSize, const std::string& messagePutChannel, const std::string& hashPutChannel); };
+class StreamTransformationFilter { public: StreamTransformationFilter(StreamTransformation& c, BufferedTransformation* attachment, BlockPaddingSchemeDef::BlockPaddingScheme padding, bool allowAuthenticatedSymmetricCipher); };
+}
 extern char DAT_14311e038[];
 extern char DAT_14311e200[];
 extern char DAT_14311e220[];
@@ -43,7 +47,7 @@ static CryptoPPOutputProxyCx13* NewCryptoPPOutputProxy(void* owner, std::uintptr
     auto* proxy = static_cast<CryptoPPOutputProxyCx13*>(::operator new(sizeof(CryptoPPOutputProxyCx13)));
     if (proxy == nullptr)    // the exe's new-expression: a failed allocation passes null on unconstructed
         return nullptr;
-    FUN_1423049e0(proxy, 0);
+    new (proxy) CryptoPP::Algorithm(false);
     proxy->vtable0 = reinterpret_cast<void*>(vtable0);
     proxy->vtable1 = reinterpret_cast<void*>(vtable1);
     proxy->refCount = 0;
@@ -75,20 +79,20 @@ void* FUN_14230fce0(void* self, void* cipher, void* attachment, std::uint32_t fl
     const std::size_t lastSize = (flags & 1) ? 0 : digestSize;
 
     // FilterWithBufferedInput base: first, per-block, and trailing byte counts, then attachment.
-    FUN_1423103b0(self, firstSize, 1, lastSize, attachment);
+    new (self) CryptoPP::FilterWithBufferedInput(firstSize, 1, lastSize, static_cast<CryptoPP::BufferedTransformation*>(attachment));
     auto** outerVtable = reinterpret_cast<void**>(self);
     outerVtable[0] = DAT_14311e220;
     outerVtable[1] = DAT_14311e3e8;
 
     auto* hashOutput = NewCryptoPPOutputProxy(self, reinterpret_cast<std::uintptr_t>(DAT_14311e638),
                                                reinterpret_cast<std::uintptr_t>(DAT_14311e7a0));
-    FUN_1423106b0(static_cast<std::uint8_t*>(self) + 0x90, hashModule, hashOutput,
-                  flags, truncatedDigestSize);
+    new (static_cast<std::uint8_t*>(self) + 0x90) CryptoPP::HashVerificationFilter(*static_cast<CryptoPP::HashTransformation*>(hashModule),
+                  reinterpret_cast<CryptoPP::BufferedTransformation*>(hashOutput), flags, truncatedDigestSize);
 
     auto* streamOutput = NewCryptoPPOutputProxy(self, reinterpret_cast<std::uintptr_t>(DAT_14311e638),
                                                  reinterpret_cast<std::uintptr_t>(DAT_14311e7a0));
-    FUN_142311070(static_cast<std::uint8_t*>(self) + 0x148, streamCipher,
-                  streamOutput, paddingScheme, true);
+    new (static_cast<std::uint8_t*>(self) + 0x148) CryptoPP::StreamTransformationFilter(*static_cast<CryptoPP::StreamTransformation*>(streamCipher),
+                  reinterpret_cast<CryptoPP::BufferedTransformation*>(streamOutput), static_cast<CryptoPP::BlockPaddingSchemeDef::BlockPaddingScheme>(paddingScheme), true);
     return self;
 }
 
@@ -100,7 +104,8 @@ void* FUN_14230ff90(void* self, void* cipher, void* attachment, bool putAAD,
     auto* cipherBytes = static_cast<std::uint8_t*>(cipher);
     void* hashModule = cipherBytes + 8;
     void* streamCipher = cipherBytes + 0x10;
-    FUN_142311070(self, streamCipher, attachment, paddingScheme, true);
+    new (self) CryptoPP::StreamTransformationFilter(*static_cast<CryptoPP::StreamTransformation*>(streamCipher),
+                  static_cast<CryptoPP::BufferedTransformation*>(attachment), static_cast<CryptoPP::BlockPaddingSchemeDef::BlockPaddingScheme>(paddingScheme), true);
 
     auto** outerVtable = reinterpret_cast<void**>(self);
     outerVtable[0] = DAT_14311e038;
@@ -109,7 +114,8 @@ void* FUN_14230ff90(void* self, void* cipher, void* attachment, bool putAAD,
     auto* hashOutput = NewCryptoPPOutputProxy(self, reinterpret_cast<std::uintptr_t>(DAT_14311e638),
                                                reinterpret_cast<std::uintptr_t>(DAT_14311e7a0));
     const void* aadChannel = DAT_143b0dc48;
-    FUN_1423104c0(static_cast<std::uint8_t*>(self) + 0xb8, hashModule, hashOutput,
-                  putAAD, truncatedDigestSize, aadChannel, macChannel);
+    new (static_cast<std::uint8_t*>(self) + 0xb8) CryptoPP::HashFilter(*static_cast<CryptoPP::HashTransformation*>(hashModule),
+                  reinterpret_cast<CryptoPP::BufferedTransformation*>(hashOutput), putAAD, truncatedDigestSize,
+                  *static_cast<const std::string*>(aadChannel), *static_cast<const std::string*>(macChannel));
     return self;
 }

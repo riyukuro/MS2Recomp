@@ -191,17 +191,17 @@ bool CIngredientContainer::IsDifferentFrom(CIngredientContainer* other) {
 CIngredientContainer::~CIngredientContainer() { reinterpret_cast<VIng&>(m_items).clear(); }
 // @0x14026b9d0
 void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
-    Unk_StrVec parts;
+    std::vector<CString> parts;   // C3: was Unk_StrVec
     FUN_140275180(const_cast<CStringW&>(text), &parts, L",");
-    if (reinterpret_cast<VStr&>(parts).size() != 3) return;
+    if (parts.size() != 3) return;
     Unk_IngRef ref(new CIngredientInfo());
     {
-        Unk_StrVec sub;
-        FUN_140275080(*parts.FUN_14027f1c0(0), &sub, ":");
-        if (reinterpret_cast<VStr&>(sub).size() > 0) ref->m_a = FUN_1407181d0(*sub.FUN_14027f1c0(0));
-        if (reinterpret_cast<VStr&>(sub).size() > 1) ref->m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*sub.FUN_14027f1c0(1));
+        std::vector<CString> sub;   // C3: was Unk_StrVec
+        FUN_140275080(parts[0], &sub, ":");
+        if (sub.size() > 0) ref->m_a = FUN_1407181d0(sub[0]);
+        if (sub.size() > 1) ref->m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(sub[1]);
     }
-    ref->m_c = FUN_1407181d0(*parts.FUN_14027f1c0(2));
+    ref->m_c = FUN_1407181d0(parts[2]);
     if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
 }
 // @0x14026bbf0
@@ -355,7 +355,7 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
     }
 }
 // @0x14026cbf0
-unsigned DungeonRewardInfo::FUN_14026cbf0() {
+__int64 DungeonRewardInfo::FUN_14026cbf0() {
     int key = 2;
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
@@ -371,7 +371,7 @@ unsigned DungeonRewardInfo::FUN_14026cc70() {
     return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026ccf0
-unsigned DungeonRewardInfo::FUN_14026ccf0() {
+__int64 DungeonRewardInfo::FUN_14026ccf0() {
     int key = 1;
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);

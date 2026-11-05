@@ -96,7 +96,6 @@ CStringW FUN_1401aa6a0(int nNpc);                  // the name text of an npc id
 
 // The talk window.
 class UITalkManager { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };   // uitalkmanager.h clashes with this unit's CCinematicContent
-class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };   // the talk manager getter (calls cast back)
 
 // Talk scripts.
 typedef Unk_ScriptPtr<CTalkScript> TalkPtr;
@@ -516,13 +515,13 @@ void UINpcPreviewDialog::FUN_141a70b90(int nRow)
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 2) {
         CTalkScript* pTalk = FUN_1408564b0(row.m_a, row.m_b != 0 ? 100 : 300).get();
-        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
     } else if (row.m_kind == 4) {
         CTalkScript* pTalk = FUN_140856c50(m_nNpcId, row.m_c).get();
-        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
     } else if (row.m_kind == 3) {
         CTalkScript* pTalk = FUN_140856820(m_nNpcId, row.m_c).get();
-        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 2, 0);
+        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 2, 0);
     } else if (row.m_kind == 5) {
         TalkPtr spTalk = FUN_140856af0(m_nNpcId, row.m_c);
         if (spTalk.IsNull())

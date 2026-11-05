@@ -97,7 +97,9 @@ template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961690
 // The client constants (0x58-byte value cells).
 struct Unk_HouseMarkCfgInt { char m_pad[0x50]; };
 struct Unk_HouseMarkCfgFloat { char m_pad[0x58]; };
-struct Unk_HouseMarkCfgValue { int FUN_14025a620(); char m_pad[0x58]; };
+class Unk_ConstVal;
+int FUN_14025a620(Unk_ConstVal* p);   // a Constants::Value<int> slot's value (commonstringtable.cpp)
+struct Unk_HouseMarkCfgValue { char m_pad[0x58]; };
 struct Unk_HouseMarkCfg
 {
     char m_pad_0000[0x1240];
@@ -123,7 +125,7 @@ class GFxManager   // C3: member view for the former free stand-ins
 public:
     float FUN_1422afec0(int);
 };
-float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
+float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00), the distance
 float FUN_14029d220(float f);                                       // fabs
 
 class CBuddyManager;
@@ -285,7 +287,7 @@ void UIHouseMarkEntity::FUN_14198b340()
     }
     if (bShow)
     {
-        float fDistance = FUN_140966f00(m_pos, ptPc);
+        float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(m_pos), reinterpret_cast<const Vector3&>(ptPc));
         if (fDistance > (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1240)->Get())
             bShow = false;
     }
@@ -334,7 +336,7 @@ void UIHouseMarkEntity::FUN_14198b5b0()
         if (spService->FUN_1410c8470(m_nId, WorldService::GetInstance()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
         {
             __int64 nNow = GetServerTime();
-            int nWaitTime = ((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4180.FUN_14025a620();
+            int nWaitTime = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4180));
             int nRemain = (int)(nStartTime + nWaitTime - nNow);
             int nProgress = 0;
             if (nWaitTime <= 0)

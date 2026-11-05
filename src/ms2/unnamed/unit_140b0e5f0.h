@@ -16,7 +16,6 @@ struct Vector3;
 struct Unk_CoupleVec
 {
     Unk_CoupleVec(const Vector3& pt);               // 0x14027dcf0
-    Unk_CoupleVec& FUN_14097faa0(const Unk_CoupleVec& v);   // NiPoint3::operator=
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_CoupleVec, 12);

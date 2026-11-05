@@ -67,7 +67,8 @@ public:
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
 
 // World service / players.
-void* FUN_1409613d0(PCBase* p);
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 
 // @0x140b0e5f0
@@ -92,7 +93,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         return;
     if (m_bLinked == 0)
         return;
-    void* pObj = FUN_1409613d0(m_pOwner);
+    void* pObj = efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pObj == 0)
         return;
     if (!FUN_140b0ef20())
@@ -138,7 +139,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
 void CoupleEffectSystem::FUN_140b0ead0(__int64 nValue)
 {
     FUN_140b0ecd0();
-    void* pObj = FUN_1409613d0(m_pOwner);
+    void* pObj = efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pObj == 0)
         return;
     if (m_bLinked != 0 && m_nEffectId > 0)
@@ -201,7 +202,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
 {
     if (m_nEffectId != 0)
         return;
-    m_posEffect.FUN_14097faa0(FUN_140b0f160());
+    reinterpret_cast<NiPoint3&>(m_posEffect) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_CoupleVec&>(FUN_140b0f160()))));   // NiPoint3::operator= (0x14097faa0)
     Unk_CoupleXform xf;
     reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
     xf.m_fScale = 1.0f;
@@ -273,7 +274,7 @@ void CoupleEffectSystem::FUN_140b0f260()
 {
     if (m_bRequested != 0)
         return;
-    void* pObj = FUN_1409613d0(m_pOwner);
+    void* pObj = efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pObj == 0)
         return;
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));

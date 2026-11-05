@@ -429,7 +429,7 @@ void UIWeddingPageMission::vfunc_o178_12(void* pQuest)
 // @0x140fe8e50
 void UIWeddingPageMission::SendQuest(int nQuestId)
 {
-    Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
+    MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
         return;
     if (spQuest->IsComplete() == 0)
@@ -450,11 +450,11 @@ void UIWeddingPageMission::FUN_140fe8fb0()
     {
         spList->FUN_1422dd1d0();
         m_binder.FUN_140d43990();
-        ATL::CAtlArray<Unk_PayloadPtr<CQuest> > quests;
+        ATL::CAtlArray<MS2Ptr<CQuest> > quests;
         ((class CQuestManager*)FUN_140764020())->FUN_1416d1060(quests);
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
-            Unk_PayloadPtr<CQuest> spQuest(quests[i]);
+            MS2Ptr<CQuest> spQuest(quests[i]);
             MS2Ptr<CQuestData> spData = spQuest->GetData();
             CStringW strDesc = FUN_1416e5350(spQuest->FUN_140bfc580(), 0);
             ASObj row(2);

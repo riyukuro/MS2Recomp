@@ -14,7 +14,7 @@
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_SdRadio;
+class ASRadioButton;
 class ASButton;
 class ASScrollingList;
 class ASItemRendererBase;
@@ -43,7 +43,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_SdRadio> m_radio;                                // +0x180 "m_radioRecommend"
+    MS2Ptr<ASRadioButton> m_radio;                              // +0x180 "m_radioRecommend"
     MS2Ptr<ASMovieClip> m_page;                                 // +0x190 "m_customPage"
     MS2Ptr<ASButton> m_okButton;                                // +0x1a0 "m_okButton"
     MS2Ptr<ASScrollingList> m_list;                                  // +0x1b0 "m_customList"

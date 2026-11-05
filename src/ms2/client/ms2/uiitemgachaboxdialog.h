@@ -2,6 +2,7 @@
 // the machine's result slots). Unk_ names are local reconstruction names.
 #pragma once
 #include <set>
+#include <vector>
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
@@ -50,9 +51,9 @@ private:
     bool m_multi;                               // +0x190 ten at a time
     bool m_sent;                                // +0x191 the open request was sent
     int m_sndRolling;                           // +0x194 handle of the looping rolling effect
-    Unk_StrVec m_bagIds;                        // +0x198 names of the three prize preview bags
-    Unk_ItemVec m_result;                       // +0x1b0 the obtained items (std::vector<ItemEntity>)
-    Unk_StrVec m_slotBinds;                     // +0x1c8 the "binding" strings handed to the AS result slots
+    std::vector<CString> m_bagIds;              // +0x198 (C3: was Unk_StrVec) names of the three prize preview bags
+    std::vector<ItemEntity> m_result;           // +0x1b0 (C3: was Unk_ItemVec) the obtained items (std::vector<ItemEntity>)
+    std::vector<CString> m_slotBinds;           // +0x1c8 (C3: was Unk_StrVec) the "binding" strings handed to the AS result slots
     std::set<ItemEntity, Unk_GachaLess> m_special;      // +0x1e0 rare items of the last result
     MS2Ptr<ASMovieClip> m_resultItem;           // +0x1f0 "m_resultItem" of the machine
 };

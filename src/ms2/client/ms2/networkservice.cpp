@@ -323,9 +323,7 @@ Unk_MessageBoxPtr FUN_140d73d20(int,CStringW,void*,CStringW);
 Unk_MessageBoxPtr FUN_140d73e40(int,int,void*,CStringW);
 Unk_MessageBoxPtr FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(Unk_MessageBoxPtr);
-void* FUN_140534fc0(const Unk_MessageBoxPtr&);
-void* FUN_140534fe0(const Unk_MessageBoxPtr&);
-#define MS2_BOX(sp) static_cast<CMsgBoxData*>(FUN_140534fe0(sp))
+#define MS2_BOX(sp) static_cast<CMsgBoxData*>(sp.operator->())
 void FUN_140a30b80(char*, int);   // C3: was FUN_140a30b80
 void FUN_1405340b0(void*,__int64);
 #include "ms2/commonfiles/commonutil.h"
@@ -376,7 +374,7 @@ extern "C" void* __RTDynamicCast(void*,long,void*,void*,int) noexcept(false);   
 #include <list>
 void FUN_14038bb30(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
-int FUN_14053fd90(void*);extern char DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90), was DAT_143ab2a90
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
@@ -493,8 +491,8 @@ int CNetworkService::GetSocketSequence() { return m_socket.GetSequence(); }
 BOOL CNetworkService::SendRetrieveFurnishingItem(CItem* item) {
     if(item==0) return false;
     if(!IsFutureTime(item->FUN_140528a90())) return false;
-    int type=FUN_14053fd90(((void*)((class CItem*)(class CItem*)(item))->FUN_140527840()));
-    int slot=reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a612b0(type,MS2Ptr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
+    int type=reinterpret_cast<CItemData*>(((class CItem*)(class CItem*)(item))->FUN_140527840())->FUN_14053fd90();
+    int slot=g_143ab2a90.FUN_140a612b0(type,MS2Ptr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
     if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
     else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
@@ -1002,44 +1000,44 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         int ss=start.GetSecond(),sm=start.GetMinute(),sh=start.GetHour(),sd=start.GetDay(),smon=start.GetMonth(),sy=start.GetYear();
         CStringW text=BlockFormat<int, int, int, int, int, int, int, int, int, int, int, int, CStringW>(0x21a,sy,smon,sd,sh,sm,ss,ey,emon,ed,eh,em,es,reason);
         Unk_MessageBoxPtr data=FUN_140d73d20(0x10,text,0,L"");
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==11||result==12) {
         CStringW text=reply.message;CStringW tag=result==12?s_maintenanceExit:CStringW(L"");text.Replace(L"\\n",L"\n");
         FUN_140d86260()->vfunc_23(0x38a,"AuthFailed_Maintenance");
         Unk_MessageBoxPtr data=FUN_140d73d20(0,text,0,tag);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
     } else if(result==0x18) {
         FUN_140d86260()->vfunc_23(0x38b,"AuthFailed_AdminIP");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x221,0,s_maintenanceExit);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x12) {
         FUN_140d86260()->vfunc_23(0x38c,"AuthFailed_NotAlphaTester");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x21b,0,s_maintenanceExit);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x15) {
         FUN_140d86260()->vfunc_23(0x38d,"AuthFailed_SessionError");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x21e,0,s_maintenanceExit);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0xe) {
         FUN_140d86260()->vfunc_23(0x38e,"AuthFailed_ExternalBlockNexonSN");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x21f,0,s_externalBlock);
-        if(FUN_140534fc0(data)) { FUN_140a30b80((char*)(FUN_140534fe0(data)), 0);MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { FUN_140a30b80((char*)(data.operator->()), 0);MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0xf) {
         FUN_140d86260()->vfunc_23(0x38f,"AuthFailed_ExternalBlockIP");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x220,0,s_maintenanceExit);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x14) {
         FUN_140d86260()->vfunc_23(0x390,"AuthFailed_AutoExternBlock");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x223,0,s_autoExternalBlock);
-        if(FUN_140534fc0(data)) { FUN_140a30b80((char*)(FUN_140534fe0(data)), 0);MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { FUN_140a30b80((char*)(data.operator->()), 0);MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==4||result==5) {
         FUN_140d86260()->vfunc_23(0x391,"AuthFailed_AlreadyLogin");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,FUN_140cc1fb0(result),0,s_alreadyReconnect);
-        if(FUN_140534fc0(data)) { FUN_140d86260()->vfunc_59(result);FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { FUN_140d86260()->vfunc_59(result);FUN_140d73c60(data); }
     } else if(result==0x13) {
         FUN_140d86260()->vfunc_23(0x392,"AuthFailed_MainATL");
         Unk_MessageBoxPtr data=FUN_140d73e40(0,0x222,0,s_maintenanceExit);
-        if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x19) {
         FUN_140d86260()->vfunc_23(0x393,"AuthFailed_Ticket");
         if(Unk_MessageBoxPtr data=FUN_140d73d20(0,GetStringCommonByKey(L"s_login_err_nxa_ticket"),0,s_maintenanceExit)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }

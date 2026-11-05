@@ -275,13 +275,6 @@ class Unk_140acd6e0 : public ASButton
 public:
 };
 
-// The movie clips of the pages (child buttons by name).
-class Unk_PiClip : public ASMovieClip
-{
-public:
-    MS2Ptr<Unk_140acd6e0> FUN_140acce30(const CString& strName);            // child button by name
-};
-
 // The local player object (vtable slot 59 sets the instrument mode).
 class Unk_PiPlayer
 {
@@ -429,8 +422,8 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     m_spPlayPage = FUN_140c02990("m_playDirectPage");
     if (m_spPlayPage.get())
     {
-        m_spLowerOctave = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30("m_lowerOctave");
-        m_spUpperOctave = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30("m_upperOctave");
+        m_spLowerOctave = reinterpret_cast<AScript*>(m_spPlayPage.operator->())->FUN_140acce30<Unk_140acd6e0>("m_lowerOctave");
+        m_spUpperOctave = reinterpret_cast<AScript*>(m_spPlayPage.operator->())->FUN_140acce30<Unk_140acd6e0>("m_upperOctave");
     }
     m_spScorePage = FUN_140c02990("m_playScorePage");
     m_spFold = GetChild<ASTextField>("m_foldText");
@@ -1104,7 +1097,7 @@ void UIPlayInstrumentDialog::FUN_14100e060()
     {
         int nNo = i + 1;
         CString strName = StringFormat<int>("m_key{0}", nNo);
-        MS2Ptr<Unk_140acd6e0> spButton = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
+        MS2Ptr<Unk_140acd6e0> spButton = reinterpret_cast<AScript*>(m_spPlayPage.operator->())->FUN_140acce30<Unk_140acd6e0>(strName);
         CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyName(aKeys[i]);
         spButton->FUN_1422cdfb0(strKey);
         MapKeyButton(aKeys[i], MS2Ptr<Unk_140acd6e0>(spButton), i);
@@ -1125,7 +1118,7 @@ void UIPlayInstrumentDialog::FUN_14100e060()
         if (key.second <= 8)
         {
             CString strName = StringFormat<int>("m_octave{0}", key.second);
-            MS2Ptr<ASDisplayObject> spControl = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
+            MS2Ptr<ASDisplayObject> spControl = reinterpret_cast<AScript*>(m_spPlayPage.operator->())->FUN_140acce30<Unk_140acd6e0>(strName);
             if (spControl == 0)
                 continue;
             MS2Ptr<ASTextField> spLabel = spControl->FUN_1409b4620("textField");
@@ -1170,8 +1163,8 @@ void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
         return;
     if (nMode == 0)
         return;
-    MS2Ptr<Unk_140acd6e0> spStop = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_stop");
-    MS2Ptr<Unk_140acd6e0> spPlay = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_play");
+    MS2Ptr<Unk_140acd6e0> spStop = reinterpret_cast<AScript*>(m_spScorePage.operator->())->FUN_140acce30<Unk_140acd6e0>("m_stop");
+    MS2Ptr<Unk_140acd6e0> spPlay = reinterpret_cast<AScript*>(m_spScorePage.operator->())->FUN_140acce30<Unk_140acd6e0>("m_play");
     MS2Ptr<ASTextField> spTime = m_spScorePage->FUN_1409b4620("m_timeText");
     if (spStop == 0 || spPlay == 0)
         return;

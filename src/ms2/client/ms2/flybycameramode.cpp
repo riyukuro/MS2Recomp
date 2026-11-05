@@ -30,6 +30,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include <efd/Point3.h>        // C3: efd::Point3::UNIT_Z (g_143a08cf8)
+template <class T> class TSingleton;
+class CameraMgr;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +42,7 @@ float FUN_141b6fdb0(float f, int n);            // ease curve (n = exponent)
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
+    Unk_FlyByCameraData* FUN_1412201a0();   // C3: was Unk_CameraManager
     void FUN_140947860(int);
     void FUN_140947980(int);
     void FUN_140aed720(struct Unk_CameraSetting const&);
@@ -47,9 +51,9 @@ public:
 
 
 // @0x1412201a0
-Unk_FlyByCameraData* Unk_CameraManager::FUN_1412201a0()
+Unk_FlyByCameraData* CameraMgr::FUN_1412201a0()   // C3: was Unk_CameraManager::FUN_1412201a0
 {
-    return &m_34;
+    return reinterpret_cast<Unk_FlyByCameraData*>(reinterpret_cast<char*>(this) + 0x34);   // m_flyBy (camera.h)
 }
 
 // @0x14121f110
@@ -79,7 +83,7 @@ void CFlyByCameraMode::vfunc_8(double fTime)
     float fRatio = m_fElapsed / m_fDuration;
     if (1.0f < fRatio)
         fRatio = 1.0f;
-    Unk_FlyByCameraData* pFly = Unk_CameraManager::FUN_1409478c0()->FUN_1412201a0();
+    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->FUN_1412201a0();
     Vector3 ptRot = CCameraMode::FUN_140afdec0(fRatio, pFly->m_from.m_18, pFly->m_to.m_18);
     vfunc_11(data.m_0);
     ((CCameraMode*)this)->FUN_140af99d0(data.m_4);
@@ -105,8 +109,8 @@ void CFlyByCameraMode::vfunc_6(int n)
         delete m_pInterp;
         m_pInterp = 0;
     }
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947860(0);
-    Unk_FlyByCameraData* pFly = Unk_CameraManager::FUN_1409478c0()->FUN_1412201a0();
+    TSingleton<CameraMgr>::GetInstance()->FUN_140947860(0);
+    Unk_FlyByCameraData* pFly = TSingleton<CameraMgr>::GetInstance()->FUN_1412201a0();
     switch (pFly->m_nKind)
     {
     case 1:
@@ -142,7 +146,7 @@ void CFlyByCameraMode::vfunc_6(int n)
 void CFlyByCameraMode::vfunc_7()
 {
     CCameraMode::vfunc_7();
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947860(m_nMode != 5);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140947860(m_nMode != 5);
     if (m_pInterp != 0)
     {
         delete m_pInterp;
@@ -165,8 +169,8 @@ MS2_REPLACE_METHOD(0x14121F910, CFlyByCameraMode, FUN_14121f910, 210, 0x5B2C953F
 // @0x14121f9f0
 void CFlyByCameraMode::FUN_14121f9f0()
 {
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_setting));
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(m_nMode);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aed720(*(struct Unk_CameraSetting const*)(&m_setting));
+    TSingleton<CameraMgr>::GetInstance()->FUN_140947980(m_nMode);
 }
 MS2_REPLACE_METHOD(0x14121F9F0, CFlyByCameraMode, FUN_14121f9f0, 70, 0xD29377B0);
 

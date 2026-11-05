@@ -46,7 +46,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>& rOut, const wchar_t* pszSep);
 template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178670 (CAtlArray<unsigned>)
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
@@ -248,7 +247,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                     spData->m_cube.m_fittingDoll.m_strAsset = "FittingDoll_M_Default01";
             }
             CString strItems = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pDoll))->Attribute("fittingdollDefaultItem"), 0);
-            FUN_140177e10(strItems, spData->m_cube.m_fittingDoll.m_defaultItems, L",");
+            XmlSplit(strItems, spData->m_cube.m_fittingDoll.m_defaultItems, ",");   // C3: was FUN_140177e10
             CString strColor;
             strColor = Unk_ReadString((class Unk_XmlNode*)(pDoll), "fittingdollSkinColor0", CString(""));
             spData->m_cube.m_fittingDoll.m_anSkinColor[0] = FUN_14028c0d0(strColor);

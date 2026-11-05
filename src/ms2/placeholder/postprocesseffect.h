@@ -96,6 +96,7 @@ private:
 MS2_CHECK_SIZE(Unk_PPRes, 8);
 Unk_PPRes FUN_1416b4990(NiDefaultClickRenderStep* step, const char* name, void* cb, void* cbData, void* a, int b, int c, void* d, const char* tech, void* e, void* f, void* g);
 void* FUN_140c8f690(const Unk_PPRes& res);
-void* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // the client config (0x1401d31f0, cachedata.cpp, the definer's signature)
+#define FUN_1401d31f0() (static_cast<void*>(FUN_1401d31f0()))   // read as void*; callers cast to their view
 extern char DAT_1439fc800;
 void FUN_14169f6d0(void* smartPtrA, void* p);

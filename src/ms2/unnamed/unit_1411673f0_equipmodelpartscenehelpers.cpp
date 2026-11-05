@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Model-part scene helpers of the item customize / equip model code:
 // scene node lookup by name through a CEquipModel part (its root, then the loaded mesh set), the NiMesh lookup used by the
-// hair customizer, interpolator controller update by node name, the part highlight toggle, and the CAtlArray<MS2Ptr<Unk_PickTarget> >
+// hair customizer, interpolator controller update by node name, the part highlight toggle, and the CAtlArray<MS2Ptr<CEquipModel> >
 // glue they instantiate. File and function names are invented (no __FILE__ string in the range).
 // MS2-UNIT: unit_1411673f0
 // MS2-RANGE: 0x1411673f0-0x141168140 .text$mn
@@ -25,6 +25,9 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/worldservice.h"
+
+std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pModel);    // C3: the part's node set (equipmodel.cpp)
+void* FUN_141200ab0(CEquipModel* pModel);                         // C3: the part's model facts (equipmodel.cpp; was the Unk_PickTarget member view)
 
 // ---- unit-local placeholders (names invented) --------------------------------------------------------------------------
 // The local player (a world actor) and the world that owns it.
@@ -57,22 +60,21 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 extern NiFixedString DAT_143ae51b8;     // name of the extra data that tags a node
 extern NiFixedString DAT_143ae50e8;     // substring of that tag that excludes the node from the highlight
 
-void FUN_1411dcc80(CEquipItem* pItem, CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
 int FUN_1405451c0(CString& strName);   // equip slot of a part name (C3: the definition's signature)
 void FUN_1414d37a0(void*, int);   // C3: was FUN_1414d37a0
 void FUN_1414d3930(void*);   // C3: was FUN_1414d3930
 
 // @0x1411673f0
 // The scene node of the part named pName: from the model root first, then from each loaded mesh of the part.
-NiAVObject* Unk_PickTarget::FUN_1411673f0(const CString* pName) const
+NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
 {
     NiAVObject* pFound = 0;
-    if (FUN_141200ab0()->m_n20 == 0) {
-        NiAVObject* pRoot = (NiAVObject*)reinterpret_cast<CEquipModel*>(const_cast<Unk_PickTarget*>(this))->vfunc_14();
+    if (((Unk_PickPartInfo*)::FUN_141200ab0(const_cast<CEquipModel*>(this)))->m_n20 == 0) {
+        NiAVObject* pRoot = (NiAVObject*)const_cast<CEquipModel*>(this)->vfunc_14();
         if (pRoot != 0) {
             pFound = pRoot->GetObjectByName((const char*)*pName);
             if (pFound == 0) {
-                std::set<NiAVObjectPtr>* kPSet = &FUN_141201c90(); std::set<NiAVObjectPtr>& kSet = *kPSet;
+                std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
                 std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
                 std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
                 for (; it != itEnd; ++it) {
@@ -86,7 +88,7 @@ NiAVObject* Unk_PickTarget::FUN_1411673f0(const CString* pName) const
             }
         }
     } else {
-        std::set<NiAVObjectPtr>* kPSet = &FUN_141201c90(); std::set<NiAVObjectPtr>& kSet = *kPSet;
+        std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
         std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
         std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
         for (; it != itEnd; ++it) {
@@ -101,7 +103,7 @@ NiAVObject* Unk_PickTarget::FUN_1411673f0(const CString* pName) const
 
 // @0x1411676d0
 // The mesh of the part named pPartName; failing that, the first "Editable " / "HR" mesh below the node of that name.
-NiAVObject* Unk_PickTarget::FUN_1411676d0(const CString* pPartName) const
+NiAVObject* CEquipModel::FUN_1411676d0(const CString* pPartName) const
 {
     NiAVObject* pNode = FUN_1411673f0(pPartName);
     NiMesh* pMesh = NiDynamicCast(NiMesh, pNode);
@@ -155,7 +157,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
 // @0x1411679d0
 // Highlights (fMode != 0) or un-highlights the meshes of the part; pNode narrows the highlight to one mesh.
 // The skip-tag test reads the extra data of the root, not of each walked node (as in the exe).
-void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
+void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 {
     if (this == 0)
         return;
@@ -163,11 +165,11 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
     if (pPlayer == 0)
         return;
     CAtlArray<NiAVObject*> aRoots;
-    if (FUN_141200ab0()->m_n20 == 0) {
-        NiAVObject* pRoot = (NiAVObject*)reinterpret_cast<CEquipModel*>(this)->vfunc_14();
+    if (((Unk_PickPartInfo*)::FUN_141200ab0(this))->m_n20 == 0) {
+        NiAVObject* pRoot = (NiAVObject*)this->vfunc_14();
         aRoots.Add(pRoot);
     }
-    std::set<NiAVObjectPtr>* kPSet = &FUN_141201c90(); std::set<NiAVObjectPtr>& kSet = *kPSet;
+    std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
     std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
     std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
     for (; it != itEnd; ++it) {
@@ -209,14 +211,14 @@ NiAVObject* FUN_141167cf0(const CString& strName)
     {
         MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655e10(FUN_1405451c0(const_cast<CString&>(strName)));
         if (spItem.get() != 0) {
-            CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
-            FUN_1411dcc80(spItem.operator->(), aParts);
+            CAtlArray<MS2Ptr<CEquipModel> > aParts;
+            spItem->GetModels(aParts);   // C3: was the free FUN_1411dcc80 view
             for (unsigned i = 0; i < aParts.GetCount(); i++) {
-                MS2Ptr<Unk_PickTarget>& spPart = aParts[i];
+                MS2Ptr<CEquipModel>& spPart = aParts[i];
                 NiAVObject* pMesh = spPart.get()->FUN_1411676d0(&strName);
                 if (pMesh != 0)
                     return pMesh;
-                pMesh = spPart.get()->FUN_1411676d0(&spPart->FUN_141200ab0()->m_str08);
+                pMesh = spPart.get()->FUN_1411676d0(&((Unk_PickPartInfo*)::FUN_141200ab0(spPart.operator->()))->m_str08);
                 if (pMesh != 0)
                     return pMesh;
             }

@@ -67,8 +67,6 @@ MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);     // the item slot beh
 class InvenSlot { public: __int64 GetItemUid(); };          // its item uid
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an item id
-class Unk_PetRowTable;
-Unk_PetRowTable* FUN_14052d210();                           // TSingleton<CPetDataTable>::GetInstance
 void* FUN_14052d200();                                      // TSingleton<CItemSocketTable>::GetInstance
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
@@ -334,7 +332,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (spPet->IsPetItem() == 0)                    // not a pet
         return;
     int nPetId = spPet->FUN_140527840()->GetPetId();
-    MS2Ptr<CPetData> spPetData = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(nPetId);
+    MS2Ptr<CPetData> spPetData = TSingleton<CPetDataTable>::GetInstance()->Find(nPetId);
     if (spPetData.IsNull())
         return;
     if (!spPetData->m_bEnablePetExtraction)

@@ -169,7 +169,7 @@ struct Unk_LoginRequest
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
 void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
 void* FUN_140aadf70();   // C3: was FUN_140aadf70
-void FUN_14067c080(Unk_LoginMachineId* pDst, const Unk_LoginMachineId& src);
+class Unk_MachineId { public: Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther); };   // C3: member view (unit_14067c020_machineidcodec)
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
@@ -588,7 +588,7 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = m_nChannel;
-        FUN_14067c080(&request.m_machineId, *reinterpret_cast<const Unk_LoginMachineId*>(reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetID()));
+        reinterpret_cast<Unk_MachineId*>(&request.m_machineId)->FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetID()));
         request.m_n2c = reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());

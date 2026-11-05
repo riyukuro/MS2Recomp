@@ -57,8 +57,7 @@ Unk_140bccd50* FUN_140bccd50();
 class Unk_UiService { public: };
 
 // A string translator (singleton chain 0x140a87680 -> 0x140a87690).
-class Unk_140a87690 : public CServerStringGroup { };
-class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
+class Unk_PatchTextOwner { public: class Unk_PatchTextFilter* FUN_140a87690(); };   // C3: CServerString accessor view (onlinepatchmanagercli.cpp)
 
 // The movie root as a display object container (m_90 of UIDialog): children are added/removed by value.
 class ASDialog : public ASDisplayObjectContainer {};
@@ -109,7 +108,7 @@ void FieldGameScoreBoardCli::FUN_140f9c3a0(CInPacket& packet)
 {
     m_nMode = (&packet.m_stream)->ReadByte();
     CStringW strTitle = (&packet.m_stream)->ReadString();
-    strTitle = reinterpret_cast<Unk_140a87680*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strTitle);
+    strTitle = reinterpret_cast<CServerStringGroup*>(reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690())->GetString(strTitle);
     int nCur = (&packet.m_stream)->ReadInt();
     int nMax = (&packet.m_stream)->ReadInt();
     FUN_140f9c610(strTitle, nCur, nMax);

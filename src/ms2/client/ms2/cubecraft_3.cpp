@@ -85,7 +85,7 @@ int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiTexture>);
 class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
 FittingDollPC* FUN_14121b590(int, int, int);
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: was (const NiMatrix3&, NiPoint3&)
-void FUN_140b86230(const NiPoint3&, NiMatrix3&);
+void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 int FUN_14123c660(GameObject*);
 void FUN_14123c300(GameObject*, float);
 void FUN_14121c170(GameObject*, NiFixedString);
@@ -102,12 +102,7 @@ class EntityWorldManager   // C3: member view (entityworldmanager.h pulls header
 public:
     bool FUN_1411cf0b0(efd::utf8string, efd::AssetID&, bool&);
     void FUN_1411cf570(egf::Entity*);
-};
-struct Vector3 { float x, y, z; };
-class Unk_CubeEntityService {
-public:
-    efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string,
-                                              Vector3, Vector3, float, int, int);
+    efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string, efd::Point3, efd::Point3, float, int, int);
 };
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
@@ -297,7 +292,7 @@ MS2_REPLACE_METHOD(0x1410b0cb0, CFittingDollCubeGuide, vfunc_4, 117, 0xCB7A88BE)
 NiMatrix3 CFittingDollCubeGuide::vfunc_5() {
     NiMatrix3 rotation;
     NiPoint3 angles = doll->vfunc_20();
-    FUN_140b86230(angles, rotation);
+    FUN_140b86230(reinterpret_cast<const efd::Point3&>(angles), rotation);
     return rotation;
 }
 MS2_REPLACE_METHOD(0x1410b0d30, CFittingDollCubeGuide, vfunc_5, 156, 0xA46EFA4C);
@@ -335,8 +330,8 @@ int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     if (!TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf0b0(efd::utf8string((const char*)assetName), id, isActor)) return 0;
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
-    entity = static_cast<Unk_CubeEntityService*>((void*)TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(
-        model, id.GetURN(), reinterpret_cast<const Vector3&>(efd::Point3::ZERO), reinterpret_cast<const Vector3&>(efd::Point3::ZERO), 1.0f, 0, 1);
+    entity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0(
+        model, id.GetURN(), efd::Point3::ZERO, efd::Point3::ZERO, 1.0f, 0, 1);
     if (entity != NULL) return 1;
     return 0;
 }
@@ -389,7 +384,7 @@ NiMatrix3 CKfmCubeGuide::vfunc_5() {
     NiPoint3 angles;
     reinterpret_cast<egf::Entity*>(entity.operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(angles));
     NiMatrix3 rotation;
-    FUN_140b86230(angles, rotation);
+    FUN_140b86230(reinterpret_cast<const efd::Point3&>(angles), rotation);
     return rotation;
 }
 MS2_REPLACE_METHOD(0x1410b1820, CKfmCubeGuide, vfunc_5, 155, 0xFB41EE8F);

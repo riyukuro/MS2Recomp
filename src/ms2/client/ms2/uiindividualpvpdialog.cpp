@@ -107,7 +107,8 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);
-CStringW FUN_1401bf530(Unk_XmlNode* pElem, const char* pszAttr, CStringW strDefault);
+class Unk_140165cf0;
+CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);   // C3: the definer's node type (blackmarketitemoption.cpp)
 
 // @0x1412c9e70
 UIIndividualPvPDialog::UIIndividualPvPDialog() : m_nLastPage(1), m_nSelected(0)
@@ -472,8 +473,8 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     std::auto_ptr<KeyMap> names = m_factory30();
     for (Unk_XmlNode* pElem = pRoot->FirstChild("key"); pElem != 0; pElem = ((class Unk_XmlNode*)((pElem))->NextSibling("key")))
     {
-        CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
-        CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));
+        CStringW strName = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), m_keyAttribute20, CStringW(L""));
+        CStringW strText = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), m_valueAttribute28, CStringW(L""));
         typename KeyMap::CPair* pPair = names->Lookup(strName);
         if (pPair == 0)
         {

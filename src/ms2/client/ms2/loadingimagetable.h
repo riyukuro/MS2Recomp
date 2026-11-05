@@ -55,7 +55,6 @@ public:
     struct Unk_MapRange
     {
         Unk_MapRange(int nFrom, int nTo) { m_nFrom = nFrom; m_nTo = nTo; }
-        bool FUN_1403b4ef0(unsigned n) const;                   // n is inside the interval
         int m_nFrom;
         int m_nTo;
     };

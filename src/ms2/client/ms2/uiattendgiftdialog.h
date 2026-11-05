@@ -76,7 +76,6 @@ public:
     void FUN_14102f180(ASData&);
     template<class T> Unk_14102fe10<T> FUN_14102f870(const CString&,Unk_14102fe10<T>&);
     template<class T> Unk_14102fe10<T> FUN_140bfa760(const CString&);
-    MS2Ptr<Unk_140acd6e0> FUN_140bc6d10(const CString&,MS2Ptr<Unk_140acd6e0>&);
 private:
     MS2_LAYOUT_FRIEND;
     Unk_14102fe10<Unk_140bfc2e0> m_giftList;

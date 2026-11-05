@@ -73,13 +73,13 @@ class CCubeMotionManager : public TSingleton<CCubeMotionManager>
 public:
     CCubeMotionManager();                                           // 0x14115b040
     virtual ~CCubeMotionManager();                                  // 0x14115b120 (scalar deleting 0x14115eca0)
-    void AddScale(const egf::EntityID& id, float fFrom, float fTo, unsigned nMs);                     // 0x14115b1e0
+    void AddScale(egf::EntityID id, float fFrom, float fTo, unsigned nMs);                     // 0x14115b1e0
     void AddRotate(egf::EntityID id, float fFrom, float fTo, unsigned nMs);                    // 0x14115b260
     void AddBounce(const egf::EntityID& id, float fFrom, float fTo, unsigned nUnused, unsigned nMs);  // 0x14115b2e0
     void AddFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, bool bHide);          // 0x14115b370
     void RemoveFade(egf::EntityID id);                       // 0x14115b430
-    bool FUN_14115b4c0(const egf::EntityID& id, Unk_CmScale& out);  // 0x14115b4c0 (the entity has a scale motion)
-    bool FUN_14115b500(const egf::EntityID& id, Unk_CmRotate& out); // 0x14115b500 (the entity has a rotate motion)
+    bool FUN_14115b4c0(egf::EntityID id, Unk_CmScale& out);  // 0x14115b4c0 (the entity has a scale motion)
+    bool FUN_14115b500(egf::EntityID id, Unk_CmRotate& out); // 0x14115b500 (the entity has a rotate motion)
     void Update();                                                  // 0x14115b540
 
     ATL::CRBMap<egf::EntityID, Unk_CmScale> m_scale;                // +0x08

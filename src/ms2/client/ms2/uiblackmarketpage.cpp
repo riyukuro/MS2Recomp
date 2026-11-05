@@ -109,7 +109,7 @@ CStringW FUN_1413fa9b0(const CStringW& str);                        // the searc
 void FUN_140222be0(ATL::CAtlArray<unsigned int>& out);              // the job codes of the search dropdown
 int FUN_1402227e0(int nJobCode, int bAll);                          // the job group of a code
 unsigned long GetTickCountMs2();                                    // tick count
-int FUN_14028d260(float fSeconds);                                  // seconds -> ticks
+__int64 FUN_14028d260(float fSeconds);                                  // seconds -> ticks  (C3: the definition's __int64 return, read as int)
 int FUN_1406198a0(int nScale, float f);                             // round(f * nScale)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // system notice text
 void FUN_141275260(int nStringId, int nA, int nB);                  // system notice of a string id
@@ -826,7 +826,7 @@ MS2_REPLACE_METHOD(0x140F0F250, BlackMarketPageItemSearch, OnSearchDelayError, 1
 int BlackMarketPageItemSearch::CanSearchNow()
 {
     unsigned int dwNow = GetTickCountMs2();
-    if (dwNow < (unsigned int)(FUN_14028d260(1.0f) + m_dwSearchTick))
+    if (dwNow < (unsigned int)((int)FUN_14028d260(1.0f) + m_dwSearchTick))
         return 0;
     return 1;
 }

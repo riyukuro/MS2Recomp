@@ -20,7 +20,7 @@
 
 class CMsgBoxData;
 class CInPacket;
-class Unk_PetRow;
+class CPetData;
 
 class CPetInventory
 {
@@ -117,7 +117,7 @@ public:
     CPetInventory* GetInventory();                         // &m_inv
     Unk_PetManagerEmpty* FUN_140c8b430();                   // &m_a0
     CCPetInfoPacket::Info* GetInfo();                 // &m_info
-    MS2Ptr<Unk_PetRow> GetSummonedPetRow();                     // the table row of the summoned pet item
+    MS2Ptr<CPetData> GetSummonedPetRow();                     // the table row of the summoned pet item
     void* GetPlayerPet(int nObjectId);                     // the pet (CPet) of a player object, or null
 
     // item use entry points (the callers pass an item data id)

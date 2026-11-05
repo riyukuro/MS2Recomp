@@ -273,7 +273,7 @@ public:
     void FUN_141671c20(MS2Ptr<CDamageRecord> spRecord);     // 0x141671c20 show a hit (damage numbers or the miss effect)
     void FUN_141672020(MS2Ptr<CDotDamageRecord> spRecord);
     void FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord);   // 0x1416721d0 show a splash hit   // 0x141672020 show a DoT tick
-    int FUN_1416725c0(NiPoint3& kDir, float fDist, float fHeight, float fUp);   // 0x1416725c0 can step fDist along kDir (motioncontroller)
+    int FUN_1416725c0(NiPoint3 kDir, float fDist, float fHeight, float fUp);   // 0x1416725c0 can step fDist along kDir (motioncontroller)
     static int FUN_141677f40(PCBase* pActor);                // 0x141677f40 local rider: request getting off (states)
     void FUN_1416788d0();                                   // 0x1416788d0 cast skill 20000011 (or the "not now" notice)
     void FUN_14166f380();                                   // 0x14166f380 reload the effect source (vfunc_70 library, vfunc_69 id)

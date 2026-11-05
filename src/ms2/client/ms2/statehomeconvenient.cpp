@@ -21,6 +21,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/icastingeventlistener.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/scriptptr.h"
 #include "ms2/placeholder/uitalkmanager.h"   // C3: UITalkManager::FUN_141b213f0 (MS2Ptr<CTalkScript>)
 #include "hook/ms2hook.h"
 
@@ -74,22 +75,12 @@ public:
 UICastingBar* FUN_140ac2270(int nId);
 
 CStringW GetStringCommon(int nId);                         // string table text of an id
-int FUN_14028d260(float fSeconds);                       // seconds -> ms
+__int64 FUN_14028d260(float fSeconds);                       // seconds -> ms  (C3: the definition's __int64 return, read as int)
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
-// The doctor NPC script (1 = a script page shown by the NPC dialog service).
-class Unk_HcNpcScript : public CPtred
-{
-public:
-    char m_pad_18[0x40];
-};
-MS2Ptr<Unk_HcNpcScript> FUN_140856820(unsigned nNpcId, int nScriptId);   // by id and script (empty when unknown)
-MS2Ptr<Unk_HcNpcScript> FUN_140856c50(unsigned nNpcId, int nMode);
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
+// The doctor NPC talk script (1 = a script page shown by the NPC dialog service). C3: the definers' types (talkscript.cpp).
+Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nTalkId);   // by id and script (empty when unknown)
+Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int nMode);
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HcBuffMgr { public: };
 // the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
@@ -223,14 +214,14 @@ void StateHomeConvenient::Finish(double fTime)
                 unsigned nNpc = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorNpcID.Get();
                 if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
-                    if (Unk_HcNpcScript* pScript = FUN_140856c50(nNpc, 1).get())
-                        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(reinterpret_cast<CTalkScript*>(pScript)), nNpc, 1, 0x12);
+                    if (CTalkScript* pScript = FUN_140856c50(nNpc, 1).get())
+                        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpc, 1, 0x12);
                 }
                 else
                 {
                     int nScript = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorScriptID1.Get();
-                    if (Unk_HcNpcScript* pScript = FUN_140856820(nNpc, nScript).get())
-                        ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(reinterpret_cast<CTalkScript*>(pScript)), nNpc, 2, 0);
+                    if (CTalkScript* pScript = FUN_140856820(nNpc, nScript).get())
+                        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpc, 2, 0);
                 }
                 m_n40 = 1;
             }
@@ -315,7 +306,7 @@ void StateHomeConvenient::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     reinterpret_cast<Unk_HcSlots*>(m_pOwner)->vfunc_68(reinterpret_cast<const efd::Point3&>(DAT_143b01a60), fTime, 0, 0, 0);
-    m_n44 += FUN_14028d260((float)fTime);
+    m_n44 += (int)FUN_14028d260((float)fTime);
     if ((unsigned)m_n44 >= (unsigned)m_n48)
     {
         switch (m_n10)

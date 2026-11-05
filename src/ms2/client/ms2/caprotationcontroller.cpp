@@ -22,8 +22,8 @@
 // MS2-PIN: ?vfunc_10@CItemCustomizeController@@UEAAXM@Z 0x140b02db0 ; unique
 // MS2-PIN: ?vfunc_9@CItemCustomizeController@@UEAAXH@Z 0x140b02dc0 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@V?$SmartPointer@VNiAVObject@@@efd@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@2@XZ 0x140b02e90 ; unique
-// MS2-PIN: ??8?$MS2Ptr@UUnk_PickTarget@@@@QEBA_NPEAUUnk_PickTarget@@@Z 0x140b02970 ; manual (identical group)
-// MS2-PIN: ??C?$MS2Ptr@UUnk_PickTarget@@@@QEBAPEAUUnk_PickTarget@@XZ 0x140b02a50 ; manual (identical group)
+// MS2-PIN: ??8?$MS2Ptr@VCEquipModel@@@@QEBA_NPEAVCEquipModel@@@Z 0x140b02970 ; manual (identical group)
+// MS2-PIN: ??C?$MS2Ptr@VCEquipModel@@@@QEBAPEAVCEquipModel@@XZ 0x140b02a50 ; manual (identical group)
 // MS2-PIN: ?GetRTTI@CCapRotationController@@UEBAPEBVNiRTTI@@XZ 0x140b02c30 ; manual
 // MS2-PIN: ?vfunc_16@CItemCustomizeController@@UEAAXXZ 0x140b02d60 ; manual (vftable slot 16)
 // MS2-PINS-END tplpin
@@ -32,6 +32,7 @@
 #include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 #include <efd/Point3.h>
 #include "caprotationcontroller.h"
+#include "ms2/client/ms2/equipmodel.h"   // C3: the part is a CEquipModel (was Unk_PickTarget)
 #include "ms2/placeholder/citem.h"
 #include <efd/MemObject.h>
 #include <NiMesh.h>
@@ -89,10 +90,8 @@ public:
     struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
     MS2Ptr<CItem> GetItem();                              // the item object holding the model record
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
-    MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
+    MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
 };
-
-struct Unk_CapEntityKey { unsigned __int64 m_id; };
 
 // The local player (virtual slot 20 returns its rotation in degrees).
 class Unk_CapPlayer
@@ -146,7 +145,11 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // The loaded meshes of a part model: a std::set<NiAVObjectPtr> (equipmodel.h).
 typedef std::set<NiAVObjectPtr> Unk_MeshSet;
-Unk_MeshSet* FUN_141201c90(Unk_PickTarget* pPart);
+class CEquipModel;
+Unk_MeshSet* FUN_141201c90(CEquipModel* pPart);       // C3: the definition's signature (equipmodel.cpp)
+void* FUN_141200ab0(CEquipModel* pPart);              // C3: the part's model facts (equipmodel.cpp; was the Unk_PickTarget member view)
+void FUN_141200160(CEquipModel* pPart, const NiPoint3& kOffset);   // C3: sets the part's model offset (equipmodel.cpp)
+void FUN_141200100(CEquipModel* pPart, const NiPoint3& kEuler);    // C3: sets the part's model rotation (equipmodel.cpp)
 
 // Listener at +0xa0: slots 1, 3 and 5 are called by the controller (the base class only knows slot 0).
 class Unk_CapListener : public Unk_ItemCustomizeListener
@@ -156,7 +159,7 @@ public:
     virtual void vfunc_2() = 0;
     virtual void vfunc_3(CItemCustomizeController* pController, float fValue) = 0;
     virtual void vfunc_4() = 0;
-    virtual void vfunc_5(CItemCustomizeController* pController, Unk_PickTarget* pPart) = 0;
+    virtual void vfunc_5(CItemCustomizeController* pController, CEquipModel* pPart) = 0;
 };
 
 // The RTTI of the class is created by a static initializer outside this unit (0x143ab9d08).
@@ -217,7 +220,7 @@ int CCapRotationController::vfunc_29()
     m_spPicker->ClearTargets();
     if (aParts.GetCount() > 0)
     {
-        MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+        MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
         m_spPicker->AddTarget(spPart.get());
     }
     return 1;
@@ -319,13 +322,12 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
     Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (m_spPart == (Unk_PickTarget*)0)
+    if (m_spPart == (CEquipModel*)0)
         return;
     Unk_CapEntityLoader* pLoader = reinterpret_cast<Unk_CapEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
-    Unk_CapEntityKey kKey;
-    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(static_cast<const egf::EntityID&>(reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c460(reinterpret_cast<egf::EntityID&>(kKey))));
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c460());
     if (pScene == 0)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
@@ -368,8 +370,14 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                 pData->m_fScale = kWorld.m_fScale;
                 pData->m_aOffset[0] = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
                 FUN_141422950(kWorld.m_Rotate, &pData->m_aEuler[0]);
-                m_spPart->FUN_141200160(pData->m_aOffset[0]);
-                m_spPart->FUN_141200100(pData->m_aEuler[0]);
+                {
+                    alignas(16) Vector3 kOffsetArg(pData->m_aOffset[0]);   // the exe passes a 16-aligned copy
+                    FUN_141200160(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kOffsetArg));
+                }
+                {
+                    alignas(16) Vector3 kEulerArg(pData->m_aEuler[0]);
+                    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEulerArg));
+                }
             }
         }
     }
@@ -434,11 +442,11 @@ int CCapRotationController::InitPart()
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
     if (aParts.IsEmpty())
         return 0;
-    m_spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
-    if (m_spPart == (Unk_PickTarget*)0)
+    m_spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
+    if (m_spPart == (CEquipModel*)0)
         return 0;
-    m_kMinEuler = reinterpret_cast<const Unk_CapPartInfo*>(m_spPart->FUN_141200ab0())->m_kMin;
-    m_kMaxEuler = reinterpret_cast<const Unk_CapPartInfo*>(m_spPart->FUN_141200ab0())->m_kMax;
+    m_kMinEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMin;
+    m_kMaxEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMax;
     Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
     Unk_MeshSet& kSet = *pSet;
     Unk_MeshSet::const_iterator itEnd = kSet.end();
@@ -471,7 +479,7 @@ void CCapRotationController::ResetHighlight()
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
     if (aParts.IsEmpty())
         return;
-    Unk_PickTarget* pPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0)).get();
+    CEquipModel* pPart = m_spEquipItem->FindModelByName(aParts.GetAt(0)).get();
     if (pPart != 0)
         pPart->FUN_1411679d0(0.0f, 0.0f, 0);
 }
@@ -527,7 +535,8 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
         NiAVObjectPtr spNode(*it);
         spNode.operator->()->SetLocalTransform(((class NiAVObject*)(spNode.operator->()))->GetLocalTransform() * kDelta);
     }
-    m_spPart->FUN_141200100(kEuler);
+    alignas(16) Vector3 kEulerArg(kEuler);   // the exe passes a 16-aligned copy
+    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEulerArg));
     pData->m_aEuler[0] = kEuler;
 }
 

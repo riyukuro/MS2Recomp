@@ -125,17 +125,16 @@ public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
 
-// A learned skill: its record and flags (the skill book hands out MS2Ptr<Unk_SkillObj>).
+// A learned skill: its record and flags (the skill book hands out MS2Ptr<SkillLevelData>).
+class SkillLevelData;
 class Unk_SkillRec { public: char m_pad_00[0xa8]; int m_pad_a8; unsigned char m_pad_ac; bool m_bBlocked; };
-class Unk_SkillObj : public CPtred { };
 class Unk_SkillBook
 {
 public:
     virtual void vfunc_0();
-    virtual MS2Ptr<Unk_SkillObj> vfunc_1(int nSkillId);
+    virtual MS2Ptr<SkillLevelData> vfunc_1(int nSkillId);
     virtual bool vfunc_2(int nSkillId);
 };
-unsigned FUN_141525480(Unk_MyPc* pPc, int nSkillId, unsigned char nFlag);
 
 // The "slot in use" restrictions (0x143ab3330).
 class Unk_Restrictions : public CGuideManager { };
@@ -151,8 +150,6 @@ public:
     void Dispatch(unsigned int, class GameEventVariable*);
 };
 class Unk_ItemSlotTable { public: int FUN_14087a930(CString strName); };
-class Unk_QuestTable { };
-void FUN_140663010(Unk_QuestTable* pTable, unsigned nId, unsigned nValue, ATL::CAtlArray<MS2Ptr<ItemEntity> >& result);
 class Unk_SkillSlots { public: void FUN_14035a870(int nSlot, int nValue); };
 class Unk_StatTable { public: };
 
@@ -267,7 +264,7 @@ CMyCharacter* FUN_140931510();
 void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value);
 Unk_Restrictions* FUN_1409331e0();
 Unk_SoundSink* FUN_1409331f0();
-Unk_QuestTable* FUN_140933200();
+CMasteryInteriorTable* FUN_140933200();
 Unk_ItemSlotTable* FUN_140933210();
 Unk_BonusBar* FUN_140933220();
 bool FUN_140930d70();
@@ -324,14 +321,14 @@ unsigned FUN_14092f4e0(int nSkillId)
         Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0());
         if (pBook->vfunc_2(nSkillId))
         {
-            MS2Ptr<Unk_SkillObj> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0())->vfunc_1(nSkillId);
+            MS2Ptr<SkillLevelData> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0())->vfunc_1(nSkillId);
             if (spSkill.get() != 0)
             {
-                if (reinterpret_cast<Unk_SkillRec*>(reinterpret_cast<SkillLevelData*>(spSkill.operator->())->GetSkill())->m_bBlocked)
+                if (reinterpret_cast<Unk_SkillRec*>(spSkill.operator->()->GetSkill())->m_bBlocked)
                     return 0;
-                return FUN_141525480(pPc, nSkillId, reinterpret_cast<SkillLevelData*>(spSkill.operator->())->FUN_140804450());
+                return pPc->FUN_141525480(nSkillId, spSkill.operator->()->FUN_140804450());
             }
-            return FUN_141525480(pPc, nSkillId, 1);
+            return pPc->FUN_141525480(nSkillId, true);   // C3: MyPC::FUN_141525480 (mypc.h)
         }
     }
     return 0;
@@ -886,7 +883,7 @@ int FUN_140930e10()
     for (unsigned short nLevel = 1; nLevel <= DAT_143ab291c; nLevel++)
     {
         ATL::CAtlArray<MS2Ptr<ItemEntity> > quests;
-        ((CMasteryInteriorTable*)FUN_140933200())->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), quests);
+        FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->FUN_141654700(), quests);
         if (quests.GetCount() == 0)
             continue;
         if (FUN_140931890(&DAT_143ab32b8, &nLevel) != -1)
@@ -1079,9 +1076,9 @@ Unk_SoundSink* FUN_1409331f0()
 }
 
 // @0x140933200
-Unk_QuestTable* FUN_140933200()
+CMasteryInteriorTable* FUN_140933200()
 {
-    return reinterpret_cast<Unk_QuestTable*>(TSingleton<CMasteryInteriorTable>::s_instance);
+    return TSingleton<CMasteryInteriorTable>::s_instance;
 }
 
 // @0x140933210

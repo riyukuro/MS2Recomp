@@ -80,6 +80,7 @@
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
+#include "ms2/placeholder/uitalkmanager.h"   // C3: UITalkManager::FUN_141b213f0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -121,12 +122,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 class CTalkScript;
 Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int questId, int n);
-class Unk_StTalkManager { public: int FUN_141b213f0(Unk_ScriptPtr<CTalkScript> script, int npcId, int mode, int n); };
-class Unk_AkoCutscene   // C3: member view for the former free stand-ins
-{
-public:
-    static class Unk_AkoCutscene* GetInstance();
-};
 
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 
@@ -294,7 +289,7 @@ int CStoryQuest::FUN_140d73970()
     if (script.IsNull())
         return 0;
     m_78 = 0;
-    ((class Unk_StTalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(script, m_data->m_2ec, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), m_data->m_2ec, 4, 0);
     return 1;
 }
 

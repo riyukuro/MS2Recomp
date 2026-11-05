@@ -42,7 +42,7 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
-GFxManager* FUN_14025e7a0();
+// FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 int FUN_1412755a0();

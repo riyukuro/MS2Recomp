@@ -1186,7 +1186,6 @@ int FUN_141b712e0()
 float FUN_141b72560(float fBase, float fExp);
 float FUN_141b72600(float fBase, float fExp);
 float FUN_141b725e0(float fValue);
-float FUN_140993fe0(const Vector3& kA, const Vector3& kB);   // dot product
 
 // @0x141b71390
 Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd, float fT)
@@ -1214,12 +1213,12 @@ float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector
     kA = kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)).FUN_14097fd50(kEnd);
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
-    float fAA = FUN_140993fe0(kA, kA);
-    float fA = 4.0f * (fAA + FUN_140993fe0(kA, kA));
-    float fAB = FUN_140993fe0(kA, kB);
-    float fB = 4.0f * (fAB + FUN_140993fe0(kA, kB));
-    float fBB = FUN_140993fe0(kB, kB);
-    float fC = fBB + FUN_140993fe0(kB, kB);
+    float fAA = (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kA));
+    float fA = 4.0f * (fAA + (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kA)));
+    float fAB = (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kB));
+    float fB = 4.0f * (fAB + (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kB)));
+    float fBB = (reinterpret_cast<const efd::Point3&>(kB) * reinterpret_cast<const efd::Point3&>(kB));
+    float fC = fBB + (reinterpret_cast<const efd::Point3&>(kB) * reinterpret_cast<const efd::Point3&>(kB));
     float fSqrtAll = 2.0f * sqrt(fA + fB + fC);
     float fSqrtA = sqrt(fA);
     float fTermA = 2.0f * fA * fSqrtA;

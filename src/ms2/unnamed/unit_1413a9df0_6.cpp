@@ -2,7 +2,7 @@
 // TU. The enum formatter machinery (fmt::internal::MakeValue / make_type / format_arg of five unit-local enums), the
 // StringFormat instances the conditions describe themselves with, the UI dialog finders and the XML attribute readers.
 // MS2-UNIT: unit_1413a9df0#6
-// MS2-RANGE: 0x1413afcb0-0x1413b28e0 .text$mn
+// MS2-RANGE: 0x1413afcb0-0x1413b2880 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0W4Unk_GcEnum1@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_GcEnum1@@@Z 0x1413afcb0 ; prop
 // MS2-PIN: ??$?0W4Unk_GcModeId@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_GcModeId@@@Z 0x1413afce0 ; prop
@@ -258,18 +258,4 @@ void Unk_GcOptScratch()
     Unk_GcOptBool oBool;
     FUN_1413747d0((unsigned char*)(&oInt));
     Unk_GcClear1((char*)(&oBool));
-}
-
-// @0x1413b2880
-Unk_GcCondRef::Unk_GcCondRef(Unk_GcCondRef&& rhs)
-{
-    m_p = rhs.m_p;
-    rhs.m_p = 0;
-}
-
-// @0x1413b28b0
-Unk_GcCondRef::Unk_GcCondRef(CGuideCondition* pCond)
-{
-    m_p = pCond;
-    FUN_141388ed0();
 }

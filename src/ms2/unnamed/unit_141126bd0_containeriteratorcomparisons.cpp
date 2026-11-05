@@ -27,7 +27,7 @@
 struct Unk_CMISMarkRec { char m_pad[0x50]; };       // node value of CubeMapInformationService::f288
 struct Unk_CMISCell { char m_pad[0x38]; };          // node value of f2b8
 struct Unk_CMISCubeTimer { char m_pad[0x48]; };     // node value of f1f8
-class Unk_CMISPropPtr { public: void* m_p; };       // node value of f58
+namespace egfPhysX { class EntityActorData; }        // node value of f58: efd::SmartPointer<egfPhysX::EntityActorData>
 enum Unk_CMISKindA : int;
 class Cube;
 class FittingDollData;
@@ -147,10 +147,10 @@ template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<s
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x141127780
 template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, __int64> > > >::operator==(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, __int64> > > >&) const;
 template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, __int64> > > >::operator!=(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, __int64> > > >&) const;
-// MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x141127090
-// MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1411277c0
-template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, Unk_CMISPropPtr> > > >::operator==(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, Unk_CMISPropPtr> > > >&) const;
-template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, Unk_CMISPropPtr> > > >::operator!=(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, Unk_CMISPropPtr> > > >&) const;
+// MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x141127090
+// MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1411277c0
+template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> > > >::operator==(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> > > >&) const;
+template bool std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> > > >::operator!=(const std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData>> > > >&) const;
 
 // std::wstring::const_iterator comparisons (each calls its own empty _Compat). The char (std::string) pair here is a byte-identical
 // look-alike of filesystem.cpp's real std::string iterator copy (0x1403a7800 / 0x1403a79a0), so it is a unit-local stand-in.

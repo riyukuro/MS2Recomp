@@ -230,7 +230,7 @@ CCubeMotionManager::~CCubeMotionManager()
 }
 
 // @0x14115b1e0
-void CCubeMotionManager::AddScale(const egf::EntityID& id, float fFrom, float fTo, unsigned nMs)
+void CCubeMotionManager::AddScale(egf::EntityID id, float fFrom, float fTo, unsigned nMs)
 {
     Unk_CmScale scale(fFrom, fTo, nMs);
     m_scale.SetAt(id, scale);
@@ -274,14 +274,14 @@ void CCubeMotionManager::RemoveFade(egf::EntityID id)
 MS2_REPLACE_METHOD(0x14115B430, CCubeMotionManager, RemoveFade, 138, 0x245A0FA6);
 
 // @0x14115b4c0
-bool CCubeMotionManager::FUN_14115b4c0(const egf::EntityID& id, Unk_CmScale& out)
+bool CCubeMotionManager::FUN_14115b4c0(egf::EntityID id, Unk_CmScale& out)
 {
     return m_scale.Lookup(id, out);
 }
 MS2_REPLACE_METHOD(0x14115B4C0, CCubeMotionManager, FUN_14115b4c0, 51, 0xC14F5254);
 
 // @0x14115b500
-bool CCubeMotionManager::FUN_14115b500(const egf::EntityID& id, Unk_CmRotate& out)
+bool CCubeMotionManager::FUN_14115b500(egf::EntityID id, Unk_CmRotate& out)
 {
     return m_rotate.Lookup(id, out);
 }

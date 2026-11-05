@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemmorphcontroller.h"
 #include "itempickinghelper.h"
+#include "equipmodel.h"   // C3: the picking target is a CEquipModel (was Unk_PickTarget)
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include <efd/MemObject.h>
 #include <efd/ServiceManager.h>
@@ -44,7 +45,7 @@ class CEquipItem : public CPtred
 public:
     struct Unk_EquipItemData* FUN_1411dc7f0();                         // the item's data
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
-    MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
+    MS2Ptr<CEquipModel> FindModelByName(const CString& strName);   // 0x1411dc950 the model of one part (C3: was FUN_1411dc950)
 };
 
                // the local player
@@ -60,7 +61,8 @@ class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
 
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h).
-std::set<NiAVObjectPtr>* FUN_141201c90(Unk_PickTarget* pPart);
+class CEquipModel;
+std::set<NiAVObjectPtr>* FUN_141201c90(CEquipModel* pPart);   // C3: the definition's signature (equipmodel.cpp)
 
 // Listener at +0xa0: slot 2 is called when a value changed (the base class only knows slot 0).
 class Unk_MorphListener
@@ -226,7 +228,7 @@ int CItemMorphController::vfunc_29()
     m_spPicker->ClearTargets();
     if (aParts.GetCount() > 0)
     {
-        MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+        MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
         m_spPicker->AddTarget(spPart.get());
     }
     return 1;
@@ -308,7 +310,7 @@ void CItemMorphController::ResetMeshHighlight()
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
     if (aParts.GetCount() > 0)
     {
-        MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+        MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
         std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
         std::set<NiAVObjectPtr>& kSet = *pSet;
         std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
@@ -385,7 +387,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
     {
         if (aParts.GetCount() > 0)
         {
-            MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+            MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
             std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
@@ -433,7 +435,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
     {
         if (aParts.GetCount() > 0)
         {
-            MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+            MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
             std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
@@ -491,7 +493,7 @@ efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
         m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
         if (aParts.GetCount() > 0)
         {
-            MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+            MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             NiAVObject* pFound = 0;
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
             std::set<NiAVObjectPtr>& kSet = *pSet;

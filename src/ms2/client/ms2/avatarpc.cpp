@@ -81,13 +81,11 @@
 #include "ms2/placeholder/cugcmanager.h"     // C3: CUgcManager::ApplyImageToRidee/FUN_141883df0
 #include "ms2/client/ms2/uirenderview.h"    // C3: UIRenderView::GetDirty (0x141ab7660)
 #include <NiControllerManager.h>            // C3: NiControllerManager::SetPaused (0x141c3c0e0)
+#include <egmAnimation/AnimationService.h>  // C3: AnimationService::ContainsEntity (0x1409991a0)
 
 
 // ---- unit-local views of exe objects ----
 
-// The model key as the exe stack holds it (same view as avatarcube.cpp).
-struct Unk_AcKey { unsigned __int64 m_id; };
-#define AC_KEY(k) reinterpret_cast<Unk_GoModelKey&>(k)
 
 // The animation service (singleton behind FUN_141b6f910); same object as avatarcube.cpp's view.
 struct Unk_AvAnimTarget
@@ -113,12 +111,11 @@ struct Unk_AvAnimRec
     char m_pad_10[0x3c];
     bool m_bFlag;                                           // +0x4c
 };
-class Unk_AcAnimSvc
+class Unk_AcAnimSvc : public egmAnimation::AnimationService
 {
 public:
     void FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag);                                  // 0x1409fad80
     void FUN_1409fad80(egf::EntityID kId, bool bFlag);                                         // 0x1409fad80 (same function; by-value id view)
-    bool FUN_1409991a0(const Unk_GoModelKey& id, Unk_AvAnimRec** ppRec);
 };
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& kName, float fBlend, bool b); };   // C3: play (animationmanager.cpp's view; was Unk_AcAnimSvc::FUN_1409a1fc0)
 namespace egmAnimation { class AnimationService; }
@@ -223,8 +220,6 @@ extern char DAT_143acdb20;                                  // set while the ava
 #include "ms2/commonfiles/itemdata.h"        // C3: ItemColorEx
 
 #include "ms2/placeholder/cpetdatatable.h"   // C3: CPetDataTable::Find (0x1407290f0)
-// The pet table (FUN_14052d210).
-class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
@@ -251,8 +246,6 @@ struct Unk_InventorySkillRequest
     __int64 item;
 };
 MS2_CHECK_SIZE(Unk_InventorySkillRequest, 0x48);
-class Unk_SkillState : public SkillData { };
-class Unk_SkillStateRef { public: Unk_SkillState* FUN_14063ed50() const; void* m_pad_00; Unk_SkillState* m_p; };
 class CSkillRecord : public CPtred
 {
 public:
@@ -261,7 +254,7 @@ public:
     unsigned GetSkillId();                                  // 0x141759960
     unsigned short GetLevel();                              // 0x141759990
     char m_pad_18[0x18];
-    Unk_SkillStateRef m_ref;                                // +0x30
+    MS2Ptr<SkillData> m_ref;                                // +0x30
     char m_pad_40[0x180];
 };
 MS2_CHECK_SIZE(CSkillRecord, 0x1c0);
@@ -723,9 +716,9 @@ bool AvatarPC::vfunc_102(MS2Ptr<CSkillRecord> spSkill)
 {
     if (spSkill == 0 || spSkill->GetSkillId() == 0)
         return false;
-    if (spSkill->m_ref.FUN_14063ed50()->FUN_1407e9bd0() != 0)
+    if (spSkill->m_ref->FUN_1407e9bd0() != 0)
     {
-        int nState = spSkill->m_ref.FUN_14063ed50()->FUN_1407e9bd0();
+        int nState = spSkill->m_ref->FUN_1407e9bd0();
         if (nState == 0x26)
         {
         }
@@ -1159,7 +1152,7 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
     CString strModel(m_strModel);
     if (spData.get() != 0)
     {
-        MS2Ptr<CPetData> kPet = ((CPetDataTable*)FUN_14052d210())->Find(((class CItemData*)(spData.operator->()))->GetPetId());
+        MS2Ptr<CPetData> kPet = TSingleton<CPetDataTable>::GetInstance()->Find(((class CItemData*)(spData.operator->()))->GetPetId());
         if (kPet == 0)
             return;
         int nNpcId = kPet->GetId();
@@ -1213,8 +1206,7 @@ void AvatarPet::vfunc_12()
     CloneCube::vfunc_12();
     if (m_unk_80 != 0)
     {
-        Unk_AcKey kId;
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((const egf::EntityID&)FUN_14123c460(AC_KEY(kId)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
     FUN_1409f9010();
     FUN_1409f8e10();
@@ -1236,7 +1228,7 @@ void AvatarPet::FUN_1409f8e10()
         return;
     if (m_spItemData == 0)
         return;
-    MS2Ptr<CPetData> kPet = ((CPetDataTable*)FUN_14052d210())->Find(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
+    MS2Ptr<CPetData> kPet = TSingleton<CPetDataTable>::GetInstance()->Find(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
     if (kPet == 0)
         return;
     MS2Ptr<NpcDataCli> kNpc = ((NpcDataTableCli*)FUN_1406d6e90())->Find(kPet->GetId());
@@ -1381,8 +1373,7 @@ void AvatarRidee::vfunc_12()
     if (m_unk_80 != 0)
     {
         reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
-        Unk_AcKey kKey2;
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((const egf::EntityID&)FUN_14123c460(AC_KEY(kKey2)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
 }
 
@@ -1615,7 +1606,7 @@ void Unk_AvSeqCtl::FUN_1409fae00(bool b)
 void Unk_AcAnimSvc::FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag)
 {
     Unk_AvAnimRec* pRec;
-    if (!FUN_1409991a0(id, &pRec))
+    if (!ContainsEntity(reinterpret_cast<const egf::EntityID&>(id), reinterpret_cast<ActorEntry*&>(pRec)))
         return;
     pRec->m_bFlag = bFlag;
     Unk_AvSeqCtl* pSeq = reinterpret_cast<Unk_AvSeqCtl*>((NiActorManager*)pRec->m_spSeq);

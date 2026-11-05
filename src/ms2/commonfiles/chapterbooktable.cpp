@@ -112,13 +112,7 @@ private:
     Unk_FmtBufBase m_kBuf;
 };
 
-class Unk_FmtWriterBase
-{
-public:
-    void* m_aState[3];
-};
-
-class Unk_FmtWriter : public Unk_FmtWriterBase
+class Unk_FmtWriter : public fmt::internal::FormatterBase      // fmt::BasicFormatter<char> (format.h)
 {
 public:
     explicit Unk_FmtWriter(Unk_FmtBuf* pBuf);               // 0x1401db730
@@ -128,8 +122,6 @@ private:
     void* m_unk20;                                          // the exe's frame holds at least 0x28 bytes for the writer
 };
 
-void FUN_1401cff40(Unk_FmtWriterBase* pThis);
-void FUN_1401d48f0(Unk_FmtBufBase* pThis, char* pData, size_t nCapacity);
 std::allocator<char>& FUN_1401d2610(std::allocator<char>* pOut);
 void FUN_1402d9f20(const Unk_FmtWriter& rWriter, Unk_FmtStringRef fmt, const fmt::ArgList& args);
 
@@ -153,7 +145,7 @@ Unk_FmtBufBase::~Unk_FmtBufBase()
 void Unk_FmtBufBase::Free()
 {
     if (m_pData != m_aInline)
-        FUN_1401d48f0(this, m_pData, m_nCapacity);
+        reinterpret_cast<std::allocator<char>*>(this)->deallocate(m_pData, m_nCapacity);   // the buffer's empty allocator base
 }
 
 // @0x1401df330
@@ -181,7 +173,6 @@ Unk_FmtBuf::~Unk_FmtBuf()
 // @0x1401db730
 Unk_FmtWriter::Unk_FmtWriter(Unk_FmtBuf* pBuf)
 {
-    FUN_1401cff40(this);
     m_pBuf = pBuf;
 }
 

@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton<CameraMgr>
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -25,10 +26,9 @@ MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEnt
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
-class Unk_PeCamera;
 class NiPoint3;
 class CameraMgr { public: bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen); };   // C3: world to screen (was a Unk_PeCamera view)
-Unk_PeCamera* FUN_1409478c0();
+template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real accessor (0x1409478c0; actioncameramode.cpp defines it)
 
 // The ui scale service: scale of a layer.
 class Unk_PeScale;
@@ -167,7 +167,7 @@ void UIPortalEmoticon::vfunc_15()
 void UIPortalEmoticon::FUN_140f9bf70()
 {
     Vector3 ptScreen;
-    if (reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
     {
         {
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

@@ -49,31 +49,25 @@
 #include <string.h>
 #include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
 #include "ms2/commonfiles/itemdatatable.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
-class Unk_PetBoxButton : public ASButton { };
-class Unk_PetBoxCheck : public ASButton { };
 // ASMovieClip with the extra setters the dialog uses
 class Unk_PetBoxClip : public ASMovieClip { };
-// the AS root (m_30) with the check box lookup
-class Unk_PetBoxRoot : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140c11f50(const CString&);
-};
 class CMsgBoxData : public CPtred
 {
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
 // the obtained items (std::vector<ItemEntity>) and the "binding" strings (std::vector<CString>)
-#define PETBOX_ITEMS reinterpret_cast<std::vector<ItemEntity>&>(m_result)
+#define PETBOX_ITEMS (m_result)
 #define PETBOX_ATTR(p) reinterpret_cast<Unk_PetBoxAttr*>(reinterpret_cast<char*>((p).operator->()) + 0x320)
-#define PETBOX_BINDS reinterpret_cast<std::vector<CString>&>(m_slotBinds)
+#define PETBOX_BINDS (m_slotBinds)
 // the item record's attribute table (+0x320) and job table (+0x138)
 class Unk_PetBoxAttr : public CXmlData
 {
@@ -140,8 +134,8 @@ private:
 MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
 int FUN_141276180(const CString&, const CString&);
 void FUN_14141f970(const CString&);
-void FUN_14141f770(CString&, unsigned int, const ATL::CAtlArray<MS2Ptr<CItem> >&, MS2Ptr<CItem>(*)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int, int);
-MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >&, int);
+void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW GetStringCommonByKey(const CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
@@ -205,9 +199,9 @@ void UIItemPetBoxDialog::OnLoadComplete()
     m_sent = false;
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    if (FUN_140bc6d10("m_singleOpenButton", m_singleOpen).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_singleOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_singleOpen)).get())
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
-    if (FUN_140bc6d10("m_multiOpenButton", m_multiOpen).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_multiOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_multiOpen)).get())
         m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)1);
     if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
         if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())
@@ -377,7 +371,7 @@ void UIItemPetBoxDialog::ClearCards()
 void UIItemPetBoxDialog::ReleaseSlotBinds()
 {
     for (size_t i = 0; i < PETBOX_BINDS.size(); ++i)
-        FUN_14141f970(*m_slotBinds.FUN_14027f1c0(i));
+        FUN_14141f970(m_slotBinds[i]);
     PETBOX_BINDS.clear();
 }
 
@@ -473,8 +467,8 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         m_special1.insert(ItemEntity(d->vfunc_o18_0(), d->vfunc_o18_1(), d->vfunc_o18_2(), false, false, false, false));
     }
     FUN_14141f970(m_bagId);
-    MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
-    FUN_14141f770(m_bagId, (unsigned)items.GetCount(), items, getter, 0x415, 0x800);
+    MS2Ptr<CItem> (*getter)(void*, int) = FUN_141420330;
+    FUN_14141f770(m_bagId, (unsigned)items.GetCount(), (void*)&items, getter, 0x415, 0x800);
     ASObj obj(2);
     obj.FUN_1407cba60("bagId", m_bagId);
     m_30->Invoke("initItemData", obj.FUN_1422bb870());
@@ -714,15 +708,15 @@ void UIItemPetBoxDialog::FUN_140e52110()
 }
 
 // @0x140e52670
-MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FindCheckBox(const CString& name)
+MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FindCheckBox(const CString& name)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_PetBoxCheck>(0);
-    return static_cast<Unk_PetBoxRoot*>(m_30.operator->())->FUN_140c11f50<Unk_PetBoxCheck>(name);
+        return MS2Ptr<ASCheckBox>(0);
+    return m_30->FUN_140c11f50<ASCheckBox>(name);
 }
 
 // @0x140e52700
-MS2Ptr<Unk_PetBoxCheck> UIItemPetBoxDialog::FUN_140e52700(const CString& name, MS2Ptr<Unk_PetBoxCheck>& member)
+MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FUN_140e52700(const CString& name, MS2Ptr<ASCheckBox>& member)
 {
     member = FindCheckBox(name);
     return member;

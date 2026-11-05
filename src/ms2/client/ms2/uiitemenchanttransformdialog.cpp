@@ -58,18 +58,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 // A button of the movie (the label and the enabled flag).
 
 
-// The movie's board (the root child of the dialog).
-class Unk_TfBoard : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);   // 0x140c02990, template COMDAT of another unit
 
 // The player's item inventory (global object).
 class Unk_TfInventory : public Unk_Inventory { };
@@ -92,10 +81,10 @@ void FUN_141275260(int nId, int a, int b);                          // pop the s
 void FUN_140710590(COutPacket& pkt);                                // send
 extern __int64 DAT_143ab2898;                                       // the player's mesos
 
-typedef MS2Ptr<CItem> (*Unk_TfGetItemFn)(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
+typedef MS2Ptr<CItem> (*Unk_TfGetItemFn)(void* pItems, int nIndex);
 void FUN_14141f970(const CString& strBag);                          // unbind a bag
-void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items, Unk_TfGetItemFn pfn, int nIcon, int nFlags);
-MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
+void FUN_14141f770(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);   // C3: itemservice.cpp's definition (0x141420330)
 void FUN_141415600(const CString& strSlot);                         // unbind a slot
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
@@ -216,10 +205,10 @@ void UIItemEnchantTransformDialog::vfunc_79(void* pPacket)
 void UIItemEnchantTransformDialog::FUN_140c3d420()
 {
     FUN_140c3d5a0();
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit")) {
+    if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
     }
@@ -241,17 +230,17 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     }
     FUN_14141f970(m_strTargetBag);
     Unk_TfGetItemFn pfnGetItem = FUN_141420330;
-    FUN_14141f770(m_strTargetBag, (unsigned)m_targets.GetCount(), m_targets, pfnGetItem, 0x415, 8);
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_targetItems");
+    FUN_14141f770(m_strTargetBag, (unsigned)m_targets.GetCount(), (void*)&m_targets, pfnGetItem, 0x415, 8);
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_targetItems");
     if (board == 0)
         return;
-    if (MS2Ptr<ASTileList> bag = ((Unk_TfBoard*)board)->FUN_140accef0<ASTileList>("m_itemBag")) {
+    if (MS2Ptr<ASTileList> bag = board->FUN_140accef0<ASTileList>("m_itemBag")) {
         reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(-1);
         bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strTargetBag);
         bag->vfunc_24(true);
     }
-    ((Unk_TfBoard*)board)->vfunc_24(true);
+    board->vfunc_24(true);
 }
 
 // @0x140c3d960
@@ -301,7 +290,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     CEnchantTransformDataPtr row = TSingleton<CItemEnchantTransformTable>::GetInstance()->FindByItem(item);
     if (row == 0)
         return;
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_board");
     if (board == 0)
         return;
     m_selected = item;
@@ -337,9 +326,9 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         outputs.PushObj(entry);
     }
     ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
-    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
-    ((Unk_TfBoard*)board)->Invoke("selectItem", obj.FUN_1422bb870());
+    board->Invoke("selectItem", obj.FUN_1422bb870());
 }
 
 // @0x140c3e820
@@ -361,10 +350,10 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
     COutPacket pkt(static_cast<int>(SendOp::TransferEnchant), 0);
     pkt.Encode8(m_selected->GetItemUid());
     FUN_140710590(pkt);
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit"))
+    if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
 }
 
@@ -373,15 +362,15 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
 {
     if (m_state != 1)
         return;
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_board");
     if (board == 0)
         return;
-    if (MS2Ptr<ASButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<ASButton>("m_submit")) {
+    if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     }
     FUN_140c3d5a0();
-    ((Unk_TfBoard*)board)->Invoke("onTransformResult");
+    board->Invoke("onTransformResult");
     m_state = 2;
 }
 
@@ -392,10 +381,10 @@ void UIItemEnchantTransformDialog::OnSubmitRetry()
     m_selected = 0;
     m_outputs.RemoveAll();
     FUN_140c3d420();
-    MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
+    MS2Ptr<ASUIComponent> board = GetChild<ASUIComponent>("m_board");
     if (board == 0)
         return;
-    ((Unk_TfBoard*)board)->Invoke("onRetry");
+    board->Invoke("onRetry");
 }
 
 // @0x140c3eda0

@@ -81,8 +81,7 @@ public:
     virtual void vfunc_126();
     virtual void vfunc_127(CItem* pItem, int n);             // MS2: slot 127 (0x3f8) puts the item into the hand
     virtual void vfunc_128(CItem* pItem, int n);             // MS2: slot 128 (0x400) takes it out again
-    Vector3 FUN_14123c360();                                 // m_pos98 (gameobject.h: NiPoint3)
-    efd::Point3 FUN_141674b60(Vector3 kDir);                 // local dir -> world dir (pcbase.h)
+    // local dir -> world dir: C3: PCBase::CalcMoveDirectionNoYaw (pcbase.h, 0x141674b60)
 };
 
 // The owner seen through its vftable where gameobject.h/pcbase.h's shared slot list declares a different parameter form:
@@ -112,12 +111,6 @@ class Unk_FsFishMgr : public CFishingManager {};
 static inline Unk_FsFishMgr* FsFishMgr() { return static_cast<Unk_FsFishMgr*>(TSingleton<CFishingManager>::GetInstance()); }
 
 
-// The effect manager: plays an effect for a request (returns its id), stops it by id, hands out the effect root.
-class Unk_FsEffectMgr : public CEffectService
-{
-public:
-    unsigned FUN_1411a49c0(Unk_EffectQuery* pQuery);
-};
 
 // The model loader (singleton): loads a nif by path.
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
@@ -134,7 +127,7 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 UICastingBar* FUN_140ac2270(int nId);
 __int64 FUN_14028d0e0();                                     // the current time
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
-efd::Point3 FUN_140a0b080(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC);
+Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
 Unk_FsCell FUN_1408a1430(Vector3 k);                 // the grid cell of a point
 int FUN_1408a03c0(Unk_FsCell kCell);                         // the cell as a key
@@ -260,7 +253,7 @@ void StateFishing::vfunc_5(int n)
         }
     }
     if (m_nEffect != 0)
-        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     ChromaSDK::GetChromaManager()->ResetKeys(0);
 }
 
@@ -291,12 +284,12 @@ void StateFishing::vfunc_3(double fTime)
             CFishingGuideObject* pGuide = reinterpret_cast<PC*>(pPC)->FUN_1416625e0();
             if (pGuide != 0)
             {
-                efd::Point3 kRot = FUN_140a0b080(pGuide->vfunc_18(), pPC->vfunc_18(), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
-                static_cast<Unk_FsPC*>(pPC)->SetRotationAndTargetYaw(kRot);
+                Vector3 kRot = FUN_140a0b080(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pGuide->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_18())), DAT_143a08cf8);
+                static_cast<Unk_FsPC*>(pPC)->SetRotationAndTargetYaw(reinterpret_cast<efd::Point3&>(kRot));
                 if (m_spEffect)
                 {
                     NiMatrix3 kMat;
-                    FUN_140b86230(kRot, kMat);
+                    FUN_140b86230(reinterpret_cast<efd::Point3&>(kRot), kMat);
                     m_spEffect->SetRotate(kMat);
                 }
                 m_nA8 = 1;
@@ -510,7 +503,7 @@ void StateFishing::FUN_140ddb740(int nRod)
         m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, ((class CNifLoadingService*)FUN_140a0afd0())->Load(CString(spRod->m_strChair), false, 5, 0, 0)));
         if (m_spEffect)
         {
-            NiNode* pRoot = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot();
+            NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
             ClonePC* pClone = FUN_1405a7e30((class PC*)(pPC));
             if (pClone != 0)
                 static_cast<AvatarPC*>(pClone)->FUN_1409f5560(m_spEffect);
@@ -533,14 +526,14 @@ void StateFishing::FUN_140ddb740(int nRod)
         }
     }
     if (m_nEffect != 0)
-        reinterpret_cast<CEffectService*>(reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     if (spRod->m_strChairEffect.GetLength() > 0)
     {
         Unk_EffectQuery kQuery;
         kQuery.m_strName = spRod->m_strChairEffect;
         kQuery.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         kQuery.SetActor(m_pOwner->FUN_14123c580());
-        m_nEffect = reinterpret_cast<Unk_FsEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&kQuery);
+        m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kQuery));
     }
 }
 
@@ -592,7 +585,7 @@ void StateFishingFloat::vfunc_3(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_FsSpeed* pSpeed = reinterpret_cast<Unk_FsSpeed*>(static_cast<Unk_FsPC*>(m_pOwner)->FUN_141671920());
-    efd::Point3 kDir = static_cast<Unk_FsPC*>(m_pOwner)->FUN_141674b60(static_cast<Unk_FsPC*>(m_pOwner)->FUN_14123c360());
+    efd::Point3 kDir = static_cast<PCBase*>(m_pOwner)->CalcMoveDirectionNoYaw(static_cast<efd::Point3&&>(static_cast<GameObject*>(m_pOwner)->FUN_14123c360()));
     efd::Point3 kVel = kDir * pSpeed->m_f8;
     efd::Point3 kStep = kVel * (float)fTime;
     if (FUN_140ddc4b0(kDir))

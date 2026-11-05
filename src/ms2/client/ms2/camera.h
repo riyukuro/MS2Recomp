@@ -241,6 +241,10 @@ public:
     void AddEffect(MS2Ptr<CCameraEffect> spEffect);                 // add a camera effect
     float FUN_140ad4b40();                                              // current mode: setting m_0 (another obj)
     Vector3 FUN_140a17e10();                                    // current mode: setting m_c (another obj)
+    float FUN_140b67d10();                                              // distance of the current mode, 0 without one (homecameramode.cpp)
+    Vector3 FUN_140a38d00();                                            // m_138, the pending move input (bosstargetcamera.cpp)
+    void FUN_140a38d90(Vector3 pt);                                     // m_138 = pt (bosstargetcamera.cpp)
+    Unk_FlyByCameraData* FUN_1412201a0();                               // &m_flyBy (flybycameramode.cpp)
     void FUN_140ad4ff0(float f);                                        // (another obj)
 
     // @0x140af2520

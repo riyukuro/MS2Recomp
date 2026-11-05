@@ -44,6 +44,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+extern template class MS2Ptr<class CQuestData>; extern template class MS2Ptr<class CConditionCommonData>; // C3: only MS2Ptr<CQuest> takes the generic bodies here
+#include "ms2/placeholder/ms2ptr_impl.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -651,7 +653,7 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                 // the quest table row (NULL when unknown)
 bool FUN_14028d470(float a, float b);                           // a == b within epsilon
 __int64 FUN_140632990(__int64 nValue, float fAdd);              // the Lua bonus added to an exp value
-void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& out, const wchar_t* pszSep);    // split into ids
+void FUN_1402929a0(const CStringW& str, std::vector<int>& out, const wchar_t* pszSep);    // split into ids; C3: the definer's signature (commonutil.cpp)
 CStringW GetStringCommon(int nStringId);                          // a common string by id
 CStringW FUN_1416e4df0(int nQuestId);                           // the quest's localized name
 int FUN_140768010(int nCount, int nBase);
@@ -777,7 +779,7 @@ void FUN_140761f60(const std::vector<unsigned>& ids, int nState);
 void FUN_140761f00(const CStringW& strIds, int nState)
 {
     std::vector<unsigned> ids;
-    FUN_1402929a0(strIds, ids, L",");
+    FUN_1402929a0(strIds, reinterpret_cast<std::vector<int>&>(ids), L",");
     FUN_140761f60(ids, nState);
 }
 MS2_REPLACE(0x140761f00, FUN_140761f00, 85, 0x1CC52EE5);
@@ -1066,7 +1068,7 @@ void FUN_140763210(int nQuestId, int nState, CStringW& strDesc, CStringW& strFor
     int nDescId = 0;
     if (nState == 1)
     {
-        Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(nQuestId);
+        MS2Ptr<CQuest> spQuest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(nQuestId);
         if ((spQuest.get() ? true : false) && spQuest->IsComplete() != 0)
             nState = 2;
     }
@@ -1193,7 +1195,7 @@ Unk_EmoNpcTable* FUN_140764010()
 // @0x140764480
 // The state of a quest against mode nMode (1 completable, 2 rewarded, 3 rewarded only): 0 satisfied, 1 pending,
 // 2 not met.
-int FUN_140764480(Unk_PayloadPtr<CQuest> spQuest, int nMode)
+int FUN_140764480(MS2Ptr<CQuest> spQuest, int nMode)
 {
     BOOL bActive = FALSE;
     BOOL bCompleted = FALSE;

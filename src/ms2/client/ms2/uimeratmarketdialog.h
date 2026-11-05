@@ -409,7 +409,7 @@ public:
     void UpdateSellerList();                                        // 0x14130ed10
     void UpdateSaleNotice();                                        // 0x14130ee60
     void AddBasket(MS2Ptr<CMeratMarketBasket> spEntry, int nCount);   // 0x14130f010
-    void RemoveBasket(const Unk_MeratProductKey& key, int nCount);  // 0x14130f310
+    void RemoveBasket(Unk_MeratProductKey key, int nCount);         // 0x14130f310
     void OnSellerVisible(bool bVisible);                            // 0x14130f430
     bool RebuildShopTab(int nTab);                                  // 0x14130f720
     void RefreshHome();                                             // 0x14130f960

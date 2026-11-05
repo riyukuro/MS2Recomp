@@ -106,16 +106,8 @@ static Unk_BuddyHandle s_pointer(NULL);
 static int s_nReloading;                        // 0x143ae07d0: a KF reload is pending; cleared when the preload lookup ends
 
 // ---- unrecovered callees ----
-// 0x30 byte list the player manager fills (ctor 0x140963ae0, dtor 0x1409647c0).
-class Unk_ShList
-{
-public:
-    Unk_ShList(int n);                          // 0x140963ae0
-    ~Unk_ShList();                              // 0x1409647c0
-private:
-    void* m_pad[6];
-};
-MS2_CHECK_SIZE(Unk_ShList, 0x30);
+// The world game object WorldService lists (complete so the list can destroy its SmartPointers).
+class Unk_WsC_GameObj : public GameObject { };
 // GameObject view: 0x14123c460 returns the actor entity id by value (written through the hidden return pointer).
 
 class WorldService   // C3: member view for the former free stand-ins
@@ -242,8 +234,8 @@ efd::AsyncResult MS2AnimationService::OnShutdown()
 void MS2AnimationService::ReloadFemaleKF()
 {
     s_nReloading = 1;
-    Unk_ShList kList(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&kList), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
+    ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
+    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 1)
     {
@@ -285,8 +277,8 @@ void MS2AnimationService::ReloadFemaleKF()
 void MS2AnimationService::ReloadMaleKF()
 {
     s_nReloading = 1;
-    Unk_ShList kList(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&kList), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
+    ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kList(10);   // C3: was Unk_ShList
+    WorldService::GetInstance()->FUN_141bd2db0(&kList, reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 0)
     {

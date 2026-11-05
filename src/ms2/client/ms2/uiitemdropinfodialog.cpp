@@ -143,15 +143,7 @@ class Unk_CoupleInput;
         temp.m_p = old; \
         return *this; \
     }
-class Unk_PetButton;
-// The button temp is the exe's MS2Ptr<Unk_PetButton> ctor / dtor.
-template <> MS2Ptr<ASButton>& MS2Ptr<ASButton>::AssignRaw(ASButton* p) {
-    MS2Ptr<Unk_PetButton> temp(reinterpret_cast<Unk_PetButton*>(p));
-    ASButton* old = m_p;
-    m_p = reinterpret_cast<ASButton*>(temp.m_p);
-    temp.m_p = reinterpret_cast<Unk_PetButton*>(old);
-    return *this;
-}
+MS2_DROPPTR_ASSIGN(ASButton)
 MS2_DROPPTR_ASSIGN(ASTextField)
 MS2_DROPPTR_ASSIGN(ASTileList)
 // inline: the ms2ptr_impl.h units instantiate the same two COMDATs.

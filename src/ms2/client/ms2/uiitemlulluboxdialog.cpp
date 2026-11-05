@@ -73,21 +73,14 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include <errno.h>
 #include <string.h>
 #include "ms2/commonfiles/os.h"
+class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
-class Unk_LulluBoxText : public ASLabel { };
-class Unk_LulluBoxButton : public ASButton { };
-class Unk_LulluBoxCheck : public ASButton { };
-// ASMovieClip with the extra child lookups / setters the dialog uses
-class Unk_LulluBoxClip : public ASMovieClip
-{
-public:
-    MS2Ptr<Unk_LulluBoxText> FUN_140c436d0(const CString&);
-};
 class CMsgBoxData : public CPtred
 {
 public:
@@ -182,9 +175,9 @@ void UIItemLulluBoxDialog::OnLoadComplete()
     FUN_1419260d0("m_webGuideButton", 0);
     CString theme = LULLUBOX_ATTR(data)->GetString(L"boxTheme", "default");
     FUN_140e48d80("m_title", m_title);
-    if (FUN_140bc6d10("m_singleOpenButton", m_singleOpen).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_singleOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_singleOpen)).get())
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)0);
-    if (FUN_140bc6d10("m_multiOpenButton", m_multiOpen).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_multiOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_multiOpen)).get())
         m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)1);
     MS2Ptr<ASMovieClip> group = GetChild<ASMovieClip>("m_itemBoxGroup");
     if (group.get()) {
@@ -399,12 +392,12 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
         return;
     bool itemBreak = LULLUBOX_ATTR(data)->GetBool(L"itemBreakButton", true);
     bool styleShop = LULLUBOX_ATTR(data)->GetBool(L"styleShopButton", true);
-    bool hasBreak = itemBreak && (FUN_140bc6d10("m_openItemBreak", m_itemBreak).get() ? true : false);
+    bool hasBreak = itemBreak && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_openItemBreak", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_itemBreak)).get() ? true : false);
     if (hasBreak) {
         m_itemBreak->vfunc_4(true);
         m_itemBreak->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c1e0), 0);
     }
-    bool hasStyle = styleShop && (FUN_140bc6d10("m_openStyleShop", m_styleShop).get() ? true : false);
+    bool hasStyle = styleShop && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_openStyleShop", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_styleShop)).get() ? true : false);
     if (hasStyle) {
         m_styleShop->vfunc_4(true);
         m_styleShop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c210), 0);
@@ -539,7 +532,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
         if (slot == 0)
             return;
-        MS2Ptr<Unk_LulluBoxText> name = static_cast<Unk_LulluBoxClip*>(single.operator->())->FUN_140c436d0("m_itemName");
+        MS2Ptr<ASLabel> name = single->FUN_140c436d0<ASLabel>("m_itemName");
         if (name == 0)
             return;
         ItemEntity& e = m_result[0];

@@ -14,6 +14,7 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // new T(v, nMovieId) wrapped in an MS2Ptr (the same helper as assprite.cpp's; one COMDAT per T)
 template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v)
@@ -91,7 +92,7 @@ MS2_REPLACE_METHOD(0x1422e7990, UISceneEntity, FUN_1422e7990, 170, 0xDE2075E7);
 // @0x1422e7a40
 void UISceneEntity::FUN_1422e7a40(int nSceneId)
 {
-    FUN_1408e57f0()->FUN_1422b9fd0(nSceneId);
+    reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(nSceneId);
 }
 MS2_REPLACE_METHOD(0x1422e7a40, UISceneEntity, FUN_1422e7a40, 35, 0x8C34759F);
 

@@ -62,9 +62,8 @@ extern bool DAT_143ae95e1;
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 
-// The skill source of a skill level, as the collision manager takes it (0x140932d90).
+// The skill source of a skill level, as the collision manager takes it (the level pointer, MS2Ptr<SkillLevelData>::get 0x140932d90).
 class Unk_SkillSrc;
-Unk_SkillSrc* FUN_140932d90(MS2Ptr<Unk_InventorySkillLevel>* pLevel);
 
 // ---- CRegionSkillObject ---------------------------------------------------------------------------------------------------
 // @0x1416f57c0
@@ -89,13 +88,13 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     m_fRotY = fRotY;
     m_points.Copy(kPoints);
     m_nStartTick = nTick;
-    reinterpret_cast<MS2Ptr<SkillData>&>(m_spRow) = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
+    m_spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spRow.IsNull())
         return 0;
-    reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill) = reinterpret_cast<MS2Ptr<SkillData>&>(m_spRow)->FUN_1407e90a0(nLevel);
+    m_spSkill = m_spRow->FUN_1407e90a0(nLevel);
     if (m_spSkill.IsNull())
         return 0;
-    m_pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
+    m_pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
     if (m_pAttr == 0)
         return 0;
 
@@ -181,7 +180,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             {
                 NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
                 NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
-                spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, pActor, 0.0f);
+                spShape = FUN_141469a90()->Create(reinterpret_cast<Unk_SkillSrc*>(m_spSkill.get()), 0, 0, pActor, 0.0f);
                 spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
                 __int64 nHandle = FUN_141469a90()->Add(spShape);
                 m_collisions.AddTail(nHandle);
@@ -196,7 +195,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                 {
                     NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
                     NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
-                    spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, 0, 0.0f);
+                    spShape = FUN_141469a90()->Create(reinterpret_cast<Unk_SkillSrc*>(m_spSkill.get()), 0, 0, 0, 0.0f);
                     spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
                     __int64 nHandle = FUN_141469a90()->Add(spShape);
                     m_collisions.AddTail(nHandle);
@@ -224,7 +223,7 @@ void CRegionSkillObject::FadeOutEffects()
 // @0x1416f6900
 void CRegionSkillObject::FUN_1416f6900()
 {
-    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
     if (pAttr == 0)
         return;
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
@@ -260,7 +259,7 @@ void CRegionSkillObject::FUN_1416f6b90()
         __int64* pHandle = &m_collisions.GetAt(pos);
         FUN_141469a90()->Touch(*pHandle);
     }
-    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
     if (pAttr == 0)
         return;
     if (pAttr->m_strResetEffect.IsEmpty())

@@ -77,12 +77,6 @@ public:
 
 };
 egmAnimation::AnimationService* FUN_141b6f910();
-// CEffectService as this unit calls it: the hit-sound point by value
-class Unk_BoEffectService
-{
-public:
-    unsigned FUN_1411a5580(int nA, int nB, int nKind, efd::Point3 kPos, float fVolume);    // play a hit sound (the point by value)
-};
 bool Unk_IsFinite(const efd::Point3& pt);                           // all three coordinates are finite
 
 // ---- inline helpers (COMDATs this obj instantiated first) ----
@@ -242,7 +236,7 @@ void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
         ? &static_cast<Client::Constants*>(FUN_1401d3200())->VolumeMyPcToBreakableObject
         : &static_cast<Client::Constants*>(FUN_1401d3200())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
-    reinterpret_cast<Unk_BoEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nHitter, m_nHitSound, nKind, m_ptPos, fVolume);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nHitter, m_nHitSound, nKind, reinterpret_cast<NiPoint3&>(m_ptPos), fVolume);
     m_kHitTimer.FUN_140868750(1000);
 }
 

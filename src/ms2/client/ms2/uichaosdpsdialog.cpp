@@ -39,9 +39,10 @@ static UICommon::CMyPCKeyInputController s_keys;
 // ---- unit-local views of exe objects ----
 
 // The game option block (the second member of the settings singleton): two flags.
+struct Unk_InterfaceState;
+bool FUN_14125bbe0(const struct Unk_InterfaceState* p);   // C3: was a Unk_ChaosOpt member (gameoptionstruct.cpp; byte +4 and byte +0x15 are set)
 struct Unk_ChaosOpt
 {
-    bool FUN_14125bbe0();                                   // 0x14125bbe0 byte +4 and byte +0x15 are set
     char m_pad_00[4];
     char m_bFlag;                                           // +4
 };
@@ -276,7 +277,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bbe0() == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
+    if (FUN_14125bbe0(reinterpret_cast<const struct Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
         || ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbe) == 0)
         vfunc_67();
     else {

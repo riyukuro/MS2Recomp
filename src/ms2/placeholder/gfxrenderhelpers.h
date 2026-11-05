@@ -11,13 +11,26 @@
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/placeholder/gfxrenderer2d.h"         // Unk_GFxUIHal, Unk_GFxUIRenderer2D
 
-// The GFx UI manager singleton (getter 0x14025e7a0; its class is in the library's first obj, 0x1422b0060-0x1422b7f20).
-class Unk_GFxUIManager
+// The GFx UI manager singleton (getter 0x14025e7a0, declared with its definer's return type, commonstringtable.cpp; the
+// caller casts it back). GFxManager is gfxmanager.h's class, whose getter declaration conflicts with this one, so the one
+// member used here is declared on a view of the same name (it mangles to the real member 0x1422b02b0).
+class GFxManager
 {
 public:
-    Unk_GFxUIRenderer2D* FUN_1422b02b0();                           // the movie renderer (+0x40 member, slot 2)
+    Unk_GFxUIRenderer2D* GetRenderer2D();                           // the movie renderer's Renderer2D (+0x40 member, slot 2)
 };
-Unk_GFxUIManager* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();
+
+// Scaleform::Render::Renderer2D (render_renderer2d.h) as GetHAL sees it: the placeholder Unk_GFxUIRenderer2D keeps its
+// own class, so the member is reached through a cast.
+namespace Scaleform { namespace Render {
+class HAL;
+class Renderer2D
+{
+public:
+    HAL* GetHAL() const;                                            // 0x1425822a0 pImpl (+0x10) -> HAL (+0x50)
+};
+} }
 
 // The helpers (defined in asmousecursor.cpp; in the exe they are inline COMDATs of that obj's tail).
 Unk_GFxUIRenderer2D* FUN_1422cf080();                               // the UI's Renderer2D
