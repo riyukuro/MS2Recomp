@@ -153,7 +153,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
 void * FUN_1413f98f0(void);  // C3: the definition's signature
 ecr::SceneGraphService* FUN_1413f98b0();
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };   // C3: member view (the material class the fade supports)
@@ -516,7 +516,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                                 pMaterial = new (efd::MemHint(efd::MemHint::NONE)) TransparencyStandardMaterial(pMesh);
                             if (pMaterial != 0)
                             {
-                                efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+                                efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
                                 if (spInstancing)
                                 {
                                     if (spInstancing->FUN_1413d6f40(pEntity) != 0)
@@ -611,7 +611,7 @@ void BGTransparencyMgr::UpdateFadeIn()
         TransparencyElement* pElement = it->second;
         if (pElement->m_timer.FUN_140868ba0() == 0)
         {
-            efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+            efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
             if (spInstancing)
             {
                 if (spInstancing->FUN_1413d6fc0(pEntity) != 0)

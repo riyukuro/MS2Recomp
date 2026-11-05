@@ -290,8 +290,8 @@ template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInform
 template <> CubeMapInformationService* efd::SmartPointer<CubeMapInformationService>::operator->() const;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-struct Unk_EntityAppFramework;
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pKey);
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
+//
 float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pRight, efd::Point3* pSide);
 
@@ -1040,7 +1040,7 @@ void StateClimb::vfunc_4(StateData* pData)
         if (reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())
             reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
     }
-    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (kSvc.operator CubeMapInformationService*()) {
         efd::Point3 kPos;
         m_pOwner->vfunc_18();
@@ -1186,7 +1186,7 @@ MS2_REPLACE_METHOD(0x1417bc9b0, StateClimb, EndOfSequence, 701, 0x726973E7);
 // @0x1417bcc80
 int StateClimb::FUN_1417bcc80()
 {
-    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (kSvc.operator CubeMapInformationService*() == 0)
         return 0;
     Unk_RayCastInfo kInfo;
@@ -1229,7 +1229,7 @@ MS2_REPLACE_METHOD(0x1417bcf20, StateClimb, FUN_1417bcf20, 256, 0xD1B40E82);
 // @0x1417bd030
 int StateClimb::FUN_1417bd030(int bLeft)
 {
-    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (kSvc.operator CubeMapInformationService*() == 0)
         return 0;
     efd::Point3 kRight;
@@ -1269,7 +1269,7 @@ MS2_REPLACE_METHOD(0x1417bd310, StateClimb, FUN_1417bd310, 259, 0x8EE1AB12);
 // @0x1417bd420
 int StateClimb::FUN_1417bd420(void* pWall)
 {
-    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (kSvc.operator CubeMapInformationService*()) {
         efd::Point3 kFacing = m_pOwner->GetForwardDirection();
         int anFlags[2];

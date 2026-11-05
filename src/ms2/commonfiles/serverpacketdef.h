@@ -82,13 +82,13 @@ public:
 };
 MS2_CHECK_SIZE(Unk_SPDH, 0x10);
 
-class Unk_SPDI {
-public:
+struct Unk_NetworkTransfer {   // the server's transfer / popup answer (networkservice, uicharacterlistdialog); ctor/dtor MS2-PIN in networkservice.cpp
+    Unk_NetworkTransfer():result(0x25),character(0),ip(0),port(0),token1(0),token2(0),field(0) {}   // 0x141540eb0
     void FUN_1407a4b50(COutputStream* out);
     void FUN_1407a4c60(CInputStream* in);
-    unsigned char kind; __int64 x; int a; short b; int c, d, e; CStringW s;
+    unsigned char result; __int64 character; unsigned ip; unsigned short port; int token1, token2, field; CStringW message;
 };
-MS2_CHECK_SIZE(Unk_SPDI, 0x30);
+MS2_CHECK_SIZE(Unk_NetworkTransfer, 0x30);
 
 class Unk_SPDJ {
 public:

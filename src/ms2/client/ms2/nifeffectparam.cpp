@@ -258,17 +258,17 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
            // release by path
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
-class Unk_CamMoveBits   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_140afc5a0() const;
-};
+// C3: m_bitsUpdate / m_bitsApply are bitset.h's Unk_Bitset<3> (all 0x140afc5a0, set-all 0x1411ff180)
+//
+//
+//
+//
 void FUN_14154fda0(void* pObj);
-class Unk_SetEffectBits   // C3: member view for the former free stand-ins
-{
-public:
-    class Unk_SetEffectBits& FUN_1411ff180();
-};
+//
+//
+//
+//
+//
 
 // Attach type name -> 0 none, 1 Node, 2 Mesh, 3 WeaponL, 4 WeaponR (0x14154d880).
 // @0x14154d880
@@ -355,7 +355,7 @@ CNifEffectParam::CNifEffectParam()
       m_fMinLength(1.0f), m_fStep(0.01f), m_fVelocity(300.0f), m_bNotForceStop(false), m_bOffFadeOut(false),
       m_fViewDistance(-1.0f), m_bBipedLoop(false)
 {
-    ((class Unk_SetEffectBits*)(struct Unk_LightUpdateBits*)(&m_bitsApply))->FUN_1411ff180();
+    m_bitsApply.FUN_1411ff180();
 }
 
 // @0x141548b90
@@ -635,7 +635,7 @@ template<class T, class U, class V> inline void Unk_NifLog3(CLogString* log, int
 // @0x14154f4b0
 Unk_BitRef::operator bool() const
 {
-    return reinterpret_cast<const Unk_Bitset<3>*>(m_pBits)->Test(m_nPos);
+    return m_pBits->Test(m_nPos);
 }
 
 // The exe's 0x14154f540 / 0x14154f560 are std::map<NiAVObject*, NiString>'s _Tree_const_iterator / _Tree_iterator
@@ -1055,7 +1055,7 @@ void CNifEffect::AttachToOwnerNode(Unk_EffectTarget* pTarget)
     if (m_spParam->m_bApplyNodeTransform == 1 && pParent != 0)
     {
         NiTransform kLocal = *static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)(m_spRoot.operator->()))->GetLocalTransform()));
-        if (((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&m_spParam->m_bitsApply))->FUN_140afc5a0())
+        if (m_spParam->m_bitsApply.FUN_140afc5a0())
         {
             ((NiAVObject*)(m_spRoot.operator->()))->SetLocalTransform(*static_cast<NiTransform*>(((void*)&((class NiAVObject*)(void*)(pParent))->GetWorldTransform())) * kLocal);
         }
@@ -1157,7 +1157,7 @@ MS2_REPLACE_METHOD(0x14154C440, CNifEffect, FUN_14154c440, 307, 0x560D08B0);
 // relative to the target when the node transform is not applied.
 void CNifEffect::FUN_14154c580()
 {
-    if (!((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&m_spParam->m_bitsUpdate))->FUN_140afc5a0())
+    if (!m_spParam->m_bitsUpdate.FUN_140afc5a0())
     {
         NiPointer<Unk_SeparateNode> spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(m_spParam->m_bitsUpdate);
         spSep->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), false);

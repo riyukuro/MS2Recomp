@@ -532,10 +532,10 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_items");
     if (list == 0)
         return;
-    MS2Ptr<ASCheckBox> checkJob = FUN_140e52670("m_checkJob");
+    MS2Ptr<ASCheckBox> checkJob = GetChild<ASCheckBox>("m_checkJob");
     if (checkJob == 0)
         return;
-    MS2Ptr<ASCheckBox> checkGender = FUN_140e52670("m_checkGender");
+    MS2Ptr<ASCheckBox> checkGender = GetChild<ASCheckBox>("m_checkGender");
     if (checkGender == 0)
         return;
     bool bJob = checkJob->FUN_1422ce0e0();

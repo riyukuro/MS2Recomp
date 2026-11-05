@@ -648,8 +648,6 @@
 ?DAT_143ab2880@@3HA	143ab2880	data
 ?DAT_142f5515c@@3QB_WB	142f5515c	data
 ??0Unk_PPSmartC@@QEAA@AEBV0@@Z	141086150	func
-??0Unk_InventoryScopedLock@@QEAA@AEAVCLockCriticalSection@@H@Z	1401b4ec0	func
-??1Unk_InventoryScopedLock@@QEAA@XZ	1401b5120	func
 ??0?$MS2Ptr@VCItemData@@@@QEAA@H@Z	14052be80	func
 ??1?$MS2Ptr@VCItemData@@@@QEAA@XZ	1401b50d0	func
 ?get@?$MS2Ptr@VCItemData@@@@QEBAPEAVCItemData@@XZ	140203c60	func
@@ -710,8 +708,6 @@
 ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_List_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@2@XZ	140391390	func
 ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_List_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@2@XZ	1403913a0	func
 __imp_CrashReporter_RegisterLogFile	142cce1a8	data
-??0Unk_FieldLock@@QEAA@AEAVCLockCriticalSection@@H@Z	1401b4ec0	func
-??1Unk_FieldLock@@QEAA@XZ	1401b5120	func
 ??0Unk_UGCMapGroup@@QEAA@XZ	1408ad110	func
 ??1Unk_UGCMapGroup@@QEAA@XZ	14050de70	func
 ?DAT_1439f4830@@3NA	1439f4830	data
@@ -965,18 +961,11 @@ __imp_NxReleaseControllerManager	142ccec90	data
 ??1Unk_VibParamRef@@QEAA@XZ	140975740	func
 ??0Unk_EffectNode@@QEAA@HH@Z	1411a34b0	func
 ??0TransitionData@@QEAA@XZ	141047100	func
-??0Unk_Handle1401cd100@@QEAA@H@Z	1401cd100	func
 ??0Unk_BuffInfoAS@@QEAA@H@Z	1422ba6e0	func
 ??1Unk_BuffInfoAS@@UEAA@XZ	1422ba860	func
-??0Unk_LightColor@@QEAA@MMM@Z	1406c4340	func
-?FUN_1414424f0@Unk_LightColor@@QEBA?AU1@M@Z	1414424f0	func
-??0Unk_LightUpdateBits@@QEAA@XZ	140afed60	func
 ?ms_RTTI@NiDX92DBufferData@@2VNiRTTI@@B	143d6eed8	data
 ??0Unk_PopupInfoAS@@QEAA@H@Z	1422ba6e0	func
 ??1Unk_PopupInfoAS@@UEAA@XZ	1422ba860	func
-??0Unk_HomeNiPoint3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
-??4Unk_HomeNiPoint3@@QEAAAEAU0@$$QEAU0@@Z	14097faa0	func
-??4Unk_HomeNiPoint3@@QEAAAEAU0@AEBU0@@Z	14097fad0	func
 ??0Unk_CameraSetup@@QEAA@XZ	140ae8aa0	func
 ??4Unk_CameraSetup@@QEAAAEAU0@AEBU0@@Z	140af6fc0	func
 ?g_byteFlag1439faadc@@3DA	1439faadc	data
@@ -1893,8 +1882,6 @@ D3DXFloat16To32Array	14230396f	func
 ?LoadBinary@NiPSEmitter@@UEAAXAEAVNiStream@@@Z	141ea5360	func
 ?LinkObject@NiPSEmitter@@UEAAXAEAVNiStream@@@Z	141ea5350	func
 ?RegisterStreamables@NiPSEmitter@@UEAA_NAEAVNiStream@@@Z	141ea5730	func
-??0Unk_MagicLock@@QEAA@AEAVCLockCriticalSection@@H@Z	1401b4ec0	func
-??1Unk_MagicLock@@QEAA@XZ	1401b5120	func
 ??0Unk_MagicTagPtr@@QEAA@XZ	141234900	func
 ??0Unk_MagicTagPtr@@QEAA@H@Z	1410a6af0	func
 ??1Unk_MagicTagPtr@@QEAA@XZ	1410a6d40	func
@@ -2057,7 +2044,6 @@ D3DXFloat16To32Array	14230396f	func
 ?GetName@NiShaderLibrary@@QEAAPEBDXZ	141d74250	func
 ?DAT_1439f8248@@3MA	1439f8248	data
 ?IsOutOfView@EffectSkipMgr@@QEBAHPEAUUnk_SkipCheck@@@Z	1411b86e0	func
-??0Unk_MagicXform@@QEAA@XZ	140a332d0	func
 ?DAT_143af25f0@@3_JA	143af25f0	data
 ?DAT_143ae0fb0@@3HA	143ae0fb0	data
 ?DAT_143ae0fb8@@3HA	143ae0fb8	data
@@ -2096,7 +2082,6 @@ D3DXFloat16To32Array	14230396f	func
 ??1?$MS2Ptr@VCSplashDamageRecord@@@@QEAA@XZ	141099f00	func
 ??C?$MS2Ptr@VCSplashDamageRecord@@@@QEBAPEAVCSplashDamageRecord@@XZ	141186350	func
 ?DAT_143a08d08@@3UVector3@@A	143a08d08	data
-??0Unk_UgcNullKey@@QEAA@H@Z	1401cd100	func
 ??0CRegionSkillObject@@QEAA@XZ	1416f57c0	func
 ?Add@?$CAtlArray@UVector3@@V?$CElementTraits@UVector3@@@ATL@@@ATL@@QEAA_KAEBUVector3@@@Z	1410a7400	func
 ?s_bInit@CBanTextChecker@@2_NA	143aacc48	data
@@ -2116,7 +2101,6 @@ D3DXFloat16To32Array	14230396f	func
 ?DAT_143ae7970@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ae7970	data
 ?DAT_143ae7990@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ae7990	data
 ??0Unk_SSGNiPt3@@QEAA@AEBVNiPoint3@@@Z	14027dcf0	func
-??0Unk_SeparateNode@@QEAA@VUnk_CamMoveBits@@@Z	141751470	func
 ?ms_RTTI@NiCamera@@2VNiRTTI@@B	143afa950	data
 ?ms_RTTI@NiFOVController@@2VNiRTTI@@B	143af89e0	data
 ?ms_RTTI@NiFOVInterpolator@@2VNiRTTI@@B	143af8900	data
@@ -2383,9 +2367,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??1Unk_CMISPartyRef@@QEAA@XZ	14050de40	func
 ??0Unk_CMISSalable@@QEAA@XZ	1408ad110	func
 ??1Unk_CMISSalable@@QEAA@XZ	14050de70	func
-??0Unk_CMISInvPtr@@QEAA@H@Z	1408882c0	func
-??0Unk_CMISInvPtr@@QEAA@PEAX@Z	140eba830	func
-??1Unk_CMISInvPtr@@QEAA@XZ	140888a90	func
 ??0Unk_CMISBlueprintPtr@@QEAA@AEBUUnk_CMISHandle3a8@@@Z	140fac570	func
 ??0Unk_CMISBlueprintPtr@@QEAA@PEAUUnk_CMISBlueprintInfo@@@Z	14111ea50	func
 ??1Unk_CMISBlueprintPtr@@QEAA@XZ	140fac610	func
@@ -2394,7 +2375,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??1Unk_CMISItemRef@@QEAA@XZ	1401b50d0	func
 ??0CPushControl@@QEAA@XZ	1413fca60	func
 ??0Ridee@@QEAA@XZ	141703a70	func
-??0Unk_PCBaseBuffList@@QEAA@PEAVPCBase@@@Z	14096ef20	func
 ??0Unk_PCBaseBuffTracker@@QEAA@XZ	141682e90	func
 ??0Unk_PCBaseComp_b18@@QEAA@H_JAEBVCUgcItemLook@@@Z	1408970e0	func
 ??0Unk_PCBaseFlags@@QEAA@XZ	140d75040	func
@@ -2421,7 +2401,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ?equal_range@?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$CustomAllocator@I@efd@@$0A@@std@@@std@@QEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@V12@@2@AEBI@Z	1413f7760	func
 ?count@?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$CustomAllocator@I@efd@@$0A@@std@@@std@@QEBA_KAEBI@Z	1413f6b30	func
 ??0UIEpProgress@@QEAA@PEAVPCBase@@@Z	141931550	func
-??0Unk_CMISEntityRef@@QEAA@AEBU0@@Z	1408b6b20	func
 ?GetTypeName@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
 ?s_bInit@QuestDataTable@@2_NA	143ab0c78	data
 ?s_instance@?$TSingleton@VQuestDataTable@@@@2PEAV1@EA	143ab0c70	data
@@ -2566,14 +2545,6 @@ inflateEnd	142723920	func
 inflateInit_	142723ad0	func
 ??1NiDDSReader@@UEAA@XZ	141d78b60	func
 ?DAT_143ab2914@@3IA	143ab2914	data
-??1Unk_W6V350@@QEAA@XZ	140964a70	func
-??1Unk_W6V738@@QEAA@XZ	141bf54a0	func
-??1Unk_W6V3a0@@QEAA@XZ	141746770	func
-??1Unk_W6V780@@QEAA@XZ	141bf5630	func
-??1Unk_W6V5a0@@QEAA@XZ	1410a6c00	func
-??1Unk_W6V420@@QEAA@XZ	140a00490	func
-??1Unk_W6V2f8@@QEAA@XZ	14123ebe0	func
-??1Unk_W6V468@@QEAA@XZ	1410b4290	func
 ?GetTypeName@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
 ??0CUgcBannerPost@@QEAA@XZ	140890700	func
 ??0CUgcBlueprintImageProxy@@QEAA@XZ	140892810	func
@@ -2726,7 +2697,6 @@ DAT_143af6ac0	143af6ac0	data
 ??1Unk_UlgBucket@@QEAA@XZ	14027dfa0	func
 ??0CKillCount@@QEAA@XZ	14064c590	func
 ??1CKillCount@@UEAA@XZ	14064c5d0	func
-??0?$Unk_CMISTree@$0BPA@@@QEAA@XZ	141122da0	func
 ??0Unk_CMISCubeTimer@@QEAA@XZ	141123160	func
 ??0Unk_RefT@@QEAA@XZ	14027cb10	func
 ??0Unk_RefA@@QEAA@AEBU0@@Z	14027caa0	func
@@ -3065,7 +3035,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_143ae95e0@@3_NA	143ae95e0	data
 ?DAT_143ae95e1@@3_NA	143ae95e1	data
 ?DAT_143afa458@@3QBEB	143afa458	data
-??1?$Unk_CMISTree@$0BPA@@@QEAA@XZ	141125d50	func
 ??0MS2MemFile@@QEAA@PEBD@Z	141626e40	func
 ??1MS2MemFile@@UEAA@XZ	141627050	func
 ?GetFileSize@MS2MemFile@@UEBAIXZ	1416271c0	func
@@ -3133,7 +3102,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??1Unk_MdXmlComment@@QEAA@XZ	1408724d0	func
 ??0?$Unk_MdPtr@UUnk_MdRecipeRef@@@@QEAA@AEBV0@@Z	1406889c0	func
 ?DAT_142dfc138@@3DA	142dfc138	data
-??0MS2SvrNewTag@@QEAA@H@Z	1401b7b90	func
 ?GetPriceText@CVIPGoods@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1408f5240	func
 ?GetSalesPeriodText@CVIPGoods@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1408f53c0	func
 ?GetGoods@CVIPTable@@QEAA?AV?$MS2Ptr@VCVIPGoods@@@@I@Z	1408f6c90	func
@@ -3286,7 +3254,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??4?$MS2Ptr@VCFunctionCubeObject@@@@QEAAAEAV0@H@Z	141126230	func
 ??0Unk_BrmList@@QEAA@H@Z	140dc5a60	func
 ??1Unk_BrmList@@QEAA@XZ	140dc5fd0	func
-??0Unk_AasImage@@QEAA@H@Z	1422e5300	func
 ??0Unk_AasSource@@QEAA@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1422e5a70	func
 ?s_bInit@CDynamicActionData@@2_NA	143aad201	data
 ?s_lock@CDynamicActionData@@2VCLockCriticalSection@@A	143aad208	data
@@ -3815,7 +3782,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_BSDevRow@@QEAA@PEAVASArray@@I@Z	1422df140	func
 ??B?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ	140159a40	func
 ??1Unk_SkillRowRef@@QEAA@XZ	14063e5c0	func
-??0Unk_SetEffectBits@@QEAA@XZ	140afed60	func
 ?FUN_1401958b0@@YAPEAVUnk_CsgSkillTable@@XZ	1401958b0	func
 ?FUN_1407ee1d0@Unk_CsgSkillTable@@QEAA?AVUnk_SkillRowRef@@H@Z	1407ee1d0	func
 ??$ThrowInvalidCall@_N@@YA_NXZ	1405625e0	func
@@ -7693,7 +7659,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?ToPrimitive@Value@AS2@GFx@Scaleform@@QEBA?AV1234@PEAVEnvironment@234@W4hint@1234@@Z	142991850	func
 ?GetTopMostMouseEntity@DisplayObjContainer@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@23@AEBV?$Point@M@Render@3@PEAUTopMostDescr@523@@Z	1425fc5f0	func
 ??0Value@AS2@GFx@Scaleform@@QEAA@PEAVObject@123@@Z	142923cb0	func
-?ArrayObjectElements_Resize@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@PEAVValue@AS2@GFx@Scaleform@@$0BED@UArrayDefaultPolicy@4@@3@_K@Z	14297e2b0	func
 ?Concat@ArrayObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBVValue@234@@Z	142935680	func
 ?InsertEmpty@ArrayObject@AS2@GFx@Scaleform@@QEAAXHH@Z	142962010	func
 ?JoinToString@ArrayObject@AS2@GFx@Scaleform@@QEBAXPEAVEnvironment@234@PEAVStringBuffer@4@PEBD@Z	142966270	func
@@ -10226,7 +10191,6 @@ XML_StopParser	1423b3570	func
 ?FUN_1428f8530@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428f8530	func
 ?FUN_1428fbb70@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbb70	func
 ?FUN_1428fbc40@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbc40	func
-?ReplaceText@DocView@Text@Render@Scaleform@@QEAA_KPEB_W_K11@Z	142614ee0	func
 ??1IntervalTimer@AS2@GFx@Scaleform@@UEAA@XZ	1429259d0	func
 ?IsActive@IntervalTimer@AS2@GFx@Scaleform@@UEBA_NXZ	142964e30	func
 ?Clear@IntervalTimer@AS2@GFx@Scaleform@@UEAAXXZ	1429343e0	func
@@ -10407,7 +10371,7 @@ criHeap_Destroy	140028074	func
 ?Sfr31ResizePod@AS3@GFx@Scaleform@@YAXPEA_K_K@Z	1425247f0	func
 ?Sfr31ResizeDH@AS3@GFx@Scaleform@@YAXPEA_K_K@Z	142524870	func
 ?Sfr31ResizeNCSPtrStr@AS3@GFx@Scaleform@@YAXPEA_KPEBX_K@Z	142524a30	func
-?Sfr31ResizeNCPod8a@AS3@GFx@Scaleform@@YAXPEA_KPEBX_K@Z	142524af0	func
+?ResizeNoConstruct@?$ArrayDataBase@V?$SPtr@VTraits@ClassTraits@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@U?$AllocatorLH@V?$SPtr@VTraits@ClassTraits@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@$0BFE@@4@UArrayDefaultPolicy@4@@Scaleform@@QEAAXPEBX_K@Z	142524af0	func
 ?Sfr31ResizeNCStr@AS3@GFx@Scaleform@@YAXPEA_KPEBX_K@Z	142524d80	func
 ?Sfr31ResizeNCValueB@AS3@GFx@Scaleform@@YAXPEA_KPEBX_K@Z	142524ec0	func
 ?Sfr31ResolveClassTraits@AS3@GFx@Scaleform@@YA_K_K00@Z	142524f60	func
@@ -14793,7 +14757,6 @@ DAT_1431921d0	1431921d0	data
 DAT_1431921e0	1431921e0	data
 ?DAT_1431b4be0@@3USd_1431b4be0@@A	1431b4be0	data
 ?DAT_1431b4c60@@3USd_1431b4c60@@A	1431b4c60	data
-?DAT_1431b53c0@@3USd_1431b53c0@@A	1431b53c0	data
 ?DAT_140002b00@@3PAEA	140002b00	data
 ?DAT_142300840@@3PAEA	142300840	data
 ?DAT_14000a770@@3PAEA	14000a770	data
@@ -14823,8 +14786,6 @@ DAT_1431921e0	1431921e0	data
 ?DAT_143138530@@3USd_143138530@@A	143138530	data
 ?DAT_1431b4ce0@@3USd_1431b4ce0@@A	1431b4ce0	data
 ?DAT_1431b4d80@@3USd_1431b4d80@@A	1431b4d80	data
-?DAT_1431b5300@@3USd_1431b5300@@A	1431b5300	data
-?DAT_1431b5310@@3USd_1431b5310@@A	1431b5310	data
 ?DAT_1431b5b40@@3USd_1431b5b40@@A	1431b5b40	data
 ?DAT_1431b5c00@@3USd_1431b5c00@@A	1431b5c00	data
 ?DAT_1431b5cb0@@3USd_1431b5cb0@@A	1431b5cb0	data
@@ -16376,20 +16337,15 @@ DAT_14313b9c8	14313b9c8	data
 ??0Unk_UbVec3@@QEAA@AEBVPoint3@efd@@@Z	14027dcf0	func
 ??0Unk_WeaponHit@@QEAA@AEBU0@@Z	140884f70	func
 ??0Unk_WeaponHit@@QEAA@H@Z	140964170	func
-??0Unk_WsA_BallRef@@QEAA@PEAX@Z	141bf0fd0	func
 ??0Unk_WsA_GoFieldRef@@QEAA@$$QEAV0@@Z	141bf1390	func
 ??0Unk_WsA_GoFieldRef@@QEAA@PEAVUnk_WsD_FieldObj@@@Z	141bf13c0	func
 ??0Unk_WsA_NpcRef@@QEAA@PEAX@Z	140aabff0	func
-??0Unk_WsA_PendingPc@@QEAA@XZ	141bf48b0	func
 ??0Unk_WsA_PropObj@@QEAA@V?$SmartPointer@VEntity@egf@@@efd@@@Z	14225f250	func
 ??0Unk_WsA_RteCtrl@@QEAA@XZ	140aab420	func
 ??0Unk_WsA_UrnId@@QEAA@PEBDH@Z	141bf3410	func
-??0Unk_WsB_ActorList@@QEAA@H@Z	140963ae0	func
 ??0Unk_WsB_Lift@@QEAA@XZ	141447080	func
 ??0Unk_WsB_NiPt3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
-??0Unk_WsC_ActorUpdater@@QEAA@VEntityID@egf@@@Z	1414a8240	func
 ??0Unk_WsC_Box@@QEAA@XZ	140ada4c0	func
-??0Unk_WsC_Breakable@@QEAA@XZ	140add560	func
 ??0Unk_WsC_IBillBoard@@QEAA@XZ	1414032e0	func
 ??0Unk_WsC_IDisplayImage@@QEAA@XZ	141400520	func
 ??0Unk_WsC_IGathering@@QEAA@XZ	1414023b0	func
@@ -16399,7 +16355,6 @@ DAT_14313b9c8	14313b9c8	data
 ??0Unk_WsC_IUI@@QEAA@XZ	1414001e0	func
 ??0Unk_WsC_IWatchTower@@QEAA@XZ	141403400	func
 ??0Unk_WsC_IWeb@@QEAA@XZ	141bf3570	func
-??0Unk_WsC_Liftable@@QEAA@XZ	141447080	func
 ??0Unk_WsC_TargetBox@@QEAA@XZ	141bf35a0	func
 ??0Unk_WsC_TargetGuide@@QEAA@XZ	141bf35d0	func
 ??0Unk_WsD_EffectCtx@@QEAA@XZ	1404746a0	func
@@ -16451,11 +16406,8 @@ DAT_14313b9c8	14313b9c8	data
 ??1Unk_RtViewPtr@@QEAA@XZ	1409a7ad0	func
 ??1Unk_TeRequest@@QEAA@XZ	1405a89e0	func
 ??1Unk_WeaponHit@@QEAA@XZ	140885120	func
-??1Unk_WsA_BallRef@@QEAA@XZ	141bf54a0	func
 ??1Unk_WsA_NpcRef@@QEAA@XZ	140a7b530	func
-??1Unk_WsA_PendingPc@@QEAA@XZ	141bf6870	func
 ??1Unk_WsA_UrnId@@QEAA@XZ	1411d6860	func
-??1Unk_WsB_ActorList@@QEAA@XZ	1409647c0	func
 ??1Unk_WsD_EffectRef@@QEAA@XZ	141bf5570	func
 ??1Unk_WsD_HiderRef@@QEAA@XZ	141bf5410	func
 ??1Unk_WsD_ShowerRef@@QEAA@XZ	141bf5440	func
@@ -16507,7 +16459,6 @@ DAT_14313b9c8	14313b9c8	data
 ??0Unk_WsI_BoundCylinder@@QEAA@XZ	140aff840	func
 ??0Unk_WsI_BoundSphere@@QEAA@XZ	140aff5b0	func
 ??0Unk_WsI_CameraSetup@@QEAA@XZ	140ae8aa0	func
-??0Unk_WsI_CameraTarget@@QEAA@XZ	140ae7ce0	func
 ??0Unk_WsI_MapMetaMgr@@QEAA@VEntityID@egf@@@Z	141478090	func
 ??0Unk_WsI_NodePtr@@QEAA@PEAVUnk_WsI_NiNode@@@Z	1409f7170	func
 ??0Unk_WsI_PhysParams@@QEAA@XZ	140ae1580	func
@@ -16705,7 +16656,6 @@ DAT_14313b9c8	14313b9c8	data
 ?DAT_14317f778@AS3@GFx@Scaleform@@3PAPEBXA	14317f778	data
 ?DAT_14317f848@AS3@GFx@Scaleform@@3PAPEBXA	14317f848	data
 ?DAT_14317f9e0@AS3@GFx@Scaleform@@3PAPEBXA	14317f9e0	data
-??0Unk_GeRange@@QEAA@XZ	1405c38a0	func
 ??1RenderQueueProcessor@Render@Scaleform@@QEAA@XZ	1426e0080	func
 ?AddStickyVariable@MovieRoot@AS2@GFx@Scaleform@@QEAAXAEBVASString@34@AEBVValue@234@H@Z	1429306a0	func
 ?UpdateAutosizeSettings@AvmTextField@AS2@GFx@Scaleform@@QEAAXXZ	142992880	func
@@ -17361,3 +17311,12 @@ _should_initialize_environment	14274aee4	func
 ?s_sssColor@Unk_RimLight@@2VNiPoint3@@A	143acd550	data
 ?DAT_143ab32d8@@3V?$set@UUnk_TrophyKey@@U?$less@UUnk_TrophyKey@@@std@@V?$allocator@UUnk_TrophyKey@@@3@@std@@A	143ab32d8	data
 ??0Unk_TrophyKey@@QEAA@XZ	1409ed810	func
+??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	14027ee20	func
+??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	14027ef80	func
+??$advance@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@_J@std@@YAXAEAV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@0@_J@Z	14027b600	func
+??$next@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@@std@@YA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@0@V10@_J@Z	14027c480	func
+??$_Advance1@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@_J@std@@YAXAEAV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@0@_JUbidirectional_iterator_tag@0@@Z	140276a40	func
+?_Unchecked_begin@?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA?AV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@2@XZ	140289d20	func
+?begin@?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@2@XZ	14028a1a0	func
+?front@?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCUserChangeableItemHistory@@@@XZ	14028aef0	func
+??0Unk_CriticalSectionLock@@QEAA@PEAVCLockCriticalSection@@H@Z	140203610	func

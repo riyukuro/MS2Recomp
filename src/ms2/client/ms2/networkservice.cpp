@@ -344,11 +344,11 @@ public:
 template<> CTradeManagerEx* TSingleton<CTradeManagerEx>::GetInstance();
 template<> CNPSMan* TSingleton<CNPSMan>::GetInstance();
 template<> CUIService* TSingleton<CUIService>::GetInstance();
-struct Unk_NetworkTransfer {
-    Unk_NetworkTransfer():result(0x25),character(0),ip(0),port(0),token1(0),token2(0),field(0) {}
-    unsigned char result;__int64 character;unsigned ip;unsigned short port;int token1,token2,field;CStringW message;
-};
-MS2_CHECK_SIZE(Unk_NetworkTransfer,0x30);
+// Unk_NetworkTransfer (the transfer answer read by 0x1407a4c60) is serverpacketdef.h's; its inline ctor / implicit dtor
+// are pinned above.
+
+
+
 
 struct Unk_NetworkLoginResult {
     Unk_NetworkLoginResult():result(13),error(0),id(0),a18(0),zone(0),zoneFlag(0),flag(0),a30(0),start(0),end(0),value(0),a4c(0),a50(0) {}
@@ -906,7 +906,7 @@ void CNetworkService::FUN_14153b440(CInPacket& input) {
 }
 // @0x14153b570
 void CNetworkService::FUN_14153b570(CInPacket& input) {
-    Unk_NetworkTransfer result;reinterpret_cast<Unk_SPDI*>(&result)->FUN_1407a4c60(&static_cast<CInputStream&>(input));int code=result.result;
+    Unk_NetworkTransfer result;result.FUN_1407a4c60(&static_cast<CInputStream&>(input));int code=result.result;
     if(code==0) {
         FUN_140d86260()->vfunc_9();((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->SetMode(0x3ed);
         DAT_143ab2a48=FUN_14028bd10(result.ip);DAT_143ab2848=result.port;DAT_143ab284c=result.token1;DAT_143ab2850=result.token2;

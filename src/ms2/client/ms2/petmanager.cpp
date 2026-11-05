@@ -51,7 +51,7 @@ public:
     void SetActor(int nActor);   // 0x140a53190
     void* m_storage[14];
 };
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // The sound ids of the pet: the summon effect sound and the level up sound (initialized before everything else).
 static CString s_strPetSummonSound = "02100199";
@@ -110,11 +110,11 @@ public:
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 struct Unk_PmConfig { char m_pad_0[0x328]; CString m_strLevelUpEffect; };      // +0x328 the pet level up effect
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411e7660();
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 void FUN_1401ff930(unsigned char*, void*);   // C3: was FUN_1401ff930
 
@@ -175,7 +175,7 @@ void CPetInventory::ResetSlots()
                 nSlots = spRow->m_nSlotNum;
         }
     }
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     m_items.RemoveAll();
     m_slots.RemoveAll();
     m_slots.SetCount(nSlots, -1);
@@ -184,7 +184,7 @@ void CPetInventory::ResetSlots()
 // @0x140c869e0
 int CPetInventory::AddItem(CItem* pItem)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     if (m_items.Lookup(pItem->GetItemUid()) != 0)
         return 0x11;
     int nSlot = pItem->FUN_140526b50();
@@ -215,7 +215,7 @@ int CPetInventory::AddItem(CItem* pItem)
 void CPetInventory::RemoveItem(unsigned __int64 nUid)
 {
     ItemPtr spItem;
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     if (m_items.Lookup(nUid, spItem))
     {
         m_items.RemoveKey(nUid);
@@ -234,7 +234,7 @@ CPetInventory::ItemPtr CPetInventory::GetItemBySlot(int nSlot)
     if (nSlot < 0 || nSlot >= nCount)
         return ItemPtr(0);
     {
-        Unk_1401b4ec0 guard(m_lock, 1);
+        Unk_CriticalSectionLock guard(m_lock, 1);
         spItem = m_slots[nSlot];
     }
     return spItem;
@@ -245,7 +245,7 @@ CPetInventory::ItemPtr CPetInventory::FindUsableItemById(int nItemId)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return ItemPtr(0);
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
@@ -260,7 +260,7 @@ CPetInventory::ItemPtr CPetInventory::FindUsableItemById(int nItemId)
 size_t CPetInventory::CollectItemsById(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
 {
     {
-        Unk_1401b4ec0 guard(m_lock, 1);
+        Unk_CriticalSectionLock guard(m_lock, 1);
         for (unsigned i = 0; i < m_slots.GetCount(); ++i)
         {
             ItemPtr spItem = m_slots[i];
@@ -303,7 +303,7 @@ size_t CPetInventory::CollectItemsById(int nItemId, ATL::CAtlList<ItemPtr>& resu
 // @0x140c87250
 CPetInventory::ItemPtr CPetInventory::GetItemByUid(unsigned __int64 nUid)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     ItemPtr spItem;
     m_items.Lookup(nUid, spItem);
     return spItem;
@@ -316,7 +316,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return ItemPtr(0);
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);
@@ -333,7 +333,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
 int CPetInventory::GetUsedSlotCount()
 {
     int nUsed = 0;
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -351,7 +351,7 @@ int CPetInventory::GetSlotCount()
 // @0x140c87610
 int CPetInventory::HasEmptySlot()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     unsigned nCount = (unsigned)m_slots.GetCount();
     int nHalf = nCount >> 1;
     int nLast = nCount - 1;
@@ -387,7 +387,7 @@ int CPetInventory::GetItemCount(int nItemId, int nRarity)
     Unk_PmPlayer* pPlayer = ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -407,7 +407,7 @@ int CPetInventory::GetItemCount(int nItemId, int nRarity)
 int CPetInventory::GetStackRoom(int nItemId)
 {
     int nRoom = 0;
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     int nCount = (int)m_slots.GetCount();
     for (int i = 0; i < nCount; ++i)
     {
@@ -420,7 +420,7 @@ int CPetInventory::GetStackRoom(int nItemId)
 // @0x140c87b90
 unsigned CPetInventory::FindEmptySlot()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
@@ -454,7 +454,7 @@ int CPetInventory::FindSlotForItem(ItemPtr spItem, int nNeed)
 // @0x140c87ef0
 void CPetInventory::GetAllItems(ATL::CAtlArray<ItemPtr>& result)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         ItemPtr spItem = m_items.GetValueAt(pos);

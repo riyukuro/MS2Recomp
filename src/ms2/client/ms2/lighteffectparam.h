@@ -6,23 +6,24 @@
 #pragma once
 #include "ms2/client/ms2/transitioneffectparam.h"
 #include "ms2/placeholder/nipoint3.h"
+#include "ms2/placeholder/bitset.h"
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/client/ms2/cubespawnobject.h"        // egf::EntityPtr
 
-// 12-byte RGB colour (the entity "colour" property value type). Arithmetic is the inline operators of this TU.
-struct Unk_LightColor
-{
-    Unk_LightColor(float fR = 0.0f, float fG = 0.0f, float fB = 0.0f);   // 0x1406c4340
-    Unk_LightColor FUN_1414424f0(float f) const;                    // operator*(float)
-    Unk_LightColor operator-(const Unk_LightColor& o) const;        // 0x14144b3f0
-    Unk_LightColor operator+(const Unk_LightColor& o) const;        // 0x14144b480
-    friend Unk_LightColor operator*(float f, const Unk_LightColor& c) { return c.FUN_1414424f0(f); }   // 0x14144b3b0
-    float r, g, b;
-};
-MS2_CHECK_SIZE(Unk_LightColor, 12);
+// The entity "colour" property value type is efd::Color: ctor 0x1406c4340, operator*(float) 0x1414424f0. This TU emits
+// Color.inl's operator- 0x14144b3f0, operator+ 0x14144b480 and operator*(float, const Color&) 0x14144b3b0.
+#include <efd/Color.h>
+//
+//
+//
+//
+//
+//
+//
+MS2_CHECK_SIZE(efd::Color, 12);
 
-// 1-byte flag set (commonfiles bitset<3>, bitset.inl): which parts of the parent transform the light follows.
-struct Unk_LightUpdateBits;
+// 1-byte flag set (commonfiles bitset<3>, bitset.h): which parts of the parent transform the light follows.
+typedef Unk_Bitset<3> Unk_LightUpdateBits;
 struct Unk_BitRef                                                   // proxy returned by operator[]
 {
     Unk_BitRef(Unk_LightUpdateBits* pBits, unsigned nPos);          // 0x14144b240
@@ -31,12 +32,6 @@ struct Unk_BitRef                                                   // proxy ret
     Unk_LightUpdateBits* m_pBits;
     unsigned m_nPos;
 };
-struct Unk_LightUpdateBits
-{
-    Unk_LightUpdateBits();                                          // 0x140afed60
-    Unk_BitRef operator[](unsigned nPos);                           // 0x14144b330
-    unsigned char m_bits;
-};
 MS2_CHECK_SIZE(Unk_LightUpdateBits, 1);
 
 // 0x40 bytes. vftable 0x142f8b3a8 (2 slots: ~, DeleteThis). Implicit dtor 0x14144b2d0, ??_G 0x14144b5b0.
@@ -44,8 +39,8 @@ class LightEffectTransitionData : public TransitionData
 {
 public:
     // implicit ctor 0x14144b1d0 (colours (0,0,0); new T() value-initialises the rest to 0)
-    Unk_LightColor m_clrDiffuse;    // +0x20 "diffuse" "r,g,b" 0..255
-    Unk_LightColor m_clrSpecular;   // +0x2c "specular"
+    efd::Color m_clrDiffuse;    // +0x20 "diffuse" "r,g,b" 0..255
+    efd::Color m_clrSpecular;   // +0x2c "specular"
     float m_fDimmer;                // +0x38 "dimmer"
     float m_fRange;                 // +0x3c "range"
 };
@@ -64,8 +59,8 @@ public:
     MS2_LAYOUT_FRIEND;
     CString m_strParentNode;        // +0x70 <attachInfo parentNode>
     Vector3 m_ptTranslate;  // +0x78 <transform translate>
-    Unk_LightColor m_clrDiffuse;    // +0x84 <light diffuse> (default 1,1,1 if not 3 components)
-    Unk_LightColor m_clrSpecular;   // +0x90 <light specular>
+    efd::Color m_clrDiffuse;    // +0x84 <light diffuse> (default 1,1,1 if not 3 components)
+    efd::Color m_clrSpecular;   // +0x90 <light specular>
     float m_fDimmer;                // +0x9c 1.0
     float m_fRange;                 // +0xa0 1000.0
     float m_fAttConstant;           // +0xa4 1.0

@@ -78,7 +78,7 @@ public:
 struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_TrgFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TrgFramework DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 int FUN_1407071e0(int nItemId);
 int FUN_140707710(int nItemId);
 int FUN_140707660(int nItemId);
@@ -332,7 +332,7 @@ int TriggerCli::GetFirstError(CStringW& rText)
 // @0x14119ab70
 int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
 {
-    efd::SmartPointer<Unk_TrgService> spService(((class Unk_TrgService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<Unk_TrgService> spService(((class Unk_TrgService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     std::vector<std::pair<CStringW, int> > ids;
     CollectIds(ids);
     CStringW strMsg;

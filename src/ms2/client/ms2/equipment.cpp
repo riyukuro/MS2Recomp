@@ -223,34 +223,34 @@ class Unk_EqPC : public PC
 };
 class Unk_MyPCEquip : public PCGemEquip {};
 // The changed set effect groups of 0x1411ec480 (commonfiles\bitset.inl, T = 3; as cameramoveeffectparam.h's
-// Unk_CamMoveBits: fill 0x140afee90, all 0x140afc5a0, set / test 0x140314670 / 0x140314790).
-class Unk_CamMoveBits   // C3: member view (cameramoveeffectparam.h) for the fill / all calls
-{
-public:
-    Unk_CamMoveBits();      // 0x140afed60 (cameramoveeffectparam's T = 3 ctor)
-    void FUN_140afee90(unsigned char ucValue);                  // Fill
-    bool FUN_140afc5a0() const;                                 // All
-};
-class Unk_SetEffectBits
-{
-public:
-    // Set / Test are bitset.h's Unk_Bitset<3> (0x140314670 / 0x140314790), called through a cast
-    // @0x1411fe0e0
-    bool FUN_1411fe0e0() const                                  // Any
-    {
-        for (int i = 0; i >= 0; --i)
-            if (m_bits[i] != 0)
-                return true;
-        return false;
-    }
-    // @0x1411ff180
-    Unk_SetEffectBits& FUN_1411ff180()                          // Set every bit
-    {
-        ((Unk_CamMoveBits*)this)->FUN_140afee90(0xff);
-        return *this;
-    }
-    unsigned char m_bits[1];
-};
+// bitset.h's Unk_Bitset<3>: fill 0x140afee90, all 0x140afc5a0, set / test 0x140314670 / 0x140314790).
+typedef Unk_Bitset<3> Unk_CamMoveBits;   // C3: cameramoveeffectparam.h's typedef (ctor 0x140afed60)
+typedef Unk_Bitset<3> Unk_SetEffectBits;   // C3: bitset.h's Unk_Bitset<3> (any 0x1411fe0e0, set-all 0x1411ff180)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 MS2_CHECK_SIZE(Unk_SetEffectBits, 1);
 int FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
 int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
@@ -341,7 +341,7 @@ public:
 
 void FUN_1411ff420(unsigned char* pBits, unsigned char nValue);    // fill (unit_1411ff420)
 
-// The 6-layer bit set of 0x1411e3000 (commonfiles\bitset.inl, T = 6; bitset.h's Unk_Bitset has no ctor / reference).
+// The 6-layer bit set of 0x1411e3000 (commonfiles\bitset.inl, T = 6; kept separate from bitset.h's Unk_Bitset).
 class Unk_LayerBits
 {
 public:
@@ -1123,7 +1123,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e2610(NiAVObject* pObj, bool bActive, int
             if (spModel == 0)
                 continue;
             std::set<NiAVObjectPtr>* pNodes = FUN_141201c90(spModel.operator->());
-            std::set<NiAVObjectPtr>& rNodes = *pNodes;
+            const std::set<NiAVObjectPtr>& rNodes = *pNodes;
             std::set<NiAVObjectPtr>::iterator itEnd = rNodes.end();
             for (std::set<NiAVObjectPtr>::iterator it = rNodes.begin(); it != itEnd; ++it) {
                 NiAVObjectPtr spNode = *it;
@@ -1157,7 +1157,7 @@ NiAVObjectPtr CEquipment::FUN_1411e2a60(__int64 nUid, const CString& strName, bo
             continue;
         std::set<NiAVObjectPtr>* pNodes = FUN_141201c90(spModel.operator->());
         const char* pszName = strName;
-        std::set<NiAVObjectPtr>& nodes = *pNodes;
+        const std::set<NiAVObjectPtr>& nodes = *pNodes;
         std::set<NiAVObjectPtr>::iterator itEnd = nodes.end();
         for (std::set<NiAVObjectPtr>::iterator it = nodes.begin(); it != itEnd; ++it) {
             NiAVObjectPtr spNode = *it;
@@ -1548,7 +1548,7 @@ void CEquipment::FUN_1411e7380()
     for (unsigned i = 0; i < models.GetCount(); i++) {
         models[i]->vfunc_22(fScale);
         std::set<NiAVObjectPtr>* pNodes = FUN_141201c90(models[i].operator->());
-        std::set<NiAVObjectPtr>& nodes = *pNodes;
+        const std::set<NiAVObjectPtr>& nodes = *pNodes;
         std::set<NiAVObjectPtr>::iterator itEnd = nodes.end();
         for (std::set<NiAVObjectPtr>::iterator it = nodes.begin(); it != itEnd; ++it) {
             NiAVObjectPtr spNode = *it;
@@ -2458,7 +2458,7 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, NiPoint3 kPos, NiPoint3 kRot
     kDelta.m_Rotate = kOld.Inverse() * kNew;
     kDelta.m_Translate = -kOldPos + kPos;
     std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(pModel);
-    std::set<NiAVObjectPtr>& kRoots = *pRoots;
+    const std::set<NiAVObjectPtr>& kRoots = *pRoots;
     std::set<NiAVObjectPtr>::iterator itEnd = kRoots.end();
     for (std::set<NiAVObjectPtr>::iterator it = kRoots.begin(); it != itEnd; ++it) {
         NiAVObjectPtr spRoot = *it;
@@ -2584,7 +2584,7 @@ void CEquipment::FUN_1411ed270()
             for (unsigned j = 0; j < capModels.GetCount(); j++) {
                 const MS2Ptr<CEquipModel>& spCap = capModels[j];
                 std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(spCap.operator->());
-                std::set<NiAVObjectPtr>& kRoots = *pRoots;
+                const std::set<NiAVObjectPtr>& kRoots = *pRoots;
                 std::set<NiAVObjectPtr>::iterator itEnd = kRoots.end();
                 for (std::set<NiAVObjectPtr>::iterator it = kRoots.begin(); it != itEnd; ++it) {
                     NiAVObjectPtr spRoot = *it;
@@ -2733,7 +2733,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
     }
     Unk_CamMoveBits changed;    // C3: the exe calls cameramoveeffectparam's T = 3 ctor
     if (bForce || m_setEffects.size() != effects.size()) {
-        ((Unk_SetEffectBits*)&changed)->FUN_1411ff180();
+        changed.FUN_1411ff180();
     } else {
         int nLast = -1;
         size_t nCount = m_setEffects.size();
@@ -2744,9 +2744,9 @@ void CEquipment::FUN_1411ec480(bool bForce)
                 continue;
             if ((spOld.get() ? true : false) && (spNew.get() ? true : false)) {
                 if (!spNew->FUN_1411dfcf0(spOld))
-                    reinterpret_cast<Unk_Bitset<3>&>(changed).Set((int)i, true);
+                    changed.Set((int)i, true);
             } else {
-                reinterpret_cast<Unk_Bitset<3>&>(changed).Set((int)i, true);
+                changed.Set((int)i, true);
             }
             if (spNew.get() != NULL)
                 nLast = (int)i;
@@ -2754,10 +2754,10 @@ void CEquipment::FUN_1411ec480(bool bForce)
         if (nLast >= 0 && nLast < (int)m_setEffects.size()) {
             MS2Ptr<Equipment::SetEffectInfo> spLast = m_setEffects[nLast];
             if ((spLast.get() ? true : false) && spLast->m_nEffect == 0)
-                reinterpret_cast<Unk_Bitset<3>&>(changed).Set(nLast, true);
+                changed.Set(nLast, true);
         }
     }
-    if (((Unk_SetEffectBits*)&changed)->FUN_1411fe0e0()) {
+    if (changed.FUN_1411fe0e0()) {
         if (changed.FUN_140afc5a0()) {
             ClearSetEffects();
             size_t nCount = effects.size();
@@ -2766,7 +2766,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
         } else {
             size_t nCount = effects.size();
             for (size_t i = 0; i < nCount; i++) {
-                if (!reinterpret_cast<Unk_Bitset<3>&>(changed).Test((int)i))
+                if (!changed.Test((int)i))
                     continue;
                 FUN_1411efa00((int)i);
                 FUN_1411eaa00(effects[i]);
@@ -2813,7 +2813,7 @@ void CEquipment::FUN_1411e5c10()
         for (size_t i = 0; i < capModels.GetCount(); i++) {
             capModels[i]->vfunc_22(fScale);
             std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
-            std::set<NiAVObjectPtr>& rRoots = *pRoots;
+            const std::set<NiAVObjectPtr>& rRoots = *pRoots;
             std::set<NiAVObjectPtr>::iterator itEnd = rRoots.end();
             for (std::set<NiAVObjectPtr>::iterator it = rRoots.begin(); it != itEnd; ++it) {
                 NiAVObjectPtr spRoot = *it;
@@ -2840,7 +2840,7 @@ void CEquipment::FUN_1411e5c10()
                 if (pRecord->m_kCapPos[0] != DAT_143b01a60)
                     kTransform.m_Translate = static_cast<const efd::Point3&>(pRecord->m_kCapPos[0]);
                 std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
-                std::set<NiAVObjectPtr>& rRoots = *pRoots;
+                const std::set<NiAVObjectPtr>& rRoots = *pRoots;
                 std::set<NiAVObjectPtr>::iterator itEnd = rRoots.end();
                 for (std::set<NiAVObjectPtr>::iterator it = rRoots.begin(); it != itEnd; ++it) {
                     NiAVObjectPtr spRoot = *it;
@@ -2855,7 +2855,7 @@ void CEquipment::FUN_1411e5c10()
             if (pCapData->FUN_14053ec70()->FUN_1405471b0()) {
                 int nResult = 0;
                 std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
-                std::set<NiAVObjectPtr>& rRoots = *pRoots;
+                const std::set<NiAVObjectPtr>& rRoots = *pRoots;
                 std::set<NiAVObjectPtr>::iterator itEnd = rRoots.end();
                 for (std::set<NiAVObjectPtr>::iterator it = rRoots.begin(); it != itEnd; ++it) {
                     NiAVObjectPtr spRoot = *it;

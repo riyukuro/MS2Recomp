@@ -41,7 +41,7 @@ class ASDialog : public ASMovieClip                                         // t
 {
 public:
 };
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };             // Value<CString>::Get
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 class Unk_NdBrowserMgr : public CWebBrowserService                                                      // the browser manager
 {
 public:
@@ -274,7 +274,7 @@ void UINoticeDialog::FUN_1410097d0()
 // @0x141009870
 void UINoticeDialog::FUN_141009870()
 {
-    CString strUrl(reinterpret_cast<Unk_StringOptionEntry*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80());
+    CString strUrl(*static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl.Get());
     if (strUrl.IsEmpty())
         return;
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c))

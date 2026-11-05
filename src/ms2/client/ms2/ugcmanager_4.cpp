@@ -130,10 +130,10 @@ Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget)
 CStringW FUN_141026ab0();                                   // ".\Custom\Thumbnail"
 CStringW FUN_141026920(int nType);                          // the upload directory of an upload kind
 
-// An entry of the character list dialog; +0x20 is the character id.
-class Unk_CharListEntry : public CPtred
-{
-};
+// C3: the character list entry is UICharacterListDialog::CCharacterInfo (cugcmanager.h includes uicharacterlistdialog.h);
+// class Unk_CharListEntry : public CPtred
+// {
+// };
 
 // Messages and strings.
 class IMessageListener;
@@ -179,13 +179,13 @@ UIUGCItemEditDialog* FUN_140eeff60(int nId);                // uiugccubepaletted
 int FUN_14088db90(int nType);
 
 // The character select dialog (0x4ef1): a character's new profile image.
-class UICharacterListDialog   // C3: member view (uicharacterlistdialog.h)
-{
-public:
-    class CCharacterInfo { public: unsigned __int64 FUN_1418e9cb0(); };   // the character id
-    void FUN_1418ed4e0(unsigned __int64 nId, CString str);
-    void FUN_1418ed5a0(unsigned __int64 nId, CString str);
-};
+// class UICharacterListDialog   // C3: member view (uicharacterlistdialog.h)
+// {
+// public:
+//     class CCharacterInfo { public: unsigned __int64 FUN_1418e9cb0(); };   // the character id
+//     void FUN_1418ed4e0(unsigned __int64 nId, CString str);
+//     void FUN_1418ed5a0(unsigned __int64 nId, CString str);
+// };
 template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 
 // The download paths of the uploaded kinds 0xc9 / 0xd1.
@@ -883,7 +883,7 @@ MS2_REPLACE_METHOD(0x141880490, CUgcManager, ShowUploadInDialog, 348, 0xE6E12340
 // @0x141880600
 // Uploads a shot of a character as its profile image: the screen rect between the "Eff_UI" and "Eff_Body" points of
 // the player, saved as a thumbnail image (the character list dialog asks for it).
-void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
+void CUgcManager::FUN_141880600(MS2Ptr<UICharacterListDialog::CCharacterInfo> spEntry)
 {
     if (spEntry == 0)
         return;
@@ -919,7 +919,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     MS2Ptr<CUgcViewerProfile> spViewer(new CUgcViewerProfile());
     spViewer->m_user.m_nType = DAT_143ab2830;
     spViewer->m_user.m_accountId = DAT_143ab2820;
-    spViewer->m_user.m_characterId = reinterpret_cast<UICharacterListDialog::CCharacterInfo*>(spEntry.operator->())->FUN_1418e9cb0();
+    spViewer->m_user.m_characterId = spEntry->FUN_1418e9cb0();
     MS2Ptr<CUploadFile> spFile(new CUploadFile());
     spFile->SetInDir(result.m_strPath, FUN_141026ab0(), 0, 0, 1);
     MS2Ptr<CUgcUploadCtrl> spCtrl(new CUgcUploadCtrl());

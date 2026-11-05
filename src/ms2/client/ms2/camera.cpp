@@ -208,7 +208,7 @@ bool FUN_1409a5770(NiFixedString& kName, const float* pf, int n); // set a globa
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
 // @0x140af7de0
 inline Unk_CameraState* CGameOption::FUN_140af7de0() { return &m_camera; }
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 class Unk_CameraConstValue
 {
@@ -1706,10 +1706,10 @@ void CameraMgr::FUN_140af1de0()
 MS2_REPLACE_METHOD(0x140AF1DE0, CameraMgr, FUN_140af1de0, 384, 0xD74FB37A);
 
 // @0x140aeb540
-void CameraMgr::SaveSetting(const egf::EntityID& id, const Unk_CameraSetting& setting)
+void CameraMgr::SaveSetting(egf::EntityID id, const Unk_CameraSetting& setting)
 {
-    // non-const id: the exe's pair ctor is pair(U1&&, U2&&) with std::forward<EntityID&> 0x140af5a50
-    m_savedSettings.insert(std::make_pair(const_cast<egf::EntityID&>(id), setting));
+    // by-value id (the caller copies it): the exe's pair ctor is pair(U1&&, U2&&) with std::forward<EntityID&> 0x140af5a50
+    m_savedSettings.insert(std::make_pair(id, setting));
 }
 MS2_REPLACE_METHOD(0x140AEB540, CameraMgr, SaveSetting, 72, 0x5A5304A2);
 
@@ -1848,9 +1848,9 @@ void CameraMgr::FUN_140aec4c0()
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), 0);
         }
         float fSpeed = (float)TSingleton<CGameOption>::GetInstance()->FUN_140af7de0()->m_n04 / 100.0f;
-        float f1 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1)->FUN_140298f40()) * fSpeed;
-        float f2 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2)->FUN_140298f40()) * fSpeed;
-        float f3 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3)->FUN_140298f40()) * fSpeed;
+        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1)->Get() * fSpeed;
+        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2)->Get() * fSpeed;
+        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3)->Get() * fSpeed;
         FUN_140aeb880(f1, f2, f3);
     }
 }
@@ -2236,7 +2236,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
             spParent = pTargetRoot;
         if (!pParam->m_update.FUN_140afc5a0())
         {
-            Unk_SeparateNode* pSeparate = EE_NEW Unk_SeparateNode(reinterpret_cast<const Unk_LightUpdateBits&>(pParam->m_update));
+            Unk_SeparateNode* pSeparate = EE_NEW Unk_SeparateNode(pParam->m_update);
             pSeparate->AttachChild(spRoot, false);
             m_effect.m_spCameraNode = pSeparate;
         }

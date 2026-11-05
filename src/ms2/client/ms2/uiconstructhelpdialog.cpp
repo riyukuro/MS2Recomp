@@ -26,9 +26,9 @@ class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationSe
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
 
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // The home (cube map information) service.
 template <int N> struct Unk_CMISTree;   // the visitor id tree (a std::set<unsigned __int64>, cubemapinformationservice_3.h)
@@ -37,7 +37,7 @@ class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 
 // The smart pointer to the service (C3: efd::SmartPointer<CubeMapInformationService>).
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
@@ -86,7 +86,7 @@ void UIConstructHelpDialog::vfunc_67()
 void UIConstructHelpDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == (CubeMapInformationService*)0)
         return;
     if (m_30.get() != 0)
@@ -116,7 +116,7 @@ int UIConstructHelpDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIConstructHelpDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == (CubeMapInformationService*)0)
         return;
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));

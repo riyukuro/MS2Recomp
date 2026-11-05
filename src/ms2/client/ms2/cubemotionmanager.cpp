@@ -40,7 +40,7 @@
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 bool FUN_14028d470(float a, float b);                           // nearly equal
 NiNode* FUN_1413fa070(egf::EntityID id);                     // entity id -> scene root
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // entity -> scene node
@@ -291,7 +291,7 @@ MS2_REPLACE_METHOD(0x14115B500, CCubeMotionManager, FUN_14115b500, 51, 0x29320C8
 void CCubeMotionManager::Update()
 {
     ATL::CAtlList<egf::EntityID> finished(10);
-    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
 
     // rotations
     for (POSITION pos1 = m_rotate.GetHeadPosition(); pos1 != 0; m_rotate.GetNext(pos1))

@@ -143,14 +143,14 @@ class UIMeratMarketDialog* FUN_140bd2c00();   // C3: was FUN_140bd2c00
 class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
 
 // A scoped lock of a critical section with a mode (0x1401b4ec0 / 0x1401b5120).
-class Unk_1401b4ec0
-{
-public:
-    Unk_1401b4ec0(CLockCriticalSection& cs, int nMode);
-    ~Unk_1401b4ec0();
-private:
-    void* m_p;
-};
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
 
 // A UGC product uid as the packet writes it (ctor 0x140d64c50 zeroes it).
 struct Unk_MmUid
@@ -689,7 +689,7 @@ void CMeratMarketMan::SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& id
 void CMeratMarketMan::RefreshRandomSaleProducts()
 {
     CMsTime now(GetServerTime());
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     UIMeratMarketDialog* pDialog = FUN_140bd2c00();
     if (pDialog == 0)
         return;

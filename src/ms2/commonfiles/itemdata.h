@@ -73,21 +73,21 @@ MS2_CHECK_OFFSET(CItemChangeBeautyTable, m_data, 0x60);
 // Names of the element types are invented; member names are the XML attribute names their readers use
 // (commonfiles\itemdatastruct.cpp).
 
-struct ModelNameEntry               // <dummy> element of an <asset>, 0x38 bytes (ctor 0x1403142a0 and reader 0x140314350 elsewhere)
-{
-    ModelNameEntry();               // 0x1403142a0
-    // implicit dtor (COMDAT 0x140540bc0 in itemdata.cpp) and moves: no user-declared dtor
-    void FUN_140314350(TiXmlElement* pElem);       // XML read
-    int gender;                     // +0x00 "gender": 0, 1 or 2 (both lists; the ctor's default)
-    CString sequence;               // +0x08 "sequence"
-    CString targetNode;             // +0x10 "targetnode" (the part's target node when empty)
-    efd::Point3 rotation;           // +0x18 "rotation"
-    efd::Point3 translation;        // +0x24 "translation"
-    float step;                     // +0x30 "step"
-    bool worldMode;                 // +0x34 "worldmode"
-    bool worldLerp;                 // +0x35 "worldlerp"
-};
-MS2_CHECK_SIZE(ModelNameEntry, 0x38);
+#include "ms2/commonfiles/dungeonmatch.h"   // <dummy> element of an <asset> = ItemDummyInfo (0x38; ctor 0x1403142a0, Load 0x140314350). C3: was the ModelNameEntry view:               // <dummy> element of an <asset>, 0x38 bytes (ctor 0x1403142a0 and reader 0x140314350 elsewhere)
+//{
+//    ModelNameEntry();               // 0x1403142a0
+//    // implicit dtor (COMDAT 0x140540bc0 in itemdata.cpp) and moves: no user-declared dtor
+//    void FUN_140314350(TiXmlElement* pElem);       // XML read
+//    int gender;                     // +0x00 "gender": 0, 1 or 2 (both lists; the ctor's default)
+//    CString sequence;               // +0x08 "sequence"
+//    CString targetNode;             // +0x10 "targetnode" (the part's target node when empty)
+//    efd::Point3 rotation;           // +0x18 "rotation"
+//    efd::Point3 translation;        // +0x24 "translation"
+//    float step;                     // +0x30 "step"
+//    bool worldMode;                 // +0x34 "worldmode"
+//    bool worldLerp;                 // +0x35 "worldlerp"
+//};
+//MS2_CHECK_SIZE(ModelNameEntry, 0x38);
 
 struct ModelFloatList               // <scale> element, 0x28 bytes
 {
@@ -146,7 +146,7 @@ struct ModelPart                    // <asset> element, 0x158 bytes
     std::vector<CString> names;     // +0xa0 <physx action>
     ModelNamedColor colors[4];      // +0xb8 <jointangle>
     std::map<CString, CString> properties;  // +0x118 "capHair" values keyed "B", "C", ...
-    std::vector<ModelNameEntry> entries[2]; // +0x128 <dummy>
+    std::vector<ItemDummyInfo> entries[2]; // +0x128 <dummy>
 };
 MS2_CHECK_SIZE(ModelPart, 0x158);
 MS2_CHECK_OFFSET(ModelPart, customs, 0x58);

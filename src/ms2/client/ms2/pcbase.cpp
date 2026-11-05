@@ -426,8 +426,8 @@ public:
     virtual ~CSplashDamageRecord();                                 // 0x14175b5f0
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };   // C3: named like the real class (0x140298f80)
-typedef Unk_StringOptionEntry Unk_PCBaseConstStr;
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
+typedef Common::Constants::Value<CString> Unk_PCBaseConstStr;
 class Unk_PCBaseConstants
 {
 public:
@@ -3944,7 +3944,7 @@ void PCBase::FUN_141671c20(MS2Ptr<CDamageRecord> spRecord)
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
                 NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
-                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.Get();
                 ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
                 ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
                 ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
@@ -3992,7 +3992,7 @@ void PCBase::FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord)
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
                 NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
-                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = ((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.FUN_140298f80();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.Get();
                 ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
                 ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
                 ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));

@@ -150,11 +150,11 @@ public:
     void CacheNamedScenes();
 };
 bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#define DAT_143b059e8 egf::g_bapiContext
+//
+//
 CLogString* GetLogString();
 bool Unk_IsFinite(const efd::Point3&);   // C3: was FUN_140a33ff0
 // C3: FUN_140a38a50 is egf::Entity::SetPropertyValue<efd::Point3> (0x140a38a50)
@@ -391,7 +391,7 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
 void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& block) {
     worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
-    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
+    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if ((HardwareInstancingService*)instancing != nullptr) instancing.operator->()->FUN_1413d73a0(map);
     loader->FUN_1411d8980(false);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
@@ -429,7 +429,7 @@ void EntityWorldManager::FUN_1411cfce0() {
 void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
     egf::EntityPtr entity(message->GetEntity());
     egf::EntityID id(entity->GetEntityID());
-    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
+    efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if (((HardwareInstancingService*)instancing != nullptr ? true : false) && instancing.operator->()->FUN_1413d6890(entity) != 0) return;
     if (worlds[currentMap].createdEntities.find(id) == worlds[currentMap].createdEntities.end()) {
         worlds[currentMap].loadedEntities[id] = entity.data();
@@ -494,7 +494,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
     shaders = m_pServiceManager->GetSystemServiceAs<ecr::ShaderService>();
     lights = m_pServiceManager->GetSystemServiceAs<ecr::LightService>();
     animation = m_pServiceManager->GetSystemServiceAs<egmAnimation::AnimationService>();
-    services = (efd::ServiceManager*)FUN_1401cd040(&DAT_143b059e8);
+    services = (efd::ServiceManager*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     messages->Subscribe(this, s_entityWorldChannel, 0, false);
     messages->Subscribe(this, entities->GetEntityLoadCategory(), 0, false);
     loader->SetMaxEntityLoadThrottle(0xffff);

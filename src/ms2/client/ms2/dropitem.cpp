@@ -129,7 +129,7 @@ public:
 class MyPC; class PCBase;
 template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 extern Unk_Inventory g_143ab2a90;
 int FUN_140768010(int, int);   // C3: was FUN_140768010
@@ -470,7 +470,7 @@ void CDropItem::FUN_14118d9a0(int nState)
             if (m_n298 != 0)
             {
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-                ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTrapDropItemEffect)->FUN_140298f80();
+                ((Unk_EffectTarget&)(kTarget)).m_strName = *Client::Constants::GetInstance()->PetTrapDropItemEffect.Get();
                 ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
                 kTarget.SetActor(FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -672,7 +672,7 @@ void CDropItem::FUN_14118d9a0(int nState)
     {
         m_arc.m_origin = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()));
         if (FUN_141b6f910()->GetActorManager(FUN_14123c460()))
-            ((class Unk_AvSeqCtl*)(class NiActorManager*)(FUN_141b6f910()->GetActorManager(FUN_14123c460())))->FUN_1409fae00(true);
+            ((class NiActorManager*)(FUN_141b6f910()->GetActorManager(FUN_14123c460())))->SetPaused(true);
         if (IsMeso())
         {
             Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FindObjectById(m_n188);

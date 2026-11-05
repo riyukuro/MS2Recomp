@@ -16,7 +16,7 @@
 
 // ---- unit-local views of exe objects ----
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+// C3: the float getter 0x140298f40 is Common::Constants::Value<float>::Get() (clientconstants.h)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 class Unk_AuCfgValue
 {
@@ -40,7 +40,7 @@ public:
 };
 
 // @0x1414a8240
-MS2ActorUpdater::MS2ActorUpdater(const egf::EntityID& kId)
+MS2ActorUpdater::MS2ActorUpdater(egf::EntityID kId)
     : m_kId(kId), m_fDistA(0.0f), m_fDistB(0.0f)
 {
     m_pGate = new CMeshUpdateGate;
@@ -99,7 +99,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
         fDuration = GetDistB();
         break;
     case 2:
-        fDuration = GetDistB() - reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->FUN_140298f40());
+        fDuration = GetDistB() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->Get();
         break;
     default:
         MS2_ASSERT_AT(0x31, FALSE);

@@ -341,12 +341,12 @@ int CPCDataPack::FUN_140720850()
 
 // ---- CByteBuffer members defined here ------------------------------------------------------------------------------------
 
-// @0x140720c30 The exe calls the const CAtlArray::operator[] (0x140517f50) on this+0x18 directly, so the member is
-// probably const there. Making it const means changing the shared stream.h declaration, so that is left for now.
+// @0x140720c30 The exe calls the const CAtlArray::operator[] (0x140517f50) on this+0x18 directly, and the
+// count is computed inline in the args (a named count local routes this+0x18 through rax).
 void CByteBuffer::AppendRemainingTo(CByteBuffer& dest)
 {
-    unsigned nCount = m_uLength - m_uOffset;
-    dest.WriteBytes(&m_aByteBuff.GetAt(0) + m_uOffset, nCount);
+    dest.WriteBytes(&static_cast<const ATL::CAtlArray<unsigned char>&>(m_aByteBuff)[0] + m_uOffset,
+        m_uLength - m_uOffset);
 }
 
 // @0x140720e90

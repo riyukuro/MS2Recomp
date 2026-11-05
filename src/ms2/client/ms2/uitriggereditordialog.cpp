@@ -122,7 +122,7 @@ public:
 struct Unk_TeFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_TeFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TeFramework DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class Unk_TeWorld
 {
 public:
@@ -284,7 +284,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
         FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
@@ -736,7 +736,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
     if (m_30 == 0)
         return;
     std::vector<Cube*> cubes;
-    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->FUN_141656ad0(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
     if (!cubes.empty())
         std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
@@ -781,7 +781,7 @@ void UITriggerEditorDialog::FUN_141b2dd80()
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     m_30->Invoke("removeAllState");
     ATL::CAtlArray<TriggerCli::StatePtr>& states = m_spTrigger->GetStates();
     for (size_t i = 0; i < states.GetCount(); i++)

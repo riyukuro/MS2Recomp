@@ -35,11 +35,11 @@ public:
     float FUN_141759b60(double);
     float FUN_141759d20(double, float);
 };
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    float FUN_1411e0f50(float);
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 bool FUN_14028d470(float a, float b);                               // nearly equal
 __int64 FUN_14028d260(float f);                                     // float -> fixed
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length

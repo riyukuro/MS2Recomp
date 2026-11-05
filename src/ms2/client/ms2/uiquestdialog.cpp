@@ -1258,7 +1258,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     if (FUN_1416e8060(nChapter) != 0)
         return 0;
     unsigned bProgressOnly = 0;
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (spCheck->GetVisible())
             bProgressOnly = spCheck->FUN_1422ce0e0();
@@ -1578,7 +1578,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     CAtlArray<int> chapters;
     GetChapterIDs(chapters);
     unsigned bProgressOnly = 0;
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (spCheck->GetVisible())
             bProgressOnly = spCheck->FUN_1422ce0e0();
@@ -1636,7 +1636,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
     unsigned bProperLevel = 1;
     CAtlArray<int> chapters;
     CRBMultiMap<int, MS2Ptr<CQuestData> > sorted(10);
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_properLevel"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_properLevel"))
         bProperLevel = spCheck->FUN_1422ce0e0();
     int nFocusChapter = 0;
     if (m_188 != 0)
@@ -1848,12 +1848,12 @@ void UIQuestDialog::ResetFilters()
 // @0x141aa2130
 void UIQuestDialog::ChangeTab(int nTab)
 {
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_properLevel"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_properLevel"))
     {
         if (nTab != 4)
             spCheck->FUN_1422ce090(m_filterA[nTab]);
     }
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_progressOnly"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (nTab != 4)
             spCheck->FUN_1422ce090(m_filterB[nTab]);

@@ -61,7 +61,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -179,7 +179,7 @@ int CItemRemakeScrollTable::Load()
         XmlValue(pNode, "representOpValue", spData->m_nLockOption);
         XmlValue(pNode, "addOpKind", spData->m_nOptionKind);
         XmlValue(pNode, "addOpValue", spData->m_nOptionValue);
-        Unk_1401b4ec0 lock(m_lock, 1);
+        Unk_CriticalSectionLock lock(m_lock, 1);
         m_map.SetAt(nId, spData);
     }
     SetInit(true);
@@ -190,7 +190,7 @@ int CItemRemakeScrollTable::Load()
 int CItemRemakeScrollTable::Reload()
 {
     int nRet = 0;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.RemoveAll();
     nRet = Load();
     return nRet;
@@ -201,7 +201,7 @@ CItemRemakeScrollDataPtr CItemRemakeScrollTable::GetData(int nId)
 {
     CheckInit();
     CItemRemakeScrollDataPtr spData(0);
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.Lookup(nId, spData);
     return spData;
 }

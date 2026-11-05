@@ -1319,11 +1319,11 @@ int FUN_1415ca030(const char* gameName, const char* userName, const char* charac
 // MS2-FUNCTIONAL 0x1415c4540: applies the requested locale after the manager accepts it and reports the recovered error outputs.
 // @0x1415c4540
 extern int FUN_1415cb6d0(void* manager, int locale, int sublocale, int* error, int* detail);
-extern "C" int FUN_1415c4540(void* self, int locale, int sublocale, int error, int detail)
+extern "C" int FUN_1415c4540(void* self, int locale, int sublocale, int error, void* detail)
 {
     void* manager = FUN_1415fa260();
     auto* pError = reinterpret_cast<int*>(static_cast<std::uintptr_t>(error));
-    auto* pDetail = reinterpret_cast<int*>(static_cast<std::uintptr_t>(detail));
+    auto* pDetail = static_cast<int*>(detail);
     if (!FUN_1415cb6d0(manager, locale, sublocale, pError, pDetail))
         return 0;
     CNMSetLocaleFunc request(locale, sublocale);
@@ -1582,7 +1582,7 @@ void FUN_1415c9040(void* object)
     FUN_14156a080(text);
 }
 
-// MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHHH@Z 0x1415c4540
+// MS2-PIN: ?FUN_1415c4540@@YAHPEAXHHH0@Z 0x1415c4540
 // MS2-PIN: ?FUN_1415caaa0@@YAPEAXPEAXI@Z 0x1415caaa0
 // MS2-PIN: ?FUN_1415cab60@@YAPEAXPEAXE@Z 0x1415cab60
 // MS2-PIN: ?FUN_1415c6970@@YA_NPEAX00H@Z 0x1415c6970

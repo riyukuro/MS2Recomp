@@ -64,7 +64,7 @@ public:
     int FUN_140e51ca0();
     void FUN_140e51e40();
     void FUN_140e52110();
-    MS2Ptr<ASCheckBox> FindCheckBox(const CString&);
+    // 0x140e52670 is UISwfEntity::GetChild<ASCheckBox> (defined in uiitempetboxdialog.cpp)
     MS2Ptr<ASCheckBox> FUN_140e52700(const CString&, MS2Ptr<ASCheckBox>&);
 private:
     MS2_LAYOUT_FRIEND;

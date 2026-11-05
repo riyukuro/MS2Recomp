@@ -364,7 +364,7 @@ class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& block, int nKind, unsigned __int64 n);
 
 // The dialogs of ids 0x4ecb (merat recipe popup) and 0x4ee3 (interior preview).
-class ASDialog : public ASDisplayObject { public: Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2); };
+class ASDialog : public ASDisplayObject { };
 class Unk_MeratRecipeDialog : public UIMaidRecipeListDialog
 {
 };
@@ -6408,7 +6408,7 @@ void UIMeratMarketDialog::UpdateSaleNotice()
             CStringW strImage = FUN_140ec2010();
             if (!strImage.IsEmpty())
                 m_2f0 = true;
-            reinterpret_cast<ASDialog*>(spPage.operator->())->FUN_140e78470("setNoticeForSaleRestrict", CStringW(strNotice), CStringW(strImage));
+            spPage.operator->()->Invoke("setNoticeForSaleRestrict", CStringW(strNotice), CStringW(strImage));
         }
     }
     ((CMeratMarketMan*)FUN_140939a00())->SendMeretMarketMode12();

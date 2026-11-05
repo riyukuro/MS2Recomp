@@ -43,7 +43,7 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The player's equip / stat holder.
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 // The player's buff / ability list.
 class Unk_PCBaseBuffs : public AdditionalCliList
 {

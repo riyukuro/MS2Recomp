@@ -128,7 +128,7 @@ void UIDebugPacketDialog::OnLoadInit()
     m_randomLoopDelay = GetChild<ASTextInput>("m_randomLoopDelay");
     m_randomLoopLength = GetChild<ASTextInput>("m_randomLoopLength");
     m_randomRemain = GetChild<ASTextField>("m_randomRemain");
-    m_ignoreAdminPacket = FUN_140e52670("m_ignoreAdminPacket");
+    m_ignoreAdminPacket = GetChild<ASCheckBox>("m_ignoreAdminPacket");
     m_usePacketCount = GetChild<ASButton>("m_usePacketCount");
     m_usePostClose = GetChild<ASButton>("m_usePostClose");
     FUN_141925fa0("m_dragBar");

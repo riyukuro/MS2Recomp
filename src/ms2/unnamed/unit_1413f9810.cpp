@@ -84,7 +84,7 @@ public:
 // ---- externs (unrecovered exe code; names are the exe addresses) ---------------------------------------------------------
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // the object at +8 of the main system; returns its service manager
 extern char DAT_143a09600;
-Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class HardwareInstancingService   // C3: member view for the former free stand-ins
 {
 public:
@@ -240,7 +240,7 @@ MS2_REPLACE(0x1413F9BA0, FUN_1413f9ba0, 151, 0xA4EE9233);
 // @0x1413f9c40
 void FUN_1413f9c40(bool bFlag)
 {
-    efd::SmartPointer<Unk_HwService> spSvc(FUN_14098c5b0((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    efd::SmartPointer<Unk_HwService> spSvc(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
     if ((Unk_HwService*)spSvc != 0)
         ((class HardwareInstancingService*)(spSvc.operator->()))->FUN_1413d6ab0(bFlag);
 }

@@ -267,25 +267,27 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@XZ 0x140287eb0
 // MS2-PIN: ?GetNode@?$CAtlMap@HW4Unk_LimitValue@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4Unk_LimitValue@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140281e10
 // MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140281d20
+class CUgcItemLook; template void MS2Ptr<CUgcItemLook>::AddRef() const;   // slot 5 of the AddRef/AddRefImpl/Reference runs: ctor 0x14027cbb0 -> 0x1402865b0 -> 0x140286910 -> 0x140286740 (no ReleaseImpl calls it)
+// MS2-PIN: ?AddRef@?$MS2Ptr@VCUgcItemLook@@@@AEBAXXZ 0x1402865b0 ; caller (ctor 0x14027cbb0)
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCUgcItemLook@@@@AEBAXPEAX@Z 0x140286910 ; caller (AddRef 0x1402865b0)
+// MS2-PIN: ?Reference@?$MS2Ptr@VCUgcItemLook@@@@CAXPEAVCUgcItemLook@@@Z 0x140286740 ; caller (AddRefImpl 0x140286910 only)
 
 // ---- Full-exe entry points under the FUN_ spellings the commonstruct slices call (ICF-folded template instances). ----
 // _Vector_alloc::_Copy_alloc for std::allocator: nothing to copy.
 void FUN_14027a4a0(__int64 a, __int64 b);                       // _Pocca
 void FUN_14027a4e0(__int64 a, __int64 b);                       // _Pocca
-struct Unk_RemakeLockOpt; typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_Cs3RemakeAlloc;   // 0x1402882f0 = its _Getal
+struct Unk_RemakeLockOpt; typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_Cs3RemakeAlloc; template std::_Vector_val<std::_Simple_types<Unk_RemakeLockOpt> >& Unk_Cs3RemakeAlloc::_Get_data() noexcept;   // 0x1402882f0 = its _Getal
 __int64 FUN_1402883f0(__int64 vec);                             // _Getal
 // @0x140287550
 void FUN_140287550(__int64 a, __int64 b)
 {
     FUN_14027a4a0(reinterpret_cast<__int64>(&reinterpret_cast<Unk_Cs3RemakeAlloc*>(a)->_Getal()), b);
 }
-
 // @0x140287580
 void FUN_140287580(__int64 a, __int64 b)
 {
     FUN_14027a4e0(FUN_1402883f0(a), b);
 }
-
 // _Tree<map<int,int>>::_Freeheadnode
 // @0x140287dc0
 void FUN_140278630(__int64, __int64) noexcept;
@@ -293,7 +295,6 @@ void FUN_140287dc0(void* tree, __int64 head)
 {
     FUN_140278630(reinterpret_cast<__int64>(&reinterpret_cast<std::_Tree_comp_alloc<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int> >, false> >*>(tree)->_Getal()), head);
 }
-
 struct Unk_TVal;
 // _Tree<map<int,int>>::_Get_data
 typedef std::pair<const int, int> Unk_TreePair;
@@ -304,7 +305,6 @@ Unk_TVal* FUN_140287ee0(void* tree)
 {
     return (Unk_TVal*)&static_cast<const Unk_TreeLayout*>(tree)->_Mypair._Get_second()._Get_second();
 }
-
 void FUN_140277470(__int64 first, __int64 last, __int64 al);   // _Destroy_range (trivially destructible: no-op)
 // 0x1402882f0 = Unk_Cs3RemakeAlloc::_Getal
 // vector<__int64>::_Destroy(first, last): forwards to the no-op range destroy of the trivially destructible elements.

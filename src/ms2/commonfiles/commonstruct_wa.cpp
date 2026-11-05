@@ -17,12 +17,12 @@
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit
 #include "ms2/placeholder/ms2svrptr.h"   // C3 #10: Clone returns MS2SvrPtr<CPtred>
 // Scoped lock helper (ctor 0x1401b4ec0, dtor 0x1401b5120).
-class Unk_1401b4ec0 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection&, int);
-    ~Unk_1401b4ec0();
-    void* m_p;
-};
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<T> bodies (CIngredientContainer); the STL/ATL instances below back the views
 typedef std::vector<MS2Ptr<CIngredientInfo>> VIng;
 typedef std::vector<CString> VStr;
@@ -283,17 +283,17 @@ void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
     }
     if (!reinterpret_cast<VIng&>(pending).empty()) {
 
-        Unk_It result;
-        Unk_It pos = *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).end()));
-        m_items.FUN_14027c290(&result, pos, *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(pending).begin())), *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(pending).end())));
+        //
+        VIng::const_iterator pos = reinterpret_cast<VIng&>(m_items).end();
+        reinterpret_cast<VIng&>(m_items).insert(pos, reinterpret_cast<VIng&>(pending).begin(), reinterpret_cast<VIng&>(pending).end());
     }
 }
 // @0x14026c450
 Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
     int keyBuffer;
-    Unk_It lower;
-    FUN_14027bf30(&lower, *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).begin())), *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).end())), *FUN_14026b540(&keyBuffer, key));
-    if (reinterpret_cast<const VIng::const_iterator&>(lower) != reinterpret_cast<VIng&>(m_items).end()) return *reinterpret_cast<Unk_IngRef*>(&**reinterpret_cast<VIng::iterator*>(&lower));
+    VIng::iterator FUN_14027bf30(VIng::iterator, VIng::iterator, int);   // std::find_if with the [key] predicate (commonstruct_2)
+    VIng::iterator lower = FUN_14027bf30(reinterpret_cast<VIng&>(m_items).begin(), reinterpret_cast<VIng&>(m_items).end(), *FUN_14026b540(&keyBuffer, key));
+    if (lower != reinterpret_cast<VIng&>(m_items).end()) return *reinterpret_cast<Unk_IngRef*>(&*lower);
     return Unk_IngRef(0);
 }
 // @0x14026c550
@@ -312,19 +312,19 @@ struct Unk_RewardPair { unsigned char key; int value; };
 // @0x14026c660
 void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
     out.WriteInt32((int)reinterpret_cast<MapII&>(m_rewards).size());
-    Unk_It t80, t88, t90, t98;
-    Unk_RewardMap& rewards = m_rewards;
-    Unk_It end = *(Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(rewards).end()));
-    for (Unk_It it = *(Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(rewards).begin())); FUN_14027ef80(&it, &end); ++*reinterpret_cast<MapII::const_iterator*>(&it)) {
-        Unk_RewardPair* entry = (Unk_RewardPair*)(void*)&**reinterpret_cast<MapII::const_iterator*>(&it);
+    //
+    MapII& rewards = reinterpret_cast<MapII&>(m_rewards);
+    MapII::const_iterator end = rewards.end();
+    for (MapII::const_iterator it = rewards.begin(); it != end; ++it) {
+        Unk_RewardPair* entry = (Unk_RewardPair*)(void*)&*it;
         out.WriteUInt8(entry->key);
         out.WriteInt32(entry->value);
     }
     out.WriteInt32((int)reinterpret_cast<VItem&>(m_items).size());
-    Unk_ItemVec& items = m_items;
-    Unk_It end2 = *(Unk_It*)(&static_cast<const VItem::iterator&>(reinterpret_cast<VItem&>(items).end()));
-    for (Unk_It it2 = *(Unk_It*)(&static_cast<const VItem::iterator&>(reinterpret_cast<VItem&>(items).begin())); reinterpret_cast<const VItem::const_iterator&>(it2) != reinterpret_cast<const VItem::const_iterator&>(end2); ++*reinterpret_cast<VItem::const_iterator*>(&it2)) {
-        ItemEntity* item = (ItemEntity*)(void*)&**reinterpret_cast<VItem::const_iterator*>(&it2);
+    VItem& items = reinterpret_cast<VItem&>(m_items);
+    VItem::const_iterator end2 = items.end();
+    for (VItem::const_iterator it2 = items.begin(); it2 != end2; ++it2) {
+        ItemEntity* item = (ItemEntity*)(void*)&*it2;
         out.WriteInt32(item->m_itemId);
         out.WriteInt32(item->m_count);
         out.WriteInt32(static_cast<ItemAble&>(*item).vfunc_o18_1());
@@ -344,8 +344,8 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
     int itemCount = in.ReadInt32();
     for (int i = 0; i < itemCount; ++i) {
         reinterpret_cast<VItem&>(m_items).push_back(ItemEntity());
-        Unk_It tmp;
-        ItemEntity* item = &**reinterpret_cast<std::reverse_iterator<VItem::iterator>*>(m_items.FUN_14028b360(&tmp));
+        //
+        ItemEntity* item = &*reinterpret_cast<VItem&>(m_items).rbegin();
         item->m_itemId = in.ReadInt32();
         item->m_count = in.ReadInt32();
         item->SetRank(in.ReadInt32());
@@ -357,33 +357,33 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
 // @0x14026cbf0
 __int64 DungeonRewardInfo::FUN_14026cbf0() {
     int key = 2;
-    Unk_It found, t18;
-    m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
-    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
+    MapII::const_iterator found = static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).find(key);
+    //
+    if (found == static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end()) return 0;
+    return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026cc70
 unsigned DungeonRewardInfo::FUN_14026cc70() {
     int key = 3;
-    Unk_It found, t18;
-    m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
-    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
+    MapII::const_iterator found = static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).find(key);
+    //
+    if (found == static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end()) return 0;
+    return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026ccf0
 __int64 DungeonRewardInfo::FUN_14026ccf0() {
     int key = 1;
-    Unk_It found, t18;
-    m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
-    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
+    MapII::const_iterator found = static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).find(key);
+    //
+    if (found == static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end()) return 0;
+    return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026cd70
 unsigned DungeonRewardInfo::FUN_14026cd70(unsigned key) {
-    Unk_It t20, t18;
-    Unk_It found = *m_rewards.FUN_14028ad10(&t20, (int*)&key);
-    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(m_rewards).end())))) return 0;
-    return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
+    MapII::const_iterator found = reinterpret_cast<MapII&>(m_rewards).find(reinterpret_cast<int&>(key));
+    //
+    if (found == static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(m_rewards).end())) return 0;
+    return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026cdf0
 void DungeonRewardInfo::Clear() {
@@ -676,15 +676,15 @@ CChangeableHistoryInfo::CChangeableHistoryInfo(int a, int b) : m_lock(), m_48(a)
 CChangeableHistoryInfo::~CChangeableHistoryInfo() { reinterpret_cast<LHist&>(m_list).clear(); }
 // @0x14026fab0
 void CChangeableHistoryInfo::FUN_14026fab0() {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     int total = 0;
-    Unk_It it, saved;
-    m_list.FUN_14028a1a0(&it);
-    while (FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end())))) {
+    LHist::iterator it = reinterpret_cast<LHist&>(m_list).begin(); Unk_It saved;
+    //
+    while (reinterpret_cast<LHist::const_iterator&>(it) != static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end())) {
         Unk_HistRef ref(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
         if (ref == 0) {
-            saved = it;
-            it = *(Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).erase(*reinterpret_cast<LHist::const_iterator*>(&saved))));
+            reinterpret_cast<LHist::iterator&>(saved) = it;
+            it = reinterpret_cast<LHist&>(m_list).erase(*reinterpret_cast<LHist::const_iterator*>(&saved));
             continue;
         }
         total = total + ref->m_40;
@@ -695,22 +695,22 @@ void CChangeableHistoryInfo::FUN_14026fab0() {
 // @0x14026fc00
 int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
     int total = 0;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (mode == 1) {
         Unk_HistList* list = &m_list;
-        Unk_It cur;
-        list->FUN_140289d20(&cur);
+        LHist::_Unchecked_iterator cur = reinterpret_cast<LHist*>(list)->_Unchecked_begin();
+        //
         LHist::_Unchecked_iterator end = reinterpret_cast<LHist*>(list)->_Unchecked_end();
-        for (; FUN_14027ef40(&cur, reinterpret_cast<Unk_It*>(&end)); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+        for (; reinterpret_cast<LHist::_Unchecked_const_iterator&>(cur) != end; ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
             Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             total = total + (*ref)->m_40;
         }
     } else if (mode == 2) {
         Unk_HistList* list = &m_list;
-        Unk_It cur;
-        list->FUN_140289d20(&cur);
+        LHist::_Unchecked_iterator cur = reinterpret_cast<LHist*>(list)->_Unchecked_begin();
+        //
         LHist::_Unchecked_iterator end = reinterpret_cast<LHist*>(list)->_Unchecked_end();
-        for (; FUN_14027ef40(&cur, reinterpret_cast<Unk_It*>(&end)); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+        for (; reinterpret_cast<LHist::_Unchecked_const_iterator&>(cur) != end; ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
             Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             if ((*ref)->m_28 != id) continue;
             total = total + (*ref)->m_40;
@@ -723,19 +723,19 @@ void CChangeableHistoryInfo::FUN_14026fda0(Unk_HistRef entry) {
     if (entry == 0) return;
     if ((__int64)m_48 != entry->m_30) return;
     if (!(m_4c == entry->m_3c)) return;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     reinterpret_cast<LHist&>(m_list).push_back(reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>&>(entry));
     m_total = m_total + entry->m_40;
 }
 // @0x14026fea0
 bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
-    Unk_1401b4ec0 lock(m_lock, 1);
-    Unk_It it, saved;
-    m_list.FUN_14028a1a0(&it);
-    for (; FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()))); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+    Unk_CriticalSectionLock lock(m_lock, 1);
+    LHist::iterator it = reinterpret_cast<LHist&>(m_list).begin(); Unk_It saved;
+    //
+    for (; reinterpret_cast<LHist::const_iterator&>(it) != static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()); ++*reinterpret_cast<LHist::iterator*>(&it)) {
         if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_18 == id) {
             m_total = m_total - (*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_40;
-            saved = it;
+            reinterpret_cast<LHist::iterator&>(saved) = it;
             reinterpret_cast<LHist&>(m_list).erase(*reinterpret_cast<LHist::const_iterator*>(&saved));
             return true;
         }
@@ -744,13 +744,13 @@ bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
 }
 // @0x14026ffd0
 Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (reinterpret_cast<LHist&>(m_list).size() == 0) return Unk_HistRef(0);
-    Unk_HistRef best(*m_list.FUN_14028aef0());
-    Unk_It t30, it;
-    FUN_14027c480(&it, *m_list.FUN_14028a1a0(&t30), 1);
+    Unk_HistRef best(reinterpret_cast<Unk_HistRef&>(reinterpret_cast<LHist&>(m_list).front()));
+    LHist::iterator it = std::next(reinterpret_cast<LHist&>(m_list).begin(), 1);
+    //
 
-    for (; FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()))); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+    for (; reinterpret_cast<LHist::const_iterator&>(it) != static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()); ++*reinterpret_cast<LHist::iterator*>(&it)) {
         if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_38 < best->m_38) best.FUN_14027eab0(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
     }
     return best;

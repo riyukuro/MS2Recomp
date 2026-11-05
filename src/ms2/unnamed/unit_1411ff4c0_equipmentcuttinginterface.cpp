@@ -30,39 +30,39 @@
 
 class MyPC;
 
-// The equip holder the cutting works on (+8 is the owning PC); names invented.
-class CEquipment { public: class PC * FUN_1411e0ee0(void); void FUN_1411e2e40(class ATL::CAtlList<class MS2Ptr<class CEquipItem>, class ATL::CElementTraits<class MS2Ptr<class CEquipItem>>> &); void FUN_1411e8d20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &); }; struct Unk_CuttingTarget : public CEquipment {
-
-
-
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment : Unk_CuttingTarget, IEquipmentCutting / CPriortyCutting (cpriortycutting.h)
+//
+//
+//
+//
+//
 class PC   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_141658e60();
 };
 
-// The cutting interface: slot 2 is pure (0x10 bytes, vftable 0x142ec0578).
-class IEquipmentCutting : public NiRefObject
-{
-public:
-    IEquipmentCutting();                // 0x1411ff6e0
-    virtual ~IEquipmentCutting();       // 0x1411ff710
-    virtual void vfunc_2() = 0;
-};
-MS2_CHECK_SIZE(IEquipmentCutting, 0x10);
-
-// Hides, for every worn item, the model parts named by its <cutting> list (0x18 bytes, vftable 0x142ec0598).
-class CPriortyCutting : public IEquipmentCutting
-{
-public:
-    explicit CPriortyCutting(Unk_CuttingTarget* pTarget);       // 0x1411ff4c0
-    virtual ~CPriortyCutting();                                  // 0x1411ff510
-    virtual void vfunc_2();                                      // 0x1411ff540
-private:
-    Unk_CuttingTarget* m_pTarget;                                // +0x10
-};
-MS2_CHECK_SIZE(CPriortyCutting, 0x18);
+// IEquipmentCutting (0x10, vftable 0x142ec0578) and CPriortyCutting (0x18, vftable 0x142ec0598) are declared in cpriortycutting.h.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x1411ff4c0
 CPriortyCutting::CPriortyCutting(Unk_CuttingTarget* pTarget)

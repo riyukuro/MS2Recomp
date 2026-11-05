@@ -29,7 +29,7 @@
 #include "ms2/commonfiles/logstring.h"
 #include "hook/ms2hook.h"
 
-ecr::RenderService* Unk_GetRenderService(char* pCell);          // gfxmoviebackground.cpp; the framework's render service (null if none)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 int FUN_14151e740();                                            // GFx allocator bytes in use
 class GFxMovieEventHandler { public: static void FUN_1422d9020(bool bEnable); };   // gfxmovie.h; IME enable flag
 CLogString* GetLogString();
@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x1422E9C40, GFxService, vfunc_16, 73, 0x437B21B6);
 // @0x1422e9c90
 bool GFxService::vfunc_17()
 {
-    ecr::RenderService* pService = Unk_GetRenderService(&DAT_143b059e8);
+    ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService != 0)
     {
         NiRenderTargetGroup* pTarget = pService->GetActiveRenderSurface()->GetRenderTargetGroup();

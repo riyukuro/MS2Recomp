@@ -186,7 +186,7 @@
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+//
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -2073,7 +2073,7 @@ void ItemOptionRandom::FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, un
             std::vector<ItemOptionValueRandom*> vValues;
             if (FUN_1405d7bf0(vValues, nCount, &random, FALSE, spContext, vLocked, NULL))
             {
-                Unk_1401b4ec0 guard(lock, 1);
+                Unk_CriticalSectionLock guard(lock, 1);
                 for (ItemOptionValueRandom* pValue : vValues)
                     mapCounts[pValue->FUN_1405d26c0()]++;
             }

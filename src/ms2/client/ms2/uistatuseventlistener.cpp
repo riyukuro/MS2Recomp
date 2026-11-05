@@ -60,11 +60,11 @@ static CString s_skill = "skill";                                           // @
 
 // The local player (MyPC) and the stats the hub reads.
 struct Unk_PCEquipSet;
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411e7660();
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 __int64 FUN_140930240();
 __int64 FUN_140930ae0();

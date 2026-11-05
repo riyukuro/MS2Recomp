@@ -103,14 +103,14 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The pet animation table.
 class Unk_PetAnimLine : public CPtred { public: CStringW m_strText; CString m_strEffect; };
-struct Unk_PetAnimLines
-{
-    void* m_p00;
-    MS2Ptr<Unk_PetAnimLine>* m_pData;                                       // +8
-    bool FUN_140b123c0() const { return m_pData == 0; }                     // @0x140b123c0
-};
-class Unk_PetAnimRow : public CPtred { public: char m_pad_18[0x68 - sizeof(CPtred)]; Unk_PetAnimLines m_lines; };
-MS2Ptr<Unk_PetAnimRow> FUN_140856fa0(int nNpcId, int nAnimId);
+#include "ms2/commonfiles/talkscript.h"   // C3: CTalkScript (FUN_140856fa0 returns Unk_ScriptPtr<CTalkScript>; was the Unk_PetAnimRow view)
+//
+//
+//
+//
+//
+//
+Unk_ScriptPtr<CTalkScript> FUN_140856fa0(int nNpcId, int nAnimId);
 
 // The lua state / grade tables, the string table, the notices.
 class Unk_LuaState;
@@ -139,7 +139,7 @@ public:
     int FUN_1422b9ea0();
 };
 unsigned FUN_140a35ca0(MS2Tick* p);
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };                   // C3: member view (Value<CString>::Get)
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
@@ -488,7 +488,7 @@ void CPet::FUN_140b10510()
                 if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
                 {
                     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-                    ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTamingMaxPointEffect)->FUN_140298f80();
+                    ((Unk_EffectTarget&)(kTarget)).m_strName = *Client::Constants::GetInstance()->PetTamingMaxPointEffect.Get();
                     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
                     kTarget.SetActor(FUN_14123c580());
                     m_nFxMax = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
@@ -518,7 +518,7 @@ void CPet::FUN_140b10510()
             if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
                 ((Unk_EffectTarget&)(kTarget)).m_strName = FUN_140291c10(m_nGradeFx);
             else
-                ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser)->FUN_140298f80();
+                ((Unk_EffectTarget&)(kTarget)).m_strName = *Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser.Get();
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
             kTarget.SetActor(FUN_14123c580());
             m_nFxOther = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
@@ -722,12 +722,12 @@ void CPet::FUN_140b114e0(int nAnimId)
         return;
     if (vfunc_127() == 0)
         return;
-    MS2Ptr<Unk_PetAnimRow> spRow = FUN_140856fa0(FUN_141092fa0(), nAnimId);
+    Unk_ScriptPtr<CTalkScript> spRow = FUN_140856fa0(FUN_141092fa0(), nAnimId);
     if (spRow == 0)
         return;
-    if (spRow->m_lines.FUN_140b123c0())
+    if (spRow->m_contents.IsEmpty())   // 0x140b123c0
         return;
-    MS2Ptr<Unk_PetAnimLine> spLine = reinterpret_cast<const MS2Ptr<Unk_PetAnimLine>&>(reinterpret_cast<const ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> >&>(spRow->m_lines).GetAt(0));   // C3: 0x140a4ffc0
+    MS2Ptr<Unk_PetAnimLine> spLine = reinterpret_cast<const MS2Ptr<Unk_PetAnimLine>&>(static_cast<const ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> >&>(spRow->m_contents).GetAt(0));   // C3: 0x140a4ffc0
     if (spLine == 0)
         return;
     CStringW strText(spLine->m_strText);
@@ -738,7 +738,7 @@ void CPet::FUN_140b114e0(int nAnimId)
         m_nIdleMs = 0;
     }
     if (spLine->m_strEffect.GetLength() > 0)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<Unk_PetAnimLine>&>(reinterpret_cast<ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> >&>(spRow->m_lines)[0])->m_strEffect), vfunc_18());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<Unk_PetAnimLine>&>(spRow->m_contents[0])->m_strEffect), vfunc_18());
 }
 
 // @0x140b11760

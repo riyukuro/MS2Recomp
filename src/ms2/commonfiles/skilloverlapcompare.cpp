@@ -78,7 +78,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/stanceleveldata.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -1234,7 +1234,7 @@ MS2Ptr<SkillData> SkillDataTable::GetSkillData(unsigned nSkillId)
 {
     if (nSkillId == 0)
         return 0;
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::unordered_map<unsigned, MS2Ptr<SkillData> >::iterator it = m_skills.find(nSkillId);
     if (it != m_skills.end())
         return it->second;
@@ -1255,7 +1255,7 @@ MS2_REPLACE_METHOD(0x1407ee2f0, SkillDataTable, GetSkillLevelData, 180, 0x950E1B
 // @0x1407ee3b0
 std::set<unsigned>* SkillDataTable::GetGroupSkills(unsigned nGroupId)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::unordered_map<unsigned, std::set<unsigned> >::iterator it = m_groups.find(nGroupId);
     if (it != m_groups.end())
         return &it->second;
@@ -1294,7 +1294,7 @@ MS2_REPLACE_METHOD(0x1407ee530, SkillDataTable, LoadSkillFile, 498, 0x56830CB3);
 // @0x1407ee730
 void SkillDataTable::AddSkill(MS2Ptr<SkillData> spSkill)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     unsigned nSkillId = spSkill->GetId();
     std::unordered_map<unsigned, MS2Ptr<SkillData> >::iterator it = m_skills.find(nSkillId);
     if (it != m_skills.end())
@@ -1319,7 +1319,7 @@ void SkillDataTable::AddSkill(MS2Ptr<SkillData> spSkill)
 // @0x1407ee9f0
 void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::vector<MS2Ptr<SkillAttackData> > vAttacks = spSkill->GetAttacks();
     for (MS2Ptr<SkillAttackData> spAttack : vAttacks)
     {

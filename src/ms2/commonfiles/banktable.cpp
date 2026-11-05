@@ -61,25 +61,25 @@ public:
 };
 
 CLockCriticalSection* Unk_LockIdentity(CLockCriticalSection*); // identity (base-object constructor)
-// Scoped lock helper shared with homeblockmanager / ugcmappackageinfo: locks on construction when asked, unlocks on exit.
-class Unk_1401b4ec0
+// The scoped lock (clockcriticalsection.h; was the local Unk_1401b4ec0 class): locks on construction when asked,
+// unlocks on exit. This unit is the exe's copy of the by-reference ctor 0x1401b4ec0 and the dtor 0x1401b5120.
+#include "ms2/placeholder/clockcriticalsection.h"
+Unk_CriticalSectionLock::Unk_CriticalSectionLock(CLockCriticalSection& lock, int bLock)
 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection& lock, int bLock)
-    {
-        m_p = Unk_LockIdentity(&lock);
-        if (bLock)
-            lock.vfunc_1();
-    }
-    ~Unk_1401b4ec0()
-    {
-        if (m_p)
-            m_p->vfunc_2();
-    }
-private:
-    CLockCriticalSection* m_p;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+    m_p = Unk_LockIdentity(&lock);
+    if (bLock)
+        lock.vfunc_1();
+}
+Unk_CriticalSectionLock::~Unk_CriticalSectionLock()
+{
+    if (m_p)
+        m_p->vfunc_2();
+}
+//
+//
+//
+//
+//
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CBankTable::s_bInit;
@@ -205,7 +205,7 @@ int CBankTable::FindBankId(int nItemId)
     int nType = item->GetType();
     int nSubType = item->GetSubtype();
     int nFound = -1;
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_defines.GetHeadPosition(); pos; m_defines.GetNext(pos))
     {
         BOOL bMatch = FALSE;
@@ -250,7 +250,7 @@ int CBankTable::LoadItemDefine()
         ReadSlotAttr(pNode, "slot", &def->m_nSlot);
         XmlGetAttr((class TiXmlElement*)(pNode), "type", def->m_nType);
         XmlGetAttr((class TiXmlElement*)(pNode), "subType", def->m_nSubType);
-        Unk_1401b4ec0 guard(m_lock, 1);
+        Unk_CriticalSectionLock guard(m_lock, 1);
         m_defines.AddTail(def);
         if (def->m_nId > m_nMaxId)
             m_nMaxId = def->m_nId;
@@ -282,7 +282,7 @@ int CBankTable::LoadBankType()
         XmlGetAttr((class TiXmlElement*)(pNode), "slotCount", data->m_nSlotCount);
         strStore = Unk_ReadString((class Unk_XmlNode*)(pNode), "storeItemType", CString(""));
         data->SetSlots(CString(strStore));
-        Unk_1401b4ec0 guard(m_lock, 1);
+        Unk_CriticalSectionLock guard(m_lock, 1);
         m_banks.SetAt(data->m_nId, data);
     }
     return 1;

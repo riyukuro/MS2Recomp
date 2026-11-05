@@ -115,7 +115,7 @@ class Unk_CinSvc : public CubeMapInformationService { public: void vfunc_1(); };
 class Unk_CinFramework { public: void* m_0; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_CinFramework*)&egf::g_bapiContext)          // C3: was extern Unk_CinFramework DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 int FUN_1408a0890(int, int, int*);
 
 // Quest helpers.
@@ -1021,14 +1021,14 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
-    efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     reinterpret_cast<Unk_CinSvc*>(spSvc.operator->())->FUN_1410ccc00(pc->FUN_141529620(), 0, 0);
     if (nMsg == 0x493e2) {
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         int nOut = 0;
         if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pc->FUN_141529620(), &nOut) == 0)
             return 0;
-        efd::SmartPointer<CubeMapInformationService> spSvc2(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spSvc2(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->FUN_141656ad0()) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);

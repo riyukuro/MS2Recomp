@@ -550,7 +550,7 @@ Unk_EdAlc* FUN_140bd6930(Unk_EdAlc* pAlc);
 void FUN_140bd4840(Unk_EdAlc* pAlc, void* pWhere, Unk_EdNode** ppValue);
 void FUN_140bd7140(Unk_EdListVal* pList);
 void FUN_140bd5c10(CPtred* p);
-Unk_EdIter* FUN_140bd4bc0(void* pTree, Unk_EdIter* pOut, const int* pKey);
+// (0x140bd4bc0 is Unk_EdEmoMap::try_emplace, called in FUN_140bd5710)
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void FUN_140a3cfe0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
@@ -662,8 +662,8 @@ bool FUN_140bd5690(const Unk_EdIter* pA, const Unk_EdIter* pB)
 // @0x140bd5710
 Unk_EdListVal* FUN_140bd5710(void* pTree, const int* pKey)
 {
-    struct { Unk_EdIter it; bool ok; } ins;  // exe writes pair<iterator,bool> (16 bytes)
-    return &FUN_140bd5770(FUN_140bd4bc0(pTree, &ins.it, pKey))->m_list;
+    typedef std::pair<Unk_EdEmoMap::iterator, bool> Ins;  // try_emplace's result stays a temporary (exe passes rax on)
+    return &FUN_140bd5770((Unk_EdIter*)&static_cast<const Ins&>(reinterpret_cast<Unk_EdEmoMap*>(pTree)->try_emplace(*pKey)).first)->m_list;
 }
 
 // @0x140bd5750

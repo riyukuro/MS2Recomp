@@ -64,11 +64,11 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
 class Unk_SSGConstValue { public: int FUN_140ad5c50(void); }; class Unk_CcConstValue : public Unk_SSGConstValue {};
-class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
-{
-public:
-    int& FUN_140298f40();
-};
+// C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
+// (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
+// unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
+// pointer it returns.
+//
 
 // The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
 class ICastingEventListener;
@@ -346,7 +346,7 @@ void StateCashCall::OnLeave(double fTime)
         nWait = 3000;
         break;
     case 5:
-        nWait = (int)FUN_14028d260(*((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->FUN_140298f40()));
+        nWait = (int)FUN_14028d260(*((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->Get());
         if (FUN_1417b8560() != 0)
             FUN_1412751f0(GetStringCommon(0x98), 1, 1);
         break;

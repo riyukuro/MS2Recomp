@@ -1146,12 +1146,12 @@ unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
 class Unk_GeMgr
 {
 public:
-    bool FUN_14138c210(int trigger, const Unk_GeRange& range);
+    bool FUN_14138c210(int trigger, const Unk_MergeRange& range);
 };
 class Unk_PCBuffTable;
 
 // MS2-FUNCTIONAL: legacy range-check entry adapts the recovered two-int range and manager method.
-bool Unk_GeMgr::FUN_14138c210(int trigger, const Unk_GeRange& range)
+bool Unk_GeMgr::FUN_14138c210(int trigger, const Unk_MergeRange& range)
 {
     Unk_GameEventIntRange converted(range.m_nMin, range.m_nMax);
     return reinterpret_cast<CGuideManager*>(this)->CheckTriggerRange(
@@ -1183,7 +1183,7 @@ void FUN_14138d460(void* self)
 // MS2-PIN: ?TestCondition@CGuideManager@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090
 // MS2-PIN: ?ShowEntityState@CGuideManager@@QEAAXH@Z 0x14138d160
 // MS2-PIN: ?ToggleDebug@CGuideManager@@QEAAXXZ 0x14138d460
-// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAA_NHAEBUUnk_GeRange@@@Z 0x14138c210
+// C3: 0x14138c210 is tag-attributed (the former pin was ignored)
 // MS2-PIN: ?FUN_14138c930@@YAHPEAXH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138c930@Unk_PCBuffTable@@YAHH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138cce0@@YAXPEAXHH@Z 0x14138cce0

@@ -72,8 +72,8 @@ class Unk_GachaWorld { public: Unk_GachaSelf* FUN_141bd0cc0(); };
 class Unk_GachaUIMgr { public: void FUN_141adc530(int); };
 class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 class UIWebBrowser : public UIWebBrowserBase { };
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
-struct Unk_GachaClient { char m_pad[0xe858]; Unk_StringOptionEntry m_url; };
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
+struct Unk_GachaClient { char m_pad[0xe858]; Common::Constants::Value<CString> m_url; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class CMsgBoxData : public CPtred
 {
@@ -442,7 +442,7 @@ void UIItemGachaBoxDialog::FUN_140c42050()
 {
     UIWebBrowser* browser = FUN_140c43790(0x4e6a);
     if (browser != 0) {
-        CString url = ((struct Unk_GachaClient*)FUN_1401d3200())->m_url.FUN_140298f80();
+        CString url = *((struct Unk_GachaClient*)FUN_1401d3200())->m_url.Get();
         if (!url.IsEmpty())
             browser->FUN_14135ec00(url, true);
     }

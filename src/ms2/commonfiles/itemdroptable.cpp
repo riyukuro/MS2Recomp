@@ -169,7 +169,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -1548,7 +1548,7 @@ bool ItemDropTable::LoadIndividualBoxes()
         MS2Ptr<ItemDropIndividualBox> pBox(new ItemDropIndividualBox);
         if (!pBox->Load(pElem))
             return;
-        Unk_1401b4ec0 guard(lock, 1);
+        Unk_CriticalSectionLock guard(lock, 1);
         if (!m_individualBoxes.insert(std::make_pair(pBox->GetId(), pBox)).second)
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"Duplicate IndividualDropID:{0}", pBox->GetId());
     });

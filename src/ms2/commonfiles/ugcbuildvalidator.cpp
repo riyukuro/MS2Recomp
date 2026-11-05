@@ -47,10 +47,10 @@ class Unk_BackUpItem;
 // C3: the Unk_Service6100017 view was CubeMapInformationService (cubemapinformationservice_3.h)
 //
 //
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);
+#define DAT_143b059e8 egf::g_bapiContext
+//
 
 class Unk_QueryObj { public: virtual ~Unk_QueryObj(); virtual void vf1(); virtual void vf2(); virtual void vf3(); virtual void vf4(); virtual bool FUN_x28(unsigned nId, void* pOut); };
 
@@ -438,14 +438,14 @@ MS2_REPLACE_METHOD(0x140881440, CUGCBuildValidator, vfunc_42, 245, 0x7D9E5EE4);
 CUGCBuildValidatorCli::CUGCBuildValidatorCli(Unk_CubePoint point, CubeItemInfo* pItem)
     : CUGCBuildValidator(point, pItem, 0), m_pCubeService(0)
 {
-    m_pCubeService = FUN_1401cd040(&DAT_143b059e8);
+    m_pCubeService = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
 }
 
 // @0x1408815e0
 CUGCBuildValidatorCli::CUGCBuildValidatorCli(Unk_CubePoint point, CubeItemInfo* pItem, int nDirection)
     : CUGCBuildValidator(point, pItem, nDirection), m_pCubeService(0)
 {
-    m_pCubeService = FUN_1401cd040(&DAT_143b059e8);
+    m_pCubeService = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
 }
 
 // @0x140881690

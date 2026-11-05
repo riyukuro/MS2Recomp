@@ -6,9 +6,9 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
-
-// Argument of the creating constructor (0x1401b7b90 builds it; same shape as Unk_JobNewTag).
-struct MS2SvrNewTag { explicit MS2SvrNewTag(int); };
+#include "ms2/placeholder/socketptr.h"   // Unk_SocketNew
+// Argument of the creating constructor: the exe tag Unk_SocketNew (ctor 0x1401b7b90; same shape as Unk_JobNewTag).
+typedef Unk_SocketNew MS2SvrNewTag;
 CPtred* FUN_1401ba820(CPtred* p);       // marks a freshly allocated object (sets the count to 1)
 
 template <class T>

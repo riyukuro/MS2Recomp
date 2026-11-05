@@ -218,7 +218,7 @@ public:
     void FUN_141adc530(int nUiType);                                        // open it
 };
 
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };              // Constants::Common::Value<CString>::Get
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 void FUN_1418fe1c0(const CString& strUrl);                                  // open the web page
 
 class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
@@ -401,7 +401,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         m_spTabs = m_30->FUN_140be23c0<ASButtonBar>("m_tabMusic");
         if (!m_strText.IsEmpty())
             FUN_140ff41a0();
-        CString strUrl(reinterpret_cast<Unk_StringOptionEntry*>(&TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage)->FUN_140298f80());
+        CString strUrl(*TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
         if (strUrl.IsEmpty())
             m_30->Invoke("hideWebPageButton");
         m_spPlayLine = GetChild<ASMovieClip>("m_playLine");
@@ -483,7 +483,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickHelpWebPage", szMethod) == 0)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, reinterpret_cast<Unk_StringOptionEntry*>(&TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage)->FUN_140298f80());
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
         FUN_1418fe1c0(strUrl);
         return 1;
     }

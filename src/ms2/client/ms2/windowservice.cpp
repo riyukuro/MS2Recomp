@@ -30,7 +30,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/delegate.h"
-#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3 (ICF i45): MS2Ptr<CLoadingDialog> members emitted here (was ascript.h)
 #include "ms2.h"
 #include "uilogindialog.h"
 #pragma comment(lib, "user32.lib")
@@ -123,17 +123,17 @@ struct Unk_GameCore {
     void* m_pad_00;
     Unk_Holder m_holder;                // +8
 };
-struct Unk_Worker;
-class Unk_WorkerPtr {                   // 16-byte intrusive handle (pointer at +8) of a worker thread object
-public:
-    Unk_WorkerPtr& operator=(int);      // 0x141b93c40: drops the held object
-    operator struct Unk_Worker*() const;    // 0x141b93c70
-    struct Unk_Worker* operator->() const;  // 0x141b93c90
-    void FUN_140d4dc30();               // release
-private:
-    void* m_pad_00;
-    struct Unk_Worker* m_p;
-};
+// C3 (ICF i45): Unk_WorkerPtr was a reinterpret view of g_spLoadingDialog; its members are MS2Ptr<CLoadingDialog>'s.
+//class Unk_WorkerPtr {                   // 16-byte intrusive handle (pointer at +8) of a worker thread object
+//public:
+//    Unk_WorkerPtr& operator=(int);      // 0x141b93c40: drops the held object
+//    operator struct Unk_Worker*() const;    // 0x141b93c70
+//    struct Unk_Worker* operator->() const;  // 0x141b93c90
+//    void FUN_140d4dc30();               // release
+//private:
+//    void* m_pad_00;
+//    struct Unk_Worker* m_p;
+//};
 int FUN_141b938f0(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
@@ -141,7 +141,7 @@ class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
 
 class CLoadingDialog;
 extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;     // 0x143ac2bd0, loadingdialog.cpp
-#define g_workerPtr reinterpret_cast<Unk_WorkerPtr&>(g_spLoadingDialog)
+//#define g_workerPtr reinterpret_cast<Unk_WorkerPtr&>(g_spLoadingDialog)
 class CLoadingDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -379,14 +379,14 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
     GetWindowRect(m_hWnd, &g_rcWindow);
 }
 
-// Stops the worker thread held in g_workerPtr and drops it.
+// Stops the worker thread held in g_spLoadingDialog and drops it.
 // @0x141b91a60
 void FUN_141b91a60()
 {
-    if (g_workerPtr)
+    if (g_spLoadingDialog)
     {
-        ((class CLoadingDialog*)(struct Unk_Worker*)(g_workerPtr.operator->()))->Close();
-        g_workerPtr = 0;
+        g_spLoadingDialog->Close();
+        g_spLoadingDialog = 0;
         g_143af7d58 = 0;
     }
 }
@@ -989,19 +989,19 @@ void FUN_141b93aa0()
 TSingleton<CWindowService>::TSingleton() { s_instance = static_cast<CWindowService*>(this); }
 CWindowService* TSingleton<CWindowService>::s_instance = 0;
 
-// @0x141b93c40
-Unk_WorkerPtr& Unk_WorkerPtr::operator=(int)
-{
-    FUN_140d4dc30();
-    return *this;
-}
-// @0x141b93c70
-Unk_WorkerPtr::operator Unk_Worker*() const { return m_p; }
+// MS2-PIN: ??4?$MS2Ptr@VCLoadingDialog@@@@QEAAAEAV0@H@Z 0x141b93c40
+//Unk_WorkerPtr& Unk_WorkerPtr::operator=(int)
+//{
+//    FUN_140d4dc30();
+//    return *this;
+//}
+// MS2-PIN: ??B?$MS2Ptr@VCLoadingDialog@@@@QEBAPEAVCLoadingDialog@@XZ 0x141b93c70
+//Unk_WorkerPtr::operator Unk_Worker*() const { return m_p; }
 // ATL::CComPtrBase<Unk_ComObj>::operator->
 // @0x141b93c80
 Unk_ComObj* FUN_141b93c80(Unk_ComObj** ppObj) { return *ppObj; }
-// @0x141b93c90
-Unk_Worker* Unk_WorkerPtr::operator->() const { return m_p; }
+// MS2-PIN: ??C?$MS2Ptr@VCLoadingDialog@@@@QEBAPEAVCLoadingDialog@@XZ 0x141b93c90
+//Unk_Worker* Unk_WorkerPtr::operator->() const { return m_p; }
 
 // Full-exe clients use two older manager class names for the window-service methods.
 class Unk_RsApp

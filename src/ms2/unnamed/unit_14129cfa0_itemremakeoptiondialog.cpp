@@ -172,14 +172,14 @@ CString FUN_140719530(unsigned __int64 uid);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 void FUN_140f73320(CMsgBoxData* box, bool b);
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    float GetAbilityRate(SAType eType);   // 0x1411e1110
-    void FUN_1411e7660();
-    MS2Ptr<CEquipItem> FUN_1411e1580(__int64 uid);   // 0x1411e1580 the worn item with this uid
-    void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // 0x1411e1ce0 the worn items in a layer
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
+//
+//
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
 void FUN_140d73aa0(CStringW text, int a, void* pListener, CStringW c);

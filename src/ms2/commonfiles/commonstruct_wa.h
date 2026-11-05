@@ -4,6 +4,7 @@
 #pragma once
 #include <afx.h>
 #include <atltime.h>
+#include <vector>
 #include "ms2/commonfiles/stream.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/placeholder/cptred.h"
@@ -24,17 +25,16 @@ class CIngredientContainer;
 // -> 0x14027f2c0. Unk_IngRef is the old stand-in name, kept until the callers are renamed.
 typedef MS2Ptr<CIngredientInfo> Unk_IngRef;
 
-// std::vector<Unk_IngRef> (24 bytes)
-class Unk_IngVec {
-public:
-    Unk_IngVec() noexcept;                 // 0x14027d720
-    ~Unk_IngVec();                         // 0x14027e480
-    // clear, reserve, size, at/at const, empty, _Unchecked_begin/end, begin, end, push_back(const&) and
-    // operator[] const: called as the std::vector members (no stand-in callers left)
-    // push_back(T&&) 0x14028b300: also called as the std::vector member
-    void FUN_14027c290(Unk_It*, Unk_It, Unk_It, Unk_It);   // insert(range), returns the iterator
-    void* m_begin; void* m_end; void* m_cap;
-};
+// The ingredient vector: std::vector<MS2Ptr<CIngredientInfo>> (24 bytes). Unk_IngVec is the old stand-in name,
+// kept until the callers are renamed. Its ctor 0x14027d720 / dtor 0x14027e480 are explicit instantiations in
+// commonstruct_2.cpp; clear, reserve, size, at, empty, begin, end, push_back x2, operator[] and insert(range)
+// 0x14027c290 are called as the std::vector members.
+typedef std::vector<Unk_IngRef> Unk_IngVec;
+//
+//
+//
+//
+//
 MS2_CHECK_SIZE(Unk_IngVec, 24);
 
 class CIngredientInfo : public CPtred {
@@ -116,28 +116,28 @@ public:
     Unk_RewardMap();                       // 0x14027d600
     ~Unk_RewardMap();                      // 0x14027e3d0
     size_t FUN_14028b3f0();                // size
-    Unk_It* FUN_14028a910(Unk_It*);        // end
-    Unk_It* FUN_14028a130(Unk_It*);        // begin
+    // Unk_It* FUN_14028a910(Unk_It*);        // end  (no users)
+    // Unk_It* FUN_14028a130(Unk_It*);        // begin  (no users)
     int& FUN_14027f180(unsigned&);         // operator[]
-    Unk_It* FUN_14028adf0(Unk_It*, int*);  // find
-    Unk_It* FUN_14028ad10(Unk_It*, int*);  // find
-    Unk_It* FUN_14028a970(Unk_It*);        // end (const)
+    // find 0x14028adf0 (const) / 0x14028ad10: the std::map members
+    //
+    // Unk_It* FUN_14028a970(Unk_It*);        // end (const)  (no users)
     void FUN_14028a410();                  // clear
     void* m_head; size_t m_size;
 };
 MS2_CHECK_SIZE(Unk_RewardMap, 16);
-class Unk_ItemVec {
-public:
-    Unk_ItemVec() noexcept;                         // 0x14027d6c0
-    ~Unk_ItemVec() noexcept;                        // 0x14027e420
-    size_t FUN_14028b470();                // size
-    void FUN_14028b2a0(const ItemEntity&);       // push_back
-    Unk_It* FUN_14028b360(Unk_It*) noexcept;   // rbegin
-    Unk_It* FUN_14028aa30(Unk_It*);        // end
-    Unk_It* FUN_14028a200(Unk_It*);        // begin
-    void FUN_14028a590();                  // clear
-    void* m_begin; void* m_end; void* m_cap;
-};
+// std::vector<ItemEntity> (24 bytes). Unk_ItemVec is the old stand-in name. Its COMDATs are the std::vector members:
+// ctor 0x14027d6c0, ~ 0x14027e420 (commonstruct_2), size 0x14028b470, push_back(&&) 0x14028b2a0, rbegin 0x14028b360,
+// end 0x14028aa30, begin 0x14028a200, clear 0x14028a590, _Tidy 0x140289740.
+typedef std::vector<ItemEntity> Unk_ItemVec;
+//
+//
+//
+//
+//
+//
+//
+//
 MS2_CHECK_SIZE(Unk_ItemVec, 24);
 
 class DungeonRewardInfo : public CPtred {
@@ -261,11 +261,11 @@ public:
     Unk_HistList();                        // 0x14027d5e0
     ~Unk_HistList();                       // 0x14027e3a0
     void FUN_14028a4b0() noexcept;                // clear
-    Unk_It* FUN_14028a1a0(Unk_It*) noexcept;   // begin
+    // begin 0x14028a1a0: the std::list member
     // C3: end / erase / push_back / _Unchecked_end (14028a9d0 / 14028aca0 / 14028b260 / 140289d80)
     // are called as std::list<MS2Ptr<CUserChangeableItemHistory>> members (LHist in commonstruct_wa.cpp).
-    Unk_HistRef* FUN_14028aef0();          // front (returns pointer to element)
-    Unk_It* FUN_140289d20(Unk_It*);        // _Unchecked_begin
+    // front 0x14028aef0: the std::list member
+    // _Unchecked_begin 0x140289d20: the std::list member
     __int64 FUN_14028b410();               // size
     void* m_head; size_t m_size;
 };
@@ -347,22 +347,22 @@ void FUN_1408731e0(void*, const char*, int&);
 __int64 FUN_140869440();
 __int64 FUN_14086b950(const __int64&, int);
 __int64 FUN_14086ba60(const __int64&, int);
-bool FUN_14027ef80(Unk_It*, Unk_It*);
-bool FUN_14027efc0(Unk_It*, Unk_It*);
-bool FUN_14027ee20(Unk_It*, Unk_It*);
-bool FUN_14027f000(Unk_It*, Unk_It*);
-bool FUN_14027ef00(Unk_It*, Unk_It*);
-bool FUN_14027ef40(Unk_It*, Unk_It*);
-Unk_IngRef* FUN_14027f490(Unk_It*);
-void* FUN_14027f410(Unk_It*);
-void* FUN_14027f350(Unk_It*);
-void* FUN_14027f450(Unk_It*);
-ItemEntity* FUN_14027f4b0(Unk_It*);
-Unk_HistRef* FUN_14027f3b0(Unk_It*);
-Unk_HistRef* FUN_14027f3f0(Unk_It*);
-void FUN_14027f600(Unk_It*);
-void FUN_14027f6b0(Unk_It*);
-void FUN_14027f550(Unk_It*);
-void FUN_14027f590(Unk_It*);
-void FUN_14027bf30(Unk_It*, Unk_It, Unk_It, int);
-void FUN_14027c480(Unk_It*, Unk_It, int);
+// FUN_14027ef80: now the std iterator operator (commonstruct_2)
+// 0x14027efc0: vector<ItemEntity>::const_iterator::operator!= (commonstruct_2)
+// FUN_14027ee20: now the std iterator operator (commonstruct_2)
+// 0x14027f000: vector<MS2Ptr<CIngredientInfo>>::const_iterator::operator!= (commonstruct_2)
+// FUN_14027ef00: now the std iterator operator (commonstruct_2)
+// FUN_14027ef40: now the std iterator operator (commonstruct_2)
+// Unk_IngRef* FUN_14027f490(Unk_It*);  (no users)
+// void* FUN_14027f410(Unk_It*);  (no users)
+// void* FUN_14027f350(Unk_It*);  (no users)
+// void* FUN_14027f450(Unk_It*);  (no users)
+// ItemEntity* FUN_14027f4b0(Unk_It*);  (no users)
+// Unk_HistRef* FUN_14027f3b0(Unk_It*);  (no users)
+// Unk_HistRef* FUN_14027f3f0(Unk_It*);  (no users)
+// void FUN_14027f600(Unk_It*);  (no users)
+// void FUN_14027f6b0(Unk_It*);  (no users)
+// void FUN_14027f550(Unk_It*);  (no users)
+// void FUN_14027f590(Unk_It*);  (no users)
+// FUN_14027bf30 (std::find_if with c450's [key] predicate): declared in CIngredientContainer::FUN_14026c450
+// (0x14027c480 = std::next<LHist::iterator>, commonstruct_2)

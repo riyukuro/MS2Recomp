@@ -88,7 +88,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 static UICommon::CMyPCKeyInputController s_keyController;
 
@@ -702,7 +702,7 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
     }
     CStringW strText;
     {
-        Unk_1401b4ec0 lock(spCache->m_lock, 1);
+        Unk_CriticalSectionLock lock(spCache->m_lock, 1);
         if (spCache->FUN_141819280() != 0)
         {
             if (FUN_141813c80(CachePtr(spCache), CString(spCache->m_strParser), CString(spCache->m_strParserValue)) == 0)
@@ -738,7 +738,7 @@ CStringW CStringTable::GetItemDescription(int nItemId, CString strTag)
 {
     CheckInit();
     DescPtr spDesc;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&m_itemDescStamp))
         FUN_141814750(CString("korItemDescription.xml"), m_itemDescs, m_itemDescStamp);
     if (m_itemDescs.Lookup(nItemId, spDesc))
@@ -751,7 +751,7 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
 {
     CheckInit();
     DescPtr spDesc;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&m_skillDescStamp))
         FUN_141814750(CString("stringSkillDescription.xml"), m_skillDescs, m_skillDescStamp);
     if (m_skillDescs.Lookup(nSkillId, spDesc))
@@ -830,7 +830,7 @@ CStringW CStringTable::GetSetItemName(int nSetId, CString strTag)
     if (FUN_1401d1320(&m_setItemNameStamp))
         FUN_141814750(CString("SetItemName.xml"), m_setItemNames, m_setItemNameStamp);
     DescPtr spDesc;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_setItemNames.Lookup(nSetId, spDesc))
         return spDesc->FUN_141813a30(strTag);
     return CStringW(L"");
@@ -843,7 +843,7 @@ CStringW CStringTable::GetUGCMapSetItemName(int nSetId, CString strTag)
     if (FUN_1401d1320(&m_ugcSetItemNameStamp))
         FUN_141814750(CString("UGCMapSetItemName.xml"), m_ugcSetItemNames, m_ugcSetItemNameStamp);
     DescPtr spDesc;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_ugcSetItemNames.Lookup(nSetId, spDesc))
         return spDesc->FUN_141813a30(strTag);
     return CStringW(L"");
@@ -858,7 +858,7 @@ int CStringTable::FUN_141812c40(int nTable, const CStringW& strName)
         CheckInit();
         return -1;
     }
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (spCache->FUN_141819280() != 0)
     {
         if (FUN_141813c80(CachePtr(spCache), CString(spCache->m_strParser), CString(spCache->m_strParserValue)) == 0)
@@ -1039,7 +1039,7 @@ int CStringTable::LoadNames(CachePtr spCache)
 // @0x141813f10
 int CStringTable::FUN_141813f10(CachePtr spCache)
 {
-    Unk_1401b4ec0 lock(spCache->m_lock, 1);
+    Unk_CriticalSectionLock lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
@@ -1075,7 +1075,7 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
 // @0x141814310
 int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
 {
-    Unk_1401b4ec0 lock(spCache->m_lock, 1);
+    Unk_CriticalSectionLock lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
@@ -1113,7 +1113,7 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
 int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCache)
 {
     CString strPath = FUN_14071ae20(strFile);
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -1142,7 +1142,7 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
 int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCache, ATL::CAtlArray<CString>& rTags)
 {
     CString strPath = FUN_14071ae20(strFile);
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -1170,7 +1170,7 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
 // @0x141814cf0
 int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos; spCache->m_files.GetNext(pos))
     {
         MS2Ptr<CCacheData> spFile = spCache->m_files.GetAt(pos);
@@ -1217,7 +1217,7 @@ CStringW CStringTable::FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned sho
 {
     LevelDescPtr spLevels;
     DescPtr spDesc;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (rMap.Lookup(*pnId, spLevels))
     {
         if (!spLevels->m_levels.Lookup(*pnLevel, spDesc))
@@ -1300,7 +1300,7 @@ CStringTable::DescPtr CStringTable::FUN_1418158b0(TiXmlElement* pNode)
 // @0x141815a20
 void CStringTable::LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
@@ -1317,7 +1317,7 @@ void CStringTable::LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot)
 // @0x141815b30
 void CStringTable::FUN_141815b30(LevelDescMap& rMap, TiXmlElement* pRoot)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))

@@ -186,8 +186,8 @@ int CPortal::FUN_14169b890()
         reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos));
         m_tooltip.AssignRaw(new UIDebugTooltip(CString("")));
         m_tooltip->m_68 = 0;
-        Vector3 ptCopy = ptPos;
-        m_tooltip->FUN_14191aae0(ptCopy);
+        // (the by-value pass copies ptPos)
+        m_tooltip->FUN_14191aae0(ptPos);
         m_tooltip->FUN_14191ab10(CStringW(L""));
         m_tooltip->FUN_14191aa10();
     }

@@ -19,15 +19,15 @@
 class TiXmlElement;
 class Unk_GcCondList;
 
-// The [min, max] pair of a trigger range: valid when max >= min and not both 0. The ctor zeroes it (0x1405c38a0, the
-// same body as Unk_MergeRange's).
-struct Unk_GeRange
-{
-    Unk_GeRange();                                          // 0x1405c38a0
-    int m_nMin;
-    int m_nMax;
-};
-MS2_CHECK_SIZE(Unk_GeRange, 8);
+// The [min, max] pair of a trigger range is Unk_MergeRange (ctor 0x1405c38a0; FUN_1405c7ba0 is its is-set check).
+#include "ms2/placeholder/unk_mergerange.h"
+//
+//
+//
+//
+//
+//
+//
 
 // 0x28. m_n18 is the condition kind (the subclass ctor/loader sets it), m_b1c negates the check, m_n20 is the XML "value".
 class CGuideCondition : public ClassObject
@@ -1110,7 +1110,7 @@ public:
     int m_n28;                                              // +0x28
     Unk_GcOptInt m_a;                                       // +0x2c
     Unk_GcOptInt m_b;                                       // +0x34
-    Unk_GeRange m_range;                                    // +0x3c
+    Unk_MergeRange m_range;                                    // +0x3c
     int m_pad_44;
 };
 MS2_CHECK_SIZE(CGuideConditionTrigger, 0x48);

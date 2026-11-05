@@ -53,7 +53,7 @@ public:
     void OpenLink(CString strUrl);
     void FUN_141262090();
 };
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Constants::Common::Value<CString>::Get
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 
 // View of the option dialog: an id at +0x28, the AS root at +0x30.
 struct Unk_PiDialog
@@ -124,7 +124,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_4(int n)   // @0x140a45e20
 int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, int nArg)   // @0x140a45e50
 {
     if (_stricmp(pszName, "OnDetail") == 0)
-        ((CPersonalInfoAgreement*)&m_state)->OpenLink(CString(((Unk_StringOptionEntry*)((char*)FUN_1401d3200() + 0xe918))->FUN_140298f80()));
+        ((CPersonalInfoAgreement*)&m_state)->OpenLink(CString(*((Common::Constants::Value<CString>*)((char*)FUN_1401d3200() + 0xe918))->Get()));
     return 0;
 }
 

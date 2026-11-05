@@ -267,40 +267,40 @@ void Unk_SPDH::FUN_1407a4ac0(CInputStream* in) {
 MS2_REPLACE_METHOD(0x1407A4AC0, Unk_SPDH, FUN_1407a4ac0, 123, 0x1D80FD34);
 
 // @0x1407a4b50
-void Unk_SPDI::FUN_1407a4b50(COutputStream* out) {
-    out->WriteUInt8(kind);
-    if (kind == 0) {
-        out->WriteInt32(a);
-        out->WriteInt16(b);
-        out->WriteInt32(c);
-        out->WriteInt32(d);
-        out->WriteInt32(e);
+void Unk_NetworkTransfer::FUN_1407a4b50(COutputStream* out) {
+    out->WriteUInt8(result);
+    if (result == 0) {
+        out->WriteInt32(ip);
+        out->WriteInt16(port);
+        out->WriteInt32(token1);
+        out->WriteInt32(token2);
+        out->WriteInt32(field);
     } else {
-        out->WriteUnicodeString(s);
+        out->WriteUnicodeString(message);
     }
-    if (kind == '1') {
-        out->WriteInt64(x);
+    if (result == '1') {
+        out->WriteInt64(character);
     }
 }
-MS2_REPLACE_METHOD(0x1407A4B50, Unk_SPDI, FUN_1407a4b50, 254, 0x578809F0);
+MS2_REPLACE_METHOD(0x1407A4B50, Unk_NetworkTransfer, FUN_1407a4b50, 254, 0x578809F0);
 
 // @0x1407a4c60
-void Unk_SPDI::FUN_1407a4c60(CInputStream* in) {
-    kind = in->ReadUInt8();
-    if (kind == 0) {
-        a = in->ReadInt32();
-        b = in->ReadInt16();
-        c = in->ReadInt32();
-        d = in->ReadInt32();
-        e = in->ReadInt32();
+void Unk_NetworkTransfer::FUN_1407a4c60(CInputStream* in) {
+    result = in->ReadUInt8();
+    if (result == 0) {
+        ip = in->ReadInt32();
+        port = in->ReadInt16();
+        token1 = in->ReadInt32();
+        token2 = in->ReadInt32();
+        field = in->ReadInt32();
     } else {
-        s = in->ReadUnicodeString();
+        message = in->ReadUnicodeString();
     }
-    if (kind == '1') {
-        x = in->ReadInt64();
+    if (result == '1') {
+        character = in->ReadInt64();
     }
 }
-MS2_REPLACE_METHOD(0x1407A4C60, Unk_SPDI, FUN_1407a4c60, 295, 0x1CFF92C3);
+MS2_REPLACE_METHOD(0x1407A4C60, Unk_NetworkTransfer, FUN_1407a4c60, 295, 0x1CFF92C3);
 
 // @0x1407a4d90
 void Unk_SPDJ::FUN_1407a4d90(COutputStream* out) {

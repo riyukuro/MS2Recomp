@@ -203,11 +203,11 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
             FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
             return out;
         } else {
-            Unk_TIter where, b;
+            Unk_TIter where;
             FUN_14027d010(&where, (__int64)wherenode, FUN_14027b570((__int64)h));
             if (!addleft)
                 ;
-            else if (FUN_14027ee20((Unk_It*)&where, (Unk_It*)FUN_14028a130(tree, &b))) {
+            else if (reinterpret_cast<MapII::const_iterator&>(where) == reinterpret_cast<TreeII*>(tree)->begin()) {
                 bool yes = true;
                 Unk_TIter t;
                 FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, true, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
@@ -414,18 +414,18 @@ void FUN_14027a740(i64 it, i64* p) { reinterpret_cast<std::vector<ItemOptionValu
 // std::map<int,int>::try_emplace(const int& key, ...)  [Ghidra's 0x147 is exact]
 Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
 {
-    Unk_TIter lb;
-    Unk_TIter end;
+    MapII::iterator lb = reinterpret_cast<TreeII*>(tree)->lower_bound(*(const int*)key);
+    //
     Unk_TIter res;
     Unk_TIter tup;
     bool ins;
     bool found;
     char pad;
-    FUN_14028af20(tree, &lb, key);
-    if (FUN_14027ee20((Unk_It*)&lb, (Unk_It*)FUN_14028a910(tree, &end)) != 0 ||
-        reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(lb.node))) != 0) {
+    //
+    if ((reinterpret_cast<MapII::const_iterator&>(lb) == reinterpret_cast<TreeII*>(tree)->end()) != 0 ||
+        reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(lb._Ptr)) != 0) {
         ins = true;
-        Unk_TNode* hint = lb.node;
+        Unk_TNode* hint = (Unk_TNode*)lb._Ptr;
         void* vt = FUN_140162f80(&pad);
         FUN_140274d10((__int64*)out, FUN_14027be90((__int64)tree, (__int64)&res, (__int64)hint, (__int64)&std::piecewise_construct,
                                          FUN_14027c240((__int64)&tup, FUN_14027c1f0(key)), (__int64)vt), (__int64)&ins);

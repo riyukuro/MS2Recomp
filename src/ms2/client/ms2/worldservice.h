@@ -205,18 +205,18 @@ struct Unk_WsV990 { void* p; };                                  // intrusive po
 //
 //
 //
-// The by-value m_3f0 value / key that FUN_141bc3470 takes (callee releases both); their == / get / dtor are the
-// exe COMDATs, defined inline in worldservice_1.cpp.
-struct Unk_WsR3f0Val : Unk_WsP16
-{
-    bool operator==(void* p) const;         // 0x1412350e0
-    ~Unk_WsR3f0Val();                       // 0x141234e70
-};
-struct Unk_WsR3f0Key : Unk_WsP16
-{
-    void* get() const;                      // 0x141235260
-    ~Unk_WsR3f0Key();                       // 0x1410a6d40
-};
+// The by-value m_3f0 value / key that FUN_141bc3470 takes (callee releases both) are magicdata's
+// Unk_MagicValPtr / Unk_MagicTagPtr (MS2Ptr<Unk_FcArea> / MS2Ptr<Unk_FcTag>).
+#include "ms2/placeholder/magicptr.h"
+typedef Unk_MagicValPtr Unk_WsR3f0Val;
+typedef Unk_MagicTagPtr Unk_WsR3f0Key;
+//
+//
+//
+//
+//
+//
+//
 struct Unk_WsV9a0 { void* p0; void* p1; };                      // p1 = an actor-like object (OnTick, G)
 #include "ms2/placeholder/tptrvalue.h"                  // TPtrValue<T> (the rank record pointer of m_a18)
 struct CGameRankingData;                                // gamerankingcli.h: the rank record shown by the interact display image
@@ -366,7 +366,7 @@ public:
     int FUN_141bc32d0(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
     void* GetRegionSkillObject(int id);                                                       // m_3a0 lookup, or null
     void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
-    void FUN_141bc3470(Unk_WsR3f0Val value, Unk_WsR3f0Key key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
+    void FUN_141bc3470(Unk_MagicValPtr value, Unk_MagicTagPtr key);                 // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
     void FUN_141bc2c90(NiPoint3 pt, ATL::CAtlArray<MS2Ptr<CPortal> >* outRefs);                            // field objects containing pt appended to the ref array, sorted nearest first
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0

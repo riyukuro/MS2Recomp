@@ -36,14 +36,14 @@ public:
 #include <NiAVObject.h>   // C3: NiAVObject::GetTranslate, GetRotate
 // The ref'd service (class id 0x06100017) the framework hands out; buddy.cpp keeps the same view.
 // C3: Unk_Service6100017 was CubeMapInformationService (cubemapinformationservice_3.h)
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; (0, 1, 0)
 #define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)                           // (0, 0, 1)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
+#define DAT_143b059e8 egf::g_bapiContext
 extern int DAT_143ad1b20;                                           // running actor counter
 extern int DAT_1439f7060;                                           // number of collision masks (8)
 extern unsigned DAT_1439f7040[];                                    // the collision masks
@@ -75,7 +75,7 @@ public:
     void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
 };
 
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* p);   // the service from the framework (DAT_143b059e8)
+//
 // FindCubeByEntityRef (0x1410b8be0) takes the id by value: this caller copies it.
 
 
@@ -272,7 +272,7 @@ int CEntityVibrator::FUN_1411cba60()
             if (1.0f <= fK) {
                 SetPosition(m_48);
                 SetRotation(m_54);
-                efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+                efd::SmartPointer<CubeMapInformationService> com(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                 if ((CubeMapInformationService*)com != 0) {
                     reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
                 }
@@ -344,7 +344,7 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
             ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(entB, 5, 0, 1);
         }
     }
-    efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> com(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if ((CubeMapInformationService*)com != 0) {
         reinterpret_cast<CubeMapInformationService*>(com.operator->())->RemovePhysXActor(reinterpret_cast<const Unk_CMISEntityRef&>(m_entity.operator->()->GetEntityID()));
     }
@@ -467,7 +467,7 @@ void CEntityVibrator::FUN_1411cd3b0()
     SetPosition(m_48);
     SetRotation(m_54);
     if (m_7c != 0) {
-        efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> com(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if ((CubeMapInformationService*)com != 0) {
             reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
         }

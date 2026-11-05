@@ -28,7 +28,7 @@ void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
+void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);   class Unk_PiComp { public: Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1); };   // C3: Invoke(method, wide string), defined in tabcontentspetinfo
 
 // @0x1422bbb50
 ASArray::ASArray(int nMovieId)
@@ -109,7 +109,7 @@ MS2_REPLACE_METHOD(0x1422BBF70, ASArray, PushString, 98, 0xD9CD880C);
 // @0x1422bbfe0
 unsigned int ASArray::PushWString(const wchar_t* sz)
 {
-    return FUN_140cbe3a0("push", sz).GetUInt();
+    return reinterpret_cast<Unk_PiComp*>(this)->FUN_140cbe3a0("push", sz).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BBFE0, ASArray, PushWString, 98, 0x793E6237);
 
@@ -179,7 +179,7 @@ MS2_REPLACE_METHOD(0x1422BC3B0, ASArray, UnshiftString, 98, 0x0D07DD93);
 // @0x1422bc420
 unsigned int ASArray::UnshiftWString(const wchar_t* sz)
 {
-    return FUN_140cbe3a0("unshift", sz).GetUInt();
+    return reinterpret_cast<Unk_PiComp*>(this)->FUN_140cbe3a0("unshift", sz).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BC420, ASArray, UnshiftWString, 98, 0x78729A4F);
 

@@ -2351,7 +2351,7 @@ EngineLog::EngineLog()
     s_strEngineLogFile = "MS2Log.txt";
     if (!efd::File::DefaultDirectoryExistsFunc("ms2log"))
         FUN_1414a5a40(CStringW(L"ms2log"));
-    Unk_PetLock lock(s_engineLogLock, 1);
+    Unk_CriticalSectionLock lock(&s_engineLogLock, 1);
     if (s_pEngineLogFile == 0) {
         CString strName;
         bool bAllExist = false;
@@ -2407,7 +2407,7 @@ EngineLog::EngineLog()
 // @0x1414921b0
 EngineLog::~EngineLog()
 {
-    Unk_PetLock lock(s_engineLogLock, 1);
+    Unk_CriticalSectionLock lock(&s_engineLogLock, 1);
     if (s_pEngineLogFile) {
         fclose(s_pEngineLogFile);
         s_pEngineLogFile = 0;
@@ -2416,7 +2416,7 @@ EngineLog::~EngineLog()
 // @0x141492230
 void EngineLog::Write(efd::UInt16 uiModule, efd::UInt8 uiLevel, const char* pszMessage)
 {
-    Unk_PetLock lock(s_engineLogLock, 1);
+    Unk_CriticalSectionLock lock(&s_engineLogLock, 1);
     if (s_pEngineLogFile == 0)
         s_pEngineLogFile = fopen(s_strEngineLogFile, "a");
     if (s_pEngineLogFile) {

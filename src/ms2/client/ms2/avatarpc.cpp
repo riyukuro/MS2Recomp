@@ -158,7 +158,7 @@ public:
     char m_pad_00[0x60];
 };
 MS2_CHECK_SIZE(Unk_AvTextCfg, 0x60);
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };   // C3: member view (the string; was Unk_AvTextCfg::FUN_140298f80)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
 class Unk_AvGlobals
 {
 public:
@@ -1105,7 +1105,7 @@ unsigned int FUN_1409f6ee0()
 // @0x1409f6f30
 Unk_AvTextCfg::operator CString()
 {
-    return ((Unk_StringOptionEntry*)this)->FUN_140298f80();
+    return *((Common::Constants::Value<CString>*)this)->Get();
 }
 
 // ---- AvatarPet ----------------------------------------------------------------------------------------------------
@@ -1322,7 +1322,7 @@ bool AvatarRidee::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     if (m_bReloading)
     {
         m_spAttach = 0;
-        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), true);
+        FUN_141b6f910()->SetPaused(FUN_14123c460(), true);
         if (m_pRider != 0)
             m_pRider->vfunc_59(1, 0, 0, 0);
     }
@@ -1372,7 +1372,7 @@ void AvatarRidee::vfunc_12()
     }
     if (m_unk_80 != 0)
     {
-        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
+        FUN_141b6f910()->SetPaused(FUN_14123c460(), false);
         reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
 }
@@ -1580,40 +1580,40 @@ int COptimizer::FUN_1409f7ea0()
 // ---- exe functions of the range that the typed source above only declares or reaches through template glue ----
 
 // The animation record chain: record -> sequence controller -> target.
-// @0x1409fad60
-bool Unk_AvAnimTarget::FUN_1409fad60()
-{
-    return m_bA1;
-}
-
-// @0x1409fad30
-bool Unk_AvSeqCtl::FUN_1409fad30()
-{
-    return reinterpret_cast<Unk_AvAnimTarget*>(m_spTarget.operator->())->FUN_1409fad60();
-}
-
-// @0x1409fae00
-void Unk_AvSeqCtl::FUN_1409fae00(bool b)
-{
-    if (b && !FUN_1409fad30())
-    {
-        m_n48 = m_n44;
-    }
-    m_spTarget->SetPaused(b);
-}
-
-// @0x1409fad80
-void Unk_AcAnimSvc::FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag)
-{
-    Unk_AvAnimRec* pRec;
-    if (!ContainsEntity(reinterpret_cast<const egf::EntityID&>(id), reinterpret_cast<ActorEntry*&>(pRec)))
-        return;
-    pRec->m_bFlag = bFlag;
-    Unk_AvSeqCtl* pSeq = reinterpret_cast<Unk_AvSeqCtl*>((NiActorManager*)pRec->m_spSeq);
-    if (pSeq == 0)
-        return;
-    pSeq->FUN_1409fae00(bFlag);
-}
+// C3: 0x1409fad60 / 0x1409fad30 / 0x1409fae00 / 0x1409fad80 are the SDK inlines NiControllerManager::IsPaused,
+// NiActorManager::IsPaused, NiActorManager::SetPaused and egmAnimation::AnimationService::SetPaused(EntityID, Bool)
+// (AnimationService.inl / NiActorManager.inl / NiControllerManager.inl, same bodies). The COMDATs come from the
+// SetPaused calls above and are bound by the MS2-PINs at the end of this file. The stand-in definitions were:
+//   Unk_AvAnimTarget::FUN_1409fad60 (return m_bA1), Unk_AvSeqCtl::FUN_1409fad30 (the target's flag),
+//   Unk_AvSeqCtl::FUN_1409fae00 (pause time, then m_spTarget->SetPaused) and Unk_AcAnimSvc::FUN_1409fad80
+//   (ContainsEntity, then the record flag and the sequence controller).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // MS2-FUNCTIONAL: instantiations of the pointer / array template glue of this range (efd::SmartPointer getters, MS2Ptr
 // reference counting, CAtlArray<void*> as the folded CAtlArray<NiNode*>); written as unit-local views of the 16-byte
@@ -1761,3 +1761,7 @@ Unk_AvPtrArray* Unk_AvPtrArrayCtor(Unk_AvPtrArray* p)
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSkillRecord@@@@AEBAXPEAX@Z 0x1409f82a0
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCArg125@@@@AEBAXPEAX@Z 0x1409f82d0
 // MS2-PIN: ??1?$Unk_PayloadPtr@VStateSkillData@@@@QEAA@XZ 0x1409f7540
+// MS2-PIN: ?SetPaused@AnimationService@egmAnimation@@QEAAXVEntityID@egf@@_N@Z 0x1409fad80
+// MS2-PIN: ?SetPaused@NiActorManager@@QEAAX_N@Z 0x1409fae00
+// MS2-PIN: ?IsPaused@NiActorManager@@QEBA_NXZ 0x1409fad30
+// MS2-PIN: ?IsPaused@NiControllerManager@@QEBA_NXZ 0x1409fad60

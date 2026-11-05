@@ -198,7 +198,7 @@ class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f2
 // CreateReactor / FestivalEvent / BlueprintImport.
 bool FUN_140b7a330(class PCBase*, int);   // C3: was FUN_140b7a330
 class CBreakableObject { public: bool FUN_140ae0700(); };   // C3: unit-local view (its header pulls PhysX)
-class Unk_QnState { public: struct Unk_QnTracking* FUN_140c9b8b0(); };   // C3: view of CGameOption
+//   C3: the Unk_QnState view is gone (CGameOption::FUN_140c9b8b0, cgameoption.h)
 class CItemUgc   // C3: member view for the former free stand-ins
 {
 public:
@@ -632,7 +632,7 @@ bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
 // @0x140d1cbd0
 void OpenItemBox(CItem* pItem, int nCount)
 {
-    if (IsOlderThanDays(((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n10Time, 7) != 0)
+    if (IsOlderThanDays(((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n10Time, 7) != 0)
     {
         CStringW strMsg;
         if (nCount > 1)
@@ -669,7 +669,7 @@ void OpenItemBoxSingle(CItem* pItem)
     __int64 nOver = 0;
     CStringW strTab;
     if (UseItemCheckCapacity(pItem, strTab, &nOver) != 0
-        && IsOlderThanDays(((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n18Time, 7) != 0)
+        && IsOlderThanDays(((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n18Time, 7) != 0)
     {
         CStringW strMsg = FormatStringId<CStringW>(0x2a7, strTab);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, L"");
@@ -739,7 +739,7 @@ bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
         return true;
     if (IsBoxNotAgainChecked(box))
     {
-        ((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n10Time = GetServerTime();
+        ((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n10Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
@@ -755,7 +755,7 @@ bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
         return true;
     if (IsBoxNotAgainChecked(box))
     {
-        ((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n18Time = GetServerTime();
+        ((Unk_GoEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_n18Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());

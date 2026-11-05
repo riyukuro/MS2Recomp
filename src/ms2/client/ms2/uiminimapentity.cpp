@@ -95,7 +95,7 @@
 #include "ms2/placeholder/cinteractobjectdata.h"
 #include "ms2/client/ms2/windowservice.h"
 #include "ms2/client/ms2/physxhelper.h"
-
+class Unk_ReportDialogAccess : public UIDialog { public: template<class T> MS2Ptr<T> GetChild(const CString& name); };   // C3: the child lookup 0x140ede180 (defined in uitencentuserreportdialog.cpp)
 // ---- unit-local views of exe objects ----
 
 
@@ -2090,18 +2090,18 @@ struct Unk_MmQuestIconOptions                                       // the quest
     bool m_world;                                                   // +0x21
     bool m_repeat;                                                  // +0x22
 };
-class Unk_QnState   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_QnTracking* FUN_140c9b8b0();
-};
+#include "ms2/placeholder/cgameoption.h"   // CGameOption::FUN_140c9b8b0 (C3: was the Unk_QnState view)
+//
+//
+//
+//
 
 // @0x141a3add0
 void UIMinimapDialog::FUN_141a3add0()
 {
     if (m_maxPanel == 0)
         return;
-    Unk_MmQuestIconOptions* pOptions = ((struct Unk_MmQuestIconOptions*)((Unk_QnState*)TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0());
+    Unk_MmQuestIconOptions* pOptions = ((struct Unk_MmQuestIconOptions*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0());
     if (pOptions == 0)
         return;
     ASArray icons(2);
@@ -3269,7 +3269,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // the entity app framework
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // @0x141a43b80
 void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
@@ -3279,7 +3279,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
     MS2Ptr<CPortal> spPortal = spProxy->m_portal;
     if (spPortal == 0)
         return;
-    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&egf::g_bapiContext))));
+    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if (static_cast<bool>(spService)) {
         if (spService->FUN_1413d7d90(spPortal->m_idEntity) != 0)
             return;
@@ -3468,7 +3468,7 @@ void UIMinimapDialog::FUN_141a3c150()
     __int64 nOwner = ((class CubeMapInformationService*)(class Unk_MmHome*)(((class Unk_MmHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3180();
     if (nOwner != 0 && nOwner != DAT_143ab2820)
         bReport = true;
-    m_maxPanel = FUN_140ede180("m_maxpanel");
+    m_maxPanel = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_maxpanel");
     MS2Ptr<AScript> spData = m_data;
     if (spData == 0)
         spData.AssignRaw(new AScript(2));

@@ -12,7 +12,7 @@
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateskill.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
-
+// MS2-PIN: ??0D3DXVECTOR3@@QEAA@AEBU_D3DVECTOR@@@Z 0x1417f5940 ; payload position from a util copy (was Unk_SkillUseVec3)
 #include <new>
 #include <float.h>
 #include <efd/Matrix3.h>
@@ -2093,9 +2093,9 @@ int StateSkill::FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
         kPayload.m_nSkillId = spRecord->GetSkillId();
         kPayload.m_nLevel = spRecord->GetLevel();
         kPayload.m_nMotion = (unsigned char)spRecord->m_nMotion;
-        kPayload.m_ptPos = FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptPos));
-        kPayload.m_ptDir = FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptDir));
-        kPayload.m_ptRot = FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptRot));
+        kPayload.m_ptPos = reinterpret_cast<const D3DVECTOR&>(static_cast<const Unk_UtilFloat3&>(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptPos))));
+        kPayload.m_ptDir = reinterpret_cast<const D3DVECTOR&>(static_cast<const Unk_UtilFloat3&>(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptDir))));
+        kPayload.m_ptRot = reinterpret_cast<const D3DVECTOR&>(static_cast<const Unk_UtilFloat3&>(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptRot))));
         kPayload.m_fCooldown = spRecord->m_fCooldown;
         kPayload.m_nElapsed = TSingleton<CMainSystem>::GetInstance()->GetElapsedTime();
         kPayload.m_bAE = spRecord->m_bAE;

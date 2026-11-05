@@ -86,7 +86,7 @@ class Unk_FdCubeSvc : public CubeMapInformationService
 public:
     // C3: FUN_1410b8c90 is CubeMapInformationService's own (returns Cube*)
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // The feature switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -234,7 +234,7 @@ int FittingDollSlot::vfunc_8(void* p)
     CItem* pItem = vfunc_25().get();
     if (pItem == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pCube == 0)
         return 0;
@@ -313,7 +313,7 @@ int FittingDollSlot::FUN_14121ddc0()
     FittingDollPC* pDoll = FUN_14121dd50();
     if (pDoll == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pCube == 0)
         return 0;

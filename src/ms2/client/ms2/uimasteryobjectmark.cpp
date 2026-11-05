@@ -51,7 +51,7 @@ public:
 int FUN_141277f40();
 float FUN_1412762d0(const NiPoint3& pt);                 // the screen y offset of a world point
 int FUN_1408a1360(Vector3 a, Vector3 b);        // the two points are on the same side
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_AuCfgValue
 {
 public:
@@ -273,10 +273,10 @@ void UIMasteryObjectMark::FUN_140e5a600()
             {
                 reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pGather->GetPos())));
-                ptScreen.x += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ddd0)->FUN_140298f40());
-                ptScreen.y += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de28)->FUN_140298f40());
+                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ddd0)->Get();
+                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de28)->Get();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->FUN_140298f40()) && pGather->FUN_141402b40() != 0) ? 1 : 0;
+                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->Get() && pGather->FUN_141402b40() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), pGather->GetPos()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)
@@ -347,10 +347,10 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             {
                 reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(spHome->GetPosition())));
-                ptScreen.x += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de80)->FUN_140298f40());
-                ptScreen.y += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8)->FUN_140298f40());
+                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de80)->Get();
+                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8)->Get();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->FUN_140298f40()) && spHome->FUN_141229080() != 0) ? 1 : 0;
+                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->Get() && spHome->FUN_141229080() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->GetPosition()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)

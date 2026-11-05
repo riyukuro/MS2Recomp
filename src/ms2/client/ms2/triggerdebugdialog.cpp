@@ -15,7 +15,7 @@ extern template class MS2Ptr<class UIObject>;
 #include "ms2/ms2recover.h"
 #include "ms2/unnamed/unit_1406125d0.h"
 #include "hook/ms2hook.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // ---- unit-local views of callees emitted in other units ----
 
@@ -83,7 +83,7 @@ void TriggerDebugDialog::SetFile(CString strFile)
 // @0x140b9b870
 void TriggerDebugDialog::AddLine(int nLine)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     __int64 nTime = GetServerTime();
     m_vecLines.push_back(std::make_pair(nLine, nTime));
 }

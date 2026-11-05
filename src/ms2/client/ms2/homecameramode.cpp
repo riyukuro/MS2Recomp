@@ -106,8 +106,8 @@ public:
 CHomeCameraMode::CHomeCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pPrev)
     : CCameraMode(pOwner, pPrev),
       m_78(0),
-      m_7c(g_143b01a60),
-      m_88(g_143b01a60),
+      m_7c(reinterpret_cast<const efd::Point3&>(g_143b01a60)),
+      m_88(reinterpret_cast<const efd::Point3&>(g_143b01a60)),
       m_94(0.0f),
       m_98(0.0f),
       m_9c(0.0f),
@@ -122,8 +122,8 @@ CHomeCameraMode::CHomeCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pP
       m_f4(0.0f),
       m_f8(0.0f),
       m_fc(0.0f),
-      m_100(g_143b01a60),
-      m_10c(g_143a08cf8)
+      m_100(reinterpret_cast<const efd::Point3&>(g_143b01a60)),
+      m_10c(reinterpret_cast<const efd::Point3&>(g_143a08cf8))
 {
     m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
 }
@@ -152,9 +152,9 @@ void CHomeCameraMode::vfunc_6(int n)
         Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (pTarget)
         {
-            m_88 = pTarget->vfunc_17();
+            m_88 = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_17()));
             m_88.z += vfunc_27();
-            vfunc_3(m_88.FUN_14097fd50(FUN_140b66660()));
+            vfunc_3(reinterpret_cast<Vector3&>(m_88).FUN_14097fd50(FUN_140b66660()));
         }
     }
     if (m_b4)
@@ -210,14 +210,14 @@ void CHomeCameraMode::vfunc_8(double fTime)
         Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
         if (!pTarget)
             break;
-        m_88 = pTarget->vfunc_17();
+        m_88 = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_17()));
         m_88.z += vfunc_27();
 
         Vector3 ptPos = g_143b01a60;
         Vector3 ptRot = g_143b01a60;
         if (m_78 == 0)
         {
-            Vector3 ptEye = m_88.FUN_14097fd50(FUN_140b66660());
+            Vector3 ptEye = reinterpret_cast<Vector3&>(m_88).FUN_14097fd50(FUN_140b66660());
             m_c4.m_pos = ptEye;
         }
 
@@ -238,7 +238,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
             if (m_bc == 0)
                 m_94 = m_94 * 0.9f;
             ptPos = m_c4.m_pos;
-            Vector3 ptTarget = m_88;
+            Vector3 ptTarget = reinterpret_cast<Vector3&>(m_88);
             Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
             ptPos.FUN_140a4e560(ptDir.FUN_14097fc90(m_94));
@@ -285,7 +285,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
             if (fYaw != 0.0f || fPitch != 0.0f)
             {
                 m_68 += fYaw;
-                Vector3 ptCenter = m_88;
+                Vector3 ptCenter = reinterpret_cast<Vector3&>(m_88);
                 ptPos = m_c4.m_pos;
                 ptPos.z = ptCenter.z;
                 Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
@@ -297,7 +297,7 @@ void CHomeCameraMode::vfunc_8(double fTime)
                 if (m_50 > m_58 && m_54 + m_9c > m_50)
                 {
                     m_c4.m_pos = ptPos;
-                    ptRot = CCameraMode::FUN_140afdd40(ptCenter, m_c4.m_pos, m_10c);
+                    ptRot = CCameraMode::FUN_140afdd40(ptCenter, m_c4.m_pos, reinterpret_cast<Vector3&>(m_10c));
                     m_c4.m_rot = ptRot;
                     FUN_140b66570();
                 }
@@ -381,7 +381,7 @@ void CHomeCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         if (m_ac && g_143abb090 != 0.0f)
             m_50 = g_143abb090;
         m_9c = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd4120();
-        m_88 = pTarget->vfunc_17();
+        m_88 = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_17()));
         m_88.z += vfunc_27();
         float fAngle = FUN_140b66b10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
         m_100.z = FUN_1409f2310(fAngle);
@@ -389,7 +389,7 @@ void CHomeCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_c4.m_pos.y = m_50 * m_100.y + m_88.y;
         m_c4.m_pos.z = m_50 * m_100.z + m_88.z;
         vfunc_3(m_c4.m_pos);
-        Vector3 ptRot = CCameraMode::FUN_140afdd40(m_88, m_c4.m_pos, m_10c);
+        Vector3 ptRot = CCameraMode::FUN_140afdd40(reinterpret_cast<Vector3&>(m_88), m_c4.m_pos, reinterpret_cast<Vector3&>(m_10c));
         vfunc_4(ptRot);
         m_c4.m_rot = ptRot;
         FUN_140b66570();
@@ -405,14 +405,14 @@ void CHomeCameraMode::FUN_140b66570()
     m_c4.m_pos.x = m_50 * m_100.x + m_88.x;
     m_c4.m_pos.y = m_50 * m_100.y + m_88.y;
     m_c4.m_pos.z = m_50 * m_100.z + m_88.z;
-    m_7c = m_c4.m_pos.FUN_140965c40(m_88);
+    m_7c = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_c4.m_pos.FUN_140965c40(reinterpret_cast<Vector3&>(m_88))));
 }
 MS2_REPLACE_METHOD(0x140B66570, CHomeCameraMode, FUN_140b66570, 232, 0x61C01930);
 
 // @0x140b66660
 Vector3 CHomeCameraMode::FUN_140b66660()
 {
-    return m_7c;
+    return reinterpret_cast<Vector3&>(m_7c);
 }
 MS2_REPLACE_METHOD(0x140B66660, CHomeCameraMode, FUN_140b66660, 41, 0x359C3214);
 
@@ -463,7 +463,7 @@ void CHomeCameraMode::FUN_140b66730(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarg
     ptPos.y = m_50 * m_100.y + ptTarget.y;
     ptPos.z = m_50 * m_100.z + ptTarget.z;
     m_c4.m_pos = ptPos;
-    ptRot = CCameraMode::FUN_140afdd40(ptTarget, m_c4.m_pos, m_10c);
+    ptRot = CCameraMode::FUN_140afdd40(ptTarget, m_c4.m_pos, reinterpret_cast<Vector3&>(m_10c));
     m_c4.m_rot = ptRot;
 }
 MS2_REPLACE_METHOD(0x140B66730, CHomeCameraMode, FUN_140b66730, 972, 0x6CC486F2);
@@ -487,8 +487,8 @@ void CHomeCameraMode::vfunc_37(double fTime)
     float fDist;
     if (m_c0)
     {
-        Unk_HomeNiPoint3 ptDiff = m_c4.m_pos.FUN_140965c40(m_dc.m_pos);
-        fDist = ptDiff.FUN_140967ac0();
+        NiPoint3 ptDiff = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_c4.m_pos.FUN_140965c40(m_dc.m_pos)));
+        fDist = reinterpret_cast<Vector3&>(ptDiff).FUN_140967ac0();
         float fBlend = 0.0f;
         if (m_b0)
         {
@@ -610,13 +610,13 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             aptCorner[8] = aptCorner[2].FUN_14097fd50(aptCorner[3]).FUN_14097fc90(0.5f);
             for (int i = 0; i < 9; ++i)
             {
-                Vector3 ptDir = m_88.FUN_140965c40(aptCorner[i]);
+                Vector3 ptDir = reinterpret_cast<Vector3&>(m_88).FUN_140965c40(aptCorner[i]);
                 float fLen = ptDir.FUN_140968990();
                 Vector3 ptBack = ptDir.FUN_1409f7960();
                 Vector3 ptHit = g_143b01a60;
                 if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(m_88, ptHit, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(static_cast<Vector3>(reinterpret_cast<Vector3&>(m_88)), ptHit, ptBack, fLen, 0x209))
                         return 1;
                 }
                 else

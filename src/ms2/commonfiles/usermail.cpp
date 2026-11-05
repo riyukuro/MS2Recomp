@@ -4,7 +4,7 @@
 // MS2-RANGE: 0x1400be260-0x1400be2c0 .text$di
 // MS2-RANGE: 0x142c9cad0-0x142c9cb06 .text$yd
 // MS2-PIN: ??4Unk_MailAttachPtr@@QEAAAEAV0@PEAVCMailAttachItem@@@Z 0x1408e4f40
-// MS2-PIN: ?get@?$Unk_MailPtr@VCMailSendKeep@@@@QEBAPEAVCMailSendKeep@@XZ 0x1408e5170
+// MS2-PIN: ?get@?$MS2Ptr@VCMailSendKeep@@@@QEBAPEAVCMailSendKeep@@XZ 0x1408e5170
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\usermail.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "usermail.h"

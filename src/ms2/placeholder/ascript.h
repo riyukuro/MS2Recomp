@@ -134,7 +134,6 @@ public:
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
     template <class T> MS2Ptr<T> FUN_140accfb0(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);    // bind a typed child (uiguilddialog "m_gradeName" as ASTextInput)
-    template <class T> MS2Ptr<T> FUN_140c26ea0(const CString& strName);                      // child control by name (guild mail "m_content"; uiguilddialog.cpp)
     template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);                      // child control by name (check box; uirankpvpdialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)

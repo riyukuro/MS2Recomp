@@ -77,7 +77,7 @@ public:
     int FUN_140f87a30(MS2Ptr<RecommendContnets> spRow);             // the row's level range holds the selected levels
     void FUN_140f87af0(unsigned short nLevel);                      // pick the shown level range around nLevel
     MS2Ptr<ASDialog> FUN_140f880c0(const CString& strName);      // the "m_eventDialog" child
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);      // check box child lookup (UIDialog member, shared)
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

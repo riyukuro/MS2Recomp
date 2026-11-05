@@ -198,7 +198,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdefaultdata.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -352,7 +352,7 @@ MS2Ptr<ItemDropEffect> CItemDataTable::GetItemDropEffect(unsigned nItemId, unsig
 // @0x1405565f0
 MS2Ptr<ItemMusicScore> CItemDataTable::GetMusicScore(unsigned nId)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::map<unsigned, MS2Ptr<ItemMusicScore> >::iterator it = m_mapMusicScore.find(nId);
     if (it != m_mapMusicScore.end())
         return it->second;
@@ -362,7 +362,7 @@ MS2Ptr<ItemMusicScore> CItemDataTable::GetMusicScore(unsigned nId)
 // @0x1405566e0
 MS2Ptr<ItemHousing> CItemDataTable::GetHousing(unsigned nId)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::map<unsigned, MS2Ptr<ItemHousing> >::iterator it = m_mapHousing.find(nId);
     if (it != m_mapHousing.end())
         return it->second;
@@ -598,7 +598,7 @@ CString CItemDataTable::GetTagName(ItemTagKey eTag)
 // @0x1405577f0
 CItemDataTable::ModelPtr CItemDataTable::GetModel(unsigned nPreset)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     ModelPtr spModel = FindModel(nPreset);
     if (spModel == 0)
     {
@@ -616,7 +616,7 @@ void CItemDataTable::FUN_140557910(int)
 // @0x140557920
 void CItemDataTable::GetHousingByCategory(int nCategory, ATL::CAtlArray<MS2Ptr<ItemHousing> >& out)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     for (std::map<unsigned, MS2Ptr<ItemHousing> >::iterator it = m_mapHousing.begin(); it != m_mapHousing.end(); it++)
     {
         MS2Ptr<ItemHousing> spHousing = it->second;
@@ -630,7 +630,7 @@ void CItemDataTable::GetHousingByCategory(int nCategory, ATL::CAtlArray<MS2Ptr<I
 bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int nType, ATL::CAtlArray<ItemDataPtr>& out)
 {
     unsigned nMaxLevel = 0;
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     for (auto& kv : m_mapItem)
     {
         CItemData* pItem = kv.second.get();
@@ -742,7 +742,7 @@ void CItemDataTable::LoadItemFile(const CString& strPath, std::vector<ItemDataPt
 // @0x140558260
 void CItemDataTable::LoadItemDataFile(unsigned nFile)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     if (m_setItemFile.find(nFile) != m_setItemFile.end())
         return;
     CString strPath = FUN_14071a5b0("itemData", Unk_SocketFormat("{0:03d}.xml", nFile));
@@ -908,7 +908,7 @@ ATL::CRBMap<CStringW, int, ATL::CStringElementTraitsI<CStringW> >* CItemDataTabl
 // @0x1405592e0
 void CItemDataTable::GetAllItemData(std::vector<ItemDataPtr>& out)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     out.reserve(m_mapItem.size());
     for (auto& kv : m_mapItem)
         out.push_back(kv.second);
@@ -917,7 +917,7 @@ void CItemDataTable::GetAllItemData(std::vector<ItemDataPtr>& out)
 // @0x1405593d0
 void CItemDataTable::GetAllModels(std::vector<ModelPtr>& out)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     out.reserve(m_mapModel.size());
     for (std::map<unsigned, ModelPtr>::iterator it = m_mapModel.begin(); it != m_mapModel.end(); it++)
         out.push_back(it->second);
@@ -947,7 +947,7 @@ void CItemDataTable::LoadItemNameIds(std::vector<unsigned>& out)
 // @0x140559690
 void CItemDataTable::ResetAllItemData()
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     for (auto& kv : m_mapItem)
         kv.second->FUN_14053ed00();
 }
@@ -1106,7 +1106,7 @@ void CItemDataTable::LoadUnlimitedEnchant(TiXmlElement* pRoot)
 // @0x14055a230
 void CItemDataTable::LoadUiMaterialSound()
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapUiMaterialSound.RemoveAll();
     CString strPath = FUN_14071a5b0("Table", "uiMaterialSound.xml");
     TiXmlDocument doc;
@@ -1142,7 +1142,7 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     for (TiXmlElement* pPalette = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("colorPalette")); pPalette != 0; pPalette = ((class TiXmlElement*)((class Unk_XmlNode*)(pPalette))->NextSibling("colorPalette")))
     {
         int nId = 0;
@@ -1185,7 +1185,7 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
 // @0x14055ad50
 void CItemDataTable::LoadMusicScore()
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapMusicScore.clear();
     CString strPath = FUN_14071a5b0("Table", "MusicScore.xml");
     TiXmlDocument doc;
@@ -1210,7 +1210,7 @@ void CItemDataTable::LoadMusicScore()
 // @0x14055b030
 void CItemDataTable::LoadHousing()
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapHousing.clear();
     CString strPath = FUN_14071a5b0("Table", "Housing.xml");
     TiXmlDocument doc;
@@ -1499,7 +1499,7 @@ void CItemDataTable::OnItemLoaded(ItemDataPtr spItem)
 // @0x14055f300
 CItemDataTable::ItemDataPtr CItemDataTable::FindItemData(int nItemId)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::unordered_map<int, ItemDataPtr>::iterator it = m_mapItem.find(nItemId);
     if (it != m_mapItem.end())
     {
@@ -1521,7 +1521,7 @@ MS2Ptr<CItemDataTable::ItemTagParam> CItemDataTable::FindTag(ItemTagKey eTag)
 // @0x14055f4d0
 CItemDataTable::ModelPtr CItemDataTable::FindModel(unsigned nPreset)
 {
-    Unk_1401b4ec0 lock(m_csModel, 1);
+    Unk_CriticalSectionLock lock(m_csModel, 1);
     std::map<unsigned, ModelPtr>::iterator it = m_mapModel.find(nPreset);
     if (it != m_mapModel.end())
     {
@@ -1559,7 +1559,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
     spModel->FUN_1401d1160(strPath);
     spModel->FUN_14054af00(pRoot);
     {
-        Unk_1401b4ec0 lock(m_csModel, 1);
+        Unk_CriticalSectionLock lock(m_csModel, 1);
         m_mapModel[nPreset] = spModel;
     }
     return true;
@@ -1568,7 +1568,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
 // @0x14055f970
 bool CItemDataTable::LoadModelFile(unsigned nFile)
 {
-    Unk_1401b4ec0 lock(m_csModel, 1);
+    Unk_CriticalSectionLock lock(m_csModel, 1);
     if (m_setModelFile.find(nFile) != m_setModelFile.end())
         return true;
     CString strPath = GetItemModelPath(nFile);

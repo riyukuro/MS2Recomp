@@ -28,7 +28,7 @@ public:
 typedef Unk_AasImage Unk_CashImage;
 typedef Unk_AasImagePtr Unk_CashImagePtr;                                   // its smart pointer (uitencentaas2dialog.h)
 class Unk_CashConstInt { public: int m_n; char m_pad_04[0x54]; };                                // one value of the client constants
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); char m_pad_00[0x60]; };
+class Unk_StringOptionEntry { public: char m_pad_00[0x60]; };   // C3: layout view of Common::Constants::Value<CString> (its Get() is 0x140298f80)
 class Unk_CashConsts
 {
 public:
@@ -48,7 +48,7 @@ public:
 
 void FUN_141901470(int n, int nTypeId);
 bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
-Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
+//Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->   // C3 (ICF i29): MS2Ptr<ASLoader>::operator->
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/os.h"
 
@@ -76,7 +76,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<ASUIComponent> FUN_140e48e10(const CString& strName, MS2Ptr<ASUIComponent>* pOut);   // finds the child and stores it in *pOut
+    // 0x140e48e10 finds the child and stores it = UISwfEntity::GetChildInto<ASUIComponent> (uiswfentity.h)
 
     int m_nDialogWidth;                                             // +0x198
     int m_nDialogHeight;                                            // +0x19c
@@ -150,9 +150,9 @@ void UITencentCashChargeDialog::OnLoadComplete()
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
-    FUN_140e48e10("m_renderTarget", &m_spTarget);
+    GetChildInto<ASUIComponent>("m_renderTarget", m_spTarget);
     int nId = vfunc_88();
-    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, ((class Unk_CashConsts*)FUN_1401d3200())->m_strUrl.FUN_140298f80(), "", nId);
+    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_strUrl)->Get(), "", nId);
     vfunc_87(&m_size);
     TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
@@ -170,7 +170,7 @@ void UITencentCashChargeDialog::vfunc_26()
 void UITencentCashChargeDialog::vfunc_85()
 {
     ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw(new ASLoader(2)));
-    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
+    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());

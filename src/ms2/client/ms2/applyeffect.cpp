@@ -561,13 +561,13 @@ struct NiFogPropertyStatics : NiFogProperty { using NiFogProperty::ms_spDefault;
 inline NiFogProperty* GetNiFogProperty() { return NiFogPropertyStatics::ms_spDefault; }
 
 // The scene graph service lookup (global service manager reference).
-namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext
 #define DAT_143b059e8 (*(unsigned char*)&egf::g_bapiContext)          // C3: was extern unsigned char DAT_143b059e8
-struct Unk_AeServiceCell { void* m_spManager; };              // SmartPointer<ServiceManager>
+//
 // @0x1409a5700
-inline MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pCell)
+template <> MS2SceneGraphService* egf::ScriptContext::GetSystemServiceAs<MS2SceneGraphService>() const
 {
-    return reinterpret_cast<const efd::SmartPointer<efd::ServiceManager>*>(&pCell->m_spManager)->operator->()->GetSystemServiceAs<MS2SceneGraphService>();
+    return m_spManager->GetSystemServiceAs<MS2SceneGraphService>();
 }
 
 // The functor that refreshes the effects of every scene graph.
@@ -614,7 +614,7 @@ void ApplyEffect::SetFogRange(bool bEnabled, float fNear, float fFar, unsigned i
     pFog->SetFog(bEnabled);
     pFog->SetFogColor(FUN_141b6dea0(uiColor));
     pFog->SetDepth(fDepth);
-    MS2SceneGraphService* pService = FUN_1409a5700(reinterpret_cast<Unk_AeServiceCell*>(&DAT_143b059e8));
+    MS2SceneGraphService* pService = egf::g_bapiContext.GetSystemServiceAs<MS2SceneGraphService>();
     if (pService) {
         UpdateAffectsFunctor kFunctor;
         pService->ForEachEntitySceneGraph(kFunctor);

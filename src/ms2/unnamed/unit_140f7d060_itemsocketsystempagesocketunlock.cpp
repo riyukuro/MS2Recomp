@@ -82,7 +82,7 @@ public:
     unsigned int FUN_141662de0();
 };
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(CAtlList<MS2Ptr<CEquipItem>>& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 // The player's inventory (global 0x143ab2a90).
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;

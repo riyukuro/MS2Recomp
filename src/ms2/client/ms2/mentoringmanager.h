@@ -27,8 +27,8 @@ public:
     bool FUN_140b71610();                                   // m_n20 has passed
     int FUN_140b71650();                                    // m_nC while m_n10 has not passed
     MentorPtr GetMentee(int nIndex);                    // the nIndex-th accepted mentee
-    size_t GetMenteeCount();                                 // number of accepted mentees
-    size_t GetMentorCount();                                 // number of waiting mentors
+    int GetMenteeCount();                                   // number of accepted mentees (int: the exe callers use a 32-bit result)
+    int GetMentorCount();                                   // number of waiting mentors (int, as above)
     CStringW FUN_140b71780();                               // the character name with the id m_n28
     CStringW FUN_140b718b0();                               // the character name with the id m_n30
     void OnPacket(CInPacket& packet);                       // 0x140b719e0 dispatch on the protocol byte

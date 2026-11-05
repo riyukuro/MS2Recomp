@@ -61,29 +61,29 @@ class CItemExtraData {
 public:
   int GetCurrentRgbComponent(unsigned nIndex);
 };
-class Unk_1401b4ec0 {
-public:
-  Unk_1401b4ec0(CLockCriticalSection &, int);
-  ~Unk_1401b4ec0();
-
-private:
-  void *m_p;
-};
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/gameeventuservalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/client/ms2/uitriggereditordialog.h"
-class Unk_IntTriple   // C3: the real class behind Unk_UserProxyColor (member view)
-{
-public:
-    void Clear();
-    void ReadArray(struct Unk_IntArr* pArr);
-    void WriteTo(COutputStream& s);
-    void ReadFrom(CInputStream& s);
-    void Copy(const Unk_IntTriple& rhs);
-};
+// (Unk_UserProxyColor is now a typedef of placeholder/inttriple.h's Unk_IntTriple, so the member view is gone)
+//
+//
+//
+//
+//
+//
+//
+//
 #include "ms2/commonfiles/adventureleveltablehelper.h"   // DAT_143ab3318 is a map of CAdventureLevelMissionData
 // DAT_143ab32d8 is a std::set<Unk_TrophyKey> (was the Unk_ProxyStaticTreeB stand-in). The key is itemdatatable.h's,
 // repeated token for token: that header pulls in guilddef_1.h, whose Unk_IntTriple clashes with this unit's.
@@ -1594,19 +1594,19 @@ MS2_REPLACE_METHOD(0x1408F07A0, Unk_UserProxy, FUN_1408f07a0, 43, 0xE310C0A3);
 
 // @0x1408f07e0
 void Unk_UserProxy::FUN_1408f07e0(const CStringW &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2c0 = p;
 }
 
 // @0x1408f0850
 void Unk_UserProxy::FUN_1408f0850(const CString &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2d0 = p;
 }
 
 // @0x1408f08c0
 void Unk_UserProxy::FUN_1408f08c0(const CStringW &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   CStringW tmp(p);
   FUN_14083d2b0(tmp);
   m_2d8 = tmp;
@@ -1614,19 +1614,19 @@ void Unk_UserProxy::FUN_1408f08c0(const CStringW &p) {
 
 // @0x1408f0950
 void Unk_UserProxy::FUN_1408f0950(const CStringW &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2c8 = p;
 }
 
 // @0x1408f09c0
 void Unk_UserProxy::FUN_1408f09c0(const CStringW &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_328 = p;
 }
 
 // @0x1408f0a30
 void Unk_UserProxy::FUN_1408f0a30(const CString &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_1a0 = p;
 }
 
@@ -1649,7 +1649,7 @@ void Unk_UserProxy::FUN_1408f0b00(int p) {
 // @0x1408f0b70
 void Unk_UserProxy::FUN_1408f0b70(Unk_UserProxyLabel &label, int a, int b, int c, const CStringW &text,
                                   __int64 until) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   label.m_0 = text;
   label.m_8 = a;
   label.m_c = b;
@@ -1662,7 +1662,7 @@ void Unk_UserProxy::FUN_1408f0c10(int i, const Unk_UserProxyLabel &p) {
   if (i < 0 || i >= 3)
     return;
   {
-    Unk_PetLock lock(m_290, 1);
+    Unk_CriticalSectionLock lock(&m_290, 1);
     m_e0[i].CopyFrom(p);
   }
 }
@@ -1672,7 +1672,7 @@ void Unk_UserProxy::FUN_1408f0ca0(int i, Unk_UserProxyLabel &p) {
   if (i < 0 || i >= 3)
     return;
   {
-    Unk_PetLock lock(m_290, 1);
+    Unk_CriticalSectionLock lock(&m_290, 1);
     p = m_e0[i];
   }
 }
@@ -1681,7 +1681,7 @@ void Unk_UserProxy::FUN_1408f0ca0(int i, Unk_UserProxyLabel &p) {
 int Unk_UserProxy::FUN_1408f0d30(int i) {
   if (i < 0 || i >= 3)
     return 0;
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   if (m_e0[i].m_18) {
     m_e0[i].Clear();
     return 1;
@@ -1692,41 +1692,41 @@ int Unk_UserProxy::FUN_1408f0d30(int i) {
 
 // @0x1408f0e00
 void Unk_UserProxy::FUN_1408f0e00() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   for (int i = 0; i < 3; ++i)
     m_e0[i].Clear();
 }
 
 // @0x1408f0e90
 void Unk_UserProxy::FUN_1408f0e90(COutputStream &s) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   for (int i = 0; i < 3; ++i)
     m_e0[i].Encode(s);
 }
 
 // @0x1408f0f20
 void Unk_UserProxy::FUN_1408f0f20(CInputStream &s) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   for (int i = 0; i < 3; ++i)
     m_e0[i].Decode(s);
 }
 
 // @0x1408f0fb0
 void Unk_UserProxy::FUN_1408f0fb0() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   for (int i = 0; i < 3; ++i)
     m_e0[i].Expire();
 }
 
 // @0x1408f1040
 void Unk_UserProxy::FUN_1408f1040(__int64 p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_50 = p;
 }
 
 // @0x1408f1090
 void Unk_UserProxy::FUN_1408f1090(CString p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_218 = p;
 }
 
@@ -1782,43 +1782,43 @@ __int64 Unk_UserProxy::FUN_1408f1330() {
 
 // @0x1408f13f0
 MS2Ptr<Club::NameInfo> Unk_UserProxy::FUN_1408f13f0(__int64 id) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2e0.FUN_14020ca10(id);
 }
 
 // @0x1408f1480
 size_t Unk_UserProxy::FUN_1408f1480() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2e0.FUN_14020ca90();
 }
 
 // @0x1408f14f0
 int Unk_UserProxy::FUN_1408f14f0() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2e0.FUN_14020cac0();
 }
 
 // @0x1408f1560
 int Unk_UserProxy::FUN_1408f1560(__int64 id, CStringW name) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2e0.FUN_14020cb00(id, name);
 }
 
 // @0x1408f1600
 int Unk_UserProxy::FUN_1408f1600(MS2Ptr<Club::NameInfo> p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2e0.FUN_14020cc00(p);
 }
 
 // @0x1408f16a0
 void Unk_UserProxy::FUN_1408f16a0(__int64 id) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020ccb0(id);
 }
 
 // @0x1408f1710
 void Unk_UserProxy::FUN_1408f1710(__int64 id, CStringW name) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   MS2Ptr<Club::NameInfo> p = FUN_1408f13f0(id);
   if (p.get())
     p->m_20 = name;
@@ -1826,67 +1826,67 @@ void Unk_UserProxy::FUN_1408f1710(__int64 id, CStringW name) {
 
 // @0x1408f17c0
 void Unk_UserProxy::FUN_1408f17c0(ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020cce0(p);
 }
 
 // @0x1408f1830
 void Unk_UserProxy::FUN_1408f1830(const ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020cda0(p);
 }
 
 // @0x1408f18a0
 void Unk_UserProxy::FUN_1408f18a0() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020c9e0();
 }
 
 // @0x1408f1900
 void Unk_UserProxy::FUN_1408f1900(COutputStream &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020ce50(p);
 }
 
 // @0x1408f1970
 void Unk_UserProxy::FUN_1408f1970(CInPacket &p) {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   m_2e0.FUN_14020cfc0(*PROXY_STREAM(&p));
 }
 
 // @0x1408f19e0
 CStringW Unk_UserProxy::FUN_1408f19e0() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2c0;
 }
 
 // @0x1408f1a60
 CString Unk_UserProxy::FUN_1408f1a60() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2d0;
 }
 
 // @0x1408f1ae0
 CStringW Unk_UserProxy::FUN_1408f1ae0() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2d8;
 }
 
 // @0x1408f1b60
 CStringW Unk_UserProxy::FUN_1408f1b60() {
-  Unk_PetLock lock(m_290, 1);
+  Unk_CriticalSectionLock lock(&m_290, 1);
   return m_2c8;
 }
 
 // @0x1408f1be0
 CStringW Unk_UserProxy::FUN_1408f1be0() const {
-  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
+  Unk_CriticalSectionLock lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_328;
 }
 
 // @0x1408f1c60
 CString Unk_UserProxy::FUN_1408f1c60() const {
-  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
+  Unk_CriticalSectionLock lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_1a0;
 }
 
@@ -1925,7 +1925,7 @@ int Unk_UserProxy::FUN_1408f1db0() {
 
 // @0x1408f1de0
 CString Unk_UserProxy::FUN_1408f1de0() const {
-  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
+  Unk_CriticalSectionLock lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_218;
 }
 

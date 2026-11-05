@@ -56,7 +56,7 @@ public:
     void FUN_1419b5730(const CString& strGroup, const CStringW& strSearch);   // fill the item list
     void FUN_1419b6350();                                       // build the context menu
     void FillFunctionList();                                       // fill the function list
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);  // child "m_checkJob" / "m_checkGender"
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
 protected:
     MS2_LAYOUT_FRIEND;

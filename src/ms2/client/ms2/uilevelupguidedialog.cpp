@@ -179,11 +179,11 @@ void UILevelUpGuideDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
         FUN_141415600(m_1a8.GetAt(i));
-    if (MS2Ptr<ASCheckBox> spEtc = FUN_140e52670("m_contentsEtc"))
+    if (MS2Ptr<ASCheckBox> spEtc = GetChild<ASCheckBox>("m_contentsEtc"))
         m_1cc[0] = spEtc->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> spBoss = FUN_140e52670("m_contentsBoss"))
+    if (MS2Ptr<ASCheckBox> spBoss = GetChild<ASCheckBox>("m_contentsBoss"))
         m_1cc[1] = spBoss->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> spDungeon = FUN_140e52670("m_contentsDungeon"))
+    if (MS2Ptr<ASCheckBox> spDungeon = GetChild<ASCheckBox>("m_contentsDungeon"))
         m_1cc[2] = spDungeon->FUN_1422ce0e0();
     UIDialog::vfunc_67();
 }
@@ -197,11 +197,11 @@ void UILevelUpGuideDialog::OnLoadComplete()
         return;
     unsigned short nLevel = Unk_LgActorLevel(pPlayer);
     FUN_140f85330(nLevel);
-    if (MS2Ptr<ASCheckBox> spEtc = FUN_140e52670("m_contentsEtc"))
+    if (MS2Ptr<ASCheckBox> spEtc = GetChild<ASCheckBox>("m_contentsEtc"))
         spEtc->FUN_1422ce090(m_1cc[0]);
-    if (MS2Ptr<ASCheckBox> spBoss = FUN_140e52670("m_contentsBoss"))
+    if (MS2Ptr<ASCheckBox> spBoss = GetChild<ASCheckBox>("m_contentsBoss"))
         spBoss->FUN_1422ce090(m_1cc[1]);
-    if (MS2Ptr<ASCheckBox> spDungeon = FUN_140e52670("m_contentsDungeon"))
+    if (MS2Ptr<ASCheckBox> spDungeon = GetChild<ASCheckBox>("m_contentsDungeon"))
         spDungeon->FUN_1422ce090(m_1cc[2]);
     FUN_140f85f90();
     FUN_140f861c0();
@@ -503,7 +503,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
                 break;
             }
             {
-                MS2Ptr<ASCheckBox> spCheck = FUN_140e52670(strCheck);
+                MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>(strCheck);
                 if (spCheck.get() != 0 && !spCheck->FUN_1422ce0e0())
                     continue;
             }

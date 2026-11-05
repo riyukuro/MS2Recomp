@@ -8,10 +8,9 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 // MS2-PIN: ??0Unk_CMISQueue@@QEAA@XZ 0x14111e640
-// Byte-identical MS2Ptr ctors: the copy ctors differ only in the AddRef they call (0x14112fa90/faf0/fb20), the default
-// ctors not at all, so the look-alike guess would pick their owners by name order.
+// Byte-identical MS2Ptr ctors: the copy ctors differ only in the AddRef they call (0x14112fa90/faf0/fb20), the default ctors not at all, so the look-alike guess would pick their owners by name order.
 // MS2-PIN: ??0?$MS2Ptr@VFittingDollData@@@@QEAA@AEBV0@@Z 0x14111e680 ; mt11: copy ctor, AddRef 0x14112fa90; callers FUN_1410bc3d0/FUN_1410cb4c0 copy MS2Ptr<FittingDollData>
-// MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@AEBV0@@Z 0x14111e730 ; sft: look-alike copy ctor, AddRef 0x14112faf0
+// MS2-PIN: ??0?$MS2Ptr@VSetItemEffectInfo@@@@QEAA@AEBV0@@Z 0x14111e730 ; ua11: look-alike copy ctor, AddRef 0x14112faf0 (survey i26); callers FUN_1410bf610 / FUN_1410d0310
 // MS2-PIN: ??0?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@AEBV0@@Z 0x14111e7c0 ; mt11: copy ctor, AddRef 0x14112fb20; callers ExportUGCMap and the set<MS2Ptr<ACCI>> _Construct1 0x1410e13a0
 // MS2-PIN: ??0?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x14111e6c0 ; sft: byte-identical default ctor
 // MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@XZ 0x14111e710 ; sft: byte-identical default ctor
@@ -21,7 +20,8 @@
 // MS2-PIN: ??0?$MS2Ptr@VSalesInfo@@@@QEAA@XZ 0x14111e8e0 ; sft: byte-identical default ctor
 // MS2-PIN: ??0?$MS2Ptr@VSetItemEffectInfo@@@@QEAA@XZ 0x14111e940 ; sft: byte-identical default ctor
 // MS2-PIN: ??0?$MS2Ptr@VUICubeUGCHead@@@@QEAA@XZ 0x14111ea30 ; sft: byte-identical default ctor
-// MS2-PIN: ??0?$MS2Ptr@VUIHouseMarkEntity@@@@QEAA@XZ 0x14111ea80 ; sft: byte-identical default ctor
+// MS2-PIN: ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@XZ 0x14111ea80 ; ua11: CallConstructors 0x14112db10 of the array whose Add copies MS2Ptr<UGCMapBlueprintInfo> and whose dtor 0x14112cfe0 calls ~MS2Ptr<UGCMapBlueprintInfo> 0x140fac610
+// MS2-PIN: ??0?$MS2Ptr@VUGCMapDesignInfo@@@@QEAA@XZ 0x14111ead0 ; ua11: CallConstructors 0x14112db90 of the array whose copy ctor 0x140fac5b0 / dtor 0x14112d020 are the UGCMapDesignInfo ones
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
@@ -146,8 +146,8 @@ void Unk_CMISDriveTail6()
     { Unk_CMISStdIntSet a, b; a = b; }
     { Unk_CMISFuncCubeSet a, b; a = b; }
     { Unk_CMISOwnerById m; }
-    { MS2Ptr<UIHouseMarkEntity> p; }
-    { MS2Ptr<FittingDollData> a; MS2Ptr<FittingDollData> b(a); }
+    { MS2Ptr<UIHouseMarkEntity> p; } { MS2Ptr<UGCMapBlueprintInfo> b, c((UGCMapBlueprintInfo*)0); } { MS2Ptr<UGCMapDesignInfo> d, e((UGCMapDesignInfo*)0); }
+    { MS2Ptr<FittingDollData> a; MS2Ptr<FittingDollData> b(a); } { MS2Ptr<CFunctionCubeObject> c((CFunctionCubeObject*)0), d(c); } { MS2Ptr<SetItemEffectInfo> e, g(e), k((SetItemEffectInfo*)0); } { MS2SvrPtr<CUGCMapSetItemInfo> h, i(h); }
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
     { Unk_CMISQueue q; }                                                                        // the async queue's implicit ctor 0x14111e640
@@ -160,14 +160,14 @@ void Unk_CMISDriveTail6()
 // -----------------------------------------------------------------------------------------------------------
 
 void FUN_14112fe10(struct Unk_Obj8* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> link
-void FUN_14112faf0(void* pThis);      // MS2Ptr<CFunctionCubeObject> link
+// C3: FUN_14112faf0(void* pThis);  is MS2Ptr<SetItemEffectInfo>::AddRef
 void FUN_14112fb20(struct Unk_BoxedPointer* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> AddRef (unit_14112fa90)
-void FUN_140dd7940(void* pThis);      // MS2Ptr<SaleStateData> link
-void FUN_140ba1c80(void* pThis);      // MS2Ptr<SetItemEffectInfo> link
-void FUN_14112fb50(void* pThis);      // MS2Ptr<Unk_CMISHouseRef> link
+// C3: FUN_140dd7940(void* pThis);  is MS2Ptr<CFunctionCubeObject>::AddRef
+// C3: FUN_140ba1c80(void* pThis);  is MS2SvrPtr<CUGCMapSetItemInfo>::AddRef
+void FUN_14112fb50(struct Unk_BoxedPointer* pThis);      // MS2Ptr<Unk_CMISHouseRef> link (unit_14112fa90)
 struct Unk_BoxedPointer; void FUN_14112fb80(Unk_BoxedPointer* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISDesignPtr> link (unit_14112fa90)
-void FUN_140fac7c0(void* pThis);
-void FUN_140fac7f0(void* pThis);
+// C3: FUN_140fac7c0(void* pThis);  is MS2Ptr<UGCMapBlueprintInfo>::AddRef
+// C3: FUN_140fac7f0(void* pThis);  is MS2Ptr<UGCMapDesignInfo>::AddRef
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
 
 // @0x14111e6e0
@@ -178,13 +178,13 @@ void* FUN_14111e6e0(void* pThis, void* pUnused)
     return pThis;
 }
 
-// @0x14111e770
-void* FUN_14111e770(void* pThis, void* pRaw)
-{
-    *(void**)((char*)pThis + 8) = pRaw;
-    FUN_14112faf0(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2Ptr@VSetItemEffectInfo@@@@QEAA@PEAVSetItemEffectInfo@@@Z 0x14111e770 ; C3: was FUN_14111e770, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x14112faf0)
+//
+//
+//
+//
+//
+//
 
 // @0x14111e800
 void* FUN_14111e800(void* pThis, void* pRaw)
@@ -194,35 +194,35 @@ void* FUN_14111e800(void* pThis, void* pRaw)
     return pThis;
 }
 
-// @0x14111e850
-void* FUN_14111e850(void* pThis, void* pOther)
-{
-    *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_140dd7940(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@AEBV0@@Z 0x14111e850 ; ua11: AddRef 0x140dd7940 (smartpush); callers set<MS2Ptr<CFunctionCubeObject>> construct 0x141119ae0, CFunctionCubeService::AddCube 0x141230c90
+//
+//
+//
+//
+//
+//
 
-// @0x14111e890
-void* FUN_14111e890(void* pThis, void* pRaw)
-{
-    *(void**)((char*)pThis + 8) = pRaw;
-    FUN_140dd7940(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@PEAVCFunctionCubeObject@@@Z 0x14111e890 ; ua11: AddRef 0x140dd7940; callers FUN_1410d0000, CFunctionCubeService::AddPendingCube 0x1412304e0
+//
+//
+//
+//
+//
+//
 
-// @0x14111e900
-void* FUN_14111e900(void* pThis, void* pOther)
-{
-    *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_140ba1c80(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@QEAA@AEBV0@@Z 0x14111e900 ; ua11: AddRef 0x140ba1c80 (ugcmapsetiteminfo); callers FUN_1410bf610
+//
+//
+//
+//
+//
+//
 
 // @0x14111e960
 void* FUN_14111e960(void* pThis, void* pOther)
 {
     *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_14112fb50(pThis);
+    FUN_14112fb50(static_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
 
@@ -249,21 +249,21 @@ void* FUN_14111ea00(void* pThis, void* pRaw)
     return pThis;
 }
 
-// @0x14111ea50
-void* FUN_14111ea50(void* pThis, void* pRaw)
-{
-    *(void**)((char*)pThis + 8) = pRaw;
-    FUN_140fac7c0(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x14111ea50 ; C3: was FUN_14111ea50, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x140fac7c0)
+//
+//
+//
+//
+//
+//
 
-// @0x14111eaa0
-void* FUN_14111eaa0(void* pThis, void* pRaw)
-{
-    *(void**)((char*)pThis + 8) = pRaw;
-    FUN_140fac7f0(pThis);
-    return pThis;
-}
+// MS2-PIN: ??0?$MS2Ptr@VUGCMapDesignInfo@@@@QEAA@PEAVUGCMapDesignInfo@@@Z 0x14111eaa0 ; C3: was FUN_14111eaa0, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x140fac7f0)
+//
+//
+//
+//
+//
+//
 
 // @0x14111eaf0
 void* FUN_14111eaf0(void* pThis, void* pRaw)

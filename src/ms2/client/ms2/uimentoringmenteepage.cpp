@@ -21,26 +21,26 @@
 #include "ms2/placeholder/wcformat.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-// The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
+// The mentee/mentor record of one user (a CPtred; +0x30 serial number, name at +0x38, a ushort at +0x40 (s_mentoring_user_info arg 1), icon url at +0x48).
 class Unk_MentorEntry : public CPtred
 {
 public:
     unsigned char m_pad_18[0x18];
     unsigned __int64 m_30;
     CStringW m_38;
-    CStringW m_40;
+    unsigned short m_40;
     CStringW m_48;
     int m_50;
     int m_54;
     bool m_58;
 };
 // The mentoring state kept by the client (singleton DAT_143abb6d8).
-class Unk_MentorInfo { public: MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n); int FUN_140b71720(); int FUN_140b71750(); };   // C3: the counts stay here, a 64-bit return costs a frame slot at each use
-class CMentoringManager   // C3: view of the real class
+class CMentoringManager   // C3: view of the real class (the counts 0x140b71720 / 0x140b71750 return int)
 {
 public:
-    int FUN_140b71650();
+    int FUN_140b71650(); int GetMenteeCount(); int GetMentorCount();
 };
+class Unk_MentorInfo : public CMentoringManager { public: MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n); };
 class MentoringDataTable { public: unsigned int GetMaxMenteeDailyRewardCoin(); };   // C3: view of the real class
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class CMentoringManager;
@@ -76,7 +76,7 @@ public:
 CString FUN_141028be0(__int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
 CString FUN_14016a600(const wchar_t* sz, int n);                         // wide to narrow
 CString FUN_140719530(unsigned __int64 n);                               // number to string
-CStringW FUN_14052b9d0(CStringW strFormat, const CStringW& a, const CStringW& b);
+// FUN_14052b9d0 = FUN_14028dfa0<unsigned short, CStringW> (wcformat.h, instantiated in item.cpp)
 
 // @0x140c70240
 static Unk_MentorInfo* FUN_140c70240()
@@ -194,7 +194,7 @@ void UIMentoringMenteePage::vfunc_9() { if (m_mentee.get()) m_mentee->Refresh();
 MS2_REPLACE_METHOD(0x140C6F110, UIMentoringMenteePage, vfunc_9, 61, 0xE6D9F15D);
 
 // @0x140c6f160
-int UIMentoringMenteePage::vfunc_8() { return FUN_140c70240()->FUN_140b71750(); }
+int UIMentoringMenteePage::vfunc_8() { return FUN_140c70240()->GetMentorCount(); }
 MS2_REPLACE_METHOD(0x140C6F160, UIMentoringMenteePage, vfunc_8, 27, 0x39E6850C);
 
 // @0x140c6f190
@@ -203,28 +203,28 @@ void UIMentoringPage::FUN_140c6f190()
     FUN_140c6f7a0("m_mentor", FUN_140c70240()->FUN_140b71680(0));
     if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
-        pSearchMovie->vfunc_4(FUN_140c70240()->FUN_140b71720() == 0);
+        pSearchMovie->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
         FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
     }
     if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
     {
-        pSearch->vfunc_4(FUN_140c70240()->FUN_140b71720() == 0);
+        pSearch->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
     }
     if (MS2Ptr<ASMovieClip> pNotify = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_notifyMovie"))
     {
-        pNotify->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
+        pNotify->vfunc_4(FUN_140c70240()->GetMenteeCount() != 0);
     }
     if (MS2Ptr<ASUIComponent> pMentor = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>("m_mentor"))
     {
-        pMentor->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
+        pMentor->vfunc_4(FUN_140c70240()->GetMenteeCount() != 0);
     }
     if (MS2Ptr<ASMovieClip> pEffect = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_effect"))
     {
-        pEffect->vfunc_4(FUN_140c70240()->FUN_140b71750() != 0);
+        pEffect->vfunc_4(FUN_140c70240()->GetMentorCount() != 0);
     }
     if (m_script.get())
     {
-        m_script->Invoke("setCount", FUN_140c70240()->FUN_140b71750());
+        m_script->Invoke("setCount", FUN_140c70240()->GetMentorCount());
     }
 }
 MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, FUN_140c6f190, 1536, 0xA2D1B5E6);
@@ -242,7 +242,7 @@ void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
             obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
             obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
             ((class AScript&)(obj)).FUN_1407cbb20("name", pEntry->m_38);
-            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
+            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
             ((class AScript&)(obj)).FUN_1407cbb20("charName", pEntry->m_38);
             obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
         }

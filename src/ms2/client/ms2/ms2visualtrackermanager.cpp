@@ -211,7 +211,7 @@ CNetworkService* FUN_140714f90();
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 unsigned int FUN_140d868f0(char*);   // C3: was FUN_140d868f0
 extern unsigned __int64 DAT_143ae0bd0;                                      // PhysX memory in use (bytes)
 struct NiDX9RendererStatics : NiDX9Renderer { using NiDX9Renderer::ms_pkD3D9; };   // C3: was extern IDirect3D9* DAT_143d6ea00 (protected static)
@@ -353,7 +353,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         }
         m_spVisObjects->FUN_14118b820(m_numObjectsDrawn, bForce, 0);
 
-        efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if ((HardwareInstancingService*)spInstancing != 0)
         {
             m_spInstancingGroup->FUN_14118b9b0(spInstancing.operator->()->FUN_1413d7eb0(), bForce, 0);

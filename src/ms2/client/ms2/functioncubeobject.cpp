@@ -219,7 +219,7 @@ typedef efd::SmartPointer<CubeMapInformationService> Unk_FcItemSvcPtr;   // C3: 
 //
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework* pFramework);   // the service 0x6100017 lookup (0x1401cd040, the definer's signature)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the block as pointers, no /GS buffer; the exe frame leaves 0x70 bytes for the local).
 struct Unk_FcSoundReqL
@@ -587,7 +587,7 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
 // @0x141226340
 CStringW CFunctionCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return L"";
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
@@ -848,7 +848,7 @@ void CFunctionCubeObject::FUN_1412273b0()
 {
     if (FUN_140966fc0() != 0xc)
         return;
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return;
     MS2Ptr<Unk_FcItemRow> spRow(reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this)))));
@@ -1042,7 +1042,7 @@ void CFunctionCubeObject::OpenTriggerEditor()
 // @0x141228100
 void CFunctionCubeObject::OpenObjectStore()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(m_nArg));
     if (pRow == 0)
         return;
@@ -1543,7 +1543,7 @@ CStringW CBreedingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(kSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
@@ -1680,7 +1680,7 @@ CStringW CFarmingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(kSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
@@ -1748,11 +1748,11 @@ class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
 extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 void* FUN_1401c0d90();
-class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
-{
-public:
-    int& FUN_140298f40();
-};
+// C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
+// (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
+// unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
+// pointer it returns.
+//
 
 // @0x14122b0d0
 CNurturingCubeObject::CNurturingCubeObject()
@@ -1858,7 +1858,7 @@ void CNurturingCubeObject::vfunc_3()
         if (((class MyPC*)(class Unk_FcActor*)(pActor))->IsDailyRecordStale() != 0)
             ((class MyPC*)(class Unk_FcActor*)(pActor))->ResetDailyRecords();
         float fDist = const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))).FUN_140965c40(GetPosition()).FUN_140967ac0();
-        unsigned nNear = fDist < *((float*)&((class Unk_IntOptionEntry*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_near))->FUN_140298f40());
+        unsigned nNear = fDist < *((Common::Constants::Value<float>*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_near))->Get();
         if ((unsigned)m_bNear != nNear)
         {
             m_bNear = nNear;
@@ -1884,7 +1884,7 @@ void CNurturingCubeObject::vfunc_5(float fZ)
 // @0x14122bab0
 CStringW CNurturingCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
@@ -1926,7 +1926,7 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
-    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemSvcPtr spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return 0;
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));

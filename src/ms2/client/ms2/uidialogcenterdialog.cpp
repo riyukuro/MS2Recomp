@@ -28,7 +28,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cmainsystem.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -293,7 +293,7 @@ void UIDialogCenterDialog::vfunc_79(void* p)
             CString strPath = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
             int nDialogId = static_cast<CInPacket*>(p)->ReadInt32();
             strPath = strPath.MakeLower();
-            Unk_1401b4ec0 lock(m_lock, 1);
+            Unk_CriticalSectionLock lock(m_lock, 1);
             MS2Ptr<TriggerDebugDialog> spDlg;
             if (!m_triggers.Lookup(strPath, spDlg))
                 return;
@@ -400,7 +400,7 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
     CString strPath(strFile);
     strPath.Replace("\\", "/");
     strPath.Replace(strDir, ".");
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     MS2Ptr<TriggerDebugDialog> spDlg;
     if (m_triggers.Lookup(strPath, spDlg))
         return;
@@ -418,7 +418,7 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
 // @0x141296070
 void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_triggers.RemoveKey(strPath);
     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
     pkt.WriteUInt8(9);

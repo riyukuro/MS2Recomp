@@ -183,17 +183,17 @@ class CGameRule { public: bool HasTermTag(const CStringW& name); MS2Ptr<TermTagC
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // One <questCondition> pair of the quest manager query (0x1407470f0): the quests whose state is checked.
-struct Unk_E16 { int m_questA, m_questB, m_stateA, m_stateB; };
-struct Unk_Arr16 { void* m_p; unsigned __int64 m_n; };
-Unk_E16* FUN_14027f040(Unk_Arr16* pArr, unsigned __int64 n);
-unsigned __int64 FUN_1402815b0(Unk_Arr16* pArr);
-class QuestMask { public: int FUN_140266970() const; };   // C3: member view (questmasktable.h)
+// C3: the Unk_E16 / Unk_Arr16 views are QuestMask::m_aRanges, a CAtlArray<Unk_Z16i> (GetCount 0x1402815b0, operator[] const 0x14027f040)
+//
+//
+//
+#include "ms2/commonfiles/questmasktable.h"   // QuestMask (C3: was a member view; Unk_QuestCondition is a QuestMask)
 class Unk_QuestCondition
 {
 public:
     char m_pad[0x18];
     unsigned m_result;
-    Unk_Arr16 m_list;
+//
 };
 int FUN_140764480(MS2Ptr<CQuest> pQuest, int nState);
 
@@ -725,12 +725,12 @@ unsigned CQuestManagerCommon::vfunc_o10_23(const Unk_QuestCondition& condition)
 {
     if (reinterpret_cast<const QuestMask&>(condition).FUN_140266970() == 0)
         return 1;
-    for (unsigned __int64 i = 0; i < FUN_1402815b0(&const_cast<Unk_QuestCondition&>(condition).m_list); ++i)
+    for (unsigned __int64 i = 0; i < reinterpret_cast<const QuestMask&>(condition).m_aRanges.GetCount(); ++i)
     {
-        MS2Ptr<CQuest> questA = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questA);
-        MS2Ptr<CQuest> questB = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questB);
-        int nA = FUN_140764480(questA, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateA);
-        int nB = FUN_140764480(questB, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateB);
+        MS2Ptr<CQuest> questA = vfunc_o10_3(reinterpret_cast<const QuestMask&>(condition).m_aRanges[i].a);
+        MS2Ptr<CQuest> questB = vfunc_o10_3(reinterpret_cast<const QuestMask&>(condition).m_aRanges[i].b);
+        int nA = FUN_140764480(questA, reinterpret_cast<const QuestMask&>(condition).m_aRanges[i].c);
+        int nB = FUN_140764480(questB, reinterpret_cast<const QuestMask&>(condition).m_aRanges[i].d);
         if (nA == 2)
             continue;
         if (nB == 1)
@@ -1517,15 +1517,15 @@ MS2_REPLACE_METHOD(0x1407495D0, CQuestData, Load, 6736, 0x22FFC8F3);
 
 // Quest-data accessors on top of the table (0x14074b030 ...).
 int ConditionKindOfType(int nType);                         // 0x14029f2b0
-class Unk_1401b4ec0
-{
-public:
-    Unk_1401b4ec0(CLockCriticalSection& lock, int bLock);   // 0x1401b4ec0
-    ~Unk_1401b4ec0();                                       // 0x1401b5120
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x14074b030
 int FUN_14074b030(CQuestData* pData)
@@ -1796,7 +1796,7 @@ QuestDataTable::~QuestDataTable()
 // @0x14074c320
 void QuestDataTable::LoadQuestData()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     CString strPath = FUN_14071a5b0("QuestData", "QuestData.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -1864,7 +1864,7 @@ MS2_REPLACE_METHOD(0x14074C320, QuestDataTable, LoadQuestData, 1691, 0xED84B5B4)
 MS2Ptr<CQuestData> QuestDataTable::GetQuestById(int nQuestId)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     std::map<unsigned, MS2Ptr<CQuestData> >::iterator it = m_quests.find(reinterpret_cast<const unsigned&>(nQuestId));
     if (it == m_quests.end())
         return MS2Ptr<CQuestData>(nullptr);
@@ -1875,7 +1875,7 @@ MS2Ptr<CQuestData> QuestDataTable::GetQuestById(int nQuestId)
 void QuestDataTable::CollectQuestsByType(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nType)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -1889,7 +1889,7 @@ void QuestDataTable::CollectQuestsByType(ATL::CAtlArray<MS2Ptr<CQuestData> >& ou
 void QuestDataTable::GetQuestIdsByMap(int nMapId, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     IdsPtr spIds(0);
     if (m_1f8.Lookup(nMapId, spIds))
         out.Copy(*spIds.operator->());
@@ -1899,7 +1899,7 @@ void QuestDataTable::GetQuestIdsByMap(int nMapId, ATL::CAtlArray<unsigned>& out)
 void QuestDataTable::CollectType3QuestsByGuideType(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nGrade)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -1915,7 +1915,7 @@ void QuestDataTable::CollectType3QuestsByGuideType(ATL::CAtlArray<MS2Ptr<CQuestD
 void QuestDataTable::CollectEventMissionQuests(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nFlag)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -1931,7 +1931,7 @@ void QuestDataTable::CollectEventMissionQuests(ATL::CAtlArray<MS2Ptr<CQuestData>
 void QuestDataTable::GetChapterIds(ATL::CAtlArray<int>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_chapter.GetStartPosition(); pos != 0; m_chapter.GetNext(pos))
         out.Add(m_chapter.GetKeyAt(pos));
 }
@@ -1941,7 +1941,7 @@ void QuestDataTable::GetQuestIdsByChapter(int nChapter, ATL::CAtlArray<unsigned>
 {
     CheckInit();
     IdsPtr spIds(0);
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     m_chapter.Lookup(nChapter, spIds);
     if (spIds.get() != 0)
         out.Copy(*spIds.operator->());
@@ -1951,7 +1951,7 @@ void QuestDataTable::GetQuestIdsByChapter(int nChapter, ATL::CAtlArray<unsigned>
 void QuestDataTable::GetAutoStartAndMapQuestIds(int nMapId, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     out.Copy(m_128);
     IdsPtr spIds(0);
     if (m_1f8.Lookup(nMapId, spIds))
@@ -1962,7 +1962,7 @@ void QuestDataTable::GetAutoStartAndMapQuestIds(int nMapId, ATL::CAtlArray<unsig
 void QuestDataTable::GetQuestIdsBelowLevelForJob(unsigned short nLevel, int nJob, std::vector<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (size_t i = 0; i < m_378.size(); ++i)
     {
         MS2Ptr<CQuestData> spData = m_378[i];
@@ -1983,7 +1983,7 @@ MS2_REPLACE_METHOD(0x14074D140, QuestDataTable, GetQuestIdsBelowLevelForJob, 350
 void QuestDataTable::GetQuestIdsByAlliance(Unk_FameAlliance nAlliance, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     IdsPtr spIds(0);
     if (m_318.Lookup(nAlliance, spIds))
         out.Copy(*spIds.operator->());
@@ -1993,7 +1993,7 @@ void QuestDataTable::GetQuestIdsByAlliance(Unk_FameAlliance nAlliance, ATL::CAtl
 void QuestDataTable::FUN_14074d360(unsigned nKey, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     IdsPtr spIds(0);
     if (m_240.Lookup(nKey, spIds))
         out.Copy(*spIds.operator->());
@@ -2003,7 +2003,7 @@ void QuestDataTable::FUN_14074d360(unsigned nKey, ATL::CAtlArray<unsigned>& out)
 void QuestDataTable::GetRemoteAcceptQuestIds(ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     out.Copy(m_1d8);
 }
 
@@ -2136,7 +2136,7 @@ QuestDataTable::IdsPtr QuestDataTable::GetQuestIdsByKey(unsigned nKey, int nInde
 {
     CheckInit();
     IdsPtr spIds(0);
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     m_148[nIndex].Lookup(nKey, spIds);
     return spIds;
 }
@@ -2145,7 +2145,7 @@ QuestDataTable::IdsPtr QuestDataTable::GetQuestIdsByKey(unsigned nKey, int nInde
 bool QuestDataTable::HasNpcQuests(unsigned nNpcId)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     return m_430.find(nNpcId) != m_430.end();
 }
 
@@ -2159,7 +2159,7 @@ std::vector<unsigned>& QuestDataTable::FUN_14074e0d0()
 std::vector<unsigned>* QuestDataTable::GetQuestIdsByNpc(int nNpcId)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     std::map<unsigned, std::vector<unsigned> >::iterator it = m_430.find(reinterpret_cast<const unsigned&>(nNpcId));
     if (it == m_430.end())
         return 0;
@@ -2170,7 +2170,7 @@ std::vector<unsigned>* QuestDataTable::GetQuestIdsByNpc(int nNpcId)
 unsigned QuestDataTable::GetChapterRegionCode(int nKey)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     unsigned nValue = 0;
     m_98.Lookup(nKey, nValue);
     return nValue;
@@ -2180,7 +2180,7 @@ unsigned QuestDataTable::GetChapterRegionCode(int nKey)
 unsigned QuestDataTable::GetChapterContinentCode(int nKey)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     unsigned nValue = 0;
     m_e0.Lookup(nKey, nValue);
     return nValue;
@@ -2190,7 +2190,7 @@ unsigned QuestDataTable::GetChapterContinentCode(int nKey)
 unsigned QuestDataTable::FUN_14074e2c0(int nKey)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     std::map<int, unsigned>::iterator it = m_420.find(nKey);
     if (it == m_420.end())
         return 0;
@@ -2201,7 +2201,7 @@ unsigned QuestDataTable::FUN_14074e2c0(int nKey)
 int QuestDataTable::GetGroupPickKind(int nGroupId)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     Unk_SocketPtr<CQuestData::GroupPickData> spPick(0);
     if (m_3d8.Lookup(nGroupId, spPick))
         return spPick->m_kind;
@@ -2212,7 +2212,7 @@ int QuestDataTable::GetGroupPickKind(int nGroupId)
 int QuestDataTable::GetGroupPickCount(int nGroupId)
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     Unk_SocketPtr<CQuestData::GroupPickData> spPick(0);
     if (m_3d8.Lookup(nGroupId, spPick))
         return spPick->m_count;
@@ -2239,7 +2239,7 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
 {
     IdsPtr spIds(0);
     {
-        Unk_1401b4ec0 guard(m_lock, 1);
+        Unk_CriticalSectionLock guard(m_lock, 1);
         if (!m_390.Lookup(nGroupId, spIds))
             return;
     }
@@ -2298,7 +2298,7 @@ int QuestDataTable::FUN_14074e510(int nQuestId)
 // @0x14074e560
 int QuestDataTable::FUN_14074e560(unsigned nFirst, unsigned nLast)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -2349,7 +2349,7 @@ MS2_REPLACE_METHOD(0x14074EBC0, QuestDataTable, CollectChainQuestIds, 604, 0x6D4
 void QuestDataTable::FUN_14074ee30()
 {
     CheckInit();
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -2395,7 +2395,7 @@ public:
 // @0x14074f160
 void QuestDataTable::FUN_14074f160()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     // Looks up (or creates) the quest id list under the key and appends the quest id to it.
 #define QUEST_ADD_ID(map, key) \
         { \
@@ -2509,7 +2509,7 @@ MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530)
 // @0x14074fee0
 void QuestDataTable::FUN_14074fee0()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_chapter.GetStartPosition(); pos != 0; m_chapter.GetNext(pos))
     {
         int nChapter = m_chapter.GetKeyAt(pos);
@@ -2551,7 +2551,7 @@ void QuestDataTable::LoadQuestGroupTable()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
@@ -2571,7 +2571,7 @@ template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*,
 // @0x1407503f0
 void QuestDataTable::FUN_1407503f0()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
@@ -2685,7 +2685,7 @@ struct Unk_QuestIdOrder : public Unk_BinaryFunction
 // @0x140750d90
 void QuestDataTable::SortNpcQuestIds()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     Unk_BinaryFunction base = {};
     for (std::pair<const unsigned, std::vector<unsigned> >& entry : m_430)
     {
@@ -2699,7 +2699,7 @@ int __cdecl FUN_140751770(const void* pA, const void* pB);
 // @0x140750ea0
 void QuestDataTable::FUN_140750ea0()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     qsort(m_1d8.GetData(), m_1d8.GetCount(), 4, FUN_140751770);
 }
 MS2_REPLACE_METHOD(0x140750EA0, QuestDataTable, FUN_140750ea0, 123, 0x5118FC0F);
@@ -2708,7 +2708,7 @@ MS2_REPLACE_METHOD(0x140750EA0, QuestDataTable, FUN_140750ea0, 123, 0x5118FC0F);
 // @0x140750f30
 void QuestDataTable::FUN_140750f30()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;

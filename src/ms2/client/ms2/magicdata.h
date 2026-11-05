@@ -90,34 +90,34 @@ int LoadMagicPath();                                                // 0x14145c4
 
 // ---- the running projectile ----
 struct Unk_MagicTag;
-struct Unk_MagicXform;
+class NiTransform;
 struct Unk_MagicEntity;
 struct Unk_MagicSkillRow;
 // 16 byte smart pointers shared with the cube/world code (out-of-line members bound by VA in symbols-manual.tsv).
-struct Unk_MagicTagPtr {
-    Unk_MagicTagPtr();                                              // 0x141234900
-    Unk_MagicTagPtr(int);                                           // 0x1410a6af0
-    Unk_MagicTagPtr(const Unk_MagicTagPtr&);                        // 0x1412348c0
-    ~Unk_MagicTagPtr();                                             // 0x1410a6d40
-    Unk_MagicTagPtr& operator=(const Unk_MagicTagPtr&);             // 0x141235040
-    Unk_MagicTag* operator->() const;                               // 0x141235260
-    bool operator==(Unk_MagicTag* p) const;                         // 0x141235120
-    Unk_MagicTagPtr(Unk_MagicTag* p);                               // 0x1410a6b10 (scenestategame 0x3d)
-    Unk_MagicTag* get() const;                                      // 0x1410a7150 (scenestategame 0x3d)
-    void* m_pad;
-    Unk_MagicTag* m_p;
-};
-MS2_CHECK_SIZE(Unk_MagicTagPtr, 0x10);
-struct Unk_MagicValPtr {
-    Unk_MagicValPtr() : m_p(0) {}                                   // 0x1414687c0 (inline)
-    Unk_MagicValPtr(int);                                           // 0x141234840
-    Unk_MagicValPtr(const Unk_MagicValPtr&);                        // 0x141234800
-    ~Unk_MagicValPtr();                                             // 0x141234e70
-    Unk_MagicValPtr& operator=(const Unk_MagicValPtr&);             // 0x141235000
-    void* m_pad;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_MagicValPtr, 0x10);
+#include "ms2/placeholder/magicptr.h"   // Unk_MagicTagPtr / Unk_MagicValPtr (shared with worldservice.h)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // Element types of the 8 byte pointer arrays (distinct instantiations in the exe, so distinct types; names invented).
 struct Unk_MagicNodeLink;
@@ -336,7 +336,7 @@ public:
     std::pair<bool, bool> FUN_14146c990(int* pKey, Unk_NiPoint3* pPoint, unsigned nOwner, Unk_MagicEntity* pCaster, int* pType);   // 0x14146c990 may the cast and end effects of a hit play
     void FUN_14146bc20(Unk_MagicTag* pTag);          // 0x14146bc20 the cast animation of a cast record
     void FUN_14146bc80(Unk_MagicTag* pTag);          // 0x14146bc80 play the end of a cast record
-    void FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Vector3 ptDirection);   // 0x14146b440 play the hit of a cast record
+    void FUN_14146b440(Unk_MagicTag* pTag, int bTracked, NiTransform* pXform, Vector3 ptDirection);   // 0x14146b440 play the hit of a cast record
 
     ATL::CRBMap<unsigned long long, Unk_SocketPtr<Unk_MagicTag> > m_mapCasts;     // +0x28 cast id -> cast record
     ATL::CAtlMap<unsigned long long, Unk_MagicModelMapPtr> m_mapModels;            // +0x58 caster id -> (cast id -> model)

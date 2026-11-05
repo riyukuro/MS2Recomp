@@ -1,5 +1,4 @@
-// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CItemMergeOptionTable: Table/itemMergeOptionBase.xml, the value
-// ranges an item merge (option transfer) can roll, and the records the merge dialog receives (CItemMergeOptionProxy).
+// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CItemMergeOptionTable: Table/itemMergeOptionBase.xml, the value ranges an item merge (option transfer) can roll, and the records the merge dialog receives (CItemMergeOptionProxy).
 // MS2-UNIT: commonfiles\itemmergeoptiontable.cpp
 // MS2-GUESS-LOOKALIKES
 // MS2-RANGE: 0x1405bea40-0x1405caed0 .text$mn
@@ -10,50 +9,58 @@
 // MS2-PIN: ??_7CItemMergeOptionTable@@6B?$CValidData@VCItemMergeOptionTable@@@@@ 0x142d652b8
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@@Z 0x1405c2690 ; unique
-// MS2-PIN: ??0?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@IMMMI@Z 0x1405c3640 ; prop
-// MS2-PIN: ??0?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@IMMMI@Z 0x1405c3730 ; prop
+// MS2-PIN: ??0?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@IMMMI@Z 0x1405c3640 ; prop
+// MS2-PIN: ??0?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@IMMMI@Z 0x1405c3730 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCItemMergeOption@@@@QEAA@PEAVCItemMergeOption@@@Z 0x1405c3910 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCItemMergeOptionData@@@@QEAA@H@Z 0x1405c39d0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCItemMergeOptionData@@@@QEAA@PEAVCItemMergeOptionData@@@Z 0x1405c39f0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCItemMergeOptionVariation@@@@QEAA@PEAVCItemMergeOptionVariation@@@Z 0x1405c3a60 ; prop
-// MS2-PIN: ??0CNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@AEBW4MergeNormalOption@@I@Z 0x1405c3fe0 ; prop
-// MS2-PIN: ??0CNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@AEBW4MergeSpecialOption@@I@Z 0x1405c4020 ; prop
-// MS2-PIN: ??0CPair@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@IEAA@AEBW4MergeNormalOption@@@Z 0x1405c4060 ; prop
-// MS2-PIN: ??0CPair@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@IEAA@AEBW4MergeSpecialOption@@@Z 0x1405c40a0 ; prop
-// MS2-PIN: ??1?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4160 ; prop
-// MS2-PIN: ??1?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4190 ; prop
+// MS2-PIN: ??0CNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@AEBW4MergeSpecialOption@@I@Z 0x1405c3fe0 ; prop
+// MS2-PIN: ??0CNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@AEBW4MergeNormalOption@@I@Z 0x1405c4020 ; prop
+// MS2-PIN: ??0CPair@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@IEAA@AEBW4MergeSpecialOption@@@Z 0x1405c4060 ; prop
+// MS2-PIN: ??0CPair@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@IEAA@AEBW4MergeNormalOption@@@Z 0x1405c40a0 ; prop
+// MS2-PIN: ??1?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4160 ; prop
+// MS2-PIN: ??1?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4190 ; prop
 // MS2-PIN: ??1?$pair@U?$pair@HH@std@@V?$MS2Ptr@VCItemMergeOptionData@@@@@std@@QEAA@XZ 0x1405c44b0 ; unique
+// MS2-PIN: ??1CPair@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4610 ; prop
+// MS2-PIN: ??1CPair@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c45f0 ; prop
+// MS2-PIN: ?FindNextNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x1405c56a0 ; prop
+// MS2-PIN: ?FindNextNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x1405c55e0 ; prop
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEBAIXZ 0x1405c5a50 ; prop
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEBAIXZ 0x1405c5a40 ; prop
+// MS2-PIN: ?GetNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4MergeNormalOption@@AEAI1AEAPEAV312@@Z 0x1405c5d20 ; prop
+// MS2-PIN: ?GetNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4MergeSpecialOption@@AEAI1AEAPEAV312@@Z 0x1405c5c30 ; prop
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCItemOption@@@@QEBA_NXZ 0x1405c4720 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOption@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOption@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOption@@@@_K@Z 0x1405c48d0 ; prop
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOptionVariation@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOptionVariation@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOptionVariation@@@@_K@Z 0x1405c4910 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VBaseOption@@@@QEBAPEAVBaseOption@@XZ 0x1405c4950 ; prop
 // MS2-PIN: ??C?$MS2Ptr@VCItemMergeOptionData@@@@QEBAPEAVCItemMergeOptionData@@XZ 0x1405c4970 ; unique
-// MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5110 ; prop
-// MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5150 ; prop
+// MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5110 ; prop
+// MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5150 ; prop
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCItemMergeOption@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOption@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCItemMergeOption@@@@@Z 0x1405c5190 ; prop
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCItemMergeOptionVariation@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOptionVariation@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCItemMergeOptionVariation@@@@@Z 0x1405c5240 ; prop
 // MS2-PIN: ?CreateNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeSpecialOption@@II@Z 0x1405c5460 ; prop
 // MS2-PIN: ?CreateNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeNormalOption@@II@Z 0x1405c54e0 ; prop
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c5560 ; unique
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c5580 ; unique
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c55a0 ; unique
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c55c0 ; unique
-// MS2-PIN: ?FreeNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x1405c5760 ; unique
-// MS2-PIN: ?FreeNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x1405c5860 ; unique
-// MS2-PIN: ?FreePlexes@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXXZ 0x1405c5960 ; unique
-// MS2-PIN: ?FreePlexes@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXXZ 0x1405c59b0 ; unique
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c5560 ; unique
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c5580 ; unique
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c55a0 ; unique
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXXZ 0x1405c55c0 ; unique
+// MS2-PIN: ?FreeNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x1405c5760 ; unique
+// MS2-PIN: ?FreeNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x1405c5860 ; unique
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXXZ 0x1405c5960 ; unique
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXXZ 0x1405c59b0 ; unique
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VCItemMergeOption@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOption@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x1405c6040 ; prop
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VCItemMergeOptionVariation@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOptionVariation@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x1405c61e0 ; prop
-// MS2-PIN: ?InitHashTable@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA_NI_N@Z 0x1405c63b0 ; unique
-// MS2-PIN: ?InitHashTable@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA_NI_N@Z 0x1405c64d0 ; unique
-// MS2-PIN: ?IsLocked@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBA_NXZ 0x1405c6650 ; unique
-// MS2-PIN: ?IsLocked@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBA_NXZ 0x1405c6680 ; unique
-// MS2-PIN: ?NewNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeNormalOption@@II@Z 0x1405c66b0 ; prop
-// MS2-PIN: ?NewNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeSpecialOption@@II@Z 0x1405c68c0 ; prop
-// MS2-PIN: ?PickSize@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAI_K@Z 0x1405c6ad0 ; unique
-// MS2-PIN: ?PickSize@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAI_K@Z 0x1405c6bc0 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXI@Z 0x1405c6cb0 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXI@Z 0x1405c6ee0 ; unique
+// MS2-PIN: ?InitHashTable@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA_NI_N@Z 0x1405c63b0 ; unique
+// MS2-PIN: ?InitHashTable@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA_NI_N@Z 0x1405c64d0 ; unique
+// MS2-PIN: ?IsLocked@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBA_NXZ 0x1405c6650 ; unique
+// MS2-PIN: ?IsLocked@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBA_NXZ 0x1405c6680 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeSpecialOption@@II@Z 0x1405c66b0 ; prop
+// MS2-PIN: ?NewNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4MergeNormalOption@@II@Z 0x1405c68c0 ; prop
+// MS2-PIN: ?PickSize@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAI_K@Z 0x1405c6ad0 ; unique
+// MS2-PIN: ?PickSize@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEBAI_K@Z 0x1405c6bc0 ; unique
+// MS2-PIN: ?Rehash@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXI@Z 0x1405c6cb0 ; unique
+// MS2-PIN: ?Rehash@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXI@Z 0x1405c6ee0 ; unique
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1405c73b0 ; prop
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1405c74a0 ; prop
 // MS2-PIN: ?RemoveNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1405c7590 ; prop
@@ -91,14 +98,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
-// Sort names of the item lists (header statics of this unit).
-#ifndef MS2_HOOK_DLL
+#ifndef MS2_HOOK_DLL   // Sort names of the item lists (header statics of this unit).
 static const CString s_mergeSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static const CString s_mergeShopSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 #endif
 
-// Unrecovered helpers (the xml loader helpers the other table units use).
-class CLogString* GetLogString();
+class CLogString* GetLogString();   // Unrecovered helpers (the xml loader helpers the other table units use).
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);
@@ -122,8 +127,7 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
     log->LogWarning(a, b, category, format, fmt::ArgList(fmt::internal::make_type(first, second), args));
 }
 
-// Option text helpers of the item tooltip (string table lookups and highlight).
-class Unk_FeatureSet;
+class Unk_FeatureSet;   // Option text helpers of the item tooltip (string table lookups and highlight).
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
@@ -142,13 +146,10 @@ class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
 public:
     bool IsInRange(int);
 };
-
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CItemMergeOptionTable::s_bInit;
 #endif
-
-// The weighted pools (ctors 0x1405c3840 / 0x1405c3870, dtors 0x1405c41e0 / 0x1405c4200).
-template <class T> MergePoolRecord<T>::MergePoolRecord() : m_nTotal(0)
+template <class T> MergePoolRecord<T>::MergePoolRecord() : m_nTotal(0)   // The weighted pools (ctors 0x1405c3840 / 0x1405c3870, dtors 0x1405c41e0 / 0x1405c4200).
 {
 }
 template <class T> MergePoolRecord<T>::~MergePoolRecord()
@@ -156,7 +157,6 @@ template <class T> MergePoolRecord<T>::~MergePoolRecord()
 }
 template struct MergePoolRecord<CItemMergeOption>;
 template struct MergePoolRecord<CItemMergeOptionVariation>;
-
 // @0x1405c4670
 CItemMergeOptionVariation& CItemMergeOptionVariation::operator=(const CItemMergeOptionVariation& o)
 {

@@ -8,6 +8,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/commonfiles/itemgift.h"
+#include "ms2/commonfiles/attendgiftdatagroup.h"   // AttendGiftDataTable / AttendGiftDataPtr (GameEventCashAttend::m_entry)
 #include <vector>
 #include <map>
 #include <set>
@@ -20,15 +21,6 @@
 #else
 #define MS2_GE_READ_BYTE(r) ((r)->ReadByte())
 #endif
-
-// The attend reward entry of the cash attend table (looked up by id through the table group singleton; the table lives
-// in attendgiftdatagroup.cpp). Name unknown.
-class Unk_CashAttendEntry : public CPtred {
-};
-class Unk_AttendGiftDataGroup {
-public:
-    MS2Ptr<Unk_CashAttendEntry> FUN_1401ae630(int id);      // 0x1401ae630
-};
 
 class GameEventAttendGift : public GameEvent {
 public:
@@ -79,7 +71,7 @@ protected:   // gameeventcli.cpp (GameEvent*Cli) reads the members
     int m_i0;                                   // +0xd0 table id
     int m_i4;                                   // +0xd4
     CStringW m_strDesc;                         // +0xd8
-    MS2Ptr<Unk_CashAttendEntry> m_entry;        // +0xe0
+    AttendGiftDataPtr m_entry;                  // +0xe0 AttendGiftDataTable::Find(m_i0)
 };
 MS2_CHECK_SIZE(GameEventCashAttend, 0xf0);
 MS2_CHECK_OFFSET(GameEventCashAttend, m_i4, 0xd4);

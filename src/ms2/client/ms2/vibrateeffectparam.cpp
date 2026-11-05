@@ -42,7 +42,7 @@ struct Unk_PadOption
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 MS2InputService* FUN_140a58540();
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 // A float table value of the client configuration (FUN_1401d3200).
 class Unk_VibrateScale
 {
@@ -135,7 +135,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
             if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
-                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->FUN_140298f40()));
+                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->Get());
         }
         return pEffect;
     }
@@ -159,7 +159,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
-            FUN_140a58540()->StartRumbleFor(m_fDuration * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->FUN_140298f40()));
+            FUN_140a58540()->StartRumbleFor(m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->Get());
     }
     return true;
 }

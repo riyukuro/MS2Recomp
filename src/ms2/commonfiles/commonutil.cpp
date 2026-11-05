@@ -1246,7 +1246,7 @@ void FUN_14028f580(CStringW& strText)
 #include <string>
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/clientconstants.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+//
 
 // Item tab name table: per inventory tab the names it is known by (English keys, then localized names).
 class CItemTabNameTable
@@ -1276,7 +1276,7 @@ CItemTabNameTable::CItemTabNameTable()
 // @0x1402906b0
 void CItemTabNameTable::Init()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     m_arrNames[0].push_back("game");
     m_arrNames[1].push_back("skin");
     m_arrNames[2].push_back("summon");
@@ -1395,23 +1395,23 @@ const std::string& FUN_14018ef70(const std::string& str);
 class Unk_SingletonObj1* FUN_1401d3200();                                // game config singleton (C3 canonical return type; was void*)
 
 // Config option entries: set flag at +8, value after the header.
-struct Unk_IntOptionEntry
-{
-    void* m_unk00;
-    bool m_bSet;
-    unsigned char m_unk09[0x47];
-    int m_nValue;
-    int& FUN_140298f40();                                       // 0x140298f40
-};
+// C3: the float option entry is Common::Constants::Value<float>; its getter 0x140298f40 is Value<float>::Get(),
+// the generic Value<T>::Get(), defined below (the exe places that COMDAT in this unit).
+//
+//
+//
+//
+//
+//
 
-struct Unk_StringOptionEntry
-{
-    void* m_unk00;
-    bool m_bSet;
-    unsigned char m_unk09[0x47];
-    CString m_strValue;
-    CString& FUN_140298f80();                                   // 0x140298f80
-};
+// C3: the string option entry is Common::Constants::Value<CString> (m_defined +8, m_value +0x50; clientconstants.h).
+// Its getter 0x140298f80 is the explicit specialization Value<CString>::Get(), defined below. It is declared
+// here, ahead of this unit's callers, so that they name that specialization. The other
+// Value<T>::Get() bodies (MS2Tick, the unit_1402ab440 types, ...) are generic definitions in other units.
+template<> CString* Common::Constants::Value<CString>::Get();
+//
+//
+//
 
 // Item tab key of a tab string (empty string = "all"); the tab key is also written to strTabOut.
 // @0x1402913b0
@@ -1537,11 +1537,11 @@ CString FUN_140291c10(int nKind)
     switch (nKind)
     {
     case 1:
-        return reinterpret_cast<Unk_StringOptionEntry*>((char*)FUN_1401d3200() + 0x8170)->FUN_140298f80();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x8170)->Get();
     case 2:
-        return reinterpret_cast<Unk_StringOptionEntry*>((char*)FUN_1401d3200() + 0x81d0)->FUN_140298f80();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x81d0)->Get();
     case 3:
-        return reinterpret_cast<Unk_StringOptionEntry*>((char*)FUN_1401d3200() + 0x8230)->FUN_140298f80();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x8230)->Get();
     default:
         return CString("");
     }
@@ -1553,11 +1553,11 @@ float FUN_140291d10(int nKind)
     switch (nKind)
     {
     case 1:
-        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8068)->FUN_140298f40());
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x8068)->Get();
     case 2:
-        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x80c0)->FUN_140298f40());
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x80c0)->Get();
     case 3:
-        return reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>((char*)FUN_1401d3200() + 0x8118)->FUN_140298f40());
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x8118)->Get();
     default:
         return 0.0f;
     }
@@ -1816,19 +1816,19 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
 }
 
 // @0x140298f40
-int& Unk_IntOptionEntry::FUN_140298f40()
+template<class T> T* Common::Constants::Value<T>::Get()   // generic body (as unit_1402ab440); here only Value<float>
 {
-    if (!m_bSet)
-        reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
-    return m_nValue;
+    if (!m_defined)
+        Error("constants is not set");
+    return &m_value;
 }
 
 // @0x140298f80
-CString& Unk_StringOptionEntry::FUN_140298f80()
+template<> CString* Common::Constants::Value<CString>::Get()
 {
-    if (!m_bSet)
-        reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
-    return m_strValue;
+    if (!m_defined)
+        Error("constants is not set");
+    return &m_value;
 }
 
 // @0x140298fd0
@@ -2221,8 +2221,8 @@ void FUN_14029dce0(const char* pszBuf, const char* pszFormat, _locale_t pLocale,
 MS2_REPLACE(0x14028B820, FUN_14028b820, 25, 0x5B243679);
 MS2_REPLACE(0x14028B840, FUN_14028b840, 60, 0x6C3E9287);
 MS2_REPLACE(0x14028B890, FUN_14028b890, 68, 0x51B88B44);
-MS2_REPLACE_METHOD(0x140298F40, Unk_IntOptionEntry, FUN_140298f40, 53, 0xC651AF56);
-MS2_REPLACE_METHOD(0x140298F80, Unk_StringOptionEntry, FUN_140298f80, 53, 0x8459A15E);
+MS2_REPLACE_IMPL(0x140298F40, ::ms2::hook::detail::MemberToVoid(static_cast<float* (Common::Constants::Value<float>::*)()>(&Common::Constants::Value<float>::Get)), "Common::Constants::Value<float>::Get", 53, 0xC651AF56);
+MS2_REPLACE_IMPL(0x140298F80, ::ms2::hook::detail::MemberToVoid(static_cast<CString* (Common::Constants::Value<CString>::*)()>(&Common::Constants::Value<CString>::Get)), "Common::Constants::Value<CString>::Get", 53, 0x8459A15E);
 MS2_REPLACE(0x140298FD0, FUN_140298fd0, 24, 0xE9DE9F2E);
 MS2_REPLACE_METHOD(0x1402992B0, Unk_BstrHolder, FUN_1402992b0, 57, 0x39A7E074);
 MS2_REPLACE_METHOD(0x14029B610, Unk_BstrHolder, FUN_14029b610, 100, 0x78F0708C);

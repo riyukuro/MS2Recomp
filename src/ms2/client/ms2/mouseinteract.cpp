@@ -187,7 +187,7 @@ struct Unk_WsC_TagPtr                                     // smart pointer to th
     Unk_PCEntList* operator->() const;                      // 0x1409f2190
 };
 
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
@@ -673,7 +673,7 @@ int CMouseInteractWeaponObject::vfunc_3()
 MS2Ptr<Cube> CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     ATL::CAtlArray<MS2Ptr<Cube> > aWeapons;
-    CubeMapInformationService* pMgr = ((class CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    CubeMapInformationService* pMgr = ((class CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     pMgr->FUN_1410d59c0(&aWeapons);
     for (size_t i = 0; i < aWeapons.GetCount(); i++) {
         MS2Ptr<Cube> hit = aWeapons[i];

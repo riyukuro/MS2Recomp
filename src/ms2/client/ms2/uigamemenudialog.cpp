@@ -116,7 +116,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;                // @0x140113
 
 // ---- unit-local views of exe types (names assumed; layouts only as far as this unit reads them) ----
 
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class UIFamePointBoardDialog : public UIObject {public:
     int FUN_140c156d0();   // C3: was free FUN_140c156d0
 };
@@ -497,7 +497,7 @@ extern GameEventUserValue DAT_143ab2fc0;
 extern GameEventUserValue DAT_143ab3010;
 extern std::set<unsigned int> DAT_143ab3308;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // ---- exe functions: singletons and registries ----
 
@@ -714,7 +714,7 @@ class UIRenderView* FUN_141a90540(int, int, class GameObject*, float);   // C3: 
 
 // ---- exe functions: grid / map service ----
 
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1162,7 +1162,7 @@ void UIGameMenuDialog::FUN_141937ed0()
         m_30->Invoke("initContract", nContract == 0);
     if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
         int nShown = 0;
-        efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (((CubeMapInformationService*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 &&
             !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820)
             nShown = 1;
@@ -1838,7 +1838,7 @@ void UIGameMenuDialog::FUN_14193b750()
         return;
     }
     int nShown = 0;
-    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (((CubeMapInformationService*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
         ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820) {
         nShown = 1;
@@ -2459,7 +2459,7 @@ int UIGameMenuDialog::FUN_14193e940(int nField)
 // @0x14193e9c0
 bool UIGameMenuDialog::FUN_14193e9c0()
 {
-    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if ((grid == (CubeMapInformationService*)0) != 0)
         return false;
     bool bField = ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820;

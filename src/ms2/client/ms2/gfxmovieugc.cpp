@@ -28,7 +28,7 @@ const NiRTTI GFxMovieUgc::ms_RTTI("GFxMovieUgc", &GFxMovieEventHandler::ms_RTTI)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern int DAT_1439f7358;                                                   // edge length of the UGC render texture
-ecr::RenderService* Unk_GetRenderService(char* pCell);                      // the render service (gfxmoviebackground.cpp)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 
 // ---- GFxMovieUgc ----
 // @0x14127d290
@@ -181,7 +181,7 @@ int GFxMovieUgc::FUN_14127dd70()
 {
     if (!m_spObject)
         return 0;
-    ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
+    ecr::RenderService* pRender = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pRender != 0)
     {
         NiRenderTargetGroup* pGroup = pRender->GetActiveRenderSurface()->GetRenderTargetGroup();

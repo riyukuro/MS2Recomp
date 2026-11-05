@@ -58,6 +58,18 @@
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14179fda0
 // MS2-PIN: ?IsEmpty@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@UUnk_JobSoundKeyTraits@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@@ATL@@@ATL@@QEBA_NXZ 0x1417a4ae0
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x1417a7990
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141794300
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141794350
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@1@1@Z 0x1417952d0
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@1@1@Z 0x141795630
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@1@@Z 0x141796710
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@1@@Z 0x141797350
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@PEAX@1@@Z 0x14179b090
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@PEAX@1@@Z 0x14179b4a0
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x14179f3f0
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x14179f430
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14179f570
+// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEBAAEBHAEBU?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@2@@Z 0x1417ab140
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_SoundPitch@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_SoundPitch@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHUUnk_SoundPitch@@@std@@PEAX@2@@Z 0x1417aa390
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_EventVoice@@@std@@@std@@@2@XZ 0x1417aa660
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@std@@@2@XZ 0x1417aa7e0
@@ -630,7 +642,6 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
     Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
-
 // @0x141792d70
 unsigned SoundPropertyMgr::GetHitSound(int nAttack, int nDefence)
 {
@@ -641,7 +652,6 @@ unsigned SoundPropertyMgr::GetHitSound(int nAttack, int nDefence)
         return ids[FUN_140767ff0() % nCount];
     return 0;
 }
-
 // @0x141792e00
 int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventVoice* pOut)
 {
@@ -656,7 +666,6 @@ int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventV
     }
     return 0;
 }
-
 // @0x141792ee0
 SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strName, const CString& strArg)
 {
@@ -678,7 +687,6 @@ SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strNa
         return spProp;
     return SystemPtr(0);
 }
-
 // @0x141793110
 SoundPropertyMgr::VoicePtr SoundPropertyMgr::FindTriggerVoice(const CString& strName)
 {
@@ -690,7 +698,6 @@ SoundPropertyMgr::VoicePtr SoundPropertyMgr::FindTriggerVoice(const CString& str
         return spProp;
     return VoicePtr(0);
 }
-
 // @0x141793210
 void SoundPropertyMgr::FUN_141793210(Unk_VoiceGroupMap& rOut)
 {
@@ -707,7 +714,6 @@ void SoundPropertyMgr::FUN_141793210(Unk_VoiceGroupMap& rOut)
         spProp->CollectNames(names);
     }
 }
-
 // @0x141793340
 int SoundPropertyMgr::FindPitch(int nObjectId, Unk_SoundPitch* pOut)
 {
@@ -720,7 +726,6 @@ int SoundPropertyMgr::FindPitch(int nObjectId, Unk_SoundPitch* pOut)
     }
     return 0;
 }
-
 // @0x1417933d0
 void SoundPropertyMgr::Reload()
 {
@@ -731,7 +736,6 @@ void SoundPropertyMgr::Reload()
     m_events.clear();
     Load();
 }
-
 // @0x141793450
 void SoundPropertyMgr::FUN_141793450()
 {
@@ -747,7 +751,6 @@ void SoundPropertyMgr::FUN_141793450()
     if (bChanged)
         Reload();
 }
-
 // @0x141793500
 int FUN_141793500(CString strEvent)
 {
@@ -767,7 +770,6 @@ int FUN_141793500(CString strEvent)
         return 6;
     return 0;
 }
-
 // @0x1417a0900
 Unk_EventVoice& Unk_EventVoice::operator=(const Unk_EventVoice& o)
 {
@@ -777,7 +779,6 @@ Unk_EventVoice& Unk_EventVoice::operator=(const Unk_EventVoice& o)
     m_strRestoreSoundId = o.m_strRestoreSoundId;
     return *this;
 }
-
 // @0x1417a3890
 void SoundPropertyMgr::CheckInit()
 {
@@ -788,7 +789,6 @@ void SoundPropertyMgr::CheckInit()
         MessageBoxA(0, msg, "Error", 0);
     }
 }
-
 // @0x1417a6920
 void SoundPropertyMgr::SetInit(bool b)
 {

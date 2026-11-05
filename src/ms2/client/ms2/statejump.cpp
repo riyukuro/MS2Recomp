@@ -47,7 +47,7 @@ egmAnimation::AnimationService* FUN_141b6f910();
 
 // The efd::Point3 *.
 class Unk_JpConsts { public: char m_pad[0x48e8]; };
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_JpScale { public: };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
@@ -202,7 +202,7 @@ void StateJump::vfunc_3(double fTime)
                 m_vDir = kWorld;
             }
         }
-        float fScale = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(reinterpret_cast<char*>(((class Unk_JpConsts*)FUN_1401d3200())) + 0x48e8)->FUN_140298f40());
+        float fScale = *reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<char*>(((class Unk_JpConsts*)FUN_1401d3200())) + 0x48e8)->Get();
         JpBody(m_pOwner)->SetKVelocity((m_vDir * m_pOwner->vfunc_95()) * fScale);
         efd::Point3 kMove = efd::Point3::ZERO;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);

@@ -24,7 +24,7 @@ class CMailInfo;
 class ASCheckBox;
 class ASScrollingList;
 class ASTextInput;
-template <class T> class Unk_MailPtr;
+template <class T> class MS2Ptr;
 
 // One ad of an ad mail as a bill row (RTTI .?AVASMailAdBillData@@, 0x58 bytes; ctor 0x1419ea130, dtor 0x1419ea3c0).
 class ASMailAdBillData : public ASBillData
@@ -82,10 +82,10 @@ public:
     unsigned FUN_1419e67a0(CMailInfo* pMail);                       // bind the attachment tooltips, returns their count
     void FUN_1419e6b70();                                           // drop the five attachment tooltips
     __int64 FUN_1419e6c30();                                        // "getMailID" (the opened mail)
-    int FUN_1419e6ec0(Unk_MailPtr<CMailInfo> spMail);               // the mail belongs to the current tab
+    int FUN_1419e6ec0(MS2Ptr<CMailInfo> spMail);               // the mail belongs to the current tab
     int FUN_1419e6fe0(int nPage);                                   // the page exists
     int FUN_1419e70c0(CStringW strIds);                             // one of the ids has attachments
-    CStringA FUN_1419e7260(Unk_MailPtr<CMailInfo> spMail);          // the row state name
+    CStringA FUN_1419e7260(MS2Ptr<CMailInfo> spMail);          // the row state name
     void FUN_1419e73f0();                                           // "m_page"
     int FUN_1419e74e0(__int64 nMailId);                             // an attachment is a locked item
     bool SendMailMode18(int nButton, const CMsgBoxData& data);       // read all: packet 0x2d / 0x12
@@ -94,11 +94,11 @@ public:
     bool SendMailMode13(int nButton, const CMsgBoxData& data);       // remove one mail
     void FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached);   // parse the id list
     int FUN_1419e7fd0();                                            // the selected tab ("m_tab")
-    void FUN_1419e6d20(ATL::CAtlList<Unk_MailPtr<CMailInfo> >& out);   // the mails of the tab, newest first, ads last
+    void FUN_1419e6d20(ATL::CAtlList<MS2Ptr<CMailInfo> >& out);   // the mails of the tab, newest first, ads last
     void SendMailMode0();                                           // ask the server for the list (packet 0x2d / 0)
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

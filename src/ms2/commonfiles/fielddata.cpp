@@ -330,14 +330,14 @@ template<class T> void Unk_FieldLog(void* log,int level,int category,const wchar
     reinterpret_cast<CLogString*>(log)->FUN_1406530d0(level,category,format,fmt::ArgList(fmt::internal::make_type(arg),values));
 }
 
-class Unk_1401b4ec0 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection&,int);
-    ~Unk_1401b4ec0();
-private:
-    CLockCriticalSection* p;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0,8);
+//
+//
+//
+//
+//
+//
+//
+//
 typedef Unk_SocketPtr<Unk_FieldSpawnMap> Unk_FieldSpawnMapPtr;
 static ATL::CAtlMap<unsigned,MS2Ptr<CFieldData> > s_fields;
 static ATL::CRBMap<unsigned,Unk_FieldSpawnMapPtr> s_spawnTags;
@@ -609,7 +609,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
     if (id==0) return MS2Ptr<CFieldData>(0);
     MS2Ptr<CFieldData> field;
     {
-        Unk_1401b4ec0 lock(s_fieldLock,1);
+        Unk_CriticalSectionLock lock(s_fieldLock,1);
         if (s_fields.Lookup(id,field))
             return field;
         else

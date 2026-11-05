@@ -100,7 +100,7 @@ class CIngredientContainer : public CPtred {
 public:
     CIngredientContainer(); virtual ~CIngredientContainer();
     size_t FUN_14026bee0(); bool FUN_14026bf40(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
-    class Unk_IngVec* FUN_14026c230(); void FUN_14026c250(CIngredientContainer*);
+    std::vector<MS2Ptr<CIngredientInfo> >* FUN_14026c230(); void FUN_14026c250(CIngredientContainer*);
     Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);

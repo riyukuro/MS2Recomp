@@ -992,7 +992,7 @@ public:
     static void FUN_1422ea210(int);
 };
 namespace ecr { class RenderService; }
-ecr::RenderService* Unk_GetRenderService(char* pCell);
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class MS2RenderService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1369,7 +1369,7 @@ int UISceneGamePlay::FUN_141aca870()
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x56, 1, 0) != 0) {
                 if (AfxMessageBox(DAT_142fdeb28, 1, 0) == 1) {
-                    void* pNet = Unk_GetRenderService((char*)&DAT_143b059e8);
+                    void* pNet = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
                     if (pNet != 0) ((class MS2RenderService*)(void*)(pNet))->CheckRenderState();
                     throw 0xd;
                 }
@@ -1660,7 +1660,7 @@ class Unk_HwService : public HardwareInstancingService { };     // the framework
 class EntityWorldManager;
 void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+//
 void FUN_1413f9c40(bool bFlag);
 void* FUN_140aae430();   // C3: was FUN_140aae430
 extern char DAT_142fdef20[];
@@ -1696,7 +1696,7 @@ void UISceneGameScreenShot::vfunc_48(int n)
         bool bSkip = false;
         bool bChar = pEntity->GetModel()->ContainsModel(DAT_142fdef20) || pEntity->GetModel()->ContainsModel("Actor");
         if (bChar) {
-            efd::SmartPointer<Unk_HwService> spSvc(FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+            efd::SmartPointer<Unk_HwService> spSvc(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
             if ((Unk_HwService*)spSvc != 0) {
                 if (spSvc->FUN_1413d6890(pEntity) != 0) bSkip = true;
                 else bSkip = ((void*)((HardwareInstancingService*)(spSvc.operator->()))->FUN_1413d66b0(pEntity)) ? true : false;

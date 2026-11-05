@@ -70,7 +70,7 @@ class CItemSocketScrollTable;
 class Unk_140166410;
 class Unk_140166430;
 class Unk_ALCurrent;
-class Unk_AttendGiftDataGroup;
+class AttendGiftDataTable;
 class Unk_BreakRecipes;
 class Unk_BreakRules;
 class Unk_ClubManager;
@@ -230,7 +230,7 @@ class CBlackMarketTable* FUN_1401c0d80();   // C3: was FUN_1401c0d80
 void* FUN_1401c0d90();
 class CDirWatcher* FUN_1401d31e0();   // C3: was FUN_1401d31e0
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_AttendGiftDataGroup* FUN_1403fc330();   // C3: was FUN_1403fc330
+class AttendGiftDataTable* FUN_1403fc330();   // C3: was FUN_1403fc330
 void* FUN_1404a1bb0();
 class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
 class Unk_EnchantRates* FUN_14052d1e0();   // C3: was FUN_14052d1e0

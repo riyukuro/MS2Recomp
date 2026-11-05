@@ -645,7 +645,7 @@ bool CUIService::FUN_141ad9e20(HWND__*)
 }
 MS2_REPLACE_METHOD(0x141ad9e20, CUIService, FUN_141ad9e20, 42, 0x11F37F9D);
 
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };   // Value<CString>::Get (C3: named like the real class)
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 
 // ---- scene entry helpers ----
 class Unk_AeGameOption   // C3: member view for the former free stand-ins
@@ -742,7 +742,7 @@ void CUIService::FUN_141ad9e50(int nScene)
             m_listOpen.AddTail((eUIClassID)0x4e28);
             m_listOpen.AddTail((eUIClassID)0x4e5f);
         }
-        if (!reinterpret_cast<Unk_StringOptionEntry*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80().IsEmpty())
+        if (!static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl.Get()->IsEmpty())
             m_listOpen.AddTail((eUIClassID)0x4ee9);
         if (*(static_cast<unsigned char*>(((void*)((class Unk_AeGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0())) + 0x14) != 0)   // flag byte at +0x14 (0x141ada11b)
             m_listOpen.AddTail((eUIClassID)0x4e7d);
@@ -2757,7 +2757,7 @@ MS2_REPLACE(0x141ade400, CUIService::FUN_141ade400, 32, 0x600272B3);
 
 // ---- movie-manager callbacks ----
 class Unk_UisHousingSvc;
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 // The efd::SmartPointer the exe wraps the housing service in (its glue COMDATs live in another unit).
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
@@ -2819,7 +2819,7 @@ void CUIService::FUN_141aecc30()
         pService->FUN_141adb2a0(nScene);
         pService->FUN_141ad9b30();
     }
-    if (efd::SmartPointer<CubeMapInformationService> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)))
+    if (efd::SmartPointer<CubeMapInformationService> spHousing = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>())
         ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc320();
     ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
@@ -2953,7 +2953,7 @@ void CUIService::FUN_141aec9c0()
         pService->FUN_141ad9e50(nScene);
         pService->FUN_141adafd0(nScene);
         pService->FUN_141ad9650();
-        efd::SmartPointer<CubeMapInformationService> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spHousing = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
         if (spHousing)
             ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();

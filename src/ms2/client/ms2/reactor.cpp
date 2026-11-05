@@ -133,9 +133,9 @@ bool ContainsId(ATL::CAtlArray<unsigned>& rIds, unsigned nId);   // conditionuti
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // Placement check: field grid (service behind 0x143b059e8), map data of the world, actor helpers.
-struct Unk_EntityAppFramework { char m_pad[8]; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 class Unk_RxCellInfo
 {
 public:
@@ -144,7 +144,7 @@ public:
     char m_pad_48[8];
     int m_nCount;                                               // +0x50
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 class Unk_RxMapInfo : public CPtred
@@ -615,7 +615,7 @@ int FUN_140b7a650(PCBase* pPc)
 
 
 
-    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (grid.operator CubeMapInformationService*() == 0)
     {
         MS2_ASSERT_AT(0x21e, 0);
@@ -798,7 +798,7 @@ __declspec(noreturn) void FUN_140159b70(unsigned int hr);
 // CRBTree<UINT, Unk_WsV148>::IsNil (0x140b7d0c0, private): the node is the tree's nil node (+0x28)
 static bool Rx_IsNil(void* pTree, Unk_GlueNode* pNode) { return pNode == *reinterpret_cast<Unk_GlueNode**>(static_cast<char*>(pTree) + 0x28); }
 Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode);
-Unk_GlueNode* FUN_140b7e2a0(void* pTree, Unk_GlueNode* pNode);
+struct Rx_ActorTree : ATL::CRBTree<unsigned, Unk_WsV148> { using ATL::CRBTree<unsigned, Unk_WsV148>::Successor; }; template <class N, class C> N Rx_NodeOf(N (C::*)(N) const);   // access view: Successor (0x140b7e2a0) is protected, CNode private
 
 // @0x140b7c2a0
 // MS2-FUNCTIONAL: std::_Uninitialized_move stand-in; the exe's element has a non-trivial move (the general-tag 0x140b7c370), Unk_Int3 doesn't
@@ -855,7 +855,7 @@ void FUN_140b7ce20(Unk_GlueNode** ppRoot) { FUN_140b7d300(ppRoot, *ppRoot); }
 Unk_GlueNode* FUN_140b7cec0(void* pTree, Unk_GlueNode** ppIt)
 {
     Unk_GlueNode* pOld = *ppIt;
-    *ppIt = FUN_140b7e2a0(pTree, pOld);
+    *ppIt = (Unk_GlueNode*)static_cast<const Rx_ActorTree*>(pTree)->Successor((decltype(Rx_NodeOf(&Rx_ActorTree::Successor)))pOld);   // CRBTree::GetNext
     return pOld;
 }
 

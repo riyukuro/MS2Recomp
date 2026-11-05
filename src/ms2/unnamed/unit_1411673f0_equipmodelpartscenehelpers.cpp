@@ -74,7 +74,7 @@ NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
         if (pRoot != 0) {
             pFound = pRoot->GetObjectByName((const char*)*pName);
             if (pFound == 0) {
-                std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
+                std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
                 std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
                 std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
                 for (; it != itEnd; ++it) {
@@ -88,7 +88,7 @@ NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
             }
         }
     } else {
-        std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
+        std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
         std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
         std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
         for (; it != itEnd; ++it) {
@@ -169,7 +169,7 @@ void CEquipModel::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
         NiAVObject* pRoot = (NiAVObject*)this->vfunc_14();
         aRoots.Add(pRoot);
     }
-    std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); std::set<NiAVObjectPtr>& kSet = *kPSet;
+    std::set<NiAVObjectPtr>* kPSet = ::FUN_141201c90(const_cast<CEquipModel*>(this)); const std::set<NiAVObjectPtr>& kSet = *kPSet;
     std::set<NiAVObjectPtr>::const_iterator itEnd = kSet.end();
     std::set<NiAVObjectPtr>::const_iterator it = kSet.begin();
     for (; it != itEnd; ++it) {

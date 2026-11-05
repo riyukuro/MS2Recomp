@@ -93,7 +93,7 @@ class CNpc { public: MS2Ptr<CMaid> FUN_141093800(); };
 
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 // The local player (only its stats).
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 class Unk_UmPC { public: };
 class PC { public: struct Unk_PCEquipSet* FUN_1416561a0(); };   // C3: the real member (0x1416561a0, the equip holder)
 
@@ -146,10 +146,10 @@ UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by U
 // The cube map service (cubemapinformationservice_3.h; its include adds egf::kENTITY_INVALID's dynamic initializer).
 class CubeMapInformationService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount); };
 class Unk_MfCubeService : public CubeMapInformationService { };
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
+//
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 extern __int64 DAT_143ab2820;
 
@@ -685,7 +685,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             int nRow = (int)(spRecipe->ingredients.size() + 1);
             int nMesoCost = spRecipe->workbenchType;
             int nCode = 0;
-            efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
+            efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
             int nResult = spService->FUN_1410d2fb0(DAT_143ab2820, nMesoCost, &nCode);
             CStringW strMesoText(L"");
             if (nMesoCost == 0x1c)

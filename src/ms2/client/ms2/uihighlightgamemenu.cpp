@@ -32,7 +32,7 @@
 
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"  // C3: StringFormat<CString>
-#include "ms2/commonfiles/usermail.h"  // C3: CUserMail, Unk_MailPtr<CMailInfo>
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail, MS2Ptr<CMailInfo>
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/commonfiles/featuremanager.h"

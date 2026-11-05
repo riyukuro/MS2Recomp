@@ -493,28 +493,28 @@ void CClubMemberProxy::FUN_14020e350(Unk_UserProxy* p)
 // @0x14020e5d0
 CStringW CClubMemberProxy::GetName()
 {
-    Unk_PetLock g(m_lock, 1);
+    Unk_CriticalSectionLock g(&m_lock, 1);
     return m_name;
 }
 
 // @0x14020e650
 void CClubMemberProxy::SetName(CStringW strName)
 {
-    Unk_PetLock g(m_lock, 1);
+    Unk_CriticalSectionLock g(&m_lock, 1);
     m_name = strName;
 }
 
 // @0x14020e6c0
 CString CClubMemberProxy::GetPicture()
 {
-    Unk_PetLock g(m_lock, 1);
+    Unk_CriticalSectionLock g(&m_lock, 1);
     return m_picture;
 }
 
 // @0x14020e740
 void CClubMemberProxy::SetPicture(CString strPicture)
 {
-    Unk_PetLock g(m_lock, 1);
+    Unk_CriticalSectionLock g(&m_lock, 1);
     m_picture = strPicture;
 }
 

@@ -112,7 +112,7 @@ public:
 
     // child lookups (one COMDAT per wrapper class; defined in other units)
     // "m_questInfo" is UISwfEntity::GetChild<ASUIComponent> (0x140c02990)
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

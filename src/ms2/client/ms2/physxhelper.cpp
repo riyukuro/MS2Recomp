@@ -134,9 +134,9 @@ int FUN_1409a8f90(const float* pf);
 bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
 float FUN_140a38cd0(float f);
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class CubeMapInformationService;
-CubeMapInformationService*FUN_1401cd040(Unk_EntityAppFramework*);
+//
 class CubeMapInformationService { public: void* FindPhysXActor(egf::EntityID key); };   // C3: was NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID); 0x1410c5420 (cubemapinformationservice_3.h)
 class WorldService   // C3: static member view for the former free stand-ins
 {
@@ -373,7 +373,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     pEntity->GetPropertyValue(0x38141815, bCube);
     if (bCube)
     {
-        efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework *>(&egf::g_bapiContext))));
+        efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
         NxActor* pActor = (NxActor*)reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FindPhysXActor(pEntity->GetEntityID());
         if (pActor != 0)
         {

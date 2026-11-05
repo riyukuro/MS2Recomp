@@ -225,7 +225,7 @@ template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInform
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 void FUN_141682f60(void* pTracker, PCBase* pOwner);         // PCBase+0x6d8 init
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
@@ -500,7 +500,7 @@ int FUN_1408a18d0(__int64 nCharId);
 class CGameRule { public: bool FUN_14047e150(unsigned __int64 nValue); };
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 // The worn items of PC::m_kEquipDE0 and the item array at PC::m_kListD48.
-class CEquipment { public: float GetAbilityRate(SAType eType); void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const; MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid); MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nLayer); };
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 
 // The MS2Ptr at Unk_PCEquipSet+0x1d8 (PC+0xfb8): the skill point book.
 // The buddy list (buddymanager.h's CBuddyManager) and an actor's guild name.
@@ -1372,7 +1372,7 @@ void MyPC::vfunc_135(int a, int b, void* p)
         if (nNew != 0)
         {
             m_b15d4 = 0;
-            Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+            Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
             if (spSvc.operator CubeMapInformationService*() != 0)
             {
                 int nMapId = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd3060();
@@ -1416,7 +1416,7 @@ MS2_REPLACE_METHOD(0x141523B70, MyPC, vfunc_146, 27, 0xDB9FCEA7);
 // @0x141523c80
 void MyPC::FUN_141523c80()
 {
-    Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     efd::Point3 kPos;
     reinterpret_cast<Unk_MyPCHousingSvc*>(spSvc.operator->())->GetCellInFrontOfActor(this, 0.0f, reinterpret_cast<Vector3*>(&kPos), 1);
     efd::Point3 kCell;
@@ -2126,7 +2126,7 @@ int MyPC::GetHomeMapId(int* pMapId)
 {
     if (HasNoHome() == 0)
     {
-        Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
         MS2Ptr<UserUGCMapInfo> spHouse(FUN_141523c50());
         *pMapId = spHouse->m_n20;
         return 1;
@@ -2142,7 +2142,7 @@ int MyPC::GetHomePosition(efd::Point3& kPos)
     kPos = efd::Point3::ZERO;
     if (HasNoHome() == 0)
     {
-        Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
         MS2Ptr<UserUGCMapInfo> spHouse(FUN_141523c50());
         if (spHouse.get() != 0)
         {
@@ -2178,7 +2178,7 @@ CStringW MyPC::GetHomeAddress()
 {
     if (HasNoHome() == 0)
     {
-        Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
         MS2Ptr<UserUGCMapInfo> spHouse(FUN_141523c50());
         if (spHouse.get() != 0)
             return CAddressTable::FormatChecked(spHouse->m_n20, spHouse->m_n24, 0, spHouse->m_str28);
@@ -2359,7 +2359,7 @@ void MyPC::FUN_141524a80(bool bForce)
                 {
                     efd::Point3 kPropPos;
                     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
-                    Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+                    Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
                     if (reinterpret_cast<Unk_MyPCHousingSvc*>(spSvc.operator->())->GetCubeAtPoint(*reinterpret_cast<Vector3*>(&kPropPos)) && vfunc_99(0) == 0)
                     {
                         if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a9b0(pEntity, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))))
@@ -2404,14 +2404,14 @@ bool FUN_14028d470(float a, float b);                       // a == b (within ep
 
 // PC::FUN_14165f100 returns the held item (fittingdollpc.h names it Unk_MyPCEmotion).
 class Unk_MyPCEmotion : public CItem {};
-class Unk_1401b4ec0                                         // the scoped lock (commonfiles\banktable.cpp)
-{
-public:
-    Unk_1401b4ec0(CLockCriticalSection& cs, int bLock);     // 0x1401b4ec0
-    ~Unk_1401b4ec0();                                       // 0x1401b5120
-private:
-    void* m_p;
-};
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
 // The item cooldowns (TSingleton<CGameEventValueManager>::GetInstance()->ShutdownSkillItem()): item id -> end tick.
 class Unk_MyPCItemCools
 {
@@ -2419,7 +2419,7 @@ public:
     // @0x141534720
     bool FUN_141534720(unsigned int nItemId)
     {
-        Unk_1401b4ec0 lock(m_cs, 1);
+        Unk_CriticalSectionLock lock(m_cs, 1);
         return m_mapCools.find(nItemId) != m_mapCools.end();
     }
     char m_pad_00[0x18];
@@ -4077,7 +4077,7 @@ CItem* MyPC::FUN_14152efa0(__int64 nItemUid, __int64* pOwner)
     Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<efd::IBase*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pPC == 0)
         return 0;
-    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Unk_MyPCPlot* pPlot = reinterpret_cast<Unk_MyPCPlot*>(pSvc->FUN_1410b8c90(pPC->FUN_14123c460()));
     if (pPlot == 0)
         return 0;
@@ -4098,7 +4098,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
     Unk_MyPCPlotPC* pPC = ((class Unk_MyPCPlotPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<efd::IBase*>(WorldService::GetInstance()->FUN_141bd1530(nOwnerId)))));
     if (pPC == 0)
         return;
-    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Unk_MyPCPlot* pPlot = reinterpret_cast<Unk_MyPCPlot*>(pSvc->FUN_1410b8c90(pPC->FUN_14123c460()));
     if (pPlot == 0)
         return;
@@ -4128,7 +4128,7 @@ void MyPC::FUN_14152f3c0()
 {
     ATL::CAtlList<efd::SmartPointer<GameObject> > aObjs(10);
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1750(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&aObjs));
-    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_MyPCPlotSvc* pSvc = static_cast<Unk_MyPCPlotSvc*>(((void*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     for (POSITION pos = aObjs.GetHeadPosition(); pos != 0; aObjs.GetNext(pos))
     {
         efd::SmartPointer<GameObject> spObj = aObjs.GetAt(pos);
@@ -4153,7 +4153,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
 {
     if (IsDead() != 0 && (nMode == 1 || nMode == 2))
         return 0;
-    Unk_MyPCSvcPtr spSvc((FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    Unk_MyPCSvcPtr spSvc((egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     reinterpret_cast<Unk_MyPCHousingSvc*>(spSvc.operator->())->FUN_1410cd440();
     bool bFree = false;
     if (DAT_143ae0fb4 != 0)

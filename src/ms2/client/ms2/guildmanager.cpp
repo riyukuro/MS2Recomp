@@ -119,7 +119,7 @@ template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapIn
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();
 template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInformationService*() const;
 template <> CubeMapInformationService* efd::SmartPointer<CubeMapInformationService>::operator->() const;
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 // Content switches (feature ids).
@@ -166,11 +166,11 @@ public:
     struct Unk_BuddySettings& GetSettings();
 };
 struct Unk_GuildBattleOptions { bool m_promptArenaJoin; };
-class Unk_QnState   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_QnTracking* FUN_140c9b8b0();
-};
+// C3: the Unk_QnState view is gone (CGameOption::FUN_140c9b8b0, cgameoption.h)
+//
+//
+//
+//
 // The local player's busy state (a pending party/trade request); see partymanager.cpp.
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int type);
 void FUN_1412752d0(const CStringW& text, int type);
@@ -921,7 +921,7 @@ void CGuildManager::FUN_1413ba4b0()
         return;
     }
     if (reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c == 0) {
-        efd::SmartPointer<CubeMapInformationService> housing(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> housing(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (((CubeMapInformationService*)housing ? true : false) && reinterpret_cast<CubeMapInformationService*>(housing.operator->())->FUN_1410d2f10()) {
         } else {
             FUN_1412751f0(GetStringCommonByKey(L"s_common_cant_move_from_here"), 1, 1);
@@ -2391,7 +2391,7 @@ void CGuildManager::FUN_1413c28e0(CInPacket& packet)
         message = GetStringCommon(0x3c0);
         FUN_141276180(s_strGuildBattleMatchingFail, "");
     }
-    if (matched && ((struct Unk_GuildBattleOptions*)((class Unk_QnState*)(class Unk_GuildOptionsMgr*)(reinterpret_cast<Unk_GuildOptionsMgr*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_promptArenaJoin) {
+    if (matched && ((struct Unk_GuildBattleOptions*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_promptArenaJoin) {
         if (m_targetGuildId == 0) {
             if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
                 dialog->FUN_141974930();

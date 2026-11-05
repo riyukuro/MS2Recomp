@@ -42,7 +42,7 @@ public:
 };
 } }
 
-ecr::RenderService* Unk_GetRenderService(char* pCell);              // gfxmoviebackground.cpp; the render service of the framework
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
 
 // GFxMovie as vfunc_6 sees it: slot 9 takes the HAL and the Renderer2D by value (gfxmovie.h types both parameters with
@@ -232,7 +232,7 @@ MS2_REPLACE_METHOD(0x1422F4C60, GFxRenderSingleThread, vfunc_14, 81, 0x43325BF2)
 int GFxRenderSingleThread::FUN_1422f4cc0()
 {
     FUN_1422f4f00();
-    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
+    ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService)
     {
         NiRenderFrame* pFrame = pService->GetActiveRenderSurface()->GetRenderFrame();
@@ -261,7 +261,7 @@ int GFxRenderSingleThread::FUN_1422f4f00()
 {
     if (!m_spRenderStep)
         return 0;
-    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
+    ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService)
     {
         NiRenderFrame* pFrame = pService->GetActiveRenderSurface()->GetRenderFrame();
@@ -280,7 +280,7 @@ MS2_REPLACE_METHOD(0x1422F4F00, GFxRenderSingleThread, FUN_1422f4f00, 197, 0x6A5
 // @0x1422f4fd0
 int GFxRenderSingleThread::FUN_1422f4fd0()
 {
-    ecr::RenderService* pService = Unk_GetRenderService((char*)&g_143b059e8);
+    ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService)
     {
         NiRenderTargetGroup* pTarget = pService->GetActiveRenderSurface()->GetRenderTargetGroup();

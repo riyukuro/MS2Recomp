@@ -3480,6 +3480,7 @@ gb/obj/stock/pcre__pcre_xclass.c.obj
 obj/scaleform/as2/sfr_as2_01b.obj
 obj/scaleform/as2/sfr_as2_02.obj
 obj/scaleform/as2/sfr_as2_02b.obj
+obj/scaleform/as2/sfr_as2_04.obj
 obj/scaleform/as2/sfr_as2_03.obj
 obj/scaleform/as2/sfr_as2_03c.obj
 obj/scaleform/as2/sfr_as2_03af.obj
@@ -3494,7 +3495,6 @@ obj/scaleform/as2/sfr_as2_03u.obj
 obj/scaleform/as2/sfr_as2_03n.obj
 obj/scaleform/as2/sfr_as2_03g.obj
 obj/scaleform/as2/sfr_as2_04j.obj
-obj/scaleform/as2/sfr_as2_04.obj
 obj/scaleform/as2/sfr_as2_03y.obj
 obj/scaleform/as2/sfr_as2_03r.obj
 obj/scaleform/as2/sfr_as2_03k.obj

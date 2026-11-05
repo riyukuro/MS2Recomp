@@ -45,11 +45,11 @@ struct Unk_Node8 { i64 m_pad_00; i64 m_nValue; };// the field at +8
 u64 FUN_141074140(void*, bool);                  // per-list insert; the flag is the uninitialised scratch
 u64 FUN_141074200(void*, bool);
 u64 FUN_141074220(void*, bool);
-u64 FUN_141074260(void*, bool);
-u64 FUN_141074320(void*, bool);
+// 0x141074260 / 0x141074320 = _Normal_allocator_traits<..map<NiMesh*,Unk_UVRect> node / Unk_AtlasResult..>::_Max_size1
+//
 
 void* FUN_141072db0(void*);                      // per-type node accessors (forward 1)
-void* FUN_141072e70(void*);
+// 0x141072e70 = _Tree_comp_alloc<..NiMesh*,Unk_UVRect..>::_Getal() const
 void* FUN_141072ed0(void*);
 void* FUN_141072f30(void*);
 
@@ -58,7 +58,7 @@ void* FUN_141073040(void*);                      // per-type node accessors (for
 //
 
 Unk_Node8* FUN_1410722e0(void*);                 // per-type node accessors reading +8
-Unk_Node8* FUN_1410723a0(void*);
+// 0x1410723a0 = _Tree_comp_alloc<..NiMesh*,Unk_UVRect..>::_Get_data() const
 
 // 0x141063d00 / 0x141063d70 = vector<Unk_AtlasResult>::emplace_back<const&> / vector<Unk_StreamElementDesc>::emplace_back<&&>
 //
@@ -152,8 +152,8 @@ u64 FUN_141079fe0(void* p)
 // @0x14107a000
 u64 FUN_14107a000(void* p)
 {
-    bool bFlag;
-    return FUN_141074260(p, bFlag);
+    std::true_type bFlag;
+    return std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<std::pair<NiMesh* const, Unk_UVRect>, void*>>>::_Max_size1(*(const efd::CustomAllocator<std::_Tree_node<std::pair<NiMesh* const, Unk_UVRect>, void*>>*)p, bFlag);
 }
 
 // @0x14107a020
@@ -194,8 +194,8 @@ u64 FUN_14107a0a0(void* p)
 // @0x14107a0c0
 u64 FUN_14107a0c0(void* p)
 {
-    bool bFlag;
-    return FUN_141074320(p, bFlag);
+    std::true_type bFlag;
+    return std::_Normal_allocator_traits<efd::CustomAllocator<Unk_AtlasResult>>::_Max_size1(*(const efd::CustomAllocator<Unk_AtlasResult>*)p, bFlag);
 }
 
 // ---------------------------------------------------------------------------
@@ -217,7 +217,7 @@ u64 FUN_14107a100(void* p)
 // @0x14107a120
 u64 FUN_14107a120(void* p)
 {
-    return FUN_14107a000(FUN_141072e70(p));
+    return FUN_14107a000((void*)&((const efd::map<NiMesh*, Unk_UVRect>*)p)->_Getal());
 }
 
 // @0x14107a140
@@ -502,7 +502,7 @@ i64 FUN_14107a900(void* p)
 // @0x14107a920
 i64 FUN_14107a920(void* p)
 {
-    return FUN_1410723a0(p)->m_nValue;
+    return ((const efd::map<NiMesh*, Unk_UVRect>*)p)->_Get_data()._Mysize;
 }
 
 // @0x14107a940

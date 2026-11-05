@@ -30,7 +30,7 @@ public:
     int FUN_141a96960(int, CStringW&, CStringW&, const CStringW&);
     int FUN_141a96c30(int, MS2Ptr<CQuestData>);
     // Unrecovered child-binding helpers; this is the original UISwfEntity subobject.
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString&);
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
     virtual int vfunc_48() { return 20043; }
 private:
     MS2_LAYOUT_FRIEND;

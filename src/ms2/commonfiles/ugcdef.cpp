@@ -138,8 +138,8 @@ static CStringA s_strSortValue = "sortValue";
 static CStringA s_strTabIndex = "tabIndex";
 
 // The scoped lock of a CLockCriticalSection (ctor 0x140203610, dtor 0x1401b5120).
-struct Unk_PetLock { Unk_PetLock(CLockCriticalSection& cs, int n); ~Unk_PetLock(); void* p; };
-MS2_CHECK_SIZE(Unk_PetLock, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
 
 // Market lookups of the item and merat market units.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -2094,14 +2094,14 @@ void CUgcMarketProduct::Read(CInPacket& packet)
 // @0x140895dd0
 CStringW CUgcMarketProduct::GetStr200()
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     return CStringW(m_str200);
 }
 
 // @0x140895e50
 void CUgcMarketProduct::SetStr200(CStringW str)
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     m_str200 = str;
 }
 
@@ -2126,28 +2126,28 @@ CStringW CUgcMarketProduct::GetStr200Head()
 // @0x140895fa0
 CStringW CUgcMarketProduct::GetStr208()
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     return CStringW(m_str208);
 }
 
 // @0x140896020
 void CUgcMarketProduct::SetStr208(CStringW str)
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     m_str208 = str;
 }
 
 // @0x1408960a0
 CStringW CUgcMarketProduct::GetStr210()
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     return CStringW(m_str210);
 }
 
 // @0x140896120
 void CUgcMarketProduct::SetStr210(CStringW str)
 {
-    Unk_PetLock lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(&m_lock, 1);
     m_str210 = str;
 }
 

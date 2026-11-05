@@ -62,25 +62,25 @@ CString FUN_140188f50(const char* psz, int n);                      // null-safe
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
 
-template <int T> class Unk_Bitset;
-template <> class Unk_Bitset<3> { public: Unk_Bitset& Set(int pos, bool value); };   // C3: was FUN_140314670 (0x140314670, bitset.h's Unk_Bitset<3>::Set)
-class Unk_SetEffectBits   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_1411fe0e0() const;
-};
-class Unk_CamMoveBits   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_140afc5a0() const;
-};
+// C3: m_update is bitset.h's Unk_Bitset<3> (Set 0x140314670, any 0x1411fe0e0, all 0x140afc5a0)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 bool FUN_14028d470(float a, float b);                               // nearly equal
 
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8 (service lookup cell)
 struct Unk_CcSvcCell;
-ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell*);   // the scene graph service (0x7002000)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // The effect manager singleton (0x1403ed280): the effect root.
 
@@ -151,42 +151,42 @@ Unk_BitRef::Unk_BitRef(Unk_LightUpdateBits* pBits, unsigned nPos)
 // @0x14144b2f0
 Unk_BitRef& Unk_BitRef::operator=(bool bValue)
 {
-    reinterpret_cast<Unk_Bitset<3>*>(m_pBits)->Set(m_nPos, bValue);
+    m_pBits->Set(m_nPos, bValue);
     return *this;
 }
 
 // @0x14144b330
-Unk_BitRef Unk_LightUpdateBits::operator[](unsigned nPos)
+template <int T> Unk_BitRef Unk_Bitset<T>::operator[](int pos)   // generic body; here only T = 3
 {
-    (void)((!!(nPos < 3)) || (_wassert(L"UINT(pos) < UINT(T)", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl", 0x98), 0));
-    return Unk_BitRef(this, nPos);
+    MS2_BITSET_ASSERT(152, UINT(pos) < UINT(T));
+    return Unk_BitRef(this, pos);
 }
 
 // @0x14144b630
 static bool FUN_14144b630(const Unk_LightUpdateBits* pBits)
 {
-    return !((class Unk_SetEffectBits*)(struct Unk_LightUpdateBits const*)(pBits))->FUN_1411fe0e0();
+    return !pBits->FUN_1411fe0e0();
 }
 
-// @0x14144b3f0
-Unk_LightColor Unk_LightColor::operator-(const Unk_LightColor& o) const
-{
-    Unk_LightColor t = *this;
-    t.r -= o.r;
-    t.g -= o.g;
-    t.b -= o.b;
-    return t;
-}
+// (0x14144b3f0 / 0x14144b480: efd::Color::operator- / operator+ from Color.inl, pinned at the end)
+//
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14144b480
-Unk_LightColor Unk_LightColor::operator+(const Unk_LightColor& o) const
-{
-    Unk_LightColor t = *this;
-    t.r += o.r;
-    t.g += o.g;
-    t.b += o.b;
-    return t;
-}
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x1414494d0
 CLightEffectParam::CLightEffectParam()
@@ -201,8 +201,8 @@ CLightEffectParam::CLightEffectParam()
 #define LIGHT_PARSE_COLOR(dst, pNode, pszName, str, arr)                                        \
     CString str = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute(pszName), 0);                              \
     XmlSplit(str, arr, ",");                                                               \
-    dst = arr.GetCount() < 3 ? Unk_LightColor(1.0f, 1.0f, 1.0f)                                 \
-        : Unk_LightColor((float)arr[0] / 255.0f, (float)arr[1] / 255.0f, (float)arr[2] / 255.0f)
+    dst = arr.GetCount() < 3 ? efd::Color(1.0f, 1.0f, 1.0f)                                 \
+        : efd::Color((float)arr[0] / 255.0f, (float)arr[1] / 255.0f, (float)arr[2] / 255.0f)
 
 // @0x141449600
 void CLightEffectParam::vfunc_1(TiXmlElement* pNode)
@@ -308,7 +308,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     if (pShadow != 0)
     {
-        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell *>(&DAT_143b059e8)));
+        efd::SmartPointer<ecr::SceneGraphService> spService(egf::g_bapiContext.GetSystemServiceAs<ecr::SceneGraphService>());
         egf::Entity* pOwner = spService->GetEntityFromSceneGraphNode(pShadow);
         if (pOwner != 0)
         {
@@ -343,7 +343,7 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
         m_spParent = static_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pShadow->GetObjectByName((const char*)pLightParam->m_strParentNode)))));
         if (m_spParent == (NiNode*)0)
             m_spParent = pShadow;
-        if (!((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&pLightParam->m_update))->FUN_140afc5a0() && !FUN_14144b630(&pLightParam->m_update))
+        if (!pLightParam->m_update.FUN_140afc5a0() && !FUN_14144b630(&pLightParam->m_update))
         {
             Unk_SeparateNode* pSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(pLightParam->m_update);
             pSep->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spOuter), false);
@@ -370,8 +370,8 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0xef627d53, bTrue);
     bool bFalse2 = false;
     FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x78e546ab, bFalse2);
-    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0x2d8cf386, const_cast<Unk_LightColor*>(&pLightParam->m_clrDiffuse));
-    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0xc3f0329e, const_cast<Unk_LightColor*>(&pLightParam->m_clrSpecular));
+    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0x2d8cf386, const_cast<efd::Color*>(&pLightParam->m_clrDiffuse));
+    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0xc3f0329e, const_cast<efd::Color*>(&pLightParam->m_clrSpecular));
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, pLightParam->m_fDimmer);
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x4871503b, pLightParam->m_fRange);
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x4dcec447, pLightParam->m_fAttConstant);
@@ -438,8 +438,8 @@ void CLightEffect::vfunc_13(TransitionData* pFromBase, TransitionData* pToBase, 
 {
     LightEffectTransitionData* pFrom = static_cast<LightEffectTransitionData*>(pFromBase);
     LightEffectTransitionData* pTo = static_cast<LightEffectTransitionData*>(pToBase);
-    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0x2d8cf386, const_cast<Unk_LightColor*>(&static_cast<const Unk_LightColor&>(pFrom->m_clrDiffuse + fT * (pTo->m_clrDiffuse - pFrom->m_clrDiffuse))));
-    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0xc3f0329e, const_cast<Unk_LightColor*>(&static_cast<const Unk_LightColor&>(pFrom->m_clrSpecular + fT * (pTo->m_clrSpecular - pFrom->m_clrSpecular))));
+    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0x2d8cf386, const_cast<efd::Color*>(&static_cast<const efd::Color&>(pFrom->m_clrDiffuse + fT * (pTo->m_clrDiffuse - pFrom->m_clrDiffuse))));
+    FUN_140b27f00(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()), 0xc3f0329e, const_cast<efd::Color*>(&static_cast<const efd::Color&>(pFrom->m_clrSpecular + fT * (pTo->m_clrSpecular - pFrom->m_clrSpecular))));
     float fDimmer = pFrom->m_fDimmer + fT * (pTo->m_fDimmer - pFrom->m_fDimmer);
     static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, fDimmer);
     float fRange = pFrom->m_fRange + fT * (pTo->m_fRange - pFrom->m_fRange);
@@ -466,4 +466,6 @@ MS2_REPLACE_METHOD(0x14144B610, CLightEffect, vfunc_12, 11, 0x653B09E8);
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE(0x14144b630, FUN_14144b630, 54, 0x526C0295);
-
+// MS2-PIN: ??GColor@efd@@QEBA?AV01@AEBV01@@Z 0x14144b3f0
+// MS2-PIN: ??HColor@efd@@QEBA?AV01@AEBV01@@Z 0x14144b480
+// MS2-PIN: ??Defd@@YA?AVColor@0@MAEBV10@@Z 0x14144b3b0

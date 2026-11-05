@@ -1091,7 +1091,7 @@ bool FUN_1418226b0(bool bLog)
 }
 
 // ---- glue of the model-reference arrays and the field map nodes ----------------------------------------
-void FUN_140335fe0(Unk_Ref* pRef, unsigned int nFlags);
+// (0x140335fe0 is MS2Ptr<DungeonRoom>::`scalar deleting destructor', called in FUN_141830d10)
 
 void FUN_141830cb0(Unk_Ref* pData, size_t nCount) throw();
 void FUN_141830d10(Unk_Ref* pData, size_t nCount) throw();
@@ -1180,7 +1180,7 @@ void FUN_141830cb0(Unk_Ref* pData, size_t nCount) throw()
 void FUN_141830d10(Unk_Ref* pData, size_t nCount) throw()
 {
     for (size_t i = 0; i < nCount; i++)
-        FUN_140335fe0(&pData[i], 0);
+        reinterpret_cast<DungeonRoomPtr*>(&pData[i])->~DungeonRoomPtr();   // unqualified: xor edx,edx; call ??_G (flag 0)
 }
 
 // @0x1418311c0

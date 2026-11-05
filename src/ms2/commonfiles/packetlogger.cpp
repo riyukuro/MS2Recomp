@@ -12,7 +12,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/xmlattr.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&,int); ~Unk_1401b4ec0(); private: void* p; };
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 CStringW FUN_14016a730(const char*,int);
 CString FUN_14016a600(const wchar_t*,int);
 unsigned __int64 FUN_1403d7cb0(const CStringW&);
@@ -123,7 +123,7 @@ MS2_REPLACE_METHOD(0x140717730, CPacketLogger, DescribeSend, 289, 0xAA1B9B85);
 // @0x140717860
 void CPacketLogger::Write(const CString& format,const CString& message) {
     CString text;text.Format(format,(const char*)message);
-    Unk_1401b4ec0 lock(m_lock,1);
+    Unk_CriticalSectionLock lock(m_lock,1);
     ATL::CAtlStringA output(text);m_file.Write((const char*)output,output.GetLength(),(DWORD*)0);
 }
 MS2_REPLACE_METHOD(0x140717860, CPacketLogger, Write, 222, 0x49D880BC);

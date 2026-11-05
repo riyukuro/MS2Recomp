@@ -312,7 +312,7 @@ void CItemMorphController::ResetMeshHighlight()
     {
         MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
         std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
-        std::set<NiAVObjectPtr>& kSet = *pSet;
+        const std::set<NiAVObjectPtr>& kSet = *pSet;
         std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
         {
@@ -389,7 +389,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
         {
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
-            std::set<NiAVObjectPtr>& kSet = *pSet;
+            const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {
@@ -437,7 +437,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
         {
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
-            std::set<NiAVObjectPtr>& kSet = *pSet;
+            const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {
@@ -496,7 +496,7 @@ efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
             MS2Ptr<CEquipModel> spPart = m_spEquipItem->FindModelByName(aParts.GetAt(0));
             NiAVObject* pFound = 0;
             std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
-            std::set<NiAVObjectPtr>& kSet = *pSet;
+            const std::set<NiAVObjectPtr>& kSet = *pSet;
             std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
             for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {

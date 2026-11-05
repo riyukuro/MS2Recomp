@@ -157,11 +157,11 @@ class Unk_CubeGridSvc : public CubeMapInformationService {
 public:
     // C3: FUN_1410cdd80 is CubeMapInformationService's own (by value)
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
 Unk_AnimSvc* FUN_1410a68d0();
-struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
-ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell* pCell);   // service 0x7002000 = kCLASSID_SceneGraphService
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
+template <> inline ecr::SceneGraphService* egf::ScriptContext::GetSystemServiceAs<ecr::SceneGraphService>() const;   // 0x1410a68f0, defined below (COMDAT: stock bapiCoreRuntime has it too)
 CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 CStringW GetStringCommon(int);
 void* FUN_14025e7c0();                       // singleton pointers: 64-bit, not int
@@ -741,7 +741,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     if (nAttach != 0)
     {
         Unk_Int3 kLocal = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pSel->GetPtCell())));
-        efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         int nCell = spGrid->FUN_1410ba5f0(kLocal, reinterpret_cast<const Vector3&>(kA));
         kB.z = spGrid->DirectionToAngle(nCell);
     }
@@ -872,7 +872,7 @@ bool CConstructionGuideObject::vfunc_68(void* a, double t, int b, unsigned c, in
     bool bResult = PCBase::vfunc_68(&kMove, t, b, 0, 1);
     if (*(efd::Point3*)a != efd::Point3::ZERO && m_bLocal)
     {
-        efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spGrid((CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (((Unk_CubeGridSvc*)spGrid.operator->())->FUN_1410cdd80(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_20())), 200.0f, DAT_143ab2398) == 0)
         {
             vfunc_19(reinterpret_cast<const efd::Point3&>(kBefore));
@@ -1132,7 +1132,7 @@ void CFishingGuideObject::vfunc_24(int)
         m_unk_40 = pOwner->vfunc_25();
         if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
-            efd::SmartPointer<ecr::SceneGraphService> spSvc(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
+            efd::SmartPointer<ecr::SceneGraphService> spSvc(egf::g_bapiContext.GetSystemServiceAs<ecr::SceneGraphService>());
             if (m_unk_40 != 0)
             {
                 if (m_unk_80 != 0)
@@ -1475,9 +1475,9 @@ Unk_AnimSvc* FUN_1410a68d0()
 }
 
 // @0x1410a68f0
-ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell* pCell)
+template <> inline ecr::SceneGraphService* egf::ScriptContext::GetSystemServiceAs<ecr::SceneGraphService>() const
 {
-    return (ecr::SceneGraphService*)FUN_1410a6920((Unk_CcSvcIf*)pCell->m_spManager.operator->());
+    return (ecr::SceneGraphService*)FUN_1410a6920((Unk_CcSvcIf*)m_spManager.operator->());   // FUN_1410a6920 = ServiceManager::GetSystemServiceAs<ecr::SceneGraphService>
 }
 
 // @0x1410a6920

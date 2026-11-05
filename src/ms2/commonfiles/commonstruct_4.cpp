@@ -60,32 +60,32 @@
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAXXZ 0x140288cc0 ; prop
 // MS2-PIN: ?_Orphan_range@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@AEBAXPEAUItemEntity@@0@Z 0x140288d00 ; prop
 // MS2-PIN: ?_Orphan_range@?$vector@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@AEBAXPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x140288d10 ; prop
-// MS2-PIN: ?Release@?$MS2Ptr@V?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCCompactControlSkill@@@@V?$CElementTraits@V?$MS2Ptr@VCCompactControlSkill@@@@@ATL@@@ATL@@@@@@AEAAXXZ 0x140288dd0 ; order
+// MS2-PIN: ?Release@?$MS2Ptr@V?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCCompactControlSkill@@@@V?$CElementTraits@V?$MS2Ptr@VCCompactControlSkill@@@@@ATL@@@ATL@@@@@@AEAAXXZ 0x140288ed0 ; caller-evidence (byte-identical slot: no exe copy of this type here)
 // MS2-PIN: ?Release@?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@AEAAXXZ 0x140288e10 ; prop
-// MS2-PIN: ?Release@?$MS2Ptr@VAdditionalEffectEventCtx@@@@AEAAXXZ 0x140288e50 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCAdditionalEvent@@@@AEAAXXZ 0x140288e90 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCIngredientInfo@@@@AEAAXXZ 0x140288ed0 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCPtred@@@@AEAAXXZ 0x140288f10 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCUserChangeableItemHistory@@@@AEAAXXZ 0x140288f50 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCUserLimitHistory@@@@AEAAXXZ 0x140288f90 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VChangeableProductInfo@@@@AEAAXXZ 0x140288fd0 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VInvokeEffectOption@@@@AEAAXXZ 0x140289010 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VNpcShopItemLife@@@@AEAAXXZ 0x140289050 ; order
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAAPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x140289090 ; order
+// MS2-PIN: ?Release@?$MS2Ptr@VAdditionalEffectEventCtx@@@@AEAAXXZ 0x140288e50 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VCAdditionalEvent@@@@AEAAXXZ 0x140288e90 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VCIngredientInfo@@@@AEAAXXZ 0x140288dd0 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VCPtred@@@@AEAAXXZ 0x140289050 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VCUserChangeableItemHistory@@@@AEAAXXZ 0x140288f10 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VCUserLimitHistory@@@@AEAAXXZ 0x140288f50 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VChangeableProductInfo@@@@AEAAXXZ 0x140288f90 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VInvokeEffectOption@@@@AEAAXXZ 0x140288fd0 ; caller-evidence
+// MS2-PIN: ?Release@?$MS2Ptr@VNpcShopItemLife@@@@AEAAXXZ 0x140289010 ; caller-evidence (byte-identical slot: no exe copy of this type here)
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAAPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x1402890d0 ; caller-evidence
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAUItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAAPEAUItemEntity@@XZ 0x1402890b0 ; prop
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCIngredientInfo@@@@XZ 0x1402890d0 ; order
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCPtred@@@@XZ 0x1402890f0 ; order
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEA_JV?$allocator@_J@std@@@std@@QEAAPEA_JXZ 0x140289110 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@V?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCCompactControlSkill@@@@V?$CElementTraits@V?$MS2Ptr@VCCompactControlSkill@@@@@ATL@@@ATL@@@@@@AEAAXPEAX@Z 0x140289130 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VAdditionalEffectEventCtx@@@@AEAAXPEAX@Z 0x1402891d0 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCAdditionalEvent@@@@AEAAXPEAX@Z 0x140289220 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCIngredientInfo@@@@AEAAXPEAX@Z 0x140289270 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCPtred@@@@AEAAXPEAX@Z 0x1402892c0 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserChangeableItemHistory@@@@AEAAXPEAX@Z 0x140289310 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserLimitHistory@@@@AEAAXPEAX@Z 0x140289360 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VChangeableProductInfo@@@@AEAAXPEAX@Z 0x1402893b0 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VInvokeEffectOption@@@@AEAAXPEAX@Z 0x140289400 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VNpcShopItemLife@@@@AEAAXPEAX@Z 0x140289450 ; order
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCIngredientInfo@@@@XZ 0x1402890f0 ; caller-evidence
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCPtred@@@@XZ 0x140289110 ; caller-evidence (byte-identical slot: no exe copy of this type here)
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEA_JV?$allocator@_J@std@@@std@@QEAAPEA_JXZ 0x140289090 ; caller-evidence (byte-identical slot: no exe copy of this type here)
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@V?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCCompactControlSkill@@@@V?$CElementTraits@V?$MS2Ptr@VCCompactControlSkill@@@@@ATL@@@ATL@@@@@@AEAAXPEAX@Z 0x140289270 ; caller-evidence (byte-identical slot: no exe copy of this type here)
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VAdditionalEffectEventCtx@@@@AEAAXPEAX@Z 0x1402891d0 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCAdditionalEvent@@@@AEAAXPEAX@Z 0x140289220 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCIngredientInfo@@@@AEAAXPEAX@Z 0x140289130 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCPtred@@@@AEAAXPEAX@Z 0x140289450 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserChangeableItemHistory@@@@AEAAXPEAX@Z 0x1402892c0 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserLimitHistory@@@@AEAAXPEAX@Z 0x140289310 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VChangeableProductInfo@@@@AEAAXPEAX@Z 0x140289360 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VInvokeEffectOption@@@@AEAAXPEAX@Z 0x1402893b0 ; caller-evidence
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VNpcShopItemLife@@@@AEAAXPEAX@Z 0x140289400 ; caller-evidence (byte-identical slot: no exe copy of this type here)
 // MS2-PIN: ?_Root@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@XZ 0x1402894c0 ; unique
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1402894e0 ; unique
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAXXZ 0x1402895f0 ; unique
@@ -180,7 +180,7 @@ typedef std::vector<MS2Ptr<CIngredientInfo> > Unk_CsIngVector;
 typedef std::list<MS2Ptr<CUserChangeableItemHistory> > Unk_CsHistList;
 // The ICF-folded accessor instances, named by the instantiation the exe's symbol rows bind.
 class Unk_XmlNode;
-typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_CsRemakeAlloc;
+typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_CsRemakeAlloc; template void std::vector<Unk_RemakeLockOpt>::_Xlength();   // 0x140289ea0 (ICF fold; harvest name)
 typedef std::_Vector_alloc<std::_Vec_base_types<__int64, std::allocator<__int64> > > Unk_CsI64Alloc;
 typedef std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<CPtred>, std::allocator<MS2Ptr<CPtred> > > > Unk_CsPtredAlloc;
 typedef std::_Vector_alloc<std::_Vec_base_types<Unk_XmlNode*, std::allocator<Unk_XmlNode*> > > Unk_CsXmlAlloc;
@@ -196,10 +196,10 @@ void* FUN_14027d3d0(void* it, __int64 ptr, __int64 cont);   // iterator ctor
 // @0x140288770
 template Unk_CsIngVector::iterator Unk_CsIngVector::_Mybase::_Make_iterator_offset(size_t) noexcept;
 // MS2-PIN: ?_Make_iterator_offset@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@2@_K@Z 0x140288770 ; unique
-
-
-
-
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@AEBH@Z 0x14028ad10 ; callees: non-const end 0x14028a910 / _Getcomp 0x140288430, lower_bound 0x14028af20
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@AEBH@Z 0x14028adf0 ; callees: const end 0x14028a970 / _Getcomp 0x140288450, lower_bound 0x14028af80
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@AEBH@Z 0x14028af20 ; caller (non-const find 0x14028ad10)
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@AEBH@Z 0x14028af80 ; caller (const find 0x14028adf0 only)
 
 // vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
 void FUN_1402875b0(__int64, __int64, __int64);        // _Destroy
@@ -226,32 +226,32 @@ void Unk_CsI64Vec::FUN_140289670()
 __int64 FUN_14027b560(__int64 p);                       // std::addressof
 void* FUN_14027ce50(void* it, __int64 node, __int64 cont); // list iterator ctor
 void * FUN_14027ced0(void *, __int64, __int64);  // C3: the definition's signature
-__int64* FUN_14027d630(__int64* it, __int64 base);      // reverse_iterator ctor
+// (0x14027d630 = the reverse_iterator<vector<ItemEntity>::iterator> ctor, commonstruct_2)
 
 // list::_Unchecked_begin: an unchecked iterator at the head's next node.
 // @0x140289d20
-Unk_It* Unk_HistList::FUN_140289d20(Unk_It* out)
-{
-    FUN_14027ced0(out, (__int64)reinterpret_cast<Unk_CsHistAlloc*>(this)->_Myhead()->_Next, 0);
-    return out;
-}
+template Unk_CsHistList::_Unchecked_iterator Unk_CsHistList::_Unchecked_begin();
+//
+//
+//
+//
 
 // list::begin: iterator(_Myhead()->_Next, addressof(_Get_data())).
 // @0x14028a1a0
-Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out) noexcept
-{
-    FUN_14027ce50(out, (__int64)reinterpret_cast<Unk_CsHistAlloc*>(this)->_Myhead()->_Next,
-                  FUN_14027b560((__int64)&reinterpret_cast<Unk_CsHistAlloc*>(this)->_Get_data()));
-    return out;
-}
+template Unk_CsHistList::iterator Unk_CsHistList::begin() noexcept;
+//
+//
+//
+//
+//
 
 // list::front: *begin().
 // @0x14028aef0
-Unk_HistRef* Unk_HistList::FUN_14028aef0()
-{
-    Unk_It it;
-    return reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<Unk_CsHistList::iterator*>(FUN_14028a1a0(&it)));
-}
+template Unk_CsHistList::reference Unk_CsHistList::front();
+//
+//
+//
+//
 
 // float floor(float): <cmath>'s inline, calling floorf through the exe's import slot.
 extern "C" float (__cdecl* __imp_floorf)(float);
@@ -279,12 +279,12 @@ template void Unk_CsIngVector::push_back(const MS2Ptr<CIngredientInfo>&);
 
 // vector<ItemEntity>::rbegin: reverse_iterator(end()).
 // @0x14028b360
-Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out) noexcept
-{
-    Unk_It it;
-    FUN_14027d630((__int64*)out, (__int64)((const Unk_It*)(&static_cast<const std::vector<ItemEntity>::iterator&>(reinterpret_cast<std::vector<ItemEntity>&>(*this).end())))->p);
-    return out;
-}
+template std::vector<ItemEntity>::reverse_iterator std::vector<ItemEntity>::rbegin() noexcept;
+// MS2-PIN: ?rbegin@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@@2@XZ 0x14028b360 ; unique
+//
+//
+//
+//
 
 // vector<16-byte value>::_Ucopy body shared by the insertion paths in commonstruct slices C/D.
 // Keep the allocator-aware copy path: these values carry reference-counted members.

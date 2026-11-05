@@ -20,7 +20,7 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/client/ms2/blockmanager.h"  // C3: CBlockManager::FindBlockedAction, BlockPtr
 #include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read7
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
@@ -382,7 +382,7 @@ void CMesoMarketMan::OnMesoMarketOwnRemoved(CInPacket& packet)
 {
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_mapOwn.RemoveKey(qwId);
     ShowResultMessage(nCode);
 }
@@ -403,7 +403,7 @@ void CMesoMarketMan::OnBuyResult(CInPacket& packet)
     int nCode = packet.ReadInt32();
     __int64 qwId = packet.ReadInt64();
     m_nBuy = packet.ReadInt32();
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     switch (nCode)
     {
     case 0:
@@ -416,7 +416,7 @@ void CMesoMarketMan::OnBuyResult(CInPacket& packet)
 // @0x140d6f0b0
 void CMesoMarketMan::AddOwnProduct(MS2Ptr<CMesoMarketProductCli> sp)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_mapOwn.SetAt(sp->m_n18, sp);
 }
 

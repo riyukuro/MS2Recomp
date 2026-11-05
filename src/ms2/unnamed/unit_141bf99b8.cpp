@@ -21,64 +21,64 @@
 // MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CADO@@efd@@UEAAPEAXI@Z 0x141bf9d90 ; prop
 // MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VPhysXPropMessage@ecrPhysX@@V23@$0DAAL@@efd@@UEAAPEAXI@Z 0x141bf9dd0 ; prop
 // MS2-PIN: ??_GUnk_WsVa00@@QEAAPEAXI@Z 0x141bf9e10 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa270 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2b0 ; order
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2f0 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa330 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3b0 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3f0 ; probe
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa430 ; order
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa470 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfaff0 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb070 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb0f0 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb170 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb2f0 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb370 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb3f0 ; probe
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb470 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb660 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb680 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb6a0 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb6c0 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb6e0 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb700 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb720 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb740 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb760 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb780 ; probe
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb7a0 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb860 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb880 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb8a0 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb8c0 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb8e0 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb900 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb920 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb940 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb960 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb980 ; probe
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb9a0 ; probe
+// MS2-PIN: ??_GCNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa270 ; slot 0 (m_350, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEAAPEAXI@Z 0x141bfa2b0 ; slot 1 (m_738, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3b0 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@QEAAPEAXI@Z 0x141bfa3f0 ; slot 6 (m_780, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@QEAAPEAXI@Z 0x141bfa430 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa470 ; slot 8 (m_420, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4b0 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4f0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x141bfaff0 ; slot 0 (m_350, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEAAPEAVCNode@12@HII@Z 0x141bfb070 ; slot 1 (m_738, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb0f0 ; slot 2 (m_848, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb170 ; slot 3 (m_208, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x141bfb270 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_FieldPropertyType@@II@Z 0x141bfb2f0 ; slot 6 (m_780, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb370 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb3f0 ; slot 8 (m_420, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb470 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?CreateNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEAAPEAVCNode@12@_JII@Z 0x141bfb4f0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEAAXXZ 0x141bfb660 ; slot 0 (m_350, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEAAXXZ 0x141bfb680 ; slot 1 (m_738, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb6c0 ; slot 3 (m_208, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb6a0 ; slot 2 (m_848, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAXXZ 0x141bfb6e0 ; slot 4 (m_930, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAAXXZ 0x141bfb700 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@QEAAXXZ 0x141bfb720 ; slot 6 (m_780, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@QEAAXXZ 0x141bfb740 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEAAXXZ 0x141bfb760 ; slot 8 (m_420, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@QEAAXXZ 0x141bfb780 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEAAXXZ 0x141bfb7a0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEAAXXZ 0x141bfb860 ; slot 0 (m_350, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEAAXXZ 0x141bfb880 ; slot 1 (m_738, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb8c0 ; slot 3 (m_208, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb8a0 ; slot 2 (m_848, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAXXZ 0x141bfb8e0 ; slot 4 (m_930, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAAXXZ 0x141bfb900 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@QEAAXXZ 0x141bfb920 ; slot 6 (m_780, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@QEAAXXZ 0x141bfb940 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEAAXXZ 0x141bfb960 ; slot 8 (m_420, member order)
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV5e8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV5e8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbe70 ; probe
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbf60 ; probe
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc050 ; probe
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc140 ; probe
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc230 ; probe
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc5f0 ; prop
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc770 ; prop
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@QEAAXXZ 0x141bfb980 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEAAXXZ 0x141bfb9a0 ; slot 10 (m_468, member order)
 // MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc830 ; prop
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc8f0 ; prop
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc9b0 ; prop
-// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfca70 ; prop
-// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfcb30 ; prop
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcd20 ; probe
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfce20 ; order
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcf20 ; probe
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd020 ; probe
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd220 ; probe
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd320 ; probe
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd420 ; order
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd520 ; probe
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc770 ; slot 2 (m_848, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc5f0 ; slot 0 (m_350, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc6b0 ; slot 1 (m_738, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc8f0 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc9b0 ; slot 6 (m_780, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfca70 ; slot 8 (m_420, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfcb30 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?FindNextNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfcbf0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcd20 ; slot 0 (m_350, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfce20 ; slot 1 (m_738, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@HV?$MS2Ptr@VUnk_WsEffect848@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsEffect848@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcf20 ; slot 2 (m_848, member order; the real value type calls ??_GCNode)
+// MS2-PIN: ?FreeNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd020 ; slot 3 (m_208, member order; the real value type calls ??_GCNode)
 // MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd820 ; probe
 // MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd8c0 ; probe
 // MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV1a8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV1a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd960 ; prop
@@ -95,43 +95,43 @@
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV4e0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV4e0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe040 ; prop
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe0e0 ; prop
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6d8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6d8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe220 ; prop
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXXZ 0x141bfe2c0 ; probe
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXXZ 0x141bfe310 ; order
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXXZ 0x141bfe360 ; probe
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXXZ 0x141bfe3b0 ; probe
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXXZ 0x141bfe450 ; probe
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXXZ 0x141bfe4a0 ; probe
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXXZ 0x141bfe4f0 ; order
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXXZ 0x141bfe540 ; probe
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd120 ; slot 4 (m_930, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd220 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd320 ; slot 6 (m_780, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd420 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd520 ; slot 8 (m_420, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd620 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?FreeNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd720 ; slot 10 (m_468, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEAAXXZ 0x141bfe2c0 ; slot 0 (m_350, member order)
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@IUUnk_WsV0e8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV0e8@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeaf0 ; probe
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb50 ; probe
 // MS2-PIN: ?GetTailPosition@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0 ; probe
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfedb0 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee00 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee50 ; prop
+// MS2-PIN: ?FreePlexes@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEAAXXZ 0x141bfe310 ; slot 1 (m_738, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEAAXXZ 0x141bfe360 ; slot 2 (m_848, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@AEAAXXZ 0x141bfe400 ; slot 4 (m_930, member order)
 // MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeea0 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeef0 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfef40 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfefe0 ; prop
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee50 ; slot 2 (m_848, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@AEAAXXZ 0x141bfe450 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@AEAAXXZ 0x141bfe4a0 ; slot 6 (m_780, member order)
 // MS2-PIN: ?GetNextKey@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@AEAPEAU__POSITION@@@Z 0x141bff170 ; order
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff570 ; prop
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@AEAAXXZ 0x141bfe4f0 ; slot 7 (m_5a0, member order)
 // MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff660 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff750 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff840 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffb10 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffc00 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffcf0 ; prop
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@AEAAXXZ 0x141bfe540 ; slot 8 (m_420, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff570 ; slot 2 (m_848, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEAAXXZ 0x141bfe590 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEAAXXZ 0x141bfe5e0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEBAIXZ 0x141bfea30 ; slot 0 (m_350, member order)
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10 ; order
 // MS2-PINS-END tplpin
 // tplpin --simulate accepted pins (w533)
 // MS2-PIN: ??_GUnk_WsVa00@@QEAAPEAXI@Z 0x141bf9e10
 // MS2-PIN: ??_G?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@QEAAPEAXI@Z 0x141bf9ed0
 // MS2-PIN: ??_GCNode@?$CAtlList@UUnk_WsV058@@V?$CElementTraits@UUnk_WsV058@@@ATL@@@ATL@@QEAAPEAXI@Z 0x141bfa230
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2f0
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa330
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3b0
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3f0
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa470
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEBAIXZ 0x141bfea40 ; slot 1 (m_738, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEBAIXZ 0x141bfea50 ; slot 2 (m_848, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEBAIXZ 0x141bfea60 ; slot 3 (m_208, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEBAIXZ 0x141bfea70 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@QEBAIXZ 0x141bfea80 ; slot 6 (m_780, member order)
 // MS2-PIN: ??_GCNode@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa530
 // MS2-PIN: ??_GCNode@?$CRBTree@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa570
 // MS2-PIN: ??_GCNode@?$CRBTree@IUUnk_WsV1a8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV1a8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa5b0
@@ -143,41 +143,41 @@
 // MS2-PIN: ??_GCNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@QEAAPEAXI@Z 0x141bfa7f0
 // MS2-PIN: ??_GCNode@?$CRBTree@_KUUnk_WsV4e0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV4e0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa870
 // MS2-PIN: ??_GCNode@?$CRBTree@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa8b0
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfaff0
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb070
-// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb0f0
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb2f0
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb370
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb3f0
-// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb470
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb680
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb6a0
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb6c0
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb6e0
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb700
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb720
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb740
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb760
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb780
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb7a0
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb860
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb880
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb8a0
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb8c0
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb8e0
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb920
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb940
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb960
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb980
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb9a0
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@QEBAIXZ 0x141bfea90 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEBAIXZ 0x141bfeaa0 ; slot 8 (m_420, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@QEBAIXZ 0x141bfeab0 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEBAIXZ 0x141bfeac0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfedb0 ; slot 0 (m_350, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee00 ; slot 1 (m_738, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeef0 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfef40 ; slot 6 (m_780, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfef90 ; slot 8 (m_420, member order)
+// MS2-PIN: ?GetNext@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfefe0 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb6c0 ; slot 3 (m_208, member order)
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb6a0 ; slot 2 (m_848, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141bff390 ; slot 0 (m_350, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141bff480 ; slot 1 (m_738, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff750 ; slot 4 (m_930, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141bff840 ; slot 5 (m_3a0, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@W4Unk_FieldPropertyType@@V?$MS2Ptr@VFieldProperty@@@@V?$CElementTraits@W4Unk_FieldPropertyType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VFieldProperty@@@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4Unk_FieldPropertyType@@AEAI1AEAPEAV312@@Z 0x141bff930 ; slot 6 (m_780, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@_KV?$SmartPointer@VCSkillMagicControlGuide@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VCSkillMagicControlGuide@@@efd@@@4@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffa20 ; slot 7 (m_5a0, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@_KV?$MS2Ptr@VCBoxCollision@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCBoxCollision@@@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffb10 ; slot 8 (m_420, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffc00 ; slot 9 (m_2f8, member order)
+// MS2-PIN: ?GetNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEBAPEAVCNode@12@_JAEAI1AEAPEAV312@@Z 0x141bffcf0 ; slot 10 (m_468, member order)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb8c0 ; slot 3 (m_208, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@HV?$MS2Ptr@VUnk_WsEffect848@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsEffect848@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2f0 ; slot 2 (m_848, member order)
+// MS2-PIN: ??_GCNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa330 ; slot 3 (m_208, member order)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV5e8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV5e8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbe70
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc050
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc230
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcf20
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd020
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd220
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd320
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd520
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd820
 // MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd8c0
 // MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV1a8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV1a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd960
@@ -191,27 +191,27 @@
 // MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdfa0
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV4e0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV4e0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe040
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe0e0
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXXZ 0x141bfe360
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXXZ 0x141bfe3b0
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXXZ 0x141bfe450
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXXZ 0x141bfe4a0
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXXZ 0x141bfe540
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetClassDesc@WorldService@@UEBAPEBVClassInfo@efd@@XZ 0x141bfe670
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb50
 // MS2-PIN: ?GetTailPosition@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee00
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee50
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeea0
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeef0
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfef40
-// MS2-PIN: ?GetNext@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfefe0
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee50 ; slot 2 (m_848, member order)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetNextKey@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@AEAPEAU__POSITION@@@Z 0x141bff170
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff390
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff570
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff660
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff750
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffb10
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffc00
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ??_GUnk_WsVa18@@QEAAPEAXI@Z 0x141bf99d0
 // MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VActorAddedMessage@egmAnimation@@@efd@@UEAAPEAXI@Z 0x141bf9a50
 // MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VActorRemovedMessage@egmAnimation@@@efd@@UEAAPEAXI@Z 0x141bf9a90
@@ -228,45 +228,45 @@
 // MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CADN@@efd@@UEAAPEAXI@Z 0x141bf9d50
 // MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CADO@@efd@@UEAAPEAXI@Z 0x141bf9d90
 // MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VPhysXPropMessage@ecrPhysX@@V23@$0DAAL@@efd@@UEAAPEAXI@Z 0x141bf9dd0
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa270
-// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2b0
-// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa430
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb660
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb900
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb8a0 ; slot 2 (m_848, member order)
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbf60
 // MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc140
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc5f0
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc770
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc830
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc8f0
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc9b0
-// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfca70
-// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfcb30
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcd20
-// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfce20
-// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd420
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc770 ; slot 2 (m_848, member order)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV118@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV118@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdaa0
 // MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV708@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV708@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdbe0
 // MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6d8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6d8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe220
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXXZ 0x141bfe2c0
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXXZ 0x141bfe310
-// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXXZ 0x141bfe4f0
-// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfedb0
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff840
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffcf0
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff570 ; slot 2 (m_848, member order)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?CreateInstance@?$TSingleton@VCDebugHelper@@@@SAPEAVCDebugHelper@@XZ 0x141bfaf70
 // MS2-PIN: ?DecRefCount@WorldService@@UEBAXXZ 0x141bfb570
 // MS2-PIN: ?DestroyInstance@?$TSingleton@VCDebugHelper@@@@SAXXZ 0x141bfb600
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEBAIXZ 0x141bfea90
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetLastScaledTime@NiControllerSequence@@QEBAMXZ 0x141bfeda0
-// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff480
-// MS2-PIN: ?GetNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4Unk_WsMapKey7@@AEAI1AEAPEAV312@@Z 0x141bff930
-// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffa20
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa370
 // MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z 0x141bfad40 ; m_058 (NewNode 0x141c08030)
 // MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bfadc0 ; m_178 (NewNode 0x141c080f0)
 // MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z 0x141bfae40 ; PC list (NewNode 0x141c081b0)
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAXXZ 0x141bfe400
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAXXZ 0x141bfe3b0 ; slot 3 (m_208, member order)
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe790 ; m_058 (NewNode 0x141c08030)
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe870 ; m_178 (NewNode 0x141c080f0)
 // MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe950 ; PC list (NewNode 0x141c081b0)
@@ -380,28 +380,28 @@ template <class M> static void WsDriveStd(M& m, typename M::key_type k)
     for (it = m.begin(); it != m.end(); ++it) {}
 }
 
-struct Unk_W6V350 { ~Unk_W6V350(); void* p0; void* p1; };   // dtor 0x140964a70
-struct Unk_W6V738 { ~Unk_W6V738(); void* p; };               // dtor 0x141bf54a0
-struct Unk_W6V3a0 { ~Unk_W6V3a0(); void* p0; void* p1; };   // dtor 0x141746770
-struct Unk_W6V780 { ~Unk_W6V780(); void* p0; void* p1; };   // dtor 0x141bf5630
-struct Unk_W6V5a0 { ~Unk_W6V5a0(); void* p; };               // dtor 0x1410a6c00
-struct Unk_W6V420 { ~Unk_W6V420(); void* p0; void* p1; };   // dtor 0x140a00490
-struct Unk_W6V2f8 { ~Unk_W6V2f8(); void* p0; void* p1; };   // dtor 0x14123ebe0
-struct Unk_W6V468 { ~Unk_W6V468(); void* p0; void* p1; };   // dtor 0x1410b4290
+class CRegionSkillObject : public CPtred {};     // m_3a0 value (MS2Ptr dtor 0x141746770). The 8 maps below are worldservice_4's real types
+class CBoxCollision : public CPtred {};          // m_420 value (MS2Ptr dtor 0x140a00490)
+class Unk_GoField : public CPtred {};            // m_2f8 value (MS2Ptr dtor 0x14123ebe0)
+class Unk_WsB_Vibrator : public CPtred {};       // m_468 value (MS2Ptr dtor 0x1410b4290)
+class Unk_WsEntity738 : public efd::IBase {}; class Unk_WsEffect848 : public CPtred {};   // m_738 value (SmartPointer dtor 0x141bf54a0); m_848 value
+enum Unk_FieldPropertyType {};                   // m_780 key (value MS2Ptr<FieldProperty>, dtor 0x141bf5630)
+#include "ms2/client/ms2/cubecraft_1.h"          // m_5a0 value CSkillMagicControlGuide (dtor 0x1410a6c00); m_350 value CPortal (portal.h, dtor 0x140964a70)
+// The CNode / CPair families of all 11 maps sit in member order 350 738 848 208 930 3a0 780 5a0 420 2f8 468 (RemoveAll 0x141c16230..).
 struct Unk_W6Access : WorldService { Unk_W6Access(); static void Del(WorldService* w) { static_cast<Unk_W6Access*>(w)->WorldService::DeleteThis(); } };   // reaches the protected DeleteThis
 void Unk_WsInst6(WorldService* w)
 {
-    WsDriveAtl(w->m_208, 1);
-    WsDriveAtl(w->m_848, 1);
+    WsDriveAtl(w->m_208, 1); { ATL::CAtlMap<int, TPtrValue<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > > m; WsDriveAtl(m, 1); }   // real m_208: its ??_GCNode / FreeNode
+    WsDriveAtl(w->m_848, 1); { ATL::CAtlMap<int, MS2Ptr<Unk_WsEffect848> > m; WsDriveAtl(m, 1); }   // real m_848: its ??_GCNode / FreeNode
     WsDriveAtl(w->m_930, 1);
-    ATL::CAtlMap<unsigned, Unk_W6V350> m350; WsDriveAtl(m350, 1);
-    ATL::CAtlMap<unsigned, Unk_W6V738> m738; WsDriveAtl(m738, 1);
-    ATL::CAtlMap<unsigned, Unk_W6V3a0> m3a0; WsDriveAtl(m3a0, 1);
-    ATL::CAtlMap<unsigned, Unk_W6V780> m780; WsDriveAtl(m780, 1);
-    ATL::CAtlMap<unsigned __int64, Unk_W6V5a0> m5a0; WsDriveAtl(m5a0, 1);
-    ATL::CAtlMap<unsigned __int64, Unk_W6V420> m420; WsDriveAtl(m420, 1);
-    ATL::CAtlMap<unsigned __int64, Unk_W6V2f8> m2f8; WsDriveAtl(m2f8, 1);
-    ATL::CAtlMap<unsigned __int64, Unk_W6V468> m468; WsDriveAtl(m468, 1);
+    ATL::CAtlMap<int, MS2Ptr<CPortal> > m350; WsDriveAtl(m350, 1);
+    ATL::CAtlMap<int, efd::SmartPointer<Unk_WsEntity738> > m738; WsDriveAtl(m738, 1);
+    ATL::CAtlMap<int, MS2Ptr<CRegionSkillObject> > m3a0; WsDriveAtl(m3a0, 1);
+    ATL::CAtlMap<Unk_FieldPropertyType, MS2Ptr<FieldProperty> > m780; WsDriveAtl(m780, 1);
+    ATL::CAtlMap<unsigned __int64, efd::SmartPointer<CSkillMagicControlGuide> > m5a0; WsDriveAtl(m5a0, 1);
+    ATL::CAtlMap<unsigned __int64, MS2Ptr<CBoxCollision> > m420; WsDriveAtl(m420, 1);
+    ATL::CAtlMap<unsigned __int64, MS2Ptr<Unk_GoField> > m2f8; WsDriveAtl(m2f8, 1);
+    ATL::CAtlMap<__int64, MS2Ptr<Unk_WsB_Vibrator> > m468; WsDriveAtl(m468, 1);
     WsDriveStd(w->m_1d8, 1);
     WsDriveStd(w->m_2e8, 1);
     WsDriveStd(w->m_ac0, 1);
@@ -589,9 +589,9 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     delete new TPtredDummy<ATL::CAtlList<efd::SmartPointer<egf::Entity> > >();   // ??_G 0x141bf9e50 (dtor 0x141bf56c0)
     // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
     { Unk_WsM5 m; m.RemoveKey(0); }
-    { Unk_WsM10 m; m.RemoveKey(0); }
-    { Unk_WsM11 m; m.RemoveKey(0); m.SetAt(0, MS2Ptr<Unk_WsMapV11>()); }   // CreateNode<__int64, V11> 0x141bfb4f0
-    { Unk_WsM7 m; m.Lookup(Unk_WsMapKey7()); }   // GetNode; its CreateNode is SetAt 0x141c1b120's 0x141bfb2f0 (W6V2f8 look-alike)
+    // (Unk_WsM10 = m_2f8, Unk_WsM11 = m_468, Unk_WsM7 = m_780: now driven over their real types in Unk_WsInst6)
+    // CreateNode<__int64, MS2Ptr<Unk_WsB_Vibrator>> 0x141bfb4f0 is m468.SetAt there
+    // the enum-keyed GetNode 0x141bff930 / CreateNode 0x141bfb2f0 are m780.Lookup / SetAt there
     // CRBTree: Find, FreeNode -> CNode scalar deleting dtor
     { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); }
     { Unk_WsF9 m; m.Lookup(0); m.RemoveKey(0); }
@@ -637,8 +637,8 @@ template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessa
 
 // Scalar deleting dtors told apart by their exe users (fx24): the CNode ones are called by the M10 / M11 FreeNode
 // 0x141bfd620 / 0x141bfd720; the ClassFunHandler one calls FunctorImpl's dtor 0x141bf5210, TPtredDummy's its dtor 0x141bf56c0.
-// MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV10@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV10@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4b0
-// MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV11@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV11@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4f0
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
+// (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ??_G?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVWorldService@@P82@EAAXXZ@@UEAAPEAXI@Z 0x141bf9a10
 // MS2-PIN: ??_G?$TPtredDummy@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x141bf9e50
 // MS2-PIN: ??_GCNode@?$CRBTree@W4Unk_WsKindKey@@HV?$CElementTraits@W4Unk_WsKindKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAXI@Z 0x141bfa8f0
@@ -835,8 +835,8 @@ void FUN_141bff270(void* map, void** pos)
 }
 
 // GetStartPosition: the first non-empty bin.
-// MS2-FUNCTIONAL: the member of a stand-in map with the same header layout (m_738)
-void* FUN_141bfff50(void* map) { return static_cast<ATL::CAtlMap<unsigned, Unk_W6V738>*>(map)->GetStartPosition(); }
+// MS2-FUNCTIONAL: the member of the real m_738 map
+void* FUN_141bfff50(void* map) { return static_cast<ATL::CAtlMap<int, efd::SmartPointer<Unk_WsEntity738> >*>(map)->GetStartPosition(); }
 
 // MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_848)
 void* FUN_141bfffc0(void* map) { return static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->GetStartPosition(); }
@@ -851,8 +851,8 @@ static bool WsLookupOut(void* value, void* out)
 }
 
 // Lookup(key): the pair, or null (m_350).
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void* FUN_141c06a60(void* map, unsigned key) { return static_cast<ATL::CAtlMap<unsigned, Unk_W6V350>*>(map)->Lookup(key); }
+// MS2-FUNCTIONAL: the member of the real m_350 map
+void* FUN_141c06a60(void* map, unsigned key) { return static_cast<ATL::CAtlMap<int, MS2Ptr<CPortal> >*>(map)->Lookup(key); }
 
 struct Unk_WsA_FieldRef;
 struct Unk_WsA_Val16;
@@ -862,17 +862,17 @@ class Unk_WsB_Marker;
 class Unk_WsB_Spawn;
 class CInteractObject;
 
-// MS2-FUNCTIONAL: Lookup(key) of a stand-in map plus an MS2Ptr<CPtred> assignment (m_350)
+// MS2-FUNCTIONAL: Lookup(key) of the real m_350 map plus an MS2Ptr<CPtred> assignment (m_350)
 bool FUN_141c06aa0(void* map, unsigned key, Unk_WsA_FieldRef* out)
 {
-    ATL::CAtlMap<unsigned, Unk_W6V350>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_W6V350>*>(map)->Lookup(key);
+    ATL::CAtlMap<int, MS2Ptr<CPortal> >::CPair* p = static_cast<ATL::CAtlMap<int, MS2Ptr<CPortal> >*>(map)->Lookup(key);
     return WsLookupOut(p ? &p->m_value : 0, out);
 }
 
-// MS2-FUNCTIONAL: Lookup(key) of a stand-in map plus an MS2Ptr<CPtred> assignment (m_848)
+// MS2-FUNCTIONAL: Lookup(key) of the header m_848 map plus an MS2Ptr<CPtred> assignment (m_848)
 bool FUN_141c06b10(void* map, unsigned key, Unk_WsA_Val16* out)
 {
-    ATL::CAtlMap<unsigned, Unk_W6V780>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_W6V780>*>(map)->Lookup(key);
+    ATL::CAtlMap<unsigned, Unk_WsV848>::CPair* p = static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->Lookup(key);
     return WsLookupOut(p ? &p->m_value : 0, out);
 }
 

@@ -70,7 +70,7 @@ public:
 };
 int FUN_141277f40();
 float FUN_1412762d0(const NiPoint3& pt);                 // the screen y offset of a world point
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_AuCfgValue
 {
 public:
@@ -307,7 +307,7 @@ Vector3 NpcNavigationEntity::vfunc_7()
 // @0x140e790f0
 float NpcNavigationEntity::vfunc_8()
 {
-    return NavigationEntity::vfunc_8() - (reinterpret_cast<const float&>(reinterpret_cast<Unk_IntOptionEntry&>(((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0).FUN_140298f40()) + 30.0f);
+    return NavigationEntity::vfunc_8() - (*reinterpret_cast<Common::Constants::Value<float>&>(((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0).Get() + 30.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

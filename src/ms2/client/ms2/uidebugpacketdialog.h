@@ -50,7 +50,7 @@ public:
     void OnDoubleClick(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291440
     bool FUN_141291470();                                       // 0x141291470 read the fixed packet and arm the loop
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
+    // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -200,15 +200,15 @@ CMentoringManager::MentorPtr CMentoringManager::GetMentee(int nIndex)
 }
 
 // @0x140b71720
-size_t CMentoringManager::GetMenteeCount()
+int CMentoringManager::GetMenteeCount()
 {
-    return m_mentees.GetCount();
+    return (int)m_mentees.GetCount();
 }
 
 // @0x140b71750
-size_t CMentoringManager::GetMentorCount()
+int CMentoringManager::GetMentorCount()
 {
-    return m_mentors.GetCount();
+    return (int)m_mentors.GetCount();
 }
 
 // @0x140b71780

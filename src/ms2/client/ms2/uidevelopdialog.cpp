@@ -88,7 +88,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_ServiceManager* FUN_1413f9850();
 struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 void FUN_1413f9c40(bool b);
 class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
@@ -188,7 +188,7 @@ void UIDevelopDialog::OnLoadComplete()
     obj.FUN_1407cbbe0("propertyVisualizer", m_bPropertyVisualizer);
     unsigned nInstancing = 1;
     {
-        efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if ((HardwareInstancingService*)spInstancing != 0)
             nInstancing = spInstancing.operator->()->FUN_1413d7eb0();
         obj.FUN_1407cb9c0("instancingMax", nInstancing);
@@ -402,7 +402,7 @@ void UIDevelopDialog::FUN_1412931c0(bool bOn)
 void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
 {
     m_bOneInstancing = bOn;
-    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if ((HardwareInstancingService*)spInstancing != 0)
         spInstancing.operator->()->FUN_1413d7ef0(nIndex, m_bOneInstancing);
 }
@@ -440,7 +440,7 @@ void UIDevelopDialog::FUN_141293390(float fScale)
 // @0x1412933f0
 void UIDevelopDialog::FUN_1412933f0(int nIndex)
 {
-    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if ((HardwareInstancingService*)spInstancing != 0)
     {
         MeshInstancing* pInstancing = spInstancing.operator->()->FUN_1413d7ef0(nIndex, m_bOneInstancing);

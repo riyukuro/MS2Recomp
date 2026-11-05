@@ -7,8 +7,8 @@
 // MS2-RANGE: 0x141126010-0x1411263f0 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??1SetItemEffectInfo@@UEAA@XZ 0x141126060
-// MS2-PIN: ??4?$MS2Ptr@VCube@@@@QEAAAEAV0@AEBV0@@Z 0x141126100
-// MS2-PIN: ??4?$MS2Ptr@VFittingDollData@@@@QEAAAEAV0@AEBV0@@Z 0x141126140
+// MS2-PIN: ??4?$MS2Ptr@VFittingDollData@@@@QEAAAEAV0@AEBV0@@Z 0x141126100 ; AddRef 0x14112fa90 / Release 0x141149320 are the FittingDollData ones; FUN_1410cb4c0 assigns MS2Ptr<FittingDollData> through it
+// MS2-PIN: ??4?$MS2Ptr@VCube@@@@QEAAAEAV0@AEBV0@@Z 0x141126140 ; look-alike pairing only: 0x141126140 is the Unk_CMISHousePtr assign (AddRef 0x14112fac0), the Cube one is 0x140965020
 // MS2-PIN: ??4?$Unk_PayloadPtr@VCubeOwner@@@@QEAAAEAV0@H@Z 0x141126260
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"

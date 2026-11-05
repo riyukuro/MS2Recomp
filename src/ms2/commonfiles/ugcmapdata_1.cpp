@@ -39,7 +39,7 @@
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit<CAtlArray<int>> (was FUN_140177de0)
 class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 struct Unk_LevelArray;
 class CubeMapInformationService;
 
@@ -66,7 +66,7 @@ public:
 };
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
-CubeMapInformationService * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
+//
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
@@ -328,7 +328,7 @@ void FUN_1408a1640(Cube* cube) {
 MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 // @0x1408a18d0
 int FUN_1408a18d0(__int64 charID) {
-    efd::SmartPointer<CubeMapInformationService> service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> service(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     int style=0;
     PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player!=0) {

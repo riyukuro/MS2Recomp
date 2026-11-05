@@ -246,9 +246,9 @@ class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };  
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInformationService*() const;        // 0x140885310
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // The actor state of the player.
 class JobSystem   // C3: member view (jobsystem.h needs MS2_THIS_FILE)
@@ -553,7 +553,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
                     {
-                        efd::SmartPointer<CubeMapInformationService> phys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+                        efd::SmartPointer<CubeMapInformationService> phys(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                         if (phys.operator CubeMapInformationService*() != 0)
                         {
                             MS2Ptr<Cube> weapon(reinterpret_cast<CubeMapInformationService*>(phys.operator->())->GetCubeAtPoint(pCtl->GetPtCell()));

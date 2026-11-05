@@ -4,8 +4,8 @@
 // MS2-UNIT: unit_141126bd0
 // MS2-RANGE: 0x141126bd0-0x141127a90 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??8?$Unk_Int3@$0A@@@QEBA_NAEBV0@@Z 0x1411272b0 ; unique
-// MS2-PIN: ??9?$Unk_Int3@$0A@@@QEBA_NAEBV0@@Z 0x1411279c0 ; unique
+// MS2-PIN: ??8?$Unk_Int3Key@$0A@@@QEBA_NAEBV0@@Z 0x1411272b0 ; unique
+// MS2-PIN: ??9?$Unk_Int3Key@$0A@@@QEBA_NAEBV0@@Z 0x1411279c0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -22,7 +22,7 @@
 
 // The value types behind the std::map/std::set const_iterator comparisons. The != body's operator== lookup completes each
 // node pair, so the value types are complete: the cube map records as size-only views (real layouts in
-// cubemapinformationservice_tail.h, which can't be included next to this unit's Unk_Int3<N> template), the pointees of the
+// cubemapinformationservice_tail.h, not included here), the pointees of the
 // MS2Ptr / SmartPointer values incomplete. The == / != pair of each tree type sits 0x730 apart, the != calling its ==.
 struct Unk_CMISMarkRec { char m_pad[0x50]; };       // node value of CubeMapInformationService::f288
 struct Unk_CMISCell { char m_pad[0x38]; };          // node value of f2b8
@@ -39,8 +39,8 @@ class AutomaticCreateCubeInfo;
 class CFunctionCubeObject;
 namespace egf { class Entity; }
 
-// Unit-local iterator stand-in for the std::map<int, Unk_Int3> const_iterator pair (0x141126c10 / 0x141127340): its value type,
-// the global struct Unk_Int3, cannot be named here next to this unit's Unk_Int3<N> key template.
+// Unit-local iterator stand-in for the std::map<int, Unk_Int3> const_iterator pair (0x141126c10 / 0x141127340): its value type
+// is the global struct Unk_Int3 (ugcmappackageinfo.h), not included here.
 template <int N>
 class Unk_Iter
 {
@@ -173,18 +173,18 @@ template bool std::_String_const_iterator<std::_String_val<std::_Simple_types<wc
 template bool Unk_StdCharIter<0>::operator!=(const Unk_StdCharIter<0>&) const;
 template bool std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t> > >::operator!=(const std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t> > >&) const;
 
-// A 12-byte key of three ints compared member-wise.
+// A 12-byte key of three ints compared member-wise (the cube cell compares of cubemapinformationservice_3 call it on Unk_Int3).
 template <int N>
-class Unk_Int3
+class Unk_Int3Key
 {
 public:
-    bool operator==(const Unk_Int3& r) const
+    bool operator==(const Unk_Int3Key& r) const
     {
         if (r.m_a == m_a && r.m_b == m_b && r.m_c == m_c)
             return true;
         return false;
     }
-    bool operator!=(const Unk_Int3& r) const
+    bool operator!=(const Unk_Int3Key& r) const
     {
         if (r.m_a != m_a || r.m_b != m_b || r.m_c != m_c)
             return true;
@@ -195,8 +195,8 @@ public:
     int m_c;
 };
 
-template class Unk_Int3<0>;
-MS2_CHECK_SIZE(Unk_Int3<0>, 0xc);
+template class Unk_Int3Key<0>;
+MS2_CHECK_SIZE(Unk_Int3Key<0>, 0xc);
 
 // A 16-byte array element (two pointers).
 struct Unk_Elem16

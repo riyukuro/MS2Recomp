@@ -34,15 +34,14 @@ void* FUN_14027d010(void* out, __int64 node, __int64 val);
 i64 FUN_14027c160(i64 v) noexcept; i64 FUN_14027c1f0(i64 v); __int64 FUN_14027c240(__int64 out, __int64 v);
 __int64 FUN_140276fe0(__int64 tree, __int64 node, __int64 val);
 void* FUN_14027cff0(void*);
-Unk_TIter* FUN_14028a130(void* tree, Unk_TIter* out) noexcept; Unk_TIter* FUN_14028a910(void* tree, Unk_TIter* out) noexcept;
+// (map<int,int> begin / end / lower_bound 0x14028a130 / 0x14028a910 / 0x14028af20: the std members)
 struct Unk_It;
-bool FUN_14027ee20(Unk_It* a, Unk_It* b);
+// (map<int,int> const_iterator == 0x14027ee20: the std member)
 i64 FUN_140288610(void* tree, i64 val);   // _Key (0x1402885e0): WdTreeAcc
 i64 FUN_140288430(void* tree);
 bool FUN_14027f870(i64 comp, i64 a, i64 b);
 unsigned char FUN_1402874c0(void* tree, i64 a, i64 b);
 Unk_TIter* FUN_14027f720(Unk_TIter*); Unk_TIter* FUN_14027f600(Unk_TIter*); void FUN_14027f740(Unk_TIter*);
-Unk_TIter* FUN_14028af20(void* tree, Unk_TIter* out, i64 key);
 __int64* FUN_140274b10(__int64* out, __int64 it, __int64 flag);
 __int64* FUN_140274d10(__int64* out, __int64 it, __int64 flag);
 __int64 FUN_14027be90(__int64 tree, __int64 out, __int64 where, __int64 piecewise, __int64 keytuple, __int64 valtuple);

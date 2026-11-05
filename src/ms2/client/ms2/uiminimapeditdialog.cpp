@@ -104,7 +104,7 @@ void CameraMgrMoveTo(CameraMgr* pCamera, Vector3 ptPos);    // set the camera po
 void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // write a bool property
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // the render surface -> camera -> frustum
 namespace ecr
@@ -118,7 +118,7 @@ extern unsigned int DAT_143af62d4;                                         // th
 extern unsigned int DAT_143af62d8;                                         // the screen height
 
 // screenshot helpers (?\textureutil.cpp)
-ecr::RenderService* Unk_GetRenderService(char* pFramework);
+//
 int EnsureScreenshotDirectory(ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t> > >* pkDirectory);
 int SaveRenderTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, NiRenderTargetGroup* pkGroup,
     NiRect<unsigned int> kRect);
@@ -438,7 +438,7 @@ void UIMinimapEditDialog::FUN_141a53750()
 // @0x141a540f0
 void UIMinimapEditDialog::FUN_141a540f0(int bShow)
 {
-    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if (bShow != 0)
     {
         m_hidden.RemoveAll();
@@ -530,7 +530,7 @@ void UIMinimapEditDialog::OnScreenShot()
         CStringW strName;
         strName.Format(L"\\%d%02d%02d_%02d%02d%02d.png", pTm->tm_year + 1900, pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
         CStringW strPath = strDirectory + strName;
-        ecr::RenderService* pRegistry = Unk_GetRenderService(&DAT_143b059e8);
+        ecr::RenderService* pRegistry = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
         if (pRegistry != NULL)
         {
             NiRenderTargetGroup* pGroup = pRegistry->GetActiveRenderSurface()->GetRenderTargetGroup();

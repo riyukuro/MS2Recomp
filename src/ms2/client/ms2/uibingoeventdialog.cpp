@@ -172,9 +172,9 @@ template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strN
         return MS2Ptr<ASButton>(0);
     return reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<ASButton>(strName);
 }
-
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140bb4a60 (T = ASItemSlot)
 // @0x140bb4a60
-MS2Ptr<ASItemSlot> FUN_140bb4a60(int nMovieId, const Scaleform::GFx::Value& v)
+template <> MS2Ptr<ASItemSlot> Unk_ASCreate<ASItemSlot>(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASItemSlot> sp(new ASItemSlot(v, nMovieId));
     return sp;
@@ -185,7 +185,7 @@ MS2Ptr<ASItemSlot> Unk_BingoClip::FUN_140bb4ba0(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return FUN_140bb4a60(m_nMovieId, v);
+        return Unk_ASCreate<ASItemSlot>(m_nMovieId, v);
     return MS2Ptr<ASItemSlot>(0);
 }
 

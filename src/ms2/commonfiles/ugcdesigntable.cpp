@@ -29,7 +29,7 @@ public:
 // ---- dynamic initializers (.text$di, in exe order) ----
 
 // The 8-byte object the unit shares with the other table units (built by 0x1401cd100, "one integer" ctor).
-struct Unk_UgcNullKey { explicit Unk_UgcNullKey(int nValue); unsigned __int64 m_nValue; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_UgcNullKey
 
 
 // @0x1400bdb40
@@ -45,7 +45,7 @@ CStringA s_skill("skill");                                          // 143ab2338
 // @0x1400bdd40
 CStringA s_stun("stun");                                            // 143ab2330
 // @0x1400bdd70
-Unk_UgcNullKey s_nullKey(0);                                        // 143ab2328
+Unk_BuddyHandle s_nullKey(0);                                       // 143ab2328
 // @0x1400bdd90
 ATL::CAtlMap<unsigned int, CStringA> s_saleTags(17, 0.75f, 0.25f, 2.25f, 10);   // 143ab2340
 

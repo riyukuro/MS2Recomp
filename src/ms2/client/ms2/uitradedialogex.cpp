@@ -52,7 +52,7 @@ typedef UIMsg Unk_TdUIMsg;
 
 
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 

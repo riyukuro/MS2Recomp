@@ -438,7 +438,7 @@ void FUN_141422b30(CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const Ve
             kShift = kShift + (const efd::Point3&)pProxy->m_aPose[pInfo->m_nSlot];
         }
     }
-    std::set<NiAVObjectPtr>& kRange = kNodes;
+    const std::set<NiAVObjectPtr>& kRange = kNodes;
     std::set<NiAVObjectPtr>::iterator itEnd = kRange.end();
     for (std::set<NiAVObjectPtr>::iterator it = kRange.begin(); it != itEnd; ++it)
     {
@@ -855,7 +855,7 @@ int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, 
     for (size_t i = 0; i < aParts.GetCount(); i++)
     {
         std::set<NiAVObjectPtr>& kSet = *FUN_141201c90(aParts[i].operator->());
-        std::set<NiAVObjectPtr>& rSet = kSet;
+        const std::set<NiAVObjectPtr>& rSet = kSet;
         std::set<NiAVObjectPtr>::iterator itEnd = rSet.end();
         for (std::set<NiAVObjectPtr>::iterator it = rSet.begin(); it != itEnd; ++it)
         {

@@ -12,23 +12,23 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/placeholder/cguildxmldata.h"   // Unk_GuildNpcKind (key of CGuildInfo+0x2c8)
-// The 12-byte three-int value (trophy / achievement tallies); defined in unit_140267ba0, unit_140267c10, unit_140267e40.
-class Unk_IntTriple {
-public:
-    Unk_IntTriple();                                        // 0x140267ba0
-    void Clear();                                           // 0x140267bd0
-    int Sum();                                              // 0x140267c10
-    void Add(int nIndex, int nValue);                       // 0x140267c70
-    int Get(int nIndex);                                    // 0x140267d70 (3: the sum)
-    void WriteTo(COutputStream& out);                       // 0x140267e40
-    void ReadFrom(CInputStream& in);                        // 0x140267e70
-    void Copy(const Unk_IntTriple& other);                  // 0x140267ea0
-    int IsEqual(const Unk_IntTriple& other);                // 0x140267ef0
-    void Write(COutputStream& out);                         // 0x140267f50
-    void Read(CInputStream& in);                            // 0x140267fb0
-    int m_v[3];
-};
-MS2_CHECK_SIZE(Unk_IntTriple,12);
+#include "ms2/placeholder/inttriple.h"   // Unk_IntTriple, the 12-byte three-int value (shared with userproxy.h)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 struct Unk_GuildArray : ATL::CAtlArray<unsigned char> {
     Unk_GuildArray(); ~Unk_GuildArray(); void FUN_1401c0580();
 };
@@ -36,10 +36,10 @@ MS2_CHECK_SIZE(Unk_GuildArray,32);
 
 class CGuildInfo;
 template <class T> class MS2Ptr;
-struct Unk_GuildMapLock { Unk_GuildMapLock(CLockCriticalSection&,int); ~Unk_GuildMapLock(); void* p; };
-MS2_CHECK_SIZE(Unk_GuildMapLock,8);
-struct Unk_GuildNameLock { Unk_GuildNameLock(CLockCriticalSection&,int); ~Unk_GuildNameLock(); void* p; };
-MS2_CHECK_SIZE(Unk_GuildNameLock,8);
+//
+//
+//
+//
 // External character record: never constructed here; the fields are the ones CGuildMember's data copy
 // (Unk_GuildMemberData::FUN_1404ca3e0) reads, at the exe offsets.
 class Unk_GuildCharacter {

@@ -50,7 +50,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+//
 
 // ---- unit-local views of exe objects ----------------------------------------------------------------------------
 
@@ -277,7 +277,7 @@ MS2Ptr<NpcDataCli> NpcDataTableCli::Find(unsigned nId)
     unsigned nFile = nId / 100000;
     if (NeedsLoad(nFile))
         Load(nFile);
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     std::unordered_map<unsigned, MS2Ptr<NpcDataCli> >::iterator it = m_mapNpc.find(nId);
     if (it == m_mapNpc.end())
         return MS2Ptr<NpcDataCli>(nullptr);
@@ -300,7 +300,7 @@ void NpcDataTableCli::LoadAll()
 // @0x140a7cc70
 void NpcDataTableCli::IndexAllRegions()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     if (m_mapTag[0].GetCount() > 0)
         return;
     for (POSITION pos = m_mapSpawn.GetStartPosition(); pos != 0; m_mapSpawn.GetNext(pos))
@@ -332,7 +332,7 @@ void NpcDataTableCli::Load(int nFile)
             continue;
         list.push_back(pData);
     }
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     m_mapLoaded[reinterpret_cast<const unsigned long&>(nFile)] = true;
     for (MS2Ptr<NpcDataCli> pData : list)
         m_mapNpc[pData->GetId()] = pData;
@@ -350,7 +350,7 @@ CStringA NpcDataTableCli::GetIllust(unsigned nId)
 // @0x140a7d260
 void NpcDataTableCli::Collect(std::map<unsigned, MS2Ptr<NpcDataCli> >& mapOut)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     for (std::pair<const unsigned, MS2Ptr<NpcDataCli> > entry : m_mapNpc)
     {
         if (entry.second.get() != 0)

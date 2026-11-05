@@ -116,7 +116,7 @@ private:
 // ---- out-of-unit callees ----
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<ASButton> FUN_140acc910(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acc910 (T = ASButton)
 MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASLabel> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -504,12 +504,12 @@ int FUN_140d01040(CString& strAlign)
 // ---- the web image holder ----
 
 // @0x140d011c0
-void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
+void FUN_140d011c0(MS2Ptr<ASLoader> spImage, CStringW strUrl, bool bFlag)
 {
     if (spImage == 0)
         return;
-    ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->UnloadAndStop(bFlag);
-    ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2)));
+    spImage.operator->()->UnloadAndStop(bFlag);
+    spImage.operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2)));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"
@@ -671,7 +671,7 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
     }
 
 // @0x140d01e70
-MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, ASButton, FUN_140acc910)
+MS2_FINDER_DEEP(140d01e70, FUN_140d01e70, ASButton, Unk_ASCreate<ASButton>)
 // @0x140d02140
 MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, FUN_140a57df0)
 // @0x140d02410

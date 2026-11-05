@@ -172,7 +172,7 @@ struct Unk_UgcFramework
 };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_UgcFramework*)&egf::g_bapiContext)          // C3: was extern Unk_UgcFramework DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // The UGC event dispatcher (the UIUGCEventListener slots).
 class Unk_UgcEventDispatcher
@@ -541,7 +541,7 @@ void CUgcDownloadCube::ProcessResult()
 {
     if (m_nResult == 0)
     {
-        efd::SmartPointer<Unk_UgcCubeService> spService(((class Unk_UgcCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        efd::SmartPointer<Unk_UgcCubeService> spService(((class Unk_UgcCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
         for (POSITION pos = m_list.GetHeadPosition(); pos; m_list.GetNext(pos))
         {
             MS2Ptr<CUgcItemCube> sp = m_list.GetAt(pos);

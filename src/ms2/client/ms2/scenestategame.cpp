@@ -534,10 +534,10 @@ public:
 //
 //
 //
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // 0x143b059e8
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+#define DAT_143b059e8 egf::g_bapiContext
+//
 class Unk_LaunchOptions   // C3: member view (real class not in this TU)
 {
 public:
@@ -634,9 +634,9 @@ public:
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);
 template <> MS2Ptr<CSplashDamageRecord>::MS2Ptr(CSplashDamageRecord* p);   // out-of-unit COMDAT (0x141099d10)
-struct Unk_MagicXform { Unk_MagicXform(); char m_pad[0x34]; };   // NiTransform (0x140a332d0)
+#include <NiTransform.h>   // C3: was the Unk_MagicXform view (implicit ctor 0x140a332d0)
 // Builds the hit transform from a position and a direction (?\magicdata.cpp).
-void FUN_141467f60(Vector3 kPos, Vector3 kDir, Unk_MagicXform* pOut);
+void FUN_141467f60(Vector3 kPos, Vector3 kDir, NiTransform* pOut);
 // Moves the hit position / direction onto the target (?\magicdata.cpp).
 int FUN_14145e1a0(int, int, struct Unk_MagicAimInfo*, struct Unk_MagicSkillRow const*, struct Vector3*, struct Vector3*);   // C3: was FUN_14145e1a0
 class Unk_SSGMagicService : public CMagicService
@@ -680,16 +680,16 @@ MS2_CHECK_OFFSET(Unk_SSGNpc, m_ce50, 0xe50);
 MS2_CHECK_OFFSET(Unk_SSGNpc, m_ne58, 0xe58);
 MS2_CHECK_OFFSET(Unk_SSGNpc, m_nea8, 0xea8);
 // The equipment of a player (client\ms2\equipment.cpp); equipment.h clashes with the AdditionalCli views here.
-class CEquipment
-{
-public:
-    void SetLayerPeriod(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
-    MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid);         // FindByUid
-    void FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer);   // move an item to another slot
-    void FUN_1411e7660();
-    void FUN_1411ea7c0();
-};
-class Unk_PCItemCooldowns { public: bool FUN_140c86510(__int64 nItemUid); bool FUN_140c86450(MS2Ptr<CItem> spItem); void FUN_140c860b0(CInputStream& stream, int nObjId); };
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
+//
+//
+//
+//   C3: Unk_PCItemCooldowns comes from fittingdollpc.h (pcitemcooldowns.h)
 // The item event hub (FUN_140a6a840); slots 5/21/23 are item notifications.
 class Unk_SSGItemHub
 {
@@ -1169,7 +1169,7 @@ MS2_CHECK_SIZE(Unk_LsSlotArg, 4);
 int FUN_1418fd6c0(__int64 nUid);
 
 // ---- statics (exe .di order) -----------------------------------------------------------------------------------
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* h); void* m_p; };     // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateGame);
 
@@ -1187,7 +1187,7 @@ static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Cre
 CString DAT_143ae7428 = "skill";
 CString DAT_143ae7420 = "stun";
 #endif
-static Unk_Handle1401cd100 s_handle(0);                     // @0x1400ffb90
+static Unk_BuddyHandle s_handle(0);                     // @0x1400ffb90
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInput;
 #ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
@@ -2242,7 +2242,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     }
     if (nMode == 0)
     {
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService)
         {
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
@@ -2288,7 +2288,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     }
     else
     {
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService)
         {
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
@@ -3687,7 +3687,7 @@ void CSceneStateGame::FUN_1417212d0(CInPacket& packet)
         }
         else
         {
-            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             if (spService)
                 ((CubeMapInformationService*)(spService).operator->())->FUN_1410caa60((ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>> const*)(ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>> const*)&(strName), nState);
         }
@@ -5645,7 +5645,7 @@ void CSceneStateGame::FUN_14171cdf0(CInPacket& packet)
                 if (((CNpcData*)static_cast<CNpc*>(pNpc)->GetNpcData().operator->())->HasPropertyTag(0x11))
                     spRecord->m_kPos = ptPos;
             }
-            Unk_MagicXform kXform;
+            NiTransform kXform;
             FUN_141467f60(ptPos, ptDir, &kXform);
             ((CMagicService*)(Unk_SSGMagicService*)(FUN_1410a7630()))->FUN_14146b440((Unk_MagicTag*)(CDamageRecord*)(spRecord.get()), 1, &kXform, ptDir);
         }
@@ -6956,7 +6956,7 @@ void CSceneStateGame::FUN_14173feb0()
         UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50();
         if (pScene != 0)
             pScene->FUN_1422dc080();
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410bc320();
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
@@ -6981,7 +6981,7 @@ void CSceneStateGame::FUN_14173feb0()
             pUI->FUN_141ad9650();
             pUI->AddMovieDamage();
         }
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410bc1c0();
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
@@ -8358,7 +8358,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
             break;
         }
         case 0:
-            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             if (spService)
             {
                 int nCubeId = packet.ReadInt32();
@@ -9874,7 +9874,7 @@ extern std::set<Unk_TrophyKey> DAT_143ab32d8;   // userproxy.cpp
 //   and shifts the four loop counters by 4. Renaming nError or hoisting it to function scope doesn't move it.
 void CSceneStateGame::OnResponseCube(CInPacket& packet)
 {
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     unsigned char nMode = packet.ReadUInt8();
     MyPC* pMyPC = ((MyPC*)WorldService::GetInstance()->FUN_141bd0cc0());
     switch (nMode)
@@ -10855,7 +10855,7 @@ void FUN_1408a10e0(Unk_CubeOwners& owners, int nGroup, int nBlock, const CString
 // @0x141728110
 void CSceneStateGame::OnLoadCubes(CInPacket& packet)
 {
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
@@ -11298,7 +11298,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         pMyPC->vfunc_88();
         DAT_143ab2942 = true;
         FUN_140d86260()->vfunc_22(0x2d0, "GameBegin");
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService ? true : false)
         {
             if (!((CubeMapInformationService*)(spService).operator->())->FUN_1410c35c0())
@@ -11981,7 +11981,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
                 FUN_1401d3700(strName);
                 if (names.find(strName) == names.end())
                 {
-                    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+                    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                     efd::Point3 kPos = efd::Point3::ZERO;
                     pEntity->GetPropertyValue(0xfd95ca52, kPos);
                     Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
@@ -12160,7 +12160,7 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
                 spDoll->items.Add(spItem);
             }
         }
-        CubeMapInformationService* pCubeMap = FUN_1401cd040(&DAT_143b059e8);
+        CubeMapInformationService* pCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
         pCubeMap->FUN_1410cb4c0(spDoll);
     }
     else if (nMode == 1)

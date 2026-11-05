@@ -297,7 +297,7 @@ void MeshInstancing::FUN_1413ed300(int nCount)
 // ---- services reached through globals ----
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 efd::MessageService* FUN_1413f9830();
 ecr::RenderService* FUN_1413f9890();
 int FUN_140ae1c10();                                                // the current game mode
@@ -361,7 +361,7 @@ Unk_MeshInstancingConfig::Unk_MeshInstancingConfig(egf::Entity* pEntity, int nCe
     flags31 = FUN_1413fa2e0(pEntity);
     unknown58 = FUN_1413fa320(pEntity);
     pEntity->GetPropertyValue<bool>(0x861681cb, flags32);
-    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> spService(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     ids = spService->FUN_1413d7160(pEntity);
 }
 

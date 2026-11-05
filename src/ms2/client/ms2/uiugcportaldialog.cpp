@@ -221,7 +221,7 @@ static void FUN_140fb19c0(ASDropdownMenu* pCombo, const CString& strName, CStrin
 void UIUGCPortalDialog::OnApply()
 {
     MS2Ptr<ASTextField> spName;
-    FUN_140e48d80<ASTextField>("m_textName", &spName);
+    GetChildInto<ASTextField>("m_textName", spName);
     CStringW strName = spName.operator->()->GetTextW();
     for (size_t i = 0; i < m_198.size(); i++)
     {

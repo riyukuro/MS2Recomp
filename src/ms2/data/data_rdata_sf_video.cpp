@@ -16,9 +16,6 @@
 struct Sd_1431b4be0;
 struct Sd_1431b4c60;
 struct Sd_1431b4ce0;
-struct Sd_1431b5300;
-struct Sd_1431b5310;
-struct Sd_1431b53c0;
 struct Sd_1431b5b40;
 struct Sd_1431b5c00;
 struct Sd_1431b5cb0;
@@ -98,9 +95,6 @@ void Sfr33ForEachChildGC_c0b(unsigned char *, void *, void (__cdecl *)(void *, v
 extern Sd_1431b4be0 DAT_1431b4be0;
 extern Sd_1431b4c60 DAT_1431b4c60;
 extern Sd_1431b4ce0 DAT_1431b4ce0;
-extern Sd_1431b5300 DAT_1431b5300;
-extern Sd_1431b5310 DAT_1431b5310;
-extern Sd_1431b53c0 DAT_1431b53c0;
 extern Sd_1431b5b40 DAT_1431b5b40;
 extern Sd_1431b5c00 DAT_1431b5c00;
 extern Sd_1431b5cb0 DAT_1431b5cb0;
@@ -227,8 +221,6 @@ void FUN_140002e10(void *);
 void FUN_140002e20(void *);
 void * FUN_140002e40(void *, unsigned int);
 ::Scaleform::GFx::AS2::FunctionRef * FUN_140007ff0(::Scaleform::GFx::AS2::ObjectInterface *, ::Scaleform::GFx::AS2::FunctionRef *, ::Scaleform::GFx::AS2::ASStringContext *);
-void * FUN_14000a010(void *, unsigned int);
-void * FUN_14000a020(void *, unsigned int);
 extern unsigned char DAT_14000a110[];
 extern unsigned char DAT_14252e480[];
 void * FUN_14000a880(void *, unsigned int);
@@ -685,45 +677,6 @@ struct Sd_1431b4d80 {
     const void* p40;
     const void* p48;
     unsigned char b50[0x10];
-};
-struct Sd_1431b5300 {
-    const void* p0;
-    unsigned char b8[0x8];
-};
-struct Sd_1431b5310 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    unsigned char ba8[0x8];
-};
-struct Sd_1431b53c0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
 };
 struct Sd_1431b5b40 {
     const void* p0;
@@ -1690,48 +1643,6 @@ alignas(16) Sd_1431b4d80 DAT_1431b4d80 = {
     "seek",
     (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Seek,
     {0},
-};
-// 0x1431b5300
-alignas(16) Sd_1431b5300 DAT_1431b5300 = {
-    (const void*)&FUN_14000a010,
-    {0},
-};
-// 0x1431b5310
-alignas(16) Sd_1431b5310 DAT_1431b5310 = {
-    (const void*)&FUN_14000a020,
-    DAT_140007dc0,
-    DAT_140007e10,
-    DAT_140008250,
-    DAT_140009ef0,
-    DAT_142944950,
-    DAT_1429388e0,
-    DAT_1429889c0,
-    DAT_1429947f0,
-    DAT_14295d970,
-    DAT_142988bb0,
-    DAT_14000a110,
-    DAT_142991170,
-    DAT_140007ba0,
-    (const void*)&FUN_140007ff0,
-    DAT_140007d90,
-    DAT_140009f30,
-    DAT_140009f00,
-    DAT_1429623a0,
-    DAT_142994c50,
-    DAT_142992780,
-    {0},
-};
-// 0x1431b53c0
-alignas(16) Sd_1431b53c0 DAT_1431b53c0 = {
-    DAT_14000a770,
-    DAT_14000a3a0,
-    (const void*)&FUN_14000a880,
-    DAT_14298cc70,
-    DAT_142956ca0,
-    DAT_140009f10,
-    DAT_140007df0,
-    DAT_140007de0,
-    DAT_140007e00,
 };
 void* PTR_s_attachVideo_1431b5800 = (void*)"attachVideo";       // 0x1431b5800
 // 0x1431b5b40
@@ -2807,9 +2718,9 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b4c60@@3PEAXEA=?DAT_1431b4c60@@3USd_1431b4c60@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b4ce0@@3PEAXEA=?DAT_1431b4ce0@@3USd_1431b4ce0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b4d80@@3UNameFunction@AS2@GFx@Scaleform@@A=?DAT_1431b4d80@@3USd_1431b4d80@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=?DAT_1431b5300@@3USd_1431b5300@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=?DAT_1431b5310@@3USd_1431b5310@@A")
-#pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=?DAT_1431b53c0@@3USd_1431b53c0@@A")
+#pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B@")
+#pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6BObjectInterface@123@@")
+#pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@")
 #pragma comment(linker, "/alternatename:?DAT_1431b5b40@@3PEAXEA=?DAT_1431b5b40@@3USd_1431b5b40@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b5c00@@3PEAXEA=?DAT_1431b5c00@@3USd_1431b5c00@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b5cb0@@3PEAXEA=?DAT_1431b5cb0@@3USd_1431b5cb0@@A")

@@ -2,7 +2,7 @@
 // MS2-UNIT: ?\nifmodel.cpp
 // MS2-RANGE: 0x141565560-0x141567000 .text$mn
 // MS2-RANGE: 0x1400fa540-0x1400fa560 .text$di
-// The node set at +0xf8 is walked through Unk_NifNodeSet's begin 0x141209190 / end 0x141209360, not std::set<NiAVObjectPtr>'s.
+// The node set at +0xf8 (std::set<NiAVObjectPtr>) is walked with its non-const begin 0x141209190 / end 0x141209360.
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifmodel.h"
 #include "kfmmodel_actor.h"
@@ -33,7 +33,7 @@ void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
    int FUN_1412033e0(class CEquipModel* self);
 void FUN_14097f710(void* dst, void* src);
 void FUN_141200ca0(class CEquipModel*);   // C3: was FUN_141200ca0
-void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
+//
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
 NiColor FUN_141b6dea0(unsigned v);
 class CItemExtraData   // C3: member view for the former free stand-ins
@@ -65,14 +65,14 @@ extern char DAT_143ae2440, DAT_143ae2b38;
 #define MS2_NODEPTR(sp) reinterpret_cast<NiNodePtr&>(sp)
 
 
-// m_unk_f8 (std::set<NiAVObjectPtr>) as the exe walks it: its begin/end are a second instantiation (0x141209190 /
-// 0x141209360, not the set's own 0x140b02f70 / 0x140b02fe0), reached through this view.
+// m_unk_f8 (std::set<NiAVObjectPtr>) as the exe walks it: the non-const _Tree::begin/end (0x141209190 /
+// 0x141209360; the const pair is 0x140b02f70 / 0x140b02fe0, called by itemugcmesh).
 typedef std::set<NiAVObjectPtr>::const_iterator NodeIt;
-struct Unk_NifNodeSet
-{
-    NodeIt FUN_141209190();   // begin
-    NodeIt FUN_141209360();   // end
-};
+//
+//
+//
+//
+//
 // The depth-first scene walker (0x30 bytes; the exe's shared helper, named after its first unit).
 class Unk_NodeQueue
 {
@@ -84,9 +84,9 @@ private:
     ATL::CAtlList<NiAVObject*> pending;
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
-#define NODESET(self) (*reinterpret_cast<Unk_NifNodeSet*>(&(self)->m_unk_f8))
+#define NODESET(self) ((self)->m_unk_f8)
 #define F8(self) ((void*)((char*)(self) + 0xf8))
-#define PAIR_BEGIN(self, it, end) FUN_141209360(F8(self), end); FUN_141209190(F8(self), it)
+//
 
 #ifdef __clang__
 // clang-cl folds the ClassInfo setup (parent = exe's CEquipModel::ms_ClassInfo) into static data (ADDR64 to an exe
@@ -157,8 +157,8 @@ int CNifModel::vfunc_6()
     vfunc_10();
     vfunc_11();
     if (*(int*)&DAT_143ae2b38 != 0 && m_i11c != 0) {
-        Unk_NifNodeSet& nodes = NODESET(this);
-        for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+        std::set<NiAVObjectPtr>& nodes = NODESET(this);
+        for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
             if (sp->GetName() == "FA_Skin") {
                 m_p120 = sp;
@@ -196,8 +196,8 @@ int CNifModel::vfunc_9() { return m_nState; }
 void CNifModel::vfunc_10()
 {
     if (reinterpret_cast<CItemData*>(reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->FUN_1411dc7f0())->FUN_14053cfd0()) {
-        Unk_NifNodeSet& nodes = NODESET(this);
-        for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+        std::set<NiAVObjectPtr>& nodes = NODESET(this);
+        for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
             FUN_141167840(sp, "HR:0", FUN_141422340((class CEquipModel*)(this), 0));
             FUN_141167840(sp, "HR0:0", FUN_141422340((class CEquipModel*)(this), 0));
@@ -216,8 +216,8 @@ void CNifModel::vfunc_11()
         NiColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
         if (i == 1)
             kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0)) * 1.3f;
-        Unk_NifNodeSet& nodes = NODESET(this);
-        for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+        std::set<NiAVObjectPtr>& nodes = NODESET(this);
+        for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
             if (sp)
                 FUN_141b6f000(sp, i, *(struct Unk_Colc const*)(&kColor));
@@ -241,8 +241,8 @@ void CNifModel::vfunc_12()
         return;
     if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &m_unk_f8) != 0) {
         int iv = ((Unk_ModelActor*)pNode)->vfunc_48();
-        Unk_NifNodeSet& nodes = NODESET(this);
-        for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+        std::set<NiAVObjectPtr>& nodes = NODESET(this);
+        for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
             if (sp) {
                 NiNode* parent = MS2_NODEPTR(m_spNode).operator->();
@@ -277,8 +277,8 @@ void CNifModel::vfunc_13()
         if (pTarget == 0)
             return;
         if (FUN_141422110((NiNode*)vfunc_14(), *(const CString*)((char*)m_unk_20 + 8), &m_unk_f8) != 0) {
-            Unk_NifNodeSet& nodes = NODESET(this);
-            for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+            std::set<NiAVObjectPtr>& nodes = NODESET(this);
+            for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
                 NiAVObjectPtr sp = *it;
                 pTarget->AttachChild(sp, true);
                 if (nDebugFlag != 0)
@@ -292,8 +292,8 @@ void CNifModel::vfunc_13()
 // @0x1415664f0
 int CNifModel::vfunc_15()
 {
-    Unk_NifNodeSet& nodes = NODESET(this);
-    for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+    std::set<NiAVObjectPtr>& nodes = NODESET(this);
+    for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
         NiAVObjectPtr sp = *it;
         if (sp) {
             if (FUN_141422f30(sp))
@@ -321,8 +321,8 @@ void CNifModel::vfunc_17()
         reinterpret_cast<NiAVObject*>(m_p120)->SetAppCulled(false);
     bool bActive = m_nState != 0 && vfunc_20() != 0 ? true : false;
     bool bHide = !bActive;
-    Unk_NifNodeSet& nodes = NODESET(this);
-    for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+    std::set<NiAVObjectPtr>& nodes = NODESET(this);
+    for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
         NiAVObjectPtr sp = *it;
         Unk_NodeQueue walk(sp);
         NiAVObject* o;
@@ -395,8 +395,8 @@ void FUN_141566b60(void* self)
     if (lVar == 0) return;
     void* tgt = FUN_141566db0(FUN_141566d90(lVar));
     if (tgt == 0) return;
-    Unk_NifNodeSet& nodes = NODESET((CNifModel*)self);
-    for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+    std::set<NiAVObjectPtr>& nodes = NODESET((CNifModel*)self);
+    for (NodeIt end = nodes.end(), it = nodes.begin(); it != end; ++it) {
         NiAVObjectPtr sp = *it;
         Unk_NodeQueue walk(sp);
         NiAVObject* o;

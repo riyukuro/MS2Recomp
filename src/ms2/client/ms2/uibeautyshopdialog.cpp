@@ -342,10 +342,10 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_BSConstI64 { public: __int64 FUN_1402bac90(); char m_pad[0x58]; };
 class Unk_BSConstInt { public: int FUN_140ec2b60(); char m_pad[0x58]; };
 struct Unk_BSConstUInt { char m_pad[0x58]; };
-class Unk_StringOptionEntry
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
+class Unk_StringOptionEntry   // C3: layout view of Common::Constants::Value<CString> (its Get() is 0x140298f80)
 {
 public:
-    CString& FUN_140298f80();             // the string value (by reference: this+0x50)
     char m_data[0x58];
 };
 struct Unk_BSConstants
@@ -2092,12 +2092,12 @@ void UIBeautyShopDialog::FUN_1418cb750(ASObj& out)
         if (nShopKind == 1)
         {
             strCategory = "hair";
-            strPath = ((struct Unk_BSConstants*)FUN_1401d3200())->m_hairGuide.FUN_140298f80();
+            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_hairGuide)->Get();
         }
         else if (nShopKind == 2)
         {
             strCategory = "makeUp";
-            strPath = ((struct Unk_BSConstants*)FUN_1401d3200())->m_makeUpGuide.FUN_140298f80();
+            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_makeUpGuide)->Get();
         }
         out.FUN_1407cba60("guideCategory", CString(strCategory));
         out.FUN_1407cba60("guideMoviePath", CString(strPath));

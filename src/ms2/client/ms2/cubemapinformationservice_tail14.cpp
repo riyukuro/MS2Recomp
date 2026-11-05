@@ -37,7 +37,7 @@ void* FUN_140159860(u64 nSize, void* pWhere);                  // placement oper
 
 // ---- scalar deleting destructors ---------------------------------------------------------------------------------
 // of the record / handle types (59 bytes: dtor, then operator delete when bit 0 of the flags is set)
-void FUN_140fac640(void* p);
+// C3: FUN_140fac640 is ~MS2Ptr<UGCMapDesignInfo>
 void FUN_141125970(void* p);
 
 // @0x14112cdec
@@ -131,7 +131,7 @@ void* FUN_14112cfe0(void* p, unsigned f)
 // @0x14112d020
 void* FUN_14112d020(void* p, unsigned f)
 {
-    FUN_140fac640(p);
+    static_cast<MS2Ptr<UGCMapDesignInfo>*>(p)->MS2Ptr<UGCMapDesignInfo>::~MS2Ptr();
     if (f & 1)
         operator delete(p, 0x10);
     return p;
@@ -457,9 +457,9 @@ struct Unk_CMISArr16
     int m_nGrowBy;
 };
 
-void FUN_140fac5b0(void* pDst, const void* pSrc);              // copy ctor of the element of array C
-void* FUN_14111ea80(void* p);                                  // default ctor of B's element
-void* FUN_14111ead0(void* p);                                  // default ctor of C's element
+// C3: FUN_140fac5b0 is the MS2Ptr<UGCMapDesignInfo> copy ctor (array C's element)
+// C3: FUN_14111ea80 is MS2Ptr<UGCMapBlueprintInfo>::MS2Ptr() (B's element)
+// C3: FUN_14111ead0 is MS2Ptr<UGCMapDesignInfo>::MS2Ptr() (C's element)
 
 void* FUN_14112cfa0(void* p, unsigned f);
 void* FUN_14112cfe0(void* p, unsigned f);
@@ -512,8 +512,8 @@ u64 FUN_14112da60(Unk_CMISArr16* a, const void* pElem)
         if (!bOk)
             ATL::AtlThrowImpl(0x8007000e);
     }
-    void* p = ::operator new(0x10, a->m_pData + iElement);
-    FUN_140fac5b0(p, pElem);
+    ::new (a->m_pData + iElement) MS2Ptr<UGCMapDesignInfo>(*static_cast<const MS2Ptr<UGCMapDesignInfo>*>(pElem));
+    //
     a->m_nSize++;
     return iElement;
 }
@@ -524,7 +524,7 @@ void FUN_14112db10(Unk_CMISHandle16* pElements, u64 nElements)
     u64 iElement = 0;
     try {
         for (iElement = 0; iElement < nElements; iElement++)
-            FUN_14111ea80(FUN_140159860(0x10, pElements + iElement));
+            ::new (pElements + iElement) MS2Ptr<UGCMapBlueprintInfo>;
     } catch (...) {
         while (iElement > 0) {
             iElement--;
@@ -540,7 +540,7 @@ void FUN_14112db90(Unk_CMISHandle16* pElements, u64 nElements)
     u64 iElement = 0;
     try {
         for (iElement = 0; iElement < nElements; iElement++)
-            FUN_14111ead0(FUN_140159860(0x10, pElements + iElement));
+            ::new (pElements + iElement) MS2Ptr<UGCMapDesignInfo>;
     } catch (...) {
         while (iElement > 0) {
             iElement--;

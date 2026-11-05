@@ -280,7 +280,7 @@
 #include <iterator>
 #include <functional>
 #include "hook/ms2hook.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 struct Unk_FishRange { bool FUN_1403b4ef0(unsigned n) const; };   // the (lo, hi) range test 0x1403b4ef0 (fishsimultedata.h): Unk_EpicRestartRange::IsIn
 // The ontime getters return MS2Ptr<const OntimeEventContext>: the exe converts the map's MS2Ptr<OntimeEventContext>
 // into a second pointer family (copy 0x140497ca0 reads the source through get(), AddRef 0x1404aeed0, (int) 0x140497ce0)
@@ -300,12 +300,12 @@ template <> inline void MS2Ptr<const OntimeEventContext>::ReleaseImpl(void*)
 }
 
 // The scoped lock of this TU (the same exe ctor as Unk_PetLock; it acquires immediately, the dtor releases).
-struct Unk_PetLock {
-    Unk_PetLock(CLockCriticalSection& lock, int acquire);      // 0x140203610
-    ~Unk_PetLock();                                            // 0x1401b5120
-    CLockCriticalSection* m_lock;
-};
-MS2_CHECK_SIZE(Unk_PetLock, 8);
+//
+//
+//
+//
+//
+//
 
 // Out-of-unit callees.
 class CExpTable;
@@ -562,7 +562,7 @@ MS2_REPLACE(0x140476020, FUN_140476020, 1409, 0x925DC80A);
 void CGameRule::FUN_1404766e0()
 {
     {
-        Unk_1401b4ec0 lock(m_80, 1);
+        Unk_CriticalSectionLock lock(m_80, 1);
         m_b0.clear();
         m_c0.clear();
         m_38.RemoveAll();
@@ -598,7 +598,7 @@ MS2_REPLACE_METHOD(0x1404766E0, CGameRule, FUN_1404766e0, 578, 0xCCB94A4A);
 // @0x140476930
 void CGameRule::SetAdventureLevelBonusExpRate(int nEventId, int nRate)
 {
-    Unk_1401b4ec0 lock(m_d8, 1);
+    Unk_CriticalSectionLock lock(m_d8, 1);
     m_108.Set(nEventId, 0, nRate);
 }
 MS2_REPLACE_METHOD(0x140476930, CGameRule, SetAdventureLevelBonusExpRate, 105, 0x731A864A);
@@ -606,7 +606,7 @@ MS2_REPLACE_METHOD(0x140476930, CGameRule, SetAdventureLevelBonusExpRate, 105, 0
 // @0x1404769a0
 void CGameRule::RemoveAdventureLevelBonusExpRate(int nEventId)
 {
-    Unk_1401b4ec0 lock(m_d8, 1);
+    Unk_CriticalSectionLock lock(m_d8, 1);
     m_108.Remove(nEventId, 0);
 }
 MS2_REPLACE_METHOD(0x1404769A0, CGameRule, RemoveAdventureLevelBonusExpRate, 95, 0x149BB056);
@@ -614,7 +614,7 @@ MS2_REPLACE_METHOD(0x1404769A0, CGameRule, RemoveAdventureLevelBonusExpRate, 95,
 // @0x140476a10
 __int64 CGameRule::CalcAdventureLevelBonusExp(__int64 value)
 {
-    Unk_1401b4ec0 lock(m_d8, 1);
+    Unk_CriticalSectionLock lock(m_d8, 1);
     unsigned rate = m_108.Get(0, 0);
     if (rate == 0)
         return 0;
@@ -626,7 +626,7 @@ MS2_REPLACE_METHOD(0x140476A10, CGameRule, CalcAdventureLevelBonusExp, 174, 0xBB
 // @0x140476ad0
 unsigned CGameRule::GetAdventureLevelBonusExpRate()
 {
-    Unk_1401b4ec0 lock(m_d8, 1);
+    Unk_CriticalSectionLock lock(m_d8, 1);
     return m_108.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x140476AD0, CGameRule, GetAdventureLevelBonusExpRate, 96, 0xEB82E36D);
@@ -730,7 +730,7 @@ MS2_REPLACE_METHOD(0x140476EF0, CGameRule, FUN_140476ef0, 288, 0x1BF16318);
 // @0x140477020
 void CGameRule::SetChatMeratRates(int eventId, int a, int b, int c)
 {
-    Unk_1401b4ec0 lock(m_260, 1);
+    Unk_CriticalSectionLock lock(m_260, 1);
     m_290.Set(eventId, 0, a);
     m_2b0.Set(eventId, 0, b);
     m_2d0.Set(eventId, 0, c);
@@ -740,7 +740,7 @@ MS2_REPLACE_METHOD(0x140477020, CGameRule, SetChatMeratRates, 172, 0x316F7B03);
 // @0x1404770e0
 void CGameRule::RemoveChatMeratRates(int eventId)
 {
-    Unk_1401b4ec0 lock(m_260, 1);
+    Unk_CriticalSectionLock lock(m_260, 1);
     m_290.Remove(eventId, 0);
     m_2b0.Remove(eventId, 0);
     m_2d0.Remove(eventId, 0);
@@ -750,7 +750,7 @@ MS2_REPLACE_METHOD(0x1404770E0, CGameRule, RemoveChatMeratRates, 147, 0xE59D8739
 // @0x140477180
 __int64 CGameRule::GetSuperChatMeratCost()
 {
-    Unk_1401b4ec0 lock(m_260, 1);
+    Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_290.Get(0, 0);
     return FUN_140482050(*FUN_1401d3200()->MeratConsumeSuperChat.Get(), rate);
 }
@@ -759,7 +759,7 @@ MS2_REPLACE_METHOD(0x140477180, CGameRule, GetSuperChatMeratCost, 134, 0x71E0501
 // @0x140477210
 __int64 CGameRule::GetWorldChatMeratCost()
 {
-    Unk_1401b4ec0 lock(m_260, 1);
+    Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_2b0.Get(0, 0);
     return FUN_140482050(*FUN_1401d3200()->MeratConsumeWorldChat.Get(), rate);
 }
@@ -768,7 +768,7 @@ MS2_REPLACE_METHOD(0x140477210, CGameRule, GetWorldChatMeratCost, 134, 0xFC61E96
 // @0x1404772a0
 __int64 CGameRule::GetChannelChatMeratCost()
 {
-    Unk_1401b4ec0 lock(m_260, 1);
+    Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_2d0.Get(0, 0);
     return FUN_140482050(*FUN_1401d3200()->MeratConsumeChannelChat.Get(), rate);
 }
@@ -807,7 +807,7 @@ MS2_REPLACE_METHOD(0x140477420, CGameRule, RemoveHotTimeEvent, 110, 0xD0CCDB96);
 // @0x1404774a0
 int CGameRule::FUN_1404774a0(unsigned key, int bAll)
 {
-    Unk_1401b4ec0 lock(m_80, 1);
+    Unk_CriticalSectionLock lock(m_80, 1);
     if (bAll != 0)
         return m_b0[key] + m_c0[key];
     return m_b0[key];
@@ -961,7 +961,7 @@ MS2_REPLACE_METHOD(0x140477D10, CGameRule, FUN_140477d10, 163, 0x0372B0CC);
 // @0x140477dc0
 void CGameRule::AddFreeAirTaxiEvent(unsigned eventId)
 {
-    Unk_PetLock lock(m_370, 1);
+    Unk_CriticalSectionLock lock(&m_370, 1);
     m_3a0.insert(eventId);
 }
 MS2_REPLACE_METHOD(0x140477DC0, CGameRule, AddFreeAirTaxiEvent, 98, 0x47F6FCC7);
@@ -969,7 +969,7 @@ MS2_REPLACE_METHOD(0x140477DC0, CGameRule, AddFreeAirTaxiEvent, 98, 0x47F6FCC7);
 // @0x140477e30
 void CGameRule::RemoveFreeAirTaxiEvent(unsigned eventId)
 {
-    Unk_PetLock lock(m_370, 1);
+    Unk_CriticalSectionLock lock(&m_370, 1);
     m_3a0.erase(eventId);
 }
 MS2_REPLACE_METHOD(0x140477E30, CGameRule, RemoveFreeAirTaxiEvent, 93, 0x96A3E339);
@@ -977,7 +977,7 @@ MS2_REPLACE_METHOD(0x140477E30, CGameRule, RemoveFreeAirTaxiEvent, 93, 0x96A3E33
 // @0x140477ea0
 BOOL CGameRule::IsFreeAirTaxiActive()
 {
-    Unk_PetLock lock(m_370, 1);
+    Unk_CriticalSectionLock lock(&m_370, 1);
     return !m_3a0.empty();
 }
 MS2_REPLACE_METHOD(0x140477EA0, CGameRule, IsFreeAirTaxiActive, 110, 0x48ABD90C);
@@ -1029,14 +1029,14 @@ MS2_REPLACE_METHOD(0x1404780E0, CGameRule, HasUserCondition, 132, 0x46133C32);
 // @0x140478170
 void CGameRule::AddOntimeEvent(int eventId, MS2Ptr<OntimeEventContext> spContext)
 {
-    Unk_PetLock lock(m_4d0, 1);
+    Unk_CriticalSectionLock lock(&m_4d0, 1);
     m_500.SetAt(eventId, spContext);
 }
 
 // @0x1404781f0
 void CGameRule::DeactivateOntimeEvent(int eventId)
 {
-    Unk_PetLock lock(m_4d0, 1);
+    Unk_CriticalSectionLock lock(&m_4d0, 1);
     ATL::CAtlMap<int, MS2Ptr<OntimeEventContext> >::CPair* pPair = m_500.Lookup(eventId);
     if (pPair != NULL)
         pPair->m_value->m_1c = false;
@@ -1046,7 +1046,7 @@ MS2_REPLACE_METHOD(0x1404781F0, CGameRule, DeactivateOntimeEvent, 125, 0x1CF96A7
 // @0x140478280
 MS2Ptr<const OntimeEventContext> CGameRule::FUN_140478280()
 {
-    Unk_PetLock lock(m_4d0, 1);
+    Unk_CriticalSectionLock lock(&m_4d0, 1);
     for (POSITION pos = m_500.GetStartPosition(); pos != NULL; m_500.GetNext(pos)) {
         MS2Ptr<OntimeEventContext> pEventCtx = m_500.GetValueAt(pos);
         MS2_ASSERT_AT(0x317, pEventCtx != NULL);
@@ -1060,7 +1060,7 @@ MS2_REPLACE_METHOD(0x140478280, CGameRule, FUN_140478280, 336, 0x21808762);
 // @0x1404783e0
 MS2Ptr<const OntimeEventContext> CGameRule::GetOntimeEvent(int eventId)
 {
-    Unk_PetLock lock(m_4d0, 1);
+    Unk_CriticalSectionLock lock(&m_4d0, 1);
     ATL::CAtlMap<int, MS2Ptr<OntimeEventContext> >::CPair* pPair = m_500.Lookup(eventId);
     if (pPair != NULL)
         return pPair->m_value;
@@ -1166,7 +1166,7 @@ MS2_REPLACE_METHOD(0x140478A60, CGameRule, FUN_140478a60, 17, 0x8BF3E2FD);
 // @0x140478a80
 void CGameRule::SetSaleEnchantRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_548.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x140478A80, CGameRule, SetSaleEnchantRate, 103, 0xE57AA20D);
@@ -1174,7 +1174,7 @@ MS2_REPLACE_METHOD(0x140478A80, CGameRule, SetSaleEnchantRate, 103, 0xE57AA20D);
 // @0x140478af0
 void CGameRule::RemoveSaleEnchantRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_548.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x140478AF0, CGameRule, RemoveSaleEnchantRate, 93, 0x0011A730);
@@ -1182,7 +1182,7 @@ MS2_REPLACE_METHOD(0x140478AF0, CGameRule, RemoveSaleEnchantRate, 93, 0x0011A730
 // @0x140478b60
 unsigned CGameRule::GetSaleEnchantRate()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_548.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x140478B60, CGameRule, GetSaleEnchantRate, 94, 0xE404E639);
@@ -1236,7 +1236,7 @@ unsigned CGameRule::GetRemakeSaleRate(int type)
 // @0x140478e80
 void CGameRule::SetSaleGemStoneUpgradeRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_588.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x140478E80, CGameRule, SetSaleGemStoneUpgradeRate, 103, 0xE10992F1);
@@ -1244,7 +1244,7 @@ MS2_REPLACE_METHOD(0x140478E80, CGameRule, SetSaleGemStoneUpgradeRate, 103, 0xE1
 // @0x140478ef0
 void CGameRule::RemoveSaleGemStoneUpgradeRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_588.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x140478EF0, CGameRule, RemoveSaleGemStoneUpgradeRate, 93, 0xC26D4BFC);
@@ -1252,7 +1252,7 @@ MS2_REPLACE_METHOD(0x140478EF0, CGameRule, RemoveSaleGemStoneUpgradeRate, 93, 0x
 // @0x140478f60
 unsigned CGameRule::GetSaleGemStoneUpgradeRate()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_588.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x140478F60, CGameRule, GetSaleGemStoneUpgradeRate, 94, 0xA2342335);
@@ -1298,14 +1298,14 @@ MS2_REPLACE_METHOD(0x1404791B0, CGameRule, GetEventQuest, 195, 0x3F3E5AE1);
 // @0x140479280
 void CGameRule::AddTermTag(MS2Ptr<TermTagContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_620, 1);
+    Unk_CriticalSectionLock lock(m_620, 1);
     m_650[spContext->FUN_140866690()] = spContext;
 }
 
 // @0x140479330
 void CGameRule::RemoveTermTag(const CStringW& name)
 {
-    Unk_1401b4ec0 lock(m_620, 1);
+    Unk_CriticalSectionLock lock(m_620, 1);
     m_650.erase(name);
 }
 MS2_REPLACE_METHOD(0x140479330, CGameRule, RemoveTermTag, 94, 0xC2193424);
@@ -1322,7 +1322,7 @@ MS2_REPLACE_METHOD(0x1404793A0, CGameRule, HasTermTag, 104, 0x0903FEF9);
 // @0x140479410
 MS2Ptr<TermTagContext> CGameRule::GetTermTag(const CStringW& name)
 {
-    Unk_1401b4ec0 lock(m_620, 1);
+    Unk_CriticalSectionLock lock(m_620, 1);
     std::unordered_map<CStringW, MS2Ptr<TermTagContext> >::iterator it = m_650.find(name);
     if (it == m_650.end())
         return MS2Ptr<TermTagContext>(nullptr);
@@ -1391,7 +1391,7 @@ MS2_REPLACE_METHOD(0x140479620, CGameRule, FUN_140479620, 17, 0x8D476AB1);
 // @0x140479640
 void CGameRule::SetUgcMapContractSaleRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_6b0.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x140479640, CGameRule, SetUgcMapContractSaleRate, 103, 0x5E141A10);
@@ -1399,7 +1399,7 @@ MS2_REPLACE_METHOD(0x140479640, CGameRule, SetUgcMapContractSaleRate, 103, 0x5E1
 // @0x1404796b0
 void CGameRule::RemoveUgcMapContractSaleRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_6b0.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x1404796B0, CGameRule, RemoveUgcMapContractSaleRate, 93, 0x97AE5738);
@@ -1407,7 +1407,7 @@ MS2_REPLACE_METHOD(0x1404796B0, CGameRule, RemoveUgcMapContractSaleRate, 93, 0x9
 // @0x140479720
 unsigned CGameRule::GetUgcMapContractSaleRate()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_6b0.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x140479720, CGameRule, GetUgcMapContractSaleRate, 94, 0x1F76043C);
@@ -1415,7 +1415,7 @@ MS2_REPLACE_METHOD(0x140479720, CGameRule, GetUgcMapContractSaleRate, 94, 0x1F76
 // @0x140479790
 void CGameRule::SetUgcMapExtensionSaleRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_6d0.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x140479790, CGameRule, SetUgcMapExtensionSaleRate, 103, 0xC227C412);
@@ -1423,7 +1423,7 @@ MS2_REPLACE_METHOD(0x140479790, CGameRule, SetUgcMapExtensionSaleRate, 103, 0xC2
 // @0x140479800
 void CGameRule::RemoveUgcMapExtensionSaleRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_6d0.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x140479800, CGameRule, RemoveUgcMapExtensionSaleRate, 93, 0x9EA3C07A);
@@ -1431,7 +1431,7 @@ MS2_REPLACE_METHOD(0x140479800, CGameRule, RemoveUgcMapExtensionSaleRate, 93, 0x
 // @0x140479870
 unsigned CGameRule::GetUgcMapExtensionSaleRate()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_6d0.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x140479870, CGameRule, GetUgcMapExtensionSaleRate, 94, 0x44DA5F15);
@@ -1499,7 +1499,7 @@ MS2_REPLACE_METHOD(0x140479A90, CGameRule, GetAutoPlayInstrumentName, 131, 0x5F7
 // @0x140479b20
 bool CGameRule::FUN_140479b20(unsigned roomId)
 {
-    Unk_1401b4ec0 lock(m_710, 1);
+    Unk_CriticalSectionLock lock(m_710, 1);
     if (m_740 == 0)
         return false;
     return m_740->FUN_1403440d0(roomId);
@@ -1509,7 +1509,7 @@ MS2_REPLACE_METHOD(0x140479B20, CGameRule, FUN_140479b20, 158, 0xF60A8655);
 // @0x140479bd0
 bool CGameRule::FUN_140479bd0(Unk_DungeonGroupType group)
 {
-    Unk_1401b4ec0 lock(m_710, 1);
+    Unk_CriticalSectionLock lock(m_710, 1);
     if (m_740 == 0)
         return false;
     return m_740->FUN_140344140(group);
@@ -1519,14 +1519,14 @@ MS2_REPLACE_METHOD(0x140479BD0, CGameRule, FUN_140479bd0, 158, 0x24A87FE1);
 // @0x140479c80
 void CGameRule::SetDungeonRoomShutdown(MS2Ptr<DungeonRoomShutdownContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_710, 1);
+    Unk_CriticalSectionLock lock(m_710, 1);
     m_740 = spContext;
 }
 
 // @0x140479cf0
 bool CGameRule::FUN_140479cf0(unsigned roomId)
 {
-    Unk_1401b4ec0 lock(m_750, 1);
+    Unk_CriticalSectionLock lock(m_750, 1);
     if (m_780 == 0)
         return false;
     return m_780->FUN_1403440d0(roomId);
@@ -1536,7 +1536,7 @@ MS2_REPLACE_METHOD(0x140479CF0, CGameRule, FUN_140479cf0, 158, 0x22AFEA69);
 // @0x140479da0
 void CGameRule::FUN_140479da0(MS2Ptr<DungeonRoomShutdownContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_750, 1);
+    Unk_CriticalSectionLock lock(m_750, 1);
     m_780 = spContext;
 }
 
@@ -1554,7 +1554,7 @@ MS2_REPLACE_METHOD(0x1404A4160, Unk_DayTimeRange, Contains, 82, 0x68C590E9);
 // @0x140479e10
 bool CGameRule::IsEventTimeLimitDungeonOpen(unsigned dungeonId)
 {
-    Unk_1401b4ec0 lock(m_790, 1);
+    Unk_CriticalSectionLock lock(m_790, 1);
     Unk_DayTime now(GetServerTime());
     typedef std::multimap<unsigned, MS2Ptr<EventTimeLimitDungeonContext> >::iterator Iter;
     std::pair<Iter, Iter> range = m_7c0.equal_range(dungeonId);
@@ -1570,7 +1570,7 @@ MS2_REPLACE_METHOD(0x140479E10, CGameRule, IsEventTimeLimitDungeonOpen, 276, 0x5
 // @0x140479f30
 void CGameRule::AddEventTimeLimitDungeons(std::vector<MS2Ptr<EventTimeLimitDungeonContext> >& contexts)
 {
-    Unk_1401b4ec0 lock(m_790, 1);
+    Unk_CriticalSectionLock lock(m_790, 1);
     for (size_t i = 0; i < contexts.size(); i++) {
         if (contexts[i]->m_eventId == 0 || contexts[i]->m_dungeonId == 0) {
             MS2_ASSERT_AT(0x48c, 0);
@@ -1584,7 +1584,7 @@ MS2_REPLACE_METHOD(0x140479F30, CGameRule, AddEventTimeLimitDungeons, 360, 0x3EC
 // @0x14047a0a0
 void CGameRule::RemoveEventTimeLimitDungeons(int eventId)
 {
-    Unk_1401b4ec0 lock(m_790, 1);
+    Unk_CriticalSectionLock lock(m_790, 1);
     std::multimap<unsigned, MS2Ptr<EventTimeLimitDungeonContext> >::iterator it = m_7c0.begin();
     while (it != m_7c0.end()) {
         MS2Ptr<EventTimeLimitDungeonContext> spContext = it->second;
@@ -1611,7 +1611,7 @@ MS2_REPLACE_METHOD(0x14047A1B0, CGameRule, GetEventTimeLimitDungeonRanges, 171, 
 // @0x14047a270
 bool CGameRule::IsFieldShutdown(unsigned id)
 {
-    Unk_PetLock lock(m_7d0, 1);
+    Unk_CriticalSectionLock lock(&m_7d0, 1);
     if (m_800.empty())
         return false;
     if (m_800.find(id) == m_800.end())
@@ -1623,7 +1623,7 @@ MS2_REPLACE_METHOD(0x14047A270, CGameRule, IsFieldShutdown, 227, 0x9C13F15C);
 // @0x14047a360
 void CGameRule::SetFieldShutdownIds(std::set<unsigned> ids)
 {
-    Unk_PetLock lock(m_7d0, 1);
+    Unk_CriticalSectionLock lock(&m_7d0, 1);
     m_800 = ids;
 }
 MS2_REPLACE_METHOD(0x14047A360, CGameRule, SetFieldShutdownIds, 105, 0xEC007177);
@@ -1631,7 +1631,7 @@ MS2_REPLACE_METHOD(0x14047A360, CGameRule, SetFieldShutdownIds, 105, 0xEC007177)
 // @0x14047a3d0
 void CGameRule::ClearFieldShutdownIds()
 {
-    Unk_PetLock lock(m_7d0, 1);
+    Unk_CriticalSectionLock lock(&m_7d0, 1);
     m_800.clear();
 }
 MS2_REPLACE_METHOD(0x14047A3D0, CGameRule, ClearFieldShutdownIds, 73, 0xAB2E3B24);
@@ -1639,7 +1639,7 @@ MS2_REPLACE_METHOD(0x14047A3D0, CGameRule, ClearFieldShutdownIds, 73, 0xAB2E3B24
 // @0x14047a420
 bool CGameRule::AddDungeonExtraRewardCount(unsigned dungeonId, MS2Ptr<DungeonExtraRewardCountCtx> spCount)
 {
-    Unk_1401b4ec0 lock(m_810, 1);
+    Unk_CriticalSectionLock lock(m_810, 1);
     if (m_840.Lookup(dungeonId) != NULL)
         return false;
     m_840.SetAt(dungeonId, spCount);
@@ -1649,7 +1649,7 @@ bool CGameRule::AddDungeonExtraRewardCount(unsigned dungeonId, MS2Ptr<DungeonExt
 // @0x14047a4e0
 void CGameRule::RemoveDungeonExtraRewardCount(unsigned dungeonId, int eventId)
 {
-    Unk_1401b4ec0 lock(m_810, 1);
+    Unk_CriticalSectionLock lock(m_810, 1);
     MS2Ptr<DungeonExtraRewardCountCtx> spCount;
     if (m_840.Lookup(dungeonId, spCount)) {
         if (spCount->m_18 != eventId)
@@ -1662,7 +1662,7 @@ MS2_REPLACE_METHOD(0x14047A4E0, CGameRule, RemoveDungeonExtraRewardCount, 196, 0
 // @0x14047a5b0
 MS2Ptr<DungeonExtraRewardCountCtx> CGameRule::GetDungeonExtraRewardCount(unsigned dungeonId)
 {
-    Unk_1401b4ec0 lock(m_810, 1);
+    Unk_CriticalSectionLock lock(m_810, 1);
     MS2Ptr<DungeonExtraRewardCountCtx> spCount;
     if (m_840.Lookup(dungeonId, spCount))
         return spCount;
@@ -1673,7 +1673,7 @@ MS2_REPLACE_METHOD(0x14047A5B0, CGameRule, GetDungeonExtraRewardCount, 221, 0x94
 // @0x14047a6a0
 void CGameRule::AddNpcEventDrop(int eventId, MS2Ptr<NpcEventDropEventContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_418, 1);
+    Unk_CriticalSectionLock lock(m_418, 1);
     const int key = eventId;
     m_448[key] = spContext;
 }
@@ -1681,7 +1681,7 @@ void CGameRule::AddNpcEventDrop(int eventId, MS2Ptr<NpcEventDropEventContext> sp
 // @0x14047a730
 void CGameRule::RemoveNpcEventDrop(int eventId)
 {
-    Unk_1401b4ec0 lock(m_418, 1);
+    Unk_CriticalSectionLock lock(m_418, 1);
     m_448.erase(+eventId);
 }
 MS2_REPLACE_METHOD(0x14047A730, CGameRule, RemoveNpcEventDrop, 101, 0x362DD7E9);
@@ -1691,7 +1691,7 @@ void CGameRule::GetNpcEventDrops(std::vector<MS2Ptr<NpcEventDropEventContext> >&
 {
     if (m_448.empty())
         return;
-    Unk_1401b4ec0 lock(m_418, 1);
+    Unk_CriticalSectionLock lock(m_418, 1);
     out.reserve(out.size() + m_448.size());
     std::map<int, MS2Ptr<NpcEventDropEventContext> >::iterator it = m_448.begin();
     std::map<int, MS2Ptr<NpcEventDropEventContext> >::iterator itEnd = m_448.end();
@@ -1719,7 +1719,7 @@ void CGameRule::FUN_14047a900(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext->m_groupType != 0)
         m_3b8[spContext->m_groupType].insert(spContext);
     if (spContext->m_dungeonID != 0)
@@ -1731,7 +1731,7 @@ void CGameRule::FUN_14047aa00(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext->m_groupType != 0) {
         std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = m_3b8[spContext->m_groupType];
         contexts.erase(spContext);
@@ -1749,7 +1749,7 @@ void CGameRule::FUN_14047aa00(MS2Ptr<DungeonBonusRewardCtx> spContext)
 // @0x14047ab70
 MS2Ptr<DungeonBonusRewardCtx> CGameRule::GetDungeonBonusRewardByGroup(Unk_DungeonGroupType group)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     std::map<Unk_DungeonGroupType, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_3b8.find(group);
     if (it == m_3b8.end())
         return MS2Ptr<DungeonBonusRewardCtx>(0);
@@ -1764,7 +1764,7 @@ MS2_REPLACE_METHOD(0x14047AB70, CGameRule, GetDungeonBonusRewardByGroup, 391, 0x
 // @0x14047ad00
 MS2Ptr<DungeonBonusRewardCtx> CGameRule::GetDungeonBonusRewardByDungeon(unsigned dungeonId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_3c8.find(dungeonId);
     if (it == m_3c8.end())
         return MS2Ptr<DungeonBonusRewardCtx>(0);
@@ -1793,7 +1793,7 @@ void CGameRule::FUN_14047afb0(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
-    Unk_1401b4ec0 lock(m_3d8, 1);
+    Unk_CriticalSectionLock lock(m_3d8, 1);
     if (spContext->m_dungeonID != 0)
         m_408[spContext->m_dungeonID].insert(spContext);
 }
@@ -1803,7 +1803,7 @@ void CGameRule::FUN_14047b070(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
-    Unk_1401b4ec0 lock(m_3d8, 1);
+    Unk_CriticalSectionLock lock(m_3d8, 1);
     if (spContext->m_dungeonID != 0) {
         std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = m_408[spContext->m_dungeonID];
         contexts.erase(spContext);
@@ -1815,7 +1815,7 @@ void CGameRule::FUN_14047b070(MS2Ptr<DungeonBonusRewardCtx> spContext)
 // @0x14047b170
 MS2Ptr<DungeonBonusRewardCtx> CGameRule::FUN_14047b170(unsigned dungeonId)
 {
-    Unk_1401b4ec0 lock(m_3d8, 1);
+    Unk_CriticalSectionLock lock(m_3d8, 1);
     std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_408.find(dungeonId);
     if (it == m_408.end())
         return MS2Ptr<DungeonBonusRewardCtx>(0);
@@ -1830,7 +1830,7 @@ MS2_REPLACE_METHOD(0x14047B170, CGameRule, FUN_14047b170, 393, 0x4F3270FB);
 // @0x14047b300
 void CGameRule::FUN_14047b300(unsigned dungeonId, Unk_DungeonGroupType group, std::vector<unsigned>& out)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     std::map<Unk_DungeonGroupType, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator itGroup = m_3b8.find(group);
     if (itGroup != m_3b8.end()) {
         std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = itGroup->second;
@@ -1853,14 +1853,14 @@ MS2_REPLACE_METHOD(0x14047B300, CGameRule, FUN_14047b300, 565, 0x0FA48FF4);
 // @0x14047b540
 void CGameRule::SetSkillUpgradeSale(MS2Ptr<SkillUpgradeSaleEventContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_890.SetAt(spContext->m_18, spContext);
 }
 
 // @0x14047b5c0
 void CGameRule::RemoveSkillUpgradeSale(unsigned skillId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_890.RemoveKey(skillId);
 }
 MS2_REPLACE_METHOD(0x14047B5C0, CGameRule, RemoveSkillUpgradeSale, 79, 0x076417CE);
@@ -1868,7 +1868,7 @@ MS2_REPLACE_METHOD(0x14047B5C0, CGameRule, RemoveSkillUpgradeSale, 79, 0x076417C
 // @0x14047b620
 MS2Ptr<SkillUpgradeSaleEventContext> CGameRule::GetSkillUpgradeSale(unsigned skillId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     MS2Ptr<SkillUpgradeSaleEventContext> spContext(0);
     m_890.Lookup(skillId, spContext);
     return spContext;
@@ -1878,7 +1878,7 @@ MS2_REPLACE_METHOD(0x14047B620, CGameRule, GetSkillUpgradeSale, 163, 0x74AFFDD3)
 // @0x14047b6d0
 void CGameRule::FUN_14047b6d0(const CStringW& str)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_888 = str;
 }
 MS2_REPLACE_METHOD(0x14047B6D0, CGameRule, FUN_14047b6d0, 93, 0xF9C0B036);
@@ -1886,7 +1886,7 @@ MS2_REPLACE_METHOD(0x14047B6D0, CGameRule, FUN_14047b6d0, 93, 0xF9C0B036);
 // @0x14047b740
 CStringW CGameRule::FUN_14047b740()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_888;
 }
 MS2_REPLACE_METHOD(0x14047B740, CGameRule, FUN_14047b740, 116, 0xF26846EA);
@@ -1939,7 +1939,7 @@ MS2_REPLACE_METHOD(0x14047B9B0, CGameRule, FUN_14047b9b0, 17, 0x12C1A083);
 // @0x14047b9d0
 void CGameRule::SetSaleUgcDesignRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_8f0.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x14047B9D0, CGameRule, SetSaleUgcDesignRate, 103, 0xBB59659B);
@@ -1947,7 +1947,7 @@ MS2_REPLACE_METHOD(0x14047B9D0, CGameRule, SetSaleUgcDesignRate, 103, 0xBB59659B
 // @0x14047ba40
 void CGameRule::RemoveSaleUgcDesignRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_8f0.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047BA40, CGameRule, RemoveSaleUgcDesignRate, 93, 0x6E5EDC06);
@@ -1955,7 +1955,7 @@ MS2_REPLACE_METHOD(0x14047BA40, CGameRule, RemoveSaleUgcDesignRate, 93, 0x6E5EDC
 // @0x14047bab0
 unsigned CGameRule::GetSaleUgcDesignRate()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_8f0.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x14047BAB0, CGameRule, GetSaleUgcDesignRate, 94, 0x0AD9610D);
@@ -1963,7 +1963,7 @@ MS2_REPLACE_METHOD(0x14047BAB0, CGameRule, GetSaleUgcDesignRate, 94, 0x0AD9610D)
 // @0x14047bb20
 void CGameRule::SetLoginNotice(bool bOn, const CMsTime& time)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_910 = bOn;
     m_918 = time;
 }
@@ -1971,7 +1971,7 @@ void CGameRule::SetLoginNotice(bool bOn, const CMsTime& time)
 // @0x14047bb90
 bool CGameRule::FUN_14047bb90()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_910;
 }
 MS2_REPLACE_METHOD(0x14047BB90, CGameRule, FUN_14047bb90, 73, 0x44009FEC);
@@ -1979,7 +1979,7 @@ MS2_REPLACE_METHOD(0x14047BB90, CGameRule, FUN_14047bb90, 73, 0x44009FEC);
 // @0x14047bbe0
 CMsTime CGameRule::FUN_14047bbe0()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_918;
 }
 MS2_REPLACE_METHOD(0x14047BBE0, CGameRule, FUN_14047bbe0, 97, 0x992F70C6);
@@ -1987,7 +1987,7 @@ MS2_REPLACE_METHOD(0x14047BBE0, CGameRule, FUN_14047bbe0, 97, 0x992F70C6);
 // @0x14047bc50
 __int64 CGameRule::FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price)
 {
-    Unk_1401b4ec0 lock(m_aa0, 1);
+    Unk_CriticalSectionLock lock(m_aa0, 1);
     for (POSITION pos = m_ad0.GetHeadPosition(); pos != NULL; m_ad0.GetNext(pos)) {
         SaleCubeBox box = m_ad0.GetValueAt(pos);
         if (box == 0)
@@ -2008,7 +2008,7 @@ __int64 CGameRule::FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price
 // @0x14047be80
 void CGameRule::SetSaleCubes(int eventId, ATL::CRBMultiMap<Unk_SaleHousingKey, MS2Ptr<SaleCube> >& cubes)
 {
-    Unk_1401b4ec0 lock(m_aa0, 1);
+    Unk_CriticalSectionLock lock(m_aa0, 1);
     m_ad0.RemoveKey(eventId);
     SaleCubeBox box(Unk_BingoNewTag(0));
     for (POSITION pos = cubes.GetHeadPosition(); pos != NULL; cubes.GetNext(pos)) {
@@ -2023,7 +2023,7 @@ MS2_REPLACE_METHOD(0x14047BE80, CGameRule, SetSaleCubes, 305, 0x962B9B9D);
 // @0x14047bfc0
 void CGameRule::RemoveSaleCubes(int eventId)
 {
-    Unk_1401b4ec0 lock(m_aa0, 1);
+    Unk_CriticalSectionLock lock(m_aa0, 1);
     m_ad0.RemoveKey(eventId);
 }
 MS2_REPLACE_METHOD(0x14047BFC0, CGameRule, RemoveSaleCubes, 81, 0x35055367);
@@ -2031,7 +2031,7 @@ MS2_REPLACE_METHOD(0x14047BFC0, CGameRule, RemoveSaleCubes, 81, 0x35055367);
 // @0x14047c020
 void CGameRule::FUN_14047c020(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c)
 {
-    Unk_1401b4ec0 lock(m_b00, 1);
+    Unk_CriticalSectionLock lock(m_b00, 1);
     MS2Ptr<EpicRestartContext> spContext(new EpicRestartContext);
     spContext->m_18 = eventId;
     spContext->m_20 = endTime;
@@ -2049,7 +2049,7 @@ MS2_REPLACE_METHOD(0x14047C020, CGameRule, FUN_14047c020, 438, 0x85C8E0E1);
 // @0x14047c1e0
 void CGameRule::FUN_14047c1e0()
 {
-    Unk_1401b4ec0 lock(m_b00, 1);
+    Unk_CriticalSectionLock lock(m_b00, 1);
     m_b30 = 0;
 }
 MS2_REPLACE_METHOD(0x14047C1E0, CGameRule, FUN_14047c1e0, 86, 0x5AAD5FB5);
@@ -2057,7 +2057,7 @@ MS2_REPLACE_METHOD(0x14047C1E0, CGameRule, FUN_14047c1e0, 86, 0x5AAD5FB5);
 // @0x14047c240
 int CGameRule::FUN_14047c240()
 {
-    Unk_1401b4ec0 lock(m_b00, 1);
+    Unk_CriticalSectionLock lock(m_b00, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_18;
@@ -2067,7 +2067,7 @@ MS2_REPLACE_METHOD(0x14047C240, CGameRule, FUN_14047c240, 146, 0x7FC36494);
 // @0x14047c2e0
 __int64 CGameRule::FUN_14047c2e0()
 {
-    Unk_1401b4ec0 lock(m_b00, 1);
+    Unk_CriticalSectionLock lock(m_b00, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_20;
@@ -2077,7 +2077,7 @@ MS2_REPLACE_METHOD(0x14047C2E0, CGameRule, FUN_14047c2e0, 151, 0xA264BA3D);
 // @0x14047c380
 BOOL CGameRule::FUN_14047c380(unsigned value)
 {
-    Unk_1401b4ec0 lock(m_b00, 1);
+    Unk_CriticalSectionLock lock(m_b00, 1);
     if (m_b30 == 0)
         return FALSE;
     if (m_b30->m_28.find(value) != m_b30->m_28.end())
@@ -2093,7 +2093,7 @@ MS2_REPLACE_METHOD(0x14047C380, CGameRule, FUN_14047c380, 411, 0xB540CD49);
 // @0x14047c530
 BOOL CGameRule::FUN_14047c530(unsigned value)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_b30 == 0)
         return FALSE;
     if (Unk_ArrayFind<unsigned>(m_b30->m_58, value) != -1)
@@ -2105,7 +2105,7 @@ MS2_REPLACE_METHOD(0x14047C530, CGameRule, FUN_14047c530, 195, 0x498C01DD);
 // @0x14047c600
 int CGameRule::FUN_14047c600()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_78;
@@ -2115,7 +2115,7 @@ MS2_REPLACE_METHOD(0x14047C600, CGameRule, FUN_14047c600, 144, 0x52F6B117);
 // @0x14047c6a0
 int CGameRule::FUN_14047c6a0()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_7c;
@@ -2125,7 +2125,7 @@ MS2_REPLACE_METHOD(0x14047C6A0, CGameRule, FUN_14047c6a0, 144, 0x75E42BA9);
 // @0x14047c740
 void CGameRule::SetLevelUpPackage(int level, const CStringW& str)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_b40 = level;
     FUN_140274fc0(const_cast<CStringW&>(str), &m_b48, L",");
 }
@@ -2134,7 +2134,7 @@ MS2_REPLACE_METHOD(0x14047C740, CGameRule, SetLevelUpPackage, 118, 0xC30BD58F);
 // @0x14047c7c0
 void CGameRule::FUN_14047c7c0()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_b40 = 0;
     m_b48.RemoveAll();
 }
@@ -2143,7 +2143,7 @@ MS2_REPLACE_METHOD(0x14047C7C0, CGameRule, FUN_14047c7c0, 86, 0x452A113A);
 // @0x14047c820
 int CGameRule::FUN_14047c820()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_b40;
 }
 MS2_REPLACE_METHOD(0x14047C820, CGameRule, FUN_14047c820, 71, 0x03F6D114);
@@ -2151,7 +2151,7 @@ MS2_REPLACE_METHOD(0x14047C820, CGameRule, FUN_14047c820, 71, 0x03F6D114);
 // @0x14047c870
 void CGameRule::FUN_14047c870(ATL::CAtlArray<unsigned>& out)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     out.Copy(m_b48);
 }
 MS2_REPLACE_METHOD(0x14047C870, CGameRule, FUN_14047c870, 92, 0xBE2B3928);
@@ -2159,7 +2159,7 @@ MS2_REPLACE_METHOD(0x14047C870, CGameRule, FUN_14047c870, 92, 0xBE2B3928);
 // @0x14047c8e0
 void CGameRule::AddStampEvent(MS2Ptr<StampEventContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext == 0)
         return;
     m_b68.SetAt((const Unk_StampKey&)spContext->m_98, spContext);
@@ -2168,7 +2168,7 @@ void CGameRule::AddStampEvent(MS2Ptr<StampEventContext> spContext)
 // @0x14047c990
 void CGameRule::RemoveStampEvent(MS2Ptr<StampEventContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext == 0)
         return;
     m_b68.RemoveKey((const Unk_StampKey&)spContext->m_98);
@@ -2177,7 +2177,7 @@ void CGameRule::RemoveStampEvent(MS2Ptr<StampEventContext> spContext)
 // @0x14047ca40
 MS2Ptr<StampEventContext> CGameRule::FUN_14047ca40(Unk_AttendTable& table)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     MS2Ptr<StampEventContext> spContext;
     if (m_b68.Lookup((Unk_StampKey)10001, spContext) && table.FUN_140482280(10001, false))
         return spContext;
@@ -2197,7 +2197,7 @@ MS2Ptr<StampEventContext> CGameRule::FUN_14047ca40(Unk_AttendTable& table)
 // @0x14047cd30
 void CGameRule::SetLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext == 0)
         return;
     m_ef8 = spContext;
@@ -2206,7 +2206,7 @@ void CGameRule::SetLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContex
 // @0x14047cdd0
 void CGameRule::ClearLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (spContext == 0)
         return;
     m_ef8 = 0;
@@ -2215,7 +2215,7 @@ void CGameRule::ClearLongTermAttendGift(MS2Ptr<LongTermAttendGiftContext> spCont
 // @0x14047ce70
 MS2Ptr<LongTermAttendGiftContext> CGameRule::GetLongTermAttendGift()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_ef8;
 }
 MS2_REPLACE_METHOD(0x14047CE70, CGameRule, GetLongTermAttendGift, 115, 0x68CA02AD);
@@ -2223,14 +2223,14 @@ MS2_REPLACE_METHOD(0x14047CE70, CGameRule, GetLongTermAttendGift, 115, 0x68CA02A
 // @0x14047cef0
 void CGameRule::SetGallery(MS2Ptr<GalleryContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_bb0 = spContext;
 }
 
 // @0x14047cf60
 MS2Ptr<GalleryContext> CGameRule::GetGallery()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_bb0;
 }
 MS2_REPLACE_METHOD(0x14047CF60, CGameRule, GetGallery, 115, 0x5A84BB64);
@@ -2238,14 +2238,14 @@ MS2_REPLACE_METHOD(0x14047CF60, CGameRule, GetGallery, 115, 0x5A84BB64);
 // @0x14047cfe0
 void CGameRule::SetSnowman(MS2Ptr<SnowmanContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_bc0 = spContext;
 }
 
 // @0x14047d050
 MS2Ptr<SnowmanContext> CGameRule::GetSnowman()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_bc0;
 }
 MS2_REPLACE_METHOD(0x14047D050, CGameRule, GetSnowman, 115, 0x6817B34D);
@@ -2253,14 +2253,14 @@ MS2_REPLACE_METHOD(0x14047D050, CGameRule, GetSnowman, 115, 0x6817B34D);
 // @0x14047d0d0
 void CGameRule::SetRps(MS2Ptr<RpsContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_bd0 = spContext;
 }
 
 // @0x14047d140
 MS2Ptr<RpsContext> CGameRule::GetRps()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_bd0;
 }
 MS2_REPLACE_METHOD(0x14047D140, CGameRule, GetRps, 115, 0x95578AE3);
@@ -2268,14 +2268,14 @@ MS2_REPLACE_METHOD(0x14047D140, CGameRule, GetRps, 115, 0x95578AE3);
 // @0x14047d1c0
 void CGameRule::SetReactor(MS2Ptr<ReactorContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_be0 = spContext;
 }
 
 // @0x14047d230
 MS2Ptr<ReactorContext> CGameRule::GetReactor()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_be0;
 }
 MS2_REPLACE_METHOD(0x14047D230, CGameRule, GetReactor, 115, 0x9E9880AD);
@@ -2283,14 +2283,14 @@ MS2_REPLACE_METHOD(0x14047D230, CGameRule, GetReactor, 115, 0x9E9880AD);
 // @0x14047d2b0
 void CGameRule::SetTreeWatering(MS2Ptr<TreeWateringContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_bf0 = spContext;
 }
 
 // @0x14047d320
 MS2Ptr<TreeWateringContext> CGameRule::GetTreeWatering()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_bf0;
 }
 MS2_REPLACE_METHOD(0x14047D320, CGameRule, GetTreeWatering, 115, 0x52F02AAE);
@@ -2298,14 +2298,14 @@ MS2_REPLACE_METHOD(0x14047D320, CGameRule, GetTreeWatering, 115, 0x52F02AAE);
 // @0x14047d3a0
 void CGameRule::FUN_14047d3a0(MS2Ptr<Unk_GameRuleC00Context> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_c00 = spContext;
 }
 
 // @0x14047d410
 MS2Ptr<Unk_GameRuleC00Context> CGameRule::FUN_14047d410()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_c00;
 }
 MS2_REPLACE_METHOD(0x14047D410, CGameRule, FUN_14047d410, 115, 0xC57D31EA);
@@ -2313,7 +2313,7 @@ MS2_REPLACE_METHOD(0x14047D410, CGameRule, FUN_14047d410, 115, 0xC57D31EA);
 // @0x14047d490
 void CGameRule::FUN_14047d490(unsigned value)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_c10 = value;
 }
 MS2_REPLACE_METHOD(0x14047D490, CGameRule, FUN_14047d490, 71, 0x8FBD6C55);
@@ -2321,7 +2321,7 @@ MS2_REPLACE_METHOD(0x14047D490, CGameRule, FUN_14047d490, 71, 0x8FBD6C55);
 // @0x14047d4e0
 float CGameRule::FUN_14047d4e0()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_c10 > 0)
         return (float)m_c10 / 100.0f;
     return 0.0f;
@@ -2331,7 +2331,7 @@ MS2_REPLACE_METHOD(0x14047D4E0, CGameRule, FUN_14047d4e0, 129, 0xC2114B86);
 // @0x14047d570
 void CGameRule::FUN_14047d570(unsigned value)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_c14 = value;
 }
 MS2_REPLACE_METHOD(0x14047D570, CGameRule, FUN_14047d570, 71, 0x2A6EA2FB);
@@ -2339,7 +2339,7 @@ MS2_REPLACE_METHOD(0x14047D570, CGameRule, FUN_14047d570, 71, 0x2A6EA2FB);
 // @0x14047d5c0
 float CGameRule::FUN_14047d5c0()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_c14 > 0)
         return (float)m_c14 / 100.0f;
     return 0.0f;
@@ -2349,14 +2349,14 @@ MS2_REPLACE_METHOD(0x14047D5C0, CGameRule, FUN_14047d5c0, 129, 0xCAB2B0A5);
 // @0x14047d650
 void CGameRule::SetTimeRunEvent(MS2Ptr<TimeRunEventContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_e98 = spContext;
 }
 
 // @0x14047d6c0
 MS2Ptr<TimeRunEventContext> CGameRule::GetTimeRunEvent()
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     return m_e98;
 }
 MS2_REPLACE_METHOD(0x14047D6C0, CGameRule, GetTimeRunEvent, 115, 0x1E18E195);
@@ -2364,7 +2364,7 @@ MS2_REPLACE_METHOD(0x14047D6C0, CGameRule, GetTimeRunEvent, 115, 0x1E18E195);
 // @0x14047d740
 int CGameRule::FUN_14047d740(unsigned questId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_e98.get()) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest(0);
         if (m_e98->m_quests.Lookup(questId, spQuest))
@@ -2377,7 +2377,7 @@ MS2_REPLACE_METHOD(0x14047D740, CGameRule, FUN_14047d740, 216, 0x0FEC6495);
 // @0x14047d820
 void CGameRule::FUN_14047d820(int eventId, const CStringW& text)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     CStringW str(text);
     str.Replace(L"\\n", L" ");
     if (str.IsEmpty())
@@ -2390,7 +2390,7 @@ MS2_REPLACE_METHOD(0x14047D820, CGameRule, FUN_14047d820, 207, 0x679FE39D);
 // @0x14047d900
 void CGameRule::FUN_14047d900(int eventId)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (m_c18.RemoveKey(eventId))
         m_c60 = true;
 }
@@ -2399,7 +2399,7 @@ MS2_REPLACE_METHOD(0x14047D900, CGameRule, FUN_14047d900, 98, 0x93F5944B);
 // @0x14047d970
 bool CGameRule::FUN_14047d970(CStringW& strNotice)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     if (!m_c60)
         return false;
     m_c60 = false;
@@ -2415,7 +2415,7 @@ MS2_REPLACE_METHOD(0x14047D970, CGameRule, FUN_14047d970, 357, 0x11222385);
 // @0x14047dae0
 void CGameRule::FUN_14047dae0(CStringW str)
 {
-    Unk_1401b4ec0 lock(m_8, 1);
+    Unk_CriticalSectionLock lock(m_8, 1);
     m_c68 = str;
 }
 MS2_REPLACE_METHOD(0x14047DAE0, CGameRule, FUN_14047dae0, 105, 0x9A7DA4A2);
@@ -2546,7 +2546,7 @@ MS2_REPLACE_METHOD(0x14047E300, CGameRule, ClearIgnoredConstructionLockIds, 94, 
 // @0x14047e370
 unsigned CGameRule::FUN_14047e370(unsigned key)
 {
-    Unk_PetLock lock(m_928, 1);
+    Unk_CriticalSectionLock lock(&m_928, 1);
     if (m_958.size() < 1)
         return 0;
     std::vector<unsigned> rates;
@@ -2566,7 +2566,7 @@ unsigned CGameRule::FUN_14047e370(unsigned key)
 // @0x14047e530
 void CGameRule::AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext)
 {
-    Unk_PetLock lock(m_928, 1);
+    Unk_CriticalSectionLock lock(&m_928, 1);
     if (spContext->m_nEventId == 0) {
         MS2_ASSERT_AT(0x8aa, 0);
         return;
@@ -2577,7 +2577,7 @@ void CGameRule::AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext)
 // @0x14047e630
 void CGameRule::RemoveEnchantRateEvent(int eventId)
 {
-    Unk_PetLock lock(m_928, 1);
+    Unk_CriticalSectionLock lock(&m_928, 1);
     std::multimap<unsigned, MS2Ptr<EnchantRateEventContext> >::iterator it = m_958.begin();
     while (it != m_958.end()) {
         MS2Ptr<EnchantRateEventContext> spContext = it->second;
@@ -2592,7 +2592,7 @@ MS2_REPLACE_METHOD(0x14047E630, CGameRule, RemoveEnchantRateEvent, 254, 0x83A1D0
 // @0x14047e740
 void CGameRule::SetRankDuelOpen(bool bOpen)
 {
-    Unk_PetLock lock(m_968, 1);
+    Unk_CriticalSectionLock lock(&m_968, 1);
     m_998 = bOpen;
 }
 MS2_REPLACE_METHOD(0x14047E740, CGameRule, SetRankDuelOpen, 74, 0xFC3499D6);
@@ -2602,7 +2602,7 @@ bool CGameRule::FUN_14047e790()
 {
     if (TSingleton<CFeatureManager>::GetInstance()->GetLocaleName() != "CN")
         return true;
-    Unk_PetLock lock(m_968, 1);
+    Unk_CriticalSectionLock lock(&m_968, 1);
     return m_998;
 }
 MS2_REPLACE_METHOD(0x14047E790, CGameRule, FUN_14047e790, 143, 0x12EC12B9);
@@ -2610,7 +2610,7 @@ MS2_REPLACE_METHOD(0x14047E790, CGameRule, FUN_14047e790, 143, 0x12EC12B9);
 // @0x14047e830
 void CGameRule::SetGuildChampionshipOpen(bool bOpen)
 {
-    Unk_PetLock lock(m_9a0, 1);
+    Unk_CriticalSectionLock lock(&m_9a0, 1);
     m_9d0 = bOpen;
 }
 MS2_REPLACE_METHOD(0x14047E830, CGameRule, SetGuildChampionshipOpen, 74, 0xE9B027F4);
@@ -2618,7 +2618,7 @@ MS2_REPLACE_METHOD(0x14047E830, CGameRule, SetGuildChampionshipOpen, 74, 0xE9B02
 // @0x14047e880
 bool CGameRule::IsGuildChampionshipOpen()
 {
-    Unk_PetLock lock(m_9a0, 1);
+    Unk_CriticalSectionLock lock(&m_9a0, 1);
     return m_9d0;
 }
 MS2_REPLACE_METHOD(0x14047E880, CGameRule, IsGuildChampionshipOpen, 75, 0x69CEC859);
@@ -2626,7 +2626,7 @@ MS2_REPLACE_METHOD(0x14047E880, CGameRule, IsGuildChampionshipOpen, 75, 0x69CEC8
 // @0x14047e8e0
 void CGameRule::SetQuestAdditionalReward(unsigned a, unsigned b, MS2Ptr<QuestAdditionalRewardContext> spContext)
 {
-    Unk_PetLock lock(m_8, 1);
+    Unk_CriticalSectionLock lock(&m_8, 1);
     std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     m_d00[key] = spContext;
 }
@@ -2634,7 +2634,7 @@ void CGameRule::SetQuestAdditionalReward(unsigned a, unsigned b, MS2Ptr<QuestAdd
 // @0x14047e980
 void CGameRule::RemoveQuestAdditionalReward(unsigned a, unsigned b)
 {
-    Unk_PetLock lock(m_8, 1);
+    Unk_CriticalSectionLock lock(&m_8, 1);
     std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     m_d00.erase(key);
 }
@@ -2643,7 +2643,7 @@ MS2_REPLACE_METHOD(0x14047E980, CGameRule, RemoveQuestAdditionalReward, 116, 0x3
 // @0x14047ea00
 unsigned CGameRule::GetQuestAdditionalRewardRate(unsigned a, unsigned b, int index)
 {
-    Unk_PetLock lock(m_8, 1);
+    Unk_CriticalSectionLock lock(&m_8, 1);
     std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     std::map<std::pair<int, int>, MS2Ptr<QuestAdditionalRewardContext> >::iterator it = m_d00.find(key);
     if (it != m_d00.end()) {
@@ -2658,7 +2658,7 @@ MS2_REPLACE_METHOD(0x14047EA00, CGameRule, GetQuestAdditionalRewardRate, 295, 0x
 // @0x14047eb30
 unsigned CGameRule::GetQuestAdditionalRewardItemRate(unsigned a, unsigned b, unsigned itemId)
 {
-    Unk_PetLock lock(m_8, 1);
+    Unk_CriticalSectionLock lock(&m_8, 1);
     std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     std::map<std::pair<int, int>, MS2Ptr<QuestAdditionalRewardContext> >::iterator it = m_d00.find(key);
     if (it != m_d00.end()) {
@@ -2688,7 +2688,7 @@ MS2_REPLACE_METHOD(0x14047ECA0, CGameRule, FUN_14047eca0, 18, 0x16694178);
 // @0x14047ecc0
 void CGameRule::GetItemTagRewards(CStringW tag, std::vector<ItemEntity>& out)
 {
-    Unk_1401b4ec0 lock(m_d18, 1);
+    Unk_CriticalSectionLock lock(m_d18, 1);
     for (std::map<unsigned, MS2Ptr<Unk_ItemTagRewardContext> >::iterator it = m_d48.begin(); it != m_d48.end();
          it++) {
         MS2Ptr<Unk_ItemTagRewardContext> spReward = it->second;
@@ -2702,14 +2702,14 @@ MS2_REPLACE_METHOD(0x14047ECC0, CGameRule, GetItemTagRewards, 369, 0xAF238A86);
 // @0x14047ee40
 void CGameRule::AddItemTagReward(int key, MS2Ptr<Unk_ItemTagRewardContext> spContext)
 {
-    Unk_1401b4ec0 lock(m_d18, 1);
+    Unk_CriticalSectionLock lock(m_d18, 1);
     m_d48.insert(std::make_pair(key, spContext));
 }
 
 // @0x14047ef00
 void CGameRule::RemoveItemTagReward(int key)
 {
-    Unk_1401b4ec0 lock(m_d18, 1);
+    Unk_CriticalSectionLock lock(m_d18, 1);
     m_d48.erase(reinterpret_cast<unsigned&>(key));
 }
 MS2_REPLACE_METHOD(0x14047EF00, CGameRule, RemoveItemTagReward, 93, 0xF6109E5C);
@@ -2717,7 +2717,7 @@ MS2_REPLACE_METHOD(0x14047EF00, CGameRule, RemoveItemTagReward, 93, 0xF6109E5C);
 // @0x14047ef70
 void CGameRule::SetPetMasteryRate(int eventId, int value)
 {
-    Unk_1401b4ec0 lock(m_d58, 1);
+    Unk_CriticalSectionLock lock(m_d58, 1);
     m_d88.Set(eventId, 0, value);
 }
 MS2_REPLACE_METHOD(0x14047EF70, CGameRule, SetPetMasteryRate, 105, 0x405B429D);
@@ -2725,7 +2725,7 @@ MS2_REPLACE_METHOD(0x14047EF70, CGameRule, SetPetMasteryRate, 105, 0x405B429D);
 // @0x14047efe0
 void CGameRule::RemovePetMasteryRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_d58, 1);
+    Unk_CriticalSectionLock lock(m_d58, 1);
     m_d88.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047EFE0, CGameRule, RemovePetMasteryRate, 95, 0xAADBEBBF);
@@ -2733,7 +2733,7 @@ MS2_REPLACE_METHOD(0x14047EFE0, CGameRule, RemovePetMasteryRate, 95, 0xAADBEBBF)
 // @0x14047f050
 int CGameRule::ApplyPetMasteryBonus(int value)
 {
-    Unk_1401b4ec0 lock(m_d58, 1);
+    Unk_CriticalSectionLock lock(m_d58, 1);
     unsigned rate = m_d88.Get(0, 0);
     double ratio = rate / 10000.0;
     return value + (int)FUN_1404820b0(value, (float)ratio);
@@ -2743,7 +2743,7 @@ MS2_REPLACE_METHOD(0x14047F050, CGameRule, ApplyPetMasteryBonus, 153, 0x294FC6DB
 // @0x14047f0f0
 bool CGameRule::IsPetMasteryEventActive()
 {
-    Unk_1401b4ec0 lock(m_d58, 1);
+    Unk_CriticalSectionLock lock(m_d58, 1);
     if (m_d88.Get(0, 0) > 0)
         return true;
     return false;
@@ -2753,7 +2753,7 @@ MS2_REPLACE_METHOD(0x14047F0F0, CGameRule, IsPetMasteryEventActive, 124, 0x8A6A7
 // @0x14047f180
 void CGameRule::FUN_14047f180(int eventId, int value)
 {
-    Unk_1401b4ec0 lock(m_da8, 1);
+    Unk_CriticalSectionLock lock(m_da8, 1);
     m_dd8.Set(eventId, 0, value);
 }
 MS2_REPLACE_METHOD(0x14047F180, CGameRule, FUN_14047f180, 105, 0x2BF6E103);
@@ -2761,7 +2761,7 @@ MS2_REPLACE_METHOD(0x14047F180, CGameRule, FUN_14047f180, 105, 0x2BF6E103);
 // @0x14047f1f0
 void CGameRule::FUN_14047f1f0(int eventId)
 {
-    Unk_1401b4ec0 lock(m_da8, 1);
+    Unk_CriticalSectionLock lock(m_da8, 1);
     m_dd8.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047F1F0, CGameRule, FUN_14047f1f0, 95, 0xEC813C31);
@@ -2769,7 +2769,7 @@ MS2_REPLACE_METHOD(0x14047F1F0, CGameRule, FUN_14047f1f0, 95, 0xEC813C31);
 // @0x14047f260
 int CGameRule::FUN_14047f260(int value)
 {
-    Unk_1401b4ec0 lock(m_da8, 1);
+    Unk_CriticalSectionLock lock(m_da8, 1);
     unsigned rate = m_dd8.Get(0, 0);
     double ratio = rate / 10000.0;
     return value + (int)FUN_1404820b0(value, (float)ratio);
@@ -2779,7 +2779,7 @@ MS2_REPLACE_METHOD(0x14047F260, CGameRule, FUN_14047f260, 153, 0x5C1EDA5D);
 // @0x14047f300
 bool CGameRule::FUN_14047f300()
 {
-    Unk_1401b4ec0 lock(m_da8, 1);
+    Unk_CriticalSectionLock lock(m_da8, 1);
     if (m_dd8.Get(0, 0) > 0)
         return true;
     return false;
@@ -2789,7 +2789,7 @@ MS2_REPLACE_METHOD(0x14047F300, CGameRule, FUN_14047f300, 124, 0xBABA6490);
 // @0x14047f390
 void CGameRule::SetPetBattleExpRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_df8, 1);
+    Unk_CriticalSectionLock lock(m_df8, 1);
     m_e28.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x14047F390, CGameRule, SetPetBattleExpRate, 105, 0xAD9AE287);
@@ -2797,7 +2797,7 @@ MS2_REPLACE_METHOD(0x14047F390, CGameRule, SetPetBattleExpRate, 105, 0xAD9AE287)
 // @0x14047f400
 void CGameRule::RemovePetBattleExpRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_df8, 1);
+    Unk_CriticalSectionLock lock(m_df8, 1);
     m_e28.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047F400, CGameRule, RemovePetBattleExpRate, 95, 0x6F89B1DC);
@@ -2805,7 +2805,7 @@ MS2_REPLACE_METHOD(0x14047F400, CGameRule, RemovePetBattleExpRate, 95, 0x6F89B1D
 // @0x14047f470
 __int64 CGameRule::ApplyPetBattleExpBonus(__int64 value)
 {
-    Unk_1401b4ec0 lock(m_df8, 1);
+    Unk_CriticalSectionLock lock(m_df8, 1);
     unsigned rate = m_e28.Get(0, 0);
     double ratio = rate / 10000.0;
     return value + (unsigned)FUN_1404820b0((unsigned)value, (float)ratio);
@@ -2815,7 +2815,7 @@ MS2_REPLACE_METHOD(0x14047F470, CGameRule, ApplyPetBattleExpBonus, 161, 0xCE82B8
 // @0x14047f520
 unsigned CGameRule::GetPetComposeSaleRate()
 {
-    Unk_1401b4ec0 lock(m_e48, 1);
+    Unk_CriticalSectionLock lock(m_e48, 1);
     return m_e78.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x14047F520, CGameRule, GetPetComposeSaleRate, 96, 0x85C3F1A8);
@@ -2823,7 +2823,7 @@ MS2_REPLACE_METHOD(0x14047F520, CGameRule, GetPetComposeSaleRate, 96, 0x85C3F1A8
 // @0x14047f590
 void CGameRule::SetPetComposeSaleRate(int eventId, int rate)
 {
-    Unk_1401b4ec0 lock(m_e48, 1);
+    Unk_CriticalSectionLock lock(m_e48, 1);
     m_e78.Set(eventId, 0, rate);
 }
 MS2_REPLACE_METHOD(0x14047F590, CGameRule, SetPetComposeSaleRate, 105, 0x2FF3326E);
@@ -2831,7 +2831,7 @@ MS2_REPLACE_METHOD(0x14047F590, CGameRule, SetPetComposeSaleRate, 105, 0x2FF3326
 // @0x14047f600
 void CGameRule::RemovePetComposeSaleRate(int eventId)
 {
-    Unk_1401b4ec0 lock(m_e48, 1);
+    Unk_CriticalSectionLock lock(m_e48, 1);
     m_e78.Remove(eventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047F600, CGameRule, RemovePetComposeSaleRate, 95, 0xCCE98023);
@@ -2839,7 +2839,7 @@ MS2_REPLACE_METHOD(0x14047F600, CGameRule, RemovePetComposeSaleRate, 95, 0xCCE98
 // @0x14047f670
 __int64 CGameRule::ApplyPetComposeSale(__int64 value)
 {
-    Unk_1401b4ec0 lock(m_e48, 1);
+    Unk_CriticalSectionLock lock(m_e48, 1);
     int rate = m_e78.Get(0, 0);
     if (rate == 0)
         return value;
@@ -2850,7 +2850,7 @@ MS2_REPLACE_METHOD(0x14047F670, CGameRule, ApplyPetComposeSale, 156, 0x1E2A4E2D)
 // @0x14047f720
 unsigned CGameRule::ApplyPetCrystalSale(unsigned value)
 {
-    Unk_1401b4ec0 lock(m_ea8, 1);
+    Unk_CriticalSectionLock lock(m_ea8, 1);
     unsigned rate = m_ed8.Get(0, 0);
     return FUN_140482050(value, rate);
 }
@@ -2859,7 +2859,7 @@ MS2_REPLACE_METHOD(0x14047F720, CGameRule, ApplyPetCrystalSale, 117, 0x9C751527)
 // @0x14047f7a0
 void CGameRule::SetPetCrystalSaleRate(int nEventId, int nRate)
 {
-    Unk_1401b4ec0 lock(m_ea8, 1);
+    Unk_CriticalSectionLock lock(m_ea8, 1);
     m_ed8.Set(nEventId, 0, nRate);
 }
 MS2_REPLACE_METHOD(0x14047F7A0, CGameRule, SetPetCrystalSaleRate, 105, 0xE7E69474);
@@ -2867,7 +2867,7 @@ MS2_REPLACE_METHOD(0x14047F7A0, CGameRule, SetPetCrystalSaleRate, 105, 0xE7E6947
 // @0x14047f810
 void CGameRule::RemovePetCrystalSaleRate(int nEventId)
 {
-    Unk_1401b4ec0 lock(m_ea8, 1);
+    Unk_CriticalSectionLock lock(m_ea8, 1);
     m_ed8.Remove(nEventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047F810, CGameRule, RemovePetCrystalSaleRate, 95, 0x3701A439);
@@ -2875,7 +2875,7 @@ MS2_REPLACE_METHOD(0x14047F810, CGameRule, RemovePetCrystalSaleRate, 95, 0x3701A
 // @0x14047f880
 unsigned CGameRule::GetLapenshardUpgradeSaleRate()
 {
-    Unk_1401b4ec0 lock(m_f08, 1);
+    Unk_CriticalSectionLock lock(m_f08, 1);
     return m_f38.Get(0, 0);
 }
 MS2_REPLACE_METHOD(0x14047F880, CGameRule, GetLapenshardUpgradeSaleRate, 96, 0xA5893F3D);
@@ -2883,7 +2883,7 @@ MS2_REPLACE_METHOD(0x14047F880, CGameRule, GetLapenshardUpgradeSaleRate, 96, 0xA
 // @0x14047f8f0
 void CGameRule::SetLapenshardUpgradeSaleRate(int nEventId, int nRate)
 {
-    Unk_1401b4ec0 lock(m_f08, 1);
+    Unk_CriticalSectionLock lock(m_f08, 1);
     m_f38.Set(nEventId, 0, nRate);
 }
 MS2_REPLACE_METHOD(0x14047F8F0, CGameRule, SetLapenshardUpgradeSaleRate, 105, 0x72EBC49F);
@@ -2891,7 +2891,7 @@ MS2_REPLACE_METHOD(0x14047F8F0, CGameRule, SetLapenshardUpgradeSaleRate, 105, 0x
 // @0x14047f960
 void CGameRule::RemoveLapenshardUpgradeSaleRate(int nEventId)
 {
-    Unk_1401b4ec0 lock(m_f08, 1);
+    Unk_CriticalSectionLock lock(m_f08, 1);
     m_f38.Remove(nEventId, 0);
 }
 MS2_REPLACE_METHOD(0x14047F960, CGameRule, RemoveLapenshardUpgradeSaleRate, 95, 0x13314818);

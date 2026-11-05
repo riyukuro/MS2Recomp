@@ -36,7 +36,7 @@ public:
     static class WorldService* GetInstance();
 };
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 // The config constants singleton: the dash speed at +0x56a8.
 class Unk_SwimScale { public: };
 class Unk_SwimConsts
@@ -121,7 +121,7 @@ void StateSwimDash::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(static_cast<const efd::Point3&>(m_pOwner->FUN_14123c360()));
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    m_pOwner->FUN_141671960(reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_SwimConsts*)FUN_1401d3200())->m_scale)->FUN_140298f40()));
+    m_pOwner->FUN_141671960(*reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_SwimConsts*)FUN_1401d3200())->m_scale)->Get());
     reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }

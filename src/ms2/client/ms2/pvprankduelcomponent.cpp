@@ -98,11 +98,11 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_RankClientState { public: };
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
-class Unk_QnState   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_QnTracking* FUN_140c9b8b0();
-};
+// C3: the Unk_QnState view is gone (CGameOption::FUN_140c9b8b0, cgameoption.h)
+//
+//
+//
+//
 class Unk_RankLeaguePlayer { public: };
 
 class Unk_RankTable { public: };
@@ -318,7 +318,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     {
         if (m_state != 0)
             return;
-        if (((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer)
+        if (((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer)
         {
             CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete_to_observe"));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);

@@ -62,7 +62,7 @@ class Unk_LiftCube : public Cube
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 Unk_Int3 FUN_1408a1430(NiPoint3 kPos);   // C3: actionkeyobject.cpp's declaration (0x1408a1430)
 int FUN_1408a03c0(Unk_Int3 pt);
 
@@ -202,7 +202,7 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
     {
         Vector3 pt;
         reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
-        efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+        efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(pt));
         Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(FUN_1408a03c0(cell));
         if (pCube != 0)

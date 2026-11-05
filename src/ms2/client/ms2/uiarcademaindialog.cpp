@@ -102,7 +102,7 @@ namespace GameRanking { class Page; }
 // C3: ~MS2Ptr<GameRanking::Page> (0x140b2db30) comes from gamerankingcli.h
 class CGameRankingCli;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -613,14 +613,14 @@ void UIArcadeMainDialog::FUN_140ef7ea0()
 // @0x140ef7fc0
 void UIArcadeMainDialog::FUN_140ef7fc0(CStringW strResponse)
 {
-    Unk_1401b4ec0 lock(m_resultLock, 1);
+    Unk_CriticalSectionLock lock(m_resultLock, 1);
     m_strResponse = strResponse;
 }
 
 // @0x140ef8040
 void UIArcadeMainDialog::FUN_140ef8040(int nArcadeId, RankingList list)
 {
-    Unk_1401b4ec0 lock(m_resultLock, 1);
+    Unk_CriticalSectionLock lock(m_resultLock, 1);
     m_results.push_back(std::pair<int, RankingList>(nArcadeId, list));
 }
 

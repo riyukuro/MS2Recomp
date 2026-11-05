@@ -20,7 +20,7 @@
 #include "ms2/placeholder/iclientplatform.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // return types of the getters this unit calls
 class Unk_AltStringMgr;
@@ -86,21 +86,21 @@ void CrashManagerCli::FUN_140a435a0()
 // @0x140a43750
 void CrashManagerCli::FUN_140a43750(DWORD nId, CString strText)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.SetAt(nId, strText);
 }
 
 // @0x140a437d0
 void CrashManagerCli::FUN_140a437d0(DWORD nId)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.RemoveKey(nId);
 }
 
 // @0x140a43830
 void CrashManagerCli::FUN_140a43830()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
         CString strLine = Unk_SocketFormat("{0} {1}", m_map.GetKeyAt(pos), m_map.GetValueAt(pos));
@@ -111,7 +111,7 @@ void CrashManagerCli::FUN_140a43830()
 // @0x140a43920
 BOOL CrashManagerCli::FUN_140a43920(DWORD nId, CString& strText)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     return m_map.Lookup(nId, strText) != 0;
 }
 

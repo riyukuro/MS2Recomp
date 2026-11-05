@@ -231,12 +231,12 @@ struct Unk_FileFailure {
     const std::string& path;
 };
 MS2_CHECK_SIZE(Unk_FileFailure, 16);
-struct Unk_1401b4ec0 {   // C3: unit-local view named like its target
-    Unk_1401b4ec0(CLockCriticalSection&, int);
-    ~Unk_1401b4ec0();
-    void* lock;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
 extern double DAT_1439f4830;
 extern unsigned char DAT_1439f3030[2048];
 extern unsigned char DAT_143aad2d0[2048];
@@ -452,7 +452,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMod
     FUN_140396290(&now);
     BufferPtr buffer;
     {
-        Unk_1401b4ec0 guard(cacheLock, 1);
+        Unk_CriticalSectionLock guard(cacheLock, 1);
         if (cache.Lookup(path, buffer)) {
             FUN_1403ab1a0(buffer.operator->(), now);
             ++buffer->m_field34;
@@ -471,7 +471,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMod
         FUN_1403ab1a0(buffer.operator->(), now);
     }
     if (cacheMode != 0 && (buffer.get() ? true : false)) {
-        Unk_1401b4ec0 guard(cacheLock, 1);
+        Unk_CriticalSectionLock guard(cacheLock, 1);
         BufferPtr existing(0);
         if (cache.Lookup(path, existing)) {
             buffer = existing;
@@ -751,7 +751,7 @@ void CFileSystem::FUN_14039a640() { packed = false; }
 MS2_REPLACE_METHOD(0x14039a640, CFileSystem, FUN_14039a640, 15, 0xCAF8FB9C);
 // @0x14039a660
 void CFileSystem::MarkCharacterModelLoaded(CString path, void*) {
-    Unk_1401b4ec0 guard(characterLock, 1);
+    Unk_CriticalSectionLock guard(characterLock, 1);
     if (path == "./data/resource/model/character/female/female.xml") characterMask |= 2;
     else if (path == "./data/resource/model/character/male/male.xml") characterMask |= 1;
 }
@@ -761,7 +761,7 @@ unsigned CFileSystem::FUN_14039a720() { return characterMask; }
 MS2_REPLACE_METHOD(0x14039a720, CFileSystem, FUN_14039a720, 17, 0x650AC462);
 // @0x14039a740
 void CFileSystem::ResetCharacterMask() {
-    Unk_1401b4ec0 guard(characterLock, 1);
+    Unk_CriticalSectionLock guard(characterLock, 1);
     characterMask = 0;
 }
 MS2_REPLACE_METHOD(0x14039a740, CFileSystem, ResetCharacterMask, 69, 0x60D6BBDC);
@@ -901,7 +901,7 @@ MS2_REPLACE_METHOD(0x14039b470, CFileSystem, FUN_14039b470, 478, 0x65A79091);
 #endif
 // @0x14039b660
 void CFileSystem::ClearCache() {
-    Unk_1401b4ec0 guard(cacheLock, 1);
+    Unk_CriticalSectionLock guard(cacheLock, 1);
     cache.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x14039b660, CFileSystem, ClearCache, 69, 0x68A6E2C2);
@@ -910,7 +910,7 @@ void CFileSystem::PurgeExpiredCache() {
     if (cache.GetCount() == 0) return;
     __time64_t now;
     FUN_140396290(&now);
-    Unk_1401b4ec0 guard(cacheLock, 1);
+    Unk_CriticalSectionLock guard(cacheLock, 1);
     POSITION position = cache.GetHeadPosition();
     while (position != nullptr) {
         POSITION current = position;

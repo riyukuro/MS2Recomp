@@ -98,7 +98,7 @@ public:
 class Unk_FdPlotMgr {};
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 // C3: FUN_1410b8c90 is the CubeMapInformationService member below (key by value, the exe builds it in an argument temp)
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
@@ -370,7 +370,7 @@ void UIFittingDollDialog::FUN_141934070()
     if (pDoll == 0)
         return;
     int bOwner = 0;
-    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pPlot != 0)
         bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
@@ -416,7 +416,7 @@ int UIFittingDollDialog::FUN_141934430()
     PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMe == 0)
         return 0xd;
-    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pPlot == 0)
         return 0xd;

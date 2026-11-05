@@ -46,7 +46,7 @@
 #include "ms2/client/ms2/worldservice.h"
 extern template class MS2Ptr<class CQuestData>; extern template class MS2Ptr<class CConditionCommonData>; // C3: only MS2Ptr<CQuest> takes the generic bodies here
 #include "ms2/placeholder/ms2ptr_impl.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -423,7 +423,7 @@ void Unk_Random::Seed(int nSeed)
 // @0x140768350
 void Unk_Random::SetState(unsigned s1, unsigned s2, unsigned s3)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_s1 = s1 | 0x100000;
     m_s2 = s2 | 0x1000;
     m_s3 = s3 | 0x10;
@@ -432,7 +432,7 @@ void Unk_Random::SetState(unsigned s1, unsigned s2, unsigned s3)
 // @0x1407683d0
 void Unk_Random::GetState(unsigned* s1, unsigned* s2, unsigned* s3)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     *s1 = m_s1;
     *s2 = m_s2;
     *s3 = m_s3;
@@ -441,7 +441,7 @@ void Unk_Random::GetState(unsigned* s1, unsigned* s2, unsigned* s3)
 // @0x140768450
 void Unk_Random::SetRaw(unsigned s1, unsigned s2, unsigned s3)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_s1 = s1;
     m_s2 = s2;
     m_s3 = s3;
@@ -450,7 +450,7 @@ void Unk_Random::SetRaw(unsigned s1, unsigned s2, unsigned s3)
 // @0x1407684c0
 unsigned Unk_Random::FUN_1407684c0()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     unsigned s1 = (m_s1 & 0xfffffffe) << 12 ^ (m_s1 << 13 ^ m_s1) >> 19;
     m_s1 = s1;
     unsigned s2 = (m_s2 & 0xfffffff8) << 4 ^ (m_s2 << 2 ^ m_s2) >> 25;

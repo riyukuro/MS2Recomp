@@ -146,9 +146,9 @@ bool FUN_140930b10();
 bool FUN_140930b70();
 unsigned int FUN_1409313b0();   // C3: was FUN_1409313b0
 bool FUN_1407d1d00(class CShutdownEventBillboard*);   // C3: was FUN_1407d1d00
-struct Unk_EntityAppFramework { char m_pad[8]; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 class Unk_RxCellInfo
 {
 public:
@@ -160,7 +160,7 @@ public:
 class Cube;
 class CubeMapInformationService : public efd::ISystemService { public: Cube* GetCubeAtPoint(Vector3 pt); Cube* GetCubeAtCell(Unk_Int3 pt); };   // C3: member view
 // C3: CubeMapInformationService (class id 0x06100017) was CubeMapInformationService (the view above)
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 class Unk_RxMapInfo : public CPtred
 {
 public:
@@ -453,7 +453,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     {
-        efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
         Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtPoint(ptLow));

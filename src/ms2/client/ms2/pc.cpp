@@ -400,7 +400,7 @@ public:
 // The housing service pointer (C3: efd::SmartPointer<CubeMapInformationService>, in place of the Unk_PCHousingSvcPtr view).
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was Unk_PCHousingSvc* FUN_1401cd040(char*)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 // Physics: the ray cast record and the PhysX helper (physxhelper.h needs NOMINMAX; state.cpp has the same view).
 struct Unk_RayCastInfo
 {
@@ -516,7 +516,7 @@ public:
     bool m_bShowPartyHp;                                            // +0xd
 };
 class CGameOption;
-unsigned FUN_140a7d630(Common::Constants::Value<Unk_ConstColor>* pColor); // the colour as ARGB (npcdatacli.cpp)
+template<class T> struct Unk_NpcConstant; unsigned NpcConstantValue(Unk_NpcConstant<unsigned>* p); // the colour as ARGB (npcdatacli.cpp; C3: was FUN_140a7d630)
 // The running skill cast (CSkillRecord, skillrecord.h; its SkillMotionData clashes with jobsystem.h's skilldata.h
 // placeholder here). The smart pointer helpers are the exe's shared copies.
 class Unk_PCSkillMotion : public CPtred                             // SkillMotionData
@@ -876,16 +876,16 @@ void PC::vfunc_12()
 }
 
 struct PCHitPoint { float x, y, z; };
-// GameObject::vfunc_33 (0x14123cf10) takes the 12-byte hit point by value: the exe copies *b into a temp and passes
-// its address (C3: was the GameObjectHitView::FUN_14123cf10(CDamageRecord*, PCHitPoint) view)
-//
-//
+// GameObject::vfunc_33 (0x14123cf10) with its parameters typed: the exe forwards the 12-byte hit point by value
+struct GameObjectHitView : GameObject {
+    void FUN_14123cf10(CDamageRecord* pRecord, PCHitPoint pt);
+};
 
 // @0x141652080
 void PC::vfunc_33(void* a, void* b)
 {
 #define pRecord static_cast<CDamageRecord*>(a)
-    GameObject::vfunc_33(a, &const_cast<PCHitPoint&>(static_cast<const PCHitPoint&>(PCHitPoint(*static_cast<PCHitPoint*>(b)))));
+    static_cast<GameObjectHitView*>(static_cast<GameObject*>(this))->FUN_14123cf10(pRecord, *static_cast<PCHitPoint*>(b));
     vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
     SkillAttackData* pAttack = pRecord->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
@@ -1379,7 +1379,7 @@ MS2_REPLACE_METHOD(0x1416561A0, PC, FUN_1416561a0, 17, 0x1D689B1E);
 // @0x1416561c0
 Unk_PCItemCooldowns* PC::FUN_1416561c0()
 {
-    return reinterpret_cast<Unk_PCItemCooldowns*>(&m_kItemsF78);
+    return &m_kItemsF78;
 }
 
 // @0x1416561e0
@@ -1566,7 +1566,7 @@ MS2Ptr<Unk_PCBaseComp_a78> PC::vfunc_82()
     if ((m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get())
     {
         reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e4c0(0x12);
-        reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e500(FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorFriendly));
+        reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorFriendly)));
         m_spA78->vfunc_2();
     }
     return m_spA78;
@@ -3082,7 +3082,7 @@ void PC::vfunc_135(int nMode, int nValue, void* pInfo)
     PC* pLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (this == pLocal)
     {
-        efd::SmartPointer<CubeMapInformationService> spHousing(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+        efd::SmartPointer<CubeMapInformationService> spHousing(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (nMode == 0)
             reinterpret_cast<CubeMapInformationService*>(spHousing.operator->())->FUN_1410cc160(0);
         else if (nValue != 2)
@@ -3628,7 +3628,7 @@ int PC::FUN_14165a540()
 {
     efd::Point3 kPos;
     efd::Point3 kRot;
-    efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+    efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (((CubeMapInformationService*)spSvc))
     {
         efd::Point3 kHit;
@@ -3838,7 +3838,7 @@ int PC::FUN_14165a540()
 // @0x14165b500
 int PC::FUN_14165b500(int nKind)
 {
-    efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+    efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (!((CubeMapInformationService*)spSvc))
         return 0;
     if (nKind == 1)
@@ -4001,11 +4001,11 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
             {
                 CEquipModel* pModel = aModels[i].get();
                 ModelPart* pPart = ((struct ModelPart*)FUN_141200ab0(pModel));
-                std::vector<ModelNameEntry>& kList = *(pPart->entries + (unsigned int)FUN_141658e60());
-                std::vector<ModelNameEntry>::const_iterator it;
+                std::vector<ItemDummyInfo>& kList = *(pPart->entries + (unsigned int)FUN_141658e60());
+                std::vector<ItemDummyInfo>::const_iterator it;
                 for (it = kList.begin(); it != kList.end(); ++it)
                 {
-                    nWorld = it->worldMode | it->worldLerp;
+                    nWorld = it->worldmode | it->worldlerp;
                     if (nWorld != 0)
                         break;
                 }
@@ -4047,7 +4047,7 @@ void PC::FUN_14165cac0()
         kModel = "MS2TombStone";
     efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
     {
-        efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+        efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (((CubeMapInformationService*)spSvc))
             kPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9150(reinterpret_cast<const Vector3&>(kPos))));
     }
@@ -4455,13 +4455,13 @@ void PC::vfunc_53(float f)
         Unk_PCLocalPlayer* pLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal)
         {
-            unsigned int nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPC);
+            unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPC));
             if (this == pLocal)
-                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorMyPC);
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorMyPC));
             else if (pLocal->vfunc_122(this))
-                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPCHostile);
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPCHostile));
             else if (pLocal->FUN_1415278d0((void*)FUN_141656a80()))
-                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorParty);
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorParty));
             reinterpret_cast<UINameTag::Entity*>(pTag)->FUN_141a5e500(nColor);
         }
     }
@@ -4621,7 +4621,7 @@ void PC::vfunc_142()
     }
     efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
     {
-        efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)&egf::g_bapiContext));
+        efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (((CubeMapInformationService*)spSvc))
             kPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410b9150(reinterpret_cast<const Vector3&>(kPos))));
     }
@@ -4861,5 +4861,5 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, s
 // MS2-PIN: ?vfunc_125@PC@@UEAAXV?$MS2Ptr@VUnk_PCArg125@@@@@Z 0x141654900
 // MS2-PIN: ?vfunc_126@PC@@UEAAXV?$MS2Ptr@VUnk_PCArg125@@@@H@Z 0x141655230
 // MS2-PIN: ?vfunc_143@PC@@UEAAXXZ 0x141660920
-// MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@UModelNameEntry@@@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@UModelNameEntry@@@std@@@0@AEAV10@@Z 0x141665be0
+// MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@UItemDummyInfo@@@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@UItemDummyInfo@@@std@@@0@AEAV10@@Z 0x141665be0
 // MS2-RANGE: 0x142cb3d50-0x142cb4000 .text$yd

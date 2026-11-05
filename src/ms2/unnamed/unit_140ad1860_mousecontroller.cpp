@@ -181,7 +181,7 @@ private:
     Unk_McAttach* m_p;
 };
 
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // Entity instancing service: the object that knows which entities are hidden.
 class Unk_McInstancing
@@ -208,7 +208,7 @@ MS2_CHECK_OFFSET(Unk_McInstancing, m_nHidden, 0xd0);
 
 
 
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+//
 
 class Unk_McEntityRules : public CTriggerService { };
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
@@ -606,7 +606,7 @@ void CMouseController::FUN_140ad2830()
     info.m_groups = 0x201;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
     {
-        efd::SmartPointer<CubeMapInformationService> spPhys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spPhys(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         void* pHit = reinterpret_cast<CubeMapInformationService*>(spPhys.operator->())->GetCubeByEntity(static_cast<egf::Entity*>(info.m_hitEntity));
         if (pHit != 0)
         {
@@ -951,7 +951,7 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     pEntity->GetPropertyValue(0x23f9860e, bFlagA);
     if (bFlagA)
     {
-        efd::SmartPointer<HardwareInstancingService> spSvc(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        efd::SmartPointer<HardwareInstancingService> spSvc(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(spSvc->FUN_1413d66b0(pEntity));
         if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {

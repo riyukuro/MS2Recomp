@@ -98,7 +98,7 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/citemenchantutil.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
@@ -720,7 +720,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
             spRandom->FUN_1405d48d0(spOption, nRank, &random, vLocked, nPickCount, &vLocal);
             Unk_EnchantMap& kStats = spOption->GetStatMap(2);
             Unk_SocketSpecialMap& kSpecials = spOption->GetSpecialMap(2);
-            Unk_1401b4ec0 guard(lock, 1);
+            Unk_CriticalSectionLock guard(lock, 1);
             vLogs.insert(vLogs.end(), vLocal.begin(), vLocal.end());
             if (nIndex == 0)
             {
@@ -898,7 +898,7 @@ bool CItemOptionTable::LoadItemOptionConstant()
             spConstant->FUN_1405d2a50(nCode);
             if (!spConstant->FUN_1405d2a90(pChild))
                 continue;
-            Unk_1401b4ec0 guard(lock, 1);
+            Unk_CriticalSectionLock guard(lock, 1);
             m_constants.insert(std::make_pair(nCode, spConstant));
         }
     });
@@ -926,7 +926,7 @@ bool CItemOptionTable::LoadItemOptionRandom()
         MS2Ptr<ItemOptionRandom> spRandom(new ItemOptionRandom);
         if (!spRandom->Load(pElem))
             return;
-        Unk_1401b4ec0 guard(lock, 1);
+        Unk_CriticalSectionLock guard(lock, 1);
         m_randoms.insert(std::make_pair(spRandom->GetCode(), (ItemOptionRandom*)spRandom));
     });
     return true;

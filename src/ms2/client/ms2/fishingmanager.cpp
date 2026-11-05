@@ -137,7 +137,7 @@ public:
     Cube* GetCubeAtCell(Unk_Int3 kCell);                    // the cube at a cell
 };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 template <> MS2Ptr<Cube>::MS2Ptr(Cube* p);                  // 0x140884fb0
 extern template class MS2Ptr<Cube>;
 
@@ -345,7 +345,7 @@ void Unk_FishLine::FUN_140cd80d0()
     }
     else
     {
-        efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+        efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         efd::Point3 kHit;
         efd::Point3 kCell;
         spCubeMap->FUN_1410b7ba0(*reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_pOwner->vfunc_18())),
@@ -1435,7 +1435,7 @@ int CFishingManager::FUN_140cdd7b0()
     kAhead.y = (kAt.y > 0.0f) ? 75.0f : -75.0f;
     kAhead.z = 0.0f;
     Unk_Int3 kBase = FUN_1408a1430(*reinterpret_cast<const NiPoint3*>(&static_cast<const efd::Point3&>(kAt + kAhead)));
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     for (int i = 0; i < 7; i++)
     {
         for (int j = 0; j < 7; j++)

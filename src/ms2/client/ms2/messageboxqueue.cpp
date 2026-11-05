@@ -18,7 +18,7 @@
 
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adcea0
 // Scoped lock (ctor 0x1401b4ec0, dtor 0x1401b5120).
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
+//
 
 UIMessageBox* FUN_14151f890();
 int FUN_14151fad0(MS2Ptr<CMsgBoxData> spData);
@@ -33,7 +33,7 @@ static ATL::CAtlList<MS2Ptr<CMsgBoxData> > s_queue(10);                     // @
 // @0x14151f150
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spData)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     MS2Ptr<CMsgBoxData> spCur = FUN_14151f820();
     if (FUN_14151fad0(spData) != 0)
     {
@@ -46,7 +46,7 @@ void FUN_14151f150(MS2Ptr<CMsgBoxData> spData)
 // @0x14151f200
 void FUN_14151f200()
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     if (s_queue.IsEmpty())
     {
         UIMessageBox* pBox = FUN_14151f890();
@@ -80,7 +80,7 @@ void FUN_14151f200()
 // @0x14151f460
 void FUN_14151f460(int nResult)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     s_queue.RemoveAll();
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0)
@@ -121,7 +121,7 @@ MS2_REPLACE(0x14151F6E0, FUN_14151f6e0, 44, 0xD5CDF260);
 // @0x14151f720
 void FUN_14151f720(MS2Ptr<CMsgBoxData> spData)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
     {
         MS2Ptr<CMsgBoxData> spItem = s_queue.GetAt(pos);
@@ -156,7 +156,7 @@ MS2_REPLACE(0x14151F890, FUN_14151f890, 19, 0x2C2012DD);
 // @0x14151f8b0
 int FUN_14151f8b0()
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     if (!s_queue.IsEmpty())
     {
         for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
@@ -176,7 +176,7 @@ int FUN_14151f8b0()
 // @0x14151f9c0
 int FUN_14151f9c0()
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     if (!s_queue.IsEmpty())
     {
         for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
@@ -207,7 +207,7 @@ MS2_REPLACE(0x14151FAD0, FUN_14151fad0, 128, 0x35EF421F);
 // @0x14151fb60
 void FUN_14151fb60(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     for (POSITION pos = s_queue.GetHeadPosition(); pos != 0; s_queue.GetNext(pos))
     {
         MS2Ptr<CMsgBoxData> spItem = s_queue.GetAt(pos);

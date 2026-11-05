@@ -78,29 +78,29 @@ unsigned FUN_140482050(unsigned nAmount, unsigned nScale);               // scal
 // The three-argument log call (the instantiation of itemgemstonedata.cpp's Unk_GemLog, same exe function)
 template <class A, class B, class C> void Unk_GemLog(class CLogString*, int, int, const wchar_t*, const A&, const B&, const C&);   // C3: was FUN_1405b1bd0
 
-// The ingredient's tag setter (an inline member of CIngredientInfo in the exe).
-// The ingredient vector's iterator (the exe's std::vector<Unk_IngRef>::iterator): the const base steps by one element.
-struct Unk_LapenIngIterBase
-{
-    Unk_IngRef* m_p;
-    // @0x1405b70f0
-    Unk_IngRef** operator++() { ++m_p; return &m_p; }
-};
-struct Unk_LapenIngIter : Unk_LapenIngIterBase
-{
-    Unk_LapenIngIter(Unk_IngRef* p) { m_p = p; }
-    // @0x1405b7110
-    Unk_LapenIngIter& operator++() { Unk_LapenIngIterBase::operator++(); return *this; }
-    bool FUN_14027f000(const Unk_LapenIngIter& rhs) const;   // operator!=
-    Unk_IngRef& FUN_14027f490() const;                      // operator*
-};
-// The ingredient vector seen through its begin()/end() (the container's m_items).
-struct Unk_LapenIngVec
-{
-    Unk_LapenIngIter FUN_14028a260();   // begin
-    Unk_LapenIngIter FUN_14028aa90();   // end
-};
+// The ingredient vector (Unk_IngVec m_items) is std::vector<MS2Ptr<CIngredientInfo> >; GetIngredients walks it with the std iterator.
+// MS2-PIN: ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1405b70f0 ; ua17: the const iterator ++ (called by the iterator ++)
+// MS2-PIN: ??E?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1405b7110 ; ua17: the iterator ++ in GetIngredients
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
+// The ingredient's tag setter (an inline member of CIngredientInfo in the exe).
 // @0x1405b3610
 inline void Unk_LapenIngredientTag(CIngredientInfo* pInfo, int nTag)
 {
@@ -128,12 +128,12 @@ MS2SvrPtr<CIngredientContainer> CItemLapenshardData::GetIngredients(int nScale)
     if (nScale == 0)
         return m_spIngredients;
     MS2SvrPtr<CIngredientContainer> spResult(new CIngredientContainer);
-    for (Unk_LapenIngIter it = reinterpret_cast<Unk_LapenIngVec&>(m_spIngredients->m_items).FUN_14028a260();
-         it.FUN_14027f000(reinterpret_cast<Unk_LapenIngVec&>(m_spIngredients->m_items).FUN_14028aa90()); ++it)
+    for (std::vector<MS2Ptr<CIngredientInfo> >::iterator it = reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo> >&>(m_spIngredients->m_items).begin();
+         it != reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo> >&>(m_spIngredients->m_items).end(); ++it)
     {
-        int nItem = it.FUN_14027f490()->m_a;
-        unsigned nAmount = it.FUN_14027f490()->m_c;
-        int nTag = it.FUN_14027f490()->m_b;
+        int nItem = (*it)->m_a;
+        unsigned nAmount = (*it)->m_c;
+        int nTag = (*it)->m_b;
         bool bMoney = nTag == 0x5d || nTag == 0x5e || nTag == 0x5f;
         if (bMoney)
         {

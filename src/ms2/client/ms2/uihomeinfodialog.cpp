@@ -83,9 +83,9 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 
 
 // The entity application framework (global at 0x143b059e8) and the cube service (class id 0x06100017).
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 extern __int64 DAT_143ab2898;                                       // wallet: meso
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/client/ms2/mypc.h"
@@ -118,7 +118,7 @@ public:
     unsigned __int64 FUN_1410d5780();                                      // merat balance
     void FUN_1410d5930(Unk_CMISTree<0x11e>* ids);                   // the visitors
 };
-class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+//
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
@@ -417,7 +417,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
 {
     if (vfunc_55())
         return;
-    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -445,7 +445,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
 {
     if (vfunc_55())
         return;
-    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))

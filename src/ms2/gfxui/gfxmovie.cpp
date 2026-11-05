@@ -29,7 +29,7 @@
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-ecr::RenderService* Unk_GetRenderService(char* pCell);           // C3: was FUN_14127bf80; its render service (null if none)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
@@ -129,7 +129,7 @@ int GFxMovie::vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags)
             m_60->SetViewAlignment(Scaleform::GFx::Movie::Align_TopLeft);
             m_60->SetExternalInterface(NiGFxExternalInterfaceDelegate<GFxMovie>::Create(this, &GFxMovie::vfunc_4));
             m_60->SetEdgeAAMode(Scaleform::Render::EdgeAA_On);
-            void* pService = Unk_GetRenderService(&DAT_143b059e8);
+            void* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
             if (pService != 0)
             {
                 NiRenderTargetGroup* pTarget = ((ecr::RenderService*)pService)->GetActiveRenderSurface()->GetRenderTargetGroup();

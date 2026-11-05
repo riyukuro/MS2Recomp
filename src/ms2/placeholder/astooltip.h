@@ -149,7 +149,7 @@ public:
     void FUN_1409d88e0(MS2Ptr<CItem> spItem);                            // ugcItemLimitRegister (by value: the callee destroys it)
     void SetItemEquipText(bool bEnable);                                    // itemEquip
     void FUN_1409e72a0(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
-    void FUN_1409e7460(class Unk_IngVec* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
+    void FUN_1409e7460(std::vector<MS2Ptr<class CIngredientInfo> >* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
     void FUN_1409d3470(CItem* pItem);                                    // extraComment (gemstone upgrade / mastery / emoticon)
     CStringW FUN_1409d9c50(CItem* pItem);                                // the extra comment of an item
     void FUN_1409d3a40(CItem* pItem);                                    // itemQuestInfo

@@ -12,19 +12,19 @@
 #include <errno.h>
 #include <string.h>
 
-class Unk_PCItemCooldowns
-{
-public:
-    Unk_PCItemCooldowns();                                  // 0x140c86000
-    void FUN_140c86060();                                   // clear all four slots
-    void FUN_140c860b0(CInputStream& stream, int nObjId);   // read the slots from a stream
-    MS2Ptr<CItem> FUN_140c862c0(__int64 nItemUid);          // find by uid
-    MS2Ptr<CItem> FUN_140c863c0(int nSlot);                 // get a slot
-    bool FUN_140c86450(MS2Ptr<CItem> spItem);               // put at the item's own slot
-    bool FUN_140c86510(__int64 nItemUid);                   // clear the slot holding the uid
-private:
-    MS2Ptr<CItem> m_items[4];
-};
+#include "ms2/placeholder/pcitemcooldowns.h"   // the class (shared with fittingdollpc.h, PC +0xf78)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 MS2_CHECK_SIZE(Unk_PCItemCooldowns, 0x40);
 
 // @0x140c86000

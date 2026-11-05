@@ -281,7 +281,7 @@ void Unk_CMISDriveTail10()
     Unk_CMISPiecewisePair<int, bool>(nKey);
     Unk_CMISPiecewisePair<int, Unk_CubePoint>(nKey);
     Unk_CMISPiecewisePair<int, Unk_CMISTree<267> >(nKey);
-    Unk_CMISPiecewisePair<int, Unk_CMISTree<496> >(nKey);
+    Unk_CMISPiecewisePair<int, efd::vector<egf::EntityID> >(nKey);       // C3: was Unk_CMISTree<496>
     Unk_CMISPiecewisePair<int, Unk_CMISCubeTimer>(nKey);
     Unk_CMISPiecewisePair<long, MS2Ptr<Cube> >(static_cast<long>(uKey));
     Unk_CMISPiecewisePair<int, Unk_CMISMapBucket>(nKey);
@@ -341,3 +341,4 @@ void Unk_CMISDriveTail10()
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1410d8440 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$?0AEBVEntityID@egf@@$$Z$$V@?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBVEntityID@egf@@@1@V?$tuple@$$V@1@@Z 0x1410d98a0 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$?0V?$tuple@AEBVEntityID@egf@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAA@AEAV?$tuple@AEBVEntityID@egf@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db230 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410daff0 ; C3: was pair<const int, Unk_CMISTree<496> >

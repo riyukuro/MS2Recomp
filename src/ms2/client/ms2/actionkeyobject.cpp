@@ -207,10 +207,10 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wi
 //
 //
 //
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
+#define DAT_143b059e8 egf::g_bapiContext
+//
 
 // The player's lifted object (MyPC::FUN_141523c00); only tested for null here.
 class Unk_PCBaseComp_b18 : public CPtred
@@ -924,7 +924,7 @@ void PortalAction::vfunc_2()
         FUN_140d73bc0(0x656, 0, 0, L"");
         return;
     }
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     if (m_spPortal->m_unk_158)
     {
         Vector3 ptFront;
@@ -982,7 +982,7 @@ CStringW PortalAction::vfunc_6()
         return L"";
     if (nTarget == 0)
         return FUN_140956e40();
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     int nMapId = 0;
     if (m_spPortal->m_unk_158)
     {
@@ -1231,7 +1231,7 @@ void BuyCubeAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    efd::SmartPointer<CubeMapInformationService> spHouse = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     int nError = ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410c8580(m_n18);
     if (nError == 0)
     {
@@ -1320,7 +1320,7 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     std::vector<Unk_WsB_LiftPtr> aLifts;
     WorldService::GetInstance()->FUN_141bc58d0(&aLifts);
     if (aLifts.size() <= 0)
@@ -1725,7 +1725,7 @@ void ViewCubeMapProfileAction::vfunc_2()
 {
     if (m_nMapId == 0)
         return;
-    efd::SmartPointer<CubeMapInformationService> spHouse = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410ccc00(m_nMapId, 1, FUN_1401d3200()->DurationForBoundaryDisplay.Read());
 }
 MS2_REPLACE_METHOD(0x140959720, ViewCubeMapProfileAction, vfunc_2, 135, 0xF03EB00E);
@@ -1823,7 +1823,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
     case 0x2f:
         return 0;
     }
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     std::vector<efd::Point3> aCells;
     aCells.reserve(3);
     for (int i = 1; i >= -1; --i)
@@ -1976,7 +1976,7 @@ int PutDownLiftableAction::vfunc_1()
         return 0;
     if (reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141659690() && pPlayer->GetCurStateId() == 1)
         return 1;
-    efd::SmartPointer<CubeMapInformationService> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     Vector3 ptFront;
     ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellInFrontOfActor(pPlayer, 0.0f, &ptFront, 1);
     Vector3 ptCell;
@@ -2132,7 +2132,7 @@ MS2_REPLACE_METHOD(0x14095BBF0, FittingDollAction, vfunc_10, 14, 0x72E52537);
 // @0x14095b7d0
 int FittingDollAction::vfunc_1()
 {
-    efd::SmartPointer<CubeMapInformationService> spHouse = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     Unk_CMISEntityRef id = spHouse->FUN_1410cb1b0();
     if (reinterpret_cast<egf::EntityID&>(id) == egf::kENTITY_INVALID)
         return 0;
@@ -2154,7 +2154,7 @@ MS2_REPLACE_METHOD(0x14095B7D0, FittingDollAction, vfunc_1, 359, 0x74E0C952);
 // @0x14095b940
 void FittingDollAction::vfunc_2()
 {
-    efd::SmartPointer<CubeMapInformationService> spHouse = FUN_1401cd040(&DAT_143b059e8);
+    efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     Unk_CMISEntityRef id = spHouse->FUN_1410cb1b0();
     if (((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410c35c0())
     {

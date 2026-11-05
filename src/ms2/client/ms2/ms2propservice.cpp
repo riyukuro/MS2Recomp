@@ -115,8 +115,8 @@
 inline unsigned FUN_1414d9cb0(EntityWorldManager* world) { return world->currentMap; }
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // the system service (0x1401cd040, the definer's signature)
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
+//
 class CubeMapInformationService { public: void* FindPhysXActor(egf::EntityID key); };   // C3: was NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID); 0x1410c5420 (cubemapinformationservice_3.h)
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class CPhysXHelper   // C3: member view for the former free stand-ins
@@ -191,7 +191,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                     bool cube = false;
                     entity->GetPropertyValue(0x38141815, cube);
                     if (cube) {
-                        efd::SmartPointer<efd::ISystemService> service(reinterpret_cast<efd::ISystemService*>(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+                        efd::SmartPointer<efd::ISystemService> service(reinterpret_cast<efd::ISystemService*>(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
                         NxActor* actor = (NxActor*)reinterpret_cast<CubeMapInformationService*>(service.operator->())->FindPhysXActor(entity->GetEntityID());
                         if (actor != NULL) {
                             ((class CPhysXHelper*)(void*)(((void*)FUN_1409f7ca0())))->FUN_14168a540(0);
@@ -259,7 +259,7 @@ efd::utf8string FUN_1414d7990(const efd::utf8string& name) {
 MS2_REPLACE(0x1414d7990, FUN_1414d7990, 156, 0x82895CAC);
 // @0x1414d7a40
 bool MS2PropService::AddPhysXPropToPropData(egf::Entity* entity, PropData* data) {
-    efd::SmartPointer<HardwareInstancingService> service(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+    efd::SmartPointer<HardwareInstancingService> service(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if ((HardwareInstancingService*)service != NULL) {
         if (service->FUN_1413d7d90(entity->GetEntityID())) return false;
     }

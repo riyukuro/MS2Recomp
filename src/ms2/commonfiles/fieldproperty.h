@@ -14,7 +14,7 @@ struct Unk_PktStream { virtual void s0(); virtual unsigned char ReadU8(); };
 struct Unk_PktIn { void* m_pad_00; Unk_PktStream m_stream; };
 
 struct Unk_Vec3f;
-struct Unk_Rgb3b { Unk_Rgb3b(); unsigned char r, g, b; Unk_Vec3f ToColor() const; };   // 3 byte colour (default ctor 0x1406c3700 zeroes it)
+class Unk_Rgb3b { public: Unk_Rgb3b(); unsigned char r, g, b; Unk_Vec3f ToColor() const; };   // 3 byte colour (default ctor 0x1406c3700 zeroes it)
 struct Unk_Vec3f { Unk_Vec3f(float x, float y, float z); float x, y, z; };   // ctor 0x1406c4340
 
 class FieldProperty : public CPtred {

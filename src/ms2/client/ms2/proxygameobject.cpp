@@ -67,7 +67,7 @@ public:
 
 CStringW FUN_1401aa6a0(int id);
 class CubeMapInformationService : public efd::ISystemService { };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 class CAddressTable   // C3: static member view for the former free stand-ins
 {
@@ -329,7 +329,7 @@ CStringW CProxyGameObject::FUN_1416c2600()
             }
         }
         if (m_b4 > 0) {
-            efd::SmartPointer<CubeMapInformationService> ptr(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+            efd::SmartPointer<CubeMapInformationService> ptr(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             Unk_UGCGroup work;
             CStringW unused;
             if (FUN_1408a0d30(m_b8, work, m_b4) != 0) {

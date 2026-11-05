@@ -209,7 +209,7 @@
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 #pragma intrinsic(memset, memcpy)                                       // template code below expands them inline again
 
 // ---- unit-local views of callees emitted in other units ----
@@ -571,7 +571,7 @@ MS2_REPLACE_METHOD(0x1414515C0, ClientLogManager, SetQuiet, 15, 0xD30DC895);
 // @0x1414515e0
 void ClientLogManager::ToggleDialog()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_spDialog && !m_spDialog->IsNotCreated())
     {
         m_spDialog->SendMessage(WM_CLOSE);
@@ -605,7 +605,7 @@ void ClientLogManager::Flush()
 {
     if (m_itPending == m_logs.end())
         return;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (; m_itPending != m_logs.end(); ++m_itPending)
     {
         if (m_spDialog.get())
@@ -662,7 +662,7 @@ MS2_REPLACE_METHOD(0x141451D90, ClientLogManager, GetLevelName, 254, 0x19E8B4EF)
 // @0x141451ea0
 void ClientLogManager::AppendLogContext(MS2Ptr<LogDialogCtx> spCtx)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     const size_t nMax = 1000;
     if (m_logs.size() > nMax)
     {

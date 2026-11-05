@@ -112,7 +112,7 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
 void FUN_1418fe1c0(const CString& str);
 
 // The limit rows of the two market buy limit tables.
@@ -920,7 +920,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             if (spData.get() != 0)
             {
                 if (spData->HasStringTag(0x13))
-                    FUN_1418fe1c0(reinterpret_cast<Unk_StringOptionEntry*>((char*)((void*)FUN_1401d3200()) + 0xdaa0)->FUN_140298f80());
+                    FUN_1418fe1c0(*reinterpret_cast<Common::Constants::Value<CString>*>((char*)((void*)FUN_1401d3200()) + 0xdaa0)->Get());
             }
         }
     }

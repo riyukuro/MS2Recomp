@@ -3481,6 +3481,7 @@ gb/obj/stock/pcre__pcre_xclass.c.obj	cl	${ROOT}	${TP}/src/pcre-8.21/pcre_xclass.
 obj/scaleform/as2/sfr_as2_01b.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_01b.cpp	6
 obj/scaleform/as2/sfr_as2_02.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_02.cpp	6
 obj/scaleform/as2/sfr_as2_02b.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_02b.cpp	6
+obj/scaleform/as2/sfr_as2_04.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_04.cpp	6
 obj/scaleform/as2/sfr_as2_03.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03.cpp	6
 obj/scaleform/as2/sfr_as2_03c.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03c.cpp	6
 obj/scaleform/as2/sfr_as2_03af.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03af.cpp	6
@@ -3495,7 +3496,6 @@ obj/scaleform/as2/sfr_as2_03u.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_a
 obj/scaleform/as2/sfr_as2_03n.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03n.cpp	6
 obj/scaleform/as2/sfr_as2_03g.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03g.cpp	6
 obj/scaleform/as2/sfr_as2_04j.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_04j.cpp	6
-obj/scaleform/as2/sfr_as2_04.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_04.cpp	6
 obj/scaleform/as2/sfr_as2_03y.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03y.cpp	6
 obj/scaleform/as2/sfr_as2_03r.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03r.cpp	6
 obj/scaleform/as2/sfr_as2_03k.obj	cl	${ROOT}	${ROOT}/src/ms2/scaleform/as2/sfr_as2_03k.cpp	6

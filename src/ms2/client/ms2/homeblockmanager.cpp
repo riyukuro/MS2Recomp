@@ -21,8 +21,8 @@
 template<> MS2Ptr<CBuddy>::~MS2Ptr();
 template<> void MS2Ptr<CBuddy>::Reference(CBuddy*);
 // Two-argument scoped lock helper shared with ugcmappackageinfo.
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&,int); ~Unk_1401b4ec0(); private: void* m_p; };
-MS2_CHECK_SIZE(Unk_1401b4ec0,8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
@@ -70,7 +70,7 @@ MS2_REPLACE_METHOD(0x140a46b90, HomeBlockManager, FUN_140a46b90, 188, 0x123F62F9
 // Shared HomeBlockInfo field types retained pending coordinator review.
 // @0x140a46c60
 void HomeBlockManager::FUN_140a46c60(CInPacket& in) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     unsigned __int64 count=(unsigned)in.ReadInt32();
     for(unsigned __int64 i=0;i<count;++i) {
         HomePtr p(new HomeBlockInfo);
@@ -125,7 +125,7 @@ void HomeBlockManager::FUN_140a47130(CInPacket& in) {
     unsigned __int64 id=in.ReadInt64();
     CStringW memo=in.ReadUnicodeString();
     if(id==0) return;
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return;
     HomePtr p=it->second;
@@ -152,7 +152,7 @@ void HomeBlockManager::FUN_140a47360(CInPacket& in) {
 MS2_REPLACE_METHOD(0x140a47360, HomeBlockManager, FUN_140a47360, 262, 0x6FA9B62B);
 // @0x140a47490
 HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(unsigned __int64 id) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return HomePtr(0);
     return it->second;
@@ -160,7 +160,7 @@ HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(unsigned __int64 id) {
 MS2_REPLACE_METHOD(0x140a47490, HomeBlockManager, FUN_140a47490, 232, 0xE93ABFD9);
 // @0x140a47580
 HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47580(unsigned __int64 id) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byAccount.find(id);
     if(it==m_byAccount.end()) return HomePtr(0);
     return it->second;
@@ -168,7 +168,7 @@ HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47580(unsigned __int64 id) {
 MS2_REPLACE_METHOD(0x140a47580, HomeBlockManager, FUN_140a47580, 232, 0xDBF71D71);
 // @0x140a47670
 void HomeBlockManager::FUN_140a47670(std::vector<BuddyPtr>& out) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     for(auto entry:m_byId) {
         if(entry.second==0) continue;
         BuddyPtr buddy=FUN_140a47d10(entry.second);
@@ -188,14 +188,14 @@ HomeBlockManager::BuddyPtr HomeBlockManager::FUN_140a477f0(__int64 id) {
 MS2_REPLACE_METHOD(0x140a477f0, HomeBlockManager, FUN_140a477f0, 324, 0x745AB369);
 // @0x140a47940
 void HomeBlockManager::FUN_140a47940() {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     m_byId.clear();
     m_byAccount.clear();
 }
 MS2_REPLACE_METHOD(0x140a47940, HomeBlockManager, FUN_140a47940, 86, 0x0AB0FDD5);
 // @0x140a479a0
 void HomeBlockManager::FUN_140a479a0(HomePtr p) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     m_byId.insert(std::make_pair(p->m_18,p));
     m_byAccount.insert(std::make_pair(p->m_28,p));
     HomeMessage(0xd57,1,1,p->m_30);
@@ -205,7 +205,7 @@ void HomeBlockManager::FUN_140a479a0(HomePtr p) {
 MS2_REPLACE_METHOD(0x140a479a0, HomeBlockManager, FUN_140a479a0, 379, 0x95F27FBB);
 // @0x140a47b30
 void HomeBlockManager::FUN_140a47b30(unsigned __int64 id) {
-    Unk_1401b4ec0 guard(m_lock,1);
+    Unk_CriticalSectionLock guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return;
     {

@@ -1018,7 +1018,7 @@ int UIUpperHudDialog::vfunc_48()
 
 class Unk_HudSound { public: unsigned char m_bMuted; };
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+// C3: FUN_140acca70 is Unk_ASCreate<ASUIComponent> (defined below)
 
 // @0x14135b110
 template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v)
@@ -1161,7 +1161,7 @@ void UIVideoContents::FUN_14135afa0(int bMute)
 // @0x14135b0a0
 void UIVideoContents::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140acca70(m_28, root);
+    m_30 = Unk_ASCreate<ASUIComponent>(m_28, root);
 }
 
 // @0x14135b420

@@ -38,13 +38,13 @@ public:
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 class CubeMapInformationService;
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 
 class Unk_RsGrid;                                                   // the cube map information service
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
@@ -184,7 +184,7 @@ void UIRealEstateSell::FUN_141ab6230()
     if (m_30.IsNull())
         return;
     ASObj obj(2);
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
     Unk_UGCGroup salable;
     if (FUN_1408a0d30(target->m_n24, salable, target->m_n20) == 0)

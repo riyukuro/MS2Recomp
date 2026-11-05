@@ -38,14 +38,14 @@ public:
 };
 
 // The member at +0x1338: the action key table (ctor 0x140951c70 in ?\actionkeyobject.cpp, dtor 0x140952e70).
-class Unk_MyPCActionKeys
-{
-public:
-    Unk_MyPCActionKeys();                                   // 0x140951c70
-    ~Unk_MyPCActionKeys();                                  // 0x140952e70
-    void FUN_140952ef0();
-    unsigned char m_body[0xa0];                             // three CAtlMaps of actions by key
-};
+#include "ms2/client/ms2/actionkeyobject.h"   // C3: Unk_ActionKeyManager (was the Unk_MyPCActionKeys view below)
+//{
+//public:
+//    Unk_MyPCActionKeys();                                   // 0x140951c70
+//    ~Unk_MyPCActionKeys();                                  // 0x140952e70
+//    void FUN_140952ef0();
+//    unsigned char m_body[0xa0];                             // three CAtlMaps of actions by key
+//};
 
 // The pending portal move at +0x17a0 (0x20; ctor 0x1415328a0).
 struct Unk_MyPCPortalMove
@@ -285,7 +285,7 @@ public:
     int FUN_1415248d0(int nSide, int nType);                // sit (0xbadf0a13) or lie (0xc13e30c8) on a nearby object
 
     StateLocalController m_kStateCtl;                       // +0x12e8
-    Unk_MyPCActionKeys m_kActionKeys;                       // +0x1338
+    Unk_ActionKeyManager m_kActionKeys;                       // +0x1338
     CSkillSystem m_kSkillSystem;                            // +0x13d8
     CGetExp* m_pGetExp;                                     // +0x15c8 (created on the first exp gain)
     int m_n15d0;                                            // +0x15d0 = 0x7fffffff

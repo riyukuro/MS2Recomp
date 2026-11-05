@@ -25,7 +25,7 @@ public:
     void FUN_14191aa10();                                           // m_78 = m_7c = 1
     void FUN_14191aa40();                                           // m_78 = m_7c = 0
     void FUN_14191aa70();                                           // unregister from the manager; m_78 = m_7c = 0
-    void FUN_14191aae0(const Vector3& pt);                  // m_6c = pt (the world anchor)
+    void FUN_14191aae0(Vector3 pt);                         // m_6c = pt (the world anchor); by value, as the exe callers copy it
     void FUN_14191ab10(CStringW strText);                           // m_88 = text; m_7c = 1
     void FUN_14191ab70(CStringW strAdditional);                     // m_90 = text; m_7c = 1
     void FUN_14191abd0();                                           // toggle the "additional" text

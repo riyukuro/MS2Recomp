@@ -159,11 +159,11 @@ void FUN_1413747d0(unsigned char*);   // C3: was FUN_1413747d0
 void Unk_GcClear0(char*);   // C3: was FUN_1413b5850
 void Unk_GcClear1(char*);   // C3: was FUN_1413b5860
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0
-class Unk_MergeRange   // C3: member view for the former free stand-ins
-{
-public:
-    void Set(int, int);
-};
+// C3: Unk_MergeRange (Set 0x1405c6380) comes from unk_mergerange.h via cguidecondition.h
+//
+//
+//
+//
 int FUN_14138a170(const CStringA& str);
 
 // @0x1413b1d00

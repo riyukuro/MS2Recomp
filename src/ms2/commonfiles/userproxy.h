@@ -68,35 +68,35 @@ MS2_CHECK_SIZE(Unk_UserProxyPtr<CPlatformProxy>, 0x10);
 Unk_UserProxyPtr<CPlatformProxy> FUN_1408e7250();
 
 // Distinct lock constructor overloads, verified at the annotated exe addresses.
-class Unk_PetLock {
-public:
-  Unk_PetLock(CLockCriticalSection &, int);
-  ~Unk_PetLock();
-
-private:
-  void *m_p;
-};
-class Unk_UserProxyConstLock {
-public:
-  Unk_UserProxyConstLock(const CLockCriticalSection &, int);
-  ~Unk_UserProxyConstLock();
-
-private:
-  void *m_p;
-};
-MS2_CHECK_SIZE(Unk_PetLock, 8);
-MS2_CHECK_SIZE(Unk_UserProxyConstLock, 8);
-class Unk_UserProxyColor {
-public:
-  Unk_UserProxyColor();
-  void Clear();
-  void FUN_140267d00(const Unk_UserProxyColor &);
-  void FUN_140267e40(COutputStream &);
-  void FUN_140267e70(CInputStream &);
-  Unk_UserProxyColor &operator=(const Unk_UserProxyColor &);
-  int m_0, m_4, m_8;
-};
-MS2_CHECK_SIZE(Unk_UserProxyColor, 12);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+#include "ms2/placeholder/inttriple.h"
+typedef Unk_IntTriple Unk_UserProxyColor;   // the 12-byte three-int value at +0xd4 (was a stand-in)
+//
+//
+//
+//
+//
+//
+//
+//
+//
 class Unk_UserProxyBits {
 public:
   Unk_UserProxyBits();

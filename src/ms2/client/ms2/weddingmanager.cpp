@@ -157,11 +157,11 @@ public:
 };
 class Unk_WmField;
 class CubeMapInformationService : public efd::ISystemService { public: static const efd::ClassID CLASS_ID = 0x06100017; int FUN_1410d2f10(); bool FUN_1410c35c0(); };   // C3: was the Unk_Service6100017 base view
-struct Unk_EntityAppFramework;   // C3: the real holder (ugcbuildvalidator.cpp)
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 // C3: Unk_Service6100017 was CubeMapInformationService (the view above)
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);
+//
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)     // C3: was extern Unk_WmFieldHolder DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 extern unsigned __int64 DAT_143ab2828;                          // the local character id
 extern Unk_Inventory g_143ab2a90;                                      // the player inventory
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -1058,7 +1058,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
 }
 
 // @0x141b89a10
-bool WeddingManager::CanVisit(int packageId, int hallId, __int64 id)
+bool WeddingManager::CanVisit(int packageId, int hallId, __int64 id, unsigned char /*night*/)
 {
     if (!FUN_140900550()) {
         ShowError(0x12);
@@ -1207,7 +1207,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
         return false;
     }
     int allowed = 0;
-    efd::SmartPointer<CubeMapInformationService> field(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> field(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if ((field.operator CubeMapInformationService*() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410c35c0()) {
         allowed = 1;
     } else {
@@ -1284,7 +1284,7 @@ bool Unk_UcSlotMgr::FUN_141b867e0(__int64 partnerId)
 // MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAHXZ 0x141b89950
 // MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0
 // MS2-PIN: ?CanStartWedding@WeddingManager@@QEAA_N_J@Z 0x141b867e0
-// MS2-PIN: ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0
+// (0x141b873c0: uimaillistdialog.cpp calls ReadTicketMail directly)
 // MS2-PIN: ?FUN_141b867e0@Unk_MsgWedding@@QEAA_N_J@Z 0x141b867e0
 // MS2-PIN: ?FUN_141b867e0@Unk_UcSlotMgr@@QEAA_N_J@Z 0x141b867e0
 // MS2-PIN: ?FUN_141b89950@@YAHPEAVWeddingManager@@@Z 0x141b89950

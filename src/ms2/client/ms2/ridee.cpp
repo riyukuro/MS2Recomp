@@ -267,11 +267,11 @@ class Unk_RideePC : public PCBase
 {
 };
 class Unk_RideeStats;
-class CEquipment   // C3: member view (real class not in this TU)
-{
-public:
-    float GetAbilityRate(SAType eType);
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 float FUN_1411f0e30(float fBase, float fRate);
 bool FUN_14028d470(float a, float b);
 
@@ -304,11 +304,11 @@ public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     Cube* GetCubeAtPoint(Vector3 pt);
 };
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
-ecr::SceneGraphService* FUN_1410a68f0(struct Unk_CcSvcCell* pCell);   // the definer's spelling (cubecraft_1)
+#define DAT_143b059e8 egf::g_bapiContext
+//
+//
 
 extern int DAT_143ae2b30;                                           // no rendering (server/tool build)
 #define g_kCubeGuideZero (*(const NiPoint3*)&efd::Point3::ZERO) // C3: 0x143b01a60, was extern const NiPoint3 g_kCubeGuideZero
@@ -555,7 +555,7 @@ void Ridee::vfunc_24(int n)
         m_unk_40 = m_pRider->vfunc_25();
         if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
-            efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<struct Unk_CcSvcCell*>(&DAT_143b059e8)));
+            efd::SmartPointer<ecr::SceneGraphService> spService(egf::g_bapiContext.GetSystemServiceAs<ecr::SceneGraphService>());
             if (m_unk_40 != 0)
             {
                 bool bValue = false;
@@ -974,7 +974,7 @@ void Ridee::FUN_141706650(bool bForce)
                 {
                     NiPoint3 kPropPos;
                     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
-                    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+                    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                     if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->GetCubeAtPoint(reinterpret_cast<Vector3&>(kPropPos)) && vfunc_99(0) == 0)
                     {
                         if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a9b0(pEntity, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))))

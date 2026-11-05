@@ -84,7 +84,7 @@ egmAnimation::AnimationService* FUN_141b6f910();
 class Unk_SiDelay { public: char m_c; };
 int FUN_14025a620(class Unk_ConstVal* p);   // C3: the real free function (a constant slot's value)
 class Unk_SiUInt { public: char m_c; };
-class Unk_StringOptionEntry { public: CString& FUN_140298f80(); char m_c; };   // C3: named like the real class (0x140298f80)
+class Unk_StringOptionEntry { public: char m_c; };   // C3: layout view of Common::Constants::Value<CString> (its Get() is 0x140298f80)
 typedef Unk_StringOptionEntry Unk_SiName;
 class Unk_SiConsts
 {
@@ -705,11 +705,11 @@ void StateIdle::FUN_1417cf360()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         if (AsPC(pPC)->FUN_141654700() == 0x32)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50)->Get();
         }
         else if (AsPC(pPC)->FUN_141654700() == 0x6e)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110)->Get();
         }
         else
         {

@@ -432,7 +432,7 @@ MS2_REPLACE_METHOD(0x140afe410, CCameraMode, vfunc_36, 147, 0x12A9C619);
 // @0x140afe4b0
 void CCameraMode::FUN_140afe4b0()
 {
-    efd::SmartPointer<ecr::CameraService> spCamera = reinterpret_cast<Unk_AppFramework&>(egf::g_bapiContext).GetSystemServiceAs<ecr::CameraService>();
+    efd::SmartPointer<ecr::CameraService> spCamera = egf::g_bapiContext.GetSystemServiceAs<ecr::CameraService>();
     if (spCamera)
     {
         Unk_CameraTarget* pTarget = (Unk_CameraTarget*)FUN_1413f98d0();

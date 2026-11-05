@@ -72,11 +72,11 @@ public:
 namespace egf { class Entity; }
 struct Unk_MakeupPlayer : public GameObject { };
 struct Unk_MakeupWorld { Unk_MakeupPlayer* FUN_141bd0cc0(); };
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void SetMeshOptimize(bool);
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene root
 
 float FUN_140768090();                                          // random float in [0, 1]

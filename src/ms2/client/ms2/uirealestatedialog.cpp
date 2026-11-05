@@ -81,21 +81,21 @@ private:
 MS2_CHECK_SIZE(CUserReportData, 0x118);
 
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 // C3: Unk_Service6100017 (the house service, CLASS_ID 0x06100017) was CubeMapInformationService (cubemapinformationservice_3.h)
 //
 //
 //
 //
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 // C3: Unk_HoService (FUN_1410d3360, the owners of the plots) was CubeMapInformationService
 //
 //
 //
 //
 //
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 
@@ -366,7 +366,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
             {
                 __int64 nTime = 0;
                 int nState = 0;
-                efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                 if ((CubeMapInformationService*)spSvc ? true : false)
                 {
                     if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
@@ -456,7 +456,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     {
                         if (DAT_143ab2898 < nPrice)
                         {
-                            efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                            efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                             FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
@@ -471,7 +471,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                     else if (g_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
-                        efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040(&DAT_143b059e8));
+                        efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
                         FUN_140d73aa0(spSvc->FUN_1410d5d80(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
@@ -544,7 +544,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
     if (pMovie == 0)
         return;
     ASObj obj(2);
-    efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     CStringW strMapName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nMapId);
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, m_nMapId) == 0)

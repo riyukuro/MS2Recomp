@@ -388,10 +388,10 @@ int ModelPart::Load(TiXmlElement* pElem)
     for (TiXmlElement* pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("dummy")); pDummy != 0;
          pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(pDummy))->NextSibling("dummy")))
     {
-        ModelNameEntry entry;
-        reinterpret_cast<ItemDummyInfo*>(&entry)->Load(pDummy);
-        if (entry.targetNode.IsEmpty())
-            entry.targetNode = name10;
+        ItemDummyInfo entry;
+        entry.Load(pDummy);
+        if (entry.targetnode.IsEmpty())
+            entry.targetnode = name10;
         if (entry.gender == 2)
         {
             entries[0].push_back(entry);

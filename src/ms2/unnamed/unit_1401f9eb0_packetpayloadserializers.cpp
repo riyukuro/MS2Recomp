@@ -10,7 +10,7 @@
 // MS2-PIN: ??_GInfo@CCPetInfoPacket@@UEAAPEAXI@Z 0x140203e10
 // MS2-PIN: ??_GChangeColorItem@CCItemColoringPacket@@UEAAPEAXI@Z 0x140203dd0
 // MS2-PIN: ??0?$MS2Ptr@VBaseOption@@@@QEAA@XZ 0x140203480
-// MS2-PIN: ??0Unk_PetLock@@QEAA@AEAVCLockCriticalSection@@H@Z 0x140203610
+// MS2-PIN: ??0Unk_CriticalSectionLock@@QEAA@PEAVCLockCriticalSection@@H@Z 0x140203610
 // MS2-PIN: ??1?$MS2Ptr@VBaseOption@@@@QEAA@XZ 0x140203970
 // MS2-PIN: ?Check@?$Unk_Allowed@H$01@@QEAA_NH@Z 0x140204050
 // MS2-PIN: ?Check@?$Unk_Minimum@E@@QEBA_NE@Z 0x1402040c0
@@ -218,14 +218,14 @@ struct Unk_NarrowPayload {CString text;};
 struct Unk_WidePayload {CStringW text;};
 MS2_CHECK_SIZE(Unk_NarrowPayload,8);
 MS2_CHECK_SIZE(Unk_WidePayload,8);
-// The original guard acquires immediately and releases even while unwinding.
-struct Unk_PetLock {
-    inline Unk_PetLock(CLockCriticalSection& value,int acquire):lock(&value) {
-        if(acquire)value.vfunc_1();
-    }
-    ~Unk_PetLock();
-    CLockCriticalSection* lock;
-};
+// The scoped lock's pointer ctor (0x140203610; was the local Unk_PetLock view): acquires when asked, and the
+// shared dtor 0x1401b5120 releases even while unwinding.
+#include "ms2/placeholder/clockcriticalsection.h"
+Unk_CriticalSectionLock::Unk_CriticalSectionLock(CLockCriticalSection* value,int acquire):m_p(value) {
+    if(acquire)value->vfunc_1();
+}
+//
+//
 extern int DAT_1439ed004;
 MS2Ptr<CItemData> FUN_14053f870(int);   // C3: was Unk_PayloadPtr<Unk_ItemFactory> (Unk_ItemFactory = CItemData)
 struct Unk_ColorItems {
@@ -1436,7 +1436,7 @@ Unk_PetIdentity::Unk_PetIdentity():name(L""),id(0),value(0),level(1),state(1),ex
 // @0x1401fee50
 void Unk_PetIdentity::FUN_1401fee50(COutputStream& stream)
 {
-    Unk_PetLock guard(lock,1);
+    Unk_CriticalSectionLock guard(&lock,1);
     stream.WriteUnicodeString(name);
     stream.WriteInt64(id);
     stream.WriteInt32(value);
@@ -1451,7 +1451,7 @@ MS2_REPLACE_METHOD(0x1401FEE50, Unk_PetIdentity, FUN_1401fee50, 226, 0xB35DE9FE)
 // @0x1401fef40
 void Unk_PetIdentity::FUN_1401fef40(void* packet)
 {
-    Unk_PetLock guard(lock,1);
+    Unk_CriticalSectionLock guard(&lock,1);
     name=reinterpret_cast<Unk_PayloadReader*>(packet)->ReadWide(Unk_WideMaximum(32));
     id=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();
     value=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
@@ -1464,7 +1464,7 @@ void Unk_PetIdentity::FUN_1401fef40(void* packet)
 // @0x1401ff0f0
 void Unk_PetIdentity::FUN_1401ff0f0(const Unk_PetIdentity& other)
 {
-    Unk_PetLock guard(lock,1);
+    Unk_CriticalSectionLock guard(&lock,1);
     name=other.name;id=other.id;value=other.value;level=other.level;state=other.state;
 }
 MS2_REPLACE_METHOD(0x1401FF0F0, Unk_PetIdentity, FUN_1401ff0f0, 154, 0x6CC50086);
@@ -1472,7 +1472,7 @@ MS2_REPLACE_METHOD(0x1401FF0F0, Unk_PetIdentity, FUN_1401ff0f0, 154, 0x6CC50086)
 // @0x1401ff190
 void Unk_PetIdentity::FUN_1401ff190(COutputStream& stream)
 {
-    Unk_PetLock guard(lock,1);
+    Unk_CriticalSectionLock guard(&lock,1);
     stream.WriteUnicodeString(name);
     stream.WriteInt64(id);
     stream.WriteInt32(value);
@@ -1485,7 +1485,7 @@ MS2_REPLACE_METHOD(0x1401FF190, Unk_PetIdentity, FUN_1401ff190, 226, 0x026355CA)
 // @0x1401ff280
 void Unk_PetIdentity::FUN_1401ff280(CInputStream& stream)
 {
-    Unk_PetLock guard(lock,1);
+    Unk_CriticalSectionLock guard(&lock,1);
     name=stream.ReadUnicodeString();
     id=stream.ReadInt64();
     value=stream.ReadInt32();

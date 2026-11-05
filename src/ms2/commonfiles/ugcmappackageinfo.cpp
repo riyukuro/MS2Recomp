@@ -19,7 +19,7 @@ public:
 };
 
 // Unrecovered helpers.
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
+//
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 // C3 #8: the cast-only Unk_140168650 view removed
 class CLogString* GetLogString();
@@ -120,7 +120,7 @@ CUGCMapPackageData::~CUGCMapPackageData()
 // @0x1408b9ab0
 int CUGCMapPackageData::FUN_1408b9ab0(int nItemId)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     int nCount = 0;
     for (unsigned int i = 0; i < m_cubes.GetCount(); ++i)
     {

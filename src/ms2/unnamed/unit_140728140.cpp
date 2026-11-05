@@ -22,7 +22,7 @@
 #include "ms2/commonfiles/filesystem.h"
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // return types of the getters this unit calls
 class CFileSystem;
@@ -189,7 +189,7 @@ bool CPetDataTable::LoadProperties()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     FUN_1401d1160(CString(strPath));
     m_pets.RemoveAll();
     m_petsByKfm.RemoveAll();
@@ -246,7 +246,7 @@ bool CPetDataTable::LoadCollectGroups()
 // @0x1407290f0
 CPetDataTable::PetPtr CPetDataTable::Find(unsigned int nPetId)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     PetPtr spPet;
@@ -257,7 +257,7 @@ CPetDataTable::PetPtr CPetDataTable::Find(unsigned int nPetId)
 // @0x1407291c0
 CPetDataTable::PetPtr CPetDataTable::Find(CString strKfm)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     PetPtr spPet;
@@ -268,7 +268,7 @@ CPetDataTable::PetPtr CPetDataTable::Find(CString strKfm)
 // @0x1407292a0
 int CPetDataTable::Contains(CString strKfm)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&static_cast<CCacheData&>(*this)) != 0)
         LoadProperties();
     return m_petsByKfm.Lookup(strKfm) != 0;

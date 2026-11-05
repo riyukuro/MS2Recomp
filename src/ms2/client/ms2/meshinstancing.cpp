@@ -17,7 +17,7 @@
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 efd::Color FUN_1413fa320(egf::Entity*);
@@ -61,7 +61,7 @@ void MeshInstancing::FUN_14147c010(egf::Entity* entity, unsigned cap, unsigned c
         entity->GetPropertyValue(0x2a7fd9f4, flag2a);
         entity->GetPropertyValue(0xd9f313f2, flag26);
         entity->GetPropertyValue(0x861681cb, flag28);
-        efd::SmartPointer<efd::IBase> guard((efd::IBase*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<efd::IBase> guard((efd::IBase*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
         capacity = cap;
         flag27 = entity->GetModel()->ContainsModel(0xd8dea70d);
         NiTransform identity;

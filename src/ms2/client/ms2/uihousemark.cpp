@@ -68,9 +68,9 @@ static CString s_strHouseIcon = "System_HouseIcon";                 // the popup
 // ---- unit-local views of exe types ----
 
 // The cube map information service (class id 0x06100017).
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // C3: FUN_1410d3360 returns the Unk_CubeOwners map (was Unk_CMISTree<0x10c>*)
 class CubeMapInformationService : public efd::ISystemService {   // C3: member view (the real header brings dynamic initializers)
@@ -82,7 +82,7 @@ public:
     CStringW FUN_1410c7ce0(int nGroup, int nBlock);                 // the address text
     Unk_CubeOwners* FUN_1410d3360();                                // the owners by group and block
 };
-class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+//
 
 // C3: Unk_140acd6e0 (the house button of the mark) is ASButton itself.
 
@@ -315,7 +315,7 @@ MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, FUN_14198b340, 608, 0x1077E10
 // @0x14198b5b0
 void UIHouseMarkEntity::FUN_14198b5b0()
 {
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     int nSub;
     int nState = spService->FUN_1410c8670(m_nId, &nSub);
     if (m_nIconType != nState)
@@ -386,7 +386,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
         return;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == (CubeMapInformationService*)NULL)
         return;
     int nResult = 0;

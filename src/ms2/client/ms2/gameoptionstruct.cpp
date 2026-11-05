@@ -82,7 +82,7 @@ public:
 };
 class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // CGameOption view, defined in uichaosdpsdialog.cpp (0x140e09150)
 // ---- header statics (dynamic initializers 0x1400ea9f0..0x1400ead60) ----
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
 
 static CString s_sortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_sortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -92,7 +92,7 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
@@ -3343,9 +3343,9 @@ public:
     __int64 FUN_1410c3180();                                    // the account id of the house owner
 };
 class Unk_HoService : public CubeMapInformationService { public: };
-struct Unk_EntityAppFramework;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 template <> bool efd::SmartPointer<CubeMapInformationService>::operator!=(CubeMapInformationService* pObject) const;   // 0x140c2b790
@@ -3355,7 +3355,7 @@ template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMa
 //
 //
 //
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // C3: the 0x06100017 service (was Unk_HoService*)
+//
 extern __int64 DAT_143ab2820;                                       // my account id
 void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strTag);  // system message box by string id
 void FUN_14151f200();
@@ -3538,7 +3538,7 @@ void CPersonalInfoAgreement::FUN_141262180()
         pIcon->FUN_141939320(bShow);
     if (!bShow)
         return;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService != (CubeMapInformationService*)0)
     {
         bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
@@ -3576,7 +3576,7 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (pPC->HasNoHome() != 0)
         return;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == (CubeMapInformationService*)0)
         return;
     bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;

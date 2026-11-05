@@ -6,20 +6,17 @@
 #include <afx.h>
 #include "ms2/ms2layout.h"
 
-// The 12-byte position of the util helpers (util.cpp's Unk_UtilFloat3; FUN_141b6dff0 copies one).
+#include <d3dx9math.h>
+
+// The 12-byte position of the util helpers (util.cpp's Unk_UtilFloat3; FUN_141b6dff0 copies one). Callers view it as
+// a D3DVECTOR, so a payload position goes through the SDK inline D3DXVECTOR3(const D3DVECTOR&) (0x1417f5940).
 struct Unk_UtilFloat3
 {
     float x, y, z;
 };
 
-// A position of the payload (0x14027db40 is the shared (x, y, z) ctor).
-struct Unk_SkillUseVec3
-{
-    Unk_SkillUseVec3(float fX, float fY, float fZ);         // 0x14027db40
-    Unk_SkillUseVec3(const Unk_UtilFloat3& v) : x(v.x), y(v.y), z(v.z) {}   // 0x1417f5940
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_SkillUseVec3, 0xc);
+// The payload positions are D3DXVECTOR3 (0x14027db40 is the SDK (x, y, z) ctor; C3: were Unk_SkillUseVec3).
+MS2_CHECK_SIZE(D3DXVECTOR3, 0xc);
 
 struct Unk_SkillUsePayload
 {
@@ -35,9 +32,9 @@ struct Unk_SkillUsePayload
     int m_nSkillId;                                         // +0x0c
     short m_nLevel;                                         // +0x10
     unsigned char m_nMotion;                                // +0x12
-    Unk_SkillUseVec3 m_ptPos;                               // +0x14
-    Unk_SkillUseVec3 m_ptDir;                               // +0x20
-    Unk_SkillUseVec3 m_ptRot;                               // +0x2c
+    D3DXVECTOR3 m_ptPos;                                    // +0x14
+    D3DXVECTOR3 m_ptDir;                                    // +0x20
+    D3DXVECTOR3 m_ptRot;                                    // +0x2c
     float m_fCooldown;                                      // +0x38
     int m_nElapsed;                                         // +0x3c the client's elapsed time
     bool m_bAE;                                             // +0x40 CSkillRecord +0xae

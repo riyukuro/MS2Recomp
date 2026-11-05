@@ -359,7 +359,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
             kXf.m_Translate = *reinterpret_cast<const NiPoint3*>(&kHit);
             Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-            Unk_MeshSet& kSet = *pSet;
+            const Unk_MeshSet& kSet = *pSet;
             Unk_MeshSet::const_iterator itEnd = kSet.end();
             for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
             {
@@ -448,7 +448,7 @@ int CCapRotationController::InitPart()
     m_kMinEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMin;
     m_kMaxEuler = reinterpret_cast<const Unk_CapPartInfo*>(FUN_141200ab0(m_spPart.operator->()))->m_kMax;
     Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-    Unk_MeshSet& kSet = *pSet;
+    const Unk_MeshSet& kSet = *pSet;
     Unk_MeshSet::const_iterator itEnd = kSet.end();
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {
@@ -528,7 +528,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kOld).Inverse() * reinterpret_cast<const efd::Matrix3&>(kNew))));
     reinterpret_cast<Unk_NiMatrix3&>(kDelta.m_Rotate) = kRot;
     Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-    Unk_MeshSet& kSet = *pSet;
+    const Unk_MeshSet& kSet = *pSet;
     Unk_MeshSet::const_iterator itEnd = kSet.end();
     for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {

@@ -93,14 +93,14 @@ class CTailEffectObjectFromAdditional;
 class CRandomTargetEffect;
 namespace HideAndSeek { class Info; }
 // PC +0xf78: four item handles (ctor 0x140c86000 = vector ctor + FUN_140c86060; implicit dtor 0x141666a60).
-// The cooldown methods are Unk_PCItemCooldowns' (scenestategame.cpp); FUN_1416561c0 hands this object out as one.
-struct Unk_PCItemSlots4
-{
-    Unk_PCItemSlots4();                                     // 0x140c86000
-    void FUN_140c86060();
-    MS2Ptr<CItem> m_aItems[4];
-};
-MS2_CHECK_SIZE(Unk_PCItemSlots4, 0x40);
+// Unk_PCItemCooldowns (pcitemcooldowns.h); FUN_1416561c0 hands this object out.
+#include "ms2/placeholder/pcitemcooldowns.h"   // C3: was the Unk_PCItemSlots4 view
+//
+//
+//
+//
+//
+MS2_CHECK_SIZE(Unk_PCItemCooldowns, 0x40);
 MS2_CHECK_SIZE(Unk_PCEquipSet, 0x198);   // ctor 0x1411dfe00, dtor 0x1411e06e0 (PC +0xde0..+0xf78)
 class PC : public PCBase {
     EE_DECLARE_CLASS1(PC, 0x06200003, PCBase);   // ClassInfo 0x143ae2e20 (setup COMDAT 0x1409f8020 in avatarpc; sb4)
@@ -430,7 +430,7 @@ public:
 #else
     Unk_PCEquipSet m_kEquipDE0;                             // +0xde0 equip holder (FUN_1411e3de0)
 #endif
-    Unk_PCItemSlots4 m_kItemsF78;                           // +0xf78 (FUN_1416561c0)
+    Unk_PCItemCooldowns m_kItemsF78;                        // +0xf78 (FUN_1416561c0)
     MS2Ptr<JobSystemCli> m_spJobFB8;                        // +0xfb8 (FUN_1416546d0)
     MS2Ptr<Unk_PCActionTimer> m_spFC8;                      // +0xfc8
     MS2Ptr<Unk_PCLinkFD8> m_spFD8;                          // +0xfd8 (FUN_141657730)

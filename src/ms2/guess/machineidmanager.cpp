@@ -14,7 +14,7 @@
 // the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
 class CMachineIDManager;
 
-void* FUN_14067c020(void* pId);                             // zero-inits the 16-byte id
+class Unk_MachineId { public: Unk_MachineId(); };          // C3: member view (unit_14067c020_machineidcodec; 0x14067c020 zero-inits the 16-byte id)
 
 #ifndef MS2_HOOK_DLL
 // ms2.cpp calls BuildID through a free declaration (FUN_140d4fd50); define that name here so the relinked exe resolves it.
@@ -29,7 +29,7 @@ CMachineIDManager* TSingleton<CMachineIDManager>::s_instance = 0;   // 0x143ab8a
 // @0x140d4fcd0
 CMachineIDManager::CMachineIDManager()
 {
-    FUN_14067c020(&m_id);
+    reinterpret_cast<Unk_MachineId*>(&m_id)->Unk_MachineId::Unk_MachineId();
 }
 
 // @0x140d4fd20

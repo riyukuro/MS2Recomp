@@ -63,9 +63,9 @@ static UICommon::CMyPCKeyInputController s_keyInputB;
 class ASDialog : public ASDisplayObject {};
 
 // The entity application framework (global at 0x143b059e8) and the cube service (class id 0x06100017).
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // The three-flag record of the cube service (ctor 0x140b68e60).
 struct Unk_CMISFlags3
@@ -89,7 +89,7 @@ public:
     CStringW FUN_1410c3260();                                           // the owner id
     Unk_CMISFlags3 FUN_1410c34f0();                                     // the camera / state bytes
 };
-class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+//
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
@@ -360,7 +360,7 @@ void UIHomeMenuDialog::FUN_140c29710()
     if (pPc == 0)
         return;
     {
-        efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if (spService != 0)
         {
             if (spService->FUN_1410d5640() == 0 && spService->FUN_1410d56a0() == 0)

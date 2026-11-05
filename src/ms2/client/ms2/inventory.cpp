@@ -266,12 +266,12 @@ extern CString DAT_143ab78e8;
 int FUN_14052a7e0(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
 struct Unk_MeratItemOwner;
 bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const Unk_MeratItemOwner*);
-struct Unk_1401b4ec0 {
-    Unk_1401b4ec0(CLockCriticalSection&, int);
-    ~Unk_1401b4ec0();
-    void* lock;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
 struct Unk_InventoryStackIdentity {
     void* unknown[6];
     __int64 owner;
@@ -1008,7 +1008,7 @@ void Unk_Inventory::FUN_140a609a0(int category, ATL::CAtlArray<unsigned __int64>
 MS2_REPLACE_METHOD(0x140a609a0, Unk_Inventory, FUN_140a609a0, 284, 0x2A368F4F);
 // @0x140a60ad0
 int Unk_Inventory::FUN_140a60ad0(int type) {
-    Unk_1401b4ec0 guard(lock, 1);
+    Unk_CriticalSectionLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
@@ -1021,7 +1021,7 @@ int Unk_Inventory::FUN_140a60ad0(int type) {
 MS2_REPLACE_METHOD(0x140a60ad0, Unk_Inventory, FUN_140a60ad0, 321, 0x274281EB);
 // @0x140a60c20
 int Unk_Inventory::FUN_140a60c20(int type) {
-    Unk_1401b4ec0 guard(lock, 1);
+    Unk_CriticalSectionLock guard(lock, 1);
     int count = 0;
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
@@ -1035,7 +1035,7 @@ int Unk_Inventory::FUN_140a60c20(int type) {
 MS2_REPLACE_METHOD(0x140a60c20, Unk_Inventory, FUN_140a60c20, 326, 0x43BB48CE);
 // @0x140a60d70
 int Unk_Inventory::FUN_140a60d70(int type) {
-    Unk_1401b4ec0 guard(lock, 1);
+    Unk_CriticalSectionLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
@@ -1048,7 +1048,7 @@ int Unk_Inventory::FUN_140a60d70(int type) {
 MS2_REPLACE_METHOD(0x140a60d70, Unk_Inventory, FUN_140a60d70, 313, 0x04FAC3B5);
 // @0x140a60ec0
 int Unk_Inventory::FUN_140a60ec0(int tag) {
-    Unk_1401b4ec0 guard(lock, 1);
+    Unk_CriticalSectionLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;

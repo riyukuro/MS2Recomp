@@ -38,7 +38,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     // The "child lookup, remember, return a copy" helpers of OnLoadComplete (inline COMDATs 0x140e48d80 / 0x140e48e10).
-    template <class T> MS2Ptr<T> GetChildInto(const CString& strName, MS2Ptr<T>& out) { out = GetChild<T>(strName); return out; }
+    // (UISwfEntity::GetChildInto<T>, uiswfentity.h)
 
     int m_178;                          // +0x178 the box item id of the event (ItemBoxEventContext::m_boxItemID)
     CStringW m_180;                     // +0x180 event title

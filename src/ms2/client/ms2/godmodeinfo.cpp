@@ -55,8 +55,8 @@ void CGodModeInfo::FUN_141374b80(Vector3 kPos)
 {
     m_spTooltip.AssignRaw(new UIDebugTooltip(CString("Consturction Group")));
     // The anchor is materialised in a local: the exe's call site copies the 12 bytes before the pass.
-    alignas(16) Vector3 ptAnchor = kPos;
-    m_spTooltip->FUN_14191aae0(ptAnchor);
+    // (the by-value pass copies the 12 bytes)
+    m_spTooltip->FUN_14191aae0(kPos);
     CStringW strText;
     strText.Format(L"%d", m_n18);
     m_spTooltip->FUN_14191ab10(strText);
@@ -70,20 +70,20 @@ void CGodModeInfo::FUN_141374d10(int n)
     SendRequestCube();
 }
 
-// The exe's FUN_14191aae0 takes the point by value (UIDebugTooltip's shared header binds it as const&), so the call
-// goes through a view whose FUN_14191aae0 takes a Vector3; the call site then copies the operator+ result into the
+// C3: FUN_14191aae0 takes the point by value (uidebugtooltip.h); the call site copies the operator+ result into the
 // outgoing argument slot.
-struct Unk_GmTooltipView
-{
-    void FUN_14191aae0(Vector3 kPos);
-};
+//
+//
+//
+//
+//
 
 // Moves the tooltip 150 units above `kPos`.
 // @0x141374d40
 void CGodModeInfo::FUN_141374d40(Vector3 kPos)
 {
     if (m_spTooltip.get() != 0)
-        reinterpret_cast<Unk_GmTooltipView*>(m_spTooltip.operator->())->FUN_14191aae0(kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f)));
+        m_spTooltip->FUN_14191aae0(kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f)));
 }
 
 // '-' steps the index down, 'x' steps it up; a change is clamped and pushed.

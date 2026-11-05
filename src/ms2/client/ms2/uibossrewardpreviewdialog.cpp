@@ -205,7 +205,7 @@ void UIBossRewardPreviewDialog::OnLoadComplete()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        FUN_140e48d80<ASTextField>("m_title", m_spTitle);
+        GetChildInto<ASTextField>("m_title", m_spTitle);
         MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_nNpcId);
         if (spNpc.get() != 0)
             static_cast<Unk_BrmAS*>(static_cast<AScript*>(pDialog))->FUN_1407cba60(s_strIconPath, CString(spNpc->m_strPortrait));

@@ -269,13 +269,13 @@ void FUN_1402769e0(i64* p, i64 n, Unk_StlTag) { *p += n * 8; }
 // @0x140276a10
 void FUN_140276a10(i64* p, i64 n, Unk_StlTag) { *p += n * 0x10; }
 // @0x140276a40
-void FUN_140276a40(i64 it, i64 n, Unk_StlTag)
-{
-    for (; 0 < n; n = n - 1)
-        reinterpret_cast<LHist::iterator*>(it)->operator++();
-    for (; n < 0; n = n + 1)
-        reinterpret_cast<LHist::iterator*>(it)->operator--();
-}
+template void std::_Advance1<LHist::iterator, __int64>(LHist::iterator&, __int64, std::bidirectional_iterator_tag);
+//
+//
+//
+//
+//
+//
 // vector::_Assign_range(first, last, forward_iterator_tag) for 8- and 16-byte elements.
 // @0x140276aa0
 void FUN_140276aa0(i64 vec, i64 first, i64 last, Unk_StlTag)

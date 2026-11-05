@@ -56,7 +56,7 @@
 
 // ---- unit-local views of exe objects ----
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+// C3: the float getter 0x140298f40 is Common::Constants::Value<float>::Get() (clientconstants.h)
 // The client constants table (FUN_1401d3200). Each value is a 0x58-byte record.
 typedef Common::Constants::Value<float> Unk_GoCfgValue;
 struct Unk_GoConfig
@@ -905,7 +905,7 @@ void GameObject::FUN_14123d7a0(CString strKey, int nValue)
     m_mapD8.SetAt(strKey, nValue);
     int nNew = FUN_14123d870();
     if (nOld != nNew)
-        reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), nNew != 0);
+        FUN_141b6f910()->SetPaused(FUN_14123c460(), nNew != 0);
 }
 MS2_REPLACE_METHOD(0x14123d7a0, GameObject, FUN_14123d7a0, 188, 0x5CCD18FC);
 
@@ -929,7 +929,7 @@ void GameObject::FUN_14123d900()
     m_mapD8.RemoveAll();
     NiPointer<NiActorManager> spManager = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
     if (spManager)
-        reinterpret_cast<Unk_GoAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
+        FUN_141b6f910()->SetPaused(FUN_14123c460(), false);
 }
 MS2_REPLACE_METHOD(0x14123d900, GameObject, FUN_14123d900, 177, 0x5BE69BE5);
 
@@ -1126,7 +1126,7 @@ void GameObject::vfunc_54(float f)
         fDuration = FUN_14123ee40();
         break;
     case 2:
-        fDuration = FUN_14123ee40() - reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration)->FUN_140298f40());
+        fDuration = FUN_14123ee40() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration)->Get();
         break;
     default:
         MS2_ASSERT_AT(0x180, FALSE);

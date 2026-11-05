@@ -115,14 +115,14 @@ class Unk_MfNpc;                                                // the npc (a CN
 #include "ms2/placeholder/cmaidrecipetable.h"   // C3: CMaidRecipeTable::Find (0x1406855c0); Unk_MfRecipe is the CMaidRecipe layout view
 // Unk_MfMsgTable::FUN_14067fd60 was CMaidManufactureMsgTable::Find (0x14067fd60, maid.h)
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 class Unk_MfPC { public: };
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
 class Unk_MfWordTable : public CReservedWordTable { public: void FUN_1416fb400(CStringW& str, Unk_MfNpc* pNpc);};
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 class Unk_Inventory { public: int FUN_140a5f180(int itemId, int rarity); int FUN_140a5f780(int nGroup, int nRarity); };   // C3: unit-local view (def in inventory); owned count of the item
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90) // the player's inventory
 extern __int64 DAT_143ab2820;                                   // own account id
@@ -135,7 +135,7 @@ public:
     static class WorldService* GetInstance();
 };
 void*FUN_1401c0d90();
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
@@ -323,7 +323,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
             if (0 < reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_nMeso)
             {
                 int nCode = 0;
-                efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
+                efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
                 int nOk = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d2fb0(DAT_143ab2820, reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_nMeso, &nCode);
                 if (nOk == 0)
                 {

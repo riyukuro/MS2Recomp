@@ -49,7 +49,7 @@ void FUN_141901390(int a1, int nUIType);
 void FUN_14125fe20(Unk_SoundState* p);   // reapply the sound volumes
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 void FUN_140d73bc0(int nId, int n, void* pListener, CStringW str);
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_140298f40 { public: };
 class Unk_1401d3200 { public: char m_pad[0x3c00]; Unk_140298f40 m_3c00; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -260,7 +260,7 @@ void UICutSceneMovie::vfunc_15()
         return;
     if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible()) {
         if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
-            if (pPlayer->FUN_1422e9540() >= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->FUN_140298f40()))
+            if (pPlayer->FUN_1422e9540() >= *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->Get())
                 ShowSkipButton();
         }
     }

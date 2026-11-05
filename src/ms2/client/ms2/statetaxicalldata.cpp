@@ -65,11 +65,11 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
 class Unk_SSGConstValue { public: int FUN_140ad5c50(void); }; class Unk_TcConstValue : public Unk_SSGConstValue {};
-class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
-{
-public:
-    int& FUN_140298f40();
-};
+// C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
+// (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
+// unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
+// pointer it returns.
+//
 
 // The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
 class ICastingEventListener;
@@ -347,7 +347,7 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     Vector3 kPos;
     Vector3 kRot;
     NiTransform xf;
-    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcEntity*>(WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_18())), *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f, 1, 0));
+    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcEntity*>(WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_18())), *((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->Get() + 100.0f, 1, 0));
     if (pStop == 0)
     {
         kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));

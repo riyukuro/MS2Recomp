@@ -133,15 +133,15 @@ void UIDamageEffect::vfunc_43()
         static_cast<Unk_DmgEntity*>(pEntity.operator->())->vfunc_25();
 }
 
-// MS2-FUNCTIONAL: the exe loads this+0x30 straight into rcx for the m_30 operator-> call (mine goes through rax)
+// The config read is inline in the Invoke args: a named pInfo local routes this+0x30 through rax.
 // @0x141910980
 void UIDamageEffect::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     FUN_141910ab0();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150());
-    static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
+    m_30->Invoke("init", m_fLowHpPercent,
+        reinterpret_cast<Unk_DmgCfgInfo*>(((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_0c);
     Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));

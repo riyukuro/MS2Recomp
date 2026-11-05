@@ -192,13 +192,13 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-class CEquipment   // C3: member view (equipment.h's SAType clashes with specialability.h)
-{
-public:
-    void FUN_1411e7660();
-    float GetAbilityRate(SAType eType);
-    void CollectShownItemsInLayer(CAtlList<MS2Ptr<CEquipItem>>& items, int nLayer);
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
+//
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 class UIMyInfoDialog   // C3: member view for the former free stand-ins
 {

@@ -199,7 +199,7 @@ void UITencentAas2Dialog::OnLoadComplete()
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
-    FUN_140e48e10("m_renderTarget", &m_spTarget);
+    GetChildInto<ASUIComponent>("m_renderTarget", m_spTarget);
     TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, m_strPage, "", vfunc_88());
     vfunc_87(&m_size);
     TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);

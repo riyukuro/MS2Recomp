@@ -119,7 +119,7 @@ __int64 GetServerTime();                                // the server time
 class Unk_ClUgc : public CUgcManager
 {
 public:
-    void FUN_141880600(UICharacterListDialog::CharPtr spCharacter);   // upload a shot of a character as its profile image
+    // void FUN_141880600(UICharacterListDialog::CharPtr spCharacter);   // C3: CUgcManager::FUN_141880600 (cugcmanager.h); upload a shot of a character as its profile image
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
@@ -218,16 +218,16 @@ CString FUN_141028a90(CString str, int nFlag);
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
-struct Unk_NetworkTransfer                              // 0x30 bytes: the popup answer of the server
-{
-public:
-    Unk_NetworkTransfer();                              // 0x141540eb0
-    ~Unk_NetworkTransfer();                             // 0x141541190
-    bool m_bEmpty;
-    char m_1, m_2, m_3, m_4, m_5, m_6, m_7;                         // the members are opaque here (no array: /GS)
-    __int64 m_8, m_10, m_18, m_20, m_28;
-};
-class Unk_SPDI { public: void FUN_1407a4c60(CInputStream* in); };   // C3: serverpacketdef.h's signature
+#include "ms2/commonfiles/serverpacketdef.h"   // Unk_NetworkTransfer: the popup answer of the server (0x30; ctor 0x141540eb0, dtor 0x141541190)
+
+
+
+
+
+
+
+
+
 class CInputKeyHandler { public: bool FUN_14116d890(bool bAlt); };   // C3: member view (placeholder/cinputkeyhandler.h)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class ASDialog : public ASDisplayObjectContainer { };
@@ -590,8 +590,8 @@ void UICharacterListDialog::vfunc_79(void* p)
     case 0xe:
     {
         Unk_NetworkTransfer info;
-        reinterpret_cast<Unk_SPDI*>(&info)->FUN_1407a4c60(&static_cast<CInputStream&>(*(CInPacket*)p));
-        if (info.m_bEmpty)
+        info.FUN_1407a4c60(&static_cast<CInputStream&>(*(CInPacket*)p));
+        if (info.result)
             ShowPopup();
         else
         {
@@ -931,7 +931,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
             if (vfunc_55() == 0)
                 OpenSelectedCharacter();
             else
-                ((class Unk_ClUgc*)TSingleton<CUgcManager>::GetInstance())->FUN_141880600(CharPtr(spCharacter));
+                TSingleton<CUgcManager>::GetInstance()->FUN_141880600(CharPtr(spCharacter));
         }
         RefreshSelection();
     }

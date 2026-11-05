@@ -7,16 +7,16 @@
 
 #include "cameramode.h"
 
-// The camera points are NiPoint3 in the exe: efd::Point3 results convert through the out-of-line NiPoint3(const
-// efd::Point3&) and are move-assigned; NiPoint3 values are copy-assigned. Vector3 stands for efd::Point3 and
-// the base slices implicitly, as in the exe.
-struct Unk_HomeNiPoint3 : public Vector3
-{
-    Unk_HomeNiPoint3(const Vector3& pt);                    // 0x14027dcf0
-    Unk_HomeNiPoint3& operator=(Unk_HomeNiPoint3&& pt);             // 0x14097faa0
-    Unk_HomeNiPoint3& operator=(const Unk_HomeNiPoint3& pt);        // 0x14097fad0
-};
-MS2_CHECK_SIZE(Unk_HomeNiPoint3, 12);
+// The camera points are the real NiPoint3: efd::Point3 / Vector3 results convert through the out-of-line
+// NiPoint3(const efd::Point3&) 0x14027dcf0 and are move-assigned (0x14097faa0); NiPoint3 values are copy-assigned
+// (0x14097fad0). The cpps read them as Vector3 through reinterpret_cast, as in the exe (NiPoint3 : efd::Point3).
+#include <NiPoint3.h>
+//
+//
+//
+//
+//
+//
 
 // A camera pose: euler angles (degrees) and position; this obj has its own out-of-line ctor and copy assignment.
 struct Unk_HomeCameraPose
@@ -35,8 +35,8 @@ class Unk_CameraManagerData
 {
 public:
     char m_pad_00[0xc8];
-    Unk_HomeNiPoint3 m_c8;               // +0xc8 zoom axis
-    Unk_HomeNiPoint3 m_d4;               // +0xd4 up vector
+    NiPoint3 m_c8;               // +0xc8 zoom axis
+    NiPoint3 m_d4;               // +0xd4 up vector
     Unk_CameraSetting m_e0;             // +0xe0 the setting the engine camera is built from
     char m_pad_108[0x10];
     MS2Ptr<CCameraMode> m_118;          // +0x118 the current camera mode
@@ -76,8 +76,8 @@ public:
     float FUN_140b66b10(float fMin, float fCur, float fMax, float fDegMin, float fDegMax);
 
     int m_78;                           // +0x78 zooming
-    Unk_HomeNiPoint3 m_7c;               // +0x7c eye offset from the target
-    Unk_HomeNiPoint3 m_88;               // +0x88 target position
+    NiPoint3 m_7c;               // +0x7c eye offset from the target
+    NiPoint3 m_88;               // +0x88 target position
     float m_94;                         // +0x94 zoom speed
     float m_98;                         // +0x98 wanted distance
     float m_9c;                         // +0x9c extra zoom range
@@ -95,8 +95,8 @@ public:
     float m_f4;
     float m_f8;
     float m_fc;
-    Unk_HomeNiPoint3 m_100;              // +0x100 direction of the zoom axis
-    Unk_HomeNiPoint3 m_10c;              // +0x10c up vector
+    NiPoint3 m_100;              // +0x100 direction of the zoom axis
+    NiPoint3 m_10c;              // +0x10c up vector
 };
 MS2_CHECK_SIZE(CHomeCameraMode, 0x118);
 MS2_CHECK_OFFSET(CHomeCameraMode, m_c4, 0xc4);

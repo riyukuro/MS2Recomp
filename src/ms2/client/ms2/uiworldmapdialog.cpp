@@ -201,7 +201,7 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);             // the field can be entered (else the reason)
 __int64 FUN_140632990(__int64 nValue, float fRate);                        // a meso value scaled by a rate
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> kHandler, CStringW strText);   // a yes/no box
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                              // show a message box

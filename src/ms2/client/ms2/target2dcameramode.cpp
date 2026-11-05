@@ -8,7 +8,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "target2dcameramode.h"
-#include "homecameramode.h"     // Unk_HomeNiPoint3: the NiPoint3 conversion ctor 0x14027dcf0
+#include "homecameramode.h"     // NiPoint3: the conversion ctor 0x14027dcf0
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -468,8 +468,8 @@ void CTarget2DCameraMode::FUN_1418399e0(double fTime)
 {
     if (m_d8)
     {
-        Unk_HomeNiPoint3 ptDelta = m_c0.m_pos.FUN_140965c40(m_a8.m_pos);
-        float fLen = ptDelta.FUN_140967ac0();
+        NiPoint3 ptDelta = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_c0.m_pos.FUN_140965c40(m_a8.m_pos)));
+        float fLen = reinterpret_cast<Vector3&>(ptDelta).FUN_140967ac0();
         if (fLen <= 1.0f)
         {
             m_a8 = m_c0;

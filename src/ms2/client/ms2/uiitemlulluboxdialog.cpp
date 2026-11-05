@@ -174,7 +174,7 @@ void UIItemLulluBoxDialog::OnLoadComplete()
     FUN_141925ec0("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
     CString theme = LULLUBOX_ATTR(data)->GetString(L"boxTheme", "default");
-    FUN_140e48d80("m_title", m_title);
+    GetChildInto<ASTextField>("m_title", m_title);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_singleOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_singleOpen)).get())
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnSelectMode), (void*)0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_multiOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_multiOpen)).get())

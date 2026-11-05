@@ -32,7 +32,7 @@ public:
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-int FUN_140179060(TiXmlElement* pElem, const char* pszName, int& nOut);   // int or enum value by name
+enum Unk_DungeonGroupType : int; template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut); template <> int XmlValueByName(TiXmlElement*, const char*, Unk_DungeonGroupType&);   // 0x140179060, the enum attribute (specialization in additionalactionadditional.cpp)
 class Unk_140166410;   // the game settings (CFeatureManager)
 Unk_140166410* FUN_140166410();
 
@@ -150,8 +150,8 @@ bool CGloabalFactor::LoadMultiControl()
         FUN_1404c1e80(pNode, "type", &nType);
         if (nType == 4)
         {
-            int nEnum;
-            FUN_140179060(pNode, "key", nEnum);
+            Unk_DungeonGroupType nEnum;
+            XmlValueByName(pNode, "key", nEnum);
             nKey = nEnum;
         }
         else

@@ -40,7 +40,7 @@ void CNMEventHandler::vfunc_2(void*) {}
 void* FUN_1415fa1b0(void) { return 0; }
 void* FUN_1415fa260(void) { return 0; }
 // Client object initialize (0x1415c4540) and login (0x1415c4810): fail (CNXMan::FUN_14160d820 reports the error).
-int FUN_1415c4540(void*, int, int, int, int) { return 0; }
+int FUN_1415c4540(void*, int, int, int, void*) { return 0; }
 int FUN_1415c4810(void*, int) { return 0; }
 // Messenger connect (0x1415c4990): CNXMan::FUN_14160db80 treats 0 as success, so the error is non-zero.
 int FUN_1415c4990(void*, const char*, unsigned int) { return 1; }

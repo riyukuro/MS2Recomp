@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13).
 // MS2-UNIT: ?\cameramoveeffectparam.cpp
 // MS2-RANGE: 0x140afe800-0x140afef30 .text$mn
-// MS2-PIN: ??0Unk_CamMoveBits@@QEAA@XZ 0x140afed60
+// MS2-PIN: ??0?$Unk_Bitset@$02@@QEAA@XZ 0x140afed60
 // MS2-PIN: ??1CCameraMoveEffectParam@@UEAA@XZ 0x140afed80
 // MS2-PIN: ??_GCCameraMoveEffect@@UEAAPEAXI@Z 0x140afedd0
 // MS2-PIN: ??_GCCameraMoveEffectParam@@UEAAPEAXI@Z 0x140afee30
@@ -17,8 +17,8 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
-template <int T> class Unk_Bitset;
-template <> class Unk_Bitset<3> { public: Unk_Bitset& Set(int pos, bool value); };   // C3: was Unk_CamMoveBits::FUN_140314670 (0x140314670, bitset.h's Unk_Bitset<3>::Set)
+// C3: m_update is bitset.h's Unk_Bitset<3> (Set 0x140314670)
+//
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -83,9 +83,9 @@ void CCameraMoveEffectParam::vfunc_1(TiXmlElement* pNode)
         XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bUpdateRotation);
     }
     if (bUpdateTranslate)
-        reinterpret_cast<Unk_Bitset<3>*>(&m_update)->Set(0, true);
+        m_update.Set(0, true);
     if (bUpdateRotation)
-        reinterpret_cast<Unk_Bitset<3>*>(&m_update)->Set(1, true);
+        m_update.Set(1, true);
 }
 MS2_REPLACE_METHOD(0x140afe8f0, CCameraMoveEffectParam, vfunc_1, 502, 0xF46663CF);
 

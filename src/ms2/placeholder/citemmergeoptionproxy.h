@@ -24,15 +24,15 @@
 enum MergeNormalOption : int {};
 enum MergeSpecialOption : int {};
 
-// Inclusive value range of a variation (ctor 0x1405c38a0).
-struct Unk_MergeRange
-{
-    Unk_MergeRange() : m_nMin(0), m_nMax(0) {}
-    void Set(int nMin, int nMax);                   // 0x1405c6380
-    int m_nMin;
-    int m_nMax;
-};
-MS2_CHECK_SIZE(Unk_MergeRange, 8);
+// Inclusive value range of a variation (ctor 0x1405c38a0): Unk_MergeRange, shared with cguidecondition.h.
+#include "ms2/placeholder/unk_mergerange.h"
+//
+//
+//
+//
+//
+//
+//
 
 // A value range of one option (ctor 0x1405bea40).
 class CItemMergeOptionVariation : public CPtred

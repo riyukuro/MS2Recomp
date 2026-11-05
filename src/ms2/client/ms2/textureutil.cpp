@@ -57,7 +57,7 @@ extern const NiPixelFormat DAT_1439fb040;                                  // MS
 // screenshot plumbing from other units
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-ecr::RenderService* Unk_GetRenderService(char* pCell);     // registry singleton
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
    // the renderer wrapper
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-in
 {
@@ -1078,7 +1078,7 @@ void TakeSceneScreenshotPng(int bNotify)
         return;
     }
     CStringW kPath = kDirectory + GetTimestampFileName(D3DXIFF_PNG);
-    void* pkRegistry = Unk_GetRenderService(&DAT_143b059e8);
+    void* pkRegistry = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pkRegistry != NULL)
     {
         NiRenderTargetGroup* pkGroup = reinterpret_cast<ecr::RenderService*>(pkRegistry)->GetActiveRenderSurface()->GetRenderTargetGroup();

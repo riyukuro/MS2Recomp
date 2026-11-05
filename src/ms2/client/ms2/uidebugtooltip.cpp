@@ -80,7 +80,7 @@ void UIDebugTooltip::FUN_14191aa70()
 MS2_REPLACE_METHOD(0x14191AA70, UIDebugTooltip, FUN_14191aa70, 106, 0x4BC32DF7);
 
 // @0x14191aae0
-void UIDebugTooltip::FUN_14191aae0(const Vector3& pt)
+void UIDebugTooltip::FUN_14191aae0(Vector3 pt)
 {
     m_6c = pt;
 }

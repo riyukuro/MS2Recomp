@@ -72,7 +72,7 @@ public:
 
     int FUN_140f25ad0(int nNpcId);                                  // 0x140f25ad0 show the npc's rewards; 1 = it has some
     void FUN_140f25bf0();                                           // 0x140f25bf0 refresh the title and the bag
-    template <class T> MS2Ptr<T> FUN_140e48d80(const CString& strName, MS2Ptr<T>& out);   // 0x140e48d80 bind a child
+    // 0x140e48d80 bind a child = UISwfEntity::GetChildInto<ASTextField> (uiswfentity.h)
 
 private:
     MS2_LAYOUT_FRIEND;

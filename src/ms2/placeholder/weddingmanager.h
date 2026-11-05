@@ -66,9 +66,9 @@ public:
     void SendReservation(int packageId, int hallId, __int64 time, unsigned char night, bool agree);   // 0x141b86420
     void SendReservationChange(int packageId, int hallId, __int64 time, unsigned char night);         // 0x141b865c0
     int CheckPropose(unsigned __int64 id);                  // 0x141b87220
-    bool CanVisit(int packageId, int hallId, __int64 id);   // 0x141b89a10
-    // CanVisit as the reservation dialog calls it: with a fourth (night) argument the body never reads.
-    bool FUN_141b89a10(int packageId, int hallId, __int64 time, unsigned char night);   // 0x141b89a10
+    bool CanVisit(int packageId, int hallId, __int64 id, unsigned char night);   // 0x141b89a10 (night: a stack arg the body never reads)
+    // (the reservation dialog passes the night flag as the fourth argument)
+    //
     bool IsPartnerOnline();                                 // 0x141b8a580
     bool IsInProgress();                                    // 0x141b89990
     bool CanStartWedding(__int64 partnerId);                // 0x141b867e0

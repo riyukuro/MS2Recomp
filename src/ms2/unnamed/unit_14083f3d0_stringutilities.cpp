@@ -236,11 +236,11 @@ CStringA Unk_TextFormat::FUN_140840580() const
 MS2_REPLACE_METHOD(0x140840580, Unk_TextFormat, FUN_140840580, 73, 0xFC51BFCB);
 
 // @0x1408405d0
-CStringW Unk_TextFormat::GetStr() const
+Unk_TextFormat::operator CStringW() const
 {
     return m_str;
 }
-MS2_REPLACE_METHOD(0x1408405D0, Unk_TextFormat, GetStr, 62, 0xB9C4D915);
+MS2_REPLACE_IMPL(0x1408405D0, ::ms2::hook::detail::MemberToVoid(&Unk_TextFormat::operator CStringW), "Unk_TextFormat::operator CStringW", 62, 0xB9C4D915);
 
 // The <xlocale> helpers call strlen/wcslen as functions in the exe (imported wcslen; pinned).
 // MS2-PIN: ??$_Maklocstr@_W@std@@YAPEA_WPEBDPEA_WAEBU_Cvtvec@@@Z 0x140840d40

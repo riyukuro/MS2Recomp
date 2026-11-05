@@ -62,7 +62,7 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // first member: efd::SmartPointer<efd::ServiceManager>
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae52e0;                                         // material name of the screen quad
 #define DAT_143a08cd8 (*(char*)&efd::Point3::UNIT_X)                                                // the reference axis of the camera angle
@@ -379,10 +379,10 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, 
 // The render service through the service manager cell.
 // @0x14127bf80
 // The cell is a holder whose first member is the service manager smart pointer.
-struct Unk_BgServiceCell { char m_spManager; };
-ecr::RenderService* Unk_GetRenderService(char* pCell)
+//
+template <> ecr::RenderService* egf::ScriptContext::GetSystemServiceAs<ecr::RenderService>() const
 {
-    return reinterpret_cast<efd::SmartPointer<efd::ServiceManager>*>(&reinterpret_cast<Unk_BgServiceCell*>(pCell)->m_spManager)->operator->()->GetSystemServiceAs<ecr::RenderService>();
+    return m_spManager->GetSystemServiceAs<ecr::RenderService>();
 }
 
 // ---- GFxMovieBackground ----
@@ -722,7 +722,7 @@ int GFxMovieBackground::AppendScene()
         TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed m_renderView == NULL");
         return 0;
     }
-    ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
+    ecr::RenderService* pRender = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pRender == 0)
     {
         TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::AppendScene Failed ecr::RenderService == NULL");
@@ -755,7 +755,7 @@ int GFxMovieBackground::FUN_14127b290()
 {
     if (!m_spRenderView)
         return 0;
-    ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
+    ecr::RenderService* pRender = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pRender == 0)
         return 0;
     NiDefaultClickRenderStep* pClickStep =
@@ -882,7 +882,7 @@ int GFxMovieBackground::CreateRenderTarget()
 // @0x14127bb50
 int GFxMovieBackground::CreateRenderTexture()
 {
-    ecr::RenderService* pRender = Unk_GetRenderService(&DAT_143b059e8);
+    ecr::RenderService* pRender = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pRender != 0)
     {
         NiRenderTargetGroup* pGroup = pRender->GetActiveRenderSurface()->GetRenderTargetGroup();

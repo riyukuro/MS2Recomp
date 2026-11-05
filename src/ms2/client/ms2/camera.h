@@ -181,7 +181,7 @@ public:
     void FUN_140aeb880(float f1, float f2, float f3);
     void FUN_140aeb900(bool b);
     void FUN_140aeb920();
-    void SaveSetting(const egf::EntityID& id, const Unk_CameraSetting& setting);  // save a setting per entity
+    void SaveSetting(egf::EntityID id, const Unk_CameraSetting& setting);  // save a setting per entity
     bool GetSavedSetting(Unk_CameraSetting& setting);                     // the first saved setting
     void FUN_140aeb950(CLocalTargetCameraMode* pMode);                  // cycle the map camera setups
     void LoadMapLocalTargetCamera(unsigned int nMapId);                            // load the map camera xml

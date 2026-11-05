@@ -46,7 +46,7 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 #pragma comment(lib, "winmm.lib")
 
@@ -228,7 +228,7 @@ CMidiOutput::~CMidiOutput()
 void CMidiOutput::OnTimer()
 {
     DWORD now = GetTickCountMs2();
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     for (int i = 0; i < 16; ++i)
     {
         if (m_channelTracks[i].empty())
@@ -276,7 +276,7 @@ void CMidiOutput::StartTimer()
 // @0x140d763d0
 void CMidiOutput::StopTimer()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     if (m_uTimerId != 0)
     {
         timeKillEvent(m_uTimerId);
@@ -319,7 +319,7 @@ void CMidiOutput::ClearChannel(int ch)
 {
     if (ch > 0x10 || ch < 0)
         return;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     CMidiMessage off;
     off.AllNotesOff(ch);
     m_device.SendShort(off.m_msg);
@@ -332,7 +332,7 @@ void CMidiOutput::ClearChannel(int ch)
 // @0x140d76640
 void CMidiOutput::RemoveTrack(int key)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_tracks.erase(key);
     m_trackEnabled.erase(key);
 }
@@ -342,7 +342,7 @@ void CMidiOutput::SetChannelTrack(int ch, const Unk_MidiTrack& track)
 {
     if (ch > 0x10 || ch < 0)
         return;
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     ClearChannel(ch);
     m_channelTracks[ch] = track;
 }
@@ -350,7 +350,7 @@ void CMidiOutput::SetChannelTrack(int ch, const Unk_MidiTrack& track)
 // @0x140d76760
 void CMidiOutput::SetTrack(int key, const Unk_MidiTrack& track)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     RemoveTrack(key);
     m_tracks[key] = track;
     m_trackEnabled[key] = true;
@@ -359,7 +359,7 @@ void CMidiOutput::SetTrack(int key, const Unk_MidiTrack& track)
 // @0x140d76800
 void CMidiOutput::SetTrackEnabled(int key, bool b)
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     m_trackEnabled[key] = b;
 }
 

@@ -365,11 +365,11 @@ struct Unk_CubeSpRef
 };
 
 
-// the exe's null test of the look pointer calls the identical-code get copy at 0x140885320
-struct Unk_LookPtrGet
-{
-    CUgcItemLook* FUN_140885320() const;
-};
+// 0x140885320 is MS2Ptr<CUgcItemLook>::get (the null test of the look pointer)
+
+
+
+
 
 // ---- exe functions: managers and singletons ----
 
@@ -398,7 +398,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 UGCCubePalette* GetUGCCubePalette();
 class Unk_CubeStock   // C3: member view for the former free stand-ins
 {
@@ -484,6 +484,7 @@ class CGameOption   // C3: member view for the former free stand-ins
 {
 public:
     void SaveCharacterSettings();
+    struct Unk_GoEtc* FUN_140c9b8b0();                      // 0x140c9b8b0 (&m_etc)
 };
 void FUN_140df5180(MS2Ptr<CUgcItemLook>* pDst, void* pSrc);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
@@ -592,11 +593,10 @@ extern char DAT_142e6b224;
 __int64 GetServerTime();
 void FUN_140710590(COutPacket& p);
 struct Unk_CubeUiData { __int64 m_0; __int64 m_8; };
-class Unk_QnState   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_QnTracking* FUN_140c9b8b0();
-};
+// C3: the Unk_QnState view is now the CGameOption view's FUN_140c9b8b0
+//
+//
+//
 
 void FUN_140ef37d0();
 void FUN_140ef3840();
@@ -1098,8 +1098,8 @@ void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
             spItem->SetItemUid(nUid);
             spItem->FUN_1405288e0(nCount);
             MS2Ptr<CUgcItemLook> spLook = spInfo->look;
-            if (reinterpret_cast<const Unk_LookPtrGet*>(&spLook)->FUN_140885320() != 0)
-                spItem->SetUgcLook(spLook.get());
+            if (spLook.get() != 0)   // C3: the second get is the MS2Ptr<UGCKeyMode> fold, as below
+                spItem->SetUgcLook(reinterpret_cast<CUgcItemLook*>(reinterpret_cast<MS2Ptr<UGCKeyMode>*>(&spLook)->get()));
             ASTooltip tooltip(pPlayer, 8, 2);
             if (tooltip.FUN_1409e0d40(spItem.get()) != 0)
             {
@@ -1307,7 +1307,7 @@ bool UIUGCCubePaletteDialog::FUN_140eec410(int nBtn, const CMsgBoxData& data)
         if (const_cast<CMsgBoxData&>(data).IsCheckbox0Checked() != 0)
         {
             __int64 n = GetServerTime();
-            ((struct Unk_CubeUiData*)((class Unk_QnState*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140c9b8b0())->m_8 = n;
+            ((struct Unk_CubeUiData*)((class CGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140c9b8b0())->m_8 = n;
             ((class CGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->SaveCharacterSettings();
         }
         FUN_140ef37d0();
@@ -2033,7 +2033,7 @@ void UGCKeyMode1::vfunc_5(void*, float, float)
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
+    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2121,7 +2121,7 @@ void UGCKeyMode2::vfunc_5(void*, float, float)
     void* pWorld = ((class WorldService*)(class Unk_WorldMgr*)(reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pWorld == 0)
         return;
-    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
+    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
@@ -2226,7 +2226,7 @@ void FUN_140ef2fb0()
         return;
     if (((class Unk_PCCubeCraft*)pEditor)->GetPending() != 0)
         return;
-    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
+    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     UGCCubePalette::CubePtr spCube = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->GetSelected();
@@ -2251,7 +2251,7 @@ void FUN_140ef2fb0()
         else if (spCube->FUN_140def4f0() != 0)
         {
             __int64 nNow = GetServerTime();
-            __int64 nLast = ((struct Unk_CubeUiData*)((class Unk_QnState*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140c9b8b0())->m_8;
+            __int64 nLast = ((struct Unk_CubeUiData*)((class CGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140c9b8b0())->m_8;
             __int64 nPrice = spCube->FUN_140def620();
             __int64 nOrigin = spCube->FUN_140def6c0();
             if (nLast + 0x15180 > nNow || nPrice == 0)
@@ -2321,7 +2321,7 @@ void FUN_140ef3840()
         return;
     if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410a8ab0() != 0)
         return;
-    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
+    Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);

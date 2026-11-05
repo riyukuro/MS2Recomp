@@ -835,7 +835,7 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
         NiNode* pScene = ((class CEffectService*)(struct Unk_PonyScene*)(reinterpret_cast<Unk_PonyScene*>(TSingleton<CEffectService>::GetInstance())))->GetLeastLoadedRoot();
         float fTime = (float)((CMainSystem*)(Unk_PonyApp*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
         Unk_MeshSet* pSet = FUN_141201c90((class CEquipModel*)(spPart.operator->()));
-        Unk_MeshSet& kSet = *pSet;
+        const Unk_MeshSet& kSet = *pSet;
         Unk_MeshSet::iterator itEnd = kSet.end();
         for (Unk_MeshSet::iterator it = kSet.begin(); it != itEnd; ++it)
         {

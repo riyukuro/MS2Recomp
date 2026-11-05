@@ -89,13 +89,13 @@ class Unk_InventoryListener* FUN_140a6a840();   // the item event hub (0x140a6a8
 
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411e3de0(int);
-    void FUN_1411e3600(MS2Ptr<CItem> spItem);               // equip (callee-destroyed arg)
-    void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;   // 0x1411e1b80 the worn items
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
+//
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
 NiPoint3 FUN_14169a860();
 

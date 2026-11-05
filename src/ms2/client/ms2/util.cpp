@@ -688,7 +688,7 @@ MS2_REPLACE(0x141b6f8b0, FUN_141b6f8b0, 80, 0xA2C1A562);
 // @0x141b6f910
 egmAnimation::AnimationService* FUN_141b6f910()
 {
-    egmAnimation::AnimationService* pService = reinterpret_cast<Unk_AppFramework&>(egf::g_bapiContext).GetSystemServiceAs<egmAnimation::AnimationService>();
+    egmAnimation::AnimationService* pService = egf::g_bapiContext.GetSystemServiceAs<egmAnimation::AnimationService>();
     return pService;
 }
 MS2_REPLACE(0x141b6f910, FUN_141b6f910, 31, 0x80477666);

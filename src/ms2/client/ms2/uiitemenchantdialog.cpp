@@ -137,7 +137,7 @@ public:
     int FUN_141662eb0(CItem* pItem);
 };
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid); float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 
 class Unk_EnPC : public MyPC
 {

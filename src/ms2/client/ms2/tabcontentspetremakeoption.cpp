@@ -133,12 +133,12 @@ public:
     MS2Ptr<CItem> FUN_141663450();                                      // the equipped pet item
     void FUN_141663400(MS2Ptr<CItem> item);                             // equip the pet item
 };
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    float GetAbilityRate(SAType eType);   // 0x1411e1110
-    void FUN_1411e7660();
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
 
 // Feature flags (slot 0x4d turns the pet remake off).
 class Unk_PetFlag { public: int FUN_1402c4c90(int nFlag); };

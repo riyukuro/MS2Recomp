@@ -12,7 +12,7 @@ MS2_CHECK_SIZE(CLockCriticalSection,0x30);
 // Scoped guard: `if (Unk_LockGuard guard = lock) {} else { ... }` (0x140163940 ctor, 0x140164a80 operator int, 0x1401643b0 dtor).
 class Unk_LockGuard { public: Unk_LockGuard(CLockCriticalSection&); ~Unk_LockGuard(); operator int(); private: void* p; };
 MS2_CHECK_SIZE(Unk_LockGuard,8);
-// Scoped lock taking the section and a mode (always 1 so far): ctor 0x1401b4ec0, dtor 0x1401b5120. Many units keep
-// their own copy under an Unk_ name (Unk_FieldLock, Unk_HistLock, ...); same two exe functions.
-class Unk_CriticalSectionLock { public: Unk_CriticalSectionLock(CLockCriticalSection&, int); ~Unk_CriticalSectionLock(); private: void* p; };
+// Scoped lock taking the section and a mode (always 1 so far): ctor 0x1401b4ec0 (by reference; 0x140203610 takes the
+// pointer), dtor 0x1401b5120. Many units keep their own copy under an Unk_ name (Unk_FieldLock, Unk_PetLock, ...).
+class Unk_CriticalSectionLock { public: Unk_CriticalSectionLock(CLockCriticalSection&, int); Unk_CriticalSectionLock(CLockCriticalSection*, int); ~Unk_CriticalSectionLock(); private: CLockCriticalSection* m_p; };
 MS2_CHECK_SIZE(Unk_CriticalSectionLock,8);

@@ -336,7 +336,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(m_nHall);
     if (spHall == 0)
         return;
-    if (!WeddingManager::GetInstance()->FUN_141b89a10(m_nPackage, m_nHall, m_nTime, m_bNight))
+    if (!WeddingManager::GetInstance()->CanVisit(m_nPackage, m_nHall, m_nTime, m_bNight))
         return;
     MS2Ptr<CItem> spCoupon(0);
     if (spHall->FUN_140906e80() != 0)

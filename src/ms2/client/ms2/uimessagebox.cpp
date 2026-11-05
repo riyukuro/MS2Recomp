@@ -208,7 +208,7 @@ __time64_t GetServerTime();
 
 class Unk_MessageBoxSound { public: virtual void vfunc_0(); virtual void vfunc_1(int nUiId); };
 template <class T> T* Unk_UgcGetDialog(int nId);   // C3: was FUN_141876420
-MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140e43fe0 (T = ASDialog)
 
 UICashShopDialog* FUN_140b04f80(int nId);
 class CGuildManager;
@@ -791,7 +791,7 @@ void UIMessageBox::FUN_1419f9250(int nResult)
         Scaleform::GFx::Value ret = m_30->Invoke("closeCurrent", (long)m_data->FUN_141a02ca0(), nResult);
         if (m_data->IsModaless())
         {
-            MS2Ptr<ASDialog> spBox = FUN_140e43fe0(m_28, ret);
+            MS2Ptr<ASDialog> spBox = Unk_ASCreate<ASDialog>(m_28, ret);
             if (spBox.get())
                 m_data->FUN_141a04f80(spBox);
         }

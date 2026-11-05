@@ -370,7 +370,7 @@
 // MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAUUnk_WsVisibleObj@@U?$less@PEAUUnk_WsVisibleObj@@@std@@V?$allocator@PEAUUnk_WsVisibleObj@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAUUnk_WsVisibleObj@@@std@@@std@@@std@@_N@1@AEBQEAUUnk_WsVisibleObj@@@Z 0x141beec50
 // MS2-PIN: ??$swap@UUnk_WsFieldRefRaw@@X@std@@YAXAEAUUnk_WsFieldRefRaw@@0@Z 0x141bef110
 // MS2-PIN: ??0?$SmartPointer@VGameObject@@@efd@@QEAA@PEAVGameObject@@@Z 0x141bf0fd0
-// MS2-PIN: ??0Unk_WsA_PropPtr@@QEAA@AEBV0@@Z 0x141bf10a0
+// MS2-PIN: ??0?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@QEAA@AEBV01@@Z 0x141bf10a0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -637,7 +637,7 @@ void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServi
     Unk_WsFieldRefRaw& a, Unk_WsFieldRefRaw& b)
 {
     efd::SmartPointer<GameObject> spObj(pObj);
-    Unk_WsA_PropPtr propCopy(prop);
+    efd::SmartPointer<egfPhysX::EntityActorData> propCopy(reinterpret_cast<const efd::SmartPointer<egfPhysX::EntityActorData>&>(prop));
     WsReal::Set048 callbacks;
     callbacks.insert(pCallback);
     std::set<Unk_WsVisibleObj*> visible;

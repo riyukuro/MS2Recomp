@@ -156,7 +156,7 @@ NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour valu
 
 class Unk_PciCfgU16 { };
 unsigned short FUN_140ba4b30(class Unk_ALConstU16* pValue);
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 class Unk_PciCfgFloat { public: };
 struct Unk_PciConstants
 {
@@ -399,7 +399,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         }
     }
     Unk_PciRange range;
-    float fDivisor = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10)->FUN_140298f40());
+    float fDivisor = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10)->Get();
     switch (nRings)
     {
     case 0:

@@ -1,22 +1,24 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). std::map iterator increment glue: 10 map families whose key and
 // value types are not recoverable from the byte-identical bodies (they differ only by the tree-min function). Each family
-// contributes _Tree_const_iterator::operator++ (calls the family's _Min), _Tree_iterator::operator++ and the post-increment;
-// seven also have the std::reverse_iterator::operator-- over it.
+// contributes _Tree_const_iterator::operator++ (calls the family's _Min), _Tree_iterator::operator++ and the post-increment; seven also have the std::reverse_iterator::operator-- over it.
 // MS2-GUESS-LOOKALIKES
 // MS2-UNIT: unit_141bf8240
 // MS2-RANGE: 0x141bf8240-0x141bf8d20 .text$mn
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??F?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$Unk_BiKey@$04@@H@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf86c0
+// MS2-PIN: ??F?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$Unk_BiKey@$05@@H@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf86e0
+// MS2-PIN: ??F?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$Unk_BiKey@$07@@H@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf8720
+// MS2-PIN: ??F?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$Unk_BiKey@$08@@H@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf8740
+// MS2-PIN: ??F?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$Unk_BiKey@$09@@H@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141bf8760
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include <map>
 #include <iterator>
 #include "ms2/ms2recover.h"
-
 // Stand-in key of the Nth map family.
 template <int N> struct Unk_BiKey { int v[N + 1]; bool operator<(const Unk_BiKey& o) const { return v[0] < o.v[0]; } };
 template <int N> struct Unk_BiMap { typedef std::map<Unk_BiKey<N>, int> type; };
-
 template <int N> void Unk_BiPre(typename Unk_BiMap<N>::type::iterator& it)
 {
     ++it;
@@ -29,7 +31,6 @@ template <int N> void Unk_BiRev(std::reverse_iterator<typename Unk_BiMap<N>::typ
 {
     --it;
 }
-
 void Unk_BiAnchor()
 {
     Unk_BiMap<1>::type::iterator it1;
@@ -77,7 +78,6 @@ void Unk_BiAnchor()
     std::reverse_iterator<Unk_BiMap<10>::type::iterator> rit10;
     Unk_BiRev<10>(rit10);
 }
-
 // MSVC's map iterator points at a tree node. The node stores left/parent/right at +0/+8/+0x10 and the nil byte at
 // +0x19. Advancing visits the leftmost node in the right subtree, or climbs until the current node leaves a right
 // edge; this is shared by the property-map and field-object map iterator views.

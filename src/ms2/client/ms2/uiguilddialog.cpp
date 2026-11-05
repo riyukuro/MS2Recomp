@@ -136,7 +136,7 @@ class TiXmlParsingData;
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
 // C3 #12: was a local TiXml view
 struct Unk_QnTracking;
-class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
+//   C3: the Unk_QnState view is gone (CGameOption::FUN_140c9b8b0, cgameoption.h)
 
 // ---- statics (.text$di) ----
 static CString s_strTooltipAlign = "tooltipAlign";
@@ -1076,7 +1076,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             bool bInform = data.PopBool();
-            reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(reinterpret_cast<Unk_QnState*>(CGameOption::GetInstance())->FUN_140c9b8b0())->m_n00) = bInform;
+            reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(CGameOption::GetInstance()->FUN_140c9b8b0())->m_n00) = bInform;
             CGameOption::GetInstance()->SaveCharacterSettings();
         }
         return 1;
@@ -2132,7 +2132,7 @@ void UIGuildDialog::FUN_141973610()
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x110))
         return;
     {
-        bool bInform = reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(reinterpret_cast<Unk_QnState*>(CGameOption::GetInstance())->FUN_140c9b8b0())->m_n00);
+        bool bInform = reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(CGameOption::GetInstance()->FUN_140c9b8b0())->m_n00);
         m_championshipPage->Invoke("SetInformArena", bInform);
         CStringW strTitle;
         CStringW strPeriod;

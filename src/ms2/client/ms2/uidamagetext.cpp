@@ -41,7 +41,7 @@ class Unk_DtNpc : public CNpc { };
           // CPartyManager: a party member (int return)
 class Unk_DtClip : public ASMovieClip { };
 class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+// C3: the float getter 0x140298f40 is Common::Constants::Value<float>::Get() (clientconstants.h)
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 class Unk_DtUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -719,13 +719,13 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     {
         if (m_bObserver)
             return 1;
-        return reinterpret_cast<GameObject*>(pActor)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
+        return reinterpret_cast<GameObject*>(pActor)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageDistance)->Get();
     }
     else if (pTarget != 0)
     {
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
-            return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageDistance)->FUN_140298f40());
+            return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageDistance)->Get();
     }
     return 0;
 }
@@ -1205,7 +1205,7 @@ void UIDamageText::FUN_141915990()
             if ((m_pBattleOption->m_n10 & 1) != 0)
             {
                 float fLine = (float)m_nLineHeight;
-                nOtherLine = (int)(fLine * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageOtherScale)->FUN_140298f40()));
+                nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageOtherScale)->Get());
                 nOtherLine2 = nOtherLine << 1;
             }
             float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
@@ -1434,7 +1434,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
     if ((m_pBattleOption->m_n10 & 1) != 0)
     {
         float fLine = (float)m_nLineHeight;
-        nOtherLine = (int)(fLine * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&FUN_1401d3200()->DamageOtherScale)->FUN_140298f40()));
+        nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageOtherScale)->Get());
         nOtherLine2 = nOtherLine << 1;
     }
     while (pos != 0)

@@ -19,7 +19,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cskillsettable.h"   // C3: CSkillSet (CSkillSystem::GetSkillSet)
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+//
 
 // ---- unit-local views of exe types ----
 
@@ -182,7 +182,7 @@ void JobSystemCli::SendRequest(int nJob, unsigned __int64 nSerial, int nSkill, u
 // @0x140a6e240
 void JobSystemCli::Refresh()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     std::vector<JobSkillPtr> skills;
     GetSkills(skills, 1, false);
     std::vector<JobSkillPtr>& range = skills;
@@ -202,7 +202,7 @@ void JobSystemCli::RefreshActiveStance()
 {
     if (m_pOwner != 0)
     {
-        Unk_1401b4ec0 lock(m_lock, 1);
+        Unk_CriticalSectionLock lock(m_lock, 1);
         const int nStanceSlot = 1;
         JobSkillPtr spSkill = FindSkill(nStanceSlot);
         if (spSkill.get() != 0)
@@ -225,7 +225,7 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
 // @0x140a6e4d0
 int JobSystemCli::ChangedMainSkills()
 {
-    Unk_1401b4ec0 lock(m_lock, 1);
+    Unk_CriticalSectionLock lock(m_lock, 1);
     int nCount = 0;
     for (auto& kv : m_skills)
     {

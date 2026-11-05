@@ -765,12 +765,12 @@ Unk_1407a7d20::Unk_1407a7d20(CInPacket& in) : m_10(0)
     m_08 = StringIdInterface(in).FUN_141024e60();
     if ((m_04 & 0x10) != 0) m_10 = (unsigned short)in.ReadInt16();
 }
-struct Unk_1407a7eb0 {
+struct Unk_SSGUserChat {   // C3: was Unk_1407a7eb0 (scenestategame's spelling)
     __int64 m_00; CStringW m_08; unsigned char m_10; CStringW m_18;
-    Unk_1407a7eb0(CInPacket& in);
+    Unk_SSGUserChat(CInPacket& in);
 };
 // @0x1407a7eb0
-Unk_1407a7eb0::Unk_1407a7eb0(CInPacket& in)
+Unk_SSGUserChat::Unk_SSGUserChat(CInPacket& in)
 {
     m_00 = in.ReadInt64();
     m_08 = in.ReadUnicodeString();

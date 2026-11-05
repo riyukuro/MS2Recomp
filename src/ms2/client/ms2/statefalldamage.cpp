@@ -73,7 +73,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
 // FUN_1409fad80 takes the id by value: the returned key is built in the arg temp, passed through a pointer temp.
 void StateFallDamage::vfunc_5(int n)
 {
-    ((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_1409fad80(m_pOwner->FUN_14123c460(), false);
+    FUN_141b6f910()->SetPaused(m_pOwner->FUN_14123c460(), false);
     m_strAnim = "";
     State::vfunc_5(n);
 }

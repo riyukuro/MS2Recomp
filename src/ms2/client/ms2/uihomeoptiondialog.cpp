@@ -33,9 +33,9 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of exe types ----
 
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 
 // The home (cube map information) service: the nine permission rows of the home.
 class Unk_HoService : public efd::ISystemService {
@@ -47,7 +47,7 @@ class CubeMapInformationService { public:   // C3: member view (cubemapinformati
     int FUN_1410c3e80(int nKey);                                    // row level
     bool FUN_1410d5640();                                           // may change the options
 };
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+//
 
 // The smart pointer to the service (C3: efd::SmartPointer<CubeMapInformationService>).
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
@@ -133,7 +133,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             if (spService == (CubeMapInformationService*)0)
                 return 1;
             if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d5640() == 0)
@@ -209,7 +209,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
     {
-        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
         if ((CubeMapInformationService*)spService == 0)
             return;
         for (int i = 0; i < 9; ++i)

@@ -45,7 +45,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 class Unk_ReactWorld { public: efd::SmartPointer<CReactor> FUN_141bc6eb0(const CString& strName); };
 
 
-// The casting bar request (see statenurturing.cpp): duration, flags, speed and four texts.
+struct Unk_CastingParam; // The casting bar request (see statenurturing.cpp): duration, flags, speed and four texts.
 struct Unk_CastInfo
 {
     Unk_CastInfo();                                      // 0x140ac2eb0
@@ -66,7 +66,7 @@ MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void FUN_1418e12b0(ICastingEventListener* pListener, Unk_CastInfo& kInfo);   // show
+    void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pInfo);   // show (0x1418e12b0)
     void FUN_1418e1390();                                                        // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
@@ -165,7 +165,7 @@ void StateReact::vfunc_4(StateData* pData)
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar == 0)
                     return;
-                pBar->FUN_1418e12b0(this, kInfo);
+                pBar->StartCasting(this, (const Unk_CastingParam*)&kInfo);
             }
         }
     }

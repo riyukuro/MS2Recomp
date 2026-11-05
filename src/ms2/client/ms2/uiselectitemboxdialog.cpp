@@ -141,8 +141,8 @@ void UISelectItemBoxDialog::OnLoadComplete()
     m_selectedSlots.resize(6);
     for (unsigned i = 0; i < 6; ++i)
         reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0(StringFormat("m_selectedSlot{0}", i), reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_selectedSlots[i]));
-    FUN_140e48d80("m_selectedCount", &m_selectedCount);
-    FUN_140e48d80("m_selectNotice", &m_selectNotice);
+    GetChildInto<ASTextField>("m_selectedCount", m_selectedCount);
+    GetChildInto<ASTextField>("m_selectNotice", m_selectNotice);
     int nDropBoxId = 0;
     if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->FUN_14092c5c0()) {
         m_nSelectCount = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(0, 0);

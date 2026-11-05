@@ -2187,7 +2187,7 @@ int FUN_1405402a0(TiXmlElement* pElem, const char* pszName, int& rnValue)
     return nResult;
 }
 
-// ModelNameEntry::~ModelNameEntry (COMDAT 0x140540bc0) is implicit.
+// ItemDummyInfo::~ItemDummyInfo (COMDAT 0x140540bc0) is implicit.
 
 // @0x140540c00
 ItemFunctionArgs::~ItemFunctionArgs()

@@ -59,7 +59,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<ASUIComponent> FUN_140e48e10(const CString& strName, MS2Ptr<ASUIComponent>* pOut);   // finds the child and stores it in *pOut
+    // 0x140e48e10 finds the child and stores it = UISwfEntity::GetChildInto<ASUIComponent> (uiswfentity.h)
 
     int m_nDialogWidth;                                             // +0x198
     int m_nDialogHeight;                                            // +0x19c

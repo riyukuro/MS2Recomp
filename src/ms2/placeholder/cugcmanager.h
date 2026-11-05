@@ -27,7 +27,7 @@ namespace UgcItemIcon { class CallBackData; }
 
 class CUgcDownloadCtrl;
 struct ReserveBannerInfo;                                  // ugcdef.h (not included: ms2.cpp has other copies of its classes)
-class Unk_CharListEntry;
+#include "ms2/client/ms2/uicharacterlistdialog.h"   // C3: UICharacterListDialog::CCharacterInfo (was the Unk_CharListEntry stand-in)
 struct Unk_BannerDay;
 class IUgcProxy;
 class CUgcUserProxy;
@@ -156,7 +156,7 @@ public:
     void FUN_14187ffe0();                                   // open the guild mark upload
     void FUN_141880230(CString strName, int nIndex);        // open a guild poster upload
     bool ShowUploadInDialog(MS2Ptr<CUgcUploadCtrl> spCtrl);
-    void FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry);  // upload a shot of a character as its profile image
+    void FUN_141880600(MS2Ptr<UICharacterListDialog::CCharacterInfo> spEntry);  // upload a shot of a character as its profile image
     void FUN_141880c90(MS2Ptr<CUploadFile> spFile);         // upload a file as the profile image
     void OnUploadResult(int nResult);                        // the server answered the upload
     int HasViewerContent();                                    // the current upload has content

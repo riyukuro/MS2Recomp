@@ -313,7 +313,7 @@ COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's s
 COutputStream & FUN_14070fb70(COutputStream &, const Unk_OSNumber &);  // C3: the definition's signature
 COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
 COutputStream & FUN_14070faa0(COutputStream &, const CStringA &);  // C3: the definition's signature
-Unk_AttendGiftDataGroup* FUN_1403fc330();
+AttendGiftDataTable* FUN_1403fc330();
 // Typed stream operators (packet.cpp).
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f960(COutputStream& out, long value);
@@ -475,7 +475,7 @@ void GameEventCashAttend::vfunc_2()
     m_i0 = FUN_140718200(m_68);
     m_i4 = FUN_140718200(m_70);
     m_strDesc = m_78;
-    m_entry = FUN_1403fc330()->FUN_1401ae630(m_i0);
+    m_entry = FUN_1403fc330()->Find(m_i0);
 }
 MS2_REPLACE_METHOD(0x1403fbb00, GameEventCashAttend, vfunc_2, 189, 0x68160277);
 
@@ -500,7 +500,7 @@ void GameEventCashAttend::vfunc_4(Unk_GEIn* in)
     reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i0));
     reinterpret_cast<Unk_OSInput*>(&in->reader)->Read6(reinterpret_cast<unsigned&>(m_i4));
     reinterpret_cast<Unk_OSInput*>(&in->reader)->Read11(m_strDesc);
-    m_entry = FUN_1403fc330()->FUN_1401ae630(m_i0);
+    m_entry = FUN_1403fc330()->Find(m_i0);
     vfunc_10();
 }
 MS2_REPLACE_METHOD(0x1403fbc70, GameEventCashAttend, vfunc_4, 275, 0x71A9551D);
@@ -554,7 +554,7 @@ void FUN_1403fbf30(Unk_GEOut* out, ATL::CAtlArray<MS2Ptr<ItemGift> >* gifts)
 MS2_REPLACE(0x1403fbf30, FUN_1403fbf30, 152, 0x0FCC86CE);
 
 // @0x1403fc330
-Unk_AttendGiftDataGroup* FUN_1403fc330() { return reinterpret_cast<Unk_AttendGiftDataGroup*>(TSingleton<AttendGiftDataTable>::s_instance); }
+AttendGiftDataTable* FUN_1403fc330() { return TSingleton<AttendGiftDataTable>::s_instance; }
 MS2_REPLACE(0x1403fc330, FUN_1403fc330, 8, 0xA0DCC569);
 
 // @0x1403fc640

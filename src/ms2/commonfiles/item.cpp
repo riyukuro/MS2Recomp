@@ -2881,15 +2881,15 @@ struct Unk_XmlElement;
 bool FUN_14028f710(Unk_XmlElement*);                                       // the element is usable
 void FUN_140530c90(MS2Ptr<CItemData> spItem, int nGrade, int nEnchant, CIngredientContainer& output);
 // Scoped lock helper shared with banktable / logstring: locks on construction when asked, unlocks on exit.
-class Unk_1401b4ec0
-{
-public:
-    Unk_1401b4ec0(CLockCriticalSection& lock, int bLock);   // 0x1401b4ec0
-    ~Unk_1401b4ec0();                                       // 0x1401b5120
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x14052de30
 CItemBreakIngredientTable::CItemBreakIngredientTable()
@@ -2905,7 +2905,7 @@ CItemBreakIngredientTable::~CItemBreakIngredientTable()
 // @0x14052dfa0
 int CItemBreakIngredientTable::Reload()
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     LoadBreakItems();
     LoadGachaBoxes();
     return 1;
@@ -2978,7 +2978,7 @@ int CItemBreakIngredientTable::LoadGachaBoxes()
 // @0x14052e650
 CItemBreakIngredientTable::IngredientPtr CItemBreakIngredientTable::GetBreakItem(int nItemId)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     if (FUN_1401d1320(m_spCache.get()) != 0)
         LoadBreakItems();
     IngredientPtr spResult(0);
@@ -2990,7 +2990,7 @@ MS2_REPLACE_METHOD(0x14052E650, CItemBreakIngredientTable, GetBreakItem, 203, 0x
 // @0x14052e730
 CItemBreakIngredientTable::IngredientPtr CItemBreakIngredientTable::GetGachaBox(int nBoxId)
 {
-    Unk_1401b4ec0 guard(m_lock, 1);
+    Unk_CriticalSectionLock guard(m_lock, 1);
     if (FUN_1401d1320(m_spCache.get()) != 0)
         LoadGachaBoxes();
     IngredientPtr spResult(0);

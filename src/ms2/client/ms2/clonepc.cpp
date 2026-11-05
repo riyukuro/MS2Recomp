@@ -141,13 +141,13 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
 };
-class CEquipment   // C3: member view of the real CEquipment (equipment.h clashes with the local AdditionalCli)
-{
-public:
-    void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // CollectItemsUpTo
-    void FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nMaxLayer, int bCheck, bool bForce);   // the shown items
-    void FUN_1411e3de0(int bKeepLoaded);   // UnequipAll
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
+//
+//
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 class CBoneRotateManager { public: void ClearActions(); };
 void FUN_141ab6e80(NiAVObject* pObj);

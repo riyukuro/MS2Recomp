@@ -94,6 +94,8 @@ public:
 
     // Returns the AS child `strName` of this entity's movie (COMDAT template; 0x14135b280 for T = ASVideoPlayer).
     template <class T> MS2Ptr<T> GetChild(const CString& strName);
+    // GetChild<T>, remembered in `out`, returns a copy (COMDATs 0x140e48d80 ASTextField / 0x140e48e10 ASUIComponent).
+    template <class T> MS2Ptr<T> GetChildInto(const CString& strName, MS2Ptr<T>& out) { out = GetChild<T>(strName); return out; }
 
     CString FUN_1422db6e0();                                // m_20 (the manager key)
     int FUN_1422db730();                                    // m_28

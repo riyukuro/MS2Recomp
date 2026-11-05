@@ -114,7 +114,7 @@ CStringW FUN_1418fec00(int nType, __int64 nValue, int, int);
 CStringW FUN_1409404f0(__int64 n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);
-std::pair<int, __int64> FUN_140931680(int& nKey, __int64& nValue);   // folded copy of std::make_pair<int&, __int64&>
+// 0x140931680 is std::pair<int, __int64>::pair<int&, __int64&> (the definer is unit_14092f420)
 int FUN_1406a6140();                                            // the pay type of the blueprint rows
 bool FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >* pOut);
 bool FUN_140930750(std::vector<std::pair<int, __int64> >* pIn, std::vector<std::pair<int, __int64> >* pOut);
@@ -511,7 +511,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
                 CStringW strPoolAmounts;
                 int nKey = FUN_1406a6140();
                 std::vector<std::pair<int, __int64> > vecRows;
-                vecRows.push_back(FUN_140931680(nKey, nValue));
+                vecRows.push_back(std::pair<int, __int64>(nKey, nValue));
                 FUN_140eabdc0(&strPoolNames, &strPoolAmounts, vecRows);
                 strNames.Append(strPoolNames);
                 strAmounts.Append(strPoolAmounts);

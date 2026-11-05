@@ -141,14 +141,14 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_140353fc0
 
 // The scoped lock around the table (0x1401b4ec0 / 0x1401b5120); the field and inventory units name their copies alike.
-class Unk_1401b4ec0 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection&, int);
-    ~Unk_1401b4ec0();
-private:
-    CLockCriticalSection* p;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+//
+//
+//
+//
+//
+//
+//
+//
 
 void FUN_14145c4b0();
 unsigned char FUN_1401d1320(CCacheData*);
@@ -177,11 +177,11 @@ extern Unk_MagicTable DAT_143adca50;
 #include "ms2/client/ms2/equipitem.h"    // C3: CEquipItem::GetItem
 #include "ms2/client/ms2/ridee.h"    // C3: efd::SmartPointer<Ridee>
 #include <NiTransform.h>    // C3: NiTransform::operator= (0x140a35c30)
-class CEquipment   // C3: view of equipment.h (its AdditionalCliList clashes with this unit's view)
-{
-public:
-    MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nSkip, int bCheck);  // FindUsableItem
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 class Unk_XmlNode   // C3: member view (as in datatable_impl.h)
 {
 public:
@@ -262,7 +262,7 @@ MS2_REPLACE_METHOD(0x14145C180, CMagicData, FUN_14145c180, 188, 0x4477E028);
 // @0x14145c250
 Unk_MagicListPtr FUN_14145c250(unsigned nMagicId)
 {
-    Unk_1401b4ec0 lock(s_magicLock, 1);
+    Unk_CriticalSectionLock lock(s_magicLock, 1);
     if (FUN_1401d1320(&s_magicCache))
         FUN_14145c4b0();
     Unk_MagicListPtr list(0);
@@ -276,7 +276,7 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex);
 // @0x14145c300
 Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
 {
-    Unk_1401b4ec0 lock(s_magicLock, 1);
+    Unk_CriticalSectionLock lock(s_magicLock, 1);
     if (FUN_1401d1320(&s_magicCache))
         FUN_14145c4b0();
     Unk_MagicListPtr list(0);
@@ -300,7 +300,7 @@ void FUN_14145c4b0()
 // @0x14145c4d0
 int LoadMagicPath()
 {
-    Unk_1401b4ec0 lock(s_magicLock, 1);
+    Unk_CriticalSectionLock lock(s_magicLock, 1);
     DAT_143adca50.RemoveAll();
     CString strPath;
     strPath.Format("./data/xml/table/magicPath.xml");
@@ -572,7 +572,7 @@ class Unk_MagicWorld : public WorldService {
 public:
     // (FUN_141bc5bb0 = WorldService::FindRefObject)
     Unk_MagicEntity* FUN_141bd0cc0();
-    void FUN_141bc3470(Unk_MagicValPtr spVal, Unk_MagicTagPtr spTag);   // register the cast record's value (callee releases both)
+    // (FUN_141bc3470 = WorldService::FUN_141bc3470, its m_3f0 value/key are these two pointers)   // register the cast record's value (callee releases both)
 };
 class Unk_MagicTime : public CMainSystem { public: }; // 0x1414732f0 the clock in ms; mode from tag + 0x30
 
@@ -617,8 +617,8 @@ struct Unk_MagicActor {};
 bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB);     // approximately equal
 
 // The 0x34 byte NiTransform the effect system takes (rotate, translate, scale).
-struct Unk_MagicXform { Unk_MagicXform(); /* 0x140a332d0 */ Unk_NiMatrix3 m_rotate; Unk_NiPoint3 m_translate; float m_fScale; };
-MS2_CHECK_SIZE(Unk_MagicXform, 0x34);
+// C3: was the Unk_MagicXform view; the effect system takes an NiTransform (<NiTransform.h>; implicit ctor 0x140a332d0).
+MS2_CHECK_SIZE(NiTransform, 0x34);
 extern Vector3 DAT_143a08d08;                               // the forward axis
 void FUN_140a0b1f0(const NiMatrix3& matRotation, efd::Point3& kOut);  // C3: was (const Unk_NiMatrix3&, Vector3*); rotation to euler angles
 // @0x14146aa10
@@ -633,7 +633,7 @@ bool FUN_14028d470(float a, float b);                               // approx eq
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
 void FUN_1410a7400(void* pArray, Vector3* pPoint);          // append a point
 // FUN_141467f60 (0x141467f60, defined below) takes both Vector3s by value, as the exe callers pass them
-void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, Unk_MagicXform* pOut);
+void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, NiTransform* pOut);
 const CString* FUN_1417590d0(Unk_MagicTag* pTag);                   // the effect name of the skill
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class COptimizer   // C3: member view for the former free stand-ins
@@ -1046,7 +1046,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
             FUN_14145e1a0(m_spSkill->m_nCasterId, m_spSkill->m_nOwnerId, reinterpret_cast<Unk_MagicAimInfo*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetMotionData()),
                 reinterpret_cast<const Unk_MagicSkillRow*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetAttackData()), &ptEnd, &m_ptDirection);
         }
-        Unk_MagicXform kXform;
+        NiTransform kXform;
         FUN_141467f60(ptEnd, m_ptDirection, &kXform);
         ((CMagicService*)FUN_1410a7630())->FUN_14146b440(spRecord.get(), 1, &kXform, m_ptDirection);
         ((CMagicService*)FUN_1410a7630())->FUN_14146ceb0(m_spSkill->m_nTagSub);
@@ -1083,13 +1083,13 @@ void CMagic::FUN_14145f570(unsigned nNow)
                     FxPair kFx = aFx[i];
                     ((Unk_MagicEffectReq&)(kReq)).m_strName = kFx.first;
                     int nFxKind = kFx.second;
-                    Unk_MagicXform kXform;
+                    NiTransform kXform;
                     if (nFxKind != 0) {
                         FUN_141467f60(m_ptCurrent, m_ptDirection, &kXform);
                     } else {
                         kXform.m_fScale = 1.0f;
-                        kXform.m_rotate = reinterpret_cast<const Unk_NiMatrix3&>(static_cast<NiAVObject*>(m_spScene.operator->())->GetRotate());
-                        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
+                        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = reinterpret_cast<const Unk_NiMatrix3&>(static_cast<NiAVObject*>(m_spScene.operator->())->GetRotate());
+                        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
                     }
                     ((Unk_MagicEffectReq&)(kReq)).m_pXform = &kXform;
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*(Unk_EffectTarget*)&((Unk_MagicEffectReq&)(kReq)));
@@ -1119,13 +1119,13 @@ void CMagic::FUN_14145f570(unsigned nNow)
                     FxPair kFx = aFx[i];
                     ((Unk_MagicEffectReq&)(kReq)).m_strName = kFx.first;
                     int nFxKind = kFx.second;
-                    Unk_MagicXform kXform;
+                    NiTransform kXform;
                     if (nFxKind != 0) {
                         FUN_141467f60(m_ptCurrent, m_ptDirection, &kXform);
                     } else {
                         kXform.m_fScale = 1.0f;
-                        kXform.m_rotate = reinterpret_cast<const Unk_NiMatrix3&>(static_cast<NiAVObject*>(m_spScene.operator->())->GetRotate());
-                        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
+                        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = reinterpret_cast<const Unk_NiMatrix3&>(static_cast<NiAVObject*>(m_spScene.operator->())->GetRotate());
+                        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
                     }
                     ((Unk_MagicEffectReq&)(kReq)).m_pXform = &kXform;
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*(Unk_EffectTarget*)&((Unk_MagicEffectReq&)(kReq)));
@@ -1302,10 +1302,10 @@ void CMagic::FUN_141462900(unsigned nNow)
                 m_slots[i].m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*(Unk_EffectTarget*)&((Unk_MagicEffectReq&)(kReq)));
             }
             if (bSingle != 0) {
-                Unk_MagicXform kXform;
+                NiTransform kXform;
                 kXform.m_fScale = 1.0f;
-                *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(ptLast))));
-                ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_rotate))->MakeIdentity();
+                *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(ptLast))));
+                ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_Rotate))->MakeIdentity();
                 NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
                 ((Unk_MagicEffectReq&)(kReq)).m_strName = pRow->m_str148;
                 ((Unk_MagicEffectReq&)(kReq)).m_nObject = nOwnerType;
@@ -1610,11 +1610,11 @@ void CMagic::FUN_141462490(unsigned nNow)
         unsigned nDue = nLife - reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())->FUN_1414734a0();
         if (nNow >= nDue) {
             m_n1D0 = 1;
-            ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
+            WorldService::GetInstance()->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
             ((class Unk_MagicCubeService*)FUN_1409670b0())->FUN_1412316a0(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
         }
     } else {
-        ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
+        WorldService::GetInstance()->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
         ((class Unk_MagicCubeService*)FUN_1409670b0())->FUN_1412316a0(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
     }
 }
@@ -1983,14 +1983,14 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         m_ptTarget = m_ptCurrent.FUN_14097fd50(ptSide.FUN_14097fc90(m_data.m_fVelocity).FUN_14097fc90(m_fRemainTime));
         m_n26C = 0;
         if (reinterpret_cast<CContentShutdown*>(&((struct Unk_MagicConfig*)FUN_14025e7b0())->m_flags)->Get((CContentShutdown::Content)0x73) == 0) {
-            Unk_MagicXform kXform;
+            NiTransform kXform;
             kXform.m_fScale = 1.0f;
-            *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
-            ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_rotate))->MakeIdentity();
+            *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
+            ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_Rotate))->MakeIdentity();
             const CString& strEffect = pRow->m_str188;
             int nKey = pRow->m_n180;
             int nType;
-            std::pair<bool, bool> kPlay = ((CMagicService*)FUN_1410a7630())->FUN_14146c990(&nKey, &kXform.m_translate, m_spSkill->m_nOwnerId,
+            std::pair<bool, bool> kPlay = ((CMagicService*)FUN_1410a7630())->FUN_14146c990(&nKey, reinterpret_cast<Unk_NiPoint3*>(&kXform.m_Translate), m_spSkill->m_nOwnerId,
                 reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(m_spSkill->m_nCasterId)), &nType);
             if (kPlay.first) {
                 NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
@@ -2006,10 +2006,10 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
             int nObject = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
             int bLocal = ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161ce60(m_spSkill->m_nOwnerId) == 0 ? 1 : 0;
             if (bLocal != 0) {
-                Unk_MagicXform kXform;
+                NiTransform kXform;
                 kXform.m_fScale = 1.0f;
-                *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
-                ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_rotate))->MakeIdentity();
+                *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
+                ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_Rotate))->MakeIdentity();
                 NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
                 ((Unk_MagicEffectReq&)(kReq)).m_strName = pRow->m_str188;
                 ((Unk_MagicEffectReq&)(kReq)).m_nObject = nObject;
@@ -2151,7 +2151,7 @@ void CMagic::FUN_141464b40()
 MS2_REPLACE_METHOD(0x141464b40, CMagic, FUN_141464b40, 435, 0xE5AFB908);
 
 // @0x141467f60
-void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, Unk_MagicXform* pOut)
+void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, NiTransform* pOut)
 {
     Unk_NiMatrix3 matRotation;
     ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&matRotation))->MakeIdentity();
@@ -2182,8 +2182,8 @@ void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, Unk_MagicXform* pOut)
         }
     }
     pOut->m_fScale = 1.0f;
-    pOut->m_rotate = matRotation;
-    *reinterpret_cast<NiPoint3*>(&pOut->m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(ptPos))));
+    reinterpret_cast<Unk_NiMatrix3&>(pOut->m_Rotate) = matRotation;
+    *reinterpret_cast<NiPoint3*>(&pOut->m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(ptPos))));
 }
 
 // @0x141461a80
@@ -2384,10 +2384,10 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
     Unk_MagicTag* pTag = m_spSkill.operator->();
     int bLocal = ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161ce60(pTag->m_nOwnerId) == 0;
     if (bLocal) {
-        Unk_MagicXform kXform;
+        NiTransform kXform;
         kXform.m_fScale = 1.0f;
-        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
-        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_rotate))->MakeIdentity();
+        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptCurrent))));
+        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kXform.m_Rotate))->MakeIdentity();
         NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
         ((Unk_MagicEffectReq&)(kReq)).m_strName = pRow->m_str160;
         ((Unk_MagicEffectReq&)(kReq)).m_nObject = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
@@ -2729,20 +2729,20 @@ MS2_REPLACE_METHOD(0x14146B420, CMagicService, GetDisplayName, 13, 0xE5D35438);
 
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 // @0x14146b440
-void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXform* pXform, Vector3 ptDirection)
+void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, NiTransform* pXform, Vector3 ptDirection)
 {
     if (pTag->m_arrB0.IsEmpty())
         return;
     Unk_MagicEntity* pCaster = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(pTag->m_nCasterId));
     if (pCaster == NULL)
         return;
-    Unk_MagicXform kXform;
+    NiTransform kXform;
     if (pXform != NULL) {
         reinterpret_cast<NiTransform&>(kXform) = reinterpret_cast<const NiTransform&>(*pXform);
     } else {
         kXform.m_fScale = 1.0f;
-        kXform.m_rotate = DAT_143a09600;
-        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
+        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
     }
     int bPlay = 1;
     if (bTracked == 0) {
@@ -2757,8 +2757,8 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXfo
                     }
                     bPlay = 0;
                 } else {
-                    kXform.m_rotate = spModel->GetRotation();
-                    *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(spModel->GetPosition()))));
+                    reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = spModel->GetRotation();
+                    *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(spModel->GetPosition()))));
                 }
             }
         }
@@ -2770,7 +2770,7 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXfo
             NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
             int nKey = reinterpret_cast<CDamageRecord*>(pTag)->GetNameIndex();
             int nType;
-            std::pair<bool, bool> kPlay = FUN_14146c990(&nKey, &kXform.m_translate, pTag->m_nOwnerId, pCaster, &nType);
+            std::pair<bool, bool> kPlay = FUN_14146c990(&nKey, reinterpret_cast<Unk_NiPoint3*>(&kXform.m_Translate), pTag->m_nOwnerId, pCaster, &nType);
             if (kPlay.first) {
                 ((Unk_MagicEffectReq&)(kReq)).m_strName = reinterpret_cast<CDamageRecord*>(pTag)->GetEffectHit();
                 ((Unk_MagicEffectReq&)(kReq)).m_nObject = nType;
@@ -2792,7 +2792,7 @@ void CMagicService::FUN_14146b440(Unk_MagicTag* pTag, int bTracked, Unk_MagicXfo
         int bShow = ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161ce60(pTag->m_nOwnerId) == 0;
         int nType = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(pTag->m_nOwnerId);
         if (nType != 1) {
-            if (((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd7230(reinterpret_cast<Vector3*>(&kXform.m_translate)) != 0)
+            if (((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd7230(reinterpret_cast<Vector3*>(&kXform.m_Translate)) != 0)
                 bShow = 0;
         }
         if (bShow != 0) {
@@ -2843,18 +2843,18 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
     if (pCaster == NULL)
         return;
     if (reinterpret_cast<CContentShutdown*>(&((struct Unk_MagicConfig*)FUN_14025e7b0())->m_flags)->Get((CContentShutdown::Content)0x73) == 0) {
-        Unk_MagicXform kXform;
-        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
+        NiTransform kXform;
+        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
         kXform.m_fScale = 1.0f;
-        kXform.m_rotate = DAT_143a09600;
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
         CNpc* pNpc = dynamic_cast<CNpc*>(reinterpret_cast<GameObject*>(pCaster));
         bool bHitPoint = pNpc != NULL && reinterpret_cast<CNpcData*>(pNpc->GetNpcData().operator->())->HasPropertyTag(0x1d);
         if (bHitPoint)
-            *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(*reinterpret_cast<const Vector3*>(&pTag->m_spLinked.m_p)))));   // MS2: the cast record's +0x78 is the hit point
+            *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(*reinterpret_cast<const Vector3*>(&pTag->m_spLinked.m_p)))));   // MS2: the cast record's +0x78 is the hit point
         NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
         int nKey = reinterpret_cast<CDamageRecord*>(pTag)->GetNameIndex();
         int nType;
-        std::pair<bool, bool> kPlay = FUN_14146c990(&nKey, &kXform.m_translate, pTag->m_nOwnerId, pCaster, &nType);
+        std::pair<bool, bool> kPlay = FUN_14146c990(&nKey, reinterpret_cast<Unk_NiPoint3*>(&kXform.m_Translate), pTag->m_nOwnerId, pCaster, &nType);
         if (kPlay.first) {
             ((Unk_MagicEffectReq&)(kReq)).m_strName = reinterpret_cast<CDamageRecord*>(pTag)->GetEffectHit();
             ((Unk_MagicEffectReq&)(kReq)).m_nObject = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(pTag->m_nOwnerId);
@@ -2878,14 +2878,14 @@ void CMagicService::FUN_14146bc80(Unk_MagicTag* pTag)
     if (pPlayer != NULL)
         bAlive = pPlayer->vf25_IsDead() == 0;
     if (bAlive != 0) {
-        Unk_MagicXform kXform;
-        *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
+        NiTransform kXform;
+        *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pCaster->vf18_GetPosition()))));
         kXform.m_fScale = 1.0f;
-        kXform.m_rotate = DAT_143a09600;
+        reinterpret_cast<Unk_NiMatrix3&>(kXform.m_Rotate) = DAT_143a09600;
         CNpc* pNpc = dynamic_cast<CNpc*>(reinterpret_cast<GameObject*>(pCaster));
         bool bHitPoint = pNpc != NULL && reinterpret_cast<CNpcData*>(pNpc->GetNpcData().operator->())->HasPropertyTag(0x1d);
         if (bHitPoint)
-            *reinterpret_cast<NiPoint3*>(&kXform.m_translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(*reinterpret_cast<const Vector3*>(&pTag->m_spLinked.m_p)))));   // MS2: the cast record's +0x78 is the hit point
+            *reinterpret_cast<NiPoint3*>(&kXform.m_Translate) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(*reinterpret_cast<const Vector3*>(&pTag->m_spLinked.m_p)))));   // MS2: the cast record's +0x78 is the hit point
         NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
         ((Unk_MagicEffectReq&)(kReq)).m_strName = reinterpret_cast<CDamageRecord*>(pTag)->GetEffectHit();
         ((Unk_MagicEffectReq&)(kReq)).m_nObject = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(pTag->m_nOwnerId);

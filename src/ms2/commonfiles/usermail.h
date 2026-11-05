@@ -7,34 +7,34 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cmailtypes.h"
 
-// Intrusive pointer to a CPtred-derived mail object (16 bytes, pointer at +8); one instance per T.
-template<class T> class Unk_MailPtr {
-public:
-    Unk_MailPtr() : p(0) {}
-    Unk_MailPtr(int) : p(0) {}
-    Unk_MailPtr(T* value) : p(value) { AddRef(); }
-    Unk_MailPtr(const Unk_MailPtr& o) : p(o.p) { AddRef(); }
-    Unk_MailPtr(Unk_MailPtr&& o) : p(o.p) { o.p = 0; }
-    ~Unk_MailPtr() { Release(); }
-    Unk_MailPtr& operator=(const Unk_MailPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
-    Unk_MailPtr& operator=(int) { Release(); return *this; }
-    // Assignment from a raw pointer (`Unk_MailPtr tmp(value); swap`), named so that `p = q` / `p = 0` keep their overloads
-    // (the exe operator= COMDAT 0x1419ede60 is in uimaillistdialog.cpp).
-    // @0x1419ede60
-    Unk_MailPtr& AssignRaw(T* value) { Unk_MailPtr temp(value); T* old = p; p = temp.p; temp.p = old; return *this; }
-    bool operator==(T* value) const { return p == value; }
-    T* get() const { return p; }
-    // @0x1419ea470 (CMailInfo)
-    bool IsNull() const { return p == 0; }
-    T* operator->() const { return p; }
-private:
-    void AddRef() const { if (p) AddRefImpl(0); }
-    static void Reference(T* value) { CPtred::AddRefPtred(value); }
-    void AddRefImpl(void*) const { Reference(p); }
-    void Release() { if (p) { ReleaseImpl(0); p = 0; } }
-    void ReleaseImpl(void*) { if (CPtred::ReleasePtred(p) == 0) { Reference(p); CPtred::DeletePtred(p); } }
-    void* pad_00; T* p;
-};
+// The mail pointers are MS2Ptr<T> (ascript.h), the game's 16-byte intrusive pointer to a CPtred-derived object.
+// The former MS2Ptr<T> view had the same layout and the same member bodies (ms2ptr_impl.h). Exe COMDATs:
+// AssignRaw 0x1419ede60 (uimaillistdialog.cpp), IsNull<CMailInfo> 0x1419ea470, get<CMailSendKeep> 0x1408e5170.
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class Unk_MailSession;
 Unk_MailSession* FUN_1403ed2d0();
@@ -45,8 +45,8 @@ int FUN_141276180(const CString&, const CString&);
 
 class CUserMail {
 public:
-    typedef Unk_MailPtr<CMailInfo> MailPtr;
-    typedef Unk_MailPtr<CMailSendKeep> KeepPtr;
+    typedef MS2Ptr<CMailInfo> MailPtr;
+    typedef MS2Ptr<CMailSendKeep> KeepPtr;
     typedef ATL::CAtlArray<MailPtr> MailArray;
     CUserMail();
     ~CUserMail();

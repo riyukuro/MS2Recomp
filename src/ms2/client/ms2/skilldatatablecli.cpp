@@ -25,7 +25,7 @@ class Unk_XmlNode   // C3: member view for the former element stand-ins
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
 
 // Unrecovered helpers.
 int LoadXml(TiXmlDocument& doc, const char* pszPath);          // skilloverlapcompare.cpp: loads an xml file
@@ -277,7 +277,7 @@ MS2_REPLACE_METHOD(0x140aaf8c0, SkillDataTableCli, CheckSkillChain, 588, 0x8FF74
 // @0x140aafb20
 void SkillDataTableCli::GetSkillIds(std::set<unsigned>& out)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     for (std::pair<const unsigned, MS2Ptr<SkillData> > entry : m_skills)
     {
         if (entry.second.get() != 0)
@@ -289,7 +289,7 @@ MS2_REPLACE_METHOD(0x140aafb20, SkillDataTableCli, GetSkillIds, 257, 0xB119FA4C)
 // @0x140aafc30
 void SkillDataTableCli::GetGlides(std::vector<MS2Ptr<SkillGlideData> >& out)
 {
-    Unk_1401b4ec0 lock(m_cs, 1);
+    Unk_CriticalSectionLock lock(m_cs, 1);
     std::transform(m_glides.begin(), m_glides.end(), std::back_inserter(out),
                    [](const std::pair<const int, MS2Ptr<SkillGlideData> >& entry) { return entry.second; });
     std::sort(out.begin(), out.end(), [](const MS2Ptr<SkillGlideData>& a, const MS2Ptr<SkillGlideData>& b) {
@@ -303,7 +303,7 @@ MS2Ptr<AdditionalData> SkillDataTableCli::GetAdditional(unsigned nId)
 {
     if (nId == 0)
         return nullptr;
-    Unk_1401b4ec0 lock(m_csAdditional, 1);
+    Unk_CriticalSectionLock lock(m_csAdditional, 1);
     std::unordered_map<unsigned, MS2Ptr<AdditionalData> >::iterator it = m_additionals.find(nId);
     if (it == m_additionals.end())
         return nullptr;
@@ -332,7 +332,7 @@ MS2_REPLACE_METHOD(0x140aafef0, SkillDataTableCli, FUN_140aafef0, 182, 0x91ABDFD
 // @0x140aaffb0
 std::set<unsigned>* SkillDataTableCli::GetAdditionalGroup(unsigned nGroupId)
 {
-    Unk_1401b4ec0 lock(m_csAdditional, 1);
+    Unk_CriticalSectionLock lock(m_csAdditional, 1);
     std::map<unsigned, std::set<unsigned> >::iterator it = m_additionalGroups.find(nGroupId);
     if (it == m_additionalGroups.end())
         return 0;
@@ -363,7 +363,7 @@ void SkillDataTableCli::LoadAdditionalFile(CString strPath)
     {
         MS2Ptr<AdditionalData> spData(new AdditionalData);
         spData->Load(pElem);
-        Unk_1401b4ec0 lock(m_csAdditional, 1);
+        Unk_CriticalSectionLock lock(m_csAdditional, 1);
         std::unordered_map<unsigned, MS2Ptr<AdditionalData> >::iterator it = m_additionals.find(spData->GetID());
         if (it != m_additionals.end())
         {

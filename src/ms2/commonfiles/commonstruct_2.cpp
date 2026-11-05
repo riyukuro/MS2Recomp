@@ -102,7 +102,7 @@ template PIng* std::_Uninitialized_move<PIng*, PIng*, std::allocator<PIng>>(PIng
 void FUN_140277870(i64, i64);
 void FUN_1402769e0(i64*, i64, Unk_StlTag);
 void FUN_140276a10(i64*, i64, Unk_StlTag);
-void FUN_140276a40(i64, i64, Unk_StlTag);
+// (0x140276a40 = std::_Advance1<LHist::iterator>, commonstruct_wc)
 void FUN_140276920(i64, i64); void FUN_140276960(i64, i64);
 void FUN_140276aa0(i64, i64, i64, Unk_StlTag); void FUN_140276d40(i64, i64, i64, Unk_StlTag);
 i64 FUN_140278710(i64); i64 FUN_140278750(i64);
@@ -162,7 +162,7 @@ void FUN_14027b5a0(i64* p, i64 n) { Unk_StlTag t; FUN_1402769e0(p, n, t); }
 // @0x14027b5d0
 void FUN_14027b5d0(i64* p, i64 n) { Unk_StlTag t; FUN_140276a10(p, n, t); }
 // @0x14027b600
-i64 FUN_14027b600(i64 p, i64 n) { Unk_StlTag t; return reinterpret_cast<i64 (*)(i64, i64, Unk_StlTag)>(&FUN_140276a40)(p, n, t); }
+template void std::advance<LHist::iterator, __int64>(LHist::iterator&, __int64);
 // @0x14027b630
 i64 FUN_14027b630(i64 a, i64 b, i64 c)
 {
@@ -310,11 +310,11 @@ i64 FUN_14027be90(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64
 // std::find_if over a vector<Unk_IngRef> with a by-value predicate argument
 void FUN_1402769a0(i64, i64); void FUN_140278760(i64); void FUN_14027a740(i64, i64*);
 // @0x14027bf30
-i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
+VIng::iterator FUN_14027bf30(VIng::iterator first, VIng::iterator last, int key)
 {
     FUN_1402769a0((i64)&first, (i64)&last);
-    i64 f = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&first);
-    i64 l = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&last);
+    i64 f = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)((i64*)&first);
+    i64 l = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)((i64*)&last);
     for (; f != l; f += 0x10) {
 
 
@@ -323,8 +323,8 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
             break;
     }
     FUN_14027a740((i64)&first, &f);
-    *out = first;
-    return out;
+    return first;
+    //
 }
 
 // fmt::internal::MakeValue<BasicFormatter<wchar_t>>(const int&): the generic ostream-formatted argument (type 0xa)
@@ -432,7 +432,7 @@ i64 FUN_14027c420(i64 it, i64 n) { FUN_14027b5a0(&it, n); return it; }
 // @0x14027c450
 i64 FUN_14027c450(i64 it, i64 n) { FUN_14027b5d0(&it, n); return it; }
 // @0x14027c480
-i64* FUN_14027c480(i64* out, i64 it, i64 n) { FUN_14027b600((i64)&it, n); *out = it; return out; }
+template LHist::iterator std::next<LHist::iterator>(LHist::iterator, __int64);
 struct Unk_TIterBool; Unk_TIterBool* FUN_14027a770(void*, Unk_TIterBool*, i64);
 // @0x14027c4c0
 i64 FUN_14027c4c0(i64 a, i64 b, i64 c) { reinterpret_cast<void (*)(i64, i64, i64)>(&FUN_14027a770)(a, b, c); return b; }
@@ -656,7 +656,7 @@ Unk_PairHolder* FUN_14027d5e0(Unk_PairHolder* t) { FUN_14027cdf0(t); return t; }
 // @0x14027d600
 Unk_RewardMap::Unk_RewardMap() { char loc; FUN_14027cf40(reinterpret_cast<Unk_PairHolder*>(this), (i64)&loc); }   // the std::map ctor; was the free FUN_14027d600(Unk_PairHolder*), aliased from this name
 // @0x14027d630
-i64* FUN_14027d630(i64* t, i64 v) { *t = v; return t; }
+template std::reverse_iterator<VItem::iterator>::reverse_iterator(VItem::iterator);
 // @0x14027d650
 Unk_Q8* FUN_14027d650(Unk_Q8* t, Unk_Q8* p) { FUN_140163dc0(t, p); *t = *p; return t; }
 // @0x14027d690
@@ -771,7 +771,7 @@ Unk_ItemAbleTwin::Unk_ItemAbleTwin() {}
 // ---- smart-pointer / container dtors: noexcept single-call bodies (the -2 unwind slot + nop is the noexcept frame) ----
 i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
 i64 FUN_140288f10(void*); i64 FUN_140288f50(void*); i64 FUN_140288f90(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
-i64 FUN_140289050(void*); struct Unk_CsI64Vec { void FUN_140289670(); }; i64 FUN_140289740(void*); i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
+i64 FUN_140289050(void*); struct Unk_CsI64Vec { void FUN_140289670(); }; i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
 i64 FUN_1402899b0(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
 void FUN_140287dc0(void*, i64);
 // MS2-PIN: ??1?$MS2Ptr@VCIngredientInfo@@@@QEAA@XZ 0x14027df70
@@ -789,13 +789,13 @@ template MS2Ptr<AdditionalEffectEventCtx>::~MS2Ptr();
 // @0x14027e000
 template MS2Ptr<CAdditionalEvent>::~MS2Ptr();
 // @0x14027e030
-void FUN_14027e030(void* t) noexcept { FUN_140288ed0(t); }
+template MS2Ptr<CItemOption>::~MS2Ptr();   // C3: was FUN_14027e030 calling FUN_140288ed0 (Release)
 // @0x14027e090
 void FUN_14027e090(void* t) noexcept { FUN_140288f50(t); }
 // @0x14027e0f0
-void FUN_14027e0f0(void* t) noexcept { FUN_140288fd0(t); }
+class InvokeEffectOption; template MS2Ptr<InvokeEffectOption>::~MS2Ptr();   // C3: was FUN_14027e0f0 calling FUN_140288fd0
 // @0x14027e120
-void FUN_14027e120(void* t) noexcept { FUN_140289010(t); }
+template PLog::~MS2Ptr();   // C3: was FUN_14027e120 calling FUN_140289010
 // @0x14027e3f0
 void FUN_14027e3f0(void* t) noexcept { reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670(); }
 // @0x14027e4b0
@@ -805,7 +805,7 @@ void FUN_14027deb0(void* t) { try { reinterpret_cast<ATL::CAtlMap<unsigned, unsi
 // @0x14027dee0
 void FUN_14027dee0(void* t) { try { reinterpret_cast<ATL::CAtlMap<int, Unk_LimitValue>*>(t)->RemoveAll(); } catch (...) {} }
 // @0x14027e420
-Unk_ItemVec::~Unk_ItemVec() noexcept { FUN_140289740(this); }
+template VItem::~vector();
 // @0x14027e450
 Unk_StrVec::~Unk_StrVec() { FUN_140289810(this); }
 // @0x14027e480
@@ -846,7 +846,7 @@ template TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>& TPtrValue<ATL::CAt
 // @0x14027ea40
 template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(const MS2Ptr<CItemOption>&);
 // @0x14027ea80
-Unk_Ref16* FUN_14027ea80(Unk_Ref16* t, int) { FUN_140288ed0(t); return t; }
+template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(int);   // C3: was FUN_14027ea80 calling FUN_140288ed0
 // @0x14027eab0
 Unk_HistRef& Unk_HistRef::FUN_14027eab0(Unk_HistRef& o) { FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(&o)); FUN_140288f10(reinterpret_cast<Unk_Ref16*>(this)); m_p = o.m_p; return *this; }   // was the free FUN_14027eab0(Unk_Ref16*, Unk_Ref16*)
 // @0x14027eaf0
@@ -976,25 +976,25 @@ template bool MS2Ptr<CIngredientInfo>::operator==(CIngredientInfo*) const;
 // @0x14027ed20
 bool Unk_HistRef::operator==(CUserChangeableItemHistory* p) const { return m_p == p; }
 // @0x14027eda0
-bool FUN_14027eda0(Unk_It* a, Unk_It* b) { return a->p == b->p; }
+template bool LHist::const_iterator::operator==(const LHist::const_iterator&) const;
 // @0x14027ede0
-bool FUN_14027ede0(Unk_It* a, Unk_It* b) { return a->p == b->p; }
+template bool LHist::_Unchecked_const_iterator::operator==(const LHist::_Unchecked_const_iterator&) const;
 // @0x14027ee20
-bool FUN_14027ee20(Unk_It* a, Unk_It* b) { return a->p == b->p; }
+template bool MapII::const_iterator::operator==(const MapII::const_iterator&) const;
 // @0x14027ee60
-bool FUN_14027ee60(Unk_It* a, Unk_It* b) { reinterpret_cast<VItem::const_iterator*>(a)->_Compat(*reinterpret_cast<VItem::const_iterator*>(b)); return a->p == b->p; }
+template bool VItem::const_iterator::operator==(const VItem::const_iterator&) const;
 // @0x14027eeb0
-bool FUN_14027eeb0(Unk_It* a, Unk_It* b) { reinterpret_cast<VIng::const_iterator*>(a)->_Compat(*reinterpret_cast<VIng::const_iterator*>(b)); return a->p == b->p; }
+template bool VIng::const_iterator::operator==(const VIng::const_iterator&) const;
 // @0x14027ef00
-bool FUN_14027ef00(Unk_It* a, Unk_It* b) { return !FUN_14027eda0(a, b); }
+template bool LHist::const_iterator::operator!=(const LHist::const_iterator&) const;
 // @0x14027ef40
-bool FUN_14027ef40(Unk_It* a, Unk_It* b) { return !FUN_14027ede0(a, b); }
+template bool LHist::_Unchecked_const_iterator::operator!=(const LHist::_Unchecked_const_iterator&) const;
 // @0x14027ef80
-bool FUN_14027ef80(Unk_It* a, Unk_It* b) { return !FUN_14027ee20(a, b); }
+template bool MapII::const_iterator::operator!=(const MapII::const_iterator&) const;
 // @0x14027efc0
-bool FUN_14027efc0(Unk_It* a, Unk_It* b) { return !FUN_14027ee60(a, b); }
+template bool VItem::const_iterator::operator!=(const VItem::const_iterator&) const;
 // @0x14027f000
-bool FUN_14027f000(Unk_It* a, Unk_It* b) { return !FUN_14027eeb0(a, b); }
+template bool VIng::const_iterator::operator!=(const VIng::const_iterator&) const;
 
 // ATL::CAtlArray::operator[] with the E_INVALIDARG bounds check
 struct Unk_E16 { i64 a, b; };

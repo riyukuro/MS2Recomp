@@ -598,11 +598,11 @@ class ClonePC   // C3: member view for the former free stand-ins
 public:
     static void FUN_141087400(bool);
 };
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1411eac40(bool);
-};
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
+//
+//
+//
+//
 extern bool DAT_143ae9750;
 #include "ms2/client/ms2/uicommunitypopup.h"
 #include "ms2/client/ms2/uiguideeventarrow.h"

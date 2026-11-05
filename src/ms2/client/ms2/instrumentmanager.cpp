@@ -38,6 +38,7 @@
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IURemoteVoice@CInstrumentManager@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIURemoteVoice@CInstrumentManager@@@1@PEAU?$_Tree_node@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAX@1@@Z 0x140d0f2e0
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0bb80
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IURemoteVoice@CInstrumentManager@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@4@$0A@@std@@@std@@IEBAAEBIAEBU?$pair@$$CBIURemoteVoice@CInstrumentManager@@@2@@Z 0x140d17c30
+// MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x140d0c990 ; look-alike: the exe caller std::distance<...pair<const unsigned,int>...> 0x140d11130 is the same map
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\instrumentmanager.cpp"
@@ -1561,7 +1562,6 @@ unsigned Unk_WmInstrumentMgr::FUN_140d08660(int channel, int program, int percus
 // MS2-PIN: ?FUN_140d08660@Unk_MeratSound@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
 
 int& FUN_140d115e0(int& r);  // this unit's identity forward copy for make_pair 0x140d117c0's second argument
-
 // The pair ctor make_pair 0x140d117c0 calls: the first value through forward<unsigned int&> 0x140162e50, the second
 // through 0x140d115e0 (the toolchain's pair<int,int>(int&, int&) is the shared 0x1404d9610).
 // @0x140d0b250

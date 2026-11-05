@@ -82,7 +82,7 @@ class TiXmlElement;
 //
 //
 //
-class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
+//
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
@@ -670,7 +670,7 @@ void FUN_140857f20(CStringA path)
 // @0x140858440
 void FUN_140858440(CStringA path)
 {
-    Unk_1401b4ec0 lock(s_lock, 1);
+    Unk_CriticalSectionLock lock(s_lock, 1);
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
         return;

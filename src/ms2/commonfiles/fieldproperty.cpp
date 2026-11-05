@@ -21,7 +21,7 @@ COutputStream & FUN_14070f9e0(COutputStream &, __int64);  // C3: the definition'
 COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's signature
 // (0x1406c3700 = Unk_Rgb3b::Unk_Rgb3b(), the default ctor of the member colours)
 COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
-void FUN_1406c38b0(Unk_PktOut*, Unk_Rgb3b*);            // write rgb
+COutputStream& operator<<(COutputStream& out, const Unk_Rgb3b& kColor);   // C3: write rgb (was the FUN_1406c38b0 stand-in)
 class Unk_OSInput   // C3: member view for the former free stand-ins
 {
 public:
@@ -32,7 +32,7 @@ public:
     class Unk_OSInput& Read9(float&);
     class Unk_OSInput& Read11(CStringW&);
 };
-void FUN_1406c3850(Unk_PktStream*, Unk_Rgb3b*);         // read rgb
+class CInputStream; CInputStream& operator>>(CInputStream& in, Unk_Rgb3b& kColor);   // C3: read rgb (was the FUN_1406c3850 stand-in)
 
 // @0x140380840
 FieldProperty::FieldProperty() {}
@@ -267,7 +267,7 @@ FieldPropertyAmbientLight::FieldPropertyAmbientLight(const Unk_Rgb3b& color, boo
 void FieldPropertyAmbientLight::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_1406c38b0(out, &m_color);
+    *(COutputStream *)out << m_color;
     FUN_14070f820(*(COutputStream *)out, m_bFlag);
     FUN_14070fa60(*(COutputStream *)out, m_fValue);
 }
@@ -276,7 +276,7 @@ void FieldPropertyAmbientLight::vfunc_1(Unk_PktOut* out)
 void FieldPropertyAmbientLight::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_1406c3850(&in->m_stream, &m_color);
+    *(CInputStream *)(&in->m_stream) >> m_color;
     ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_bFlag));
     ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_fValue));
 }
@@ -306,8 +306,8 @@ FieldPropertyDirectionalLight::FieldPropertyDirectionalLight(const Unk_Rgb3b& c1
 void FieldPropertyDirectionalLight::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_1406c38b0(out, &m_color1);
-    FUN_1406c38b0(out, &m_color2);
+    *(COutputStream *)out << m_color1;
+    *(COutputStream *)out << m_color2;
     FUN_14070f820(*(COutputStream *)out, m_bFlag);
     FUN_14070fa60(*(COutputStream *)out, m_fValue);
 }
@@ -316,8 +316,8 @@ void FieldPropertyDirectionalLight::vfunc_1(Unk_PktOut* out)
 void FieldPropertyDirectionalLight::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_1406c3850(&in->m_stream, &m_color1);
-    FUN_1406c3850(&in->m_stream, &m_color2);
+    *(CInputStream *)(&in->m_stream) >> m_color1;
+    *(CInputStream *)(&in->m_stream) >> m_color2;
     ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read0(*(bool*)((unsigned char*)&m_bFlag));
     ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read9(*(float*)(&m_fValue));
 }

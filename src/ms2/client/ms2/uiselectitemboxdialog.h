@@ -50,7 +50,7 @@ public:
     void FUN_140f9a700();                                               // refresh the slots, counters and the ok label
 
     // C3: FUN_140e8d030 (bind the tile list) is UISelectSuperWorldChatDialog's (uisidepopuptalk.h), called through a view in the .cpp
-    MS2Ptr<ASTextField> FUN_140e48d80(const CString& strName, MS2Ptr<ASTextField>* pOut);
+    // 0x140e48d80 = UISwfEntity::GetChildInto<ASTextField> (uiswfentity.h)
 
 protected:
     MS2_LAYOUT_FRIEND;

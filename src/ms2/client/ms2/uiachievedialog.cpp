@@ -139,8 +139,8 @@ extern int DAT_143ab2914;                                       // the GM level
 
 // the trophies updated by the server (refreshed per frame) and the claim sound
 ATL::CAtlMap<unsigned int, int> DAT_143af0f30;
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-Unk_Handle1401cd100 DAT_143af0fc8(0);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* h); void* m_p; };     // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
+Unk_BuddyHandle DAT_143af0fc8(0);
 static CString kTrophyRewardGet("system_Trophy_Reward_Get");
 
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600

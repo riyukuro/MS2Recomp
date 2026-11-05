@@ -5,9 +5,9 @@
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@6B@ 0x142fbefc0
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142fbefe8
 // MS2-PIN: ??1TMailAdBillDataParam@@UEAA@XZ 0x1419ea450
-// MS2-PIN: ?IsNull@?$Unk_MailPtr@VCMailInfo@@@@QEBA_NXZ 0x1419ea470
-// MS2-PIN: ?Maximum@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eaf40
-// MS2-PIN: ?Predecessor@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eb2d0
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCMailInfo@@@@QEBA_NXZ 0x1419ea470
+// MS2-PIN: ?Maximum@?$CRBTree@_JV?$MS2Ptr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eaf40
+// MS2-PIN: ?Predecessor@?$CRBTree@_JV?$MS2Ptr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eb2d0
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ebc60
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ebc00
 //
@@ -157,9 +157,9 @@ __int64 GetServerTime();                                            // the serve
 
 class PCBase;
 
-// The wedding manager (WeddingManager, placeholder/weddingmanager.h) as this unit calls it: ReadTicketMail with the
-// mail pointer type of CUserMail.
-class Unk_MlWedding { public: void FUN_141b873c0(Unk_MailPtr<CMailInfo> spMail, AScript* pOut); };
+// C3: the wedding ticket mail goes to WeddingManager::ReadTicketMail(MS2Ptr<CMailInfo>, AScript*)
+// (placeholder/weddingmanager.h, 0x141b873c0); CUserMail::MailPtr is MS2Ptr<CMailInfo>.
+//
 
 // ---- UIMailSendDialog's views ----
 
@@ -199,7 +199,7 @@ int FUN_1419eadd0(CMailInfo* pMail)
 // The text translator of the system mails (sender / title keys -> text).
 CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
 
-// @0x1419ea470: Unk_MailPtr<CMailInfo>::IsNull (usermail.h)
+// @0x1419ea470: MS2Ptr<CMailInfo>::IsNull (usermail.h)
 
 // The meso of the mail (the plain sum while unclaimed plus the meso benefit).
 // @0x1419e9160
@@ -508,7 +508,7 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 if (nKind == 0x70)
                 {
                     ASObj wedding(2);
-                    reinterpret_cast<Unk_MlWedding*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b873c0(CUserMail::MailPtr(spMail), &wedding);
+                    TSingleton<WeddingManager>::GetInstance()->ReadTicketMail(CUserMail::MailPtr(spMail), &wedding);
                     info.FUN_1409eb270("wedding", wedding);
                 }
                 info.FUN_1407cbb20("sender", CStringW(strSender));
@@ -663,7 +663,7 @@ __int64 UIMailListDialog::FUN_1419e6c30()
 MS2_REPLACE_METHOD(0x1419E6C30, UIMailListDialog, FUN_1419e6c30, 234, 0x978463E6); // FUN_1419e6c30
 
 // @0x1419e6ec0
-int UIMailListDialog::FUN_1419e6ec0(Unk_MailPtr<CMailInfo> spMail)
+int UIMailListDialog::FUN_1419e6ec0(MS2Ptr<CMailInfo> spMail)
 {
     if (FUN_1419e7fd0() == 1)
     {
@@ -727,7 +727,7 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
 MS2_REPLACE_METHOD(0x1419E70C0, UIMailListDialog, FUN_1419e70c0, 395, 0xB40CDF74); // FUN_1419e70c0
 
 // @0x1419e7260
-CStringA UIMailListDialog::FUN_1419e7260(Unk_MailPtr<CMailInfo> spMail)
+CStringA UIMailListDialog::FUN_1419e7260(MS2Ptr<CMailInfo> spMail)
 {
     if (FUN_1419ead90(spMail.operator->()) != 0)
     {
@@ -884,7 +884,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             FUN_1419e5190();
             FUN_1419e73f0();
             m_mapChecked.RemoveAll();
-            if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+            if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
                 spCheck->FUN_1422ce090(0);
         }
     }
@@ -896,7 +896,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             FUN_1419e5190();
             FUN_1419e73f0();
             m_mapChecked.RemoveAll();
-            if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+            if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
                 spCheck->FUN_1422ce090(0);
         }
     }
@@ -1256,7 +1256,7 @@ void UIMailListDialog::FUN_1419e5190()
         spPrev->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage - 1));
     if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_next"))
         spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
-    if (MS2Ptr<ASCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+    if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
         spCheck->FUN_1422ce090(0);
 }
 MS2_REPLACE_METHOD(0x1419E5190, UIMailListDialog, FUN_1419e5190, 1889, 0x75FE8B86); // FUN_1419e5190

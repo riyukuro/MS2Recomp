@@ -112,14 +112,14 @@ MS2_CHECK_SIZE(Unk_FileChangeFunctor, 8);
 //
 //
 
-class Unk_1401b4ec0 {
-public:
-    Unk_1401b4ec0(CLockCriticalSection&, int);
-    ~Unk_1401b4ec0();
-private:
-    void* m_lock;
-};
-MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
+//
+//
+//
+//
+//
+//
+//
+//
 
 typedef ATL::CRBMap<CString, FILETIME> Unk_FileTimeMap;
 
@@ -293,7 +293,7 @@ void FUN_1401d1400(CString strPath)
 unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime)
 {
     FUN_1401d3700(strPath);
-    Unk_1401b4ec0 kGuard(g_cacheLock, 1);
+    Unk_CriticalSectionLock kGuard(g_cacheLock, 1);
     return s_map.Lookup(strPath, *pTime);
 }
 

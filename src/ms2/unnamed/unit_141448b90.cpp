@@ -42,8 +42,8 @@ public:
 class NiDX9Renderer { public: static const NiRTTI ms_RTTI; NiDX9RenderState* GetRenderState() const; };      // C3: was extern char DAT_143d6eb58
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class MS2SceneGraphService; struct Unk_AeServiceCell;
-MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pFramework);         // the scene graph service
+class MS2SceneGraphService;
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 
 // The engine's light-service functor that re-evaluates which lights affect each scene graph (Gamebryo LightService.cpp, ctor
 // 0x1409a79c0, dtor 0x1409a7d30; the engine copy is not linked into the hook DLL).
@@ -162,7 +162,7 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
     float fB = pData->PopFloat();
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFogColor(NiColor(fR / 255.0f, fG / 255.0f, fB / 255.0f));
-    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(egf::g_bapiContext.GetSystemServiceAs<MS2SceneGraphService>());
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);
@@ -189,7 +189,7 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
     reinterpret_cast<Unk_AeFogState*>(pRenderer->GetRenderState())->FUN_1409a9bf0(fDensity);
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetDepth(fFogValue);
-    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(egf::g_bapiContext.GetSystemServiceAs<MS2SceneGraphService>());
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);
@@ -201,7 +201,7 @@ void UILightDialog::FUN_141449190(bool bEnable)
 {
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFog(bEnable);
-    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(egf::g_bapiContext.GetSystemServiceAs<MS2SceneGraphService>());
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);

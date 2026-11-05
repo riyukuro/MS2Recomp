@@ -35,13 +35,13 @@
 #include "hook/ms2hook.h"
 
 // The scoped lock of a CLockCriticalSection (the 0x140203610 copy of the ctor, dtor 0x1401b5120).
-struct Unk_PetLock
-{
-    Unk_PetLock(CLockCriticalSection& lock, int acquire);     // 0x140203610
-    ~Unk_PetLock();                                           // 0x1401b5120
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PetLock, 8);
+#include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
+//
+//
+//
+//
+//
+//
 
 // @0x1408d6b30
 CUserEventManager::CUserEventManager()
@@ -102,21 +102,21 @@ void CUserEventManager::GetAll38(ATL::CAtlArray<MS2Ptr<Context38> >& rOut)
 // @0x1408d71d0
 void CUserEventManager::AddB0(MS2Ptr<ContextB0> spContext)
 {
-    Unk_PetLock guard(m_lockB0, 1);
+    Unk_CriticalSectionLock guard(&m_lockB0, 1);
     m_mapB0.SetAt(spContext->m_key, spContext);
 }
 
 // @0x1408d7250
 void CUserEventManager::RemoveB0(int nKey)
 {
-    Unk_PetLock guard(m_lockB0, 1);
+    Unk_CriticalSectionLock guard(&m_lockB0, 1);
     m_mapB0.RemoveKey(nKey);
 }
 
 // @0x1408d72b0
 void CUserEventManager::GetAllB0(ATL::CAtlArray<MS2Ptr<ContextB0> >& rOut)
 {
-    Unk_PetLock guard(m_lockB0, 1);
+    Unk_CriticalSectionLock guard(&m_lockB0, 1);
     for (POSITION pos = m_mapB0.GetStartPosition(); pos != 0; m_mapB0.GetNext(pos))
         rOut.Add(m_mapB0.GetValueAt(pos));
 }
@@ -124,21 +124,21 @@ void CUserEventManager::GetAllB0(ATL::CAtlArray<MS2Ptr<ContextB0> >& rOut)
 // @0x1408d7360
 void CUserEventManager::AddMentoring(int nKey, MS2Ptr<ContextMentoring> spContext)
 {
-    Unk_PetLock guard(m_lockMentoring, 1);
+    Unk_CriticalSectionLock guard(&m_lockMentoring, 1);
     m_mentoring.SetAt(nKey, spContext);
 }
 
 // @0x1408d73e0
 void CUserEventManager::RemoveMentoring(int nKey)
 {
-    Unk_PetLock guard(m_lockMentoring, 1);
+    Unk_CriticalSectionLock guard(&m_lockMentoring, 1);
     m_mentoring.RemoveKey(nKey);
 }
 
 // @0x1408d7440
 void CUserEventManager::GetAllMentoring(ATL::CAtlArray<MS2Ptr<ContextMentoring> >& rOut)
 {
-    Unk_PetLock guard(m_lockMentoring, 1);
+    Unk_CriticalSectionLock guard(&m_lockMentoring, 1);
     for (POSITION pos = m_mentoring.GetStartPosition(); pos != 0; m_mentoring.GetNext(pos))
         rOut.Add(m_mentoring.GetValueAt(pos));
 }
@@ -146,21 +146,21 @@ void CUserEventManager::GetAllMentoring(ATL::CAtlArray<MS2Ptr<ContextMentoring> 
 // @0x1408d74f0
 void CUserEventManager::Add1A0(int nKey, MS2Ptr<Context1A0> spContext)
 {
-    Unk_PetLock guard(m_lock1A0, 1);
+    Unk_CriticalSectionLock guard(&m_lock1A0, 1);
     m_map1A0.SetAt(nKey, spContext);
 }
 
 // @0x1408d7570
 void CUserEventManager::Remove1A0(int nKey)
 {
-    Unk_PetLock guard(m_lock1A0, 1);
+    Unk_CriticalSectionLock guard(&m_lock1A0, 1);
     m_map1A0.RemoveKey(nKey);
 }
 
 // @0x1408d75d0
 void CUserEventManager::GetAll1A0(ATL::CAtlArray<MS2Ptr<Context1A0> >& rOut)
 {
-    Unk_PetLock guard(m_lock1A0, 1);
+    Unk_CriticalSectionLock guard(&m_lock1A0, 1);
     for (POSITION pos = m_map1A0.GetStartPosition(); pos != 0; m_map1A0.GetNext(pos))
         rOut.Add(m_map1A0.GetValueAt(pos));
 }
@@ -227,35 +227,35 @@ MS2Ptr<CUserEventManager::Context258> CUserEventManager::Get258()
 // @0x1408d78c0
 void CUserEventManager::Set298(MS2Ptr<Context298> spContext)
 {
-    Unk_PetLock guard(m_lock298, 1);
+    Unk_CriticalSectionLock guard(&m_lock298, 1);
     m_ptr298 = spContext;
 }
 
 // @0x1408d7930
 MS2Ptr<CUserEventManager::Context298> CUserEventManager::Get298()
 {
-    Unk_PetLock guard(m_lock298, 1);
+    Unk_CriticalSectionLock guard(&m_lock298, 1);
     return m_ptr298;
 }
 
 // @0x1408d79b0
 void CUserEventManager::Add2D8(int nKey, MS2Ptr<Context2D8> spContext)
 {
-    Unk_PetLock guard(m_lock2D8, 1);
+    Unk_CriticalSectionLock guard(&m_lock2D8, 1);
     m_map2D8.SetAt(nKey, spContext);
 }
 
 // @0x1408d7a30
 void CUserEventManager::Remove2D8(int nKey)
 {
-    Unk_PetLock guard(m_lock2D8, 1);
+    Unk_CriticalSectionLock guard(&m_lock2D8, 1);
     m_map2D8.RemoveKey(nKey);
 }
 
 // @0x1408d7a90
 void CUserEventManager::GetAll2D8(ATL::CAtlArray<MS2Ptr<Context2D8> >& rOut)
 {
-    Unk_PetLock guard(m_lock2D8, 1);
+    Unk_CriticalSectionLock guard(&m_lock2D8, 1);
     for (POSITION pos = m_map2D8.GetStartPosition(); pos != 0; m_map2D8.GetNext(pos))
         rOut.Add(m_map2D8.GetValueAt(pos));
 }
@@ -263,21 +263,21 @@ void CUserEventManager::GetAll2D8(ATL::CAtlArray<MS2Ptr<Context2D8> >& rOut)
 // @0x1408d7b40
 void CUserEventManager::Add350(MS2Ptr<Context350> spContext)
 {
-    Unk_PetLock guard(m_lock350, 1);
+    Unk_CriticalSectionLock guard(&m_lock350, 1);
     m_map350.SetAt(spContext->m_key, spContext);
 }
 
 // @0x1408d7bc0
 void CUserEventManager::Remove350(int nKey)
 {
-    Unk_PetLock guard(m_lock350, 1);
+    Unk_CriticalSectionLock guard(&m_lock350, 1);
     m_map350.RemoveKey(nKey);
 }
 
 // @0x1408d7c20
 void CUserEventManager::GetAll350(ATL::CAtlArray<MS2Ptr<Context350> >& rOut)
 {
-    Unk_PetLock guard(m_lock350, 1);
+    Unk_CriticalSectionLock guard(&m_lock350, 1);
     for (POSITION pos = m_map350.GetStartPosition(); pos != 0; m_map350.GetNext(pos))
         rOut.Add(m_map350.GetValueAt(pos));
 }
@@ -285,21 +285,21 @@ void CUserEventManager::GetAll350(ATL::CAtlArray<MS2Ptr<Context350> >& rOut)
 // @0x1408d7cd0
 void CUserEventManager::AddDTReward(MS2Ptr<CommonUserEvent::DTRewardEventContext> spContext)
 {
-    Unk_PetLock guard(m_lockDTReward, 1);
+    Unk_CriticalSectionLock guard(&m_lockDTReward, 1);
     m_dtRewards.SetAt(spContext->m_id, spContext);
 }
 
 // @0x1408d7d50
 void CUserEventManager::RemoveDTReward(int nKey)
 {
-    Unk_PetLock guard(m_lockDTReward, 1);
+    Unk_CriticalSectionLock guard(&m_lockDTReward, 1);
     m_dtRewards.RemoveKey(nKey);
 }
 
 // @0x1408d7db0
 void CUserEventManager::GetAllDTReward(ATL::CAtlArray<MS2Ptr<CommonUserEvent::DTRewardEventContext> >& rOut)
 {
-    Unk_PetLock guard(m_lockDTReward, 1);
+    Unk_CriticalSectionLock guard(&m_lockDTReward, 1);
     for (POSITION pos = m_dtRewards.GetStartPosition(); pos != 0; m_dtRewards.GetNext(pos))
         rOut.Add(m_dtRewards.GetValueAt(pos));
 }
@@ -307,7 +307,7 @@ void CUserEventManager::GetAllDTReward(ATL::CAtlArray<MS2Ptr<CommonUserEvent::DT
 // @0x1408d7e60
 int CUserEventManager::HasDTReward(unsigned short nLevel)
 {
-    Unk_PetLock guard(m_lockDTReward, 1);
+    Unk_CriticalSectionLock guard(&m_lockDTReward, 1);
     for (POSITION pos = m_dtRewards.GetStartPosition(); pos != 0; m_dtRewards.GetNext(pos))
     {
         MS2Ptr<CommonUserEvent::DTRewardEventContext>& rContext = m_dtRewards.GetValueAt(pos);
@@ -320,20 +320,20 @@ int CUserEventManager::HasDTReward(unsigned short nLevel)
 // @0x1408d7f40
 void CUserEventManager::Set3C8(MS2Ptr<Context3C8> spContext)
 {
-    Unk_PetLock guard(m_lock3C8, 1);
+    Unk_CriticalSectionLock guard(&m_lock3C8, 1);
     m_ptr3C8 = spContext;
 }
 
 // @0x1408d7fb0
 void CUserEventManager::Reset3C8()
 {
-    Unk_PetLock guard(m_lock3C8, 1);
+    Unk_CriticalSectionLock guard(&m_lock3C8, 1);
     m_ptr3C8 = 0;
 }
 
 // @0x1408d8010
 MS2Ptr<CUserEventManager::Context3C8> CUserEventManager::Get3C8()
 {
-    Unk_PetLock guard(m_lock3C8, 1);
+    Unk_CriticalSectionLock guard(&m_lock3C8, 1);
     return m_ptr3C8;
 }

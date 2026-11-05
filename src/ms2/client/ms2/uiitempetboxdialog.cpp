@@ -708,7 +708,7 @@ void UIItemPetBoxDialog::FUN_140e52110()
 }
 
 // @0x140e52670
-MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FindCheckBox(const CString& name)
+template <> MS2Ptr<ASCheckBox> UISwfEntity::GetChild<ASCheckBox>(const CString& name)
 {
     if (m_30 == 0)
         return MS2Ptr<ASCheckBox>(0);
@@ -718,7 +718,7 @@ MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FindCheckBox(const CString& name)
 // @0x140e52700
 MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FUN_140e52700(const CString& name, MS2Ptr<ASCheckBox>& member)
 {
-    member = FindCheckBox(name);
+    member = GetChild<ASCheckBox>(name);
     return member;
 }
 
@@ -744,6 +744,6 @@ MS2_REPLACE_METHOD(0x140E4FC50, UIItemPetBoxDialog, FUN_140e4fc50, 50, 0x3FD9DD9
 MS2_REPLACE_METHOD(0x140E4FC90, UIItemPetBoxDialog, IsSpecialItem, 187, 0x768844F2);
 MS2_REPLACE_METHOD(0x140E519B0, UIItemPetBoxDialog, FUN_140e519b0, 734, 0x3387E636);
 MS2_REPLACE_METHOD(0x140E51CA0, UIItemPetBoxDialog, FUN_140e51ca0, 401, 0x3F87147F);
-MS2_REPLACE_METHOD(0x140E52670, UIItemPetBoxDialog, FindCheckBox, 139, 0x2C5278D7);
+MS2_REPLACE_METHOD(0x140E52670, UISwfEntity, GetChild<ASCheckBox>, 139, 0x2C5278D7);
 MS2_REPLACE_METHOD(0x140E52700, UIItemPetBoxDialog, FUN_140e52700, 138, 0x48954D03);
 MS2_REPLACE_METHOD_VIA(0x140E4F610, UIItemPetBoxDialog, IUIAvatarEventListener, vfunc_o178_1, 178, 0xCEE1D1D9);

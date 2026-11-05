@@ -70,12 +70,12 @@ static egf::EntityID s_nullEntityId(0ull);
 
 class Unk_GameClock;
 
-struct Unk_EntityAppFramework                   // the framework
-{
-    efd::ServiceManagerPtr manager;
-};
-namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
+//
+//
+//
+//
+#define DAT_143b059e8 egf::g_bapiContext
 
 // The service 0x0610000c: owns the running CAlphaAnimation objects.
 class Unk_AlphaService : public efd::ISystemService
@@ -197,8 +197,8 @@ void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce);
 void FUN_14098c120(NiAVObject* pkObject);
 bool FUN_14098c620(NiAVObject* pkObject);
 bool FUN_14098c680(NiProperty* pkProperty);
-Unk_AlphaService* FUN_14098c540(Unk_EntityAppFramework* pFramework);
-Unk_HwService* FUN_14098c5b0(Unk_EntityAppFramework* pFramework);
+//
+//
 void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue);
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -287,7 +287,7 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<NiPoint2>& keys, egf::En
     pCtrl->Start(-NI_INFINITY);
     pCtrl->SetPhase(0.0f);
 
-    Unk_AlphaService* pService = FUN_14098c540(&DAT_143b059e8);
+    Unk_AlphaService* pService = egf::g_bapiContext.GetSystemServiceAs<Unk_AlphaService>();
     if (pService)
         reinterpret_cast<CEffectService*>(pService)->AddTracked(reinterpret_cast<Unk_EsTracked*>(pAnim));
     pkObject->Update(fNow, true);
@@ -462,15 +462,15 @@ void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue)
 }
 
 // @0x14098c540
-Unk_AlphaService* FUN_14098c540(Unk_EntityAppFramework* pFramework)
+template <> Unk_AlphaService* egf::ScriptContext::GetSystemServiceAs<Unk_AlphaService>() const
 {
-    return pFramework->manager->GetSystemServiceAs<Unk_AlphaService>();
+    return m_spManager->GetSystemServiceAs<Unk_AlphaService>();
 }
 
 // @0x14098c5b0
-Unk_HwService* FUN_14098c5b0(Unk_EntityAppFramework* pFramework)
+template <> Unk_HwService* egf::ScriptContext::GetSystemServiceAs<Unk_HwService>() const
 {
-    return pFramework->manager->GetSystemServiceAs<Unk_HwService>();
+    return m_spManager->GetSystemServiceAs<Unk_HwService>();
 }
 
 // Applies fAlpha to the material/alpha properties of the object and its descendants (bForce also touches culled nodes).
@@ -572,7 +572,7 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
     efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(idEntity));
     if (spEntity)
     {
-        efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
+        efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
         if (spService)
         {
             Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
@@ -604,7 +604,7 @@ CEntityShower::~CEntityShower()
     if (!m_bWasShown)
     {
         efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
-        efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
+        efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
         if (spService && spEntity)
         {
             Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
@@ -632,7 +632,7 @@ bool CEntityShower::vfunc_2()
         efd::SmartPointer<egf::Entity> spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_idEntity));
         if (spEntity)
         {
-            efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
+            efd::SmartPointer<Unk_HwService> spService(egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>());
             if (spService)
             {
                 m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());

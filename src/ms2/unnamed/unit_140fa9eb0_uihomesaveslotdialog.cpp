@@ -56,9 +56,9 @@ static Unk_BuddyHandle s_pointer2(NULL);
 // ---- unit-local views of exe types ----
 
 // The cube map information service (class id 0x06100017), which also keeps the home / blueprint save slots.
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
+#define DAT_143b059e8 egf::g_bapiContext
 extern int DAT_143ab2914;
 
 // One saved slot: id, name and the time it was saved (0 = empty). The ugcdef.h class, declared here as
@@ -87,7 +87,7 @@ MS2_CHECK_OFFSET(UGCMapBlueprintInfo, m_nTime, 0x28);
 // C3: Unk_Service6100017 was CubeMapInformationService (class id 0x06100017, the view below)
 //
 //
-class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+//
 // The cube map service members reached through the same service pointer.
 class CubeMapInformationService : public efd::ISystemService {
 public:
@@ -186,7 +186,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             if (spService)
             {
                 int nSlot = data.PopInt();
@@ -202,7 +202,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
             if (spService)
             {
                 int nSlot = data.PopInt();
@@ -222,7 +222,7 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
 {
     if (!m_30)
         return;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
     {
         ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d4920();
@@ -289,7 +289,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
@@ -324,7 +324,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
@@ -372,7 +372,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
@@ -407,7 +407,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData&
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);

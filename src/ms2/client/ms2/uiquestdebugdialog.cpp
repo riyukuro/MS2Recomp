@@ -420,7 +420,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     int maxLevel = 0;
     if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchLevelMax")) maxLevel = _wtoi(input->GetText());
     unsigned int standard = 0;
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
     // The count formatter is a separate unrecovered COMDAT; its call and two array arguments are retained below.
     if (MS2Ptr<ASTextField> text = GetChild<ASTextField>("m_count")) {
         ATL::CAtlArray<MS2Ptr<CQuestData>> available, completed;
@@ -434,10 +434,10 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         text->SetTextW(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkProgress")) progress = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkComplete")) complete = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkExceptLocking")) exceptLocking = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkProgress")) progress = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkComplete")) complete = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkExceptLocking")) exceptLocking = check->FUN_1422ce0e0();
     CStringW filter = FUN_141a966a0(0);
     std::vector<MS2Ptr<CQuestData>> quests;
     if (chapter) {
@@ -512,7 +512,7 @@ MS2_REPLACE_METHOD(0x141A95310, UIQuestDebugDialog, FUN_141a95310, 4998, 0x217DF
 CStringW UIQuestDebugDialog::FUN_141a966a0(unsigned int mode)
 {
     unsigned int checked = 0;
-    if (MS2Ptr<ASCheckBox> check = FUN_140e52670("m_checkFilter")) checked = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkFilter")) checked = check->FUN_1422ce0e0();
     CStringW text;
     if (checked == mode) {
         if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchInput")) text = input->GetText();

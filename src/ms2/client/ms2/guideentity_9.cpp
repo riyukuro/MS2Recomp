@@ -74,7 +74,7 @@ void* FUN_141395500(void* pNode);
 class Unk_GeMgr
 {
 public:
-    bool FUN_14138c210(int nTrigger, const Unk_GeRange& range);
+    bool FUN_14138c210(int nTrigger, const Unk_MergeRange& range);
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 

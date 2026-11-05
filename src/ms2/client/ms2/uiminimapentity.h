@@ -300,7 +300,7 @@ public:
     void FUN_141a3b6f0();                                       // BuildShowAttributes
     bool FUN_141a3bda0(ASObj& data, ProxyPtr spProxy);          // BuildPlayerData
     void FUN_141a3c150();                                       // BuildUIData
-    MS2Ptr<ASGameEntity> FUN_140ede180(const CString& strName);  // FindComponent (ICF'd GetChild instance)
+    // C3: FUN_140ede180 = Unk_ReportDialogAccess::GetChild<ASGameEntity> (the .cpp calls it through a view)
     void FUN_141a3ced0();                                       // BuildField
     void FUN_141a3d080(ProxyPtr spProxy);                       // AddProxy
     void FUN_141a3dbb0();                                       // BuildTaxi

@@ -238,7 +238,7 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 int FUN_140930190();
-class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 
@@ -391,7 +391,7 @@ int FUN_1418fd330(__int64 nOwner)
         return 0;
     }
     int nValue = 0;
-    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    efd::SmartPointer<CubeMapInformationService> grid(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if ((grid.operator CubeMapInformationService*() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410c35c0())
     {
         nValue = 1;

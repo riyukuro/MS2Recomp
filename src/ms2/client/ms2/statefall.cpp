@@ -39,7 +39,7 @@
 
 // The physics body of the actor: sets the velocity.
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 // The config constants singleton: the air control scale at +0x48e8.
 class Unk_FallScale { public: };
 class Unk_FallConsts
@@ -152,7 +152,7 @@ void StateFall::vfunc_3(double fTime)
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();
-        efd::Point3 kVel = kDir * (fSpeed * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_FallConsts*)FUN_1401d3200())->m_scale)->FUN_140298f40()));
+        efd::Point3 kVel = kDir * (fSpeed * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_FallConsts*)FUN_1401d3200())->m_scale)->Get());
         reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     }
     efd::Point3 kMove = efd::Point3::ZERO;

@@ -475,7 +475,7 @@ void CGameOptionCamera::vfunc_7()
     }
 }
 
-struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 // A float table value of the client configuration (FUN_1401d3200).
 class Unk_GoCfgValue
 {
@@ -511,9 +511,9 @@ void CGameOptionCamera::vfunc_10()
         float fScale = WorldService::GetInstance()->FUN_141bcfc50();
         FUN_140ad4ff0(TSingleton<CameraMgr>::GetInstance(), fScale);
         float fStep = (float)m_state.m_n04 / 100.0f;
-        float f1 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1a80)->FUN_140298f40()) * fStep;
-        float f2 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1ad8)->FUN_140298f40()) * fStep;
-        float f3 = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1b30)->FUN_140298f40()) * fStep;
+        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1a80)->Get() * fStep;
+        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1ad8)->Get() * fStep;
+        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1b30)->Get() * fStep;
         TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(f1, f2, f3);
         CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
         if (pMode != 0)

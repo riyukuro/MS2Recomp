@@ -277,7 +277,7 @@ public:
     unsigned int CalcCraftReceipeRequireItemCount(unsigned int a, unsigned int b, unsigned int c);
 };
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+#include "ms2/client/ms2/equipment.h"   // CEquipment (was a local member view)
 int FUN_1406198a0(int n, float f);
 __int64 FUN_1404820b0(unsigned n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);

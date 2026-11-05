@@ -137,7 +137,7 @@ public:
     char m_pad_10[0x40];
     Vector3 m_value;                                        // +0x50
 };
-struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Value<CString>::get
+// C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // Unit helpers declared elsewhere.
@@ -235,7 +235,7 @@ void CExpEffectInfo::InitConstants()
     s_ptSpreadMin = kMin;
     Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2380)->FUN_141273d00();
     s_ptSpreadMax = kMax;
-    s_strEffDummy = reinterpret_cast<Unk_StringOptionEntry*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->FUN_140298f80();
+    s_strEffDummy = *reinterpret_cast<Common::Constants::Value<CString>*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->Get();
     s_nConstInit = 1;
 }
 #endif

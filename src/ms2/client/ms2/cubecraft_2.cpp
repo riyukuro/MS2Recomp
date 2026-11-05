@@ -75,7 +75,7 @@ public:
 MS2_CHECK_OFFSET(Unk_C2Config, m_strGuideInventory, 0x1f8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
+#include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 
 // A 24-byte reason / filter record (constructed from 0) handed to the cube service checks.
@@ -96,7 +96,7 @@ public:
     // C3: FUN_1410cdf60 (the column step is free) is CubeMapInformationService's own
 //
 class Unk_MyPCHousingSvc { public: void FUN_1410d6590(int nMessage); };   // show the build notice (calls cast the cube service)
-CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
+//
 
 // The client constants table: three consecutive 0x58-byte item-id constants at +0x39f0 (the guide effect items).
 class Unk_C2ConstB { public: char m_pad[0x58]; };
@@ -341,7 +341,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
 {
     if (bEnable)
     {
-        m_svc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
+        m_svc = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
         m_tPulse.FUN_1408687f0();
         m_tSlide.FUN_1408687f0();
         m_bFirstMove = false;
@@ -1194,7 +1194,7 @@ void Unk_PCCubeCraft::FUN_1410ac1c0()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, 1);
-            efd::SmartPointer<CubeMapInformationService> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
+            efd::SmartPointer<CubeMapInformationService> spSvc = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
                 FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), 6.0f);
         }
@@ -1222,7 +1222,7 @@ void Unk_PCCubeCraft::FUN_1410ac380()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, -2);
-            efd::SmartPointer<CubeMapInformationService> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
+            efd::SmartPointer<CubeMapInformationService> spSvc = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
                 FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), -6.0f);
         }
