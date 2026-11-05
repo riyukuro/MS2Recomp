@@ -47,20 +47,20 @@
 template <class T> class TSingleton;
 class CameraMgr;
 template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // C3: 0x1409478c0, as camera.h declares it
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
-};
+// C3 #12: was a local TiXml view
+
+
+
+
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -109,8 +109,8 @@ Unk_ResourceMgr* FUN_140a0afd0();
 const NiRTTI CRibbonEffect::ms_RTTI("CRibbonEffect", &CEffect::ms_RTTI);        // @0x1400ff2b0
 static CString s_str143ae6a00("skill");                                          // @0x1400ff2e0
 static CString s_str143ae69f8("stun");                                           // @0x1400ff310
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143ae6a08(0);                                   // @0x1400ff340
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+static Unk_BuddyHandle s_dat_143ae6a08(0);                                   // @0x1400ff340
 #else
 const NiRTTI CRibbonEffect::ms_RTTI("CRibbonEffect", &CEffect::ms_RTTI);
 #endif
@@ -122,14 +122,14 @@ CRibbonEffectParam::CRibbonEffectParam()
 }
 
 // @0x141701410
-void CRibbonEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CRibbonEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "texturePath", m_strTexturePath);
     XmlGetAttr((class TiXmlElement*)(pNode), "nifPath", m_strNifPath);
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
     XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
-    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)

@@ -20,7 +20,7 @@
 #include "ms2/placeholder/citem.h"
 
 class ASMovieClip;
-class Unk_140acd6e0;
+class ASButton;
 class ASTileList;
 
 class UIItemTreasureMapDialog : public UIDialog
@@ -60,7 +60,7 @@ private:
     MS2Ptr<CItem> m_spTarget;                                        // +0x1c0 the picked map
     unsigned __int64 m_nTargetUid;                                   // +0x1d0 the map that is being appraised
     MS2Ptr<ASMovieClip> m_board;                                     // +0x1d8 "m_board"
-    MS2Ptr<Unk_140acd6e0> m_submit;                                  // +0x1e8 "m_submit"
+    MS2Ptr<ASButton> m_submit;                                  // +0x1e8 "m_submit"
     MS2Ptr<ASTileList> m_itemBag;                                     // +0x1f8 "m_itemBag"
 };
 MS2_CHECK_SIZE(UIItemTreasureMapDialog, 0x208);

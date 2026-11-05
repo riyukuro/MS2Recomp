@@ -237,11 +237,11 @@
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element.
-class Unk_140165cf0
-{
-public:
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);                     // FirstChildElement(name)
@@ -286,7 +286,7 @@ static int ParseAttachType(CString& strType)
 }
 
 // @0x14154e0e0
-static int FUN_14154e0e0(Unk_140165cf0* pNode, const char* pszName, int& nOut)
+static int FUN_14154e0e0(TiXmlElement* pNode, const char* pszName, int& nOut)
 {
     // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
     if (false)
@@ -359,7 +359,7 @@ CNifEffectParam::CNifEffectParam()
 }
 
 // @0x141548b90
-void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CNifEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     bool bUpdateTranslate = true, bUpdateRotation = true, bUpdateScale = true;
@@ -377,14 +377,14 @@ void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "offFadeOut", m_bOffFadeOut);
     XmlGetAttr((class TiXmlElement*)(pNode), "myReferCount", m_nMyReferCount);
     XmlGetAttr((class TiXmlElement*)(pNode), "otherReferCount", m_nOtherReferCount);
-    Unk_140165cf0* pTransform = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("transform");
+    TiXmlElement* pTransform = (TiXmlElement*)((Unk_XmlNode*)pNode)->FirstChild("transform");
     if (pTransform != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pTransform), "translate", *(efd::Point3*)&m_ptTranslate);
         XmlGetAttr((class TiXmlElement*)(pTransform), "rotation", *(efd::Point3*)&m_ptRotation);
         XmlGetAttr((class TiXmlElement*)(pTransform), "scale", m_fScale);
     }
-    Unk_140165cf0* pAttach = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("attachInfo");
+    TiXmlElement* pAttach = (TiXmlElement*)((Unk_XmlNode*)pNode)->FirstChild("attachInfo");
     if (pAttach != 0)
     {
         FUN_14154e0e0(pAttach, "attachType", m_nAttachType);
@@ -398,21 +398,21 @@ void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (bAttachToNode)
             m_nAttachType = 1;
     }
-    Unk_140165cf0* pUpdate = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("update");
+    TiXmlElement* pUpdate = (TiXmlElement*)((Unk_XmlNode*)pNode)->FirstChild("update");
     if (pUpdate != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bUpdateTranslate);
         XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bUpdateRotation);
         XmlGetAttr((class TiXmlElement*)(pUpdate), "scale", bUpdateScale);
     }
-    Unk_140165cf0* pApply = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("applyNodeTransform");
+    TiXmlElement* pApply = (TiXmlElement*)((Unk_XmlNode*)pNode)->FirstChild("applyNodeTransform");
     if (pApply != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pApply), "translate", bApplyTranslate);
         XmlGetAttr((class TiXmlElement*)(pApply), "rotation", bApplyRotation);
         XmlGetAttr((class TiXmlElement*)(pApply), "scale", bApplyScale);
     }
-    Unk_140165cf0* pLerp = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("lerp");
+    TiXmlElement* pLerp = (TiXmlElement*)((Unk_XmlNode*)pNode)->FirstChild("lerp");
     if (pLerp != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pLerp), "type", m_strLerpType);
@@ -584,14 +584,14 @@ inline void FUN_141550050(void* pNode, const char* pszPath)
 
 
 
-// Scene nodes of the effect system (see swoosheffectparam.cpp / lighteffectparam.cpp).
-class Unk_SeparateNode : public NiNode
-{
-public:
-    Unk_SeparateNode(unsigned char nBits);                          // 0x141751470
-    char m_pad_node[0x138 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
+#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+//
+//
+//
+//
+//
+//
+//
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_NodeQueue
@@ -1159,7 +1159,7 @@ void CNifEffect::FUN_14154c580()
 {
     if (!((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&m_spParam->m_bitsUpdate))->FUN_140afc5a0())
     {
-        NiPointer<Unk_SeparateNode> spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(m_spParam->m_bitsUpdate.m_bits);
+        NiPointer<Unk_SeparateNode> spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(m_spParam->m_bitsUpdate);
         spSep->AttachChild(static_cast<NiAVObject*>(m_spRoot.operator NiNode*()), false);
         m_spRoot.operator=((NiNode*)(spSep));
     }
@@ -1572,13 +1572,13 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/placeholder/coptimizer.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-    char const* Attribute(char const*, int*) const;
-};
+class TiXmlElement;
+// C3 #12: was a local TiXml view
+
+
+
+
+
 
 extern int DAT_143ae1f20;                                           // the render device is lost
 extern int DAT_1439ed00c;                                           // the caches are enabled
@@ -2203,7 +2203,7 @@ extern char DAT_142f2d1d0;
 extern char DAT_142f2d1d8;
 extern char DAT_142f2d1e8;
 extern NiFixedString DAT_143ae5178;                                          // the weight key
-Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);                 // root element
+TiXmlElement* DocRootElement(TiXmlDocument* pDoc);                 // root element
 void FUN_141047ac0(class NiObjectNET*, class NiFixedString const&, float);   // C3: was FUN_141047ac0
 void FUN_1415672e0(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
@@ -2252,26 +2252,26 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
     {
         pDoc = &it->second;
     }
-    Unk_140165cf0* pElement = DocRootElement(pDoc);
+    TiXmlElement* pElement = DocRootElement(pDoc);
     if (pElement == 0)
         return;
-    Unk_140165cf0* pList = (Unk_140165cf0*)((Unk_XmlNode*)pElement)->FirstChild(&DAT_142f2d1c8);
+    TiXmlElement* pList = (TiXmlElement*)((Unk_XmlNode*)pElement)->FirstChild(&DAT_142f2d1c8);
     if (pList == 0)
         return;
-    Unk_140165cf0* pItem = (Unk_140165cf0*)((Unk_XmlNode*)pList)->FirstChild(&DAT_142f2d1d0);
+    TiXmlElement* pItem = (TiXmlElement*)((Unk_XmlNode*)pList)->FirstChild(&DAT_142f2d1d0);
     while (pItem != 0)
     {
-        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pItem))->Attribute(&DAT_142f2d1d8);
+        const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pItem))->Attribute(&DAT_142f2d1d8);
         if (pszName != 0)
         {
             unsigned nWeight = 0;
-            if (((class TiXmlElement*)(class Unk_140165cf0*)(pItem))->Attribute("weight", (int*)&nWeight) != 0)
+            if (((class TiXmlElement*)(class TiXmlElement*)(pItem))->Attribute("weight", (int*)&nWeight) != 0)
             {
                 NiFixedString kName(pszName);
                 SetWeights(pRoot->GetObjectByName(kName), (int)nWeight);
             }
         }
-        pItem = (Unk_140165cf0*)((Unk_XmlNode*)pItem)->NextSibling(&DAT_142f2d1e8);
+        pItem = (TiXmlElement*)((Unk_XmlNode*)pItem)->NextSibling(&DAT_142f2d1e8);
     }
 }
 MS2_REPLACE_METHOD(0x141555F50, CNifLoadingService, ApplyWeights, 967, 0x6D7EAF52);

@@ -189,7 +189,7 @@ void UIDebugPacketDialog::vfunc_72()
     {
         while (m_nRandomRemain > 0 && uNow > m_nRandomNext)
         {
-            int nId = m_range.FUN_141291f20();
+            int nId = reinterpret_cast<Unk_DpRange&>(m_range).FUN_141291f20();
             if (((ASCheckBox*)m_ignoreAdminPacket ? true : false) && (nId == 0x50 || nId == 0x24 || nId == 0x15))
             {
                 // admin packets are skipped
@@ -328,7 +328,7 @@ bool UIDebugPacketDialog::FUN_141291850()
 {
     int nStart = FUN_1401d9a00(m_randomStart->GetText());
     int nEnd = FUN_1401d9a00(m_randomEnd->GetText());
-    reinterpret_cast<Unk_MergeRange*>(&m_range)->Set(nStart, nEnd);
+    m_range.Set(nStart, nEnd);
     m_nRandomRemain = FUN_1401d9a00(m_randomLoopCount->GetText());
     m_nRandomDelay = FUN_1401d9a00(m_randomLoopDelay->GetText());
     m_nRandomLength = FUN_1401d9a00(m_randomLoopLength->GetText());

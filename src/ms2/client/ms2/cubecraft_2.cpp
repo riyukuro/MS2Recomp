@@ -86,17 +86,17 @@ public:
     void* m_pad[3];
 };
 
-// The cube grid service (class id 0x06100017), seen through the real CubeMapInformationService. The members kept
-// here differ from the real ones in how they pass their arguments.
-class Unk_Service6100017 : public CubeMapInformationService
-{
-public:
-    int FUN_1410c6980(Cube* pCube, int nKind, MS2Ptr<CItemData> spItem, __int64 nOwner, int nMode);   // may the cube be removed / moved
-    int FUN_1410cdd80(Vector3 ptFrom, Vector3 ptTo, float fDist, Unk_Int3 kDir);   // the sweep from ptFrom to ptTo is free
-    int FUN_1410cdf60(Unk_Int3 kFrom, Unk_Int3 kDir);                                           // the column step is free
-};
+// The cube grid service (class id 0x06100017), seen through the real CubeMapInformationService. Every member
+// used here is CubeMapInformationService's own.
+// C3: the former Unk_Service6100017 view is gone (it added no members):
+//
+//
+    // C3: FUN_1410c6980 (may the cube be removed / moved) is CubeMapInformationService's own
+    // C3: FUN_1410cdd80 (the sweep from ptFrom to ptTo is free) is CubeMapInformationService's own
+    // C3: FUN_1410cdf60 (the column step is free) is CubeMapInformationService's own
+//
 class Unk_MyPCHousingSvc { public: void FUN_1410d6590(int nMessage); };   // show the build notice (calls cast the cube service)
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 
 // The client constants table: three consecutive 0x58-byte item-id constants at +0x39f0 (the guide effect items).
 class Unk_C2ConstB { public: char m_pad[0x58]; };
@@ -137,15 +137,15 @@ public:
 };
 int FUN_1408a03c0(Unk_Int3 point);
 int FUN_1408a13d0(NiPoint3 kPos);   // C3: ridee.cpp / mypc.cpp's declaration (0x1408a13d0)
-Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
+efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptCenter);   // fills the cell center
 #include "ms2/placeholder/unk_1402a9d70.h"
 // File statics of this TU (initialised by the .text$di entries; the hook build uses the exe's copies).
 #ifndef MS2_HOOK_DLL
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400e5be0
 static CString s_str143acf628("skill");                                                    // @0x1400e5ca0
 static CString s_str143acf620("stun");                                                     // @0x1400e5cd0
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };           // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143acf668(0);                                             // @0x1400e5d00
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };           // ctor 0x1401cd100
+static Unk_BuddyHandle s_dat_143acf668(0);                                             // @0x1400e5d00
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);                          // @0x1400e5d20
 static CString DAT_143acf6b8("system_notice_error_warningNoBuild");                        // @0x1400e5d70
 static CString DAT_143acf6c0("ugc_moveblock");                                             // @0x1400e5da0
@@ -280,7 +280,7 @@ extern NiRTTI DAT_143afa4d8;
 
 // @0x1410a8550
 Unk_PCCubeCraft::Unk_PCCubeCraft(PC* pOwner, int nMode, CubeItemInfo* pInfo)
-    : m_fScale(1.0f), m_spGuide(0), m_spGuide2(0), m_spEffectA(0), m_spEffectB(0), m_spEffectC(0), m_spNode(0), m_svc((Unk_Service6100017*)0), m_spGod(0),
+    : m_fScale(1.0f), m_spGuide(0), m_spGuide2(0), m_spEffectA(0), m_spEffectB(0), m_spEffectC(0), m_spNode(0), m_svc((CubeMapInformationService*)0), m_spGod(0),
       m_bFirstMove(true), m_nCheck(1)
 {
     m_bVisible = true;
@@ -1194,7 +1194,7 @@ void Unk_PCCubeCraft::FUN_1410ac1c0()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, 1);
-            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
+            efd::SmartPointer<CubeMapInformationService> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
                 FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), 6.0f);
         }
@@ -1222,7 +1222,7 @@ void Unk_PCCubeCraft::FUN_1410ac380()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, -2);
-            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
+            efd::SmartPointer<CubeMapInformationService> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
                 FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), -6.0f);
         }
@@ -1461,7 +1461,7 @@ void Unk_PCCubeCraft::FUN_1410aeec0(const Vector3& kPos)
     pCube = m_svc->GetCubeAtCell(kCell);
     if (pCube == 0)
     {
-        FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
+        FUN_1408a15b0(kCell, reinterpret_cast<efd::Point3&>(const_cast<Vector3&>(kPos)));
     }
     else
     {
@@ -1469,14 +1469,14 @@ void Unk_PCCubeCraft::FUN_1410aeec0(const Vector3& kPos)
         pCube = m_svc->GetCubeAtCell(kCell);
         if (pCube == 0)
         {
-            FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
+            FUN_1408a15b0(kCell, reinterpret_cast<efd::Point3&>(const_cast<Vector3&>(kPos)));
         }
         else
         {
             kCell.z = kCell.z + 1;
             pCube = m_svc->GetCubeAtCell(kCell);
             if (pCube == 0)
-                FUN_1408a15b0(kCell, const_cast<Vector3&>(kPos));
+                FUN_1408a15b0(kCell, reinterpret_cast<efd::Point3&>(const_cast<Vector3&>(kPos)));
         }
     }
 }

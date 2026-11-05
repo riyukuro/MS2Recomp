@@ -11,10 +11,10 @@
 // MS2-PIN: ??B?$SmartPointer@VNiProperty@@@efd@@QEBAPEAVNiProperty@@XZ 0x14127c930 ; order
 // MS2-PIN: ??B?$SmartPointer@VNiZBufferProperty@@@efd@@QEBAPEAVNiZBufferProperty@@XZ 0x14127c950 ; order
 // MS2-PIN: ??C?$Ptr@VMovie@GFx@Scaleform@@@Scaleform@@QEBAPEAVMovie@GFx@1@XZ 0x14127c960 ; unique
-// MS2-PIN: ??C?$Ptr@VUnk_GFxHandleObj@@@Scaleform@@QEBAPEAVUnk_GFxHandleObj@@XZ 0x14127c980 ; order
+// MS2-PIN: ??C?$Ptr@VUnk_GFxUIHal@@@Scaleform@@QEBAPEAVUnk_GFxUIHal@@XZ 0x14127c980 ; order
 // MS2-PIN: ??C?$SmartPointer@VNiScreenFillingRenderView@@@efd@@QEBAPEAVNiScreenFillingRenderView@@XZ 0x14127c9c0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??1?$Ptr@VUnk_GFxHandleObj@@@Scaleform@@QEAA@XZ 0x14127c550
+// MS2-PIN: ??1?$Ptr@VUnk_GFxUIHal@@@Scaleform@@QEAA@XZ 0x14127c550
 // MS2-PIN: ??1?$SmartPointer@VMinimapViewport@@@efd@@QEAA@XZ 0x14127c5f0
 // MS2-PIN: ??4?$SmartPointer@VNiProperty@@@efd@@QEAAAEAV01@AEBV01@@Z 0x14127c780
 // MS2-PIN: ??B?$SmartPointer@VNiScreenFillingRenderView@@@efd@@QEBAPEAVNiScreenFillingRenderView@@XZ 0x14127c940
@@ -214,7 +214,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     class UISceneEntity* FUN_1422b9e50();
 };
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+class ASUIComponent; template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (tabcontentspetevolution)
 
 // The minimap viewport: projects a world position to the background (returns false when it is off screen).
 class MinimapViewport : public NiRefObject
@@ -253,37 +253,37 @@ public:
 };
 } }
 class Unk_BgDispHandle;
-class Unk_GFxHandleObj
-{
-public:
-    void AddRef();                                                          // 0x14257dc30
-    void Release();                                                         // 0x14257dcb0
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual Unk_BgTarget* vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17(Unk_BgTarget* pTarget, bool bFlag);
-    void Assign(Unk_BgDispHandle& kHandle);                                 // 0x14127cb10
-};
+// (Unk_GFxHandleObj, the view of vfunc_9's first argument, is Unk_GFxUIHal: gfxrenderer2d.h types its slots 14/17.)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // The display handle copy of the movie (vfunc_9): a ref-counted pointer, wrapped twice (0x14127c160 <- 0x14127c3d0 <- 0x14127c130).
 class Unk_BgHandleRef
 {
 public:
     Unk_BgHandleRef(const Unk_BgHandleRef& r);                              // 0x14127c160
-    Unk_GFxHandleObj* m_p;
+    Scaleform::RefCountImpl* m_p;                                           // the handle data (RefCountImpl AddRef 0x14257dc30)
 };
 class Unk_BgDispBase
 {
@@ -325,7 +325,7 @@ Unk_BgDispHandle::~Unk_BgDispHandle() { reinterpret_cast<Scaleform::Render::Cont
 // @0x14127cc80
 void* Unk_BgDispHandle::GetObj() { return reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle*>(this)->GetRenderEntry(); }
 // @0x14127cb10
-void Unk_GFxHandleObj::Assign(Unk_BgDispHandle& kHandle) { reinterpret_cast<Scaleform::Render::Renderer2D*>(this)->Display(static_cast<Scaleform::Render::TreeRoot*>(kHandle.GetObj())); }
+void Unk_GFxUIRenderer2D::Display(Unk_BgDispHandle& kHandle) { reinterpret_cast<Scaleform::Render::Renderer2D*>(this)->Display(static_cast<Scaleform::Render::TreeRoot*>(kHandle.GetObj())); }
 
 // ---- Unk_BgComPtr<T> ----
 // @0x14127c1a0
@@ -428,7 +428,7 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
         if (nArgs > 0)
         {
             Scaleform::GFx::Value vArg(pArgs[0]);
-            m_spScript = FUN_140acca70(m_18, vArg);
+            m_spScript = reinterpret_cast<MS2Ptr<AScript>&&>(static_cast<MS2Ptr<ASUIComponent>&&>(Unk_ASCreate<ASUIComponent>(m_18, vArg)));
             if (m_spScript.get() != 0)
                 m_spScript->Invoke("loadBG", FUN_14127be10(), m_nCameraFlag);
             m_spViewport = NiNew MinimapViewport;
@@ -524,18 +524,18 @@ void GFxMovieBackground::vfunc_8(float fTime)
     }
 }
 // @0x14127a3a0
-void GFxMovieBackground::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
+void GFxMovieBackground::vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
 {
     if (m_spRenderTarget == 0)
         return;
-    Unk_BgComPtr<Unk_BgTarget> spTarget(spObj->vfunc_14());
+    Unk_BgComPtr<Unk_BgTarget> spTarget(spObj->GetDefaultRenderTarget());
     if (spTarget != 0)
     {
-        spObj->vfunc_17(m_spRenderTarget, true);
+        spObj->SetRenderTarget(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
         if (reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle&>(kHandle).NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spHandle.operator->())->GetContextNotify()))
-            reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->Assign(kHandle);
-        spObj->vfunc_17(spTarget, true);
+            spHandle->Display(kHandle);
+        spObj->SetRenderTarget(spTarget, true);
     }
 }
 // @0x14127a580
@@ -980,6 +980,6 @@ MS2_REPLACE_METHOD(0x14127bcb0, GFxMovieBackground, SetBaseTexture, 336, 0x893CF
 MS2_REPLACE_METHOD(0x14127be10, GFxMovieBackground, FUN_14127be10, 360, 0xFCB863E7);
 
 // vfunc_9's second by-value Ptr<> argument is the Renderer2D in the exe: its release COMDAT 0x14127c5c0 is a separate
-// copy of 0x14127c550 (gfxmovie.h spells both arguments Unk_GFxHandleObj), emitted here explicitly.
+// copy of 0x14127c550 (the Ptr<Unk_GFxUIHal> one), emitted here explicitly.
 template Scaleform::Ptr<Unk_GFxUIRenderer2D>::~Ptr();
 // MS2-PIN: ??1?$Ptr@VUnk_GFxUIRenderer2D@@@Scaleform@@QEAA@XZ 0x14127c5c0

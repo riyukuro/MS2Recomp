@@ -51,7 +51,7 @@
 
 template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -121,7 +121,7 @@ unsigned* FUN_1416e1e70(std::vector<unsigned>* pVec);           // end
 class CReservedWordTable;
 class Unk_NpPathCfg;
 CString FUN_14071ae20(const CString& str);              // the path of a data file
-CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);   // string attribute with default
+CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW strDefault);   // string attribute with default
 struct Unk_RayCastInfo;
 class CPhysXHelper   // physxhelper.h needs NOMINMAX, which this unit's headers do not set
 {
@@ -292,10 +292,10 @@ int UINpcPreviewDialog::LoadNpcName()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("key"))) {
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));

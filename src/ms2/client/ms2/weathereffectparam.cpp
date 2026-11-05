@@ -19,7 +19,7 @@ WeatherEffectParam::WeatherEffectParam()
 }
 
 // @0x141b772a0
-void WeatherEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void WeatherEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((TiXmlElement*)pNode, "fallType", m_nFallType);

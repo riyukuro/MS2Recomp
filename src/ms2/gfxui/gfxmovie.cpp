@@ -37,12 +37,12 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a St
 
 // The two Ptr<> arguments of vfunc_9/10 (gfxmovie.h): the Render HAL and the Renderer2D. Only the release functions
 // are needed here (GFxMovieBackground's unit spells out more of it).
-class Unk_GFxHandleObj
-{
-public:
-    void AddRef();                                              // 0x14257dc30
-    void Release();                                             // 0x14257dcb0
-};
+// Unk_GFxUIHal (the HAL) and Unk_GFxUIRenderer2D come from gfxrenderer2d.h; their Release is RefCountImpl's.
+//
+//
+//
+//
+//
 
 // @0x1422bced0
 GFxMovie::GFxMovie()
@@ -87,7 +87,7 @@ Scaleform::GFx::Value GFxMovie::FUN_1422bd1b0(const char* szMethod)
 Scaleform::GFx::Value GFxMovie::FUN_1422bd250(const char* szMethod, ASArgList& args)
 {
     Scaleform::GFx::Value vResult;
-    if (!m_60->Invoke(szMethod, &vResult, args.FUN_1409b1f70(0), (unsigned)args.FUN_1409b2840()))
+    if (!m_60->Invoke(szMethod, &vResult, args.FUN_1409b1f70(0), (unsigned)reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
         return Scaleform::GFx::Value();
     return vResult;
 }
@@ -188,7 +188,7 @@ MS2_REPLACE_METHOD(0x1422BDA00, GFxMovie, vfunc_8, 386, 0x5DFFD53E);
 
 // Draw the movie: capture the next frame and display it with the Renderer2D (spRenderer).
 // @0x1422bdb90
-void GFxMovie::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
+void GFxMovie::vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
 {
     Scaleform::GFx::MovieDisplayHandle hDisplay = m_60->GetDisplayHandle();
     if (hDisplay.NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spRenderer.operator->())->GetContextNotify()))
@@ -197,7 +197,7 @@ void GFxMovie::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxU
 
 // Capture without drawing.
 // @0x1422bdc50
-void GFxMovie::vfunc_10(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
+void GFxMovie::vfunc_10(MS2_GFX_PTR(Unk_GFxUIHal) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
 {
     Scaleform::GFx::MovieDisplayHandle hDisplay = m_60->GetDisplayHandle();
     hDisplay.NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spRenderer.operator->())->GetContextNotify());

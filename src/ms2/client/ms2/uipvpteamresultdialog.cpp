@@ -75,7 +75,7 @@ private:
 class Unk_PtScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140c4bd20(const char* szMethod, bool a1, Scaleform::GFx::Value a2);
+    // C3: FUN_140c4bd20 is AScript::Invoke(const char*, bool, Value) (ascript.h)
     Scaleform::GFx::Value FUN_141346320(const char* szMethod, bool a1, const char* a2, const char* a3, const char* a4, int a5);
     Scaleform::GFx::Value FUN_141346430(const char* szMethod, bool a1, CStringW a2, const wchar_t* a3, CStringW a4, int a5);
 };
@@ -190,7 +190,7 @@ void UIPvPTeamResultDialog::FUN_1413454b0()
                 ASObj obj(2);
                 if (!FUN_141345c60(obj, (int)j, pMember))
                     continue;
-                static_cast<Unk_PtScript*>(m_30.operator->())->FUN_140c4bd20("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.FUN_1422bb870());
+                static_cast<Unk_PtScript*>(m_30.operator->())->Invoke("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.FUN_1422bb870());
             }
         }
     }

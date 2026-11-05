@@ -51,7 +51,7 @@
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/placeholder/xmlattr.h"  // C3: XmlSplit was FUN_140177db0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -64,12 +64,12 @@ public:
 class Unk_DcXmlNode
 {
 public:
-    Unk_DcXmlNode* FUN_140165cf0(const char* szName);           // first child element
-    Unk_DcXmlNode* FUN_140168650(const char* szName);           // next sibling element
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 };
 void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140179060(Unk_DcXmlNode* pNode, const char* szName, Unk_DcGroupType& n);   // enum attribute
+enum Unk_DungeonGroupType : int; template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut); template <> int XmlValueByName(TiXmlElement*, const char*, Unk_DungeonGroupType&);   // 0x140179060, the enum attribute (specialization in additionalactionadditional.cpp)
 bool FUN_14028f710(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14016a5c0(const char* psz, int n);
@@ -163,7 +163,7 @@ class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: un
 void* FUN_140764030();
 
 // The find component's party search button.
-class Unk_140acd6e0 : public ASMovieClip { public: };
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 
 // Strings.
 CStringW TranslateEnumDungeonGroup(unsigned int nGroupType);      // group type name
@@ -171,8 +171,8 @@ bool FUN_140e14520(int nGroupType);                             // the group typ
 bool FUN_140e146a0();                                           // matching is available
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 void XmlSetAttr(class TiXmlElement*, const char*, const CString&);   // C3: was FUN_140874050
-class Unk_140165cf0;
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>)
+class TiXmlElement;
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>)
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -248,7 +248,7 @@ void UIDungeonCategoryTable::Load()
             for (Unk_DcXmlNode* pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->FirstChild("dungeonCategory")); pNode != 0;
                  pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonCategory"))) {
                 Unk_DcGroupType nGroupType;
-                FUN_140179060(pNode, "groupType", nGroupType);
+                XmlValueByName(reinterpret_cast<TiXmlElement*>(pNode), "groupType", reinterpret_cast<Unk_DungeonGroupType&>(nGroupType));
                 pCategory->m_groupTypes.Add(nGroupType);
             }
             m_maps[nIndex].SetAt(pCategory->m_range.m_nLow, pCategory);
@@ -438,7 +438,7 @@ int UIDungeonControlCenter::vfunc_54(void* pCfg)
     UIDialog::vfunc_54(pCfg);
     m_bookmarks.clear();
     std::vector<unsigned int> ids;
-    XmlTokenList(static_cast<Unk_140165cf0*>(pCfg), "dungeon", ids);
+    XmlTokenList(static_cast<TiXmlElement*>(pCfg), "dungeon", ids);
     for (size_t i = 0; i < ids.size(); i++) {
         if (TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(ids[i]).get())
             m_bookmarks.insert(ids[i]);
@@ -522,7 +522,7 @@ void UIDungeonControlCenter::FUN_140c0c430()
     if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonFindComponent")) {
         pComponent->Invoke("setMatch", nMatch);
         pComponent->Invoke("setEnabled", bEnabled);
-        if (MS2Ptr<Unk_140acd6e0> pButton = pComponent->FUN_140acce30<Unk_140acd6e0>("m_partySearch"))
+        if (MS2Ptr<ASButton> pButton = pComponent->FUN_140acce30<ASButton>("m_partySearch"))
             pButton->FUN_1422c1fe0(DAT_143ab2878 != 2);
     }
 }

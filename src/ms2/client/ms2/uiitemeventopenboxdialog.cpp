@@ -57,7 +57,7 @@ static CString s_strSkill = "skill";                                        // @
 static CString s_strStun = "stun";                                          // @0x1400d82d0
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_140acd6e0 : public ASButton {};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 // the box item slot clip: sets a string member of its AS object
 class Unk_EobSlot : public ASUIComponent { public:
@@ -126,7 +126,7 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
     GetChildInto<ASTextField>("m_eventName", m_1a8);
     GetChildInto<ASTextField>("m_eventDesc", m_1b8);
     GetChildInto<ASUIComponent>("m_slot", m_1d8);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_requestButton", m_1c8).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_requestButton", m_1c8).get())
     {
         ((class ASButton*)(m_1c8))->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
         CStringW strLabel(L"s_event_open_item_box_ui_button");

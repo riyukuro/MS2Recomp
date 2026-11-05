@@ -13,13 +13,13 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -92,21 +92,21 @@ bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
         Unk_FileLog(GetLogString(), 2, 0x13, L"[IgnoreFile] {0} \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4.\r\n", pszFile);
         return false;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\r\n");
         return false;
     }
-    for (Unk_140165cf0* pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("except")); pExcept != 0; pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->NextSibling("except")))
+    for (TiXmlElement* pExcept = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("except")); pExcept != 0; pExcept = ((class TiXmlElement*)((class Unk_XmlNode*)(pExcept))->NextSibling("except")))
     {
         std::string strEntry;
-        const char* pszTag = ((class TiXmlElement*)(class Unk_140165cf0*)(pExcept))->Attribute("tag");
+        const char* pszTag = ((class TiXmlElement*)(class TiXmlElement*)(pExcept))->Attribute("tag");
         if (pszTag != 0 && atoi(pszTag) <= nMode)
             continue;
-        for (Unk_140165cf0* pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->FirstChild("directory")); pDir != 0; pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDir))->NextSibling("directory")))
+        for (TiXmlElement* pDir = ((class TiXmlElement*)((class Unk_XmlNode*)(pExcept))->FirstChild("directory")); pDir != 0; pDir = ((class TiXmlElement*)((class Unk_XmlNode*)(pDir))->NextSibling("directory")))
         {
-            const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pDir))->Attribute("name");
+            const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pDir))->Attribute("name");
             if (pszName != 0)
             {
                 std::string strName(pszName);
@@ -122,9 +122,9 @@ bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
                 m_setDirs.insert(strEntry);
             }
         }
-        for (Unk_140165cf0* pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->FirstChild("file")); pFile != 0; pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFile))->NextSibling("file")))
+        for (TiXmlElement* pFile = ((class TiXmlElement*)((class Unk_XmlNode*)(pExcept))->FirstChild("file")); pFile != 0; pFile = ((class TiXmlElement*)((class Unk_XmlNode*)(pFile))->NextSibling("file")))
         {
-            const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pFile))->Attribute("name");
+            const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pFile))->Attribute("name");
             if (pszName != 0)
             {
                 std::string strName(pszName);

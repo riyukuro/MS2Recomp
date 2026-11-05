@@ -66,28 +66,28 @@ class Unk_ActorRegistry
 public:
 };
 
-// A CPtred-derived buff record (AdditionalCli, 0x78, ?\additionalcli.cpp). Only what the clone uses.
-class AdditionalCli : public CPtred
-{
-public:
-    AdditionalCli();                                                // ctor, called after new(0x78)
-    bool FUN_14096bc20(int nOwner, MS2Ptr<AdditionalCli> spSrc);    // 0x14096bc20 copies spSrc, owned by nOwner
-    bool FUN_14096d6b0();                                           // 0x14096d6b0
-    unsigned int FUN_14096d2a0();                                   // 0x14096d2a0 data id
-    unsigned short GetLevel();                                 // 0x14096d2c0 data sub id
-    char m_pad_18[0x60];
-};
-MS2_CHECK_SIZE(AdditionalCli, 0x78);
-
-// The list of buff records a PC carries (FUN_1416749a0).
-class AdditionalCliList
-{
-public:
-    void ClearAll();                                                // 0x140970490 clears the list
-    int FUN_14096f070(MS2Ptr<AdditionalCli> spCli);                 // 0x14096f070 adds a record (callee-destroyed arg)
-    void FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& out);   // 0x1409725f0 copies the records out
-    int FUN_140970020(unsigned int, unsigned short, unsigned int, int);
-};
+// The buff record (AdditionalCli, 0x78, ?\additionalcli.cpp) and the list of buff records a PC carries
+// (AdditionalCliList, FUN_1416749a0): the real classes (C3: the local views are gone).
+#include "ms2/client/ms2/additionalclilist.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The record of an item (the CItemData of a worn item): +0x248 holds two parallel id arrays.
 class Unk_CloneItemRec

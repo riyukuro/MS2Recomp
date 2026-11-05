@@ -199,6 +199,7 @@ public:
     Unk_MailBenefitList& FUN_1419ea9a0() { return m_benefits; }   // inline COMDAT (uimaillistdialog.cpp)
     // @0x1419eab80
     CStringW FUN_1419eab80() const { return m_str120; }            // inline COMDAT (uimaillistdialog.cpp): the ad product name
+    CStringW FUN_141b8ecc0() const { return m_str68; }             // 0x141b8ecc0 inline COMDAT (weddingmanager.cpp): the wedding ticket's xml body
     MS2_LAYOUT_FRIEND;
     __int64 m_nId; int m_nKind; int m_n24; __int64 m_n28;      // +0x18
     CStringW m_str30; __int64 m_n38;                           // +0x30

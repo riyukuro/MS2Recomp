@@ -139,7 +139,7 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 { public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -147,14 +147,14 @@ public:
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 : public Unk_XmlNode { };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-bool FUN_14028f710(struct Unk_XmlElement*);   // C3: param was Unk_140165cf0*
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: param was TiXmlElement*
 
-int FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short*);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int*);
+int FUN_1408731a0(TiXmlElement*, const char*, unsigned short*);
+int FUN_1408731e0(TiXmlElement*, const char*, int*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 class Unk_ALSkillTable;   // TSingleton<SkillDataTableCli>::GetInstance's result
 
@@ -171,7 +171,7 @@ extern CAdventureLevelMission DAT_142ceaec8;
 
 // Attribute readers: the default is returned when the attribute is missing.
 // @0x140197310
-unsigned short FUN_140197310(Unk_140165cf0* pElem, const char* pszName, unsigned short nDefault)
+unsigned short FUN_140197310(TiXmlElement* pElem, const char* pszName, unsigned short nDefault)
 {
     unsigned short nVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<unsigned short&>(nVal)) != 0)
@@ -180,7 +180,7 @@ unsigned short FUN_140197310(Unk_140165cf0* pElem, const char* pszName, unsigned
 }
 
 // @0x140197350
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault)
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault)
 {
     int nVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<int&>(nVal)) != 0)
@@ -189,7 +189,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault)
 }
 
 // @0x140197390
-unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault)
+unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault)
 {
     unsigned nVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(unsigned int*)(&nVal)) != 0)
@@ -198,7 +198,7 @@ unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefa
 }
 
 // @0x1401973d0
-float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault)
+float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault)
 {
     float fVal;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<float&>(fVal)) != 0)
@@ -415,13 +415,13 @@ bool CAdventureLevelTable::LoadReward()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reward")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("reward")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -446,13 +446,13 @@ bool CAdventureLevelTable::LoadAbility()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -479,13 +479,13 @@ bool CAdventureLevelTable::LoadMission()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mission")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mission")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mission")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mission")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

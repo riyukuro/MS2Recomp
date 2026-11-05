@@ -15,7 +15,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/petgroupinfo.h"
 
-class Unk_140165cf0;    // xml element
+class TiXmlElement;    // xml element
 
 // One <pets> row.
 class CPetData : public CPtred
@@ -23,7 +23,7 @@ class CPetData : public CPtred
 public:
     CPetData();                                             // 0x140728140
     virtual ~CPetData();                                    // 0x1407282b0
-    bool Load(Unk_140165cf0* pNode);                        // 0x140728320
+    bool Load(TiXmlElement* pNode);                        // 0x140728320
     int GetItemId(int nKind);                               // 0x1407287e0 "itemIDs" or, when 0, the pet id
     unsigned int GetId();                                   // 0x140728820
 

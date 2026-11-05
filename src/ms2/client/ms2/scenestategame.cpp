@@ -8,7 +8,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$type@W4Unk_SSGJobError@@$0A@@?$MakeValue@V?$BasicFormatter@D@fmt@@@internal@fmt@@SA_KAEBW4Unk_SSGJobError@@@Z 0x141745390 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141745520 ; unique
-// MS2-PIN: ??0?$Unk_BmPtr@VUserUGCMapInfo@@@@QEAA@AEBUUnk_BmNewTag@@@Z 0x141745a10 ; unique
+// MS2-PIN: ??0?$Unk_BmPtr@VUserUGCMapInfo@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x141745a10 ; unique
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1417473e0 ; unique
 // MS2-PIN: ??_GCEnchantOption@@UEAAPEAXI@Z 0x1417475f0 ; unique
 // MS2-PIN: ?TypeCast@CSceneStateGame@@UEBA_NIPEAPEAX@Z 0x14174a720 ; unique
@@ -219,7 +219,7 @@ public:
     struct Unk_SSGEntListPtr FUN_141bd0420(unsigned int nModelHash);   // the entities of a model
     void FUN_141bc9aa0(MS2Ptr<CProxyGameObject> spProxy);   // add a field object proxy
     // interact objects (0x63)
-    void FUN_141bc5c40(MS2Ptr<CInteractObject> spObj);      // add one
+    // (add one: WorldService::AddProp 0x141bc5c40)
     int FUN_141bc1720(MS2Ptr<class CPortal> spPortal);      // register a field object (portal) (0x48)
 };
 
@@ -412,16 +412,16 @@ class Unk_SSGMachineId
 public:
     unsigned char m_data[16];
 };
-class Unk_SSGEnterRequest
+struct Unk_NetworkAuth   // C3: networkservice.cpp's field-enter request (was Unk_SSGEnterRequest; same 0x20 layout)
 {
 public:
-    Unk_SSGEnterRequest();                                  // 0x141540ca0
+    Unk_NetworkAuth();                                  // 0x141540ca0
     __int64 m_nAccountId;                                   // +0x00
     int m_n8;                                               // +0x08
     int m_nC;                                               // +0x0c
     Unk_SSGMachineId m_machineId;                           // +0x10
 };
-MS2_CHECK_SIZE(Unk_SSGEnterRequest, 0x20);
+MS2_CHECK_SIZE(Unk_NetworkAuth, 0x20);
 void FUN_1401f9d20(struct Unk_LoginEnter* pReq, class COutputStream* pOut);
 class Unk_MachineId { public: Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther); };   // C3: member view
 class CMachineIDManager { public: struct Unk_MachineID* GetID(); };   // C3: member view
@@ -515,29 +515,29 @@ public:
 MS2_CHECK_SIZE(UGCMapBlueprintInfo, 0x30);
 #include "ms2/client/ms2/ugchomebgdata.h"   // Unk_UhSetting
 // Three byte-sized house rules, decoded from the packet.
-class Unk_SSGHouseRule
-{
-public:
-    Unk_SSGHouseRule();                                     // 0x140b68e60
-    unsigned char m_a, m_b, m_c;
-};
-MS2_CHECK_SIZE(Unk_SSGHouseRule, 3);
+//class Unk_SSGHouseRule
+//{
+//public:
+//    Unk_SSGHouseRule();                                     // 0x140b68e60
+//    unsigned char m_a, m_b, m_c;
+//};
+//MS2_CHECK_SIZE(Unk_SSGHouseRule, 3);
 class NoticeCubeInfo;
 class Unk_MyPCHousingSvc   // C3: member view (real class not in this TU)
 {
 public:
     void FUN_1410d6590(int);
 };
-class Unk_Service6100017 : public CubeMapInformationService
-{
-public:
-    void FUN_1410cb4c0(MS2Ptr<FittingDollData> spDoll);    // add a fitting doll (0x7b)
-    static const efd::ClassID CLASS_ID = 0x06100017;
-};
+// C3: the former Unk_Service6100017 view is CubeMapInformationService itself
+// (cubemapinformationservice_3.h): FUN_1401cd040 hands back the 0x06100017 service,
+// and FUN_1410cb4c0 (add a fitting doll, 0x7b) is its member.
+//
+//
+//
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // 0x143b059e8
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);
 class Unk_LaunchOptions   // C3: member view (real class not in this TU)
 {
 public:
@@ -566,7 +566,7 @@ class Unk_SSG931510 : public CMyCharacter { public: };
 void FUN_1412b9870(int nId, int nType);
 
 // 0x18..0x41: actor packets
-class Unk_AvModeSvc   // C3: member view (real class not in this TU)
+class COptimizer   // C3: member view (coptimizer.h)
 {
 public:
     int FUN_1409f7ea0();
@@ -727,7 +727,8 @@ public:
     virtual void vfunc_30(CItem* pItem);                    // gem taken out
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-MyPC* FUN_1409613d0(PCBase* pPC);                          // efd::DynamicCast<MyPC> (class id 0x6200004)
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0 (the local player cast, class id 0x6200004; actionkeyobject.cpp)
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -764,11 +765,11 @@ struct Unk_InventorySkillRequest
     __int64 item;
 };
 MS2_CHECK_SIZE(Unk_InventorySkillRequest, 0x48);
-class Unk_PCBaseComp_b18 : public CPtred   // the casting skill (CSkillRecord, 0x1c0)
+class CSkillRecord : public CPtred   // C3: the casting skill, a view of skillrecord.h's CSkillRecord (0x1c0; that header clashes with the SkillTargetRecord view)
 {
 public:
-    Unk_PCBaseComp_b18();                                   // 0x141759260
-    bool FUN_1417595d0(Unk_InventorySkillRequest& kReq);    // build the record of a request
+    CSkillRecord();                                         // 0x141759260
+    bool Init(Unk_InventorySkillRequest& kReq);             // 0x1417595d0 build the record of a request
     char m_pad[0x28 - sizeof(CPtred)];
     __int64 m_nSkillUid;                                    // +0x28
     char m_pad_30[0x68 - 0x30];
@@ -787,7 +788,7 @@ public:
     ATL::CAtlList<Unk_SocketPtr<CMagicModel> > m_listModels;   // +0x108 the projectiles started by this cast
     char m_pad_tail[0x1c0 - 0x108 - sizeof(ATL::CAtlList<Unk_SocketPtr<CMagicModel> >)];
 };
-MS2_CHECK_SIZE(Unk_PCBaseComp_b18, 0x1c0);
+class Unk_PCBaseComp_b18 : public CSkillRecord {};   MS2_CHECK_SIZE(Unk_PCBaseComp_b18, 0x1c0);   // pcbase.h's slot 103/104 name
 MS2_CHECK_OFFSET(Unk_PCBaseComp_b18, m_fSpeed, 0x74);
 MS2_CHECK_OFFSET(Unk_PCBaseComp_b18, m_strExtra, 0xb8);
 MS2_CHECK_OFFSET(Unk_PCBaseComp_b18, m_nSkillUid, 0x28);
@@ -1141,29 +1142,29 @@ class Unk_LapenEquipped   // C3: member view (real class not in this TU)
 public:
     void Read(CInPacket&);
 };
-class Unk_SSG5b5dd0                                         // packet 0x11b mode 1 entry
+struct Unk_LsEquipRequest                                   // packet 0x11b mode 1 entry (C3: lapenshardslot.cpp's view, was Unk_SSG5b5dd0)
 {
 public:
-    Unk_SSG5b5dd0();                                        // 0x140a6ffe0
+    Unk_LsEquipRequest();                                        // 0x140a6ffe0
     int m_nA;
     __int64 m_n8;
     int m_nB;
 };
-MS2_CHECK_SIZE(Unk_SSG5b5dd0, 0x18);
-MS2_CHECK_OFFSET(Unk_SSG5b5dd0, m_nB, 0x10);
+MS2_CHECK_SIZE(Unk_LsEquipRequest, 0x18);
+MS2_CHECK_OFFSET(Unk_LsEquipRequest, m_nB, 0x10);
 
 class Unk_LapenUnequip   // C3: member view (real class not in this TU)
 {
 public:
     void Read(CInPacket&);
 };
-class Unk_SSG5b5e70                                         // packet 0x11b mode 2 entry
+struct Unk_LsSlotArg                                        // packet 0x11b mode 2 entry (C3: uilapenshardsystemdialog's view, was Unk_SSG5b5e70)
 {
 public:
-    Unk_SSG5b5e70();                                        // 0x140c5e480
+    Unk_LsSlotArg();                                        // 0x140c5e480
     int m_nA;
 };
-MS2_CHECK_SIZE(Unk_SSG5b5e70, 4);
+MS2_CHECK_SIZE(Unk_LsSlotArg, 4);
 
 int FUN_1418fd6c0(__int64 nUid);
 
@@ -2052,7 +2053,7 @@ MS2_REPLACE_METHOD(0x14170dbe0, CSceneStateGame, OnWndMessage, 155, 0x19D25A81);
 // @0x14170dc90
 void CSceneStateGame::OnRequestLogin(CInPacket& packet)
 {
-    Unk_SSGEnterRequest req;
+    Unk_NetworkAuth req;
     req.m_nAccountId = DAT_143ab2820;
     req.m_n8 = DAT_143ab284c;
     req.m_nC = DAT_143ab2850;
@@ -2188,7 +2189,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     int nF = 0;
     int nG = 10;
     int nH = 5;
-    Unk_SSGHouseRule rule;
+    Unk_CMISFlags3 rule;   // C3: was the unit-local Unk_SSGHouseRule (same ctor 0x140b68e60)
     efd::map<Unk_CMISKindB, bool> mapFlags;
     efd::map<Unk_CMISKindB, int> mapValues;
     ATL::CAtlArray<MS2Ptr<UGCMapDesignInfo> > arrDesign;
@@ -2241,7 +2242,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     }
     if (nMode == 0)
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService)
         {
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
@@ -2257,7 +2258,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3630(nF);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3490(nG);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c34d0(nH);
-            spService->FUN_1410c3530(*reinterpret_cast<Unk_CMISFlags3*>(&rule));
+            spService->FUN_1410c3530(rule);
             if (bHasInfo != 0)
             {
                 ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3670();
@@ -2287,7 +2288,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
     }
     else
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService)
         {
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3020(nMapId);
@@ -2303,7 +2304,7 @@ void CSceneStateGame::OnLoadUgcMap(CInPacket& packet)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3630(nF);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3490(nG);
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410c34d0(nH);
-            spService->FUN_1410c3530(*reinterpret_cast<Unk_CMISFlags3*>(&rule));
+            spService->FUN_1410c3530(rule);
             if (bHasInfo != 0)
             {
                 ((CubeMapInformationService*)(spService).operator->())->FUN_1410c3670();
@@ -2390,7 +2391,7 @@ void CSceneStateGame::OnFieldRemoveUser(CInPacket& packet)
     MyPC* pPC = ((MyPC*)((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bd0cc0());
     if (pPC != 0)
         ((class PC*)(class MyPC*)(pPC))->FUN_141663500(nMapId);
-    if (((Unk_AvModeSvc*)(Unk_SSG9f7c90*)(((class Unk_SSG9f7c90*)FUN_1409f7c90())))->FUN_1409f7ea0() != 0)
+    if (((COptimizer*)(Unk_SSG9f7c90*)(((class Unk_SSG9f7c90*)FUN_1409f7c90())))->FUN_1409f7ea0() != 0)
         ((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bbbcf0(nMapId, 1);
     else
         ((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bbbcf0(nMapId, 0);
@@ -2437,7 +2438,7 @@ void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
         if (((CDropItem*)(Unk_SSGDropItem*)(pDrop))->FUN_14118ff10())
         {
             unsigned __int64 nAdd = (unsigned)packet.ReadInt32();
-            MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nOwnerId)));
+            MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nOwnerId)));
             if (pMyPC != 0)
             {
                 // MS2: slot 88 (MyPC's override returns its EP gauge; PCBase declares the slot as int)
@@ -2591,7 +2592,7 @@ void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
         int nSlot = packet.ReadUInt8();
         int nType = packet.ReadUInt8();
         int nKind = FUN_140222f60(nType);
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nId)));
         if (pMyPC == 0)
             return;
         MS2Ptr<CEquipItem> spEquip = ((CEquipment*)((class PC*)(class MyPC*)(pMyPC))->FUN_1416561a0())->FUN_1411e1580(nItemUid);
@@ -3105,7 +3106,7 @@ void CSceneStateGame::OnItemPutOn(CInPacket& packet)
         pPC->vfunc_127(spItem.get(), 1);
     else
         pPC->vfunc_127(spItem.get(), 0);
-    MyPC* pMyPC = FUN_1409613d0(pPC);
+    MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pMyPC != 0)
     {
         if (((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
@@ -3154,7 +3155,7 @@ void CSceneStateGame::OnItemPutOff(CInPacket& packet)
         pPC->vfunc_128(pItem.get(), 1);
     else
         pPC->vfunc_128(pItem.get(), 0);
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         Unk_SSGItemHub* pHub = ((class Unk_SSGItemHub*)FUN_140a6a840());
@@ -3181,7 +3182,7 @@ void CSceneStateGame::FUN_141716d10(CInPacket& packet)
     spItem->FUN_140526b70(nAmount);
     spItem->FUN_140524eb0(packet);
     pPC->FUN_1416561c0()->FUN_140c86450(spItem);
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         Unk_SSGItemHub* pHub = ((class Unk_SSGItemHub*)FUN_140a6a840());
@@ -3203,7 +3204,7 @@ void CSceneStateGame::OnItemSkinPutOff(CInPacket& packet)
     if (!pItem)
         return;
     pPC->FUN_1416561c0()->FUN_140c86510(nItemUid);
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
         ((class Unk_SSGItemHub*)FUN_140a6a840())->vfunc_5(pItem.get());
 }
@@ -3220,7 +3221,7 @@ void CSceneStateGame::OnItemUpdate(CInPacket& packet)
     MS2Ptr<CEquipItem> pEquip = pPC->GetEquipByUid(nItemUid);
     if (!pEquip)
         return;
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         Unk_SSGItemHub* pHub = ((class Unk_SSGItemHub*)FUN_140a6a840());
@@ -3249,7 +3250,7 @@ void CSceneStateGame::OnUserSkinColor(CInPacket& packet)
     FUN_141b6f220(FUN_141b6efc0(pPC->FUN_14123c410()), 0, *(struct Unk_Colc const*)&static_cast<class NiColor const&>(pPC->FUN_141659220(0)));
     FUN_141b6f220(FUN_141b6efc0(pPC->FUN_14123c410()), 2, *(struct Unk_Colc const*)&static_cast<class NiColor const&>(pPC->FUN_141659220(1)));
     pPC->FUN_141656780();
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         Unk_SSGItemHub* pHub = ((class Unk_SSGItemHub*)FUN_140a6a840());
@@ -3327,8 +3328,8 @@ void CSceneStateGame::OnSkillUse(CInPacket& packet)
         kReq.origin = kPos;
         kReq.direction = kDir;
         kReq.fValue = kRot.z;
-        MS2Ptr<Unk_PCBaseComp_b18> spSkill(new Unk_PCBaseComp_b18());
-        if (!spSkill->FUN_1417595d0(kReq))
+        MS2Ptr<Unk_PCBaseComp_b18> spSkill(static_cast<Unk_PCBaseComp_b18*>(new CSkillRecord()));
+        if (!spSkill->Init(kReq))
             return;
         if (FUN_140166410()->FUN_14036d570(0xae))
         {
@@ -3384,8 +3385,8 @@ void CSceneStateGame::FUN_141718150(CInPacket& packet)
             kReq.origin = kPos;
             kReq.direction = kDir;
             kReq.fValue = kRot.z;
-            MS2Ptr<Unk_PCBaseComp_b18> spSkill(new Unk_PCBaseComp_b18());
-            if (!spSkill->FUN_1417595d0(kReq))
+            MS2Ptr<Unk_PCBaseComp_b18> spSkill(static_cast<Unk_PCBaseComp_b18*>(new CSkillRecord()));
+            if (!spSkill->Init(kReq))
                 return;
             spSkill->m_fSpeed = fSpeed;
             pActor->FUN_141673b40(spSkill);
@@ -3686,7 +3687,7 @@ void CSceneStateGame::FUN_1417212d0(CInPacket& packet)
         }
         else
         {
-            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
                 ((CubeMapInformationService*)(spService).operator->())->FUN_1410caa60((ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>> const*)(ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>> const*)&(strName), nState);
         }
@@ -4198,7 +4199,7 @@ void CSceneStateGame::OnMyInfo(CInPacket& packet)
     PC* pPC = ((PC*)WorldService::GetInstance()->FUN_141bd1290(nId));
     if (pPC == 0)
         return;
-    MyPC* pMyPC = FUN_1409613d0(pPC);
+    MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pMyPC != 0)
     {
         int nResult = packet.ReadInt32();
@@ -4535,11 +4536,11 @@ MS2_REPLACE_METHOD(0x141737360, CSceneStateGame, OnRoomDungeon, 95, 0x096233CB);
 
 // Packet 0xce: UGC map (home) visit results and the password portal (mypc.cpp's lock map and key).
 class UIApartmentDialog : public UIDialog { public: bool FUN_1418b6ab0(int nMode); };   // nonzero: handled
-// A password portal lock (RTTI UGCMapEnterBlockInfo, 0x28; ctor 0x1408b3e20 in ?\ugcmapoptions.cpp).
+class UGCMapEnterBlockInfo : public CPtred { public: UGCMapEnterBlockInfo(); __int64 m_n18; int m_n20; };   // a password portal lock (ugcmapoptions.h clashes here; ctor 0x1408b3e20)
+// The lock as mypc.cpp's map value view (the same 0x28-byte UGCMapEnterBlockInfo).
 class Unk_MyPCPortalLock : public CPtred
 {
 public:
-    Unk_MyPCPortalLock();
     __int64 m_nUntil;                                       // +0x18 the portal cannot be retried before this
     int m_nTries;                                           // +0x20 wrong passwords
 };
@@ -4554,7 +4555,7 @@ struct Unk_MyPCPortalKey
     int m_nB;
     unsigned __int64 m_nC;
 };
-extern ATL::CRBMap<Unk_MyPCPortalKey, MS2Ptr<Unk_MyPCPortalLock> > DAT_143ab3288;   // the locked password portals
+extern struct Unk_Be790TreeA DAT_143ab3288; typedef ATL::CRBMap<Unk_MyPCPortalKey, MS2Ptr<Unk_MyPCPortalLock> > Unk_SSGPortalLockMap;   // the locked password portals (as mypc.cpp)
 // The pending portal move (mypc.h; +0x17a0 of MyPC).
 struct Unk_SSGPortalMove
 {
@@ -4633,10 +4634,10 @@ void CSceneStateGame::FUN_1417373d0(CInPacket& packet)
         __int64 nC = packet.ReadInt64();
         Unk_MyPCPortalKey key(((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd3060(), nA, nB, nC);
         MS2Ptr<Unk_MyPCPortalLock> spLock(0);
-        if (!DAT_143ab3288.Lookup(key, spLock))
+        if (!reinterpret_cast<Unk_SSGPortalLockMap&>(DAT_143ab3288).Lookup(key, spLock))
         {
-            spLock.AssignRaw(new Unk_MyPCPortalLock);
-            DAT_143ab3288.SetAt(key, spLock);
+            spLock.AssignRaw(reinterpret_cast<Unk_MyPCPortalLock*>(new UGCMapEnterBlockInfo));
+            reinterpret_cast<Unk_SSGPortalLockMap&>(DAT_143ab3288).SetAt(key, spLock);
         }
         if (spLock->m_nUntil > GetServerTime())
             break;
@@ -5240,7 +5241,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         int nA = packet.ReadInt32();
         int nB = packet.ReadInt32();
         int nC = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         if (nType == 2)
@@ -5273,7 +5274,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
     case 3:
     {
         int nCharId = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
@@ -5290,7 +5291,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         int nCharId = packet.ReadInt32();
         int nA = packet.ReadInt32();
         int nB = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         UIArcadeLifeBar* pBar = Unk_SSGGetDialog<UIArcadeLifeBar>(0x4efc);
@@ -5302,7 +5303,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
     {
         int nCharId = packet.ReadInt32();
         int nSkillId = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         pMyPC->FUN_141523bc0()->FUN_141767f80(nSkillId);
@@ -5313,7 +5314,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
     {
         int nCharId = packet.ReadInt32();
         int nSkillId = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         pMyPC->FUN_141523bc0()->FUN_141768100(nSkillId);
@@ -5326,7 +5327,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         int nValue = packet.ReadInt32();
         bool bShow = packet.ReadBool();
         bool bFlag = packet.ReadBool();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         UIWatchAGameDialog* pDlg = Unk_SSGGetDialog<UIWatchAGameDialog>(0x4f91);
@@ -5352,7 +5353,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         int nItemId = packet.ReadInt32();
         int nUnused = packet.ReadInt32();
         int nCount = packet.ReadInt32();
-        MyPC* pMyPC = FUN_1409613d0(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(((PC*)WorldService::GetInstance()->FUN_141bd1290(nCharId)));
         if (pMyPC == 0)
             break;
         UIHideAndSeekResultDialog* pDlg = Unk_SSGGetDialog<UIHideAndSeekResultDialog>(0x4f92);
@@ -5780,7 +5781,7 @@ void CSceneStateGame::OnUserMoveByPortal(CInPacket& packet)
     PC* pPC = ((PC*)WorldService::GetInstance()->FUN_141bd1290(nId));
     if (pPC == 0)
         return;
-    MyPC* pMyPC = FUN_1409613d0(pPC);
+    MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pMyPC != 0)
         pMyPC->FUN_141528e50(reinterpret_cast<const efd::Point3&>(kPos), reinterpret_cast<const efd::Point3&>(kRot), nFlag);
     else
@@ -5997,8 +5998,8 @@ void CSceneStateGame::FUN_14172a1c0(CInPacket& packet)
         kReq.tick = nCastUid;
         kReq.unknown14 = nMotion;
         kReq.origin = kPos;
-        MS2Ptr<Unk_PCBaseComp_b18> spSkill(new Unk_PCBaseComp_b18());
-        if (!spSkill->FUN_1417595d0(kReq))
+        MS2Ptr<Unk_PCBaseComp_b18> spSkill(static_cast<Unk_PCBaseComp_b18*>(new CSkillRecord()));
+        if (!spSkill->Init(kReq))
             return;
         spSkill->m_n94 = n94;
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9020(strName, spSkill, strBone, nFlag);
@@ -6091,7 +6092,7 @@ class CItemStatus   // C3: member view (real class not in this TU)
 public:
     CItemEnchantInfo* GetEnchant();
 };
-class Unk_ItemEnchantData { public:  };   // CItemStatus
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 void FUN_140d73ff0(CStringW strKey);                        // system message box by string key
 enum Unk_SSGEnchantExpError { };                            // the 0x97 mode 12 error code
 
@@ -6111,7 +6112,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
-            int nPrevLevel = ((CItemStatus*)(Unk_ItemEnchantData*)(spItem->FUN_1405278a0()))->GetEnchant()->GetLevel();
+            int nPrevLevel = ((CItemStatus*)(spItem->FUN_1405278a0()))->GetEnchant()->GetLevel();
             UIItemEnchantDialog* pDlg = ((class UIItemEnchantDialog*)FUN_1413b1bc0(0x4e92));
             if (pDlg != 0)
             {
@@ -6146,7 +6147,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
-            int nPrevLevel = ((CItemStatus*)(Unk_ItemEnchantData*)(spItem->FUN_1405278a0()))->GetEnchant()->GetLevel();
+            int nPrevLevel = ((CItemStatus*)(spItem->FUN_1405278a0()))->GetEnchant()->GetLevel();
             UIItemEnchantDialog* pDlg = ((class UIItemEnchantDialog*)FUN_1413b1bc0(0x4e92));
             if (pDlg != 0)
             {
@@ -6392,7 +6393,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
                         {
                             spObj->FUN_14174a4a0(strName);
                             spObj->FUN_14174a4d0();
-                            ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5c40(spObj);
+                            WorldService::GetInstance()->AddProp(spObj);
                         }
                     }
                     TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(spEntity, 0);
@@ -6955,7 +6956,7 @@ void CSceneStateGame::FUN_14173feb0()
         UISwfEntity* pScene = ((class GFxSceneService*)(class Unk_SSGSoundCtl*)(((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50();
         if (pScene != 0)
             pScene->FUN_1422dc080();
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410bc320();
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
@@ -6980,7 +6981,7 @@ void CSceneStateGame::FUN_14173feb0()
             pUI->FUN_141ad9650();
             pUI->AddMovieDamage();
         }
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService)
             ((CubeMapInformationService*)(spService).operator->())->FUN_1410bc1c0();
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
@@ -7319,7 +7320,7 @@ void CSceneStateGame::OnNametag(CInPacket& packet)
         return;
     pPC->FUN_141661dc0(nA, nB);
     FUN_141a60f00(pPC->FUN_14123c580());
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         Unk_SSGDlg2711* pDlg = ((class Unk_SSGDlg2711*)FUN_140938c30(0x2711));
@@ -7362,7 +7363,7 @@ void CSceneStateGame::OnRevivalConfirm(CInPacket& packet)
     int bEffect = pPC->FUN_141661aa0() && nB == 0;
     pPC->FUN_141661a60(nB);
     pPC->FUN_1416619d0(nA);
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         if (bEffect)
@@ -7455,7 +7456,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
     {
         ((class Unk_SSGSkillBook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0())->vfunc_7(packet);
         ((class PC*)(class PC*)(pPC))->FUN_141654790();
-        MyPC* pMyPC = FUN_1409613d0(pPC);
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
         if (pMyPC != 0)
         {
             TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(4, 0);
@@ -7477,7 +7478,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
             query.SetActor(pPC->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&query));   // C3: CEffectService (effectservice.h)
             ((class CSkillTierOptionManager*)(class Unk_PCSkillTree*)(pPC->FUN_1409eee00().get()))->Clear();
-            MyPC* pMyPC = FUN_1409613d0(pPC);
+            MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
             if (pMyPC != 0)
             {
                 TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(4, 0);
@@ -7501,7 +7502,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
     else if (nMode == 7)
     {
         ((class Unk_SSGSkillBook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0())->vfunc_7(packet);
-        MyPC* pMyPC = FUN_1409613d0(pPC);
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
         if (pMyPC != 0)
         {
             TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(4, 0);
@@ -7513,7 +7514,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
     else if (nMode == 9 || nMode == 10 || nMode == 11)
     {
         ((class Unk_SSGSkillBook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0())->vfunc_7(packet);
-        MyPC* pMyPC = FUN_1409613d0(pPC);
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
         if (pMyPC != 0)
         {
             Unk_SSGDlg4f2d* pTree = ((class Unk_SSGDlg4f2d*)FUN_1409eb120(0x4f2d));
@@ -7751,12 +7752,12 @@ MS2_REPLACE_METHOD(0x141720E50, CSceneStateGame, OnRegionSkill, 1037, 0xEEED3063
 struct Unk_UtilFloat3 { float x, y, z; };
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* p);
 // The anchor handle is MS2Ptr<CBoxCollision>; the stand-in stays as vfunc_27's array element type.
-class Unk_GoAnchorPtr
-{
-public:
-    ~Unk_GoAnchorPtr();                                     // 0x140a00490
-    void* m_pad[2];
-};
+// (vfunc_27 fills a CAtlArray<MS2Ptr<CBoxCollision> >: the old Unk_GoAnchorPtr view shared all its VAs)
+//
+//
+//
+//
+//
 
 // 0x3d mode 5: region skill hits. The region skill (cast uid, owner, region id, attack), then per target its id,
 // (flag, damage) hits, origin and direction; npcs with flag 0x1d are hit at their nearest part anchor.
@@ -7795,14 +7796,14 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
             if (pNpc != 0 && ((CNpcData*)static_cast<CNpc*>(pNpc)->GetNpcData().operator->())->HasPropertyTag(0x1d))
             {
                 Vector3 kBest = kOrigin;
-                ATL::CAtlArray<Unk_GoAnchorPtr> kAnchors;
+                ATL::CAtlArray<MS2Ptr<CBoxCollision> > kAnchors;
                 pNpc->vfunc_27(kAnchors);
                 if (kAnchors.IsEmpty() == true)
                     return;
                 float fMin = FLT_MAX;
                 for (size_t k = 0; k < kAnchors.GetCount(); k++)
                 {
-                    MS2Ptr<CBoxCollision> spAnchor(reinterpret_cast<MS2Ptr<CBoxCollision>&>(kAnchors[k]));
+                    MS2Ptr<CBoxCollision> spAnchor(kAnchors[k]);
                     if (spAnchor == NULL)
                         continue;
                     Vector3 kPt = FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&spAnchor->m_kBox.center));
@@ -7841,7 +7842,7 @@ void CSceneStateGame::OnSetCraftMode(CInPacket& packet)
     {
         pPC->vfunc_135(bHasItem, 0, 0);
     }
-    if (FUN_1409613d0(pPC) != 0)
+    if ((MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC) != 0)
     {
         PCBase* pTarget = ((PCBase*)WorldService::GetInstance()->FUN_141bd3620());
         if (pTarget != 0)
@@ -7955,7 +7956,7 @@ void CSceneStateGame::OnSetPcbang(CInPacket& packet)
     if (pPC == 0)
         return;
     pPC->FUN_141658ed0(nValue);
-    void* pHost = FUN_1409613d0(pPC);
+    void* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pHost != 0)
     {
         PCBase* pTarget = ((PCBase*)WorldService::GetInstance()->FUN_141bd3620());
@@ -8357,7 +8358,7 @@ void CSceneStateGame::FUN_141738b40(CInPacket& packet)
             break;
         }
         case 0:
-            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
                 int nCubeId = packet.ReadInt32();
@@ -8762,16 +8763,16 @@ void CSceneStateGame::OnLapenshard(CInPacket& packet)
     }
     case 1:
     {
-        Unk_SSG5b5dd0 kEntry;
-        ((Unk_LapenEquipped*)(Unk_SSG5b5dd0*)&(kEntry))->Read(packet);
+        Unk_LsEquipRequest kEntry;
+        ((Unk_LapenEquipped*)(Unk_LsEquipRequest*)&(kEntry))->Read(packet);
         pPC->EquipLapenshard((Unk_MyPCLapenSlot)kEntry.m_nA, kEntry.m_nB, 0);
         FUN_1419f37f0(5);
         break;
     }
     case 2:
     {
-        Unk_SSG5b5e70 kEntry;
-        ((Unk_LapenUnequip*)(Unk_SSG5b5e70*)&(kEntry))->Read(packet);
+        Unk_LsSlotArg kEntry;
+        ((Unk_LapenUnequip*)(Unk_LsSlotArg*)&(kEntry))->Read(packet);
         pPC->UnequipLapenshard((Unk_MyPCLapenSlot)kEntry.m_nA);
         FUN_1419f37f0(5);
         break;
@@ -8846,7 +8847,7 @@ void CSceneStateGame::OnPrestige(CInPacket& packet)
                     req.SetActor(pPC->FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&req));   // C3: CEffectService (effectservice.h)
             }
-            MyPC* pMyPC = FUN_1409613d0(pPC);
+            MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
             if (pMyPC == 0)
                 break;
             {
@@ -9539,7 +9540,7 @@ void CSceneStateGame::OnLevelUp(CInPacket& packet)
     }
     Unk_SSGSkillBook* pBook = ((class Unk_SSGSkillBook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0());
     pBook->vfunc_4(nLevel);
-    MyPC* pMyPC = FUN_1409613d0(pPC);
+    MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
     if (pMyPC != 0)
     {
         FUN_141b16550(nLevel);
@@ -9847,33 +9848,33 @@ extern unsigned short DAT_143ab2940;
 extern __int64 DAT_143ab2948;
 extern ATL::CAtlArray<int> DAT_143ab32b8;
 // A (cube id, value) pair of the house set 0x143ab32d8 (ctor 0x1409ed810).
-struct Unk_SSGHouseKey
-{
-    Unk_SSGHouseKey();   // 0x1409ed810, out of range
-    unsigned int m_nA;
-    unsigned int m_nB;
-};
-inline bool operator<(const Unk_SSGHouseKey& a, const Unk_SSGHouseKey& b)
-{
-    if (a.m_nA != b.m_nA)
-        return a.m_nA < b.m_nA;
-    return a.m_nB < b.m_nB;
-}
+#include "ms2/commonfiles/itemdatatable.h"   // the pair is Unk_TrophyKey (was the unit-local Unk_SSGHouseKey, same layout and ordering)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // The set's members live in another unit (clear 0x140581e40, end 0x140582470, find 0x140583270, insert 0x140569330).
 // Declared as explicit specializations so this TU calls them instead of emitting look-alikes of the unit's other set.
-typedef std::_Tree<std::_Tset_traits<Unk_SSGHouseKey, std::less<Unk_SSGHouseKey>, std::allocator<Unk_SSGHouseKey>, false> > Unk_SSGHouseTree;
-template <> Unk_SSGHouseTree::iterator Unk_SSGHouseTree::find(const Unk_SSGHouseKey& kKey);
-template <> Unk_SSGHouseTree::iterator Unk_SSGHouseTree::end() noexcept;
-template <> void Unk_SSGHouseTree::clear() noexcept;
-template <> template <> Unk_SSGHouseTree::_Pairib Unk_SSGHouseTree::insert<false, 0>(const Unk_SSGHouseKey& kKey);
-extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
+typedef std::_Tree<std::_Tset_traits<Unk_TrophyKey, std::less<Unk_TrophyKey>, std::allocator<Unk_TrophyKey>, false> > Unk_TrophyTree;
+template <> Unk_TrophyTree::iterator Unk_TrophyTree::find(const Unk_TrophyKey& kKey);
+template <> Unk_TrophyTree::iterator Unk_TrophyTree::end() noexcept;
+template <> void Unk_TrophyTree::clear() noexcept;
+template <> template <> Unk_TrophyTree::_Pairib Unk_TrophyTree::insert<false, 0>(const Unk_TrophyKey& kKey);
+extern std::set<Unk_TrophyKey> DAT_143ab32d8;   // userproxy.cpp
 
 // @0x141723670
 // MS2-FUNCTIONAL: identical instructions and length; the exe swaps two dword stack slots (mode 2 nError at +0x90, the mode 5 `nFlag == 0` temp at +0x128)
 //   and shifts the four loop counters by 4. Renaming nError or hoisting it to function scope doesn't move it.
 void CSceneStateGame::OnResponseCube(CInPacket& packet)
 {
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     unsigned char nMode = packet.ReadUInt8();
     MyPC* pMyPC = ((MyPC*)WorldService::GetInstance()->FUN_141bd0cc0());
     switch (nMode)
@@ -10748,9 +10749,9 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
         DAT_143ab32d8.clear();
         for (unsigned int i = 0; i < nCount; i++)
         {
-            Unk_SSGHouseKey kKey;
-            kKey.m_nA = packet.ReadInt32();
-            kKey.m_nB = packet.ReadInt32();
+            Unk_TrophyKey kKey;
+            kKey.m_nId = packet.ReadInt32();
+            kKey.m_nLevel = packet.ReadInt32();
             if (DAT_143ab32d8.find(kKey) == DAT_143ab32d8.end())
                 DAT_143ab32d8.insert(kKey);
         }
@@ -10854,7 +10855,7 @@ void FUN_1408a10e0(Unk_CubeOwners& owners, int nGroup, int nBlock, const CString
 // @0x141728110
 void CSceneStateGame::OnLoadCubes(CInPacket& packet)
 {
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     unsigned char nMode = packet.ReadUInt8();
     switch (nMode)
     {
@@ -10972,7 +10973,7 @@ class CZlibPacket final : public CPtred
 {
 public:
     CZlibPacket() : m_stream(true, 0x28) { m_bDirty = true; }
-    CByteBuffer& FUN_14083b6b0(CInputStream& stream);       // decode; the decompressed buffer
+    // C3: the decoder 0x14083b6b0 is Unk_StreamWrapper::Decode (stream.h; same layout), called through a cast
 private:
     Unk_CompressedStream m_stream;                          // +0x18
     bool m_bDirty;                                          // +0xa0
@@ -11048,7 +11049,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
             if (spItem.get() != 0)
             {
                 pPC->FUN_14166ccb0()->vfunc_30(reinterpret_cast<MS2Ptr<Unk_StateArg29>&>(spItem));
-                if (FUN_1409613d0(pPC) != 0)
+                if ((MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC) != 0)
                     ((class Unk_SSGItemHub*)FUN_140a6a840())->vfunc_30(spItem.get());
             }
         }
@@ -11223,7 +11224,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
 
     // the owned items
     CZlibPacket kItems;
-    CByteBuffer& buf = kItems.FUN_14083b6b0(static_cast<CInputStream&>(packet));
+    CByteBuffer& buf = reinterpret_cast<Unk_StreamWrapper&>(kItems).Decode(static_cast<CInputStream&>(packet));
     int nItems = buf.ReadUInt8();
     for (int i = 0; i < nItems; i++)
     {
@@ -11264,10 +11265,10 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
 
     // the item cooldowns and the worn equipment
     CZlibPacket kCooldowns;
-    CByteBuffer& kCooldownBuf = kCooldowns.FUN_14083b6b0(static_cast<CInputStream&>(packet));
+    CByteBuffer& kCooldownBuf = reinterpret_cast<Unk_StreamWrapper&>(kCooldowns).Decode(static_cast<CInputStream&>(packet));
     spPC->FUN_1416561c0()->FUN_140c860b0(kCooldownBuf, nObjId);
     CZlibPacket kEquip;
-    CByteBuffer& kEquipBuf = kEquip.FUN_14083b6b0(static_cast<CInputStream&>(packet));
+    CByteBuffer& kEquipBuf = reinterpret_cast<Unk_StreamWrapper&>(kEquip).Decode(static_cast<CInputStream&>(packet));
     spPC->FUN_14165f460()->ReadFromStream(kEquipBuf, nObjId);
     MS2Ptr<CGemBase> spGem = spPC->FUN_14165f460()->FUN_141270740(1);
     if (spGem.get())
@@ -11297,7 +11298,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         pMyPC->vfunc_88();
         DAT_143ab2942 = true;
         FUN_140d86260()->vfunc_22(0x2d0, "GameBegin");
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService ? true : false)
         {
             if (!((CubeMapInformationService*)(spService).operator->())->FUN_1410c35c0())
@@ -11307,7 +11308,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
             }
         }
         FUN_141425610();
-        pMyPC->FUN_14152ed60(&proxy);
+        pMyPC->FUN_14152ed60(reinterpret_cast<const Unk_MyPCGameBegin*>(&proxy));
     }
     MyPC* pLocal = ((MyPC*)((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bd0cc0());
     if (pLocal)
@@ -11980,7 +11981,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
                 FUN_1401d3700(strName);
                 if (names.find(strName) == names.end())
                 {
-                    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+                    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
                     efd::Point3 kPos = efd::Point3::ZERO;
                     pEntity->GetPropertyValue(0xfd95ca52, kPos);
                     Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
@@ -12159,7 +12160,7 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
                 spDoll->items.Add(spItem);
             }
         }
-        Unk_Service6100017* pCubeMap = FUN_1401cd040(&DAT_143b059e8);
+        CubeMapInformationService* pCubeMap = FUN_1401cd040(&DAT_143b059e8);
         pCubeMap->FUN_1410cb4c0(spDoll);
     }
     else if (nMode == 1)
@@ -12329,7 +12330,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
             return;
         pGuide->vfunc_128();
         WorldService::GetInstance()->FUN_141bbbcf0(nGuideId, 0);
-        MyPC* pMyPC = FUN_1409613d0(pOwner);
+        MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pOwner);
         if (pMyPC != 0 && pMyPC->GetActiveCubeCraft() != 0)
         {
             pMyPC->SendCraftModeOff();

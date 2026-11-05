@@ -70,11 +70,11 @@ class UIAchieveDialog; class UIMeratMarketRegisterDialog;
 template <class T> T* Unk_DrGetDialog(int nId);   // the open dialog of a ui id (0x1412bcec0 for UIAchieveDialog, uidungeonroomdialog)
 template <class T> T* Unk_MmGetDialog(int nId);   // the open dialog of a ui id (0x140d61d50 for UIMeratMarketRegisterDialog, meratmarketman)
 int Unk_GcState178(char*);   // C3: was FUN_1413b5610
-class TiXmlElement   // C3: member view for the former FUN_14086f500 stand-in
-{
-public:
-    const char* Attribute(const char* name, int* i) const;
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 
 // The slot-55 dialog query (is the dialog hidden).
 // A dialog: only slot 55 (is the dialog hidden).
@@ -117,7 +117,7 @@ CGuideConditionEquipSkill::CGuideConditionEquipSkill()
 }
 
 // @0x1413a8460
-void CGuideConditionEquipSkill::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionEquipSkill::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     ((class TiXmlElement*)(pElem))->Attribute("isEquip", &m_nIsEquip);
@@ -229,7 +229,7 @@ CStringW CGuideConditionEquipItem::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A8960, CGuideConditionEquipItem, GetTypeName, 61, 0x769C1354);
 
 // @0x1413a89b0
-void CGuideConditionEquipItem::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionEquipItem::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nSlotType = 0;
@@ -319,7 +319,7 @@ CStringW CGuideConditionDesignItem::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A9020, CGuideConditionDesignItem, GetTypeName, 61, 0x192C9BF3);
 
 // @0x1413a9070
-void CGuideConditionDesignItem::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionDesignItem::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nItemType = 0;
@@ -382,7 +382,7 @@ CStringW CGuideConditionExistItem::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A9380, CGuideConditionExistItem, GetTypeName, 61, 0x322D3F81);
 
 // @0x1413a93d0
-void CGuideConditionExistItem::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionExistItem::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nItemId = 0;
@@ -432,7 +432,7 @@ CStringW CGuideConditionCountItem::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A9670, CGuideConditionCountItem, GetTypeName, 61, 0x10E998EE);
 
 // @0x1413a96c0
-void CGuideConditionCountItem::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionCountItem::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 12;

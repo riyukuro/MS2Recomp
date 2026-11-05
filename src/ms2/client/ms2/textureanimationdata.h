@@ -22,7 +22,7 @@
 #include "ms2/client/ms2/layer.h"
 #include "ms2/client/ms2/itempickinghelper.h"       // Unk_PickMeshPtr (scene node pointer)
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 class PCBase;
 
 // One <texture> element of the animation XML (0x18 bytes). The control texture is optional.
@@ -30,7 +30,7 @@ struct Unk_TextureFrame
 {
     Unk_TextureFrame();                                         // 0x141847510
     ~Unk_TextureFrame();                                        // 0x141849de0
-    void Load(Unk_140165cf0* pNode);                   // read "file", "control" and "delay"
+    void Load(TiXmlElement* pNode);                   // read "file", "control" and "delay"
     void FUN_1418475d0(const CString& strDir, int nFlags);      // load the textures into the resource manager
     bool FUN_1418476e0(const CString& strDir);                  // both textures are loaded
     void FUN_141847880(const CString& strDir);                  // queue the textures in the file preload
@@ -53,7 +53,7 @@ public:
     virtual ~CTextureAnimationData() = default;                 //  0 0x141849da0 (implicit) (??_G 0x14184a090)
 
     int FUN_141847c90(int nTime);                               // frame index at the given time
-    bool FUN_141847e30(Unk_140165cf0* pNode);                   // parse "target" and the <texture> list; false when empty
+    bool FUN_141847e30(TiXmlElement* pNode);                   // parse "target" and the <texture> list; false when empty
     int FUN_141847fe0(const CString& strDir);                   // all frames loaded
     void FUN_141848080(const CString& strDir, int nFlags);      // load all frames
     efd::SmartPointer<NiTexture> FUN_141848110(unsigned int nFrame, const CString& strDir);   // base texture of a frame

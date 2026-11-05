@@ -7,13 +7,13 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/bitset.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 // An item's <dummy> attach node (read by the item data loader, 0x140543ca0). 0x38 bytes.
 struct ItemDummyInfo
 {
     ItemDummyInfo();                        // 0x1403142a0
-    void Load(Unk_140165cf0* pElem);        // 0x140314350
+    void Load(TiXmlElement* pElem);        // 0x140314350
 
     int gender;                             // +0x00
     CString sequence;                       // +0x08

@@ -169,7 +169,7 @@
 #include "ms2/ms2recover.h"
 #include <atlcoll.h>
 #include <string>
-class Unk_140165cf0;
+class TiXmlElement;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
@@ -177,7 +177,7 @@ public:
 };
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 
-class Unk_140165cf0;
+class TiXmlElement;
 class CLogString* GetLogString();
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -229,15 +229,15 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     TiXmlDocument document;
     if(GetFileSystem()->FUN_1403974b0(&document,path,0,false,false)==0) return Unk_UGCMapPtr(0);
     Unk_UGCMapPtr value(new CUGCMapData);
-    class Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ugcmap"));
+    class TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ugcmap"));
     if(root==0) {
         Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ugcmap> {0}]",path);
         return Unk_UGCMapPtr(0);
     }
-    for(auto* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(root))->FirstChild("group"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(node))->NextSibling("group"))) {
+    for(auto* node=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(root))->FirstChild("group"));node;node=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(node))->NextSibling("group"))) {
         int no=0; XmlGetAttr((class TiXmlElement*)(node), "no", *(int*)(&no));
         int contractPrice=0; XmlGetAttr((class TiXmlElement*)(node), "contractPrice", *(int*)(&contractPrice));
-        CString contractText(((class TiXmlElement*)(class Unk_140165cf0*)(node))->Attribute("contractPriceItemCode"));
+        CString contractText(((class TiXmlElement*)(class TiXmlElement*)(node))->Attribute("contractPriceItemCode"));
         long contractItemCode=atol(contractText);
         int contractDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeContractDate", *(int*)(&contractDays));
         int extensionDays=0; XmlGetAttr((class TiXmlElement*)(node), "ugcHomeExtensionDate", *(int*)(&extensionDays));
@@ -249,7 +249,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         int area=0; XmlGetAttr((class TiXmlElement*)(node), "area", *(int*)(&area));
         int indoorCount=0; XmlGetAttr((class TiXmlElement*)(node), "indoorCount", *(int*)(&indoorCount));
         int extensionPrice=0; XmlGetAttr((class TiXmlElement*)(node), "extensionPrice", *(int*)(&extensionPrice));
-        CString extensionText(((class TiXmlElement*)(class Unk_140165cf0*)(node))->Attribute("extensionPriceItemCode"));
+        CString extensionText(((class TiXmlElement*)(class TiXmlElement*)(node))->Attribute("extensionPriceItemCode"));
         long extensionItemCode=atol(extensionText);
         int houseNumber=0; XmlGetAttr((class TiXmlElement*)(node), "houseNumber", *(int*)(&houseNumber));
         CString previewIcon=Unk_ReadString((class Unk_XmlNode*)(node), "previewIcon", CString(""));
@@ -286,7 +286,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         group.hideEmoticon=hideEmoticon;group.trophyID=trophyId;group.adminOnly=adminOnly;
         group.triggerCount=triggerCount;group.indoorSizeType=indoorSizeType;group.useCouponEvent=useCouponEvent;
     }
-    for(auto* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(root))->FirstChild("floor"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(void*)(node))->NextSibling("floor"))) {
+    for(auto* node=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(root))->FirstChild("floor"));node;node=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(node))->NextSibling("floor"))) {
         Unk_UGCFloor floor;
         int id=0;XmlGetAttr((class TiXmlElement*)(node), "id", *(int*)(&id));
         XmlGetAttr((class TiXmlElement*)(node), "start_height", *(float*)(&floor.startHeight));

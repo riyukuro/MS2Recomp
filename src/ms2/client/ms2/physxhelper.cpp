@@ -91,17 +91,17 @@ public:
     char m_pad[0xf8];
     char m_lock[8];
 };
-// Smart pointer to a prop object (the same shape as worldservice_1's Unk_WsA_PropPtr).
-class Unk_PhysPropPtr
-{
-public:
-    ~Unk_PhysPropPtr();                                     // 0x140ae16b0
-    Unk_PhysPropPtr(const Unk_PhysPropPtr&);                // 0x141bf10a0 (declared only: makes MSVC pass it by hidden reference like the exe, not in a register)
-    Unk_PhysPropObj* FUN_140ae1920() const;                 // the object
-    Unk_PhysPropObj* FUN_14168afe0() const;                 // the object (this unit's copy)
-private:
-    Unk_PhysPropObj* m_p;
-};
+// C3: the prop pointer is efd::SmartPointer<egfPhysX::EntityActorData>: dtor 0x140ae16b0,
+// copy 0x141bf10a0 (the caller's), operator T* 0x140ae1920, operator-> 0x14168afe0.
+
+
+
+
+
+
+
+
+
 Unk_PhysXApp* FUN_14168ab00(efd::ServiceManager* pServices);
 Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices);
 
@@ -135,9 +135,9 @@ bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
 float FUN_140a38cd0(float f);
 struct Unk_EntityAppFramework;
-class Unk_Service6100017;
-Unk_Service6100017*FUN_1401cd040(Unk_EntityAppFramework*);
-NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
+class CubeMapInformationService;
+CubeMapInformationService*FUN_1401cd040(Unk_EntityAppFramework*);
+class CubeMapInformationService { public: void* FindPhysXActor(egf::EntityID key); };   // C3: was NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID); 0x1410c5420 (cubemapinformationservice_3.h)
 class WorldService   // C3: static member view for the former free stand-ins
 {
 public:
@@ -293,16 +293,16 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     return false;
 }
 // @0x141689ac0
-void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
+void CPhysXHelper::FUN_141689ac0(efd::SmartPointer<egfPhysX::EntityActorData> spProp)
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
     ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
     if (pProps != 0)
     {
-        unsigned uiProps = pProps->GetNumProps(reinterpret_cast<egfPhysX::EntityActorData*>(pProp.FUN_14168afe0())->GetEntity()->GetEntityID());
+        unsigned uiProps = pProps->GetNumProps(spProp->GetEntity()->GetEntityID());
         for (unsigned i = 0; i < uiProps; i++)
         {
-            NiPhysXProp* pPhysXProp = pProps->GetPropAt(reinterpret_cast<egfPhysX::EntityActorData*>(pProp.FUN_14168afe0())->GetEntity()->GetEntityID(), i);
+            NiPhysXProp* pPhysXProp = pProps->GetPropAt(spProp->GetEntity()->GetEntityID(), i);
             if (pPhysXProp == 0)
                 continue;
             NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
@@ -318,7 +318,7 @@ void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
                     continue;
                 NxActor* pActor = pDesc->GetActor();
                 if (pActor != 0)
-                    pActor->userData = pProp.FUN_140ae1920();
+                    pActor->userData = (egfPhysX::EntityActorData*)spProp;
             }
         }
     }
@@ -374,7 +374,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     if (bCube)
     {
         efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework *>(&egf::g_bapiContext))));
-        NxActor* pActor = FUN_1410c5420(spService.operator->(), pEntity->GetEntityID());
+        NxActor* pActor = (NxActor*)reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FindPhysXActor(pEntity->GetEntityID());
         if (pActor != 0)
         {
             FUN_14168a540(0);
@@ -562,7 +562,7 @@ bool CPhysXHelper::FUN_14168a770(const Vector3* pPoint)
     return false;
 }
 // @0x14168a9b0
-int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Vector3& ptFrom)
+int CPhysXHelper::FUN_14168a9b0(void* pEntity, Vector3 ptFrom)
 {
     Unk_RayCastInfo kInfo;
     Vector3 ptHit = g_143b01a60;
@@ -611,8 +611,8 @@ ClosestHitReport::ClosestHitReport(NxActor* pIgnoreA, NxActor* pIgnoreB)
     m_pIgnoreB = pIgnoreB;
     m_hit.distance = -1.0f;
 }
-// @0x14168afe0
-Unk_PhysPropObj* Unk_PhysPropPtr::FUN_14168afe0() const { return m_p; }
+// 0x14168afe0 = efd::SmartPointer<egfPhysX::EntityActorData>::operator-> (SDK inline)
+
 // @0x14168b0f0
 const NxRaycastHit* ClosestHitReport::FUN_14168b0f0() const
 {

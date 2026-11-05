@@ -107,7 +107,7 @@ struct Unk_PCWorld {                // the world service (FUN_1403ed2d0; the vie
 };
 void* FUN_140b285a0(void* p);
 void* FUN_140b285b0(void* p);
-Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
+// 0x1406c3780 = Unk_Rgb3b::ToColor (rgb bytes -> 0..1 floats, fieldproperty.h)
 void FUN_140b27ec0(void* ent, unsigned id, void* p);
 void FUN_140b27f00(void* ent, unsigned id, void* p);
 unsigned FUN_140b27eb0();
@@ -216,7 +216,7 @@ void FieldPropertyAmbientLightCli::vfunc_4()
 }
 
 // @0x140b27a80
-Unk_Vec3f* FUN_140b27a80(FieldPropertyAmbientLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color, out); return out; }
+Unk_Vec3f FieldPropertyAmbientLightCli::FUN_140b27a80() const { return m_color.ToColor(); }
 
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
@@ -237,7 +237,7 @@ void FieldPropertyDirectionalLightCli::vfunc_4()
 }
 
 // @0x140b27c60
-Unk_Vec3f* FUN_140b27c60(FieldPropertyDirectionalLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color1, out); return out; }
+Unk_Vec3f FieldPropertyDirectionalLightCli::FUN_140b27c60() const { return m_color1.ToColor(); }
 
 // @0x140b27ca0
 void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)TSingleton<CameraMgr>::GetInstance())->FUN_140aeb900(m_b); }
@@ -250,14 +250,14 @@ void FieldPropertyPhotoStudioCli::vfunc_4() { (TSingleton<CUIService>::GetInstan
 void FieldPropertyPhotoStudioCli::vfunc_5() { TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f8f); }
 
 // ---- Entity property helpers (egf::Entity; the change-tracking map lives at entity+0xd0) ----
-void* FUN_1409481f0(void* map, void* it);
-void* FUN_140948250(void* map, void* it, unsigned* key);
-bool FUN_140947540(void* a, void* b);
+#include <efd/StdContainers.h>
+// C3: the map is the real efd::map<unsigned, Unk_PropertyCacheEntry> (find 0x140948250, end 0x1409481f0,
+// const_iterator::operator== 0x140947540, operator[] 0x140947580; glue in actioncameramode, see propertycache.h).
 struct Unk_PropertyCacheEntry {     // C3: was the free FUN_140947490 (the inline ctor of alphaanimation's view)
     Unk_PropertyCacheEntry(unsigned nId, void* pValue, unsigned nType);   // 0x140947490
-    unsigned m_id; void* m_pValue; unsigned m_type;
+    Unk_PropertyCacheEntry() : m_id(0), m_pValue(NULL), m_type(0) {}   unsigned m_id; void* m_pValue; unsigned m_type;   // () 0x1409474d0
 };
-void* FUN_140947580(void* map, unsigned* key);
+typedef efd::map<unsigned, Unk_PropertyCacheEntry> Unk_PropertyCacheMap;
 
 // Remembers the entity's original value for a property before it is overwritten (map find/insert).
 // @0x140b27d50
@@ -265,12 +265,12 @@ void FUN_140b27d50(egf::Entity* pEntity, unsigned id, void* pNew)
 {
     if (*((unsigned char*)pEntity + 0xc8))
     {
-        Unk_MapIt it1, it2;
-        if (FUN_140947540(FUN_140948250((char*)pEntity + 0xd0, &it2, &id), FUN_1409481f0((char*)pEntity + 0xd0, &it1)))
+
+        if (((Unk_PropertyCacheMap*)((char*)pEntity + 0xd0))->find(id) == ((Unk_PropertyCacheMap*)((char*)pEntity + 0xd0))->end())
         {
             Unk_Vec3f old(0, 0, 0);
             ((Unk_EntityAccess*)pEntity)->Get(id, &old, FUN_140b27eb0());
-            *(Unk_Rec24*)FUN_140947580((char*)pEntity + 0xd0, &id) = reinterpret_cast<const Unk_Rec24&>(static_cast<const Unk_PropertyCacheEntry&>(Unk_PropertyCacheEntry(id, new Unk_Vec3f(old), FUN_140b27eb0())));
+            *(Unk_Rec24*)&(*(Unk_PropertyCacheMap*)((char*)pEntity + 0xd0))[id] = reinterpret_cast<const Unk_Rec24&>(static_cast<const Unk_PropertyCacheEntry&>(Unk_PropertyCacheEntry(id, new Unk_Vec3f(old), FUN_140b27eb0())));
         }
     }
 }
@@ -335,8 +335,8 @@ MS2_REPLACE_METHOD(0x140b27860, FieldPropertyLockMyPCCli, vfunc_5, 57, 0xCD9CD6D
 MS2_REPLACE_METHOD(0x140b278a0, FieldPropertyUserTagSymbolCli, vfunc_4, 27, 0x622133FB);
 MS2_REPLACE_METHOD(0x140b278d0, FieldPropertyWeatherCli, vfunc_4, 35, 0x43231132);
 MS2_REPLACE_METHOD(0x140b27900, FieldPropertyWeatherCli, vfunc_5, 29, 0x45C5C1E0);
-MS2_REPLACE(0x140b27a80, FUN_140b27a80, 46, 0xFF3862E1);
-MS2_REPLACE(0x140b27c60, FUN_140b27c60, 46, 0x77829EFF);
+MS2_REPLACE_METHOD(0x140b27a80, FieldPropertyAmbientLightCli, FUN_140b27a80, 46, 0xFF3862E1);
+MS2_REPLACE_METHOD(0x140b27c60, FieldPropertyDirectionalLightCli, FUN_140b27c60, 46, 0x77829EFF);
 MS2_REPLACE_METHOD(0x140b27ca0, FieldPropertyEnableLocalCameraCli, vfunc_4, 36, 0x3EC2A4E7);
 MS2_REPLACE_METHOD(0x140b27cd0, FieldPropertyEnableLocalCameraCli, vfunc_5, 29, 0x41CD19A7);
 MS2_REPLACE_METHOD(0x140b27d00, FieldPropertyPhotoStudioCli, vfunc_4, 32, 0x9E7FC2AE);

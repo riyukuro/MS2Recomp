@@ -18,7 +18,7 @@
 #include "ms2/placeholder/itemcustom.h"
 #include "ms2/placeholder/characterdecaldata.h"
 
-class Unk_140165cf0;    // game TinyXML element (declared where the loaders are)
+class TiXmlElement;    // game TinyXML element (declared where the loaders are)
 class ItemCustom;
 
 // One <beauty> row of ItemChangeBeauty.xml (0x50 bytes; vftable has the deleting dtor only).
@@ -28,7 +28,7 @@ public:
     CChangeBeautyData();                // 0x140539f90
     virtual ~CChangeBeautyData();       // 0x14053a130
 
-    bool FUN_14053a7c0(Unk_140165cf0*); // row reader (always true; the <item> children are only validated by the loader)
+    bool FUN_14053a7c0(TiXmlElement*); // row reader (always true; the <item> children are only validated by the loader)
 
     int m_nId;                          // +0x18 "id"
     int m_nUnk1c;                       // +0x1c
@@ -77,7 +77,7 @@ struct ModelNameEntry               // <dummy> element of an <asset>, 0x38 bytes
 {
     ModelNameEntry();               // 0x1403142a0
     // implicit dtor (COMDAT 0x140540bc0 in itemdata.cpp) and moves: no user-declared dtor
-    void FUN_140314350(Unk_140165cf0* pElem);       // XML read
+    void FUN_140314350(TiXmlElement* pElem);       // XML read
     int gender;                     // +0x00 "gender": 0, 1 or 2 (both lists; the ctor's default)
     CString sequence;               // +0x08 "sequence"
     CString targetNode;             // +0x10 "targetnode" (the part's target node when empty)
@@ -93,7 +93,7 @@ struct ModelFloatList               // <scale> element, 0x28 bytes
 {
     ModelFloatList();               // 0x140544b10
     // implicit dtor (COMDAT 0x140541080 in itemdata.cpp) and moves: no user-declared dtor
-    int Load(Unk_140165cf0* pElem);        // XML read
+    int Load(TiXmlElement* pElem);        // XML read
     int FUN_140544c00(void* pParent);            // XML write (nothing)
     float FUN_140544c20() const;    // a random entry of values, 1.0 when empty
     float maxValue;                 // +0x00 "max" (default 1.0)
@@ -119,7 +119,7 @@ struct ModelPart                    // <asset> element, 0x158 bytes
 {
     ModelPart();                    // 0x140543a90
     // implicit dtor (COMDAT 0x140540f60 in itemdata.cpp) and moves: no user-declared dtor
-    int Load(Unk_140165cf0* pElem);        // XML read
+    int Load(TiXmlElement* pElem);        // XML read
     int FUN_140544a80(void* pParent);            // XML write (nothing)
     int FUN_140544aa0(int nGender, int nWeapon) const;   // the part is worn by the gender / weapon
     CString name0;                  // +0x00 "name"
@@ -159,7 +159,7 @@ struct ModelGroup                   // 0x38 bytes (also the unit's third static,
 {
     ModelGroup();                   // 0x140544ca0
     // implicit dtor (COMDAT 0x140540f30 in itemdata.cpp) and moves: no user-declared dtor
-    void FUN_140544cf0(Unk_140165cf0* pElem);       // XML read
+    void FUN_140544cf0(TiXmlElement* pElem);       // XML read
     void FUN_140544f00(void* pParent);           // XML write (nothing)
     const ModelFloatList* FUN_140544f20(size_t nIndex) const;   // the nIndex-th scale list (a static default when out of range)
     const ModelPart* FUN_140544fe0(size_t nIndex) const;  // the nIndex-th part (a static default when out of range)
@@ -180,7 +180,7 @@ class MsTransform : public CPtred
 {
 public:
     MsTransform();                  // 0x140546860
-    void LoadXml(Unk_140165cf0* pElem);       // XML read
+    void LoadXml(TiXmlElement* pElem);       // XML read
     void SaveXml(void* pElem);                // XML write
     NiPoint3 position;              // +0x18 (NiPoint3() COMDAT 0x1405522f0)
     NiPoint3 rotation;              // +0x24
@@ -192,7 +192,7 @@ struct ItemModelHead                // <customize> block, 0x50 bytes at ItemMode
 {
     ItemModelHead();                // 0x140546a00
     ~ItemModelHead();               // 0x140540c70
-    int Load(Unk_140165cf0* pElem);        // XML read
+    int Load(TiXmlElement* pElem);        // XML read
     int Save(void* pParent);               // XML write
     bool FUN_140547130();           // scale
     bool FUN_140547150();           // rotation
@@ -227,7 +227,7 @@ public:
     // Implicit virtual destructor: 0x140540e20 (no vftable store).
     static unsigned FUN_14054aec0(unsigned nId);    // nId / 100000
     void FUN_14054aee0(int n);      // m_nUnk28 = n
-    void FUN_14054af00(Unk_140165cf0* pElem);       // XML read
+    void FUN_14054af00(TiXmlElement* pElem);       // XML read
     void FUN_14054b230(void* pParent);           // XML write (nothing)
     void FUN_14054b250(const CString& strName);     // renames every part of every group
     std::vector<CString>* FUN_14054b2c0(int nGender);   // the <cutting> names of a gender
@@ -266,7 +266,7 @@ class DropNifData : public CPtred   // 0x20 bytes
 public:
     DropNifData();                  // 0x1405434a0
     virtual ~DropNifData() = default;   // COMDAT 0x140552480 (no vptr store)
-    void FUN_1405434f0(Unk_140165cf0* pElem);   // XML read
+    void FUN_1405434f0(TiXmlElement* pElem);   // XML read
     bool FUN_140543550(unsigned n); // m_nUnk1c <= n
     int GetTypeId();            // type id
     int m_nTypeId;                  // +0x18 "typeID"
@@ -279,7 +279,7 @@ class ItemDropEffect : public CPtred    // 0x88 bytes
 public:
     ItemDropEffect();               // 0x1405435b0
     virtual ~ItemDropEffect() = default;    // COMDAT 0x1405524c0 (no vptr store)
-    void Load(Unk_140165cf0* pElem);   // XML read
+    void Load(TiXmlElement* pElem);   // XML read
     int typeID;                     // +0x18
     float unknown1c;                // +0x1c (default 50.0)
     float scale;                    // +0x20

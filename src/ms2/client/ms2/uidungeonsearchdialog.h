@@ -20,7 +20,7 @@ class CInPacket;
 class NotifyObject;
 class CMsgBoxData;
 class UIDungeonSearchUnitedReward;
-class Unk_DsButton;
+// (the sub buttons are plain ASButtons)
 class ASButton;
 class Unk_DsLabel;
 class Unk_DsRoom;
@@ -93,7 +93,7 @@ private:
     MS2Ptr<UIDungeonSearchPage> m_pageCustom;                                   // +0x178 page 1
     MS2Ptr<UIDungeonSearchPage> m_pageRandom;                                   // +0x188 page 2
     MS2Ptr<UIDungeonSearchUnitedReward> m_unitedReward;                         // +0x198 "m_unitedReward"
-    std::vector<MS2Ptr<Unk_DsButton> > m_subButtons;                            // +0x1a8 "m_subButton0".."m_subButton11"
+    std::vector<MS2Ptr<ASButton> > m_subButtons;                                // +0x1a8 "m_subButton0".."m_subButton11"
     std::vector<MS2Ptr<Unk_DsLabel> > m_subLabels;                              // +0x1c0 "m_subLabel0".."m_subLabel11"
     MS2Ptr<ASMovieClip> m_subPanel;                                             // +0x1d8 "m_subPanel"
 };

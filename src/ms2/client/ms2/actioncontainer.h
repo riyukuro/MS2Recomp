@@ -20,7 +20,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/datatable.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // The number of action types ActionType can return (75 itself means "unknown").
 const int kPCActionTypes = 75;
@@ -30,7 +30,7 @@ class PCActionList : public CPtred
 {
 public:
     PCActionList();                                         // 0x140948420
-    void Load(Unk_140165cf0* pNode);                        // 0x140948470 the <names> attribute
+    void Load(TiXmlElement* pNode);                        // 0x140948470 the <names> attribute
     int RandomIndex();                                      // -1 when empty
     CStringA RandomName();
     CStringA Name(unsigned nIndex);
@@ -47,7 +47,7 @@ class PCActionGroup : public CPtred
 public:
     PCActionGroup();                                        // 0x14094d9f0
     virtual int Id() = 0;                                   //  1
-    virtual void LoadXml(Unk_140165cf0* pNode) = 0;         //  2
+    virtual void LoadXml(TiXmlElement* pNode) = 0;         //  2
     virtual unsigned __int64 Count(int nType) const = 0;          //  3
     virtual int RandomIndex(int nType) const = 0;                 //  4
     virtual CStringA RandomName(int nType) const = 0;             //  5
@@ -61,7 +61,7 @@ class PCActionGroupDefault : public PCActionGroup
 public:
     PCActionGroupDefault();                                 // 0x140948690
     virtual int Id();
-    virtual void LoadXml(Unk_140165cf0* pNode);
+    virtual void LoadXml(TiXmlElement* pNode);
     virtual unsigned __int64 Count(int nType) const;
     virtual int RandomIndex(int nType) const;
     virtual CStringA RandomName(int nType) const;
@@ -78,7 +78,7 @@ class PCActionGroupCustom : public PCActionGroup
 public:
     explicit PCActionGroupCustom(PCActionGroup* pFallback); // 0x140948af0
     virtual int Id();
-    virtual void LoadXml(Unk_140165cf0* pNode);
+    virtual void LoadXml(TiXmlElement* pNode);
     virtual unsigned __int64 Count(int nType) const;
     virtual int RandomIndex(int nType) const;
     virtual CStringA RandomName(int nType) const;
@@ -99,7 +99,7 @@ public:
     virtual ~PCActionDataTable() = default;
     virtual void Add(MS2Ptr<PCActionGroup> spRow);          // 0x1409492b0
     virtual void Loaded();                                  // 0x1409493a0
-    virtual MS2Ptr<PCActionGroup> Create(Unk_140165cf0* pNode);   // 0x1409493b0
+    virtual MS2Ptr<PCActionGroup> Create(TiXmlElement* pNode);   // 0x1409493b0
     MS2Ptr<PCActionGroup> Find(unsigned nId);               // 0x1409494e0 the group, the default group when unknown
 private:
     MS2_LAYOUT_FRIEND;
@@ -108,5 +108,5 @@ private:
 };
 MS2_CHECK_SIZE(PCActionDataTable, 0x60);
 
-int ReadAction(Unk_140165cf0* pNode, const char* szName, int* pnType);   // 0x14094a400 the action type attribute
+int ReadAction(TiXmlElement* pNode, const char* szName, int* pnType);   // 0x14094a400 the action type attribute
 int ActionType(const CStringA& strName);                    // 0x140949600 the action type of a name, kPCActionTypes when unknown

@@ -110,7 +110,7 @@ MS2_CHECK_OFFSET(Unk_SsPushMgr, m_pushes, 0x10);
 class Unk_SingletonObj* FUN_140cea070();   // C3: was FUN_140cea070
 
 // The local player's buffs (PCBase +0x748).
-class AdditionalCliList { public: int HasEnabledWithEventBuffType(int nType); };   // C3: member view (additionalclilist.h)
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
 class Unk_PCBaseBuffs : public AdditionalCliList { };
 
 extern Unk_Inventory g_143ab2a90;

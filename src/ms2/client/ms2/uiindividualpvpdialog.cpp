@@ -66,10 +66,10 @@ public:
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
 // An arena button.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
 
 // The arena rows are IndividualArenaData, read through CIndividualArenaDataTable::GetData (individualarenadata.h).
 
@@ -107,8 +107,8 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);
-class Unk_140165cf0;
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);   // C3: the definer's node type (blackmarketitemoption.cpp)
+class TiXmlElement;
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszAttr, CStringW strDefault);   // C3: the definer's node type (blackmarketitemoption.cpp)
 
 // @0x1412c9e70
 UIIndividualPvPDialog::UIIndividualPvPDialog() : m_nLastPage(1), m_nSelected(0)
@@ -138,9 +138,9 @@ void UIIndividualPvPDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    m_spRegister = GetChild<Unk_140acd6e0>("m_registPVP");
-    m_spUnregister = GetChild<Unk_140acd6e0>("m_unregistPVP");
-    m_spJoin = GetChild<Unk_140acd6e0>("m_joinPVP");
+    m_spRegister = GetChild<ASButton>("m_registPVP");
+    m_spUnregister = GetChild<ASButton>("m_unregistPVP");
+    m_spJoin = GetChild<ASButton>("m_joinPVP");
     m_spName = GetChild<ASTextField>("m_arenaName");
     m_spDetail = GetChild<ASTextField>("m_arenaDetail");
     m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
@@ -150,15 +150,15 @@ void UIIndividualPvPDialog::OnLoadComplete()
     for (int i = 1; i < 4; i++)
     {
         CString strName = StringFormat<int>("m_arena{0}", i);
-        MS2Ptr<Unk_140acd6e0> spArena = GetChild<Unk_140acd6e0>(strName);
+        MS2Ptr<ASButton> spArena = GetChild<ASButton>(strName);
         if (spArena.get())
         {
             m_arenas[i] = spArena;
             reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_arenas[i])->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb7e0), FUN_140bb9630(i));
         }
     }
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
+    std::map<int, MS2Ptr<ASButton> >::iterator it = m_arenas.begin();
+    std::map<int, MS2Ptr<ASButton> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
     {
         CIndividualArenaDataTable::DataPtr spData = TSingleton<CIndividualArenaDataTable>::GetInstance()->GetData(it->first);
@@ -193,8 +193,8 @@ void UIIndividualPvPDialog::vfunc_26()
     m_spJoin = 0;
     m_spRegister = 0;
     m_spUnregister = 0;
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
+    std::map<int, MS2Ptr<ASButton> >::iterator it = m_arenas.begin();
+    std::map<int, MS2Ptr<ASButton> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
         it->second = 0;
     m_arenas.clear();
@@ -351,8 +351,8 @@ void UIIndividualPvPDialog::SendPVPMode10(const Scaleform::GFx::FunctionHandler:
 void UIIndividualPvPDialog::FUN_1412cb7e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nArena = FUN_140bb9640(params.pUserData);
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
+    std::map<int, MS2Ptr<ASButton> >::iterator it = m_arenas.begin();
+    std::map<int, MS2Ptr<ASButton> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
     {
         if (it->first == nArena)
@@ -372,11 +372,11 @@ void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
     int nArena = reinterpret_cast<CPVPManager*>(reinterpret_cast<Unk_PvpMgr*>(TSingleton<CPVPManager>::GetInstance()))->Selection();
     if (nArena >= 4)
         return;
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator it = m_arenas.begin();
-    std::map<int, MS2Ptr<Unk_140acd6e0> >::iterator itEnd = m_arenas.end();
+    std::map<int, MS2Ptr<ASButton> >::iterator it = m_arenas.begin();
+    std::map<int, MS2Ptr<ASButton> >::iterator itEnd = m_arenas.end();
     for (; it != itEnd; ++it)
     {
-        MS2Ptr<Unk_140acd6e0>& spButton = it->second;
+        MS2Ptr<ASButton>& spButton = it->second;
         MS2Ptr<ASMovieClip> spEffect = spButton->FUN_1409b4560("m_effect");
         if (spEffect.get())
             spEffect->vfunc_15("hide");
@@ -385,7 +385,7 @@ void UIIndividualPvPDialog::FUN_1412cb8d0(bool bPlay)
     {
         if (m_arenas.find(nArena) == m_arenas.end())
             return;
-        MS2Ptr<Unk_140acd6e0> spArena = m_arenas[nArena];
+        MS2Ptr<ASButton> spArena = m_arenas[nArena];
         if (spArena.get())
         {
             MS2Ptr<ASMovieClip> spEffect = spArena->FUN_1409b4560("m_effect");
@@ -473,8 +473,8 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     std::auto_ptr<KeyMap> names = m_factory30();
     for (Unk_XmlNode* pElem = pRoot->FirstChild("key"); pElem != 0; pElem = ((class Unk_XmlNode*)((pElem))->NextSibling("key")))
     {
-        CStringW strName = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), m_keyAttribute20, CStringW(L""));
-        CStringW strText = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), m_valueAttribute28, CStringW(L""));
+        CStringW strName = FUN_1401bf530(reinterpret_cast<TiXmlElement*>(pElem), m_keyAttribute20, CStringW(L""));
+        CStringW strText = FUN_1401bf530(reinterpret_cast<TiXmlElement*>(pElem), m_valueAttribute28, CStringW(L""));
         typename KeyMap::CPair* pPair = names->Lookup(strName);
         if (pPair == 0)
         {

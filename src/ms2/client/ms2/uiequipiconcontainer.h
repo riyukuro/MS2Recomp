@@ -10,7 +10,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/cptred.h"
 
-class Unk_EquipOutfit;      // the outfit the icons were built from (a CPtred; lists its items)
+class Customize;           // the avatar customize the icons were built from (customize.h; C3: was Unk_EquipOutfit)
 
 class UIEquipIconContainer : public CPtred
 {
@@ -18,7 +18,7 @@ public:
     UIEquipIconContainer();                                             // 0x140e29f60
     virtual ~UIEquipIconContainer();                                    //  0 0x140e2a000 (??_G 0x140e2b9d0)
 
-    MS2Ptr<ASEquipIcon> FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Unk_EquipOutfit> pOutfit);   // equip an item in a slot (creating or changing its icon)
+    MS2Ptr<ASEquipIcon> FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit);   // equip an item in a slot (creating or changing its icon)
     void FUN_140e2a640(int nSlot);                                      // remove the slot's icon
     void UnEquipAll();                                               // remove every icon
     void FUN_140e2a6e0(int nVisible);                                   // show / hide the clip

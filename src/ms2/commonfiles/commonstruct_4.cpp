@@ -194,12 +194,12 @@ struct Unk_CsVecView { Unk_CsPtredPair m_alloc; };
 __int64 FUN_14027b590(__int64 p);                       // std::addressof
 void* FUN_14027d3d0(void* it, __int64 ptr, __int64 cont);   // iterator ctor
 // @0x140288770
-__int64 FUN_140288770(__int64 self, __int64 out, __int64 idx) noexcept
-{
-    Unk_CsIngVal* d = reinterpret_cast<Unk_CsIngVal*>(&reinterpret_cast<Unk_CsVecView*>(self)->m_alloc._Get_second());
-    FUN_14027d3d0((void*)out, (__int64)(d->first + idx), FUN_14027b590((__int64)d));
-    return out;
-}
+template Unk_CsIngVector::iterator Unk_CsIngVector::_Mybase::_Make_iterator_offset(size_t) noexcept;
+// MS2-PIN: ?_Make_iterator_offset@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@2@_K@Z 0x140288770 ; unique
+
+
+
+
 
 // vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
 void FUN_1402875b0(__int64, __int64, __int64);        // _Destroy
@@ -261,47 +261,47 @@ float FUN_14028aed0(float f)
     return __imp_floorf(f);
 }
 
-// push_back(MS2Ptr&&)
-// MS2-FUNCTIONAL: calls the std::vector member; the exe calls its emplace_back instance out of line
+// vector<MS2Ptr<CIngredientInfo>>::push_back(T&&): calls emplace_back 14027be20 out of line (was Unk_IngVec::FUN_14028b300).
 // @0x14028b300
-void Unk_IngVec::FUN_14028b300(Unk_IngRef& r)
-{
-    reinterpret_cast<Unk_CsIngVector*>(this)->push_back(std::move(reinterpret_cast<MS2Ptr<CIngredientInfo>&>(r)));
-}
+template void Unk_CsIngVector::push_back(MS2Ptr<CIngredientInfo>&&);
+//
+//
+//
+//
 
-// push_back(const MS2Ptr&)
-// MS2-FUNCTIONAL: calls the std::vector member; the exe calls its push_back instance out of line
+// vector<MS2Ptr<CIngredientInfo>>::push_back(const T&): calls emplace_back 14027bcd0 out of line (was FUN_14028b330).
 // @0x14028b330
-void Unk_IngVec::FUN_14028b330(Unk_IngRef& r)
-{
-    reinterpret_cast<Unk_CsIngVector*>(this)->push_back(reinterpret_cast<const MS2Ptr<CIngredientInfo>&>(r));
-}
+template void Unk_CsIngVector::push_back(const MS2Ptr<CIngredientInfo>&);
+
+
+
+
 
 // vector<ItemEntity>::rbegin: reverse_iterator(end()).
 // @0x14028b360
 Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out) noexcept
 {
     Unk_It it;
-    FUN_14027d630((__int64*)out, (__int64)FUN_14028aa30(&it)->p);
+    FUN_14027d630((__int64*)out, (__int64)((const Unk_It*)(&static_cast<const std::vector<ItemEntity>::iterator&>(reinterpret_cast<std::vector<ItemEntity>&>(*this).end())))->p);
     return out;
 }
 
 // vector<16-byte value>::_Ucopy body shared by the insertion paths in commonstruct slices C/D.
 // Keep the allocator-aware copy path: these values carry reference-counted members.
 // @0x140289b00
-__int64 FUN_140289b00(void* vec, __int64 first, __int64 last, __int64 dest)
-{
-    extern __int64 FUN_14027b250(__int64, __int64, __int64, __int64);
-    return FUN_14027b250(first, last, dest, (__int64)&reinterpret_cast<Unk_CsIngAlloc*>(vec)->_Getal());
-}
+template MS2Ptr<CIngredientInfo>* Unk_CsIngVector::_Umove(MS2Ptr<CIngredientInfo>*, MS2Ptr<CIngredientInfo>*, MS2Ptr<CIngredientInfo>*);
 
-// Alternate call-site prototype recorded for the same folded helper in the exe.
-// The executable body consumes only the first four registers/arguments.
-// MS2-PIN: ?FUN_140289b00@@YA_J_J000000@Z 0x140289b00
-__int64 FUN_140289b00(__int64 vec, __int64 first, __int64 last, __int64 dest, __int64, __int64, __int64)
-{
-    return FUN_140289b00(reinterpret_cast<void*>(vec), first, last, dest);
-}
+
+
+
+
+
+
+
+
+
+
+
 // vector<MS2Ptr<CPtred>>'s _Buy 0x140286b50, _Destroy 0x1402876b0, _Tidy 0x1402899b0 and clear 0x14028a690
 // call _Getal 0x1402883f0 and _Mylast 0x140288be0.
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPtred@@@@@2@XZ 0x1402883f0

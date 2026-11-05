@@ -10,7 +10,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/itemgift.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // 16-byte intrusive smart pointer (RTTI TPtr<T>; field 0 unused, field 1 the pointee) to a CPtred-derived object.
 template <class T>
@@ -26,6 +26,7 @@ public:
     Unk_AttendPtr& operator=(const Unk_AttendPtr& o);
     T* get() const;
     T* operator->() const;
+    bool operator==(T* p) const;                        // e.g. 0x140bcc100 (uicashattenddialog)
 
 private:
     void AddRef() const;
@@ -52,6 +53,7 @@ template <class T> Unk_AttendPtr<T>& Unk_AttendPtr<T>::operator=(const Unk_Atten
 }
 template <class T> T* Unk_AttendPtr<T>::get() const { return m_p; }
 template <class T> T* Unk_AttendPtr<T>::operator->() const { return m_p; }
+template <class T> bool Unk_AttendPtr<T>::operator==(T* p) const { return m_p == p; }
 template <class T> void Unk_AttendPtr<T>::AddRef() const { if (m_p) AddRefImpl(0); }
 template <class T> void Unk_AttendPtr<T>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
 template <class T> void Unk_AttendPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
@@ -66,7 +68,7 @@ class AttendGiftDataGroup : public CPtred
 {
 public:
     AttendGiftDataGroup();                                          // 0x1401adea0
-    bool Load(Unk_140165cf0* pNode, const CString& strContext);     // 0x1401adef0
+    bool Load(TiXmlElement* pNode, const CString& strContext);     // 0x1401adef0
 
     std::vector<Unk_AttendPtr<ItemGift> > m_gifts;                  // +0x18
 };
@@ -79,7 +81,7 @@ class AttendGiftData : public CPtred
 {
 public:
     AttendGiftData();                                               // 0x1401adff0
-    bool Load(Unk_140165cf0* pNode);                                // 0x1401ae040
+    bool Load(TiXmlElement* pNode);                                // 0x1401ae040
     unsigned GetId();                                               // 0x1401ae1c0
     unsigned GetGroupCount();                                       // 0x1401ae1e0
     AttendGiftDataGroupPtr GetGroup(unsigned nIndex) const;         // 0x1401ae210

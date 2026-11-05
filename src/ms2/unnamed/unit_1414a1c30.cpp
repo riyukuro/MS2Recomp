@@ -288,7 +288,7 @@ class Unk_PcBangTable;
 class Unk_PcFieldTable;
 class Unk_PetRowTable;
 class Unk_PriceTable;
-class Unk_QgNavi;
+class CQuestNavigator;
 class Unk_RankTable;
 class Unk_SoundSink;
 class WeddingManager;
@@ -350,7 +350,7 @@ class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 Unk_SingletonObj* FUN_140cea070();
 class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
-class Unk_QgNavi* FUN_140e7c990();   // C3: was FUN_140e7c990
+class CQuestNavigator* FUN_140e7c990();   // C3: was FUN_140e7c990
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 UGCCubePalette* GetUGCCubePalette();
@@ -411,7 +411,7 @@ struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
 class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend CResultObj FUN_1414a58c0(int idx); };
 #define DAT_143afa980 (*reinterpret_cast<char**>(&NiShadowManager::ms_pkShadowManager))   // C3: was extern char* DAT_143afa980
 void* FUN_1414a54f0_ctor(void* mem, void* self);
-void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
+void* FUN_140c8f690(const efd::SmartPointer<class NiViewRenderClick>&);   // C3: was FUN_140c8f690
 class NiMaterial; class NiTexture;
 // The five CAtlMap::RemoveAll COMDATs below (and their Disable/EnableAutoRehash) belong to CReactorDataTable's and
 // CArcadeDataTable's maps; FreeNode, IsLocked, PickSize, InitHashTable and FreePlexes are the COMDATs of those tables'
@@ -1952,7 +1952,7 @@ MS2_REPLACE(0x1414A5940, FUN_1414a5940, 31, 0x888D3262);
 void FUN_1414a5960(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator efd::UInt32(); }
 MS2_REPLACE(0x1414A5960, FUN_1414a5960, 31, 0x24583782);
 // @0x1414a5980
-void FUN_1414a5980(char* pThis) { FUN_140c8f690(*(class Unk_PPRes const*)(pThis + 0x28)); }
+void FUN_1414a5980(char* pThis) { FUN_140c8f690(*(const efd::SmartPointer<class NiViewRenderClick>*)(pThis + 0x28)); }
 MS2_REPLACE(0x1414A5980, FUN_1414a5980, 31, 0xEFCBF263);
 // @0x1414a59a0
 void* FUN_1414a59a0(char* pThis) { return reinterpret_cast<efd::SmartPointer<NiTexture>*>(pThis + 0x118)->operator NiTexture*(); }

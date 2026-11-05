@@ -20,7 +20,7 @@
 #include "ms2/client/ms2/uidialog.h"
 
 class GameObject;
-class Unk_140165cf0;
+class TiXmlElement;
 
 class UICameraEditDialog : public UIDialog
 {

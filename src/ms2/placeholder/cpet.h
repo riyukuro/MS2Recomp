@@ -52,7 +52,7 @@ public:
     void FUN_140b10f90(unsigned short n);                   // m_nGrade + its sound/effect id
     unsigned short GetGrade();                         // m_nGrade
     int GetGradeFx();                                    // m_nGradeFx
-    void FUN_140b11020();                                   // FUN_140291d10(m_nGradeFx)
+    float FUN_140b11020();                                  // FUN_140291d10(m_nGradeFx)
     int FUN_140b11180();                                    // use a pet skill (returns 1: used)
     void FUN_140b11320(float fTime);                        // accumulate the idle time, finish the owner's emote
     void FUN_140b114e0(int nAnimId);                        // play a pet animation

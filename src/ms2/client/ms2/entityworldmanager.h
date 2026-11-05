@@ -111,8 +111,8 @@ public:
     void FUN_1411cfd40(const egf::EntityChangeMessage*, efd::Category);
     void FUN_1411cffa0(const egf::EntityChangeMessage*, efd::Category);
     void FUN_1411d0a60(unsigned, int);
-    size_t FUN_1411d0ab0();
-    size_t FUN_1411d0af0();
+    unsigned FUN_1411d0ab0();   // size(), read 32-bit by the visual tracker
+    unsigned FUN_1411d0af0();
     efd::UInt32 FUN_1411d0b30();
 public:
     unsigned currentMap;

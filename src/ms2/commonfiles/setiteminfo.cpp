@@ -13,7 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -37,13 +37,13 @@ SetItemInfo::SetItemInfo() : m_nId(0), m_bShowEffect(false), m_bDisableTooltip(f
 }
 
 // @0x1407ad2f0
-bool SetItemInfo::Load(Unk_140165cf0* pNode)
+bool SetItemInfo::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     XmlQuery((class TiXmlElement*)(pNode), "showEffectIfItsSetItemMotion", m_bShowEffect);
     XmlQuery((class TiXmlElement*)(pNode), "isDisableTooltip", m_bDisableTooltip);
     XmlTokenList(pNode, "itemIDs", m_items);
-    for (Unk_140165cf0* pPart = pNode->FUN_140165cf0("part"); pPart != NULL; pPart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPart))->NextSibling("part")))
+    for (TiXmlElement* pPart = pNode->FirstChildElement("part"); pPart != NULL; pPart = ((class TiXmlElement*)((class Unk_XmlNode*)(pPart))->NextSibling("part")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pPart)))
             continue;

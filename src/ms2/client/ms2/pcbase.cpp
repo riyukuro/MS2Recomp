@@ -139,11 +139,11 @@ class Unk_PCBaseComp_a98 : public CPtred {};
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity {};
 class Unk_PCBaseComp_ab8 : public CPtred {};
 class Unk_PCBaseComp_ac8 : public UIBanner::Entity {};
-// RideeItemInfo (RTTI; 0x90, vftable 0x142d9fff8): the ugc item a ridee was summoned with.
+#include "ms2/commonfiles/ugcdef.h"   // C3: RideeItemInfo (RTTI; 0x90, vftable 0x142d9fff8): the ugc item a ridee was summoned with; the view below is its layout
 class Unk_PCBaseComp_b18 : public CPtred
 {
 public:
-    Unk_PCBaseComp_b18(int nItemId, __int64 nItemUid, const CUgcItemLook& kLook);   // 0x1408970e0
+    // C3: constructed as RideeItemInfo(int, __int64, const CUgcItemLook*) 0x1408970e0 (vfunc_120)
 
 
 
@@ -219,14 +219,14 @@ class CTextureAnimation   // C3: member view (real class not in this TU)
 {
 public:
     CTextureAnimation(PCBase* pOwner);                              // 0x1418482f0
-    void FUN_141848650();
+    void FUN_141848650(); void FUN_1418484a0(MS2Ptr<CTextureAnimationData> spData, const CString& strDir);   // C3: textureanimationdata.h
     bool FUN_141848740(int);
     char m_pad[0x88];
 };
 class Unk_PCBaseEmoPlayer : public CPtred                           // 0x88
 {
 public:
-    void FUN_1418484a0(MS2Ptr<Unk_PCBaseEmoAnim> spAnim, const CString& strName);
+    // FUN_1418484a0 is CTextureAnimation's (see the view above)
     void* m_pad_18[14];
 };
 MS2_CHECK_SIZE(Unk_PCBaseEmoPlayer, 0x88);
@@ -303,7 +303,7 @@ public:
 };
 
 // The actor's buffs as other units see them (FUN_1416749a0 returns &m_unk_748).
-class Unk_PCBaseBuffs : public Unk_PCBaseBuffList
+class Unk_PCBaseBuffs : public AdditionalCliList
 {
 };
 
@@ -607,7 +607,7 @@ public:
     virtual void vfunc_1();
     virtual void vfunc_2();
     virtual void vfunc_3();
-    virtual void vfunc_4(int n);
+    virtual int vfunc_4(int n);                                     // PCActionGroup::RandomIndex
     virtual CString vfunc_5(int n);
     virtual CString vfunc_6(int a, int b);
     virtual std::vector<CString>* vfunc_7(int nKey);                // sequence names
@@ -870,7 +870,7 @@ MS2_REPLACE_METHOD(0x14166b880, PCBase, vfunc_14, 257, 0x75887CFA);
 void PCBase::vfunc_15()
 {
     GameObject::vfunc_15();
-    reinterpret_cast<AdditionalCliList*>(&m_unk_748)->ClearAll();
+    m_unk_748.ClearAll();
     vfunc_16();
 }
 MS2_REPLACE_METHOD(0x14166b990, PCBase, vfunc_15, 62, 0xB1BD862D);
@@ -1062,7 +1062,7 @@ MS2_REPLACE_METHOD(0x14166c5b0, PCBase, vfunc_23, 133, 0x138B180B);
 void PCBase::vfunc_52(double fTime)
 {
     if (GetClassID() != 0x6200016)
-        FUN_14123c330(reinterpret_cast<AdditionalCliList*>(&m_unk_748)->GetScaleMultiplier());
+        FUN_14123c330(m_unk_748.GetScaleMultiplier());
     float fScale = FUN_14123c260() / GetScaleAC();
     if (fScale != m_fScaleA8) {
         BOOL bDown = m_fScaleA8 - fScale > 0.0f ? FALSE : TRUE;
@@ -2713,9 +2713,9 @@ MS2Ptr<Unk_PCBaseComp_b18> PCBase::vfunc_103()
 MS2_REPLACE_METHOD(0x1416738c0, PCBase, vfunc_103, 233, 0xF71E697F);
 
 // @0x1416739c0
-MS2Ptr<Unk_PCBaseComp_b18> PCBase::vfunc_104(bool a, bool b, bool c)
+MS2Ptr<CSkillRecord> PCBase::vfunc_104(bool a, bool b, bool c)
 {
-    return MS2Ptr<Unk_PCBaseComp_b18>(0);
+    return MS2Ptr<CSkillRecord>(0);
 }
 MS2_REPLACE_METHOD(0x1416739c0, PCBase, vfunc_104, 65, 0x3097854B);
 
@@ -2965,7 +2965,7 @@ MS2_REPLACE_METHOD(0x141674b60, PCBase, CalcMoveDirectionNoYaw, 87, 0x56E1EF6F);
 // @0x141674bc0
 int PCBase::FUN_141674bc0()
 {
-    return reinterpret_cast<AdditionalCliList*>(&m_unk_748)->FUN_140970990();
+    return m_unk_748.FUN_140970990();
 }
 MS2_REPLACE_METHOD(0x141674bc0, PCBase, FUN_141674bc0, 33, 0xD3B461DE);
 
@@ -2987,7 +2987,7 @@ MS2_REPLACE_METHOD(0x141675150, PCBase, FUN_141675150, 219, 0x54BDAE33);
 // @0x141675240
 unsigned int PCBase::FUN_141675240()
 {
-    return reinterpret_cast<AdditionalCliList*>(&m_unk_748)->GetIgnoreCollisionGroups();
+    return m_unk_748.GetIgnoreCollisionGroups();
 }
 MS2_REPLACE_METHOD(0x141675240, PCBase, FUN_141675240, 33, 0x084A2064);
 
@@ -3123,7 +3123,7 @@ void PCBase::FUN_141675980()
 MS2_REPLACE_METHOD(0x141675980, PCBase, FUN_141675980, 831, 0x095AE68E);
 
 // @0x141675cd0
-int PCBase::FUN_141675cd0(const NiPoint3& kPos, CString strUnused, CString* pName, float* pDist)
+int PCBase::FUN_141675cd0(NiPoint3 kPos, CString strUnused, CString* pName, float* pDist)
 {
     if (FUN_141675e60() == 0)
         return 0;
@@ -3297,7 +3297,7 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
         MS2Ptr<RideOnActionUseItem> spUse(dynamic_cast<RideOnActionUseItem*>(spAction.get()));
         if (spUse == 0)
             return;
-        spItem.AssignRaw(new Unk_PCBaseComp_b18(spUse->m_n30, spUse->m_n38, spUse->m_look));
+        spItem.AssignRaw(reinterpret_cast<Unk_PCBaseComp_b18*>(new RideeItemInfo(spUse->m_n30, spUse->m_n38, &spUse->m_look)));
     }
     if (FUN_14123bea0() == 0) {
         FUN_141676320(spAction);
@@ -3460,7 +3460,7 @@ MS2_REPLACE_METHOD(0x141678290, PCBase, FUN_141678290, 72, 0xE8669FA0);
 // @0x141678680
 unsigned int PCBase::GetSkillUseDisableMask()
 {
-    unsigned int nMask = reinterpret_cast<AdditionalCliList*>(&m_unk_748)->FUN_140970bf0();
+    unsigned int nMask = m_unk_748.FUN_140970bf0();
     MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField.get() != 0)
         nMask |= spField->m_nSkillUseDisableMask;
@@ -3498,9 +3498,9 @@ const char* PCBase::vfunc_123(int n)
 MS2_REPLACE_METHOD(0x1416790b0, PCBase, vfunc_123, 105, 0x3D3A5EA7);
 
 // @0x141679120
-void PCBase::FUN_141679120(int n)
+int PCBase::FUN_141679120(int n)
 {
-    m_spD00->vfunc_4(n);
+    return m_spD00->vfunc_4(n);
 }
 MS2_REPLACE_METHOD(0x141679120, PCBase, FUN_141679120, 62, 0x06B74A69);
 
@@ -3707,7 +3707,7 @@ void PCBase::FUN_14166ef10(const CString& str, int nA, int nB, bool bC)
         if (reinterpret_cast<const MS2Ptr<CTextureAnimationData>&>(spSet->m_sp30).operator CTextureAnimationData*() != 0) {
             if (m_sp638 == 0)
                 m_sp638.AssignRaw(reinterpret_cast<Unk_PCBaseEmoPlayer*>(new CTextureAnimation(this)));
-            m_sp638->FUN_1418484a0(spSet->m_sp30, m_spD10->vfunc_1());
+            reinterpret_cast<CTextureAnimation*>(m_sp638.operator->())->FUN_1418484a0(reinterpret_cast<const MS2Ptr<CTextureAnimationData>&>(spSet->m_sp30), m_spD10->vfunc_1());
         }
         if (m_unk_a50 != 0 && nA != 0) {
             for (unsigned int i = 0; i < spSet->m_arrEffects.GetCount(); i++) {
@@ -3739,7 +3739,7 @@ void PCBase::vfunc_53(float f)
         bMoved = m_pushControl.vfunc_1(this, f);
     if (bMoved)
         vfunc_110();
-    reinterpret_cast<AdditionalCliList*>(&m_unk_748)->FUN_140970420(f);
+    m_unk_748.FUN_140970420(f);
 }
 MS2_REPLACE_METHOD(0x141679450, PCBase, vfunc_53, 383, 0x2D2ECE5C);
 
@@ -4119,7 +4119,7 @@ void PCBase::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
 {
     if (FUN_14028d470(fScale, 0.0f))
         return;
-    if (reinterpret_cast<AdditionalCliList*>(&m_unk_748)->FUN_140970c10(spRecord->GetAttackData(), 1) != 0)
+    if (m_unk_748.FUN_140970c10(spRecord->GetAttackData(), 1) != 0)
         return;
     if (spRecord->GetTotalDamage() == 0)
         return;
@@ -4257,7 +4257,7 @@ void PCBase::FUN_14166f380()
         if ((spSet.get() ? true : false) && (reinterpret_cast<const MS2Ptr<CTextureAnimationData>&>(spSet->m_sp30).operator CTextureAnimationData*() ? true : false)) {
             if (m_sp638 == 0)
                 m_sp638.AssignRaw(reinterpret_cast<Unk_PCBaseEmoPlayer*>(new CTextureAnimation(this)));
-            m_sp638->FUN_1418484a0(spSet->m_sp30, m_spD10->vfunc_1());
+            reinterpret_cast<CTextureAnimation*>(m_sp638.operator->())->FUN_1418484a0(reinterpret_cast<const MS2Ptr<CTextureAnimationData>&>(spSet->m_sp30), m_spD10->vfunc_1());
         }
     }
 }

@@ -36,7 +36,7 @@ extern int DAT_143ab0248;
 
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -88,17 +88,17 @@ void ItemGachaBoxTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "randomBox", "randomBoxID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         GachaBoxDataPtr spBox(MS2SvrNewTag(0));
         XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxID", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxID));
         XmlGetAttr((class TiXmlElement*)(pNode), "randomBoxGroup", reinterpret_cast<unsigned&>(spBox->m_nRandomBoxGroup));

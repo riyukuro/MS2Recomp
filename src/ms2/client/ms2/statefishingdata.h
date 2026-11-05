@@ -15,16 +15,16 @@
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/commonfiles/timer.h"
+#include "ms2/commonfiles/ugcmappackageinfo.h"   // Unk_Int3, the fishing grid cell
 
 class CItem;
 class PCBase;
 
-// A cell of the fishing grid (3 ints); FUN_1408a1430 builds it from a point, FUN_1408a03c0 hashes it.
-struct Unk_FsCell
-{
-    Unk_FsCell();                                               // 0x1408850a0
-    int x, y, z;
-};
+// A cell of the fishing grid is the cube cell Unk_Int3 (3 ints, ugcmappackageinfo.h): FUN_1408a1430 builds it from a
+// point, FUN_1408a03c0 hashes it. The old stand-in struct declared a ctor (0x1408850a0) that nothing here calls.
+typedef Unk_Int3 Unk_FsCell;
+//
+//
 MS2_CHECK_SIZE(Unk_FsCell, 12);
 
 // 0x20. The rod id. The exe's dtor body is a bare StateData::~StateData (no vptr store), so it stays implicit:

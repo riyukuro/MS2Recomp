@@ -11,6 +11,8 @@
 #include "ms2/placeholder/nipoint3.h"
 #include <efd/SmartPointer.h>
 #include <NiNode.h>
+#include <efd/Point3.h>
+#include "ms2/commonfiles/timer.h"   // Unk_FishLine's timers
 
 class Unk_GuideRecord;       // a placement/aim record of the controller (MS2Ptr, 0x1417b7620 returns the current one)
 class CCubeGuideWrapper;     // cubeguide.h
@@ -142,20 +144,39 @@ MS2_CHECK_OFFSET(CConstructionGuideObject, m_spItem, 0xdb8);
 MS2_CHECK_OFFSET(CConstructionGuideObject, m_spModel, 0xdd0);
 MS2_CHECK_OFFSET(CConstructionGuideObject, m_spBirdHead, 0xdf0);
 
-// The fishing line effect (0xa8 bytes at CFishingGuideObject + 0xda8): first member is the owning guide. External
-// ctor/dtor/updates are called through FUN_ members.
+// The fishing line effect (0xa8 bytes at CFishingGuideObject + 0xda8). The ctor is defined in unit_140cd7ce0, the other
+// members in fishingmanager.cpp.
+class CFishingGuideObject;
 class Unk_FishLine
 {
 public:
     Unk_FishLine();                                         // 0x140cd7d80
     ~Unk_FishLine();                                        // 0x140cd7e40
-    void FUN_140cd7eb0(int nHandle, NiPoint3 kPos);         // start
-    void FUN_140cd8080();                                   // stop
-    void FUN_140cd80d0();                                   // update
-    void* m_pOwner;                                         // +0 (0x1410a77c0)
-    char m_pad_08[0xa0];
+    void FUN_140cd7eb0(int nKind, efd::Point3 kPos);        // 0x140cd7eb0 start
+    void Destroy();                                         // 0x140cd8080 stop
+    void FUN_140cd80d0();                                   // 0x140cd80d0 update
+    int FUN_140cd85b0();                                    // the line is out
+    int FUN_140cd85e0();                                    // the grid cell under the float
+    efd::Point3 FUN_140cd8630();                            // the float position
+    void FUN_140cd8740(efd::Point3 kPos);                   // the float landed
+    void FUN_140cd89c0(efd::Point3 kPos);                   // retarget the line
+    void ReleaseGuide();                                    // drop the guide model
+    static void SnapToCell(efd::Point3 kPos);               // snap to the grid (the exe passes a copy: no effect)
+
+    CFishingGuideObject* m_pOwner;                          // +0x00 (set by 0x1410a77c0)
+    CCubeGuideWrapper* m_pGuide;                            // +0x08 the line model
+    int m_nKind;                                            // +0x10 0 = water, 1 = spot
+    Timer m_flyTimer;                                       // +0x18 the throw flight
+    efd::Point3 m_kTarget;                                  // +0x50
+    efd::Point3 m_kLanding;                                 // +0x5c
+    unsigned m_nEffect;                                     // +0x68 the splash effect
+    Timer m_waitTimer;                                      // +0x70
 };
-MS2_CHECK_SIZE(Unk_FishLine, 0xa8);
+static_assert(sizeof(Unk_FishLine) == 0xa8, "Unk_FishLine size");
+MS2_CHECK_OFFSET(Unk_FishLine, m_flyTimer, 0x18);
+MS2_CHECK_OFFSET(Unk_FishLine, m_kTarget, 0x50);
+MS2_CHECK_OFFSET(Unk_FishLine, m_nEffect, 0x68);
+MS2_CHECK_OFFSET(Unk_FishLine, m_waitTimer, 0x70);
 
 // 0xe98. The fishing line / float guide of a fishing player.
 class CFishingGuideObject : public CGuideObject

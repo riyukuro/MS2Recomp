@@ -20,7 +20,7 @@ __int64 GetServerTime();                        // the current time
 void AddDays(CMsTime& time, long days);         // 0x14086a7e0 (commonfiles/timeutil.cpp)
 
 // @0x1408d5040
-bool Unk_EventCore::FUN_1408d5040(Unk_140165cf0* pNode)
+bool Unk_EventCore::FUN_1408d5040(TiXmlElement* pNode)
 {
     CStringA strTitle;
     CStringA strContent;

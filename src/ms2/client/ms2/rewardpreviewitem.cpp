@@ -32,7 +32,7 @@
 // The statics of the common header (the sort names, "skill", "stun" and the condition map).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -67,7 +67,7 @@ RewardPreviewItem::RewardPreviewItem()
 }
 
 // @0x140dc2f80
-void RewardPreviewItem::Load(Unk_140165cf0* pElem)
+void RewardPreviewItem::Load(TiXmlElement* pElem)
 {
     m_item.vfunc_2(pElem);
     XmlEnumName<RewardPreviewItemTag, ParseRewardPreviewItemTag>(pElem, "itemTag", m_itemTag);
@@ -175,10 +175,10 @@ RewardPreviewInfo::RewardPreviewInfo()
 }
 
 // @0x140dc37b0
-void RewardPreviewInfo::Load(Unk_140165cf0* pElem)
+void RewardPreviewInfo::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pElem))->FirstChild("item")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pElem))->FirstChild("item")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
         if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
@@ -389,13 +389,13 @@ bool CRewardPreviewTable::LoadBoss()
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         unsigned nId = 0;
         if (XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId)) != 0)
@@ -415,13 +415,13 @@ bool CRewardPreviewTable::LoadDungeon()
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         int nId;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));

@@ -14,7 +14,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/uidialog.h"
 
-class Unk_TpInput;
+class ASTextArea;
 class ASButtonBar;
 
 class UITextPreviewDialog : public UIDialog
@@ -35,12 +35,12 @@ public:
     void FUN_1413510f0(CStringW strText);                       // set the text of input 2
     void OnDescriptionCheck();                                       // "OnDescriptionCheck"
 
-    MS2Ptr<Unk_TpInput> FUN_140c26f60(const CString& strName);  // 0x140c26f60 input child lookup (a UIDialog member)
+    // the inputs come from UISwfEntity::GetChild<ASTextArea> (0x140c26f60)
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_TpInput> m_178;                                  // +0x178 "m_input1"
-    MS2Ptr<Unk_TpInput> m_188;                                  // +0x188 "m_input2"
+    MS2Ptr<ASTextArea> m_178;                                   // +0x178 "m_input1"
+    MS2Ptr<ASTextArea> m_188;                                   // +0x188 "m_input2"
     MS2Ptr<ASButtonBar> m_198;                                 // +0x198 "m_buttonBar"
 };
 MS2_CHECK_SIZE(UITextPreviewDialog, 0x1a8);

@@ -16,15 +16,15 @@
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/tptreddummy.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // Key type of the interior maps (a distinct key type: the exe's maps pass the key by reference).
 enum ECubeCategory { ECubeCategory_None = 0 };
 
-struct Unk_CubeNewTag
-{
-    explicit Unk_CubeNewTag(int);                           // 0x1401b7b90 (returns its this, no code)
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_CubeNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_CubeNewTag;
+
+
 
 CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 
@@ -45,7 +45,7 @@ public:
     T* get() const;
     T* operator->() const;
     bool operator==(T* p) const;
-
+    friend struct Unk_CubePtrAccess;    // uiugccubepalettedialog FUN_140ef0500 (AddRef / Release)
 private:
     void AddRef() const;
     void Make();
@@ -250,9 +250,9 @@ public:
     void LoadInteriors();                                            // 0x140886fc0 ugcCubeDefaultCategory.xml
 
 private:
-    void ReadTabsInto(int nCategory, Unk_140165cf0* pElem, TabArray* pOut);            // 0x140887430
-    void ReadTabChildren(int nCategory, Unk_140165cf0* pElem, TabPtr tab);             // 0x140887240
-    TabPtr ReadTab(Unk_140165cf0* pElem);                                              // 0x140887530
+    void ReadTabsInto(int nCategory, TiXmlElement* pElem, TabArray* pOut);            // 0x140887430
+    void ReadTabChildren(int nCategory, TiXmlElement* pElem, TabPtr tab);             // 0x140887240
+    TabPtr ReadTab(TiXmlElement* pElem);                                              // 0x140887530
     int NextCategory();                                             // 0x1408876a0 largest category + 1
     int NextOrder();                                                // 0x1408877a0 largest order + 1
     int NextFilter();                                               // 0x1408878a0 largest filter + 1

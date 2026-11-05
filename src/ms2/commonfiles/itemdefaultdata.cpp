@@ -30,7 +30,7 @@
 #include "ms2/commonfiles/filesystem.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -43,8 +43,8 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
-int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);  // banktable.cpp: slot name attribute
+unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
+int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);  // banktable.cpp: slot name attribute
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                             // the item data of an id
 
 // The default items per job (job code 0 = every job).
@@ -88,13 +88,13 @@ void CItemDefaultData::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));
-    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key"))) {
+    for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key"))) {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
         int nJobCode = 0;
@@ -107,10 +107,10 @@ void CItemDefaultData::Load()
             spItems.AssignRaw(new TDefaultItems(nJobCode));
             ms_mapJobItems.SetAt(nJobCode, spItems);
         }
-        for (Unk_140165cf0* pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->FirstChild("slot")); pSlot != 0; pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->NextSibling("slot"))) {
+        for (TiXmlElement* pSlot = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->FirstChild("slot")); pSlot != 0; pSlot = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlot))->NextSibling("slot"))) {
             Unk_ItemDefaultKind eSlot = (Unk_ItemDefaultKind)0;
             ReadSlotAttr(pSlot, "name", (int*)&eSlot);
-            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
+            for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlot))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item"))) {
                 if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                     continue;
                 bool bVisible = false;

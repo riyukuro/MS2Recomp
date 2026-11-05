@@ -47,7 +47,7 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/client/ms2/entityinstancing.h"  // C3: EntityInstancing::FUN_1411c6a50
 #include "ms2/client/ms2/ms2scenegraphservice.h"   // C3: TSingleton<MS2SceneGraphService>::s_instance
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
@@ -58,7 +58,7 @@ public:
     void* m_storage[14];
 };
 #include <efd/ISystemService.h>
-class Unk_Service6100017 : public efd::ISystemService { };   // the cube map service (class id 0x06100017; as entityvibrator.cpp)
+// C3: Unk_Service6100017 was CubeMapInformationService (cubemapinformationservice_3.h)
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -147,7 +147,7 @@ public:
     virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63();
     virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66();
     virtual void vfunc_67(Vector3* pA, Vector3* pB);   // MS2: slot 67 (0x218) two plane vectors
-    Vector3 FUN_14123cc20();                            // facing vector
+    // facing vector: GameObject::GetForwardDirection (0x14123cc20)
 };
 
 class Unk_McWorld : public WorldService
@@ -181,7 +181,7 @@ private:
     Unk_McAttach* m_p;
 };
 
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // Entity instancing service: the object that knows which entities are hidden.
 class Unk_McInstancing
@@ -193,21 +193,21 @@ public:
     int m_nHidden;                                              // +0xd0
 };
 MS2_CHECK_OFFSET(Unk_McInstancing, m_nHidden, 0xd0);
-class Unk_McInstSvc : public Unk_McRefObj { };
-class Unk_McInstSvcPtr
-{
-public:
-    Unk_McInstSvcPtr(Unk_McInstSvc* p)
-    {
-        m_p = p;
-        if (m_p)
-            m_p->vfunc_1();
-    }
-    ~Unk_McInstSvcPtr();                                        // 0x14098cc60
-    Unk_McInstSvc* FUN_14098d0e0() const;                       // operator->
-private:
-    Unk_McInstSvc* m_p;
-};
+// C3: Unk_McInstSvcPtr was efd::SmartPointer<HardwareInstancingService> (ctor 0x14098c7d0, dtor 0x14098cc60,
+// operator-> 0x14098d0e0; the same VAs as the real rows). The Unk_McInstSvc / Unk_McInstSvcPtr views are gone.
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 
 class Unk_McEntityRules : public CTriggerService { };
@@ -601,12 +601,12 @@ void CMouseController::FUN_140ad2830()
         return;
     Unk_RayCastInfo info;
     info.m_origin = pPc->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, 75.0f));
-    info.m_dir = pPc->FUN_14123cc20();
+    info.m_dir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pPc)->GetForwardDirection()));
     info.m_maxDist = 50.0f;
     info.m_groups = 0x201;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&info, 0))
     {
-        efd::SmartPointer<Unk_Service6100017> spPhys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spPhys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         void* pHit = reinterpret_cast<CubeMapInformationService*>(spPhys.operator->())->GetCubeByEntity(static_cast<egf::Entity*>(info.m_hitEntity));
         if (pHit != 0)
         {
@@ -781,7 +781,7 @@ MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87
 Vector3 CMouseController::FUN_140ad3400(Vector3 pt)
 {
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    Vector3 vFacing = pPc->FUN_14123cc20();
+    efd::Point3 vFacing = ((GameObject*)pPc)->GetForwardDirection();
     Vector3 vPos = FUN_140ad3c70();
     Vector3 v = DAT_143b01a60;
     if (FUN_14028d470(vFacing.x, 1.0f))
@@ -951,8 +951,8 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     pEntity->GetPropertyValue(0x23f9860e, bFlagA);
     if (bFlagA)
     {
-        Unk_McInstSvcPtr spSvc(((class Unk_McInstSvc*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-        Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(reinterpret_cast<HardwareInstancingService*>(spSvc.FUN_14098d0e0())->FUN_1413d66b0(pEntity));
+        efd::SmartPointer<HardwareInstancingService> spSvc(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
+        Unk_McInstancing* pInst = reinterpret_cast<Unk_McInstancing*>(spSvc->FUN_1413d66b0(pEntity));
         if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {
             bResult = !reinterpret_cast<EntityInstancing*>(pInst)->FUN_1411c6a50(pEntity->GetEntityID());

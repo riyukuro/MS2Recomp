@@ -19,7 +19,7 @@ public:
     void Clear();                                           // 0x140267bd0
     int Sum();                                              // 0x140267c10
     void Add(int nIndex, int nValue);                       // 0x140267c70
-    unsigned __int64 Get(int nIndex);                       // 0x140267d70 (3: the sum)
+    int Get(int nIndex);                                    // 0x140267d70 (3: the sum)
     void WriteTo(COutputStream& out);                       // 0x140267e40
     void ReadFrom(CInputStream& in);                        // 0x140267e70
     void Copy(const Unk_IntTriple& other);                  // 0x140267ea0
@@ -335,13 +335,13 @@ public:
     void FUN_1404cc210(CInPacket& packet);
     std::map<std::pair<unsigned,int>,ItemEntity> f18;                    // items by (id, rank)
     std::map<std::pair<__int64,int>,ItemEntity> f28;
-    std::deque<Unk_PayloadPtr<CGuildStroageHistory> > f38;               // history, newest last
-    ATL::CAtlArray<Unk_PayloadPtr<CGuildStroageHistory> > f60;
+    std::deque<MS2Ptr<CGuildStroageHistory> > f38;               // history, newest last
+    ATL::CAtlArray<MS2Ptr<CGuildStroageHistory> > f60;
 };
 MS2_CHECK_SIZE(CGuildStorage::CGuildStroageHistory,0x80);
 MS2_CHECK_SIZE(CGuildStorage,0x80);
 // Older spelling of CGuildStorage::f38 (guildmanager.cpp declares the deque clear over it).
-typedef std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> > Unk_GuildMapC;
+typedef std::deque<MS2Ptr<CGuildStorage::CGuildStroageHistory> > Unk_GuildMapC;
 class CGuildNpc : public CPtred {
 public:
     CGuildNpc();
@@ -357,7 +357,7 @@ class CGuildInfo {
 public:
     CGuildInfo();
     ~CGuildInfo();
-    virtual int vfunc_0(Unk_PayloadPtr<CGuildMember> member);
+    virtual int vfunc_0(MS2Ptr<CGuildMember> member);
     virtual void vfunc_1(CStringW name);
     virtual void vfunc_2(__int64 value,CStringW name,int key,const CStringW& text);
     void FUN_1404cc900();
@@ -389,15 +389,15 @@ public:
     void FUN_1404cfe60(const CStringW& name,__int64 value);
     int FUN_1404cff20();
     int GetMemberCount();
-    Unk_PayloadPtr<CGuildMember> GetMasterMember();   // the master
-    void SetMasterMember(Unk_PayloadPtr<CGuildMember> v);
+    MS2Ptr<CGuildMember> GetMasterMember();   // the master
+    void SetMasterMember(MS2Ptr<CGuildMember> v);
     int IsMaster(CStringW name);
     void FUN_1404d0330(void* out); void FUN_1404d0420(void* out);
     int FUN_1404d0510(); int GetMaxGradeIndex();
     int HasMemberPermission(CStringW name,unsigned mask);
     unsigned FUN_1404d06a0(CStringW name);
-    Unk_PayloadPtr<CGuildGrade> GetGrade(int index);
-    int SetOrAddGrade(int index,Unk_PayloadPtr<CGuildGrade> grade);
+    MS2Ptr<CGuildGrade> GetGrade(int index);
+    int SetOrAddGrade(int index,MS2Ptr<CGuildGrade> grade);
     CStringW GetGradeName(int index);
     int FUN_1404d0c00(); int FUN_1404d0d00(); int FUN_1404d0df0(); int FUN_1404d0ee0();
     unsigned GetScore(); void SetScore(int v);
@@ -427,12 +427,12 @@ public:
     __int64 FUN_1404d2330(int key);
     CStringW FUN_1404d2400(int key);
     int FUN_1404d2510(int a,int b);
-    void FUN_1404d25a0(Unk_PayloadPtr<CGuildSkill> skill);
+    void FUN_1404d25a0(MS2Ptr<CGuildSkill> skill);
     MS2Ptr<CGuildSkill> FUN_1404d2640(int key);           // skill by id (sret)
     int FUN_1404d26f0(int key);
     MS2Ptr<CGuildCustomEvent> FUN_1404d27b0(int key);     // custom event by id (sret)
-    void FUN_1404d2860(Unk_PayloadPtr<CGuildNpc> npc);
-    Unk_PayloadPtr<CGuildNpc> FUN_1404d28e0(int key);
+    void FUN_1404d2860(MS2Ptr<CGuildNpc> npc);
+    MS2Ptr<CGuildNpc> FUN_1404d28e0(int key);
     int FUN_1404d2990(int key);
     void FUN_1404d2a10(CInPacket* packet);
     void FUN_1404d2b00(int a,void* b); void FUN_1404d2ba0(int a,void* b);
@@ -446,23 +446,23 @@ public:
     void FUN_1404d31b0();
     int FUN_1404d3400(ATL::CAtlMap<__int64,__int64>* out);   // fills a member map, returns its count
     void FUN_1404d3600(int v); int FUN_1404d3620();
-    Unk_PayloadPtr<CGuildNpcShopMgr> FUN_1404d3640();
+    MS2Ptr<CGuildNpcShopMgr> FUN_1404d3640();
     void FUN_1404d36d0();
     void FUN_1404d3b80();
     void FUN_1404d3e70();
     // @0x1404d3fe0 / 0x1404d4060: the Unk_GuildStrRec (de)serializers are free helpers in guilddef_1.cpp.
     CLockCriticalSection lock; __int64 f38; CStringW f40; CString f48; int f50; CStringW f58,f60; __int64 f68,f70,f78; CStringW f80; __int64 f88,f90; CStringW f98;
-    ATL::CAtlArray<Unk_PayloadPtr<CGuildGrade> > fa0; int fc0,fc4; __int64 fc8,fd0; CStringW fd8; Unk_GuildSeason season;   // MS2: fa0 holds the grades (CAtlArray<Unk_PayloadPtr<CGuildGrade>> RemoveAll 0x1404f86e0 / SetCount 0x1404f9b50 / SetAt 0x1404f9730)
+    ATL::CAtlArray<MS2Ptr<CGuildGrade> > fa0; int fc0,fc4; __int64 fc8,fd0; CStringW fd8; Unk_GuildSeason season;   // MS2: fa0 holds the grades (CAtlArray<MS2Ptr<CGuildGrade>> RemoveAll 0x1404f86e0 / SetCount 0x1404f9b50 / SetAt 0x1404f9730)
     int f130,f134,f138,f13c,f140,f144,f148,f14c,f150=1000,f154,f158,f15c,f160,f164,f168,f16c;
     ATL::CAtlMap<int,Unk_GuildStrEntry> f170; CGuildStorage storage;
-    ATL::CAtlMap<int,Unk_PayloadPtr<CGuildSkill> > f238;                 // skills by id
-    ATL::CAtlMap<int,Unk_PayloadPtr<CGuildCustomEvent> > f280;           // custom events by id
-    ATL::CAtlMap<Unk_GuildNpcKind,Unk_PayloadPtr<CGuildNpc> > f2c8;      // npcs by kind
-    Unk_PayloadPtr<CGuildMember> f310;                                   // the master
-    ATL::CRBMap<CStringW,Unk_PayloadPtr<CGuildMember>,ATL::CStringElementTraitsI<CStringW> > f320;   // members by name (case-insensitive)
+    ATL::CAtlMap<int,MS2Ptr<CGuildSkill> > f238;                 // skills by id
+    ATL::CAtlMap<int,MS2Ptr<CGuildCustomEvent> > f280;           // custom events by id
+    ATL::CAtlMap<Unk_GuildNpcKind,MS2Ptr<CGuildNpc> > f2c8;      // npcs by kind
+    MS2Ptr<CGuildMember> f310;                                   // the master
+    ATL::CRBMap<CStringW,MS2Ptr<CGuildMember>,ATL::CStringElementTraitsI<CStringW> > f320;   // members by name (case-insensitive)
     // @0x14197dff0
     CGuildStorage* FUN_14197dff0() { return &storage; }   // the storage (inline; uiguilddialog.cpp)
-    int f350; unsigned char f354; int f358=0; Unk_PayloadPtr<CGuildNpcShopMgr> f360;   // f360: new 0x28, ctor 0x1404ee230
+    int f350; unsigned char f354; int f358=0; MS2Ptr<CGuildNpcShopMgr> f360;   // f360: new 0x28, ctor 0x1404ee230
     MS2_LAYOUT_FRIEND;
 };
 MS2_CHECK_SIZE(CGuildInfo,0x370);

@@ -48,7 +48,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CReactor);
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::AssetData::GetSequenceName
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
@@ -144,9 +144,9 @@ public:
     char m_pad_48[8];
     int m_nCount;                                               // +0x50
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 class Unk_RxMapInfo : public CPtred
 {
 public:
@@ -156,9 +156,9 @@ public:
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);   // C3: the definer's signature (0x1408a14c0), cell of a point
-int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
+int FUN_1408a03c0(Unk_Int3 pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
-Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
+efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptCenter);   // fills the cell center
 class CInteractObject   // C3: member view (real class not in this TU)
 {
 public:
@@ -615,8 +615,8 @@ int FUN_140b7a650(PCBase* pPc)
 
 
 
-    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
-    if (grid.operator Unk_Service6100017*() == 0)
+    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    if (grid.operator CubeMapInformationService*() == 0)
     {
         MS2_ASSERT_AT(0x21e, 0);
         return 1;
@@ -625,12 +625,11 @@ int FUN_140b7a650(PCBase* pPc)
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
     pWorld->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
-    Unk_Int3 cellOfPc;
-    cellOfPc = FUN_1408a14c0(posPc);   // the exe's sret temp is copied in
-    int nCellId = FUN_1408a03c0(cellOfPc);
+    // the exe copies the sret cell temp into the by-value argument
+    int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
     Unk_Int3 cell = FUN_1408a0400(nCellId);
     Vector3 ptCenter;
-    FUN_1408a15b0(cell, ptCenter);
+    FUN_1408a15b0(cell, reinterpret_cast<efd::Point3&>(ptCenter));
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i)
     {
@@ -666,10 +665,8 @@ int FUN_140b7a650(PCBase* pPc)
             continue;
         Vector3 pt;
         // the exe copies the vfunc_18 result straight into the by-value arg
-        Unk_Int3 cellOfActor;
-        cellOfActor = FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18());
-        int nActorCell = FUN_1408a03c0(cellOfActor);
-        FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
+        int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
+        FUN_1408a15b0(FUN_1408a0400(nActorCell), reinterpret_cast<efd::Point3&>(pt));
         float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
         if (fDist < fNear)
             return 1;
@@ -826,18 +823,18 @@ struct Unk_RxAnimRec
     void* m_spActorManager;
     void* m_spAssetData;
 };
-bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec);
+// FUN_1409991a0 was AnimationService::ContainsEntity (0x1409991a0), reached through Unk_RxAnimAccess below
 // The animation service's protected AssetData (GetSequenceName 0x1409a1940), opened up like equipmodel.cpp's view.
 struct Unk_RxAnimAccess : egmAnimation::AnimationService
 {
-    using AnimationService::AssetData;
+    using AnimationService::AssetData; using AnimationService::ActorEntry; using AnimationService::ContainsEntity;
 };
 // @0x140b7cc50
 // MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
 efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
 {
     Unk_RxAnimRec* pRec;
-    if (!FUN_1409991a0(this, &id, &pRec))
+    if (!reinterpret_cast<Unk_RxAnimAccess*>(this)->ContainsEntity(id, reinterpret_cast<Unk_RxAnimAccess::ActorEntry*&>(pRec)))
         return efd::utf8string::NullString();
     Unk_RxAnimAccess::AssetData* pName = reinterpret_cast<efd::SmartPointer<Unk_RxAnimAccess::AssetData>*>(&pRec->m_spAssetData)->operator Unk_RxAnimAccess::AssetData*();
     if (!pName)

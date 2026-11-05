@@ -46,8 +46,8 @@ enum
 
 int FUN_1411a0f80(const CString& strType);                  // 0x1411a0f80 type name -> kind (case-insensitive)
 CString FUN_1411a12f0(int nType);                           // 0x1411a12f0 kind -> display name ("NULL" if unknown)
-int FUN_1411a16c0(Unk_140165cf0* pNode, const char* pszName, int& nType);   // 0x1411a16c0 read a type attribute
-MS2Ptr<CEffectParam> FUN_1411a04e0(const CString& strName, Unk_140165cf0* pNode);   // 0x1411a04e0 create + load one param
+int FUN_1411a16c0(TiXmlElement* pNode, const char* pszName, int& nType);   // 0x1411a16c0 read a type attribute
+MS2Ptr<CEffectParam> FUN_1411a04e0(const CString& strName, TiXmlElement* pNode);   // 0x1411a04e0 create + load one param
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);  // 0x14119eae0 create the runtime effect
 
 typedef MS2Ptr<CEffectParam> CEffectParamPtr;

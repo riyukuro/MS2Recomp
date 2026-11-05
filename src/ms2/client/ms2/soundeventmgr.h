@@ -74,7 +74,7 @@ class CSoundEventEffectParam : public CEffectParam
 {
 public:
     CSoundEventEffectParam();                                   // 0x141775810
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141775af0
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141775af0
     virtual bool vfunc_2();                                     // 2 0x141775cb0 validate the event / group names
     virtual CEffectPtr vfunc_6();                               // 6 0x141775fc0 new CSoundEventEffect
     virtual bool vfunc_7(Unk_EffectTarget* pTarget);            // 7 0x141776060
@@ -84,8 +84,8 @@ public:
     const CString& FUN_141776260() const { return m_strGroup; }
     const CString& FUN_141776280() const { return m_strParentNode; }
     float FUN_1417762a0(int nJob) const;                              // the start delay for the job
-    void FUN_141776330(Unk_140165cf0* pNode);                   // "jobEvent"  = job:event,...
-    void FUN_1417764c0(Unk_140165cf0* pNode);                   // "byJobStartDelay" = job:delay,...
+    void FUN_141776330(TiXmlElement* pNode);                   // "jobEvent"  = job:event,...
+    void FUN_1417764c0(TiXmlElement* pNode);                   // "byJobStartDelay" = job:delay,...
 
 public:
     MS2_LAYOUT_FRIEND;

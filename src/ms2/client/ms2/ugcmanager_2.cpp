@@ -159,11 +159,12 @@ class Cube   // C3: member view for the former free stand-ins
 public:
     int FUN_1408b51d0();
 };
+class CubeMapInformationService { public: Cube* FUN_1410b8c90(egf::EntityID kId); };   // C3: member view
 class Unk_UgcCubeService : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    Cube* FUN_1410b8c90(egf::EntityID id);
+    // C3: FUN_1410b8c90 is CubeMapInformationService's own (view below)
 };
 struct Unk_UgcFramework
 {
@@ -171,7 +172,7 @@ struct Unk_UgcFramework
 };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_UgcFramework*)&egf::g_bapiContext)          // C3: was extern Unk_UgcFramework DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The UGC event dispatcher (the UIUGCEventListener slots).
 class Unk_UgcEventDispatcher
@@ -546,7 +547,7 @@ void CUgcDownloadCube::ProcessResult()
             MS2Ptr<CUgcItemCube> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Cube* pCube = spService->FUN_1410b8c90(sp->m_entityId);
+            Cube* pCube = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410b8c90(sp->m_entityId);
             if (pCube)
                 pCube->FUN_1408b51d0();
             else

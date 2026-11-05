@@ -102,14 +102,14 @@ struct Unk_PmFixedItem;
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 class Unk_ItemEquipData : public CItemData {};              // CItem::FUN_140527840's record (as commonfiles\item.cpp)
-class Unk_CommandArgs                                       // the function parameter text
-{
-public:
-    int FUN_1408d1f60(unsigned nIndex, int nDefault);
-    int FUN_1408d1fd0(unsigned nIndex, int nDefault);
-    unsigned FUN_1408d2380();
-    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);
-};
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
+
+
+
+
+
+
+
 class Unk_ItemOwnerRef : public CItemTransfer {};           // CItem::FUN_140527930's transfer state
 
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_IuBoxCallback;
@@ -562,13 +562,13 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
         context.m_job = pPlayer->FUN_141654700();
     }
     Unk_ItemEquipData* pRecord = pItem->FUN_140527840();
-    if (((Unk_CommandArgs&)(pRecord->function.parameter)).FUN_1408d2380() != 0)
+    if (((ItemFunctionArgs&)(pRecord->function.parameter)).FUN_1408d2380() != 0)
     {
         int nBoxId = 0;
         if (pRecord->function.name == L"OpenItemBox")
             nBoxId = pRecord->function.arg0;
         else if (pRecord->function.name == L"OpenItemBoxWithKey")
-            nBoxId = ((Unk_CommandArgs&)(pRecord->function.parameter)).FUN_1408d1fd0(5, 0);
+            nBoxId = ((ItemFunctionArgs&)(pRecord->function.parameter)).FUN_1408d1fd0(5, 0);
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nBoxId, context, drops, false);
     }
     for (std::vector<ItemDropResult>::const_iterator it = drops.begin(); it != drops.end(); ++it)
@@ -696,7 +696,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
         g_143ab2a90.FUN_140a63880(pItem, strArgs);
         return;
     }
-    int nMultiOpen = ((Unk_CommandArgs&)(pItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
+    int nMultiOpen = ((ItemFunctionArgs&)(pItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
     unsigned int bSingle = pItem->FUN_140529640();
     int nCount = g_143ab2a90.FUN_140a5f410(MS2Ptr<CItem>(pItem));
     if (nCount < 0)
@@ -808,7 +808,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (spItem == 0 || spItem->FUN_140527840() == 0 || pPlayer == 0)
         return 0;
-    int nDays = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nDays = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     MS2Ptr<CEquipmentSlotLayerInfo> spTitle = pPlayer->FUN_1416561a0()->GetTitle();
     if (spTitle == 0)
         return 0;
@@ -874,7 +874,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (spItem == 0 || spItem->FUN_140527840() == 0 || pPlayer == 0)
         return 0;
-    int nParam = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nParam = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     if (nParam == 0)
         return 0;
     if (pPlayer->FUN_14123c260() <= 0.9f || pPlayer->FUN_14123c260() >= 1.1f)
@@ -921,7 +921,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d1ef50
 int CreateReactor(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    int nReactorId = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nReactorId = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     if (!FUN_140b7a330((class PCBase*)(pPlayer), nReactorId))
         return 0;
     static_cast<MyPC*>(pPlayer)->FUN_14152e0c0();
@@ -1216,8 +1216,8 @@ int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d21d70
 int OpenWebPage(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    CStringA strUrl = FUN_14016a600(((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(0, L""), 0);
-    CStringW strKind = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(1, L"");
+    CStringA strUrl = FUN_14016a600(((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(0, L""), 0);
+    CStringW strKind = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(1, L"");
     if (strKind == L"maview")
     {
         UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
@@ -1511,7 +1511,7 @@ int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
     CStringW strTab;
     if (g_143ab2a90.FUN_140a5ce30(strTab))
     {
-        if (strTab.GetLength() != 0 && ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() == 1)
+        if (strTab.GetLength() != 0 && ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() == 1)
             strMsg = FormatStringId<CStringW>(0x2a6, strTab);
     }
     else
@@ -1596,8 +1596,8 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     CStringW strMsg;
-    int nDungeon = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
-    int nIndex = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
+    int nDungeon = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nIndex = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
     DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nDungeon, nIndex);
     if (spRoom == 0)
         return 0;
@@ -1628,8 +1628,8 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d25430
 int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    int nKeyId = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
-    int nNeed = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
+    int nKeyId = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nNeed = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
     int nHave = g_143ab2a90.FUN_140a5f180(nKeyId, 0);
     if (nNeed > nHave)
     {
@@ -1668,8 +1668,8 @@ int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 1;
     }
     int nCount = 1;
-    if (((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() > 4)
-        nCount = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
+    if (((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() > 4)
+        nCount = ((ItemFunctionArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
     int nHave = g_143ab2a90.FUN_140a5f180(spItem->FUN_1405276c0(), 0);
     if (nCount > nHave)
     {
@@ -1726,8 +1726,8 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if (!spData->HasFunction())
         return 0;
-    unsigned nQuestId = ((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(0, 0);
-    unsigned short nLevel = (unsigned short)((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(1, 0);
+    unsigned nQuestId = ((ItemFunctionArgs&)(spData->function.parameter)).FUN_1408d1f60(0, 0);
+    unsigned short nLevel = (unsigned short)((ItemFunctionArgs&)(spData->function.parameter)).FUN_1408d1f60(1, 0);
     if (nLevel == 0)
         nLevel = 10;
     if ((unsigned short)pPlayer->vfunc_78() < nLevel)

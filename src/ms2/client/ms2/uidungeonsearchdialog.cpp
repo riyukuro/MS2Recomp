@@ -9,52 +9,52 @@
 // MS2-PIN: ??$?8PEAVUIDungeonSearchDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140e1c3b0 ; prop
 // MS2-PIN: ??$?8PEAVUIDungeonSearchPage@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonSearchPage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x140e1c420 ; prop
 // MS2-PIN: ??$?8PEAVUIDungeonSearchPage@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonSearchPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140e1c470 ; prop
-// MS2-PIN: ??$_Emplace_back@AEAV?$MS2Ptr@VUnk_DsButton@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VUnk_DsButton@@@@@Z 0x140e1d1e0 ; prop
-// MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VUnk_DsButton@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VUnk_DsButton@@@@@Z 0x140e1d2a0 ; prop
+// MS2-PIN: ??$_Emplace_back@AEAV?$MS2Ptr@VASButton@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VASButton@@@@@Z 0x140e1d1e0 ; prop
+// MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VASButton@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VASButton@@@@@Z 0x140e1d2a0 ; prop
 // MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VUnk_DsRoom@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsRoom@@@@V?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VUnk_DsRoom@@@@@Z 0x140e1d300 ; prop
 // MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@VUnk_DsLabel@@@@@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@VUnk_DsLabel@@@@@Z 0x140e1d420 ; prop
 // MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@VUnk_DsLabel@@@@@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VUnk_DsLabel@@@@QEAV2@AEBV2@@Z 0x140e1d730 ; prop
 // MS2-PIN: ??$_Get_unwrapped@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@YAPEAV?$MS2Ptr@VUnk_DsLabel@@@@QEAV1@@Z 0x140e1d990 ; prop
 // MS2-PIN: ??$_Get_unwrapped_n@V?$MS2Ptr@VUnk_DsLabel@@@@_J$0A@@std@@YAPEAV?$MS2Ptr@VUnk_DsLabel@@@@QEAV1@_J@Z 0x140e1d9b0 ; prop
-// MS2-PIN: ??$_Idl_distance1@PEAV?$MS2Ptr@VUnk_DsButton@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VUnk_DsButton@@@@0Urandom_access_iterator_tag@0@@Z 0x140e1d9c0 ; prop
+// MS2-PIN: ??$_Idl_distance1@PEAV?$MS2Ptr@VASButton@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VASButton@@@@0Urandom_access_iterator_tag@0@@Z 0x140e1d9c0 ; prop
 // MS2-PIN: ??$_Idl_distance@PEAV?$MS2Ptr@VUnk_DsLabel@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VUnk_DsLabel@@@@0@Z 0x140e1da50 ; prop
 // MS2-PIN: ??$_Ptr_copy_cat@V?$MS2Ptr@VUnk_DsLabel@@@@V1@@std@@YA?AU_General_ptr_iterator_tag@0@AEBQEAV?$MS2Ptr@VUnk_DsLabel@@@@0@Z 0x140e1dab0 ; prop
-// MS2-PIN: ??$_Ptr_move_cat@V?$MS2Ptr@VUnk_DsButton@@@@V1@@std@@YA?AU_General_ptr_iterator_tag@0@AEBQEAV?$MS2Ptr@VUnk_DsButton@@@@0@Z 0x140e1dae0 ; prop
+// MS2-PIN: ??$_Ptr_move_cat@V?$MS2Ptr@VASButton@@@@V1@@std@@YA?AU_General_ptr_iterator_tag@0@AEBQEAV?$MS2Ptr@VASButton@@@@0@Z 0x140e1dae0 ; prop
 // MS2-PIN: ??$_Ptr_move_cat@V?$MS2Ptr@VUnk_DsLabel@@@@V1@@std@@YA?AU_General_ptr_iterator_tag@0@AEBQEAV?$MS2Ptr@VUnk_DsLabel@@@@0@Z 0x140e1db10 ; prop
-// MS2-PIN: ??$_Seek_wrapped@V?$MS2Ptr@VUnk_DsButton@@@@@std@@YAXAEAPEAV?$MS2Ptr@VUnk_DsButton@@@@QEAV1@@Z 0x140e1db40 ; prop
+// MS2-PIN: ??$_Seek_wrapped@V?$MS2Ptr@VASButton@@@@@std@@YAXAEAPEAV?$MS2Ptr@VASButton@@@@QEAV1@@Z 0x140e1db40 ; prop
 // MS2-PIN: ??$_Uninitialized_copy@PEAV?$MS2Ptr@VUnk_DsLabel@@@@PEAV1@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@YAPEAV?$MS2Ptr@VUnk_DsLabel@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@0@@Z 0x140e1dc70 ; prop
 // MS2-PIN: ??$_Uninitialized_copy_al_unchecked@PEAV?$MS2Ptr@VUnk_DsRoom@@@@PEAV1@V?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@std@@@std@@YAPEAV?$MS2Ptr@VUnk_DsRoom@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140e1ddd0 ; prop
-// MS2-PIN: ??$_Uninitialized_move@PEAV?$MS2Ptr@VUnk_DsButton@@@@PEAV1@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@YAPEAV?$MS2Ptr@VUnk_DsButton@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@0@@Z 0x140e1de60 ; prop
+// MS2-PIN: ??$_Uninitialized_move@PEAV?$MS2Ptr@VASButton@@@@PEAV1@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@YAPEAV?$MS2Ptr@VASButton@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VASButton@@@@@0@@Z 0x140e1de60 ; prop
 // MS2-PIN: ??$_Uninitialized_move@PEAV?$MS2Ptr@VUnk_DsLabel@@@@PEAV1@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@YAPEAV?$MS2Ptr@VUnk_DsLabel@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@0@@Z 0x140e1df30 ; prop
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAV?$MS2Ptr@VUnk_DsButton@@@@PEAV1@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@YAPEAV?$MS2Ptr@VUnk_DsButton@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140e1e000 ; prop
-// MS2-PIN: ??$construct@V?$MS2Ptr@VUnk_DsButton@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@1@QEAV?$MS2Ptr@VUnk_DsButton@@@@AEAV3@@Z 0x140e1e120 ; prop
-// MS2-PIN: ??$construct@V?$MS2Ptr@VUnk_DsButton@@@@AEBV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@1@QEAV?$MS2Ptr@VUnk_DsButton@@@@AEBV3@@Z 0x140e1e170 ; prop
-// MS2-PIN: ??$construct@V?$MS2Ptr@VUnk_DsButton@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@1@QEAV?$MS2Ptr@VUnk_DsButton@@@@$$QEAV3@@Z 0x140e1e1c0 ; prop
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAV?$MS2Ptr@VASButton@@@@PEAV1@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@YAPEAV?$MS2Ptr@VASButton@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VASButton@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140e1e000 ; prop
+// MS2-PIN: ??$construct@V?$MS2Ptr@VASButton@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VASButton@@@@@1@QEAV?$MS2Ptr@VASButton@@@@AEAV3@@Z 0x140e1e120 ; prop
+// MS2-PIN: ??$construct@V?$MS2Ptr@VASButton@@@@AEBV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VASButton@@@@@1@QEAV?$MS2Ptr@VASButton@@@@AEBV3@@Z 0x140e1e170 ; prop
+// MS2-PIN: ??$construct@V?$MS2Ptr@VASButton@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VASButton@@@@@1@QEAV?$MS2Ptr@VASButton@@@@$$QEAV3@@Z 0x140e1e1c0 ; prop
 // MS2-PIN: ??$construct@V?$MS2Ptr@VUnk_DsLabel@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@1@QEAV?$MS2Ptr@VUnk_DsLabel@@@@AEAV3@@Z 0x140e1e210 ; prop
 // MS2-PIN: ??$construct@V?$MS2Ptr@VUnk_DsLabel@@@@AEBV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@1@QEAV?$MS2Ptr@VUnk_DsLabel@@@@AEBV3@@Z 0x140e1e260 ; prop
 // MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VUnk_DsLabel@@@@@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VUnk_DsLabel@@@@@Z 0x140e1e3b0 ; prop
-// MS2-PIN: ??$forward@AEAV?$MS2Ptr@VUnk_DsButton@@@@@std@@YAAEAV?$MS2Ptr@VUnk_DsButton@@@@AEAV1@@Z 0x140e1e420 ; prop
-// MS2-PIN: ??$forward@AEBV?$MS2Ptr@VUnk_DsButton@@@@@std@@YAAEBV?$MS2Ptr@VUnk_DsButton@@@@AEBV1@@Z 0x140e1e4b0 ; prop
+// MS2-PIN: ??$forward@AEAV?$MS2Ptr@VASButton@@@@@std@@YAAEAV?$MS2Ptr@VASButton@@@@AEAV1@@Z 0x140e1e420 ; prop
+// MS2-PIN: ??$forward@AEBV?$MS2Ptr@VASButton@@@@@std@@YAAEBV?$MS2Ptr@VASButton@@@@AEBV1@@Z 0x140e1e4b0 ; prop
 // MS2-PIN: ??$forward@AEBV?$MS2Ptr@VUnk_DsLabel@@@@@std@@YAAEBV?$MS2Ptr@VUnk_DsLabel@@@@AEBV1@@Z 0x140e1e4c0 ; prop
-// MS2-PIN: ??$forward@V?$MS2Ptr@VUnk_DsButton@@@@@std@@YA$$QEAV?$MS2Ptr@VUnk_DsButton@@@@AEAV1@@Z 0x140e1e4d0 ; prop
-// MS2-PIN: ??$move@AEAV?$MS2Ptr@VUnk_DsButton@@@@@std@@YA$$QEAV?$MS2Ptr@VUnk_DsButton@@@@AEAV1@@Z 0x140e1e6a0 ; prop
+// MS2-PIN: ??$forward@V?$MS2Ptr@VASButton@@@@@std@@YA$$QEAV?$MS2Ptr@VASButton@@@@AEAV1@@Z 0x140e1e4d0 ; prop
+// MS2-PIN: ??$move@AEAV?$MS2Ptr@VASButton@@@@@std@@YA$$QEAV?$MS2Ptr@VASButton@@@@AEAV1@@Z 0x140e1e6a0 ; prop
 // MS2-PIN: ??$move@AEAV?$MS2Ptr@VUnk_DsRoom@@@@@std@@YA$$QEAV?$MS2Ptr@VUnk_DsRoom@@@@AEAV1@@Z 0x140e1e6b0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140e1e6c0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140e1e800 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonSearchPage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140e1e8a0 ; unique
 // MS2-PIN: ??0?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsRoom@@@@V?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VUnk_DsRoom@@@@AEAV?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@1@@Z 0x140e1ead0 ; prop
-// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@QEAA@XZ 0x140e1ed40 ; prop
+// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@QEAA@XZ 0x140e1ed40 ; prop
 // MS2-PIN: ?vfunc_48@UIDungeonSearchDialog@@UEAAHXZ 0x140e1f110 ; unique
-// MS2-PIN: ?_Calculate_growth@?$vector@V?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@AEBA_K_K@Z 0x140e1f1a0 ; prop
-// MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VUnk_DsButton@@@@_K1@Z 0x140e1f2c0 ; unique
+// MS2-PIN: ?_Calculate_growth@?$vector@V?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@AEBA_K_K@Z 0x140e1f1a0 ; prop
+// MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VASButton@@@@_K1@Z 0x140e1f2c0 ; unique
 // MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VUnk_DsRoom@@@@V?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@std@@@std@@AEBA_NXZ 0x140e1f730 ; prop
 // MS2-PIN: ?_Orphan_range@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@AEBAXPEAV?$MS2Ptr@VUnk_DsLabel@@@@0@Z 0x140e1f950 ; prop
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_DsRoom@@@@V?$allocator@V?$MS2Ptr@VUnk_DsRoom@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VUnk_DsRoom@@@@XZ 0x140e1fb00 ; prop
 // MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VUnk_DsLabel@@@@PEAV3@00@Z 0x140e1fd50 ; prop
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VUnk_DsButton@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140e1fd90 ; prop
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VASButton@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140e1fd90 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VUnk_DsLabel@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140e1fdd0 ; prop
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VUnk_DsLabel@@@@00@Z 0x140e1fe70 ; unique
-// MS2-PIN: ?allocate@?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@QEAAPEAV?$MS2Ptr@VUnk_DsButton@@@@_K@Z 0x140e1ff10 ; unique
+// MS2-PIN: ?allocate@?$allocator@V?$MS2Ptr@VASButton@@@@@std@@QEAAPEAV?$MS2Ptr@VASButton@@@@_K@Z 0x140e1ff10 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e200f0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e20150 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140e201b0 ; unique
@@ -75,9 +75,9 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e20660 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchPage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e206c0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonSearchPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140e20720 ; unique
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@2@@Z 0x140e20780 ; unique
-// MS2-PIN: ?push_back@?$vector@V?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VUnk_DsButton@@@@@Z 0x140e20840 ; prop
-// MS2-PIN: ?size@?$vector@V?$MS2Ptr@VUnk_DsButton@@@@V?$allocator@V?$MS2Ptr@VUnk_DsButton@@@@@std@@@std@@QEBA_KXZ 0x140e20940 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VASButton@@@@@2@@Z 0x140e20780 ; unique
+// MS2-PIN: ?push_back@?$vector@V?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VASButton@@@@@Z 0x140e20840 ; prop
+// MS2-PIN: ?size@?$vector@V?$MS2Ptr@VASButton@@@@V?$allocator@V?$MS2Ptr@VASButton@@@@@std@@@std@@QEBA_KXZ 0x140e20940 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?push_back@?$vector@V?$MS2Ptr@VUnk_DsLabel@@@@V?$allocator@V?$MS2Ptr@VUnk_DsLabel@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VUnk_DsLabel@@@@@Z 0x140e20870
 // MS2-PIN: ??0?$MS2Ptr@VUIDungeonSearchPage@@@@QEAA@AEBV0@@Z 0x140e1ea20
@@ -128,10 +128,10 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 // The notification centre ("NotifyGameStart" ...).
 class Unk_SingletonObj* FUN_140939a10();
 
-class Unk_DsButton : public ASButton
-{
-public:
-};
+// The sub buttons are plain ASButtons: FUN_140d01c90 builds them with Unk_ASCreate<ASButton>
+// (RTTI .?AVASButton@@), and their vector is the one UIDungeonRoomInfo::m_subTabButtons uses.
+
+
 class Unk_DsLabel : public ASDisplayObject {};
 
 // A dungeon room record (the list rows of the select dialog).
@@ -300,14 +300,14 @@ void FUN_140d73ff0(CStringW);
 
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType);
 
-// The array loaders build an ASDisplayObjectContainer over a Value; one child getter COMDAT per wrapper class.
-class Unk_DsNode : public ASDisplayObjectContainer
+class ASLabel;   // The array loaders build an ASDisplayObjectContainer over a Value; one child getter COMDAT per wrapper class.
+class Unk_Finder : public ASDisplayObjectContainer   // C3: was Unk_DsNode; the child getters 0x140d01c90 / 0x140d01dd0 (unit_140cff310)
 {
 public:
-    MS2Ptr<Unk_DsButton> FUN_140d01c90(const CString& strName);
-    MS2Ptr<Unk_DsLabel> FUN_140d01dd0(const CString& strName);
+    MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);
+    MS2Ptr<ASLabel> FUN_140d01dd0(const CString& strName);   // C3: the getter returns MS2Ptr<ASLabel>
 };
-bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart);
+bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<ASButton> >& out, unsigned nStart);
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart);
 
 #define DS_BIND(call, member, line) do { \
@@ -764,7 +764,7 @@ UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType)
 MS2_REPLACE(0x140e1cfe0, FUN_140e1cfe0, 147, 0xC7E55275);
 
 // @0x140e1cc40
-bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart)
+bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<ASButton> >& out, unsigned nStart)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return false;
@@ -772,7 +772,7 @@ bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned 
     out.reserve(nCount);
     for (unsigned i = nStart; i < nCount + nStart; ++i) {
         ASDisplayObjectContainer node(root, 2);
-        MS2Ptr<Unk_DsButton> child = static_cast<Unk_DsNode&>(node).FUN_140d01c90(StringFormat("{0}{1}", strName, i));
+        MS2Ptr<ASButton> child = static_cast<Unk_Finder&>(node).FUN_140d01c90(StringFormat("{0}{1}", strName, i));
         if (child == NULL) {
             (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", 99), 0));
             return false;
@@ -791,12 +791,12 @@ bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned 
     out.reserve(nCount);
     for (unsigned i = nStart; i < nCount + nStart; ++i) {
         ASDisplayObjectContainer node(root, 2);
-        MS2Ptr<Unk_DsLabel> child = static_cast<Unk_DsNode&>(node).FUN_140d01dd0(StringFormat("{0}{1}", strName, i));
+        MS2Ptr<ASLabel> child = static_cast<Unk_Finder&>(node).FUN_140d01dd0(StringFormat("{0}{1}", strName, i));
         if (child == NULL) {
             (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", 99), 0));
             return false;
         }
-        out.push_back(child);
+        out.push_back(reinterpret_cast<const MS2Ptr<Unk_DsLabel>&>(child));
     }
     return true;
 }

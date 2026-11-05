@@ -87,10 +87,10 @@ public:
 MS2_CHECK_SIZE(CGameRankingParam, 0x50);
 
 // The tag that selects the "make a fresh object" constructor of the service's handles (0x1401b7b90, no code).
-struct Unk_RankNewTag
-{
-    explicit Unk_RankNewTag(int);
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_RankNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_RankNewTag;
+
+
 
 // The answer of a request: slot 2 = percent rank flag, slot 3 = my rank (both through the pointee's vftable).
 struct Unk_RankListHandle;

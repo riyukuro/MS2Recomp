@@ -10,7 +10,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
-
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<T> (friend Unk_MS2PtrAccess)
 #include <assert.h>
 #include <new>
 
@@ -21,15 +21,15 @@
 class Unk_GcSmartRef
 {
 public:
-    Unk_GcSmartRef& FUN_1413b40b0(Unk_GcSmartRef& rhs);     // 0x1413b40b0 assignment
+    // C3: 0x1413b40b0 is MS2Ptr<ASDisplayObject>::operator=, now Unk_MS2PtrAccess::FUN_1413b40b0 (below)
     void* FUN_1413b4130() const;                            // 0x1413b4130 the held value
-    void FUN_140d03270();
-    void FUN_140d03410();
+    // C3: FUN_140d03270 / FUN_140d03410 were MS2Ptr<ASDisplayObject>::AddRef / Release (private,
+    // reached through the Unk_MS2PtrAccess friend)
     void* m_p0;
     void* m_p8;
 };
 MS2_CHECK_SIZE(Unk_GcSmartRef, 0x10);
-
+class ASDisplayObject; struct Unk_MS2PtrAccess { static MS2Ptr<ASDisplayObject>& FUN_1413b40b0(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs); };
 
 // @0x1413b4010
 Unk_GcOptInt& Unk_GcOptInt::operator=(const int& nValue)
@@ -56,12 +56,12 @@ Unk_GcOptBool& Unk_GcOptBool::operator=(const bool& bValue)
 }
 
 // @0x1413b40b0
-Unk_GcSmartRef& Unk_GcSmartRef::FUN_1413b40b0(Unk_GcSmartRef& rhs)
+MS2Ptr<ASDisplayObject>& Unk_MS2PtrAccess::FUN_1413b40b0(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs)
 {
-    rhs.FUN_140d03270();
-    FUN_140d03410();
-    m_p8 = rhs.m_p8;
-    return *this;
+    rhs.AddRef();
+    self.Release();
+    self.m_p = rhs.m_p;
+    return self;
 }
 
 // @0x1413b4130

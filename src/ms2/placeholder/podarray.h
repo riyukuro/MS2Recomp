@@ -2,7 +2,7 @@
 // (data +0, size +8, max +0x10, grow-by int +0x18). It has CAtlArray's members and the same operator[] guard, but
 // SetCount / GrowBuffer / destructor carry no constructor or destructor loops (exe 0x14020bfa0 / 0x14020ba50 /
 // 0x14020a580), and memory comes from the imported calloc / free. NOT an original name.
-// GrowBuffer relocates with FUN_1401c2a80(dst, src, count) (ATL's RelocateElements: Checked::memmove_s).
+// GrowBuffer relocates with ATL::CElementTraitsBase<unsigned char>::RelocateElements (0x1401c2a80, Checked::memmove_s).
 #pragma once
 
 #include <stddef.h>
@@ -12,7 +12,7 @@
 // The static-CRT headers declare calloc/free without dllimport; the exe calls the IAT slots.
 extern "C" void* (__cdecl* __imp_calloc)(size_t, size_t);
 extern "C" void (__cdecl* __imp_free)(void*);
-void FUN_1401c2a80(void* dst, const void* src, size_t count);
+// 0x1401c2a80 = ATL::CElementTraitsBase<unsigned char>::RelocateElements (atlcoll.h inline, C3: was FUN_1401c2a80)
 
 template <class T>
 class Unk_PodArray
@@ -75,7 +75,7 @@ private:
                 else nNewMax = nNewSize;
                 T* pNewData = static_cast<T*>(__imp_calloc(nNewMax, 1));
                 if (pNewData == NULL) return false;
-                FUN_1401c2a80(pNewData, m_pData, m_nSize);
+                ATL::CElementTraitsBase<unsigned char>::RelocateElements(reinterpret_cast<unsigned char*>(pNewData), reinterpret_cast<unsigned char*>(m_pData), m_nSize);
                 __imp_free(m_pData);
                 m_pData = pNewData;
                 m_nMaxSize = nNewMax;

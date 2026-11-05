@@ -77,7 +77,7 @@
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -111,8 +111,8 @@ void FUN_1402928e0(const CStringW& text, ATL::CAtlArray<float>& values, const wc
 void FUN_1401d9a30(CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* delims);
 bool FUN_14081dcd0(int nSaType);                                        // the SA value is a percent
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
-int FUN_1401d9a00(CStringW& text);                                      // a token as int
+TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+int FUN_1401d9a00(const CStringW& text);                                    // a token as int
 // The dungeon open period value (gameeventvalue.cpp): registers / removes a dungeon tag's open period.
 class CGameEventValueDungeonOpenPeriod   // C3: unit-local view (gameeventvalue.h; the former free stand-ins)
 {
@@ -171,8 +171,8 @@ public:
     void Clear();
 };
 // The table attribute readers with a default (adventureleveltablehelper.cpp).
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
-unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
+unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
 class CGameEventValueItemBox   // C3: unit-local view (gameeventvalue.h; the former free stand-ins)
 {
 public:
@@ -219,7 +219,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_1407181a0(const CStringW& str);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);  // string attribute or default
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);  // string attribute or default
 CString FUN_1401d4330(const wchar_t* pszWide, int nCodePage);                      // wide to multibyte
 CMsTime FUN_140718950(const CString& str);                                          // a date string
 __int64 GetServerTime();                                                            // server time
@@ -278,7 +278,7 @@ public:
     void Set(MS2Ptr<BingoContext> spContext);   // 0x140429d00
     void Clear(MS2Ptr<BingoContext> spContext);   // 0x140429d90
 };
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
+int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 class CGameEventValueStarShop   // C3: member view for the former free stand-ins
 {
 public:
@@ -560,7 +560,7 @@ template <> inline Unk_DayTime XmlConvert<Unk_DayTime>(const CString& str)
 }
 
 // An "a-b" attribute into a range (any other token count fails with TIXML_WRONG_TYPE, 2).
-template <class T> int XmlValueRange(Unk_140165cf0* pElem, const char* pszName, T& range)
+template <class T> int XmlValueRange(TiXmlElement* pElem, const char* pszName, T& range)
 {
     CString str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
@@ -940,7 +940,7 @@ void GameEventItemBuff::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
     CStringW strType;
@@ -997,10 +997,10 @@ void GameEventDungeonBonusReward::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    Unk_140165cf0* pElem = FUN_140345b40((TiXmlDocument *)pRoot);
+    TiXmlElement* pElem = FUN_140345b40((TiXmlDocument *)pRoot);
     if ((m_d0.get() ? true : false) && pElem)
         m_d0->Load(pElem);
 }
@@ -1220,7 +1220,7 @@ void GameEventQuestTag::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
     CStringA strType;
@@ -1823,10 +1823,10 @@ void GameEventFieldShutdown::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -1872,10 +1872,10 @@ void GameEventDungeonExtraReward::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<DungeonExtraRewardCountCtx> spCount(new DungeonExtraRewardCountCtx);
         spCount->m_18 = GetID();
@@ -2143,10 +2143,10 @@ void GameEventNpcEventDrop::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+    TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
     if (!pNode)
         return;
     MS2Ptr<NpcEventDropEventContext> spContext(new NpcEventDropEventContext);
@@ -2203,10 +2203,10 @@ void GameEventBlueMarble::vfunc_2()
     if (GetFileSystem()->LoadXmlFromString(&docSlot, m_70) == 0)
         return;
     MS2Ptr<BlueMarbleEventContext> spContext(new BlueMarbleEventContext(GetID(), FUN_1402e2730()));
-    Unk_140165cf0* pRound = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&docRound)->FirstChild("round"));
+    TiXmlElement* pRound = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&docRound)->FirstChild("round"));
     if (pRound)
         spContext->LoadRewards(pRound);
-    Unk_140165cf0* pSlots = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&docSlot)->FirstChild("slots"));
+    TiXmlElement* pSlots = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&docSlot)->FirstChild("slots"));
     if (pSlots)
         spContext->LoadSlots(pSlots);
     m_d0 = spContext;
@@ -2372,10 +2372,10 @@ void GameEventDungeonEnterTimeLimit::FUN_1403c31c0(const CStringW& strXml)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         MS2Ptr<EventTimeLimitDungeonContext> spContext(new EventTimeLimitDungeonContext);
         spContext->m_eventId = GetID();
@@ -2664,13 +2664,13 @@ void GameEventStampEvent::vfunc_2()
         return;
     }
     MS2Ptr<StampEventContext> spContext(new StampEventContext(GetID()));
-    Unk_140165cf0* pStampRoot = FUN_140345b40(&docStamp);
+    TiXmlElement* pStampRoot = FUN_140345b40(&docStamp);
     if (pStampRoot)
     {
-        Unk_140165cf0* pTag = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStampRoot))->FirstChild("tag"));
+        TiXmlElement* pTag = ((class TiXmlElement*)((class Unk_XmlNode*)(pStampRoot))->FirstChild("tag"));
         if (pTag)
             XmlGetAttr((class TiXmlElement*)(pTag), "event", spContext->m_strTitle);
-        for (Unk_140165cf0* pStamp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStampRoot))->FirstChild("stamp")); pStamp; pStamp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStamp))->NextSibling("stamp")))
+        for (TiXmlElement* pStamp = ((class TiXmlElement*)((class Unk_XmlNode*)(pStampRoot))->FirstChild("stamp")); pStamp; pStamp = ((class TiXmlElement*)((class Unk_XmlNode*)(pStamp))->NextSibling("stamp")))
         {
             MS2Ptr<StampEventContext::Stamp> spStamp(new StampEventContext::Stamp);
             XmlGetAttr((class TiXmlElement*)(pStamp), "quest", reinterpret_cast<unsigned int&>(spStamp->m_id));
@@ -2680,11 +2680,11 @@ void GameEventStampEvent::vfunc_2()
             spContext->m_stamps.Add(spStamp);
         }
     }
-    Unk_140165cf0* pRewardRoot = FUN_140345b40(&docReward);
+    TiXmlElement* pRewardRoot = FUN_140345b40(&docReward);
     if (pRewardRoot)
     {
-        for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
-             pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
+        for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
+             pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
         {
             MS2Ptr<StampEventContext::Reward> spReward(new StampEventContext::Reward);
             XmlGetAttr((class TiXmlElement*)(pReward), "special", spReward->m_bReceived);
@@ -2817,10 +2817,10 @@ int GameEventTimeRunEvent::FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest; pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
+    for (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest; pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
     {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest(new TimeRunEventContext::QuestContext);
         XmlGetAttr((class TiXmlElement*)(pQuest), "questID", reinterpret_cast<unsigned int&>(spQuest->m_questId));
@@ -2839,10 +2839,10 @@ int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
         return 0;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
+    for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
     {
         MS2Ptr<ItemEntity> spItem(new ItemEntity);
         int nDistance = 0;
@@ -2850,7 +2850,7 @@ int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
         spItem->vfunc_2(pReward);
         spContext->m_rewards.SetAt(nDistance, spItem);
     }
-    Unk_140165cf0* pFinal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("final"));
+    TiXmlElement* pFinal = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("final"));
     if (pFinal)
         spContext->m_item.vfunc_2(pFinal);
     return 1;
@@ -4185,7 +4185,7 @@ void GameEventItemBox::vfunc_2()
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
     MS2Ptr<ItemBoxEventContext> spBox(new ItemBoxEventContext);
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
     spBox->m_3c = m_id;
@@ -4274,10 +4274,10 @@ void GameEventShutdownInteractObjectId::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         unsigned nFieldId = FUN_140197390(pNode, "fieldId", 0);
         int nObjectId = FUN_140197350(pNode, "objectId", 0);
@@ -4357,10 +4357,10 @@ void GameEventShutdownFunctionItem::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         unsigned nItemId = FUN_140197390(pNode, "itemId", 0);
         if (nItemId == 0)
@@ -4434,10 +4434,10 @@ void GameEventShutdownSkillItem::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         unsigned nItemId = FUN_140197390(pNode, "itemId", 0);
         if (nItemId == 0)
@@ -4849,13 +4849,13 @@ bool GameEventGallery::ReadCardData(MS2Ptr<GalleryContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(3951), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
     }
-    Unk_140165cf0* root = FUN_140345b40(&doc);
+    TiXmlElement* root = FUN_140345b40(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(3954), "root" && 0);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         MS2Ptr<GalleryContext::Card> card(new GalleryContext::Card);
         if (!card)
@@ -4884,13 +4884,13 @@ bool GameEventGallery::ReadRewardData(MS2Ptr<GalleryContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(3974), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v2)" && 0);
         return false;
     }
-    Unk_140165cf0* root = FUN_140345b40(&doc);
+    TiXmlElement* root = FUN_140345b40(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(3977), "root" && 0);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         ItemEntity item;
         item.vfunc_2(pNode);
@@ -5091,16 +5091,16 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(4145), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
     }
-    Unk_140165cf0* root = FUN_140345b40(&doc);
+    TiXmlElement* root = FUN_140345b40(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4148), "root" && 0);
         return false;
     }
-    Unk_140165cf0* xelOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("option"));
+    TiXmlElement* xelOption = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("option"));
     if (xelOption)
         XmlGetAttr((class TiXmlElement*)(xelOption), "thema", pContext->m_strTitle);
-    for (Unk_140165cf0* xel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("snowman")); xel; xel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->NextSibling("snowman")))
+    for (TiXmlElement* xel = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("snowman")); xel; xel = ((class TiXmlElement*)((class Unk_XmlNode*)(xel))->NextSibling("snowman")))
     {
         MS2Ptr<SnowmanContext::Snowman> snowman(new SnowmanContext::Snowman);
         if (!snowman)
@@ -5108,7 +5108,7 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
             MS2_ASSERT_AT(MS2_LINE(4159), "snowman" && 0);
             return false;
         }
-        Unk_140165cf0* xelCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->FirstChild("condition"));
+        TiXmlElement* xelCondition = ((class TiXmlElement*)((class Unk_XmlNode*)(xel))->FirstChild("condition"));
         if (xelCondition == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4162), "xelCondition" && 0);
@@ -5117,12 +5117,12 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
         XmlGetAttr((class TiXmlElement*)(xelCondition), "snowflakeCount", snowman->m_18);
         XmlGetAttr((class TiXmlElement*)(xelCondition), "dailyMaxCount", snowman->m_1c);
         XmlGetAttr((class TiXmlElement*)(xelCondition), "accumMaxCount", snowman->m_20);
-        if (!ReadRewardData(((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->FirstChild("rewardItems")), snowman->m_items))
+        if (!ReadRewardData(((class TiXmlElement*)((class Unk_XmlNode*)(xel))->FirstChild("rewardItems")), snowman->m_items))
         {
             MS2_ASSERT_AT(MS2_LINE(4168), "ReadRewardData(xel->FirstChildElement(\"rewardItems\"), snowman->dailyCompelteRewards)" && 0);
             return false;
         }
-        if (!ReadRewardData(((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->FirstChild("accumRewardItems")), snowman->m_bonusItems))
+        if (!ReadRewardData(((class TiXmlElement*)((class Unk_XmlNode*)(xel))->FirstChild("accumRewardItems")), snowman->m_bonusItems))
         {
             MS2_ASSERT_AT(MS2_LINE(4169), "ReadRewardData(xel->FirstChildElement(\"accumRewardItems\"), snowman->accumCompleteRewards)" && 0);
             return false;
@@ -5134,14 +5134,14 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
 MS2_REPLACE_METHOD(0x1403CE180, GameEventSnowman, ReadSnowmanData, 1362, 0x0B581B97);
 
 // @0x1403ce6e0
-bool GameEventSnowman::ReadRewardData(Unk_140165cf0* xelReward, ATL::CAtlArray<ItemEntity>& rewards)
+bool GameEventSnowman::ReadRewardData(TiXmlElement* xelReward, ATL::CAtlArray<ItemEntity>& rewards)
 {
     if (xelReward == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4179), "xelReward" && 0);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xelReward))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(xelReward))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         ItemEntity item;
         item.vfunc_2(pNode);
@@ -5228,13 +5228,13 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
         MS2_ASSERT_AT(MS2_LINE(4233), 0);
         return false;
     }
-    Unk_140165cf0* root = FUN_140345b40(&doc);
+    TiXmlElement* root = FUN_140345b40(&doc);
     if (root == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4240), 0);
         return false;
     }
-    Unk_140165cf0* xel = FUN_140345b40((TiXmlDocument *)root);
+    TiXmlElement* xel = FUN_140345b40((TiXmlDocument *)root);
     if (xel == NULL)
     {
         MS2_ASSERT_AT(MS2_LINE(4247), 0);
@@ -5242,7 +5242,7 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
     }
     do
     {
-        Unk_140165cf0* xelTicket = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->FirstChild("gameTicket"));
+        TiXmlElement* xelTicket = ((class TiXmlElement*)((class Unk_XmlNode*)(xel))->FirstChild("gameTicket"));
         if (xelTicket == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4255), 0);
@@ -5250,17 +5250,17 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
         }
         XmlGetAttr((class TiXmlElement*)(xelTicket), "itemID", reinterpret_cast<unsigned int&>(pContext->m_20));
     } while (0);
-    for (Unk_140165cf0* xelReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xel))->FirstChild("rewardData")); xelReward; xelReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xelReward))->NextSibling("rewardData")))
+    for (TiXmlElement* xelReward = ((class TiXmlElement*)((class Unk_XmlNode*)(xel))->FirstChild("rewardData")); xelReward; xelReward = ((class TiXmlElement*)((class Unk_XmlNode*)(xelReward))->NextSibling("rewardData")))
     {
         MS2Ptr<RpsContext::RewardData> reward(new RpsContext::RewardData);
         XmlGetAttr((class TiXmlElement*)(xelReward), "condPlayCount", reward->m_count);
-        Unk_140165cf0* xelItems = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xelReward))->FirstChild("items"));
+        TiXmlElement* xelItems = ((class TiXmlElement*)((class Unk_XmlNode*)(xelReward))->FirstChild("items"));
         if (xelItems == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4270), 0);
             return false;
         }
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(xelItems))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(xelItems))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             ItemEntity item;
             item.vfunc_2(pNode);
@@ -5540,10 +5540,10 @@ void GameEventCustomTriggerString::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class Unk_140165cf0*)(class Unk_140165cf0*)(pNode))->NextSiblingElement())
+    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot); pNode; pNode = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->NextSiblingElement())
     {
         CStringW strId;
         CStringW strName;
@@ -5666,13 +5666,13 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
             return false;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+        TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == NULL)
             return false;
-        Unk_140165cf0* pTreeStep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("tree_step"));
+        TiXmlElement* pTreeStep = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("tree_step"));
         if (pTreeStep)
         {
-            for (Unk_140165cf0* pStep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTreeStep))->FirstChild("step")); pStep; pStep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStep))->NextSibling("step")))
+            for (TiXmlElement* pStep = ((class TiXmlElement*)((class Unk_XmlNode*)(pTreeStep))->FirstChild("step")); pStep; pStep = ((class TiXmlElement*)((class Unk_XmlNode*)(pStep))->NextSibling("step")))
             {
                 MS2Ptr<TreeWatering_TreeStep> spStep(new TreeWatering_TreeStep);
                 XmlGetAttr((class TiXmlElement*)(pStep), "step", spStep->m_step);
@@ -5681,10 +5681,10 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
                 pContext->m_steps.SetAt(spStep->m_step, spStep);
             }
         }
-        Unk_140165cf0* pEmotionDay = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("emotion_day"));
+        TiXmlElement* pEmotionDay = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("emotion_day"));
         if (pEmotionDay)
         {
-            for (Unk_140165cf0* pTime = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEmotionDay))->FirstChild("time")); pTime; pTime = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTime))->NextSibling("time")))
+            for (TiXmlElement* pTime = ((class TiXmlElement*)((class Unk_XmlNode*)(pEmotionDay))->FirstChild("time")); pTime; pTime = ((class TiXmlElement*)((class Unk_XmlNode*)(pTime))->NextSibling("time")))
             {
                 MS2Ptr<TreeWatering_EmotionDay> spDay(new TreeWatering_EmotionDay);
                 XmlGetAttr((class TiXmlElement*)(pTime), "begin", spDay->m_beginTime);
@@ -5697,10 +5697,10 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
             return false;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+        TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == NULL)
             return false;
-        Unk_140165cf0* pWatering = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("watering_reward"));
+        TiXmlElement* pWatering = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("watering_reward"));
         if (pWatering)
         {
             XmlGetAttr((class TiXmlElement*)(pWatering), "MaxRewardCountDaily", pContext->m_nDailyLimit);
@@ -5708,7 +5708,7 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
             XmlGetAttr((class TiXmlElement*)(pWatering), "grade", pContext->m_90);
             XmlGetAttr((class TiXmlElement*)(pWatering), "count", reinterpret_cast<unsigned int&>(pContext->m_94));
         }
-        Unk_140165cf0* pEmotion = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("emotion_reward"));
+        TiXmlElement* pEmotion = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("emotion_reward"));
         if (pEmotion)
         {
             XmlGetAttr((class TiXmlElement*)(pEmotion), "MaxRewardCountDaily", pContext->m_nBonusLimit);
@@ -5721,10 +5721,10 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_78) == 0)
             return false;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+        TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == NULL)
             return false;
-        Unk_140165cf0* pResource = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("resource"));
+        TiXmlElement* pResource = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("resource"));
         if (pResource)
         {
             XmlGetAttr((class TiXmlElement*)(pResource), "FieldID", reinterpret_cast<unsigned int&>(pContext->m_f0));
@@ -5734,10 +5734,10 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
             XmlGetAttr((class TiXmlElement*)(pResource), "EmotionAnimation", pContext->m_strStateBonus);
             XmlGetAttr((class TiXmlElement*)(pResource), "EmotionDayEffect", pContext->m_str118);
         }
-        Unk_140165cf0* pTreeResource = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("tree_resource"));
+        TiXmlElement* pTreeResource = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("tree_resource"));
         if (pTreeResource)
         {
-            for (Unk_140165cf0* pStep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTreeResource))->FirstChild("step")); pStep; pStep = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStep))->NextSibling("step")))
+            for (TiXmlElement* pStep = ((class TiXmlElement*)((class Unk_XmlNode*)(pTreeResource))->FirstChild("step")); pStep; pStep = ((class TiXmlElement*)((class Unk_XmlNode*)(pStep))->NextSibling("step")))
             {
                 MS2Ptr<TreeWatering_TreeResource> spResource(new TreeWatering_TreeResource);
                 XmlGetAttr((class TiXmlElement*)(pStep), "step", spResource->m_id);
@@ -5928,10 +5928,10 @@ void GameEventBurningLevelup::vfunc_2()
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
             return;
-        Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
             return;
-        Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+        TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
         XmlGetAttr((class TiXmlElement*)(pNode), "beginLevel", m_d0->m_beginLevel);
@@ -5949,13 +5949,13 @@ void GameEventBurningLevelup::vfunc_2()
         TiXmlDocument doc;
         if (GetFileSystem()->LoadXmlFromString(&doc, m_70) == 0)
             return;
-        Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
             return;
-        Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
+        TiXmlElement* pNode = FUN_140345b40((TiXmlDocument *)pRoot);
         if (pNode == NULL)
             return;
-        for (pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+        for (pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             ItemEntity item;
             item.vfunc_2(pNode);
@@ -5971,17 +5971,17 @@ void GameEventBurningLevelup::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_80) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    Unk_140165cf0* pJumping = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("jumpingOption"));
+    TiXmlElement* pJumping = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("jumpingOption"));
     if (pJumping)
     {
         XmlGetAttr((class TiXmlElement*)(pJumping), "tutorialEndFieldId", reinterpret_cast<unsigned int&>(m_d0->m_tutorialEndFieldId));
         XmlGetAttr((class TiXmlElement*)(pJumping), "jumpingItemDescPopupStringKey", m_d0->m_jumpingItemDescPopupStringKey);
         XmlGetAttr((class TiXmlElement*)(pJumping), "jumpingItemNotifyStringKey", m_d0->m_jumpingItemNotifyStringKey);
         XmlGetAttr((class TiXmlElement*)(pJumping), "jumpingCompleteStringKey", m_d0->m_jumpingCompleteStringKey);
-        Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJumping))->FirstChild("item"));
+        TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pJumping))->FirstChild("item"));
         if (pItem == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(5154), 0);
@@ -6174,7 +6174,7 @@ void GameEventCoupleDance::vfunc_2()
             MS2_ASSERT_AT(MS2_LINE(4337), 0);
             return;
         }
-        Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4344), 0);
@@ -6189,7 +6189,7 @@ void GameEventCoupleDance::vfunc_2()
             MS2_ASSERT_AT(MS2_LINE(4354), 0);
             return;
         }
-        Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
         {
             MS2_ASSERT_AT(MS2_LINE(4361), 0);
@@ -6479,20 +6479,20 @@ void GameEventCollectItemGroup::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    Unk_140165cf0* pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
+    TiXmlElement* pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
     if (pInfo == NULL)
         return;
     XmlGetAttr((class TiXmlElement*)(pInfo), "name", m_d0->m_name);
-    Unk_140165cf0* pResult = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("result"));
+    TiXmlElement* pResult = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("result"));
     if (pResult == NULL)
         return;
     ItemEntity result;
     m_d0->m_result.vfunc_2(pResult);
-    for (Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pCondition;
-         pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCondition))->NextSibling("condition")))
+    for (TiXmlElement* pCondition = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pCondition;
+         pCondition = ((class TiXmlElement*)((class Unk_XmlNode*)(pCondition))->NextSibling("condition")))
     {
         ItemEntity item;
         item.vfunc_2(pCondition);
@@ -6660,16 +6660,16 @@ void GameEventArcadeOpen::vfunc_2()
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, m_68) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
-    Unk_140165cf0* pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
+    TiXmlElement* pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("info"));
     if (pInfo == NULL)
         return;
     m_d0->m_eventId = GetID();
     XmlGetAttr((class TiXmlElement*)(pInfo), "arcadeId", m_d0->m_arcadeId);
     XmlGetAttr((class TiXmlElement*)(pInfo), "rewardCountPerDay", m_d0->m_rewardCountPerDay);
-    for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
+    for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pReward; pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
     {
         ItemEntity item;
         item.vfunc_2(pReward);
@@ -6840,20 +6840,20 @@ void GameEventLongTermAttendGift::vfunc_2()
         return;
     }
     MS2Ptr<LongTermAttendGiftContext> spContext(new LongTermAttendGiftContext(GetID()));
-    Unk_140165cf0* pInfo;
-    Unk_140165cf0* pInfoRoot = FUN_140345b40(&docInfo);
-    if (pInfoRoot && (pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pInfoRoot))->FirstChild("info"))) != NULL)
+    TiXmlElement* pInfo;
+    TiXmlElement* pInfoRoot = FUN_140345b40(&docInfo);
+    if (pInfoRoot && (pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pInfoRoot))->FirstChild("info"))) != NULL)
     {
         XmlGetAttr((class TiXmlElement*)(pInfo), "title", spContext->m_title);
         XmlGetAttr((class TiXmlElement*)(pInfo), "maxattendance", reinterpret_cast<unsigned int&>(spContext->m_maxAttendance));
         XmlGetAttr((class TiXmlElement*)(pInfo), "merat", reinterpret_cast<unsigned int&>(spContext->m_merat));
         XmlGetAttr((class TiXmlElement*)(pInfo), "eventTag", spContext->m_eventTag);
     }
-    Unk_140165cf0* pRewardRoot = FUN_140345b40(&docReward);
+    TiXmlElement* pRewardRoot = FUN_140345b40(&docReward);
     if (pRewardRoot)
     {
-        for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
-             pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
+        for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pRewardRoot))->FirstChild("reward")); pReward;
+             pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
         {
             MS2Ptr<LongTermAttendGiftContext::Reward> spReward(new LongTermAttendGiftContext::Reward);
             XmlGetAttr((class TiXmlElement*)(pReward), "count", spReward->m_count);

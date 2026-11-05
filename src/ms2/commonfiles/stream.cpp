@@ -252,7 +252,7 @@ void Unk_StreamWrapper::Encode(COutputStream& out,bool raw) {
 }
 MS2_REPLACE_METHOD(0x14083B600, Unk_StreamWrapper, Encode, 170, 0xACEB3D74);
 // @0x14083b6b0
-void Unk_StreamWrapper::Decode(CInputStream& in) { Read(in); }
+CByteBuffer& Unk_StreamWrapper::Decode(CInputStream& in) { return Read(in); }
 MS2_REPLACE_METHOD(0x14083B6B0, Unk_StreamWrapper, Decode, 34, 0xDD506B28);
 // @0x14083b6e0
 bool Unk_StreamWrapper::Update(bool compression,unsigned threshold) { Configure(compression,threshold);return m_dirty; }

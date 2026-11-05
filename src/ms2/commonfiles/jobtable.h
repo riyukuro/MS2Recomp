@@ -29,13 +29,13 @@ int FUN_140718170(const CString& s);    // string -> int
 CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // "x,y" point attribute (uiPosition).
-int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt);    // 0x140645190
+int XmlValue(TiXmlElement* pElem, const char* pszName, CPoint& pt);    // 0x140645190
 
 class JobSkillData : public CPtred
 {
 public:
     JobSkillData();                                     // 0x140643650
-    bool Load(Unk_140165cf0* pElem);                    // 0x140643720
+    bool Load(TiXmlElement* pElem);                    // 0x140643720
     bool HasRequirement();                              // 0x140643880 any requireLevel / requireSkillIDs / requireQuestID
     unsigned short GetRequireLevel(unsigned short skillLevel);    // 0x1406438e0 character level needed for a skill level
 
@@ -66,7 +66,7 @@ public:
     typedef std::map<unsigned, JobSkillDataPtr> SkillMap;
 
     JobData();                                          // 0x1406439a0
-    void Load(Unk_140165cf0* pElem);                    // 0x140643a60
+    void Load(TiXmlElement* pElem);                    // 0x140643a60
     Unk_JobGroupID GetJobGroupID();                     // 0x140643e40
     Unk_JobCode GetSubJob(int nIndex);                  // 0x140643e60 nIndex 1 / 2
     Unk_JobCode GetSubJob1();                           // 0x140643ed0

@@ -21,7 +21,7 @@ class CInPacket;
 
 // A locked option of a remake request: the option index and its value, 8 bytes. The ctor 0x140b98d30 (an inline COMDAT,
 // first emitted by ?\tabcontentspetremakeoption.cpp) zeroes both ints. It is the element of the option list
-// (Unk_RemakeOptionList50 is this std::vector, 0x18 bytes; push_back(const&) 0x140b9b410 and its emplace_back glue
+// (Unk_RemakeLockOptList is this std::vector, 0x18 bytes; push_back(const&) 0x140b9b410 and its emplace_back glue
 // 0x140b99c40..0x140b9a170 are in tabcontentspetremakeoption.cpp).
 struct Unk_RemakeLockOpt
 {
@@ -33,15 +33,8 @@ MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
 typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
 MS2_CHECK_SIZE(Unk_RemakeLockOptList, 0x18);
 
-// The option list of a remake record: a vector of (kind, value) pairs, 0x18 bytes (unit_140267390.cpp defines the same
-// struct; ctor 0x14027d690, dtor 0x14027e3f0).
-struct Unk_RemakeOptionList50 {
-    Unk_RemakeOptionList50() throw();                               // 0x14027d690
-    ~Unk_RemakeOptionList50();                                      // 0x14027e3f0
-    Unk_RemakeOptionList50& operator=(const Unk_RemakeOptionList50& o); // 0x14027eb30
-    void* m_first; void* m_last; void* m_end;
-};
-MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);
+// The option list of a remake record is this vector (C3 #13: was Unk_RemakeOptionList50; ctor 0x14027d690, dtor
+// 0x14027e3f0, operator= 0x14027eb30; RemakeOptionContext +0x50 in unit_140267390.cpp holds the same type).
 
 namespace CCItemRemakeOptionPacket {
 
@@ -62,7 +55,7 @@ public:
     virtual ~RemakeOption();                                        // 0x140617340
     virtual void vfunc_1(COutputStream& out);                       // 0x140617380
     virtual void vfunc_2(CInPacket& in);                            // 0x140617450
-    Unk_RemakeOptionList50 m_options;                               // +0x28
+    Unk_RemakeLockOptList m_options;                                // +0x28
 };
 MS2_CHECK_SIZE(RemakeOption, 0x40);
 
@@ -122,7 +115,7 @@ public:
     __int64 m_scrollUid;                                            // +0x08
     __int64 m_itemUid;                                              // +0x10
     __int64 m_ingredientUid;                                        // +0x18
-    Unk_RemakeOptionList50 m_options;                               // +0x20
+    Unk_RemakeLockOptList m_options;                                // +0x20
     bool m_bLocked;                                                 // +0x38
 };
 MS2_CHECK_SIZE(RemakeOption, 0x40);

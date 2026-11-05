@@ -20,7 +20,7 @@
 #include "ms2/commonfiles/filesystem.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -66,13 +66,13 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     TiXmlDocument doc;
     if (((class Unk_DiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return MS2Ptr<CDropItemData>(0);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return MS2Ptr<CDropItemData>(0);
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropitem")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dropitem")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropitem")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("dropitem")))
     {
         // The exe parses into spData itself, so a miss in the final Lookup returns the last parsed entry.
         spData.AssignRaw(new CDropItemData);

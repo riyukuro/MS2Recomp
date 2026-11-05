@@ -6,34 +6,34 @@
 // MS2-RANGE: 0x1414286a0-0x14143d580 .text$mn
 // MS2-RANGE: 0x1400f6ce0-0x1400f6db0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141432710 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHPEAVUnk_140165cf0@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141432800 ; unique
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141432710 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHPEAVTiXmlElement@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141432800 ; unique
 // MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@V12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@111@Z 0x141432bf0 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@@Z 0x141433030 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141433050 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@1@Z 0x1414331b0 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@@Z 0x141433510 ; unique
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@@Z 0x141434150 ; unique
-// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141434610 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414347e0 ; unique
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414348b0 ; unique
-// MS2-PIN: ??$forward@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@YAAEAU?$pair@$$CBHPEAVUnk_140165cf0@@@0@AEAU10@@Z 0x141434960 ; prop
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHPEAVTiXmlElement@@@std@@@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHPEAVTiXmlElement@@@1@@Z 0x141433030 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141433050 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@1@AEAU?$pair@$$CBHPEAVTiXmlElement@@@1@1@Z 0x1414331b0 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHPEAVTiXmlElement@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@1@@Z 0x141433510 ; unique
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHPEAVTiXmlElement@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@1@@Z 0x141434150 ; unique
+// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141434610 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHPEAVTiXmlElement@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHPEAVTiXmlElement@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414347e0 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414348b0 ; unique
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@YAAEAU?$pair@$$CBHPEAVTiXmlElement@@@0@AEAU10@@Z 0x141434960 ; prop
 // MS2-PIN: ??0CNode@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@QEAA@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x1414353d0 ; unique
 // MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEAA@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141435500 ; unique
-// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141435f30 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141435f30 ; prop
 // MS2-PIN: ?Find@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEBAPEAVCNode@12@AEBH@Z 0x1414368d0 ; unique
 // MS2-PIN: ?Find@?$CRBTree@_KHV?$CElementTraits@_K@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_K@Z 0x1414369c0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CDefaultElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@AEBHAEAI1AEAPEAV312@@Z 0x1414375a0 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141437f20 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@_KHV?$CElementTraits@_K@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_KAEBH@Z 0x141438020 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141439150 ; unique
-// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@XZ 0x14143c160 ; unique
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x14143c240 ; unique
-// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@Z 0x14143c2b0 ; unique
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@Z 0x14143c980 ; unique
-// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@_K@Z 0x14143d020 ; unique
-// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@_K@Z 0x14143d050 ; prop
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@2@AEBH@Z 0x14143d280 ; unique
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@XZ 0x14143c160 ; unique
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x14143c240 ; unique
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@@Z 0x14143c2b0 ; unique
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@@Z 0x14143c980 ; unique
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@_K@Z 0x14143d020 ; unique
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHPEAVTiXmlElement@@@std@@PEAX@2@_K@Z 0x14143d050 ; prop
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HPEAVTiXmlElement@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVTiXmlElement@@@std@@@std@@@std@@@2@AEBH@Z 0x14143d280 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400f6d40
 // MS2-PIN: memcpy_s 0x14143d430
@@ -105,7 +105,7 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/placeholder/cquestmanagercommon.h"
 #include "ms2/client/ms2/uigamemenudialog.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -126,7 +126,7 @@ class Unk_140166410* FUN_140166410();   // C3: the real return type; callers cas
 MS2InputService* FUN_140a58540();
 struct Unk_XmlElement;
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
-class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode&); TiXmlNode* LinkEndChild(TiXmlNode*); };   // C3: member view (0x14086e000, 0x14086e090)
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CString FUN_14028d1f0(const char* psz);
 CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
@@ -134,8 +134,8 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table re
 extern int DAT_143af7d40;                                   // input enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);                  // the element is enabled
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);           // int attribute
-unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);           // int attribute
+unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
 class Unk_KtPlayer : public PC                                          // MyPC
 {
 public:
@@ -184,17 +184,17 @@ extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90);  // th
 int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* szName);
-    const char* Attribute(const char* name) const;              // 0x14086f4b0 (C3: the former free stand-ins)
-    const char* Attribute(const char* name, int* i) const;      // 0x14086f500
-    void SetAttribute(const char* name, const char* value);     // 0x14086f8d0
-    void SetAttribute(const char* name, int value);             // 0x14086f920
-private:
-    void* m_pad[0x90 / sizeof(void*)];
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
+
 
 // The game TinyXML declaration node (ctor 0x1408704d0, 0x68 bytes; the document owns and deletes it).
 class TiXmlDeclaration
@@ -431,24 +431,24 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
+    TiXmlElement* pConfig = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
     if (pConfig == 0)
     {
-        pConfig = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("KeyConfig"));
+        pConfig = reinterpret_cast<TiXmlElement*>(new TiXmlElement("KeyConfig"));
         reinterpret_cast<TiXmlNode*>(pRoot)->LinkEndChild(reinterpret_cast<TiXmlNode*>(reinterpret_cast<TiXmlElement*>(pConfig)));
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pConfig), "key", "keyCode", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
-    std::map<int, Unk_140165cf0*> byKey;
+    std::map<int, TiXmlElement*> byKey;
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         unsigned nKeyCode = 0;
@@ -464,13 +464,13 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
         if (IsGamepadKey(nKey) != 0)
             continue;
         {
-            Unk_140165cf0* pNode = 0;
-            std::map<int, Unk_140165cf0*>::iterator it = byKey.find(nKey);
+            TiXmlElement* pNode = 0;
+            std::map<int, TiXmlElement*>::iterator it = byKey.find(nKey);
             if (it != byKey.end())
                 pNode = it->second;
             if (pNode == 0)
             {
-                pNode = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("key"));
+                pNode = reinterpret_cast<TiXmlElement*>(new TiXmlElement("key"));
                 ((TiXmlElement*)(pNode))->SetAttribute("code", "");
                 ((TiXmlElement*)(pNode))->SetAttribute("type", "");
                 ((TiXmlElement*)(pNode))->SetAttribute("keyCode", nKey);
@@ -502,24 +502,24 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
+    TiXmlElement* pConfig = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
     if (pConfig == 0)
     {
-        pConfig = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("KeyConfig"));
+        pConfig = reinterpret_cast<TiXmlElement*>(new TiXmlElement("KeyConfig"));
         reinterpret_cast<TiXmlNode*>(pRoot)->LinkEndChild(reinterpret_cast<TiXmlNode*>(reinterpret_cast<TiXmlElement*>(pConfig)));
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pConfig), "key", "keyCode", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
-    std::map<int, Unk_140165cf0*> byKey;
+    std::map<int, TiXmlElement*> byKey;
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         unsigned nKeyCode = 0;
@@ -535,13 +535,13 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
         if (IsGamepadKey(nKey) == 0)
             continue;
         {
-            Unk_140165cf0* pNode = 0;
-            std::map<int, Unk_140165cf0*>::iterator it = byKey.find(nKey);
+            TiXmlElement* pNode = 0;
+            std::map<int, TiXmlElement*>::iterator it = byKey.find(nKey);
             if (it != byKey.end())
                 pNode = it->second;
             if (pNode == 0)
             {
-                pNode = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("key"));
+                pNode = reinterpret_cast<TiXmlElement*>(new TiXmlElement("key"));
                 ((TiXmlElement*)(pNode))->SetAttribute("code", "");
                 ((TiXmlElement*)(pNode))->SetAttribute("type", "");
                 ((TiXmlElement*)(pNode))->SetAttribute("keyCode", nKey);
@@ -991,7 +991,7 @@ void CKeyTable::FUN_14142bb10()
                     else if (spData->GetStringTag() == 0xd9)
                     {
                         ItemFunction* pFunc = &spData->function;
-                        if (reinterpret_cast<Unk_CommandArgs*>(&pFunc->parameter)->FUN_1408d21c0(0, L"") == L"ugcevent")
+                        if (reinterpret_cast<ItemFunctionArgs*>(&pFunc->parameter)->FUN_1408d21c0(0, L"") == L"ugcevent")
                             FUN_140dffeb0(reinterpret_cast<Unk_OxArgs*>(&pFunc->parameter));
                     }
                     else
@@ -2106,13 +2106,13 @@ void CKeyTable::LoadKeySetting(CString strName)
     TiXmlDocument doc;
     if (!doc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), strFile), TIXML_ENCODING_UNKNOWN))
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     unsigned nPages = (unsigned)m_quickSlots.GetCount();
     m_quickSlots.RemoveAll();
     m_quickSlots.SetCount(nPages, -1);
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("setting")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("setting")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("setting")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("setting")))
     {
         int nIndex = FUN_140197350(pNode, "index", -1);
         int nItemId = FUN_140197390(pNode, "itemId", 0);
@@ -2150,13 +2150,13 @@ int CKeyTable::LoadKeySettingTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "keySetting.xml"), 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_KtLogFormat((Unk_KtLog*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "keySetting.xml");
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         if (!FUN_14028f710(reinterpret_cast<Unk_XmlElement*>(pNode)))
             continue;

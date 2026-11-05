@@ -50,7 +50,7 @@ public:
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // The packet stream readers (commonfiles\packet.cpp).
-CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
+// C3: FUN_14070f3c0 = Unk_OSInput member (os.h)
 
 // The string table text with two arguments (a key like "s_dungeonMission_ingame_misison_normal").
 
@@ -103,7 +103,7 @@ MS2Ptr<DungeonMissionCli> DungeonMissionCli::Create(unsigned nId)
 // @0x140b1df30
 void DungeonMissionCli::vfunc_2(CInputStream& in)
 {
-    FUN_14070f3c0(in, m_score);
+    reinterpret_cast<Unk_OSInput&>(in).Read3(reinterpret_cast<unsigned short&>(m_score));
 }
 
 // @0x140b1df60
@@ -237,7 +237,7 @@ DungeonMissionEvent::DungeonMissionEvent()
 void DungeonMissionEvent::vfunc_2(CInputStream& in)
 {
     DungeonMissionCli::vfunc_2(in);
-    FUN_14070f3c0(in, m_count);
+    reinterpret_cast<Unk_OSInput&>(in).Read3(reinterpret_cast<unsigned short&>(m_count));
 }
 
 // @0x140b1e560

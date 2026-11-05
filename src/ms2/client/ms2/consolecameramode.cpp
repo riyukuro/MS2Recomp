@@ -88,7 +88,7 @@ namespace egf { class Entity; }
 class NiAVObject;
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 // efd::operator*(const Point3&, const Matrix3&) (0x1420834e0)
-Vector3 FUN_1420834e0(const Vector3& pt, const Unk_EfdMatrix3& m);
+// C3 #9: efd::operator*(const Point3&, const Matrix3&) (0x1420834e0) is called directly.
 
 // Camera tuning values of the camera xml (FUN_140ae8910 consumes its by-value CString key).
 float FUN_140ae8910(CString key);
@@ -176,7 +176,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         if (pNode)
         {
             Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
-            m_78 = pTarget->vfunc_18().FUN_14097fd50(FUN_1420834e0(m_118, kRot));
+            m_78 = pTarget->vfunc_18().FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_118) * reinterpret_cast<const efd::Matrix3&>(kRot))));
         }
         else
         {
@@ -326,7 +326,7 @@ void CConsoleCameraMode::vfunc_6(int n)
     {
         NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->FUN_14123c410());
         Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
-        m_78 = pTarget->vfunc_18().FUN_14097fd50(FUN_1420834e0(m_118, kRot));
+        m_78 = pTarget->vfunc_18().FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_118) * reinterpret_cast<const efd::Matrix3&>(kRot))));
         if (n == 0)
             vfunc_3(m_78.FUN_14097fd50(m_setting.m_c));
     }

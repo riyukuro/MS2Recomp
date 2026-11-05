@@ -21,15 +21,15 @@
 #include "ms2/placeholder/ascript.h"
 
 class CItem;
-class ASMovieClip;
+class ASUIComponent;
 class ASTextField;
-class Unk_140acd6e0;
+class ASButton;
 class ASButtonBar;
 
 class UIPlayInstrumentDialog : public UIDialog
 {
 public:
-    typedef std::pair<int, MS2Ptr<Unk_140acd6e0> > KeyButton;              // note index, the key button
+    typedef std::pair<int, MS2Ptr<ASButton> > KeyButton;              // note index, the key button
     typedef std::map<int, KeyButton> KeyButtonMap;                         // keyboard key -> button
     typedef std::map<int, unsigned long> PressedMap;                           // keyboard key -> the note being played
 
@@ -63,7 +63,7 @@ public:
     int GetAutoPlay();                                                    // 0x14100d9f0 m_nAutoPlay
     void FUN_14100da10();                                                   // 0x14100da10 the play timer text
     void FUN_14100e060();                                                   // 0x14100e060 bind the key buttons
-    void MapKeyButton(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex);   // 0x14100e880
+    void MapKeyButton(int nKey, MS2Ptr<ASButton> spButton, int nIndex);   // 0x14100e880
     void ClampAndApplyOctave();                                                   // 0x14100e910 apply the octave
     void FUN_14100e9a0(int nMode);                                          // 0x14100e9a0 the play / stop buttons
     int GetMode();                                                    // inline: m_nMode (instrumentmanager.cpp)
@@ -71,7 +71,7 @@ public:
     void UpdateSlotCount();                                                   // 0x14100f1f0 the slot count
     unsigned char FUN_14100f2e0();                                          // 0x14100f2e0 play the chosen score
 
-    MS2Ptr<ASMovieClip> FUN_140c02990(const CString& strName);              // 0x140c02990 bind a movie clip child
+    // the two page lookups are UISwfEntity::GetChild<ASUIComponent> (0x140c02990)
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -89,10 +89,10 @@ private:
     unsigned m_nEndTick;                                                    // +0x1e4
     int m_nKind;                                                            // +0x1e8 0 solo, 1 ensemble
     int m_nAutoPlay;                                                        // +0x1ec
-    MS2Ptr<ASMovieClip> m_spPlayPage;                                       // +0x1f0 "m_playDirectPage"
-    MS2Ptr<ASMovieClip> m_spScorePage;                                      // +0x200 "m_playScorePage"
-    MS2Ptr<Unk_140acd6e0> m_spLowerOctave;                                  // +0x210 "m_lowerOctave"
-    MS2Ptr<Unk_140acd6e0> m_spUpperOctave;                                  // +0x220 "m_upperOctave"
+    MS2Ptr<ASUIComponent> m_spPlayPage;                                     // +0x1f0 "m_playDirectPage"
+    MS2Ptr<ASUIComponent> m_spScorePage;                                    // +0x200 "m_playScorePage"
+    MS2Ptr<ASButton> m_spLowerOctave;                                  // +0x210 "m_lowerOctave"
+    MS2Ptr<ASButton> m_spUpperOctave;                                  // +0x220 "m_upperOctave"
     MS2Ptr<ASTextField> m_spFold;                                           // +0x230 "m_foldText"
     MS2Ptr<ASButtonBar>   m_spTab;                                           // +0x240 "m_tab"
     std::vector<std::pair<int, int> > m_octaveKeys;                         // +0x250 (key, octave code)

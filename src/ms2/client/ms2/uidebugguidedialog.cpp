@@ -51,7 +51,7 @@
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce240
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -72,12 +72,12 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe types ----
 
-class Unk_140165cf0                                             // game TinyXML element
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);          // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);          // NextSiblingElement
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
@@ -114,7 +114,7 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
 // ---- the XML records ----
 
 // @0x141286410
-Unk_DebugGuideArg::Unk_DebugGuideArg(Unk_140165cf0* pElem)
+Unk_DebugGuideArg::Unk_DebugGuideArg(TiXmlElement* pElem)
 {
     Read(pElem);
 }
@@ -126,7 +126,7 @@ Unk_DebugGuideArg::Unk_DebugGuideArg(CStringW strCmd, bool bUseArg)
 }
 
 // @0x1412864c0
-void Unk_DebugGuideArg::Read(Unk_140165cf0* pElem)
+void Unk_DebugGuideArg::Read(TiXmlElement* pElem)
 {
     m_bUseArg = false;
     XmlGetAttr((class TiXmlElement*)(pElem), "cmd", m_strCmd);
@@ -149,7 +149,7 @@ Unk_DebugGuideCommand::~Unk_DebugGuideCommand()
 }
 
 // @0x141286520
-void Unk_DebugGuideCommand::Read(Unk_140165cf0* pElem)
+void Unk_DebugGuideCommand::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "name", m_strName);
     XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
@@ -159,7 +159,7 @@ void Unk_DebugGuideCommand::Read(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "useArg", bUseArg);
     if (!strCmd.IsEmpty())
         m_args.push_back(Unk_DebugGuideArg(strCmd, bUseArg));
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
         m_args.push_back(Unk_DebugGuideArg(pChild));
 }
 
@@ -170,7 +170,7 @@ void Unk_DebugGuideCommand::AddArg(const Unk_DebugGuideArg& rArg)
 }
 
 // @0x141286710
-Unk_DebugGuideGroup::Unk_DebugGuideGroup(Unk_140165cf0* pElem)
+Unk_DebugGuideGroup::Unk_DebugGuideGroup(TiXmlElement* pElem)
 {
     Read(pElem);
 }
@@ -181,11 +181,11 @@ Unk_DebugGuideGroup::~Unk_DebugGuideGroup()
 }
 
 // @0x141286780
-void Unk_DebugGuideGroup::Read(Unk_140165cf0* pElem)
+void Unk_DebugGuideGroup::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "name", m_strName);
     XmlGetAttr((class TiXmlElement*)(pElem), "charOnlyName", m_strCharOnly);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("CommandSet")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("CommandSet")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("CommandSet")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("CommandSet")))
     {
         Unk_DebugGuideCommand cmd;
         cmd.Read(pChild);
@@ -347,13 +347,13 @@ void UIDebugGuideDialog::LoadXml(CString strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Group")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("Group")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("Group")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("Group")))
     {
         Unk_DebugGuideGroup group(pElem);
         bool bSkip = !group.m_strCharOnly.IsEmpty() && ((class WorldService*)WorldService::GetInstance())->FUN_141bd0d30() != group.m_strCharOnly;

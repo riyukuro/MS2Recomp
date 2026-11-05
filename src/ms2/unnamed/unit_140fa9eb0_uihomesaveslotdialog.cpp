@@ -14,17 +14,17 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fac9e0
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUGCMapBlueprintInfo@@@@V?$CElementTraits@V?$MS2Ptr@VUGCMapBlueprintInfo@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac790
-// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUnk_BlueprintSlot@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_BlueprintSlot@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac7a0
+// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUGCMapDesignInfo@@@@V?$CElementTraits@V?$MS2Ptr@VUGCMapDesignInfo@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac7a0
 // MS2-PIN: ?Release@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEAAXXZ 0x140fac8c0
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEAAXXZ 0x140fac900
+// MS2-PIN: ?Release@?$MS2Ptr@VUGCMapDesignInfo@@@@AEAAXXZ 0x140fac900
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEAAXPEAX@Z 0x140fac940
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEAAXPEAX@Z 0x140fac990
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUGCMapDesignInfo@@@@AEAAXPEAX@Z 0x140fac990
 // MS2-PIN: ?Reference@?$MS2Ptr@VUGCMapBlueprintInfo@@@@CAXPEAVUGCMapBlueprintInfo@@@Z 0x140fac820
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_BlueprintSlot@@@@CAXPEAVUnk_BlueprintSlot@@@Z 0x140fac840
+// MS2-PIN: ?Reference@?$MS2Ptr@VUGCMapDesignInfo@@@@CAXPEAVUGCMapDesignInfo@@@Z 0x140fac840
 // MS2-PIN: ?AddRef@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEBAXXZ 0x140fac7c0
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEBAXXZ 0x140fac7f0
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUGCMapDesignInfo@@@@AEBAXXZ 0x140fac7f0
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEBAXPEAX@Z 0x140fac860
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEBAXPEAX@Z 0x140fac890
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUGCMapDesignInfo@@@@AEBAXPEAX@Z 0x140fac890
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "unit_140fa9eb0.h"
@@ -63,41 +63,41 @@ extern int DAT_143ab2914;
 
 // One saved slot: id, name and the time it was saved (0 = empty). The ugcdef.h class, declared here as
 // scenestategame.cpp does (the header's includes would add header statics to this unit).
-class UGCMapBlueprintInfo : public CPtred
+class UGCMapDesignInfo : public CPtred
 {
 public:
-    UGCMapBlueprintInfo();
+    UGCMapDesignInfo();
     int m_nId;                                              // +0x18
     CString m_strName;                                      // +0x20
     __int64 m_nTime;                                        // +0x28
 };
-MS2_CHECK_SIZE(UGCMapBlueprintInfo, 0x30);
+MS2_CHECK_SIZE(UGCMapDesignInfo, 0x30);
 
-// The slot of the blueprint list (the same fields, a separate type in the exe).
-class Unk_BlueprintSlot : public CPtred {
+// The slot of the blueprint list: the ugcdef.h UGCMapBlueprintInfo (the same fields, a separate MS2Ptr chain in the exe).
+class UGCMapBlueprintInfo : public CPtred {
 public:
     int m_nId;                                                      // +0x18
     CString m_strName;                                              // +0x20
     __int64 m_nTime;                                                // +0x28
 };
-MS2_CHECK_OFFSET(Unk_BlueprintSlot, m_nId, 0x18);
-MS2_CHECK_OFFSET(Unk_BlueprintSlot, m_strName, 0x20);
-MS2_CHECK_OFFSET(Unk_BlueprintSlot, m_nTime, 0x28);
+MS2_CHECK_OFFSET(UGCMapBlueprintInfo, m_nId, 0x18);
+MS2_CHECK_OFFSET(UGCMapBlueprintInfo, m_strName, 0x20);
+MS2_CHECK_OFFSET(UGCMapBlueprintInfo, m_nTime, 0x28);
 
-class Unk_Service6100017 : public efd::ISystemService {
+// C3: Unk_Service6100017 was CubeMapInformationService (class id 0x06100017, the view below)
+//
+//
+class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);
+// The cube map service members reached through the same service pointer.
+class CubeMapInformationService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* FUN_1410d4660();         // the home slots (+0x388)
-    ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* FUN_1410d4920();    // the blueprint slots (+0x3a8)
-};
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
-// The cube map service members reached through the same service pointer.
-class CubeMapInformationService {
-public:
     bool FUN_1410c3600(int nRule);
     int FUN_1410d2f10();
     int FUN_1410c3100();
     int FUN_1410c3140();
+    ATL::CAtlArray<MS2Ptr<UGCMapDesignInfo> >* FUN_1410d4660();         // the home slots (+0x388)
+    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* FUN_1410d4920();    // the blueprint slots (+0x3a8)
 };
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
@@ -186,7 +186,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
                 int nSlot = data.PopInt();
@@ -202,7 +202,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
                 int nSlot = data.PopInt();
@@ -222,10 +222,10 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
 {
     if (!m_30)
         return;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
     {
-        ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
+        ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d4920();
         for (size_t i = 0; i < 5; ++i)
         {
             CString strName;
@@ -240,7 +240,7 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
     }
     else
     {
-        ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = spService->FUN_1410d4660();
+        ATL::CAtlArray<MS2Ptr<UGCMapDesignInfo> >* pSlots = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d4660();
         for (size_t i = 0; i < 5; ++i)
         {
             CString strName;
@@ -289,16 +289,16 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
     CStringW strName = data.FUN_141a02d50();
     strName.Trim(L",");
-    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = spService->FUN_1410d4660();
+    ATL::CAtlArray<MS2Ptr<UGCMapDesignInfo> >* pSlots = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d4660();
     for (size_t i = 0; i < pSlots->GetCount(); ++i)
     {
-        MS2Ptr<UGCMapBlueprintInfo> spSlot = (*pSlots)[i];
+        MS2Ptr<UGCMapDesignInfo> spSlot = (*pSlots)[i];
         if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
@@ -324,7 +324,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
@@ -372,16 +372,16 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
     CStringW strName = data.FUN_141a02d50();
     strName.Trim(L",");
-    ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
+    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d4920();
     for (size_t i = 0; i < pSlots->GetCount(); ++i)
     {
-        MS2Ptr<Unk_BlueprintSlot> spSlot = (*pSlots)[i];
+        MS2Ptr<UGCMapBlueprintInfo> spSlot = (*pSlots)[i];
         if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
@@ -407,7 +407,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData&
 {
     if (nResult != 0)
         return true;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);

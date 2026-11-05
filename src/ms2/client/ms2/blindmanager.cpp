@@ -6,7 +6,6 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/blindmanager.h"
 #include "ms2/placeholder/tixmldocument.h"
-#include "ms2/placeholder/xmlattr.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/ms2recover.h"
@@ -21,7 +20,8 @@
 #include "ms2/commonfiles/tinyxml.h"
 #include "ms2/ms2format.h"
 #undef TiXmlDocument
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+#include "ms2/placeholder/xmlattr.h"   // C3 #12: after tinyxml.h, so its reduced TiXml view steps aside
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -33,9 +33,9 @@ CString FUN_141275640();                                                // the u
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // dir + "\\" + file
 CString FUN_1409a2360(const char* psz, int n);                          // text conversion
 CString FUN_14016a5c0(const char* psz, int n);                          // path conversion
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
-__int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
+__int64 Unk_ExpGetInt64(TiXmlElement* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);   // C3: was FUN_1408740a0
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
@@ -87,7 +87,7 @@ void BlindManager::Load()
     if (GetFileSystem()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
         return;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&document)->FirstChild("ms2");
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)(pRoot->FirstChild("blind"))); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)(pRoot->FirstChild("blind"))); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
     {
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));

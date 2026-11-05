@@ -49,7 +49,7 @@ class CCameraMoveEffectParam : public CEffectParam
 {
 public:
     CCameraMoveEffectParam();                                   // 0x140afe800
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140afe8f0
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x140afe8f0
     virtual CEffectPtr vfunc_6();                               // 6 0x140afeaf0 new CCameraMoveEffect
     virtual bool vfunc_7(Unk_EffectTarget* p);                  // 7 0x140afeb90 also skip for target kind 3
 public:

@@ -84,8 +84,8 @@ int FUN_141275a10(CItem* pItem);                                // the usable st
 void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key

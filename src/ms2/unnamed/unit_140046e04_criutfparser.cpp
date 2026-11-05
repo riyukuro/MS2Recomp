@@ -97,7 +97,7 @@ extern const char* DAT_143ba9d50;                               // version banne
 
 void criErr_Notify(long level, const char* msg);   // sfr_cri_02c, 0x140038ddc
 void criErr_NotifyGeneric(long level, const char* code, long err);   // sfr_cri_02c, 0x140038e24
-unsigned FUN_14003afb0(Unk_CriUtfTable* table, const unsigned char* src, Unk_CriUtfColumn* column);
+struct CriUtfRtvView; struct CriUtfRtvColumn; unsigned long criUtfRtv_GetField(const CriUtfRtvView* table, const unsigned char* field, CriUtfRtvColumn* column);   // C3: sfr_cri_03a
 int FUN_140ccaae0(const char* fmt, ...);
 unsigned FUN_140047158(unsigned type);
 unsigned FUN_140047170(const unsigned char* src, unsigned* out);
@@ -149,7 +149,7 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
     }
     for (unsigned i = 0; i < table->m_columnCount; ++i)
     {
-        n = FUN_14003afb0(table, data, &table->m_columns[i]);
+        n = criUtfRtv_GetField((const CriUtfRtvView*)table, data, (CriUtfRtvColumn*)&table->m_columns[i]);
         data = data + n;
         unsigned sum = 0;
         Unk_CriUtfColumn* c = table->m_columns;

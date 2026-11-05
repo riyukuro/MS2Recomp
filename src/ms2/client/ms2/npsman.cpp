@@ -19,14 +19,15 @@ extern "C" __declspec(dllimport) void __cdecl OpenSurveyWindowA(const char* pszU
 extern "C" void (__cdecl* __imp_AddSurveyParameterA)(const char* pszName, const char* pszValue);
 
 // ---- unit-local colour types (names invented) ----
-struct Unk_NpColor3 { float r, g, b; Unk_NpColor3(); };   // ctor 0x1409f72f0
+// Unk_NpColor3 was NiColor (ctor 0x1409f72f0 = ??0NiColor@@QEAA@XZ; NiColor(float, float, float) 0x140a56db0)
 
 // ---- exe callees ----
 #include "ms2/ms2format.h"   // C3: StringFormat<unsigned __int64> (was FUN_1401d9af0)
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);
 efd::Point3 FUN_14028f060(CString strText);   // commonutil.cpp
-void FUN_14028f190(void* pOut, CStringW kText);
-Unk_NpColor3 FUN_140a56db0(float r, float g, float b);
+struct Unk_CommonVec3 { Unk_CommonVec3() {} float x, y, z; };   // commonutil.cpp's view
+Unk_CommonVec3 FUN_14028f190(CStringW kText);   // commonutil.cpp
+// FUN_140a56db0 = NiColor(float, float, float)
 int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...);
 
 extern const char DAT_142e36cd4[];                              // "{0}"
@@ -138,15 +139,15 @@ TSingleton<CNPSMan>::~TSingleton()
 // @0x140db9270
 // The exe evaluates the stack args (&kColor.r + 2, + 1) into pointer temps before the CStringA conversion: the
 // components are addressed off r with pointer arithmetic (`&kColor.g` is a simple arg that cl evaluates after the call).
-Unk_NpColor3 FUN_140db9270(CStringA& strText)
+NiColor FUN_140db9270(CStringA& strText)
 {
-    static Unk_NpColor3 kDefault = FUN_140a56db0(1.0f, 0.0f, 1.0f);
+    static NiColor kDefault(1.0f, 0.0f, 1.0f);
     if (strText.IsEmpty())
         return kDefault;
-    Unk_NpColor3 kColor;
+    NiColor kColor;
     int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f", &kColor.r, &kColor.r + 1, &kColor.r + 2);
     if (nParsed != 3)
-        return Unk_NpColor3();
+        return NiColor();
     return kColor;
 }
 
@@ -172,8 +173,7 @@ efd::Point3 Common::FUN_140db9570(const CString& strText)
 }
 
 // @0x140db95c0
-void* FUN_140db95c0(void* pOut, CStringW& strText)
+Unk_CommonVec3 FUN_140db95c0(CStringW& strText)
 {
-    FUN_14028f190(pOut, CStringW(strText));
-    return pOut;
+    return FUN_14028f190(CStringW(strText));
 }

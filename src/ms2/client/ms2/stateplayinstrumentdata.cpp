@@ -112,7 +112,7 @@ struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
 int FUN_140768010(int nRange, int nBase);                    // random number in [nBase, nBase + nRange)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
+// C3: FUN_140a38a50 is egf::Entity::SetPropertyValue<efd::Point3> (0x140a38a50)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);             // the scene root of an entity
 CString FUN_1409a2360(const char* psz, int n);               // text conversion
@@ -408,8 +408,8 @@ void StatePlayInstrument::vfunc_3(double fTime)
             NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
             if (pRoot != 0)
             {
-                FUN_140a38a50(m_spEntity.operator->(), 0xfd95ca52, &DAT_143b01a60);
-                FUN_140a38a50(m_spEntity.operator->(), 0x68c7c29d, &DAT_143b01a60);
+                m_spEntity.operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
+                m_spEntity.operator->()->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
                 bool bShow = true;
                 FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bShow);
                 NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pRoot));

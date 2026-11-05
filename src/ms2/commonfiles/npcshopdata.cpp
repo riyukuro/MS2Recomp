@@ -136,7 +136,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -154,7 +154,7 @@ int XmlGetAttr(class TiXmlElement* pElem, const char* pszName, CMsTime& tOut);  
 int XmlQuery(class TiXmlElement* pElem, const char* pszName, bool& bOut);        // C3: was FUN_1408736d0
 int XmlGetBool(class TiXmlElement* pElem, const char* pszName, int& nOut);       // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement* pElem, const char* pszName, CString& strOut);   // C3: was FUN_140873ad0
-int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
+int FUN_14035bc20(TiXmlElement* pElem, const char* pszName, Unk_FameAlliance* pOut);
 int Unk_ReadRank(class Unk_XmlNode* pElem, const char* pszName, int* pOut);       // C3: was FUN_14015f500
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);              // pOut: std::vector<CString>*
 unsigned int FUN_1407181d0(const CString& str);   // C3: the definition's unsigned return (packetlogger.cpp)
@@ -333,7 +333,7 @@ void TShopPaymentAttr::FUN_1406dc2c0(CInPacket& in)
 MS2_REPLACE_METHOD(0x1406DC2C0, TShopPaymentAttr, FUN_1406dc2c0, 249, 0xFA616EDA);
 
 // @0x1406dc3c0
-void TShopPaymentAttr::FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strType, const CString& strItem,
+void TShopPaymentAttr::FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType, const CString& strItem,
                                      const CString& strIcon, const CString& strPrice)
 {
     if (!(pElem))
@@ -712,7 +712,7 @@ bool CNpcShopItem::operator!=(const CNpcShopItem& o) const
         return true;
     if (m_spLife != 0 && o.m_spLife != 0)
     {
-        if ((*m_spLife).IsDifferentFrom(&*o.m_spLife))
+        if (static_cast<NpcShopItemLife&>(*m_spLife).IsDifferentFrom(&static_cast<NpcShopItemLife&>(*o.m_spLife)))
             return true;
     }
     else if (m_spLife != 0 || o.m_spLife != 0)
@@ -735,7 +735,7 @@ bool CNpcShopItem::FUN_1406de350()
     if (m_spLife != 0)
     {
         CMsTime tmNow(GetServerTime());
-        if (!m_spLife->FUN_14026f040(tmNow))
+        if (!static_cast<NpcShopItemLife*>(m_spLife.get())->FUN_14026f040(tmNow))
             return false;
     }
     return true;
@@ -754,7 +754,7 @@ bool CNpcShopItem::FUN_1406de410()
     if (m_spLife != 0)
     {
         CMsTime tmNow(GetServerTime());
-        if (!m_spLife->IsNotExpired(tmNow))
+        if (!static_cast<NpcShopItemLife*>(m_spLife.get())->IsNotExpired(tmNow))
             return false;
     }
     return true;
@@ -947,7 +947,7 @@ int CNpcShopData::FUN_1406df1d0()
 MS2_REPLACE_METHOD(0x1406DF1D0, CNpcShopData, FUN_1406df1d0, 11, 0x30025ED0);
 
 void FUN_1406e35b0(const CString& strPath);
-bool FUN_1406e5bc0(Unk_140165cf0* pElem);
+bool FUN_1406e5bc0(TiXmlElement* pElem);
 
 // Loads Table/Server/shop_meratGroup.xml into the merat groups (once, and only with the merat premium table).
 // @0x1406df1f0
@@ -963,12 +963,12 @@ int LoadShopMeratGroup()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     CString strItem("meratItem");
     const CString& strItemTag = strItem;
-    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
+    for (TiXmlElement* pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         if (!FUN_1406e5bc0(pShop))
             continue;
@@ -978,8 +978,8 @@ int LoadShopMeratGroup()
             continue;
         Unk_MeratItemArrayPtr spItems(Unk_SocketNew(0));
         s_meratGroups.SetAt(nGroupId, spItems);
-        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild(strItemTag)); pItem != 0;
-             pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling(strItemTag)))
+        for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->FirstChild(strItemTag)); pItem != 0;
+             pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling(strItemTag)))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
@@ -1077,9 +1077,9 @@ int FUN_1406df690()
 
 bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out);
 bool FUN_1406e5ea0(const CStringW& str, std::set<int>& out);
-MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemId, unsigned nShopId,
+MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
                                                   const CString& strPath, CStringW& strError);
-Unk_ShopLifeRef FUN_1406e3310(Unk_140165cf0* pElem);
+MS2SvrPtr<CPtred> FUN_1406e3310(TiXmlElement* pElem);
 
 // Reads the <shop> rows of a shop info table (shop_*_info.xml) into shops.
 // @0x1406e0390
@@ -1088,24 +1088,24 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     int bFailed = 0;
     CStringW strErrors;
-    std::vector<Unk_140165cf0*> elems;
+    std::vector<TiXmlElement*> elems;
     if (bOverride)
         FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "shop", "shopID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(elems));
     else
     {
-        for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
+        for (TiXmlElement* pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
         {
             if (!FUN_1406e5bc0(pShop))
                 continue;
             elems.push_back(pShop);
         }
     }
-    for (Unk_140165cf0* pShop : elems)
+    for (TiXmlElement* pShop : elems)
     {
         MS2Ptr<CNpcShopData> spShop(new CNpcShopData);
         int nResetEnable = 0;
@@ -1162,12 +1162,12 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     int bFailed = 0;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
+    for (TiXmlElement* pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         unsigned nShopId = 0;
         XmlGetAttr((class TiXmlElement*)(pShop), "shopID", nShopId);
@@ -1185,19 +1185,19 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
         }
         if (spShop == 0)
             continue;
-        std::vector<Unk_140165cf0*> elems;
+        std::vector<TiXmlElement*> elems;
         if (bOverride)
             FUN_14028faa0((struct Unk_XmlElement*)(pShop), "item", "sn", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(elems));
         else
         {
-            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+            for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
             {
                 if (!FUN_1406e5bc0(pItem))
                     continue;
                 elems.push_back(pItem);
             }
         }
-        for (Unk_140165cf0* pItem : elems)
+        for (TiXmlElement* pItem : elems)
         {
             MS2Ptr<CNpcShopItem> spItem(new CNpcShopItem);
             XmlGetAttr((class TiXmlElement*)(pItem), "sn", spItem->m_nSn);
@@ -1272,7 +1272,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 strErrors.Append(L"\r\n" + strError);
                 bFailed = 1;
             }
-            Unk_ShopLifeRef spLife = FUN_1406e3310(pItem);
+            MS2SvrPtr<CPtred> spLife = FUN_1406e3310(pItem);
             if (spLife != 0)
                 spItem->m_spLife = spLife;
             spItem->m_strCategory = Unk_ReadString((class Unk_XmlNode*)(pItem), "category", CString(""));
@@ -1306,12 +1306,12 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     int bFailed = 0;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
+    for (TiXmlElement* pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         unsigned nShopId = 0;
         XmlGetAttr((class TiXmlElement*)(pShop), "shopID", nShopId);
@@ -1330,7 +1330,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
         if (spShop == 0)
             continue;
         XmlGetAttr((class TiXmlElement*)(pShop), "categoryID", reinterpret_cast<int&>(spShop->m_nNewCategoryId));
-        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+        for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
@@ -1426,7 +1426,7 @@ MS2Ptr<CNpcShopData> FUN_1406e2550(unsigned nShopId)
 
 // Checks a shop after reading (FALSE: strError says why).
 // @0x1406e2600
-int CNpcShopData::Read(CString& strError, Unk_140165cf0* pElem)
+int CNpcShopData::Read(CString& strError, TiXmlElement* pElem)
 {
     if (m_nResetEnable != 0)
     {
@@ -1576,7 +1576,7 @@ void FUN_1406e2ee0(int nGroupId, Unk_MeratItemArray& out)
 
 // The buy period of an <item> (null: the item has no period attributes).
 // @0x1406e2fb0
-MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemId, unsigned nShopId,
+MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(TiXmlElement* pElem, unsigned nItemId, unsigned nShopId,
                                                   const CString& strPath, CStringW& strError)
 {
     if (pElem == 0)
@@ -1614,15 +1614,15 @@ MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemI
 
 // The item life of an <item> (null: none or invalid).
 // @0x1406e3310
-Unk_ShopLifeRef FUN_1406e3310(Unk_140165cf0* pElem)
+MS2SvrPtr<CPtred> FUN_1406e3310(TiXmlElement* pElem)
 {
     if (pElem == 0)
-        return Unk_ShopLifeRef(0);
-    Unk_ShopLifeRef spLife(new NpcShopItemLife);
-    if (!spLife->FUN_14026ebc0(pElem))
-        return Unk_ShopLifeRef(0);
-    if (!spLife->FUN_14026f0f0())
-        return Unk_ShopLifeRef(0);
+        return MS2SvrPtr<CPtred>(0);
+    MS2SvrPtr<CPtred> spLife(new NpcShopItemLife);
+    if (!static_cast<NpcShopItemLife*>(spLife.get())->FUN_14026ebc0(pElem))
+        return MS2SvrPtr<CPtred>(0);
+    if (!static_cast<NpcShopItemLife*>(spLife.get())->FUN_14026f0f0())
+        return MS2SvrPtr<CPtred>(0);
     return spLife;
 }
 
@@ -2095,7 +2095,7 @@ MS2Ptr<CBeautyShopData> FUN_1406e4ef0(unsigned nShopId)
 
 // Reads one beauty shop <item> into its item group (both genders when the item has no gender limit).
 // @0x1406e4fa0
-bool FUN_1406e4fa0(Unk_140165cf0* pElem, unsigned nShopId, CBeautyShopItemGroup* pGroup, void*)
+bool FUN_1406e4fa0(TiXmlElement* pElem, unsigned nShopId, CBeautyShopItemGroup* pGroup, void*)
 {
     if (!FUN_1406e5bc0(pElem))
         return true;
@@ -2175,11 +2175,11 @@ bool FUN_1406e56d0(const CString& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
     CStringW strErrors;
-    for (Unk_140165cf0* pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
+    for (TiXmlElement* pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shop")); pShop != 0; pShop = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->NextSibling("shop")))
     {
         if (!FUN_1406e5bc0(pShop))
             continue;
@@ -2189,7 +2189,7 @@ bool FUN_1406e56d0(const CString& strPath)
             continue;
         Unk_CouponItemArrayPtr spCoupons(0);
         spCoupons = Unk_SocketNew(0);
-        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+        for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pShop))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_1406e5bc0(pItem))
                 continue;
@@ -2252,7 +2252,7 @@ bool FUN_1406e5ba0(int nPrice)
 }
 
 // @0x1406e5bc0
-bool FUN_1406e5bc0(Unk_140165cf0* pElem)
+bool FUN_1406e5bc0(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return false;

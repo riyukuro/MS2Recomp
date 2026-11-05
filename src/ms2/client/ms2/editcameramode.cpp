@@ -28,33 +28,33 @@ public:
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The camera option row held by the game context (+0x1f4 fov).
-struct Unk_FreeCamOption
-{
-    char m_pad_000[0x1f4];
-    float m_1f4;
-};
+// C3: the Unk_FreeCamOption / Unk_FreeCamOptionPtr / Unk_FreeCamContext views are gone (no caller since db8eef594):
+// the field data is WorldService::FUN_141bd30a0() -> MS2Ptr<CFieldDataCli> (fielddatacli.h).
 
-// Smart pointer to it (pointer at +8).
-class Unk_FreeCamOptionPtr
-{
-public:
-    ~Unk_FreeCamOptionPtr() { FUN_140885ab0(); }    // 0x1408850f0 (another obj)
-    Unk_FreeCamOption* FUN_140885340() const;       // operator->
-    void FUN_140885ab0();                           // release
 
-    void* m_pad_00;
-    Unk_FreeCamOption* m_p;
-};
 
-// The world service (FUN_1403ed2d0).
-class Unk_FreeCamContext
-{
-public:
-    Unk_FreeCamOptionPtr FUN_141bd30a0();           // copy of +0x298
-};
-Unk_FreeCamContext* FUN_1403ed2d0();
-Unk_CameraTargetEntity* FUN_141bd0cc0(Unk_FreeCamContext* p);   // the local player
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // The game's TinyXML element (0x90 bytes).
 class Unk_TiXmlElement
@@ -65,7 +65,7 @@ private:
     char m_pad_00[0x90];
 };
 void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndChild
-Unk_TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);  // FirstChildElement
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 void FUN_140873e30(Unk_TiXmlElement* pElem, const char* pszName, float fValue);   // SetFloatAttribute
 void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);     // SetAttribute
 void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Vector3 pt);   // SetPointAttribute

@@ -32,7 +32,7 @@
 // MS2-PIN: ?clear@?$vector@_JV?$allocator@_J@std@@@std@@QEAAXXZ 0x14062c520
 // MS2-PIN: ?size@?$vector@V?$MS2Ptr@VCItem@@@@V?$allocator@V?$MS2Ptr@VCItem@@@@@std@@@std@@QEBA_KXZ 0x14062c650
 // MS2-PIN: ??$FormatStringId@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBV01@0@Z 0x140632a60
-// MS2-PIN: ?AssignRaw@?$Unk_EnchantPtr@VCItemEnchantInfo@@@@QEAAAEAV1@PEAVCItemEnchantInfo@@@Z 0x1406332d0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCItemEnchantInfo@@@@QEAAAEAV1@PEAVCItemEnchantInfo@@@Z 0x1406332d0
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnlimitedEnchantInfo@@@@QEAAAEAV1@PEAVUnlimitedEnchantInfo@@@Z 0x140633340
 // MS2-PIN: ??D?$MS2Ptr@VCItemBinding@CItemTransfer@@@@QEBAAEAVCItemBinding@CItemTransfer@@XZ 0x140635e60
 // MS2-PIN: ??D?$MS2Ptr@VCItemTransfer@@@@QEBAAEAVCItemTransfer@@XZ 0x140635e70
@@ -80,7 +80,7 @@ static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 #include "ms2/commonfiles/citemoptiontable.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/client/ms2/skilltieroptionmanager.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -1216,7 +1216,7 @@ bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
 }
 MS2_REPLACE(0x14062ABB0, SendItemSocketSystem, 443, 0xB6C836FB);
 
-class Unk_ItemEnchantData : public CItemStatus {};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 CStringW GetStringCommonByKey(const CStringW& str);
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -1237,7 +1237,7 @@ CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
         for (POSITION pos = mapRandom.GetStartPosition(); pos; mapRandom.GetNext(pos))
         {
             int nType = mapRandom.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spBase = mapRandom.GetValueAt(pos);
+            MS2Ptr<BaseOption> spBase = mapRandom.GetValueAt(pos);
             if (spBase == (BaseOption*)0)
                 continue;
             return FUN_140631600(nType, spBase.get());
@@ -1249,7 +1249,7 @@ CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
         for (POSITION pos = mapExtra.GetStartPosition(); pos; mapExtra.GetNext(pos))
         {
             int nType = mapExtra.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spBase = mapExtra.GetValueAt(pos);
+            MS2Ptr<BaseOption> spBase = mapExtra.GetValueAt(pos);
             if (spBase == (BaseOption*)0)
                 continue;
             return FUN_140631830(nType, spBase->GetValue(), 0);
@@ -1372,7 +1372,7 @@ int CItemSocketTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -1385,7 +1385,7 @@ int CItemSocketTable::Load()
     const CString& strOpenType = "openType";
     const CString& strRandomOpenRange = "randomOpenRange";
     const CString& strFixOpenCount = "fixOpenCount";
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strItemSocket)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strItemSocket)))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strItemSocket)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strItemSocket)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -1576,7 +1576,7 @@ CStringW FUN_1409e0a90(float fValue);
 CStringW FUN_1409e0970(int nStat, int nValue);
 CStringW FUN_1409e0bf0(int nStat, int nValue);
 int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned>* paSa);   // the SA types a tier grants a job
-void FUN_140222be0(ATL::CAtlArray<int>& aJobs);         // the job ids
+enum Unk_LevelEntry; void FUN_140222be0(ATL::CAtlArray<Unk_LevelEntry>& aJobs);   // the job ids (the unit_1402226b0 def)
 class Unk_ObjTable { };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -1908,14 +1908,14 @@ int CItemStatus::GetStatValue(unsigned nType, int nWhich, int nSub)
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetStatOption(nSub, nType);
+            MS2Ptr<BaseOption> spBase = m_spOption->GetStatOption(nSub, nType);
             if (spBase.get() != 0)
                 nResult += spBase->GetValue();
         }
     }
     if (nWhich == 3 || nWhich == 1)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->GetOption(nType);
+        MS2Ptr<BaseOption> spBase = m_spEnchant->GetOption(nType);
         if (spBase.get() != 0)
         {
             if (IsRatioStat(nType))
@@ -1932,7 +1932,7 @@ int CItemStatus::GetStatValue(unsigned nType, int nWhich, int nSub)
     }
     if (nWhich == 3 || nWhich == 2)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FindOption(nType);
+        MS2Ptr<BaseOption> spBase = m_spUnlimited->FindOption(nType);
         if (spBase.get() != 0)
         {
             if (IsRatioStat(nType))
@@ -1963,14 +1963,14 @@ int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
+            MS2Ptr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
             if (spBase.get() != 0)
                 nResult += spBase->GetValue();
         }
     }
     if ((nWhich == 3 || nWhich == 2) && nSub == 5)
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FindSecondaryOption(nType);
+        MS2Ptr<BaseOption> spBase = m_spUnlimited->FindSecondaryOption(nType);
         if (spBase.get() != 0)
             nResult += spBase->GetValue();
     }
@@ -1981,7 +1981,7 @@ MS2_REPLACE_METHOD(0x140630290, CItemStatus, FUN_140630290, 325, 0x45267C83);
 // @0x1406303e0
 float CItemStatus::GetEnchantRatio(unsigned nType)
 {
-    Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->GetOption(nType);
+    MS2Ptr<BaseOption> spBase = m_spEnchant->GetOption(nType);
     if (spBase == (BaseOption*)0)
         return 0;
     if (!IsRatioStat(nType))
@@ -2017,7 +2017,7 @@ CStringW CItemStatus::GetSpecialStatText(int nSub, unsigned nType, void* pData)
 {
     CStringW str;
     {
-        Unk_EnchantPtr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
+        MS2Ptr<BaseOption> spBase = m_spOption->GetSpecialOption(nSub, nType);
         if (spBase.get() != 0)
         {
             str = FUN_140631830(nType, spBase->GetValue(), reinterpret_cast<CItemData*>(pData));
@@ -2064,10 +2064,10 @@ int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
     for (unsigned i = 0; i < 0x23; ++i)
     {
         int nId = i;
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetStatOption(4, nId);
+        MS2Ptr<BaseOption> spSource = spOther->m_spOption->GetStatOption(4, nId);
         if (spSource.get() != 0)
         {
-            Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
+            MS2Ptr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
             m_spOption->TrySetStatOption(4, nId, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
@@ -2078,10 +2078,10 @@ int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
     for (unsigned i = 0; i < 0xcf; ++i)
     {
         int nId = i;
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetSpecialOption(4, nId);
+        MS2Ptr<BaseOption> spSource = spOther->m_spOption->GetSpecialOption(4, nId);
         if (spSource.get() != 0)
         {
-            Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
+            MS2Ptr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
             m_spOption->TrySetSpecialOption(4, nId, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
@@ -2094,7 +2094,7 @@ int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
 MS2_REPLACE_METHOD(0x1406308A0, CItemStatus, CopyGroup4From, 1103, 0xFA56D793);
 
 // @0x140630d00
-unsigned short CItemStatus::GetEnchantLevel()
+unsigned CItemStatus::GetEnchantLevel()
 {
     return m_spEnchant->GetLevel();
 }
@@ -2149,7 +2149,7 @@ CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
     if (FUN_14081d9e0(nSaType) != 0)
     {
         ATL::CAtlArray<int> aJobs;
-        FUN_140222be0(aJobs);
+        FUN_140222be0(reinterpret_cast<ATL::CAtlArray<Unk_LevelEntry>&>(aJobs));
         for (unsigned i = 0; i < aJobs.GetCount(); i++)
         {
             int nJob = aJobs[i];
@@ -2252,7 +2252,7 @@ CStringW FUN_1406319f0(int nBuffId, unsigned short nLevel)
 MS2_REPLACE(0x1406319F0, FUN_1406319f0, 240, 0xFB0E0A77);
 
 // @0x140631af0
-CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus)
+CStringW FUN_140631af0(int nStat, MS2Ptr<BaseOption> spBase, CItemStatus* pStatus)
 {
     CStringW strResult;
     if (spBase->HasValue())

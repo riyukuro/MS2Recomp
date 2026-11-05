@@ -24,13 +24,9 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The distance slider ("m_sliderDistance"; uiupperhuddialog.cpp's Unk_HudSlider - this unit owns its GetChild
-// instance); the value is a float.
-class Unk_HudSlider : public ASDisplayObject
-{
-};
-MS2Ptr<Unk_HudSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
-extern template class MS2Ptr<Unk_HudSlider>;                         // instances owned by uiupperhuddialog.cpp
+// The distance slider ("m_sliderDistance") is ASSlider; this unit owns its GetChild instance. The value is a float.
+MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
+extern template class MS2Ptr<ASSlider>;                              // instances owned by uiupperhuddialog.cpp
 
 void FUN_140710590(COutPacket& packet);
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);           // show a notice message
@@ -40,8 +36,8 @@ extern template class MS2Ptr<CBanTextChecker>;
 #endif
 
 // The child getters are defined below (0x140fafed0 / 0x140faff90); declared first so OnApply does not instantiate.
-template <> MS2Ptr<Unk_HudSlider> AScript::FUN_140accef0<Unk_HudSlider>(const CString& strName);
-template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName);
+template <> MS2Ptr<ASSlider> AScript::FUN_140fafed0<ASSlider>(const CString& strName);
+template <> MS2Ptr<ASSlider> UISwfEntity::GetChild<ASSlider>(const CString& strName);
 
 // @0x140faf840
 UIUGCCubeNoticeDialog::UIUGCCubeNoticeDialog()
@@ -99,8 +95,8 @@ void UIUGCCubeNoticeDialog::OnApply()
 {
     if (MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textMessage"))
         m_strMessage = spText->GetText();
-    if (MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>("m_sliderDistance"))
-        m_nDistance = (int)reinterpret_cast<ASSlider*>(spSlider.operator->())->FUN_1422ce630();
+    if (MS2Ptr<ASSlider> spSlider = GetChild<ASSlider>("m_sliderDistance"))
+        m_nDistance = (int)spSlider->FUN_1422ce630();
     CBanTextChecker* pChecker;
     CBanTextChecker* pDead = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
     if (pChecker != 0)
@@ -124,20 +120,20 @@ void UIUGCCubeNoticeDialog::OnApply()
 MS2_REPLACE_METHOD(0x140FAFBD0, UIUGCCubeNoticeDialog, OnApply, 760, 0x571ABD56);
 
 // @0x140fafed0
-template <> MS2Ptr<Unk_HudSlider> AScript::FUN_140accef0<Unk_HudSlider>(const CString& strName)
+template <> MS2Ptr<ASSlider> AScript::FUN_140fafed0<ASSlider>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140a57ea0(m_nMovieId, v);
-    return MS2Ptr<Unk_HudSlider>(0);
+    return MS2Ptr<ASSlider>(0);
 }
 
 // @0x140faff90
-template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName)
+template <> MS2Ptr<ASSlider> UISwfEntity::GetChild<ASSlider>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_HudSlider>(0);
-    return m_30->FUN_140accef0<Unk_HudSlider>(strName);
+        return MS2Ptr<ASSlider>(0);
+    return m_30->FUN_140fafed0<ASSlider>(strName);
 }
 
 // @0x140fb0060

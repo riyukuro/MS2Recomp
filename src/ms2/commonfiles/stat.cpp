@@ -30,10 +30,10 @@
 // MS2-PIN: ??1?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAA@XZ 0x140830f90 ; prop
 // MS2-PIN: ??1?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAA@XZ 0x140830fb0 ; unique
 // MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1408313d0 ; prop
-// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_StatKey@@V?$Unk_StatOptPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_StatKey@@@ATL@@V?$CElementTraits@V?$Unk_StatOptPtr@VBaseOption@@@@@4@@ATL@@QEBAAEBW4Unk_StatKey@@PEAU__POSITION@@@Z 0x140831c10 ; unique
-// MS2-PIN: ?GetNext@?$CAtlMap@W4Unk_StatKey@@V?$Unk_StatOptPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_StatKey@@@ATL@@V?$CElementTraits@V?$Unk_StatOptPtr@VBaseOption@@@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140831c80 ; unique
+// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_InvokeOptionType@@V?$MS2Ptr@VInvokeEffectOption@@@@V?$CElementTraits@W4Unk_InvokeOptionType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VInvokeEffectOption@@@@@4@@ATL@@QEBAAEBW4Unk_InvokeOptionType@@PEAU__POSITION@@@Z 0x140831c10 ; unique
+// MS2-PIN: ?GetNext@?$CAtlMap@W4Unk_InvokeOptionType@@V?$MS2Ptr@VInvokeEffectOption@@@@V?$CElementTraits@W4Unk_InvokeOptionType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VInvokeEffectOption@@@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140831c80 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HUStatLevelValues@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@UStatLevelValues@@@3@@ATL@@AEBAPEAVCNode@12@AEBHAEAI1AEAPEAV312@@Z 0x140831cd0 ; unique
-// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_StatKey@@V?$Unk_StatOptPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_StatKey@@@ATL@@V?$CElementTraits@V?$Unk_StatOptPtr@VBaseOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x140831eb0 ; unique
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_InvokeOptionType@@V?$MS2Ptr@VInvokeEffectOption@@@@V?$CElementTraits@W4Unk_InvokeOptionType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VInvokeEffectOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x140831eb0 ; unique
 // MS2-PIN: ?Hash@?$CDefaultHashTraits@H@ATL@@SAKAEBH@Z 0x140831fb0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@XZ 0x140834260 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@PEAX@std@@@2@XZ 0x140834270 ; unique
@@ -52,7 +52,7 @@
 #include <atlcoll.h>
 #include "stat.h"
 #include "itemenchantinfo.h"
-#include "ms2/placeholder/tptreddummy.h"
+#include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
@@ -60,9 +60,9 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_XmlNode { public: Unk_XmlNode* NextSibling(const char*); };   // C3: the next-sibling view (0x140168650)
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* NextSibling(const char*); };   // C3: the element view (0x140165cf0 / 0x140168650)
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // the string table directory
 int XmlGetAttr(class TiXmlElement*, char const*, int&);         // C3: was FUN_1408731e0
@@ -76,37 +76,37 @@ extern CStringW DAT_143aacc90;                                          // the t
 
 typedef ATL::CAtlMap<int, StatLevelValues, ATL::CDefaultElementTraits<int> > StatLevelMap;
 
-// The option pointer as this unit instantiates it: the reference is added through an out-of-line helper (the exe calls the
-// COMDAT thunk 0x1402867c0 that commonstruct.cpp also owns), unlike the inlined Unk_EnchantPtr<BaseOption>.
-template<class T> class Unk_StatOptPtr {
-public:
-    Unk_StatOptPtr() : p(0) {}
-    Unk_StatOptPtr(const Unk_StatOptPtr& o) : p(o.p) { AddRef(); }
-    Unk_StatOptPtr(T* value) : p(value) { AddRef(); }
-    explicit Unk_StatOptPtr(int) : p(0) {}
-    ~Unk_StatOptPtr() { Release(); }
-    Unk_StatOptPtr& operator=(const Unk_StatOptPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
-    T* operator->() const { return p; }
-    bool operator==(T* value) const { return p == value; }
-    bool operator!() const { return !p; }
-    operator T*() const { return p; }
-    T* get() const { return p; }
-private:
-    void AddRef() const { if (p) AddRefImpl(0); }
-    __declspec(noinline) static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
-    void AddRefImpl(void*) const { AddRefObject(p); }
-    void Release() { if (p) { ReleaseImpl(0); p = 0; } }
-    void ReleaseImpl(void*) {
-        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p)) == 0) {
-            AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));
-        }
-    }
-    void* pad; T* p;
-};
-enum Unk_StatKey {};   // the stat id key of an option set
-typedef ATL::CAtlMap<Unk_StatKey, Unk_StatOptPtr<BaseOption> > StatOptionMap;
-typedef TPtredDummy<StatOptionMap> StatOptionSet;
-void FUN_140267220(BaseOption* pThis, Unk_StatOptPtr<BaseOption> spOther);   // merge the other option into this one
+// The option map of an option set holds InvokeEffectOption (SAInvokeEffectStat::m_18, additionalclilist.h): the merge
+// below calls InvokeEffectOption::Accumulate (0x140267220) on the map value, and Accumulate adds the float at +0x20,
+// past the end of the 0x20-byte BaseOption. The map, pointer and set COMDATs here are the CAtlMap<Unk_InvokeOptionType,
+// MS2Ptr<InvokeEffectOption> > and MS2Ptr<SAInvokeEffectStat> instantiations that additionalcli.cpp also emits.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef ATL::CAtlMap<Unk_InvokeOptionType, MS2Ptr<InvokeEffectOption> > StatOptionMap;
+typedef SAInvokeEffectStat StatOptionSet;
+
 
 // ---- the stat table (static initializers in .text$di, in this order) ----
 
@@ -132,19 +132,19 @@ void MergeOptions(StatOptionSet* pDest, MS2Ptr<StatOptionSet> spSource)
 {
     if (!spSource)
         return;
-    if (spSource->value.IsEmpty())
+    if (spSource->m_18.IsEmpty())
         return;
-    for (POSITION pos = spSource->value.GetStartPosition(); pos; spSource->value.GetNext(pos))
+    for (POSITION pos = spSource->m_18.GetStartPosition(); pos; spSource->m_18.GetNext(pos))
     {
-        Unk_StatKey nKey = spSource->value.GetKeyAt(pos);
-        Unk_StatOptPtr<BaseOption> spOption = spSource->value.GetValueAt(pos);
+        Unk_InvokeOptionType nKey = spSource->m_18.GetKeyAt(pos);
+        MS2Ptr<InvokeEffectOption> spOption = spSource->m_18.GetValueAt(pos);
         if (!spOption)
             continue;
-        Unk_StatOptPtr<BaseOption> spExisting(0);
-        if (pDest->value.Lookup(nKey, spExisting))
-            FUN_140267220(spExisting, Unk_StatOptPtr<BaseOption>(spOption));
+        MS2Ptr<InvokeEffectOption> spExisting(0);
+        if (pDest->m_18.Lookup(nKey, spExisting))
+            spExisting->Accumulate(MS2Ptr<InvokeEffectOption>(spOption));
         else
-            pDest->value.SetAt(nKey, spOption);
+            pDest->m_18.SetAt(nKey, spOption);
     }
 }
 
@@ -155,10 +155,10 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
+    for (TiXmlElement* pNode = pRoot->FirstChildElement("key"); pNode != 0; pNode = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
     {
         CStringW strName;
         CStringW strUnused;
@@ -181,10 +181,10 @@ int LoadStatDefinitions()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
+    for (TiXmlElement* pNode = pRoot->FirstChildElement("key"); pNode != 0; pNode = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("key")))
     {
         CStringA strOption;
         int nId;
@@ -224,11 +224,11 @@ int LoadUserStats(int nJob)
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     StatLevelValues values;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat"); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("stat")))
+    for (TiXmlElement* pNode = pRoot->FirstChildElement("stat"); pNode != 0; pNode = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(pNode)->NextSibling("stat")))
     {
         int nLevel = 1;
         if (XmlGetAttr((class TiXmlElement*)(pNode), "lev", nLevel) != 1)

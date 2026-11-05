@@ -131,7 +131,7 @@ class Unk_DpsPC : public PC
 public:
 };
 // CItem::FUN_1405278a0's record is the item status.
-class Unk_ItemEnchantData : public CItemStatus {};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 // CItem::FUN_140527840's record is the item data.
 class Unk_ItemEquipData : public CItemData {};
 
@@ -1378,7 +1378,7 @@ static const CStringW& GetItemText(CItem* pItem)
         for (unsigned nStat = 0; nStat < 0x23; nStat++)
         {
             int nStatId = nStat;
-            Unk_EnchantPtr<BaseOption> spStat(new BaseOption);
+            MS2Ptr<BaseOption> spStat(new BaseOption);
             spStat->SetValue(pItem->FUN_1405278a0()->GetStatValue(nStatId, 0, (int)nRank));
             int nValue = spStat->GetValue();
             if (nValue == 0)
@@ -1391,7 +1391,7 @@ static const CStringW& GetItemText(CItem* pItem)
         for (unsigned nType = 1; nType < 0xcf; nType++)
         {
             int nTypeId = nType;
-            Unk_EnchantPtr<BaseOption> spSpecial = spOption->GetSpecialOption((int)nRank, nTypeId);
+            MS2Ptr<BaseOption> spSpecial = spOption->GetSpecialOption((int)nRank, nTypeId);
             if (spSpecial.get() != 0)
                 s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->GetSpecialStatText((int)nRank, nTypeId, 0));
         }

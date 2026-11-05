@@ -29,7 +29,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -43,20 +43,20 @@ void FUN_14084f390(StringIdInterfaceBase* pThis, CInPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text of a key
 
 // Builds the text of a "{0} {1}" format with arguments.
-class Unk_TextFormat { public: class Unk_TextFormat & FUN_140840530(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_StringArgFormatter : public Unk_TextFormat {
-public:
-    // @0x1410254e0
-    Unk_StringArgFormatter(const CStringW& strFormat) : m_strFormat(strFormat), m_nCount(0), m_nPad(0) {}
-    // @0x141025530
-    ~Unk_StringArgFormatter() {}
-
-    operator CStringW();                                                // the formatted text (@0x1408405d0)
-private:
-    CStringW m_strFormat;                                               // +0x00
-    int m_nCount;                                                       // +0x08
-    int m_nPad;                                                         // +0x0c
-};
-MS2_CHECK_SIZE(Unk_StringArgFormatter, 0x10);
+#include "ms2/placeholder/textformat.h"   // Unk_TextFormat: its inline ctor 0x1410254e0 / dtor 0x141025530 are emitted here
+// (this was a local view of the same 0x10-byte formatter; GetStr 0x1408405d0 is the formatted text).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class CReservedWordTable;
 
@@ -65,7 +65,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);                          // path below the Table folder
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // widens a narrow string
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);   // wide attribute
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszAttr, CStringW strDefault);   // wide attribute
 class StringManager;
 
 // The download cache root (set by FUN_1410268a0) and the "use the simple cache layout" switch.
@@ -116,9 +116,9 @@ CStringW StringIdInterface::FUN_141024e60()
         default:
             MS2_ASSERT_AT(0x25, 0);
         }
-        Unk_StringArgFormatter formatter(strFormat);
+        Unk_TextFormat formatter(strFormat);
         for (size_t i = 0; i < arguments.GetCount(); i++)
-            ((class Unk_TextFormat&)(formatter)).FUN_140840530(arguments[i]);
+            formatter.FUN_140840530(arguments[i]);
         CStringW strResult = formatter;
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
         return strResult;
@@ -152,7 +152,7 @@ template <class T> CStringW StringManager::GetText(StringXmlCategory category, T
 // @0x1410255f0
 template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadData()
 {
-    Unk_140165cf0* pRoot = 0;
+    TiXmlElement* pRoot = 0;
     ValueMap* pMap;
     TiXmlDocument doc;
     do
@@ -164,7 +164,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
             break;
         if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             break;
-        pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+        pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     } while (0);
     if (pRoot == 0)
     {
@@ -173,7 +173,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     }
     pMap = new ValueMap(10);
     std::auto_ptr<KeyMap> names = m_factory30();
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
+    for (TiXmlElement* pElem = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
         CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));

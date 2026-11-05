@@ -39,7 +39,7 @@ class CAfterImageEffectParam : public CEffectParam
 public:
     CAfterImageEffectParam();                                   // 0x140987430
     virtual ~CAfterImageEffectParam();                          // 0x1409874f0, ??_G 0x140987990
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140987520
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x140987520
     virtual CEffectPtr vfunc_6();                               // 6 0x140987740 new CAfterImageEffect
 
     const Unk_AfterImageColor* GetColor() const;   // 0x140987810

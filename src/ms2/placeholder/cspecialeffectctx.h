@@ -22,7 +22,7 @@ public:
 class Unk_SEParam
 {
 public:
-    int FUN_14054c530(const CStringW& strName, int* pnDefault);        // 0x14054c530
+    // its FUN_14054c530 was the inline CXmlData::GetUInt (COMDAT 0x14054c530)
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -45,7 +45,7 @@ public:
 
     // Attribute getters (names invented). The name is taken by value (the callee destroys it).
     // @0x140827740
-    int GetInt(CStringW strName, int* pnDefault) { return reinterpret_cast<Unk_SEParam*>(m_pParam.operator->())->FUN_14054c530(strName, pnDefault); }
+    int GetInt(CStringW strName, int* pnDefault) { return m_pParam.operator->()->GetUInt(strName, *pnDefault); }
     // @0x1408277a0
     float GetFloat(CStringW strName, float* pfDefault) { return m_pParam.operator->()->FUN_1408276a0(strName, pfDefault); }
 };

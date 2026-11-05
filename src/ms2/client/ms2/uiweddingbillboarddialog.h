@@ -21,7 +21,7 @@
 class ASTextField;
 class CInPacket;
 class ASScrollingList;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIWeddingBillboardDialog : public UIDialog
 {

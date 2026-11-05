@@ -277,7 +277,7 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, CItem* pUser, int nMovieId);
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);   // C3: the definition takes __int64 (gfxui/asfunction.cpp)
     virtual ~ASFunction();
 private:
     void* m_40;
@@ -311,7 +311,7 @@ public:
 // the pointee as Unk_MeratEquipEntry; it is the CMeratMarketProduct of this dialog.
 class Unk_MeratEquipEntry : public CMeratMarketProduct { };
 class Unk_MeratFilter : public CPtred { };                                  // the market filter
-class Unk_EquipOutfit : public CPtred { };                                  // uiequipiconcontainer.h (the avatar customize here)
+// C3: Unk_EquipOutfit was Customize (uiequipiconcontainer.h)
 struct Unk_MeratOid : public Unk_MeratProductKey { };   // asitemslot.cpp's name for the key (GetProductOID)
 
 // map, the sellers, the product lists, the basket and the requests to the server.
@@ -474,7 +474,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStri
         return FUN_14028dee0(arg1, fmt::ArgList(fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
     }
 MM_BLOCKFORMAT(1) MM_BLOCKFORMAT(2) MM_BLOCKFORMAT(3) MM_BLOCKFORMAT(4) MM_BLOCKFORMAT(5) MM_BLOCKFORMAT(6) MM_BLOCKFORMAT(7) MM_BLOCKFORMAT(8)
-CStringW FUN_141277dd0(class Unk_ConstString* pValue);                      // the string of a value
+CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);                      // the string of a value
 bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct);
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError);
@@ -556,7 +556,7 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 
 
 int FUN_140ec1c70(ATL::CAtlArray<MS2Ptr<class Unk_McCategoryEntry> >& list, int nCategory);                 // index of the category in the list
-void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<class Unk_140acd6e0>* pOut);     // bind a child of the root
+void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<class ASButton>* pOut);     // bind a child of the root
 bool FUN_141b488c0(MS2Ptr<CItemData> spData);                               // the item may be previewed
 bool FUN_141b48710(MS2Ptr<CItemData> spData);
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pFirst,
@@ -1050,7 +1050,7 @@ int UIMeratMarketDialog::vfunc_46()
         return 0;
     {
         CString strName("m_probInfo");
-        FUN_14134a480(*m_30, strName, (MS2Ptr<Unk_140acd6e0>*)&m_600);
+        FUN_14134a480(*m_30, strName, (MS2Ptr<ASButton>*)&m_600);
     }
     return 1;
 }
@@ -1716,7 +1716,7 @@ void UIMeratMarketDialog::AddPreviewSlot(MS2Ptr<CItem> spItem, MS2Ptr<CMeratMark
                     spCustomize = spAvatar->GetCustomize();
             }
             {
-                MS2Ptr<ASEquipIcon> spIcon = spContainer->FUN_140e2a090(nEvent, spItem, spSrc, reinterpret_cast<MS2Ptr<Unk_EquipOutfit>&>(spCustomize));
+                MS2Ptr<ASEquipIcon> spIcon = spContainer->FUN_140e2a090(nEvent, spItem, spSrc, spCustomize);
                 if (spIcon.get() != 0) {
                     spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnEquipIconTooltip), (long long)spIcon.get());
                     if (FUN_141b48710(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(((CItem*)spItem)->FUN_140527840()))) || ((spData.get() ? true : false) && FUN_141b48710(spData))) {
@@ -3709,7 +3709,7 @@ void UIMeratMarketDialog::OnSearchItemLink(ASData& data)
     Scaleform::GFx::Value vText = obj.GetMember("searchText");
     CStringW strText;
     if (!((Scaleform::GFx::Value*)(void*)(&vText))->IsUndefined() && !((Scaleform::GFx::Value*)(void*)(&vText))->IsNull())
-        strText = FUN_141277dd0((Unk_ConstString*)&vText);
+        strText = FUN_141277dd0(&vText);
     if (!strText.IsEmpty())
     {
         MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCondition();
@@ -4985,13 +4985,13 @@ void UIMeratMarketDialog::LoadSampleScore()
     const CString& strPath = ((struct Unk_ConfigPaths*)FUN_1401d31f0())->m_strSampleScore;
     if (((class Unk_MmFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    Unk_140165cf0* pHarmony = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("harmony"));
+    TiXmlElement* pHarmony = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("harmony"));
     if (pHarmony != 0)
     {
         CStringA strChord;
@@ -6679,7 +6679,7 @@ void UIMeratMarketDialog::ApplySearchAll(MS2Ptr<CMeratMarketSchCond> spCond, ASO
     if (!((Scaleform::GFx::Value*)(void*)(&vData))->IsNull() && !((Scaleform::GFx::Value*)(void*)(&vData))->IsUndefined()) {
         ASObj data(vData, 2);
         Scaleform::GFx::Value vWord = data.GetMember("findWord");
-        strWord = FUN_141277dd0((Unk_ConstString*)&vWord);
+        strWord = FUN_141277dd0(&vWord);
         strWord = strWord.Trim();
         if (strWord.IsEmpty())
             return;

@@ -1,7 +1,7 @@
 // additionalclilist.h - the actor's additional effect list (PCBase +0x748, 0x1a0 bytes; no RTTI): the AdditionalCli
 // records of an actor keyed by their key, and the state the active records add up to (status, motion, consume, the
 // special abilities, the shield record). Recovered with ?\additionalcli.cpp#2 (0x14096ee00-0x140978f40). Header and
-// class names assumed (pcbase.h declares the same object as Unk_PCBaseBuffList; the exe's members are FUN_<va>).
+// class names assumed (PCBase::m_unk_748 in pcbase.h is one; the exe's members are FUN_<va>).
 // SAInvokeEffectStat (RTTI, 0x60): the invoke effect options one skill / effect gets from the active records.
 #pragma once
 #include <afx.h>

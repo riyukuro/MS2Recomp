@@ -65,7 +65,7 @@
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include <efd/ISystemService.h>
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker
@@ -158,9 +158,9 @@ public:
     int m_nCount;                                               // +0x50
 };
 class Cube;
-class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); Cube* GetCubeAtCell(Unk_Int3 pt); };   // C3: member view
-class Unk_Service6100017 : public efd::ISystemService { };   // the cube map service (class id 0x06100017; as entityvibrator.cpp)
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService : public efd::ISystemService { public: Cube* GetCubeAtPoint(Vector3 pt); Cube* GetCubeAtCell(Unk_Int3 pt); };   // C3: member view
+// C3: CubeMapInformationService (class id 0x06100017) was CubeMapInformationService (the view above)
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_RxMapInfo : public CPtred
 {
 public:
@@ -168,9 +168,9 @@ public:
     int m_nKind;                                                // +0xc4
 };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);                    // cell of a point
-int FUN_1408a03c0(const Unk_Int3& pt);   // the callers pass the returned cell temporary
+int FUN_1408a03c0(Unk_Int3 pt);   // the callers pass the returned cell temporary (copied into the argument)
 Unk_Int3 FUN_1408a0400(int nCellId);
-Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
+efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptCenter);   // fills the cell center
 class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
 class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_RxNpc : public CPtred { public:  };
@@ -408,7 +408,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
     Unk_Int3 cell = FUN_1408a0400(nCellId);
     Vector3 ptCenter;
-    FUN_1408a15b0(cell, ptCenter);
+    FUN_1408a15b0(cell, reinterpret_cast<efd::Point3&>(ptCenter));
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i) {
         MS2Ptr<CInteractObject> spObj = arrNear[i];
@@ -444,7 +444,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
             continue;
         Vector3 pt;
         int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
-        FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
+        FUN_1408a15b0(FUN_1408a0400(nActorCell), reinterpret_cast<efd::Point3&>(pt));
         float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
         if (fDist < 230.0f) {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
@@ -453,7 +453,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     }
 
     {
-        efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
         Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtPoint(ptLow));

@@ -8,7 +8,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEAHAEAV?$MS2Ptr@VJobData@@@@$0A@@?$pair@HV?$MS2Ptr@VJobData@@@@@std@@QEAA@AEAHAEAV?$MS2Ptr@VJobData@@@@@Z 0x140645070 ; unique
 // MS2-PIN: ??$?0HV?$MS2Ptr@VJobData@@@@$0A@@?$pair@$$CBHV?$MS2Ptr@VJobData@@@@@std@@QEAA@$$QEAU?$pair@HV?$MS2Ptr@VJobData@@@@@1@@Z 0x1406450c0 ; unique
-// MS2-PIN: ?XmlValue@@YAHPEAVUnk_140165cf0@@PEBDAEAVCPoint@@@Z 0x140645190 ; unique
+// MS2-PIN: ?XmlValue@@YAHPEAVTiXmlElement@@PEBDAEAVCPoint@@@Z 0x140645190 ; unique
 // MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VJobSkillData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@1@@Z 0x140645330 ; unique
 // MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VJobSkillData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@1@1@Z 0x140646050 ; unique
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VJobSkillData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VJobSkillData@@@@@std@@PEAX@1@@Z 0x1406463b0 ; unique
@@ -43,7 +43,7 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -78,7 +78,7 @@ JobSkillData::JobSkillData()
 }
 
 // @0x140645190
-int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt)
+int XmlValue(TiXmlElement* pElem, const char* pszName, CPoint& pt)
 {
     CString str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
@@ -94,7 +94,7 @@ int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt)
 }
 
 // @0x140643720
-bool JobSkillData::Load(Unk_140165cf0* pElem)
+bool JobSkillData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "skillID", m_skillID);
     XmlValue(pElem, "uiPosition", m_uiPosition);
@@ -142,7 +142,7 @@ JobData::JobData()
 }
 
 // @0x140643a60
-void JobData::Load(Unk_140165cf0* pElem)
+void JobData::Load(TiXmlElement* pElem)
 {
     XmlValue(pElem, "jobGroupID", m_jobGroupID);
     XmlGetAttr((class TiXmlElement*)(pElem), "characterBGM", m_characterBGM);
@@ -152,10 +152,10 @@ void JobData::Load(Unk_140165cf0* pElem)
     XmlTokenList(pElem, "startItems", m_startItems);
     XmlValue(pElem, "subJob1", m_subJob1);
     XmlValue(pElem, "subJob2", m_subJob2);
-    Unk_140165cf0* pSkills = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skills"));
+    TiXmlElement* pSkills = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("skills"));
     if (pSkills != 0)
     {
-    for (Unk_140165cf0* pSkill : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkills))->FirstChild("v")))
+    for (TiXmlElement* pSkill : ((class TiXmlElement*)((class Unk_XmlNode*)(pSkills))->FirstChild("v")))
     {
         JobSkillDataPtr spSkill(new JobSkillData);
         if (spSkill->Load(pSkill))
@@ -313,17 +313,17 @@ int JobTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "job", "jobGroupID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         JobDataPtr spJob(new JobData);

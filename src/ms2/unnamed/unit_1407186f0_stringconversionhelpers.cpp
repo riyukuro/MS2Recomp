@@ -46,11 +46,11 @@ MS2Colors FUN_1407186f0(const CString& s) {
 }
 
 // @0x140718770
-void* FUN_140718770(void* ret, const CStringA& s) {
-    unsigned tmp;
-    reinterpret_cast<Unk_ConstColor*>(&tmp)->Unk_ConstColor::Unk_ConstColor(strtoul((const char*)s, 0, 16));
-    *(unsigned*)ret = tmp;
-    return ret;
+Unk_ConstColor FUN_140718770(const CStringA& s) {
+    Unk_ConstColor tmp(strtoul((const char*)s, 0, 16));
+    //
+    //
+    return tmp;
 }
 // @0x1407187d0
 void* FUN_1407187d0(void* ret, const CStringW& s) {

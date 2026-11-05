@@ -72,15 +72,15 @@
 #include <NiFixedString.h>   // C3: DAT_143ae53c0
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <string.h>
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-
+class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // CGameOption view, defined in uichaosdpsdialog.cpp (0x140e09150)
 // ---- header statics (dynamic initializers 0x1400ea9f0..0x1400ead60) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 
@@ -204,7 +204,7 @@ void CGameOptionInterface::vfunc_3(int n)
 {
     if (n == 0)
     {
-        FUN_14125bb60(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140e09150());
+        FUN_14125bb60(&m_state, reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()));
         FUN_14125bd00(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0());
     }
     CBaseOption::vfunc_3(n);
@@ -383,11 +383,11 @@ void CGameOptionInterface::vfunc_10()
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f23);
     }
     FUN_14125bd20(&m_flag, m_flag.m_b);
-    FUN_14125bb60(TSingleton<CGameOption>::GetInstance()->FUN_140e09150(), &m_state);
+    FUN_14125bb60(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()), &m_state);
     FUN_14125bd00(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), &m_flag);
     UIDamageEffect* pEffect = FUN_140ac55a0(0x4e3c);
     if (pEffect != 0)
-        pEffect->FUN_141910b30((float)TSingleton<CGameOption>::GetInstance()->FUN_140e09150()->m_n0c);
+        pEffect->FUN_141910b30((float)reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_n0c);
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x1412569A0, CGameOptionInterface, vfunc_10, 415, 0x86CDC5AF);
@@ -425,7 +425,7 @@ MS2_REPLACE_METHOD(0x141256C50, CGameOptionInterface, GetTypeName, 61, 0x01A065A
 // @0x141256ca0
 int CGameOptionInterface::vfunc_14()
 {
-    return memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140e09150(), 0x18);
+    return memcmp(&m_state, reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()), 0x18);
 }
 MS2_REPLACE_METHOD(0x141256CA0, CGameOptionInterface, vfunc_14, 50, 0x3A2AC844);
 
@@ -541,7 +541,7 @@ void CGameOptionSoundDefault::vfunc_6()
                 spClip->vfunc_3(1);
                 if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
                     spSlider->FUN_1422ce5f0((float)m_state.m_n2c);
-                if (MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>("m_isOffBgm"))
+                if (MS2Ptr<ASCheckBox> spOff = spClip->FUN_140c11f50<ASCheckBox>("m_isOffBgm"))
                     spOff->FUN_1422ce090(m_state.m_b30);
             }
             else
@@ -628,7 +628,7 @@ void CGameOptionSoundDefault::vfunc_7()
         {
             if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
                 m_state.m_n2c = (int)spSlider->FUN_1422ce630();
-            if (MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>("m_isOffBgm"))
+            if (MS2Ptr<ASCheckBox> spOff = spClip->FUN_140c11f50<ASCheckBox>("m_isOffBgm"))
                 m_state.m_b30 = spOff->FUN_1422ce0e0() ? true : false;
         }
     }
@@ -3320,7 +3320,7 @@ int FUN_141261b90(Unk_GsEtc* p, int nQuestId)
 }
 MS2_REPLACE(0x141261B90, FUN_141261b90, 323, 0x1360F8F3);
 
-class Unk_140acd6e0 : public ASDisplayObject {};                // the button wrapper (uisystemmenudialog.h members)
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 
 // ---- CPersonalInfoAgreement: the personal information agreements (house visit) ------------------------------------
 // The UIs the agreement updates.
@@ -3346,16 +3346,16 @@ class Unk_HoService : public CubeMapInformationService { public: };
 struct Unk_EntityAppFramework;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 template <> bool efd::SmartPointer<CubeMapInformationService>::operator!=(CubeMapInformationService* pObject) const;   // 0x140c2b790
-class Unk_HoServicePtr
-{
-public:
-    bool FUN_140ef4cb0(int n);                                      // == null
-    Unk_HoService* m_p;
-};
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // C3: was Unk_HoService*
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const;   // 0x140ef4cb0 (C3: was the Unk_HoServicePtr view)
+//
+//
+//
+//
+//
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // C3: the 0x06100017 service (was Unk_HoService*)
 extern __int64 DAT_143ab2820;                                       // my account id
 void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strTag);  // system message box by string id
 void FUN_14151f200();
@@ -3538,8 +3538,8 @@ void CPersonalInfoAgreement::FUN_141262180()
         pIcon->FUN_141939320(bShow);
     if (!bShow)
         return;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spService) != (CubeMapInformationService*)0)
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService != (CubeMapInformationService*)0)
     {
         bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
         if (bMyHouse)
@@ -3576,8 +3576,8 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (pPC->HasNoHome() != 0)
         return;
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (reinterpret_cast<Unk_HoServicePtr&>(spService).FUN_140ef4cb0(0))
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == (CubeMapInformationService*)0)
         return;
     bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
     if (!bMyHouse)
@@ -3689,23 +3689,23 @@ bool CPersonalInfoAgreement::FUN_141262f10(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x141262F10, CPersonalInfoAgreement, FUN_141262f10, 35, 0x556A5A8F);
 
 // ---- XML helpers: <section key="value"/> under the document root ---------------------------------------------------
-class TiXmlNode { public: TiXmlNode* LinkEndChild(TiXmlNode* addThis); };   // C3: member view
-class TiXmlElement : public TiXmlNode
-{
-public:
-    TiXmlElement(const char* szName);                           // 0x14086f2f0
-    const char* Attribute(const char* name) const;
-    const char* Attribute(const char* name, int* i) const;
-    const char* Attribute(const char* name, double* d) const;
-    void SetAttribute(const char* name, const char* value);
-    void SetAttribute(const char* name, int value);
-    void SetDoubleAttribute(const char* name, double value);
-    void RemoveAttribute(const char* name);
-private:
-    void* m_pad[0x90 / sizeof(void*)];
-};
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
-TiXmlElement* FUN_140165cf0(TiXmlElement* pElem, const char* pszName);  // FirstChildElement
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
+
+
+
+
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, __int64& n);   // C3: was FUN_1408732e0
 int XmlGetAttr(TiXmlElement* pElem, const char* pszName, unsigned __int64& n);   // C3: was FUN_140873320

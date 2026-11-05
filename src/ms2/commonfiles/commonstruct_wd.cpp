@@ -19,7 +19,7 @@
 typedef std::map<int, int> MapII;
 typedef MapII::_Mybase TreeII;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>> TValII;
-typedef TValII::_Nodeptr NodeII;
+typedef TValII::_Nodeptr NodeII; struct WdTreeAcc : TreeII { using TreeII::_Destroy_if_node; using TreeII::_Key; };   // the protected _Tree members
 typedef MS2Ptr<CIngredientInfo> PIng;
 typedef MS2Ptr<Probability::LogContext> PLog;
 typedef std::vector<PIng> VIng;
@@ -33,7 +33,7 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
 {
     Unk_TVal* h = (Unk_TVal*)&reinterpret_cast<TreeII*>(tree)->_Get_data();
     if ((u64)(reinterpret_cast<TreeII*>(tree)->max_size() - 1) <= h->size) {
-        FUN_1402876f0(tree, newnode);
+        static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Destroy_if_node(reinterpret_cast<NodeII>(newnode));
         std::_Xlength_error("map/set<T> too long");
     }
     {
@@ -95,7 +95,7 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
     }
 }
 // _Insert_hint's repeated pieces: _Key(node), _Kfn(val), _DEBUG_LT_PRED(_Getcomp(), l, r), _Insert_at(leftish, node, forward(val), newnode)
-#define WD_KEY(n) (*(const int*)FUN_1402885e0(tree, (n)))
+#define WD_KEY(n) (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(n)))
 #define WD_KFN() (*(const int*)FUN_140288610(tree, val))
 #define WD_LT(l, r) reinterpret_cast<TreeII*>(tree)->_Getcomp()(l, r)
 #define WD_INSERT_AT(left, n) FUN_140278a30(tree, out, left, (n), FUN_14027c160(val), newnode)
@@ -173,7 +173,7 @@ Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, U
             }
         }
     } catch (...) {
-        FUN_1402876f0(tree, newnode);
+        static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Destroy_if_node(reinterpret_cast<NodeII>(newnode));
         throw;
     }
     Unk_TIterBool r;
@@ -220,14 +220,14 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
                 FUN_140274d10((__int64*)out, FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), (__int64)&yes);
                 return out;
             } else {
-                FUN_1402876f0(tree, newnode);
+                static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Destroy_if_node(reinterpret_cast<NodeII>(newnode));
                 bool no = false;
                 FUN_140274b10((__int64*)out, (__int64)&where, (__int64)&no);
                 return out;
             }
         }
     } catch (...) {
-        FUN_1402876f0(tree, newnode);
+        static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Destroy_if_node(reinterpret_cast<NodeII>(newnode));
         throw;
     }
 }
@@ -238,84 +238,84 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
 #undef WD_PREV
 #undef WD_CIT
 // @0x140279de0
-// std::vector<16-byte smart pointer>::_Insert_range(const_iterator where, _Iter first, _Iter last, forward_iterator_tag) (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
-void FUN_140279de0(void* vec, Unk_E16* where, i64 first, i64 last)
-{
-    u64 count = std::_Convert_size<u64>((u64)(FUN_14027bc70(first, last)));
-    i64 whereoff = where - *(Unk_E16**)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-    bool onebback = count == 1 && where == *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast() ? true : false;
-    if (count == 0) {
-    } else if (count > FUN_140289e50(vec)) {
-        u64 oldsize = reinterpret_cast<VIng*>(vec)->size();
-        if (count > reinterpret_cast<VIng*>(vec)->max_size() - oldsize)
-            FUN_140289f00();
-        u64 newsize = oldsize + count;
-        u64 newcap = FUN_140287070(vec, newsize);
-        Unk_E16* newvec = (Unk_E16*)reinterpret_cast<VIng*>(vec)->_Getal().allocate(newcap);
-        Unk_E16* constructed_last = newvec + whereoff + count;
-        Unk_E16* constructed_first = constructed_last;
-        try {
-            FUN_14027a900(vec, first, last, (i64)&newvec[whereoff]);
-            constructed_first = newvec + whereoff;
-            if (onebback) {
-                FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)newvec);
-            } else {
-                FUN_140289b00(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), (i64)where, (i64)newvec);
-                constructed_first = newvec;
-                FUN_140289b00(vec, (i64)where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)(newvec + whereoff + count));
-            }
-        } catch (...) {
-            FUN_140287670(vec, (i64)constructed_first, (i64)constructed_last);
-            reinterpret_cast<VIng*>(vec)->_Getal().deallocate((PIng*)newvec, newcap);
-            throw;
-        }
-        FUN_1402873b0(vec, newvec, newsize, newcap);
-    } else {
-        Unk_E16* oldlast = *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast();
-        u64 affected = oldlast - where;
-        if (count < affected) {
-            *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = FUN_140289b00(vec, (i64)(oldlast - count), (i64)oldlast, (i64)oldlast);
-            FUN_14027a390((i64)where, (i64)(oldlast - count), (i64)oldlast);
-            FUN_140287670(vec, (i64)where, (i64)&where[count]);
-            try {
-                FUN_14027a900(vec, first, last, (i64)where);
-            } catch (...) {
-                try {
-                    FUN_140289b00(vec, (i64)&where[count], (i64)&where[2 * count], (i64)where);
-                } catch (...) {
-                    FUN_140288d20(vec, (i64)where, (i64)oldlast);
-                    FUN_140287670(vec, (i64)&where[count], *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-                    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)where;
-                    throw;
-                }
-                FUN_14027a450((i64)&where[2 * count], *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)&where[count]);
-                FUN_140287670(vec, (i64)oldlast, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)oldlast;
-                throw;
-            }
-        } else {
-            Unk_E16* relocated = where + count;
-            *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = FUN_140289b00(vec, (i64)where, (i64)oldlast, (i64)relocated);
-            FUN_140287670(vec, (i64)where, (i64)oldlast);
-            try {
-                FUN_14027a900(vec, first, last, (i64)where);
-            } catch (...) {
-                try {
-                    FUN_140289b00(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)where);
-                } catch (...) {
-                    FUN_140288d20(vec, (i64)where, (i64)oldlast);
-                    FUN_140287670(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-                    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)where;
-                    throw;
-                }
-                FUN_140287670(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)oldlast;
-                throw;
-            }
-        }
-        FUN_140288d20(vec, (i64)where, (i64)oldlast);
-    }
-}
+// std::vector<MS2Ptr<CIngredientInfo>>::_Insert_range<PIng*>(.., forward_iterator_tag), reached from insert 0x14027c290
+template void VIng::_Insert_range<PIng*>(VIng::const_iterator, PIng*, PIng*, std::forward_iterator_tag);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // @0x14027a270
 i64 FUN_14027a270(i64 p) { return p; }
 // @0x14027a280
@@ -325,7 +325,7 @@ Unk_TNode* FUN_14027a280(void* tree, i64 key)
     Unk_TNode* where = FUN_140287ee0(tree)->head;
     Unk_TNode* trynode = where->parent;
     while (trynode->isnil == 0) {
-        if (FUN_1402874c0(tree, FUN_1402885e0(tree, trynode), key)) {
+        if (FUN_1402874c0(tree, (i64)&static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(trynode)), key)) {
             trynode = trynode->right;
         } else {
             where = trynode;
@@ -336,35 +336,35 @@ Unk_TNode* FUN_14027a280(void* tree, i64 key)
 }
 // @0x14027a320
 // std::_Move_backward_unchecked(first, last, dest) for the 16-byte element
-i64 FUN_14027a320(i64 first, i64 last, i64 dest, Unk_StlTag)
-{
-    while (first != last) {
-        last = last - 0x10;
-        dest = dest - 0x10;
-        FUN_14027e950((Unk_Ref16*)dest, (Unk_Ref16*)FUN_14027c400(last));
-    }
-    return dest;
-}
+template PIng* std::_Move_backward_unchecked1<PIng*, PIng*>(PIng*, PIng*, PIng*, std::_General_ptr_iterator_tag);
+
+
+
+
+
+
+
+
 // @0x14027a390
-void FUN_14027a390(i64 first, i64 last, i64 dest)
-{
-    char tag = FUN_14027a670(&first, &dest);
-    FUN_14027a320(first, last, dest, *(Unk_StlTag*)&tag);
-}
+template PIng* std::_Move_backward_unchecked<PIng*, PIng*>(PIng*, PIng*, PIng*);
+
+
+
+
 // @0x14027a3e0
 // std::_Move_unchecked(first, last, dest) for the 16-byte element
-i64 FUN_14027a3e0(i64 first, i64 last, i64 dest, Unk_StlTag)
-{
-    for (; first != last; dest += 0x10, first += 0x10)
-        FUN_14027e950((Unk_Ref16*)dest, (Unk_Ref16*)FUN_14027c400(first));
-    return dest;
-}
+template PIng* std::_Move_unchecked1<PIng*, PIng*>(PIng*, PIng*, PIng*, std::_General_ptr_iterator_tag);
+
+
+
+
+
 // @0x14027a450
-void FUN_14027a450(i64 first, i64 last, i64 dest)
-{
-    char tag = FUN_14027a670(&first, &dest);
-    FUN_14027a3e0(first, last, dest, *(Unk_StlTag*)&tag);
-}
+template PIng* std::_Move_unchecked<PIng*, PIng*>(PIng*, PIng*, PIng*);
+
+
+
+
 // @0x14027a4a0
 // std::_Pocca(_Wrap_alloc&, const _Wrap_alloc&)
 void FUN_14027a4a0(i64 a, i64 b)
@@ -397,7 +397,7 @@ char FUN_14027a610(i64*, i64*) { Unk_StlTag tag = {}; return *(char*)&tag; }
 // @0x14027a640
 char FUN_14027a640(i64*, i64*) { Unk_StlTag tag = {}; return *(char*)&tag; }
 // @0x14027a670
-char FUN_14027a670(i64*, i64*) { Unk_StlTag tag = {}; return *(char*)&tag; }
+template std::_General_ptr_iterator_tag std::_Ptr_move_cat<PIng, PIng>(PIng* const&, PIng* const&);
 // @0x14027a6a0
 void FUN_14027a6a0(i64* p, i64 v) { *p = v; }
 // @0x14027a6c0
@@ -423,7 +423,7 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     char pad;
     FUN_14028af20(tree, &lb, key);
     if (FUN_14027ee20((Unk_It*)&lb, (Unk_It*)FUN_14028a910(tree, &end)) != 0 ||
-        reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), *(const int*)(FUN_1402885e0(tree, lb.node))) != 0) {
+        reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(key), static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(lb.node))) != 0) {
         ins = true;
         Unk_TNode* hint = lb.node;
         void* vt = FUN_140162f80(&pad);

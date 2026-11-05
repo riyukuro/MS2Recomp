@@ -22,15 +22,15 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/nipoint3.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -50,20 +50,20 @@ static CString s_strStun3 = "stun";                  // @0x1400e7e60
 static Unk_BuddyHandle s_handle3(0);             // @0x1400e7e90
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
-    Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
-public:
-    class Unk_140165cf0* NextSiblingElement();   // C3: was free FUN_1403f0510
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int FUN_1408731e0(TiXmlElement*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);
 
@@ -104,7 +104,7 @@ public:
     char m_pad_32[0x7a];
     float m_fViewDistance;          // +0xac
 };
-float* FUN_140552770(std::vector<float>*, size_t);          // const operator[]
+// C3: FUN_140552770 is std::vector<float>::operator[] const
 class CGameOption;
 class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 unsigned char FUN_1401d1320(CCacheData*);
@@ -148,7 +148,7 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
     float fDist = delta.FUN_140968990();
     float fView = pCheck->m_fViewDistance;
     if (FUN_14028d470(fView, -1.0f))
-        fView = *FUN_140552770(const_cast<std::vector<float>*>(&m_rows[pCheck->m_nRow].m_dist), pCheck->m_nCaster);
+        fView = static_cast<const std::vector<float>&>(m_rows[pCheck->m_nRow].m_dist)[pCheck->m_nCaster];
     bool bZero = FUN_14028d470(fView, 0);
     bool bNear = fDist < fView;
     return !(bZero | bNear);
@@ -185,7 +185,7 @@ bool EffectSkipMgr::LoadOption()
     CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -194,16 +194,16 @@ bool EffectSkipMgr::LoadOption()
     CString strOption("option");
     char szNum[8];
     strOption += _itoa(nOption + 1, szNum, 8);
-    Unk_140165cf0* pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strOption));
+    TiXmlElement* pOption = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strOption));
     if (pOption != 0)
     {
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("nif")), 1);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("sound")), 2);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("swoosh")), 7);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("random")), 0xb);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("vibrate")), 0xc);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("chaoslight")), 0xe);
-        LoadElements(((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->FirstChild("lightning")), 0x10);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("nif")), 1);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("sound")), 2);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("swoosh")), 7);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("random")), 0xb);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("vibrate")), 0xc);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("chaoslight")), 0xe);
+        LoadElements(((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->FirstChild("lightning")), 0x10);
     }
     SetInit(true);
     return true;
@@ -217,28 +217,28 @@ bool EffectSkipMgr::LoadLimitCount()
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     m_cache.FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_140165cf0* pDefault = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("default"));
+    TiXmlElement* pDefault = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("default"));
     if (pDefault != 0)
         XmlGetAttr((class TiXmlElement*)(pDefault), "maxcount", reinterpret_cast<int&>(m_nMaxCount));
-    Unk_140165cf0* pAdaptive = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("adaptive"));
+    TiXmlElement* pAdaptive = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("adaptive"));
     if (pAdaptive != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pAdaptive), "baseframe", reinterpret_cast<int&>(m_nBaseFrame));
         if (0 < m_nBaseFrame)
             LoadBenchmark();
     }
-    Unk_140165cf0* pEffects = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effects"));
+    TiXmlElement* pEffects = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("effects"));
     if (pEffects != 0)
     {
         CString strName;
         int nCount;
-        for (Unk_140165cf0* pUnit = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffects))->FirstChild("unit")); pUnit != 0; pUnit = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pUnit))->NextSibling("effect")))
+        for (TiXmlElement* pUnit = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffects))->FirstChild("unit")); pUnit != 0; pUnit = ((class TiXmlElement*)((class Unk_XmlNode*)(pUnit))->NextSibling("effect")))
         {
             XmlGetAttr((class TiXmlElement*)(pUnit), "id", strName);
             XmlGetAttr((class TiXmlElement*)(pUnit), "count", reinterpret_cast<int&>(nCount));
@@ -288,10 +288,10 @@ int EffectSkipMgr::ParseCaster(const char* pszCaster, int* pnCaster)
 // @0x1411b92f0
 void EffectSkipMgr::LoadElements(void* pNode, int nRow)
 {
-    for (Unk_140165cf0* pElement = ((class Unk_140165cf0*)((class Unk_XmlNode*)(static_cast<Unk_140165cf0*>(pNode)))->FirstChild("element")); pElement != 0;
-         pElement = ((class Unk_140165cf0*)(pElement))->NextSiblingElement())
+    for (TiXmlElement* pElement = ((class TiXmlElement*)((class Unk_XmlNode*)(static_cast<TiXmlElement*>(pNode)))->FirstChild("element")); pElement != 0;
+         pElement = ((class TiXmlElement*)(pElement))->NextSiblingElement())
     {
-        CString strCaster = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pElement))->Attribute("caster"), 0);
+        CString strCaster = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pElement))->Attribute("caster"), 0);
         int nCaster;
         float fView = 0;
         XmlGetAttr((class TiXmlElement*)(pElement), "viewDistance", reinterpret_cast<float&>(fView));
@@ -366,14 +366,14 @@ void EffectSkipMgr::LoadBenchmark()
     CString strPath = FUN_14071a5b0("Table", "effect_benchmark.xml");
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     CString strName;
-    for (Unk_140165cf0* pE = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("e")); pE != 0; pE = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pE))->NextSibling("e")))
+    for (TiXmlElement* pE = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("e")); pE != 0; pE = ((class TiXmlElement*)((class Unk_XmlNode*)(pE))->NextSibling("e")))
     {
         int nTime;
         XmlGetAttr((class TiXmlElement*)(pE), "p", strName);

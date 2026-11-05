@@ -116,7 +116,7 @@ void FUN_1401d3700(CString& str);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
-class Unk_WsB_Prop : public CInteractObject { };
+// (the prop of a tree is WorldService's CInteractObject, interactobject.h)
 class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 the placement box
                       // the item kind
 namespace egmAnimation { class AnimationService; }
@@ -450,8 +450,8 @@ void CDropItem::FUN_14118d9a0(int nState)
         }
         else if (m_nDropKind == 0x21)
         {
-            efd::Point3 kSelfPos = vfunc_18();
-            Unk_WsB_Prop* pProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<Vector3&>(kSelfPos), 0);
+            // (the point is vfunc_18's result, copied once into the by-value argument)
+            CInteractObject* pProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(vfunc_18())), 0);
             bool bProp = pProp && (pProp->GetRow().get() ? true : false);
             if (bProp)
             {

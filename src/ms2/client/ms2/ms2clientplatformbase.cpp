@@ -44,23 +44,23 @@ static CStringA s_strReportSiren2("PremiumShop_ReportSiren");       // 0x143abf5
 void FUN_14092e580(void* p) noexcept;
 void FUN_14092ea10(void* p, int n);
 class CFeatureManager { public: bool FUN_14036d650(); };
-class UIReportDialog;
+#include "ms2/commonfiles/meratproductkey.h"   // the report id is a merat product key (UIReportDialog::FUN_141ab9b80)
 Unk_NexonAnalytics* FUN_140c77900();
 bool FUN_14092ca70(HMODULE* ppModule, LPCSTR pszDll);   // xmldata.cpp: load the dll into *ppModule (the analytics module handle is at +0)
-UIReportDialog* FUN_140c76fd0(int nId);
+class UIReportDialog* FUN_140c76fd0(int nId);
 class UIReportDialog : public UIDialog
 {
 public:
     void FUN_141ab9aa0(__int64 nTargetId, const CStringW& strText);
     void FUN_141ab9b10(const CStringW& strA, const CStringW& strB);
     void FUN_141ab9a10(__int64 nTargetId, int nKind, const CStringA& strA, const CStringW& strText);
-    void FUN_141ab9b80(Unk_ReportId id, __int64 nTargetId, CStringW strA, CStringW strB, int nFlag);
+    void FUN_141ab9b80(Unk_MeratProductKey key, __int64 nTargetId, CStringW strA, CStringW strB, int nFlag);
     void FUN_141ab9c50(__int64 nTargetId, const CStringW& strText, int nA, int nB);
     void FUN_141ab9ce0(CStringW strA, CStringW strB);
 };
 int FUN_141276180(const CString& strTarget, const CString& strValue);
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
+template <class T, class U> void Unk_SkillTableLog(class CLogString*, int, int, const wchar_t*, const T&, const U&);   // C3: was FUN_140ab1290 (skilldatatablecli)
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
@@ -251,7 +251,7 @@ void CClientPlatformBase::vfunc_22(int nCode, const char* pszFormat, ...)
         strLog.FormatV(pszFormat, args);
         va_end(args);
         FUN_140c77900()->FUN_14092d1f0(nCode, strLog);
-        FUN_140ab1290(((void*)GetLogString()), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", nCode, strLog);
+        Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
 
@@ -265,7 +265,7 @@ void CClientPlatformBase::vfunc_23(int nCode, const char* pszFormat, ...)
         strLog.FormatV(pszFormat, args);
         va_end(args);
         FUN_140c77900()->FUN_14092d280(nCode, strLog);
-        FUN_140ab1290(((void*)GetLogString()), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", nCode, strLog);
+        Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
 
@@ -381,7 +381,7 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         pDialog->FUN_141ab9a10(spReport->GetField48(), spReport->GetField58(), spReport->GetField50(), spReport->GetTitle());
         break;
     case 3:
-        pDialog->FUN_141ab9b80(spReport->m_id, spReport->GetField60(), spReport->GetField38(), spReport->GetTitle(),
+        pDialog->FUN_141ab9b80(reinterpret_cast<const Unk_MeratProductKey&>(spReport->m_id), spReport->GetField60(), spReport->GetField38(), spReport->GetTitle(),
                                spReport->m_n110);
         break;
     case 4:

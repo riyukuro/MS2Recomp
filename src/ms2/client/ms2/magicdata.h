@@ -16,7 +16,7 @@
 
 class GameObject;
 
-class Unk_140165cf0;    // game TinyXML element
+class TiXmlElement;    // game TinyXML element
 
 // One <move> element of magicPath.xml (0xc0 bytes, RTTI base CPtred).
 class CMagicData : public CPtred

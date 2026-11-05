@@ -9,7 +9,7 @@
 #include "ms2/placeholder/cguidecondition.h"
 #include "ms2/placeholder/cguideaction.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // 0xd8.
 class CGuideEntity : public CPtred
@@ -31,14 +31,14 @@ public:
     void StartActions();                                    // 0x1413a3210
     void StopActions();                                     // 0x1413a32a0
     int AreActionsDone();                                  // 0x1413a3330
-    bool Load(Unk_140165cf0* pElem);                        // 0x1413a33c0
+    bool Load(TiXmlElement* pElem);                        // 0x1413a33c0
     void Clear(bool bNotify);                               // 0x1413a35d0
     void SetState(int nState);                              // 0x1413a3670
     void UpdateConditions();                                // 0x1413a36b0
     void MoveStartedConditions();                           // 0x1413a3720
     void CollectTriggerValues(std::map<int, int>& mapValues);   // 0x1413a3820
-    void LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list);   // 0x1413a3960
-    void LoadActions(Unk_140165cf0* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list);   // 0x1413a3a30
+    void LoadConditions(TiXmlElement* pElem, Unk_GcCondList& list);   // 0x1413a3960
+    void LoadActions(TiXmlElement* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list);   // 0x1413a3a30
     void PruneConditions(Unk_GcCondList& list);             // 0x1413a3b00
     void ResetConditions(Unk_GcCondList& list);             // 0x1413a3be0
 

@@ -13,11 +13,11 @@ template <> inline double floor<int, void>(int n) { return __imp_floor((double)n
 
 // ---- part 1 (0x1409c5210-0x1409cc800) ----
 #include "ms2/ms2format.h"
-#include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption>
+#include "ms2/commonfiles/itemenchantinfo.h"     // MS2Ptr<BaseOption>
 #include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable (the recovered form; NOT placeholder/citemoptiontable.h)
 class Unk_140166430* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
 CStringW FUN_1409e6010(int nKind, CItem* pItem);  // part 5: the option kind title (pet kinds use their own text)
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
 #include "ms2/commonfiles/itemdroptable.h"       // ItemDropResult (ASObj::FUN_1409c5bd0)
 CStringW FUN_141425950(unsigned nItemId);              // the item name (itemugcmesh.cpp)
 CStringW FUN_1409eb450(int n);                    // part 6: CStringW(int)
@@ -39,7 +39,7 @@ struct Unk_TooltipConfigPaths
     CString m_strUgcMovie;                        // +0xc8
 };
 class Unk_SingletonObj* FUN_1401d31f0();
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);
 #include "ms2/commonfiles/featuremanager.h"
 class Unk_140166410* FUN_140166410();                 // TSingleton<CFeatureManager>::GetInstance (exe copy; also part 2)
 CStringW FUN_1409e5320(const int& nSeason);       // part 5: the season text (also part 3)
@@ -63,7 +63,7 @@ CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option t
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
 extern const int DAT_142dbac18[4];                // the item model classes that make a set piece gender-bound (1, 2, 3, 18)
 #include "ms2/placeholder/citemmergeoptiontable.h"
-class Unk_ItemEnchantData;
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 CStringW FUN_1409e0900(int n);                    // part 5: an int option value text
 CStringW FUN_1409e0a90(float fRate);              // part 5: a rate option value text
 bool IsStatKindOne(int nStat);                    // the stat is shown as an integer (stat.cpp)
@@ -91,7 +91,7 @@ const CString& FUN_14081d380(int nSpecial);       // the xml name of a special s
 int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
 __int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
-CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
+CStringW FUN_140631af0(int nStat, MS2Ptr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
 int FUN_14072fd00(int nUnused);                   // the pet option count (unit_14072f7f0.cpp)
 CStringW GetStringCommonByKey(const CStringW& strKey);   // the string-table text of a key (commonutil.cpp)
 CStringW FUN_1409404f0(__int64 nValue);           // a number with separators (achievemanager.cpp)
@@ -147,7 +147,7 @@ int FUN_1409e6c80(CItem* pItem);                                      // part 5
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/client/ms2/achievemanager.h"
 #include <set>
-class Unk_ItemEnchantData;                                            // CItem::FUN_1405278a0's record (part 3 owns the type)
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 
 
 
@@ -164,20 +164,20 @@ extern unsigned short DAT_143ab291c;                                  // the hou
 extern unsigned short DAT_143ab2940;                                  // the housing level limit
 extern unsigned short DAT_143ab2964;                                  // billboard: the required level
 extern unsigned DAT_143ab2970;                                        // billboard: the required adventure level
-// The (trophy id, grade) key of the achieved-trophy set DAT_143ab32d8 (as scenestategame.cpp / mypc.cpp).
-struct Unk_SSGHouseKey
-{
-    Unk_SSGHouseKey() { m_nA = 0; m_nB = 0; }   // 0x1409ed810 (inline COMDAT of this unit)
-    unsigned int m_nA;
-    unsigned int m_nB;
-};
-inline bool operator<(const Unk_SSGHouseKey& a, const Unk_SSGHouseKey& b)
-{
-    if (a.m_nA != b.m_nA)
-        return a.m_nA < b.m_nA;
-    return a.m_nB < b.m_nB;
-}
-extern class Unk_ProxyStaticTreeB DAT_143ab32d8;
+// The (trophy id, grade) key of the achieved-trophy set DAT_143ab32d8 is itemdatatable.h's Unk_TrophyKey (was the
+// unit-local Unk_SSGHouseKey, same 8-byte layout and ordering).
+inline Unk_TrophyKey::Unk_TrophyKey() { m_nId = 0; m_nLevel = 0; }   // 0x1409ed810 (inline COMDAT of this unit)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+extern std::set<Unk_TrophyKey> DAT_143ab32d8;   // userproxy.cpp
 // ---- end part 2 ----
 
 // ---- part 3 (0x1409d3010-0x1409d9f30) ----
@@ -188,7 +188,7 @@ extern class Unk_ProxyStaticTreeB DAT_143ab32d8;
 class Unk_ItemPlusInfo : public UnlimitedEnchantInfo {};    // CItemStatus::FUN_140630d90's record
 #include "ms2/commonfiles/itemenchantinfo.h"              // CItemEnchantInfo
 #include "ms2/commonfiles/itemoption.h"
-class Unk_ItemEnchantData : public CItemStatus {};   // CItem::FUN_1405278a0's record
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
 ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
 int FUN_1409e6fc0(int nKind);                               // part 5: the item kind shown by the tooltip
@@ -237,9 +237,9 @@ struct Unk_TooltipBreakTable
 class Unk_BreakRecipes* FUN_140535300();                  // 0x140535300 the break ingredient table
 #include "ms2/commonfiles/itembreakmanager.h"
 class Unk_SlotBreakManager* FUN_1409c4b20();                // 0x1409c4b20 the break manager
-// The callers here test CItemData::FUN_14053d740 (enableRegisterMeratMarket) as an int (no movzx): the exe's caller-side
-// prototype returns BOOL.
-struct Unk_ItemDataMeratView : CItemData { int FUN_14053d740(); };
+// The callers here test CItemData::IsMeratMarketRegisterable (0x14053d740, enableRegisterMeratMarket) as an int (no movzx):
+// it returns BOOL (int).
+struct Unk_ItemDataMeratView;   // its FUN_14053d740 was CItemData::IsMeratMarketRegisterable
 #include "ms2/commonfiles/itemgemstonedata.h"
 CItemGemStoneUpgradeTable* FUN_14062c280();              // 0x14062c280 TSingleton<CItemGemStoneUpgradeTable>::GetInstance (exe copy)
 bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow);        // the gemstone is at its last level (itemsocketsystemutil.cpp)
@@ -289,7 +289,7 @@ template<> struct Unk_SocketRef<Unk_TooltipBeautyItems> {
 };
 MS2_SOCKETPTR_BOXED(Unk_TooltipBeautyItems)
 Unk_SocketPtr<Unk_TooltipBeautyItems> FUN_1406e5af0(unsigned nShopId);    // the coupon items of a beauty shop (npcshopdata.cpp)
-class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); int FUN_1408d1f60(unsigned int, int); unsigned int FUN_1408d2380(void); };   // C3: member view
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
 // CItemData::FUN_14053c940 / FUN_14053d660 return an int at the call sites (citemdata.h declares them bool).
 struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
 int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
@@ -445,13 +445,13 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                    // the item dat
 
 
 bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
-#include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption> (FUN_1409e4950)
+#include "ms2/commonfiles/itemenchantinfo.h"     // MS2Ptr<BaseOption> (FUN_1409e4950)
 #include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/commonfiles/item.h"               // CItemStatus
 class Unk_140166430* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue);   // part 1
 CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
 int FindStatByName(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)

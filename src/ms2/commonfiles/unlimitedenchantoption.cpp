@@ -5,8 +5,8 @@
 // MS2-RANGE: 0x1400be020-0x1400be110 .text$di
 // MS2-RANGE: 0x1408c3140-0x1408d1c50 .text$mn
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31a0
-// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31c0
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31a0
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@1@@Z 0x1408c31c0
 // MS2-PIN: memmove_s 0x1408d1ab0
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$TSingleton@VUnlimitedEnchantTable@@@@@ 0x142da3040
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$CValidData@VUnlimitedEnchantTable@@@@@ 0x142da3050
@@ -33,7 +33,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -91,7 +91,7 @@ void UnlimitedEnchantOption::MergePrimary(MS2Ptr<UnlimitedEnchantOption> spOther
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+            MS2Ptr<BaseOption> spOption(new BaseOption);
             spOption->FUN_140266da0(it->second.get());
             m_stats[nKey] = spOption;
         }
@@ -112,7 +112,7 @@ void UnlimitedEnchantOption::MergeSecondary(MS2Ptr<UnlimitedEnchantOption> spOth
         }
         else
         {
-            Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+            MS2Ptr<BaseOption> spOption(new BaseOption);
             spOption->FUN_140266da0(it->second.get());
             m_specials[nKey] = spOption;
         }
@@ -137,7 +137,7 @@ bool UnlimitedEnchantTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
@@ -145,7 +145,7 @@ bool UnlimitedEnchantTable::Load()
     }
     typedef std::map<std::pair<int, int>, MS2Ptr<UnlimitedEnchantOption> > RangeMap;
     std::map<int, RangeMap> ranges;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("option")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("option")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -189,7 +189,7 @@ bool UnlimitedEnchantTable::Load()
             XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<int>("rate{0}", i), reinterpret_cast<float&>(fRate));
             if (nOption != -1 && (!FUN_14028d470(fRate, 0) || nValue != 0))
             {
-                Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+                MS2Ptr<BaseOption> spOption(new BaseOption);
                 if (nValue != 0)
                     spOption->SetValue((int)nValue);
                 else
@@ -202,7 +202,7 @@ bool UnlimitedEnchantTable::Load()
             XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<int>("sa_rate{0}", i), reinterpret_cast<float&>(fSpecialRate));
             if (nSpecial != 0 && !FUN_14028d470(fSpecialRate, 0))
             {
-                Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+                MS2Ptr<BaseOption> spOption(new BaseOption);
                 spOption->FUN_140266e50(fSpecialRate);
                 spInfo->m_specials.insert(std::make_pair(nSpecial, spOption));
             }

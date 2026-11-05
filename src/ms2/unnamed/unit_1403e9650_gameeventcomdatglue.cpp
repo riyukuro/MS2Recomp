@@ -452,7 +452,7 @@ template void Unk_GameEventDelete<Unk_GameEventStrPair>(Unk_GameEventStrPair*);
 // bodies are not written yet, so this emits the COMDATs. Not exe code.
 template <class T>
 void Unk_GameEventInlineUse(T* pMgr, CShutdownEventKeyCountMapUInt* pCounts, Unk_GameEventIntRange* pRange,
-                            OntimeEventContext* pOntime, Unk_140165cf0* pElem, CGameRule* pRule)
+                            OntimeEventContext* pOntime, TiXmlElement* pElem, CGameRule* pRule)
 {
     TSingleton<CEffectService>::GetInstance();
     TSingleton<CGuildManager>::GetInstance();
@@ -502,5 +502,5 @@ void Unk_GameEventInlineUse(T* pMgr, CShutdownEventKeyCountMapUInt* pCounts, Unk
     pRule->SetTransferItemBound(true);
 }
 template void Unk_GameEventInlineUse<CGameEventValueManager>(CGameEventValueManager*, CShutdownEventKeyCountMapUInt*,
-                                                             Unk_GameEventIntRange*, OntimeEventContext*, Unk_140165cf0*,
+                                                             Unk_GameEventIntRange*, OntimeEventContext*, TiXmlElement*,
                                                              CGameRule*);

@@ -82,15 +82,15 @@ public: ASTooltip(int,int); virtual ~ASTooltip(); int ApplyTextTooltip(const CSt
 private: void* m_40; void* m_48; void* m_50; void* m_58;
 };
 class Unk_RewardThing : public PCGemEquip { };
-struct Unk_PetBoxCameraData
-{
-    Unk_PetBoxCameraData();
+class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
+{ public:
+    Unk_ModelViewCamera(); void ApplyCharCamera();
     efd::Point3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
-class Unk_ModelViewCamera { public: void ApplyCharCamera(); };   // C3: member view (uimodelview.h, 0x141b48530)
+typedef Unk_ModelViewCamera Unk_PetBoxCameraData; MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
+// C3: Unk_ModelViewCamera::ApplyCharCamera (uimodelview.h, 0x141b48530) is declared in the camera class above
 class ClonePC { public: void FUN_1410885b0(bool b); };   // C3: member view (clonepc.h)
 class PC { public: class Unk_MyPCEquip* FUN_14165f460(); int FUN_141654730(); };   // C3: member view (pc.cpp)
 class Unk_RewardActor

@@ -193,14 +193,14 @@ public:
     CStringW m_strValue;                                            // +0x38
     CStringW m_strImage;                                            // +0x40
 };
-
-class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
+#include "ms2/placeholder/asbutton.h"
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10 "m_btnNext" / "m_btnPrev"
 
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class Unk_CashFnArgs : public Unk_CommandArgs                                                // the <function> parameter list of an item
+class Unk_CashFnArgs : public ItemFunctionArgs                                                // the <function> parameter list of an item
 {
 };
 
@@ -225,7 +225,7 @@ void FUN_141275260(int nStringId, int a, int b);                    // a notice
 unsigned FUN_1407181d0(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
-void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASMovieClip>* pOut);   // bind a child of the root
+void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pOut);   // bind a child of the root (unit_141347b10)
 void FUN_140b05680(const CString& strMovie);                        // close the shop movie of the manager
 void FUN_140b055c0(const CString& strMovie, int nCategory);         // open the inventory movie
 bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
@@ -476,7 +476,7 @@ int UICashShopDialog::vfunc_46()
         return 0;
     {
         CString strName("m_probInfo");
-        FUN_14134a480(*m_30, strName, &m_spProbInfo);
+        FUN_14134a480(*m_30, strName, reinterpret_cast<MS2Ptr<ASButton>*>(&m_spProbInfo));
     }
     return 1;
 }
@@ -811,11 +811,11 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
 void UICashShopDialog::FUN_141035e40()
 {
     ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& rows = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b05c00();
-    if (MS2Ptr<Unk_CashButton> spNext = FUN_140bb4b10("m_btnNext")) {
+    if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_btnNext")) {
         int bFullPage = rows.GetCount() == 0x1e;
         spNext->FUN_1422c1fe0(bFullPage);
     }
-    if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
+    if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_btnPrev"))
         spPrev->FUN_1422c1fe0(m_nCategory > 1);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
         spPage->SetTextW(StringFormat(L"{0}", m_nCategory));

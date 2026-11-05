@@ -33,12 +33,12 @@ public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     int TryGetHouseMarkPosition(int nKey, Vector3* pOut);       // 0x1410d33a0
 };
-class Unk_Service6100017 : public CubeMapInformationService { };   // the return type the callers of FUN_1401cd040 declare
+// C3: Unk_Service6100017 was CubeMapInformationService (the view above)
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);
 
 // A header static of this unit: a pointer-sized handle constructed from 0 through a base ctor (the two COMDATs
 // 0x1401cd100 / 0x1401cd130 and the lone initializer 0x1400b4640). Its real type is unknown.
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x1401CC3E0, CBuddy, FUN_1401cc3e0, 17, 0x54C6247B);
 int CBuddy::FUN_1401cc400(Vector3* out) {
     *out = DAT_143b01a60;
     if ((unsigned)m_b8 > 0) {
-        efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> service(FUN_1401cd040(&DAT_143b059e8));
         if (service->TryGetHouseMarkPosition(m_bc, out)) return 1;
     }
     return 0;
@@ -216,8 +216,8 @@ void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
 }
 MS2_REPLACE_METHOD(0x1401CC7C0, CBuddy, FUN_1401cc7c0, 2087, 0x6A3E5EB7);
 // @0x1401cd040
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework) {
-    return static_cast<Unk_Service6100017*>(framework->manager->GetSystemServiceAs<CubeMapInformationService>());
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework) {
+    return static_cast<CubeMapInformationService*>(framework->manager->GetSystemServiceAs<CubeMapInformationService>());
 }
 MS2_REPLACE(0x1401CD040, FUN_1401cd040, 35, 0x3CF7DD05);
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -48,7 +48,7 @@ public:
     void FUN_140e9f540();
     void FUN_140e9f870(const CStringW&, unsigned);
     MS2Ptr<ASTextField> FUN_140e48d80(const CString&, MS2Ptr<ASTextField>&);
-    MS2Ptr<ASCheckBox> FUN_140e52700(const CString&, MS2Ptr<ASCheckBox>&);
+    // C3: FUN_140e52700 (bind a check box) is UIItemPetBoxDialog's (uiitempetboxdialog.h), called through a view in the .cpp
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened

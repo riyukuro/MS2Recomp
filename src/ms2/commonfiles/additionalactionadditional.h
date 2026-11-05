@@ -20,7 +20,7 @@
 #include "ms2/placeholder/gostate.h"     // Unk_RequireState (requireStates)
 #include "ms2/placeholder/gosubstate.h"   // Unk_RequireSubState (requireSubStates)
 
-class Unk_140165cf0;    // game TinyXML element (ms2/placeholder/xmlattr.h)
+class TiXmlElement;    // game TinyXML element (ms2/placeholder/xmlattr.h)
 class COutputStream;
 class CInPacket;
 
@@ -51,7 +51,7 @@ public:
     virtual ~AdditionalActionAdditional() = default;          // ??_G 0x140185340, dtor 0x140183c80
 
     bool IsDifferent(const AdditionalActionAdditional& o);      // 0x140170010
-    int Load(Unk_140165cf0* pElem);                     // 0x140170160
+    int Load(TiXmlElement* pElem);                     // 0x140170160
 
     int m_nRandomCast;                                  // +0x18 "randomCast"
     ATL::CAtlArray<unsigned short> m_arrLevel;          // +0x20 "level"
@@ -102,8 +102,8 @@ public:
                                                         // implicit dtor: 0x140183d20 has no vftable store, ??_G 0x140185380
 
     bool IsDifferent(const AdditionalActionSkill& o);   // 0x1401708f0
-    int Load(Unk_140165cf0* pElem);                     // 0x140170a10
-    int FUN_140170b50(Unk_140165cf0* pElem, CString strName);   // 0x140170b50: unused hook, returns 1
+    int Load(TiXmlElement* pElem);                     // 0x140170a10
+    int FUN_140170b50(TiXmlElement* pElem, CString strName);   // 0x140170b50: unused hook, returns 1
 
     unsigned m_nSkillID;                                // +0x18
     unsigned short m_nLevel;                            // +0x1c (1)
@@ -127,10 +127,10 @@ class AdditionalData : public CPtred
 public:
     AdditionalData();                                   // 0x140170b90
     virtual ~AdditionalData() = default;                      // ??_G 0x1401853c0, dtor 0x140183d40
-    virtual void ReadLevel(Unk_140165cf0* pElem);       // slot 1, 0x140171050: one <level>
+    virtual void ReadLevel(TiXmlElement* pElem);       // slot 1, 0x140171050: one <level>
 
     unsigned GetID();                                   // 0x140170c20
-    bool Load(Unk_140165cf0* pElem);                    // 0x140170c60
+    bool Load(TiXmlElement* pElem);                    // 0x140170c60
     BuffMainType GetMainType();                         // 0x140170e20
     bool IsDebuff();                                    // 0x140170e40
     unsigned GetCategory();                             // 0x140170e60
@@ -165,7 +165,7 @@ struct Unk_RangeShape
 
     Unk_RangeShape();                                       // 0x1408001f0
     bool FUN_1408002b0(const Unk_RangeShape& o);            // is different
-    void Load(Unk_140165cf0* pElem);               // reads the shape attributes
+    void Load(TiXmlElement* pElem);               // reads the shape attributes
     void FUN_140800570(void* pElem);                        // writes the shape attributes
     // Declared (0x140184190), so SpreadProperty::Clear assigns through the copy operator= 0x1401945c0 like the exe.
     ~Unk_RangeShape() {}
@@ -178,7 +178,7 @@ public:
     Unk_RangeProperty();                                                // 0x140800860
     ~Unk_RangeProperty() {}                                             // 0x140184170 (no move: copy operator= 0x1401944c0)
     bool FUN_140800920(const Unk_RangeProperty& o);                     // is different
-    void LoadElement(Unk_140165cf0* pElem, CString strName);           // reads the named child element
+    void LoadElement(TiXmlElement* pElem, CString strName);           // reads the named child element
     void SaveElement(void* pParent, CString strName);                 // writes the named child element
 
     // Thirteen scalars, not an array: SpreadProperty::Clear 0x140192e20 has no /GS cookie for the 0x78 temporary and
@@ -195,7 +195,7 @@ class Unk_CompareStat
 {
 public:
     Unk_CompareStat();                                                  // 0x1407e5db0
-    int FUN_1407e5e70(Unk_140165cf0* pElem);
+    int FUN_1407e5e70(TiXmlElement* pElem);
     bool FUN_1407e5e00(const Unk_CompareStat& o);                       // is different
 
     float m_f0;
@@ -210,7 +210,7 @@ class Unk_SkillOverlapCondition
 {
 public:
     Unk_SkillOverlapCondition();                                        // 0x1407e5f80
-    int Load(Unk_140165cf0* pElem);                                     // 0x1407e6080
+    int Load(TiXmlElement* pElem);                                     // 0x1407e6080
     bool FUN_1407e5fe0(const Unk_SkillOverlapCondition& o);             // is different
 
     bool m_b0;                       // +0x00 a range check is set
@@ -533,7 +533,7 @@ public:
 
     AdditionalLevelData(AdditionalData* pParent);       // 0x140171110
     virtual ~AdditionalLevelData() = default;                 // ??_G 0x140185400, dtor 0x140183f60
-    virtual bool Load(Unk_140165cf0* pElem);            // slot 1, 0x140172a30
+    virtual bool Load(TiXmlElement* pElem);            // slot 1, 0x140172a30
 
     AdditionalData* GetParent();                        // 0x140171800
     unsigned GetID();                                   // 0x140171820
@@ -555,13 +555,13 @@ public:
     bool IsHideBuffIcon();                              // 0x140175290
     bool IsInfinitySP();                                // 0x1401752e0
     bool IsVisibleItemOption();                         // 0x140175300
-    void LoadOverlapKeepEffect(Unk_140165cf0* pElem);   // 0x140175320
+    void LoadOverlapKeepEffect(TiXmlElement* pElem);   // 0x140175320
     CString GetIcon();                                  // 0x1401756c0
     static unsigned __int64 MakeKey(unsigned nID, unsigned short nLevel);   // 0x140175710
     static unsigned __int64 GetKeyID(unsigned __int64 nKey);                // 0x140175750
     static unsigned short GetKeyLevel(unsigned __int64 nKey);               // 0x140175770
     bool HasSA(SAType eType) const;                     // 0x140175790 (calls the const find 0x1401900a0)
-    void LoadCondition(Unk_140165cf0* pElem);           // 0x1401757f0
+    void LoadCondition(TiXmlElement* pElem);           // 0x1401757f0
 
     AdditionalData* m_pParent;                          // +0x18
     unsigned short m_nLevel;                            // +0x20

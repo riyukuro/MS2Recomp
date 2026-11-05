@@ -16,7 +16,7 @@ void FUN_14025a680(CStringW& strSource, ATL::CAtlArray<CStringW>& out, const wch
 class Unk_SplitStr
 {
 public:
-    Unk_SplitStr(CStringW strName, CStringW strDelims);                         // 0x1408d1c50
+    // C3: the 0x1408d1c50 ctor is ItemFunctionArgs's (citemdata.h), defined below
     void FUN_1408d1d80(CStringW strName, CStringW strDelims);                   // sets the name and splits it
     void FUN_1408d1e80(int nKey, int nValue);                                   // map insert
 
@@ -26,10 +26,10 @@ public:
 };
 
 // @0x1408d1c50
-Unk_SplitStr::Unk_SplitStr(CStringW strName, CStringW strDelims)
-    : m_strName(strName)
+ItemFunctionArgs::ItemFunctionArgs(CStringW strName, CStringW strDelims)
+    : text(strName)
 {
-    reinterpret_cast<ItemFunctionArgs*>(this)->FUN_1408d1e00(CStringW(strName), CStringW(strDelims));
+    FUN_1408d1e00(CStringW(strName), CStringW(strDelims));
 }
 
 // @0x1408d1d80

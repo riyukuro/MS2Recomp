@@ -69,7 +69,7 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_nextKey = "cinematic_nextkey";
-static Unk_WireframeRegistrar s_talkManagerRegistrar("UITalkManager", 0);
+static NiRTTI s_talkManagerRegistrar("UITalkManager", 0);
 static CString s_strSortTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_strSortTypeNamesLike2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
@@ -1050,7 +1050,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
         MS2Ptr<CTalkScript> spScript(new CTalkScript(in));
         if (nSub == 1)
         {
-            if (spScript->m_contents.FUN_14078fae0() == 0)
+            if (spScript->m_contents.GetCount() == 0)
                 return;
             Unk_TcNpc* pNpc = reinterpret_cast<Unk_TcNpc*>(WorldService::GetInstance()->FUN_141bd1320(nNpcId));
             if (pNpc != 0)
@@ -1058,7 +1058,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
                 MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = pNpc->vfunc_85();
                 if (spBalloon.get() != 0)
                     spBalloon->FUN_1418fb6d0();
-                pNpc->ShowChatBalloon(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
+                pNpc->ShowChatBalloon(CStringW(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_name));
             }
         }
         else
@@ -1592,11 +1592,11 @@ void UITalkManager::FUN_141b20790(int nNpcId, int nFriendly)
             nKind = 7;
     }
     Unk_ScriptPtr<CTalkScript> spScript = FUN_140856fa0(((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0(), nKind);
-    if ((spScript.get() ? true : false) && spScript->m_contents.FUN_14078fae0() > 0)
+    if ((spScript.get() ? true : false) && spScript->m_contents.GetCount() > 0)
     {
-        pNpc->ShowChatBalloon(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
-        if (TSingleton<UITalkManager>::GetInstance()->GetTalking() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
-            TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(spScript->m_contents.FUN_14078f350(0)->m_unk20), pNpc->vfunc_18());
+        pNpc->ShowChatBalloon(CStringW(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_name));
+        if (TSingleton<UITalkManager>::GetInstance()->GetTalking() == 0 && reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_unk20.GetLength() != 0)
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(reinterpret_cast<MS2Ptr<CScriptContent>&>(spScript->m_contents[0])->m_unk20), pNpc->vfunc_18());
     }
 }
 
@@ -1643,10 +1643,10 @@ int UITalkManager::FUN_141b20bb0()
         return 0;
     if (m_spScript.get() != 0)
     {
-        if (m_nPage < (int)m_spScript->m_contents.FUN_14078fae0())
+        if (m_nPage < (int)m_spScript->m_contents.GetCount())
         {
-            MS2Ptr<CScriptContent> spContent = m_spScript->m_contents.FUN_14078f350(m_nPage);
-            int bLast = m_nPage == (int)m_spScript->m_contents.FUN_14078fae0() - 1;
+            MS2Ptr<CScriptContent> spContent = reinterpret_cast<MS2Ptr<CScriptContent>&>(m_spScript->m_contents[m_nPage]);
+            int bLast = m_nPage == (int)m_spScript->m_contents.GetCount() - 1;
             if (bLast)
                 bLast = reinterpret_cast<ATL::CAtlArray<int>&>(m_spScript->m_gotoConditionTalkIds).GetCount() == 0;
             return pUi->FUN_141b1b440(FUN_141b21de0(MS2Ptr<CScriptContent>(spContent)), bLast);
@@ -1694,9 +1694,9 @@ CStringW UITalkManager::FUN_141b20ed0()
 {
     if (m_spScript.IsNull())
         return CStringW(L"");
-    if (m_nPage >= (int)m_spScript->m_contents.FUN_14078fae0())
+    if (m_nPage >= (int)m_spScript->m_contents.GetCount())
         return CStringW(L"");
-    return CStringW(m_spScript->m_contents.FUN_14078f350(m_nPage)->m_name);
+    return CStringW(reinterpret_cast<MS2Ptr<CScriptContent>&>(m_spScript->m_contents[m_nPage])->m_name);
 }
 
 // @0x141b20fe0
@@ -1710,9 +1710,9 @@ MS2Ptr<CCinematicContent> UITalkManager::GetCurrentContent()
 {
     if (m_spScript.IsNull())
         return MS2Ptr<CCinematicContent>(0);
-    if (m_nPage >= (int)m_spScript->m_contents.FUN_14078fae0())
+    if (m_nPage >= (int)m_spScript->m_contents.GetCount())
         return MS2Ptr<CCinematicContent>(0);
-    MS2Ptr<CScriptContent> spContent = m_spScript->m_contents.FUN_14078f350(m_nPage);
+    MS2Ptr<CScriptContent> spContent = reinterpret_cast<MS2Ptr<CScriptContent>&>(m_spScript->m_contents[m_nPage]);
     return MS2Ptr<CCinematicContent>(FUN_141b21de0(MS2Ptr<CScriptContent>(spContent)));
 }
 
@@ -1829,10 +1829,10 @@ void UITalkManager::FUN_141b215b0(int bSamePage)
     }
     if (m_spScript.get() != 0)
     {
-        if (m_nPage < (int)m_spScript->m_contents.FUN_14078fae0())
+        if (m_nPage < (int)m_spScript->m_contents.GetCount())
         {
-            MS2Ptr<CScriptContent> spContent = m_spScript->m_contents.FUN_14078f350(m_nPage);
-            int bLast = m_nPage == (int)m_spScript->m_contents.FUN_14078fae0() - 1;
+            MS2Ptr<CScriptContent> spContent = reinterpret_cast<MS2Ptr<CScriptContent>&>(m_spScript->m_contents[m_nPage]);
+            int bLast = m_nPage == (int)m_spScript->m_contents.GetCount() - 1;
             if (bLast)
                 bLast = reinterpret_cast<ATL::CAtlArray<int>&>(m_spScript->m_gotoConditionTalkIds).GetCount() == 0;
             pUi->FUN_141b1b440(FUN_141b21de0(MS2Ptr<CScriptContent>(spContent)), bLast);

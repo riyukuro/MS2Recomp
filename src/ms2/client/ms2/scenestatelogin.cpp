@@ -59,7 +59,7 @@ public:
     void FUN_140aed720(struct Unk_CameraSetting const&);
     void FUN_140aed750(int, int);
 };
-struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, *m_p5; };
+#include "ms2/client/ms2/cameramode.h"   // Unk_CameraSetting (ctor 0x140ae7ce0; was the Unk_140ae7ce0 view)
 void FUN_14174c520(CSceneStateLogin*, CInPacket&);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLogin);
@@ -143,10 +143,10 @@ void CSceneStateLogin::vfunc_1(int)
 {
     if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() != 0)
     {
-        Unk_140ae7ce0 tmp;
-        if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetSavedSetting(*(struct Unk_CameraSetting*)(&tmp)))
+        Unk_CameraSetting tmp;
+        if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->GetSavedSetting(tmp))
         {
-            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(&tmp));
+            ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(tmp);
             ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(4, 1);
         }
     }

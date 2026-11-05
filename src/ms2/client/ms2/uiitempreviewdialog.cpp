@@ -52,7 +52,7 @@ class Unk_IpPreview : public ItemPreviewMgr
 };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 
-class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
+// C3: Unk_EquipOutfit was Customize (uiequipiconcontainer.h)
 CStringW GetStringCommon(int nStringId);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
 void FUN_1418bee30(ASObj* pObj, int n);
@@ -229,7 +229,7 @@ void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
         void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
         spSlot->FUN_1409c3860(spItem.get(), pPlayer, 0xd01);
     }
-    MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(spSlot.operator ASSlot*()), MS2Ptr<Unk_EquipOutfit>(0));
+    MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(spSlot.operator ASSlot*()), MS2Ptr<Customize>(0));
     if (spIcon.get() != 0) {
         spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPreviewDialog::FUN_1412d66e0), 0);
     }

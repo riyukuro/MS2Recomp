@@ -155,7 +155,7 @@ MS2_CHECK_OFFSET(Unk_CompressedStream,m_useCompression,0x84);
 class Unk_StreamWrapper {
 public:
     void Encode(COutputStream&,bool);
-    void Decode(CInputStream&);
+    CByteBuffer& Decode(CInputStream&);
     bool Update(bool,unsigned);
     void Configure(bool,unsigned);
     void EncodeReady(COutputStream& s) { m_stream.EncodeReady(s); }

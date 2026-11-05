@@ -51,12 +51,12 @@ template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 // Game TinyXML element and attribute helpers (commonfiles\tinyxmlhelper.cpp).
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -113,7 +113,7 @@ LightningEffectParam::LightningEffectParam()
 }
 
 // @0x14144b880
-void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void LightningEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlTokenList(pNode, "texturePathA", m_arrTexture[0]);
@@ -124,7 +124,7 @@ void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
     XmlGetAttr((class TiXmlElement*)(pNode), "textureChangeTick", *(unsigned long*)&(m_nTextureChangeTick));
     XmlGetAttr((class TiXmlElement*)(pNode), "textureSequence", m_bTextureSequence);
-    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)
@@ -134,7 +134,7 @@ void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (strAlpha.CompareNoCase("ADD") == 0)
             m_nAlphaMode = 2;
     }
-    CString strSorting = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("sortingMode"), 0);
+    CString strSorting = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("sortingMode"), 0);
     if (strSorting.GetLength() > 0)
     {
         if (strSorting.CompareNoCase("INHERIT") == 0)

@@ -81,18 +81,18 @@ int GFxMovieUgc::vfunc_7(int x, int y)
     return 1;
 }
 // @0x14127d720
-void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
+void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
 {
     if (m_spRenderTarget == 0)
         return;
-    Unk_BgComPtr<Unk_BgTarget> spTarget(spObj->vfunc_14());
+    Unk_BgComPtr<Unk_BgTarget> spTarget(spObj->GetDefaultRenderTarget());
     if (spTarget != 0)
     {
-        spObj->vfunc_17(m_spRenderTarget, true);
+        spObj->SetRenderTarget(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
         if (reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle&>(kHandle).NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spHandle.operator->())->GetContextNotify()))
-            reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->Assign(kHandle);
-        spObj->vfunc_17(spTarget, true);
+            spHandle->Display(kHandle);
+        spObj->SetRenderTarget(spTarget, true);
     }
 }
 // @0x14127d900

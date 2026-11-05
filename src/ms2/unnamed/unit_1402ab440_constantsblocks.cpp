@@ -195,7 +195,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -544,7 +544,7 @@ bool Constants::Lookup(const CString& key, float* out)
 CString FUN_1407185b0(const CString& s);
 CStringW FUN_140718650(const CString& s);
 // The parsers as defined (unit_1407186f0_stringconversionhelpers.cpp).
-void* FUN_140718770(void* ret, const CStringA& s);
+Unk_ConstColor FUN_140718770(const CStringA& s);
 void* FUN_140718830(void* ret, const CStringA& s);
 namespace Common {
 efd::Point3 FUN_140db9570(const CString& s);
@@ -555,8 +555,8 @@ bool Constants::Lookup(const CString& key, Unk_ConstColor* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        unsigned c;
-        *out = *(Unk_ConstColor*)FUN_140718770((void*)&c, s);
+        //
+        *out = FUN_140718770(s);
         return true;
     }
     return false;
@@ -1288,7 +1288,7 @@ bool Common::Constants::GetOr(const CString& key, CStringW* out, const CStringW&
 
 // ---- constants.xml loader -----------------------------------------------------------------------------------------
 // Unrecovered xml helpers (the same ones the table units use).
-class Unk_ConstXmlNode { public: Unk_ConstXmlNode* FUN_140165cf0(const char* name); };
+class Unk_ConstXmlNode {};   // C3 #8: its dead FUN_140165cf0 / FUN_140168650 members removed
 class Unk_ConstFileSystem : public CFileSystem
 {
 };

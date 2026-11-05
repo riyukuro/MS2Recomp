@@ -101,7 +101,7 @@ class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* N
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // ---- header statics of the two TUs this file's initializers come from (strings, condition table, key input) ----
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };     // ctor 0x1401cd100
 
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
@@ -109,7 +109,7 @@ static CString s_strStun1 = "stun";
 extern float DAT_1439f8cdc;     // 360.0f
 extern float DAT_1439f8ce4;     // 250.0f
 static float s_fRange1 = DAT_1439f8cdc - DAT_1439f8ce4;        // initializer 0x140111040
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -583,9 +583,9 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The prev/next buttons.
-class Unk_CtButton : public ASMovieClip
-{
-};
+#include "ms2/placeholder/asbutton.h"
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10
+
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // set an Int value
 
@@ -805,7 +805,7 @@ int UICartoonDialog::FUN_1418e0070(int nPage, ASObj* pPage)
 // @0x1418e0230
 void UICartoonDialog::FUN_1418e0230()
 {
-    if (MS2Ptr<Unk_CtButton> spPrev = FUN_140bb4b10("m_prev"))
+    if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_prev"))
     {
         int nStep = FUN_1418e0480();
         spPrev->FUN_1422c1fe0(m_nPage - nStep < 0 ? 0 : 1);
@@ -816,7 +816,7 @@ void UICartoonDialog::FUN_1418e0230()
             fAlpha = 100.0f;
         spPrev->SetAlpha(fAlpha);
     }
-    if (MS2Ptr<Unk_CtButton> spNext = FUN_140bb4b10("m_next"))
+    if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_next"))
     {
         int nMaxPage = CStoryBookTable::GetInstance()->GetMaxPage(m_nBookId);
         spNext->FUN_1422c1fe0(m_nPage >= nMaxPage ? 0 : 1);
@@ -960,13 +960,13 @@ void UICastingBar::vfunc_15()
 }
 
 // @0x1418e12b0
-void UICastingBar::StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam)
+void UICastingBar::StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pParam)
 {
     FUN_1418e15d0(pListener, pParam);
 }
 
 // @0x1418e12f0
-void UICastingBar::StartCastingText(Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bShowTime,
+void UICastingBar::StartCastingText(ICastingEventListener* pListener, const CStringW& strText, int nDuration, bool bShowTime,
     bool bActive, const CStringW& strEnd)
 {
     Unk_CastingParam param;
@@ -985,7 +985,7 @@ void UICastingBar::FUN_1418e1390()
 }
 
 // @0x1418e13c0
-void UICastingBar::RestartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam)
+void UICastingBar::RestartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pParam)
 {
     FUN_1418e1390();
     FUN_1418e15d0(pListener, pParam);
@@ -1019,10 +1019,10 @@ void UICastingBar::UpdateValue(float fValue)
 }
 
 // @0x1418e15d0
-void UICastingBar::FUN_1418e15d0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam)
+void UICastingBar::FUN_1418e15d0(ICastingEventListener* pListener, const Unk_CastingParam* pParam)
 {
     if (m_pListener != 0)
-        m_pListener->vfunc_1();
+        m_pListener->OnCastingCancelled();
     m_pListener = pListener;
     m_bActive = pParam->m_bActive;
     m_strEnd = pParam->m_str30;
@@ -1063,7 +1063,7 @@ void UICastingBar::FinishCasting(const CStringW& strText)
 void UICastingBar::OnCastingComplete()
 {
     if (m_pListener != 0)
-        m_pListener->vfunc_0();
+        m_pListener->OnCastingFinished();
     EndCasting();
 }
 
@@ -1226,7 +1226,7 @@ unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6
 CString FUN_140719210(long n);
 void* FUN_140d86260();
 int FUN_141424580(MS2Ptr<CEquipItem> spEquip, unsigned int* pnColor, int n);        // the colour of the worn item (spEquip by value)
-int FUN_1414248a0(CItemData* pData, int* pnIn, int* pnOut);
+struct Unk_UgcItemData; int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut);   // itemugcmesh (nKey = const int*)
 void FUN_140710590(COutPacket& packet);                                     // send
 void FUN_140f324f0(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
 class Unk_CcScript : public AScript
@@ -1939,7 +1939,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         int& nOutColor = nColor;
         if ((unsigned)pData->FUN_14053e260() > 0)
         {
-            FUN_1414248a0(pData, &nColor, &nOutColor);
+            FUN_1414248a0(reinterpret_cast<Unk_UgcItemData*>((CItemData*)pData), reinterpret_cast<__int64>(&nColor), &nOutColor);
             kRow.FUN_1409c4990("itemcolor", nOutColor);
         }
         kRow.FUN_1407cb9c0("tab", nTab);
@@ -1956,7 +1956,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         int nSkin;
         FUN_1414239e0((unsigned int*)(&nSkin), 0, (struct Unk_UgcPlayer*)(pPc));
         int nColor = nSkin;
-        FUN_1414248a0(spDefault, &nSkin, &nColor);
+        FUN_1414248a0(reinterpret_cast<Unk_UgcItemData*>((CItemData*)spDefault), reinterpret_cast<__int64>(&nSkin), &nColor);
         int nTab;
         int nCategory;
         GetItemTabAndCategory(spDefault, &nTab, &nCategory);

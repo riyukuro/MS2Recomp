@@ -3,6 +3,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/citemextradata.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<ChangeColorItem>
 #include <atlcoll.h>
 class CCItemColoringPacket {
 public:
@@ -27,8 +28,8 @@ public:
         ChangeColors() {}
         // implicit (virtual) dtor: the exe ~ChangeColors stores no vftable
         void FUN_140200950(COutputStream& stream);                          // encode
-        void FUN_140200bc0(Unk_PayloadPtr<ChangeColorItem> spItem);         // add
-        ATL::CAtlArray<Unk_PayloadPtr<ChangeColorItem> > items;
+        void FUN_140200bc0(MS2Ptr<ChangeColorItem> spItem);         // add
+        ATL::CAtlArray<MS2Ptr<ChangeColorItem> > items;
     };
 };
 MS2_CHECK_SIZE(CCItemColoringPacket::ChangeColorItem,0x48);

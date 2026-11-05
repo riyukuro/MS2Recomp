@@ -75,8 +75,8 @@ MS2_CHECK_SIZE(InvokeEffectOption, 0x28);
 
 // A (key, pointer, ref) record.
 struct Unk_Ref16 { void* m_unknown; void* m_p; };
-Unk_Ref16* FUN_14027cb90(Unk_Ref16* t, int);
-Unk_Ref16* FUN_14027cbb0(Unk_Ref16* t, void* p);
+class CUgcItemLook;   // C3: the ref is MS2Ptr<CUgcItemLook> (was the FUN_14027cb90 / FUN_14027cbb0 Unk_Ref16 views)
+//
 struct Unk_KeyedRef
 {
     Unk_KeyedRef();                                     // 0x140266bc0
@@ -90,7 +90,7 @@ struct Unk_KeyedRef
 MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 
 // Out-of-line vector helpers and the XML attribute accessors of the game's TinyXML wrapper.
-class Unk_140165cf0;
+class TiXmlElement;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
@@ -138,7 +138,7 @@ ItemCustom::ItemCustom() : unknown18(0.0f, 0.0f, 0.0f), unknown24(0.0f, 0.0f, 0.
 }
 
 // @0x140266aa0
-void ItemCustom::FUN_140266aa0(Unk_140165cf0* pElem)
+void ItemCustom::FUN_140266aa0(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "icon", name);
     XmlGetAttr((class TiXmlElement*)(pElem), "position", reinterpret_cast<efd::Point3&>(unknown18));
@@ -159,7 +159,7 @@ Unk_KeyedRef::Unk_KeyedRef()
 {
     m_nKey = 0;
     m_pData = 0;
-    FUN_14027cb90(&m_ref, 0);
+    reinterpret_cast<MS2Ptr<CUgcItemLook>*>(&m_ref)->MS2Ptr<CUgcItemLook>::MS2Ptr(0);
 }
 
 // @0x140266c10
@@ -167,7 +167,7 @@ Unk_KeyedRef::Unk_KeyedRef(int nKey, void* pData, void* pRef)
 {
     m_nKey = nKey;
     m_pData = pData;
-    FUN_14027cbb0(&m_ref, pRef);
+    reinterpret_cast<MS2Ptr<CUgcItemLook>*>(&m_ref)->MS2Ptr<CUgcItemLook>::MS2Ptr((CUgcItemLook*)pRef);
 }
 
 // @0x140266c70

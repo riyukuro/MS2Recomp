@@ -20,8 +20,8 @@ class UnlimitedEnchantOption : public CPtred
 public:
     typedef UnlimitedEnchantInfo::OptionKey StatKey;
     typedef Unk_SocketSpecialStat SpecialKey;
-    typedef std::map<StatKey, Unk_EnchantPtr<BaseOption> > StatMap;
-    typedef std::map<SpecialKey, Unk_EnchantPtr<BaseOption> > SpecialMap;
+    typedef std::map<StatKey, MS2Ptr<BaseOption> > StatMap;
+    typedef std::map<SpecialKey, MS2Ptr<BaseOption> > SpecialMap;
 
     UnlimitedEnchantOption();                                       // 0x1408c3140
     void Merge(MS2Ptr<UnlimitedEnchantOption> spOther);             // 0x1408c31e0

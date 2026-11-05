@@ -109,14 +109,14 @@ template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
-class Unk_WeddingMail : public CPtred
-{
-public:
-    CStringW FUN_141b8ecc0() const { return m_strPath; }       // inline (COMDAT emitted in this range)
-    unsigned char m_pad_18[0x50];
-    CStringW m_strPath;                                         // +0x68 the mail's xml body path
-};
-MS2_CHECK_OFFSET(Unk_WeddingMail, m_strPath, 0x68);
+#include "ms2/placeholder/cmailtypes.h"   // C3: the ticket mail is CMailInfo (was the stand-in Unk_WeddingMail)
+// CMailInfo::FUN_141b8ecc0 (0x141b8ecc0, inline COMDAT emitted in this range) returns m_str68 (+0x68), the mail's xml body path.
+// The caller (uimaillistdialog.cpp) passes the mail as CMailInfo.
+//
+//
+//
+//
+//
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -156,10 +156,10 @@ public:
     int FUN_141527160(int);
 };
 class Unk_WmField;
-class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
+class CubeMapInformationService : public efd::ISystemService { public: static const efd::ClassID CLASS_ID = 0x06100017; int FUN_1410d2f10(); bool FUN_1410c35c0(); };   // C3: was the Unk_Service6100017 base view
 struct Unk_EntityAppFramework;   // C3: the real holder (ugcbuildvalidator.cpp)
-class Unk_Service6100017 : public efd::ISystemService {};   // the cube grid service (class id 0x06100017)
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
+// C3: Unk_Service6100017 was CubeMapInformationService (the view above)
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)     // C3: was extern Unk_WmFieldHolder DAT_143b059e8
 extern unsigned __int64 DAT_143ab2828;                          // the local character id
@@ -1091,7 +1091,7 @@ bool WeddingManager::IsPartnerOnline()
 }
 
 // @0x141b873c0
-void WeddingManager::ReadTicketMail(MS2Ptr<Unk_WeddingMail> mail, AScript* script)
+void WeddingManager::ReadTicketMail(MS2Ptr<CMailInfo> mail, AScript* script)
 {
     TiXmlDocument doc;
     WeddingHallTicket ticket;
@@ -1207,8 +1207,8 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
         return false;
     }
     int allowed = 0;
-    efd::SmartPointer<Unk_Service6100017> field(FUN_1401cd040(&DAT_143b059e8));
-    if ((field.operator Unk_Service6100017*() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410c35c0()) {
+    efd::SmartPointer<CubeMapInformationService> field(FUN_1401cd040(&DAT_143b059e8));
+    if ((field.operator CubeMapInformationService*() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410c35c0()) {
         allowed = 1;
     } else {
         allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c;
@@ -1282,7 +1282,7 @@ bool Unk_UcSlotMgr::FUN_141b867e0(__int64 partnerId)
 
 // Full-executable aliases for existing WeddingManager methods.
 // MS2-PIN: ?ApplyHallTicket@WeddingManager@@QEAAHXZ 0x141b89950
-// MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VUnk_WeddingMail@@@@PEAVAScript@@@Z 0x141b873c0
+// MS2-PIN: ?ReadTicketMail@WeddingManager@@QEAAXV?$MS2Ptr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0
 // MS2-PIN: ?CanStartWedding@WeddingManager@@QEAA_N_J@Z 0x141b867e0
 // MS2-PIN: ?FUN_141b873c0@Unk_MlWedding@@QEAAXV?$Unk_MailPtr@VCMailInfo@@@@PEAVAScript@@@Z 0x141b873c0
 // MS2-PIN: ?FUN_141b867e0@Unk_MsgWedding@@QEAA_N_J@Z 0x141b867e0

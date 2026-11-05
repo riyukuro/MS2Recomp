@@ -33,10 +33,10 @@ class Unk_AasImage : public AScript                                         // t
 public:
     char m_pad_ascript[0x90 - sizeof(AScript)];
 };
-class Unk_140acd6e0 : public ASButton                                // the button wrapper
-{
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
 class ASDialog : public ASMovieClip                                         // the movie root
 {
 public:
@@ -63,7 +63,7 @@ public:
     Unk_NdFlag m_8;
 };
 
-Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
+// C3: FUN_140d03240 is MS2Ptr<ASLoader>::operator-> (ICF fold with MS2Ptr<ASURLRequest>::get)
 
 // ---- AScript::FUN_141009c70 ----
 
@@ -167,7 +167,7 @@ void UINoticeDialog::vfunc_85()
         return;
     vfunc_86();
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
-    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
+    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
     reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->SetBrowserKeyboard(m_nBrowserId, 0);
 }
@@ -177,7 +177,7 @@ void UINoticeDialog::vfunc_86()
 {
     if (m_spImage.get() != 0)
     {
-        ((class ASLoader*)(class Unk_AasImage*)(FUN_140d03240(&m_spImage)))->UnloadAndStop(true);
+        ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->UnloadAndStop(true);
         m_renderTarget->FUN_1422c6b70(m_spImage->FUN_1422bb890());
         m_spImage = 0;
     }

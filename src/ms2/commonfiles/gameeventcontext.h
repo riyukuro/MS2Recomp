@@ -92,8 +92,8 @@ MS2_CHECK_OFFSET(GameEventCashAttend, m_entry, 0xe0);
 class BlueMarbleEventContext : public CPtred {
 public:
     BlueMarbleEventContext(int eventId, const CMsTime& endTime);   // 0x1403fc710
-    void LoadRewards(Unk_140165cf0* pElem);                 // 0x1403fc7c0
-    void LoadSlots(Unk_140165cf0* pElem);                   // 0x1403fc990
+    void LoadRewards(TiXmlElement* pElem);                 // 0x1403fc7c0
+    void LoadSlots(TiXmlElement* pElem);                   // 0x1403fc990
     void AddReward(int round, MS2Ptr<ItemEntity> spItem);   // 0x1403fcac0
     int m_eventId;                                          // +0x18
     CMsTime m_endTime;                                      // +0x20
@@ -111,7 +111,7 @@ MS2_CHECK_OFFSET(BlueMarbleEventContext, m_rewards, 0x38);
 class DungeonBonusRewardCtx : public CPtred {
 public:
     DungeonBonusRewardCtx();                                // 0x1403fd8a0
-    void Load(Unk_140165cf0* pElem);                        // 0x1403fd930
+    void Load(TiXmlElement* pElem);                        // 0x1403fd930
     void Write(COutputStream& out) const;                   // 0x1403fda00
     void Read(CInputStream& in);                            // 0x1403fda90
     void Merge(const MS2Ptr<DungeonBonusRewardCtx>& other); // 0x1403fdb40
@@ -131,7 +131,7 @@ COutputStream& operator<<(COutputStream& out, const DungeonBonusRewardCtx& ctx);
 class ItemBoxEventContext : public CPtred {
 public:
     ItemBoxEventContext();                                  // 0x1403fdd50
-    void Load(Unk_140165cf0* pElem);                        // 0x1403fdde0
+    void Load(TiXmlElement* pElem);                        // 0x1403fdde0
     void Write(COutputStream& out);                         // 0x1403fde90
     void Read(CInPacket& packet);                           // 0x1403fdf70
     unsigned m_fieldID;                                     // +0x18 "fieldID"
@@ -173,7 +173,7 @@ MS2_CHECK_SIZE(MentoringContext, 0x50);
 class DungeonBuffEventCtx : public CPtred {
 public:
     DungeonBuffEventCtx();                                  // 0x1403ff6c0
-    bool Load(Unk_140165cf0* pElem);                        // 0x1403ff720: false without effect GUIDs
+    bool Load(TiXmlElement* pElem);                        // 0x1403ff720: false without effect GUIDs
     unsigned m_dungeonID;                                   // +0x18 "dungeonID"
     int m_pad_1c;
     std::vector<unsigned __int64> m_addEffectGUIDs;         // +0x20 "addifectGUIDs"
@@ -319,8 +319,8 @@ public:
 // The creating-constructor tag and the 16-byte smart pointer of a boxed value (TPtr<T> over TPtredDummy<T>; same
 // template as Unk_FieldPtr in fieldmetatable.h). Members are defined out of the class so that they stay out-of-line
 // COMDATs like the exe's (0x14040f040..0x140418e80).
-#include "ms2/placeholder/tptreddummy.h"
-struct Unk_BingoNewTag { explicit Unk_BingoNewTag(int); };     // 0x1401b7b90 (returns its this, no code)
+#include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
+typedef Unk_SocketNew Unk_BingoNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
 CPtred* FUN_1401ba820(CPtred* p);                               // marks a freshly allocated box (sets the count to 1)
 template <class T>
 class Unk_GEBoxPtr

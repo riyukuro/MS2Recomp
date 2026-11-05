@@ -59,7 +59,7 @@ public:
     virtual Vector3 vfunc_18();
 };
 
-class Unk_CastingListener; struct Unk_CastingParam; // The casting bar request (StartCasting): duration, flags, speed and four texts (+0x28 the label).
+class ICastingEventListener; struct Unk_CastingParam; // The casting bar request (StartCasting): duration, flags, speed and four texts (+0x28 the label).
 struct Unk_CastInfo
 {
     Unk_CastInfo();                                      // 0x140ac2eb0
@@ -81,7 +81,7 @@ MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pInfo);   // show
+    void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pInfo);   // show
     void FUN_1418e1390();                                                        // cancel
 };
 
@@ -184,7 +184,7 @@ void StateNurturing::vfunc_4(StateData* pData)
         {
             Unk_CastInfo kInfo;
             FUN_140ac1480(&kInfo);
-            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
+            pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
     if (pPC)

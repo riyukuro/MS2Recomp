@@ -28,7 +28,7 @@ class Unk_Restrictions;
 
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 template <class T> T* Unk_GaGetUIByName(const CStringA& strName);   // the dialog of a name
-int ReadValueList(class Unk_140165cf0 *, char const *, class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>> &);
+int ReadValueList(class TiXmlElement *, char const *, class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>> &);
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
 
 class CGuideManager { public: int InternOccurrence(const CStringA& strName); };   // the dialog state service
@@ -100,7 +100,7 @@ int CGuideConditionDialog::vfunc_8()
 }
 
 // @0x1413a6480
-void CGuideConditionDialog::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionDialog::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 3;

@@ -24,176 +24,176 @@
 // MS2-PIN: ?LoadAll@CGuildXmlData@@QEAA_NXZ 0x1404d5960 ; unique
 // MS2-PIN: ?FUN_1404d6ab0@CGuildXmlData@@QEAA_NXZ 0x1404d6ab0 ; unique
 // MS2-PIN: ?GetMaxExp@CGuildXmlData@@QEAAHXZ 0x1404d7280 ; unique
-// MS2-PIN: ?GetProperty@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410 ; unique
-// MS2-PIN: ?GetSkill@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0 ; unique
-// MS2-PIN: ?GetEvent@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830 ; unique
-// MS2-PIN: ?GetHouse@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0 ; unique
-// MS2-PIN: ?GetNpc@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40 ; unique
-// MS2-PIN: ?GetRaid@CGuildXmlData@@QEAA?AV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0 ; unique
+// MS2-PIN: ?GetProperty@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@H@Z 0x1404d7410 ; unique
+// MS2-PIN: ?GetSkill@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@HH@Z 0x1404d74e0 ; unique
+// MS2-PIN: ?GetEvent@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@H@Z 0x1404d7830 ; unique
+// MS2-PIN: ?GetHouse@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0 ; unique
+// MS2-PIN: ?GetNpc@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40 ; unique
+// MS2-PIN: ?GetRaid@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0 ; unique
 // MS2-PIN: ?FUN_1404d7f20@CNpcShopProductProxy@@QEAAXAEAVCOutputStream@@@Z 0x1404d7f20 ; unique
 // MS2-PIN: ?FUN_1404d80a0@CGuildNpcShop@@QEAAXXZ 0x1404d80a0 ; unique
-// MS2-PIN: ?FUN_1404d80d0@CGuildNpcShop@@QEAA?AV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0 ; unique
-// MS2-PIN: ?FUN_1404d86e0@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0 ; unique
-// MS2-PIN: ?GetOrCreateShop@CGuildNpcShopMgr@@QEAA?AV?$Unk_PayloadPtr@VCGuildNpcShop@@@@I@Z 0x1404d88e0 ; unique
+// MS2-PIN: ?FUN_1404d80d0@CGuildNpcShop@@QEAA?AV?$MS2Ptr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0 ; unique
+// MS2-PIN: ?FUN_1404d86e0@CGuildNpcShopMgr@@QEAA?AV?$MS2Ptr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0 ; unique
+// MS2-PIN: ?GetOrCreateShop@CGuildNpcShopMgr@@QEAA?AV?$MS2Ptr@VCGuildNpcShop@@@@I@Z 0x1404d88e0 ; unique
 // MS2-PIN: ?FUN_1404d8ff0@CGuildNpcShopMgr@@QEAAXIPEAVCInPacket@@@Z 0x1404d8ff0 ; unique
 // MS2-PIN: ?FUN_1404d91e0@Unk_GuildShopOffer@@QEAAXAEAVCOutputStream@@@Z 0x1404d91e0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93a0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93d0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9400 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9430 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9460 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d94c0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9520 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9580 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d95b0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d95e0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93a0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93d0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9400 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9430 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9460 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d94c0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9520 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9580 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d95b0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d95e0 ; unique
 // MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x1404d9610 ; unique
 // MS2-PIN: ??$?0AEAIH$0A@@?$pair@IH@std@@QEAA@AEAI$$QEAH@Z 0x1404d9660 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@0@Z 0x1404d96b0 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@0@Z 0x1404d96b0 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@1@0@Z 0x1404d9700 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9750 ; prop
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d97a0 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d97f0 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9840 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9890 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@0@Z 0x1404d98e0 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9930 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9980 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d97a0 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d97f0 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9840 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9890 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@0@Z 0x1404d98e0 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9930 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9980 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@1@0@Z 0x1404d99d0 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9a20 ; prop
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9a70 ; unique
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404d9a70 ; unique
 // MS2-PIN: ??$?0AEAW4Unk_GuildNpcKind@@AEAH$0A@@?$pair@W4Unk_GuildNpcKind@@H@std@@QEAA@AEAW4Unk_GuildNpcKind@@AEAH@Z 0x1404d9ac0 ; unique
-// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9b10 ; unique
-// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9b60 ; unique
-// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9bb0 ; unique
-// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1404d9c00 ; unique
-// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1404d9c50 ; unique
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9ca0 ; unique
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9cf0 ; unique
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9d40 ; unique
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9d90 ; unique
-// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9de0 ; unique
-// MS2-PIN: ??$?0AEBU?$less@U?$pair@HH@std@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@U?$pair@HH@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@U?$pair@HH@std@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9e80 ; unique
-// MS2-PIN: ??$?0AEBU?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9f20 ; unique
-// MS2-PIN: ??$?0AEBU?$pair@HH@std@@$$Z$$V@?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@HH@std@@@1@V?$tuple@$$V@1@@Z 0x1404d9fc0 ; unique
+// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9b10 ; unique
+// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9b60 ; unique
+// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1404d9bb0 ; unique
+// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1404d9c00 ; unique
+// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1404d9c50 ; unique
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9ca0 ; unique
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9cf0 ; unique
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9d40 ; unique
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9d90 ; unique
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9de0 ; unique
+// MS2-PIN: ??$?0AEBU?$less@U?$pair@HH@std@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@U?$pair@HH@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@U?$pair@HH@std@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9e80 ; unique
+// MS2-PIN: ??$?0AEBU?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1404d9f20 ; unique
+// MS2-PIN: ??$?0AEBU?$pair@HH@std@@$$Z$$V@?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@HH@std@@@1@V?$tuple@$$V@1@@Z 0x1404d9fc0 ; unique
 // MS2-PIN: ??$?0AEBU?$pair@HH@std@@$0A@@?$tuple@AEBU?$pair@HH@std@@@std@@QEAA@AEBU?$pair@HH@1@@Z 0x1404da010 ; unique
 // MS2-PIN: ??$?0AEBU?$pair@HH@std@@@?$_Tuple_val@AEBU?$pair@HH@std@@@std@@QEAA@AEBU?$pair@HH@1@@Z 0x1404da060 ; unique
 // MS2-PIN: ??$?0AEBU?$pair@IH@std@@$$Z$$V@?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@IH@std@@@1@V?$tuple@$$V@1@@Z 0x1404da090 ; unique
-// MS2-PIN: ??$?0AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@$$Z$$V@?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@V?$tuple@$$V@1@@Z 0x1404da160 ; unique
+// MS2-PIN: ??$?0AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@$$Z$$V@?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@V?$tuple@$$V@1@@Z 0x1404da160 ; unique
 // MS2-PIN: ??$?0AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@$0A@@?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@QEAA@AEBU?$pair@W4Unk_GuildNpcKind@@H@1@@Z 0x1404da1b0 ; unique
 // MS2-PIN: ??$?0AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@?$_Tuple_val@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@QEAA@AEBU?$pair@W4Unk_GuildNpcKind@@H@1@@Z 0x1404da200 ; unique
 // MS2-PIN: ??$?0U_Exact_args_t@std@@AEBU?$pair@HH@1@$$V$0A@@?$tuple@AEBU?$pair@HH@std@@@std@@QEAA@U_Exact_args_t@1@AEBU?$pair@HH@1@@Z 0x1404da230 ; unique
 // MS2-PIN: ??$?0U_Exact_args_t@std@@AEBU?$pair@W4Unk_GuildNpcKind@@H@1@$$V$0A@@?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@QEAA@U_Exact_args_t@1@AEBU?$pair@W4Unk_GuildNpcKind@@H@1@@Z 0x1404da2f0 ; unique
-// MS2-PIN: ??$?0V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@?$allocator@U_Container_proxy@std@@@std@@QEAA@AEBV?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@1@@Z 0x1404da360 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da3c0 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da410 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da460 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da4b0 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da500 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da550 ; unique
+// MS2-PIN: ??$?0V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@?$allocator@U_Container_proxy@std@@@std@@QEAA@AEBV?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@1@@Z 0x1404da360 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da3c0 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da410 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da460 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da4b0 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da500 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da550 ; unique
 // MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da5a0 ; prop
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da5f0 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da640 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da690 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da6e0 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da730 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da780 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@HH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@HH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da7d0 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1404da5f0 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da640 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da690 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da6e0 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da730 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da780 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@HH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@HH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da7d0 ; unique
 // MS2-PIN: ??$?0V?$tuple@AEBU?$pair@IH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@IH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da820 ; unique
-// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da870 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1404da870 ; unique
 // MS2-PIN: ??$?MHH@std@@YA_NAEBU?$pair@HH@0@0@Z 0x1404da8c0 ; unique
 // MS2-PIN: ??$?MW4Unk_GuildNpcKind@@H@std@@YA_NAEBU?$pair@W4Unk_GuildNpcKind@@H@0@0@Z 0x1404da920 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@1@@Z 0x1404dab00 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@1@@Z 0x1404dab20 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@@Z 0x1404dab40 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@1@@Z 0x1404dab60 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@1@@Z 0x1404dab80 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@1@@Z 0x1404daba0 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@1@@Z 0x1404dab00 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@1@@Z 0x1404dab20 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@@Z 0x1404dab40 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@1@@Z 0x1404dab60 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@1@@Z 0x1404dab80 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@1@@Z 0x1404daba0 ; unique
 // MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@1@@Z 0x1404dabc0 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@1@@Z 0x1404dabe0 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@1@@Z 0x1404dabe0 ; unique
 // MS2-PIN: ??$_Buy_if_not_node@AEBW4Unk_GuildNpcKind@@@?$_Tree@V?$_Tset_traits@W4Unk_GuildNpcKind@@U?$less@W4Unk_GuildNpcKind@@@std@@V?$allocator@W4Unk_GuildNpcKind@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@1@U_Not_a_node_tag@1@AEBW4Unk_GuildNpcKind@@@Z 0x1404dac00 ; unique
 // MS2-PIN: ??$_Buynode@AEAU?$pair@$$CBIH@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@AEAU?$pair@$$CBIH@1@@Z 0x1404dac30 ; unique
 // MS2-PIN: ??$_Buynode@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@1@@Z 0x1404dacc0 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dad50 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dae20 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404daef0 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dafc0 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db090 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@HH@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@HH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db160 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dad50 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dae20 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1404daef0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1404dafc0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db090 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@HH@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@HH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db160 ; unique
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@IH@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@IH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db230 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db300 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@W4Unk_GuildNpcKind@@H@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404db300 ; unique
 // MS2-PIN: ??$_Buynode@AEBW4Unk_GuildNpcKind@@@?$_Tree_comp_alloc@V?$_Tset_traits@W4Unk_GuildNpcKind@@U?$less@W4Unk_GuildNpcKind@@@std@@V?$allocator@W4Unk_GuildNpcKind@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@1@AEBW4Unk_GuildNpcKind@@@Z 0x1404db3d0 ; unique
 // MS2-PIN: ??$_Copy@U_Copy_tag@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEAAXAEBV01@U_Copy_tag@01@@Z 0x1404db460 ; unique
 // MS2-PIN: ??$_Copy@U_Copy_tag@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAAXAEBV01@U_Copy_tag@01@@Z 0x1404db580 ; unique
-// MS2-PIN: ??$_Copy_memmove@PEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YAPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@00@Z 0x1404db6a0 ; unique
+// MS2-PIN: ??$_Copy_memmove@PEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YAPEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@00@Z 0x1404db6a0 ; unique
 // MS2-PIN: ??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z 0x1404db710 ; unique
 // MS2-PIN: ??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z 0x1404db820 ; unique
 // MS2-PIN: ??$_Copy_or_move@U?$pair@$$CBIH@std@@U?$integral_constant@_N$0A@@2@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@AEAU?$pair@$$CBIH@1@U_Copy_tag@01@U?$integral_constant@_N$0A@@1@@Z 0x1404db930 ; unique
 // MS2-PIN: ??$_Copy_or_move@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@U?$integral_constant@_N$0A@@2@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@1@U_Copy_tag@01@U?$integral_constant@_N$0A@@1@@Z 0x1404db960 ; unique
-// MS2-PIN: ??$_Destroy_range1@V?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@YAXPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@0AEAV?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@0@U?$integral_constant@_N$00@0@@Z 0x1404db9c0 ; unique
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@YAXPEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@0AEAV?$allocator@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@0@U?$integral_constant@_N$00@0@@Z 0x1404db9c0 ; unique
 // MS2-PIN: ??$_Destroy_range1@V?$allocator@U?$pair@HH@std@@@std@@@std@@YAXPEAU?$pair@HH@0@0AEAV?$allocator@U?$pair@HH@std@@@0@U?$integral_constant@_N$00@0@@Z 0x1404db9e0 ; unique
-// MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x1404dba00 ; unique
-// MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x1404dba60 ; unique
-// MS2-PIN: ??$_Destroy_range@V?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@YAXPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@0AEAV?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@0@@Z 0x1404dbac0 ; unique
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAXPEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@0AEAV?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x1404dba00 ; unique
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x1404dba60 ; unique
+// MS2-PIN: ??$_Destroy_range@V?$allocator@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@YAXPEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@0AEAV?$allocator@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@0@@Z 0x1404dbac0 ; unique
 // MS2-PIN: ??$_Destroy_range@V?$allocator@U?$pair@HH@std@@@std@@@std@@YAXPEAU?$pair@HH@0@0AEAV?$allocator@U?$pair@HH@std@@@0@@Z 0x1404dbb10 ; unique
-// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@0@@Z 0x1404dbb60 ; unique
-// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@0@@Z 0x1404dbbb0 ; unique
-// MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404dbc00 ; prop
+// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAXPEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@0AEAV?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@0@@Z 0x1404dbb60 ; unique
+// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@0@@Z 0x1404dbbb0 ; unique
+// MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404dbc00 ; prop
 // MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404dbc60 ; prop
-// MS2-PIN: ??$_Emplace_back@AEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@?$_Uninitialized_backout_al@PEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAXAEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@Z 0x1404dbd20 ; unique
-// MS2-PIN: ??$_Emplace_back@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@?$_Uninitialized_backout_al@PEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAX$$QEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@Z 0x1404dbe40 ; unique
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@AEAAXAEBV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@Z 0x1404dc020 ; unique
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@?$vector@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@AEAAXAEBV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@Z 0x1404dc0e0 ; unique
-// MS2-PIN: ??$_Emplace_reallocate@AEBV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@QEAAPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@QEAV2@AEBV2@@Z 0x1404dc620 ; unique
-// MS2-PIN: ??$_Emplace_reallocate@AEBV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@?$vector@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@QEAV2@AEBV2@@Z 0x1404dc870 ; unique
-// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x1404dcac0 ; unique
-// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x1404dcb50 ; unique
+// MS2-PIN: ??$_Emplace_back@AEAV?$MS2Ptr@VCNpcShopProductProxy@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCNpcShopProductProxy@@@@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VCNpcShopProductProxy@@@@@Z 0x1404dbd20 ; unique
+// MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VCNpcShopProductProxy@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCNpcShopProductProxy@@@@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCNpcShopProductProxy@@@@@Z 0x1404dbe40 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@Z 0x1404dc020 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@VCNpcShopProductProxy@@@@@?$vector@V?$MS2Ptr@VCNpcShopProductProxy@@@@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@VCNpcShopProductProxy@@@@@Z 0x1404dc0e0 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@QEAV2@AEBV2@@Z 0x1404dc620 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@VCNpcShopProductProxy@@@@@?$vector@V?$MS2Ptr@VCNpcShopProductProxy@@@@V?$allocator@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCNpcShopProductProxy@@@@QEAV2@AEBV2@@Z 0x1404dc870 ; unique
+// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x1404dcac0 ; unique
+// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x1404dcb50 ; unique
 // MS2-PIN: ??$_Eqrange@U?$pair@IH@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@V12@@1@AEBU?$pair@IH@1@@Z 0x1404dcd90 ; unique
 // MS2-PIN: ??$_Eqrange@U?$pair@IH@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@std@@V12@@1@AEBU?$pair@IH@1@@Z 0x1404dce20 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd060 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd0f0 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd180 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd210 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd2a0 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd330 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd3c0 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd060 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd0f0 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd180 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd210 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd2a0 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd330 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd3c0 ; unique
 // MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd450 ; unique
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd4e0 ; unique
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd4e0 ; unique
 // MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@_JH@std@@UItemEntity@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBU?$pair@_JH@std@@UItemEntity@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@_JH@std@@UItemEntity@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1404dd570 ; unique
 // MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@std@@@std@@@?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@std@@@1@PEAU01@@Z 0x1404dd600 ; unique
 // MS2-PIN: ??$_Get_size_of_n@$0FI@@std@@YA_K_K@Z 0x1404dd690 ; unique
-// MS2-PIN: ??$_Get_unwrapped@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@YAPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@QEAPEAV1@@Z 0x1404dd6e0 ; unique
+// MS2-PIN: ??$_Get_unwrapped@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@YAPEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@QEAPEAV1@@Z 0x1404dd6e0 ; unique
 // MS2-PIN: ??$_Get_unwrapped@U?$pair@HH@std@@@std@@YAPEAU?$pair@HH@0@QEAU10@@Z 0x1404dd6f0 ; unique
-// MS2-PIN: ??$_Get_unwrapped@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@YAPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@QEAV1@@Z 0x1404dd700 ; unique
-// MS2-PIN: ??$_Get_unwrapped@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@YAPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@QEAV1@@Z 0x1404dd710 ; unique
-// MS2-PIN: ??$_Get_unwrapped_n@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@_J$0A@@std@@YAPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@QEAPEAV1@_J@Z 0x1404dd720 ; unique
+// MS2-PIN: ??$_Get_unwrapped@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@YAPEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@QEAV1@@Z 0x1404dd700 ; unique
+// MS2-PIN: ??$_Get_unwrapped@V?$MS2Ptr@VCNpcShopProductProxy@@@@@std@@YAPEAV?$MS2Ptr@VCNpcShopProductProxy@@@@QEAV1@@Z 0x1404dd710 ; unique
+// MS2-PIN: ??$_Get_unwrapped_n@PEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@_J$0A@@std@@YAPEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@QEAPEAV1@_J@Z 0x1404dd720 ; unique
 // MS2-PIN: ??$_Get_unwrapped_n@U?$pair@HH@std@@_J$0A@@std@@YAPEAU?$pair@HH@0@QEAU10@_J@Z 0x1404dd730 ; unique
-// MS2-PIN: ??$_Get_unwrapped_n@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@_J$0A@@std@@YAPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@QEAV1@_J@Z 0x1404dd740 ; unique
-// MS2-PIN: ??$_Get_unwrapped_n@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@_J$0A@@std@@YAPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@QEAV1@_J@Z 0x1404dd750 ; unique
-// MS2-PIN: ??$_Idl_distance1@PEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YA_JAEBQEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd760 ; unique
+// MS2-PIN: ??$_Get_unwrapped_n@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@_J$0A@@std@@YAPEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@QEAV1@_J@Z 0x1404dd740 ; unique
+// MS2-PIN: ??$_Get_unwrapped_n@V?$MS2Ptr@VCNpcShopProductProxy@@@@_J$0A@@std@@YAPEAV?$MS2Ptr@VCNpcShopProductProxy@@@@QEAV1@_J@Z 0x1404dd750 ; unique
+// MS2-PIN: ??$_Idl_distance1@PEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YA_JAEBQEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd760 ; unique
 // MS2-PIN: ??$_Idl_distance1@PEAU?$pair@HH@std@@PEAU12@@std@@YA_JAEBQEAU?$pair@HH@0@0Urandom_access_iterator_tag@0@@Z 0x1404dd790 ; unique
-// MS2-PIN: ??$_Idl_distance1@PEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@PEAV1@@std@@YA_JAEBQEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd7c0 ; unique
-// MS2-PIN: ??$_Idl_distance1@PEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@PEAV1@@std@@YA_JAEBQEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd7f0 ; unique
-// MS2-PIN: ??$_Idl_distance@PEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YA_JAEBQEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@0@Z 0x1404dd820 ; unique
+// MS2-PIN: ??$_Idl_distance1@PEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd7c0 ; unique
+// MS2-PIN: ??$_Idl_distance1@PEAV?$MS2Ptr@VCNpcShopProductProxy@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VCNpcShopProductProxy@@@@0Urandom_access_iterator_tag@0@@Z 0x1404dd7f0 ; unique
+// MS2-PIN: ??$_Idl_distance@PEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@PEAPEAV1@@std@@YA_JAEBQEAPEAV?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@0@Z 0x1404dd820 ; unique
 // MS2-PIN: ??$_Idl_distance@PEAU?$pair@HH@std@@PEAU12@@std@@YA_JAEBQEAU?$pair@HH@0@0@Z 0x1404dd850 ; unique
-// MS2-PIN: ??$_Idl_distance@PEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@PEAV1@@std@@YA_JAEBQEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0@Z 0x1404dd880 ; unique
-// MS2-PIN: ??$_Idl_distance@PEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@PEAV1@@std@@YA_JAEBQEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0@Z 0x1404dd8b0 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@1@1@Z 0x1404dd8e0 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@1@1@Z 0x1404ddc40 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@1@Z 0x1404ddfa0 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@1@1@Z 0x1404de300 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@1@1@Z 0x1404de660 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@1@1@Z 0x1404de9c0 ; unique
+// MS2-PIN: ??$_Idl_distance@PEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@0@Z 0x1404dd880 ; unique
+// MS2-PIN: ??$_Idl_distance@PEAV?$MS2Ptr@VCNpcShopProductProxy@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VCNpcShopProductProxy@@@@0@Z 0x1404dd8b0 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@1@1@Z 0x1404dd8e0 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@1@1@Z 0x1404ddc40 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@1@Z 0x1404ddfa0 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@1@1@Z 0x1404de300 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@1@1@Z 0x1404de660 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@1@1@Z 0x1404de9c0 ; unique
 // MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@UItemEntity@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@IH@std@@UItemEntity@@@1@1@Z 0x1404ded20 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@1@1@Z 0x1404df080 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@1@1@Z 0x1404df080 ; unique
 // MS2-PIN: ??$_Insert_at@AEBW4Unk_GuildNpcKind@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@W4Unk_GuildNpcKind@@U?$less@W4Unk_GuildNpcKind@@@std@@V?$allocator@W4Unk_GuildNpcKind@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@std@@@1@_NPEAU?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@1@AEBW4Unk_GuildNpcKind@@U_Not_a_node_tag@1@@Z 0x1404df3e0 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404df740 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e0380 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@@Z 0x1404e0fc0 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e1c00 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@@Z 0x1404e2840 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e3480 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e4d00 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404df740 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e0380 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$MS2Ptr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@@Z 0x1404e0fc0 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e1c00 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCGuildNpcShop@@@@@std@@PEAX@1@@Z 0x1404e2840 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e3480 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@U?$less@U?$pair@W4Unk_GuildNpcKind@@H@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@W4Unk_GuildNpcKind@@H@std@@V?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@@std@@PEAX@1@@Z 0x1404e4d00 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7CGuildXmlData@@6B?$TSingleton@VCGuildXmlData@@@@@ 0x142d52ac8
 // MS2-PIN: ??_7CGuildXmlData@@6B?$CValidData@VCGuildXmlData@@@@@ 0x142d52ad8
@@ -205,10 +205,11 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/tixmldocument.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CGuildXmlData::Guild*> COMDATs
 #include "hook/ms2hook.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_140165cf0;
+class TiXmlElement;
 // MS2-FUNCTIONAL: equivalent source; container spellings and /Od temporary placement remain under recovery.
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -216,7 +217,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 extern int FUN_140873420(void*,const char*,CStringW*);
-template <class C> int XmlTokenList(class Unk_140165cf0*, const char*, C&);
+template <class C> int XmlTokenList(class TiXmlElement*, const char*, C&);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 extern int FUN_1408733e0(void*,const char*,CString*);
 int Parse_140219f50(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
@@ -239,12 +240,12 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
-class Unk_140165cf0   // C3: member view for the former free stand-ins
-{
-public:
-    class Unk_140165cf0* NextSiblingElement();
-};
+TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -404,7 +405,7 @@ bool CGuildXmlData::GuildHouse::FUN_1404d5070(void* node){
     XmlGetAttr((class TiXmlElement*)(node), "theme", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "fieldID", *(unsigned int*)(&f50));
     XmlGetAttr((class TiXmlElement*)(node), "areaSize", *(int*)(&f24));
-    XmlTokenList((class Unk_140165cf0*)node,"facility",f38);
+    XmlTokenList((class TiXmlElement*)node,"facility",f38);
     XmlGetAttr((class TiXmlElement*)(node), "stringKey", *(int*)(&f20));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeCost", *(int*)(&f28));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeReqGuildLevel", *(int*)(&f2c));
@@ -456,7 +457,7 @@ bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
         }
         void* root=FUN_140345b40(&doc);
         if(!root){Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;}
-        for(void* child=FUN_140345b40((TiXmlDocument *)root);child;child=((void*)((class Unk_140165cf0*)(void const*)(child))->NextSiblingElement())){
+        for(void* child=FUN_140345b40((TiXmlDocument *)root);child;child=((void*)((class TiXmlElement*)(void const*)(child))->NextSiblingElement())){
             ItemEntity item;int rank=1;
             XmlGetAttr((class TiXmlElement*)(child), "id", *(unsigned int*)(&item.m_itemId));
             Unk_ReadRank((class Unk_XmlNode*)(child), "rank", &rank);
@@ -494,7 +495,7 @@ bool CGuildXmlData::LoadGuildProperty(){
     std::vector<void*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(root), "property", "level", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
-        Unk_PayloadPtr<GuildProperty> value=new GuildProperty;
+        MS2Ptr<GuildProperty> value=new GuildProperty;
         if(!value->FUN_1404d4990(nodes[index]))continue;
         property[value->f18]=value;
     }
@@ -508,7 +509,7 @@ bool CGuildXmlData::LoadGuildBuff(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildBuff"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildBuff"))){
-        Unk_PayloadPtr<GuildSkill> value=new GuildSkill;
+        MS2Ptr<GuildSkill> value=new GuildSkill;
         if(!value->FUN_1404d4cb0(node))continue;
         skill[value->f18].push_back(value);
     }
@@ -522,7 +523,7 @@ bool CGuildXmlData::LoadGuildEvent(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildEvent"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildEvent"))){
-        Unk_PayloadPtr<GuildEvent> value=new GuildEvent;
+        MS2Ptr<GuildEvent> value=new GuildEvent;
         if(value->FUN_1404d4f10(node))event[value->f18]=value;
     }
     return true;
@@ -535,7 +536,7 @@ bool CGuildXmlData::LoadGuildHouse(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildHouse"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildHouse"))){
-        Unk_PayloadPtr<GuildHouse> value=new GuildHouse;
+        MS2Ptr<GuildHouse> value=new GuildHouse;
         if(value->FUN_1404d5070(node)){std::pair<int,int> key(value->f18,value->f1c);house[key]=value;}
     }
     return true;
@@ -550,7 +551,7 @@ bool CGuildXmlData::LoadGuildNpc(){
     std::vector<void*> nodes;
     FUN_14028fd90((struct Unk_XmlElement*)root,"npc","type","level",(std::vector<struct Unk_XmlElement*>&)nodes);
     for(size_t index=0;index<nodes.size();++index){
-        Unk_PayloadPtr<GuildNpc> value=new GuildNpc;
+        MS2Ptr<GuildNpc> value=new GuildNpc;
         if(!value->FUN_1404d5270(nodes[index]))continue;
         std::pair<Unk_GuildNpcKind,int> key(value->f18,value->f1c);
         npc[key]=value;
@@ -567,7 +568,7 @@ bool CGuildXmlData::LoadGuildRaid(){
     std::vector<void*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(root), "guildRaid", "dungeonRoomID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for(size_t index=0;index<nodes.size();++index){
-        Unk_PayloadPtr<GuildRaid> value=new GuildRaid;
+        MS2Ptr<GuildRaid> value=new GuildRaid;
         if(!value->FUN_1404d53d0(nodes[index]))continue;
         raid[value->f18]=value;
     }
@@ -664,21 +665,21 @@ int CGuildXmlData::GetContribution(int kind){
 }
 MS2_REPLACE_METHOD(0x1404d73d0, CGuildXmlData, GetContribution, 58, 0x0185980C);
 // @0x1404d7410
-Unk_PayloadPtr<CGuildXmlData::GuildProperty> CGuildXmlData::GetProperty(int level){
+MS2Ptr<CGuildXmlData::GuildProperty> CGuildXmlData::GetProperty(int level){
     Unk_GuildXmlDataCheckInit_3460();
-    if(property.find(level)==property.end()) return Unk_PayloadPtr<GuildProperty>(0);
+    if(property.find(level)==property.end()) return MS2Ptr<GuildProperty>(0);
     return property[level];
 }
 MS2_REPLACE_METHOD(0x1404d7410, CGuildXmlData, GetProperty, 192, 0x621EADAB);
 // @0x1404d74e0
-Unk_PayloadPtr<CGuildXmlData::GuildSkill> CGuildXmlData::GetSkill(int id,int level){
+MS2Ptr<CGuildXmlData::GuildSkill> CGuildXmlData::GetSkill(int id,int level){
     Unk_GuildXmlDataCheckInit_3460();
-    if(skill.find(id)==skill.end()) return Unk_PayloadPtr<GuildSkill>(0);
-    std::vector<Unk_PayloadPtr<GuildSkill>>& list=skill[id];
+    if(skill.find(id)==skill.end()) return MS2Ptr<GuildSkill>(0);
+    std::vector<MS2Ptr<GuildSkill>>& list=skill[id];
     for(size_t i=0;i<list.size();++i){
         if(list[i]->f1c==level) return list[i];
     }
-    return Unk_PayloadPtr<GuildSkill>(0);
+    return MS2Ptr<GuildSkill>(0);
 }
 MS2_REPLACE_METHOD(0x1404d74e0, CGuildXmlData, GetSkill, 325, 0x79DB9B95);
 // @0x1404d7630
@@ -704,9 +705,9 @@ void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7730, CGuildXmlData, FUN_1404d7730, 240, 0xAD6C0DE5);
 // @0x1404d7830
-Unk_PayloadPtr<CGuildXmlData::GuildEvent> CGuildXmlData::GetEvent(int id){
+MS2Ptr<CGuildXmlData::GuildEvent> CGuildXmlData::GetEvent(int id){
     Unk_GuildXmlDataCheckInit_3460();
-    if(event.find(id)==event.end()) return Unk_PayloadPtr<GuildEvent>(0);
+    if(event.find(id)==event.end()) return MS2Ptr<GuildEvent>(0);
     return event[id];
 }
 MS2_REPLACE_METHOD(0x1404d7830, CGuildXmlData, GetEvent, 192, 0x7276C91B);
@@ -718,10 +719,10 @@ void CGuildXmlData::GetEventIds(std::vector<int>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7900, CGuildXmlData, GetEventIds, 157, 0xFAEEBFF0);
 // @0x1404d79b0
-Unk_PayloadPtr<CGuildXmlData::GuildHouse> CGuildXmlData::GetHouse(int level,int theme){
+MS2Ptr<CGuildXmlData::GuildHouse> CGuildXmlData::GetHouse(int level,int theme){
     Unk_GuildXmlDataCheckInit_3460();
     std::pair<int,int> key(level,theme);
-    if(house.find(key)==house.end()) return Unk_PayloadPtr<GuildHouse>(0);
+    if(house.find(key)==house.end()) return MS2Ptr<GuildHouse>(0);
     return house[key];
 }
 MS2_REPLACE_METHOD(0x1404d79b0, CGuildXmlData, GetHouse, 217, 0x4798F80C);
@@ -733,10 +734,10 @@ void CGuildXmlData::GetHouseKeys(std::vector<std::pair<int,int>>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7a90, CGuildXmlData, GetHouseKeys, 157, 0x032A47F6);
 // @0x1404d7b40
-Unk_PayloadPtr<CGuildXmlData::GuildNpc> CGuildXmlData::GetNpc(Unk_GuildNpcKind kind,int level){
+MS2Ptr<CGuildXmlData::GuildNpc> CGuildXmlData::GetNpc(Unk_GuildNpcKind kind,int level){
     Unk_GuildXmlDataCheckInit_3460();
     std::pair<Unk_GuildNpcKind,int> key(kind,level);
-    if(npc.find(key)==npc.end()) return Unk_PayloadPtr<GuildNpc>(0);
+    if(npc.find(key)==npc.end()) return MS2Ptr<GuildNpc>(0);
     return npc[key];
 }
 MS2_REPLACE_METHOD(0x1404d7b40, CGuildXmlData, GetNpc, 217, 0x88080605);
@@ -747,9 +748,9 @@ void CGuildXmlData::GetNpcKinds(std::set<Unk_GuildNpcKind>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7c20, CGuildXmlData, GetNpcKinds, 132, 0x7F14F619);
 // @0x1404d7cb0
-Unk_PayloadPtr<CGuildXmlData::GuildRaid> CGuildXmlData::GetRaid(unsigned id){
+MS2Ptr<CGuildXmlData::GuildRaid> CGuildXmlData::GetRaid(unsigned id){
     Unk_GuildXmlDataCheckInit_3460();
-    if(raid.find(id)==raid.end()) return Unk_PayloadPtr<GuildRaid>(0);
+    if(raid.find(id)==raid.end()) return MS2Ptr<GuildRaid>(0);
     return raid[id];
 }
 MS2_REPLACE_METHOD(0x1404d7cb0, CGuildXmlData, GetRaid, 192, 0x4C2B2E5E);
@@ -761,12 +762,12 @@ void CGuildXmlData::GetRaidIds(std::vector<unsigned>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7d80, CGuildXmlData, GetRaidIds, 157, 0xEC01BA76);
 // @0x1404d7e30
-Unk_PayloadPtr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int id){
+MS2Ptr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int id){
     Unk_GuildXmlDataCheckInit_3460();
-    if(id<0) return Unk_PayloadPtr<GuildRaidReward>(0);
+    if(id<0) return MS2Ptr<GuildRaidReward>(0);
     auto i=reward.lower_bound(id);
     if(i!=reward.end()) return i->second;
-    return Unk_PayloadPtr<GuildRaidReward>(0);
+    return MS2Ptr<GuildRaidReward>(0);
 }
 MS2_REPLACE_METHOD(0x1404d7e30, CGuildXmlData, FUN_1404d7e30, 219, 0x2CAA611D);
 // @0x1404d7f20
@@ -792,8 +793,8 @@ MS2_REPLACE_METHOD(0x1404d8070, CGuildNpcShop, FUN_1404d8070, 33, 0xF2339317);
 void CGuildNpcShop::FUN_1404d80a0(){products.clear();}
 MS2_REPLACE_METHOD(0x1404d80a0, CGuildNpcShop, FUN_1404d80a0, 31, 0x053AC054);
 // @0x1404d80d0
-Unk_PayloadPtr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d80d0(int itemId,int rank,int price){
-    Unk_PayloadPtr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
+MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d80d0(int itemId,int rank,int price){
+    MS2Ptr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
     if(ref!=0){
         ref->f18=itemId;
         ref->f1c=rank;
@@ -803,9 +804,9 @@ Unk_PayloadPtr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d80d0(int itemId,int
     return ref;
 }
 // @0x1404d81e0
-Unk_PayloadPtr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d81e0(int itemId,int rank,int price){
+MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d81e0(int itemId,int rank,int price){
     int index=FUN_1404d82a0(itemId,rank,price);
-    if(index<0 || index>=(int)products.size()) return Unk_PayloadPtr<CNpcShopProductProxy>(0);
+    if(index<0 || index>=(int)products.size()) return MS2Ptr<CNpcShopProductProxy>(0);
     return products.at(index);
 }
 MS2_REPLACE_METHOD(0x1404d81e0, CGuildNpcShop, FUN_1404d81e0, 176, 0xE05C1D52);
@@ -814,7 +815,7 @@ int CGuildNpcShop::FUN_1404d82a0(int itemId,int rank,int price){
     if(products.empty()) return -1;
     size_t count=products.size();
     for(size_t i=0;i<count;++i){
-        Unk_PayloadPtr<CNpcShopProductProxy> ref=products.at(i);
+        MS2Ptr<CNpcShopProductProxy> ref=products.at(i);
         if(ref==0){
             continue;
         }
@@ -830,7 +831,7 @@ void CGuildNpcShop::FUN_1404d83e0(COutputStream& out){
     int n=(int)products.size();
     out.WriteInt16((unsigned short)n);
     for(int i=0;i<n;++i){
-        Unk_PayloadPtr<CNpcShopProductProxy> ref=products.at(i);
+        MS2Ptr<CNpcShopProductProxy> ref=products.at(i);
         bool bValid=ref ? true : false;
         out.WriteBool(bValid);
         if(ref) ref->FUN_1404d7f20(out);
@@ -846,14 +847,14 @@ void CGuildNpcShop::FUN_1404d8520(CInPacket* packet){
     for(int i=0;i<n;++i){
         bool bValid=packet->ReadBool();
         if(!bValid) continue;
-        Unk_PayloadPtr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
+        MS2Ptr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
         ref->FUN_1404d7fa0(packet);
         products.push_back(ref);
     }
 }
 // @0x1404d86e0
-Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d86e0(unsigned id,__int64 time){
-    Unk_PayloadPtr<CGuildNpcShop> ref(new CGuildNpcShop);
+MS2Ptr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d86e0(unsigned id,__int64 time){
+    MS2Ptr<CGuildNpcShop> ref(new CGuildNpcShop);
     if(ref!=0){
         ref->f18=id;
         ref->f20=time;
@@ -862,18 +863,18 @@ Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d86e0(unsigned id,__int6
     return ref;
 }
 // @0x1404d87f0
-Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::GetShop(unsigned id){
-    if(shops.empty()) return Unk_PayloadPtr<CGuildNpcShop>(0);
+MS2Ptr<CGuildNpcShop> CGuildNpcShopMgr::GetShop(unsigned id){
+    if(shops.empty()) return MS2Ptr<CGuildNpcShop>(0);
     auto i=shops.find(id);
-    if(i==shops.end()) return Unk_PayloadPtr<CGuildNpcShop>(0);
+    if(i==shops.end()) return MS2Ptr<CGuildNpcShop>(0);
     return i->second;
 }
 MS2_REPLACE_METHOD(0x1404d87f0, CGuildNpcShopMgr, GetShop, 231, 0xF18D7394);
 // @0x1404d88e0
-Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::GetOrCreateShop(unsigned id){
-    Unk_PayloadPtr<CGuildNpcShop> ref=GetShop(id);
+MS2Ptr<CGuildNpcShop> CGuildNpcShopMgr::GetOrCreateShop(unsigned id){
+    MS2Ptr<CGuildNpcShop> ref=GetShop(id);
     if(ref==0){
-        ref=new CGuildNpcShop;
+        ref.AssignRaw(new CGuildNpcShop);
         shops[id]=ref;
     }
     return ref;
@@ -881,7 +882,7 @@ Unk_PayloadPtr<CGuildNpcShop> CGuildNpcShopMgr::GetOrCreateShop(unsigned id){
 // @0x1404d89e0
 int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created){
     __int64 now=GetServerTime();
-    Unk_PayloadPtr<CGuildNpcShop> shop=GetShop(offer->f20);
+    MS2Ptr<CGuildNpcShop> shop=GetShop(offer->f20);
     if(shop){
         if(shop->f20!=offer->f28 || shop->f20<now){
             shops.erase(offer->f20);
@@ -894,7 +895,7 @@ int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,b
     }
     if(shop==0) return 0x31;
     shop->f28=now;
-    Unk_PayloadPtr<CNpcShopProductProxy> product=shop->FUN_1404d81e0(item->m_itemId,item->vfunc_o18_1(),0);
+    MS2Ptr<CNpcShopProductProxy> product=shop->FUN_1404d81e0(item->m_itemId,item->vfunc_o18_1(),0);
     unsigned total=item->m_count;
     if(product) total=total+product->f24;
     if(total>offer->f1c) return 0x33;
@@ -909,7 +910,7 @@ void CGuildNpcShopMgr::Write(COutputStream& out){
     int n=(int)shops.size();
     out.WriteInt16((unsigned short)n);
     for(auto i=shops.begin();i!=shops.end();++i){
-        Unk_PayloadPtr<CGuildNpcShop> ref=i->second;
+        MS2Ptr<CGuildNpcShop> ref=i->second;
         bool bValid=ref ? true : false;
         out.WriteBool(bValid);
         if(ref) ref->FUN_1404d83e0(out);
@@ -923,21 +924,21 @@ void CGuildNpcShopMgr::Read(CInPacket* packet){
     for(int i=0;i<n;++i){
         bool bValid=packet->ReadBool();
         if(!bValid) continue;
-        Unk_PayloadPtr<CGuildNpcShop> ref(new CGuildNpcShop);
+        MS2Ptr<CGuildNpcShop> ref(new CGuildNpcShop);
         ref->FUN_1404d8520(packet);
         shops[ref->f18]=ref;
     }
 }
 // @0x1404d8ff0
 void CGuildNpcShopMgr::FUN_1404d8ff0(unsigned id,CInPacket* packet){
-    Unk_PayloadPtr<CGuildNpcShop> ref=GetOrCreateShop(id);
+    MS2Ptr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0) ref->FUN_1404d8520(packet);
 }
 // @0x1404d9060
 void CGuildNpcShopMgr::FUN_1404d9060(unsigned id,CInPacket* packet){
-    Unk_PayloadPtr<CGuildNpcShop> ref=GetOrCreateShop(id);
+    MS2Ptr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0){
-        Unk_PayloadPtr<CNpcShopProductProxy> product(new CNpcShopProductProxy);
+        MS2Ptr<CNpcShopProductProxy> product(new CNpcShopProductProxy);
         product->FUN_1404d7fa0(packet);
         int index=ref->FUN_1404d82a0(product->f18,product->f1c,0);
         if(index>=0) ref->products[index]=product;
@@ -1012,8 +1013,8 @@ static CString s_guildNames[7]={CString("None"),CString("Buy"),CString("Like"),C
 // Operations used by the storage/shop methods in the other parts of the same original object.
 // These compile-time drivers are never called or hooked.
 void Unk_GuildEmitStorageOperations(std::map<std::pair<unsigned,int>,ItemEntity>& storage,
-                                   std::map<unsigned,Unk_PayloadPtr<CGuildXmlData::GuildRaid>>& raids,
-                                   std::map<unsigned,Unk_PayloadPtr<CGuildNpcShop>>& shops,
+                                   std::map<unsigned,MS2Ptr<CGuildXmlData::GuildRaid>>& raids,
+                                   std::map<unsigned,MS2Ptr<CGuildNpcShop>>& shops,
                                    unsigned& id,int& rank) {
     std::pair<unsigned,int> key(id,std::move(rank));
     storage[key];
@@ -1034,7 +1035,7 @@ void Unk_GuildEmitCopies(std::map<unsigned,int>& raids,
 }
 
 void Unk_GuildEmitHistory(guilddef4::HistDeque& history,guilddef4::MapStorage2& storage,
-                         const guilddef4::TP<guilddef4::Hist>& entry,__int64 id,int rank) {
+                         const MS2Ptr<guilddef4::Hist>& entry,__int64 id,int rank) {
     history.push_back(entry);
     history.clear();
     std::pair<__int64,int> key(id,rank);

@@ -24,7 +24,7 @@
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/worldservice.h"
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -52,7 +52,7 @@ public:
 class Unk_GcWorld : public WorldService
 {
 public:
-    MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
+    // (FUN_141bc6090, the interactable object at a point: WorldService's own member, point by value)
 };
 
 // The local player: only the position getter (slot 18) is used here.
@@ -152,10 +152,10 @@ CGuideConditionPosition::CGuideConditionPosition()
 }
 
 // @0x1413a6f30
-void CGuideConditionPosition::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionPosition::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("cube")); pCube != 0; pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
+    for (TiXmlElement* pCube = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("cube")); pCube != 0; pCube = ((class TiXmlElement*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
     {
         float fRange = 75.0f;
         XmlGetAttr((class TiXmlElement*)(pCube), "range", fRange);

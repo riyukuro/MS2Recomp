@@ -10,7 +10,7 @@
 #include <NiPoint3.h>
 
 class TiXmlNode;
-class Unk_140165cf0;   // game TinyXML element (see effectdummy.cpp)
+class TiXmlElement;   // game TinyXML element (see effectdummy.cpp)
 
 
 class CEffectDummy : public CPtred
@@ -25,7 +25,7 @@ public:
     bool operator!=(const CEffectDummy& o) const;           // 0x140a510b0
     MS2SvrPtr<CEffectDummy> Clone() const;                  // 0x140a51100
     void Assign(const CEffectDummy& o);                     // 0x140a513d0 (member-wise copy)
-    void Parse(Unk_140165cf0* pNode);                           // 0x140a511b0: <dummy name> <attachInfo ...> <transform ...>
+    void Parse(TiXmlElement* pNode);                           // 0x140a511b0: <dummy name> <attachInfo ...> <transform ...>
     void SetName(const CString& s);                         // 0x140a512e0
     void SetParentNode(const CString& s);                   // 0x140a51310
     void SetTranslate(const NiPoint3& v);              // 0x140a51340
@@ -112,7 +112,7 @@ public:
     EffectDummyGroup();                                     // 0x140a51490
 
     void FUN_140a514e0(TiXmlNode* pNode);                   // builds the dummy list from the <dummy> children
-    void FUN_140a515c0();                                   // (list size, used as a count)
+    size_t FUN_140a515c0();                                 // list size (the callers use it as a count)
     MS2SvrPtr<CEffectDummy> FUN_140a515f0(const CString& name);   // lookup by name
     bool FUN_140a516e0(unsigned int idx, void* pOut);       // copies dummy [idx] into *pOut (a CEffectDummy)
 

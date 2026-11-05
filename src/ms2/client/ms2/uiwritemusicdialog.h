@@ -32,7 +32,7 @@ class ASUIComponent;
 class ASDropdownMenu;
 class MMLToken;
 class ASSlider;
-class Unk_140165cf0;
+class TiXmlElement;
 class UISwfEntity;
 class UIMsg;
 
@@ -90,7 +90,7 @@ public:
     void ImportMmlFile();                                                   // 0x140ff2600 the open file box
     void FUN_140ff2700(const CStringW& strPath);                            // 0x140ff2700 load an .ms2mml file
     void FUN_140ff2cf0(const CStringW& strPath);                            // 0x140ff2cf0 save an .ms2mml file
-    bool FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& strOut, int* pnTotal);   // 0x140ff3230 one tab of the file
+    bool FUN_140ff3230(TiXmlElement* pElem, int nMax, CString& strOut, int* pnTotal);   // 0x140ff3230 one tab of the file
     void SetPlayStartButtonVisible(bool bVisible);                                      // 0x140ff3350 "setPlayStartButtonVisible"
     bool IsMusicScoreDirty();                                                   // 0x140ff33c0 "m_dirtyMusicScore"
     void SetMusicScoreDirty(bool bDirty);                                        // 0x140ff3450 set "m_dirtyMusicScore"

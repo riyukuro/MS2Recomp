@@ -28,7 +28,7 @@
 
 class ASData;
 class NotifyObject;
-class Unk_140165cf0;
+class TiXmlElement;
 
 // ---- ?\uisidepopuptalk.cpp#3: the conditions and the table ----------------------------------------------------------
 
@@ -50,7 +50,7 @@ public:
     static ClassObject* CreateObject();                     // 0x140e8d770
     CSidePopupCondition();                                  // 0x140e8d820
     virtual CStringW GetTypeName();                             // 1 0x140e8d7d0 class name
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x140e8d860 Load: "key"
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x140e8d860 Load: "key"
     // @0x140e91ba0
     virtual int vfunc_3() { return 1; }                     // 3 the popup may show (Find)
     // @0x140e91b90
@@ -101,7 +101,7 @@ public:
     static ClassObject* CreateObject();                     // 0x140e8dd10
     virtual CStringW GetTypeName();                             // 1 0x140e8dd70
     CSidePopupConditionQuestProgress();                     // 0x140e8ddc0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x140e8de10 + "args"
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x140e8de10 + "args"
     virtual int vfunc_3();                                  // 3 0x140e8de60
     virtual int vfunc_4();                                  // 4 0x140e8de80
     int FUN_140e8dea0();                                    // every progress counter equals its arg

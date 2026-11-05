@@ -33,7 +33,7 @@ ItemDummyInfo::ItemDummyInfo()
 }
 
 // @0x140314350
-void ItemDummyInfo::Load(Unk_140165cf0* pElem)
+void ItemDummyInfo::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(gender));
     XmlGetAttr((class TiXmlElement*)(pElem), "sequence", sequence);

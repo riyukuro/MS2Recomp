@@ -102,10 +102,10 @@ MS2_CHECK_OFFSET(Unk_ObsKillView, m_strVictim, 0x20);
 
 typedef ATL::CAtlMap<unsigned, MS2Ptr<CProxyGameObject> > Unk_ObsProxyMap;
 
-class Unk_ObsWorld
+class Unk_ObsWorld : public WorldService
 {
 public:
-    MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);    // the proxy of a player by name
+    // FUN_141bc9d60 (the proxy of a player by name): WorldService's own member
 };
 
 class UIDamageEffect : public UIObject

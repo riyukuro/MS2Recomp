@@ -16,7 +16,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -33,7 +33,7 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 
 // Reads an attribute that is converted by name; stores the value only on success.
 // @0x1406363a0
-static int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+static int FUN_1406363a0(TiXmlElement* pElem, const char* pszName, int* pOut);
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -64,10 +64,10 @@ int CJobConditionTable::LoadFile(const CString& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -103,7 +103,7 @@ CJobConditionTable::NpcJobDataPtr CJobConditionTable::GetData(int nNpcId)
 }
 
 // @0x1406363a0
-static int FUN_1406363a0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+static int FUN_1406363a0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)

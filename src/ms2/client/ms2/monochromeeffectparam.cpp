@@ -35,7 +35,7 @@ MonochromeEffectParam::MonochromeEffectParam()
 }
 
 // @0x141487730
-void MonochromeEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void MonochromeEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "saturationMin", m_fSaturationMin);

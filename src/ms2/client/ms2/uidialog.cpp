@@ -4,20 +4,20 @@
 // MS2-RANGE: 0x140112990-0x140112b40 .text$di
 // MS2-RANGE: 0x142cbdbd0-0x142cbdca0 .text$yd
 // MS2-PIN: ??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEBH@Z 0x141926b20
-// MS2-PIN: ??1?$MS2Ptr@VUnk_WebGuideEntry@@@@QEAA@XZ 0x1419271c0
-// MS2-PIN: ??8?$MS2Ptr@VUnk_WebGuideEntry@@@@QEBA_NPEAVUnk_WebGuideEntry@@@Z 0x141927240
+// MS2-PIN: ??1?$MS2Ptr@VWebGuide@@@@QEAA@XZ 0x1419271c0
+// MS2-PIN: ??8?$MS2Ptr@VWebGuide@@@@QEBA_NPEAVWebGuide@@@Z 0x141927240
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x1419272c0
 // MS2-PIN: ??_GUIDialog@@UEAAPEAXI@Z 0x141927340
-// MS2-PIN: ??B?$MS2Ptr@VUnk_140acd6e0@@@@QEBAPEAVUnk_140acd6e0@@XZ 0x141927810
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_WebGuideEntry@@@@AEBAXXZ 0x141927c10
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_WebGuideEntry@@@@CAXPEAVUnk_WebGuideEntry@@@Z 0x141927c40
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_WebGuideEntry@@@@AEBAXPEAX@Z 0x141927c60
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_WebGuideEntry@@@@AEAAXXZ 0x141927c90
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_WebGuideEntry@@@@AEAAXPEAX@Z 0x141927cd0
+// MS2-PIN: ?get@?$MS2Ptr@VASButton@@@@QEBAPEAVASButton@@XZ 0x141927810
+// MS2-PIN: ?AddRef@?$MS2Ptr@VWebGuide@@@@AEBAXXZ 0x141927c10
+// MS2-PIN: ?Reference@?$MS2Ptr@VWebGuide@@@@CAXPEAVWebGuide@@@Z 0x141927c40
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VWebGuide@@@@AEBAXPEAX@Z 0x141927c60
+// MS2-PIN: ?Release@?$MS2Ptr@VWebGuide@@@@AEAAXXZ 0x141927c90
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VWebGuide@@@@AEAAXPEAX@Z 0x141927cd0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?FreeNode@?$CAtlList@W4Unk_UIType@@V?$CElementTraits@W4Unk_UIType@@@ATL@@@ATL@@AEAAXPEAVCNode@12@@Z 0x1419274e0 ; unique
 // MS2-PIN: ?GetFreeNode@?$CAtlList@W4Unk_UIType@@V?$CElementTraits@W4Unk_UIType@@@ATL@@@ATL@@AEAAXXZ 0x141927550 ; unique
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WebGuideEntry@@@@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VUnk_WebGuideEntry@@@@@2@@ATL@@QEBAIXZ 0x141927630 ; unique
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VWebGuide@@@@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VWebGuide@@@@@2@@ATL@@QEBAIXZ 0x141927630 ; unique
 // MS2-PIN: ?RemoveAt@?$CAtlList@W4Unk_UIType@@V?$CElementTraits@W4Unk_UIType@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141927b30 ; unique
 // MS2-PINS-END tplpin
 //
@@ -95,19 +95,19 @@ public:
     void FUN_1422e6230(int n);
 };
 // The button wrapper of the bound children ("m_closeButton", "m_dragBar", "m_webGuideButton").
-class Unk_140acd6e0 : public ASButton
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
+class Unk_Finder : public ASDisplayObjectContainer   // C3: was Unk_ASChildFinder; the definer view (unit_140cff310_gfxutilwrappers)
 {
 public:
-};
-class Unk_ASChildFinder : public ASDisplayObjectContainer
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140d01c90(const CString& strName);    // recursive getChildByName
+    MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);    // recursive getChildByName (the ASButton instance, the only T here)
 };
 class ASUIComponentEx : public ASUIComponent
 {
 };
-MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);    // new ASDialog(v, nMovieId)
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);    // C3: was FUN_140e43fe0 (T = ASDialog: new ASDialog(v, nMovieId))
 
 // ---- game singletons and helpers ----
 class Unk_14140ea40                                                 // dialog open/close listener
@@ -145,24 +145,24 @@ public:
 extern unsigned DAT_143af62d4;                                      // client area width
 extern unsigned DAT_143af62d8;                                      // client area height
 extern int DAT_143af62dc;                                           // dialogs blocked
-// The web guide entries keyed by "<dialog name><n>".
-class Unk_WebGuideEntry : public CPtred {};
-class Unk_1414a5880
+// The web guide entries keyed by "<dialog name><n>": WebGuide (the table's vftable is
+// ??_7WebGuideTable@@6B?$DataTableMap@VWebGuide@@...; C3: was the stand-in Unk_WebGuideEntry).
+// C3: was the unit-local view Unk_1414a5880; the definer is WebGuideTable::FUN_141927640 (webguide.h).
+// @0x141927640
+MS2Ptr<WebGuide> WebGuideTable::FUN_141927640(CString strKey)
 {
-public:
-    // @0x141927640
-    MS2Ptr<Unk_WebGuideEntry> FUN_141927640(CString strKey)
-    {
-        MS2Ptr<Unk_WebGuideEntry> sp;
-        if (m_map.Lookup(strKey, sp))
-            return sp;
-        return 0;
-    }
+    MS2Ptr<WebGuide> sp;
+    if (m_map.Lookup(strKey, sp))
+        return sp;
+    return 0;
+}
 
-private:
-    char m_pad_00[0x38];
-    ATL::CAtlMap<CString, MS2Ptr<Unk_WebGuideEntry>, ATL::CStringElementTraits<CString> > m_map;    // +0x38
-};
+
+
+
+
+
+
 
 // ---- xml (game TinyXML) ----
 class TiXmlElement
@@ -178,7 +178,7 @@ public:
     void Clear();
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -219,7 +219,7 @@ MS2_REPLACE_METHOD(0x1419234e0, UIDialog, GetTypeName, 61, 0xEB719311);
 // @0x141923530
 int UIDialog::vfunc_52()
 {
-    return GetChild<Unk_140acd6e0>("m_dragBar").get() != 0;
+    return GetChild<ASButton>("m_dragBar").get() != 0;
 }
 MS2_REPLACE_METHOD(0x141923530, UIDialog, vfunc_52, 144, 0x6143FF76);
 
@@ -927,9 +927,9 @@ MS2_REPLACE_METHOD(0x141925c10, UIDialog, vfunc_32, 58, 0x2E88B7AD);
 // @0x141925c50
 void UIDialog::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140e43fe0(m_28, root);
+    m_30 = Unk_ASCreate<ASDialog>(m_28, root);
     if (m_30.get())
-        m_90 = FUN_140e43fe0(m_28, m_30->FUN_1422bb870());
+        m_90 = Unk_ASCreate<ASDialog>(m_28, m_30->FUN_1422bb870());
     else
         m_90 = 0;
 }
@@ -986,7 +986,7 @@ void UIDialog::FUN_141925fa0(CString strName)
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<Unk_140acd6e0> spBar = FUN_141926e30<Unk_140acd6e0>(strName);
+    MS2Ptr<ASButton> spBar = FUN_141926e30<ASButton>(strName);
     if (spBar == 0)
         return;
     m_30->Invoke("setDragBar", Scaleform::GFx::Value(spBar->FUN_1422bb870()));
@@ -1006,14 +1006,14 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
 {
     if (spRoot == 0)
         return;
-    MS2Ptr<Unk_140acd6e0> spButton = spRoot->FUN_140acce30<Unk_140acd6e0>(strName);
+    MS2Ptr<ASButton> spButton = spRoot->FUN_140acce30<ASButton>(strName);
     if (spButton == 0)
         return;
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5f)) {
         spButton->vfunc_4(false);
         return;
     }
-    if (reinterpret_cast<Unk_1414a5880*>(TSingleton<WebGuideTable>::GetInstance())->FUN_141927640(FUN_1419268a0(n)) == 0) {
+    if (TSingleton<WebGuideTable>::GetInstance()->FUN_141927640(FUN_1419268a0(n)) == 0) {
         spButton->vfunc_4(false);
         return;
     }
@@ -1029,7 +1029,7 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
 // @0x1419264e0
 void UIDialog::FUN_1419264e0(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
-    MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>(strName);
+    MS2Ptr<ASButton> spButton = GetChild<ASButton>(strName);
     if (spButton == 0)
         return;
     spButton->FUN_1422ce240(cb, 0);
@@ -1130,7 +1130,7 @@ template <class T> MS2Ptr<T> UIDialog::FUN_141926e30(const CString& strName)
         UIDIALOG_INL_ASSERT_0();
         return MS2Ptr<T>(0);
     }
-    return static_cast<Unk_ASChildFinder*>(spContainer.operator->())->FUN_140d01c90<T>(strName);
+    return static_cast<Unk_Finder*>(spContainer.operator->())->FUN_140d01c90(strName);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x141927e50

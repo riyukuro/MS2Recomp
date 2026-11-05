@@ -38,7 +38,6 @@
 // ---- unit-local views of exe objects ----
 
 class ASDialog : public ASDisplayObjectContainer {};
-class Unk_HudSlider : public ASSlider {};                            // the slider type of the 0x140faff90 child lookup
 
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char* pszName); };   // FirstChildElement, a separate copy from TiXmlNode::FirstChild
 
@@ -217,21 +216,21 @@ void UIMinimapEditDialog::OnLoadComplete()
     if (pDialog != NULL)
         pDialog->SetPositionFloat(0, 0);
 
-    if (MS2Ptr<Unk_HudSlider> spFov = GetChild<Unk_HudSlider>("m_sliderFov"))
+    if (MS2Ptr<ASSlider> spFov = GetChild<ASSlider>("m_sliderFov"))
     {
         spFov->FUN_1422ce750(0);
         spFov->FUN_1422ce6a0(90.0f);
         spFov->FUN_1422ce5f0(CameraMgr::GetInstance()->FUN_140ad4b40());
         spFov->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_HudSlider> spDistance = GetChild<Unk_HudSlider>("m_sliderDistance"))
+    if (MS2Ptr<ASSlider> spDistance = GetChild<ASSlider>("m_sliderDistance"))
     {
         spDistance->FUN_1422ce750(10.0f);
         spDistance->FUN_1422ce6a0(20000.0f);
         spDistance->FUN_1422ce5f0(FUN_1409f2430(CameraMgr::GetInstance()));
         spDistance->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_HudSlider> spVAngle = GetChild<Unk_HudSlider>("m_sliderVAngle"))
+    if (MS2Ptr<ASSlider> spVAngle = GetChild<ASSlider>("m_sliderVAngle"))
     {
         spVAngle->FUN_1422ce750(0);
         spVAngle->FUN_1422ce6a0(90.0f);

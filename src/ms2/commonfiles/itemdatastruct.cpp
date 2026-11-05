@@ -58,7 +58,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -67,17 +67,17 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers.
-int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
+int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
 void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // C3: was FUN_1402c8940
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
 CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
 int FUN_1402227e0(int, int);  // C3: the definition's signature
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
@@ -147,40 +147,40 @@ template <> void XmlSplitImpl(const CString& str, std::vector<__int64>& vec, con
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
 // TinyXML attribute (only the sentinel of an element's attribute set is touched here).
-class Unk_TiXmlAttribute
-{
-public:
-    void* unknown00[7];                         // TiXmlBase, document, name, value, prev
-    Unk_TiXmlAttribute* next;                   // +0x38
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 MS2_CHECK_SIZE(Unk_TiXmlAttribute, 0x40);
 
-class Unk_TiXmlAttributeSet
-{
-public:
-    // @0x140552d70
-    Unk_TiXmlAttribute* First() { return (sentinel.next == &sentinel) ? 0 : sentinel.next; }
-    Unk_TiXmlAttribute sentinel;
-};
+// C3 #12: was a local TiXml view
 
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);      // 0x14086f2f0
-    virtual ~TiXmlElement();                // 0x14086f450
-    char const* Attribute(char const*) const;
-    // @0x140552e00
-    bool HasAttributes() { return attributeSet.First() == 0 ? false : true; }
-    // @0x140552e40
-    bool HasChildren() { return firstChild == 0 ? false : true; }
-    // @0x140552e70
-    bool HasContent() { return HasAttributes() || HasChildren(); }
-private:
-    void* unknown00[4];                         // TiXmlBase, parent, type
-    void* firstChild;                           // +0x28
-    void* unknown30[4];                         // lastChild, value, prev, next
-    Unk_TiXmlAttributeSet attributeSet;         // +0x50
-};
+
+
+
+
+
+
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // Drops one leading and one trailing comma of a joined list (an inline helper of the XML writers).
@@ -209,7 +209,7 @@ DropNifData::DropNifData()
 }
 
 // @0x1405434f0
-void DropNifData::FUN_1405434f0(Unk_140165cf0* pElem)
+void DropNifData::FUN_1405434f0(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "typeID", reinterpret_cast<unsigned&>(m_nTypeId));
     XmlGetAttr((class TiXmlElement*)(pElem), "min", m_nUnk1c);
@@ -236,7 +236,7 @@ ItemDropEffect::ItemDropEffect()
 }
 
 // @0x140543730
-void ItemDropEffect::Load(Unk_140165cf0* pElem)
+void ItemDropEffect::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "typeID", reinterpret_cast<unsigned&>(typeID));
     XmlGetAttr((class TiXmlElement*)(pElem), "scale", reinterpret_cast<float&>(scale));
@@ -284,7 +284,7 @@ ModelPart::ModelPart()
 }
 
 // @0x140543ca0
-int ModelPart::Load(Unk_140165cf0* pElem)
+int ModelPart::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "name", name0);
     XmlGetAttr((class TiXmlElement*)(pElem), "selfnode", name8);
@@ -312,17 +312,17 @@ int ModelPart::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "mantlescale", reinterpret_cast<float&>(mantlescale));
     XmlGetAttr((class TiXmlElement*)(pElem), "weapon", reinterpret_cast<int&>(weapon));
     XmlGetAttr((class TiXmlElement*)(pElem), "placeable", reinterpret_cast<int&>(placeable));
-    for (Unk_140165cf0* pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("custom")); pCustom != 0;
-         pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
+    for (TiXmlElement* pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("custom")); pCustom != 0;
+         pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
     {
         MS2Ptr<ItemCustom> spCustom(new ItemCustom);
         spCustom->FUN_140266aa0(pCustom);
         customs.push_back(spCustom);
     }
-    for (Unk_140165cf0* pRotation = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("userrotation")); pRotation != 0;
-         pRotation = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRotation))->NextSibling("userrotation")))
+    for (TiXmlElement* pRotation = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("userrotation")); pRotation != 0;
+         pRotation = ((class TiXmlElement*)((class Unk_XmlNode*)(pRotation))->NextSibling("userrotation")))
     {
-        const char* pszAxis = ((class TiXmlElement*)(class Unk_140165cf0*)(pRotation))->Attribute("axis");
+        const char* pszAxis = ((class TiXmlElement*)(class TiXmlElement*)(pRotation))->Attribute("axis");
         if (pszAxis != 0)
         {
         if (_stricmp(pszAxis, "x") == 0)
@@ -361,12 +361,12 @@ int ModelPart::Load(Unk_140165cf0* pElem)
         }
     }
     int nJoint = 0;
-    for (Unk_140165cf0* pJoint = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("jointangle")); pJoint != 0;
-         pJoint = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJoint))->NextSibling("jointangle")))
+    for (TiXmlElement* pJoint = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("jointangle")); pJoint != 0;
+         pJoint = ((class TiXmlElement*)((class Unk_XmlNode*)(pJoint))->NextSibling("jointangle")))
     {
         if (nJoint == 4)
             break;
-        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pJoint))->Attribute("name");
+        const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pJoint))->Attribute("name");
         ModelNamedColor& color = colors[nJoint++];
         color.name = pszName;
         XmlGetAttr((class TiXmlElement*)(pJoint), "soft", reinterpret_cast<float&>(color.soft));
@@ -385,8 +385,8 @@ int ModelPart::Load(Unk_140165cf0* pElem)
             properties.insert(std::make_pair(strKey, capHairs[i]));
         }
     }
-    for (Unk_140165cf0* pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dummy")); pDummy != 0;
-         pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummy))->NextSibling("dummy")))
+    for (TiXmlElement* pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("dummy")); pDummy != 0;
+         pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(pDummy))->NextSibling("dummy")))
     {
         ModelNameEntry entry;
         reinterpret_cast<ItemDummyInfo*>(&entry)->Load(pDummy);
@@ -402,7 +402,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
             entries[entry.gender].push_back(entry);
         }
     }
-    Unk_140165cf0* pPhysX = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("physx"));
+    TiXmlElement* pPhysX = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("physx"));
     if (pPhysX != 0)
     {
         CString strAction = Unk_ReadString((class Unk_XmlNode*)(pPhysX), "action", "");
@@ -437,7 +437,7 @@ ModelFloatList::ModelFloatList() : maxValue(1.0f), minValue(0), reverse(0)
 }
 
 // @0x140544b70
-int ModelFloatList::Load(Unk_140165cf0* pElem)
+int ModelFloatList::Load(TiXmlElement* pElem)
 {
     XmlTokenList(pElem, "value", values);
     XmlGetAttr((class TiXmlElement*)(pElem), "min", reinterpret_cast<float&>(minValue));
@@ -467,12 +467,12 @@ ModelGroup::ModelGroup()
 }
 
 // @0x140544cf0
-void ModelGroup::FUN_140544cf0(Unk_140165cf0* pElem)
+void ModelGroup::FUN_140544cf0(TiXmlElement* pElem)
 {
     ReadSlotAttr(pElem, "name", &type);
     int nPony = 0;
-    for (Unk_140165cf0* pAsset = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("asset")); pAsset != 0;
-         pAsset = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAsset))->NextSibling("asset")))
+    for (TiXmlElement* pAsset = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("asset")); pAsset != 0;
+         pAsset = ((class TiXmlElement*)((class Unk_XmlNode*)(pAsset))->NextSibling("asset")))
     {
         parts.push_back(ModelPart());
         ModelPart* pPart = &parts[parts.size() - 1];
@@ -480,8 +480,8 @@ void ModelGroup::FUN_140544cf0(Unk_140165cf0* pElem)
         if (pPart->pony != 0)
             pPart->ponyIndex = nPony++;
     }
-    for (Unk_140165cf0* pScale = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("scale")); pScale != 0;
-         pScale = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pScale))->NextSibling("scale")))
+    for (TiXmlElement* pScale = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("scale")); pScale != 0;
+         pScale = ((class TiXmlElement*)((class Unk_XmlNode*)(pScale))->NextSibling("scale")))
     {
         floats.push_back(ModelFloatList());
         ModelFloatList* pFloats = &floats[floats.size() - 1];
@@ -564,16 +564,16 @@ ItemLimit::ItemLimit()
 }
 
 // @0x1405452f0
-int ItemLimit::Load(Unk_140165cf0* pElem)
+int ItemLimit::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pLimit = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("limit"));
+    TiXmlElement* pLimit = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("limit"));
     if (pLimit != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pLimit), "genderLimit", genderLimit);
         XmlGetAttr((class TiXmlElement*)(pLimit), "levelLimit", levelLimit);
         XmlValue(pLimit, "transferType", transferType);
         XmlGetAttr((class TiXmlElement*)(pLimit), "transferTypeVersion", reinterpret_cast<int&>(transferTypeVersion));
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pLimit))->Attribute("globalTransferType") != 0)
+        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pLimit))->Attribute("globalTransferType") != 0)
             XmlValue(pLimit, "globalTransferType", transferType);
         XmlGetAttr((class TiXmlElement*)(pLimit), "shopSell", reinterpret_cast<bool&>(shopSell));
         XmlValue(pLimit, "enableBreak", enableBreak);
@@ -794,9 +794,9 @@ ItemPeriod::ItemPeriod() : usePeriod(0), expirationType(ItemExpirationTypeNone),
 }
 
 // @0x140546150
-int ItemPeriod::Load(Unk_140165cf0* pElem)
+int ItemPeriod::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pLife = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("life"));
+    TiXmlElement* pLife = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("life"));
     if (pLife != 0)
     {
         ATL::CAtlArray<int> values;
@@ -868,9 +868,9 @@ ItemSkill::ItemSkill() : skillId(0), skillLevel(1)
 }
 
 // @0x140546770
-int ItemSkill::LoadXml(Unk_140165cf0* pElem)
+int ItemSkill::LoadXml(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
+    TiXmlElement* pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
     if (pSkill != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pSkill), "skillID", skillId);
@@ -902,7 +902,7 @@ MsTransform::MsTransform()
 }
 
 // @0x1405468d0
-void MsTransform::LoadXml(Unk_140165cf0* pElem)
+void MsTransform::LoadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "position", *(class NiPoint3*)&static_cast<class efd::Point3&>(position));
     XmlGetAttr((class TiXmlElement*)(pElem), "rotation", *(class NiPoint3*)&static_cast<class efd::Point3&>(rotation));
@@ -927,9 +927,9 @@ ItemModelHead::ItemModelHead() : flag10(false), flag11(false), unknown14(0), sca
 }
 
 // @0x140546a90
-int ItemModelHead::Load(Unk_140165cf0* pElem)
+int ItemModelHead::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pCustomize = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("customize"));
+    TiXmlElement* pCustomize = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("customize"));
     if (pCustomize == 0)
         return 1;
     XmlGetAttr((class TiXmlElement*)(pCustomize), "color", reinterpret_cast<bool&>(flag10));
@@ -945,7 +945,7 @@ int ItemModelHead::Load(Unk_140165cf0* pElem)
     flag11 = ids.size() > 1;
     if (unknown14 == 0)
         flag10 = false;
-    Unk_140165cf0* pCapTransform = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCustomize))->FirstChild("capTransform"));
+    TiXmlElement* pCapTransform = ((class TiXmlElement*)((class Unk_XmlNode*)(pCustomize))->FirstChild("capTransform"));
     if (pCapTransform != 0)
     {
         handle.AssignRaw(new MsTransform);
@@ -1083,9 +1083,9 @@ ItemMaterial::ItemMaterial()
 }
 
 // @0x1405473c0
-int ItemMaterial::FUN_1405473c0(Unk_140165cf0* pElem)
+int ItemMaterial::FUN_1405473c0(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pMaterial = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("material"));
+    TiXmlElement* pMaterial = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("material"));
     if (pMaterial != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pMaterial), "ui", reinterpret_cast<int&>(unknown0));
@@ -1119,7 +1119,7 @@ ItemProperty::ItemProperty()
 }
 
 // @0x1405475c0
-void ItemProperty::Load(Unk_140165cf0* pElem)
+void ItemProperty::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "slotMax", slotMax);
     slotMax = (std::min<unsigned>)(slotMax, 99999);
@@ -1131,7 +1131,7 @@ void ItemProperty::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "slotIcon", slotIcon);
     XmlGetAttr((class TiXmlElement*)(pElem), "movie", movie);
     XmlGetAttr((class TiXmlElement*)(pElem), "remakeDisable", reinterpret_cast<bool&>(remakeDisable));
-    Unk_140165cf0* pSell = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("sell"));
+    TiXmlElement* pSell = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("sell"));
     if (pSell != 0)
         XmlTokenList(pSell, "price", sellPrice);
     XmlGetAttr((class TiXmlElement*)(pElem), "gearScore", gearScore);
@@ -1139,15 +1139,15 @@ void ItemProperty::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "unlimitedEnchantMaxGrade", reinterpret_cast<int&>(unlimitedEnchantMaxGrade));
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingLimitCount", reinterpret_cast<int&>(rePackingLimitCount));
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingItemConsumeCount", reinterpret_cast<int&>(rePackingItemConsumeCount));
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingLimitCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingLimitCount") != 0)
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingLimitCount", reinterpret_cast<int&>(rePackingLimitCount));
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingItemConsumeCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingItemConsumeCount") != 0)
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingItemConsumeCount", reinterpret_cast<int&>(rePackingItemConsumeCount));
     CString strScrollIds;
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingScrollID", strScrollIds);
     if (!strScrollIds.IsEmpty())
         XmlSplit(strScrollIds, rePackingScrollID, ",");
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("globalRePackingScrollID") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingScrollID") != 0)
     {
         CString strGlobalScrollIds;
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingScrollID", strGlobalScrollIds);
@@ -1287,9 +1287,9 @@ ItemInstallData::ItemInstallData()
 }
 
 // @0x140548320
-int ItemInstallData::Load(Unk_140165cf0* pElem)
+int ItemInstallData::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pInstall = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("install"));
+    TiXmlElement* pInstall = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("install"));
     if (pInstall != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pInstall), "placeable", reinterpret_cast<int&>(placeable));
@@ -1309,7 +1309,7 @@ int ItemInstallData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pInstall), "mapAttribute", mapAttribute);
         XmlGetAttr((class TiXmlElement*)(pInstall), "propCollisionGroup", reinterpret_cast<int&>(propCollisionGroup));
         XmlGetAttr((class TiXmlElement*)(pInstall), "useInstancing", reinterpret_cast<bool&>(useInstancing));
-        const char* pszDimension = ((class TiXmlElement*)(class Unk_140165cf0*)(pInstall))->Attribute("physXdimension");
+        const char* pszDimension = ((class TiXmlElement*)(class TiXmlElement*)(pInstall))->Attribute("physXdimension");
         if (pszDimension != 0)
             physXdimension = FUN_14028f060(FUN_140188f50(pszDimension, 0));
     }
@@ -1451,9 +1451,9 @@ ItemHousing::ItemHousing()
 }
 
 // @0x140548e50
-int ItemHousing::LoadXml(Unk_140165cf0* pElem, int nItemId)
+int ItemHousing::LoadXml(TiXmlElement* pElem, int nItemId)
 {
-    Unk_140165cf0* pHousing = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("housing"));
+    TiXmlElement* pHousing = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("housing"));
     if (pHousing != 0)
     {
         XmlValue(pHousing, "filter", filter);
@@ -1470,7 +1470,7 @@ int ItemHousing::LoadXml(Unk_140165cf0* pElem, int nItemId)
 }
 
 // @0x140548fe0
-void ItemHousing::LoadElement(Unk_140165cf0* pElem, int nItemId)
+void ItemHousing::LoadElement(TiXmlElement* pElem, int nItemId)
 {
     itemId = nItemId;
     XmlValue(pElem, "filter", filter);
@@ -1560,9 +1560,9 @@ ItemFusion::ItemFusion()
 }
 
 // @0x140549520
-int ItemFusion::LoadXml(Unk_140165cf0* pElem)
+int ItemFusion::LoadXml(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pFusion = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("fusion"));
+    TiXmlElement* pFusion = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("fusion"));
     if (pFusion != 0)
         XmlGetAttr((class TiXmlElement*)(pFusion), "fusionable", reinterpret_cast<int&>(fusionable));
     return 1;
@@ -1580,9 +1580,9 @@ ItemUccMesh::ItemUccMesh()
 }
 
 // @0x1405495d0
-int ItemUccMesh::LoadXml(Unk_140165cf0* pElem)
+int ItemUccMesh::LoadXml(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pUcc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("ucc"));
+    TiXmlElement* pUcc = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("ucc"));
     if (pUcc != 0)
         XmlGetAttr((class TiXmlElement*)(pUcc), "mesh", mesh);
     return 1;
@@ -1606,9 +1606,9 @@ ItemEffect::ItemEffect() : enchantShape(1), sameBattleIdle(false), sameCharacter
 }
 
 // @0x140549740
-int ItemEffect::Load(Unk_140165cf0* pElem)
+int ItemEffect::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effect"));
+    TiXmlElement* pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("effect"));
     if (pEffect != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pEffect), "enchantShape", reinterpret_cast<int&>(enchantShape));
@@ -1684,9 +1684,9 @@ ItemAdditionalEffect::ItemAdditionalEffect()
 }
 
 // @0x140549c00
-int ItemAdditionalEffect::FUN_140549c00(Unk_140165cf0* pElem)
+int ItemAdditionalEffect::FUN_140549c00(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("AdditionalEffect"));
+    TiXmlElement* pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("AdditionalEffect"));
     if (pEffect != 0)
     {
         CString strIds = Unk_ReadString((class Unk_XmlNode*)(pEffect), "id", "");
@@ -1752,9 +1752,9 @@ ItemFunction::ItemFunction()
 }
 
 // @0x140549f00
-int ItemFunction::Load(Unk_140165cf0* pElem)
+int ItemFunction::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("function"));
+    TiXmlElement* p = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("function"));
     if (p != 0)
     {
         XmlGetAttr((class TiXmlElement*)(p), "name", name);
@@ -1863,9 +1863,9 @@ ItemMusicScore::ItemMusicScore()
 }
 
 // @0x14054a7b0
-int ItemMusicScore::LoadXml(Unk_140165cf0* pElem)
+int ItemMusicScore::LoadXml(TiXmlElement* pElem)
 {
-    Unk_140165cf0* p = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("MusicScore"));
+    TiXmlElement* p = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("MusicScore"));
     if (p != 0)
     {
         XmlGetAttr((class TiXmlElement*)(p), "playCount", reinterpret_cast<int&>(playCount));
@@ -1880,7 +1880,7 @@ int ItemMusicScore::LoadXml(Unk_140165cf0* pElem)
 }
 
 // @0x14054a8c0
-int ItemMusicScore::LoadElement(Unk_140165cf0* pElem)
+int ItemMusicScore::LoadElement(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "playCount", reinterpret_cast<int&>(playCount));
     XmlGetAttr((class TiXmlElement*)(pElem), "masteryValueMax", reinterpret_cast<int&>(masteryValueMax));
@@ -1997,13 +1997,13 @@ void ItemModelData::FUN_14054aee0(int n)
 }
 
 // @0x14054af00
-void ItemModelData::FUN_14054af00(Unk_140165cf0* pElem)
+void ItemModelData::FUN_14054af00(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "desc", name);
-    Unk_140165cf0* pSlots = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("slots"));
+    TiXmlElement* pSlots = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("slots"));
     if (pSlots != 0)
     {
-        for (Unk_140165cf0* pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlots))->FirstChild("slot")); pSlot != 0; pSlot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->NextSibling("slot")))
+        for (TiXmlElement* pSlot = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlots))->FirstChild("slot")); pSlot != 0; pSlot = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlot))->NextSibling("slot")))
         {
             groups.push_back(ModelGroup());
             ModelGroup& group = groups[groups.size() - 1];
@@ -2016,10 +2016,10 @@ void ItemModelData::FUN_14054af00(Unk_140165cf0* pElem)
         }
     }
     head.Load(pElem);
-    Unk_140165cf0* pCutting = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("cutting"));
+    TiXmlElement* pCutting = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("cutting"));
     if (pCutting != 0)
     {
-        for (Unk_140165cf0* pMesh = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCutting))->FirstChild("mesh")); pMesh != 0; pMesh = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMesh))->NextSibling("mesh")))
+        for (TiXmlElement* pMesh = ((class TiXmlElement*)((class Unk_XmlNode*)(pCutting))->FirstChild("mesh")); pMesh != 0; pMesh = ((class TiXmlElement*)((class Unk_XmlNode*)(pMesh))->NextSibling("mesh")))
         {
             CString strName = Unk_ReadString((class Unk_XmlNode*)(pMesh), "name", "");
             if (strName.IsEmpty())

@@ -43,7 +43,7 @@ GaussianBlurEffectParam::GaussianBlurEffectParam()
 }
 
 // @0x140cfd300
-void GaussianBlurEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void GaussianBlurEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "offsetMin", m_fOffsetMin);

@@ -18,12 +18,12 @@
 
 // ---- unit-local placeholders ----
 
-// An RGB triple (ctor 0x1405522f0).
-struct Unk_Color3
-{
-    Unk_Color3();
-    float r, g, b;
-};
+// The SSS colour is a NiPoint3 (r, g, b in x, y, z; NiPoint3() 0x1405522f0).
+#include <NiPoint3.h>
+//
+//
+//
+//
 
 // The character rim light / SSS settings (statics; the setters live in another unit, the getters are inline COMDATs
 // of this obj).
@@ -31,19 +31,19 @@ class Unk_RimLight
 {
 public:
     static void FUN_14107b2a0(float fYaw, float fPitch);                 // s_fYaw = fYaw, s_fPitch = fPitch
-    static void FUN_14107b320(const Unk_Color3& color, float fPower);    // s_sssColor = color, s_fSSSPower = fPower
+    static void FUN_14107b320(const NiPoint3& color, float fPower);      // s_sssColor = color, s_fSSSPower = fPower
     // @0x141709920
     static float FUN_141709920() { return s_fPitch; }
     // @0x141709930
     static float FUN_141709930() { return s_fYaw; }
     // @0x141709940
-    static const Unk_Color3* FUN_141709940() { return &s_sssColor; }
+    static const NiPoint3* FUN_141709940() { return &s_sssColor; }
     // @0x141709950
     static float FUN_141709950() { return s_fSSSPower; }
 
     static float s_fPitch;              // 0x1439f6fec
     static float s_fYaw;                // 0x143acd4b0
-    static Unk_Color3 s_sssColor;       // 0x143acd550
+    static NiPoint3 s_sssColor;         // 0x143acd550
     static float s_fSSSPower;           // 0x1439f6ff0
 };
 
@@ -80,10 +80,10 @@ void UIRimLightDialog::OnLoadComplete()
     obj.FUN_140e06d60("shadowMinScale", 0.5);
     ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultSize", 100);
     ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultBias", 3);
-    const Unk_Color3* pColor = Unk_RimLight::FUN_141709940();
-    obj.FUN_1409c4a30("sssRed", pColor->r);
-    obj.FUN_1409c4a30("sssGreen", pColor->g);
-    obj.FUN_1409c4a30("sssBlue", pColor->b);
+    const NiPoint3* pColor = Unk_RimLight::FUN_141709940();
+    obj.FUN_1409c4a30("sssRed", pColor->x);
+    obj.FUN_1409c4a30("sssGreen", pColor->y);
+    obj.FUN_1409c4a30("sssBlue", pColor->z);
     obj.FUN_1409c4a30("sssPower", Unk_RimLight::FUN_141709950());
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
@@ -138,10 +138,10 @@ MS2_REPLACE_METHOD(0x141709800, UIRimLightDialog, FUN_141709800, 91, 0x28CBBBB8)
 // @0x141709870
 void UIRimLightDialog::FUN_141709870(ASData& data)
 {
-    Unk_Color3 color;
-    color.r = data.PopFloat();
-    color.g = data.PopFloat();
-    color.b = data.PopFloat();
+    NiPoint3 color;
+    color.x = data.PopFloat();
+    color.y = data.PopFloat();
+    color.z = data.PopFloat();
     float fPower = data.PopFloat();
     Unk_RimLight::FUN_14107b320(color, fPower);
 }

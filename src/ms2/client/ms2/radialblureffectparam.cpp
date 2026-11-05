@@ -30,7 +30,7 @@ RadialBlurEffectParam::RadialBlurEffectParam()
 }
 
 // @0x1416ec180
-void RadialBlurEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void RadialBlurEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "distMin", m_fDistMin);

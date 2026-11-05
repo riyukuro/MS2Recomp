@@ -15,7 +15,7 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One recipe row of masteryReceipe.xml, 0xc0 bytes.
 class CMasteryReceipe : public CPtred
@@ -23,7 +23,7 @@ class CMasteryReceipe : public CPtred
 public:
     CMasteryReceipe();                                  // 0x14066d000
     // ~CMasteryReceipe() implicit (virtual through CPtred), 0x14066d630
-    int Load(Unk_140165cf0* pNode);                     // 0x1406694a0
+    int Load(TiXmlElement* pNode);                     // 0x1406694a0
     CStringA IconPath();                                // 0x140669980
 
     int m_nId;                                          // +0x18 "id"

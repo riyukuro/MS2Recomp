@@ -11,7 +11,7 @@
 #include <efd/utf8string.h>
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
-class Unk_140165cf0;
+class TiXmlElement;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
@@ -77,10 +77,10 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
     if (pEntity == 0)
         return 0;
     for (pEntity = ((class Unk_XmlNode*)(void*)(pEntity))->FirstChild("entity"); pEntity != 0; pEntity = ((class Unk_XmlNode*)(class Unk_XmlNode*)(pEntity))->NextSibling("entity")) {
-        const char* pszId = ((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("id");
+        const char* pszId = ((class TiXmlElement*)(class TiXmlElement*)(pEntity))->Attribute("id");
         if (pszId == 0)
             continue;
-        const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("name");
+        const char* pszName = ((class TiXmlElement*)(class TiXmlElement*)(pEntity))->Attribute("name");
         if (pszName == 0)
             continue;
         CString strName(pszName);

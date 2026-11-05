@@ -18,15 +18,15 @@
 class TiXmlDocument;
 
 // A game TinyXML element (TiXmlElement): only the sibling / child walks used by the loader.
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);       // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);       // NextSiblingElement
-};
+class TiXmlElement;   // C3 #12: was a local TiXml element view; a declaration is enough here (triggercli.cpp includes the real tinyxml.h)
 
-// Argument of the smart pointer's creating constructor (0x1401b7b90 builds it; same shape as Unk_PktNewTag).
-struct Unk_TrgNewTag { explicit Unk_TrgNewTag(int); };
+
+
+
+
+
+#include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
+typedef Unk_SocketNew Unk_TrgNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
 
 CPtred* FUN_1401ba820(CPtred*);
 
@@ -70,7 +70,7 @@ public:
 
     TriggerCli();                                                       // 0x141199270
     virtual ~TriggerCli();                                              // 0x141199310 (slot 0: ??_G 0x14119c8a0)
-    virtual void LoadState(Unk_140165cf0* pNode);                       // slot 1, 0x14119b140: one <state> element
+    virtual void LoadState(TiXmlElement* pNode);                       // slot 1, 0x14119b140: one <state> element
 
     static MS2Ptr<TriggerCli> Create(const CString& strPath);           // 0x1411993a0 (null when the file fails)
     static MS2Ptr<TriggerCli> Create(CFileSystem::BufferPtr spBuffer);  // 0x141199520

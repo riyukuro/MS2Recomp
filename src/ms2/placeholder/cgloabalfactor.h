@@ -14,7 +14,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 
 class CInPacket;
-class Unk_140165cf0;
+class TiXmlElement;
 CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 class CGloabalFactor : public TSingleton<CGloabalFactor>, public CValidData<CGloabalFactor>

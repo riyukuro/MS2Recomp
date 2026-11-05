@@ -65,7 +65,7 @@ public:
     virtual Vector3 vfunc_18();
 };
 
-class Unk_CastingListener; struct Unk_CastingParam; // The casting bar request (StartCasting): duration, flags, speed and four texts (+0x28 the label).
+class ICastingEventListener; struct Unk_CastingParam; // The casting bar request (StartCasting): duration, flags, speed and four texts (+0x28 the label).
 struct Unk_HmCastInfo
 {
     Unk_HmCastInfo()
@@ -92,7 +92,7 @@ MS2_CHECK_SIZE(Unk_HmCastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pInfo);   // show
+    void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pInfo);   // show
     void FUN_1418e1390();                                                          // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
@@ -165,7 +165,7 @@ void StateHomemade::vfunc_4(StateData* pData)
         {
             Unk_HmCastInfo kInfo;
             FUN_140ca4f30(&kInfo);
-            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
+            pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
         m_aCubes.clear();
         ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> > aCubes;

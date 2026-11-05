@@ -222,12 +222,12 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
                 continue;
             if (_stricmp("stat", ((Scaleform::GFx::Value*)&(vType))->GetString()) == 0) {
                 Unk_PacketOptionA key = (Unk_PacketOptionA)((Scaleform::GFx::Value*)&(vIndex))->GetUInt();
-                Unk_PayloadPtr<BaseOption> option = new BaseOption;
+                MS2Ptr<BaseOption> option = new BaseOption;
                 option->SetValue(((Scaleform::GFx::Value*)&(vValue))->GetInt());
                 packet.optionsA[nKind].SetAt(key, option);
             } else if (_stricmp("specialAbility", ((Scaleform::GFx::Value*)&(vType))->GetString()) == 0) {
                 Unk_PacketOptionB key = (Unk_PacketOptionB)((Scaleform::GFx::Value*)&(vIndex))->GetUInt();
-                Unk_PayloadPtr<BaseOption> option = new BaseOption;
+                MS2Ptr<BaseOption> option = new BaseOption;
                 option->SetValue(((Scaleform::GFx::Value*)&(vValue))->GetInt());
                 packet.optionsB[nKind].SetAt(key, option);
             }

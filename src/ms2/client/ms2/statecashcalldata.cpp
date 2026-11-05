@@ -75,7 +75,7 @@ class ICastingEventListener;
 class UICastingBar : public UIObject
 {
 public:
-    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
+    void StartCastingText(class ICastingEventListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };

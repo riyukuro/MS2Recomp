@@ -29,7 +29,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -41,19 +41,19 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class TiXmlNode { public: const TiXmlElement* NextSiblingElement() const; };   // 0x14086e770
-int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
-int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
+// (TiXmlNode::NextSiblingElement(): in the shared view above; the non-const 0x1403f0510 wrapper is the exe callee)
+int FUN_1413b1d00(TiXmlElement* pElem, const char* pszName, Unk_GcOptInt& oOut);
+int FUN_1413b1fc0(TiXmlElement* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
 
 struct Unk_MergeRange;
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);                          // is set
-int FUN_1413b1d60(class Unk_140165cf0*, char const*, void*);   // C3: was FUN_1413b1d60
+int FUN_1413b1d60(class TiXmlElement*, char const*, void*);   // C3: was FUN_1413b1d60
 class Unk_ImNullableInt   // C3: member view for the former free stand-ins
 {
 public:
@@ -62,7 +62,7 @@ public:
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                     // Nullable<int>::GetValue
 Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nullable<int>()
 
-class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
+class TiXmlElement* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
 MS2Ptr<CGuideCondition> FUN_1413a5420(CStringA strTag);                 // the condition class of a tag
 void* FUN_141395500(void* pNode);
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
@@ -282,9 +282,9 @@ tm* FUN_1413a52a0(const __time64_t* pTime)
 }
 
 // @0x1413a52c0
-MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem)
+MS2Ptr<CGuideCondition> FUN_1413a52c0(TiXmlElement* pElem)
 {
-    CStringA strTag(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("type"));
+    CStringA strTag(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("type"));
     MS2Ptr<CGuideCondition> ref = FUN_1413a5420(strTag);
     if (ref.get())
         ref->vfunc_2(pElem);
@@ -342,7 +342,7 @@ int CGuideCondition::FUN_1413a5600(bool bResult)
 }
 
 // @0x1413a5670
-void CGuideCondition::vfunc_2(Unk_140165cf0* pElem)
+void CGuideCondition::vfunc_2(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "value", m_n20);
     XmlGetAttr((class TiXmlElement*)(pElem), "not", m_b1c);
@@ -436,13 +436,13 @@ CGuideConditionTrigger::CGuideConditionTrigger()
 }
 
 // @0x1413a5ad0
-void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionTrigger::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     FUN_1413b1fc0(pElem, "trigger", m_n28);
     FUN_1413b1d00(pElem, "value", m_a);
     FUN_1413b1d00(pElem, "subValue", m_b);
-    if (((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("range") != 0)
+    if (((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("range") != 0)
         FUN_1413b1d60(pElem, "range", (void*)(&m_range));
     if (m_n28 == 0)
         throw std::exception("Unknown Guide Trigger Tag");
@@ -647,7 +647,7 @@ int CGuideEntity::AreActionsDone()
 }
 
 // @0x1413a33c0
-bool CGuideEntity::Load(Unk_140165cf0* pElem)
+bool CGuideEntity::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "saveId", m_nSaveId);
@@ -656,7 +656,7 @@ bool CGuideEntity::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "isNoSave", m_nNoSave);
     if (!FUN_1413a4b50())
         XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
-    for (Unk_140165cf0* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = (Unk_140165cf0*)((const TiXmlNode*)pChild)->NextSiblingElement())
+    for (TiXmlElement* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = (TiXmlElement*)((const TiXmlNode*)pChild)->NextSiblingElement())
     {
         CStringA strName(pChild->Value());
         if (strName == "open")
@@ -738,9 +738,9 @@ void CGuideEntity::CollectTriggerValues(std::map<int, int>& mapValues)
 }
 
 // @0x1413a3960
-void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
+void CGuideEntity::LoadConditions(TiXmlElement* pElem, Unk_GcCondList& list)
 {
-    for (Unk_140165cf0* pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
+    for (TiXmlElement* pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
         MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pCond);
         (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
@@ -750,9 +750,9 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
 }
 
 // @0x1413a3a30
-void CGuideEntity::LoadActions(Unk_140165cf0* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list)
+void CGuideEntity::LoadActions(TiXmlElement* pElem, CAtlArray<MS2Ptr<CGuideAction> >& list)
 {
-    for (Unk_140165cf0* pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
+    for (TiXmlElement* pAct = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class TiXmlElement*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
     {
         MS2Ptr<CGuideAction> ref = FUN_141382b90(pAct);
         (void)((FUN_1413a47b0(ref) == 0) || (_wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212), 0));

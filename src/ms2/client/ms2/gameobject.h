@@ -44,7 +44,7 @@ class CAnimationManager;   // 0xa0 bytes, ctor(GameObject*); held at +0x48 (anim
 class CObjectShadow;      // +0x58 (efd::SmartPointer)
 class CMeshUpdateGate;    // +0x130 (unnamed/unit_14176f2a0.h)
 class Unk_GoField;        // +0x60 the field object the position was last resolved in (gameobject.cpp)
-class Unk_GoAnchorPtr;    // vfunc_27: 16-byte ref-counted anchor handle (gameobject.cpp)
+class CBoxCollision;   // vfunc_27 fills MS2Ptr<CBoxCollision>s
 class Unk_GoAttachment;   // vfunc_26: object placed at the actor each frame (gameobject.cpp)
 namespace egf { class Entity; }
 
@@ -102,7 +102,7 @@ public:
     virtual void vfunc_24(int) {}                           // 24 0x1409f3020 (inline, COMDAT in avatarcube)
     virtual int vfunc_25() { return m_unk_40; }             // 25 0x1409f2fb0 (inline)
     virtual Unk_GoAttachment* vfunc_26();                   // 26 0x14123c740 (0 here)
-    virtual void vfunc_27(ATL::CAtlArray<Unk_GoAnchorPtr>& kArr);     // 27 0x14123c750 (collect anchor handles; empty here)
+    virtual void vfunc_27(ATL::CAtlArray<MS2Ptr<CBoxCollision> >& kArr);     // 27 0x14123c750 (collect anchor handles; empty here)
     virtual void vfunc_28(void* p);                         // 28 0x14123c770
     virtual int vfunc_29(GameObject* pTarget, efd::Point3* pOut);   // 29 0x14123c790 anchor nearest to pTarget
     virtual NiPoint3 vfunc_30(GameObject* pTarget);         // 30 0x14123c9f0

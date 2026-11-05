@@ -27,6 +27,7 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/ascorelist.h"    // ASItemRendererBase: the offer's "m_limitedRenderer" clip
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/cadbannermanagercli.h"
@@ -59,15 +60,8 @@ class ASDialog : public ASUIComponent
 };
 MS2_CHECK_SIZE(ASDialog, 0x88);
 
-// The gift row clip of uicashattenddialog.cpp: the offer's "m_limitedRenderer" movie clip is the same class (0x88 bytes).
-class Unk_CadGiftClip : public ASUIComponent
-{
-public:
-    Unk_CadGiftClip(const Scaleform::GFx::Value& v, int nMovieId);      // 0x1422e1f00
-};
-
 // The market record is the equip entry the AS product classes take.
-class Unk_MeratEquipEntry : public Unk_AdMarketItem
+class Unk_MeratEquipEntry : public CMeratMarketProduct
 {
 };
 
@@ -135,13 +129,13 @@ void UIAdPushLimitedDialog::OnLoadComplete()
         if (m_spBanner.get() != 0)
             product.SetBanner(m_spBanner);
         {
-            MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
+            MS2Ptr<CMeratMarketProduct> spItem = m_spOwner->m_item;
             product.vfunc_1(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spItem), 0);
             product.FUN_1407cbbe0("minimize", bMinimize);
-            CStringW strTitle = reinterpret_cast<CMeratMarketPremiumProduct*>(&spItem->m_info)->GetName();
+            CStringW strTitle = spItem->m_premium.GetName();
             if (strTitle.IsEmpty())
             {
-                if (((class CMeratMarketProduct*)(class Unk_AdMarketItem*)(spItem.operator->()))->GetSalePrice() == 0)
+                if (spItem.operator->()->GetSalePrice() == 0)
                     strTitle = L"$s_adpush_title_free";
                 else
                     strTitle = L"$s_adpush_title_default";
@@ -149,7 +143,7 @@ void UIAdPushLimitedDialog::OnLoadComplete()
             product.FUN_1407cbb20("title", strTitle);
             m_spMaxComp = m_30->FUN_140accfb0<ASUIComponent>("m_maxComp");
             if (m_spMaxComp.get() != 0)
-                m_spRenderer = m_spMaxComp->FUN_140e159f0<Unk_CadGiftClip>("m_limitedRenderer");
+                m_spRenderer = m_spMaxComp->FUN_140e159f0<ASItemRendererBase>("m_limitedRenderer");
         }
         m_30->Invoke("initData", Scaleform::GFx::Value(product.FUN_1422bb870()));
         // slot 43 of the network platform (the call name is not recovered): the event 0xe with a 1000 ms delay
@@ -299,12 +293,12 @@ void UIAdPushLimitedDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
     UIObject::vfunc_49(pRetVal, pArgs);
     if (m_spOwner == 0)
         return;
-    MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
+    MS2Ptr<CMeratMarketProduct> spItem = m_spOwner->m_item;
     if (spItem == 0)
         return;
     ASTooltip tip(4, 2);
     bool bCompare = false;
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((class CMeratMarketPremiumProduct*)(&spItem->m_info), bCompare);
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((&spItem->m_premium), bCompare);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -378,7 +372,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
     m_bBannerEmpty = false;
     if (m_spOwner->m_item.get() != 0)
     {
-        CMeratMarketPremiumProduct* pInfo = reinterpret_cast<CMeratMarketPremiumProduct*>(&m_spOwner->m_item.operator->()->m_info);
+        CMeratMarketPremiumProduct* pInfo = &m_spOwner->m_item.operator->()->m_premium;
         if (pInfo->FUN_1406a0fe0())
         {
             CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
@@ -423,7 +417,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
 {
     if (m_spOwner == 0)
         return;
-    MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
+    MS2Ptr<CMeratMarketProduct> spItem = m_spOwner->m_item;
     if (spItem == 0)
         return;
     Scaleform::GFx::Value v = data.PopValue();
@@ -433,11 +427,11 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
         return;
     Unk_MeratOid oid;
     spProduct->GetProductOID(&oid);
-    unsigned char* pInfo = (unsigned char*)&spItem->m_info;
+    unsigned char* pInfo = (unsigned char*)&spItem->m_premium;
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
-        reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem) = ((class CMeratMarketMan*)FUN_140939a00())->FUN_140d578d0(reinterpret_cast<Unk_MeratProductKey&>(oid));
+        spItem = ((class CMeratMarketMan*)FUN_140939a00())->FUN_140d578d0(reinterpret_cast<Unk_MeratProductKey&>(oid));
     AScript* pBuyBtn = out.FUN_140ec2a90();
-    int nPriceKind = FUN_140ebf520(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), pBuyBtn);
+    int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
     if (*(pInfo + 0x108) != 0 && reinterpret_cast<CMeratMarketPremiumProduct*>(pInfo)->GetPriceOf(0) == 0)
     {
         ATL::CAtlArray<unsigned int> ids;
@@ -455,7 +449,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
         MS2Ptr<CMeratMarketBuy> spBuy(new CMeratMarketBuy());
         if (spBuy == 0 || spBuy->m_spPacket == 0)
             return;
-        spBuy->FUN_140d60a80(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), nBuyType, FUN_14069c3e0(nPriceKind), 1);
+        spBuy->FUN_140d60a80(spItem, nBuyType, FUN_14069c3e0(nPriceKind), 1);
         spBuy->FUN_140d60d60(0, 1);
         ((class Unk_LpWorld*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
         ((class Unk_LpWorld*)FUN_140939a00())->StartPendingPurchases(nBuyType);
@@ -463,7 +457,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     else
     {
         MS2Ptr<TMeratMarketBillDataParam> spParam = FUN_140e04070(strMethod, 3, 1);
-        FUN_140ebf610(strMethod, reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), spParam, nPriceKind);
+        FUN_140ebf610(strMethod, spItem, spParam, nPriceKind);
     }
 }
 

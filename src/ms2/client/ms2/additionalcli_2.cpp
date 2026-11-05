@@ -79,21 +79,21 @@ class Unk_PCBaseComp_a68 : public UIShieldBar::Entity {};
 class Unk_PCBaseComp_a98 : public UIBuffBalloon::Entity {};
 
 // The buff UIs take the record by value (the callee destroys the copy).
-class Unk_AclUpperBar : public UIUpperHpBar
-{
-public:
-    void FUN_141b4cf40(MS2Ptr<AdditionalCli> sp);           // add a buff icon
-};
+// FUN_141b4cf40: UIUpperHpBar's own member (uiupperhpbar.h), add a buff icon
+//
+//
+//
+//
 class Unk_AclDuelBar : public UINpcDuelHPBarDialog
 {
 public:
-    void FUN_140e6c440(MS2Ptr<AdditionalCli> sp);           // add a buff icon
+    // FUN_140e6c440: UINpcDuelHPBarDialog's own member (uinpcduelhpbardialog.h), add a buff icon
 };
-class Unk_AclMainInfo : public UIMainPlayerInfo
-{
-public:
-    void FUN_1419f0fe0(MS2Ptr<AdditionalCli> sp);           // add a buff icon
-};
+// FUN_1419f0fe0: UIMainPlayerInfo::AddBuffEffect (uimainplayerinfo.h), add a buff icon
+//
+//
+//
+//
 // The shield buff HUD (unnamed/unit_140c5d230.h; that header's UIEntityEventListener clashes with uiupperhpbar.h's,
 // so the class is declared here with the same bases for the dynamic_cast of Unk_AcFindUI).
 class UILapenshardShieldBar : public UIHeadUpDisplay, public UIEntityEventListener
@@ -109,12 +109,12 @@ class Unk_AclSkillTable : public SkillDataTable
 
 
 
-class Unk_Gauge   // C3: the InvokeEffectOption setters are this class's
-{
-public:
-    void SetAmount(float);
-    void SetCount(int);
-};
+// (the InvokeEffectOption setters are declared in invokeeffectoption.h)
+
+
+
+
+
 
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
 UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
@@ -935,17 +935,17 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 {
                     spOption.AssignRaw(new InvokeEffectOption);
                     spOption->m_nA = nType;
-                    reinterpret_cast<Unk_Gauge*>(spOption.operator->())->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
-                    reinterpret_cast<Unk_Gauge*>(spOption.operator->())->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
+                    spOption->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
+                    spOption->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
                     spStat->m_18.SetAt(nType, spOption);
                 }
                 else
                 {
                     MS2Ptr<InvokeEffectOption> spOther(new InvokeEffectOption);
                     spOther->m_nA = nType;
-                    reinterpret_cast<Unk_Gauge*>(spOther.operator->())->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
-                    reinterpret_cast<Unk_Gauge*>(spOther.operator->())->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
-                    spOption->FUN_140267220(spOther);
+                    spOther->SetCount(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
+                    spOther->SetAmount(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
+                    spOption->Accumulate(spOther);
                 }
             }
         }
@@ -1228,16 +1228,16 @@ void AdditionalCliList::FUN_140973950(MS2Ptr<AdditionalCli> sp)
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(20063);
             if (pInfo)
-                static_cast<Unk_AclMainInfo*>(pInfo)->FUN_1419f0fe0(sp);
+                pInfo->AddBuffEffect(sp);
         }
         else if (FUN_140973680(sp))
         {
             UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
             if (pBar)
-                static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4cf40(sp);
+                pBar->FUN_141b4cf40(sp);
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)
-                static_cast<Unk_AclDuelBar*>(pDuel)->FUN_140e6c440(sp);
+                pDuel->FUN_140e6c440(sp);
         }
     }
     if (!FUN_140973640())

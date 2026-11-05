@@ -10,7 +10,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <level> row, 0x28 bytes.
 class StanceLevelData : public CPtred
@@ -18,7 +18,7 @@ class StanceLevelData : public CPtred
 public:
     StanceLevelData();                                  // 0x1408290b0
     virtual ~StanceLevelData();                         // 0x140829120
-    bool Load(Unk_140165cf0* pNode);                     // 0x140829150
+    bool Load(TiXmlElement* pNode);                     // 0x140829150
     unsigned DamageRate(int nBase);                     // 0x1408291e0 rate per mille of nBase, capped
 
     unsigned m_nLevel;                                  // +0x18 "level"
@@ -34,7 +34,7 @@ class StanceData : public CPtred
 public:
     StanceData();                                       // 0x140829240
     virtual ~StanceData();                              // 0x1408292d0
-    bool Load(Unk_140165cf0* pNode);                     // 0x140829330
+    bool Load(TiXmlElement* pNode);                     // 0x140829330
     bool HasDamageSkill(unsigned nSkillId);                   // 0x1408294a0
     int StanceAdditionalID();                           // 0x140829510
     int HitCountAdditionalID();                         // 0x140829530

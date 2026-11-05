@@ -106,7 +106,7 @@
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -270,7 +270,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
     TiXmlDocument doc;
     if (((class Unk_GmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CStringA>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -282,11 +282,11 @@ void CGuideManager::LoadFile(const CStringA& strPath)
         m_caches.Add(spCache);
     }
 
-    std::vector<Unk_140165cf0*> events;
+    std::vector<TiXmlElement*> events;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "event", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&events));
     for (size_t i = 0; i < events.size(); i++)
     {
-        Unk_140165cf0* pElem = events[i];
+        TiXmlElement* pElem = events[i];
         if (pElem == 0)
             continue;
         MS2Ptr<CGuideEntity> spEntity(new CGuideEntity);
@@ -303,7 +303,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
             m_names.Add(StringFormat(L"Guide Error: [ID:{0}] {1}", spEntity->m_nId, FUN_14016a730(e.what(), 0)));
         }
     }
-    for (Unk_140165cf0* pImport = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("import")); pImport != 0; pImport = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pImport))->NextSibling("import")))
+    for (TiXmlElement* pImport = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("import")); pImport != 0; pImport = ((class TiXmlElement*)((class Unk_XmlNode*)(pImport))->NextSibling("import")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pImport)))
             continue;

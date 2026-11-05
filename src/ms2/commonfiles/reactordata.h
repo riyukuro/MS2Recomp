@@ -15,7 +15,7 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // game TinyXML element (declared where the loaders are)
+class TiXmlElement;    // game TinyXML element (declared where the loaders are)
 
 // Condition of a reactor state (0x20 bytes, vftable: deleting dtor only). m_nType is the condition kind (the only
 // subclass in this unit, ReactorConditionItem, uses 0).
@@ -65,7 +65,7 @@ public:
     CStringW m_strActionStringKey;          // +0x48 "actionStringKey"
     ConditionList m_conditions;             // +0x50 <condItem> children
 
-    bool Load(Unk_140165cf0* pNode);        // 0x14076a550
+    bool Load(TiXmlElement* pNode);        // 0x14076a550
 };
 MS2_CHECK_SIZE(ReactorStateData, 0x80);
 MS2_CHECK_OFFSET(ReactorStateData, m_strKfmName, 0x28);
@@ -81,7 +81,7 @@ public:
     ReactorData();                          // 0x14076a9e0
     virtual ~ReactorData();                 // 0x14076aab0
 
-    bool Load(Unk_140165cf0* pNode);        // 0x14076ab40
+    bool Load(TiXmlElement* pNode);        // 0x14076ab40
     CStringA GetCreateAnimation();          // 0x14076b060 a random entry (empty when none)
     CStringA GetReactAnimation();           // 0x14076b110
 

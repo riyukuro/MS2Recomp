@@ -232,7 +232,6 @@ class GameObject;
 class ASArray;
 class CMsgBoxData;
 class CInPacket;
-template <class T> class Unk_PayloadPtr;
 class HomeBlockInfo;                                               // commonfiles/commonstruct_wa.h
 class Unk_PmUserEntry;
 
@@ -310,7 +309,7 @@ public:
     void FUN_141a84b10(int nType);
     void FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName);
     void FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId);
-    void FUN_141a84cb0(int nType, MyPC* pMe, Unk_PayloadPtr<HomeBlockInfo> spHome);
+    void FUN_141a84cb0(int nType, MyPC* pMe, MS2Ptr<HomeBlockInfo> spHome);
     // menu handlers (m_160)
     void FUN_141a84d40();
     void FUN_141a84da0();

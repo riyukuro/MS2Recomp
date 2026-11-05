@@ -155,9 +155,9 @@ void* FUN_140c8f680(void* smartPtr)
 }
 
 // @0x140c8f690
-void* FUN_140c8f690(const Unk_PPRes& res)
+void* FUN_140c8f690(const efd::SmartPointer<NiViewRenderClick>& res)
 {
-    return res.m_p;
+    return *reinterpret_cast<void* const*>(&res);   // m_pObject
 }
 
 // @0x140c8f810
@@ -221,7 +221,7 @@ PostShimmerEffectParam::PostShimmerEffectParam()
 }
 
 // @0x140c8fa20
-void PostShimmerEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void PostShimmerEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "blendingMin", m_fBlendingMin);

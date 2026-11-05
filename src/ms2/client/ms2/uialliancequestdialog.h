@@ -48,8 +48,8 @@ public:
     int FUN_140bf9a40(unsigned nQuest);                         // 0x140bf9a40 the fame / required quests are met
     CStringW FUN_140bf9bd0();                                   // 0x140bf9bd0 "requirement" text (empty when met)
     CStringW FUN_140bf9e10();                                   // 0x140bf9e10 "limit by other alliance fame" text
-    MS2Ptr<class Unk_140acd6e0> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
-    MS2Ptr<class Unk_AqList> FUN_140bfa760(const CString& strName);      // 0x140bfa760 the list child of the movie
+    MS2Ptr<class ASButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
+    MS2Ptr<class ASTileCacheList> FUN_140bfa760(const CString& strName);      // 0x140bfa760 the list child of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

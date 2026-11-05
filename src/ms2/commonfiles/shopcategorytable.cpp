@@ -29,7 +29,7 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -48,13 +48,13 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
    // the content switches
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_1406a5040(int nTabId);                                          // the tab opens on its best page
 
 // View for the identical-code TPtrValue::get copy LoadCategories passes to LoadTabs.
-struct Unk_ScTabListView { CShopCategoryTable::TabList* FUN_1407cc3e0() const; };
+// C3: FUN_1407cc3e0 is TPtrValue<TabList>::operator* (tptrvalue.h; this unit owns the copy), was Unk_ScTabListView
 
 // The AS object a tab is written into: AScript, which holds the GFx value at +0x20.
 struct Unk_AsOut : public CPtred
@@ -111,7 +111,7 @@ CShopCategoryTable::TabInfo::~TabInfo()
 }
 
 // @0x1407ca080
-bool CShopCategoryTable::TabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spParent)
+bool CShopCategoryTable::TabInfo::Load(TiXmlElement* pElem, MS2Ptr<TabInfo> spParent)
 {
     if (pElem == 0)
         return false;
@@ -163,7 +163,7 @@ CShopCategoryTable::SortTabInfo::SortTabInfo()
 }
 
 // @0x1407ca590
-bool CShopCategoryTable::SortTabInfo::Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spParent)
+bool CShopCategoryTable::SortTabInfo::Load(TiXmlElement* pElem, MS2Ptr<TabInfo> spParent)
 {
     if (TabInfo::Load(pElem, MS2Ptr<TabInfo>(0)))
     {
@@ -221,11 +221,11 @@ void CShopCategoryTable::Load()
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
         {
-            Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+            TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
             if (pRoot == 0)
                 continue;
             LoadCategories(pRoot);
-            Unk_140165cf0* pNext = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
+            TiXmlElement* pNext = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
             if (pNext != 0)
                 LoadCategories(pNext);
         }
@@ -234,11 +234,11 @@ void CShopCategoryTable::Load()
 }
 
 // @0x1407cad10
-void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
+void CShopCategoryTable::LoadCategories(TiXmlElement* pRoot)
 {
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0; pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
+    for (TiXmlElement* pCategory = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0; pCategory = ((class TiXmlElement*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pCategory), "id", nId);
@@ -252,7 +252,7 @@ void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
         TabListPtr spList(Unk_GrNewTag(0));
         if (spList.get() != 0)
         {
-            LoadTabs(nTabType, pCategory, m_tabs, reinterpret_cast<Unk_ScTabListView*>(&spList)->FUN_1407cc3e0(), TabPtr(0));
+            LoadTabs(nTabType, pCategory, m_tabs, &*spList, TabPtr(0));
             m_tabs.SetAt(nId, spList);
         }
     }
@@ -270,9 +270,9 @@ CShopCategoryTable::TabPtr CShopCategoryTable::NewTab(int nTabType)
 }
 
 // @0x1407cb000
-void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& rMap, TabList* pList, TabPtr spParent)
+void CShopCategoryTable::LoadTabs(int nTabType, TiXmlElement* pParent, TabMap& rMap, TabList* pList, TabPtr spParent)
 {
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pParent))->FirstChild("tab")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("tab")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pParent))->FirstChild("tab")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("tab")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;

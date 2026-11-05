@@ -221,8 +221,8 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovi
 void FUN_140d00640(const Scaleform::GFx::Value& root, CString strName, int nId);        // set a child's state
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);                           // unbind
-bool FUN_140bc7c10(const Scaleform::GFx::Value& root, CString strName, int nCount, std::vector<MS2Ptr<ASMovieClip> >& out, int nStart);
-bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, int nCount, std::vector<MS2Ptr<ASButton> >& out, int nStart);
+class Unk_CadCheck; template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);   // C3: was FUN_140bc7c10 (uicashattenddialog, T = Unk_CadCheck)
+bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<ASButton> >& out, unsigned nStart);
 
 // ASUIComponent slots 16-24 (0x1422c7ec0..0x1422c80c0; every ASUIComponent-derived vftable has them, astriggerstate.cpp).
 class Unk_ASComponentSlots : public ASUIComponent
@@ -240,11 +240,11 @@ public:
 };
 
 // The actor's buffs as this unit reads them (additionalclilist.h).
-class AdditionalCliList
-{
-public:
-    int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare);       // the buff state (0: not active)
-};
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
+//
+//
+//
+//
 
 // A reward slot clip as this unit invokes it.
 class Unk_RewardClip : public ASMovieClip   // C3: unit-local view named like the uiachievedialog one
@@ -403,9 +403,9 @@ MS2_REPLACE_METHOD(0x1412A8770, UIDungeonRoomRankPanel, SetLayout, 93, 0x9F469BB
 UIDungeonRoomSeasonRankReward::UIDungeonRoomSeasonRankReward(MS2Ptr<ASMovieClip> spPanel)
     : m_spPanel(spPanel)
 {
-    if (!FUN_140bc7c10((*m_spPanel).FUN_1422bb890(), "m_seasonRankReward", 5, m_seasonRankReward, 0))
+    if (!FUN_140bc7a40<Unk_CadCheck>((*m_spPanel).FUN_1422bb890(), "m_seasonRankReward", 5, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_seasonRankReward), 0))
         throw DR_SWF_ERROR(159);
-    if (!FUN_140bc7c10((*m_spPanel).FUN_1422bb890(), "m_seasonRank", 5, m_seasonRank, 0))
+    if (!FUN_140bc7a40<Unk_CadCheck>((*m_spPanel).FUN_1422bb890(), "m_seasonRank", 5, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_seasonRank), 0))
         throw DR_SWF_ERROR(162);
     for (unsigned i = 0; i < m_seasonRankReward.size(); i++)
     {
@@ -558,7 +558,7 @@ UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovie
     do { m_spPanel->FUN_140bc71c0("m_dungeonHelpEvent", m_dungeonHelpEvent); if (m_dungeonHelpEvent == 0) throw DR_SWF_ERROR(318); } while (0);
     do { m_spPanel->FUN_140bc71c0("m_dungeonSearching", m_dungeonSearching); if (m_dungeonSearching == 0) throw DR_SWF_ERROR(319); } while (0);
     do { m_spPanel->FUN_140bbe640("m_favoriteMark", m_favoriteMark); if (m_favoriteMark == 0) throw DR_SWF_ERROR(320); } while (0);
-    FUN_140bc7c10((*m_spPanel).FUN_1422bb890(), "m_partyMember", 10, m_partyMembers, 0);
+    FUN_140bc7a40<Unk_CadCheck>((*m_spPanel).FUN_1422bb890(), "m_partyMember", 10, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_partyMembers), 0);
     FUN_140d01420((*m_spPanel).FUN_1422bb890(), "m_rewardText1", 2);
     FUN_140d01420((*m_spPanel).FUN_1422bb890(), "m_rewardText2", 2);
     m_addExtraRewardCount->FUN_1422ce1f0(2);
@@ -570,13 +570,13 @@ UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovie
             throw DR_SWF_ERROR(334);
         if (!FUN_140e1cc40((*spContents).FUN_1422bb890(), "m_subTabButton", 5, m_subTabButtons, 0))
             throw DR_SWF_ERROR(337);
-        if (!FUN_140bc7c10((*spContents).FUN_1422bb890(), "m_subPanel", 5, m_subPanels, 0))
+        if (!FUN_140bc7a40<Unk_CadCheck>((*spContents).FUN_1422bb890(), "m_subPanel", 5, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_subPanels), 0))
             throw DR_SWF_ERROR(340);
         do { m_subPanels[0]->FUN_140beaf20("m_dungeonDesc", m_dungeonDesc); if (m_dungeonDesc == 0) throw DR_SWF_ERROR(342); } while (0);
         do { m_subPanels[1]->FUN_140beaf20("m_limitText", m_limitText); if (m_limitText == 0) throw DR_SWF_ERROR(343); } while (0);
         do { m_subPanels[1]->FUN_140bc71c0("m_requireCondition", m_requireCondition); if (m_requireCondition == 0) throw DR_SWF_ERROR(344); } while (0);
         const int nRewardItems = 0x1c;
-        FUN_140bc7c10((*m_subPanels[2]).FUN_1422bb890(), "m_rewardItem", nRewardItems, m_rewardItems, 0);
+        FUN_140bc7a40<Unk_CadCheck>((*m_subPanels[2]).FUN_1422bb890(), "m_rewardItem", nRewardItems, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_rewardItems), 0);
         m_spRankPanel.AssignRaw(new UIDungeonRoomRankPanel(m_subPanels[3]));
         m_spSeasonRankReward.AssignRaw(new UIDungeonRoomSeasonRankReward(m_subPanels[4]));
         m_spLimitTextGroup.AssignRaw(new UIDungeonRoomLimitTextGroup(m_subPanels[1]));

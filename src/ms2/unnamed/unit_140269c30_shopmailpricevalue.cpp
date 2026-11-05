@@ -41,7 +41,7 @@ MS2_REPLACE_METHOD(0x140269D10, Unk_CommonPrice, ClearAmount, 19, 0x8111F705);
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 
 // @0x140269d30
-bool Unk_CommonPrice::LoadXml(Unk_140165cf0* pNode)
+bool Unk_CommonPrice::LoadXml(TiXmlElement* pNode)
 {
     CStringA strType;
     XmlGetAttr((class TiXmlElement*)(pNode), "type", strType);

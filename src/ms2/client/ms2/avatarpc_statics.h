@@ -2,6 +2,6 @@
 // and the condition (see ms2/placeholder/header_statics_a.h, MS2_STATICS_A_BEFORE_CONDITION).
 #pragma once
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
 
-static Unk_Handle1401cd100 s_dat_143ab4c58(0);                                              // @0x1400c2580
+static Unk_BuddyHandle s_dat_143ab4c58(0);                                              // @0x1400c2580

@@ -33,7 +33,7 @@ CString WebGuide::GetKey() const
 }
 
 // @0x141b81b70
-void WebGuide::LoadXml(Unk_140165cf0* pNode)
+void WebGuide::LoadXml(TiXmlElement* pNode)
 {
     XmlGetAttr((TiXmlElement*)pNode, "dialogName", m_strDialogName);
     XmlGetAttr((TiXmlElement*)pNode, "webUrl", m_strWebUrl);

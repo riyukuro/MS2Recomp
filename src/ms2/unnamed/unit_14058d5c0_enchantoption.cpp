@@ -24,7 +24,7 @@ void CEnchantOption::FUN_14058d5c0(CInPacket& packet)
 {
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i) {
-        Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+        MS2Ptr<BaseOption> spOption(new BaseOption);
         int nKey = (unsigned short)packet.ReadInt16();
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(static_cast<CInputStream&>(packet)));
         m_options.SetAt(nKey, spOption);

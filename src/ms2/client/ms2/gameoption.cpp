@@ -138,11 +138,11 @@ struct Unk_GpDialog
     MS2Ptr<ASSlider> FUN_140a58110(CString name, int nIndex);
 };
 
-// View of UIGameOptionDialog: the child lookups by name (getTabChild).
+struct Unk_PiDialog { MS2Ptr<ASRadioButton> FUN_140a46480(CString name, int nIndex); };   // the radio-button lookup, defined in gameoptionpersonalinfoagreement.cpp (0x140a46480)
 class Unk_GoDialog
 {
 public:
-    MS2Ptr<ASRadioButton> FUN_140a46480(CString name, int nIndex);
+    // View of UIGameOptionDialog: the child lookups by name (getTabChild); FUN_140a46480 is Unk_PiDialog's.
     MS2Ptr<ASTextField> FUN_14124e120(CString name, int nIndex);
     MS2Ptr<ASTextInput> FUN_14124e2e0(CString name, int nIndex);
 
@@ -245,21 +245,21 @@ void CGameOptionBattle::vfunc_6()
     MS2Ptr<ASRadioButton> spRadio(0);
     int nGive = m_state.m_n08;
     if (nGive == 1)
-        spRadio = pDlg->FUN_140a46480(CString("m_giveDamageMine"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_giveDamageMine"), -1);
     else if (nGive == 3)
-        spRadio = pDlg->FUN_140a46480(CString("m_giveDamageParty"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_giveDamageParty"), -1);
     else if (nGive == 7)
-        spRadio = pDlg->FUN_140a46480(CString("m_giveDamageAll"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_giveDamageAll"), -1);
     if (static_cast<ASRadioButton*>(spRadio) != 0)
         spRadio->FUN_1422ce090(1);
     spRadio = 0;
     int nTake = m_state.m_n0c;
     if (nTake == 1)
-        spRadio = pDlg->FUN_140a46480(CString("m_takeDamageMine"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_takeDamageMine"), -1);
     else if (nTake == 3)
-        spRadio = pDlg->FUN_140a46480(CString("m_takeDamageParty"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_takeDamageParty"), -1);
     else if (nTake == 7)
-        spRadio = pDlg->FUN_140a46480(CString("m_takeDamageAll"), -1);
+        spRadio = reinterpret_cast<Unk_PiDialog*>(pDlg)->FUN_140a46480(CString("m_takeDamageAll"), -1);
     if (static_cast<ASRadioButton*>(spRadio) != 0)
         spRadio->FUN_1422ce090(1);
     unsigned nDiff = m_state.m_n10;
@@ -319,7 +319,7 @@ void CGameOptionBattle::vfunc_7()
     for (size_t i = 0; i < arrGive.GetCount(); i++)
     {
         const std::pair<CString, int>& opt = arrGive[i];
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString(opt.first), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString(opt.first), -1);
         if (static_cast<ASRadioButton*>(sp) != 0 && sp->FUN_1422ce0e0())
         {
             m_state.m_n08 = opt.second;
@@ -336,7 +336,7 @@ void CGameOptionBattle::vfunc_7()
     for (size_t i = 0; i < arrTake.GetCount(); i++)
     {
         const std::pair<CString, int>& opt = arrTake[i];
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString(opt.first), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString(opt.first), -1);
         if (static_cast<ASRadioButton*>(sp) != 0 && sp->FUN_1422ce0e0())
         {
             m_state.m_n0c = opt.second;
@@ -1066,12 +1066,12 @@ void CGameOptionGraphicDefault::vfunc_6()
 {
     FUN_14124d080();
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_nScreenMode == 1);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state.m_nScreenMode == 2);
     }
@@ -1142,27 +1142,27 @@ void CGameOptionGraphicDefault::vfunc_6()
             sp->SetSelectedIndex(m_state2.m_nOptimalHide);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state2.m_bHideAlways);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state2.m_bHideBossBattle);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state2.m_bShowParty);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state2.m_bShowGuild);
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             sp->FUN_1422ce090(m_state2.m_bShowCustom);
     }
@@ -1195,13 +1195,13 @@ void CGameOptionGraphicDefault::vfunc_7()
         }
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             if (sp->FUN_1422ce0e0())
                 m_state.m_nScreenMode = 1;
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             if (sp->FUN_1422ce0e0())
                 m_state.m_nScreenMode = 2;
@@ -1265,27 +1265,27 @@ void CGameOptionGraphicDefault::vfunc_7()
             m_state2.m_nOptimalHide = sp->GetSelectedIndex();
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             m_state2.m_bHideAlways = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             m_state2.m_bHideBossBattle = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             m_state2.m_bShowParty = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             m_state2.m_bShowGuild = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<ASRadioButton> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
+        MS2Ptr<ASRadioButton> sp = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
         if (static_cast<ASRadioButton*>(sp) != 0)
             m_state2.m_bShowCustom = sp->FUN_1422ce0e0() ? true : false;
     }
@@ -1570,7 +1570,7 @@ public:
     void Clear();
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -1578,7 +1578,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-CStringW FUN_1401bf530(class Unk_140165cf0* pElem, const char* szName, CStringW strDefault);   // string attribute (strDefault by value)
+CStringW FUN_1401bf530(class TiXmlElement* pElem, const char* szName, CStringW strDefault);   // string attribute (strDefault by value)
 void XmlSetAttr(class TiXmlElement*, const char*, const CStringA&);
 void* FUN_14086f2f0(void* pMem, const char* szName);            // TiXmlElement::TiXmlElement(const char*)
 class TiXmlElement
@@ -2000,7 +2000,7 @@ int CGameOption::FUN_1412438f0()
                 {
                     for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("vga")); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("vga")))
                     {
-                        CStringW strVga = FUN_1401bf530((class Unk_140165cf0*)(pNode), "name", CStringW(L""));
+                        CStringW strVga = FUN_1401bf530((class TiXmlElement*)(pNode), "name", CStringW(L""));
                         if (strVga == strName)
                         {
                             XmlGetAttr((class TiXmlElement*)(pNode), "value", nValue);

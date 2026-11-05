@@ -9,14 +9,14 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/datatablemap.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 class WebGuide : public CPtred
 {
 public:
     WebGuide();                                             // 0x141b81ac0
     CString GetKey() const;                                 // 0x141b81b20 the dialog name
-    void LoadXml(Unk_140165cf0* pNode);                     // 0x141b81b70
+    void LoadXml(TiXmlElement* pNode);                     // 0x141b81b70
 
     CString m_strDialogName;                                // +0x18 "dialogName"
     CString m_strWebUrl;                                    // +0x20 "webUrl"
@@ -30,5 +30,6 @@ class WebGuideTable : public DataTableMap<WebGuide, CString, ATL::CStringElement
 {
 public:
     WebGuideTable();                                        // 0x141b81bd0 loads Table/WebGuide.xml
+    MS2Ptr<WebGuide> FUN_141927640(CString strKey);         // 0x141927640 (uidialog.cpp) the web guide of a dialog
 };
 MS2_CHECK_SIZE(WebGuideTable, 0x88);

@@ -30,14 +30,14 @@ Unk_TNode** FUN_1402894c0(Unk_TVal*); Unk_TNode** FUN_140288630(Unk_TVal*); Unk_
 void FUN_140288640(Unk_TVal*, Unk_TNode*); void FUN_1402894e0(Unk_TVal*, Unk_TNode*);
 __int64 FUN_14027b570(__int64) noexcept;
 void* FUN_14027d010(void* out, __int64 node, __int64 val);
-void FUN_1402876f0(void* tree, Unk_TNode* node);
+// _Tree<map<int,int>>::_Destroy_if_node (0x1402876f0, protected): WdTreeAcc in commonstruct_wd.cpp
 i64 FUN_14027c160(i64 v) noexcept; i64 FUN_14027c1f0(i64 v); __int64 FUN_14027c240(__int64 out, __int64 v);
 __int64 FUN_140276fe0(__int64 tree, __int64 node, __int64 val);
 void* FUN_14027cff0(void*);
 Unk_TIter* FUN_14028a130(void* tree, Unk_TIter* out) noexcept; Unk_TIter* FUN_14028a910(void* tree, Unk_TIter* out) noexcept;
 struct Unk_It;
 bool FUN_14027ee20(Unk_It* a, Unk_It* b);
-i64 FUN_1402885e0(void* tree, Unk_TNode* node); i64 FUN_140288610(void* tree, i64 val);
+i64 FUN_140288610(void* tree, i64 val);   // _Key (0x1402885e0): WdTreeAcc
 i64 FUN_140288430(void* tree);
 bool FUN_14027f870(i64 comp, i64 a, i64 b);
 unsigned char FUN_1402874c0(void* tree, i64 a, i64 b);
@@ -59,7 +59,7 @@ i64 FUN_140289b00(void* vec, i64 first, i64 last, i64 dest);
 void FUN_1402873b0(void* vec, Unk_E16* newvec, u64 size, u64 cap);
 void FUN_140287670(void* vec, i64 first, i64 last);
 void FUN_140288d20(void* vec, i64 first, i64 last);
-i64 FUN_14027c400(i64); struct Unk_Ref16; Unk_Ref16* FUN_14027e950(Unk_Ref16* dest, Unk_Ref16* src);
+i64 FUN_14027c400(i64); class CIngredientInfo;   // 0x14027e950 = MS2Ptr<CIngredientInfo>::operator= (commonstruct_2)
 // ---- allocator / unchecked-iterator helpers ----
 i64 FUN_1402882f0(void* vec); i64 FUN_1402883f0(void* vec);
 void FUN_1402895c0(i64 it, i64 ptr);

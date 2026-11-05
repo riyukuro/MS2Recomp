@@ -91,7 +91,7 @@ DungeonMissionData::DungeonMissionData()
 }
 
 // @0x140314960
-bool DungeonMissionData::Load(Unk_140165cf0* pElem)
+bool DungeonMissionData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_id);
     XmlGetAttr((class TiXmlElement*)(pElem), "type", m_type);
@@ -153,7 +153,7 @@ CStringW DungeonMissionData::GetName()
 MS2_REPLACE_METHOD(0x140314D00, DungeonMissionData, GetName, 76, 0x106F6DFC);
 
 // @0x140314d60
-MS2Ptr<DungeonMissionData> DungeonMissionData::Create(Unk_140165cf0* pElem)
+MS2Ptr<DungeonMissionData> DungeonMissionData::Create(TiXmlElement* pElem)
 {
     CStringW strType;
     XmlGetAttr((class TiXmlElement*)(pElem), "type", strType);
@@ -185,7 +185,7 @@ CStringW DungeonMissionDataPlayTime::GetTypeName()
 MS2_REPLACE_METHOD(0x140314F80, DungeonMissionDataPlayTime, GetTypeName, 61, 0xFDA50BA5);
 
 // @0x140314fd0
-bool DungeonMissionDataPlayTime::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataPlayTime::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
@@ -220,7 +220,7 @@ CStringW DungeonMissionDataLimitUserCount::GetTypeName()
 MS2_REPLACE_METHOD(0x1403150C0, DungeonMissionDataLimitUserCount, GetTypeName, 61, 0x66DC0398);
 
 // @0x140315110
-bool DungeonMissionDataLimitUserCount::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataLimitUserCount::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 1;
@@ -246,7 +246,7 @@ CStringW DungeonMissionDataKillNpc::GetTypeName()
 MS2_REPLACE_METHOD(0x1403151D0, DungeonMissionDataKillNpc, GetTypeName, 61, 0xA964FE77);
 
 // @0x140315220
-bool DungeonMissionDataKillNpc::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataKillNpc::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value2 = 1;
@@ -278,7 +278,7 @@ CStringW DungeonMissionDataDamageBySkill::GetTypeName()
 MS2_REPLACE_METHOD(0x140315370, DungeonMissionDataDamageBySkill, GetTypeName, 61, 0x103E837A);
 
 // @0x1403153c0
-bool DungeonMissionDataDamageBySkill::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataDamageBySkill::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     XmlTokenList(pElem, "value1", m_value1);
@@ -304,7 +304,7 @@ CStringW DungeonMissionDataUseSkill::GetTypeName()
 MS2_REPLACE_METHOD(0x140315490, DungeonMissionDataUseSkill, GetTypeName, 61, 0x7C1546C6);
 
 // @0x1403154e0
-bool DungeonMissionDataUseSkill::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataUseSkill::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
@@ -330,7 +330,7 @@ CStringW DungeonMissionDataGainBuff::GetTypeName()
 MS2_REPLACE_METHOD(0x1403155A0, DungeonMissionDataGainBuff, GetTypeName, 61, 0xD0D4E531);
 
 // @0x1403155f0
-bool DungeonMissionDataGainBuff::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataGainBuff::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     XmlTokenList(pElem, "value1", m_value1);
@@ -355,7 +355,7 @@ CStringW DungeonMissionDataLastHitNpc::GetTypeName()
 MS2_REPLACE_METHOD(0x1403156A0, DungeonMissionDataLastHitNpc, GetTypeName, 61, 0xED4B6883);
 
 // @0x1403156f0
-bool DungeonMissionDataLastHitNpc::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataLastHitNpc::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     XmlTokenList(pElem, "value1", m_value1);
@@ -380,7 +380,7 @@ CStringW DungeonMissionDataUseInteractObject::GetTypeName()
 MS2_REPLACE_METHOD(0x1403157A0, DungeonMissionDataUseInteractObject, GetTypeName, 61, 0x4FA969F8);
 
 // @0x1403157f0
-bool DungeonMissionDataUseInteractObject::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataUseInteractObject::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     m_value1 = 0;
@@ -406,7 +406,7 @@ CStringW DungeonMissionDataDamageToNpc::GetTypeName()
 MS2_REPLACE_METHOD(0x1403158B0, DungeonMissionDataDamageToNpc, GetTypeName, 61, 0x97C62EB4);
 
 // @0x140315900
-bool DungeonMissionDataDamageToNpc::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataDamageToNpc::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     XmlGetAttr((class TiXmlElement*)(pElem), "value1", reinterpret_cast<__int64&>(m_value1));
@@ -442,7 +442,7 @@ CStringW DungeonMissionDataTrigger::GetTypeName()
 MS2_REPLACE_METHOD(0x140315A70, DungeonMissionDataTrigger, GetTypeName, 61, 0xAA071FE5);
 
 // @0x140315ac0
-bool DungeonMissionDataTrigger::Load(Unk_140165cf0* pElem)
+bool DungeonMissionDataTrigger::Load(TiXmlElement* pElem)
 {
     DungeonMissionData::Load(pElem);
     return true;

@@ -89,7 +89,7 @@ class CInputStream;
 class COutputStream;
 class Unk_ItemUgcInfo;
 class Unk_ItemEquipData;
-class Unk_ItemEnchantData;
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 class Unk_ItemOwnerRef;
 class CInPacket;
 template <class T> class MS2Ptr;
@@ -143,7 +143,7 @@ public:
   void SetEnchantCharge(int);                // 0x140527110 set enchant exp
   int GetPlusLevel();
   int FUN_140527030();
-  Unk_ItemEnchantData* FUN_1405278a0();   // 0x1405278a0 the enchant data object (null when absent)
+  CItemStatus* FUN_1405278a0();   // 0x1405278a0 the enchant data object (null when absent)
   Unk_ItemOwnerRef* FUN_140527930();      // 0x140527930 binding owner holder
   unsigned GetRequiredLevel();               // 0x140527710 item level
   int InitWithCount(int, int, int, int);  // set up from id, rank, 0, count
@@ -314,7 +314,7 @@ public:
   void SetCoupleInfo(const CItemCoupleInfo&);
   void SetCoupleName(const CStringW&);
   __int64 FUN_1405293b0();
-  unsigned char FUN_1405294a0();
+  int FUN_1405294a0();   // the couple info's linked flag; the exe caller stores eax without widening
   void FUN_140529500(const CStringW&);
   CStringW* FUN_140529540();
   void FUN_140529600();

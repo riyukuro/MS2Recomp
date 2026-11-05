@@ -15,7 +15,7 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 
-class Unk_140165cf0;                // game TinyXML element (declared where the loaders are)
+class TiXmlElement;                // game TinyXML element (declared where the loaders are)
 class ItemModelData;                // itemdata.h
 struct ItemModelHead;               // itemdata.h
 class CItemExtraData;               // citemextradata.h
@@ -26,7 +26,7 @@ class CItemExtraData;               // citemextradata.h
 struct ItemSkill                    // <skill skillID skillLevel>
 {
     ItemSkill();                    // 0x140546740
-    int LoadXml(Unk_140165cf0* pElem);        // XML read (the <skill> child of pElem)
+    int LoadXml(TiXmlElement* pElem);        // XML read (the <skill> child of pElem)
     int FUN_1405467f0(void* pParent);               // XML write (nothing)
     bool FUN_140546810(const ItemSkill* pOther);    // operator!=
     unsigned skillId;               // +0x00 "skillID"
@@ -38,7 +38,7 @@ MS2_CHECK_SIZE(ItemSkill, 0x8);
 struct ItemMaterial                 // <material ... attack>
 {
     ItemMaterial();                 // 0x140547390
-    int FUN_1405473c0(Unk_140165cf0* pElem);
+    int FUN_1405473c0(TiXmlElement* pElem);
     int FUN_140547440(void* pParent);
     bool FUN_140547460(const ItemMaterial* pOther);
     int unknown0;
@@ -50,7 +50,7 @@ struct ItemProperty                 // <property> block: slotMax, collection, pr
 {
     ItemProperty();                 // 0x1405474a0
     ~ItemProperty();                // 0x140540eb0
-    void Load(Unk_140165cf0* pElem);       // XML read
+    void Load(TiXmlElement* pElem);       // XML read
     void FUN_1405479a0(void* pElem);                // XML write (attributes of the <property> element)
     bool FUN_140547ec0(const ItemProperty* pOther); // operator!=
     __int64 FUN_1405480f0(int nRarity);             // sell price (one value, or one per rarity 1..6)
@@ -88,7 +88,7 @@ struct ItemPeriod                   // <life ...>
 {
     ItemPeriod();                   // 0x1405460f0
     ~ItemPeriod();                  // 0x140540db0
-    int Load(Unk_140165cf0* pElem);        // XML read (the <life> child of pElem)
+    int Load(TiXmlElement* pElem);        // XML read (the <life> child of pElem)
     int Save(void* pParent);               // XML write (nothing when all fields are empty)
     bool FUN_140546620(const ItemPeriod* pOther);   // operator!=
     int FUN_1405466d0();            // the item has a limited life
@@ -108,7 +108,7 @@ struct ItemLimit                    // <limit ...>
 {
     ItemLimit();                    // 0x140545220
     ~ItemLimit();                   // 0x140540dd0
-    int Load(Unk_140165cf0* pElem);        // XML read (the <limit> child of pElem)
+    int Load(TiXmlElement* pElem);        // XML read (the <limit> child of pElem)
     int Save(void* pParent);               // XML write (nothing when equal to the default)
     bool FUN_140545a80(const ItemLimit* pOther);    // operator==
     bool FUN_140545ad0(const ItemLimit* pOther);    // operator!=
@@ -160,7 +160,7 @@ struct ItemInstallData {
     CString mapAttribute;     // +0x50 "mapAttribute"
     int propCollisionGroup;   // +0x58 "propCollisionGroup"
     bool useInstancing;       // +0x5c "useInstancing" (default true)
-    int Load(Unk_140165cf0* pElem);     // XML read
+    int Load(TiXmlElement* pElem);     // XML read
     int Save(void* pParent);            // XML write
     bool FUN_140548a50(const ItemInstallData* pOther);   // operator==
     bool FUN_140548aa0(const ItemInstallData* pOther);   // operator!=
@@ -182,7 +182,7 @@ struct ItemUccMesh                  // <ucc mesh> block: the mesh name (cubecraf
 {
     ItemUccMesh();                  // 0x1405495a0
     ~ItemUccMesh();                 // 0x1405410a0
-    int LoadXml(Unk_140165cf0* pElem);
+    int LoadXml(TiXmlElement* pElem);
     int SaveXml(void* pParent);
     CString mesh;                   // +0x00 "mesh"
 };
@@ -192,7 +192,7 @@ struct ItemEffect                   // <effect ...>
 {
     ItemEffect();                   // 0x1405496c0
     ~ItemEffect();                  // 0x140540cb0
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     int Save(void* pParent);
     bool FUN_140549a40(const ItemEffect* pOther);   // operator!=
     bool FUN_140549b10();           // any field differs from the default
@@ -215,8 +215,8 @@ class ItemMusicScore : public CPtred
 {
 public:
     ItemMusicScore();                                       // 0x14054a720
-    int LoadXml(Unk_140165cf0* pElem);                // XML read (the <MusicScore> child of pElem)
-    int LoadElement(Unk_140165cf0* pElem);                // XML read (the attributes of pElem)
+    int LoadXml(TiXmlElement* pElem);                // XML read (the <MusicScore> child of pElem)
+    int LoadElement(TiXmlElement* pElem);                // XML read (the attributes of pElem)
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_14054abd0(const ItemMusicScore* pOther);       // operator!=
     bool FUN_14054aca0();                                   // isCustomNote
@@ -244,8 +244,8 @@ class ItemHousing : public CPtred
 {
 public:
     ItemHousing();                                          // 0x140548d90
-    int LoadXml(Unk_140165cf0* pElem, int nItemId);   // XML read (the <housing> child of pElem)
-    void LoadElement(Unk_140165cf0* pElem, int nItemId);  // XML read (the attributes of pElem)
+    int LoadXml(TiXmlElement* pElem, int nItemId);   // XML read (the <housing> child of pElem)
+    void LoadElement(TiXmlElement* pElem, int nItemId);  // XML read (the attributes of pElem)
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_140549380(const ItemHousing* pOther);          // operator!=
     int FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc);     // the item can be placed
@@ -271,7 +271,7 @@ MS2_CHECK_OFFSET(ItemHousing, itemId, 0x58);
 struct ItemFusion                   // <fusion fusionable>
 {
     ItemFusion();                   // 0x140549500
-    int LoadXml(Unk_140165cf0* pElem);
+    int LoadXml(TiXmlElement* pElem);
     int FUN_140549580(void* pParent);
     int fusionable;
     int unknown4;
@@ -282,7 +282,7 @@ struct ItemAdditionalEffect         // <AdditionalEffect ...>
 {
     ItemAdditionalEffect();         // 0x140549bb0
     ~ItemAdditionalEffect();        // 0x140540c40
-    int FUN_140549c00(Unk_140165cf0* pElem);
+    int FUN_140549c00(TiXmlElement* pElem);
     int FUN_140549d40(void* pParent);
     bool FUN_140549d60(const ItemAdditionalEffect* pOther);     // operator!=
     unsigned FUN_140549de0();       // the first id (0 when none)
@@ -294,15 +294,26 @@ struct ItemAdditionalEffect         // <AdditionalEffect ...>
 };
 MS2_CHECK_SIZE(ItemAdditionalEffect, 0x48);
 
-struct ItemFunctionArgs             // the <function> parameter string split into arguments, 0x70 bytes
+// The argument block of an item <function> and of a chat command (CUserCommandCli handlers), 0x70 bytes: the raw
+// text, its split words and an int key/value table. Accessors: unit_1408d1ec0 / unit_1408d2280.
+struct ItemFunctionArgs
 {
     ItemFunctionArgs();             // 0x1408d1bd0
+    ItemFunctionArgs(CStringW strText, CStringW strSeparators);    // 0x1408d1c50
     ~ItemFunctionArgs();            // 0x140540c00
     void FUN_1408d1e00(CStringW strText, CStringW strSeparators);   // split strText into args
-    unsigned FUN_1408d2380();       // the argument count
-    unsigned FUN_1408d1f60(int nIndex, int nDefault);
-    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);   // the nIndex-th argument as a string (unit_140d1ae30: OpenWebPage)
-    int FUN_1408d1fd0(int nIndex, int nDefault);   // the nIndex-th argument as a number (usercommandcli.h: Unk_CommandArgs)
+    bool FUN_1408d1ec0(int nKey, int* pnValue);                     // table lookup with an out value
+    int FUN_1408d1f10(int nKey, int nDefault);                      // table lookup with a default
+    int FUN_1408d1f60(unsigned nIndex, int nDefault);               // word n as int (_wtoi)
+    int FUN_1408d1fd0(unsigned nIndex, int nDefault);               // word n as int (_wtol)
+    __int64 FUN_1408d2040(unsigned nIndex, __int64 nDefault);       // word n as __int64
+    unsigned FUN_1408d20b0(unsigned nIndex, unsigned nDefault);
+    bool FUN_1408d2140(unsigned nIndex, bool bDefault);
+    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);        // word n as a string
+    float FUN_1408d2280(unsigned nIndex, float fDefault);
+    double FUN_1408d22c0(unsigned nIndex, double dDefault);
+    CStringW FUN_1408d2330();                                       // copy of the raw text
+    unsigned FUN_1408d2380();                                       // the argument count
     CStringW text;                  // +0x00
     ATL::CAtlArray<CStringW> args;  // +0x08
     ATL::CAtlMap<int, int> values;  // +0x28
@@ -313,7 +324,7 @@ struct ItemFunction                 // <function name parameter ...>
 {
     ItemFunction();                 // 0x140549e70
     ~ItemFunction();                // 0x140540d10
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     bool FUN_14054a2b0(const ItemFunction* pOther);    // operator!=
     int FUN_14054a350();            // 0 when the parameter is malformed
     bool FUN_14054a3d0();           // has a name
@@ -334,7 +345,7 @@ class CItemData : public CPtred, public CValidData<CItemData>, public CObjectCou
 public:
     CItemData();             // 0x14053b510
     virtual ~CItemData();    // 0x14053b730
-    bool Load(Unk_140165cf0* pElem);    // 0x14053b830 XML read
+    bool Load(TiXmlElement* pElem);    // 0x14053b830 XML read
     bool Save(void* pParent);    // 0x14053be30 XML write
     bool FUN_14053c170(const CItemData* pOther);    // 0x14053c170 operator!=
     int GetOriginOrItemId();     // 0x14053c560 (uiitemenchantdialog.cpp)
@@ -402,7 +413,7 @@ public:
     bool FUN_14053d600();    // 0x14053d600
     int IsFatiguePenaltyApplied();    // 0x14053d640
     int HasPeriod();    // 0x14053d660
-    bool IsMeratMarketRegisterable();    // 0x14053d740
+    int IsMeratMarketRegisterable();     // 0x14053d740 (BOOL: the callers test it as an int)
     bool FUN_14053d760();    // 0x14053d760
     bool FUN_14053d7c0();    // 0x14053d7c0
     bool FUN_14053d800();    // 0x14053d800

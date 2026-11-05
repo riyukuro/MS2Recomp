@@ -93,31 +93,31 @@ CStringW FUN_14183e9c0(CStringW, int);
 int FUN_1407181a0(const CStringW&);
 class CUserCommandCli { public: static void SendCommand(CStringW); };   // C3: member view
 int FUN_14053feb0(int);
-class Unk_DropRef { public: void* m_08; };
-class Unk_DropEntry : public Unk_DropRef {
-public:
-    virtual int vfunc_0();
-    virtual int vfunc_1();
-    void* m_10; void* m_18;
-    int m_20; int m_min; int m_max;
-};
-MS2_CHECK_OFFSET(Unk_DropEntry, m_min, 0x24);
-MS2_CHECK_OFFSET(Unk_DropEntry, m_max, 0x28);
-template <> Unk_DropEntry* MS2Ptr<Unk_DropEntry>::get() const { return m_p; }  // COMDAT first instantiated here
-// The rest of the MS2Ptr<Unk_DropEntry> COMDAT chain (shared with a sibling unit; defined here so the DLL links).
-// @0x1403038d0
-template <> void MS2Ptr<Unk_DropEntry>::Reference(Unk_DropEntry* p) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(p)); }
-// @0x14030d460
-template <> void MS2Ptr<Unk_DropEntry>::ReleaseImpl(void*) {
-    if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(m_p)) == 0) {
-        Reference(m_p);
-        CPtred::DeletePtred(reinterpret_cast<CPtred*>(m_p));
-    }
-}
-// @0x14030d010
-template <> void MS2Ptr<Unk_DropEntry>::Release() { if (m_p) { ReleaseImpl((Unk_DropRef*)(Unk_DropEntry*)0); m_p = 0; } }
-// @0x1402fee10
-template <> MS2Ptr<Unk_DropEntry>::~MS2Ptr() { Release(); }
+// C3: Unk_DropRef / Unk_DropEntry were the ItemDropResult view (itemdroptable.h): GetBoxItems fills a
+// vector<MS2Ptr<ItemDropResult>>; vfunc_0/1 = ItemAble::vfunc_o18_0/1, m_min/m_max = m_count/m_maxCount (+0x24/+0x28).
+// The MS2Ptr<ItemDropResult> Reference/ReleaseImpl/Release/~MS2Ptr COMDATs come from itemdroptable.h / itemdroptable.cpp.
+template <> ItemDropResult* MS2Ptr<ItemDropResult>::get() const { return m_p; }  // COMDAT first instantiated here (0x140c3c690)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 MS2Ptr<CItemData> FUN_14053f870(int);
 class ASObj : public AScript {
 public: ASObj(int); virtual ~ASObj();
@@ -240,21 +240,21 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
     MS2Ptr<CItemData> data((CItemData*)m_item->FUN_140527840());
     if (data == NULL) return;
     if (m_box == 0) return;
-    std::vector<MS2Ptr<Unk_DropEntry>> entries;
-    TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(m_box, reinterpret_cast<std::vector<MS2Ptr<ItemDropResult>>&>(entries));
+    std::vector<MS2Ptr<ItemDropResult>> entries;
+    TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(m_box, entries);
     ASDataProvider array(2);
     for (auto& entry : entries) {
-        MS2Ptr<CItemData> info = FUN_14053f870(entry->vfunc_0());
+        MS2Ptr<CItemData> info = FUN_14053f870(entry->vfunc_o18_0());
         if (info == NULL) continue;
         MS2Ptr<CItem> item(new CItem);
-        if (!item->FUN_14052b130(entry->vfunc_0(),entry->vfunc_1(),0)) continue;
+        if (!item->FUN_14052b130(entry->vfunc_o18_0(),entry->vfunc_o18_1(),0)) continue;
         ASObj obj(2);
-        obj.FUN_1409c5bd0(reinterpret_cast<ItemDropResult*>(entry.get()));
+        obj.FUN_1409c5bd0(entry.get());
         obj.FUN_1407cb9c0(s_itemCount,0);
         {
             CStringW range;
-            if (entry->m_min == entry->m_max) range = StringFormat<CStringW>(L"{0}",FUN_1409eb450(entry->m_min));
-            else range = StringFormat<CStringW, CStringW>(L"{0} ~ {1}",FUN_1409eb450(entry->m_min),FUN_1409eb450(entry->m_max));
+            if (entry->m_count == entry->m_maxCount) range = StringFormat<CStringW>(L"{0}",FUN_1409eb450(entry->m_count));
+            else range = StringFormat<CStringW, CStringW>(L"{0} ~ {1}",FUN_1409eb450(entry->m_count),FUN_1409eb450(entry->m_maxCount));
             obj.FUN_1407cbb20("rangeCount",range);
         }
         array.PushValue(obj.FUN_1422bb870());

@@ -16,7 +16,7 @@
 #include "ms2/placeholder/blackmarketpage.h"
 
 class CItem;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIBlackMarketDialog : public UIDialog
 {
@@ -61,7 +61,7 @@ private:
     MS2Ptr<BlackMarketPageMesoRegister> m_spMesoRegister;           // +0x1b0
     MS2Ptr<BlackMarketPageMesoSearch> m_spMesoSearchSingle;         // +0x1c0 "m_mesoSearchPageSingleRange"
     std::vector<BlackMarketPage*> m_pages;                          // +0x1d0
-    MS2Ptr<Unk_140acd6e0> m_spDetailButton;                         // +0x1e8 "m_mesoMarketDetailButton"
+    MS2Ptr<ASButton> m_spDetailButton;                         // +0x1e8 "m_mesoMarketDetailButton"
 };
 MS2_CHECK_SIZE(UIBlackMarketDialog, 0x1f8);
 MS2_CHECK_OFFSET(UIBlackMarketDialog, m_pCurPage, 0x178);

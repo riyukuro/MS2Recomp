@@ -155,9 +155,9 @@ Unk_Int3 FUN_1408a1430(NiPoint3 kPos);   // C3: actionkeyobject.cpp's declaratio
 
 class Unk_CubeGridSvc : public CubeMapInformationService {
 public:
-    int FUN_1410cdd80(Vector3 kPos, Vector3 kDir, float fRange, Unk_Int3 kDown);
+    // C3: FUN_1410cdd80 is CubeMapInformationService's own (by value)
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
 Unk_AnimSvc* FUN_1410a68d0();
 struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
@@ -182,7 +182,7 @@ struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_n
 Unk_Int3 FUN_1408a0400(int nPacked);
 
 class Unk_MagicTarget : public CPtred { public: char m_pad[0x40]; };
-class Unk_GuideEntity : public CPtred { public: char m_pad[0x40]; };
+// (the guide target of 0x141467500 is CMagicModel's Unk_MagicTagPtr spCaster, magicdata.h)
 struct Unk_MagicNode { Unk_MagicNode* m_pNext; void* m_pPrev; MS2Ptr<Unk_MagicTarget> m_spData; };
 struct Unk_MagicTargetList { void* m_pHead; };
 class Unk_SkillMagicInfo : public CPtred
@@ -197,7 +197,7 @@ public:
 void* FUN_1410a7620(Unk_MagicTargetList*);
 MS2Ptr<Unk_MagicTarget>* FUN_1410a7520(Unk_MagicTargetList*, void*);
 MS2Ptr<Unk_MagicTarget>* FUN_1410a7640(Unk_MagicTargetList*, void**);
-void FUN_141467500(CMagicModel*, MS2Ptr<Unk_MagicTarget>, MS2Ptr<Unk_GuideEntity>, NiPoint3, int, int, int);
+// 0x141467500 is CMagicModel::FUN_141467500 (magicdata.h)
 long long FUN_1410a7630();
 MS2_CHECK_OFFSET(SkillData, m_block150, 0x150);   // C3: the skill row read by CSkillMagicControlGuide::FUN_1410a5ea0 (was the row view Unk_SkillRow)
 void FUN_1409f7320(efd::Matrix3*);
@@ -235,10 +235,10 @@ private:
     char m_pad_18[0x98 - 0x18];
 };
 
-// The placement/aim record a controller sends (a CPtred, created by 0x140835450; layout = statemanager.h Unk_StateArg22).
-class Unk_GuideRecord : public CPtred
+// The placement/aim record a controller sends (a CPtred, created by 0x140835450 as the statemanager.h Unk_StateArg22).
+class Unk_StateArg22 : public CPtred
 {
-public:
+public: void FUN_1408356f0(class CInPacket& packet);         // the record read
     int m_nType;                                                // +0x18
     int m_nObjId;                                               // +0x1c
     efd::Point3 m_pos20;
@@ -253,9 +253,9 @@ public:
     int m_na8;
     int m_nac;
 };
-MS2Ptr<Unk_GuideRecord> FUN_140835450(int nType);
-class Unk_StateArg22 : public CPtred { public: void FUN_1408356f0(class CInPacket& packet); };   // C3: member view (statemanager.h) for the record read
-class Unk_FishLineBody { public: void Destroy(); void FUN_140cd80d0(); };   // C3: member view (fishingmanager.cpp) of the fishing line
+MS2Ptr<Unk_StateArg22> FUN_140835450(int nType);
+class Unk_GuideRecord : public Unk_StateArg22 { };         // the controller's record type (cubecraft_1.h; GetCurrent / FUN_1417b7670)
+//
 
 class Unk_GuideWorld
 {
@@ -430,7 +430,7 @@ void CGuideObject::vfunc_126()
     {
         if (spOld.get() != 0)
             m_ctrl.vfunc_0();
-        MS2Ptr<Unk_GuideRecord> spNew = FUN_140835450(GetCurStateId());
+        MS2Ptr<Unk_StateArg22> spNew = FUN_140835450(GetCurStateId());
         spNew->m_nObjId = FUN_14166cc80();
         spNew->m_pos3c = m_pos98;
         spNew->m_pos20 = vfunc_18();
@@ -442,7 +442,7 @@ void CGuideObject::vfunc_126()
         spNew->m_nac = reinterpret_cast<Unk_GuideApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473390();
         if (m_bBusy)
             spNew->m_pos3c = NiPoint3::ZERO;
-        m_ctrl.FUN_1417b7670(spNew.get());
+        m_ctrl.FUN_1417b7670(static_cast<Unk_GuideRecord*>(spNew.get()));
     }
 }
 
@@ -483,8 +483,8 @@ void CGuideObject::vfunc_129(void* pStream)
     for (int i = 0; i < nCount; ++i)
     {
         int nType = (&((Unk_CcRecordStream*)pStream)->m_reader)->ReadU8();
-        MS2Ptr<Unk_GuideRecord> spRec = FUN_140835450(nType);
-        ((Unk_StateArg22*)spRec.operator->())->FUN_1408356f0(*(CInPacket*)pStream);
+        MS2Ptr<Unk_StateArg22> spRec = FUN_140835450(nType);
+        spRec->FUN_1408356f0(*(CInPacket*)pStream);
         vfunc_114(spRec.get());
     }
 }
@@ -928,7 +928,7 @@ CFishingGuideObject::CFishingGuideObject()
     m_spStateMgr->RegisterState(0x2e, new StateFishingFloat(this));
     m_ctrl.SetKind(1);
     vfunc_59(0x2e, 0, 0, 0);
-    FUN_1410a77c0(&m_fishLine.m_pOwner, this);
+    FUN_1410a77c0((void**)&m_fishLine.m_pOwner, this);
     m_nEffectA = 0;
     m_nEffectB = 0;
     m_nEffectC = 0;
@@ -1001,7 +1001,7 @@ void CFishingGuideObject::vfunc_127()
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : 0, 0x6200004))
     {
         efd::Point3 kFrom = vfunc_18() - efd::Point3(0.0f, 0.0f, 75.0f);
-        m_fishLine.FUN_140cd7eb0(TSingleton<CFishingManager>::GetInstance()->FUN_140cdb110(kFrom), vfunc_18());
+        m_fishLine.FUN_140cd7eb0(TSingleton<CFishingManager>::GetInstance()->FUN_140cdb110(kFrom), static_cast<const efd::Point3&>(vfunc_18()));
     }
 }
 
@@ -1013,7 +1013,7 @@ void CFishingGuideObject::vfunc_128()
     if (pOwner != 0)
         ((class PC*)(class PCBase*)(pOwner))->SetGuide(efd::SmartPointer<CGuideObject>((CGuideObject*)0), 1);
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : 0, 0x6200004))
-        ((Unk_FishLineBody*)&m_fishLine)->Destroy();
+        m_fishLine.Destroy();
     if (m_nEffectA != 0)
     {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectA);
@@ -1168,7 +1168,7 @@ void CFishingGuideObject::vfunc_53(float f)
     FUN_1410a5690();
     PCBase* pOwner = FUN_1410a1310();
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200004))
-        ((Unk_FishLineBody*)&m_fishLine)->FUN_140cd80d0();
+        m_fishLine.FUN_140cd80d0();
     if (m_spBirdHead.get())
     {
         m_spBirdHead->vfunc_15();
@@ -1340,7 +1340,7 @@ void CSkillMagicControlGuide::vfunc_127()
             {
                 Unk_MagicTarget* pTarget = FUN_1410a7520(&m_spInfo->m_targets, pos)->get();
                 MS2Ptr<CMagicModel> spModel(new CMagicModel());
-                FUN_141467500(spModel.get(), pTarget, MS2Ptr<Unk_GuideEntity>(0), vfunc_18(), 1, 1, 0);
+                spModel.get()->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTarget)), Unk_MagicTagPtr(0), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), 1, 1, 0);
             }
         }
     }

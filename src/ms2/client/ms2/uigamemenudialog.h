@@ -31,7 +31,7 @@ class CInPacket;
 class CMsgBoxData;
 class GameEventVariable;
 class NotifyObject;
-class Unk_GmItem;
+class ASDropdownMenu;
 class Unk_UISwfEntity_25;
 
 enum EMenuKey { EMenuKey_None = 0 };     // menu id key type of m_menuText (the exe has a separate CAtlMap instance for it)
@@ -125,8 +125,8 @@ public:
     void FUN_14193ac40(int nEnable, int nId);
     CString GetMenuName(int nId);
     CString FUN_14193afc0(int nId);
-    MS2Ptr<Unk_GmItem> FindMenuItemById(int nId);
-    MS2Ptr<Unk_GmItem> FindMenuItem(const CString& strName);
+    MS2Ptr<ASDropdownMenu> FindMenuItemById(int nId);
+    MS2Ptr<ASDropdownMenu> FindMenuItem(const CString& strName);
     // game menu button handlers bound by CGameMenuTable::RegisterDefs (0x140cf1110)
     void FUN_14193b5b0();
     void FUN_14193b630();

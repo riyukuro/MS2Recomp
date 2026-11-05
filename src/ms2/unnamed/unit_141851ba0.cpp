@@ -79,13 +79,13 @@ int CMorphingAnimationData::FUN_141851c20(int nTime)
 MS2_REPLACE_METHOD(0x141851C20, CMorphingAnimationData, FUN_141851c20, 386, 0xD67399D0);
 
 // @0x141851db0
-void CMorphingAnimationData::FUN_141851db0(Unk_140165cf0* pElem)
+void CMorphingAnimationData::FUN_141851db0(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "target", m_strNodeName);
     if (m_strNodeName.IsEmpty())
         m_strNodeName = "FA_Skin";
-    for (Unk_140165cf0* pWeight = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->FirstChild("weight")); pWeight != 0;
-         pWeight = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pWeight))->NextSibling("weight")))
+    for (TiXmlElement* pWeight = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pElem))->FirstChild("weight")); pWeight != 0;
+         pWeight = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pWeight))->NextSibling("weight")))
     {
         float fValue;
         XmlGetAttr((class TiXmlElement*)(pWeight), "value", fValue);

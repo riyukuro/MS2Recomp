@@ -9,7 +9,7 @@ class CVibrateEffectParam : public CEffectParam
 {
 public:
     CVibrateEffectParam();                                      // 0x141b72630
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141b72690 freq / amp / damping / dampingTime
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141b72690 freq / amp / damping / dampingTime
     virtual bool vfunc_2();                                     // 2 0x141b72730 validate: dampingTime must not exceed duration
     virtual CEffectPtr vfunc_6();                               // 6 0x141b727b0 new CVibrateEffect
     virtual bool vfunc_7(Unk_EffectTarget* p);                  // 7 0x141b72850 also skip for target kind 3

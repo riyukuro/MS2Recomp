@@ -13,7 +13,7 @@
 
 class CMeratMarketProduct;      // commonfiles/meratmarketbasketinfo.h
 class ASMeratMarketBuyBillData; // placeholder/asmeratmarketbuybilldata.h
-class Unk_AdMarketItem;         // unit_140e3efd0.h
+
 
 class CPendingBuyBase : public CPtred
 {
@@ -45,8 +45,8 @@ public:
 
     // Fill the packet (0x140d60a80): item, quantity, price kind, flag. A null item or packet is ignored.
     void FUN_140d60a80(MS2Ptr<CMeratMarketProduct> spItem, int nBuyType, int nPayType, int nFlag);
-    // The same exe function as uiadpushlimiteddialog.cpp types the product (unit_140e3efd0.h's view, Unk_AdMarketItem).
-    void FUN_140d60a80(MS2Ptr<Unk_AdMarketItem> spItem, int nBuyType, int nPayType, int nFlag);
+
+
     void FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int nBuyType, int nFlag);   // from a bill row
     void FUN_140d60d60(int nA, int nB);                             // 0x140d60d60 packet +0x40 / +0x44
     int GetBasketIndex();                                            // 0x140d60ef0 the basket line index

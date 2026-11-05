@@ -5,6 +5,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/stream.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr (Guild* records)
 #include <map>
 #include <set>
 #include "ms2/commonfiles/itemgift.h"
@@ -138,22 +139,22 @@ public:
     bool LoadGuildContribution();
     unsigned GetLevelByExp(int); int GetAccumExp(int); int GetMaxExp(); int GetMaxLevel();
     float GetQuestRewardFactor(unsigned short,int); int GetContribution(int);
-    Unk_PayloadPtr<GuildProperty> GetProperty(int);
-    Unk_PayloadPtr<GuildSkill> GetSkill(int,int);
+    MS2Ptr<GuildProperty> GetProperty(int);
+    MS2Ptr<GuildSkill> GetSkill(int,int);
     void FUN_1404d7630(std::vector<int>&); void FUN_1404d7730(std::vector<int>&);
-    Unk_PayloadPtr<GuildEvent> GetEvent(int); void GetEventIds(std::vector<int>&);
-    Unk_PayloadPtr<GuildHouse> GetHouse(int,int); void GetHouseKeys(std::vector<std::pair<int,int>>&);
-    Unk_PayloadPtr<GuildNpc> GetNpc(Unk_GuildNpcKind,int);
+    MS2Ptr<GuildEvent> GetEvent(int); void GetEventIds(std::vector<int>&);
+    MS2Ptr<GuildHouse> GetHouse(int,int); void GetHouseKeys(std::vector<std::pair<int,int>>&);
+    MS2Ptr<GuildNpc> GetNpc(Unk_GuildNpcKind,int);
     void GetNpcKinds(std::set<Unk_GuildNpcKind>&);
-    Unk_PayloadPtr<GuildRaid> GetRaid(unsigned); void GetRaidIds(std::vector<unsigned>&);
-    Unk_PayloadPtr<GuildRaidReward> FUN_1404d7e30(int);
-    std::map<int,Unk_PayloadPtr<GuildProperty>> property;
-    std::map<int,std::vector<Unk_PayloadPtr<GuildSkill>>> skill;
-    std::map<int,Unk_PayloadPtr<GuildEvent>> event;
-    std::map<std::pair<int,int>,Unk_PayloadPtr<GuildHouse>> house;
-    std::map<std::pair<Unk_GuildNpcKind,int>,Unk_PayloadPtr<GuildNpc>> npc;
-    std::map<unsigned,Unk_PayloadPtr<GuildRaid>> raid;
-    std::map<int,Unk_PayloadPtr<GuildRaidReward>> reward;
+    MS2Ptr<GuildRaid> GetRaid(unsigned); void GetRaidIds(std::vector<unsigned>&);
+    MS2Ptr<GuildRaidReward> FUN_1404d7e30(int);
+    std::map<int,MS2Ptr<GuildProperty>> property;
+    std::map<int,std::vector<MS2Ptr<GuildSkill>>> skill;
+    std::map<int,MS2Ptr<GuildEvent>> event;
+    std::map<std::pair<int,int>,MS2Ptr<GuildHouse>> house;
+    std::map<std::pair<Unk_GuildNpcKind,int>,MS2Ptr<GuildNpc>> npc;
+    std::map<unsigned,MS2Ptr<GuildRaid>> raid;
+    std::map<int,MS2Ptr<GuildRaidReward>> reward;
     float questFactors[300][5];
     int contribution[10];
 };

@@ -122,12 +122,12 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
         return 0;
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     m_bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
-    m_pose.m_pos.x = ptPos.x;
-    m_pose.m_pos.y = ptPos.y;
-    m_pose.m_pos.z = ptPos.z;
-    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
-    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    NxCreateBox(m_obb, m_bounds, *(class NxMat34 const*)(&m_pose));
+    m_pose.t.x = ptPos.x;
+    m_pose.t.y = ptPos.y;
+    m_pose.t.z = ptPos.z;
+    m_pose.M.id();
+    m_pose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
+    NxCreateBox(m_obb, m_bounds, m_pose);
     NxVec3 vCenter(ptCenter.x, ptCenter.y, ptCenter.z);
     m_obb.center += vCenter;   // move the box centre (0x140adbf00)
     return 1;

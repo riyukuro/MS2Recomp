@@ -36,7 +36,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -106,13 +106,13 @@ bool CArcadeDataTable::LoadMain()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         MainPtr pData(new CArcadeMainData);
         int nId = 0;
@@ -134,13 +134,13 @@ bool CArcadeDataTable::LoadReward()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         int nArcadeId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "arcadeId", reinterpret_cast<int&>(nArcadeId));
@@ -148,7 +148,7 @@ bool CArcadeDataTable::LoadReward()
         std::vector<RewardPtr> aReward;
         aReward.resize(MAX_ROUND);
         aReward[0] = new CArcadeRewardData;
-        for (Unk_140165cf0* pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("reward")); pReward != 0; pReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
+        for (TiXmlElement* pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("reward")); pReward != 0; pReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pReward))->NextSibling("reward")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pReward)))
                 continue;
@@ -173,20 +173,20 @@ bool CArcadeDataTable::LoadRecord()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("arcadeGame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("arcadeGame")))
     {
         int nArcadeId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nArcadeId));
         int nId = nArcadeId;
         std::vector<Unk_ArcadeRecord> aRecord;
         aRecord.reserve(10);
-        for (Unk_140165cf0* pRank = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("rank")); pRank != 0; pRank = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRank))->NextSibling("rank")))
+        for (TiXmlElement* pRank = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("rank")); pRank != 0; pRank = ((class TiXmlElement*)((class Unk_XmlNode*)(pRank))->NextSibling("rank")))
         {
             Unk_ArcadeRecord record;
             unsigned nNpcId = 0;

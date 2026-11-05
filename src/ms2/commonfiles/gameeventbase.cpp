@@ -106,7 +106,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 
 // The TinyXML attribute readers (commonfiles\xmldata).
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
+int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 // The string splitters (commonstringtable.cpp / chapterbooktable.cpp).
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);
@@ -155,7 +155,7 @@ bool GameEvent::Init(int id, const CMsTime& start, const CMsTime& end, const CSt
 MS2_REPLACE_METHOD(0x1402E1D00, GameEvent, GetID, 14, 0x72E52537);
 
 // @0x1402e1f40
-bool GameEvent::LoadXml(Unk_140165cf0* pElem)
+bool GameEvent::LoadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "gameEventID", *(unsigned int*)&static_cast<int&>(m_id));
     XmlGetAttr((class TiXmlElement*)(pElem), "eventStart", m_28);

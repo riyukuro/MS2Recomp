@@ -41,14 +41,14 @@ private:
     int m_result;
 };
 MS2_CHECK_SIZE(Unk_140659080,0x30);
-class Unk_140165cf0;
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
+CStringW FUN_1401bf530(TiXmlElement*,const char*,CStringW);
 CString FUN_1406513d0(CString);
 CStringW FUN_14016a730(const char*,int);
 bool FUN_14025fab0(CStringW&);
@@ -291,9 +291,9 @@ bool CLogString::ReadLogPathFromSettings()
     TiXmlDocument doc;
     bool bFailed=!doc.LoadFile(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),TIXML_ENCODING_UNKNOWN) ? TRUE : FALSE;
     if(bFailed && !doc.LoadFile("setting.xml",TIXML_ENCODING_UNKNOWN)) return false;
-    Unk_140165cf0* root=((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* root=((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if(!root) return false;
-    Unk_140165cf0* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("logpath"));
+    TiXmlElement* node=((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("logpath"));
     if(!node) return false;
     CStringW path=FUN_1401bf530(node,"logpath",L"");
     if(path.IsEmpty()) return false;

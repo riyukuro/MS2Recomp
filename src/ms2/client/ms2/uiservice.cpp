@@ -201,9 +201,9 @@ class Unk_UisWorld : public WorldService                                        
 public:
 };
      // background movie name override
-class Unk_UisRootsSub { public: void* FUN_14151e180(); };
-class Unk_UisRootsOwner { public: char m_unk00[0x20]; Unk_UisRootsSub m_sub; };
-class Unk_UisMovieObj
+struct Unk_VtmObjectTable;   // C3: ms2visualtrackermanager's object table (the former Unk_UisRootsSub slot is its SmartPointer)
+class Unk_UisRootsOwner { public: char m_unk00[0x20]; efd::SmartPointer<Unk_VtmObjectTable> m_sub; };   // = Unk_VtmMovieStats
+struct Unk_VtmMovieView   // C3: ms2visualtrackermanager's movie view (was Unk_UisMovieObj)
 {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
@@ -218,7 +218,7 @@ public:
     virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48();
     virtual Unk_UisRootsOwner* vfunc_49();                          // MS2: slot 49 (0x188)
 };
-class Unk_UisMovieSlot { public: void* FUN_14151e150(); Unk_UisMovieObj* FUN_14151e170(); };
+// C3: the former Unk_UisMovieSlot is efd::SmartPointer<Unk_VtmMovieView> (operator T* 0x14151e150, operator-> 0x14151e170)
 class Unk_UisMovie
 {
 public:
@@ -232,7 +232,7 @@ public:
     virtual void vfunc_35(); virtual void vfunc_36();
     virtual bool vfunc_37(float x, float y, int n, int m);              // MS2: slot 37 (0x128) hit test
     char m_unk08[0x10];
-    Unk_UisMovieSlot m_slot;                                        // +0x18
+    efd::SmartPointer<Unk_VtmMovieView> m_slot;                    // +0x18
 };
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // C3: the definition's return type
 class Unk_UisPlayerInfo { };   // the local player's name
@@ -471,13 +471,13 @@ MS2_REPLACE_METHOD(0x141AD9330, CUIService, GetDisplayName, 13, 0xDFB7B125);
 // ---- more exe helpers (chunk 2) ----
 CStringA FUN_140719190(int n);
 // game TinyXML (tinyxmlhelper.cpp)
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* szValue);                              // 0x14086f2f0
-private:
-    char m_pad[0x90];
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -485,11 +485,11 @@ public:
 };
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 void XmlSetAttr(TiXmlElement* pElem, const char* szName, int nValue);        // SetAttribute
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* LinkEndChild(class TiXmlNode*);
-};
+// C3 #12: was a local TiXml view
+
+
+
+
 CString FUN_1412755f0();                                                     // the user data folder
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);       // path join
 void FUN_141b70290();
@@ -1097,9 +1097,9 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+//   (C3: the former Unk_Service6100017 forward declaration; the class is defined above)
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()
@@ -2757,10 +2757,10 @@ MS2_REPLACE(0x141ade400, CUIService::FUN_141ade400, 32, 0x600272B3);
 
 // ---- movie-manager callbacks ----
 class Unk_UisHousingSvc;
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
 // The efd::SmartPointer the exe wraps the housing service in (its glue COMDATs live in another unit).
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
@@ -2819,7 +2819,7 @@ void CUIService::FUN_141aecc30()
         pService->FUN_141adb2a0(nScene);
         pService->FUN_141ad9b30();
     }
-    if (efd::SmartPointer<Unk_Service6100017> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)))
+    if (efd::SmartPointer<CubeMapInformationService> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)))
         ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc320();
     ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb7a0();
     ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d4b70(1);
@@ -2864,7 +2864,7 @@ int FUN_141277f40();
 int FUN_141277f50();
 void* FUN_1413f9950();
    // scene name (member: this=rcx, hidden return=rdx)
-class Unk_VtmObjectTable   // C3: member view for the former free stand-ins
+struct Unk_VtmObjectTable   // C3: member view for the former free stand-ins
 {
 public:
     unsigned __int64 FUN_14151e8c0();
@@ -2953,7 +2953,7 @@ void CUIService::FUN_141aec9c0()
         pService->FUN_141ad9e50(nScene);
         pService->FUN_141adafd0(nScene);
         pService->FUN_141ad9650();
-        efd::SmartPointer<Unk_Service6100017> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8));
+        efd::SmartPointer<CubeMapInformationService> spHousing = FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8));
         if (spHousing)
             ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
@@ -2982,10 +2982,10 @@ void CUIService::FUN_141aece70()
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CUIService Log ---");
     if (Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(FUN_1422bb8b0(2)))
     {
-        if (pMovie->m_slot.FUN_14151e150() ? true : false)
+        if (pMovie->m_slot ? true : false)
         {
-            if (Unk_UisRootsOwner* pOwner = pMovie->m_slot.FUN_14151e170()->vfunc_49())
-                reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("MaxCollectionRoots: %d", ((class Unk_VtmObjectTable*)(void*)(pOwner->m_sub.FUN_14151e180()))->FUN_14151e8c0());
+            if (Unk_UisRootsOwner* pOwner = pMovie->m_slot->vfunc_49())
+                reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("MaxCollectionRoots: %d", pOwner->m_sub->FUN_14151e8c0());
         }
     }
     FUN_141adcbb0(&CUIService::FUN_141aed0a0);
@@ -3247,11 +3247,11 @@ void CUIService::FUN_141aec3e0()
 CStringW FUN_140719630(int n);
 CStringW FUN_1407196b0(long n);
 CStringW FUN_1407197a0(float f);
-CStringW FUN_141277dd0(class Unk_ConstString* pValue);   // C3: the definition's signature
+CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);   // C3: the definition's signature
 
 // The format arguments of a text (see stringtable.cpp): the type bits of the arguments and their values.
 struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
-Unk_StFmtArg FUN_1401cfcf0(const CStringW& str);
+// C3: FUN_1401cfcf0 is fmt::internal::MakeValue<BasicFormatter<wchar_t>>(const CStringW&) (format.h)
 
 // @0x141addb30
 void FUN_141addb30(long long n)
@@ -3303,7 +3303,7 @@ void FUN_141addb30(long long n)
                     break;
                 case 6:
                 case 7:
-                    strArg = FUN_141277dd0(reinterpret_cast<Unk_ConstString*>(&kArg));
+                    strArg = FUN_141277dd0(&kArg);
                     break;
                 }
                 if (arrValues.IsEmpty())
@@ -3311,7 +3311,7 @@ void FUN_141addb30(long long n)
                 else
                     kTypes |= fmt::internal::make_type(strArg) << (arrValues.GetCount() << 2);
                 arrKeep.Add(strArg);
-                arrValues.Add(FUN_1401cfcf0(strArg));
+                arrValues.Add(reinterpret_cast<const Unk_StFmtArg&>(static_cast<const fmt::internal::Value&>(fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(strArg))));
             }
             fmt::ArgList kList(kTypes, reinterpret_cast<const fmt::internal::Value*>(&arrValues[0]));
             strResult = StringFormat((const wchar_t*)strFormat, kList);

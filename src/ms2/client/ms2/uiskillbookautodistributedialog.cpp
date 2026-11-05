@@ -109,7 +109,7 @@ FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/gfxui/astooltipmanager.h"
 #include "ms2/placeholder/unk_blocklist.h"
 #include "ms2/commonfiles/os.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -1898,10 +1898,10 @@ void UISkillBookTreeDialog::LoadAutoDistribute()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = (class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pJob = (class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("job"); pJob != 0; pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
+    for (TiXmlElement* pJob = (class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("job"); pJob != 0; pJob = ((class TiXmlElement*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
     {
         int nJob = 0;
         XmlValue(pJob, "code", reinterpret_cast<Unk_JobGroupID&>(nJob));
@@ -1910,14 +1910,14 @@ void UISkillBookTreeDialog::LoadAutoDistribute()
         TPtrValue<AutoDistributeArray> spList(Unk_GrNewTag(0));
         for (size_t i = 0; i < nodes.size(); i++)
         {
-            Unk_140165cf0* pNode = reinterpret_cast<Unk_140165cf0*>(nodes[i]);
+            TiXmlElement* pNode = reinterpret_cast<TiXmlElement*>(nodes[i]);
             if (pNode == 0)
                 continue;
             MS2Ptr<AutoDistribute> spItem(new AutoDistribute);
             XmlQuery((class TiXmlElement*)pNode, "name", spItem->m_strName);
             XmlQuery((class TiXmlElement*)pNode, "tooltip", spItem->m_strTooltip);
             XmlValue(pNode, "subJobCode", reinterpret_cast<Unk_JobCode&>(spItem->m_nSubJob));
-            for (Unk_140165cf0* pSkill = (class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("skill"); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
+            for (TiXmlElement* pSkill = (class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("skill"); pSkill != 0; pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
             {
                 unsigned nId = 0;
                 unsigned nPoint = 0;

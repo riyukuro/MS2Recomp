@@ -24,10 +24,10 @@
 
 class ASDialog : public ASDisplayObject { };
 
-// The text input.
-class Unk_TpInput : public ASTextInput
-{
-};
+// The text inputs are ASTextAreas: GetChild<ASTextArea> is the COMDAT at 0x140c26f60.
+#include "ms2/placeholder/astextarea.h"
+template <> MS2Ptr<ASTextArea> UISwfEntity::GetChild<ASTextArea>(const CString& strName);   // C3: 0x140c26f60
+//
 
 extern template class MS2Ptr<ASButtonBar>;                      // instances owned by other objs
 
@@ -66,11 +66,11 @@ void UITextPreviewDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     {
         CString strName("m_input1");
-        m_178 = FUN_140c26f60(strName);
+        m_178 = GetChild<ASTextArea>(strName);
     }
     {
         CString strName("m_input2");
-        m_188 = FUN_140c26f60(strName);
+        m_188 = GetChild<ASTextArea>(strName);
     }
     {
         CString strName("m_buttonBar");

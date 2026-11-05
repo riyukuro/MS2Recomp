@@ -93,14 +93,14 @@ class CIngredientInfo;
 template <> MS2Ptr<CIngredientInfo>::~MS2Ptr();   // C3: defined elsewhere (CIngredientInfo is incomplete here; keeps ms2ptr_impl.h from instantiating it)
 class Unk_BreakIngredient { public: void* p0; void* p8; void* p10; int p18,id; unsigned count; };
 class Unk_BreakIngredients {
-public: MS2Ptr<CIngredientInfo>& FUN_14027f1f0(size_t);   // C3: size/empty are std::vector<MS2Ptr<CIngredientInfo>>'s
+    // C3: size/empty/operator[] are std::vector<MS2Ptr<CIngredientInfo>>'s
 private: void* p0; void* p8; void* p10;
 };
 class CIngredientContainer : public CPtred {
 public:
     CIngredientContainer(); virtual ~CIngredientContainer();
     size_t FUN_14026bee0(); bool FUN_14026bf40(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
-    const Unk_BreakIngredients& FUN_14026c230() const; void FUN_14026c250(CIngredientContainer*);
+    class Unk_IngVec* FUN_14026c230(); void FUN_14026c250(CIngredientContainer*);
     Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);
@@ -256,7 +256,7 @@ void FUN_140530c90(MS2Ptr<CItemData> item,int grade,int enhance,CIngredientConta
             }
             for(size_t i=0;i<reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients).size();++i) for(size_t j=0;j<extra.FUN_14026bee0();++j) {
                 MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(j); if(p==0) continue;
-                if(reinterpret_cast<Unk_BreakIngredient*>(output.ingredients.FUN_14027f1f0(i).operator->())->id==reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->id) { reinterpret_cast<Unk_BreakIngredient*>(output.ingredients.FUN_14027f1f0(i).operator->())->count+=reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=0; }
+                if(reinterpret_cast<Unk_BreakIngredient*>((reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients)[i]).operator->())->id==reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->id) { reinterpret_cast<Unk_BreakIngredient*>((reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients)[i]).operator->())->count+=reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=0; }
             }
             output.FUN_14026c250(&extra);
         }
@@ -300,7 +300,7 @@ MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x7942969
 bool CItemBreakManager::FUN_140531850(ItemPtr item) {
     if(item==0) return false; if(!item->HasSkin()) return true;
     MS2SvrPtr<CIngredientContainer> p=reinterpret_cast<CItemBreakIngredientTable*>(FUN_140535300())->GetBreakItem(item->FUN_1405276c0());
-    if(p.get()) { const Unk_BreakIngredients& list=p->FUN_14026c230(); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(list).empty()) return true; }
+    if(p.get()) { const Unk_BreakIngredients& list=*reinterpret_cast<const Unk_BreakIngredients*>(p->FUN_14026c230()); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(list).empty()) return true; }
     int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
         unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->GetRarity(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
         ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(result.ingredients).empty()) return true;

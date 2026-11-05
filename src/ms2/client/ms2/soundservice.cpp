@@ -171,8 +171,8 @@ static CString s_strSkill = "skill";
 // @0x140101840
 static CString s_strStun = "stun";
 // @0x140101870
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+static Unk_BuddyHandle s_pointer(NULL);
 #endif
 
 // @0x1417b3d20

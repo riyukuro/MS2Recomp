@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class ASMovieClip;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIWatchAGameDialog : public UIDialog
 {
@@ -42,8 +42,8 @@ private:
     bool m_bFlag;                                               // +0x184
     int m_nCamera;                                              // +0x188 index into m_cameras, -1 = none
     std::vector<int> m_cameras;                                 // +0x190 the camera triggers
-    MS2Ptr<Unk_140acd6e0> m_foldButton;                         // +0x1a8 "m_foldButton"
-    MS2Ptr<Unk_140acd6e0> m_buttons[4];                         // +0x1b8 "m_button" of each action clip
+    MS2Ptr<ASButton> m_foldButton;                         // +0x1a8 "m_foldButton"
+    MS2Ptr<ASButton> m_buttons[4];                         // +0x1b8 "m_button" of each action clip
     MS2Ptr<ASMovieClip> m_clips[4];                             // +0x1f8 "m_actionButton1..4"
 };
 MS2_CHECK_SIZE(UIWatchAGameDialog, 0x238);

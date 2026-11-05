@@ -138,7 +138,7 @@ class ASDialog : public ASUIComponent { };
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser, int nMovieId);   // 0x1422c8430
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);   // 0x1422c8430
     virtual ~ASFunction();
 private:
     void* m_40;

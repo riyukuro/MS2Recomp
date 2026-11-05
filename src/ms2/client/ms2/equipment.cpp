@@ -171,8 +171,8 @@ struct Unk_EquipItemData : public Unk_ItemEquipData {};
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };   // C3: member view (as avatarpc.cpp)
-class Unk_Gauge { public: float GetAmount(); int GetCount(); };   // C3: the InvokeEffectOption getters are this class's
+// C3: FUN_1409f7ea0 is COptimizer's (coptimizer.h); FUN_1409f7c90 returns the singleton
+// (the InvokeEffectOption getters are declared in invokeeffectoption.h)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 int FUN_14081d8a0(int nType);                       // a skill stat option type
 int FUN_14081d8e0(int nType);                       // an effect stat option type
@@ -197,7 +197,7 @@ int FUN_1405451c0(CString& strName);              // the slot of a slot name
 void FUN_141049240(NiAVObject* pRoot, ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aSource,
     ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aMerged);   // merge the meshes (MeshOptimizer)
 void FUN_141567330(NiAVObject* pRoot, bool bShadow);    // set up the shadow casters (unit_141567000)
-// The asset locator the hair variant asks (the ServiceManager's system service of FUN_140998330).
+#include <efd/AssetLocatorService.h>   // the asset locator the hair variant asks (GetSystemServiceAs<efd::AssetLocatorService> 0x140998330)
 class Unk_EqAssetSvc
 {
 public:
@@ -227,13 +227,13 @@ class Unk_MyPCEquip : public PCGemEquip {};
 class Unk_CamMoveBits   // C3: member view (cameramoveeffectparam.h) for the fill / all calls
 {
 public:
+    Unk_CamMoveBits();      // 0x140afed60 (cameramoveeffectparam's T = 3 ctor)
     void FUN_140afee90(unsigned char ucValue);                  // Fill
     bool FUN_140afc5a0() const;                                 // All
 };
 class Unk_SetEffectBits
 {
 public:
-    Unk_SetEffectBits();    // 0x140afed60: the exe calls cameramoveeffectparam's T = 3 ctor (Unk_CamMoveBits)
     // Set / Test are bitset.h's Unk_Bitset<3> (0x140314670 / 0x140314790), called through a cast
     // @0x1411fe0e0
     bool FUN_1411fe0e0() const                                  // Any
@@ -260,16 +260,16 @@ extern int DAT_143ae2b50;                               // the mesh optimizer is
 bool FUN_141b701f0(struct Unk_UtilNodeList*, unsigned int);   // C3: was FUN_141b701f0
 namespace efd { class ServiceManager; }
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
-Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
+#include "ms2/placeholder/ecrcameraservice.h"   // Unk_ServiceManager::GetSystemServiceAs<T> (was the free FUN_140998330 view)
 egmAnimation::AnimationService* FUN_141b6f910();
-// The scene graph walker (0x30 bytes) of 0x1411eac40 / 0x1411ed270.
+// The scene graph walker (0x30 bytes) of 0x1411eac40 / 0x1411ed270.   // C3: Unk_EqSceneDump was this walker
+class Unk_NodeQueue { public: Unk_NodeQueue(NiAVObject* pkRoot); ~Unk_NodeQueue(); NiAVObject* Next(bool bAddChildren); private: void* m_buf[6]; };   // alphaanimation.cpp
 NiObject** FUN_14107cbe0(class Unk_NodeQueue&);   // C3: was Unk_EqSceneIter::FUN_14107cbe0 (the walker's current object)
 class Unk_EqSceneDump
 {
 public:
-    Unk_EqSceneDump(NiAVObject* pRoot);                 // 0x14098cb80
-    ~Unk_EqSceneDump();                                 // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bChildren);                  // the next object (NULL at the end)
+    // the walk itself is Unk_NodeQueue (ctor 0x14098cb80, dtor 0x14098cf00, Next 0x14098e0d0); this view only adds the dump
+//
     void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth);   // dump (recursive)
     void FUN_1411fa480(const NiTransform& kTransform);  // log a transform
 private:
@@ -329,12 +329,12 @@ void* FUN_141200ab0(CEquipModel* pModel);                          // the <asset
 void* FUN_1412018c0(CEquipModel* pModel);                          // the first root (NiAVObject)
 int FUN_141200bb0(CEquipModel* pModel, CString* pTag);              // add a tag
 int FUN_141200c10(CEquipModel* pModel, CString* pTag);              // remove a tag
+void FUN_141200100(CEquipModel* pModel, NiPoint3 kRot);            // by value (the exe copies; equipmodel.cpp)
+void FUN_141200160(CEquipModel* pModel, NiPoint3 kPos);
 class Unk_EquipModelCalls : public CEquipModel
 {
 public:
-    void FUN_141200100(NiPoint3 kRot);                              // by value (the exe copies; the definition takes const&)
-    void FUN_141200160(NiPoint3 kPos);
-    MS2Ptr<CEquipItem> FUN_141200a40();                             // the owner item
+    // FUN_141200a40 (the owner item) is CEquipModel's own member (equipmodel.h)
     // FUN_1411673f0: CEquipModel's own (const CString*) member, the scene node of the part (unit_1411673f0)
 };
 #define MODEL(sp) static_cast<Unk_EquipModelCalls*>((sp).operator->())
@@ -749,7 +749,7 @@ float CEquipment::FUN_1411e1250(int nOption, unsigned nKey)
     MS2Ptr<InvokeEffectOption> spOption;
     if (!spStat->m_18.Lookup(reinterpret_cast<Unk_InvokeOptionType&>(nOption), spOption))
         return 0;
-    return ((Unk_Gauge*)spOption.operator->())->GetAmount();
+    return spOption->GetAmount();
 }
 MS2_REPLACE_METHOD(0x1411E1250, CEquipment, FUN_1411e1250, 393, 0x8631731B);
 
@@ -768,7 +768,7 @@ float CEquipment::FUN_1411e13e0(int nOption, unsigned nKey)
     MS2Ptr<InvokeEffectOption> spOption;
     if (!spStat->m_18.Lookup(reinterpret_cast<Unk_InvokeOptionType&>(nOption), spOption))
         return 0.0f;
-    return (float)((Unk_Gauge*)spOption.operator->())->GetCount();
+    return (float)spOption->GetCount();
 }
 MS2_REPLACE_METHOD(0x1411E13E0, CEquipment, FUN_1411e13e0, 397, 0xAC56B855);
 
@@ -1067,7 +1067,7 @@ void CEquipment::FUN_1411e3de0(int bKeepLoaded)
         for (int i = 0; i < 6; i++) {
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
-                if (bKeepLoaded == 0 && FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+                if (bKeepLoaded == 0 && ((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
                     RequestEquipItemLoad(spItem, 0);
                 else
                     FUN_1411e3bd0(spItem, 0);
@@ -1087,7 +1087,7 @@ void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, in
                 continue;
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
-                if (bKeepLoaded == 0 && FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+                if (bKeepLoaded == 0 && ((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
                     RequestEquipItemLoad(spItem, 0);
                 else
                     FUN_1411e3bd0(spItem, 0);
@@ -2287,8 +2287,8 @@ void CEquipment::FUN_1411eac40(bool b)
     NiAVObject* pRoot = pActor->GetNIFRoot();
     if (pRoot == NULL)
         return;
-    Unk_EqSceneDump kDump(pRoot);
-    kDump.FUN_1411f88a0(b, NULL, 0);
+    Unk_NodeQueue kDump(pRoot);
+    reinterpret_cast<Unk_EqSceneDump&>(kDump).FUN_1411f88a0(b, NULL, 0);
 }
 MS2_REPLACE_METHOD(0x1411EAC40, CEquipment, FUN_1411eac40, 169, 0xC962716D);
 
@@ -2386,7 +2386,7 @@ int CEquipment::FUN_1411eb550(CString strName)
                 return 1;
         }
     } else {
-        Unk_EqAssetSvc* pAssets = FUN_140998330((void*)reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager)->FUN_140af8310());
+        Unk_EqAssetSvc* pAssets = reinterpret_cast<Unk_EqAssetSvc*>(reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager)->FUN_140af8310())->GetSystemServiceAs<efd::AssetLocatorService>());
         if (pAssets == NULL)
             return 1;
         if (!pAssets->vfunc_21((const char*)strPath)) {
@@ -2464,8 +2464,8 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, NiPoint3 kPos, NiPoint3 kRot
         NiAVObjectPtr spRoot = *it;
         spRoot->SetLocalTransform(spRoot->GetLocalTransform() * kDelta);
     }
-    static_cast<Unk_EquipModelCalls*>(pModel)->FUN_141200160(kPos);
-    static_cast<Unk_EquipModelCalls*>(pModel)->FUN_141200100(kRot);
+    FUN_141200160(pModel, kPos);
+    FUN_141200100(pModel, kRot);
 }
 MS2_REPLACE_METHOD(0x1411EF2E0, CEquipment, FUN_1411ef2e0, 1105, 0x2DB48AAF);
 
@@ -2588,9 +2588,9 @@ void CEquipment::FUN_1411ed270()
                 std::set<NiAVObjectPtr>::iterator itEnd = kRoots.end();
                 for (std::set<NiAVObjectPtr>::iterator it = kRoots.begin(); it != itEnd; ++it) {
                     NiAVObjectPtr spRoot = *it;
-                    Unk_EqSceneDump kWalk(spRoot);
+                    Unk_NodeQueue kWalk(spRoot);
                     NiAVObject* pObject;
-                    while ((pObject = kWalk.FUN_14098e0d0(true)) != NULL) {
+                    while ((pObject = kWalk.Next(true)) != NULL) {
                         NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
                         if (pMesh != NULL && !FUN_141b701f0((struct Unk_UtilNodeList*)(pMesh), 1))
                             continue;
@@ -2731,9 +2731,9 @@ void CEquipment::FUN_1411ec480(bool bForce)
             }
         }
     }
-    Unk_SetEffectBits changed;
+    Unk_CamMoveBits changed;    // C3: the exe calls cameramoveeffectparam's T = 3 ctor
     if (bForce || m_setEffects.size() != effects.size()) {
-        changed.FUN_1411ff180();
+        ((Unk_SetEffectBits*)&changed)->FUN_1411ff180();
     } else {
         int nLast = -1;
         size_t nCount = m_setEffects.size();
@@ -2757,8 +2757,8 @@ void CEquipment::FUN_1411ec480(bool bForce)
                 reinterpret_cast<Unk_Bitset<3>&>(changed).Set(nLast, true);
         }
     }
-    if (changed.FUN_1411fe0e0()) {
-        if (((Unk_CamMoveBits*)&changed)->FUN_140afc5a0()) {
+    if (((Unk_SetEffectBits*)&changed)->FUN_1411fe0e0()) {
+        if (changed.FUN_140afc5a0()) {
             ClearSetEffects();
             size_t nCount = effects.size();
             for (size_t i = 0; i < nCount; i++)
@@ -3153,3 +3153,4 @@ void Unk_EqSceneDump::FUN_1411fa480(const NiTransform& kTransform)
 }
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411f0040 ; gp1: by its exe callers
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCEquipItem@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411f0010 ; gp1: by its exe callers
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411effb0 ; prop

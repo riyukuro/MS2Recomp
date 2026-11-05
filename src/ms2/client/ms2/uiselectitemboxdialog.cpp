@@ -39,13 +39,13 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100 (C3: the name other units use)
 static Unk_BuddyHandle s_dat_143acbc50(NULL);                                       // @0x1400e1640
-
+class UISelectSuperWorldChatDialog { public: MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>& out); };   // C3: the tile-list binder (0x140e8d030, uisidepopuptalk_2.cpp)
 #include "ms2/placeholder/asevent.h"   // C3: ASListEvent (dtor 0x140f83bb0)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/fittingdollpc.h"
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 
@@ -57,7 +57,7 @@ class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const 
 
 // The item record's properties (+0x320) and argument table (+0x2b0).
 class Unk_SibProps { };                    // a CXmlData
-class Unk_SibArgs { };                     // an Unk_CommandArgs
+class Unk_SibArgs { };                     // an ItemFunctionArgs
 class Unk_SibItemData
 {
 public:
@@ -126,13 +126,13 @@ void UISelectItemBoxDialog::OnLoadComplete()
     if (item == 0)
         return;
     {
-        ASButton* ok = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_okButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_okButton)).get());
+        ASButton* ok = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_okButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_okButton)).get());
         if (ok != 0) {
             m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a230), (void*)0);
         }
     }
     {
-        ASMultiSelectTileCacheList* list = FUN_140e8d030("m_selectItemList", &m_selectItemList).get();
+        ASMultiSelectTileCacheList* list = reinterpret_cast<UISelectSuperWorldChatDialog*>(this)->FUN_140e8d030("m_selectItemList", m_selectItemList).get();
         if (list != 0) {
             reinterpret_cast<ASCoreList*>(m_selectItemList.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a5f0), (void*)0);
         }
@@ -145,8 +145,8 @@ void UISelectItemBoxDialog::OnLoadComplete()
     FUN_140e48d80("m_selectNotice", &m_selectNotice);
     int nDropBoxId = 0;
     if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->FUN_14092c5c0()) {
-        m_nSelectCount = reinterpret_cast<Unk_CommandArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(0, 0);
-        nDropBoxId = reinterpret_cast<Unk_CommandArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(1, 0);
+        m_nSelectCount = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(0, 0);
+        nDropBoxId = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(1, 0);
     } else {
         int nDefault = 0;
         m_nSelectCount = reinterpret_cast<CXmlData*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props)->GetInt(L"selectCount", nDefault);
@@ -183,7 +183,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     m_selectItemList->Invoke("resetRenderer");
     m_selectItemList->vfunc_25(list.FUN_1422bb870());
     m_selectItemList->vfunc_24(true);
-    int nNext = reinterpret_cast<Unk_CommandArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(4, 1);
+    int nNext = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(4, 1);
     int nHave = g_143ab2a90.FUN_140a5f180(item->FUN_1405276c0(), 0);
     if (nNext == 1 && 1 < nHave)
         m_okButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_next"));

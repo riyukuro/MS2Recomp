@@ -11,7 +11,7 @@
 // MS2-PIN: ??0Unk_TradeItemTable@@QEAA@XZ 0x14185b130
 // MS2-PIN: ??1Unk_TradeItemTable@@QEAA@XZ 0x14185b170
 // MS2-PIN: ??$?0W4Unk_TradeResult@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_TradeResult@@@Z 0x14185d930
-// MS2-PIN: ??$Unk_TradeFormat@W4Unk_TradeResult@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBW4Unk_TradeResult@@@Z 0x14185d960
+// MS2-PIN: ??$FUN_14028dee0@W4Unk_TradeResult@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBW4Unk_TradeResult@@@Z 0x14185d960
 // MS2-PIN: ??$FormatCustomArg@W4Unk_TradeResult@@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@SAXPEAXPEBX0@Z 0x14185db10
 // MS2-PIN: ??$format_arg@_WW4Unk_TradeResult@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_TradeResult@@@Z 0x14185d9f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\trademanagerex.cpp"
@@ -112,8 +112,8 @@ void FUN_140710590(COutPacket& packet);
 
 // The string table entry formatter with one enum argument: FMT_VARIADIC_W instance (0x14185d960).
 enum Unk_TradeResult : unsigned int {};
-CStringW Unk_TradeFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, Unk_TradeFormat, int)
+CStringW FUN_14028dee0(int, const fmt::ArgList&);   // C3: util.cpp:65 (was Unk_TradeFormat)
+FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 
 // ---- statics (.text$di) ----
 static CStringW s_requestTradeEx(L"requestTradeEx");
@@ -502,7 +502,7 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         strMsg = FUN_14028dee0<CStringW, unsigned short>(0x940, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
         break;
     default:
-        strMsg = Unk_TradeFormat(0x837, code);
+        strMsg = FUN_14028dee0(0x837, code);
         break;
     }
     if (!strMsg.IsEmpty())

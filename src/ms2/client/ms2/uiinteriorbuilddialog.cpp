@@ -167,7 +167,7 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     MS2SvrPtr<CItemData> spData(spItem->FUN_140527840());
     if (spData == 0)
         return;
-    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
     UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
     if (spPackage == 0)
         return;
@@ -200,7 +200,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
     if (strPackage.IsEmpty())
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));

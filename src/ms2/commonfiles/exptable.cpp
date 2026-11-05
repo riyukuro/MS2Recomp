@@ -41,19 +41,19 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/luautil.h"
 #include <algorithm>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
-class Unk_140165cf0                         // game TinyXML element
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);          // the first child with the name
-    Unk_140165cf0* FUN_140168650(const char* pszName);          // the next sibling with the name
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
 
 // Unrecovered helpers.
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
@@ -62,15 +62,15 @@ class CLogString* GetLogString();   // C3: was CLogString::GetInstance
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-class TiXmlElement { public: char const * Attribute(char const *, int *) const; };
+// C3 #12: was a local TiXml view
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int Parse_14021af40(const CStringA& value);                                          // the string as a number
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-int FUN_140197350(Unk_140165cf0 *, char const *, int);  // C3: the definition's signature
-unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
+int FUN_140197350(TiXmlElement *, char const *, int);  // C3: the definition's signature
+unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -87,7 +87,7 @@ inline void Unk_ExpLog(CLogString* log, int level, int category, const wchar_t* 
 }
 
 // @0x140354050
-int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int Unk_ExpGetInt(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -103,7 +103,7 @@ int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140354110
-double Unk_ExpGetDouble(Unk_140165cf0* pElem, const char* pszName, double fDefault)
+double Unk_ExpGetDouble(TiXmlElement* pElem, const char* pszName, double fDefault)
 {
     double fValue;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(double*)(&fValue)) != 0)
@@ -112,7 +112,7 @@ double Unk_ExpGetDouble(Unk_140165cf0* pElem, const char* pszName, double fDefau
 }
 
 // @0x140354150
-__int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault)
+__int64 Unk_ExpGetInt64(TiXmlElement* pElem, const char* pszName, __int64 nDefault)
 {
     __int64 nValue;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(__int64*)(&nValue)) != 0)
@@ -232,13 +232,13 @@ bool CExpTable::LoadNextExp()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
-    for (Unk_140165cf0* pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
+    for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
@@ -269,13 +269,13 @@ bool CExpTable::LoadCommonExp()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
-    for (Unk_140165cf0* pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
+    for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
@@ -299,13 +299,13 @@ bool CExpTable::LoadPetExp()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
-    for (Unk_140165cf0* pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
+    for (TiXmlElement* pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exp")); pExp != 0; pExp = ((class TiXmlElement*)((class Unk_XmlNode*)(pExp))->NextSibling("exp")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
@@ -337,13 +337,13 @@ bool CExpTable::LoadPetEvolution()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
-    for (Unk_140165cf0* pEvo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("petEvolution")); pEvo != 0; pEvo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEvo))->NextSibling("petEvolution")))
+    for (TiXmlElement* pEvo = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("petEvolution")); pEvo != 0; pEvo = ((class TiXmlElement*)((class Unk_XmlNode*)(pEvo))->NextSibling("petEvolution")))
     {
         if (FUN_14028f710((struct Unk_XmlElement*)(pEvo)) == 0)
             continue;
@@ -370,13 +370,13 @@ bool CExpTable::ReadExpTable(const CString& strFile)
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[file: {0}]", strPath);
         return false;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_EXP_XML_ERR, strPath);
         return false;
     }
-    for (Unk_140165cf0* pTable = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pTable != 0; pTable = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTable))->NextSibling("table")))
+    for (TiXmlElement* pTable = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pTable != 0; pTable = ((class TiXmlElement*)((class Unk_XmlNode*)(pTable))->NextSibling("table")))
     {
         int nTableId = 0;
         XmlGetAttr((class TiXmlElement*)(pTable), "expTableID", *(unsigned int*)(&nTableId));
@@ -388,7 +388,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"CExpTable::ReadExpTable DuplicateID:{0}", reinterpret_cast<const unsigned&>(nTableId));
             continue;
         }
-        for (Unk_140165cf0* pBase = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTable))->FirstChild("base")); pBase != 0; pBase = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBase))->NextSibling("base")))
+        for (TiXmlElement* pBase = ((class TiXmlElement*)((class Unk_XmlNode*)(pTable))->FirstChild("base")); pBase != 0; pBase = ((class TiXmlElement*)((class Unk_XmlNode*)(pBase))->NextSibling("base")))
         {
             if (FUN_14028f710((struct Unk_XmlElement*)(pBase)) == 0)
                 continue;

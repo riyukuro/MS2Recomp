@@ -17,7 +17,7 @@
 #include "ms2/placeholder/dungeonroomshutdowncontext.h"
 
 #include "ms2/placeholder/dungeongrouptype.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -26,18 +26,18 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Out-of-unit helpers.
-template <class E> int XmlValueByName(Unk_140165cf0* pElem, const char* pszName, E& eOut);   // enum attribute by name
-template <> int XmlValueByName(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // 0x140179060 (defined in additionalactionadditional.cpp)
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlElement const* FirstChildElement() const;
-};
+template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut);   // enum attribute by name
+template <> int XmlValueByName(TiXmlElement* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // 0x140179060 (defined in additionalactionadditional.cpp)
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 
 // @0x140345b40
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc)
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc)
 {
-    return ((class Unk_140165cf0*)((class TiXmlNode*)(class TiXmlDocument*)(pDoc))->FirstChildElement());
+    return ((class TiXmlElement*)((class TiXmlNode*)(class TiXmlDocument*)(pDoc))->FirstChildElement());
 }
 
 // @0x140343e50
@@ -51,11 +51,11 @@ void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRoom")); pNode != 0;
-         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRoom")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRoom")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRoom")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
@@ -70,11 +70,11 @@ void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonGroup")); pNode != 0;
-         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonGroup")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonGroup")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonGroup")))
     {
         Unk_DungeonGroupType eType = Unk_DungeonGroupType_None;
         XmlValueByName(pNode, "type", eType);

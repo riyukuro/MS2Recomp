@@ -20,7 +20,7 @@ CNetworkService* FUN_140714f90();
 void* FUN_140aae430();
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
-void FUN_141740b00(int, int, int, const CStringW&, const unsigned short*);
+template <class A, class B> void Unk_SSGFormatMsg(int nStringId, int nA, int nB, const A& a, const B& b);   // C3: was FUN_141740b00 (scenestategame)
 CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_140298ea0(CStringW);
@@ -74,7 +74,7 @@ void CSceneStateMove::OnUpdate(double fTime)
         FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
         m_timer.FUN_140868750(10000);
         CStringW addr = FUN_14016a730(DAT_143ab2a48, 0);
-        FUN_141740b00(0x2dd, 1, 1, addr, &DAT_143ab2848);
+        Unk_SSGFormatMsg<CStringW, unsigned short>(0x2dd, 1, 1, addr, DAT_143ab2848);
     }
     if (m_nRetry < 5)
     {

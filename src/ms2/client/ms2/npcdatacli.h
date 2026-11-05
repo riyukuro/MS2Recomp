@@ -17,7 +17,7 @@ class NpcDataCli : public CNpcData
 public:
     NpcDataCli();                                           // 0x140a7beb0
     virtual ~NpcDataCli();                                  // 0x140a7c020, sdd 0x140a81680
-    virtual bool LoadXml(Unk_140165cf0* pElem);             // 0x140a7c420
+    virtual bool LoadXml(TiXmlElement* pElem);             // 0x140a7c420
     bool Different(const NpcDataCli* pOther);               // 0x140a7c150
     bool GetNametag();                                      // 0x140a7c8d0
     bool IsFemale();                                        // 0x140a7c8f0

@@ -8,7 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // game TinyXML element (declared where the loader is)
+class TiXmlElement;     // game TinyXML element (commonfiles/tinyxml.h)
 
 // One <sound> row, 0x18 bytes (value of the three maps, also the element of the lists passed to the Set* functions).
 struct CSoundDataEntry
@@ -41,7 +41,7 @@ public:
     void SetEventSounds(const SoundList& list);                   // 0x140818a20
     void SetProgrammerSounds(const SoundList& list);              // 0x140818ad0
     void SetTriggerVoiceSounds(const SoundList& list);            // 0x140818b80
-    int ParseSection(Unk_140165cf0* pRoot, const char* pszTag, int nType, SoundMap& map);   // 0x140818c30
+    int ParseSection(TiXmlElement* pRoot, const char* pszTag, int nType, SoundMap& map);   // 0x140818c30
 
     CString m_strPath;                  // +8
     SoundMap m_eventSounds;             // +0x10

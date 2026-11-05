@@ -71,8 +71,7 @@ public:
 class CClubClientManager;
 inline Unk_ClubManager* FUN_140e0d900() { return reinterpret_cast<Unk_ClubManager*>(TSingleton<CClubClientManager>::s_instance); }
 
-class Unk_ClubBuffTable;   // the CClubDataTable instance
-Unk_ClubBuffTable* FUN_140b1a4e0();
+CClubDataTable* FUN_140b1a4e0();   // the CClubDataTable instance
 
             // my character name
 
@@ -206,7 +205,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
         if (club == 0)
             return 1;
-        CClubDataTable::BuffPtr buff = reinterpret_cast<CClubDataTable*>(FUN_140b1a4e0())->FUN_140211a40();
+        CClubDataTable::BuffPtr buff = FUN_140b1a4e0()->FUN_140211a40();
         int nBuffId = buff->m_effectId;
         unsigned short nLevel = buff->m_effectLevel;
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x25, FUN_140298ea0(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
@@ -300,7 +299,7 @@ bool UIClubDialog::OnMsgBoxBuffConfirm(int nResult, const CMsgBoxData& data)
         return true;
     {
         int nId = _wtoi(data.FUN_141a02d50());
-        CClubDataTable::BuffPtr spBuff = reinterpret_cast<CClubDataTable*>(FUN_140b1a4e0())->FUN_1402116a0(nId);
+        CClubDataTable::BuffPtr spBuff = FUN_140b1a4e0()->FUN_1402116a0(nId);
         if (spBuff != 0)
             FUN_140e0d900()->FUN_140b163c0(m_nClubId, spBuff->m_effectId, spBuff->m_effectLevel);
     }

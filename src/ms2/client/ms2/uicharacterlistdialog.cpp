@@ -107,7 +107,7 @@ static CStringW s_strChangeInvalidCharName(L"changeInvalidCharName");
 #include <set>
 #include "ms2/commonfiles/itemgift.h"   // C3: ItemEntity
 #include "ms2/commonfiles/gameevent.h"   // C3: BurningLevelupContext
-
+#include "ms2/placeholder/asbutton.h"   // C3: GetChild<ASButton> 0x140bb4b10
 // @0x1401115d0
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -124,28 +124,28 @@ public:
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
 // The generic reader of an item from a stream (the 0x141272280 object is an empty functor).
-class Unk_ClItemReader
+struct Unk_PayloadItemWire   // C3: the item-wire reader (ctor in gemslot_2, readers in packetpayloadserializers); was Unk_ClItemReader
 {
 public:
-    Unk_ClItemReader();                                 // 0x141272280
-};
-class Unk_PayloadItemWire { public: MS2Ptr<CItem> FUN_1401fce40(CInputStream& s); };   // C3: the item-wire reader's signature (packetpayloadserializers)
+    Unk_PayloadItemWire();                                 // 0x141272280
+    MS2Ptr<CItem> FUN_1401fce40(CInputStream& s);
+}; typedef Unk_PayloadItemWire Unk_ClItemReader;
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_ClIdSet : public ATL::CAtlArray<unsigned __int64> { public: bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
-class Unk_ClUserInfo
+struct Unk_GsConnect                                    // CGameOption's connect block (the definer is gameoptionstruct.cpp)
 {
-public:
     char m_pad[0x20];
-    CStringW m_str20;
-    __int64 m_n28;
+    CStringW m_strCharName;                             // +0x20
+    unsigned __int64 m_nCharSN;                         // +0x28
     char m_pad2[8];
-    Unk_ClIdSet m_ids;
-    void FUN_141260cb0();
-    void FUN_141260e70();
+    Unk_ClIdSet m_charList;                             // +0x38 (CAtlArray<unsigned __int64>)
 };
-class Unk_ClUserMgr { public: Unk_ClUserInfo* FUN_140cfd260(); };
+void FUN_141260cb0(Unk_GsConnect* p);                   // the definer's free functions (gameoptionstruct.cpp)
+void FUN_141260e70(Unk_GsConnect* p);
+//
+// C3: FUN_140cfd260 / FUN_140c58ac0 are CGameOption's (cgameoption.h); Unk_GsConnect views its connect block
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-unsigned char* FUN_140c58ac0(Unk_ClUserMgr* p);
+//
 void FUN_14125f670(struct Unk_GpState* p, bool bUse, bool bNotify);   // C3: the definer's signature (gameoptionstruct.cpp)
 void FUN_14125bd20(struct Unk_InterfaceFlag* p, bool b);   // C3: was (unsigned char*, unsigned char) (gameoptionstruct.cpp)
 extern bool DAT_143ab2946;
@@ -218,11 +218,11 @@ CString FUN_141028a90(CString str, int nFlag);
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
-class Unk_ClPopupInfo                                   // 0x30 bytes: the popup answer of the server
+struct Unk_NetworkTransfer                              // 0x30 bytes: the popup answer of the server
 {
 public:
-    Unk_ClPopupInfo();                                  // 0x141540eb0
-    ~Unk_ClPopupInfo();                                 // 0x141541190
+    Unk_NetworkTransfer();                              // 0x141540eb0
+    ~Unk_NetworkTransfer();                             // 0x141541190
     bool m_bEmpty;
     char m_1, m_2, m_3, m_4, m_5, m_6, m_7;                         // the members are opaque here (no array: /GS)
     __int64 m_8, m_10, m_18, m_20, m_28;
@@ -231,7 +231,7 @@ class Unk_SPDI { public: void FUN_1407a4c60(CInputStream* in); };   // C3: serve
 class CInputKeyHandler { public: bool FUN_14116d890(bool bAlt); };   // C3: member view (placeholder/cinputkeyhandler.h)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class ASDialog : public ASDisplayObjectContainer { };
-class Unk_ClButton : public ASMovieClip { public: };
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10
 bool FUN_141900750(ASObj* pObj);                        // fill the initData object
 extern int DAT_143ab0248;
 UIRegionListDialog* FUN_1418f6130(int nId);                         // the open region list dialog
@@ -295,8 +295,8 @@ class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); vi
 struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
 // The events are BurningLevelupContext rows (commonfiles/gameevent.h); a reward item is read through Unk_ClRewardEntry.
 typedef std::list<MS2Ptr<BurningLevelupContext> > BurnEvents;           // CGameEventValueBurningLevelup::GetAll fills a list
-class Unk_ClCountEvent : public Unk_GameEventValue408 { };   // IsSet / GetValue (+0x408)
-class Unk_ClBurnMgr { public: Unk_ClCountEvent* FUN_14041cb30(); };
+struct Unk_GESub : public Unk_GameEventValue408 { }; typedef Unk_GESub Unk_ClCountEvent;   // IsSet / GetValue (+0x408)
+class Unk_GEManagerB { public: Unk_GESub* GetSub(); }; typedef Unk_GEManagerB Unk_ClBurnMgr;   // C3: uicameraeditdialog / gameeventlobbymap's view
 int FUN_1418fc810();   // C3: was FUN_1418fc810
 void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> spBox);   // attach the reward items to the box
 namespace efd { class Win32PlatformService { public: HWND GetWindowRef() const; }; }   // C3: member view
@@ -549,8 +549,8 @@ UICharacterListDialog::UICharacterListDialog()
       m_1f0(10), m_220(0), m_221(0), m_224(0), m_228(0)
 {
     m_80 = 0;
-    m_198 = reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->m_str20;
-    m_1a0 = reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->m_n28;
+    m_198 = reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strCharName;
+    m_1a0 = reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_nCharSN;
     FUN_141925e70(0, 1);
     ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xc, Delegate<void(CInPacket&)>(this, &UICharacterListDialog::FUN_1418ed880));
     s_reply = nullptr;
@@ -589,7 +589,7 @@ void UICharacterListDialog::vfunc_79(void* p)
     {
     case 0xe:
     {
-        Unk_ClPopupInfo info;
+        Unk_NetworkTransfer info;
         reinterpret_cast<Unk_SPDI*>(&info)->FUN_1407a4c60(&static_cast<CInputStream&>(*(CInPacket*)p));
         if (info.m_bEmpty)
             ShowPopup();
@@ -709,12 +709,12 @@ void UICharacterListDialog::OnLoadComplete()
     FUN_1418f0400();
     if (FUN_1406516b0() == 3)
         AttachHealthGame();
-    if (MS2Ptr<Unk_ClButton> spDelete = FUN_140bb4b10("m_deleteAccount"))
+    if (MS2Ptr<ASButton> spDelete = GetChild<ASButton>("m_deleteAccount"))
     {
         if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x112))
             spDelete->vfunc_4(0);
     }
-    if (MS2Ptr<Unk_ClButton> spServer = FUN_140bb4b10("m_serverlist"))
+    if (MS2Ptr<ASButton> spServer = GetChild<ASButton>("m_serverlist"))
     {
         int nVisible = ((class Unk_ClNet*)FUN_140d86260())->vfunc_1();
         ((class CFeatureManager*)FUN_140166410());
@@ -822,7 +822,7 @@ int UICharacterListDialog::vfunc_4()
     int nResult = UIDialog::vfunc_4();
     if (m_30 == 0)
         return nResult;
-    Unk_ClIdSet* pIds = &reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->m_ids;
+    Unk_ClIdSet* pIds = &reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_charList;
     pIds->RemoveAll();
     size_t nCount = m_1a8.size();
     for (size_t i = 0; i < nCount; ++i)
@@ -832,7 +832,7 @@ int UICharacterListDialog::vfunc_4()
             continue;
         pIds->Add(spCharacter->FUN_1418e9cb0());
     }
-    reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->FUN_141260cb0();
+    FUN_141260cb0(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()));
     return nResult;
 }
 
@@ -840,7 +840,7 @@ int UICharacterListDialog::vfunc_4()
 int UICharacterListDialog::vfunc_5()
 {
     int nResult = UIDialog::vfunc_5();
-    reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->FUN_141260e70();
+    FUN_141260e70(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()));
     return nResult;
 }
 
@@ -1046,7 +1046,7 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
         FUN_141b70290();
         TSingleton<CGameOption>::GetInstance()->LoadCharacterOption();
         FUN_14125f670(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), *reinterpret_cast<bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
-        FUN_14125bd20(reinterpret_cast<struct Unk_InterfaceFlag*>(FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance()))), *reinterpret_cast<bool*>(FUN_140c58ac0(reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance()))));
+        FUN_14125bd20(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), *reinterpret_cast<bool*>(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
     }
     else
     {
@@ -1227,7 +1227,7 @@ void UICharacterListDialog::FUN_1418ef210(int nIndex, unsigned __int64 nId)
 // @0x1418ef290
 void UICharacterListDialog::SortCharacters()
 {
-    Unk_ClIdSet* pIds = &reinterpret_cast<Unk_ClUserMgr*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()->m_ids;
+    Unk_ClIdSet* pIds = &reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_charList;
     if (pIds->IsEmpty())
         return;
     if (m_1a8.empty())
@@ -1441,9 +1441,9 @@ void UICharacterListDialog::FUN_1418f11c0()
 void UICharacterListDialog::OnCreatePC()
 {
     // a character-count event lowers the slot limit (message 10), else the server's limit (message 9)
-    if (reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041cb30()->IsSet())
+    if (reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()->IsSet())
     {
-        int nLimit = reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041cb30()->GetValue();
+        int nLimit = reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()->GetValue();
         if (FUN_1418f1c20() >= nLimit)
         {
             FUN_140d73aa0(BlockFormat(10, nLimit), 0, 0, CStringW(L""));

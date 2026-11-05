@@ -126,12 +126,12 @@ template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::Navigati
 #include "ms2/placeholder/termtagcontext.h"
 #include "ms2/commonfiles/os.h"
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -139,7 +139,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -892,7 +892,7 @@ bool CQuestData::QuestRewardItem::operator!=(const QuestRewardItem& o) const
 }
 
 // @0x140747fc0
-bool CQuestData::QuestRewardItem::LoadXml(Unk_140165cf0* pElem)
+bool CQuestData::QuestRewardItem::LoadXml(TiXmlElement* pElem)
 {
     if (!FUN_14028f650((struct Unk_XmlElement*)(pElem)))
         return false;
@@ -1246,10 +1246,10 @@ bool CQuestData::operator!=(const CQuestData& o) const
 }
 
 // The attribute readers used by the quest loader (the enum parsers are defined further down in this unit).
-int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
+int FUN_14035ba10(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_14035bc20(TiXmlElement* pElem, const char* pszName, Unk_FameAlliance* pOut);
 enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 };   // as in cinteractobjectdata.h (its QuestMask clashes here)
-int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int Unk_ExpGetInt(TiXmlElement* pElem, const char* pszName, int* pOut);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlQuery(class TiXmlElement*, char const*, CString&);    // C3: was FUN_140873ad0
 int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
@@ -1257,26 +1257,26 @@ int FUN_14028e160(CString& str);
 int FUN_140718170(const CString& str);
 unsigned int FUN_1407181d0(const CString& str);
 int FUN_1407514d0(const CString& str);
-int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140751ee0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140751f70(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1407520f0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1407521b0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140752270(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140752330(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1407523f0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut);
-int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int FUN_140751e50(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140751ee0(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140751f70(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_1407520f0(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_1407521b0(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140752270(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140752330(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_1407523f0(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_1407524b0(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140752570(TiXmlElement* pElem, const char* pszName, int* pOut);
+int FUN_140752630(TiXmlElement* pElem, const char* pszName, int* pOut);
 class Unk_FeatureFlags;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 // @0x1407495d0
-bool CQuestData::Load(Unk_140165cf0* pElem)
+bool CQuestData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", (unsigned&)m_id);
-    Unk_140165cf0* pBasic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("basic"));
+    TiXmlElement* pBasic = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("basic"));
     if (pBasic)
     {
         XmlGetAttr((class TiXmlElement*)(pBasic), "chapterID", reinterpret_cast<int&>(m_28));
@@ -1312,14 +1312,14 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         else
             m_durationMinutes = FUN_140718170(strPeriod);
     }
-    Unk_140165cf0* pNotify = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("notify"));
+    TiXmlElement* pNotify = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("notify"));
     if (pNotify)
     {
         FUN_1407521b0(pNotify, "completeUiEffect", &m_2d0.m_id);
         XmlGetAttr((class TiXmlElement*)(pNotify), "acceptSoundKey", m_2d0.m_accept);
         XmlGetAttr((class TiXmlElement*)(pNotify), "completeSoundKey", m_2d0.m_reward);
     }
-    Unk_140165cf0* pRequire = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("require"));
+    TiXmlElement* pRequire = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("require"));
     if (pRequire)
     {
         XmlGetAttr((class TiXmlElement*)(pRequire), "level", reinterpret_cast<unsigned short&>((unsigned short&)m_require.m_level));
@@ -1374,7 +1374,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         if (nGroupId != 0 && m_30 == 0)
             m_require.m_groupId = nGroupId;
     }
-    for (Unk_140165cf0* pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
+    for (TiXmlElement* pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pCond != 0; pCond = ((class TiXmlElement*)((class Unk_XmlNode*)(pCond))->NextSibling("condition")))
     {
         MS2Ptr<CConditionCommonData> spCond(new CConditionCommonData());
         if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), L"QuestData", FUN_14074b030(this)) == 0)
@@ -1382,7 +1382,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         unsigned nIndex = (unsigned)m_conditions.GetCount();
         m_conditions.Add(spCond);
         Unk_SocketPtr<NavigationData> spNavigation(0);
-        for (Unk_140165cf0* pNavi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCond))->FirstChild("navi")); pNavi != 0; pNavi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNavi))->NextSibling("navi")))
+        for (TiXmlElement* pNavi = ((class TiXmlElement*)((class Unk_XmlNode*)(pCond))->FirstChild("navi")); pNavi != 0; pNavi = ((class TiXmlElement*)((class Unk_XmlNode*)(pNavi))->NextSibling("navi")))
         {
             Unk_SocketPtr<NavigationTarget> spTarget(new NavigationTarget());
             FUN_140752630(pNavi, "type", &spTarget->m_kind);
@@ -1398,13 +1398,13 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         if ((NavigationData*)spNavigation != 0)
             m_navigation.SetAt(nIndex, spNavigation);
     }
-    Unk_140165cf0* pStart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("start"));
+    TiXmlElement* pStart = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("start"));
     if (pStart)
         XmlGetAttr((class TiXmlElement*)(pStart), "npc", (unsigned&)m_2e8);
-    Unk_140165cf0* pComplete = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("complete"));
+    TiXmlElement* pComplete = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("complete"));
     if (pComplete)
         XmlGetAttr((class TiXmlElement*)(pComplete), "npc", (unsigned&)m_2ec);
-    Unk_140165cf0* pCompleteReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("completeReward"));
+    TiXmlElement* pCompleteReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("completeReward"));
     if (pCompleteReward)
     {
         XmlGetAttr((class TiXmlElement*)(pCompleteReward), "money", reinterpret_cast<int&>(m_complete.m_money));
@@ -1422,30 +1422,30 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pCompleteReward), "weddingExp", reinterpret_cast<__int64&>(m_complete.m_weddingExp));
         XmlGetAttr((class TiXmlElement*)(pCompleteReward), "karma", reinterpret_cast<int&>(m_complete.m_karma));
         XmlGetAttr((class TiXmlElement*)(pCompleteReward), "lu", reinterpret_cast<int&>(m_complete.m_lu));
-        for (Unk_140165cf0* pItem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCompleteReward))->FirstChild("v")))
+        for (TiXmlElement* pItem : ((class TiXmlElement*)((class Unk_XmlNode*)(pCompleteReward))->FirstChild("v")))
         {
             QuestRewardItem item;
             if (item.LoadXml(pItem))
                 m_complete.m_choiceRewards.Add(item);
         }
     }
-    Unk_140165cf0* pAcceptReward = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("acceptReward"));
+    TiXmlElement* pAcceptReward = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("acceptReward"));
     if (pAcceptReward)
     {
-        for (Unk_140165cf0* pItem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAcceptReward))->FirstChild("v")))
+        for (TiXmlElement* pItem : ((class TiXmlElement*)((class Unk_XmlNode*)(pAcceptReward))->FirstChild("v")))
         {
             QuestRewardItem item;
             if (item.LoadXml(pItem))
                 m_rewards.push_back(item);
         }
     }
-    Unk_140165cf0* pProgressMap = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("progressMap"));
+    TiXmlElement* pProgressMap = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("progressMap"));
     if (pProgressMap)
     {
         CString strProgressMap = Unk_ReadString((class Unk_XmlNode*)(pProgressMap), "progressMap", "");
         XmlSplit(strProgressMap, m_fields, ",");
     }
-    Unk_140165cf0* pGuide = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("guide"));
+    TiXmlElement* pGuide = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("guide"));
     if (pGuide)
     {
         FUN_140752330(pGuide, "guideType", &m_338.m_value);
@@ -1457,17 +1457,17 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pGuide), "guideMaxLevel", reinterpret_cast<unsigned short&>(nMaxLevel));
         m_338.m_levelRange.FUN_14075bc80(nMinLevel, nMaxLevel);
     }
-    Unk_140165cf0* pEventMission = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("eventMission"));
+    TiXmlElement* pEventMission = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("eventMission"));
     if (pEventMission)
         FUN_1407523f0(pEventMission, "event", &m_350.m_value);
-    Unk_140165cf0* pMentoring = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("mentoringMission"));
+    TiXmlElement* pMentoring = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("mentoringMission"));
     if (pMentoring)
     {
         XmlGetAttr((class TiXmlElement*)(pMentoring), "mentoringIcon", m_358.m_8);
         XmlGetAttr((class TiXmlElement*)(pMentoring), "openingDay", reinterpret_cast<int&>(m_358.m_0));
         XmlGetAttr((class TiXmlElement*)(pMentoring), "mentoringSeason", reinterpret_cast<int&>(m_358.m_4));
     }
-    Unk_140165cf0* pDispatch = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dispatch"));
+    TiXmlElement* pDispatch = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("dispatch"));
     if (pDispatch)
     {
         FUN_140751f70(pDispatch, "type", &m_2f0.m_0);
@@ -1477,7 +1477,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x42) == 1)
     {
-        Unk_140165cf0* pGotoNpc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoNpc"));
+        TiXmlElement* pGotoNpc = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoNpc"));
         if (pGotoNpc)
         {
             XmlGetAttr((class TiXmlElement*)(pGotoNpc), "enable", reinterpret_cast<int&>(m_300.m_0));
@@ -1485,27 +1485,27 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
             XmlGetAttr((class TiXmlElement*)(pGotoNpc), "gotoPortal", reinterpret_cast<int&>(m_300.m_8));
         }
     }
-    Unk_140165cf0* pGotoDungeon = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoDungeon"));
+    TiXmlElement* pGotoDungeon = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoDungeon"));
     if (pGotoDungeon)
     {
         FUN_140751e50(pGotoDungeon, "state", &m_30c.m_0);
         XmlGetAttr((class TiXmlElement*)(pGotoDungeon), "gotoDungeon", (unsigned&)m_30c.m_roomId);
         XmlGetAttr((class TiXmlElement*)(pGotoDungeon), "gotoInstanceID", (unsigned&)m_30c.m_fieldId);
     }
-    Unk_140165cf0* pRemoteAccept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteAccept"));
+    TiXmlElement* pRemoteAccept = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteAccept"));
     if (pRemoteAccept)
     {
         FUN_1407520f0(pRemoteAccept, "useRemote", &m_320.m_0);
         XmlGetAttr((class TiXmlElement*)(pRemoteAccept), "requireField", (unsigned&)m_320.m_4);
     }
-    Unk_140165cf0* pRemoteComplete = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteComplete"));
+    TiXmlElement* pRemoteComplete = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("remoteComplete"));
     if (pRemoteComplete)
     {
         FUN_1407520f0(pRemoteComplete, "useRemote", &m_32c.m_0);
         XmlGetAttr((class TiXmlElement*)(pRemoteComplete), "requireField", (unsigned&)m_32c.m_4);
         XmlGetAttr((class TiXmlElement*)(pRemoteComplete), "requireDungeonClear", reinterpret_cast<int&>(m_32c.m_8));
     }
-    Unk_140165cf0* pSummonPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("summonPortal"));
+    TiXmlElement* pSummonPortal = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("summonPortal"));
     if (pSummonPortal)
     {
         XmlGetAttr((class TiXmlElement*)(pSummonPortal), "fieldID", (unsigned&)m_318.m_0);
@@ -1801,13 +1801,13 @@ void QuestDataTable::LoadQuestData()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")))
+    for (TiXmlElement* pNode : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -2383,7 +2383,7 @@ void QuestDataTable::FUN_14074ee30()
 MS2_REPLACE_METHOD(0x14074EE30, QuestDataTable, FUN_14074ee30, 806, 0x83205888);
 
 class CLogString* GetLogString();
-void FUN_1406e7140(void* pLog, int a, int b, int nFlags, const wchar_t* pszFormat, const int& arg0, const int& arg1);
+class Unk_NpcShopLog { public: template <class A, class B> void LogWarn(unsigned __int64 a, unsigned __int64 b, int nCategory, const wchar_t* format, const A& v0, const B& v1); };   // C3: member view (npcshopdata.cpp; was the free FUN_1406e7140)
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
@@ -2485,12 +2485,12 @@ void QuestDataTable::FUN_14074f160()
                 if (!spItem)
                 {
                     int nQuest = FUN_14074b030(spData.operator->());
-                    FUN_1406e7140(GetLogString(), 0, 0, 0x30, L"invalid quest item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
+                    reinterpret_cast<Unk_NpcShopLog*>(GetLogString())->LogWarn<unsigned, unsigned>(0, 0, 0x30, L"invalid quest item [qid:{0}, itemid:{1}]", reinterpret_cast<const unsigned&>(nQuest), reinterpret_cast<const unsigned&>(reward.m_itemId));
                 }
                 if (spItem->limit.shopSell != 0)
                 {
                     int nQuest = FUN_14074b030(spData.operator->());
-                    FUN_1406e7140(GetLogString(), 0, 0, 0x30, L"abusing item [qid:{0}, itemid:{1}]", nQuest, reward.m_itemId);
+                    reinterpret_cast<Unk_NpcShopLog*>(GetLogString())->LogWarn<unsigned, unsigned>(0, 0, 0x30, L"abusing item [qid:{0}, itemid:{1}]", reinterpret_cast<const unsigned&>(nQuest), reinterpret_cast<const unsigned&>(reward.m_itemId));
                 }
             }
         }
@@ -2536,7 +2536,7 @@ MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, FUN_14074fee0, 557, 0xD7488436);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int FUN_140752030(TiXmlElement* pElem, const char* pszName, int* pOut);
 // Loads the quest table.
 // @0x140750120
 void QuestDataTable::LoadQuestGroupTable()
@@ -2545,14 +2545,14 @@ void QuestDataTable::LoadQuestGroupTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_1401b4ec0 guard(m_lock, 1);
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -2812,14 +2812,14 @@ int FUN_1407514d0(const CString& str)
 }
 
 // @0x140751560
-void FUN_140751560(Unk_140165cf0* pElem, ATL::CAtlArray<CString>& args)
+void FUN_140751560(TiXmlElement* pElem, ATL::CAtlArray<CString>& args)
 {
     args.RemoveAll();
     for (unsigned i = 0; i < 3; i++)
     {
         CString strName;
         strName.Format("arg%d", i + 1);
-        const char* pszValue = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute(strName);
+        const char* pszValue = ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute(strName);
         if (pszValue != 0)
             args.SetAtGrow(i, CString(pszValue));
     }
@@ -2878,7 +2878,7 @@ int Parse_14021a570(const CString& str);
 int Parse_14021a1f0(const CString& str);
 
 // @0x140751e50
-int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140751e50(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2894,7 +2894,7 @@ int FUN_140751e50(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140751ee0
-int FUN_140751ee0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140751ee0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2910,7 +2910,7 @@ int FUN_140751ee0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140751f70
-int FUN_140751f70(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140751f70(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2926,7 +2926,7 @@ int FUN_140751f70(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140752030
-int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140752030(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2942,7 +2942,7 @@ int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x1407520f0
-int FUN_1407520f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_1407520f0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2958,7 +2958,7 @@ int FUN_1407520f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x1407521b0
-int FUN_1407521b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_1407521b0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2974,7 +2974,7 @@ int FUN_1407521b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140752270
-int FUN_140752270(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140752270(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -2990,7 +2990,7 @@ int FUN_140752270(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140752330
-int FUN_140752330(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140752330(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -3006,7 +3006,7 @@ int FUN_140752330(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x1407523f0
-int FUN_1407523f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_1407523f0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -3022,7 +3022,7 @@ int FUN_1407523f0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x1407524b0
-int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_1407524b0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -3038,7 +3038,7 @@ int FUN_1407524b0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140752570
-int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140752570(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -3054,7 +3054,7 @@ int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x140752630
-int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_140752630(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {

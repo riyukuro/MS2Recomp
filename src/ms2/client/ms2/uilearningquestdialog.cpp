@@ -35,7 +35,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -61,8 +61,8 @@ class CFileSystem   // C3: member view for the former free stand-ins
 public:
     int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
 };
-TiXmlElement* FUN_140165cf0(TiXmlDocument* pParent, const char* pszName);   // FirstChildElement
-TiXmlElement* FUN_140165cf0(TiXmlElement* pParent, const char* pszName);
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -91,13 +91,13 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-struct Unk_LqOptions { char m_pad_00[0x50]; unsigned char m_50; unsigned char* FUN_140ea41a0() { return &m_50; } };
+Unk_StatusFlag* CGameOption::FUN_140ea41a0() { return &m_statusChar; }   // 0x140ea41a0 (C3: was the Unk_LqOptions view)
 bool FUN_140930b70();
 class UIStatusEventDispatcher;
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 unsigned short FUN_14074bd10(int);  // C3: the definition's signature
-class Unk_140acd6e0 : public ASMovieClip { public:
-};
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
+//
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
@@ -254,7 +254,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strName);
         spName->SetTextW(strName);
     }
-    if (MS2Ptr<Unk_140acd6e0> spOk = GetChild<Unk_140acd6e0>("m_ok"))
+    if (MS2Ptr<ASButton> spOk = GetChild<ASButton>("m_ok"))
     {
         unsigned nState = 0;
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
@@ -317,7 +317,7 @@ int UILearningQuestDialog::FUN_140ea1e20(int bNew)
         return 0;
     if (bNew != 0)
     {
-        if (*reinterpret_cast<Unk_LqOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140ea41a0() != 0)
+        if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0()) != 0)
             return 0;
     }
     if (FUN_140930b70() == 0)

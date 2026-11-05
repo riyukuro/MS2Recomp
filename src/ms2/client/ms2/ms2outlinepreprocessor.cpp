@@ -19,7 +19,7 @@
 #include "ms2/client/ms2/effectservice.h"   // C3: EffectNode::ms_RTTI
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"   // C3: PostProcessingService::SetStepActive
 
-struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
+#include "ms2/client/ms2/fielddatacli.h"   // Unk_Vec3Cli: the out-of-line colour ctor 0x140a56db0 (was a local Unk_Colc view)
 
 // ---- out-of-unit callees ----
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -163,7 +163,7 @@ void FUN_1414d37a0(void* obj, int idx)
 {
     if (idx < 0 || idx >= 3)
         return;
-    static Unk_Colc axes[3] = { Unk_Colc(1.0f, 0.0f, 0.0f), Unk_Colc(0.0f, 1.0f, 0.0f), Unk_Colc(0.0f, 0.0f, 1.0f) };
+    static Unk_Vec3Cli axes[3] = { Unk_Vec3Cli(1.0f, 0.0f, 0.0f), Unk_Vec3Cli(0.0f, 1.0f, 0.0f), Unk_Vec3Cli(0.0f, 0.0f, 1.0f) };
     FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50e0, *(class NiColor const*)(&axes[idx]));
     if (*(int*)&DAT_143ae2b34 != 0)
         FUN_141568df0((class NiAVObject*)(obj));

@@ -9,7 +9,7 @@
 #include "ms2/placeholder/delegate.h"
 
 class NotifyObject;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIWebBrowser : public UIWebBrowserBase
 {
@@ -40,12 +40,12 @@ public:
 
 protected:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_140acd6e0> m_btnHome;            // +0x198 "m_btnHome"
-    MS2Ptr<Unk_140acd6e0> m_btnPrev;            // +0x1a8 "m_btnPrev"
-    MS2Ptr<Unk_140acd6e0> m_btnNext;            // +0x1b8 "m_btnNext"
-    MS2Ptr<Unk_140acd6e0> m_btnRefresh;         // +0x1c8 "m_btnRefresh"
-    MS2Ptr<Unk_140acd6e0> m_btnMinSize;         // +0x1d8 "m_btnMinSize"
-    MS2Ptr<Unk_140acd6e0> m_btnMaxSize;         // +0x1e8 "m_btnMaxSize"
+    MS2Ptr<ASButton> m_btnHome;            // +0x198 "m_btnHome"
+    MS2Ptr<ASButton> m_btnPrev;            // +0x1a8 "m_btnPrev"
+    MS2Ptr<ASButton> m_btnNext;            // +0x1b8 "m_btnNext"
+    MS2Ptr<ASButton> m_btnRefresh;         // +0x1c8 "m_btnRefresh"
+    MS2Ptr<ASButton> m_btnMinSize;         // +0x1d8 "m_btnMinSize"
+    MS2Ptr<ASButton> m_btnMaxSize;         // +0x1e8 "m_btnMaxSize"
     CString m_strStored;                        // +0x1f8 the page reported by the browser
     int m_nWidth;                               // +0x200 current browser size
     int m_nHeight;                              // +0x204

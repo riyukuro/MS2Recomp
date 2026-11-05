@@ -38,11 +38,10 @@ struct Unk_CtbMat33
     float m20, m21, m22;
 };
 MS2_CHECK_SIZE(Unk_CtbMat33, 0x24);
-// NxMat34: rotation + translation (ctor(bool identity) 0x140adb9e0, dtor 0x140adbb80).
+// NxMat34 layout view for the out-of-line NxMat34::getInverse copy 0x140b00260 (the members are NxMat34 itself:
+// ctor(bool) 0x140adb9e0, dtor 0x140adbb80).
 struct Unk_CtbMat34
 {
-    Unk_CtbMat34(bool bIdentity);                       // 0x140adb9e0
-    ~Unk_CtbMat34();                                    // 0x140adbb80
     bool FUN_140b00260(Unk_CtbMat34* pOut) const;       // inverse
     Unk_CtbMat33 m_rot;
     Unk_CtbVec3 m_pos;
@@ -79,8 +78,8 @@ public:
 
     NxBounds3 m_bounds;                                                 // +0x20 local box
     NxBox m_obb;                                                        // +0x38 the box in world space
-    Unk_CtbMat34 m_pose;                                                // +0x74
-    Unk_CtbMat34 m_inverse;                                             // +0xa4
+    NxMat34 m_pose;                                                     // +0x74
+    NxMat34 m_inverse;                                                  // +0xa4
 };
 MS2_CHECK_SIZE(CCameraTargetBoundingBox, 0xd8);
 MS2_CHECK_OFFSET(CCameraTargetBoundingBox, m_obb, 0x38);

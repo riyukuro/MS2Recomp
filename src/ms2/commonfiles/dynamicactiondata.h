@@ -13,7 +13,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/placeholder/tptrvalue.h"
 
-class Unk_140165cf0;    // xml element (declared where the loaders are)
+class TiXmlElement;    // xml element (declared where the loaders are)
 
 // The pointer the statics hold to a skill id set: the same code as TPtrValue<std::set<unsigned>> (the exe has a second
 // copy of every member for it, with no Make), so it is a class of its own here.

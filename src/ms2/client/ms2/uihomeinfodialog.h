@@ -11,7 +11,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class CMsgBoxData;
-class Unk_HiPanelB;
+class ASGameEntity;
 
 class UIHomeInfoDialog : public UIDialog
 {
@@ -53,7 +53,7 @@ public:
     bool FUN_1412c7ff0(int nResult, const CMsgBoxData& data);
     unsigned int FUN_1412c81d0();                                      // remaining bank cooldown in ms
     unsigned int FUN_1412c8280();                                      // remaining doctor cooldown in ms
-    MS2Ptr<Unk_HiPanelB> FUN_140ede180(const CString& strName); // child lookup (ICF'd GetChild instance)
+    // C3: FUN_140ede180 = Unk_ReportDialogAccess::GetChild<ASGameEntity> (the .cpp calls it through a view)
 
 private:
     MS2_LAYOUT_FRIEND;

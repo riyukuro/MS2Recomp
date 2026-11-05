@@ -32,7 +32,7 @@
 // MS2-PIN: ??1?$MS2Ptr@VCGuildPVPSeasonHistoryData@@@@QEAA@XZ 0x1413cc6d0
 // MS2-PIN: ??_G?$MS2Ptr@VCGuildPVPHistoryData@@@@QEAAPEAXI@Z 0x1413cd620
 // MS2-PIN: ??_G?$MS2Ptr@VCGuildPVPSeasonHistoryData@@@@QEAAPEAXI@Z 0x1413cd660
-// MS2-PIN: ?get@?$Unk_PayloadPtr@UGuildNpc@CGuildXmlData@@@@QEBAPEAUGuildNpc@CGuildXmlData@@XZ 0x1413cce40
+// MS2-PIN: ?get@?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@QEBAPEAUGuildNpc@CGuildXmlData@@XZ 0x1413cce40
 // MS2-PIN: ??0?$MS2Ptr@VCGuildMember@@@@QEAA@AEBV0@@Z 0x1404ec5b0
 // MS2-PIN: ??0?$MS2Ptr@VCGuildMember@@@@QEAA@H@Z 0x1404ec5f0
 // MS2-PIN: ??0?$MS2Ptr@VCGuildMember@@@@QEAA@$$QEAV0@@Z 0x1404ec580
@@ -114,12 +114,12 @@ extern int DAT_143ab2870;       // the local character's current map id
 // The housing service, looked up from its registry cell.
 // Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
 class CubeMapInformationService { public: int FUN_1410d2f10(); };
-class Unk_Service6100017;
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* p);
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();
-template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;
-template <> Unk_Service6100017* efd::SmartPointer<Unk_Service6100017>::operator->() const;
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService;
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* p);
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();
+template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInformationService*() const;
+template <> CubeMapInformationService* efd::SmartPointer<CubeMapInformationService>::operator->() const;
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 // Content switches (feature ids).
@@ -146,8 +146,8 @@ class UIPvPGuildTeamResultDialog : public UIDialog { public: void FUN_141341220(
 CStringW FUN_140a2fcd0(__int64 begin, __int64 end);
 bool FUN_141b70f50(const CStringW& left, const CStringW& right);   // the names are equal
 CStringW BlockFormat(int id);
-CStringW BlockFormat(int id, const fmt::ArgList& args);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 #include "ms2/placeholder/formatstringid.h"
 class Unk_GFRecord { public: void FUN_1404c5be0(CInputStream* in); };   // C3: the guild history record reader's signature (0x1404c5be0)
 CStringW FUN_140763e10(int value);                   // the number with digit grouping
@@ -189,7 +189,7 @@ int IsNotRecentDayChange(__int64 time);
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);
 __int64 GetServerTime();
 // CGuildInfo containers reached through the guild chunk's COMDATs (see guilddef_1.cpp).
-typedef ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>> GuildMemberTree;
+typedef ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>> GuildMemberTree;
 
 
 // @0x1413b5a10
@@ -239,7 +239,7 @@ void CGuildManager::FUN_1413b5f90()
 {
     if (!FUN_1413b6160()) return;
     if (Unk_LockGuard guard = lock) {} else {
-        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
             if (member.get() != 0)
                 reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
@@ -285,7 +285,7 @@ MS2Ptr<CGuildMember> CGuildManager::FUN_1413b6200(__int64 characterId)
 {
     MS2Ptr<CGuildMember> found(0);
     if (Unk_LockGuard guard = lock) {} else {
-        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
             if ((member.get() ? true : false) && member->data.f08 == characterId) {
                 found = member;
@@ -657,7 +657,7 @@ bool CGuildManager::FUN_1413b8540(int amount)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_can_next_day"), 1, 1);
         return false;
     }
-    Unk_PayloadPtr<CGuildXmlData::GuildProperty> property = TSingleton<CGuildXmlData>::GetInstance()->GetProperty(GetGuildLevel());
+    MS2Ptr<CGuildXmlData::GuildProperty> property = TSingleton<CGuildXmlData>::GetInstance()->GetProperty(GetGuildLevel());
     if (property == 0) return false;
     if (member->FUN_1404cb3e0() + amount > property->f30) {
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_donateMax"), 1, 1);
@@ -750,7 +750,7 @@ void CGuildManager::FUN_1413b8fe0(int skillId)
         return;
     }
     int skillLevel = FUN_1404d26f0(skillId);
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (skillData == 0) return;
     int requiredLevel = TSingleton<CGuildXmlData>::GetInstance()->GetLevelByExp(FUN_1404d1a80());
     if (requiredLevel < skillData->f20) {
@@ -792,7 +792,7 @@ void CGuildManager::FUN_1413b96e0(int skillId)
 {
     if (!FUN_1413b6160()) return;
     int skillLevel = FUN_1404d26f0(skillId);
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (skillData == 0) return;
     if (!skillData->FUN_1404d4e40()) return;
     int requiredLevel = TSingleton<CGuildXmlData>::GetInstance()->GetLevelByExp(FUN_1404d1a80());
@@ -823,10 +823,10 @@ void CGuildManager::FUN_1413b9ac0(int skillId)
 {
     if (!FUN_1413b6160()) return;
     int skillLevel = FUN_1404d26f0(skillId);
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> current = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> current = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (current == 0) return;
     int nextLevel = skillLevel + 1;
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> next = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, nextLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> next = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, nextLevel);
     if (next == 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_max_level"), 1, 1);
         return;
@@ -857,7 +857,7 @@ MS2_REPLACE_METHOD(0x1413B9AC0, CGuildManager, FUN_1413b9ac0, 1453, 0xDA842B83);
 void CGuildManager::FUN_1413ba080(int eventId)
 {
     if (!FUN_1413b6160()) return;
-    Unk_PayloadPtr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
+    MS2Ptr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
     if (eventData == 0) return;
     __int64 now = GetServerTime();
     if (FUN_1404ccec0() + DaysToSeconds(1) > now) {
@@ -882,7 +882,7 @@ MS2_REPLACE_METHOD(0x1413BA080, CGuildManager, FUN_1413ba080, 636, 0x9FB82CA0);
 void CGuildManager::SendGuildMode100(int eventId)
 {
     if (!FUN_1413b6160()) return;
-    Unk_PayloadPtr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
+    MS2Ptr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
     if (eventData == 0) return;
     MS2Ptr<CGuildCustomEvent> customEvent = FUN_1404d27b0(eventId);
     if (customEvent == 0) return;
@@ -914,15 +914,15 @@ void CGuildManager::FUN_1413ba4b0()
     }
     int houseLevel = FUN_1404d1f90();
     int houseTheme = FUN_1404d2030();
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(houseLevel, houseTheme);
+    MS2Ptr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(houseLevel, houseTheme);
     if (house == 0) return;
     if (WorldService::GetInstance()->FUN_141bd3060() == house->f50) {
         FUN_1412751f0(GetStringCommonByKey(L"s_common_cant_move_from_here"), 1, 1);
         return;
     }
     if (reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c == 0) {
-        efd::SmartPointer<Unk_Service6100017> housing(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-        if (((Unk_Service6100017*)housing ? true : false) && reinterpret_cast<CubeMapInformationService*>(housing.operator->())->FUN_1410d2f10()) {
+        efd::SmartPointer<CubeMapInformationService> housing(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        if (((CubeMapInformationService*)housing ? true : false) && reinterpret_cast<CubeMapInformationService*>(housing.operator->())->FUN_1410d2f10()) {
         } else {
             FUN_1412751f0(GetStringCommonByKey(L"s_common_cant_move_from_here"), 1, 1);
             return;
@@ -944,7 +944,7 @@ void CGuildManager::FUN_1413ba820(int level, int theme)
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_need_pre_house_level"), 1, 1);
         return;
     }
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nextLevel, theme);
+    MS2Ptr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nextLevel, theme);
     if (house == 0) return;
     if (!IsMaster(FUN_1413c7c20())) {
         FUN_1412751f0(GetStringCommon(0x416), 1, 1);
@@ -971,7 +971,7 @@ void CGuildManager::FUN_1413babf0(int theme)
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x5b)) return;
     if (!FUN_1413b6160()) return;
     int level = FUN_1404d1f90();
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(level, theme);
+    MS2Ptr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(level, theme);
     if (house == 0) return;
     if (!IsMaster(FUN_1413c7c20())) {
         FUN_1412751f0(GetStringCommon(0x416), 1, 1);
@@ -1014,7 +1014,7 @@ void CGuildManager::FUN_1413bb000(Unk_GuildNpcKind kind)
     if (!FUN_1413b6160()) return;
     int level = FUN_1404d2990(kind);
     int nextLevel = level + 1;
-    Unk_PayloadPtr<CGuildXmlData::GuildNpc> npc = TSingleton<CGuildXmlData>::GetInstance()->GetNpc(kind, nextLevel);
+    MS2Ptr<CGuildXmlData::GuildNpc> npc = TSingleton<CGuildXmlData>::GetInstance()->GetNpc(kind, nextLevel);
     if (npc == 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_max_level"), 1, 1);
         return;
@@ -1235,7 +1235,7 @@ int CGuildManager::FUN_1413bc390()
 {
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
-        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
             if ((member.get() ? true : false) && member->f158 == 0)
                 count++;
@@ -1357,7 +1357,7 @@ int CGuildManager::GetMemberPCsInWorld(std::map<unsigned __int64, PCBase*>& out)
 {
     if (FUN_1413b6160()) {
         if (Unk_LockGuard guard = lock) {} else {
-            for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+            for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
                 MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
                 if (member.get() != 0) {
                     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(member->data.f08);
@@ -1376,7 +1376,7 @@ int CGuildManager::FUN_1413bcbc0(std::map<unsigned __int64, PCBase*>& out)
 {
     if (FUN_1413b6160()) {
         if (Unk_LockGuard guard = lock) {} else {
-            for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+            for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
                 MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
                 if (member.get() != 0) {
                     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(member->data.f08);
@@ -1499,7 +1499,7 @@ MS2_REPLACE_METHOD(0x1413BD640, CGuildManager, FUN_1413bd640, 56, 0xE6D04E64);
 // @0x1413bd050
 int CGuildManager::GetSkillCostWithEventDiscount(int skillId, int skillLevel)
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (skillData == 0) return 0;
     __int64 cost = FUN_1404d2510(skillId, skillLevel);
     int discount = skillData->FUN_1404d4e80() ? 0 : reinterpret_cast<CGameEventValueGuildSkillSale*>(TSingleton<CGameEventValueManager>::GetInstance()->GuildSkillSale())->GetRate();
@@ -1511,7 +1511,7 @@ MS2_REPLACE_METHOD(0x1413BD050, CGuildManager, GetSkillCostWithEventDiscount, 32
 // @0x1413bd1a0
 int CGuildManager::GetPersonalSkillDiscountedCost(int skillId, int skillLevel)
 {
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (skillData == 0) return 0x7fffffff;
     if (!skillData->FUN_1404d4e40()) return 0x7fffffff;
     __int64 duration = skillData->f28;
@@ -1531,7 +1531,7 @@ void CGuildManager::FUN_1413bd680(CInPacket& packet)
     m_joinRequestsForGuild.RemoveAll();
     m_joinRequestsForChar.RemoveAll();
     if (Unk_LockGuard guard = lock) {} else {
-        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
             if (member.get() != 0)
                 reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
@@ -1683,7 +1683,7 @@ void CGuildManager::FUN_1413be460(CInPacket& packet)
     else
         FUN_1412751b0(FormatStringId<CStringW>(0x3ab, name), 0xd);
     if (Unk_LockGuard guard = lock) {} else {
-        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, Unk_PayloadPtr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<Unk_PayloadPtr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
+        for (void* pos = ((void*)((ATL::CRBTree<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, MS2Ptr<CGuildMember>, ATL::CStringElementTraitsI<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CDefaultCharTraits<wchar_t>>, ATL::CElementTraits<MS2Ptr<CGuildMember>>>*)(void*)(&f320))->GetHeadPosition()); pos != 0; ((GuildMemberTree*)(void*)(&f320))->GetNext(reinterpret_cast<POSITION&>(pos))) {
             MS2Ptr<CGuildMember> member = reinterpret_cast<MS2Ptr<CGuildMember>&>(((GuildMemberTree*)(void*)(&f320))->GetValueAt((POSITION)pos));
             if (member.get() != 0)
                 reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
@@ -1846,7 +1846,7 @@ void CGuildManager::OnPacketGradeChanged(CInPacket& packet)
     int index = packet.ReadUInt8();
     CGuildGrade grade;
     grade.FUN_1404c71d0(packet);
-    Unk_PayloadPtr<CGuildGrade> current = GetGrade(index);
+    MS2Ptr<CGuildGrade> current = GetGrade(index);
     FUN_140d73aa0(FormatStringId<CStringW>(0x398, GetGradeName(index)), 0, 0, CStringW(L""));
 }
 MS2_REPLACE_METHOD(0x1413BF130, CGuildManager, OnPacketGradeChanged, 358, 0x5D4FD5ED);
@@ -1870,7 +1870,7 @@ void CGuildManager::FUN_1413bf340(CInPacket& packet)
         return;
     int skillId = packet.ReadInt32();
     int skillLevel = FUN_1404d26f0(skillId);
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
     if (skillData == 0) return;
     FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_guild_skill_use_skill"), TSingleton<CStringTable>::GetInstance()->FUN_141812290(skillData->f34, skillData->f38, CString("name"))), 0xd);
 }
@@ -1884,7 +1884,7 @@ void CGuildManager::FUN_1413bf540(CInPacket& packet)
     int skillId = packet.ReadInt32();
     int skillLevel = FUN_1404d26f0(skillId);
     if ((TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)(0x4e4f)))) {
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
+        MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skillId, skillLevel);
         if (skillData == 0) return;
         m_470.insert(std::make_pair(skillData->f34, skillData->f38));
     }
@@ -1913,14 +1913,14 @@ void CGuildManager::OnPacketOpenEvent(CInPacket& packet)
     if (!FUN_1413b6160())
         return;
     int eventId = packet.ReadInt32();
-    Unk_PayloadPtr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
+    MS2Ptr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(eventId);
     if (eventData == 0) return;
     CStringW eventName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, eventData->f1c);
     FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_guild_open_event"), eventName), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413BF9A0, CGuildManager, OnPacketOpenEvent, 328, 0xA408E437);
 
-// MS2-FUNCTIONAL: the member is an MS2Ptr<CGuildMember> here, so the by-value Unk_PayloadPtr<CGuildMember> argument
+// MS2-FUNCTIONAL: the member is an MS2Ptr<CGuildMember> here, so the by-value MS2Ptr<CGuildMember> argument
 // of CGuildInfo::vfunc_0 is built from the raw pointer instead of the exe's copy ctor.
 // @0x1413bfaf0
 void CGuildManager::FUN_1413bfaf0(CInPacket& packet)
@@ -1936,7 +1936,7 @@ void CGuildManager::FUN_1413bfaf0(CInPacket& packet)
     } else {
         member.AssignRaw(new CGuildMember());
         member->FUN_1404cb450(&packet);
-        vfunc_0(reinterpret_cast<Unk_PayloadPtr<CGuildMember>&>(member));
+        vfunc_0(reinterpret_cast<MS2Ptr<CGuildMember>&>(member));
     }
     reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
     if (member->fb0 == 3) {
@@ -2067,7 +2067,7 @@ void CGuildManager::FUN_1413c0880(CInPacket& packet)
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(name);
     if (member.get() != 0) {
         member->fb4 = gradeIndex;
-        Unk_PayloadPtr<CGuildGrade> grade = GetGrade(gradeIndex);
+        MS2Ptr<CGuildGrade> grade = GetGrade(gradeIndex);
         if (grade.get() != 0) {
             bool isMe = FUN_141b70f50(name, FUN_1413c7c20());
             if (isMe) {
@@ -2237,7 +2237,7 @@ void CGuildManager::FUN_1413c1960(CInPacket& packet)
     int index = packet.ReadUInt8();
     CGuildGrade grade;
     grade.FUN_1404c71d0(packet);
-    Unk_PayloadPtr<CGuildGrade> current = GetGrade(index);
+    MS2Ptr<CGuildGrade> current = GetGrade(index);
     if (current == 0)
         return;
     current->FUN_1404c70f0(grade.grade, grade.name, grade.permissions);
@@ -2494,7 +2494,7 @@ void CGuildManager::FUN_1413c3170(CInPacket& packet)
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
         dialog->FUN_14196e590();
     if (!user.IsEmpty()) {
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skill.f18, skill.f1c);
+        MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skill.f18, skill.f1c);
         if (skillData == 0)
             return;
         CStringW skillName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(skillData->f34, skillData->f38, CString("name"));
@@ -2514,7 +2514,7 @@ void CGuildManager::FUN_1413c3460(CInPacket& packet)
     if (current == 0)
         return;
     current->CopyFrom(&skill);
-    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skill.f18, skill.f1c);
+    MS2Ptr<CGuildXmlData::GuildSkill> skillData = TSingleton<CGuildXmlData>::GetInstance()->GetSkill(skill.f18, skill.f1c);
     if (skillData == 0)
         return;
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f))) {
@@ -2541,7 +2541,7 @@ void CGuildManager::FUN_1413c3780(CInPacket& packet)
     current->FUN_1404cbde0(&customEvent);
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
         dialog->FUN_141970900();
-    Unk_PayloadPtr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(customEvent.f18);
+    MS2Ptr<CGuildXmlData::GuildEvent> eventData = TSingleton<CGuildXmlData>::GetInstance()->GetEvent(customEvent.f18);
     if (eventData == 0)
         return;
     CStringW eventName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, eventData->f1c);
@@ -2564,7 +2564,7 @@ void CGuildManager::FUN_1413c39e0(CInPacket& packet)
     }
     if (UIGuildHouseUpgradeDialog* upgrade = Unk_GuildFindDialog<UIGuildHouseUpgradeDialog>(0x4f2e))
         upgrade->FUN_140e39da0();
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(level, theme);
+    MS2Ptr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(level, theme);
     if (house.get() != 0)
         FUN_1412751b0(FUN_14028dfa0<CStringW, int, CStringW>(CStringW(L"s_guild_notify_house_upgrade"), user, level,
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20)), 0xd);
@@ -2603,12 +2603,12 @@ MS2_REPLACE_METHOD(0x1413C3E50, CGuildManager, FUN_1413c3e50, 139, 0xF70246D1);
 void CGuildManager::FUN_1413c3ef0(CInPacket& packet)
 {
     CStringW user = packet.ReadUnicodeString();
-    Unk_PayloadPtr<CGuildNpc> npc(new CGuildNpc());
+    MS2Ptr<CGuildNpc> npc(new CGuildNpc());
     npc->FUN_1404cc440(packet);
     FUN_1404d2860(npc);
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
         dialog->FUN_141971ac0();
-    Unk_PayloadPtr<CGuildXmlData::GuildNpc> npcData = TSingleton<CGuildXmlData>::GetInstance()->GetNpc((Unk_GuildNpcKind)npc->f18, npc->f1c);
+    MS2Ptr<CGuildXmlData::GuildNpc> npcData = TSingleton<CGuildXmlData>::GetInstance()->GetNpc((Unk_GuildNpcKind)npc->f18, npc->f1c);
     if (npcData.get() != 0)
         FUN_1412751b0(FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_guild_notify_upgrade_npc"), user,
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3f, npcData->f30), reinterpret_cast<const int&>(npc->f1c)), 0xd);
@@ -2983,7 +2983,7 @@ void CGuildManager::FUN_1413c5dc0(CInPacket& packet)
         return;
     {
         m_400 = true;
-        ((std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>, std::allocator<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>>>*)(void*)(&storage.f38))->clear();
+        ((std::deque<MS2Ptr<CGuildStorage::CGuildStroageHistory>, std::allocator<MS2Ptr<CGuildStorage::CGuildStroageHistory>>>*)(void*)(&storage.f38))->clear();
         int count = packet.ReadInt32();
         for (int i = 0; i < count; i++) {
             ItemEntity item;
@@ -3152,7 +3152,7 @@ void CGuildManager::FUN_1413c7900(CInPacket& packet)
     } else {
         int count = packet.ReadUInt8();
         for (int i = 0; i < count; i++) {
-            Unk_PayloadPtr<CGuildMember> member(new CGuildMember());
+            MS2Ptr<CGuildMember> member(new CGuildMember());
             member->FUN_1404cb450(&packet);
             vfunc_0(member);
             reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
@@ -3173,7 +3173,7 @@ void CGuildManager::FUN_1413c7aa0(CInPacket& packet)
         int count = packet.ReadUInt8();
         fa0.SetCount(count, -1);
         for (int i = 0; i < count; i++) {
-            Unk_PayloadPtr<CGuildGrade> grade(new CGuildGrade());
+            MS2Ptr<CGuildGrade> grade(new CGuildGrade());
             grade->FUN_1404c71d0(packet);
             fa0.SetAt(i, grade);
         }

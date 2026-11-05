@@ -45,17 +45,17 @@ unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
 // The popup target of a character: the entity manager finds the entity, whose slot 86 hands out a reference to the
 // popup object that is hidden by its slot 3.
-class Unk_PpTarget { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); };
-class Unk_PpHandle
+// slot 86 is PCBase::vfunc_86, MS2Ptr<Unk_PCBaseComp_ab8> (pcbase.h; the UIPopupProfileImage::Entity of the actor).
+// Its slot 3 hides the popup. Its ~MS2Ptr / operator T* / operator-> are 0x141666930 / 0x1416676a0 / 0x141667730.
+class Unk_PCBaseComp_ab8 : public CPtred
 {
 public:
-    ~Unk_PpHandle();                        // 0x141666930
-    void* FUN_1416676a0();                  // the reference (null when invalid)
-    Unk_PpTarget* FUN_141667730();          // the popup object
-private:
-    void* m_p; void* m_pad_08;
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3();                 // close the popup
 };
-MS2_CHECK_SIZE(Unk_PpHandle, 0x10);
+//
+//
 class Unk_PpEntity
 {
 public:
@@ -145,7 +145,7 @@ public:
     virtual void vfunc_83();
     virtual void vfunc_84();
     virtual void vfunc_85();
-    virtual Unk_PpHandle vfunc_86();        // 86 0x2b0
+    virtual MS2Ptr<Unk_PCBaseComp_ab8> vfunc_86();   // 86 0x2b0
 };
 class Unk_PpEntityMgr { public: };
 
@@ -244,9 +244,9 @@ void CPopupProfileImageMan::FUN_141697430()
             if (spData->IsExpired(nNow) == 1)
             {
                 Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntity*>(WorldService::GetInstance()->FUN_141bd1530(nId));
-                bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
+                bool bFound = pEntity != 0 && (pEntity->vfunc_86().operator Unk_PCBaseComp_ab8*() ? true : false);
                 if (bFound)
-                    pEntity->vfunc_86().FUN_141667730()->vfunc_3();
+                    pEntity->vfunc_86()->vfunc_3();
                 expired.AddTail(nId);
             }
         }
@@ -311,9 +311,9 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
         if (m_shown.Lookup(nId, spData))
             m_shown.RemoveKey(nId);
         Unk_PpEntity* pEntity = reinterpret_cast<Unk_PpEntity*>(WorldService::GetInstance()->FUN_141bd1530(nId));
-        bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
+        bool bFound = pEntity != 0 && (pEntity->vfunc_86().operator Unk_PCBaseComp_ab8*() ? true : false);
         if (bFound)
-            pEntity->vfunc_86().FUN_141667730()->vfunc_3();
+            pEntity->vfunc_86()->vfunc_3();
     }
 }
 MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 465, 0xF1C4CEB1);

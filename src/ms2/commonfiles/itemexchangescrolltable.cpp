@@ -20,7 +20,7 @@
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -91,13 +91,13 @@ void CItemExchangeScrollTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("exchange")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("exchange")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("exchange")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("exchange")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -108,32 +108,32 @@ void CItemExchangeScrollTable::Load()
         XmlEnumName<int, Parse_14021a270>(pNode, "type", reinterpret_cast<int&>(spInfo->m_eType));
         XmlGetAttr((class TiXmlElement*)(pNode), "maxGrade", reinterpret_cast<int&>(spInfo->m_nMaxGrade));
         XmlGetAttr((class TiXmlElement*)(pNode), "tradableCountDeduction", reinterpret_cast<int&>(spInfo->m_nTradableCountDeduction));
-        Unk_140165cf0* pReceipe = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("receipe"));
+        TiXmlElement* pReceipe = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("receipe"));
         if (pReceipe != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pReceipe), "id", spInfo->m_receipe.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pReceipe), "rank", &spInfo->m_receipe.m_nRank);
             XmlGetAttr((class TiXmlElement*)(pReceipe), "count", reinterpret_cast<int&>(spInfo->m_receipe.m_nCount));
         }
-        Unk_140165cf0* pExchange = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("exchange"));
+        TiXmlElement* pExchange = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("exchange"));
         if (pExchange != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pExchange), "id", spInfo->m_exchange.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pExchange), "rank", &spInfo->m_exchange.m_nRank);
             XmlGetAttr((class TiXmlElement*)(pExchange), "count", reinterpret_cast<int&>(spInfo->m_exchange.m_nCount));
         }
-        Unk_140165cf0* pEquip = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("requireEquip"));
+        TiXmlElement* pEquip = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("requireEquip"));
         if (pEquip != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pEquip), "id", spInfo->m_requireEquip.m_nId);
             Unk_ReadRank((class Unk_XmlNode*)(pEquip), "rank", &spInfo->m_requireEquip.m_nRank);
             XmlGetAttr((class TiXmlElement*)(pEquip), "count", reinterpret_cast<int&>(spInfo->m_requireEquip.m_nCount));
         }
-        Unk_140165cf0* pRequire = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("require"));
+        TiXmlElement* pRequire = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("require"));
         if (pRequire != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pRequire), "meso", reinterpret_cast<__int64&>(spInfo->m_nMeso));
-            for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRequire))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+            for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRequire))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
             {
                 CStringW strItem;
                 XmlGetAttr((class TiXmlElement*)(pItem), "id", strItem);

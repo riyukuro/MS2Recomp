@@ -89,7 +89,7 @@ public:
     int m_c0;                                                       // +0xc0
     unsigned char m_c4;                                             // +0xc4
     MS2SvrPtr<CNpcShopBuyPeriod> m_c8;                              // +0xc8 the buy period
-    Unk_ShopLifeRef m_d8;                                           // +0xd8 the item life (NpcShopItemLife)
+    MS2SvrPtr<CPtred> m_d8;                                         // +0xd8 the item life (NpcShopItemLife; = CItem's slot +0x188 type)
 };
 MS2_CHECK_SIZE(CNpcShopProductCli, 0xe8);
 MS2_CHECK_OFFSET(CNpcShopProductCli, m_98, 0x98);

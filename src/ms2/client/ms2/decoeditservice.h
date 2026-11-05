@@ -25,15 +25,9 @@
 #include "ms2/placeholder/iworldservicecallback.h"
 #include "ms2/placeholder/nipoint3.h"
 
-// A NiPoint3 / efd::Point3 (the by-value CollectNear point and the cursor ray). CollectNear's argument is built from
-// a Vector3 by NiPoint3(const efd::Point3&) (0x14027dcf0, out of line) and copied in.
-struct Unk_DecoPoint3
-{
-    Unk_DecoPoint3();                                       // 0x1405522f0 (zero)
-    Unk_DecoPoint3(const Vector3& pt);                      // 0x14027dcf0
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_DecoPoint3, 12);
+// The by-value CollectNear point and the cursor ray are NiPoint3. Callers build the argument from a Vector3 by
+// NiPoint3(const efd::Point3&) (0x14027dcf0, an SDK inline COMDAT).
+#include <NiPoint3.h>
 
 class NiMesh;
 class NiNode;
@@ -67,7 +61,7 @@ public:
     bool LoadNif(CString strAsset);                                 // 0x141174800 (by value) start loading a .nif
     bool LoadKfm(CString strAsset);                                 // 0x141174930 (by value) start loading a .kfm
     bool AddTransform(const NiTransform& xf);                       // 0x141174a50 false when a transform at that spot exists
-    void CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141174ab0
+    void CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141174ab0
     void CollectTransforms(ATL::CAtlArray<NiTransform>& aOut);      // 0x141174bb0 the transform of every instance
     CString GetModel();                                             // 0x1411744a0 the model path
     void PlayAnim(int nSeq, float fSpeed, bool bLoop);              // 0x141174ce0
@@ -104,7 +98,7 @@ public:
     DecoItem* AddItem();                                            // 0x1411773c0
     DecoItem* AddItem(const ATL::CAtlArray<NiTransform>& aXf);      // 0x141177470
     bool AddTransform(const NiTransform& xf);                       // 0x141177530
-    void CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141177580
+    void CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141177580
     DecoItem* GetEditableItem();                                    // 0x141177640
 
 private:
@@ -158,7 +152,7 @@ public:
     void CollectLayers(ATL::CAtlArray<MS2Ptr<DecoLayer> >& aOut);                                   // 0x141170240
     void ApplyBrush();                              // 0x1411703a0 slot 3 of the selected brush
     bool AddTransform(const NiTransform& xf);       // 0x1411704d0
-    void CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141170520
+    void CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut);   // 0x141170520
 
     int m_nBrush;                                                   // +0x2c selected brush (0 paint, 1 noise)
     MS2Ptr<DecoLayer> m_spLayer;                                    // +0x30 selected layer

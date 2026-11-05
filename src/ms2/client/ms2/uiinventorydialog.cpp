@@ -342,7 +342,7 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The other dialogs the window works with.
 UIDialog* FUN_140c300a0(int nUiId);
-__int64 FUN_141662830(MyPC* pPc);                                   // the last bank call time
+// FUN_141662830 (the last bank call time): PC's own member (fittingdollpc.h)
 class UIItemLockDialog;
 class UIItemBreakDonationDialog;
 class UIItemExtractionScrollDialog;
@@ -424,13 +424,13 @@ template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)
 }
 // The exe's GetChild COMDATs each bind through their wrapper class's own AScript child getter (0x140e159f0 is the
 // ASWeeklyRewardItemSlot one), so the classes used here are specialized onto the getter the exe calls.
-// exe 0x140bb4b10
-template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName)
-{
-    if (m_30 == 0)
-        return MS2Ptr<ASButton>(0);
-    return m_30->FUN_140acce30<ASButton>(strName);
-}
+// exe 0x140bb4b10 - defined (tagged) by uibingoeventdialog, which owns the VA; declared here.
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);
+
+
+
+
+
 // exe 0x140c02870
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName)
 {
@@ -1270,7 +1270,7 @@ void UIInventoryDialog::OnClickOpenBank()
         }
         __int64 nNow = GetServerTime();
         int nCooltime = *FUN_1401d3200()->HomeBankCallCooltime.Get() / 1000;
-        int nElapsed = (int)(nNow - FUN_141662830(pPc));
+        int nElapsed = (int)(nNow - pPc->FUN_141662830());
         if (nElapsed < nCooltime)
         {
             int nRemain = nCooltime - nElapsed;
@@ -1848,7 +1848,7 @@ CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
-    if (MS2Ptr<ASUIComponent> spButton = m_30->FUN_140acce30<ASUIComponent>("m_openBank"))
+    if (MS2Ptr<ASButton> spButton = m_30->FUN_140acce30<ASButton>("m_openBank"))
     {
         if (bBank == 1)
         {
@@ -1879,23 +1879,23 @@ MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, RequestExpandSlots, 113, 0);
 
 // ---- UIInviteGroupDialog ---------------------------------------------------------------------------------------------
 
-// The real entry class of these accessors (messengerdata.cpp); the list keeps Unk_InvGroupEntry, the calls cast.
+// The real entry class (messengerdata.cpp): the rows are built with its ctors; the list keeps Unk_InvGroupEntry, the calls cast.
 struct Unk_MdEntry
 {
+    Unk_MdEntry(class Unk_MdSrcA& src); Unk_MdEntry(class Unk_MdSrcB& src); Unk_MdEntry(class Unk_MdSrcC& src);   // 0x141483300 / 0x141483580 / 0x141483830
     unsigned GetKind();
     __int64 FUN_141483da0();
     CStringW GetImage();
     CStringW GetName();
     CStringW GetInfo();
+    unsigned m_nKind; __int64 m_nId; CStringW m_strImage; CStringW m_strName; CStringW m_strInfo;   // as Unk_InvGroupEntry (dtor 0x14194e470)
 };
 
 // One row of the user list (messengerdata.cpp's entry: kind, character id, image, name, level / job line), built from a
 // buddy, a party member or a guild member. The copy and the destruction are implicit (dtor 0x14194e470).
 struct Unk_InvGroupEntry
 {
-    Unk_InvGroupEntry(CBuddy& src);                                 // 0x141483300
-    Unk_InvGroupEntry(CPartyMember& src);                           // 0x141483580
-    Unk_InvGroupEntry(CGuildMember& src);                           // 0x141483830
+    // (built by the Unk_MdEntry ctors: buddy 0x141483300, party member 0x141483580, guild member 0x141483830)
     unsigned m_nKind;                                               // +0x00
     __int64 m_nId;                                                  // +0x08
     CStringW m_strImage;                                            // +0x10
@@ -2154,7 +2154,7 @@ void UIInviteGroupDialog::CollectPartyMembers(EntryList& entries)
         {
             if (IsAlreadyListedOrInGroup(pMember->user.m_8, entries) != 0)
                 continue;
-            entries.AddTail(Unk_InvGroupEntry(*pMember));
+            entries.AddTail(reinterpret_cast<const Unk_InvGroupEntry&>(static_cast<const Unk_MdEntry&>(Unk_MdEntry(*(Unk_MdSrcB*)pMember))));
         }
     }
 }
@@ -2173,7 +2173,7 @@ void UIInviteGroupDialog::CollectGuildMembers(EntryList& entries)
         {
             if (IsAlreadyListedOrInGroup(pMember->data.f08, entries) != 0)
                 continue;
-            entries.AddTail(Unk_InvGroupEntry(*pMember));
+            entries.AddTail(reinterpret_cast<const Unk_InvGroupEntry&>(static_cast<const Unk_MdEntry&>(Unk_MdEntry(*(Unk_MdSrcC*)pMember))));
         }
     }
 }
@@ -2192,7 +2192,7 @@ void UIInviteGroupDialog::AddBuddyEntries(EntryList& entries)
         {
             if (IsAlreadyListedOrInGroup(pBuddy->FUN_1401cc230(), entries) != 0)
                 continue;
-            entries.AddTail(Unk_InvGroupEntry(*pBuddy));
+            entries.AddTail(reinterpret_cast<const Unk_InvGroupEntry&>(static_cast<const Unk_MdEntry&>(Unk_MdEntry(*(Unk_MdSrcA*)pBuddy))));
         }
     }
 }
@@ -2700,7 +2700,7 @@ int UIItemBreakDialog::vfunc_46()
             strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->Localize("$s_itembreak_desc_socket"));
         spDesc->SetTextW(strDesc);
     }
-    if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
+    if (MS2Ptr<ASButton> spInfo = m_30->FUN_140acce30<ASButton>("m_info"))
     {
         CStringW strTooltip = FUN_14025e7a0()->Localize("$s_itembreak_tooltip_desc");
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a) == true)
@@ -2987,7 +2987,7 @@ MS2_REPLACE_METHOD(0x1419A5030, UIItemBreakDonationDialog, vfunc_85, 15, 0);
 // @0x1419a5050
 int UIItemBreakDonationDialog::vfunc_46()
 {
-    if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
+    if (MS2Ptr<ASButton> spInfo = m_30->FUN_140acce30<ASButton>("m_info"))
         spInfo->SetTooltipText(FUN_14025e7a0()->Localize("$s_itembreak_donation_tooltip_desc"));
     return 1;
 }

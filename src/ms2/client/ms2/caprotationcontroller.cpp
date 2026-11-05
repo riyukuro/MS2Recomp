@@ -122,11 +122,11 @@ struct Unk_CapCamera : public CameraMgr
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float Unk_Acos(float fCos);                                     // acos
-char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
-                   float fRadius, Vector3* pHit);       // ray / sphere hit
+bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
+                   float fRadius, NiPoint3* pHit);      // ray / sphere hit
 void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler);   // rotation -> euler angles (degrees)
-// efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
-struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
+// C3 #9: kOld.Inverse() * kNew (0x1420845e0, 0x140a33480) calls the real efd::Matrix3 members.
+//
 // C3: world translate = NiAVObject::GetWorldTranslate (0x140947900)
 #define FUN_140947900(p) ((const Vector3&)(p)->GetWorldTranslate())
 
@@ -148,8 +148,8 @@ typedef std::set<NiAVObjectPtr> Unk_MeshSet;
 class CEquipModel;
 Unk_MeshSet* FUN_141201c90(CEquipModel* pPart);       // C3: the definition's signature (equipmodel.cpp)
 void* FUN_141200ab0(CEquipModel* pPart);              // C3: the part's model facts (equipmodel.cpp; was the Unk_PickTarget member view)
-void FUN_141200160(CEquipModel* pPart, const NiPoint3& kOffset);   // C3: sets the part's model offset (equipmodel.cpp)
-void FUN_141200100(CEquipModel* pPart, const NiPoint3& kEuler);    // C3: sets the part's model rotation (equipmodel.cpp)
+void FUN_141200160(CEquipModel* pPart, NiPoint3 kOffset);          // C3: sets the part's model offset (equipmodel.cpp)
+void FUN_141200100(CEquipModel* pPart, NiPoint3 kEuler);            // C3: sets the part's model rotation (equipmodel.cpp)
 
 // Listener at +0xa0: slots 1, 3 and 5 are called by the controller (the base class only knows slot 0).
 class Unk_CapListener : public Unk_ItemCustomizeListener
@@ -267,7 +267,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
     Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
     m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
     m_fRadius = m_kDragDir.FUN_140968990();
-    m_kDragDir = kRotZ.FUN_140a00720(m_kDragDir);
+    m_kDragDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRotZ) * reinterpret_cast<const efd::Point3&>(m_kDragDir)));
     m_kCurEuler = GetPartEuler();
     if (m_pListener != 0)
         static_cast<Unk_CapListener*>(m_pListener)->vfunc_1(this);
@@ -291,12 +291,12 @@ void CCapRotationController::vfunc_31()
             if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), kOrigin, kDir) != 0)
             {
                 NiPoint3 kHit;
-                FUN_14147aa60(reinterpret_cast<const Vector3&>(kOrigin), reinterpret_cast<const Vector3&>(kDir), FUN_140947900(m_spMesh.operator->()), m_fRadius, reinterpret_cast<Vector3*>(&kHit));
+                FUN_14147aa60(kOrigin, kDir, reinterpret_cast<const NiPoint3&>(FUN_140947900(m_spMesh.operator->())), m_fRadius, &kHit);
                 Vector3 kDelta = reinterpret_cast<const Vector3&>(kHit).FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
                 kDelta.FUN_140968990();
                 Unk_EfdMatrix3 kRotZ;
                 reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
-                kDelta = kRotZ.FUN_140a00720(kDelta);
+                kDelta = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRotZ) * reinterpret_cast<const efd::Point3&>(kDelta)));
                 Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
                 kAxis.FUN_140968990();
                 float fAngle = SafeAcos(reinterpret_cast<const efd::Point3&>(m_kDragDir).Dot(reinterpret_cast<const efd::Point3&>(kDelta)));
@@ -304,7 +304,7 @@ void CCapRotationController::vfunc_31()
                 kQuat.FromAngleAxis(fAngle, *(const efd::Point3*)&kAxis);
                 Unk_EfdMatrix3 kRot;
                 kQuat.ToRotation(*(efd::Matrix3*)&kRot);
-                kRot = kRot.FUN_140a33480(m_kInitRot);
+                kRot = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Matrix3&>(m_kInitRot)));
                 Vector3 kEuler;
                 reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
                 kEuler.x = WrapAngle((kEuler.x * 180.0f) / 3.1415927f, m_kMinEuler.x, m_kMaxEuler.x);
@@ -355,7 +355,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
             kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
-            Unk_NiMatrix3 kRot(((const Unk_EfdMatrix3*)&static_cast<const NiMatrix3&>(NiMatrix3((const efd::Point3&)kN, (const efd::Point3&)kSide, reinterpret_cast<const NiPoint3&>(kUp))))->FUN_140a33480(kFix));
+            Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3((const efd::Point3&)kN, (const efd::Point3&)kSide, reinterpret_cast<const NiPoint3&>(kUp)))) * reinterpret_cast<const efd::Matrix3&>(kFix))));
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
             kXf.m_Translate = *reinterpret_cast<const NiPoint3*>(&kHit);
             Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
@@ -371,12 +371,12 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                 pData->m_aOffset[0] = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
                 FUN_141422950(kWorld.m_Rotate, &pData->m_aEuler[0]);
                 {
-                    alignas(16) Vector3 kOffsetArg(pData->m_aOffset[0]);   // the exe passes a 16-aligned copy
-                    FUN_141200160(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kOffsetArg));
+                    // by value: the exe passes a 16-aligned copy
+                    FUN_141200160(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aOffset[0]));
                 }
                 {
-                    alignas(16) Vector3 kEulerArg(pData->m_aEuler[0]);
-                    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEulerArg));
+
+                    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(pData->m_aEuler[0]));
                 }
             }
         }
@@ -525,7 +525,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     reinterpret_cast<efd::Matrix3*>(&kOld)->FromEulerAnglesXYZ((kCur.x * 3.1415927f) / 180.0f, (kCur.y * 3.1415927f) / 180.0f, (kCur.z * 3.1415927f) / 180.0f);
     NiTransform kDelta;
     kDelta.MakeIdentity();
-    Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_CapMatrix&>(kOld).FUN_1420845e0().FUN_140a33480(kNew));
+    Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kOld).Inverse() * reinterpret_cast<const efd::Matrix3&>(kNew))));
     reinterpret_cast<Unk_NiMatrix3&>(kDelta.m_Rotate) = kRot;
     Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
     Unk_MeshSet& kSet = *pSet;
@@ -535,8 +535,8 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
         NiAVObjectPtr spNode(*it);
         spNode.operator->()->SetLocalTransform(((class NiAVObject*)(spNode.operator->()))->GetLocalTransform() * kDelta);
     }
-    alignas(16) Vector3 kEulerArg(kEuler);   // the exe passes a 16-aligned copy
-    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEulerArg));
+    // by value: the exe passes a 16-aligned copy
+    FUN_141200100(m_spPart.operator->(), reinterpret_cast<const NiPoint3&>(kEuler));
     pData->m_aEuler[0] = kEuler;
 }
 

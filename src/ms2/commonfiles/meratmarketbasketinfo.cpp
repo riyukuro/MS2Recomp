@@ -67,7 +67,7 @@ template <> inline void MS2Ptr<Unk_MmSaleCtx>::ReleaseImpl(void*)
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -1167,7 +1167,7 @@ void CMeratMarketPremiumProduct::ReadBrief(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1406A1240, CMeratMarketPremiumProduct, ReadBrief, 88, 0x2F2F442F);
 
 // @0x1406a12a0
-BOOL CMeratMarketPremiumProduct::LoadXml(Unk_140165cf0* pElem)
+BOOL CMeratMarketPremiumProduct::LoadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "sn", reinterpret_cast<int&>(m_nId));
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nItemId));
@@ -1593,10 +1593,10 @@ int CMeratMarketPremium::LoadXml(const CStringA& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
     {
         MS2Ptr<CMeratMarketPremiumProduct> spProduct(new CMeratMarketPremiumProduct);
         if (spProduct.get())
@@ -1633,10 +1633,10 @@ int CMeratMarketPremium::LoadUgcXml(const CStringA& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
     {
         MS2Ptr<CUgcPremiumProduct> spProduct(new CUgcPremiumProduct);
         if (spProduct.get())
@@ -2258,10 +2258,10 @@ MS2_REPLACE(0x1406A4AE0, FUN_1406a4ae0, 99, 0x1C0A91EE);
 // @0x1406a4b50
 int FUN_1406a4b50(TiXmlDocument* pDoc, CAtlList<int>* pList)
 {
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((pDoc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((pDoc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
-    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+    for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
     {
         CStringA strSn;
         XmlGetAttr((class TiXmlElement*)(pItem), "sn", strSn);

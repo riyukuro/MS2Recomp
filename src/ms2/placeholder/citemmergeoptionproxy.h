@@ -109,7 +109,7 @@ class CItemMergeOptionData : public CPtred
 public:
     CItemMergeOptionData();                         // 0x1405bf380
     virtual ~CItemMergeOptionData();                // 0x1405bf410
-    bool Load(Unk_140165cf0* pSlot);       // loads a <slot> of itemMergeOptionBase.xml
+    bool Load(TiXmlElement* pSlot);       // loads a <slot> of itemMergeOptionBase.xml
     int GetProbVer();                            // the probability version
 
     int m_nId;                                      // +0x18 the part id of the slot

@@ -27,14 +27,14 @@
 #include <time.h>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 : public Unk_XmlNode {};   // FirstChildElement
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
@@ -43,7 +43,7 @@ void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* fo
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
+unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x1401782a0 for std::vector<unsigned> (xmlattr.h)
 __int64 GetServerTime();                                                  // server time
 int FUN_140768010(int, int);  // C3: the definition's signature
@@ -97,13 +97,13 @@ bool LoginBgBgmTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return true;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return true;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "login", "clientPropertyBgDay", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {

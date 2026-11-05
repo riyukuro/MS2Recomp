@@ -11,7 +11,7 @@ class SkillActionSkill : public CPtred
 public:
     SkillActionSkill();                                     // 0x1408018d0
     bool operator!=(const SkillActionSkill& o);             // 0x140801a10
-    int Load(Unk_140165cf0* pElem);                         // 0x140801c40
+    int Load(TiXmlElement* pElem);                         // 0x140801c40
     int Save(void* pParent, CString strName);               // 0x140802050
 
     ATL::CAtlArray<unsigned short> m_arrLevel;              // +0x18 "level"

@@ -77,7 +77,7 @@ class MyPC   // C3: member view (the real header pulls in the PC tree)
 {
 public:
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
-    int FUN_14152e970(int nId);                              // the free skill points of nId
+    int FUN_14152e970(int nId);   MS2Ptr<CStatPointManager> FUN_140c25130();   // free skill points of nId; copy of the stat point manager handle
 };
 
 class CItem;
@@ -115,7 +115,7 @@ public:
 class Unk_HlPc
 {
 public:
-    MS2Ptr<CStatPointManager> FUN_140c25130();             // copy of the stat point manager handle
+    // FUN_140c25130 (the stat point manager handle) is MyPC's; it returns m_statRef below
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
@@ -261,11 +261,11 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class CGameOption;
 
 // lists, arrays, item records
-class Unk_CommandArgs   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_1408d1f60(unsigned int, int);
-};
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
+
+
+
+
 void AddMinutes(class CMsTime&, int);   // C3: was FUN_14086a880
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410
 
@@ -285,9 +285,9 @@ int FUN_140c25190()
 }
 
 // @0x140c25130
-MS2Ptr<CStatPointManager> Unk_HlPc::FUN_140c25130()
+MS2Ptr<CStatPointManager> MyPC::FUN_140c25130()
 {
-    return m_statRef;
+    return reinterpret_cast<Unk_HlPc*>(this)->m_statRef;
 }
 
 // @0x140c25330
@@ -701,7 +701,7 @@ int UIHighlightGameMenu::FUN_140c236f0()
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    bool bPoint = (unsigned)pPc->FUN_140c25130()->GetRemaining() > 0;
+    bool bPoint = (unsigned)((MyPC*)pPc)->FUN_140c25130()->GetRemaining() > 0;
     if (bPoint)
         return true;
     return false;
@@ -736,7 +736,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
         return false;
     if (rec->function.name != L"EnchantScroll")
         return false;
-    int nKind = reinterpret_cast<Unk_CommandArgs&>(rec->function.parameter).FUN_1408d1f60(0, 0);
+    int nKind = reinterpret_cast<ItemFunctionArgs&>(rec->function.parameter).FUN_1408d1f60(0, 0);
     MS2Ptr<CEnchantScrollData> ench = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(nKind);
     if (ench.IsNull())
         return false;

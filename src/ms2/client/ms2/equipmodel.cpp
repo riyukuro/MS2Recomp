@@ -501,7 +501,7 @@ NiPoint3 CEquipModel::GetPos6c()
 }
 
 // @0x141200100
-void FUN_141200100(CEquipModel* self, const NiPoint3& p)
+void FUN_141200100(CEquipModel* self, NiPoint3 p)
 {
     self->m_pos6c = p;
 }
@@ -513,7 +513,7 @@ NiPoint3 CEquipModel::FUN_141200130()
 }
 
 // @0x141200160
-void FUN_141200160(CEquipModel* self, const NiPoint3& p)
+void FUN_141200160(CEquipModel* self, NiPoint3 p)
 {
     self->m_pos60 = p;
 }

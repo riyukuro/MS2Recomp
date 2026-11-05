@@ -23,16 +23,12 @@ class Unk_AeGameOption   // C3: member view for the former free stand-ins
 public:
     class Unk_AeGraphicOption* FUN_1409a8ac0();
 };
-class NiViewRenderClick   // C3: member view for the former free stand-ins
-{
-public:
-    class NiRenderListProcessor* GetProcessor() const;
-};
+// NiViewRenderClick::GetProcessor: the SDK header-inline (NiViewRenderClick.inl, via postprocesseffect.h).
 #include "ms2/client/ms2/ms2materialswapprocessor.h"   // C3: MS2MaterialSwapProcessor::GetSwappers
 class Unk_LsPassFlag { public: void FUN_1414cf920(bool bOn); };   // the pass flag setter (ms2lightservice)
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_140c900e0(const NiFixedString& name, const efd::Point2* data, int n);
-void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
+void* FUN_140c8f690(const efd::SmartPointer<class NiViewRenderClick>&);   // C3: was FUN_140c8f690
 unsigned char FUN_1411782b0(void* p);
 void* FUN_1411782c0(void* p, int n);
 struct Unk_DOFW { void* FUN_1411782f0(); void* m_0; };
@@ -137,7 +133,7 @@ unsigned char FUN_1411782b0(void* p)
 // @0x1411782c0
 void* FUN_1411782c0(void* p, int n)
 {
-    return FUN_140c8f690(*(class Unk_PPRes const*)((char*)p + 0xb8 + (__int64)n * 8));
+    return FUN_140c8f690(*(const efd::SmartPointer<class NiViewRenderClick>*)((char*)p + 0xb8 + (__int64)n * 8));
 }
 
 // @0x1411782f0

@@ -105,16 +105,16 @@ extern template class MS2Ptr<CPetData>;
 // CItem::FUN_140527840's record (as commonfiles\item.cpp): the item data, of which this unit reads the type and the
 // function arguments (+0x2b0, the arguments of the item's <function>).
 class Unk_ItemEquipData : public CItemData {};
-struct Unk_CommandArgs                                                  // C3: member view (usercommandcli.h)
-{
-    unsigned FUN_1408d2380();                                           // the argument count
-    int FUN_1408d1fd0(unsigned nIndex, int nDefault);                   // the nIndex-th argument as a number
-};
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
+
+
+
+
 class Unk_ComposeItemView : public CPtred
 {
 public:
     unsigned char m_pad_18[0x298];
-    Unk_CommandArgs m_args;                                             // +0x2b0
+    ItemFunctionArgs m_args;                                             // +0x2b0
 };
 
 // The local player: slot 77 is the name; FUN_141663a20 is a counter the compose bonus is derived from.
@@ -203,8 +203,8 @@ void FUN_141275260(int nMsgId, int a1, int a2);
 // String helpers.
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 

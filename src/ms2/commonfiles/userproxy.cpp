@@ -84,23 +84,22 @@ public:
     void ReadFrom(CInputStream& s);
     void Copy(const Unk_IntTriple& rhs);
 };
-class Unk_ProxyStaticTreeA {
-public:
-  Unk_ProxyStaticTreeA();
-  ~Unk_ProxyStaticTreeA();
-
-private:
-  void *m_0;
-  size_t m_8;
-};
-class Unk_ProxyStaticTreeB {
-public:
-  Unk_ProxyStaticTreeB();
-  ~Unk_ProxyStaticTreeB();
-
-private:
-  void *m_0;
-  size_t m_8;
+#include "ms2/commonfiles/adventureleveltablehelper.h"   // DAT_143ab3318 is a map of CAdventureLevelMissionData
+// DAT_143ab32d8 is a std::set<Unk_TrophyKey> (was the Unk_ProxyStaticTreeB stand-in). The key is itemdatatable.h's,
+// repeated token for token: that header pulls in guilddef_1.h, whose Unk_IntTriple clashes with this unit's.
+struct Unk_TrophyKey
+{
+    Unk_TrophyKey();                                                                 // 0x1409ed810 (inline in astooltip_local.h)
+    Unk_TrophyKey(unsigned nId, unsigned nLevel) : m_nId(nId), m_nLevel(nLevel) {}  // 0x14056beb0
+    bool operator<(const Unk_TrophyKey& o) const                                     // 0x14056e500
+    {
+        if (m_nId != o.m_nId)
+            return m_nId < o.m_nId;
+        else
+            return m_nLevel < o.m_nLevel;
+    }
+    unsigned m_nId;     // +0x00
+    unsigned m_nLevel;  // +0x04
 };
 class Unk_ProxyStaticMap {
 public:
@@ -115,8 +114,8 @@ private:
   size_t m_20;
   void *m_28;
 };
-MS2_CHECK_SIZE(Unk_ProxyStaticTreeA, 0x10);
-MS2_CHECK_SIZE(Unk_ProxyStaticTreeB, 0x10);
+//
+MS2_CHECK_SIZE(std::set<Unk_TrophyKey>, 0x10);
 MS2_CHECK_SIZE(Unk_ProxyStaticMap, 0x30);
 static CString s_proxySortA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_proxyKeys;
@@ -132,9 +131,9 @@ GameEventUserValue DAT_143ab2fc0;
 extern GameEventUserValue DAT_143ab2fc0;
 #endif
 #ifndef MS2_HOOK_DLL   // s_proxyTreeA: the exe's object at 0x143ab3318, which other units reach as DAT_143ab3318 (the hook DLL binds it)
-Unk_ProxyStaticTreeA DAT_143ab3318;
+std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;
 #else
-extern Unk_ProxyStaticTreeA DAT_143ab3318;
+extern std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;
 #endif
 #ifndef MS2_HOOK_DLL   // s_proxyEventB: the exe's object at 0x143ab3010, which other units reach as DAT_143ab3010 (the hook DLL binds it)
 GameEventUserValue DAT_143ab3010;
@@ -142,14 +141,14 @@ GameEventUserValue DAT_143ab3010;
 extern GameEventUserValue DAT_143ab3010;
 #endif
 #ifndef MS2_HOOK_DLL   // s_proxyTreeB: the exe's object at 0x143ab32d8, which other units reach as DAT_143ab32d8 (the hook DLL binds it)
-Unk_ProxyStaticTreeB DAT_143ab32d8;
+std::set<Unk_TrophyKey> DAT_143ab32d8;
 #else
-extern Unk_ProxyStaticTreeB DAT_143ab32d8;
+extern std::set<Unk_TrophyKey> DAT_143ab32d8;
 #endif
 #ifndef MS2_HOOK_DLL   // s_proxyMap: the exe's object at 0x143ab31e8, which other units reach as DAT_143ab31e8 (the hook DLL binds it)
-Unk_ProxyStaticMap DAT_143ab31e8(10);
+ATL::CRBMap<__int64, int> DAT_143ab31e8(10);   // C3: was the Unk_ProxyStaticMap view (ctor 0x140932430, dtor 0x140932950)
 #else
-extern Unk_ProxyStaticMap DAT_143ab31e8;
+extern ATL::CRBMap<__int64, int> DAT_143ab31e8;
 #endif
 // @0x1408e70b0
 CPlatformProxy::CPlatformProxy() { vfunc_1(); }
@@ -2634,3 +2633,4 @@ CStringW UITriggerEditorDialog::Message::FUN_1408f4c40() {
 // MS2-PIN: ??__FDAT_143ab31e8@@YAXXZ 0x142c9cc50
 // MS2-PIN: ??__FDAT_143ab32d8@@YAXXZ 0x142c9cc30
 // MS2-PIN: ??__FDAT_143ab3318@@YAXXZ 0x142c9cbf0
+// MS2-PIN: ??1?$map@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@@std@@QEAA@XZ 0x140932b20 ; ua17: the implicit map dtor of DAT_143ab3318 (calls ~_Tree 0x140932a20)

@@ -8,9 +8,9 @@ class CInPacket;
 class ASData;
 class CMsgBoxData;
 class GameEventVariable;
-class Unk_140ce3510;
-class Unk_140bfc2e0;
-class Unk_140acd6e0;
+class GameEventAttendGiftCli;   // C3: was Unk_140ce3510
+class ASTileCacheList;
+class ASButton;
 
 // Intrusive owner; only COMDATs present in this unit are defined here.
 template<class T> class Unk_14102fe10 {
@@ -33,7 +33,7 @@ private:
     T* m_p;
 };
 // The list reset COMDAT belongs to an earlier unit.
-template<> Unk_14102fe10<Unk_140bfc2e0>& Unk_14102fe10<Unk_140bfc2e0>::operator=(int);
+// (the gift list is MS2Ptr<ASTileCacheList>; its reset COMDAT belongs to an earlier unit)
 
 class UIAttendGiftDialog : public UIDialog {
 public:
@@ -46,10 +46,10 @@ public:
     // @0x141030400
     virtual int vfunc_48() { return 0x4eb8; }
     bool SelectRequestedEvent(int);
-    void AddEvent(Unk_14102fe10<Unk_140ce3510>);
-    void RemoveEvent(Unk_14102fe10<Unk_140ce3510>);
+    void AddEvent(MS2Ptr<GameEventAttendGiftCli>);
+    void RemoveEvent(MS2Ptr<GameEventAttendGiftCli>);
     bool HasActiveEvents();
-    Unk_14102fe10<Unk_140ce3510> FindEventByKind(int);
+    MS2Ptr<GameEventAttendGiftCli> FindEventByKind(int);
     int FUN_14102ccd0();
     void SelectEventByIndex(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_14102cea0(const Scaleform::GFx::FunctionHandler::Params&);
@@ -74,19 +74,19 @@ public:
     void FUN_14102f080();
     void SendSelectedEventRequest();
     void FUN_14102f180(ASData&);
-    template<class T> Unk_14102fe10<T> FUN_14102f870(const CString&,Unk_14102fe10<T>&);
-    template<class T> Unk_14102fe10<T> FUN_140bfa760(const CString&);
+    template<class T> MS2Ptr<T> FUN_14102f870(const CString&,MS2Ptr<T>&);
+    // C3: the list child lookup 0x140bfa760 is UIAllianceQuestDialog::FUN_140bfa760 (uiattendgiftdialog.cpp view)
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_14102fe10<Unk_140bfc2e0> m_giftList;
-    MS2Ptr<Unk_140acd6e0> m_detail;
-    MS2Ptr<Unk_140acd6e0> m_pay;
-    MS2Ptr<Unk_140acd6e0> m_usePoint;
-    std::map<unsigned long,Unk_14102fe10<Unk_140ce3510>> m_events;
-    ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510>> m_activeEvents;
-    ATL::CAtlArray<MS2Ptr<Unk_140acd6e0>> m_buttons;
-    Unk_14102fe10<Unk_140ce3510> m_selected;
-    Unk_14102fe10<Unk_140ce3510> m_requested;
+    MS2Ptr<ASTileCacheList> m_giftList;
+    MS2Ptr<ASButton> m_detail;
+    MS2Ptr<ASButton> m_pay;
+    MS2Ptr<ASButton> m_usePoint;
+    std::map<unsigned long,MS2Ptr<GameEventAttendGiftCli>> m_events;
+    ATL::CAtlArray<MS2Ptr<GameEventAttendGiftCli>> m_activeEvents;
+    ATL::CAtlArray<MS2Ptr<ASButton>> m_buttons;
+    MS2Ptr<GameEventAttendGiftCli> m_selected;
+    MS2Ptr<GameEventAttendGiftCli> m_requested;
     int m_eventId;
 };
 MS2_CHECK_SIZE(UIAttendGiftDialog,0x230);

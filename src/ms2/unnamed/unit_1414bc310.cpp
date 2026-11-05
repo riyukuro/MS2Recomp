@@ -19,9 +19,9 @@ public:
     float TakeAverageSimulateTime();                        // 0x1415040f0: average since the last call (resets the accumulator)
 };
 
-class Unk_ServiceHost;
+#include <efd/ServiceManager.h>
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
-Unk_FrameTimeSource* FUN_1411d15f0(Unk_ServiceHost* pHost); // GetSystemServiceAs<Unk_FrameTimeSource>
+class Unk_PhysXSceneView; template <> Unk_PhysXSceneView* efd::ServiceManager::GetSystemServiceAs<Unk_PhysXSceneView>() const;   // 0x1411d15f0, entityworldmanager's scene service
 
 // @0x1414bc310
 ElapsedTimeUpdate::ElapsedTimeUpdate()
@@ -51,7 +51,7 @@ FrameEventUpdate::FrameEventUpdate()
 // @0x1414bc430
 float FrameEventUpdate::TakeSample(float fTime)
 {
-    efd::SmartPointer<Unk_FrameTimeSource> spSource(FUN_1411d15f0(((class Unk_ServiceHost*)FUN_1413f9850())));
+    efd::SmartPointer<Unk_FrameTimeSource> spSource(reinterpret_cast<Unk_FrameTimeSource*>(reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<Unk_PhysXSceneView>()));
     if (spSource)
         return reinterpret_cast<MS2SceneService*>(spSource.operator->())->TakeAverageSimulateTime() * 1000.0f;
     return 0.0f;

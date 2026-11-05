@@ -127,14 +127,12 @@ public:
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);  // 0x140c02900
 };
 // "m_textInput": the chat input.
-class Unk_RankInput : public ASTextInput {};
+//   (C3: the input is ASTextInput itself; the old Unk_RankInput view is gone)
 class UIGameRankingDialog
 {
 public:
-    MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);    // 0x140e35bd0
+    MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);    // 0x140e35bd0
 };
-// "m_slider0" of the settings box: the window alpha.
-class Unk_HudSlider : public ASSlider {};
 // The message carries the box's AS root.
 typedef UIMsg Unk_GrmMsg;
 
@@ -239,7 +237,7 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
 void FUN_14083d2b0(CStringW& str);                                  // strips the markup
 bool FUN_140d2aa60(CStringW& strHtml);                              // the input has item links
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
-void FUN_140d2c2a0(MS2Ptr<Unk_RankInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
+void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
@@ -257,7 +255,7 @@ public:
     void Clear();
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -343,7 +341,7 @@ void UIGroupMessenger::vfunc_63(int n)
     vfunc_4();
     if (n != 0)
     {
-        if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+        if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
         {
             if (spInput->GetFocused())
             {
@@ -500,7 +498,7 @@ void UIGroupMessenger::OnLoadComplete()
             m_nScrollPosition = nScrollPosition;
             spOutput->FUN_1422e17f0(m_nScrollPosition);
         }
-        if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+        if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
             spInput->SetMaxChars(*Client::Constants::GetInstance()->MaxChatLength.Get());
     }
 }
@@ -580,7 +578,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         SetName(spName->GetTextW());
                     }
                 }
-                if (MS2Ptr<Unk_HudSlider> spAlpha = reinterpret_cast<AScript&>(box).FUN_140accef0<Unk_HudSlider>("m_slider0"))
+                if (MS2Ptr<ASSlider> spAlpha = reinterpret_cast<AScript&>(box).FUN_140fafed0<ASSlider>("m_slider0"))
                     m_nAlpha = (int)spAlpha->FUN_1422ce840();
                 FUN_14194bde0();
                 if (FUN_141482e80()->m_pBrowser != 0)
@@ -708,7 +706,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     {
         if (_stricmp("eventTextInput", szMethod) == 0)
         {
-            if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+            if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
                 FUN_140d2c2a0(spInput, m_inputHistory);
             return 1;
         }
@@ -1099,7 +1097,7 @@ MS2_REPLACE_METHOD(0x14194BC70, UIGroupMessenger, SetName, 65, 0x6116EF81);
 // @0x14194bcc0
 void UIGroupMessenger::SetInputText(CStringW strText)
 {
-    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         vfunc_78();
         FUN_14194d100(spInput, strText, 1);
@@ -1194,7 +1192,7 @@ int UIGroupMessenger::FUN_14194c6d0()
         return 0;
     if (FUN_141482e80()->FUN_1414829e0() != m_strName)
         return 0;
-    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->GetFocused())
             return 1;
@@ -1209,7 +1207,7 @@ MS2_REPLACE_METHOD(0x14194C6D0, UIGroupMessenger, FUN_14194c6d0, 331, 0xF9EA75FE
 // @0x14194c830
 int UIGroupMessenger::FUN_14194c830()
 {
-    MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput");
+    MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput");
     if (spInput == 0)
         return 0;
     CStringW strText = spInput->GetText();
@@ -1249,7 +1247,7 @@ MS2_REPLACE_METHOD(0x14194C830, UIGroupMessenger, FUN_14194c830, 884, 0x4FB1EAAB
 // @0x14194cbb0
 int UIGroupMessenger::FUN_14194cbb0()
 {
-    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->GetFocused())
         {
@@ -1270,7 +1268,7 @@ MS2_REPLACE_METHOD(0x14194CBB0, UIGroupMessenger, FUN_14194cbb0, 322, 0x0B436CC5
 // @0x14194cd00
 int UIGroupMessenger::ClearInput()
 {
-    if (MS2Ptr<Unk_RankInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
+    if (MS2Ptr<ASTextInput> spInput = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_textInput"))
     {
         if (spInput->GetFocused())
         {
@@ -1313,7 +1311,7 @@ MS2_REPLACE_METHOD(0x14194CE40, UIGroupMessenger, FUN_14194ce40, 696, 0xB730CB0A
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d100
-void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_RankInput> spInput, const CStringW& strText, int bSelectEnd)
+void UIGroupMessenger::FUN_14194d100(MS2Ptr<ASTextInput> spInput, const CStringW& strText, int bSelectEnd)
 {
     CStringW strCurrent = spInput->GetText();
     if (strCurrent.GetLength() >= spInput->GetMaxChars())

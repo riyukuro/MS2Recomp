@@ -7,7 +7,6 @@
 // MS2-PIN: ??__Fs_unk1402a9d70_0@@YAXXZ 0x142ca09a0
 // MS2-PIN: ??__Fs_unk1402a9d70@@YAXXZ 0x142ca0a30
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCClubMember@@@@V?$CElementTraits@V?$MS2Ptr@VCClubMember@@@@@ATL@@@ATL@@QEBA_KXZ 0x140b1a490
-// MS2-PIN: ??8?$MS2Ptr@VUnk_ClubBuffData@@@@QEBA_NPEAVUnk_ClubBuffData@@@Z 0x140b19db0
 // MS2-PIN: ??0?$MS2Ptr@VCClubCli@@@@QEAA@PEAVCClubCli@@@Z 0x140b196f0
 // MS2-PIN: ?AddRef@?$MS2Ptr@VCClubCli@@@@AEBAXXZ 0x140b1cda0
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCClubCli@@@@AEBAXPEAX@Z 0x140b1cea0
@@ -103,18 +102,8 @@ public:
     static class WorldService* GetInstance();
 };
 
-// Club buff table (global accessor 0x140b1a4e0): the buff record for a buff id and level.
-class Unk_ClubBuffData : public CPtred
-{
-};
-class Unk_ClubBuffTable
-{
-public:
-    MS2Ptr<Unk_ClubBuffData> FUN_140211760(int nBuffId, int nLevel);
-};
-
-class CClubDataTable;
-Unk_ClubBuffTable* FUN_140b1a4e0();
+// The club buff table (CClubDataTable, commonfiles\clubcommon.h), through its global accessor 0x140b1a4e0.
+CClubDataTable* FUN_140b1a4e0();
 
 // The club name limits, kept in the game constants.
 struct Unk_ClubLimit
@@ -519,7 +508,7 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
     int bClear = 0;
     if (nBuffId == 0 && nBuffLevel == 0)
         bClear = 1;
-    MS2Ptr<Unk_ClubBuffData> spBuff = FUN_140b1a4e0()->FUN_140211760(nBuffId, nBuffLevel);
+    CClubDataTable::BuffPtr spBuff = FUN_140b1a4e0()->FUN_140211760(nBuffId, nBuffLevel);
     if (spBuff == 0 && bClear == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
@@ -1523,9 +1512,9 @@ CStringW FUN_140b18ef0()
 }
 
 // @0x140b1a4e0
-Unk_ClubBuffTable* FUN_140b1a4e0()
+CClubDataTable* FUN_140b1a4e0()
 {
-    return reinterpret_cast<Unk_ClubBuffTable*>(TSingleton<CClubDataTable>::s_instance);
+    return TSingleton<CClubDataTable>::s_instance;
 }
 
 // @0x140b19090

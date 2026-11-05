@@ -112,7 +112,7 @@ void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, bool* pFlag);
 #include "ms2/commonfiles/item.h"         // C3: CItemStatus, CItem::FUN_1405278a0's record (was the view Unk_RmEnchant)
 #include "ms2/commonfiles/itemoption.h"   // C3: CItemOption (was the stand-in Unk_PetData)
 
-struct Unk_CommandArgs { int FUN_1408d1f60(unsigned nIndex, int nDefault); };
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
 
 // Strings / messages.
 CStringW GetStringCommonByKey(const CStringW& key);
@@ -507,7 +507,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
             {
                 Unk_RemakeStat stat(2, MS2Ptr<CItem>(spItem), false);
                 if (stat.FUN_140619290(aLocked[i], lockOpt.m_nIndex, lockOpt.m_nValue))
-                    reinterpret_cast<Unk_RemakeLockOptList&>(option.m_options).push_back(lockOpt);
+                    option.m_options.push_back(lockOpt);
             }
             else
                 option.m_bLocked = true;
@@ -649,7 +649,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60(ASData& data)
             Unk_RemakeStat stat(2, MS2Ptr<CItem>(m_spTarget), false);
             CStringW strLocked = FUN_140619070(stat, aLocked);
             CStringW strName = m_spIngredient->FUN_140528160();
-            unsigned nPetId = reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
+            unsigned nPetId = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
             strAsk = FUN_14028dfa0<unsigned __int64, unsigned int, CStringW, CStringW, unsigned int>(CStringW(L"s_pet_remake_ask_lock_item_option"), aLocked.GetCount(), nPetId, strLocked, strName, nPetId);
         }
         else
@@ -755,7 +755,7 @@ void UIItemRemakeScrollDialog::FUN_140f5bbb0(ASData& data)
                 return;
             if (spData->function.name != L"LockItemOptionPet")
                 return;
-            unsigned nPetId = reinterpret_cast<Unk_CommandArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
+            unsigned nPetId = reinterpret_cast<ItemFunctionArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
             if (nPetId == nNeed)
                 FUN_140d73aa0(FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_pet_remake_notice_lock_item_option_limit"), spIngredient->FUN_140528160(), nPetId), 0, 0, CStringW(L""));
             else
@@ -934,7 +934,7 @@ MS2Ptr<CItemRemakeScrollData> UIItemRemakeScrollDialog::FUN_140f5d380(MS2Ptr<CIt
 {
     if (spData == 0)
         return MS2Ptr<CItemRemakeScrollData>(0);
-    unsigned nId = reinterpret_cast<Unk_CommandArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
+    unsigned nId = reinterpret_cast<ItemFunctionArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
     MS2Ptr<CItemRemakeScrollData> spScroll = TSingleton<CItemRemakeScrollTable>::GetInstance()->GetData(nId);
     return spScroll;
 }
@@ -1169,7 +1169,7 @@ void UIItemRemakeScrollDialog::FUN_140f5e5f0(ItemScrollSlot& slot, DragSlot* pDr
             }
         }
         else if (m_spIngredient.get() != 0)
-            nLockCount = reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
+            nLockCount = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<CItemData*>(m_spIngredient->FUN_140527840())->function.parameter).FUN_1408d1f60(0, 0);
         obj.FUN_1407cbb20("itemName", CStringW(strName));
         obj.FUN_1407cb9c0("maxOptionLockCount", nLockCount != 0);
         m_30->Invoke("selectItem", obj.FUN_1422bb870());
@@ -1216,7 +1216,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ede0(ItemScrollSlot& slot, DragSlot* pDr
         }
         slot.SetItem(spItem);
         slot.vfunc_10();
-        int nLimit = reinterpret_cast<Unk_CommandArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
+        int nLimit = reinterpret_cast<ItemFunctionArgs&>(spData->function.parameter).FUN_1408d1f60(0, 0);
         nLimit = (std::min)(m_nOptionCount - 1, nLimit);
         ASObj obj(2);
         obj.FUN_1407cb9c0("maxOptionLockCount", nLimit);

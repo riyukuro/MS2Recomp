@@ -40,7 +40,7 @@ static CString s_sndChoice = "Enchant_ItemChoice";
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASDialog : public ASDisplayObject {};
-class Unk_140acd6e0 : public ASDisplayObject {};                            // the button wrapper
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
@@ -139,7 +139,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         m_itemBag->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
-        m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
+        m_submit = m_board->FUN_140acce30<ASButton>("m_submit");
         if (m_submit.get() != 0)
             reinterpret_cast<ASMovieClip*>(m_submit.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), (void*)0);
         CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");

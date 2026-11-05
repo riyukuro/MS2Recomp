@@ -52,7 +52,7 @@ bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
 CString FUN_14016a600(const wchar_t* psz, int n);                           // wide -> narrow string
 void FUN_140d03450(Unk_AasImagePtr* p);                                     // p = NULL (releases)
 void FUN_140d03320(Unk_AasImage* p);                                        // add a reference
-Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
+// C3: FUN_140d03240 is MS2Ptr<ASLoader>::operator-> (ICF fold with MS2Ptr<ASURLRequest>::get)
 void FUN_1416a0e70();
 CNetworkService* FUN_140714f90();
 
@@ -220,7 +220,7 @@ MS2_REPLACE_METHOD(0x140E98F20, UITencentAas2Dialog, vfunc_26, 66, 0x3FE26FC5);
 void UITencentAas2Dialog::vfunc_85()
 {
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
-    reinterpret_cast<ASLoader*>(FUN_140d03240(&m_spImage))->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
+    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
         FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {

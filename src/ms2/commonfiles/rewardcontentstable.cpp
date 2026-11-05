@@ -23,7 +23,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/adventureleveltablehelper.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -37,7 +37,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const unsigned& nArg);
+class Unk_MeratLog { public: template <class T> void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* format, const T& value); };   // C3: 0x1406a6d70 = Log<unsigned int> (meratmarketbasketinfo.cpp)
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -71,7 +71,7 @@ RewardContentsItem::RewardContentsItem()
 void RewardContentsItem::vfunc_2(void* pNode)
 {
     ItemEntity::vfunc_2(pNode);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "prob", reinterpret_cast<unsigned&>(m_nProb));
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "prob", reinterpret_cast<unsigned&>(m_nProb));
 }
 
 // @0x140770440
@@ -82,10 +82,10 @@ RewardContentsItemGroup::RewardContentsItemGroup()
 // @0x1407704a0
 bool RewardContentsItemGroup::Load(void* pNode)
 {
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "minLevel", m_levelRange.m_nLow);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "maxLevel", m_levelRange.m_nHigh);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "minLevel", m_levelRange.m_nLow);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "maxLevel", m_levelRange.m_nHigh);
     (void)((!!(m_levelRange.m_nLow <= m_levelRange.m_nHigh)) || (_wassert(L"m_levelRange.m_minValue <= m_levelRange.m_maxValue", _CRT_WIDE(MS2_THIS_FILE), 35), 0));
-    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((pNode)))->FirstChild("item")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("item")))
+    for (TiXmlElement* pChild = static_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((pNode)))->FirstChild("item")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("item")))
     {
         MS2Ptr<RewardContentsItem> spItem(new RewardContentsItem);
         spItem->vfunc_2(pChild);
@@ -121,12 +121,12 @@ RewardContentsItemTable::RewardContentsItemTable()
 // @0x140770810
 bool RewardContentsItemTable::Load(void* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
         return false;
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "itemTableID", m_nItemTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "itemTableID", m_nItemTableId);
     if (m_nItemTableId == 0)
         return false;
-    for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((pNode)))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = static_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((pNode)))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         MS2Ptr<RewardContentsItemGroup> spGroup(new RewardContentsItemGroup);
         if (!spGroup->Load(pChild))
@@ -163,15 +163,15 @@ RewardContents::RewardContents()
 // @0x140770af0
 bool RewardContents::Load(void* pNode)
 {
-    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<Unk_140165cf0*>(pNode))))
+    if (!FUN_14028f710((struct Unk_XmlElement*)(static_cast<TiXmlElement*>(pNode))))
         return false;
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "rewardID", m_nRewardId);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "mesoTableID", m_nMesoTableId);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "mesoFactor", *(double*)(&m_dMesoFactor));
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "expTableID", m_nExpTableId);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "expFactor", *(double*)(&m_dExpFactor));
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "itemTableID", m_nItemTableId);
-    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "adventureExpTableID", m_nAdventureExpTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "rewardID", m_nRewardId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "mesoTableID", m_nMesoTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "mesoFactor", *(double*)(&m_dMesoFactor));
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "expTableID", m_nExpTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "expFactor", *(double*)(&m_dExpFactor));
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "itemTableID", m_nItemTableId);
+    XmlGetAttr((class TiXmlElement*)(static_cast<TiXmlElement*>(pNode)), "adventureExpTableID", m_nAdventureExpTableId);
     if (m_nRewardId == 0)
         return false;
     return true;
@@ -233,13 +233,13 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "mesoTableID", nId);
@@ -248,10 +248,10 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
         std::vector<__int64>& values = m_mesoTables[nId];
         if (!values.empty())
         {
-            FUN_1406a6d70(GetLogString(), 0, 0, 0x13, L"RewardContentsTable::ReadMesoTable DuplicateID:{0}", nId);
+            reinterpret_cast<Unk_MeratLog*>(GetLogString())->Log<unsigned int>(0, 0, 0x13, L"RewardContentsTable::ReadMesoTable DuplicateID:{0}", nId);
             continue;
         }
-        for (Unk_140165cf0* pChild = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+        for (TiXmlElement* pChild = ((class TiXmlElement *)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
                 continue;
@@ -291,13 +291,13 @@ bool RewardContentsTable::ReadItemTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("table")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("table")))
     {
         MS2Ptr<RewardContentsItemTable> spValue(new RewardContentsItemTable);
         if (!spValue->Load(pNode))
@@ -317,13 +317,13 @@ bool RewardContentsTable::ReadContents()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         MS2Ptr<RewardContents> spValue(new RewardContents);
         if (!spValue->Load(pNode))

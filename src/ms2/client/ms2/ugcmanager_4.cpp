@@ -81,8 +81,8 @@
 // ---- callees ------------------------------------------------------------------------------------------------------
 
 void FUN_141275260(int nStringId, int nA, int nB);          // system message
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 
 // Block checks (blockmanager.cpp).
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);

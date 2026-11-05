@@ -9,7 +9,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <learning> row, 0x48 bytes; vftable 0x142d6e0b8-ish (deleting dtor only).
 class CLearningQuestData : public CPtred
@@ -18,7 +18,7 @@ public:
     CLearningQuestData();               // 0x14064d220
     // ~CLearningQuestData (0x14064d430) is implicit: the exe stores no vftable in it.
 
-    int Read(Unk_140165cf0* pElem);     // 0x14064ca50 attributes of one <learning>; 0 when the row is unusable
+    int Read(TiXmlElement* pElem);     // 0x14064ca50 attributes of one <learning>; 0 when the row is unusable
 
     int m_nId;                          // +0x18 "id"
     int m_nCategory;                    // +0x1c "category"

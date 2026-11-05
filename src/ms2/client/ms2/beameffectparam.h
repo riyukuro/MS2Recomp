@@ -14,7 +14,7 @@ class BeamInfo : public CPtred
 {
 public:
     explicit BeamInfo(long nType);                              // 0x140a0ca60
-    virtual bool vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140a0c770 node != NULL
+    virtual bool vfunc_1(TiXmlElement* pNode);                 // 1 0x140a0c770 node != NULL
 public:
     MS2_LAYOUT_FRIEND;
     long m_nType;                   // +0x18 1 = pointCurve, 2 = directionCurve
@@ -26,7 +26,7 @@ class BeamPointCurveInfo : public BeamInfo
 {
 public:
     BeamPointCurveInfo();                                       // 0x140a0caa0
-    virtual bool vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140a0c790 passThroughPoint
+    virtual bool vfunc_1(TiXmlElement* pNode);                 // 1 0x140a0c790 passThroughPoint
 public:
     Vector3 m_kPassThroughPoint;    // +0x20
 };
@@ -37,7 +37,7 @@ class BeamDirectionCurveInfo : public BeamInfo
 {
 public:
     BeamDirectionCurveInfo();                                   // 0x140a0ca10
-    virtual bool vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140a0c800 directionRate / lengthRate (default 0.5)
+    virtual bool vfunc_1(TiXmlElement* pNode);                 // 1 0x140a0c800 directionRate / lengthRate (default 0.5)
 public:
     float m_fDirectionRate;         // +0x20
     float m_fLengthRate;            // +0x24
@@ -49,7 +49,7 @@ class CBeamEffectParam : public CEffectParam
 {
 public:
     CBeamEffectParam();                                         // 0x140a0c300
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x140a0c3a0
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x140a0c3a0
     virtual CEffectPtr vfunc_6();                               // 6 0x140a0c6d0 new CBeamEffect
 public:
     MS2_LAYOUT_FRIEND;

@@ -53,8 +53,10 @@ struct HALInitParams : public Render::HALInitParams
 }
 } }
 
+class Unk_BgTarget;       // gfxmoviebackground.h (the HAL's render target)
+class Unk_BgDispHandle;   // gfxmoviebackground.cpp / gfxrenderhandle.h (the movie display handle copy)
 // Render::D3D9::HAL (vftable 0x14319d760; slot 0 the virtual dtor). Only the slots called by the game are typed; their
-// names are the SDK's Render::HAL ones.
+// names are the SDK's Render::HAL ones. GFxMovie::vfunc_9/10 take it as their first Ptr<> argument.
 class Unk_GFxUIHal : public Scaleform::RefCountBase<Unk_GFxUIHal, Scaleform::StatRender_Mem>
 {
 public:
@@ -63,8 +65,11 @@ public:
     virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
+    virtual void vfunc_12(); virtual void vfunc_13();
+    virtual Unk_BgTarget* GetDefaultRenderTarget();                 // 14 (+0x70)
+    virtual void vfunc_15(); virtual void vfunc_16();
+    virtual bool SetRenderTarget(Unk_BgTarget* pTarget, bool setState);   // 17 (+0x88)
+    virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27();
     virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31();
@@ -98,6 +103,7 @@ public:
     void FUN_142582250();                                           // EndFrame()
     Scaleform::Render::GlyphCacheConfig* FUN_142582280();           // GetGlyphCacheConfig()
     Unk_GFxUIHal* FUN_1425822a0();                                  // GetHAL(): pImpl (+0x10) -> HAL (+0x50)
+    void Display(Unk_BgDispHandle& kHandle);                        // 0x14127cb10 Display(const MovieDisplayHandle&) (gfxmoviebackground.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

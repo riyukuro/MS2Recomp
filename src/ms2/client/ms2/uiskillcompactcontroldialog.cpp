@@ -84,7 +84,7 @@ public:
 class JobTable;
 
 // The hot key label of the movie and the tab buttons.
-class Unk_140acd6e0 : public ASButton {};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
 
 // The movie root of the dialog (RTTI .?AVASDialog@@).
@@ -567,7 +567,7 @@ void UISkillCompactControlDialog::OnLoadComplete()
     if (m_30.get() != 0)
     {
         m_spButtonBar = m_30->FUN_140be23c0<ASButtonBar>("m_buttonBar");
-        m_spAddButton = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>("m_addButton");
+        m_spAddButton = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<ASButton>("m_addButton");
     }
     COutPacket packet(static_cast<int>(SendOp::SkillMacro), 0);
     packet.Encode1(0);
@@ -815,7 +815,7 @@ void UISkillCompactControlDialog::FUN_140fa1ff0()
 void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 {
     int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
-    MS2Ptr<Unk_140acd6e0> spHotKey = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>("m_hotKey");
+    MS2Ptr<ASButton> spHotKey = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<ASButton>("m_hotKey");
     if (spHotKey)
     {
         CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);

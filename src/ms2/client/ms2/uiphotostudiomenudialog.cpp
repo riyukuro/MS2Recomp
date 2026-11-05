@@ -27,7 +27,7 @@ public:
 };
 
 // The movie child "m_freeCamera" (a check box).
-class Unk_140acd6e0 : public ASButton { public: };
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 
 class Unk_PsUiMgr
 {
@@ -106,7 +106,7 @@ void UIPhotoStudioMenuDialog::OnFreeCamera()
 // @0x140e761b0
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
-    if (MS2Ptr<Unk_140acd6e0> spCheck = GetChild<Unk_140acd6e0>("m_freeCamera"))
+    if (MS2Ptr<ASButton> spCheck = GetChild<ASButton>("m_freeCamera"))
         spCheck->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
 }
 

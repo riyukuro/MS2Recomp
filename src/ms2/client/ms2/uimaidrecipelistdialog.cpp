@@ -62,7 +62,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -995,10 +995,10 @@ int FUN_1412df3b0(const CStringW& str)
     return 0;
 }
 
-void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem);
+void FUN_1412e1bd0(Unk_MdLayoutItem* p, TiXmlElement* pElem);
 #ifndef MS2_HOOK_DLL
 // @0x1412e1bd0
-void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem)
+void FUN_1412e1bd0(Unk_MdLayoutItem* p, TiXmlElement* pElem)
 {
     CStringA strSn;
     XmlGetAttr((class TiXmlElement*)(pElem), "sn", strSn);
@@ -1142,10 +1142,10 @@ int FUN_1412dfc40(const CString& strPath, UIMDEditDialogCommon::CShop* pShop)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+    for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
     {
         bool bVisible = false;
         XmlGetAttr((class TiXmlElement*)(pItem), "visible", reinterpret_cast<bool&>(bVisible));
@@ -1194,14 +1194,14 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return 0;
-        Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+        TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
         if (pRoot == 0)
             return 0;
         CString strUnused1;                                      // two strings the exe constructs and never uses
         CString strUnused2;
         FUN_1412e1d20(nMode);
         ASArray items(2);
-        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+        for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             Unk_MdLayoutItem entry;
             FUN_1412e1bd0(&entry, pItem);
@@ -1214,7 +1214,7 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
         }
         ASArray categories(2);
         int nCategory = 0;
-        for (Unk_140165cf0* pCat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCat != 0; pCat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCat))->NextSibling("category")))
+        for (TiXmlElement* pCat = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCat != 0; pCat = ((class TiXmlElement*)((class Unk_XmlNode*)(pCat))->NextSibling("category")))
         {
             ASObj row(2);
             CStringW strName;
@@ -1260,10 +1260,10 @@ CString FUN_1409a2360(const char* sz, int bUtf8);
 CString FUN_14016a5c0(const char* psz, int n);
 
 // Unit-local views of the TinyXML nodes that are written (the exe's classes are not recovered).
-class TiXmlNode { public: virtual ~TiXmlNode(); TiXmlNode* InsertEndChild(const TiXmlNode& child); };
-class TiXmlElement : public TiXmlNode { public: TiXmlElement(const char* szName); virtual ~TiXmlElement(); void* m_pad[17]; };
-class TiXmlDeclaration : public TiXmlNode { public: TiXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); virtual ~TiXmlDeclaration(); void* m_pad[13]; };
-class TiXmlComment : public TiXmlNode { public: TiXmlComment(const char* sz); virtual ~TiXmlComment(); void* m_pad[9]; };   // C3: view with the real virtual dtor
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+// C3 #12: was a local TiXml view
+class TiXmlDeclaration : public TiXmlNode { public: TiXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); virtual ~TiXmlDeclaration(); void* m_pad[4]; };   // C3 #12: 0x70, over the 0x50 shared TiXmlNode
+class TiXmlComment : public TiXmlNode { public: TiXmlComment(const char* sz); virtual ~TiXmlComment(); };   // C3: view with the real virtual dtor; 0x50 = the shared TiXmlNode (C3 #12)
 void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned long);
 void XmlSetAttr(class TiXmlElement*, char const*, bool);

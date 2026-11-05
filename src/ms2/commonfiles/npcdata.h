@@ -33,7 +33,7 @@ class CRegionSpawnResult;
 struct Unk_NpcModel
 {
     Unk_NpcModel();                                         // 0x1406c8910
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c8990
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c8990
     bool operator!=(const Unk_NpcModel& o) const;           // 0x1406c8ba0
     CStringA m_strKfm;
     float m_fScale;
@@ -78,7 +78,7 @@ MS2_CHECK_SIZE(Unk_NpcSkill, 0x48);
 struct Unk_NpcShape
 {
     Unk_NpcShape();                                         // 0x1406c9000
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9080 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c9080 (empty)
     bool operator!=(const Unk_NpcShape& o) const;           // 0x1406c90a0
     CStringA m_strShape;
     float m_fWidth;
@@ -94,7 +94,7 @@ MS2_CHECK_SIZE(Unk_NpcShape, 0x20);
 struct Unk_NpcCapsule
 {
     Unk_NpcCapsule();                                       // 0x1406c92b0
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c92f0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c92f0 (empty)
     bool operator!=(const Unk_NpcCapsule& o) const;         // 0x1406c9310
     float m_fRadius;
     float m_fHeight;
@@ -106,7 +106,7 @@ MS2_CHECK_SIZE(Unk_NpcCapsule, 0xc);
 struct Unk_NpcPush
 {
     Unk_NpcPush();                                          // 0x1406c9370
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c93b0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c93b0 (empty)
     bool operator!=(const Unk_NpcPush& o) const;            // 0x1406c93d0
     float m_fBack;
     float m_fUp;
@@ -118,7 +118,7 @@ MS2_CHECK_SIZE(Unk_NpcPush, 0xc);
 struct Unk_NpcDead
 {
     Unk_NpcDead();                                          // 0x1406c9430
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c94b0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c94b0 (empty)
     bool operator!=(const Unk_NpcDead& o) const;            // 0x1406c94d0
     CStringA GetRandomDefaultAction() const;                // 0x1406c95b0
     CStringA GetRandomUpAction() const;                     // 0x1406c9680
@@ -136,7 +136,7 @@ MS2_CHECK_SIZE(Unk_NpcDead, 0x58);
 struct Unk_NpcNormal
 {
     Unk_NpcNormal();                                        // 0x1406c9750
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9790 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c9790 (empty)
     bool operator!=(const Unk_NpcNormal& o) const;          // 0x1406c97b0
     ATL::CAtlArray<std::pair<CStringA, int> > m_aActions;
     int m_nMoveArea;
@@ -147,7 +147,7 @@ MS2_CHECK_SIZE(Unk_NpcNormal, 0x28);
 struct Unk_NpcDrop
 {
     Unk_NpcDrop();                                          // 0x1406c9800
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c98b0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c98b0 (empty)
     bool operator!=(const Unk_NpcDrop& o) const;            // 0x1406c98d0
     void GetGlobalDropBoxIds(std::set<unsigned>& setIds) const;     // 0x1406c9a20 (global, dead and hit lists)
     void GetIndividualDropBoxIds(std::set<unsigned>& setIds) const; // 0x1406c9c00 (individual and hit lists)
@@ -167,7 +167,7 @@ MS2_CHECK_SIZE(Unk_NpcDrop, 0x88);
 struct Unk_NpcCorpse
 {
     Unk_NpcCorpse();                                        // 0x1406c9d40
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9dc0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c9dc0 (empty)
     bool operator!=(const Unk_NpcCorpse& o) const;          // 0x1406c9de0
     int m_nHitAble;
     Unk_NpcShape m_shape;
@@ -182,7 +182,7 @@ MS2_CHECK_SIZE(Unk_NpcCorpse, 0x58);
 struct Unk_NpcEffect
 {
     Unk_NpcEffect();                                        // 0x1406d4dc0
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9ec0 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406c9ec0 (empty)
     bool operator!=(const Unk_NpcEffect& o) const;          // 0x1406c9ee0
     ATL::CAtlArray<unsigned> m_aCodes;
     ATL::CAtlArray<unsigned short> m_aLevels;
@@ -196,7 +196,7 @@ MS2_CHECK_SIZE(Unk_NpcEffect, 0x98);
 struct Unk_NpcInteract
 {
     Unk_NpcInteract();                                      // 0x1406c9fb0
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406ca010 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406ca010 (empty)
     bool operator!=(const Unk_NpcInteract& o) const;        // 0x1406ca030
     unsigned m_nCastingTime;
     unsigned m_nCoolTime;
@@ -210,7 +210,7 @@ MS2_CHECK_SIZE(Unk_NpcInteract, 0x20);
 struct Unk_NpcLookAt
 {
     Unk_NpcLookAt();                                        // 0x1406ca0e0
-    void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406ca120 (empty)
+    void WriteXml(TiXmlElement* pParent) const;            // 0x1406ca120 (empty)
     bool operator!=(const Unk_NpcLookAt& o) const;          // 0x1406ca140
     int m_n0;
     int m_n1;
@@ -229,7 +229,7 @@ public:
     public:
         NodeCollision();                                    // 0x1406c9170
         virtual ~NodeCollision() = default;                 // 0x1406d5820 (pinned: the exe dtor has no vptr store)
-        void WriteXml(Unk_140165cf0* pParent) const;            // 0x1406c9200 (empty)
+        void WriteXml(TiXmlElement* pParent) const;            // 0x1406c9200 (empty)
         bool operator!=(const NodeCollision& o) const;      // 0x1406c9220
         CStringA m_strTargetNode;
         Vector3 m_vVolume;
@@ -238,9 +238,9 @@ public:
 
     CNpcData();                                             // 0x1406ca1c0
     virtual ~CNpcData();                                    // 0x1406ca570
-    virtual bool LoadXml(Unk_140165cf0* pElem);             // 0x1406cae60
+    virtual bool LoadXml(TiXmlElement* pElem);             // 0x1406cae60
     bool operator!=(const CNpcData& o) const;               // 0x1406ca6b0
-    bool Load(Unk_140165cf0* pRoot);                        // 0x1406cade0
+    bool Load(TiXmlElement* pRoot);                        // 0x1406cade0
 
     int GetId() const;                                      // 0x1406cce20
     CStringA GetStringId() const;                           // 0x1406cce40

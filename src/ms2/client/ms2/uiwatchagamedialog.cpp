@@ -32,10 +32,10 @@ static CString s_strStun = "stun";
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> WagClickDelegate;
 
 // The action / fold button.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
 // The hide and seek record of a player.
@@ -125,12 +125,12 @@ void UIWatchAGameDialog::OnLoadComplete()
         m_clips[i] = GetChild<ASMovieClip>(strName);
         if (m_clips[i] == 0)
             continue;
-        m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_140acd6e0>("m_button");
+        m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
         m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), FUN_140bb9630(i));
     }
-    m_foldButton = GetChild<Unk_140acd6e0>("m_foldButton");
+    m_foldButton = GetChild<ASButton>("m_foldButton");
     m_foldButton->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
     {
         CStringW strKey(L"s_watchagame_change_camera");

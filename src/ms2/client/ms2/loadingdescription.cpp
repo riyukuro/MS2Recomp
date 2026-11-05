@@ -35,12 +35,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 
 // ---- unit-local views of callees emitted in other units ----
 
@@ -48,10 +48,9 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                              // path of a table file
 CString FUN_14016a5c0(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
-void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 struct Unk_XmlElement;
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
-CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
+CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
 class CReservedWordTable;
 unsigned char FUN_1401d1320(CCacheData* pCache);                            // file changed since load
 
@@ -59,7 +58,7 @@ unsigned char FUN_1401d1320(CCacheData* pCache);                            // f
 bool CLoadingDescriptionTable::s_bInit;
 #endif
 
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -138,9 +137,9 @@ CStringW CLoadingDescriptionTable::GetRandomTip()
         {
             CLoadingDescriptionCache::DescPtr spDesc(m_spData->m_descs.GetAt(i));
             ATL::CAtlArray<int> aStart;
-            FUN_140177e10(spDesc->m_strStart, aStart, "-");
+            XmlSplit(spDesc->m_strStart, reinterpret_cast<ATL::CAtlArray<unsigned>&>(aStart), "-");   // C3: was FUN_140177e10 (xmlattr.h, CAtlArray<unsigned>)
             ATL::CAtlArray<int> aEnd;
-            FUN_140177e10(spDesc->m_strEnd, aEnd, "-");
+            XmlSplit(spDesc->m_strEnd, reinterpret_cast<ATL::CAtlArray<unsigned>&>(aEnd), "-");   // C3: was FUN_140177e10 (xmlattr.h, CAtlArray<unsigned>)
             if (aStart.GetCount() != 6 || aEnd.GetCount() != 6)
                 continue;
             CMsTime tStart = FUN_14144fa40(aStart);
@@ -173,21 +172,21 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
         if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return 0;
         m_spData->FUN_1401d1160(CString(strPath));
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
             return 0;
         }
-        std::vector<Unk_140165cf0*> nodes;
+        std::vector<TiXmlElement*> nodes;
         FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pRoot), "tip", "id", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
         for (size_t i = 0; i < nodes.size(); i++)
         {
-            Unk_140165cf0* pNode = nodes[i];
+            TiXmlElement* pNode = nodes[i];
             CLoadingDescriptionCache::DescPtr spDesc(new CLoadingDescription);
-            spDesc->m_strId = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("id");
-            spDesc->m_strStart = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("startTime");
-            spDesc->m_strEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("endTime");
+            spDesc->m_strId = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("id");
+            spDesc->m_strStart = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("startTime");
+            spDesc->m_strEnd = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("endTime");
             spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
             spDesc->m_strText.Replace(L"\\n", L"\n");
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spDesc->m_strText);

@@ -151,12 +151,12 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
 
 // @0x14147aa60
 // Ray against a sphere; writes the first hit point (or the closest point on the sphere when the ray misses) to pHit.
-char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter, float fRadius, Vector3* pHit)
+bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter, float fRadius, NiPoint3* pHit)
 {
-    char bHit = 0;
-    Vector3 kUnit = kDir;
+    bool bHit = false;
+    Vector3 kUnit = reinterpret_cast<const Vector3&>(kDir);
     kUnit.FUN_140968990();
-    Unk_NiPoint3 kToCenter(kCenter.FUN_140965c40(kOrigin));
+    Unk_NiPoint3 kToCenter(reinterpret_cast<const Vector3&>(kCenter).FUN_140965c40(reinterpret_cast<const Vector3&>(kOrigin)));
     float fProj = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kUnit));
     float fProjSqr = fProj * fProj;
     float fSqr = reinterpret_cast<const efd::Point3&>(kToCenter).Dot(reinterpret_cast<const efd::Point3&>(kToCenter));
@@ -166,11 +166,11 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
     float fPerp = fSqr - fProjSqr;
     if (fPerp > fRR)
     {
-        bHit = 0;
-        Unk_NiPoint3 kNear(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fProj, kUnit)));
-        Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
+        bHit = false;
+        Unk_NiPoint3 kNear(reinterpret_cast<const Vector3&>(kOrigin).FUN_14097fd50(FUN_1409ab5c0(fProj, kUnit)));
+        Unk_NiPoint3 kNormal(reinterpret_cast<const Vector3&>(kCenter).FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
         reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
-        *reinterpret_cast<NiPoint3*>(pHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
+        *pHit = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
             reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(efd::Sqrt(fPerp) - fRadius))))));
     }
     else
@@ -181,8 +181,8 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
             fT = fProj - fHalf;
         else
             fT = fProj + fHalf;
-        *reinterpret_cast<NiPoint3*>(pHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(kOrigin.FUN_14097fd50(FUN_1409ab5c0(fT, kUnit))))));
-        bHit = 1;
+        *pHit = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(kOrigin).FUN_14097fd50(FUN_1409ab5c0(fT, kUnit))))));
+        bHit = true;
     }
     return bHit;
 }

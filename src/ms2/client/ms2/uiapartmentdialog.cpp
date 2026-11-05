@@ -35,9 +35,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> AptClickDelegate;
 
 // The broker / door / contract buttons.
-class Unk_140acd6e0 : public ASButton
-{
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
 
 class Unk_AptScript : public AScript
 {
@@ -103,21 +103,21 @@ void UIApartmentDialog::OnLoadComplete()
     m_nStyle = 0;
     if (m_group.FUN_1408ad2f0() != 0)
         m_nStyle = 1;
-    m_broker = GetChild<Unk_140acd6e0>("m_broker");
+    m_broker = GetChild<ASButton>("m_broker");
     static_cast<Unk_AptScript*>(m_30.operator->())->FUN_1418b7550("setStyle", m_nStyle);
     if (m_nStyle == 0)
     {
-        m_door0 = GetChild<Unk_140acd6e0>("m_door0");
-        m_door1 = GetChild<Unk_140acd6e0>("m_door1");
-        m_door2 = GetChild<Unk_140acd6e0>("m_door2");
+        m_door0 = GetChild<ASButton>("m_door0");
+        m_door1 = GetChild<ASButton>("m_door1");
+        m_door2 = GetChild<ASButton>("m_door2");
     }
     else
     {
-        m_door0 = GetChild<Unk_140acd6e0>("m_door3");
-        m_door1 = GetChild<Unk_140acd6e0>("m_door4");
-        m_door2 = GetChild<Unk_140acd6e0>("m_door5");
+        m_door0 = GetChild<ASButton>("m_door3");
+        m_door1 = GetChild<ASButton>("m_door4");
+        m_door2 = GetChild<ASButton>("m_door5");
     }
-    m_contract = GetChild<Unk_140acd6e0>("m_contractButton");
+    m_contract = GetChild<ASButton>("m_contractButton");
     ((class ASButton*)(m_broker))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
     ((class ASButton*)(m_door0))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
     ((class ASButton*)(m_door1))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);

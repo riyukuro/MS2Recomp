@@ -189,7 +189,7 @@ TimeRange::TimeRange(const CMsTime& start, const CMsTime& end)
 }
 
 // @0x140868d60
-void TimeRange::FUN_140868d60(Unk_140165cf0* pNode)
+void TimeRange::FUN_140868d60(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "startTime", m_start);
     XmlGetAttr((class TiXmlElement*)(pNode), "endTime", m_end);

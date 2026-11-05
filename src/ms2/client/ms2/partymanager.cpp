@@ -366,16 +366,16 @@ struct Unk_PartyJoinRequest {
     CStringW name;
     int value, kind;
 };
-struct Unk_PartyRecruitInvite {
-    explicit Unk_PartyRecruitInvite(MS2Ptr<CMatchPartyRecruit>);
-    ~Unk_PartyRecruitInvite();
+struct Unk_PayloadIdentity {   // C3: was Unk_PartyRecruitInvite (= unit_1401f9eb0's Unk_PayloadIdentity, ctor 0x1401fbeb0)
+    explicit Unk_PayloadIdentity(MS2Ptr<CMatchPartyRecruit>);
+    ~Unk_PayloadIdentity();
     __int64 recruitId;
     int fieldId;
     CStringW ownerName;
 };
 MS2_CHECK_SIZE(Unk_PartyInviteName, 8);
 MS2_CHECK_SIZE(Unk_PartyJoinRequest, 0x10);
-MS2_CHECK_SIZE(Unk_PartyRecruitInvite, 0x18);
+MS2_CHECK_SIZE(Unk_PayloadIdentity, 0x18);
 void FUN_1401fc0b0(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc0b0
 void FUN_1401fbd30(unsigned char*, class COutputStream&);   // C3: was FUN_1401fbd30
 void FUN_1401fbf70(unsigned char*, class COutputStream&);   // C3: was FUN_1401fbf70
@@ -388,7 +388,7 @@ UIChaosDPSDialog* FUN_141632700(int);
 UIPartyDPSDialog* FUN_1416327a0(int);
 int Unk_ClubBuffCategory(int);
 CStringW TranslateEnumDungeonGroup(unsigned int nGroup);
-int FUN_1401d9a00(CStringW&);
+int FUN_1401d9a00(const CStringW&);
 void FUN_141632630(const CStringW&, std::vector<int>&, const wchar_t*);
 
 struct Unk_PartyOptionPrefix { bool flags[3]; bool refuseParty; };
@@ -772,7 +772,7 @@ void CPartyManager::SendPartyMode1(CStringW name)
 MS2_REPLACE_METHOD(0x14162BA50, CPartyManager, SendPartyMode1, 239, 0x10B17C55);
 
 // @0x14162bb50
-void CPartyManager::SendPartyMode23(const Unk_PartyRecruitInvite& request)
+void CPartyManager::SendPartyMode23(const Unk_PayloadIdentity& request)
 {
     CStringW name(request.ownerName);
     if (name.IsEmpty()) return;
@@ -791,7 +791,7 @@ MS2_REPLACE_METHOD(0x14162BB50, CPartyManager, SendPartyMode23, 361, 0x171D882A)
 // @0x14162bcc0
 void CPartyManager::SendPartyInviteFromRecruit(MS2Ptr<CMatchPartyRecruit> recruit)
 {
-    Unk_PartyRecruitInvite request(recruit);
+    Unk_PayloadIdentity request(recruit);
     SendPartyMode23(request);
 }
 MS2_REPLACE_METHOD(0x14162BCC0, CPartyManager, SendPartyInviteFromRecruit, 111, 0xDEFC1332);
@@ -1837,7 +1837,7 @@ Unk_PartyJoinRequest::Unk_PartyJoinRequest() : value(0x32), kind(0) {}
 NotifySurvivalState::NotifySurvivalState() {}
 
 // @0x1416341c0
-Unk_PartyRecruitInvite::~Unk_PartyRecruitInvite() {}
+Unk_PayloadIdentity::~Unk_PayloadIdentity() {}
 
 // @0x141634220
 Unk_PartyInviteName::~Unk_PartyInviteName() {}

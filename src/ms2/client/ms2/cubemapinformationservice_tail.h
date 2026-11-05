@@ -90,11 +90,14 @@ struct Unk_CMISMarkRec
 };
 MS2_CHECK_SIZE(Unk_CMISMarkRec, 0x50);
 
-// per-cell record with a UTF-8 name (node value of f2b8)
+// per-cell record with a UTF-8 name (node value of f2b8; default ctor 0x1411230b0, copy 0x141123050, dtor 0x141125ec0)
 struct Unk_CMISCell
 {
+    Unk_CMISCell() = default;
+    Unk_CMISCell(const Unk_CMISCell& o);                        // 0x141123050 (unit_141121cf0)
     efd::utf8string m_name;
-    int m_a, m_b, m_c, m_d, m_e, m_f;
+    efd::Color m_color;                                         // +0x20 (0x1411230b0 builds it with Color(0, 0, 0))
+    efd::Point3 m_pos;                                          // +0x2c
 };
 MS2_CHECK_SIZE(Unk_CMISCell, 0x38);
 

@@ -47,7 +47,7 @@
 #include "ms2/client/ms2/worldservice.h"
 
 template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -85,7 +85,7 @@ class Unk_NcWorld : public WorldService
 {
 public:
     Unk_NcPlayer* FUN_141bd0cc0();
-    MS2Ptr<CProxyGameObject> FUN_141bc9e70(int nId);
+    // FUN_141bc9e70: WorldService's own member
 };
 
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
@@ -109,11 +109,11 @@ void FUN_140841420(CStringW& str);                      // trim
 
 // xml file helpers
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-class Unk_NcNode { public: Unk_NcNode* FUN_140165cf0(const char* szTag); Unk_NcNode* FUN_140168650(const char* szTag); };
+class Unk_NcNode {};   // C3 #8: its dead FUN_140165cf0 / FUN_140168650 members removed
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140399100(CString strPattern, CString strDir, CAtlArray<CString>& output, CString strExclude, bool bLocalOnly);
-CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* szAttr, CStringW strDefault);
+CStringW FUN_1401bf530(TiXmlElement* pNode, const char* szAttr, CStringW strDefault);
 
 // @0x141a6c140
 template CStringW FUN_14028dfa0<CStringW, unsigned short, CStringW, unsigned, CStringW, CStringW>(CStringW, const CStringW&, const unsigned short&, const CStringW&, const unsigned&, const CStringW&, const CStringW&);
@@ -320,7 +320,7 @@ void UINpcCreateDialog::ReadNpcFromFile()
         Unk_NcNode* pRoot = ((class Unk_NcNode*)((class Unk_XmlNode*)(((Unk_NcNode*)&doc)))->FirstChild("ms2"));
         for (Unk_NcNode* pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")); pNpc != 0; pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc"))) {
             CStringW strId((const wchar_t*)0);
-            strId = FUN_1401bf530((Unk_140165cf0*)pNpc, "id", CStringW(L""));
+            strId = FUN_1401bf530((TiXmlElement*)pNpc, "id", CStringW(L""));
             if (strId.IsEmpty())
                 continue;
             m_files.push_back(strId);

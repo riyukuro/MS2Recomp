@@ -78,9 +78,9 @@ void Unk_ToolCallback::Reset()
 }
 
 // @0x1418589d0
-CToolTreeNodesDialog::CToolTreeNodesDialog(Unk_ToolCallback callback, CWnd* pParent)
+CToolTreeNodesDialog::CToolTreeNodesDialog(TFunctor<void, ParamList<CString, EmptyParam> > callback, CWnd* pParent)
     : CDialog(0x80, pParent)
-    , m_callback(callback)
+    , m_callback(reinterpret_cast<Unk_ToolCallback&>(callback))
     , m_pNode(0)
 {
 }

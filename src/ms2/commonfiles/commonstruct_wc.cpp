@@ -93,8 +93,8 @@ i64 FUN_140274a20(i64 p, Unk_StlTag) { FUN_14027d570((void*)p); FUN_14027d410((U
 i64 FUN_140274a50(i64 p, Unk_StlTag) { FUN_14027d580((void*)p); FUN_14027d450((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a80
 i64 FUN_140274a80(i64 p, Unk_StlTag) { FUN_14027d590((void*)p); FUN_14027d490((i64)&((Unk_WcSelf*)p)->m_0); return p; }
-// @0x140274ab0
-i64 FUN_140274ab0(i64 p, Unk_StlTag) { FUN_14027d5a0((void*)p); FUN_14027d4d0((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140274ab0 ; unique
+template std::_Vector_alloc<std::_Vec_base_types<PIng, std::allocator<PIng>>>::_Vector_alloc();   // emits the _Compressed_pair ctor COMDAT pinned above (an explicit instantiation of it ICEs cl 19.16)
 // @0x140274ae0
 i64 FUN_140274ae0(i64 p, Unk_StlTag) { FUN_14027d5b0((void*)p); FUN_14027d510((Unk_Z24*)&((Unk_WcSelf*)p)->m_0); return p; }
 // pair<unsigned,unsigned> built piecewise (key from the tuple, value zero-initialized).
@@ -250,20 +250,20 @@ int FUN_1402767f0(void* node, const char* name, unsigned* out)
 }
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstruct.cpp"
-
+// MS2-PIN: ??$_Get_unwrapped@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@std@@$0A@@std@@YAPEAV?$MS2Ptr@VCIngredientInfo@@@@AEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@@0@@Z 0x140278760 ; unique
 // 0x140276880 is TPtrValue<CUserLimitGroup::HistoryList>::Allocate, instantiated at the end of this file.
 // @0x1402768f0
 void FUN_1402768f0(i64, i64, Unk_StlTag) {}
 // @0x140276900
 void FUN_140276900(i64, i64, Unk_StlTag) {}
 // @0x140276910
-void FUN_140276910(i64, i64, Unk_StlTag) {}
+__if_exists (std::_Adl_verify_range1) { template void std::_Adl_verify_range1<VIng::iterator, VIng::iterator>(const VIng::iterator&, const VIng::iterator&, std::false_type); }
 // @0x140276920
 void FUN_140276920(i64 a, i64 b) { Unk_StlTag tag = {}; FUN_1402768f0(a, b, tag); }
 // @0x140276960
 void FUN_140276960(i64 a, i64 b) { Unk_StlTag tag = {}; FUN_140276900(a, b, tag); }
 // @0x1402769a0
-void FUN_1402769a0(i64 a, i64 b) { Unk_StlTag tag = {}; FUN_140276910(a, b, tag); }
+template void std::_Adl_verify_range<VIng::iterator, VIng::iterator>(const VIng::iterator&, const VIng::iterator&);
 // @0x1402769e0
 void FUN_1402769e0(i64* p, i64 n, Unk_StlTag) { *p += n * 8; }
 // @0x140276a10
@@ -437,7 +437,7 @@ void FUN_1402775b0(i64 a, i64 b, i64 c) { Unk_StlTag tag = {}; FUN_140277410(a, 
 // @0x140277600
 i64 FUN_140277600(i64 a, i64 b, Unk_StlTag) { return (b - a) >> 3; }
 // @0x140277630
-i64 FUN_140277630(i64 a, i64 b, Unk_StlTag) { return (b - a) >> 4; }
+template std::_Iter_diff_t<PIng*> std::_Distance1<PIng*>(PIng*, PIng*, std::random_access_iterator_tag);
 // @0x140277660
 i64 FUN_140277660(i64 a, i64 b, Unk_StlTag) { return (b - a) >> 4; }
 // _Construct_at_end style element constructors: *(self+8) = write cursor, *(self+0x10) = allocator
@@ -525,37 +525,37 @@ void FUN_140277bd0(i64 vec, i64 v)
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277c90
-i64 FUN_140277c90(i64 vec, i64 where, i64 v)
-{
-    i64 off = (where - *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst()) >> 4;
-    i64 al = (i64)&reinterpret_cast<VIng*>(vec)->_Getal();
-    i64 oldsize = reinterpret_cast<VIng*>(vec)->size();
-    if (oldsize == reinterpret_cast<VIng*>(vec)->max_size())
-        FUN_140289f00();
-    i64 newsize = oldsize + 1;
-    u64 newcap = FUN_140287070(vec, newsize);
-    i64 newvec = (i64)reinterpret_cast<std::allocator<PIng>*>(al)->allocate(newcap);
-    i64 constructed_last = newvec + off * 0x10 + 0x10;
-    i64 constructed_first = constructed_last;
-    try {
+template PIng* VIng::_Emplace_reallocate<const PIng&>(PIng*, const PIng&);
 
-        FUN_14027ba20(al, FUN_14027a9b0(newvec + off * 0x10), (i64)&reinterpret_cast<const PIng&>(std::forward<const PIng&>(*reinterpret_cast<const PIng*>(v))));
-        constructed_first = newvec + off * 0x10;
-        if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
-            FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
-        } else {
-            FUN_140289b00((void*)vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), where, newvec);
-            constructed_first = newvec;
-            FUN_140289b00((void*)vec, where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec + off * 0x10 + 0x10);
-        }
-    } catch (...) {
-        FUN_140287670(vec, constructed_first, constructed_last);
-        reinterpret_cast<std::allocator<PIng>*>(al)->deallocate((PIng*)newvec, newcap);
-        throw;
-    }
-    FUN_1402873b0(vec, newvec, newsize, newcap);
-    return off * 0x10 + *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277ee0
 i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
@@ -624,37 +624,37 @@ i64 FUN_140278130(i64 vec, i64 where, i64 v)
 }
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140278370
-i64 FUN_140278370(i64 vec, i64 where, i64 v)
-{
-    i64 off = (where - *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst()) >> 4;
-    i64 al = (i64)&reinterpret_cast<VIng*>(vec)->_Getal();
-    i64 oldsize = reinterpret_cast<VIng*>(vec)->size();
-    if (oldsize == reinterpret_cast<VIng*>(vec)->max_size())
-        FUN_140289f00();
-    i64 newsize = oldsize + 1;
-    u64 newcap = FUN_140287070(vec, newsize);
-    i64 newvec = (i64)reinterpret_cast<std::allocator<PIng>*>(al)->allocate(newcap);
-    i64 constructed_last = newvec + off * 0x10 + 0x10;
-    i64 constructed_first = constructed_last;
-    try {
+template PIng* VIng::_Emplace_reallocate<PIng>(PIng*, PIng&&);
 
-        FUN_14027ba70(al, FUN_14027a9b0(newvec + off * 0x10), (i64)&reinterpret_cast<PIng&>(std::forward<PIng>(*reinterpret_cast<PIng*>(v))));
-        constructed_first = newvec + off * 0x10;
-        if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
-            FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
-        } else {
-            FUN_140289b00((void*)vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), where, newvec);
-            constructed_first = newvec;
-            FUN_140289b00((void*)vec, where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec + off * 0x10 + 0x10);
-        }
-    } catch (...) {
-        FUN_140287670(vec, constructed_first, constructed_last);
-        reinterpret_cast<std::allocator<PIng>*>(al)->deallocate((PIng*)newvec, newcap);
-        throw;
-    }
-    FUN_1402873b0(vec, newvec, newsize, newcap);
-    return off * 0x10 + *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // node free: destroy the two (three) pointer members, then deallocate the node
 // @0x1402785c0
 void FUN_1402785c0(i64, i64 node) noexcept
@@ -693,7 +693,7 @@ i64 FUN_140278740(i64 p) { return p; }
 // @0x140278750
 i64 FUN_140278750(i64 p) { return p; }
 // @0x140278760
-void FUN_140278760(i64 p) { reinterpret_cast<std::initializer_list<__int64>*>(p)->begin(); }
+template auto std::_Get_unwrapped<VIng::iterator, 0>(const VIng::iterator&);
 // @0x140278780
 i64 FUN_140278780(i64 p, i64) { return p; }
 // @0x140278790

@@ -12,8 +12,8 @@ public:
     virtual void vfunc_1(void*);
     virtual int vfunc_2();
     int a,b,c,d,e,f,g,h,i,j;
-    ATL::CAtlMap<Unk_PacketOptionA,Unk_PayloadPtr<BaseOption>> optionsA[5];
-    ATL::CAtlMap<Unk_PacketOptionB,Unk_PayloadPtr<BaseOption>> optionsB[5];
+    ATL::CAtlMap<Unk_PacketOptionA,MS2Ptr<BaseOption>> optionsA[5];
+    ATL::CAtlMap<Unk_PacketOptionB,MS2Ptr<BaseOption>> optionsB[5];
 };
 MS2_CHECK_SIZE(CCCreateItemPacket,0x300);
 MS2_CHECK_OFFSET(CCCreateItemPacket,optionsA,0x30);

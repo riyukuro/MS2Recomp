@@ -3,6 +3,7 @@
 #include "ms2/placeholder/cguildxmldata.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr (NPC shop records)
 #include <map>
 #include <vector>
 class CInPacket;
@@ -21,13 +22,13 @@ public:
     virtual ~CGuildNpcShop(){}
     bool FUN_1404d8070(__int64 now);
     void FUN_1404d80a0();
-    Unk_PayloadPtr<CNpcShopProductProxy> FUN_1404d80d0(int itemId,int rank,int price);
-    Unk_PayloadPtr<CNpcShopProductProxy> FUN_1404d81e0(int itemId,int rank,int price);
+    MS2Ptr<CNpcShopProductProxy> FUN_1404d80d0(int itemId,int rank,int price);
+    MS2Ptr<CNpcShopProductProxy> FUN_1404d81e0(int itemId,int rank,int price);
     int FUN_1404d82a0(int itemId,int rank,int price);
     void FUN_1404d83e0(COutputStream& out);
     void FUN_1404d8520(CInPacket* packet);
     unsigned f18; __int64 f20,f28;
-    std::vector<Unk_PayloadPtr<CNpcShopProductProxy>> products;
+    std::vector<MS2Ptr<CNpcShopProductProxy>> products;
 };
 MS2_CHECK_SIZE(CGuildNpcShop,0x48);
 // Purchase request/offer record (0x30).
@@ -44,15 +45,15 @@ class CGuildNpcShopMgr : public CPtred {
 public:
     CGuildNpcShopMgr(){}
     virtual ~CGuildNpcShopMgr(){}
-    Unk_PayloadPtr<CGuildNpcShop> FUN_1404d86e0(unsigned id,__int64 time);
-    Unk_PayloadPtr<CGuildNpcShop> GetShop(unsigned id);
-    Unk_PayloadPtr<CGuildNpcShop> GetOrCreateShop(unsigned id);
+    MS2Ptr<CGuildNpcShop> FUN_1404d86e0(unsigned id,__int64 time);
+    MS2Ptr<CGuildNpcShop> GetShop(unsigned id);
+    MS2Ptr<CGuildNpcShop> GetOrCreateShop(unsigned id);
     int FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created);
     void Write(COutputStream& out);
     void Read(CInPacket* packet);
     void FUN_1404d8ff0(unsigned id,CInPacket* packet);
     void FUN_1404d9060(unsigned id,CInPacket* packet);
-    std::map<unsigned,Unk_PayloadPtr<CGuildNpcShop>> shops;
+    std::map<unsigned,MS2Ptr<CGuildNpcShop>> shops;
 };
 MS2_CHECK_SIZE(CGuildNpcShopMgr,0x28);
 int FUN_1404d9330(const CString& text);

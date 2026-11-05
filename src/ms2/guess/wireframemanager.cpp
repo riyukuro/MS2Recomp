@@ -14,4 +14,4 @@
 static const char s_szWireframeManager[] = "CWireframeManager";
 
 // The registration: one global, so the whole thing folds into the file's dynamic initializer.
-Unk_WireframeRegistrar g_wireframeRegistrar(s_szWireframeManager, 0);
+NiRTTI g_wireframeRegistrar(s_szWireframeManager, 0);

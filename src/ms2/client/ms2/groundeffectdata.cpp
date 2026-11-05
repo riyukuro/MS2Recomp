@@ -31,13 +31,13 @@
 #include <NiNode.h>   // C3: ms_RTTI
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -53,13 +53,13 @@ static CString s_strStun3 = "stun";
 static Unk_1402a9d70 s_unk1402a9d70_3(17, 0.75f, 0.25f, 2.25f, 10);
 
 // Unrecovered xml loader helpers (the same ones the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);       // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);       // NextSiblingElement
-};
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
+// C3 #12: was a local TiXml view
+
+
+
+
+
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_GroundFiles : public CFileSystem { };
 class CLogString;
@@ -179,7 +179,7 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return GroundPtr(0);
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -191,9 +191,9 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
         spGround.AssignRaw(new CGroundData);
         m_grounds.SetAt(strGround, spGround);
     }
-    for (Unk_140165cf0* pAction = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("action")); pAction != 0; pAction = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAction))->NextSibling("action")))
+    for (TiXmlElement* pAction = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("action")); pAction != 0; pAction = ((class TiXmlElement*)((class Unk_XmlNode*)(pAction))->NextSibling("action")))
     {
-        const char* pszType = ((class TiXmlElement*)(class Unk_140165cf0*)(pAction))->Attribute("type");
+        const char* pszType = ((class TiXmlElement*)(class TiXmlElement*)(pAction))->Attribute("type");
         if (pszType != 0)
         {
             CGroundData::ActionPtr spAction(new CGroundActionData);
@@ -201,15 +201,15 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
                 CString strType(pszType);
                 spGround->m_actions.SetAt(strType, spAction);
             }
-            for (Unk_140165cf0* pEffects = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAction))->FirstChild("effects")); pEffects != 0;
-                 pEffects = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffects))->NextSibling("effects")))
+            for (TiXmlElement* pEffects = ((class TiXmlElement*)((class Unk_XmlNode*)(pAction))->FirstChild("effects")); pEffects != 0;
+                 pEffects = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffects))->NextSibling("effects")))
             {
                 CGroundActionData::EffectPtr spEffect(new CGroundEffectData);
                 spAction->m_effects.Add(spEffect);
-                for (Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffects))->FirstChild("effect")); pEffect != 0;
-                     pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
+                for (TiXmlElement* pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffects))->FirstChild("effect")); pEffect != 0;
+                     pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
                 {
-                    const char* pszFile = ((class TiXmlElement*)(class Unk_140165cf0*)(pEffect))->Attribute("filePath");
+                    const char* pszFile = ((class TiXmlElement*)(class TiXmlElement*)(pEffect))->Attribute("filePath");
                     {
                         CString strFile(pszFile);
                         spEffect->m_files.Add(strFile);

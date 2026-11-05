@@ -15,7 +15,7 @@
 
 class CInPacket;
 class COutPacket;
-class Unk_140165cf0;
+class TiXmlElement;
 class Unk_UserProxy;
 namespace Club { class SaveMember; }
 
@@ -276,7 +276,7 @@ public:
     public:
         ClubBuffData();
         // ~ClubBuffData (0x140212480) is implicit: the exe dtor stores no vptr.
-        void FUN_140211280(Unk_140165cf0* pElem);     // id, additionalEffectId, additionalEffectLevel
+        void FUN_140211280(TiXmlElement* pElem);     // id, additionalEffectId, additionalEffectLevel
         int m_id;                                       // +0x18 "id"
         int m_1c;                                       // +0x1c
         int m_20;                                       // +0x20

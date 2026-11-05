@@ -11,7 +11,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/filebuffer_1.h"
-#include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<CFileBuffer> m_buffer
 
 class MS2MemFile : public efd::FileCommon
 {
@@ -29,7 +29,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     unsigned int m_uiPos;                                   // +0x28 read position
-    Unk_PayloadPtr<CFileBuffer> m_buffer;                   // +0x30 the shared CFileBuffer handle
+    MS2Ptr<CFileBuffer> m_buffer;                           // +0x30 the shared CFileBuffer handle
 };
 MS2_CHECK_SIZE(MS2MemFile, 0x40);
 MS2_CHECK_OFFSET(MS2MemFile, m_uiPos, 0x28);

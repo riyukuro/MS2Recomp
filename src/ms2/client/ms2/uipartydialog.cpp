@@ -1554,13 +1554,13 @@ void UIPopupEntity::vfunc_15()
         return;
     }
     NiPoint3 kScreen;
-    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const Unk_PopupPos&>(vfunc_60())), kScreen))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_60())), kScreen))
     {
         if (m_88 != 0)
             vfunc_52();
         kScreen *= FUN_14025e7a0()->FUN_1422afec0(m_28);
         kScreen.y = kScreen.y + vfunc_59();
-        kScreen.y = kScreen.y + FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_PopupPos&>(vfunc_60())));
+        kScreen.y = kScreen.y + FUN_1412762d0(static_cast<const NiPoint3&>(vfunc_60()));
         vfunc_53(kScreen);
     }
     else
@@ -1647,16 +1647,16 @@ float UIPopupEntity::vfunc_59()
 }
 
 // @0x141a7d260
-Unk_PopupPos UIPopupEntity::vfunc_60()
+NiPoint3 UIPopupEntity::vfunc_60()
 {
     if (m_68 != 0)
     {
         if (m_70 == 0)
             m_70 = reinterpret_cast<PCBase*>(m_68)->FUN_141675150(m_78);
         if (m_70 != 0)
-            return reinterpret_cast<const Unk_PopupPos&>(static_cast<NiAVObject*>(m_70)->GetWorldTranslate());
+            return reinterpret_cast<const NiPoint3&>(static_cast<NiAVObject*>(m_70)->GetWorldTranslate());
     }
-    return Unk_PopupPos(efd::Point3::ZERO);
+    return NiPoint3(efd::Point3::ZERO);
 }
 
 // @0x141a7d300
@@ -3567,12 +3567,12 @@ struct Unk_PpInteract : CInteractObjectData
 
 // The entities of a world type hash (worldservice_1.cpp: a 16-byte box pointer to a list of entity references).
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PpEntityList;
-void FUN_1409f20e0(void* pTagPtr);                                      // release
+struct Unk_PCEntListPtr { ~Unk_PCEntListPtr(); };   // C3: FUN_1409f20e0 (release) is pc.cpp's Unk_PCEntListPtr dtor (0x1409f20e0)
 struct Unk_WsC_TagPtr;
 bool FUN_1409f2130(Unk_WsC_TagPtr* p, void* other);                         // p == other
 struct Unk_WsC_TagPtr
 {
-    ~Unk_WsC_TagPtr() { FUN_1409f20e0(this); }
+    ~Unk_WsC_TagPtr() { reinterpret_cast<Unk_PCEntListPtr*>(this)->Unk_PCEntListPtr::~Unk_PCEntListPtr(); }
     Unk_PpEntityList* operator->() const { return m_list; }
     void* m_unk;
     Unk_PpEntityList* m_list;

@@ -25,7 +25,7 @@
 #include "ms2/placeholder/asbutton.h"
 
 // ---- unit-local views of exe types ----
-
+class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
 
 // Keyboard state (FUN_14025e7c0).
@@ -74,7 +74,7 @@ void UIHomeSummonDialog::OnLoadComplete()
     if (m_30.IsNull() != 0)
         return;
     FUN_141925ec0("m_closeButton");
-    FUN_140bc6d10("m_confirmButton", m_180);
+    reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_confirmButton", m_180);
     m_180->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
     FUN_14129a040("m_textInput", m_190);
     m_190.operator->()->SetEditable(1);

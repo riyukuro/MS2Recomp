@@ -24,7 +24,7 @@ class CInPacket;
 class CMsgBoxData;
 class CQuest;
 class ASScrollingList;
-class Unk_QdInfo;
+class ASUIComponent;
 class ASCheckBox;
 
 class UIQuestDialog : public UIDialog, public UIQuestEventListener
@@ -111,7 +111,7 @@ public:
     TPtrValue<QuestFlags> GetFlags(int nChapter);               // 0x141aa25a0
 
     // child lookups (one COMDAT per wrapper class; defined in other units)
-    MS2Ptr<Unk_QdInfo> FUN_140c02990(const CString& strName);      // "m_questInfo"
+    // "m_questInfo" is UISwfEntity::GetChild<ASUIComponent> (0x140c02990)
     MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);     // "m_properLevel" / "m_progressOnly" check boxes
 
 private:

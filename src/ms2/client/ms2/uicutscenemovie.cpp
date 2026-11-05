@@ -232,7 +232,7 @@ MS2_REPLACE_METHOD(0x14190F3B0, UICutSceneMovie, GetTypeName, 61, 0x09248588);
 void UICutSceneMovie::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+    if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         int nWidth = pPlayer->FUN_1422c1500();
         int nHeight = pPlayer->FUN_1422c1530();
         m_30->Invoke("setStageSize", nWidth, nHeight);
@@ -259,7 +259,7 @@ void UICutSceneMovie::vfunc_15()
     if (m_30.IsNull())
         return;
     if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible()) {
-        if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+        if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
             if (pPlayer->FUN_1422e9540() >= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->FUN_140298f40()))
                 ShowSkipButton();
         }
@@ -350,7 +350,7 @@ MS2_REPLACE_METHOD(0x14190FB40, UICutSceneMovie, vfunc_11, 153, 0x86F6B64B);
 // @0x14190fbe0
 bool UICutSceneMovie::vfunc_17()
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+    if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
         pPlayer->FUN_1422e9810(pPlayer->FUN_1422c1500(), pPlayer->FUN_1422c1530());
     return true;
 }
@@ -391,7 +391,7 @@ MS2_REPLACE_METHOD(0x14190FEF0, UICutSceneMovie, Play, 197, 0x9AC68545);
 // @0x14190ffc0
 bool UICutSceneMovie::PlayUsm()
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+    if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
         if (pSound)
             pPlayer->FUN_1422e9490(pSound->m_b00 ? 0.0f : pSound->FUN_1412602e0());

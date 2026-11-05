@@ -19,7 +19,7 @@
 class ASMovieClip;
 class CInPacket;
 class NotifyObject;
-class Unk_140acd6e0;
+class ASButton;
 struct Unk_SmReward;
 
 // 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870 re-arms).
@@ -64,10 +64,10 @@ private:
     CString m_strSlot;                  // +0x198 the name the reward item is bound under
     MS2Ptr<ASMovieClip> m_event;        // +0x1a0 "m_event"
     MS2Ptr<ASMovieClip> m_onTimeEvent;  // +0x1b0 "m_onTimeEvent"
-    MS2Ptr<Unk_140acd6e0> m_btnShow;    // +0x1c0 "m_btnShow"
-    MS2Ptr<Unk_140acd6e0> m_btnDetail;  // +0x1d0 "m_detail"
-    MS2Ptr<Unk_140acd6e0> m_btnClose;   // +0x1e0 "m_close"
-    MS2Ptr<Unk_140acd6e0> m_btnOnTime;  // +0x1f0 "m_onTimeEventButton"
+    MS2Ptr<ASButton> m_btnShow;    // +0x1c0 "m_btnShow"
+    MS2Ptr<ASButton> m_btnDetail;  // +0x1d0 "m_detail"
+    MS2Ptr<ASButton> m_btnClose;   // +0x1e0 "m_close"
+    MS2Ptr<ASButton> m_btnOnTime;  // +0x1f0 "m_onTimeEventButton"
     Unk_IntervalTimer m_tick;                  // +0x200
     unsigned m_nHideAt;                 // +0x208 server time the popup hides at
 };

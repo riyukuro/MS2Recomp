@@ -13,6 +13,10 @@
 
 #include "ms2/ms2layout.h"
 #include <NiDefaultClickRenderStep.h>
+#include <NiRenderClick.h>
+#include <NiRenderedTexture.h>
+#include <NiTexturingProperty.h>
+#include <NiViewRenderClick.h>
 #include <NiFixedString.h>
 #include <NiString.h>
 #include <efd/SmartPointer.h>
@@ -85,17 +89,21 @@ void FUN_140c8f950(NiDefaultClickRenderStep* step, const NiFixedString& name);  
 void* FUN_140c8f680(void* smartPtr);                                                      // smart pointer -> raw
 void* FUN_1409a8d30(NiDefaultClickRenderStep* step, NiFixedString* name);
 void FUN_14169fbf0(NiDefaultClickRenderStep* step, void* p);
-// Result handle of the render-click factory FUN_1416b4990 (8 bytes, returned by value, dtor 0x1409a7b30).
-class Unk_PPRes {
-public:
-    ~Unk_PPRes();                   // 0x1409a7b30
-    friend void* FUN_140c8f690(const Unk_PPRes& res);   // the getter (COMDAT in postshimmerrenderstep.cpp)
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PPRes, 8);
-Unk_PPRes FUN_1416b4990(NiDefaultClickRenderStep* step, const char* name, void* cb, void* cbData, void* a, int b, int c, void* d, const char* tech, void* e, void* f, void* g);
-void* FUN_140c8f690(const Unk_PPRes& res);
+// C3: FUN_1416b4990 is setupRenderClick (postprocessingservice.cpp). It returns
+// efd::SmartPointer<NiViewRenderClick> by value (the old Unk_PPRes stand-in: its
+// dtor 0x1409a7b30 is ??1 SmartPointer<NiViewRenderClick>). Callers keep the old
+// loose argument list (0 for null maps, ints for the filter/clamp enums); the
+// macro casts each argument to the definer's parameter type.
+efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* pkStep, const char* pcName,
+    NiRenderClick::Callback pfnCallback, void* pvCallbackData, NiTexture* pkSource,
+    NiTexturingProperty::FilterMode eFilter, NiTexturingProperty::ClampMode eClamp, NiRenderedTexture* pkTarget,
+    const char* pcMaterial, NiTexture* pkMap0, NiTexture* pkMap1, NiTexture* pkMap2);
+#define FUN_1416b4990(step, name, cb, cbData, a, b, c, d, tech, e, f, g) \
+    setupRenderClick((step), (name), (NiRenderClick::Callback)(cb), (cbData), (NiTexture*)(a), \
+        (NiTexturingProperty::FilterMode)(b), (NiTexturingProperty::ClampMode)(c), (NiRenderedTexture*)(d), \
+        (tech), (NiTexture*)(e), (NiTexture*)(f), (NiTexture*)(g))
+// The click getter at 0x140c8f690 (??B SmartPointer<NiViewRenderClick>; local copy in postshimmerrenderstep.cpp).
+void* FUN_140c8f690(const efd::SmartPointer<NiViewRenderClick>& res);
 class Unk_SingletonObj* FUN_1401d31f0();   // the client config (0x1401d31f0, cachedata.cpp, the definer's signature)
 #define FUN_1401d31f0() (static_cast<void*>(FUN_1401d31f0()))   // read as void*; callers cast to their view
 extern char DAT_1439fc800;

@@ -12,7 +12,7 @@
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/commonfiles/ugcmappackageinfo.h"
 
-class Unk_Service6100017;
+class CubeMapInformationService;
 
 // Unk_CubePoint (the cube grid point) is in cube.h.
 
@@ -123,7 +123,7 @@ public:
     virtual Cube* vfunc_34();
     virtual int vfunc_35();
 
-    efd::SmartPointer<Unk_Service6100017> m_pCubeService;       // +0x40 the cube service (class id 0x06100017)
+    efd::SmartPointer<CubeMapInformationService> m_pCubeService;       // +0x40 the cube service (class id 0x06100017)
 };
 MS2_CHECK_SIZE(CUGCBuildValidatorCli, 0x48);
 MS2_CHECK_OFFSET(CUGCBuildValidatorCli, m_pCubeService, 0x40);

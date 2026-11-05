@@ -18,7 +18,7 @@ class TextureOverrideEffectParam : public CEffectParam
 {
 public:
     TextureOverrideEffectParam();                               // 0x14184b540
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x14184b590 "texturepath"
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x14184b590 "texturepath"
     virtual bool vfunc_5(int nFlags);                           // 5 0x14184b5e0 preload the texture
     virtual CEffectPtr vfunc_6();                               // 6 0x14184b690 new TextureOverrideEffect
 public:

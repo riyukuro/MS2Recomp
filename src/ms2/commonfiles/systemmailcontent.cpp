@@ -24,7 +24,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -86,13 +86,13 @@ void LoadSystemMailContent()
         if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_SmLog(GetLogString(), 1, 0x13, MS2_SM_XML_ERR, "systemMailContent.xml");
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
     {
         CSystemMailContent::Ptr spMail(new CSystemMailContent);
         spMail->FUN_1401d1160(strPath);
@@ -117,9 +117,9 @@ void LoadSystemMailContent()
 
 // The same rows read from an element of another document.
 // @0x140851c40
-void FUN_140851c40(Unk_140165cf0* pRoot)
+void FUN_140851c40(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
     {
         CSystemMailContent::Ptr spMail(new CSystemMailContent);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spMail->m_nId));

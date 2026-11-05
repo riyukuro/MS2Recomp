@@ -29,12 +29,12 @@ public:
     IdMap m_mapPart2;                                       // +0x68
 };
 
-// The costume table (the singleton at 0x143aaf318); only the row lookup is used here.
-class Unk_CostumeTable
-{
-public:
-    MS2Ptr<Unk_CostumeRow> FUN_1405360b0(unsigned int nId, unsigned int nKind);    // 0x1405360b0
-};
+// The costume table is CostumeSetTable (the singleton at 0x143aaf318, costumesettable.h); its row lookup
+// GetSet 0x1405360b0 hands back an MS2SvrPtr<CostumeSet>, and Unk_CostumeRow above is the view of that
+// CostumeSet with the map type of this unit's CAtlMap pins.
+//
+//
+//
 
 class CostumeManager : public CPtred
 {

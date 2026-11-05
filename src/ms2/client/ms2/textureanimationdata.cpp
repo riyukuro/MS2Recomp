@@ -87,7 +87,7 @@ Unk_TextureFrame::Unk_TextureFrame()
 }
 
 // @0x141847560
-void Unk_TextureFrame::Load(Unk_140165cf0* pNode)
+void Unk_TextureFrame::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "file", m_strFile);
     XmlGetAttr((class TiXmlElement*)(pNode), "control", m_strControl);
@@ -215,12 +215,12 @@ int CTextureAnimationData::FUN_141847c90(int nTime)
 MS2_REPLACE_METHOD(0x141847C90, CTextureAnimationData, FUN_141847c90, 398, 0x5BB09234);
 
 // @0x141847e30
-bool CTextureAnimationData::FUN_141847e30(Unk_140165cf0* pNode)
+bool CTextureAnimationData::FUN_141847e30(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "target", m_strTarget);
     if (m_strTarget.IsEmpty())
         m_strTarget = DAT_143ae51d8.operator const char*();
-    for (Unk_140165cf0* pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("texture")); pTexture != 0; pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pTexture))->NextSibling("texture")))
+    for (TiXmlElement* pTexture = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("texture")); pTexture != 0; pTexture = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pTexture))->NextSibling("texture")))
     {
         m_arrFrames.Add(Unk_TextureFrame());
         int nLast = (int)m_arrFrames.GetCount() - 1;

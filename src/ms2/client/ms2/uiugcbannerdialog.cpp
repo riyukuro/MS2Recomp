@@ -83,14 +83,14 @@ class Unk_UgcImageData : public AScript
 };
 
 
-// The title label of the dialog (a text field child of the movie).
-class Unk_WcTitle : public ASDisplayObject { public: void FUN_1422e4b80(const CStringW& str); };
-// MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of another unit (declared only).
-template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
-template <> MS2Ptr<Unk_WcTitle>::~MS2Ptr();
-template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=(int);
-template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_WcTitle>(const MS2Ptr<Unk_WcTitle>&);
-class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CString&); };
+// The price label of the dialog ("m_labelMeso") is ASLabel (the 0x88-byte text child; its setter 0x1422e4b80 sets
+// "htmlText").
+// MS2Ptr<ASLabel> members and the AScript child binder (0x140c436d0, uiitemgachaboxdialog) are COMDATs of another unit.
+template <> MS2Ptr<ASLabel>::MS2Ptr();
+template <> MS2Ptr<ASLabel>::~MS2Ptr();
+template <> MS2Ptr<ASLabel>& MS2Ptr<ASLabel>::operator=(int);
+template <> template <> MS2Ptr<ASLabel>& MS2Ptr<ASLabel>::operator=<ASLabel>(const MS2Ptr<ASLabel>&);
+template <> MS2Ptr<ASLabel> AScript::FUN_140c436d0<ASLabel>(const CString& strName);
 
 // The purchase block notice (the state manager answers whether the action is blocked right now).
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
@@ -768,9 +768,9 @@ void UIUGCBannerDialog::FUN_141b36750(__int64 nPrice)
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     if (m_238 == 0)
-        m_238 = reinterpret_cast<Unk_WcTitleFinder*>(m_30.operator->())->FUN_140c436d0("m_labelMeso");
+        m_238 = reinterpret_cast<AScript*>(m_30.operator->())->FUN_140c436d0<ASLabel>("m_labelMeso");
     if (m_238.get() != 0)
-        reinterpret_cast<MS2Ptr<ASLabel>&>(m_238)->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, (bool)0));
+        m_238->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, (bool)0));
 }
 
 // @0x141b368b0

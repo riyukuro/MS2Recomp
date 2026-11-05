@@ -7,7 +7,7 @@
 #include "effectdummy.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -16,11 +16,11 @@ public:
 // ---- out-of-unit callees ----
 
 // TinyXML element of the game (TiXmlElement/TiXmlNode); only the two navigation calls used here.
-class Unk_140165cf0 : public Unk_XmlNode {
-public:
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 
-    Unk_140165cf0* NextSiblingElement();                    // NextSiblingElement
-};
+
+
+
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
@@ -74,19 +74,19 @@ MS2SvrPtr<CEffectDummy> CEffectDummy::Clone() const
 MS2_REPLACE_METHOD(0x140A51100, CEffectDummy, Clone, 157, 0xF7AFFC88);
 
 // @0x140a511b0
-void CEffectDummy::Parse(Unk_140165cf0* pNode)
+void CEffectDummy::Parse(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return;
     XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
-    Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
+    TiXmlElement* pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
     if (pAttach)
     {
         XmlGetAttr((class TiXmlElement*)(pAttach), "parentNode", m_strParentNode);
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", m_bApplyWorldTransform);
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", m_bApplyLocalScale);
     }
-    Unk_140165cf0* pXf = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
+    TiXmlElement* pXf = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pXf)
     {
         XmlGetAttr((class TiXmlElement*)(pXf), "translate", m_vTranslate);
@@ -159,7 +159,7 @@ EffectDummyGroup::EffectDummyGroup()
 // @0x140a514e0
 void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
 {
-    for (Unk_140165cf0* pDummy = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(pNode)))->FirstChild("dummy")); pDummy != 0; pDummy = pDummy->NextSiblingElement())
+    for (TiXmlElement* pDummy = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(pNode)))->FirstChild("dummy")); pDummy != 0; pDummy = pDummy->NextSiblingElement())
     {
         DummyPtr p(new CEffectDummy);
         p->Parse(pDummy);
@@ -169,9 +169,9 @@ void EffectDummyGroup::FUN_140a514e0(TiXmlNode* pNode)
 MS2_REPLACE_METHOD(0x140A514E0, EffectDummyGroup, FUN_140a514e0, 215, 0xF53907CC);
 
 // @0x140a515c0
-void EffectDummyGroup::FUN_140a515c0()
+size_t EffectDummyGroup::FUN_140a515c0()
 {
-    (void)m_dummies.size();
+    return m_dummies.size();
 }
 MS2_REPLACE_METHOD(0x140A515C0, EffectDummyGroup, FUN_140a515c0, 31, 0xF84B7AE2);
 

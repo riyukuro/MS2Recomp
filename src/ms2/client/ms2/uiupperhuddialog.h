@@ -87,7 +87,7 @@ public:
     void SetButtonBadge(MS2Ptr<Unk_HudButton> spButton, int nCount);
     void SetPcBangState(int nState);
 
-    MS2Ptr<ASTextInput> FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out);
+    // C3: FUN_14129a040 (bind a text input) is UIHomeSummonDialog's (unit_141299650.h), called through a view in the .cpp
 
 private:
     MS2_LAYOUT_FRIEND;

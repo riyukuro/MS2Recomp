@@ -14,7 +14,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -71,9 +71,9 @@ MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, GetTypeName, 61, 0
 void UIDungeonExpenseRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_acceptButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_acceptButton)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_acceptButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_acceptButton)))
         m_acceptButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3aee0), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_cancelButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_cancelButton)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_cancelButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_cancelButton)))
         m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3af10), 0);
     FUN_140f3ad50();
     ((class Unk_DxHost*)FUN_140d86260())->vfunc_43(2, 0, 1000);

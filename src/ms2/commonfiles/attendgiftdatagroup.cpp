@@ -22,7 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -43,9 +43,9 @@ AttendGiftDataGroup::AttendGiftDataGroup()
 }
 
 // @0x1401adef0
-bool AttendGiftDataGroup::Load(Unk_140165cf0* pNode, const CString& strContext)
+bool AttendGiftDataGroup::Load(TiXmlElement* pNode, const CString& strContext)
 {
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("v")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("v")))
     {
         Unk_AttendPtr<ItemGift> spGift(new ItemGift());
         spGift->vfunc_2(pElem);
@@ -61,12 +61,12 @@ AttendGiftData::AttendGiftData()
 }
 
 // @0x1401ae040
-bool AttendGiftData::Load(Unk_140165cf0* pNode)
+bool AttendGiftData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "giftID", m_nGiftId);
     CString strContext;
     strContext.Format("giftID=%u", m_nGiftId);
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("group")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("group")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("group")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("group")))
     {
         AttendGiftDataGroupPtr spGroup(new AttendGiftDataGroup());
         if (!spGroup->Load(pElem, strContext))
@@ -108,10 +108,10 @@ bool AttendGiftDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "AttendGiftData", "giftID", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {

@@ -495,7 +495,7 @@ public:
     void Clear();
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 TiXmlElement* XmlChild(TiXmlElement* pParent, const char* szName, bool bCreate);   // child element (created on request)
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -763,7 +763,7 @@ int UIMessenger::vfunc_84()
 void UIMessenger::OnLoadComplete()
 {
     m_textInput = GetChild<ASTextInput>("m_textInput");
-    m_textOutput = FUN_140c26f60("m_textOutput");
+    m_textOutput = GetChild<ASTextArea>("m_textOutput");
     m_buttonBar = GetChild<ASButtonBar>("m_buttonBar");
     m_subject = GetChild<ASDropdownMenu>("m_subject");
     m_chatEmoticonPreview = GetChild<ASMovieClip>("m_chatEmoticonPreview");

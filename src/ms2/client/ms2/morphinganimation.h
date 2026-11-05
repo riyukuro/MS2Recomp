@@ -10,7 +10,7 @@
 #include <atlcoll.h>
 #include <atlstr.h>
 
-class Unk_140165cf0;                                    // game TinyXML element
+class TiXmlElement;                                    // game TinyXML element
 
 // 0x68 bytes, vftable 0x142f84808 (only the deleting dtor), ctor 0x141851ba0, dtor 0x141851f00.
 class CMorphingAnimationData : public CPtred
@@ -21,7 +21,7 @@ public:
 
     // Index of the frame that time nTime (ms) falls in: walks m_frameTimes, wrapping into the loop from m_nLoopStart.
     int FUN_141851c20(int nTime);                       // 0x141851c20
-    void FUN_141851db0(Unk_140165cf0* pElem);           // 0x141851db0 reads <target>/<weight> elements
+    void FUN_141851db0(TiXmlElement* pElem);           // 0x141851db0 reads <target>/<weight> elements
 
     CString m_strNodeName;                              // +0x18 name of the model node that carries the morph controller
     ATL::CAtlArray<int> m_frameTimes;                   // +0x20 duration of every frame

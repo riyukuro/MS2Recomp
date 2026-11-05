@@ -4,11 +4,11 @@
 // MS2-RANGE: 0x1407dee30-0x1407e5b80 .text$mn
 #include "ms2/placeholder/ms2stdafx.h"
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // xmlattr.h asserts (NDEBUG DLL build)
-#include "ms2/commonfiles/skillattackdata.h"
+#include "ms2/commonfiles/tinyxml.h"   // C3 #12: first, so the reduced TiXml view (via xmlattr.h) steps aside
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
-#include "ms2/commonfiles/tinyxml.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+#include "ms2/commonfiles/skillattackdata.h"
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -96,9 +96,9 @@ bool SkillArrow::operator!=(const SkillArrow& o) const
 MS2_REPLACE_METHOD(0x1407DEF80, SkillArrow, operator!=, 515, 0xBEC66076);
 
 // @0x1407df190
-int SkillArrow::Load(Unk_140165cf0* pElem)
+int SkillArrow::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pArrow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("arrow"));
+    TiXmlElement* pArrow = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("arrow"));
     if (pArrow == 0)
         return 1;
     XmlGetAttr((class TiXmlElement*)(pArrow), "overlap", reinterpret_cast<int&>(m_nOverlap));
@@ -248,9 +248,9 @@ bool SkillDamage::operator!=(const SkillDamage& o) const
 MS2_REPLACE_METHOD(0x1407DFDF0, SkillDamage, operator!=, 968, 0xB3EF0FD2);
 
 // @0x1407e01c0
-int SkillDamage::Load(Unk_140165cf0* pElem)
+int SkillDamage::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pDamage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("damage"));
+    TiXmlElement* pDamage = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("damage"));
     if (pDamage == 0)
         return 1;
     XmlGetAttr((class TiXmlElement*)(pDamage), "count", reinterpret_cast<int&>(m_nCount));
@@ -420,9 +420,9 @@ bool SkillPause::operator!=(const SkillPause& o) const
 MS2_REPLACE_METHOD(0x1407E1060, SkillPause, operator!=, 86, 0x1A6E711F);
 
 // @0x1407e10c0
-int SkillPause::Load(Unk_140165cf0* pElem)
+int SkillPause::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pPause = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("pause"));
+    TiXmlElement* pPause = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("pause"));
     if (pPause)
     {
         XmlGetAttr((class TiXmlElement*)(pPause), "pauseDuration", reinterpret_cast<float&>(m_fDuration));
@@ -462,9 +462,9 @@ bool SkillChain::operator!=(const SkillChain& o) const
 MS2_REPLACE_METHOD(0x1407E11E0, SkillChain, operator!=, 50, 0x3E310983);
 
 // @0x1407e1220
-int SkillChain::Load(Unk_140165cf0* pElem)
+int SkillChain::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pChain = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("chain"));
+    TiXmlElement* pChain = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("chain"));
     if (pChain)
         m_strEffect = Unk_ReadString((class Unk_XmlNode*)(pChain), "effect", CString(""));
     return 1;
@@ -570,7 +570,7 @@ const CString& SkillAttackData::GetArrowEffect() const
 MS2_REPLACE_METHOD(0x1407E1A30, SkillAttackData, GetArrowEffect, 17, 0x05460BBA);
 
 // @0x1407e1a50
-int SkillAttackData::Load(Unk_140165cf0* pElem)
+int SkillAttackData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "point", m_strPoint);
     XmlGetAttr((class TiXmlElement*)(pElem), "pointGroupID", reinterpret_cast<unsigned int&>(m_nPointGroupID));
@@ -604,14 +604,14 @@ int SkillAttackData::Load(Unk_140165cf0* pElem)
         return 0;
     if (!m_damage.Load(pElem))
         return 0;
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
     {
         MS2Ptr<SkillActionAdditional> spAction(new SkillActionAdditional);
         if (!spAction->Load(pChild))
             return 0;
         m_vAdditional.push_back(spAction);
     }
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionSkill")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("actionSkill")))
     {
         MS2Ptr<SkillActionSkill> spAction(new SkillActionSkill);
         if (!spAction->Load(pChild))

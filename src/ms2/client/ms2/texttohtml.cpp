@@ -99,21 +99,21 @@ MS2_CHECK_SIZE(Unk_ThWedding, 0x28);
 // A time value (the date text helper).
 
 // The item record handle (the item of a megaphone): the function name at +0x290 and its parameter list at +0x2b0.
-class Unk_CommandArgs
-{
-public:
-    unsigned FUN_1408d2380();                                   // the count
-    CStringW FUN_1408d21c0(int nIdx, CStringW strDefault);      // a string parameter
-    int FUN_1408d1f60(unsigned nIdx, int nDefault);             // an integer parameter
-private:
-    char m_pad[0x28];
-};
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
+
+
+
+
+
+
+
+
 struct Unk_ThItemRec
 {
     char m_pad[0x290];
     CStringW m_290;
     char m_pad298[0x18];
-    Unk_CommandArgs m_2b0;
+    ItemFunctionArgs m_2b0;
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 

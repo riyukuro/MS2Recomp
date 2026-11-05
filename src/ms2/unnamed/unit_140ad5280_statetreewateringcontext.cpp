@@ -38,7 +38,7 @@ MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 class UICastingBar : public UIObject
 {
 public:
-    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
+    void StartCastingText(class ICastingEventListener* pListener, const CStringW& strText, int nDuration, bool bA, bool bB,
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };
@@ -120,7 +120,7 @@ void StateTreeWatering::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strLabel(L"");
-            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(nTextId), nDuration, false,
+            pBar->StartCastingText(static_cast<ICastingEventListener*>(this), GetStringCommon(nTextId), nDuration, false,
                 true, strLabel);
         }
     }

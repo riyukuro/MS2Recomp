@@ -49,19 +49,19 @@ static CString s_strBuyTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "C
 // ---- unit-local views of exe objects ----
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> RankClickDelegate;
-
-class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_PCBaseBuffs : public AdditionalCliList {};
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
+class Unk_PCBaseBuffs : public AdditionalCliList {};
 class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
 UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
 class UIWebBrowser* FUN_140c43790(int nUiId);                       // GetDialog
 class Unk_RankClientState { public: };
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
-class Unk_QnState   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_QnTracking* FUN_140c9b8b0();
-};
+// C3: FUN_140c9b8b0 is CGameOption's (cgameoption.h); was the Unk_QnState view
+
+
+
+
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
@@ -69,8 +69,8 @@ CStringW GetStringCommonByKey(const CStringW& str);                        // st
 CStringW GetStringCommon(int nId);                                    // string table text by id
 template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a);             // the key's text formatted with a
 template <class A, class B, class C> CStringW FUN_14028dfa0(CStringW strKey, const A& a, const B& b, const C& c);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 template <class A, class B> CStringW StringFormat(const wchar_t* szFormat, const A& a, const B& b);
 template <class A> CString StringFormat(const char* szFormat, const A& a);
 enum Unk_ClosingJob { Unk_ClosingJob_None };   // uidungeonclosingphotodialog's job enum (StringFormat<Unk_ClosingJob> 0x140e10af0)
@@ -138,7 +138,7 @@ void UIRankPvPDialog::OnLoadComplete()
         m_seasonBestRating = m_registerPage->FUN_1409b4620("m_seasonBestRating");
         m_rating = m_registerPage->FUN_1409b4620("m_rating");
         m_rankMark = m_registerPage->FUN_1409b4560("m_rankMark");
-        m_observeCheck->FUN_1422ce090(((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer);
+        m_observeCheck->FUN_1422ce090(((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer);
         m_register->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
         m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
         m_showGrade->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
@@ -438,7 +438,7 @@ void UIRankPvPDialog::FUN_140f95260(const Scaleform::GFx::FunctionHandler::Param
 {
     if (m_30 == 0)
         return;
-    unsigned char nObserver = ((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer;
+    unsigned char nObserver = ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer;
     if (nObserver == 1)
     {
         // Registering while observing: ask first (OnMessage "rankArenaRegister").
@@ -502,7 +502,7 @@ void UIRankPvPDialog::FUN_140f95630(const Scaleform::GFx::FunctionHandler::Param
     if (m_30 == 0)
         return;
     bool bObserve = FUN_14028d780(m_observeCheck->FUN_1422ce0e0());
-    ((struct Unk_RankClientFlags*)((class Unk_QnState*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->FUN_140c9b8b0())->m_observer = bObserve;
+    ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer = bObserve;
     ((class CGameOption*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
     if (bObserve)
         FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_observe_notify"), 0, 0, CStringW(L""));

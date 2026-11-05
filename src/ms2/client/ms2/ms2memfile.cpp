@@ -27,6 +27,7 @@
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CFileBuffer> COMDATs (m_buffer)
 #include "ms2/ms2recover.h"
 
 #include "ms2/scaleform/include/kernel/sf_file.h"
@@ -70,7 +71,7 @@ MS2MemFile::MS2MemFile(const void* pData, int nSize)
 {
     SetEndianSwap(false);
     m_uiPos = 0;
-    m_buffer = new CFileBuffer;
+    m_buffer.AssignRaw(new CFileBuffer);
     m_buffer->Adopt(const_cast<void*>(pData), nSize);
     m_bGood = m_buffer.get() ? true : false;
 }
@@ -173,7 +174,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_PayloadPtr<CFileBuffer> m_buffer;                   // +0x30 keeps the bytes alive
+    MS2Ptr<CFileBuffer> m_buffer;                           // +0x30 keeps the bytes alive
 };
 MS2_CHECK_SIZE(ScaleformMemFile, 0x40);
 

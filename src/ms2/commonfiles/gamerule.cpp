@@ -281,7 +281,7 @@
 #include <functional>
 #include "hook/ms2hook.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
-
+struct Unk_FishRange { bool FUN_1403b4ef0(unsigned n) const; };   // the (lo, hi) range test 0x1403b4ef0 (fishsimultedata.h): Unk_EpicRestartRange::IsIn
 // The ontime getters return MS2Ptr<const OntimeEventContext>: the exe converts the map's MS2Ptr<OntimeEventContext>
 // into a second pointer family (copy 0x140497ca0 reads the source through get(), AddRef 0x1404aeed0, (int) 0x140497ce0)
 // that only this TU instantiates. The CPtred helpers take a non-const pointer.
@@ -2083,7 +2083,7 @@ BOOL CGameRule::FUN_14047c380(unsigned value)
     if (m_b30->m_28.find(value) != m_b30->m_28.end())
         return TRUE;
     for (size_t i = 0; i < m_b30->m_38.GetCount(); i++) {
-        if (m_b30->m_38[i].IsIn(value))
+        if (reinterpret_cast<const Unk_FishRange&>(m_b30->m_38[i]).FUN_1403b4ef0(value))
             return TRUE;
     }
     return FALSE;

@@ -37,7 +37,7 @@
 #include "ms2/client/ms2/uiservice.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -289,7 +289,7 @@ CGameMenuItem::CGameMenuItem()
 }
 
 // @0x140cf0970
-void CGameMenuItem::Load(Unk_140165cf0* pElem)
+void CGameMenuItem::Load(TiXmlElement* pElem)
 {
     XmlEnumName<int, Parse_14021b830>(pElem, "id", m_nId);
     XmlEnumName<EGameMenuFilter, ParseGameMenuFilter>(pElem, "filterType", m_eFilterType);
@@ -299,7 +299,7 @@ void CGameMenuItem::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "col", reinterpret_cast<int&>(m_nCol));
     if (!m_strFilterValue.IsEmpty())
         m_nFilterEventId = FUN_140718200(m_strFilterValue);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("child")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("child")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("child")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("child")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -1129,20 +1129,20 @@ int CGameMenuTable::LoadXml()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("menuSet")); pSet != 0; pSet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->NextSibling("menuSet")))
+    for (TiXmlElement* pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("menuSet")); pSet != 0; pSet = ((class TiXmlElement*)((class Unk_XmlNode*)(pSet))->NextSibling("menuSet")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSet)))
             continue;
         {
             EGameMenuSet eSet = GAMEMENU_SET_GAME;
             XmlEnumName<EGameMenuSet, ParseGameMenuSet>(pSet, "type", eSet);
-            for (Unk_140165cf0* pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSet))->FirstChild("menu")); pMenu != 0; pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
+            for (TiXmlElement* pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pSet))->FirstChild("menu")); pMenu != 0; pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
             {
                 if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                     continue;

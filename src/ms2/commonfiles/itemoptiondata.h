@@ -15,7 +15,7 @@
 
 class CItemData;
 class CItemOption;
-class Unk_140165cf0;                // game TinyXML element
+class TiXmlElement;                // game TinyXML element
 class Unk_Random;                   // randomeffectparam.h
 class ItemOptionRandom;
 class ItemOptionValueRandom;
@@ -131,7 +131,7 @@ class ItemOptionValueRandom : public CPtred
 {
 public:
     ItemOptionValueRandom();                    // 0x1405d2520
-    bool FUN_1405d2590(Unk_140165cf0* pElem);   // xml read
+    bool FUN_1405d2590(TiXmlElement* pElem);   // xml read
     CString FUN_1405d26c0();                    // the xml name of the stat
     int GetStat();                        // the stat (-1 for a special stat)
     unsigned GetSpecial();                   // the special stat
@@ -156,13 +156,13 @@ public:
     ItemOptionConstant();                       // 0x1405d29f0
     void FUN_1405d2a50(int nValue);
     int GetGrade();                        // "grade"
-    bool FUN_1405d2a90(Unk_140165cf0* pElem);   // xml read
+    bool FUN_1405d2a90(TiXmlElement* pElem);   // xml read
     void FUN_1405d2e70(MS2Ptr<CItemOption> spOption, int nRank);   // adds the rows to an option
     size_t FUN_1405d31f0();                     // the row count
     MS2Ptr<ItemOptionValue> FUN_1405d3220(int nStat);
     MS2Ptr<ItemOptionValue> FUN_1405d3300(unsigned nSpecial);
     void FUN_1405d33e0(std::function<void(ItemOptionValue*)> fnVisit);
-    void FUN_1405d3490(Unk_140165cf0* pElem);   // xml read of createType 3 (lua computed) rows
+    void FUN_1405d3490(TiXmlElement* pElem);   // xml read of createType 3 (lua computed) rows
 private:
     int m_n18;                                  // +0x18
     int m_nGrade;                               // +0x1c "grade"
@@ -246,7 +246,7 @@ class ItemOptionVariationData : public CPtred
 {
 public:
     ItemOptionVariationData();                  // 0x1405d37e0
-    void FUN_1405d3870(Unk_140165cf0* pElem);   // xml read
+    void FUN_1405d3870(TiXmlElement* pElem);   // xml read
     int FUN_1405d3a20();                        // "id"
     int FUN_1405d3a40();                        // a random stat (0 when none)
     int FUN_1405d3a90(Unk_Random* pRandom);
@@ -273,7 +273,7 @@ public:
     ItemOptionStatGroup GetStatGroup();        // "statGroup"
     int GetProbVer();                        // "probVer"
     int GetLevelGroupId();                        // "levelGroupID"
-    bool Load(Unk_140165cf0* pElem);   // xml read
+    bool Load(TiXmlElement* pElem);   // xml read
     // Rolls the random options onto an option.
     void FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
     bool FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);

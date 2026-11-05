@@ -40,7 +40,7 @@ public:
     void FUN_14129cb20();                                   // forget the three expiry times
     CStringW FUN_14129cb50(ATL::CTimeSpan span);            // "mm:ss", red when under 11 seconds
     void FUN_14129cc60(bool bActive);                       // 0x14129cc60 m_active, restack the bottom-centre dialogs
-    MS2Ptr<ASMovieClip> FUN_140ba4b70(const CString& strName);  // child lookup
+    // child lookup 0x140ba4b70 = UISwfEntity::GetChild<ASTileList> (OnLoadComplete)
 
 private:
     MS2_LAYOUT_FRIEND;

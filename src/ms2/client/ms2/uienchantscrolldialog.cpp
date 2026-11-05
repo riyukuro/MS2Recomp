@@ -97,7 +97,7 @@ ES_ID_WRAP(3)
 
 CStringW FUN_141b71910(__int64 n);
 
-typedef ATL::CAtlMap<int, Unk_EnchantPtr<BaseOption>, Unk_EnchantKeyTraits> Unk_EsOptionMap;
+typedef ATL::CAtlMap<int, MS2Ptr<BaseOption>, Unk_EnchantKeyTraits> Unk_EsOptionMap;
 typedef ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > Unk_EsKeyArray;
 
 static int FUN_140f3e920(const Unk_EsKeyArray& arr, const int& nValue)
@@ -374,7 +374,7 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
     size_t nCount = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap map(17, 0.75f, 0.25f, 2.25f, 10);
     for (size_t i = 0; i < nCount; i++) {
-        Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
+        MS2Ptr<BaseOption> spOpt(new BaseOption());
         int nKey = (unsigned short)packet.ReadInt16();
         spOpt->SetValue(packet.ReadInt32());
         map.SetAt(nKey, spOpt);
@@ -382,7 +382,7 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
     ASArray list(2);
     for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
         unsigned nKey = map.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spOpt = map.GetValueAt(pos);
+        MS2Ptr<BaseOption> spOpt = map.GetValueAt(pos);
         if (!spOpt)
             continue;
         if (spOpt->HasValue()) {
@@ -412,7 +412,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     size_t nLow = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap mapLow(17, 0.75f, 0.25f, 2.25f, 10);
     for (size_t i = 0; i < nLow; i++) {
-        Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
+        MS2Ptr<BaseOption> spOpt(new BaseOption());
         int nKey = (unsigned short)packet.ReadInt16();
         spOpt->SetValue(packet.ReadInt32());
         mapLow.SetAt(nKey, spOpt);
@@ -422,7 +422,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     size_t nHigh = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap mapHigh(17, 0.75f, 0.25f, 2.25f, 10);
     for (size_t i = 0; i < nHigh; i++) {
-        Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
+        MS2Ptr<BaseOption> spOpt(new BaseOption());
         int nKey = (unsigned short)packet.ReadInt16();
         spOpt->SetValue(packet.ReadInt32());
         mapHigh.SetAt(nKey, spOpt);
@@ -432,8 +432,8 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     ASArray list(2);
     for (size_t i = 0; i < keys.GetCount(); i++) {
         int nKey = keys.GetAt(i);
-        Unk_EnchantPtr<BaseOption> spLow(0);
-        Unk_EnchantPtr<BaseOption> spHigh(0);
+        MS2Ptr<BaseOption> spLow(0);
+        MS2Ptr<BaseOption> spHigh(0);
         if (!mapLow.Lookup(nKey, spLow))
             continue;
         if (!mapHigh.Lookup(nKey, spHigh))

@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0;
+class TiXmlElement;
 class TiXmlElement;
 class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -25,7 +25,7 @@ unsigned FUN_140540000(const CString& strTag);              // ticket tag name -
 // @0x14031c680
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-inline int ReadTicketTagAttr(Unk_140165cf0* pElem, const char* pszName, unsigned* pnOut)
+inline int ReadTicketTagAttr(TiXmlElement* pElem, const char* pszName, unsigned* pnOut)
 {
     if (FALSE)
     {
@@ -44,10 +44,10 @@ inline int ReadTicketTagAttr(Unk_140165cf0* pElem, const char* pszName, unsigned
 
 // tinyxmlhelper.h: the "v" attributes of the child elements `pszName` (1 when there is none).
 // @0x14031c740
-inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned>& rOut)
+inline int ReadValueList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<unsigned>& rOut)
 {
     int nCount = 0;
-    for (Unk_140165cf0* pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pElem)->FirstChildElement(pszName); pChild; pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pChild)->NextSiblingElement(pszName))
+    for (TiXmlElement* pChild = (TiXmlElement*)reinterpret_cast<TiXmlNode*>(pElem)->FirstChildElement(pszName); pChild; pChild = (TiXmlElement*)reinterpret_cast<TiXmlNode*>(pChild)->NextSiblingElement(pszName))
     {
         unsigned nValue;
         XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<unsigned int&>(nValue));
@@ -71,7 +71,7 @@ int DungeonRewardCoupon::GetId()
 MS2_REPLACE_METHOD(0x14031C590, DungeonRewardCoupon, GetId, 14, 0x72E52537);
 
 // @0x14031c5b0
-void DungeonRewardCoupon::Load(Unk_140165cf0* pElem)
+void DungeonRewardCoupon::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
     ReadTicketTagAttr(pElem, "ticketTag", &m_ticketTag);

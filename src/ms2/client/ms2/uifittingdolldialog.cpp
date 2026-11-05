@@ -41,7 +41,7 @@
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 
 // The dialog movie's root (an ASDialog): "bagID" / "owner" are plain members of the movie, the drag events are methods.
 class ASDialog : public ASDisplayObject
@@ -98,12 +98,13 @@ public:
 class Unk_FdPlotMgr {};
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, egf::EntityID kId);   // by value (the exe builds the key in an argument temp)
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+// C3: FUN_1410b8c90 is the CubeMapInformationService member below (key by value, the exe builds it in an argument temp)
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
     __int64 GetOwnerId(int, int);
+    class Cube* FUN_1410b8c90(egf::EntityID kId);
 };
 
 // The doll / player helpers.
@@ -150,7 +151,7 @@ static CString s_strSkill("skill");
 static CString s_strStun("stun");
 
 // @0x140113450
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 
 // @0x140113470
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
@@ -370,7 +371,7 @@ void UIFittingDollDialog::FUN_141934070()
         return;
     int bOwner = 0;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, pDoll->FUN_14123c460());
+    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pPlot != 0)
         bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
     bool bEquip = pDoll->FUN_14121c710() == 1;
@@ -416,7 +417,7 @@ int UIFittingDollDialog::FUN_141934430()
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, pDoll->FUN_14123c460());
+    Unk_FdPlot* pPlot = reinterpret_cast<Unk_FdPlot*>(((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pPlot == 0)
         return 0xd;
     if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())

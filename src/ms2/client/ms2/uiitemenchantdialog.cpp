@@ -11,7 +11,7 @@
 // MS2-PIN: ??$?8PEAVUIItemEnchantDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIItemEnchantDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1419c99f0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemEnchantDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x1419ca480 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCEnchantOption@@@@QEAAAEAV1@PEAVCEnchantOption@@@Z 0x1419ca670 ; unique
-// MS2-PIN: ??8?$Unk_EnchantPtr@VCItemEnchantInfo@@@@QEBA_NPEAVCItemEnchantInfo@@@Z 0x1419ca6e0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCItemEnchantInfo@@@@QEBA_NPEAVCItemEnchantInfo@@@Z 0x1419ca6e0 ; unique
 // MS2-PIN: ??_EUIItemEnchantDialog@@WBJA@EAAPEAXI@Z 0x1419ca730 ; unique
 // MS2-PIN: ??_EUIItemEnchantDialog@@WBJI@EAAPEAXI@Z 0x1419ca73c ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemEnchantDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x1419ca750 ; prop
@@ -239,9 +239,9 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_EnScroll : public CPtred { public: char m_pad[0x1c - 0x18]; int m_1c; };
 
 // Item sub-objects returned by the CItem accessors.
-class Unk_ItemEnchantData : public CItemStatus
-{
-};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
+
+
 
 // The enchant result option container (RTTI CEnchantOption : CPtred, 0x68).
 class CEnchantOption : public CPtred
@@ -250,7 +250,7 @@ public:
     CEnchantOption();
     void FUN_14058d5c0(CInPacket& pkt);
     char m_pad_18[0x20 - 0x18];
-    ATL::CAtlMap<Unk_PacketOptionB, Unk_PayloadPtr<BaseOption> > m_options;     // +0x20
+    ATL::CAtlMap<Unk_PacketOptionB, MS2Ptr<BaseOption> > m_options;     // +0x20
 };
 MS2_CHECK_SIZE(CEnchantOption, 0x68);
 
@@ -727,7 +727,7 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
         return;
     if (FUN_141902660(item) != 0)
         return;
-    Unk_EnchantPtr<CItemEnchantInfo> info(item->FUN_1405278a0()->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> info(item->FUN_1405278a0()->GetEnchant());
     if (info == 0)
         return;
     int lock = item->FUN_140527030();
@@ -1546,7 +1546,7 @@ CStringW UIItemEnchantDialog::FUN_1419c65b0(MS2Ptr<CItem> item, CEnchantOption* 
     CStringW out;
     for (POSITION pos = pOption->m_options.GetStartPosition(); pos != 0; pOption->m_options.GetNext(pos)) {
         unsigned int key = pOption->m_options.GetKeyAt(pos);
-        Unk_PayloadPtr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
+        MS2Ptr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
         if (opt.IsNull())
             continue;
         if (opt->HasValue()) {
@@ -1568,7 +1568,7 @@ void UIItemEnchantDialog::FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOpt
     ASArray list(2);
     for (POSITION pos = pOption->m_options.GetStartPosition(); pos != 0; pOption->m_options.GetNext(pos)) {
         unsigned int key = pOption->m_options.GetKeyAt(pos);
-        Unk_PayloadPtr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
+        MS2Ptr<BaseOption> opt = pOption->m_options.GetValueAt(pos);
         if (opt.IsNull())
             continue;
         if (opt->HasValue()) {
@@ -1848,9 +1848,9 @@ int UIItemEnchantDialog::GetProtectorRank(int itemId)
     if (!data)
         return 0;
     if (data->function.name == L"EnchantSuperProtect") {
-        return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0);
+        return reinterpret_cast<ItemFunctionArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0);
     } else if (data->function.name == L"EnchantScroll") {
-        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
+        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<ItemFunctionArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
             return ref.operator->()->GetMaxRank();
     }
@@ -1864,9 +1864,9 @@ int UIItemEnchantDialog::GetProtectorCount(int itemId)
     if (!data)
         return 0;
     if (data->function.name == L"EnchantSuperProtect") {
-        return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(1, 0);
+        return reinterpret_cast<ItemFunctionArgs*>(&data->function.parameter)->FUN_1408d1f60(1, 0);
     } else if (data->function.name == L"EnchantScroll") {
-        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
+        CEnchantScrollTable::ScrollPtr ref = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(reinterpret_cast<ItemFunctionArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
             return reinterpret_cast<Unk_EnScroll*>(ref.operator->())->m_1c;
     }
@@ -1883,10 +1883,10 @@ int UIItemEnchantDialog::FUN_1419c89b0(unsigned __int64 uid)
         return 0;
     int hasCurrency = 0;
     for (unsigned __int64 i = 0; i < m_ingredients.FUN_14026bee0(); i++) {
-        Unk_IngRef ing = *m_ingredients.m_items.FUN_14027f1f0(i);
+        Unk_IngRef ing = reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(m_ingredients.m_items)[i];
         if (g_143ab2a90.FUN_140a5f780(ing->m_b, 0) < ing->m_c)
             return 0;
-        if ((*m_ingredients.m_items.FUN_14027f1f0(i))->m_b == 99)
+        if ((reinterpret_cast<std::vector<MS2Ptr<CIngredientInfo>>&>(m_ingredients.m_items)[i])->m_b == 99)
             hasCurrency = 1;
     }
     return hasCurrency;

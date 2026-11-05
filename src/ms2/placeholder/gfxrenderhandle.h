@@ -106,38 +106,13 @@ public:
 };
 } }
 class Unk_BgDispHandle;
-class Unk_GFxHandleObj
-{
-public:
-    void AddRef();                                                          // 0x14257dc30
-    void Release();                                                         // 0x14257dcb0
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual Unk_BgTarget* vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17(Unk_BgTarget* pTarget, bool bFlag);
-    void FUN_142582230(void* p);
-    void Assign(Unk_BgDispHandle& kHandle);                                 // 0x14127cb10
-};
+// (Unk_GFxHandleObj is Unk_GFxUIHal, gfxrenderer2d.h; the display call is Unk_GFxUIRenderer2D::Display.)
 // The display handle copy of the movie (vfunc_9): a ref-counted pointer, wrapped twice (0x14127c160 <- 0x14127c3d0 <- 0x14127c130).
 class Unk_BgHandleRef
 {
 public:
     Unk_BgHandleRef(const Unk_BgHandleRef& r);                              // 0x14127c160
-    Unk_GFxHandleObj* m_p;
+    Scaleform::RefCountImpl* m_p;                                           // the handle data (RefCountImpl AddRef 0x14257dc30)
 };
 class Unk_BgDispBase : public Unk_BgHandleRef
 {

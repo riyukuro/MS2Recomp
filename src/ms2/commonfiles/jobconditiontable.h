@@ -11,10 +11,10 @@
 #include "ms2/placeholder/cvaliddata.h"
 
 // The creating-constructor tag of the smart pointer below (`Unk_JobPtr<T> p(Unk_JobNewTag(0))`).
-struct Unk_JobNewTag
-{
-    explicit Unk_JobNewTag(int);                            // 0x1401b7b90 (returns its this, no code)
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_JobNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_JobNewTag;
+
+
 
 CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 

@@ -47,7 +47,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/client/ms2/uirenderview.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/placeholder/ssquickentry.h"
 #include "ms2/placeholder/cskillsettable.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
@@ -57,7 +57,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/commonfiles/achievedata.h"
 #include "ms2/gfxui/notifyhandler.h"
 #include "ms2/placeholder/crideedata.h"
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
 static CString s_strNotThisPlace = "system_notice_error_warningNotThisPlace";              // @0x140116540
@@ -68,11 +68,11 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);             
 
 // ---- unit-local views of exe types (names assumed; layouts only as far as this unit reads them) ----
 
-// The AS objects of the movie (helpers of the Invoke family that only this unit uses).
+class Unk_LgRoot { public: Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1); };   // the (string, ushort) invoke helper, defined by uileveluppackagedialog.cpp
 class Unk_MpScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1);
+    // the AS objects of the movie (helpers of the Invoke family that only this unit uses)
     MS2Ptr<ASEffectManager> FUN_1419f3a40(const CString& strName);
 };
 // The (int, int, int) invoke helper, defined as Unk_EpEntity:: by uiepprogress.cpp.
@@ -126,7 +126,7 @@ void FUN_1417633f0(const CString& strName, int nCount);                 // creat
 // The skill set of the player.
 
 // The key table.
-class Unk_MpKeyPages { public: int FUN_1414370a0(); };
+// C3: Unk_MpKeyPages was CKeyTable::m_quickSlots (ckeytable.h), CAtlArray<CAtlMap<unsigned, Unk_SsQuickEntry>>
 class CKeyTable   // C3: member view (real class not in this TU)
 {
 public:
@@ -148,14 +148,14 @@ class Unk_MpKeyTable
 public:
     int FUN_1419f4760();
     char m_pad_00[0x1a0];
-    Unk_MpKeyPages m_1a0;                                               // +0x1a0 the pages
+    ATL::CAtlArray<ATL::CAtlMap<unsigned int, Unk_SsQuickEntry> > m_1a0;   // +0x1a0 the pages (CKeyTable::m_quickSlots)
 };
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 // @0x1419f4760
 int Unk_MpKeyTable::FUN_1419f4760()
 {
-    return m_1a0.FUN_1414370a0();
+    return (int)m_1a0.GetCount();
 }
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -190,15 +190,15 @@ class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Ridee : public PCBase { public: MS2SvrPtr<CRideeData> GetData(); };   // C3: member view (held through efd::SmartPointer<Ridee>)
 
 // The ridee avatar (UIAvatarRidee, 0xd8; slot 1 binds the event listener, slot 28 forwards the render target).
-struct Unk_MpCamData
-{
-    Unk_MpCamData();                                                    // 0x140cb13b0
+class Unk_ModelViewCamera   // C3: uimodelview.h's camera preset (0x30); was Unk_MpCamData (typedef below)
+{ public:
+    Unk_ModelViewCamera();                                              // 0x140cb13b0
     NiPoint3 m_eye;
     NiPoint3 m_target;
     float m_18, m_1c, m_20, m_24;                                       // the ctor zeroes +0x18..+0x24
     int m_28;                                                           // 1
     int m_2c;                                                           // 0
-};
+}; typedef Unk_ModelViewCamera Unk_MpCamData;
 class Unk_MpCamera
 {
 public:
@@ -243,10 +243,10 @@ template <> MS2Ptr<Cube>::~MS2Ptr();                                    // 0x140
 template <> MS2Ptr<Cube>::operator Cube*() const;                       // 0x140885330
 template <> Cube* MS2Ptr<Cube>::operator->() const;                     // 0x140885350
 class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view (cubemapinformationservice_3.h)
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
-template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;        // 0x140885310
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
+template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInformationService*() const;        // 0x140885310
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
@@ -256,12 +256,12 @@ class JobSystem   // C3: member view (jobsystem.h needs MS2_THIS_FILE)
 public:
     JobDataPtr GetJobData();
 };
-class AdditionalCliList   // C3: member view (real class not in this TU)
-{
-public:
-    float FUN_140970fb0();
-    bool IsInfinitySP();
-};
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
+//
+//
+//
+//
+//
 class Unk_MpStat { public:   };
 
 class Unk_MpPC : public MyPC
@@ -553,8 +553,8 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
                     {
-                        efd::SmartPointer<Unk_Service6100017> phys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-                        if (phys.operator Unk_Service6100017*() != 0)
+                        efd::SmartPointer<CubeMapInformationService> phys(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+                        if (phys.operator CubeMapInformationService*() != 0)
                         {
                             MS2Ptr<Cube> weapon(reinterpret_cast<CubeMapInformationService*>(phys.operator->())->GetCubeAtPoint(pCtl->GetPtCell()));
                             if (weapon.operator Cube*() != 0)
@@ -713,7 +713,7 @@ void UIMainPlayerInfo::vfunc_oa0_8(CStringW s)
 void UIMainPlayerInfo::vfunc_oa0_9(unsigned short nLevel)
 {
     if (m_playerInfo.get() != 0)
-        MP_AS(m_playerInfo)->FUN_140ea5e70("setLevel", nLevel);
+        reinterpret_cast<Unk_LgRoot*>(m_playerInfo.operator->())->FUN_140ea5e70("setLevel", nLevel);
     FUN_1419f37f0(1);
 }
 

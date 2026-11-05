@@ -15,6 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/cgameoption.h"
 #include <io.h>
 
 typedef MS2Ptr<ASDropdownMenu> RLg;             // a drop down of the option dialog
@@ -34,22 +35,22 @@ struct Unk_LgDialog
     RLg FUN_140cfcf10(CString name, int nIndex);                // a child drop down by name
 };
 
-// The game-option settings object returned by FUN_1409a8b10.
-class Unk_LgSettings
-{
-public:
-    Unk_LgState* FUN_140cfd280();                               // +0x198 the saved language / voice
-    CStringW* FUN_140cfd260();                                  // +0xe8 the region name
-    char m_pad[0xe8];
-    CStringW m_strRegion;                                       // +0xe8
-    char m_pad2[0x198 - 0xf0];
-    Unk_LgState m_state;                                        // +0x198
-};
-class CGameOption   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlDocument* FUN_1412442a0();
-};
+// C3: the former settings stand-in is CGameOption (cgameoption.h): FUN_140cfd260 = &m_connect (+0xe8, the
+// region name is its first string), FUN_140cfd280 = &m_language (+0x198).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The state block's methods (0x14125f090...).
 struct Unk_LgState* FUN_14125f090(struct Unk_LgState*);   // C3: was FUN_14125f090
@@ -78,15 +79,15 @@ CLocaleLanguageData* FUN_140cfd210(LocaleLanguageDataPtr* p)
 }
 
 // @0x140cfd260
-CStringW* Unk_LgSettings::FUN_140cfd260()
+Unk_GoConnect* CGameOption::FUN_140cfd260()
 {
-    return &m_strRegion;
+    return &m_connect;
 }
 
 // @0x140cfd280
-Unk_LgState* Unk_LgSettings::FUN_140cfd280()
+Unk_LgState* CGameOption::FUN_140cfd280()
 {
-    return &m_state;
+    return &m_language;
 }
 
 // @0x140cfb450
@@ -105,7 +106,7 @@ CGameOptionLanguage::~CGameOptionLanguage()
 void CGameOptionLanguage::vfunc_3(int n)
 {
     if (n == 0)
-        FUN_14125f260(&m_state, ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280());
+        FUN_14125f260(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140cfd280());
     else
         FUN_140cfbf50();
     CBaseOption::vfunc_3(n);
@@ -293,7 +294,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                 if (DAT_143ab0248 == 2)
                 {
                     CString strRegion;
-                    strRegion = (const wchar_t*)*((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd260();
+                    strRegion = (const wchar_t*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()->m_str00;
                     if (strRegion.IsEmpty())
                         strRegion = "stage";
                     ASObj item(2);
@@ -367,14 +368,14 @@ void CGameOptionLanguage::vfunc_10()
 {
     CBaseOption::vfunc_10();
     int bRestart = 0;
-    if (m_state.m_nLanguage != ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nLanguage)
+    if (m_state.m_nLanguage != TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()->m_nLanguage)
         bRestart = 1;
-    if (m_state.m_nVoice != ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nVoice)
+    if (m_state.m_nVoice != TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()->m_nVoice)
     {
         int nOk = FUN_140cfbcd0(m_state.m_nVoice);
         if (nOk == 0)
         {
-            m_state.m_nVoice = ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nVoice;
+            m_state.m_nVoice = TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()->m_nVoice;
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
             if (((void*)list.get()) != 0)
                 list->SetSelectedIndex(m_state.m_nVoice);
@@ -391,7 +392,7 @@ void CGameOptionLanguage::vfunc_10()
     }
     if (bRestart)
         FUN_140d73aa0(GetStringCommonByKey(L"s_gameoption_voice_select_restart"), 0, 0, CStringW(L""));
-    FUN_14125f260(((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280(), &m_state);
+    FUN_14125f260(TSingleton<CGameOption>::GetInstance()->FUN_140cfd280(), &m_state);
 }
 MS2_REPLACE_METHOD(0x140cfcb20, CGameOptionLanguage, vfunc_10, 726, 0xD92A6CE6);
 
@@ -400,7 +401,7 @@ void CGameOptionLanguage::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125f0c0(&m_state);
-    LoadGameOptionLanguage(&m_state, (class TiXmlDocument*)(((void*)((class CGameOption*)(class Unk_LgSettings*)(((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())))->FUN_1412442a0())));
+    LoadGameOptionLanguage(&m_state, (class TiXmlDocument*)(((void*)TSingleton<CGameOption>::GetInstance()->FUN_1412442a0())));
     vfunc_6();
 }
 
@@ -413,9 +414,9 @@ CString CGameOptionLanguage::GetTypeName()
 // @0x140cfceb0
 int CGameOptionLanguage::vfunc_14()
 {
-    if (m_state.m_nLanguage != ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nLanguage)
+    if (m_state.m_nLanguage != TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()->m_nLanguage)
         return true;
-    if (m_state.m_nVoice != ((class Unk_LgSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140cfd280()->m_nVoice)
+    if (m_state.m_nVoice != TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()->m_nVoice)
         return true;
     return false;
 }

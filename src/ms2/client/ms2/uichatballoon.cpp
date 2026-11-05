@@ -50,7 +50,7 @@ CStringW DAT_143af1c18 = L"confirmCommend";
 extern CStringW DAT_143af1c18;
 #endif
 extern CStringW DAT_143af1bc8;                                      // the game exit message tag (another unit's static)
-
+class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // CGameOption view, defined in uichaosdpsdialog.cpp (0x140e09150)
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 struct Unk_CbCfgFloat { char m_pad[0x58]; };
 struct Unk_CbCfgInt { char m_pad[0x58]; };
@@ -535,7 +535,7 @@ int FUN_1418fcb70()
         return 0;
     if (FUN_141274ff0() != 0)
     {
-        if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150()) == 0)
+        if (*reinterpret_cast<unsigned char*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0)
             return 0;
         FUN_141274f50();
     }

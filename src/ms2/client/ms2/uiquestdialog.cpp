@@ -264,8 +264,8 @@ public:
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
 };
-// "m_questInfo".
-class Unk_QdInfo : public Unk_QdCtl { };
+// C3: "m_questInfo" is an ASUIComponent child (getter 0x140c02990, owned by uidailymissiondialog).
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);
 class ASDialog : public ASDisplayObject
 {
 public:
@@ -780,7 +780,7 @@ void UIQuestDialog::SelectQuest(int nQuestId)
     if (!spData)
         return;
     ClearOpened();
-    if (MS2Ptr<Unk_QdInfo> spInfo = FUN_140c02990("m_questInfo"))
+    if (MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_questInfo"))
     {
         ASObj info(2);
         info.FUN_1409c0d20("id", nQuestId);
@@ -1228,7 +1228,7 @@ void UIQuestDialog::ClearOpened()
 void UIQuestDialog::RefreshDetail()
 {
     ClearOpened();
-    if (MS2Ptr<Unk_QdInfo> spInfo = FUN_140c02990("m_questInfo"))
+    if (MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_questInfo"))
     {
         ASObj info(2);
         info.FUN_1407cb9c0("id", 0);

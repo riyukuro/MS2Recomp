@@ -10,7 +10,7 @@
 #include "ms2/placeholder/dclevelrange.h"
 #include "ms2/placeholder/socketptr.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 class CQuestData : public CPtred
 {
@@ -24,7 +24,7 @@ public:
         // implicit dtor: 0x140758db0 has no vftable store, ??_G 0x140759fa0
         int m_itemId, m_count, m_job;
         bool operator!=(const QuestRewardItem& o) const;   // 0x140747f60
-        bool LoadXml(Unk_140165cf0* pElem);                // 0x140747fc0
+        bool LoadXml(TiXmlElement* pElem);                // 0x140747fc0
     };
     // <navigation> targets: ctor 0x140748aa0, compare 0x140748b00.
     class NavigationTarget : public CPtred
@@ -60,7 +60,7 @@ public:
     virtual ~CQuestData();
     bool operator!=(const CQuestData& o) const;   // 0x140749090
     Unk_SocketPtr<NavigationData> FUN_14074b380(int nKey);   // the <navi> entry of a state (null when missing)
-    bool Load(Unk_140165cf0* pElem);      // XML loader (<quest> element)
+    bool Load(TiXmlElement* pElem);      // XML loader (<quest> element)
     int m_id, m_type, m_20, m_level, m_28;
     unsigned char m_2c, m_2d, m_2e, m_2f, m_30, m_31, m_flag, m_33, m_34;
     unsigned char GetKind() const { return m_2c; }   // 0x14064dbd0 (COMDAT first emitted by learningquesttable.cpp)

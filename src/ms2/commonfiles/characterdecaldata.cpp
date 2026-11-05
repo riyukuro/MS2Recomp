@@ -11,7 +11,7 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -25,14 +25,14 @@ CharacterDecalData::CharacterDecalData()
 }
 
 // @0x1401e4090
-void CharacterDecalData::FUN_1401e4090(Unk_140165cf0* pElem)
+void CharacterDecalData::FUN_1401e4090(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pDecal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("decal"));
+    TiXmlElement* pDecal = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("decal"));
     if (pDecal != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pDecal), "texture", unknown18);
-        for (Unk_140165cf0* pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDecal))->FirstChild("custom")); pCustom != 0;
-             pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
+        for (TiXmlElement* pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pDecal))->FirstChild("custom")); pCustom != 0;
+             pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
         {
             MS2Ptr<ItemCustom> spCustom(new ItemCustom);
             spCustom->FUN_140266aa0(pCustom);

@@ -16,13 +16,13 @@
 
 class ASTextField;
 
-// What the caster implements: slot 0 runs when the gauge completes, slot 1 when the cast is replaced.
-class Unk_CastingListener
-{
-public:
-    virtual void vfunc_0() = 0;
-    virtual void vfunc_1() = 0;
-};
+// What the caster implements: ICastingEventListener. Slot 0 (OnCastingFinished) runs when the gauge completes,
+// slot 1 (OnCastingCancelled) when the cast is replaced. C3: was a stand-in listener class; every caller
+// passes static_cast<ICastingEventListener*>(this).
+#include "ms2/placeholder/icastingeventlistener.h"
+//
+//
+//
 
 // The arguments of one cast (0x38 bytes; ctor 0x140ac2eb0, dtor 0x140ac3070).
 struct Unk_CastingParam
@@ -54,15 +54,15 @@ public:
                                                                     // 28 0x1418e11f0 "OnCastingComplete"
     virtual int vfunc_48();                                         // 48 0x1418e1f70
 
-    void StartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e12b0 start a cast
-    void StartCastingText(Unk_CastingListener* pListener, const CStringW& strText, int nDuration, bool bShowTime,
+    void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e12b0 start a cast
+    void StartCastingText(ICastingEventListener* pListener, const CStringW& strText, int nDuration, bool bShowTime,
         bool bActive, const CStringW& strEnd);                      // 0x1418e12f0 start a cast from loose arguments
     void FUN_1418e1390();                                           // 0x1418e1390 stop with the end text
-    void RestartCasting(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e13c0 stop, start a new cast
+    void RestartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e13c0 stop, start a new cast
     void SetCastText(const CStringW& strText);                    // 0x1418e1400 set both caption lines
     void SetCastTime(const CStringW& strText);                    // 0x1418e14b0 set both time lines
     void UpdateValue(float fValue);                               // 0x1418e1560 movie "updateValue"
-    void FUN_1418e15d0(Unk_CastingListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e15d0 start the cast
+    void FUN_1418e15d0(ICastingEventListener* pListener, const Unk_CastingParam* pParam);   // 0x1418e15d0 start the cast
     void CancelCasting(const CStringW& strText);                    // 0x1418e18a0 stopCasting + reset
     void InvokeStopCasting(const CStringW& strText);                    // 0x1418e18e0 movie "stopCasting"
     void FinishCasting(const CStringW& strText);                    // 0x1418e19c0 stopCasting + completed callback
@@ -71,11 +71,11 @@ public:
     void ReleaseWidgets();                                           // 0x1418e1ab0 drop the text fields
     void FUN_1418e1b20(bool bShowTime);                             // 0x1418e1b20 bind the text fields
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field child lookup
-    Unk_CastingListener* FUN_1417f5e90() { return m_pListener; }   // 0x1417f5e90 (COMDAT in stateskill.obj)
+    ICastingEventListener* FUN_1417f5e90() { return m_pListener; }   // 0x1417f5e90 (COMDAT in stateskill.obj)
     // @0x1417f5f90
     int FUN_1417f5f90() { return m_timer.FUN_140868ba0(); }          // a cast is running (COMDAT in stateskill.obj)
 
-    Unk_CastingListener* m_pListener;                               // +0x70 the caster
+    ICastingEventListener* m_pListener;                               // +0x70 the caster
     MS2Ptr<ASTextField> m_spText1;                                  // +0x78 "m_text1"
     MS2Ptr<ASTextField> m_spText2;                                  // +0x88 "m_text2"
     MS2Ptr<ASTextField> m_spTime1;                                  // +0x98 "m_timetext1"

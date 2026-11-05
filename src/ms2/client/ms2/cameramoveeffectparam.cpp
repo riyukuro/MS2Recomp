@@ -19,17 +19,17 @@
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
 template <int T> class Unk_Bitset;
 template <> class Unk_Bitset<3> { public: Unk_Bitset& Set(int pos, bool value); };   // C3: was Unk_CamMoveBits::FUN_140314670 (0x140314670, bitset.h's Unk_Bitset<3>::Set)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Game TinyXML element: FirstChildElement.
-class Unk_140165cf0 : public Unk_XmlNode {
-public:
+// C3 #12: was a local TiXml view
 
-};
+
+
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -48,22 +48,22 @@ CCameraMoveEffectParam::CCameraMoveEffectParam()
 }
 
 // @0x140afe8f0
-void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CCameraMoveEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "filePath", m_strFilePath);
     bool bUpdateTranslate = false;
     bool bUpdateRotation = false;
-    Unk_140165cf0* pTransform = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
+    TiXmlElement* pTransform = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("transform"));
     if (pTransform)
     {
         XmlGetAttr((class TiXmlElement*)(pTransform), "translate", reinterpret_cast<efd::Point3&>(m_kTranslate));
         XmlGetAttr((class TiXmlElement*)(pTransform), "rotation", reinterpret_cast<efd::Point3&>(m_kRotation));
     }
-    Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
+    TiXmlElement* pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("attachInfo"));
     if (pAttach)
     {
-        const char* pszAttach = ((class TiXmlElement*)(class Unk_140165cf0*)(pAttach))->Attribute("attachToNode");
+        const char* pszAttach = ((class TiXmlElement*)(class TiXmlElement*)(pAttach))->Attribute("attachToNode");
         if (pszAttach)
         {
             m_bAttachToNode = _stricmp(pszAttach, "true") == 0;
@@ -76,7 +76,7 @@ void CCameraMoveEffectParam::vfunc_1(Unk_140165cf0* pNode)
         XmlGetAttr((class TiXmlElement*)(pAttach), "applyNodeTransform", m_bApplyNodeTransform);
         XmlGetAttr((class TiXmlElement*)(pAttach), "parentNode", m_strParentNode);
     }
-    Unk_140165cf0* pUpdate = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("update"));
+    TiXmlElement* pUpdate = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("update"));
     if (pUpdate)
     {
         XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bUpdateTranslate);

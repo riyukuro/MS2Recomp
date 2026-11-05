@@ -70,7 +70,7 @@ template<> CQuest* MS2Ptr<CQuest>::operator->() const;
 template<> MS2Ptr<CQuest>::MS2Ptr(const MS2Ptr&);
 template<> CStringA StringFormat<int, unsigned int>(const char* format, const int& v0, const unsigned int& v1);   // 0x141aaf900 below
 
-class Unk_140165cf0;
+class TiXmlElement;
 namespace UICommon {
 class CAlignmentInfo : public CPtred {
 public:
@@ -78,8 +78,8 @@ public:
     void FUN_14015b020();
     int FUN_140159bc0();
     void FUN_140159ba0();
-    void FUN_1419015e0(Unk_140165cf0* pCfg);                                         // save
-    bool FUN_141901660(Unk_140165cf0* pCfg);                                         // load
+    void FUN_1419015e0(TiXmlElement* pCfg);                                         // save
+    bool FUN_141901660(TiXmlElement* pCfg);                                         // load
     void FUN_141901880(MS2Ptr<AScript> root, float w, float h, float x, float y);
     void FUN_141901c10(MS2Ptr<AScript> root, int w, int h);                 // apply
     void FUN_141901cd0();                                                   // reset
@@ -572,7 +572,7 @@ int UIQuestGuideDialog::vfunc_53(void* pCfg)
             float x = (float)pDialog->FUN_1422c1500();
             float y = (float)pDialog->FUN_1422c1530();
             m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);
-            m_alignment->FUN_1419015e0((Unk_140165cf0*)pCfg);
+            m_alignment->FUN_1419015e0((TiXmlElement*)pCfg);
         }
         return 1;
     }
@@ -586,7 +586,7 @@ int UIQuestGuideDialog::vfunc_54(void* pCfg)
     if (UIDialog::vfunc_54(pCfg)) {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if ((m_alignment.get() ? true : false) && pDialog) {
-            if (!m_alignment->FUN_141901660((Unk_140165cf0*)pCfg)) {
+            if (!m_alignment->FUN_141901660((TiXmlElement*)pCfg)) {
                 float x = (float)pDialog->FUN_1422c1500();
                 float y = (float)pDialog->FUN_1422c1530();
                 m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);

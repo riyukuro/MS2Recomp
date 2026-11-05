@@ -2168,7 +2168,7 @@ void CMeratMarketMan::OnAdProducts(CInPacket& packet)
                 MS2Ptr<CMeratMarketProduct> spProduct = *itProduct;
                 if (spProduct == 0)
                     continue;
-                if (pAdDialog->AddBundle(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(spProduct), nIndex, nSize, false))
+                if (pAdDialog->AddBundle(spProduct, nIndex, nSize, false))
                     nIndex++;
             }
         }
@@ -2650,9 +2650,9 @@ void CMeratMarketMan::OnBuySucceeded(CInPacket& packet)
                         if (pDialog != 0)
                             pDialog->OnProductSelected(spProduct);
                         UIAdPushDialog* pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34);
-                        // The ad push dialog's Unk_AdMarketItem (unit_140e3efd0.h) is the same exe object; the exe copies the pointer.
+                        // The ad push dialog takes the same CMeratMarketProduct; the exe copies the pointer.
                         if (pAdDialog != 0)
-                            pAdDialog->UpdateBundles(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(spProduct));
+                            pAdDialog->UpdateBundles(spProduct);
                         UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
                         if (pMenu != 0)
                             pMenu->FUN_14193dd50();
@@ -2978,7 +2978,7 @@ bool CMeratMarketMan::PushAdProducts(unsigned int nCategory, int nTab)
         int nCount = (int)aProducts.GetCount();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<CMeratMarketProduct> spProduct = aProducts[i];
-            pAdDialog->AddBundle(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(spProduct), i, nCount, bMinimized);
+            pAdDialog->AddBundle(spProduct, i, nCount, bMinimized);
         }
         pAdDialog->Refresh(7);
         return true;
@@ -3000,7 +3000,7 @@ bool CMeratMarketMan::FUN_140d5ba70()
         int nCount = (int)aProducts.GetCount();
         for (int i = 0; i < nCount; i++) {
             MS2Ptr<CMeratMarketProduct> spProduct = aProducts[i];
-            pAdDialog->AddBundle(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(spProduct), i, nCount, bMinimized);
+            pAdDialog->AddBundle(spProduct, i, nCount, bMinimized);
         }
         pAdDialog->Refresh(7);
         return true;

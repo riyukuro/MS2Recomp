@@ -37,17 +37,17 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 static CString FormatIconPath(const char* pszFormat, const CString& v0);
-int FUN_1405400f0(Unk_140165cf0*, const char*, int&);
-int FUN_140540180(Unk_140165cf0*, const char*, int&);
-int FUN_140540210(Unk_140165cf0*, const char*, int&);
-int FUN_1405402a0(Unk_140165cf0*, const char*, int&);
+int FUN_1405400f0(TiXmlElement*, const char*, int&);
+int FUN_140540180(TiXmlElement*, const char*, int&);
+int FUN_140540210(TiXmlElement*, const char*, int&);
+int FUN_1405402a0(TiXmlElement*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CString&);   // C3: was FUN_1408733e0
@@ -56,19 +56,19 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
-class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
+// C3 #12: was a local TiXml view
 class Unk_CommonLog;
 template <class A, class B> void Unk_BurningLevelupLog(Unk_CommonLog*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_1403d7960
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
-class TiXmlElement   // C3: unit-local view of the real class
-{
-public:
-    TiXmlElement(const char* pszName);          // 0x14086f2f0
-    virtual ~TiXmlElement();                    // 0x14086f450
-private:
-    void* m_data[0x11];
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
 
 // The GameDictionaryManager instance getter's own return view (the lookup is GameDictionaryManager::Get).
 class Unk_PcBangTable;
@@ -96,14 +96,14 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/gamedictionarymanager.h"   // C3: TSingleton<GameDictionaryManager>::s_instance (0x143aaecf8)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 class ItemGachaBoxTable;
-class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); };   // C3: member view (was ItemFunctionArgs::FUN_1408d1fd0)
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
 
 class Unk_PriceRow { public: };
 class Unk_PriceHolder
@@ -134,7 +134,7 @@ public:
 int FUN_1403ba790(unsigned int);  // C3: the definition's signature
 
 // Option-table lookups started by CItemData::FUN_14053ed00.
-struct Unk_OptionData;
+#include "ms2/commonfiles/citemoptiontable.h"   // C3: Unk_OptionMgr = CItemOptionTable, Unk_OptionData = CItemOption (FUN_1405f4ff0)
 class Unk_Random   // C3: unit-local view of the game random generator (randomeffectparam.h)
 {
 public:
@@ -143,11 +143,11 @@ public:
 private:
     void* m_data[8];                                        // 0x40 bytes (pointer elements: a non-pointer array is a GS buffer, and the exe frame has no cookie)
 };
-class Unk_OptionMgr
-{
-public:
-    Unk_PayloadPtr<Unk_OptionData> FUN_1405f4ff0(MS2Ptr<CItemData> pItem, int nRank, Unk_Random& key);
-};
+
+
+
+
+
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
 // Free functions of this unit used before their definition.
@@ -192,7 +192,7 @@ bool CItemChangeBeautyTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((Unk_140165cf0*)((Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((TiXmlElement*)((Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -202,7 +202,7 @@ bool CItemChangeBeautyTable::Load()
     const CStringA& strId = "id";
     const CStringA& strItem = "item";
     const CStringA& strItemId = "itemID";
-    for (Unk_140165cf0* pNode = ((Unk_140165cf0*)((Unk_XmlNode*)(pRoot))->FirstChild(strBeauty)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strBeauty)))
+    for (TiXmlElement* pNode = ((TiXmlElement*)((Unk_XmlNode*)(pRoot))->FirstChild(strBeauty)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strBeauty)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -215,7 +215,7 @@ bool CItemChangeBeautyTable::Load()
             continue;
         data->m_nId = nId;
         data->FUN_14053a7c0(pNode);
-        for (Unk_140165cf0* pItem = ((Unk_140165cf0*)((Unk_XmlNode*)(pNode))->FirstChild(strItem)); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling(strItem)))
+        for (TiXmlElement* pItem = ((TiXmlElement*)((Unk_XmlNode*)(pNode))->FirstChild(strItem)); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling(strItem)))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
@@ -303,7 +303,7 @@ void CItemChangeBeautyTable::CheckInit()
 }
 
 // @0x14053a7c0
-bool CChangeBeautyData::FUN_14053a7c0(Unk_140165cf0*)
+bool CChangeBeautyData::FUN_14053a7c0(TiXmlElement*)
 {
     return true;
 }
@@ -328,16 +328,16 @@ CItemData::~CItemData()
 }
 
 // @0x14053b830
-bool CItemData::Load(Unk_140165cf0* pElem)
+bool CItemData::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pBasic = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("basic"));
+    TiXmlElement* pBasic = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("basic"));
     if (pBasic) {
         XmlGetAttr((class TiXmlElement*)(pBasic), "originID", *(unsigned int*)&static_cast<int&>(originID));
         CString strStringTag;
         XmlGetAttr((class TiXmlElement*)(pBasic), "stringTag", strStringTag);
         stringTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(strStringTag);
     }
-    Unk_140165cf0* pProperty = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("property"));
+    TiXmlElement* pProperty = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("property"));
     if (pProperty) {
         FUN_1405402a0(pProperty, "type", type);
         XmlGetAttr((class TiXmlElement*)(pProperty), "subtype", subtype);
@@ -359,18 +359,18 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     if (!fusion.LoadXml(pElem)) return false;
     if (!additionalEffect.FUN_140549c00(pElem)) return false;
     if (!function.Load(pElem)) return false;
-    Unk_140165cf0* pTool = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("tool"));
+    TiXmlElement* pTool = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("tool"));
     if (pTool) {
         XmlGetAttr((class TiXmlElement*)(pTool), "itemPreset", *(unsigned int*)&static_cast<int&>(itemPreset));
     }
-    Unk_140165cf0* pOption = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("option"));
+    TiXmlElement* pOption = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("option"));
     if (pOption) {
         XmlGetAttr((class TiXmlElement*)(pOption), "constantID", *(unsigned int*)&static_cast<int&>(constantID));
         XmlGetAttr((class TiXmlElement*)(pOption), "randomID", *(unsigned int*)&static_cast<int&>(randomID));
         XmlGetAttr((class TiXmlElement*)(pOption), "optionLevel", optionLevel);
         XmlGetAttr((class TiXmlElement*)(pOption), "optionLevelFactor", optionLevelFactor);
     }
-    Unk_140165cf0* pPCBang = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("PCBang"));
+    TiXmlElement* pPCBang = ((TiXmlElement*)((Unk_XmlNode*)(pElem))->FirstChild("PCBang"));
     if (pPCBang) {
         XmlGetAttr((class TiXmlElement*)(pPCBang), "PCBang", bPCBang);
     }
@@ -990,7 +990,7 @@ bool CItemData::HasCubeTextureMesh()
 }
 
 // @0x14053d740
-bool CItemData::IsMeratMarketRegisterable()
+int CItemData::IsMeratMarketRegisterable()
 {
     return limit.enableRegisterMeratMarket;
 }
@@ -1083,7 +1083,7 @@ bool CItemData::HasOpenGachaBoxFunction()
 {
     if (!IsFunctionName(L"OpenGachaBox"))
         return false;
-    int nValue = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
+    int nValue = ((ItemFunctionArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     if (nValue == 0)
         return false;
     return true;
@@ -1094,7 +1094,7 @@ bool CItemData::HasQuestStartFunction()
 {
     if (!IsFunctionName(L"QuestStart"))
         return false;
-    int nValue = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
+    int nValue = ((ItemFunctionArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     if (nValue == 0)
         return false;
     return true;
@@ -1226,7 +1226,7 @@ int CItemData::GetOpenGachaBoxParam0()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
-    int nResult = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
+    int nResult = ((ItemFunctionArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     return nResult;
 }
 
@@ -1235,7 +1235,7 @@ int CItemData::GetOpenGachaBoxParam1()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
-    int nResult = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(1, 0);
+    int nResult = ((ItemFunctionArgs&)(function.parameter)).FUN_1408d1fd0(1, 0);
     return nResult;
 }
 
@@ -1244,7 +1244,7 @@ int CItemData::GetQuestStartQuestId()
 {
     if (!HasQuestStartFunction())
         return 0;
-    return ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
+    return ((ItemFunctionArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
 }
 
 // @0x14053dfd0
@@ -1575,12 +1575,12 @@ void CItemData::FUN_14053ed00()
         {
             for (int nRank = 1; nRank < 7; ++nRank)
             {
-                ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), nRank, key);
+                reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), nRank, &key);
             }
         }
         else
         {
-            ((class Unk_OptionMgr*)FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, key);
+            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, &key);
         }
     }
     if ((unsigned int)property.gearScore > 0)
@@ -2120,7 +2120,7 @@ static CString FormatIconPath(const char* pszFormat, const CString& v0)
 }
 
 // @0x1405400f0
-int FUN_1405400f0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
+int FUN_1405400f0(TiXmlElement* pElem, const char* pszName, int& rnValue)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -2137,7 +2137,7 @@ int FUN_1405400f0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 }
 
 // @0x140540180
-int FUN_140540180(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
+int FUN_140540180(TiXmlElement* pElem, const char* pszName, int& rnValue)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -2154,7 +2154,7 @@ int FUN_140540180(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 }
 
 // @0x140540210
-int FUN_140540210(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
+int FUN_140540210(TiXmlElement* pElem, const char* pszName, int& rnValue)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -2171,7 +2171,7 @@ int FUN_140540210(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
 }
 
 // @0x1405402a0
-int FUN_1405402a0(Unk_140165cf0* pElem, const char* pszName, int& rnValue)
+int FUN_1405402a0(TiXmlElement* pElem, const char* pszName, int& rnValue)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)

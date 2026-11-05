@@ -19,45 +19,45 @@
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBN@@@QEAA@XZ 0x1411220a0 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBD@@@QEAA@XZ 0x1411220f0 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBG@@@QEAA@XZ 0x141122170 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAI@@@QEAA@XZ 0x1411221c0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAK@@@QEAA@XZ 0x141122210 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBC@@@QEAA@XZ 0x141122260 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBH@@@QEAA@XZ 0x141122290 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAE@@@QEAA@XZ 0x1411222e0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBB@@@QEAA@XZ 0x141122330 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAM@@@QEAA@XZ 0x141122360 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBL@@@QEAA@XZ 0x141122390 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAF@@@QEAA@XZ 0x1411223c0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAG@@@QEAA@XZ 0x141122410 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAP@@@QEAA@XZ 0x141122460 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAJ@@@QEAA@XZ 0x1411224b0 ; prop
+// MS2-PIN: ??0?$map@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411221c0 ; prop
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VFittingDollData@@@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122210 ; prop
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VSalesInfo@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@@3@@std@@QEAA@XZ 0x141122260 ; prop
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VSetItemEffectInfo@@@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122290 ; prop
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411222e0 ; prop
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VUICubeUGCHead@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@3@@std@@QEAA@XZ 0x141122330 ; prop
+// MS2-PIN: ??0?$map@HV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@2@@std@@QEAA@XZ 0x141122360 ; prop
+// MS2-PIN: ??0?$map@HV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@@std@@@2@@std@@QEAA@XZ 0x141122390 ; prop
+// MS2-PIN: ??0?$map@HV?$map@_JV?$MS2Ptr@VCube@@@@U?$less@_J@std@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411223c0 ; prop
+// MS2-PIN: ??0?$map@HV?$set@HU?$less@H@std@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122410 ; prop
+// MS2-PIN: ??0?$map@HV?$vector@VEntityID@egf@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122460 ; prop
+// MS2-PIN: ??0?$map@HVEntityID@egf@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411224b0 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBA@@@QEAA@XZ 0x141122500 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBE@@@QEAA@XZ 0x141122550 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BABE@@@QEAA@XZ 0x1411225a0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAH@@@QEAA@XZ 0x141122620 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAO@@@QEAA@XZ 0x141122670 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAB@@@QEAA@XZ 0x1411226c0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAC@@@QEAA@XZ 0x141122710 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAD@@@QEAA@XZ 0x141122760 ; prop
+// MS2-PIN: ??0?$map@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@@efd@@QEAA@XZ 0x141122620 ; prop
+// MS2-PIN: ??0?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@efd@@QEAA@XZ 0x141122670 ; prop
+// MS2-PIN: ??0?$map@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x1411226c0 ; prop
+// MS2-PIN: ??0?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122710 ; prop
+// MS2-PIN: ??0?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122760 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBK@@@QEAA@XZ 0x1411227b0 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBJ@@@QEAA@XZ 0x141122830 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBI@@@QEAA@XZ 0x141122880 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBP@@@QEAA@XZ 0x1411228d0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAN@@@QEAA@XZ 0x141122920 ; prop
+// MS2-PIN: ??0?$map@_JV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@QEAA@XZ 0x141122920 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BAL@@@QEAA@XZ 0x1411229d0 ; prop
 // MS2-PIN: ??0?$map@IU?$Unk_MC@$0N@@@U?$less@I@std@@U?$Unk_McAlloc@U?$pair@$$CBIU?$Unk_MC@$0N@@@@std@@@@@std@@QEAA@XZ 0x141122a90 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BAAO@@@QEAA@XZ 0x141122af0 ; prop
 // MS2-PIN: ??0?$map@IU?$Unk_MC@$0O@@@U?$less@I@std@@U?$Unk_McAlloc@U?$pair@$$CBIU?$Unk_MC@$0O@@@@std@@@@@std@@QEAA@XZ 0x141122b10 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBM@@@QEAA@XZ 0x141122b40 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BAA@@@QEAA@XZ 0x141122b70 ; prop
+// MS2-PIN: ??0?$set@V?$MS2Ptr@VCFunctionCubeObject@@@@U?$less@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@V?$allocator@V?$MS2Ptr@VCFunctionCubeObject@@@@@3@@std@@QEAA@XZ 0x141122b40 ; prop
+// MS2-PIN: ??0?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122b70 ; prop
 // MS2-PIN: ??0?$map@IU?$Unk_MC@$0P@@@U?$less@I@std@@U?$Unk_McAlloc@U?$pair@$$CBIU?$Unk_MC@$0P@@@@std@@@@@std@@QEAA@XZ 0x141122b90 ; prop
 // MS2-PIN: ??0?$tuple@$$QEAW4Unk_CMISKindB@@@std@@QEAA@$$QEAV01@@Z 0x141122bc0 ; prop
 // MS2-PIN: ??0?$tuple@AEBVEntityID@egf@@@std@@QEAA@$$QEAV01@@Z 0x141122c00 ; prop
 // MS2-PIN: ??0?$tuple@AEBW4Unk_CMISKindA@@@std@@QEAA@$$QEAV01@@Z 0x141122c40 ; prop
-// MS2-PIN: ??0Unk_CMISKeySet@@QEAA@XZ 0x141122d00 ; prop
+// MS2-PIN: ??0?$vector@H@efd@@QEAA@XZ 0x141122d00 ; prop
 // MS2-PIN: ??0?$vector@HV?$CustomAllocator@H@efd@@@std@@QEAA@XZ 0x141122d20 ; prop
 // MS2-PIN: ??0Unk_CMISAnchorStdEntVec@@QEAA@XZ 0x141122da0 ; prop
-// MS2-PIN: ??0Unk_CMISXformVec@@QEAA@XZ 0x141122df0 ; prop
+// MS2-PIN: ??0?$vector@VNiTransform@@@efd@@QEAA@XZ 0x141122df0 ; prop
 // MS2-PIN: ??0?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEAA@XZ 0x141122e40 ; prop
 // MS2-PIN: ??0Category@efd@@QEAA@W4ExpectedChannelUsage@UniversalID@1@II@Z 0x141122f90 ; unique
 // MS2-PIN: ??0Unk_CMISDeadString@@QEAA@XZ 0x141123030 ; unique
@@ -225,14 +225,14 @@ struct Unk_CMISCellInit
 MS2_CHECK_SIZE(Unk_CMISCellInit, 0x38);
 
 // @0x141123050
-struct Unk_CMISCell56
-{
-    Unk_CMISCell56(const Unk_CMISCell56& o) : m_name(o.m_name), m_scale(o.m_scale), m_pos(o.m_pos) {}
-    efd::utf8string m_name;
-    Unk_InstancingScale m_scale;
-    efd::Point3 m_pos;
-};
-MS2_CHECK_SIZE(Unk_CMISCell56, 0x38);
+Unk_CMISCell::Unk_CMISCell(const Unk_CMISCell& o) : m_name(o.m_name), m_color(o.m_color), m_pos(o.m_pos) {}
+// (was the Unk_CMISCell56 view of cubemapinformationservice_tail.h's Unk_CMISCell)
+
+
+
+
+
+
 
 // @0x141122990 (the set element of tail11: {int; MS2Ptr} with an out-of-line copy ctor)
 struct Unk_CMISIdPtr
@@ -244,10 +244,10 @@ struct Unk_CMISIdPtr
 
 struct Unk_CMISPawn;
 // @0x141123230
-struct Unk_CMISByDistance
+class GameObject; struct Unk_DkNearer   // C3: was Unk_CMISByDistance (operator() 0x14112cbc0, unit_14112ab60)
 {
-    Unk_CMISByDistance(Unk_CMISPawn* pPawn) { m_pPawn = pPawn; }
-    Unk_CMISPawn* m_pPawn;
+    Unk_DkNearer(GameObject* pPlayer) { m_pPlayer = pPlayer; }
+    GameObject* m_pPlayer;
 };
 
 class NotifyObject
@@ -283,8 +283,8 @@ SaleStateData::SaleStateData() : m_nState(0), m_p(0) {}
 
 #ifndef MS2_HOOK_DLL
 // ---- vectors named by their constructor wrappers ----------------------------------------------------------------------------
-struct Unk_CMISKeySet : std::vector<int, efd::CustomAllocator<int> > { Unk_CMISKeySet() {} };                        // 0x141122d00
-struct Unk_CMISXformVec : std::vector<NiTransform, efd::CustomAllocator<NiTransform> > { Unk_CMISXformVec() {} };    // 0x141122df0
+// C3: Unk_CMISKeySet was efd::vector<int> (its ctor 0x141122d00 is efd::vector<int>::vector())
+// C3: Unk_CMISXformVec was efd::vector<NiTransform> (its ctor 0x141122df0 is efd::vector<NiTransform>::vector())
 struct Unk_CMISAnchorStdEntVec : std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID> > { Unk_CMISAnchorStdEntVec() {} };                       // 0x141122e40
 
 struct Unk_CMISAnchorMH : efd::BaseMessageHandler
@@ -317,51 +317,51 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) Unk_CMISTree<285>;
     new (p) Unk_CMISTree<275>;
     new (p) Unk_CMISTree<278>;
-    new (p) Unk_CMISTree<264>;
-    new (p) Unk_CMISTree<266>;
-    new (p) Unk_CMISTree<279>;
-    new (p) Unk_CMISTree<260>;
-    new (p) Unk_CMISTree<261>;
-    new (p) Unk_CMISTree<262>;
+    new (p) efd::map<int, efd::SmartPointer<egf::Entity> >;
+    new (p) efd::map<int, MS2Ptr<FittingDollData> >;
+    new (p) efd::map<int, MS2Ptr<SetItemEffectInfo> >;
+    new (p) efd::map<int, MS2Ptr<Cube> >;
+    new (p) efd::map<int, efd::map<__int64, MS2Ptr<Cube> > >;
+    new (p) efd::map<int, efd::set<int> >;
     new (p) Unk_CMISTree<287>;
     new (p) Unk_CMISTree<267>;
     new (p) Unk_CMISTree<4109>;
     new (p) Unk_CMISTree<4110>;
-    new (p) Unk_CMISTree<256>;
-    new (p) Unk_CMISTree<271>;
-    new (p) Unk_CMISTree<265>;
+    new (p) efd::set<egf::EntityID>;
+    new (p) efd::map<int, efd::vector<egf::EntityID> >;
+    new (p) efd::map<int, egf::EntityID>;
     new (p) Unk_CMISTree<272>;
     new (p) Unk_CMISTree<276>;
     new (p) Unk_CMISTree<4116>;
-    new (p) Unk_CMISTree<263>;
-    new (p) Unk_CMISTree<270>;
-    new (p) Unk_CMISTree<257>;
-    new (p) Unk_CMISTree<258>;
-    new (p) Unk_CMISTree<259>;
+    new (p) efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >;
+    new (p) efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int>;
+    new (p) efd::map<egf::EntityID, __int64>;
+    new (p) efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >;
+    new (p) efd::map<egf::EntityID, MS2Ptr<Cube> >;
     new (p) Unk_CMISTree<282>;
     new (p) Unk_CMISTree<281>;
     new (p) Unk_CMISTree<280>;
     new (p) Unk_CMISAnchorS29;
-    new (p) Unk_CMISTree<274>;
-    new (p) Unk_CMISTree<273>;
-    new (p) Unk_CMISTree<268>;
-    new (p) Unk_CMISTree<283>;
+    new (p) std::map<int, MS2Ptr<SalesInfo> >;
+    new (p) std::map<int, MS2Ptr<UICubeUGCHead> >;
+    new (p) std::map<int, std::map<int, Unk_PayloadPtr<CubeOwner> > >;
+    new (p) std::map<int, std::map<unsigned, std::set<int> > >;
     new (p) Unk_CMISAnchorS34;
     new (p) Unk_CMISAnchorS35;
-    new (p) Unk_CMISTree<269>;
+    new (p) std::map<__int64, Unk_PayloadPtr<CubeOwner> >;
     new (p) Unk_CMISAnchorS37;
-    new (p) Unk_CMISTree<284>;
-    new (p) Unk_CMISKeySet;
-    new (p) Unk_CMISXformVec;
+    new (p) std::set<MS2Ptr<CFunctionCubeObject> >;
+    new (p) efd::vector<int>;
+    new (p) efd::vector<NiTransform>;
     new (p) Unk_CMISAnchorStdEntVec;
     new (p) std::vector<egf::EntityPtr>;
     new (p) Unk_CMISAnchorMH;
     new (p) Unk_CMISAnchorSvc;
     new (p) Unk_CMISDeadString;
     new (p) Unk_CMISCellInit;
-    new (p) Unk_CMISCell56(*(const Unk_CMISCell56*)p);
+    new (p) Unk_CMISCell(*(const Unk_CMISCell*)p);
     new (p) Unk_CMISIdPtr(*(const Unk_CMISIdPtr*)p);
-    new (p) Unk_CMISByDistance(0);
+    new (p) Unk_DkNearer(0);
     new (p) NotifyChangeUIBuildingCount((const int*)p);
     new (p) egf::EntityChangeMessage;
     new (p) efd::Category(efd::UniversalID::ECU_Any, 1, 2);

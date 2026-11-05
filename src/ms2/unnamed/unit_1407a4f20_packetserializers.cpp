@@ -71,7 +71,7 @@
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
-CInputStream& FUN_14070f440(CInputStream&, long&);              // packet.cpp stream operators
+// C3: FUN_14070f440 = Unk_OSInput member (os.h)
 // 0x14070f480 = Unk_OSInput::Read6 (os.cpp)
 COutputStream& FUN_14070f960(COutputStream&, long);
 COutputStream& FUN_14070f9a0(COutputStream&, unsigned int);
@@ -542,7 +542,7 @@ void FUN_1407a6ef0(Unk_1407a6db0& v, COutputStream& out)
 void FUN_1407a6f30(Unk_1407a6db0& v, CInputStream& in)
 {
     reinterpret_cast<Unk_OSInput&>(in).Read7(v.m_00);
-    FUN_14070f440(in, (long&)v.m_08);
+    reinterpret_cast<Unk_OSInput&>(in).Read5((long&)v.m_08);
 }
 
 struct Unk_1407a6f80 { long m_00, m_04; CStringW m_08; };
@@ -556,8 +556,8 @@ void FUN_1407a6f80(Unk_1407a6f80& v, COutputStream& out)
 // @0x1407a6fe0
 void FUN_1407a6fe0(Unk_1407a6f80& v, CInputStream& in)
 {
-    FUN_14070f440(in, v.m_00);
-    FUN_14070f440(in, v.m_04);
+    reinterpret_cast<Unk_OSInput&>(in).Read5(v.m_00);
+    reinterpret_cast<Unk_OSInput&>(in).Read5(v.m_04);
     reinterpret_cast<Unk_OSInput&>(in).Read11(v.m_08);
 }
 
@@ -578,7 +578,7 @@ void FUN_1407a70f0(Unk_1407a7040& v, CInputStream& in)
     FUN_1407a6fe0(v.m_28, in);
     int count = 0;
     reinterpret_cast<Unk_OSInput&>(in).Read6(static_cast<Unk_1407a71a0&>(v).m_00);
-    FUN_14070f440(in, (long&)count);
+    reinterpret_cast<Unk_OSInput&>(in).Read5((long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
         reinterpret_cast<Unk_OSInput&>(in).Read7((__int64&)id);
@@ -598,7 +598,7 @@ void FUN_1407a7230(Unk_1407a71a0& v, CInputStream& in)
 {
     int count = 0;
     reinterpret_cast<Unk_OSInput&>(in).Read6(v.m_00);
-    FUN_14070f440(in, (long&)count);
+    reinterpret_cast<Unk_OSInput&>(in).Read5((long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
         reinterpret_cast<Unk_OSInput&>(in).Read7((__int64&)id);

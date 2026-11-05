@@ -9,7 +9,7 @@ public:
     virtual ~CStarting() = default;
     int id;
     bool enabled;
-    Unk_CommonPosition position, rotation;
+    D3DXVECTOR3 position, rotation;
 };
 MS2_CHECK_OFFSET(CStarting, position, 0x20);
 MS2_CHECK_SIZE(CStarting, 0x38);

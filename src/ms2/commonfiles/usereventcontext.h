@@ -51,10 +51,10 @@ template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefObject(Unk_EventHol
 template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefImpl(void*) const {
     AddRefObject(Unk_EventBase<Unk_EventPayload>::Get(p));
 }
-class Unk_140165cf0;
+class TiXmlElement;
 struct Unk_EventCore {
     void FUN_1408d5390(int);
-    bool FUN_1408d5040(Unk_140165cf0*);                 // load from a mail/event xml element (unit_1408d5040.cpp)
+    bool FUN_1408d5040(TiXmlElement*);                 // load from a mail/event xml element (unit_1408d5040.cpp)
     void FUN_1408d5320(const CMsTime&);                // set the end time (unit_1408d5040.cpp)
     CMsTime FUN_1408d53f0() const;                      // the end time, or now + mode days (unit_1408d5040.cpp)
     int type,id; CStringW name,text,extra; CMsTime time;

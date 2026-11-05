@@ -27,7 +27,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/client/ms2/textureanimationdata.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 // One <emotion name faceName equiphide isTool> element. RTTI CEmotionData, 0x90 bytes (operator new 0x1411bd5c0),
 // vftable 0x142ebce30 (one slot: the dtor).
@@ -36,7 +36,7 @@ class CEmotionData : public CPtred
 public:
     CEmotionData();                                         // 0x1411bcb50
     virtual ~CEmotionData();                                // 0x1411bcc20 (??_G 0x1411c02d0)
-    bool Load(Unk_140165cf0* pNode);                        // 0x1411bccd0 false: no name or not enabled
+    bool Load(TiXmlElement* pNode);                        // 0x1411bccd0 false: no name or not enabled
     CString GetAnimation(int nIndex);                       // 0x1411bd0c0 "" outside 0..4
     void LoadTexture(CString strDir);                       // 0x1411bd150 load the texture animation frames
     void CheckResources(CString strDir);                    // 0x1411bd1c0 log missing effect / texture files
@@ -64,7 +64,7 @@ class CEmotionGroup : public CPtred
 {
 public:
     CEmotionGroup();                                        // 0x1411bd550
-    void Load(Unk_140165cf0* pRoot);                        // 0x1411bd5c0 the <emotion> list of <ms2>
+    void Load(TiXmlElement* pRoot);                        // 0x1411bd5c0 the <emotion> list of <ms2>
     void LoadTextures(const CString& strDir);               // 0x1411bd710
     void CheckResources();                                  // 0x1411bd7e0
     virtual CString GetItemCode();                          //  1 0x1411bd8d0 "" (the import's item code)

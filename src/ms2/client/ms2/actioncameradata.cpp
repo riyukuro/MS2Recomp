@@ -12,25 +12,25 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <efd/ILogger.h>
 #include <efd/Helpers.h>
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Game TinyXML element: FirstChildElement by name.
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
-};
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
+// C3 #12: was a local TiXml view
+
+
+
+
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 CString FUN_140188f50(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -77,7 +77,7 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
     TiXmlDocument doc;
     if (((class Unk_ActionFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return DataPtr(0);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -87,9 +87,9 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
     DataPtr spData(new CActionCameraData);
     spData->FUN_1401d1160(CString(strPath));
     ActionCameraInfo* pInfo = spData->GetInfo();
-    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("actionCamera"));
-    pInfo->m_strPath = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("path");
-    CString strStay = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("stayLocked"), 0);
+    TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("actionCamera"));
+    pInfo->m_strPath = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("path");
+    CString strStay = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("stayLocked"), 0);
     pInfo->m_bStayLocked = (strStay == "true");
     XmlGetAttr((class TiXmlElement*)(pNode), "interpolationTime", pInfo->m_fInterpolationTime);
     return spData;

@@ -106,7 +106,7 @@ CStringW FUN_1409404f0(__int64 n);                                  // a money a
 CStringW FUN_140719a80(unsigned __int64 n);                                  // a 64-bit number as text
 unsigned __int64 FUN_140718350(const CString& str);                 // a decimal string as a 64-bit number
 CStringW FUN_1413fa9b0(const CStringW& str);                        // the search form of a name
-void FUN_140222be0(ATL::CAtlArray<unsigned int>& out);              // the job codes of the search dropdown
+enum Unk_LevelEntry; void FUN_140222be0(ATL::CAtlArray<Unk_LevelEntry>& out);   // the job codes of the search dropdown (the unit_1402226b0 def)
 int FUN_1402227e0(int nJobCode, int bAll);                          // the job group of a code
 unsigned long GetTickCountMs2();                                    // tick count
 __int64 FUN_14028d260(float fSeconds);                                  // seconds -> ticks  (C3: the definition's __int64 return, read as int)
@@ -127,8 +127,8 @@ int FUN_1401bcd30();                                                // default c
 class Unk_InventoryStateManager;
 Unk_InventoryStateManager*FUN_140a6a830();                                     // the block manager
 void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);    // notice of a blocked action
-CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"   // FormatStringId<...> over FUN_14028dee0 (commonutil.cpp)
+//
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text of a key, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -665,7 +665,7 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
         if (AddLabeledEntry(jobAll, L"$s_blackmarket_dropdown_joball", "code", 200))
             jobs.PushValue(jobAll.FUN_1422bb870());
         ATL::CAtlArray<unsigned int> jobCodes;
-        FUN_140222be0(jobCodes);
+        FUN_140222be0(reinterpret_cast<ATL::CAtlArray<Unk_LevelEntry>&>(jobCodes));
         size_t nJobs = jobCodes.GetCount();
         for (size_t i = 0; i < nJobs; i++)
         {

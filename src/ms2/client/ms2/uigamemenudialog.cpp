@@ -92,7 +92,7 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/placeholder/cgamemenutable.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
-#include "ms2/placeholder/cgamemenutable.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu (the menu entry "m_button")
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameevent.h"
@@ -107,7 +107,7 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/gameeventuservaluemanager.h"  // C3: GameEventUserValueManager::RegisterListener/UnregisterListener
 #include "ms2/commonfiles/jobsystem.h"  // C3: JobSystem::GetSkills
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>
 #include "ms2/client/ms2/ridee.h"    // C3: efd::SmartPointer<Ridee>
 #include "ms2/commonfiles/characterability.h"    // C3: CCharacterAbilityTable::FUN_1401e0450, CCharacterAbility
 #undef MS2_STATICS_A_BEFORE_CONDITION
@@ -292,11 +292,11 @@ class Unk_GmMenuTable : public CGameMenuTable
 {
 public:
 };
-class Unk_CubeMgr;
-struct Unk_CubeSpRef { bool FUN_140ef4cb0(Unk_CubeMgr* p); };    // uiugccubepalettedialog.cpp: the 8-byte cube-service ref; true when it holds p
-class Unk_Service6100017;
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
+class CubeMapInformationService;
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const;   // 0x140ef4cb0 (C3: was the Unk_HoServicePtr view)
+//
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
 class Unk_GmTargetRef
 {
@@ -308,12 +308,12 @@ class Unk_GmQuestIface { public: virtual void vfunc_0(); virtual int vfunc_1(); 
 class Unk_GmQuest : public CPtred, public Unk_GmQuestIface {};
 
 // Base of the movie clips this dialog binds.
-class Unk_GmItem : public ASMovieClip {};
-class Unk_GmClip : public ASMovieClip
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);
-};
+// C3: the menu entry's "m_button" child is an ASDropdownMenu (AScript::GetDropdownMenu 0x140bbe700 builds it
+// through Unk_BpCreate<ASDropdownMenu>; the ASDropdownMenu ctor 0x1422df570 stores ??_7ASDropdownMenu@@6B@).
+
+
+
+
 class Unk_GmPoint { public: int x; int y; Unk_GmPoint& operator=(const Unk_GmPoint& o); };   // returned through a hidden pointer; exe 0x141937345 loads both with integer moves
 class Unk_UISwfEntity_25 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual Unk_GmPoint vfunc_5(); };
 class Unk_GmSlot : public CPtred { public: char m_pad[0x20]; };
@@ -621,7 +621,7 @@ public:
     int GetAuto();
     int SendRequestPet();
 };
-class Unk_HlPc { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };
+// FUN_140c25130 (the stat point manager) is MyPC's (see the MyPC view below)
 
 // ---- exe functions: dialogs ----
 
@@ -714,7 +714,7 @@ class UIRenderView* FUN_141a90540(int, int, class GameObject*, float);   // C3: 
 
 // ---- exe functions: grid / map service ----
 
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
@@ -729,7 +729,7 @@ class MyPC   // C3: member view for the former free stand-ins
 {
 public:
     class UserUGCMapInfo* FUN_141523c50();   // the house record (+0x1618)
-    int FUN_141527160(int);
+    int FUN_141527160(int);   MS2Ptr<CStatPointManager> FUN_140c25130();
     int HasNoHome();
     int FUN_141527ed0();
     int FUN_141529ae0(int, int, int, __int64);
@@ -1090,7 +1090,7 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByName(CString(strName));
         if (ref.get()) {
             CStringW strTip(((Unk_GmMenuEntry*)ref.operator->())->m_strTip);
-            if (MS2Ptr<Unk_GmItem> item = FindMenuItem(strName)) {
+            if (MS2Ptr<ASDropdownMenu> item = FindMenuItem(strName)) {
                 if (item->FUN_1422c2030() == 0)
                     strTip = ((Unk_GmMenuEntry*)ref.operator->())->m_strTipOff;
             }
@@ -1106,7 +1106,7 @@ void UIGameMenuDialog::vfunc_oa0_29()
     if (pPc == NULL)
         return;
     int bHas = 0;
-    bool bLeft = (unsigned)reinterpret_cast<Unk_HlPc*>(pPc)->FUN_140c25130()->GetRemaining() > 0;
+    bool bLeft = (unsigned)reinterpret_cast<MyPC*>(pPc)->FUN_140c25130()->GetRemaining() > 0;
     if (bLeft)
         bHas = 1;
     SetMenuNotifyUp(8, bHas);
@@ -1162,8 +1162,8 @@ void UIGameMenuDialog::FUN_141937ed0()
         m_30->Invoke("initContract", nContract == 0);
     if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
         int nShown = 0;
-        efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
-        if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 &&
+        efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+        if (((CubeMapInformationService*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 &&
             !((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820)
             nShown = 1;
         else
@@ -1226,7 +1226,7 @@ void UIGameMenuDialog::InitPetInfo(int bUp, int nA, int nB)
 void UIGameMenuDialog::SetMenuNotifyUp(int nId, int bUp)
 {
     int nKey = FindTopMenuId(nId);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyUp", FUN_14193afc0(nId), bUp);
 }
 
@@ -1243,7 +1243,7 @@ void UIGameMenuDialog::FUN_1419384d0()
         int nId = m_menuText.GetKeyAt(pos);
         CStringW strText(m_menuText.GetValueAt(pos));
         int nKey = FindTopMenuId(nId);
-        if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+        if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
             spItem->FUN_140c38f00("setEventPopup", FUN_14193afc0(nId), CStringW(strText));
     }
 }
@@ -1301,7 +1301,7 @@ void UIGameMenuDialog::FUN_141938850()
 int UIGameMenuDialog::IsMenuExpanded(CString strName)
 {
     {
-        MS2Ptr<Unk_GmItem> spItem = FindMenuItem(strName);
+        MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(strName);
         if (spItem.get() != 0)
             return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spItem->Invoke("isExpand")))->GetBool();
     }
@@ -1393,7 +1393,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
     }
     int nMenu = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindIdByUiId(nId);
     int nKey = FindTopMenuId(nMenu);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyCount", FUN_14193afc0(nMenu), nCount);
 }
 
@@ -1406,7 +1406,7 @@ void UIGameMenuDialog::FUN_1419391c0()
             nCount = 1;
     }
     int nKey = FindTopMenuId(0x16);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyCount", FUN_14193afc0(0x16), nCount);
 }
 
@@ -1421,7 +1421,7 @@ void UIGameMenuDialog::FUN_141939320(bool bValue)
 void UIGameMenuDialog::SetNotifyRedCircle16(bool bValue)
 {
     int nKey = FindTopMenuId(0x16);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->FUN_140ee5060("setNotifyRedCircle", FUN_14193afc0(0x16), bValue);
 }
 
@@ -1436,7 +1436,7 @@ void UIGameMenuDialog::FUN_1419394a0(bool bValue)
 void UIGameMenuDialog::SetNotifyRedCircle7(bool bValue)
 {
     int nKey = FindTopMenuId(7);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->FUN_140ee5060("setNotifyRedCircle", FUN_14193afc0(7), bValue);
 }
 
@@ -1445,7 +1445,7 @@ void UIGameMenuDialog::FUN_141939620()
 {
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x5c) == 1) {
         int nKey = FindTopMenuId(0x24);
-        if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+        if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
             spItem->Invoke("setNotifyCount", FUN_14193afc0(0x24), DAT_143ab2900);
     }
 }
@@ -1454,7 +1454,7 @@ void UIGameMenuDialog::FUN_141939620()
 void UIGameMenuDialog::SetMenuEnable(int nId, int nEnable)
 {
     int nKey = FindTopMenuId(nId);
-    if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+    if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
         spItem->Invoke("setMenuEnable", FUN_14193afc0(nId), nEnable);
     m_enabled.SetAt(reinterpret_cast<const EMenuKey&>(nId), nEnable);
 }
@@ -1621,7 +1621,7 @@ void UIGameMenuDialog::FUN_14193a140()
         for (size_t k = 0; k < arrAdded.GetCount(); ++k) {
             if (FUN_14193f100(m_order, arrAdded[k]) == -1) {
                 int nKey = FindTopMenuId(arrAdded[k]);
-                if (MS2Ptr<Unk_GmItem> spItem = FindMenuItem(FUN_14193afc0(nKey)))
+                if (MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(FUN_14193afc0(nKey)))
                     spItem->Invoke("setNotifyNew", FUN_14193afc0(arrAdded[k]), 1);
             }
         }
@@ -1725,19 +1725,19 @@ CString UIGameMenuDialog::FUN_14193afc0(int nId)
 }
 
 // @0x14193b0f0
-MS2Ptr<Unk_GmItem> UIGameMenuDialog::FindMenuItemById(int nId)
+MS2Ptr<ASDropdownMenu> UIGameMenuDialog::FindMenuItemById(int nId)
 {
     return FindMenuItem(GetMenuName(nId));
 }
 
 // @0x14193b180
-MS2Ptr<Unk_GmItem> UIGameMenuDialog::FindMenuItem(const CString& strName)
+MS2Ptr<ASDropdownMenu> UIGameMenuDialog::FindMenuItem(const CString& strName)
 {
     if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus")) {
         if (MS2Ptr<ASMovieClip> spEntry = spMenus->FUN_1409b4560(strName))
-            return static_cast<Unk_GmClip*>(spEntry.operator->())->FUN_140bbe700<Unk_GmItem>("m_button");
+            return spEntry->GetDropdownMenu("m_button");
     }
-    return MS2Ptr<Unk_GmItem>(0);
+    return MS2Ptr<ASDropdownMenu>(0);
 }
 
 // @0x14193b2f0
@@ -1838,8 +1838,8 @@ void UIGameMenuDialog::FUN_14193b750()
         return;
     }
     int nShown = 0;
-    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
-    if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
+    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    if (((CubeMapInformationService*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
         ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() != DAT_143ab2820) {
         nShown = 1;
     } else {
@@ -1848,7 +1848,7 @@ void UIGameMenuDialog::FUN_14193b750()
     if (nShown == 0) {
         if (FUN_14193e9c0() != 0)
             return;
-        if (((Unk_Service6100017*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
+        if (((CubeMapInformationService*)grid ? true : false) && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c35c0() == 0 &&
             ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820)
             FUN_141275260(0x870, 1, 0);
         else
@@ -2313,7 +2313,7 @@ void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
     int nId = 0xf;
     int nKey = FindTopMenuId(nId);
     CString strName = FUN_14193afc0(nKey);
-    MS2Ptr<Unk_GmItem> spItem = FindMenuItem(strName);
+    MS2Ptr<ASDropdownMenu> spItem = FindMenuItem(strName);
     if (spItem == NULL) {
         strName = Unk_SocketFormat<CString>("{0}_event", strName);
         spItem = FindMenuItem(strName);
@@ -2459,8 +2459,8 @@ int UIGameMenuDialog::FUN_14193e940(int nField)
 // @0x14193e9c0
 bool UIGameMenuDialog::FUN_14193e9c0()
 {
-    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
-    if (reinterpret_cast<Unk_CubeSpRef*>(&grid)->FUN_140ef4cb0(0) != 0)
+    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040(&DAT_143b059e8));
+    if ((grid == (CubeMapInformationService*)0) != 0)
         return false;
     bool bField = ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410d2f10() != 0 && ((class CubeMapInformationService*)(class Unk_GmGrid*)(grid.operator->()))->FUN_1410c3180() == DAT_143ab2820;
     void* pDlg1;

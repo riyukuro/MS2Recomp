@@ -13,13 +13,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/commonfiles/ugcmappackageinfo.h"   // C3: Unk_Int3, the cell type of FUN_1408a15b0
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
 int FUN_140707710(int nKind);
-efd::Point3 FUN_1408a15b0(Unk_UgcCell cell, efd::Point3& ptOrigin);   // the world point of a cell
+efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptOrigin);   // the world point of a cell (Unk_UgcCell is the same 3 ints)
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -154,7 +155,7 @@ int UICubeUGCHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UICubeUGCHead::FUN_141906b60()
 {
     efd::Point3 ptOrigin = efd::Point3::ZERO;
-    NiPoint3 world = FUN_1408a15b0(m_68, ptOrigin);
+    NiPoint3 world = FUN_1408a15b0(reinterpret_cast<const Unk_Int3&>(m_68), ptOrigin);
     Vector3 screen;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(world, reinterpret_cast<NiPoint3&>(screen)) != 0)
     {

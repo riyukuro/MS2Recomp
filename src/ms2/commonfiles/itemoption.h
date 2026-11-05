@@ -12,7 +12,7 @@ class CInputStream;
 
 // The special-stat options of a socket (the key is the special stat; ctor 0x1405cccb0 in itemoptiondata.cpp).
 enum Unk_SocketSpecialStat { };
-typedef ATL::CAtlMap<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> > Unk_SocketSpecialMap;
+typedef ATL::CAtlMap<Unk_SocketSpecialStat, MS2Ptr<BaseOption> > Unk_SocketSpecialMap;
 // The basic stat of an option group entry, as the first of the pair CItemOption::GetFirstStat returns.
 enum Unk_StatType { };
 // The display order of an option line (CItemOptionTable::FUN_1405f6ed0) -> its text.
@@ -27,8 +27,8 @@ public:
     MS2Ptr<CItemOption> Clone();        // 0x1405caf90 copy
     void ClearAll();                       // 0x1405cb110 clear
     void ClearGroup(int nGroup);             // 0x1405cb190 clear a group
-    bool TrySetStatOption(int nGroup, int nStat, Unk_EnchantPtr<BaseOption> spOption);        // 0x1405cb200
-    bool TrySetSpecialOption(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseOption> spOption);   // 0x1405cb2a0
+    bool TrySetStatOption(int nGroup, int nStat, MS2Ptr<BaseOption> spOption);        // 0x1405cb200
+    bool TrySetSpecialOption(int nGroup, unsigned nStat, MS2Ptr<BaseOption> spOption);   // 0x1405cb2a0
     unsigned GetItemId();                   // 0x1405cb340 the item id
     void FUN_1405cb360(int nValue);             // 0x1405cb360
     int FUN_1405cb380();                        // 0x1405cb380
@@ -36,8 +36,8 @@ public:
     int SumSpecialValue(unsigned nType);          // 0x1405cb440 the summed value of a special stat
     std::pair<Unk_StatType, int> GetFirstStat(int nGroup) const;      // 0x1405cb4e0 the first stat of a group
     std::pair<Unk_SocketSpecialStat, int> GetFirstSpecialStat(int nGroup) const;  // 0x1405cb620 the first special stat
-    Unk_EnchantPtr<BaseOption> GetStatOption(int nGroup, int nStat);        // 0x1405cb760
-    Unk_EnchantPtr<BaseOption> GetSpecialOption(int nGroup, unsigned nType);   // 0x1405cb800
+    MS2Ptr<BaseOption> GetStatOption(int nGroup, int nStat);        // 0x1405cb760
+    MS2Ptr<BaseOption> GetSpecialOption(int nGroup, unsigned nType);   // 0x1405cb800
     Unk_EnchantMap& GetStatMap(int nGroup);  // 0x1405cb8a0 the stat map of a group
     Unk_SocketSpecialMap& GetSpecialMap(int nGroup);    // 0x1405cb8d0 the special-stat map of a group
     void FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut);    // 0x1405cb900 the option texts of a group

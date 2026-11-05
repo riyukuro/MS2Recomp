@@ -36,12 +36,12 @@
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit<CAtlArray<int>> (was FUN_140177de0)
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 struct Unk_EntityAppFramework;
 struct Unk_LevelArray;
-class Unk_Service6100017;
+class CubeMapInformationService;
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 // Earlier objects own these shared bodies.
@@ -64,9 +64,9 @@ class CubeMapInformationService {   // C3: member view (cubemapinformationservic
 public:
     void FUN_1410bb610(unsigned nMask, PCBase* pPawn, float fDist, std::vector<efd::SmartPointer<egf::Entity> >* pOut);
 };
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
-Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0 (C3: was the Unk_Ptr1401cd040 view)
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
+CubeMapInformationService * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
@@ -108,7 +108,7 @@ MS2_REPLACE(0x1408a02a0, FUN_1408a02a0, 184, 0x75D22760);
 int FUN_1408a0370(int x,int y,int z) { int result=(x&0xff)+((y&0xff)<<8)+((z&0xff)<<16); return result; }
 MS2_REPLACE(0x1408a0370, FUN_1408a0370, 67, 0xE97E08EA);
 // @0x1408a03c0
-int FUN_1408a03c0(const Unk_Int3& p) { return FUN_1408a0370(p.x,p.y,p.z); }
+int FUN_1408a03c0(Unk_Int3 p) { return FUN_1408a0370(p.x,p.y,p.z); }
 MS2_REPLACE(0x1408a03c0, FUN_1408a03c0, 43, 0xFDC1CB50);
 // @0x1408a0400
 Unk_Int3 FUN_1408a0400(int packed) {
@@ -264,7 +264,7 @@ int FUN_1408a1360(Vector3 a,Vector3 b) { int x=(int)(a.z/150.0f); int y=(int)(b.
 MS2_REPLACE(0x1408a1360, FUN_1408a1360, 100, 0x09C21056);
 Unk_Int3 FUN_1408a1430(NiPoint3);
 // @0x1408a13d0
-int FUN_1408a13d0(NiPoint3 p) { Unk_Int3 cube; cube=FUN_1408a1430(p); return FUN_1408a03c0(cube); }
+int FUN_1408a13d0(NiPoint3 p) { return FUN_1408a03c0(FUN_1408a1430(p)); }
 MS2_REPLACE(0x1408a13d0, FUN_1408a13d0, 81, 0x560BD7D8);
 // @0x1408a1430
 Unk_Int3 FUN_1408a1430(NiPoint3 p) {
@@ -286,7 +286,7 @@ Unk_Int3 FUN_1408a14c0(NiPoint3 p) {
 }
 MS2_REPLACE(0x1408a14c0, FUN_1408a14c0, 232, 0xDF76819B);
 // @0x1408a15b0
-NiPoint3 FUN_1408a15b0(const Unk_Int3& p,NiPoint3& out) {
+efd::Point3 FUN_1408a15b0(Unk_Int3 p,efd::Point3& out) {
     out.x=(float)p.x*150.0f; out.y=(float)p.y*150.0f; out.z=(float)p.z*150.0f;
     return out;
 }
@@ -328,7 +328,7 @@ void FUN_1408a1640(Cube* cube) {
 MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
 // @0x1408a18d0
 int FUN_1408a18d0(__int64 charID) {
-    efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> service(FUN_1401cd040((Unk_EntityAppFramework *)&DAT_143b059e8));
     int style=0;
     PCBase* player=((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if(player!=0) {

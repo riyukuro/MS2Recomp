@@ -123,6 +123,8 @@ public:
     Unk_ScriptPtr<CTalkScript> FUN_141b21b90();                    // find the script of the talk
     unsigned FUN_141b21d70();                               // the sound of the page
     int FUN_141b1d810() { return m_nSound; }                // 0x141b1d810 (inline)
+    CTalkRewardData* FUN_141082d60() { return &m_reward; }  // 0x141082d60 (inline) the reward block of the open talk
+    unsigned char FUN_141082ec0() { return m_nFlags; }      // 0x141082ec0 (inline) the state flags
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -108,7 +108,7 @@
 // MS2-PIN: ?_Max_bucket_size@?$_Hash@V?$_Umap_traits@IV?$MS2Ptr@VItemDropGlobalGroup@@@@V?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemDropGlobalGroup@@@@@std@@@3@$0A@@std@@@std@@IEBAAEBMXZ 0x14030bce0 ; unique
 // MS2-PIN: ?_Max_bucket_size@?$_Hash@V?$_Umap_traits@IV?$MS2Ptr@VItemDropIndividualBox@@@@V?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemDropIndividualBox@@@@@std@@@3@$0A@@std@@@std@@IEAAAEAMXZ 0x14030bd00 ; unique
 // MS2-PIN: ?_Max_bucket_size@?$_Hash@V?$_Umap_traits@IV?$MS2Ptr@VItemDropIndividualBox@@@@V?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemDropIndividualBox@@@@@std@@@3@$0A@@std@@@std@@IEBAAEBMXZ 0x14030bd20 ; unique
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_140165cf0@@V?$allocator@PEAVUnk_140165cf0@@@std@@@std@@@std@@QEBAAEBQEAPEAVUnk_140165cf0@@XZ 0x14030c120 ; prop
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@PEAVTiXmlElement@@V?$allocator@PEAVTiXmlElement@@@std@@@std@@@std@@QEBAAEBQEAPEAVTiXmlElement@@XZ 0x14030c120 ; prop
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@IV?$allocator@I@std@@@std@@@std@@QEAAXXZ 0x14030c6e0 ; prop
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@QEBAAEAPEAU?$_Tree_node@IPEAX@2@XZ 0x14030d5a0 ; prop
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HV?$ItemDropPicker@H@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$ItemDropPicker@H@@@std@@@3@$0A@@std@@@std@@IEAAXXZ 0x14030ddb0 ; unique
@@ -141,8 +141,8 @@
 // cf9: residual look-alikes resolved by the pinned vector callers and const getter chain.
 // MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VItemDropGlobalBox@@@@@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VItemDropGlobalBox@@@@@Z 0x1402fade0
 // MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@AEAAXXZ 0x14030e1f0
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_140165cf0@@V?$allocator@PEAVUnk_140165cf0@@@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVUnk_140165cf0@@@std@@@2@XZ 0x140309790
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_140165cf0@@V?$allocator@PEAVUnk_140165cf0@@@std@@@std@@@std@@QEBAAEBQEAPEAVUnk_140165cf0@@XZ 0x14030bee0
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVTiXmlElement@@V?$allocator@PEAVTiXmlElement@@@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVTiXmlElement@@@std@@@2@XZ 0x140309790
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@PEAVTiXmlElement@@V?$allocator@PEAVTiXmlElement@@@std@@@std@@@std@@QEBAAEBQEAPEAVTiXmlElement@@XZ 0x14030bee0
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VItemDropGlobalBox@@@@XZ 0x14030c3c0
 // MS2-PIN: ?_Unchecked_end@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VItemDropGlobalBox@@@@XZ 0x14030f140
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdroptable.cpp"
@@ -160,7 +160,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -207,7 +207,7 @@ ItemDropData::ItemDropData() : m_itemID(0), m_itemID2(0)
 }
 
 // @0x1402e6d60
-bool ItemDropData::Load(Unk_140165cf0* pElem)
+bool ItemDropData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "itemID", m_itemID);
     XmlGetAttr((class TiXmlElement*)(pElem), "itemID2", m_itemID2);
@@ -471,7 +471,7 @@ ItemDropDataGlobal::ItemDropDataGlobal() : m_minLevel(0), m_maxLevel(0)
 }
 
 // @0x1402e7750
-bool ItemDropDataGlobal::Load(Unk_140165cf0* pElem)
+bool ItemDropDataGlobal::Load(TiXmlElement* pElem)
 {
     if (!ItemDropData::Load(pElem))
         return false;
@@ -506,7 +506,7 @@ ItemDropDataIndividual::ItemDropDataIndividual()
 }
 
 // @0x1402e78f0
-bool ItemDropDataIndividual::Load(Unk_140165cf0* pElem)
+bool ItemDropDataIndividual::Load(TiXmlElement* pElem)
 {
     if (!ItemDropData::Load(pElem))
         return false;
@@ -559,10 +559,10 @@ ItemDropGlobalGroup::ItemDropGlobalGroup() : m_dropGroupID(0)
 }
 
 // @0x1402e7ad0
-bool ItemDropGlobalGroup::Load(Unk_140165cf0* pElem)
+bool ItemDropGlobalGroup::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupID", m_dropGroupID);
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -605,7 +605,7 @@ ItemDropGlobalBox::ItemDropGlobalBox()
 }
 
 // @0x1402e7dc0
-bool ItemDropGlobalBox::Load(Unk_140165cf0* pElem)
+bool ItemDropGlobalBox::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupIDs", m_dropGroupIDs);
     XmlGetAttr((class TiXmlElement*)(pElem), "isOwnerDrop", reinterpret_cast<bool&>(m_isOwnerDrop));
@@ -746,10 +746,10 @@ unsigned ItemDropGlobalBoxGroup::GetId()
 MS2_REPLACE_METHOD(0x1402E86D0, ItemDropGlobalBoxGroup, GetId, 14, 0x72E52537);
 
 // @0x1402e86f0
-bool ItemDropGlobalBoxGroup::Load(Unk_140165cf0* pElem)
+bool ItemDropGlobalBoxGroup::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dropBoxID", m_dropBoxID);
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -805,7 +805,7 @@ unsigned ItemDropIndividualGroup::GetSmartDropRate()
 MS2_REPLACE_METHOD(0x1402E8A00, ItemDropIndividualGroup, GetSmartDropRate, 14, 0x69D980EB);
 
 // @0x1402e8a20
-bool ItemDropIndividualGroup::Load(Unk_140165cf0* pElem)
+bool ItemDropIndividualGroup::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dropGroupID", m_dropGroupID);
     XmlGetAttr((class TiXmlElement*)(pElem), "smartDropRate", m_smartDropRate);
@@ -831,7 +831,7 @@ bool ItemDropIndividualGroup::Load(Unk_140165cf0* pElem)
         for (size_t i = 0; i < counts.size(); ++i)
             m_dropCount.Register(probabilities[i], counts[i]);
     }
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -883,11 +883,11 @@ ItemDropIndividualBox::ItemDropIndividualBox() : m_dropBoxID(0), m_probVer(0)
 }
 
 // @0x1402e8f80
-bool ItemDropIndividualBox::Load(Unk_140165cf0* pElem)
+bool ItemDropIndividualBox::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dropBoxID", m_dropBoxID);
     XmlGetAttr((class TiXmlElement*)(pElem), "probVer", m_probVer);
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("group")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("group")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChild)))
             continue;
@@ -1481,13 +1481,13 @@ bool ItemDropTable::LoadGlobalBoxes()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
+    for (TiXmlElement* pElem : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
     {
         MS2Ptr<ItemDropGlobalBoxGroup> pGroup(new ItemDropGlobalBoxGroup);
         if (!pGroup->Load(pElem))
@@ -1506,13 +1506,13 @@ bool ItemDropTable::LoadGlobalGroups()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
+    for (TiXmlElement* pElem : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropBox")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
             continue;
@@ -1534,17 +1534,17 @@ bool ItemDropTable::LoadIndividualBoxes()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    std::vector<Unk_140165cf0*> elems;
+    std::vector<TiXmlElement*> elems;
     FUN_14028f5d0((struct Unk_XmlElement*)pRoot, "dropBox", (std::vector<struct Unk_XmlElement*>&)elems);
     CLockCriticalSection lock;
     // @0x140301bf0 (the lambda body)
-    Concurrency::parallel_for_each(elems.begin(), elems.end(), [&lock, this](Unk_140165cf0* pElem) {
+    Concurrency::parallel_for_each(elems.begin(), elems.end(), [&lock, this](TiXmlElement* pElem) {
         MS2Ptr<ItemDropIndividualBox> pBox(new ItemDropIndividualBox);
         if (!pBox->Load(pElem))
             return;

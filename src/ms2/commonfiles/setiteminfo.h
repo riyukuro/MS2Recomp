@@ -9,7 +9,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 class SetItemOptionPart;
 
 class SetItemInfo : public CPtred
@@ -18,7 +18,7 @@ public:
     SetItemInfo();                              // 0x1407ad240
     virtual ~SetItemInfo() = default;           // 0x1407adff0 (no vptr store; deleting 0x1407ae0f0)
 
-    bool Load(Unk_140165cf0* pNode);   // read a <set> element; false when it is invalid
+    bool Load(TiXmlElement* pNode);   // read a <set> element; false when it is invalid
     int FUN_1407ad550();                        // the set id
     int HasItem(unsigned nItemId) const;        // 0x1407ad570 the item is one of the pieces
     bool IsShowEffect();                       // showEffectIfItsSetItemMotion (+0x80)

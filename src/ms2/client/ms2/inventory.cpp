@@ -616,7 +616,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5dca0(CStringW function, CStringW 
             ItemPtr item = items.GetValueAt(pos);
             if (!item) continue;
             if (item->FUN_140527840()->function.name != function) continue;
-            if (((Unk_CommandArgs*)&item->FUN_140527840()->function.parameter)->FUN_1408d2330() != parameter) continue;
+            if (((ItemFunctionArgs*)&item->FUN_140527840()->function.parameter)->FUN_1408d2330() != parameter) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             found.push_back(item);
         }

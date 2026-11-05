@@ -75,7 +75,7 @@ static CString s_tabIndex2 = "tabIndex";
 #include "uimodelview.h"
 #include "networkservice.h"
 #include "gameobject.h"
-#include "ms2/unnamed/unit_140b0e5f0.h"            // Unk_CoupleVec (out-of-line NiPoint3 copy 0x14027dcf0)
+#include "ms2/unnamed/unit_140b0e5f0.h"            // NiPoint3(const efd::Point3&) 0x14027dcf0
 #include "ms2/placeholder/astextinput.h"
 #include "ms2/placeholder/notifygameeventchanged.h"
 #include "ms2/placeholder/cguidemanager.h"
@@ -919,7 +919,7 @@ void UIUGCItemEditDialog::FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar)
         return;
     Unk_ModelViewCamera kCamera;
     UIRenderView* pView = m_spView;
-    Unk_CoupleVec kPos(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pObj->vfunc_18())));
+    NiPoint3 kPos(static_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pObj->vfunc_18())));
     int nKind = spAvatar->GetKind();
     if (nKind == 1)
     {

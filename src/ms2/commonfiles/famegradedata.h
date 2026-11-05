@@ -12,7 +12,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/famealliance.h"
 
-class Unk_140165cf0;    // xml element (declared where the loaders are)
+class TiXmlElement;    // xml element (declared where the loaders are)
 class Unk_FameLogFilter;    // container of already received log ids (looked up by FUN_140204740)
 
 
@@ -23,7 +23,7 @@ public:
     CFameGradeData();                   // 0x1403588d0
     virtual ~CFameGradeData();          // 0x140358940
 
-    int Read(Unk_140165cf0* pElem);     // 0x140358970 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140358970 (name invented)
 
     int m_nGrade;                       // +0x18 "grade"
     Unk_FameAlliance m_nAlliance;       // +0x1c "alliance" (1..9)
@@ -42,7 +42,7 @@ public:
     CFameLogData();                     // 0x140358a40
     virtual ~CFameLogData();            // 0x140358aa0
 
-    int Read(Unk_140165cf0* pElem);     // 0x140358ad0 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140358ad0 (name invented)
 
     int m_nGrade;                       // +0x18 "grade"
     unsigned m_nId;                     // +0x1c "id"
@@ -58,7 +58,7 @@ public:
     CFameLimitData();                   // 0x140358b60
     virtual ~CFameLimitData();          // 0x140358bd0
 
-    int Read(Unk_140165cf0* pElem);     // 0x140358c10 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140358c10 (name invented)
 
     Unk_FameAlliance m_nAlliance;       // +0x18 "alliance"
     ATL::CAtlMap<Unk_FameAlliance, int> m_mapGrade;  // +0x20 requireAlliance -> requireGrade
@@ -73,7 +73,7 @@ public:
     CFamePickAlliance();                // 0x140358de0
     virtual ~CFamePickAlliance();       // 0x140358e30
 
-    int Read(Unk_140165cf0* pElem);     // 0x140358e60 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140358e60 (name invented)
 
     Unk_FameAlliance m_nAlliance;       // +0x18 "id"
     int m_nMaxCount;                    // +0x1c "maxCount"
@@ -89,7 +89,7 @@ public:
     CFamePickMethod();                  // 0x140358ee0
     virtual ~CFamePickMethod();         // 0x140358f90
 
-    int Read(Unk_140165cf0* pElem);     // 0x140358ff0 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140358ff0 (name invented)
     int HasAlliance(Unk_FameAlliance nAlliance);    // 0x1403591e0 (name invented)
 
     int m_nType;                        // +0x18 "type": 1 rankalliancecombination, 2 fixedcountperalliance
@@ -111,7 +111,7 @@ public:
     CFameSeasonDef();                   // 0x1403593d0
     virtual ~CFameSeasonDef();          // 0x140359420
 
-    int Read(Unk_140165cf0* pElem);     // 0x140359460 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x140359460 (name invented)
 
     Unk_FameSeason m_nSeason;           // +0x18 "name"
     unsigned m_nRequireQuest;           // +0x1c "requireQuest"
@@ -128,7 +128,7 @@ public:
     CFameDef();                         // 0x140359240
     virtual ~CFameDef();                // 0x1403592b0
 
-    int Read(Unk_140165cf0* pElem);     // 0x1403592f0 (name invented)
+    int Read(TiXmlElement* pElem);     // 0x1403592f0 (name invented)
 
     Unk_FameAlliance m_nAlliance;       // +0x18 "alliance" (1..9)
     CStringA m_strSymbol;               // +0x20 "symbol"

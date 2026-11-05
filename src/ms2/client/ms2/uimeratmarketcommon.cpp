@@ -155,7 +155,7 @@ __int64 FUN_14028d0e0();
 extern Unk_Inventory g_143ab2a90;
 int FUN_140ec2ac0(MS2Ptr<CItemData> spData);
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade);
-CStringW FUN_141277dd0(class Unk_ConstString* pValue);
+CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
 int FUN_140718200(const CStringW& str);
 bool FUN_140ec3b90(const Scaleform::GFx::Value* pValue);
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* root, bool b, ASTooltip* pLhs, ASTooltip* pRhs);
@@ -401,7 +401,7 @@ int FUN_140ebc850(MS2Ptr<ASArray> spItems)
         Scaleform::GFx::Value vId = row.GetMember("itemID");
         int nItemId = 0;
         if (FUN_140ec3b90(&vId) == 0)
-            nItemId = FUN_140718200(FUN_141277dd0((class Unk_ConstString*)&vId));
+            nItemId = FUN_140718200(FUN_141277dd0(&vId));
         else
             nItemId = vId.GetUInt();
         if (nItemId == 0)
@@ -977,9 +977,9 @@ void FUN_140d73bc0(int nId, int a, void* pListener, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);
 void SendRequestCubeMode66(void* pBlueprint);
 // The owner key of the local player (account id, kind, character id); the exe builds it field by field.
-struct Unk_McTimeKey
+struct Unk_BillOwner
 {
-    void FUN_1409aff60();
+    Unk_BillOwner();                                        // 0x1409aff60, the definer's spelling (asbilldata); was Unk_McTimeKey::FUN_1409aff60
     __int64 a;
     int b;
     void* c;                                                // a pointer-size id (a pointer member keeps /GS off, as in the exe)
@@ -1153,8 +1153,8 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
             FUN_140d73bc0(0xa0e, 0, 0, CStringW(L""));
             return;
         }
-        Unk_McTimeKey key;
-        key.FUN_1409aff60();
+        Unk_BillOwner key;
+//
         key.a = DAT_143ab2820;
         key.b = DAT_143ab2830;
         key.c = (void*)DAT_143ab2838;

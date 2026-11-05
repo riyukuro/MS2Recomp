@@ -214,7 +214,7 @@ MS2_CHECK_OFFSET(CBanTextChecker, m_mapBanWords, 0x3a8);
 MS2_CHECK_OFFSET(CBanTextChecker, m_mapCharClass, 0x3d8);
 
 class CommonString;
-class Unk_140165cf0;
+class TiXmlElement;
 
 // This instantiation stores the complete object pointer; DAT_143aacce8 (getter FUN_14025e7d0).
 template <> class TSingleton<CommonString>
@@ -253,7 +253,7 @@ public:
     int FUN_140259910();                                        // 0x140259910 always 1
     bool LoadDebug();                                           // 0x140259640 ../XmlDebug/stringDebug.xml
     void Reload();                                              // 0x140259930
-    void LoadStrings(Unk_140165cf0* pRoot);                     // 0x140259e60
+    void LoadStrings(TiXmlElement* pRoot);                     // 0x140259e60
     bool FUN_1402599e0();                                       // 0x1402599e0 self test of the ban word checker (this unused)
 
     TextMap m_maps[2];                                  // +0x38

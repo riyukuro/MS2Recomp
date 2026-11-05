@@ -20,7 +20,7 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -34,7 +34,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const T1& first,
                    const T2& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
+unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 
@@ -74,15 +74,15 @@ int WeddingEmotionTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::set<unsigned> codes;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("weddingEmotion")); pNode != 0;
-         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("weddingEmotion")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("weddingEmotion")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("weddingEmotion")))
     {
         MS2Ptr<WeddingEmotionData> spData(new WeddingEmotionData);
         unsigned nCode = FUN_140197390(pNode, "code", 0);

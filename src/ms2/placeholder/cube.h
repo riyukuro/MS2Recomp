@@ -50,7 +50,7 @@ public:
     int fieldD4,fieldD8;
     Unk_CubeTextRecord record;
     Unk_PayloadPtr<NoticeCubeInfo> notice;
-    struct Vector3 FUN_1408b5370();                 // the world position of the cube
+    efd::Point3 FUN_1408b5370();                    // the world position of the cube (FUN_1408a15b0 of the cell)
     int FUN_1408b4f20();                                    // the item id (ugcmanager.cpp#4)
     class CUgcItemLook* FUN_1408b4f80();                    // the UGC look of the item (ugcmanager.cpp#4)
     unsigned FUN_1408b4e90() const;                         // field5c

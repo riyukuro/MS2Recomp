@@ -10,7 +10,7 @@ class ScreenMaskingEffectParam : public CPostEffectParam
 {
 public:
     ScreenMaskingEffectParam();                                    // 0x140dca0b0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                    // 1 0x140dca130
+    virtual void vfunc_1(TiXmlElement* pNode);                    // 1 0x140dca130
 public:
     float m_fBlendingMin;           // +0x60 "blendingMin"
     float m_fBlendingMax;           // +0x64 "blendingMax" = 1

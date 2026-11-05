@@ -108,11 +108,11 @@ void Unk_CMISDriveColumnMapTail7()
 struct Unk_CMISPawn;
 // The ordering FUN_1410bb610 sorts its entity list with: by distance from the pawn (ctor 0x141123230, operator()
 // 0x14112cbc0, outside this slice).
-struct Unk_CMISByDistance
+class GameObject; struct Unk_DkNearer   // C3: was Unk_CMISByDistance (operator() 0x14112cbc0, unit_14112ab60)
 {
-    Unk_CMISByDistance(Unk_CMISPawn* pPawn) { m_pPawn = pPawn; }
-    bool operator()(egf::EntityPtr a, egf::EntityPtr b) const;
-    Unk_CMISPawn* m_pPawn;
+    Unk_DkNearer(GameObject* pPlayer) { m_pPlayer = pPlayer; }                 // 0x141123230
+    bool operator()(egf::EntityPtr kA, egf::EntityPtr kB) const;
+    GameObject* m_pPlayer;
 };
 
 typedef std::map<unsigned int, int> Unk_CMISStdMapUIntInt;
@@ -188,7 +188,7 @@ void Unk_CMISDriveTail7()
     { Unk_CMISFuncCubeSet s; MS2Ptr<CFunctionCubeObject> p; Unk_CMISDriveSet(s, p); s.emplace(p); }
     { Unk_CMISEntityIdSet s; Unk_CMISDriveSet(s, id); }
     { Unk_CMISIntVec v; Unk_CMISDriveVector(v, nKey); Unk_CMISIntVec w; v = w; }
-    { Unk_CMISStdEntVec v; Unk_CMISDriveVector(v, egf::EntityPtr()); std::sort(v.begin(), v.end(), Unk_CMISByDistance(0)); }
+    { Unk_CMISStdEntVec v; Unk_CMISDriveVector(v, egf::EntityPtr()); std::sort(v.begin(), v.end(), Unk_DkNearer(0)); }
     { Unk_CMISEntityIdVec v; Unk_CMISDriveVector(v, id); Unk_CMISEntityIdVec w; v = w; }
     { Unk_CMISEntVec v; Unk_CMISDriveVector(v, egf::EntityPtr()); Unk_CMISEntVec w; v = w; }
     { Unk_CMISElem52Vec v; Unk_CMISDriveVector(v, Unk_CMISElem52()); Unk_CMISElem52Vec w; v = w; }

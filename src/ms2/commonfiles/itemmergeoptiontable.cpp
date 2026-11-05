@@ -26,7 +26,7 @@
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCItemOption@@@@QEBA_NXZ 0x1405c4720 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOption@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOption@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOption@@@@_K@Z 0x1405c48d0 ; prop
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOptionVariation@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOptionVariation@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOptionVariation@@@@_K@Z 0x1405c4910 ; unique
-// MS2-PIN: ?get@?$Unk_EnchantPtr@VBaseOption@@@@QEBAPEAVBaseOption@@XZ 0x1405c4950 ; prop
+// MS2-PIN: ?get@?$MS2Ptr@VBaseOption@@@@QEBAPEAVBaseOption@@XZ 0x1405c4950 ; prop
 // MS2-PIN: ??C?$MS2Ptr@VCItemMergeOptionData@@@@QEBAPEAVCItemMergeOptionData@@XZ 0x1405c4970 ; unique
 // MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5110 ; prop
 // MS2-PIN: ??_GCNode@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAXI@Z 0x1405c5150 ; prop
@@ -81,7 +81,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -133,8 +133,8 @@ public:
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signature
 template <class A> CStringW FormatStringId(int nId, const A& a);             // the highlighted text
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, MS2Ptr<BaseOption> spOption, const CStringW& strText);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
 class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
@@ -289,12 +289,12 @@ CItemMergeOptionData::~CItemMergeOptionData()
 
 // @0x1405bf470
 // The <slot> element: its options and, per option, the steps idx0_max..idx9_max the value range is cut into.
-bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
+bool CItemMergeOptionData::Load(TiXmlElement* pSlot)
 {
     XmlGetAttr((class TiXmlElement*)(pSlot), "probVer", reinterpret_cast<unsigned int&>((unsigned&)m_nProbVer));
     XmlGetAttr((class TiXmlElement*)(pSlot), "part", reinterpret_cast<int&>(m_nId));
     XmlTokenList(pSlot, "partLimit", m_aPartLimit);
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSlot))->FirstChild("option")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("option")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pSlot))->FirstChild("option")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("option")))
     {
         CString strName;
         unsigned nPrev = 0;
@@ -401,22 +401,22 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strPath);
         return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "mergeOption", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         int nItemType = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nItemType));
         if (nItemType == 0)
             continue;
-        for (Unk_140165cf0* pSlot : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("slot")))
+        for (TiXmlElement* pSlot : ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("slot")))
         {
             DataPtr spData(new CItemMergeOptionData);
             if (!spData->Load(pSlot))
@@ -524,7 +524,7 @@ CItemMergeOptionVariation* CItemMergeOptionTable::FUN_1405c0740(int nCategory, i
 
 // @0x1405c0870
 // The value of the normal option lies inside the rolled range of the slot's option.
-int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue)
 {
     if (!spValue)
         return 0;
@@ -544,7 +544,7 @@ int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag
 }
 
 // @0x1405c0a70
-int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue)
 {
     if (!spValue)
         return 0;
@@ -565,7 +565,7 @@ int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag
 
 // @0x1405c0c70
 // The value of the normal option reaches the maximum of the slot's option.
-int CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue)
 {
     if (!spValue)
         return 0;
@@ -585,7 +585,7 @@ int CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag
 }
 
 // @0x1405c0e80
-int CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue)
 {
     if (!spValue)
         return 0;
@@ -628,7 +628,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))
         {
             int nStat = rNormal.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spValue = rNormal.GetValueAt(pos);
+            MS2Ptr<BaseOption> spValue = rNormal.GetValueAt(pos);
             if (!spValue)
                 continue;
             CStringW strLine;
@@ -648,7 +648,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         for (POSITION pos = rSpecial.GetStartPosition(); pos != 0; rSpecial.GetNext(pos))
         {
             int nStat = rSpecial.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
+            MS2Ptr<BaseOption> spValue = rSpecial.GetValueAt(pos);
             if (!spValue)
                 continue;
             CStringW strLine = FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())) + strTag;

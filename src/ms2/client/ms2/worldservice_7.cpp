@@ -142,7 +142,7 @@
 // MS2-PIN: ?Reference@?$MS2Ptr@VMS2ActorUpdater@@@@CAXPEAVMS2ActorUpdater@@@Z 0x141c1f660
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@2@XZ 0x141c20750
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCLiftableTargetGuide@@@@AEBAXPEAX@Z 0x141c1f770
-// MS2-PIN: ?_Calculate_growth@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@2@@std@@AEBA_K_K@Z 0x141c20b60
+// MS2-PIN: ?_Calculate_growth@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@@2@@std@@AEBA_K_K@Z 0x141c20b60
 // MS2-PIN: ?RBDeleteFixup@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141c10de0
 // MS2-PIN: ?RBInsert@?$CRBTree@IV?$SmartPointer@VCNpc@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VCNpc@@@efd@@@4@@ATL@@IEAAPEAVCNode@12@IAEBV?$SmartPointer@VCNpc@@@efd@@@Z 0x141c12220
 // MS2-PIN: ?RBInsert@?$CRBTree@PEAVEntity@egf@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@5@@ATL@@IEAAPEAVCNode@12@AEBQEAVEntity@egf@@AEBV?$MS2Ptr@VUnk_WsMarker@@@@@Z 0x141c12ea0
@@ -444,7 +444,7 @@ void Unk_WsInst7(WorldService* w)
     WsReal::VecTextPair vtp;
     WsDriveVec(vtp, std::pair<CStringA, CStringA>());
     WsReal::Veca18 va18;
-    WsDriveVec(va18, std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> >());
+    WsDriveVec(va18, std::pair<CStringA, TPtrValue<CGameRankingData> >());
     std::vector<efd::SmartPointer<egf::Entity> > vent;  // FUN_141bda490 out vector
     WsDriveVec(vent, efd::SmartPointer<egf::Entity>());
     std::vector<MS2Ptr<CLiftableObject> > vlift;        // FUN_141bc58d0 out vector

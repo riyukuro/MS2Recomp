@@ -128,7 +128,7 @@ public:
 private:
     char m_pad[0x90];
 };
-class Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);   // the root element
+class TiXmlElement* DocRootElement(TiXmlDocument* pDoc);   // the root element
 // The TinyXML node base (Clear 0x14086ddc0, LinkEndChild 0x14086e090).
 class TiXmlNode
 {
@@ -709,7 +709,7 @@ float ItemOptionDebug::FUN_1419b6940(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -729,7 +729,7 @@ float ItemOptionDebug::GetMaxRate(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -748,7 +748,7 @@ void ItemOptionDebug::CountRates(int nGroup, int nStat, Unk_IcRateCounts& counts
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         float fKey = value->FUN_140266e10();
@@ -769,7 +769,7 @@ __int64 ItemOptionDebug::GetMinValue(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 n = value->GetValue();
@@ -789,7 +789,7 @@ __int64 ItemOptionDebug::GetMaxOptionValue(int nGroup, int nStat)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 n = value->GetValue();
@@ -808,7 +808,7 @@ void ItemOptionDebug::CountValues(int nGroup, int nStat, Unk_IcValueCounts& coun
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetStatOption(nGroup, nStat);
+        MS2Ptr<BaseOption> value = option->GetStatOption(nGroup, nStat);
         if (value == 0)
             continue;
         __int64 nKey = value->GetValue();
@@ -829,7 +829,7 @@ float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -849,7 +849,7 @@ float ItemOptionDebug::GetMaxSpecialRate(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = value->FUN_140266e10();
@@ -868,7 +868,7 @@ void ItemOptionDebug::CountSpecialRates(int nGroup, unsigned nSpecial, Unk_IcRat
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float fKey = value->FUN_140266e10();
@@ -889,7 +889,7 @@ float ItemOptionDebug::GetMinSpecialValue(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = (float)value->GetValue();
@@ -909,7 +909,7 @@ float ItemOptionDebug::GetMaxSpecialValue(int nGroup, unsigned nSpecial)
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float f = (float)value->GetValue();
@@ -928,7 +928,7 @@ void ItemOptionDebug::CountSpecialValues(int nGroup, unsigned nSpecial, Unk_IcRa
         MS2Ptr<CItemOption> option = m_options.GetNext(pos);
         if (option == 0)
             continue;
-        Unk_EnchantPtr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
+        MS2Ptr<BaseOption> value = option->GetSpecialOption(nGroup, nSpecial);
         if (value == 0)
             continue;
         float fKey = (float)value->GetValue();

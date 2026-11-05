@@ -10,56 +10,55 @@
 // MS2-RANGE: 0x142c9d0c0-0x142c9d1c0 .text$yd
 // MS2-PIN: ??$forward@U?$pair@H_J@std@@@std@@YA$$QEAU?$pair@H_J@0@AEAU10@@Z 0x140932390 ; hand: callers expect this twin
 // MS2-PIN: ??$construct@U?$pair@H_J@std@@U12@@?$_Default_allocator_traits@V?$allocator@U?$pair@H_J@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@H_J@std@@@1@QEAU?$pair@H_J@1@$$QEAU31@@Z 0x1409321e0 ; hand: callers expect this twin
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@_K@Z 0x140935140 ; hand: callers expect this twin
-// MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@PEAU32@@Z 0x140934ac0 ; hand: callers expect this twin
-// MS2-PIN: ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@@Z 0x140934900 ; hand: callers expect this twin
-// MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@@Z 0x140934da0 ; hand: callers expect this twin
-// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@2@XZ 0x1409347f0 ; hand: callers expect this twin
-// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@1@PEAU01@@Z 0x140931d80 ; hand: callers expect this twin
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@1@@Z 0x140932600 ; hand: callers expect this twin
-// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@@Z 0x140932280 ; hand: callers expect this twin
-// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@0@AEAPEAU10@@Z 0x1409320e0 ; hand: callers expect this twin
-// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@AEAPEAU31@@Z 0x140932140 ; hand: callers expect this twin
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@XZ 0x140934790 ; hand: callers expect this twin
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@XZ 0x1409347a0 ; hand: callers expect this twin
-// MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@XZ 0x1409346e0 ; hand: callers expect this twin
+// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@_K@Z 0x140935140 ; hand: callers expect this twin
+// MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@PEAU32@@Z 0x140934ac0 ; hand: callers expect this twin
+// MS2-PIN: ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@@Z 0x140934900 ; hand: callers expect this twin
+// MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@@Z 0x140934da0 ; hand: callers expect this twin
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@2@XZ 0x1409347f0 ; hand: callers expect this twin
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@1@PEAU01@@Z 0x140931d80 ; hand: callers expect this twin
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@1@@Z 0x140932600 ; hand: callers expect this twin
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@1@@Z 0x140932280 ; hand: callers expect this twin
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@0@AEAPEAU10@@Z 0x1409320e0 ; hand: callers expect this twin
+// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@1@AEAPEAU31@@Z 0x140932140 ; hand: callers expect this twin
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@XZ 0x140934790 ; hand: callers expect this twin
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@XZ 0x1409347a0 ; hand: callers expect this twin
+// MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@XZ 0x1409346e0 ; hand: callers expect this twin
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$_Emplace_back@U?$pair@H_J@std@@@?$_Uninitialized_backout_al@PEAU?$pair@H_J@std@@V?$allocator@U?$pair@H_J@std@@@2@@std@@QEAAX$$QEAU?$pair@H_J@1@@Z 0x140931a10 ; unique
-// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@0@AEAV10@@Z 0x140932120 ; unique
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@0@AEAV10@@Z 0x140932120 ; unique
 // MS2-PIN: ??$forward@AEB_J@std@@YAAEB_JAEB_J@Z 0x140932350 ; prop
-// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140932520 ; prop
-// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140932580 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140932520 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140932580 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA@AEBUUnk_TailSetLess@@@Z 0x1409325c0 ; prop
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@1@@Z 0x140932600 ; prop
-// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@1@@Z 0x140932680 ; unique
-// MS2-PIN: ??0?$map@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@@std@@QEAA@XZ 0x140932840 ; prop
+//
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@1@@Z 0x140932680 ; unique
+// MS2-PIN: ??0?$map@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@@std@@QEAA@XZ 0x140932840 ; prop
 // MS2-PIN: ??0?$set@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@@std@@QEAA@XZ 0x140932870 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA@XZ 0x140932a50 ; prop
-// MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x140932a80 ; prop
+// MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x140932a80 ; prop
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA@XZ 0x140932ab0 ; prop
-// MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932c80 ; unique
+// MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932c80 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932cc0 ; prop
-// MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932d00 ; unique
+// MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932d00 ; unique
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932d40 ; prop
-// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140932da0 ; unique
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140932da0 ; unique
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140932e10 ; prop
-// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@XZ 0x1409335f0 ; prop
+// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@XZ 0x1409335f0 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@XZ 0x1409336b0 ; prop
-// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x140933910 ; prop
+// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x140933910 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAAXXZ 0x140933940 ; prop
-// MS2-PIN: ?_Extract@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@2@@Z 0x140933af0 ; prop
+// MS2-PIN: ?_Extract@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@2@@Z 0x140933af0 ; prop
 // MS2-PIN: ?_Extract@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@QEAAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@@Z 0x1409340a0 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$pair@H_J@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@H_J@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$pair@H_J@std@@@2@XZ 0x140934770 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$pair@H_J@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@H_J@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$pair@H_J@std@@@2@XZ 0x140934780 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@UUnk_TailSetLess@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_TailSetVal@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@2@$00@std@@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_TailSetVal@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@2@$00@2@XZ 0x1409347a0 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_TailSetVal@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@2@XZ 0x1409347c0 ; unique
-// MS2-PIN: ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@@Z 0x140934900 ; prop
+//
 // MS2-PIN: ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@QEAAXPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@@Z 0x1409349e0 ; prop
-// MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@PEAU32@@Z 0x140934ac0 ; prop
+//
 // MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@SAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@PEAU32@@Z 0x140934af0 ; prop
-// MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@PEAU32@@Z 0x140934b20 ; prop
+// MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@PEAU32@@Z 0x140934b20 ; prop
 // MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@SAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@PEAU32@@Z 0x140934b50 ; prop
-// MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@@Z 0x140934da0 ; prop
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@QEAAXPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@@Z 0x140934e80 ; prop
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@@Z 0x140935980 ; la1: called from set erase(first,last) 140935890
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@2@V32@0@Z 0x140935890 ; unique
@@ -100,10 +99,10 @@
 
 // ---- unit-local stand-ins ---------------------------------------------------------------------------------------------
 
-// The client's object table (0x1403ed2d0): the local player is its first entry.
-class Unk_FieldRef;
-class Unk_MailSession { public: MS2Ptr<Unk_FieldRef> FUN_141bd30a0(); };
-typedef Unk_MailSession Unk_ObjTable;
+// C3: the Unk_MailSession / Unk_ObjTable view and Unk_FieldRef are gone (no caller since f64e3e85e):
+// the field getter is WorldService::FUN_141bd30a0() -> MS2Ptr<CFieldDataCli>, declared on the WorldService view below.
+
+
 
 // The local player (MyPC); only the two slots this zone calls are declared (78: level, 141: a cap).
 class Unk_MyPc : public MyPC
@@ -237,7 +236,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_141275260(int nStringId, int nA, int nB);
 
 
-class Unk_FieldRef : public CPtred { };
+
 int IsNotRecentDayChange(__int64 nTime);
 bool IsEarlierDay(CMsTime tmOld, CMsTime tmNew, int nBaseHour);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
 __int64 GetServerTime();
@@ -246,15 +245,15 @@ class Unk_NoticeSub { public: virtual void vfunc_0(); virtual unsigned char vfun
 class Unk_NoticeSubRef;
 class Unk_Notice { public: void* m_pad_00; Unk_NoticeSub m_sub; };
 
-class Unk_Misc32d8 { public: void FUN_140581e40(); };
+#include "ms2/commonfiles/itemdatatable.h"   // Unk_TrophyKey: DAT_143ab32d8 is a std::set<Unk_TrophyKey> (userproxy.cpp)
 // Same layout as the unit-local state of uiadventureleveldialog.cpp (the map global 0x143ab3318 is shared).
-class Unk_ALMissionState
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    unsigned int m_18;
-    bool m_1c;
-};
+#include "ms2/commonfiles/adventureleveltablehelper.h"   // CAdventureLevelMissionData, the mission state of the map global 0x143ab3318
+//
+//
+//
+//
+//
+//
 
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_QuickSlots { };
@@ -278,8 +277,8 @@ extern GameEventUserValue DAT_143ab3010;
 #include "ms2/client/ms2/skillsystem.h"
 #include "ms2/placeholder/cskillsettable.h"   // CSkillSet
 extern Unk_CubeStock DAT_143ab2e50;
-extern Unk_Misc32d8 DAT_143ab32d8;
-extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
+template <> void std::_Tree<std::_Tset_traits<Unk_TrophyKey, std::less<Unk_TrophyKey>, std::allocator<Unk_TrophyKey>, false> >::clear() noexcept;   extern std::set<Unk_TrophyKey> DAT_143ab32d8;   // clear 0x140581e40 is another unit's
+extern std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;   // 0x143ab3318, the mission progress (userproxy)
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;
 extern ATL::CAtlArray<int> DAT_143ab32b8;
 
@@ -301,13 +300,13 @@ void FUN_14092f420()
     DAT_143ab2e50.FUN_140dfc4f0();
     DAT_143ab2857 = 0;
     DAT_143ab2938 = 0;
-    DAT_143ab32d8.FUN_140581e40();
+    DAT_143ab32d8.clear();
     DAT_143ab2940 = 0;
     DAT_143ab291e = 0;
     DAT_143ab2948 = 0;
     DAT_143ab2947 = 0;
     DAT_143ab2966 = 0;
-    g_unkMissionStates.clear();
+    DAT_143ab3318.clear();
 }
 
 // @0x14092f4e0
@@ -1177,11 +1176,11 @@ struct Unk_TailRefBox { void* m_p; };
 struct Unk_TailSetVal { void* m_unk_00; Unk_TailRefBox m_ref; char m_pad_10[0x8]; };                // element of the set tree (0x18)
 struct Unk_TailAlmVal { void* m_unk_00; Unk_TailRefBox m_ref; char m_pad_10[0x20]; };                // element of the mission tree (0x30)
 struct Unk_TailSetNode { Unk_TailSetNode* m_pLeft; Unk_TailSetNode* m_pParent; Unk_TailSetNode* m_pRight; char m_nColor; char m_bNil; Unk_TailSetVal m_val; };
-struct Unk_TailAlmState { void* m_pad_00[0x5]; bool operator<(const Unk_TailAlmState&) const { return false; } };
+// (the mapped type of the mission tree is CAdventureLevelMissionData, 0x28)
 struct Unk_TailAlmTree { char m_pad_00[0x10]; };
 struct Unk_TailAlmNode { Unk_TailAlmNode* m_pLeft; Unk_TailAlmNode* m_pParent; Unk_TailAlmNode* m_pRight; char m_nColor; char m_bNil; Unk_TailAlmVal m_val; };
 struct Unk_TailSetLess { bool operator()(const Unk_TailSetVal&, const Unk_TailSetVal&) const { return false; } };
-typedef std::set<Unk_TailSetVal, Unk_TailSetLess> Unk_TailSet;
+typedef std::set<Unk_TailSetVal, Unk_TailSetLess> Unk_TailSet; typedef std::_Tree<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, false>> Unk_TailSTree; typedef std::_Tree_val<std::_Tree_simple_types<Unk_TailSetVal>> Unk_TailTVal; typedef std::_Tree_node<Unk_TailSetVal, void*> Unk_TailTNode; typedef std::_Tree_const_iterator<Unk_TailTVal> Unk_TailCIt; typedef std::_Tree_unchecked_const_iterator<Unk_TailTVal, std::_Iterator_base0> Unk_TailUIt;
 typedef std::pair<int, __int64> Unk_TailPair;
 struct Unk_TailZeroTag { };
 
@@ -1212,12 +1211,12 @@ Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pVal, unsigned nFlags);
 Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pVal, unsigned nFlags);
 void FUN_140932b80(Unk_TailSetVal* pVal);
 void FUN_14063e780(Unk_TailRefBox* pBox);
-void FUN_140195700(Unk_TailRefBox* pBox);
+// (was FUN_140195700: now ~CAdventureLevelMissionData)
 void FUN_140932b60(Unk_TailAlmVal* pVal);
-Unk_TailIter* FUN_140932640(Unk_TailIter* pIt, void* pNode, const void* pCont);
-void FUN_140932a20(Unk_TailAlmTree* pTree);
-void FUN_140932a50(Unk_TailSet* pTree);
-Unk_TailIter* FUN_140932f10(Unk_TailIter* pIt);
+// (was FUN_140932640: now the real set member)
+// 0x140932a20 = std::_Tree<map<unsigned, CAdventureLevelMissionData>>::~_Tree
+// (was FUN_140932a50: now the real set member)
+// (was FUN_140932f10: now the real set member)
 void FUN_140932ba0(Unk_TailNodeA* pNode);
 void FUN_140932bc0(Unk_TailNodeB* pNode);
 void FUN_140932be0(Unk_TailNodeA* pNode);
@@ -1243,18 +1242,18 @@ struct Unk_TailVecVal { Unk_TailPair* m_pFirst; Unk_TailPair* m_pLast; Unk_TailP
 Unk_TailVecVal* FUN_1409347d0(Unk_TailVecVal* pVal);
 Unk_TailTreeA* FUN_140932460(Unk_TailTreeA* pTree, size_t nBlock);
 Unk_TailTreeB* FUN_1409324c0(Unk_TailTreeB* pTree, size_t nBlock);
-Unk_TailSetNode*& FUN_140931e10(Unk_TailAlc* pAlc, Unk_TailSetNode* pNode);
+// (was FUN_140931e10: now the real set member)
 Unk_TailSetVal* FUN_140932110(Unk_TailSetVal* pVal);
 void FUN_1409322c0(Unk_TailAlc* pAlc, Unk_TailSetVal* pVal);
 void FUN_140933a50(Unk_TailSet* pTree, Unk_TailSetNode* pNode);
 void FUN_1409339b0(Unk_TailAlmTree* pTree, Unk_TailAlmNode* pNode);
-Unk_TailAlmNode*& FUN_140931d80(Unk_TailAlc* pAlc, Unk_TailAlmNode* pNode);
+// 0x140931d80 = _Tree_node<pair<const unsigned, CAdventureLevelMissionData>>::_Freenode0
 void FUN_1409322a0(Unk_TailAlc* pAlc, Unk_TailAlmVal* pVal);
 Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
-Unk_TailIter* FUN_140935280(Unk_TailSet* pTree, Unk_TailIter* pRet);
-Unk_TailIter* FUN_140935890(Unk_TailSet* pTree, Unk_TailIter* pRet, Unk_TailIter itFirst, Unk_TailIter itLast);
-void* FUN_140932130(void* pVal);
-Unk_TailSetNode* FUN_1409340a0(void* pVal, void* pWhere);
+// (was FUN_140935280: now the real _Tree member)
+// (was FUN_140935890: now the real _Tree member)
+// (was FUN_140932130: now the real set member)
+// (was FUN_1409340a0: now the real set member)
 Unk_TailPair** FUN_140934be0(std::vector<Unk_TailPair>* pVec);
 void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
@@ -1389,7 +1388,7 @@ Unk_TailTreeB* FUN_1409324c0(Unk_TailTreeB* pThis, size_t nBlock)
 // @0x1409326c0
 Unk_TailIter* FUN_1409326c0(Unk_TailIter* pThis, void* pNode, const void* pCont)
 {
-    FUN_140932640(pThis, pNode, pCont);
+    reinterpret_cast<Unk_TailCIt*>(pThis)->Unk_TailCIt::_Tree_const_iterator((Unk_TailTNode*)pNode, (const Unk_TailTVal*)pCont);
     return pThis;
 }
 
@@ -1449,16 +1448,16 @@ void FUN_1409329f0(Unk_TailBoxPtr* pThis) noexcept
     FUN_140934c70(pThis);
 }
 
-// @0x140932b20
-void FUN_140932b20(Unk_TailAlmTree* pThis)
-{
-    FUN_140932a20(pThis);
-}
+// 0x140932b20 is the implicit dtor of std::map<unsigned, CAdventureLevelMissionData> (DAT_143ab3318, pinned in userproxy)
+//
+//
+//
+//
 
 // @0x140932b40
 void FUN_140932b40(Unk_TailSet* pThis)
 {
-    FUN_140932a50(pThis);
+    reinterpret_cast<Unk_TailSTree*>(pThis)->Unk_TailSTree::~_Tree();
 }
 
 // @0x140932ba0
@@ -1487,7 +1486,7 @@ void FUN_140932c00(Unk_TailNodeB*)
 // @0x140932e60
 Unk_TailIter* FUN_140932e60(Unk_TailIter* pThis)
 {
-    FUN_140932f10(pThis);
+    ++*reinterpret_cast<Unk_TailUIt*>(pThis);
     return pThis;
 }
 
@@ -1594,9 +1593,9 @@ void FUN_1409339b0(Unk_TailAlmTree* pThis, Unk_TailAlmNode* pRoot)
     {
         FUN_1409339b0(pThis, pNode->m_pRight);
         pNode = pNode->m_pLeft;
-        Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tmap_traits<unsigned int, Unk_ALMissionState, std::less<unsigned int>, std::allocator<std::pair<unsigned int const, Unk_ALMissionState>>, 0>>*)(struct Unk_TailAlmTree*)(pThis))->_Getal());
+        Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tmap_traits<unsigned int, CAdventureLevelMissionData, std::less<unsigned int>, std::allocator<std::pair<unsigned int const, CAdventureLevelMissionData>>, 0>>*)(struct Unk_TailAlmTree*)(pThis))->_Getal());
         FUN_1409322a0(pAlc, FUN_140932100(&pRoot->m_val));
-        FUN_140931d80(pAlc, pRoot);
+        std::_Tree_node<std::pair<const unsigned int, CAdventureLevelMissionData>, void*>::_Freenode0(*reinterpret_cast<std::allocator<std::_Tree_node<std::pair<const unsigned int, CAdventureLevelMissionData>, void*>>*>(pAlc), reinterpret_cast<std::_Tree_node<std::pair<const unsigned int, CAdventureLevelMissionData>, void*>*>(pRoot));
     }
 }
 
@@ -1609,14 +1608,14 @@ void FUN_140933a50(Unk_TailSet* pThis, Unk_TailSetNode* pRoot)
         pNode = pNode->m_pLeft;
         Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal());
         FUN_1409322c0(pAlc, FUN_140932110(&pRoot->m_val));
-        FUN_140931e10(pAlc, pRoot);
+        Unk_TailTNode::_Freenode0(*reinterpret_cast<std::allocator<Unk_TailTNode>*>(pAlc), reinterpret_cast<Unk_TailTNode*>(pRoot));
     }
 }
 
 // @0x140934680
 void FUN_140934680(Unk_TailSet* pThis, Unk_TailSetNode* pNode)
 {
-    FUN_140931e10(((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal()), pNode);
+    Unk_TailTNode::_Freenode0(*reinterpret_cast<std::allocator<Unk_TailTNode>*>(&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal()), reinterpret_cast<Unk_TailTNode*>(pNode));
 }
 
 // @0x140934730
@@ -1654,10 +1653,10 @@ void FUN_140934cd0(Unk_TailBoxPtr* pThis, void*)
 // @0x140934fc0
 void FUN_140934fc0(Unk_TailSet* pThis)
 {
-    Unk_TailIter itEnd, itBegin, itRes;
+    Unk_TailIter itEnd;
     Unk_TailIter itLast = *FUN_140935690(pThis, &itEnd);
-    Unk_TailIter itFirst = *FUN_140935280(pThis, &itBegin);
-    FUN_140935890(pThis, &itRes, itFirst, itLast);
+    Unk_TailIter itFirst = reinterpret_cast<const Unk_TailIter&>(static_cast<const Unk_TailCIt&>(reinterpret_cast<Unk_TailSTree*>(pThis)->begin()));
+    reinterpret_cast<Unk_TailSTree*>(pThis)->erase(reinterpret_cast<Unk_TailCIt&>(itFirst), reinterpret_cast<Unk_TailCIt&>(itLast));   // erase(begin(), end())
 }
 
 // @0x140935120
@@ -1720,7 +1719,7 @@ bool FUN_1409355e0(std::vector<Unk_TailPair>* pThis)
 Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 {
     Unk_TailSetNode** pVal = (Unk_TailSetNode**)((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
-    FUN_1409326c0(pRet, *pVal, FUN_140932130(pVal));
+    FUN_1409326c0(pRet, *pVal, std::addressof(*(Unk_TailTVal*)pVal));
     return pRet;
 }
 
@@ -1730,11 +1729,11 @@ Unk_TailIter* FUN_140935980(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter
     void* pVal = ((void*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Get_data());
     Unk_TailIter itNext = itWhere;
     FUN_140932e60(&itNext);
-    Unk_TailSetNode* pNode = FUN_1409340a0(pVal, itWhere.m_pNode);
+    Unk_TailSetNode* pNode = (Unk_TailSetNode*)((Unk_TailTVal*)pVal)->_Extract(*reinterpret_cast<Unk_TailCIt*>(&itWhere));
     Unk_TailAlc* pAlc = ((struct Unk_TailAlc*)&((std::_Tree_comp_alloc<std::_Tset_traits<Unk_TailSetVal, Unk_TailSetLess, std::allocator<Unk_TailSetVal>, 0>>*)(void*)(pThis))->_Getal());
     FUN_1409322c0(pAlc, FUN_140932110(&pNode->m_val));
-    FUN_140931e10(pAlc, pNode);
-    FUN_1409326c0(pRet, itNext.m_pNode, FUN_140932130(pVal));
+    Unk_TailTNode::_Freenode0(*reinterpret_cast<std::allocator<Unk_TailTNode>*>(pAlc), reinterpret_cast<Unk_TailTNode*>(pNode));
+    FUN_1409326c0(pRet, itNext.m_pNode, std::addressof(*(Unk_TailTVal*)pVal));
     return pRet;
 }
 
@@ -1802,7 +1801,7 @@ void FUN_140932b80(Unk_TailSetVal* pThis)
 // @0x140932b60
 void FUN_140932b60(Unk_TailAlmVal* pThis)
 {
-    FUN_140195700(&pThis->m_ref);
+    reinterpret_cast<CAdventureLevelMissionData*>(&pThis->m_ref)->CAdventureLevelMissionData::~CAdventureLevelMissionData();
 }
 
 // @0x140932fa0
@@ -1824,5 +1823,6 @@ Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pThis, unsigned nFlags)
 }
 
 template class std::set<Unk_TailSetVal, Unk_TailSetLess>;
-template class std::map<unsigned int, Unk_TailAlmState>;
-// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@2@@Z 0x1409357e0 ; la1: called from map erase(first,last) 1409356f0, frees through the Alm _Freenode0 140931d80
+template class std::map<unsigned int, CAdventureLevelMissionData>;
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@2@@Z 0x1409357e0 ; la1: called from map erase(first,last) 1409356f0, frees through the Alm _Freenode0 140931d80
+// MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x140932a20 ; ua17: the mission tree dtor, called by the map dtor 0x140932b20

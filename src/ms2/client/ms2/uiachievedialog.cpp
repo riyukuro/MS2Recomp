@@ -53,12 +53,12 @@
 
 // ---- unit-local views of exe types ----
 
-// the "m_heroTrophy" / "m_summaryTrophy" component
-class Unk_AcHero : public ASUIComponent
-{
-public:
-    Scaleform::GFx::Value FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row);
-};
+// the "m_heroTrophy" / "m_summaryTrophy" component is an ASGameEntity: the MS2Ptr dtor/bool/->/! at
+// 0x140ba7b40/bf0/c00/0x140ede6c0 and GetChild 0x140ede180 carry only the ASGameEntity name besides stand-ins.
+#include "ms2/placeholder/asgameentity.h"
+class Unk_ReportDialogAccess : public UIDialog { public: template<class T> MS2Ptr<T> GetChild(const CString& name); };   // C3: the child lookup 0x140ede180 (defined in uitencentuserreportdialog.cpp)
+
+
 // the movie root: gotoAndPlay(label) and the reward count call
 class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName); };
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int n, CStringW str); };
@@ -564,7 +564,7 @@ void UIAchieveDialog::FUN_1418a8ff0()
     if (spCategory.IsNull())
         return;
     {
-        if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+        if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
             switch (spCategory->m_nTab) {
             case 2:
                 spHero->vfunc_13("search");
@@ -673,7 +673,7 @@ void UIAchieveDialog::FUN_1418a9800()
 // @0x1418a9c20
 void UIAchieveDialog::FUN_1418a9c20()
 {
-    if (MS2Ptr<Unk_AcHero> spSummary = FUN_140ede180("m_summaryTrophy")) {
+    if (MS2Ptr<ASGameEntity> spSummary = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_summaryTrophy")) {
         spSummary->Invoke("removeAll");
         std::vector<ClearRecord> records;
         FUN_1418adae0(records);
@@ -709,7 +709,7 @@ void UIAchieveDialog::FUN_1418a9c20()
 // @0x1418aa190
 void UIAchieveDialog::FUN_1418aa190(const FilterOptions* pOptions)
 {
-    MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
+    MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy");
     if (spHero.IsNull())
         return;
     MS2Ptr<ASScrollingList> spList = spHero->FUN_140bc7280<ASScrollingList>("m_list");
@@ -774,7 +774,7 @@ void UIAchieveDialog::FUN_1418aa660(int nId)
     case 0:
     case 2:
         if (spCategory->Matches(nId)) {
-            if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+            if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
                 ASObj row(2);
                 FUN_1418ab7e0(row, spAchieve);
                 spHero->Invoke("updateAchieve", row);
@@ -852,7 +852,7 @@ CStringW UIAchieveDialog::FUN_1418aac30(CAchieve* pAchieve, int nGrade)
 // @0x1418aad60
 CStringW UIAchieveDialog::GetSearchText()
 {
-    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+    if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
         if (MS2Ptr<ASTextInput> spInput = spHero->FUN_140bbe880<ASTextInput>("m_searchInput"))
             return reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
     }
@@ -862,7 +862,7 @@ CStringW UIAchieveDialog::GetSearchText()
 // @0x1418aaee0
 void UIAchieveDialog::SetSearchText(const CStringW& strText)
 {
-    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+    if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
         if (MS2Ptr<ASTextInput> spInput = spHero->FUN_140bbe880<ASTextInput>("m_searchInput"))
             spInput->SetTextW(strText);
     }
@@ -1077,7 +1077,7 @@ int UIAchieveDialog::FUN_1418ac320(int nId)
 // @0x1418ac480
 int UIAchieveDialog::GetFilterIndex()
 {
-    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+    if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
         if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
             return spFilter->GetVisible() ? spFilter->GetSelectedIndex() : 4;
         }
@@ -1088,7 +1088,7 @@ int UIAchieveDialog::GetFilterIndex()
 // @0x1418ac5f0
 void UIAchieveDialog::SetFilterIndex(int nIndex)
 {
-    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+    if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
         if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter"))
             spFilter->SetSelectedIndex(nIndex);
     }
@@ -1171,7 +1171,7 @@ int UIAchieveDialog::FUN_1418aca90(CAchieve* pAchieve)
 // @0x1418acaf0
 int UIAchieveDialog::FUN_1418acaf0()
 {
-    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+    if (MS2Ptr<ASGameEntity> spHero = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_heroTrophy")) {
         if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
             if (!spFilter->GetVisible())
                 return 0;
@@ -1391,7 +1391,7 @@ static ATL::CAtlArray<__int64>* AcCollectedIds(CAchieve* pAchieve)
 }
 
 // @0x1418adea0
-Scaleform::GFx::Value Unk_AcHero::FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row)
+Scaleform::GFx::Value ASGameEntity::FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row)
 {
     ASArgList args;
     args.FUN_1409b2800(2);

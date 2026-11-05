@@ -21,17 +21,17 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/creservedwordtable.h"
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -94,17 +94,17 @@ void CStoryBookTable::Load()
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0(reinterpret_cast<Unk_XmlElement*>(pRoot), "book", "id", reinterpret_cast<std::vector<Unk_XmlElement*>&>(nodes));
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pBook = nodes[i];
+        TiXmlElement* pBook = nodes[i];
         CStoryBookDataPtr spData(new CStoryBookData);
         spData->m_nMaxPage = 0;
         int nId = 0;
@@ -118,14 +118,14 @@ void CStoryBookTable::Load()
             spData->m_nType = 3;
         else if (strType.CompareNoCase("adpaper") == 0)
             spData->m_nType = 4;
-        for (Unk_140165cf0* pPage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pBook))->FirstChild("page")); pPage != 0; pPage = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPage))->NextSibling("page")))
+        for (TiXmlElement* pPage = ((class TiXmlElement*)((class Unk_XmlNode*)(pBook))->FirstChild("page")); pPage != 0; pPage = ((class TiXmlElement*)((class Unk_XmlNode*)(pPage))->NextSibling("page")))
         {
             CStoryBookData::BookPagePtr spPage(new CStoryBookData::BookPage);
             int nNumber = 0;
             XmlGetAttr((class TiXmlElement*)(pPage), "number", reinterpret_cast<int&>(nNumber));
             XmlGetAttr((class TiXmlElement*)(pPage), "string", spPage->m_strText);
             XmlGetAttr((class TiXmlElement*)(pPage), "valign", spPage->m_strVAlign);
-            CString strImage = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pPage))->Attribute("image"));
+            CString strImage = FUN_14028d1f0(((class TiXmlElement*)(class TiXmlElement*)(pPage))->Attribute("image"));
             if (strImage.GetLength() > 0)
             {
                 ATL::CAtlArray<CString> arrPath;

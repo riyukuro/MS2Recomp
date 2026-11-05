@@ -6,7 +6,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$CAtlArray@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@QEAA@XZ 0x140887f10 ; unique
 // MS2-PIN: ??0?$CAtlArray@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@QEAA@XZ 0x140887f50 ; prop
-// MS2-PIN: ??0?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@QEAA@AEBUUnk_CubeNewTag@@@Z 0x140888370 ; unique
+// MS2-PIN: ??0?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140888370 ; unique
 // MS2-PIN: ??0?$TPtredDummy@V?$CAtlArray@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAA@XZ 0x140888670 ; prop
 // MS2-PIN: ??0?$TPtredDummy@V?$CAtlArray@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAA@XZ 0x1408886b0 ; prop
 // MS2-PIN: ??0?$TPtredDummy@V?$CAtlArray@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAA@XZ 0x1408886f0 ; prop
@@ -22,8 +22,8 @@
 // MS2-PIN: ??_G?$TPtredDummy@V?$CAtlArray@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x1408891e0 ; prop
 // MS2-PIN: ??_G?$TPtredDummy@V?$CAtlArray@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x140889220 ; prop
 // MS2-PIN: ??_G?$TSingleton@VUGCCubeCategoryTable@@@@UEAAPEAXI@Z 0x140889260 ; unique
-// MS2-PIN: ??4?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_CubeNewTag@@@Z 0x1408896b0 ; prop
-// MS2-PIN: ??4?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_CubeNewTag@@@Z 0x1408896e0 ; prop
+// MS2-PIN: ??4?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VMenuInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x1408896b0 ; prop
+// MS2-PIN: ??4?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VSortInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x1408896e0 ; prop
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_CubeBoxPtr@V?$CAtlArray@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@V?$CElementTraits@V?$Unk_CubePtr@VTabInfo@UGCCubeCategoryTable@@@@@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14088a040 ; unique
 // MS2-PIN: ?AddRef@?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@AEBAXXZ 0x14088cf30 ; unique
 // MS2-PIN: ?AddRefImpl@?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@AEBAXPEAX@Z 0x14088d160 ; unique
@@ -49,7 +49,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -57,12 +57,12 @@ public:
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -226,13 +226,13 @@ void UGCCubeCategoryTable::LoadMenus()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            Unk_140165cf0* pMenus = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("menus"));
+            TiXmlElement* pMenus = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("menus"));
             if (pMenus != 0)
             {
-                for (Unk_140165cf0* pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenus))->FirstChild("menu")); pMenu != 0; pMenu = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
+                for (TiXmlElement* pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenus))->FirstChild("menu")); pMenu != 0; pMenu = ((class TiXmlElement*)((class Unk_XmlNode*)(pMenu))->NextSibling("menu")))
                 {
                     if (!FUN_14028f710((struct Unk_XmlElement*)(pMenu)))
                         continue;
@@ -252,10 +252,10 @@ void UGCCubeCategoryTable::LoadMenus()
                     m_menus->Add(menu);
                 }
             }
-            Unk_140165cf0* pSorts = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("sort"));
+            TiXmlElement* pSorts = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("sort"));
             if (pSorts != 0)
             {
-                for (Unk_140165cf0* pSort = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSorts))->FirstChild("sort")); pSort != 0; pSort = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSort))->NextSibling("sort")))
+                for (TiXmlElement* pSort = ((class TiXmlElement*)((class Unk_XmlNode*)(pSorts))->FirstChild("sort")); pSort != 0; pSort = ((class TiXmlElement*)((class Unk_XmlNode*)(pSort))->NextSibling("sort")))
                 {
                     int nName = 0;
                     XmlGetAttr((class TiXmlElement*)(pSort), "name", *(unsigned int*)&static_cast<int&>(nName));
@@ -268,8 +268,8 @@ void UGCCubeCategoryTable::LoadMenus()
                 }
             }
             int nIndex = 0;
-            for (Unk_140165cf0* pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0;
-                 pCategory = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
+            for (TiXmlElement* pCategory = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pCategory != 0;
+                 pCategory = ((class TiXmlElement*)((class Unk_XmlNode*)(pCategory))->NextSibling("category")))
             {
                 nIndex = nIndex + 1;
                 TabArrayPtr tabs((Unk_CubeNewTag(0)));
@@ -288,10 +288,10 @@ void UGCCubeCategoryTable::LoadInteriors()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
-            for (Unk_140165cf0* pList = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pList != 0; pList = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pList))->NextSibling("list")))
+            for (TiXmlElement* pList = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pList != 0; pList = ((class TiXmlElement*)((class Unk_XmlNode*)(pList))->NextSibling("list")))
             {
                 InteriorPtr interior((Unk_CubeNewTag(0)));
                 int nCategory = 0;
@@ -309,14 +309,14 @@ void UGCCubeCategoryTable::LoadInteriors()
 }
 
 // @0x140887240
-void UGCCubeCategoryTable::ReadTabChildren(int nCategory, Unk_140165cf0* pElem, TabPtr parent)
+void UGCCubeCategoryTable::ReadTabChildren(int nCategory, TiXmlElement* pElem, TabPtr parent)
 {
     if (parent == 0)
         return;
     MenuPtr menu = FindMenu(nCategory);
     if (menu == 0)
         return;
-    for (Unk_140165cf0* pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
+    for (TiXmlElement* pTab = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class TiXmlElement*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
     {
         TabPtr child = ReadTab(pTab);
         if (child == 0)
@@ -329,9 +329,9 @@ void UGCCubeCategoryTable::ReadTabChildren(int nCategory, Unk_140165cf0* pElem, 
 }
 
 // @0x140887430
-void UGCCubeCategoryTable::ReadTabsInto(int nCategory, Unk_140165cf0* pElem, TabArray* pOut)
+void UGCCubeCategoryTable::ReadTabsInto(int nCategory, TiXmlElement* pElem, TabArray* pOut)
 {
-    for (Unk_140165cf0* pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
+    for (TiXmlElement* pTab = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("tab")); pTab != 0; pTab = ((class TiXmlElement*)((class Unk_XmlNode*)(pTab))->NextSibling("tab")))
     {
         TabPtr tab = ReadTab(pTab);
         if (tab == 0)
@@ -342,7 +342,7 @@ void UGCCubeCategoryTable::ReadTabsInto(int nCategory, Unk_140165cf0* pElem, Tab
 }
 
 // @0x140887530
-UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(Unk_140165cf0* pElem)
+UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(TiXmlElement* pElem)
 {
     if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
         return TabPtr(0);

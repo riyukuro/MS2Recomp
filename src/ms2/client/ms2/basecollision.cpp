@@ -260,11 +260,11 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             if (spCtx->m_bUseAllAnchors != 0)
                 pObj->vfunc_28(&kBoxes);
             if (kBoxes.IsEmpty())
-                pObj->vfunc_27(reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>&>(kBoxes));
+                pObj->vfunc_27(kBoxes);
             if (!kBoxes.IsEmpty())
             {
                 int bHit = 0;
-                for (unsigned int i = 0; i < reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>&>(kBoxes).GetCount(); i++)
+                for (unsigned int i = 0; i < kBoxes.GetCount(); i++)
                 {
                     MS2Ptr<CBoxCollision> spBox(kBoxes[i]);
                     if (spBox == NULL)

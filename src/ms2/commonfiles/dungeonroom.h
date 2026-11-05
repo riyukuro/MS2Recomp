@@ -18,7 +18,7 @@
 #include "ms2/commonfiles/timer.h"
 #include "ms2/placeholder/partybits.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 class DungeonRewardCoupon;
 
 
@@ -57,7 +57,7 @@ class DungeonRankRewardBase : public CPtred
 {
 public:
     DungeonRankRewardBase();                    // 0x14031cad0
-    bool Load(Unk_140165cf0* pElem);            // 0x14031cb30
+    bool Load(TiXmlElement* pElem);            // 0x14031cb30
     unsigned GetId();                           // 0x14031ccf0
     unsigned GetItemId(int nRank);              // 0x14031cd10
     int GetSystemMailId(int nRank);             // 0x14031cd70
@@ -83,7 +83,7 @@ class DungeonRoom : public CPtred
 public:
     DungeonRoom();                                  // 0x14031cdf0
     virtual ~DungeonRoom();                         // 0x14031d220
-    void Load(Unk_140165cf0* pElem);                // 0x14031d350
+    void Load(TiXmlElement* pElem);                // 0x14031d350
     unsigned GetDungeonRoomID();                    // 0x14031ddd0
     unsigned GetRewardRoomID();                     // 0x14031ddf0
     unsigned GetDungeonID();                        // 0x14031de20
@@ -210,7 +210,7 @@ __int64 CalcCooldownEndTime(int nType, int nValue, __int64 tNow);              /
 // RTTI DungeonSeasonItemGift, 0x38 bytes: a season reward with the score it needs.
 struct DungeonSeasonItemGift : ItemGift {
     DungeonSeasonItemGift();                        // 0x14031e950
-    virtual void vfunc_4(Unk_140165cf0* pElem);     // 0x14031e9a0
+    virtual void vfunc_4(TiXmlElement* pElem);     // 0x14031e9a0
     unsigned m_requireScore;                        // +0x30
 };
 MS2_CHECK_SIZE(DungeonSeasonItemGift, 0x38);
@@ -219,7 +219,7 @@ MS2_CHECK_SIZE(DungeonSeasonItemGift, 0x38);
 struct DungeonRankRequire
 {
     DungeonRankRequire();                           // 0x14031e9f0
-    void Load(Unk_140165cf0* pElem);                // 0x14031ea30
+    void Load(TiXmlElement* pElem);                // 0x14031ea30
     short GetMaxScore();                            // 0x14031eb90
     int GetRank(short nScore);                      // 0x14031ebb0
     size_t GetCount();                              // 0x14031ec40
@@ -236,7 +236,7 @@ class DungeonSeason : public CPtred
 public:
     DungeonSeason();                                // 0x14031ecc0
     virtual ~DungeonSeason();                       // 0x14031ed50
-    bool Load(Unk_140165cf0* pElem);                // 0x14031ed90
+    bool Load(TiXmlElement* pElem);                // 0x14031ed90
     bool IsInPeriod(const CMsTime& t);              // 0x14031f030
     MS2Ptr<DungeonSeasonItemGift> GetReward(unsigned nScore);   // 0x14031f060
 
@@ -255,7 +255,7 @@ class DungeonUnitedWeeklyReward : public CPtred
 public:
     DungeonUnitedWeeklyReward();                    // 0x14031f140
     virtual ~DungeonUnitedWeeklyReward();           // 0x14031f1a0
-    bool Load(Unk_140165cf0* pElem);                // 0x14031f1d0
+    bool Load(TiXmlElement* pElem);                // 0x14031f1d0
 
     unsigned m_rewardCount;                         // +0x18
     unsigned m_rewardID;                            // +0x1c
@@ -269,7 +269,7 @@ class DungeonRoundData : public CPtred
 {
 public:
     DungeonRoundData();                             // 0x14031f260
-    bool Load(Unk_140165cf0* pElem);                // 0x14031f2b0
+    bool Load(TiXmlElement* pElem);                // 0x14031f2b0
 
     unsigned m_rewardID;                            // +0x18
     unsigned m_gearScore;                           // +0x1c
@@ -281,7 +281,7 @@ class DungeonRoundGroup : public CPtred
 {
 public:
     DungeonRoundGroup();                            // 0x14031f310
-    bool Load(Unk_140165cf0* pElem);                // 0x14031f360
+    bool Load(TiXmlElement* pElem);                // 0x14031f360
     void GetRewardIds(unsigned char nFrom, unsigned char nTo, std::vector<unsigned>& out);  // 0x14031f480
     MS2Ptr<DungeonRoundData> GetRound(unsigned nIndex);     // 0x14031f530
 
@@ -367,9 +367,9 @@ public:
     void LoadCoupons();                                         // 0x140322000 DungeonRewardCoupon.xml
     DungeonRewardCoupon* GetCoupon(int nCouponId);              // 0x140322260
     DungeonRoundGroup* GetRoundGroup(int nGroupId);             // 0x1403222f0
-    bool LoadDungeonConfig(Unk_140165cf0* pElem);               // 0x140322370 MissionRank groups
-    bool LoadReverseRaidConfig(Unk_140165cf0* pElem);           // 0x140322440
-    bool LoadUnitedWeeklyRewards(Unk_140165cf0* pElem);         // 0x140322530
+    bool LoadDungeonConfig(TiXmlElement* pElem);               // 0x140322370 MissionRank groups
+    bool LoadReverseRaidConfig(TiXmlElement* pElem);           // 0x140322440
+    bool LoadUnitedWeeklyRewards(TiXmlElement* pElem);         // 0x140322530
 
     // @0x140336680
     static void CheckInit()

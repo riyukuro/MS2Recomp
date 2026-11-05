@@ -11,7 +11,7 @@
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tset_traits@PEAXU?$less@PEAX@std@@V?$allocator@PEAX@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@PEAXPEAX@2@@Z 0x141bb2540
 // MS2-PIN: ?_Tidy@?$vector@UUnk_WsN1@@V?$allocator@UUnk_WsN1@@@std@@@std@@AEAAXXZ 0x141bb6e60
 // MS2-PIN: ?_Tidy@?$vector@UUnk_WsN2@@V?$allocator@UUnk_WsN2@@@std@@@std@@AEAAXXZ 0x141bb6d90
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_WsK_Rank@@@@AEAAXPEAX@Z 0x141bb6440
+// MS2-PIN: ?ReleaseImpl@?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAAXPEAX@Z 0x141bb6440
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -20,26 +20,26 @@
 #include "ms2/placeholder/specialnpcinfo.h"
 #include "ms2/client/ms2/gameeventcli.h"   // EventIconInfo (WorldMapManager::m_c8's value)
 
-// The exe's MS2Ptr<Unk_WsK_Rank> reaches its CPtred through a helper (a down-adjust by -0x18 with a null test), not the
-// inline upcast of ms2ptr_impl.h.
-CPtred* FUN_141bb0630(Unk_WsK_Rank* p);
-void FUN_141bb1410(CPtred* p);
-template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*)
-{
-    CPtred* p = FUN_141bb0630(m_p);
-    if (CPtred::ReleasePtred(p) == 0)
-    {
-        FUN_141bb1410(p);
-        CPtred::DeletePtred(p);
-    }
-}
-// Same for the add-ref (exe 0x140b314c0, the rank pointer's shared COMDAT): the generic one added a reference to the
-// CPtred at m_p itself, so each copy bumped a field of the record while each release dropped the real count, and the
-// record was freed under the m_a18 queue (garbage CStringW at +0x78 in CInteractDisplayImage::FUN_141401380).
-template <> void MS2Ptr<Unk_WsK_Rank>::AddRefImpl(void*) const
-{
-    FUN_141bb1410(FUN_141bb0630(m_p));
-}
+#include "ms2/client/ms2/gamerankingcli.h"   // CGameRankingData (Unk_WsVa18 = pair<CStringA, TPtrValue<CGameRankingData> >)
+// m_a18's rank pointer is TPtrValue<CGameRankingData> (~TPtrValue 0x140b2da40 -> Release 0x140b31640). The
+// MS2Ptr<Unk_WsK_Rank> ReleaseImpl / AddRefImpl specializations that stood in for it are gone: the 0x141bb63e0
+// Release / 0x141bb6440 ReleaseImpl / 0x141bb0630 Owner family they were pinned to is TPtrValue<SpecialNPCInfo>'s
+// (only caller of 0x141bb63e0: ~TPtrValue<SpecialNPCInfo> 0x141badf10).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // Not WorldService::m_980's map: this copy is unsigned-keyed (find 0x141bb8e00 / lower_bound 0x141bb91a0 call
 // less<unsigned> 0x140185090) and its erase (0x141bb8750) destroys a non-trivial value (0x141babd70), while m_980's own
@@ -215,7 +215,7 @@ void Unk_WsAnchorGlue()
 // MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsV1f8@@@std@@PEAX@2@PEAU32@@Z 0x141bb61a0
 // MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@PEAX@std@@@std@@SAPEAU?$_Tree_node@PEAXPEAX@2@PEAU32@@Z 0x141bb6230
 // MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsF4@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsF4@@@std@@PEAX@2@PEAU32@@Z 0x141bb6290
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_WsK_Rank@@@@AEAAXXZ 0x141bb63e0
+// MS2-PIN: ?Release@?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAAXXZ 0x141bb63e0
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsV1f8@@@std@@PEAX@2@XZ 0x141bb6530
 // MS2-PIN: ?_Root@?$_Tree_val@U?$_Tree_simple_types@PEAX@std@@@std@@QEBAAEAPEAU?$_Tree_node@PEAXPEAX@2@XZ 0x141bb6590
 // MS2-PIN: ?_Root@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsV1f8@@@std@@PEAX@2@XZ 0x141bb65f0
@@ -271,3 +271,4 @@ void Unk_WsAnchorGlue()
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_WsVa18@@V?$allocator@UUnk_WsVa18@@@std@@@std@@AEAAXPEAUUnk_WsVa18@@00U?$integral_constant@_N$00@2@@Z 0x141bb7000
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UUnk_WsVa18@@V?$allocator@UUnk_WsVa18@@@std@@@std@@AEAAXPEAUUnk_WsVa18@@00U?$integral_constant@_N$0A@@2@@Z 0x141bb7040
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VEventIconInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@3@$0A@@std@@@std@@QEAA_KAEBI@Z 0x141bb85f0 ; gp1: called by WorldMapManager::RemoveEventIconInfo (0x141b9a360)
+// MS2-PIN: ?_Xlength@?$vector@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@CAXXZ 0x141bb70f0

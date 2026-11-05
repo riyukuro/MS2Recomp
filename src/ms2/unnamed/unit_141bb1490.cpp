@@ -11,17 +11,17 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uiworldmap.h"   // C3: the factories' record types
-
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<T> (friend Unk_MS2PtrAccess)
 // The runtime's refcount-1 helper, the four types' pooled allocator+constructor and their release helpers (other units).
 class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
 UIWorldMap::AddtionalInfo* FUN_141b9d8e0(void* pTag);   // C3: returns the record
 UIWorldMap::FieldSearchInfo* FUN_141b9d950(void* pTag);   // C3: returns the record
 UIWorldMap::IconInfo* FUN_141b9d9c0(void* pTag);   // C3: returns the record
 UIWorldMap::MapTile* FUN_141b9da20(void* pTag);   // C3: returns the record
-void  FUN_141b6c060(void* pThis);
-void  FUN_141b6c0a0(void* pThis);
-void  FUN_141b6c0e0(void* pThis);
-void  FUN_140cb18e0(void* pThis);
+struct Unk_MS2PtrAccess { static void FUN_141bb1490(MS2Ptr<UIWorldMap::AddtionalInfo>& sp);   // C3: MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
+    static void FUN_141bb14c0(MS2Ptr<UIWorldMap::FieldSearchInfo>& sp);   // C3: MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
+    static void FUN_141bb14f0(MS2Ptr<UIWorldMap::IconInfo>& sp);   // C3: MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
+    static void FUN_141bb1520(MS2Ptr<UIWorldMap::MapTile>& sp); };   // C3: MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
 
 // The four factories below (defined after the initializers, in exe order).
 void* FUN_141bb1550(void*);
@@ -29,39 +29,39 @@ void* FUN_141bb1570(void*);
 void* FUN_141bb1590(void*);
 void* FUN_141bb15b0(void*);
 
-// The owner's pointer member at +0x8 (the four owners share this view).
-struct Unk_141bb1490_Obj8 {
-    char  m_pad_00[0x8];
-    void* m_pField8;   // +0x8
-};
-MS2_CHECK_OFFSET(Unk_141bb1490_Obj8, m_pField8, 0x8);
+// The owner is the MS2Ptr<T> itself (m_p at +0x8); the Release helpers 0x141b6c060/0a0/0e0, 0x140cb18e0 are MS2Ptr<T>::Release.
+//
+//
+//
+//
+//
 
 // @0x141bb1490
-void FUN_141bb1490(Unk_141bb1490_Obj8* pThis)
+void Unk_MS2PtrAccess::FUN_141bb1490(MS2Ptr<UIWorldMap::AddtionalInfo>& sp)
 {
-    FUN_141b6c060(pThis);
-    pThis->m_pField8 = FUN_141bb1550(0);
+    sp.Release();
+    sp.m_p = static_cast<UIWorldMap::AddtionalInfo*>(FUN_141bb1550(0));
 }
 
 // @0x141bb14c0
-void FUN_141bb14c0(Unk_141bb1490_Obj8* pThis)
+void Unk_MS2PtrAccess::FUN_141bb14c0(MS2Ptr<UIWorldMap::FieldSearchInfo>& sp)
 {
-    FUN_141b6c0a0(pThis);
-    pThis->m_pField8 = FUN_141bb1570(0);
+    sp.Release();
+    sp.m_p = static_cast<UIWorldMap::FieldSearchInfo*>(FUN_141bb1570(0));
 }
 
 // @0x141bb14f0
-void FUN_141bb14f0(Unk_141bb1490_Obj8* pThis)
+void Unk_MS2PtrAccess::FUN_141bb14f0(MS2Ptr<UIWorldMap::IconInfo>& sp)
 {
-    FUN_141b6c0e0(pThis);
-    pThis->m_pField8 = FUN_141bb1590(0);
+    sp.Release();
+    sp.m_p = static_cast<UIWorldMap::IconInfo*>(FUN_141bb1590(0));
 }
 
 // @0x141bb1520
-void FUN_141bb1520(Unk_141bb1490_Obj8* pThis)
+void Unk_MS2PtrAccess::FUN_141bb1520(MS2Ptr<UIWorldMap::MapTile>& sp)
 {
-    FUN_140cb18e0(pThis);
-    pThis->m_pField8 = FUN_141bb15b0(0);
+    sp.Release();
+    sp.m_p = static_cast<UIWorldMap::MapTile*>(FUN_141bb15b0(0));
 }
 
 // @0x141bb1550

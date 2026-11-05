@@ -30,7 +30,7 @@ class PostShimmerEffectParam : public CPostEffectParam
 public:
     PostShimmerEffectParam();                                      // 0x140c8f980
     // implicit virtual dtor 0x140c901f0 (no vptr reset), ??_G 0x140c902a0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                    // 1 0x140c8fa20
+    virtual void vfunc_1(TiXmlElement* pNode);                    // 1 0x140c8fa20
 public:
     float m_fBlendingMin;           // +0x60 "blendingMin" (percent)
     float m_fBlendingMax;           // +0x64 "blendingMax" = 1

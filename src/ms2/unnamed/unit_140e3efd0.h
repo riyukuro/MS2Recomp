@@ -21,7 +21,7 @@ class ASMovieClip;
 class ASDialog;
 class UIAdPushLimitedDialog;
 class AdPushEntityBase;
-class Unk_AdMarketItem;
+class CMeratMarketProduct;
 class Unk_AdXmlNode;
 
 // The limited-time bundle entry (entity kind 1). Its vftable follows the base: 1 Show, 2 Close(bool), 3 Remove, 4 Save,
@@ -51,31 +51,31 @@ protected:
 };
 MS2_CHECK_SIZE(AdPushEntityBase, 0x28);
 
-// The market item (the pointee of the bundle's MS2Ptr at +0x58); only the fields the dialog reads are named.
-class Unk_AdItemInfo {                          // its icon path is CDBPremiumProduct::GetIconPath (0x1406a0160)
-private:
-    char m_pad_00[0x18];
-};
-class Unk_AdMarketItem : public CPtred {
-public:
-    MS2_LAYOUT_FRIEND;
-    Unk_MeratProductKey m_id;                   // +0x18 the market product key (copied into the lookup key)
-    char m_pad_28[8];
-    Unk_AdItemInfo m_info;                      // +0x30 (0x18 bytes, up to m_nSn)
-    int m_nSn;                                  // +0x48
-    char m_pad_4c[0xb8 - 0x4c];
-    int m_nB8;                                  // +0xb8 (1 = account bound)
-    char m_pad_bc[0x124 - 0xbc];
-    int m_n124;                                 // +0x124
-    char m_pad_128[0x134 - 0x128];
-    int m_nRemain;                              // +0x134 seconds the offer lasts
+// The market item (the pointee of the bundle's MS2Ptr at +0x58) is CMeratMarketProduct (meratmarketbasketinfo.h):
+// the dialog reads m_key (+0x18) and its premium product m_premium (+0x30): m_nId "sn" (+0x48), m_nBuyLimit (+0xb8),
+// m_nf4 (+0x124) and m_n104 (+0x134, the seconds the offer lasts).
 
-};
-MS2_CHECK_OFFSET(Unk_AdMarketItem, m_info, 0x30);
-MS2_CHECK_OFFSET(Unk_AdMarketItem, m_nSn, 0x48);
-MS2_CHECK_OFFSET(Unk_AdMarketItem, m_nB8, 0xb8);
-MS2_CHECK_OFFSET(Unk_AdMarketItem, m_n124, 0x124);
-MS2_CHECK_OFFSET(Unk_AdMarketItem, m_nRemain, 0x134);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class AdPushEntityLimitedBundle : public AdPushEntityBase {
     friend class UIAdPushDialog;
@@ -99,8 +99,8 @@ public:
     bool UpdateRemainTime();                                    // 0x140e42a60
     void SetMaximizePos(float x, float y);                      // 0x140e42c90
     NiPoint2* GetMaximizePos();               // 0x140e42cd0
-    void SetMarketItem(MS2Ptr<Unk_AdMarketItem> p);             // 0x140e42cf0
-    void Update(MS2Ptr<Unk_AdMarketItem> p);                    // 0x140e42740
+    void SetMarketItem(MS2Ptr<CMeratMarketProduct> p);             // 0x140e42cf0
+    void Update(MS2Ptr<CMeratMarketProduct> p);                    // 0x140e42740
     void SetBadge(MS2Ptr<ASMovieClip> badge);                   // 0x140e42860
 private:
     MS2_LAYOUT_FRIEND;
@@ -109,7 +109,7 @@ private:
     bool m_bMinimized;                          // +0x48
     int m_n4c;                                  // +0x4c
     int m_n50;                                  // +0x50
-    MS2Ptr<Unk_AdMarketItem> m_item;            // +0x58
+    MS2Ptr<CMeratMarketProduct> m_item;            // +0x58
     bool m_bShowRemain;                         // +0x68
     __int64 m_endTime;                          // +0x70
     __int64 m_n78;                              // +0x78
@@ -138,11 +138,11 @@ public:
     virtual void vfunc_67();
     virtual void vfunc_72();
     virtual void vfunc_76();
-    bool AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, bool bMinimized);   // 0x140e406c0
+    bool AddBundle(MS2Ptr<CMeratMarketProduct> item, int n4c, int n50, bool bMinimized);   // 0x140e406c0
     bool RemoveEntityKey(const int& nId);                       // 0x140e409b0
     bool RemoveBundle(MS2Ptr<AdPushEntityLimitedBundle> bundle);    // 0x140e40a30
     bool Refresh(unsigned nFlags);                              // 0x140e40b20
-    void UpdateBundles(MS2Ptr<Unk_AdMarketItem> item);          // 0x140e40de0
+    void UpdateBundles(MS2Ptr<CMeratMarketProduct> item);          // 0x140e40de0
     void OnNotifyGameEventChanged(NotifyObject* pNotify);       // 0x140e41000
     bool IsAnyAnimating();                                      // 0x140e41110
     bool MaximizeAll();                                         // 0x140e411d0

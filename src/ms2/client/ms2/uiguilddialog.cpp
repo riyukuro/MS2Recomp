@@ -20,13 +20,13 @@
 // MS2-PIN: ??0?$allocator@U?$pair@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ 0x14197d100 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCGuildPVPHistoryData@@@@QEBAPEAVCGuildPVPHistoryData@@XZ 0x14197d870 ; unique
 // MS2-PIN: ?vfunc_48@UIGuildDialog@@UEAAHXZ 0x14197e030 ; unique
-// MS2-PIN: ?_Myoff@?$_Deque_alloc@U?$_Deque_base_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@QEAAAEA_KXZ 0x14197f790 ; unique
-// MS2-PIN: ?begin@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x14197fd50 ; unique
+// MS2-PIN: ?_Myoff@?$_Deque_alloc@U?$_Deque_base_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@QEAAAEA_KXZ 0x14197f790 ; unique
+// MS2-PIN: ?begin@?$deque@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x14197fd50 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197ff90 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14197fff0 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141980050 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419800b0 ; unique
-// MS2-PIN: ?end@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x141980300 ; unique
+// MS2-PIN: ?end@?$deque@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x141980300 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141980720 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z 0x141980750 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141980790 ; unique
@@ -39,8 +39,8 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141980960 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1419809c0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141980a20 ; unique
-// MS2-PIN: ?rbegin@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980b60 ; unique
-// MS2-PIN: ?rend@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980bb0 ; unique
+// MS2-PIN: ?rbegin@?$deque@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980b60 ; unique
+// MS2-PIN: ?rend@?$deque@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$MS2Ptr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980bb0 ; unique
 // MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cbe5b0 ; probe
 // MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cbe600 ; probe
 // MS2-PIN: ??__Fs_strTooltipAlign@@YAXXZ 0x142cbe620 ; probe
@@ -117,24 +117,24 @@
 #include "ms2/placeholder/formatstringid.h"
 
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
-class Unk_140165cf0;
+class TiXmlElement;
 #ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
 #define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
 #endif
 class TiXmlParsingData;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-    TiXmlElement(const char* pszValue);                         // 0x14086f2f0
-    virtual ~TiXmlElement();                                    // 0x14086f450
-    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
-private:
-    void* m_pad[0x88 / 8];                                      // 0x90 bytes; pointer slots: an array of scalars would be a /GS buffer
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
-class TiXmlNode { public: const TiXmlElement* NextSiblingElement() const; };   // C3: member view (tinyxml)
+// C3 #12: was a local TiXml view
 struct Unk_QnTracking;
 class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
 
@@ -236,11 +236,11 @@ typedef std::map<std::pair<int, int>, ItemEntity> Unk_GdStorageItems;
 void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<ItemSlotBag::CreateParam> spParam);   // register an item slot bag (C3: the definer's void* items)
 MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);          // ItemSlotBag: the item at an index of a CAtlArray<MS2Ptr<CItem>>
 // The guild storage history (CGuildStorage::f38, opaque in guilddef_1.h; guildmanager.cpp clears it as this deque).
-typedef std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> > Unk_GdStorageHistory;
+typedef std::deque<MS2Ptr<CGuildStorage::CGuildStroageHistory> > Unk_GdStorageHistory;
 __int64 DaysToSeconds64(int nDays);                             // days -> seconds
 // MS2Ptr<CGuildMember>'s raw-pointer conversion; the exe calls its own copy (0x14197d8b0) in vfunc_28.
 struct Unk_GdMemberPtr { void* m_vfptr; CGuildMember* m_p; CGuildMember* FUN_14197d8b0() const; };
-class Unk_GdTextArea : public ASTextInput { };   // a text area: set the html text
+// C3: the history text area is ASTextArea (astextarea.h), the T of FUN_140accef0<ASTextArea> (0x140c26ea0, defined in uihomeinfoeditdialog.cpp)
 int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory);   // fill a pvp history row
    // resolve a web api url
 class CWebBrowserService;
@@ -488,7 +488,7 @@ void UIGuildDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
         }
         else if ((strName == "m_goldInfo"))
         {
-            Unk_PayloadPtr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(CGuildManager::GetInstance()->GetGuildLevel());
+            MS2Ptr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(CGuildManager::GetInstance()->GetGuildLevel());
             if (spProperty == 0)
                 return;
             int nFund = (int)spProperty->f28;
@@ -685,7 +685,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
         if (spMe == 0)
             return 0;
-        Unk_PayloadPtr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(CGuildManager::GetInstance()->GetGuildLevel());
+        MS2Ptr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->GetProperty(CGuildManager::GetInstance()->GetGuildLevel());
         if (spProperty == 0)
             return 0;
         int nCount = spMe->FUN_1404cb3e0();
@@ -946,7 +946,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     CStringW strGradeName = spGrade->GetWString("gradeName");
                     Scaleform::GFx::Value vAuth = spGrade->GetMember("gradeAuth");
                     int nAuth = vAuth.GetInt();
-                    Unk_PayloadPtr<CGuildGrade> spOld = CGuildManager::GetInstance()->GetGrade(i);
+                    MS2Ptr<CGuildGrade> spOld = CGuildManager::GetInstance()->GetGrade(i);
                     if (spOld == 0)
                         continue;
                     if (spOld->name == strGradeName && spOld->permissions == nAuth)
@@ -1088,7 +1088,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
-            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
+            MS2Ptr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
             if (spSkill == 0)
                 return 1;
             CStringW strMsg;
@@ -1120,7 +1120,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
-            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
+            MS2Ptr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
             if (spSkill == 0)
                 return 1;
             if (!spSkill->FUN_1404d4e40())
@@ -1142,10 +1142,10 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
             int nNextLevel = nLevel + 1;
-            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
+            MS2Ptr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
             if (spSkill == 0)
                 return 1;
-            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spNext = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nNextLevel);
+            MS2Ptr<CGuildXmlData::GuildSkill> spNext = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nNextLevel);
             if (spNext == 0)
                 return 1;
             CStringW strCost = FUN_140763e10(spNext->f24);
@@ -1192,7 +1192,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             int nKind = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d2990(nKind);
             int nNextLevel = nLevel + 1;
-            Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->GetNpc((Unk_GuildNpcKind)nKind, nNextLevel);
+            MS2Ptr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->GetNpc((Unk_GuildNpcKind)nKind, nNextLevel);
             if (spNpc == 0)
                 return 1;
             CStringW strMsg = FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_guild_ui_house_npc_upgrade_popup"), FUN_1409404f0(spNpc->f20), CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30), nNextLevel);
@@ -1865,10 +1865,10 @@ void UIGuildDialog::FUN_14196c860()
         return;
     CStringW strGrade;
     CStringW strMark;
-    Unk_PayloadPtr<CGuildMember> spMaster = CGuildManager::GetInstance()->GetMasterMember();
+    MS2Ptr<CGuildMember> spMaster = CGuildManager::GetInstance()->GetMasterMember();
     if (spMaster.get() != 0)
     {
-        Unk_PayloadPtr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(spMaster->fb4);
+        MS2Ptr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(spMaster->fb4);
         if (spGrade.get() != 0)
             strGrade = FUN_14028dee0<unsigned short, CStringW, CStringW>(0x3d9, spMaster->data.f1c, CStringTable::GetInstance()->FUN_141811980(6, spMaster->data.f18), spGrade->name);
         strMark = FUN_14016a730(FUN_141028be0(spMaster->data.f08, spMaster->data.FUN_1404ca980(), 1, CString("")), 0);
@@ -1887,7 +1887,7 @@ void UIGuildDialog::FUN_14196cd30()
     for (int nGrade = 0; nGrade < 6; nGrade++)
     {
         ASObj objGrade(2);
-        Unk_PayloadPtr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(nGrade);
+        MS2Ptr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(nGrade);
         if (spGrade == 0)
             continue;
         objGrade.FUN_1407cb9c0("gradeRank", nGrade);
@@ -2109,7 +2109,7 @@ void UIGuildDialog::FUN_141973220()
     ASArray arrHistory(2);
     for (size_t i = 0; i < arrIds.size(); i++)
     {
-        Unk_PayloadPtr<CGuildXmlData::GuildRaid> spRaid = CGuildXmlData::GetInstance()->GetRaid(arrIds[i]);
+        MS2Ptr<CGuildXmlData::GuildRaid> spRaid = CGuildXmlData::GetInstance()->GetRaid(arrIds[i]);
         if (spRaid == 0)
             continue;
         const unsigned& nRaidId = spRaid->f18;
@@ -2189,7 +2189,7 @@ void UIGuildDialog::FUN_14196e590()
         MS2Ptr<CGuildSkill> spSkill = CGuildManager::GetInstance()->FUN_1404d2640(arrIds[i]);
         if (spSkill == 0)
             continue;
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(spSkill->f18, spSkill->f1c);
+        MS2Ptr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(spSkill->f18, spSkill->f1c);
         if (spData == 0)
             continue;
         MS2Ptr<AdditionalLevelData> spEffect = SkillDataTableCli::GetInstance()->FUN_140aafef0(spData->f34, (unsigned short)spData->f38);
@@ -2298,7 +2298,7 @@ void UIGuildDialog::FUN_14196f830()
     {
         const int& nId = arrIds[i];
         int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nId);
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(nId, nLevel);
+        MS2Ptr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(nId, nLevel);
         if (spData == 0)
             continue;
         if (!spData->FUN_1404d4e40())
@@ -2390,7 +2390,7 @@ void UIGuildDialog::FUN_141970900()
     CGuildXmlData::GetInstance()->GetEventIds(arrIds);
     for (size_t i = 0; i < arrIds.size(); i++)
     {
-        Unk_PayloadPtr<CGuildXmlData::GuildEvent> spEvent = CGuildXmlData::GetInstance()->GetEvent(arrIds[i]);
+        MS2Ptr<CGuildXmlData::GuildEvent> spEvent = CGuildXmlData::GetInstance()->GetEvent(arrIds[i]);
         if (spEvent == 0)
             continue;
         MS2Ptr<CGuildCustomEvent> spCustom = CGuildManager::GetInstance()->FUN_1404d27b0(spEvent->f18);
@@ -2458,7 +2458,7 @@ void UIGuildDialog::FUN_141971490()
         return;
     int nTheme = CGuildManager::GetInstance()->FUN_1404d1f90();
     int nLevel = CGuildManager::GetInstance()->FUN_1404d2030();
-    Unk_PayloadPtr<CGuildXmlData::GuildHouse> spHouse = CGuildXmlData::GetInstance()->GetHouse(nTheme, nLevel);
+    MS2Ptr<CGuildXmlData::GuildHouse> spHouse = CGuildXmlData::GetInstance()->GetHouse(nTheme, nLevel);
     if (spHouse == 0)
         return;
     MS2Ptr<ASMovieClip> spHouseClip = m_housePage->FUN_1409b4560("m_house");
@@ -2510,10 +2510,10 @@ void UIGuildDialog::FUN_141971ac0()
         bool bCanUpgrade = true;
         int nLevel = CGuildManager::GetInstance()->FUN_1404d2990(*it);
         int nNextLevel = nLevel + 1;
-        Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNext = CGuildXmlData::GetInstance()->GetNpc(*it, nNextLevel);
+        MS2Ptr<CGuildXmlData::GuildNpc> spNext = CGuildXmlData::GetInstance()->GetNpc(*it, nNextLevel);
         if (spNext == 0)
         {
-            Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->GetNpc(*it, nLevel);
+            MS2Ptr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->GetNpc(*it, nLevel);
             if (spNpc.get() != 0)
             {
                 strCondition = L"MAX";
@@ -2566,7 +2566,7 @@ void UIGuildDialog::FUN_1419758a0()
     for (std::set<int>::iterator it = m_1b0.begin(), itEnd = m_1b0.end(); it != itEnd; ++it)
     {
         int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(*it);
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(*it, nLevel);
+        MS2Ptr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(*it, nLevel);
         if (spData == 0)
             continue;
         MS2Ptr<CGuildSkill> spSkill = CGuildManager::GetInstance()->FUN_1404d2640(*it);
@@ -2608,7 +2608,7 @@ void UIGuildDialog::FUN_141975c80()
     for (std::set<int>::iterator it = m_1c0.begin(), itEnd = m_1c0.end(); it != itEnd; ++it)
     {
         int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(*it);
-        Unk_PayloadPtr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(*it, nLevel);
+        MS2Ptr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->GetSkill(*it, nLevel);
         if (spData == 0)
             continue;
         if (!spData->FUN_1404d4e40())
@@ -2686,7 +2686,7 @@ void UIGuildDialog::FUN_1419729d0()
     CStringW strHistory;
     for (; it != itEnd; ++it)
     {
-        const Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>& spEntry = *it;
+        const MS2Ptr<CGuildStorage::CGuildStroageHistory>& spEntry = *it;
         if (spEntry->f78 < nSince)
             continue;
         CMsTime time(spEntry->f78);
@@ -2708,7 +2708,7 @@ void UIGuildDialog::FUN_1419729d0()
     MS2Ptr<ASMovieClip> spHistory = m_storagePage->FUN_1409b4560("m_history");
     if (spHistory == 0)
         return;
-    MS2Ptr<Unk_GdTextArea> spText = spHistory->FUN_140c26ea0<Unk_GdTextArea>("m_textArea");
+    MS2Ptr<ASTextArea> spText = spHistory->FUN_140accef0<ASTextArea>("m_textArea");
     if (spText == 0)
         return;
     spText->SetHtmlTextW(strHistory);
@@ -3030,7 +3030,7 @@ bool UIGuildDialog::FUN_141974ed0()
     {
         if (MS2Ptr<ASTextInput> spTitle = spMail->FUN_140bbe880<ASTextInput>("m_title"))
             strTitle = (const wchar_t*)spTitle->GetText();
-        if (MS2Ptr<ASTextArea> spContent = spMail->FUN_140c26ea0<ASTextArea>("m_content"))
+        if (MS2Ptr<ASTextArea> spContent = spMail->FUN_140accef0<ASTextArea>("m_content"))
             strContent = (const wchar_t*)spContent->GetText();
     }
     if (strTitle.GetLength() < 1)
@@ -3052,7 +3052,7 @@ bool UIGuildDialog::FUN_1419751e0()
     {
         if (MS2Ptr<ASTextInput> spTitle = spMail->FUN_140bbe880<ASTextInput>("m_title"))
             strTitle = spTitle->GetText();
-        if (MS2Ptr<ASTextArea> spContent = spMail->FUN_140c26ea0<ASTextArea>("m_content"))
+        if (MS2Ptr<ASTextArea> spContent = spMail->FUN_140accef0<ASTextArea>("m_content"))
             strContent = spContent->GetText();
     }
     if (CGuildManager::GetInstance()->FUN_1413bbc10(strTitle, strContent))
@@ -3262,10 +3262,10 @@ void UIGuildDialog::FUN_141976e00(CString strXml)
     if (pEnd == 0)
         return;
     std::vector<std::pair<unsigned __int64, CString> > marks;
-    for (Unk_140165cf0* pGuild = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&root)->FirstChild("guild")); pGuild != 0; pGuild = reinterpret_cast<Unk_140165cf0*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pGuild)->NextSiblingElement())))
+    for (TiXmlElement* pGuild = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&root)->FirstChild("guild")); pGuild != 0; pGuild = reinterpret_cast<TiXmlElement*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pGuild)->NextSiblingElement())))
     {
-        unsigned __int64 nGuildId = FUN_140718350(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("sn"));
-        CString strMark = FUN_1407185b0(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("mark"));
+        unsigned __int64 nGuildId = FUN_140718350(((class TiXmlElement*)(class TiXmlElement*)(pGuild))->Attribute("sn"));
+        CString strMark = FUN_1407185b0(((class TiXmlElement*)(class TiXmlElement*)(pGuild))->Attribute("mark"));
         std::pair<unsigned __int64, CString> mark(nGuildId, strMark);
         marks.push_back(mark);
     }
@@ -3507,7 +3507,7 @@ int FUN_1419771b0(ASObj& obj, const MS2Ptr<CGuildMember>& spMember)
     }
     obj.FUN_1407cbb20("location", strLocation);
     CStringW strGrade;
-    Unk_PayloadPtr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(spMember->fb4);
+    MS2Ptr<CGuildGrade> spGrade = CGuildManager::GetInstance()->GetGrade(spMember->fb4);
     if (spGrade.get() != 0)
         strGrade = spGrade->name;
     CStringW strInfo = FUN_14028dee0<unsigned short, CStringW, CStringW>(0x3d9, pData->f1c, CStringTable::GetInstance()->FUN_141811980(6, pData->f18), strGrade);

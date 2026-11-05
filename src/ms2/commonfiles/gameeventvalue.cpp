@@ -287,7 +287,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -296,8 +296,8 @@ public:
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
-unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);           // unsigned attribute
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);  // the document's first child element
+unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);           // unsigned attribute
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);  // the document's first child element
 __int64 FUN_14028d0e0();                            // the current server time
 CStringW FUN_140718600(const CStringW& value);      // copy
 
@@ -556,13 +556,13 @@ void CGameEventValueMasteryReward::Load(unsigned long eventId, int type, const C
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+    TiXmlElement* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
         return;
     if (m_events.find(eventId) != m_events.end())
         return;
     Rates rates;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != NULL; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != NULL; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v"))) {
         unsigned long fieldId = FUN_140197390(pNode, "fieldID", 0);
         int rate = FUN_140197390(pNode, "rate", 0);
         if (fieldId == 0 || rate == 0)

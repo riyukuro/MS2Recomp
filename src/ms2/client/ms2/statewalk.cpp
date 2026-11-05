@@ -46,7 +46,7 @@ egmAnimation::AnimationService* FUN_141b6f910();
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)
 
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
-class Unk_WkPlayback { public: bool FUN_1406af100(); };
+class Unk_LaunchOptions { public: bool FUN_1406af100(); };   // replay / spectator mode (unit_1406aee80)
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
@@ -102,7 +102,7 @@ void StateWalk::vfunc_4(StateData* pData)
 {
     m_fSpeed1 = m_pOwner->vfunc_96();
     m_fSpeed2 = m_pOwner->vfunc_97();
-    if (((class Unk_WkPlayback*)FUN_1406aeee0())->FUN_1406af100())
+    if (FUN_1406aeee0()->FUN_1406af100())
     {
         m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     }

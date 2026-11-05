@@ -109,7 +109,7 @@ public:
     int FUN_1416c2090();                                            // has a template id
     int FUN_1416c20d0();                                            // has a portal
     int FUN_1416c2110();                                            // the portal is shown on the minimap
-    class Unk_ProxyValue88* FUN_1416c2200();                      // the quest guide (+0x88; cproxygameobject.h's return type)
+    struct Unk_QmNpcQuestState* FUN_1416c2200();                  // the quest guide (+0x88)
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     void* FUN_1416c22f0();                                          // the owner character id
     int FUN_1416c2350();                                            // the template (npc) id
@@ -638,7 +638,7 @@ CString UIMinimapEntity::GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon
 MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, GetLayerForNpc, 236, 0x6D436F94);
 
 // @0x141a32ba0
-CStringW UIMinimapEntity::GetFriendHomeTooltip(Unk_BuddyPtr<CBuddy> spBuddy)
+CStringW UIMinimapEntity::GetFriendHomeTooltip(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0)
         return L"";
@@ -728,7 +728,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
-        Unk_QmNpcQuestState* pInfo = reinterpret_cast<Unk_QmNpcQuestState*>(spProxy->FUN_1416c2200());
+        Unk_QmNpcQuestState* pInfo = spProxy->FUN_1416c2200();
         if (pInfo->m_icon != 0xb) {
             strText = pInfo->m_text;
         } else {
@@ -820,7 +820,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
             POSITION pos = spHomes->GetHeadPosition();
             for (size_t i = 0; i < nCount; i++) {
                 __int64 nId = spHomes->GetAt(pos);
-                Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
+                MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
                 if (spBuddy.get()) {
                     if (!strBuddies.IsEmpty())
                         strBuddies.Append(L"\n");
@@ -919,7 +919,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
 MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 1806, 0xFF202207);
 
 // @0x141a34550
-UIMinimapEntityBuddyHome::UIMinimapEntityBuddyHome(Unk_BuddyPtr<CBuddy> spBuddy)
+UIMinimapEntityBuddyHome::UIMinimapEntityBuddyHome(MS2Ptr<CBuddy> spBuddy)
     : UIMinimapEntity(5), m_buddy(spBuddy)
 {
 }
@@ -1489,7 +1489,7 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
             float fLeft = static_cast<float>(m_90->FUN_1422c1500());
             float fTop = static_cast<float>(static_cast<ASDisplayObject*>(m_90.operator->())->FUN_1422c1530());
             m_alignment->FUN_141901880(m_30, static_cast<float>(nWidth), static_cast<float>(nHeight), fLeft, fTop);
-            m_alignment->FUN_1419015e0(static_cast<Unk_140165cf0*>(pCfg));
+            m_alignment->FUN_1419015e0(static_cast<TiXmlElement*>(pCfg));
         }
         for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
             MS2Ptr<TShowAttr> spAttr = m_showAttrs.GetValueAt(pos);
@@ -1538,7 +1538,7 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
         }
     }
     if (static_cast<bool>(m_alignment.get()) && static_cast<bool>(m_90.get())) {
-        if (!m_alignment->FUN_141901660(static_cast<Unk_140165cf0*>(pCfg))) {
+        if (!m_alignment->FUN_141901660(static_cast<TiXmlElement*>(pCfg))) {
             float fLeft = static_cast<float>(m_90->FUN_1422c1500());
             float fTop = static_cast<float>(static_cast<ASDisplayObject*>(m_90.operator->())->FUN_1422c1530());
             m_alignment->FUN_141901880(m_30, static_cast<float>(nWidth), static_cast<float>(nHeight), fLeft, fTop);
@@ -1617,7 +1617,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
 {
     if (m_30 == 0)
         return;
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
+    MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     int nField = spBuddy->FUN_1401cc3e0();
@@ -1646,7 +1646,7 @@ MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc
 // @0x141a38880
 void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
 {
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
+    MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     FUN_141a3f9f0(spBuddy);
@@ -1658,7 +1658,7 @@ void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
 {
     if (!n)
         return;
-    Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
+    MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
     FUN_141a3f9f0(spBuddy);
@@ -2745,7 +2745,7 @@ void UIMinimapDialog::FUN_141a3dda0()
 }
 
 // @0x141a3e2d0
-void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
+void UIMinimapDialog::FUN_141a3e2d0(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
         return;
@@ -2764,12 +2764,12 @@ void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
 // @0x141a3ed50
 void UIMinimapDialog::FUN_141a3ed50()
 {
-    ATL::CAtlArray<Unk_BuddyPtr<CBuddy> > buddies;
+    ATL::CAtlArray<MS2Ptr<CBuddy> > buddies;
     TSingleton<CBuddyManager>::GetInstance()->GetAllBuddies(buddies);
     int nCurrent = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     size_t nCount = buddies.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
-        Unk_BuddyPtr<CBuddy> spBuddy = buddies[i];
+        MS2Ptr<CBuddy> spBuddy = buddies[i];
         if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
             continue;
         int nField = spBuddy->FUN_1401cc3e0();
@@ -3232,7 +3232,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
 {
     spEntity->m_64 = false;
     spEntity->m_showGuide = false;
-    const Unk_QmNpcQuestState* pGuide = reinterpret_cast<Unk_QmNpcQuestState*>(spProxy->FUN_1416c2200());
+    const Unk_QmNpcQuestState* pGuide = spProxy->FUN_1416c2200();
     bool bBoss = false;
     if (pGuide->m_icon != 0xb) {
         CString strState;
@@ -3381,7 +3381,7 @@ bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool 
         POSITION pos = spHomes->GetHeadPosition();
         for (size_t i = 0; i < nCount; i++) {
             __int64 nId = spHomes->GetAt(pos);
-            Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
+            MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
             if (spBuddy.get()) {
                 bFound = true;
                 break;
@@ -3735,7 +3735,7 @@ void ASObj::FUN_141a472c0(const char* szName, int n)
 }
 
 // @0x141a3f9f0
-void UIMinimapDialog::FUN_141a3f9f0(Unk_BuddyPtr<CBuddy> spBuddy)
+void UIMinimapDialog::FUN_141a3f9f0(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0)
         return;

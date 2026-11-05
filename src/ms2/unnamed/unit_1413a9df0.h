@@ -98,8 +98,8 @@ template <class T> class MS2Ptr;
 class CFieldDataCli;
 
 // An object reference found in the world.
-class Unk_WsB_Prop;
-class CInteractObject { public: Vector3 GetPos(); int FUN_1413b5600(); };
+#include "ms2/placeholder/cptred.h"   // CInteractObject's base (MS2Ptr<CInteractObject> releases through it)
+class CInteractObject : public CPtred { public: Vector3 GetPos(); int FUN_1413b5600(); };
 
 class WorldService   // C3: member view
 {
@@ -107,7 +107,7 @@ public:
     static WorldService* GetInstance();
     void* FUN_141bd0cc0();                              // the local player
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
-    MS2Ptr<Unk_WsB_Prop> FUN_141bc6510(Vector3 pos, int nId);
+    MS2Ptr<CInteractObject> FUN_141bc6510(Vector3 pos, int nId);
 };
 
 // The guide manager and the guide entry reference.
@@ -133,19 +133,19 @@ class Unk_SoundSink* FUN_1409331f0();   // the key binds (C3: was void*)
 void* FUN_1413b1c60(const CStringA& strName);           // the dialog of a name
 void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
 void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
-int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut);
+int FUN_1413b1f30(TiXmlElement* pElem, const char* pszName, int& nOut);
 void* FUN_14136f3e0(int nUIId);                    // the dialog of a ui id
 CStringA StringFormat(const char* format);
 
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;         // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 
-MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem); // builds the condition of a <condition> element
+MS2Ptr<CGuideCondition> FUN_1413a52c0(TiXmlElement* pElem); // builds the condition of a <condition> element
 int FUN_1413a5570(CGuideCondition* pCond);              // runs a nested condition's test
 
-int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
-int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut);
-int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut);
+int FUN_1413b1d00(TiXmlElement* pElem, const char* pszName, Unk_GcOptInt& oOut);
+int FUN_1413b1e70(TiXmlElement* pElem, const char* pszName, Unk_GcOptVec3& oOut);
+int FUN_1413b1ed0(TiXmlElement* pElem, const char* pszName, Unk_GcOptBool& oOut);
 bool FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                   // Nullable<int>::HasValue (another obj)
 bool Unk_GcIntIsNull(const Unk_GcOptInt* pOpt);                 // 0x1413b58a0 Nullable<int>::IsNull (#5)
 int* FUN_1409393d0(Unk_GcOptInt* pOpt);                         // Nullable<int>::GetValue (achievemanager)

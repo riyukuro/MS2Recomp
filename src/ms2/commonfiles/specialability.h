@@ -10,7 +10,7 @@
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/commonfiles/blackmarketitemoption.h"
 
-enum SAType { SAType_None };                // the special ability type (also used by additionalactionadditional.h)
+#include "ms2/commonfiles/additionalactionadditional.h"   // SAType, the special ability type (defined there once)
 enum eSpecialAbility { };                   // an ability id (the keys of the group table)
 
 // One row of the 0xcf entry table (specialAbilityStringTable.xml <key id= option= valueType= commonStringID= valueStringID=>).

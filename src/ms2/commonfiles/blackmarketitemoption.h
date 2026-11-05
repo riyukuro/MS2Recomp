@@ -20,10 +20,10 @@ class CInputStream;
 class COutputStream;
 class CItem;
 
-struct Unk_BmNewTag
-{
-    explicit Unk_BmNewTag(int);                             // 0x1401b7b90 (returns its this, no code)
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_BmNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_BmNewTag;
+
+
 
 CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated object (sets the count to 1)
 
@@ -321,7 +321,7 @@ MS2_CHECK_OFFSET(CBlackMarketSchCond, m_strName, 0x40);
 MS2_CHECK_OFFSET(CBlackMarketSchCond, m_aMin, 0x64);
 MS2_CHECK_OFFSET(CBlackMarketSchCond, m_aMax, 0x70);
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // RTTI CBlackMarketTable, 0x120 bytes: TSingleton at +0, the CCacheData base at +8 (path of the loaded file),
 // CValidData at +0x30 (vftables 0x142cedee0 / 0x142cedef0 / 0x142cedf00, each only the deleting destructor).
@@ -383,7 +383,7 @@ public:
     IdArrayPtr GetOptionStats(unsigned int nOption);    // 0x1401c4430 stat tables of an option
     StatArrayPtr GetStatTable(unsigned int nId);        // 0x1401c44f0
     TabPtr GetTab(unsigned int nId);    // 0x1401c45b0
-    static void ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories);  // 0x1401c4670 (static: rcx = pElem)
+    static void ReadTabs(TiXmlElement* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories);  // 0x1401c4670 (static: rcx = pElem)
 
     static void CheckInit();            // 0x1401c60f0
     static void SetInit(bool b);        // 0x1401c9180

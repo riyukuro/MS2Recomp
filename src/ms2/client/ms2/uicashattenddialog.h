@@ -11,24 +11,24 @@ class CInPacket;
 class CMsgBoxData;
 class GameEventVariable;
 class GameEventCashAttendCli;
-class Unk_140acd6e0;
+class ASButton;
 class ASMovieClip;
 class Unk_CadCheck;
 class ASItemSlot;
 class ASGaugeControl;
-class Unk_CadGiftClip;
+class ASItemRendererBase;
 class ASScrollingList;
 class UICashAttendDialog;
 
 // One day row of the gift list ("m_giftList1".."m_giftList5"); 0x90 bytes.
 class UICashAttendGifList : public CPtred {
 public:
-    UICashAttendGifList(UICashAttendDialog* pDialog, MS2Ptr<Unk_CadGiftClip> spClip);
+    UICashAttendGifList(UICashAttendDialog* pDialog, MS2Ptr<ASItemRendererBase> spClip);
     void FUN_140bc2620(const Scaleform::GFx::FunctionHandler::Params& params);   // row clicked: show the day's rewards
     void FUN_140bc2b10();                                                        // clear the row
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_CadGiftClip> m_clip;                     // +0x18
+    MS2Ptr<ASItemRendererBase> m_clip;                  // +0x18
     MS2Ptr<ASMovieClip> m_bg1;                          // +0x28
     MS2Ptr<ASMovieClip> m_bg2;                          // +0x38
     MS2Ptr<ASMovieClip> m_disabled;                     // +0x48
@@ -77,13 +77,13 @@ public:
     template<class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out);
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_140acd6e0> m_usePointButton;                         // +0x178
+    MS2Ptr<ASButton> m_usePointButton;                         // +0x178
     MS2Ptr<ASScrollingList> m_giftList;                             // +0x188
     MS2Ptr<ASGaugeControl> m_progressGauge;                         // +0x198
     std::vector<MS2Ptr<UICashAttendGifList> > m_rows;               // +0x1a8
     std::map<unsigned long, MS2Ptr<GameEventCashAttendCli> > m_events;      // +0x1c0
     ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> > m_activeEvents; // +0x1d0
-    ATL::CAtlArray<MS2Ptr<Unk_140acd6e0> > m_eventButtons;          // +0x1f0
+    ATL::CAtlArray<MS2Ptr<ASButton> > m_eventButtons;          // +0x1f0
     MS2Ptr<GameEventCashAttendCli> m_selected;                      // +0x210
     MS2Ptr<GameEventCashAttendCli> m_requested;                     // +0x220
     int m_eventId;                                                  // +0x230

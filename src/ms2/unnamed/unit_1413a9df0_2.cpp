@@ -207,7 +207,7 @@ CStringW CGuideConditionHasMoney::GetTypeName()
 }
 
 // @0x1413acef0
-void CGuideConditionHasMoney::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionHasMoney::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nMoneyType = 0;
@@ -369,7 +369,7 @@ CStringW CGuideConditionJobCode::GetTypeName()
 }
 
 // @0x1413ad890
-void CGuideConditionJobCode::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionJobCode::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 5;
@@ -403,7 +403,7 @@ CStringW CGuideConditionSubJobCode::GetTypeName()
 }
 
 // @0x1413ada00
-void CGuideConditionSubJobCode::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionSubJobCode::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlTokenList(pElem, "subJobCodes", m_subJobCodes);
@@ -436,7 +436,7 @@ CStringW CGuideConditionBattleState::GetTypeName()
 }
 
 // @0x1413adbb0
-void CGuideConditionBattleState::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionBattleState::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 0xe;
@@ -509,7 +509,7 @@ CStringW CGuideConditionMenuExpand::GetTypeName()
 }
 
 // @0x1413adf00
-void CGuideConditionMenuExpand::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionMenuExpand::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "menuName", m_strMenuName);
@@ -717,7 +717,7 @@ CStringW CGuideConditionMentoringPage::GetTypeName()
 }
 
 // @0x1413aea40
-void CGuideConditionMentoringPage::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionMentoringPage::vfunc_2(TiXmlElement* pElem)
 {
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "pageName", m_strPageName);
 }
@@ -804,7 +804,7 @@ int CGuideConditionButtonSelected::vfunc_3()
 }
 
 // @0x1413af0c0
-void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionButtonSelected::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     if (m_b1c)
@@ -871,7 +871,7 @@ int CGuideConditionContract::vfunc_3()
 }
 
 // @0x1413af560
-void CGuideConditionContract::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionContract::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_nDialogId);
@@ -912,7 +912,7 @@ int CGuideConditionHomeMode::vfunc_3()
 }
 
 // @0x1413af880
-void CGuideConditionHomeMode::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionHomeMode::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     FUN_1413b1f30(pElem, "mode", m_nMode);
@@ -944,7 +944,7 @@ CGuideConditionEnterDungeon::CGuideConditionEnterDungeon()
 }
 
 // @0x1413afa70
-void CGuideConditionEnterDungeon::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionEnterDungeon::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 10;
@@ -981,7 +981,7 @@ CGuideConditionChatEmoticon::CGuideConditionChatEmoticon()
 }
 
 // @0x1413afc10
-void CGuideConditionChatEmoticon::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionChatEmoticon::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 9;

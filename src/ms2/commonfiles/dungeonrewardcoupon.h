@@ -7,7 +7,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 // RTTI DungeonRewardCoupon, 0x50 bytes.
 class DungeonRewardCoupon : public CPtred
@@ -16,7 +16,7 @@ public:
     DungeonRewardCoupon();                          // 0x14031c510
     // implicit dtor 0x14031c7e0
     int GetId();                                    // 0x14031c590
-    void Load(Unk_140165cf0* pElem);                // 0x14031c5b0
+    void Load(TiXmlElement* pElem);                // 0x14031c5b0
 
     int m_id;                                       // +0x18
     unsigned m_ticketTag;                           // +0x1c

@@ -13,7 +13,7 @@ __int64 FUN_1400530c0(__int64 pBuf, int nLen, int nCode);       // find a start 
 long FUN_140053000(unsigned char* pHeader);                       // header flags (sfr_cri_05c)
 struct Unk_M2vCtx;
 void FUN_1400544e0(void* pCtx);   // sfr_cri_06
-void FUN_1400540d0(Unk_M2vCtx* pCtx);
+void FUN_1400540d0(void* pCtx);   // sfr_cri_05c (empty)
 void M2VERR_Init();
 void FUN_1400544b0();
 void M2VVLC_Init();

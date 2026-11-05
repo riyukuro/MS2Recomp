@@ -27,7 +27,7 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14135a900 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14135a960 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIUpperHudDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14135a9c0 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_ASVideoPlayer@@@@QEBAPEAVUnk_ASVideoPlayer@@XZ 0x14135b3d0 ; prop
+// MS2-PIN: ??C?$MS2Ptr@VASVideoPlayer@@@@QEBAPEAVASVideoPlayer@@XZ 0x14135b3d0 ; prop
 // MS2-PIN: ??_EUIVisitorsBookDialog@@WBHI@EAAPEAXI@Z 0x14135bbb8 ; unique
 // MS2-PIN: ??_GUIVisitorsBookDialog@@UEAAPEAXI@Z 0x14135bbd0 ; prop
 // MS2-PIN: ??_GUIVisualEffectDialog@@UEAAPEAXI@Z 0x14135dda0 ; unique
@@ -36,7 +36,7 @@
 // MS2-PIN: ??_GUIWebBrowserBase@@UEAAPEAXI@Z 0x14135fae0 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1UIVisitorsBookDialog@@UEAA@XZ 0x14135bba0
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_ASVideoPlayer@@@@QEBAPEAVUnk_ASVideoPlayer@@XZ 0x14135b3c0
+// MS2-PIN: ?get@?$MS2Ptr@VASVideoPlayer@@@@QEBAPEAVASVideoPlayer@@XZ 0x14135b3c0
 // MS2-PIN: ?GetData@NiGlobalConstantEntry@@QEBAXAEAIAEAPEBX@Z 0x14135de60
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiupperhuddialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -99,16 +99,16 @@
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/placeholder/astextinput.h"  // C3: ASTextInput::FUN_1422e0ab0
 #include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
-
+class UIHomeSummonDialog { public: MS2Ptr<ASTextInput> FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out); };   // C3: the text-input binder (0x14129a040, unit_141299650_uihomesummondialog.cpp)
 class PCBase;
 class UIPcBangDialog;
 
 // ---- statics (the exe runs them in this order; the header-local objects come twice, with the key input, the
 // string constants and the handle in between) ----
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
 
 static CString s_sort8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};   // @0x1400f1000
 static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};                      // @0x1400f10d0
@@ -120,7 +120,7 @@ static CString s_jobCode = "jobCode";                                           
 static CString s_sortValue = "sortValue";                                                           // @0x1400f12a0
 static CString s_tabIndex = "tabIndex";                                                             // @0x1400f12d0
 static CString s_maidFinish = "maid_Finish";                                                        // @0x1400f1300
-static Unk_Handle1401cd100 s_handle(0);                                                             // @0x1400f1330
+static Unk_BuddyHandle s_handle(0);                                                             // @0x1400f1330
 static CString s_skill2 = "skill";                                                                  // @0x1400f1350
 static CString s_stun2 = "stun";                                                                    // @0x1400f1380
 static CString s_sort7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};                    // @0x1400f13b0
@@ -257,9 +257,9 @@ void UIUpperHudDialog::OnLoadComplete()
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__));
     m_nNoticeY = (int)m_noticeText->FUN_1422c1110();
     m_eventText->FUN_1422c2a70(HudClickDelegate(this, &UIUpperHudDialog::OpenEventBrowser), (void*)0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_tokenPocketButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_tokenPocket)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_tokenPocketButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_tokenPocket)))
         m_tokenPocket->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356cd0), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_maidStatusButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_maidStatus)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_maidStatusButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_maidStatus)))
         m_maidStatus->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d00), 0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBang)); if (m_pcBang == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(101), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButtonCn1", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBangCn1)); if (m_pcBangCn1 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(102), __FUNCTION__)); } while (0);
@@ -267,29 +267,29 @@ void UIUpperHudDialog::OnLoadComplete()
     m_pcBang->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
     m_pcBangCn1->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
     m_pcBangCn2->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_fishingBookButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_fishingBook)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_fishingBookButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_fishingBook)))
         m_fishingBook->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356dc0), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_keyboardGuideButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_keyboardGuide)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_keyboardGuideButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_keyboardGuide)))
         m_keyboardGuide->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356df0), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_searchButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_search)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_searchButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_search)))
     {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f) == true)
             m_search->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_gamedictionary_tooltip_search"));
         m_search->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356f90), 0);
     }
-    if (FUN_14129a040("m_searchInput", m_searchInput))
+    if (reinterpret_cast<UIHomeSummonDialog*>(this)->FUN_14129a040("m_searchInput", m_searchInput))
     {
         reinterpret_cast<ASInteractiveObject*>(m_searchInput.get())->FUN_1422de780(HudClickDelegate(this, &UIUpperHudDialog::FUN_141357050), 0, 0);
         m_searchInput->vfunc_3(0);
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xaf) == true)
     {
-        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_keyboardMode", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_keyboardMode)))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_keyboardMode", reinterpret_cast<MS2Ptr<ASButton>&>(m_keyboardMode)))
         {
             m_keyboardMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
             m_keyboardMode->vfunc_4(TSingleton<CMouseController>::GetInstance()->HasMode() == 0);
         }
-        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_mouseMode", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_mouseMode)))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_mouseMode", reinterpret_cast<MS2Ptr<ASButton>&>(m_mouseMode)))
         {
             m_mouseMode->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356e20), 0);
             m_mouseMode->vfunc_3(TSingleton<CMouseController>::GetInstance()->HasMode());
@@ -297,9 +297,9 @@ void UIUpperHudDialog::OnLoadComplete()
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
-        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_gamePadOn", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_gamePadOn)))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_gamePadOn", reinterpret_cast<MS2Ptr<ASButton>&>(m_gamePadOn)))
             m_gamePadOn->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOnClick), 0);
-        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_gamePadOff", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_gamePadOff)))
+        if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_gamePadOff", reinterpret_cast<MS2Ptr<ASButton>&>(m_gamePadOff)))
             m_gamePadOff->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOffClick), 0);
         SetGamePadMode(*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))));
     }
@@ -465,7 +465,7 @@ int UIUpperHudDialog::vfunc_46()
         return 0;
     if (m_30 == 0)
         return 0;
-    if (MS2Ptr<ASMovieClip> spMarat = m_30->FUN_140acce30<ASMovieClip>("m_marat"))
+    if (MS2Ptr<ASButton> spMarat = m_30->FUN_140acce30<ASButton>("m_marat"))
     {
         if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3d))
             spMarat->vfunc_4(false);
@@ -1028,20 +1028,20 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 }
 
 // @0x14135b1c0
-template <> MS2Ptr<Unk_ASVideoPlayer> AScript::FUN_140accef0<Unk_ASVideoPlayer>(const CString& strName)
+template <> MS2Ptr<ASVideoPlayer> AScript::FUN_140accef0<ASVideoPlayer>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
-        return Unk_ASCreate<Unk_ASVideoPlayer>(m_nMovieId, v);
-    return MS2Ptr<Unk_ASVideoPlayer>(0);
+        return Unk_ASCreate<ASVideoPlayer>(m_nMovieId, v);
+    return MS2Ptr<ASVideoPlayer>(0);
 }
 
 // @0x14135b280
-template <> MS2Ptr<Unk_ASVideoPlayer> UISwfEntity::GetChild<Unk_ASVideoPlayer>(const CString& strName)
+template <> MS2Ptr<ASVideoPlayer> UISwfEntity::GetChild<ASVideoPlayer>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_ASVideoPlayer>(0);
-    return m_30->FUN_140accef0<Unk_ASVideoPlayer>(strName);
+        return MS2Ptr<ASVideoPlayer>(0);
+    return m_30->FUN_140accef0<ASVideoPlayer>(strName);
 }
 
 // @0x14135aa20
@@ -1071,7 +1071,7 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
         return 0;
     if (m_4c != 0)
     {
-        if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+        if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
         {
             Unk_HudSound* pSound = reinterpret_cast<Unk_HudSound*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
             if (pSound != 0)
@@ -1099,7 +1099,7 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
 // @0x14135ad10
 int UIVideoContents::vfunc_53()
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
     {
         spPlayer->FUN_1422e9650();
         return 1;
@@ -1110,7 +1110,7 @@ int UIVideoContents::vfunc_53()
 // @0x14135adc0
 int UIVideoContents::vfunc_54(float fTimeout)
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
     {
         Scaleform::GFx::Value vStream = spPlayer->Invoke("getNetStream");
         if (vStream.IsObject())
@@ -1143,7 +1143,7 @@ int UIVideoContents::vfunc_13()
 // @0x14135afa0
 void UIVideoContents::FUN_14135afa0(int bMute)
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
     {
         float fSound = 1.0f;
         Unk_HudSound* pSound = reinterpret_cast<Unk_HudSound*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
@@ -1411,24 +1411,24 @@ void FUN_14135db70(const NiFixedString& kName, const Unk_ShaderColor* pv, int n)
 float FUN_14135dad0(const char* pszName);
 void FUN_14135d9d0(int nMode);
 
-// A 12-byte rgb with the default (inline) copy: the glow colour assignment is a rep movsb in the exe. The ctor is
-// only declared: an all-float 12-byte aggregate counts as a GS buffer, the exe's frame has no cookie.
-struct Unk_HudColor3
-{
-    Unk_HudColor3();
-    float r, g, b;
-};
+// The glow colour is a 12-byte Unk_Vec3f rgb with the default (inline) copy: the assignment is a rep movsb in the
+// exe. It is built by the Unk_Vec3Cli(float, float, float) ctor 0x140a56db0 (fielddatacli.h). Unk_Vec3f has a
+// user ctor, so the 12-byte all-float local is not a GS buffer and the frame has no cookie, as in the exe.
+//
+//
+//
+//
 
 // The world environment behind the player table (0x141bd30a0).
 class Unk_HudEnvData
 {
 public:
     char m_pad_00[0x17c];
-    Unk_HudColor3 m_glowColor;                                                     // +0x17c
+    Unk_Vec3f m_glowColor;                                                         // +0x17c
     char m_pad_188[0x74];
     char m_bGlow;                                                               // +0x1fc
 };
-Unk_HudColor3 FUN_140a56db0(float r, float g, float b);
+// 0x140a56db0 is Unk_Vec3Cli::Unk_Vec3Cli(float, float, float) (fielddatacli.h)
 
 // @0x14135bc20
 UIVisualEffectDialog::UIVisualEffectDialog()
@@ -1831,7 +1831,7 @@ void UIVisualEffectDialog::SetGlowColor(float fRed, float fGreen, float fBlue)
     MS2Ptr<CFieldDataCli> spEnv = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_HudEnvData*>(spEnv.get()) != 0)
     {
-        reinterpret_cast<Unk_HudEnvData*>(spEnv.operator->())->m_glowColor = FUN_140a56db0(fRed, fGreen, fBlue);
+        reinterpret_cast<Unk_HudEnvData*>(spEnv.operator->())->m_glowColor = Unk_Vec3Cli(fRed, fGreen, fBlue);
     }
 }
 

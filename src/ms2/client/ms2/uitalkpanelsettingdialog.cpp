@@ -34,9 +34,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // "m_sliderTransparent" / "m_sliderFontsize": the look sliders; the radios; "m_apply".
-class Unk_HudSlider : public ASSlider {};
-class Unk_SdRadio : public ASButton {};
-class Unk_140acd6e0 : public ASUIComponent {};
+#include "ms2/placeholder/asradiobutton.h"   // C3: the radios are ASRadioButton (was the Unk_SdRadio view)
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 
 // The chat state of the messenger: the tab manager (+0x40) and the chat window (+0x48).
 struct Unk_MdState
@@ -163,7 +162,7 @@ int UITalkPanelSettingDialog::vfunc_13()
                 {
                     if (FUN_141b236c0(FUN_141b23550()) == 1)
                     {
-                        if (MS2Ptr<Unk_140acd6e0> spApply = GetChild<Unk_140acd6e0>("m_apply"))
+                        if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
                             spApply->SetDisplayFocus(1);
                     }
                 }
@@ -235,7 +234,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
         // The key handler applies the text typed in the tab, not the request's text.
         if (FUN_141b236c0(FUN_141b23550()) == 1)
         {
-            if (MS2Ptr<Unk_140acd6e0> spApply = GetChild<Unk_140acd6e0>("m_apply"))
+            if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
                 spApply->SetDisplayFocus(1);
         }
         return;
@@ -335,17 +334,17 @@ void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetti
 {
     if (MS2Ptr<ASCheckBox> sp = m_spRoot->FUN_140c11f50<ASCheckBox>("m_entire"))
         s_nGlobal = sp->FUN_1422ce0e0();
-    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderTransparent"))
+    if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderTransparent"))
     {
         pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
         DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
     }
-    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderFontsize"))
+    if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderFontsize"))
     {
         pSetting->m_screen.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
         DAT_143adda48.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
     }
-    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageShow"))
+    if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageShow"))
     {
         pSetting->m_screen.m_nShowDamage = sp->FUN_1422ce0e0();
         DAT_143adda48.m_nShowDamage = sp->FUN_1422ce0e0();
@@ -389,13 +388,13 @@ void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetti
 void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetting)
 {
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", s_nGlobal);
-    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderTransparent"))
+    if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderTransparent"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
-    if (MS2Ptr<Unk_HudSlider> sp = m_spRoot->FUN_140accef0<Unk_HudSlider>("m_sliderFontsize"))
+    if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderFontsize"))
         sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
-    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageShow"))
+    if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageShow"))
         reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
-    if (MS2Ptr<Unk_SdRadio> sp = m_spRoot->FUN_140e159f0<Unk_SdRadio>("m_damageHide"))
+    if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageHide"))
         reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_subjectAll", pSetting->FUN_141482200()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_social", pSetting->FUN_141482200()->m_nSocial);
@@ -434,7 +433,7 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_systemAll", pSetting->FUN_141482190()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_event", pSetting->FUN_141482190()->m_nEvent);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_notice", pSetting->FUN_141482190()->m_nNotice);
-    if (MS2Ptr<Unk_140acd6e0> sp = GetChild<Unk_140acd6e0>("m_apply"))
+    if (MS2Ptr<ASButton> sp = GetChild<ASButton>("m_apply"))
         sp->FUN_1422c1fe0(0);
     if (m_spRoot.get() != 0)
         m_spRoot->Invoke("alignCheckBox");

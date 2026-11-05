@@ -65,12 +65,12 @@ struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); vir
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: the definition's signature (blackmarketitemoption.cpp); was CLua*
 
 // Locale switch of the name tables ("npcNamePlural" differs by locale).
-class Unk_RwLocale { public: };
-class Unk_LgSettings   // C3: member view for the former free stand-ins
-{
-public:
-    struct Unk_LgState* FUN_140cfd280();
-};
+// C3: FUN_140cfd280 is CGameOption's (&m_language, cgameoption.h)
+//
+//
+//
+//
+//
 
 // A map name with its world map entry.
 class Unk_RwMapTable { public: };
@@ -574,7 +574,7 @@ static void Rw_NpcName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcd70
 static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
+    switch (*((int*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()))
     {
     case 0:
     case 1:
@@ -589,7 +589,7 @@ static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fce70
 static void Rw_NpcNamePlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
+    switch (*((int*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()))
     {
     case 0:
     case 1:
@@ -616,7 +616,7 @@ static void Rw_Item(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd0f0
 static void Rw_ItemPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    switch (*((int*)((class Unk_LgSettings*)(class Unk_RwLocale*)(reinterpret_cast<Unk_RwLocale*>(TSingleton<CGameOption>::GetInstance())))->FUN_140cfd280()))
+    switch (*((int*)TSingleton<CGameOption>::GetInstance()->FUN_140cfd280()))
     {
     case 0:
     case 1:

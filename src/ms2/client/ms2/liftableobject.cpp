@@ -9,7 +9,7 @@
 #include "ms2/placeholder/cube.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/notifysystem.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 #include <efd/ParseHelper.h>   // C3: ParseHelper<ID128>::ToString
 #include <NiNode.h>   // C3: NiNode::ms_RTTI
@@ -23,7 +23,7 @@ public:
     ~NoticeMessage();
     void* m_storage[14];
 };
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
@@ -59,10 +59,10 @@ void FUN_1401d3700(CString& str);
 class Unk_LiftCube : public Cube
 {
 };
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 Unk_Int3 FUN_1408a1430(NiPoint3 kPos);   // C3: actionkeyobject.cpp's declaration (0x1408a1430)
 int FUN_1408a03c0(Unk_Int3 pt);
 
@@ -202,7 +202,7 @@ void CLiftableObject::BindEntity(Unk_Entity* pEntity)
     {
         Vector3 pt;
         reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
-        efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+        efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(pt));
         Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(FUN_1408a03c0(cell));
         if (pCube != 0)

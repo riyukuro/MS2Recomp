@@ -294,12 +294,12 @@ template <class A1, class A2, class A3, class A4, class A5, class A6, class A7> 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
+class Unk_MentorWriter; class Unk_MentorEmptyPacket { public: void FUN_14069a4e0(Unk_MentorWriter& stream); };   // C3: mentor.cpp
 // The register role byte (ctor 0x140c731c0 always stores 8).
 class Unk_MentorRole
 {
 public:
     Unk_MentorRole() { m_nRole = 8; }       // @0x140c731c0
-    void FUN_14069a4e0(COutPacket& pkt);
 private:
     char m_nRole;
 };
@@ -370,7 +370,7 @@ bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& d
     if (nResult != 0) return true;
     COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MentorRole role;
-    role.FUN_14069a4e0(pkt);
+    reinterpret_cast<Unk_MentorEmptyPacket&>(role).FUN_14069a4e0(reinterpret_cast<Unk_MentorWriter&>(pkt));
     FUN_140710590(pkt);
     return true;
 }
@@ -412,31 +412,31 @@ public:
     Unk_MentorProgress m_progress;
 };
 MS2_CHECK_OFFSET(Unk_MentorInstance, m_progress, 0x18);
-class CQuest   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_140bfc580();
-};
-// The 16-byte smart pointer to a quest instance.
-class Unk_MentorInstPtr
-{
-public:
-    ~Unk_MentorInstPtr();                   // 0x140747580
-    bool IsNull() const;                    // 0x1407475b0
-    Unk_MentorInstance* get() const;        // 0x140747690
-    Unk_MentorInstance* operator->() const; // 0x1407476b0
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_MentorInstPtr, 0x10);
+#include "ms2/client/ms2/questmanager_1.h"   // CQuest
+// The quest instance is a CQuest: CPtred (0x18) then CQuestCommon at +0x18, whose slots (GetData, IsComplete,
+// IsActive, IsRewarded, GetStartTime) are Unk_MentorProgress above. CQuestManagerCommon (CQuestManager+0x10)
+// slot 3 returns MS2Ptr<CQuest>: ~ 0x140747580, IsNull 0x1407475b0, get 0x140747690, operator-> 0x1407476b0.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // The quest state (member +0x10 of the global at FUN_140764020).
 class Unk_MentorQuestState
 {
 public:
-    virtual Unk_MentorInstPtr vfunc_0(int nQuest);
+    virtual MS2Ptr<CQuest> vfunc_0(int nQuest);
     virtual void vfunc_1();
     virtual void vfunc_2();
-    virtual Unk_MentorInstPtr vfunc_3(int nQuest);      // the instance of a quest
+    virtual MS2Ptr<CQuest> vfunc_3(int nQuest);      // the instance of a quest
 };
 class Unk_MentorQuestGlobal { public: void* m_0; void* m_8; Unk_MentorQuestState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -662,10 +662,10 @@ void UIMentoringMissionPage::FUN_140c74450(int nDay)
         FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), nDay);
         for (size_t i = 0; i < ids.GetCount(); i++)
         {
-            Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
+            MS2Ptr<CQuest> spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
             if (spInst.IsNull()) continue;
             ASObj obj(2);
-            FUN_140c74170(obj, spInst.get());
+            FUN_140c74170(obj, (Unk_MentorInstance*)spInst.get());
             spList->AddItem(obj);
         }
         spList->vfunc_24(true);
@@ -687,8 +687,8 @@ __int64 UIMentoringMissionPage::FUN_140c74720()
     FUN_140c74850(reinterpret_cast<Unk_MentorIdArray&>(ids), -1);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        Unk_MentorInstPtr spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
-        if (spInst.get() != 0) return (&spInst->m_progress)->vfunc_4();
+        MS2Ptr<CQuest> spInst = (&((class Unk_MentorQuestGlobal*)FUN_140764020())->state)->vfunc_3(ids[i]);
+        if (spInst.get() != 0) return spInst->GetStartTime();
     }
     return 0;
 }

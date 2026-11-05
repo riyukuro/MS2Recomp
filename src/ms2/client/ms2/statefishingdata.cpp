@@ -38,6 +38,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/coptimizer.h"
+#include "ms2/commonfiles/ugcmappackageinfo.h"   // C3: Unk_Int3, the cell type of FUN_1408a03c0
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/fishingmanager.h"
 #include "ms2/client/ms2/fishcube.h"   // C3: CFishCube (CFishingManager::FindCube)
@@ -129,8 +130,8 @@ __int64 FUN_14028d0e0();                                     // the current time
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
 void FUN_140b86230(const efd::Point3& kDir, NiMatrix3& kOut);   // rotation matrix of a direction
-Unk_FsCell FUN_1408a1430(Vector3 k);                 // the grid cell of a point
-int FUN_1408a03c0(Unk_FsCell kCell);                         // the cell as a key
+Unk_Int3 FUN_1408a1430(NiPoint3 k);                  // the grid cell of a point (the definer's signature, ugcmapdata_1)
+int FUN_1408a03c0(Unk_Int3 kCell);                           // the cell as a key (Unk_FsCell is the same 3 ints)
 
 // Plays an animation on the owner at the owner's speed (spelled out in every branch: the name is a block-local string).
 #define MS2_FS_PLAY(pszAnim)                                                                                  \
@@ -624,7 +625,7 @@ Unk_FsCell StateFishingFloat::FUN_140ddc3c0(efd::Point3 kPoint)
     kCorner.x = (kPoint.x > 0.0f) ? 75.0f : -75.0f;
     kCorner.y = (kPoint.y > 0.0f) ? 75.0f : -75.0f;
     kCorner.z = 0.0f;
-    return FUN_1408a1430(reinterpret_cast<Vector3&>(kPoint).FUN_14097fd50(kCorner));
+    return FUN_1408a1430(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kPoint).FUN_14097fd50(kCorner))));
 }
 
 // @0x140ddc4b0
@@ -660,7 +661,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
             if (nType != 8)
                 return 0;
             Unk_FsCell kCellB = FUN_140ddc3c0(MS2_FS_HIT + efd::Point3(0.0f, 0.0f, 55.0f));
-            if (TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_1408a03c0(FUN_140ddc3c0(MS2_FS_HIT))).IsNull())
+            if (TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_1408a03c0(reinterpret_cast<const Unk_Int3&>(static_cast<const Unk_FsCell&>(FUN_140ddc3c0(MS2_FS_HIT))))).IsNull())
                 return 0;
             if (kCellA.z != kCellB.z)
                 m_pOwner->vfunc_19(MS2_FS_HIT + efd::Point3(0.0f, 0.0f, 55.0f));

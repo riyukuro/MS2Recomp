@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x1400f6db0-0x1400f6f20 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??1?$vector@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@QEAA@XZ 0x141442340 ; prop
-// MS2-PIN: ??B?$SmartPointer@VUnk_KfmPhysics@@@efd@@QEBAPEAVUnk_KfmPhysics@@XZ 0x1414424d0 ; unique
+// MS2-PIN: ??B?$SmartPointer@VIEquipModelForceApplier@@@efd@@QEBAPEAVIEquipModelForceApplier@@XZ 0x1414424d0 ; unique
 // MS2-PIN: ?TypeCast@CKfmModel@@UEBA_NIPEAPEAX@Z 0x141442960 ; unique
 // MS2-PIN: ?TypeCast@CKfmModel@@UEBA_NIPEAPEBX@Z 0x1414429b0 ; unique
 // MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@V?$CustomAllocator@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@2@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@2@XZ 0x141442a60 ; unique
@@ -78,11 +78,12 @@ extern efd::AssetID DAT_143a0acf8;   // the invalid asset id
 
 // ---- unit-local views of exe objects ----
 // The animation service (singleton behind FUN_141b6f910).
-class Unk_AnimSvc : public egmAnimation::AnimationService { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
+class Unk_AnimSvc : public egmAnimation::AnimationService { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);   // play (animationmanager.cpp)
+    bool FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // play by sequence id (decoeditservice.cpp)
 class Unk_KfmAnimSvc : public Unk_AnimSvc
 {
 public:
-    void FUN_1411766b0(const egf::EntityID& id, unsigned int nSeq, float fBlend, bool b);     // play by sequence id
+    // C3: FUN_1411766b0 is Unk_AnimSvc's (the AnimationService view)
 };
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -172,7 +173,7 @@ class CPonyTailPhysXHelper   // C3: member view for the former free stand-ins
 public:
     static void UpdateModelPhysXValues(class CEquipModel*, void const*);
 };
-efd::SmartPointer<Unk_KfmPhysics> FUN_141209640(CEquipModel* p);
+// FUN_141209640 (the force-applier factory): equipmodelforceapplier.h
 void FUN_140a332d0(NiTransform* p);
 const NiTransform& FUN_140a33f90(void* obj);   void FUN_140aacb60(void* obj, const void* xf);
 void FUN_140981070(void* obj, const void* p);   void FUN_140ddcca0(void* obj, const void* m);   void FUN_1410b2450(void* obj, float s);
@@ -473,12 +474,12 @@ void CKfmModel::vfunc_10()
 
 class CItem;
    // CEquipItem::GetItem
-struct Unk_KfmColor : efd::Color
-{
-    using efd::Color::operator=;
-    efd::Color FUN_1414424f0(float fScale) const;   // 0x1414424f0 Color * scale
-};
-Unk_KfmColor FUN_141b6dea0(unsigned nColor);
+// (Unk_KfmColor was a view of NiColor; its FUN_1414424f0 is efd::Color::operator*(float) const 0x1414424f0)
+//
+//
+//
+//
+NiColor FUN_141b6dea0(unsigned nColor);
 
 // @0x14143e3e0
 void CKfmModel::vfunc_11()
@@ -490,9 +491,9 @@ void CKfmModel::vfunc_11()
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
-        Unk_KfmColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
+        NiColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
         if (i == 1) {
-            NiColor kScaled(FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0)).FUN_1414424f0(1.3f));
+            NiColor kScaled(FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0)) * 1.3f);
             kColor = kScaled;
         }
         void* pRoot = vfunc_14();
@@ -659,9 +660,9 @@ void CKfmModel::vfunc_18()
 void CKfmModel::vfunc_19(double fTime)
 {
     FUN_1411ffee0((class CEquipModel*)(this), fTime);
-    if ((Unk_KfmPhysics*)m_pPhysics != 0) {
+    if ((IEquipModelForceApplier*)m_pPhysics != 0) {
         ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
-        m_pPhysics->Update(fTime);
+        m_pPhysics->OnTick(fTime);
         ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
     }
     if (m_nUpdateHR != 0)
@@ -989,14 +990,14 @@ void CKfmModel::FUN_141440f60()
     reinterpret_cast<Unk_KfmModelSlots*>(this)->vfunc_26(reinterpret_cast<NiPoint3&>(kRot));
 }
 
-// The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
+// The prop snapshot's joint accessors (the joint array is at +0x30), the same calls as
 // equipmodelforceapplier.cpp's.
-class Unk_WindPropDesc
-{
-public:
-    unsigned GetActorCount() const;                             // 0x14120ac30
-    NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
-};
+typedef NiPhysXPropDesc Unk_WindPropDesc;   // its joint accessors, GetJointCount 0x14120ac30 and GetJointAt 0x14120abd0
+// {
+// public:
+//     unsigned GetActorCount() const;                             // 0x14120ac30
+//     NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
+// };
 
 // @0x14143f3d0
 void CKfmModel::FUN_14143f3d0()
@@ -1015,9 +1016,9 @@ void CKfmModel::FUN_14143f3d0()
             Unk_WindPropDesc* pDesc = (Unk_WindPropDesc*)pProp->GetSnapshot();
             if (pDesc == 0)
                 continue;
-            unsigned nCount = pDesc->GetActorCount();
+            unsigned nCount = pDesc->GetJointCount();
             for (unsigned j = 0; j < nCount; ++j) {
-                NiPhysXD6JointDesc* pJointDesc = (NiPhysXD6JointDesc*)NiObject::DynamicCast(&NiPhysXD6JointDesc::ms_RTTI, pDesc->GetActorAt(j));
+                NiPhysXD6JointDesc* pJointDesc = (NiPhysXD6JointDesc*)NiObject::DynamicCast(&NiPhysXD6JointDesc::ms_RTTI, pDesc->GetJointAt(j));
                 NxD6Joint* pJoint;
                 if (pJointDesc != 0 && (pJoint = pJointDesc->GetJoint()) != 0) {
                     NxD6JointDesc kDesc;

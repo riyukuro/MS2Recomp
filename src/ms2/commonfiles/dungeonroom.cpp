@@ -120,7 +120,7 @@
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -207,7 +207,7 @@ inline void SetBits(Unk_PartyBits& bits, CStringW str)
 }
 
 // tinyxmlhelper.h readers.
-inline int ReadDayBits(Unk_140165cf0* pElem, const char* pszName, Unk_PartyBits& out)
+inline int ReadDayBits(TiXmlElement* pElem, const char* pszName, Unk_PartyBits& out)
 {
     CStringW str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
@@ -215,7 +215,7 @@ inline int ReadDayBits(Unk_140165cf0* pElem, const char* pszName, Unk_PartyBits&
         SetBits(out, str);
     return nRet;
 }
-inline int ReadBossRankingType(Unk_140165cf0* pElem, const char* pszName, DungeonBossRankingType& out)
+inline int ReadBossRankingType(TiXmlElement* pElem, const char* pszName, DungeonBossRankingType& out)
 {
     if (0)
     {
@@ -229,7 +229,7 @@ inline int ReadBossRankingType(Unk_140165cf0* pElem, const char* pszName, Dungeo
     out = ParseBossRankingType(str);
     return nRet;
 }
-inline int ReadTimerType(Unk_140165cf0* pElem, const char* pszName, DungeonTimerType& out)
+inline int ReadTimerType(TiXmlElement* pElem, const char* pszName, DungeonTimerType& out)
 {
     if (0)
     {
@@ -287,11 +287,11 @@ DungeonRankRewardBase::DungeonRankRewardBase()
 }
 
 // @0x14031cb30
-bool DungeonRankRewardBase::Load(Unk_140165cf0* pElem)
+bool DungeonRankRewardBase::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "rewardID", reinterpret_cast<unsigned int&>(m_rewardID));
     m_items.resize(6);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         int nRank = 0;
         XmlGetAttr((class TiXmlElement*)(pChild), "rank", reinterpret_cast<int&>(nRank));
@@ -367,7 +367,7 @@ DungeonRoom::~DungeonRoom()
 }
 
 // @0x14031d350
-void DungeonRoom::Load(Unk_140165cf0* pElem)
+void DungeonRoom::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "dungeonRoomID", reinterpret_cast<unsigned int&>(m_dungeonRoomID));
     XmlGetAttr((class TiXmlElement*)(pElem), "dungeonLevel", reinterpret_cast<unsigned short&>(m_dungeonLevel));
@@ -816,7 +816,7 @@ DungeonSeasonItemGift::DungeonSeasonItemGift()
 }
 
 // @0x14031e9a0
-void DungeonSeasonItemGift::vfunc_4(Unk_140165cf0* pElem)
+void DungeonSeasonItemGift::vfunc_4(TiXmlElement* pElem)
 {
     ItemEntity::vfunc_2(pElem);
     XmlGetAttr((class TiXmlElement*)(pElem), "requireScore", reinterpret_cast<unsigned int&>(m_requireScore));
@@ -830,11 +830,11 @@ DungeonRankRequire::DungeonRankRequire()
 }
 
 // @0x14031ea30
-void DungeonRankRequire::Load(Unk_140165cf0* pElem)
+void DungeonRankRequire::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement *)(pElem), "maxScore", m_maxScore);
     int nPrev = -1;
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("rank")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("rank")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("rank")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("rank")))
     {
         int nScore = 0;
         XmlGetAttr((class TiXmlElement*)(pChild), "score", reinterpret_cast<int&>(nScore));
@@ -900,14 +900,14 @@ DungeonSeason::~DungeonSeason()
 }
 
 // @0x14031ed90
-bool DungeonSeason::Load(Unk_140165cf0* pElem)
+bool DungeonSeason::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement *)(pElem), "seasonID", m_seasonID);
     XmlGetAttr((class TiXmlElement*)(pElem), "maxSeasonScore", reinterpret_cast<unsigned int&>(m_maxSeasonScore));
     XmlGetAttr((class TiXmlElement*)(pElem), "systemMailID", reinterpret_cast<int&>(m_systemMailID));
     XmlGetAttr((class TiXmlElement*)(pElem), "dayOfWeeks", reinterpret_cast<int&>(m_dayOfWeeks));
     m_period.FUN_140868d60(pElem);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("Reward")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("Reward")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("Reward")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("Reward")))
     {
         MS2Ptr<DungeonSeasonItemGift> pReward(new DungeonSeasonItemGift);
         pReward->vfunc_4(pChild);
@@ -959,7 +959,7 @@ DungeonUnitedWeeklyReward::~DungeonUnitedWeeklyReward()
 }
 
 // @0x14031f1d0
-bool DungeonUnitedWeeklyReward::Load(Unk_140165cf0* pElem)
+bool DungeonUnitedWeeklyReward::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "rewardCount", reinterpret_cast<unsigned int&>(m_rewardCount));
     XmlGetAttr((class TiXmlElement*)(pElem), "rewardID", reinterpret_cast<unsigned int&>(m_rewardID));
@@ -976,7 +976,7 @@ DungeonRoundData::DungeonRoundData()
 }
 
 // @0x14031f2b0
-bool DungeonRoundData::Load(Unk_140165cf0* pElem)
+bool DungeonRoundData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "rewardID", reinterpret_cast<unsigned int&>(m_rewardID));
     XmlGetAttr((class TiXmlElement*)(pElem), "gearScore", reinterpret_cast<unsigned int&>(m_gearScore));
@@ -991,12 +991,12 @@ DungeonRoundGroup::DungeonRoundGroup()
 }
 
 // @0x14031f360
-bool DungeonRoundGroup::Load(Unk_140165cf0* pElem)
+bool DungeonRoundGroup::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
     if (m_id == 0)
         return false;
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         MS2Ptr<DungeonRoundData> pRound(new DungeonRoundData);
         pRound->Load(pChild);
@@ -1056,10 +1056,10 @@ void DungeonRoomTable::LoadRooms()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "dungeonRoom", "dungeonRoomID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
@@ -1080,14 +1080,14 @@ void DungeonRoomTable::LoadSeasons()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonSeason", "seasonID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         MS2Ptr<DungeonSeason> pSeason(new DungeonSeason);
@@ -1105,16 +1105,16 @@ void DungeonRoomTable::LoadConfig()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("DungeonConfig"));
+    TiXmlElement* pConfig = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("DungeonConfig"));
     if (pConfig)
         LoadDungeonConfig(pConfig);
-    Unk_140165cf0* pReverseRaid = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ReverseRaidConfig"));
+    TiXmlElement* pReverseRaid = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("ReverseRaidConfig"));
     if (pReverseRaid)
         LoadReverseRaidConfig(pReverseRaid);
-    Unk_140165cf0* pWeekly = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("UnitedWeeklyReward"));
+    TiXmlElement* pWeekly = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("UnitedWeeklyReward"));
     if (pWeekly)
         LoadUnitedWeeklyRewards(pWeekly);
 }
@@ -1128,14 +1128,14 @@ void DungeonRoomTable::LoadRankRewards()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonRankReward", "rewardID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         MS2Ptr<DungeonRankRewardBase> pReward(new DungeonRankRewardBase);
@@ -1154,14 +1154,14 @@ void DungeonRoomTable::LoadRoundGroups()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "DungeonRoundGroup", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         MS2Ptr<DungeonRoundGroup> pGroup(new DungeonRoundGroup);
@@ -1554,10 +1554,10 @@ void DungeonRoomTable::LoadCoupons()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRewardCoupon")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRewardCoupon")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRewardCoupon")); pNode; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRewardCoupon")))
     {
         if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;
@@ -1591,12 +1591,12 @@ DungeonRoundGroup* DungeonRoomTable::GetRoundGroup(int nGroupId)
 MS2_REPLACE_METHOD(0x1403222F0, DungeonRoomTable, GetRoundGroup, 121, 0x003D0128);
 
 // @0x140322370
-bool DungeonRoomTable::LoadDungeonConfig(Unk_140165cf0* pElem)
+bool DungeonRoomTable::LoadDungeonConfig(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pRank = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("MissionRank"));
+    TiXmlElement* pRank = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("MissionRank"));
     if (pRank)
     {
-        for (Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRank))->FirstChild("group")); pGroup; pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
+        for (TiXmlElement* pGroup = ((class TiXmlElement*)((class Unk_XmlNode*)(pRank))->FirstChild("group")); pGroup; pGroup = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
         {
             unsigned nId = 0;
             XmlGetAttr((class TiXmlElement*)(pGroup), "id", reinterpret_cast<unsigned int&>(nId));
@@ -1611,13 +1611,13 @@ bool DungeonRoomTable::LoadDungeonConfig(Unk_140165cf0* pElem)
 MS2_REPLACE_METHOD(0x140322370, DungeonRoomTable, LoadDungeonConfig, 194, 0x9149FF36);
 
 // @0x140322440
-bool DungeonRoomTable::LoadReverseRaidConfig(Unk_140165cf0* pElem)
+bool DungeonRoomTable::LoadReverseRaidConfig(TiXmlElement* pElem)
 {
     if (((Unk_1406aeee0*)FUN_1406aeee0())->FUN_1406af020())
         return true;
     XmlGetAttr((class TiXmlElement *)(pElem), "startDate", m_startDate);
     XmlGetAttr((class TiXmlElement*)(pElem), "periodDays", reinterpret_cast<int&>(m_periodDays));
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pChild), "dungeonID", reinterpret_cast<unsigned int&>(nId));
@@ -1629,9 +1629,9 @@ bool DungeonRoomTable::LoadReverseRaidConfig(Unk_140165cf0* pElem)
 MS2_REPLACE_METHOD(0x140322440, DungeonRoomTable, LoadReverseRaidConfig, 227, 0x98C0173F);
 
 // @0x140322530
-bool DungeonRoomTable::LoadUnitedWeeklyRewards(Unk_140165cf0* pElem)
+bool DungeonRoomTable::LoadUnitedWeeklyRewards(TiXmlElement* pElem)
 {
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         MS2Ptr<DungeonUnitedWeeklyReward> pReward(new DungeonUnitedWeeklyReward);
         if (pReward->Load(pChild))

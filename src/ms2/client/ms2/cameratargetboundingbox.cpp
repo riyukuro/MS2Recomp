@@ -67,13 +67,13 @@ int CCameraTargetBoundingBox::InitFromEntity(egf::Entity* pEntity)
     m_entityId = pEntity->GetEntityIDValue();
     Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
     m_bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
-    m_pose.m_pos.x = ptPos.x;
-    m_pose.m_pos.y = ptPos.y;
-    m_pose.m_pos.z = ptPos.z;
-    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->id();
-    ((class NxMat33*)(struct Unk_CtbMat33*)(&m_pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
-    m_pose.FUN_140b00260(&m_inverse);
-    NxCreateBox(m_obb, m_bounds, *(class NxMat34 const*)(&m_pose));
+    m_pose.t.x = ptPos.x;
+    m_pose.t.y = ptPos.y;
+    m_pose.t.z = ptPos.z;
+    m_pose.M.id();
+    m_pose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
+    reinterpret_cast<const Unk_CtbMat34&>(m_pose).FUN_140b00260(reinterpret_cast<Unk_CtbMat34*>(&m_inverse));
+    NxCreateBox(m_obb, m_bounds, m_pose);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140AFF0F0, CCameraTargetBoundingBox, InitFromEntity, 560, 0x6AA13F9C);
@@ -91,7 +91,7 @@ Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
     if (Contains(pt))
         return pt;
     NxVec3 vWorld(pt.x, pt.y, pt.z);
-    NxVec3 vLocal = reinterpret_cast<const NxMat34&>(m_inverse) * vWorld;
+    NxVec3 vLocal = m_inverse * vWorld;
     if (vLocal.x < m_bounds.min.x)
         vLocal.x = m_bounds.min.x;
     if (vLocal.x > m_bounds.max.x)
@@ -104,7 +104,7 @@ Vector3 CCameraTargetBoundingBox::GetClosest(const Vector3& pt)
         vLocal.z = m_bounds.min.z;
     if (vLocal.z > m_bounds.max.z)
         vLocal.z = m_bounds.max.z;
-    vWorld = reinterpret_cast<const NxMat34&>(m_pose) * vLocal;
+    vWorld = m_pose * vLocal;
     return Vector3(vWorld.x, vWorld.y, vWorld.z);
 }
 MS2_REPLACE_METHOD(0x140AFF3A0, CCameraTargetBoundingBox, GetClosest, 514, 0x1D624BCD);

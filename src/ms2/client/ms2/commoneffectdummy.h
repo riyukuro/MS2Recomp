@@ -19,7 +19,7 @@ public:
 
     bool Load();                            // 0x140a400d0 (name invented)
     CEffectDummy* Find(const CString& name);// 0x140a40180 (arg type unverified)
-    void Clear();                           // 0x140a40200
+    size_t Clear();                         // 0x140a40200 (returns the row count; the callers use it)
     bool Get(unsigned int idx, void* pOut); // 0x140a40230
     bool LoadFile(const char* path);        // 0x140a40280
 

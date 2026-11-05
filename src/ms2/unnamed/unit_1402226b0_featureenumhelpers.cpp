@@ -61,7 +61,7 @@ struct Unk_SharedMemory
     char m_szName[32];                                  // +0x08
     void* m_pView;                                      // +0x28
     Unk_SharedMemory(const char* pszName, DWORD nSize); // 0x140223990
-    void FUN_140223a90();                               // closes the view and the mapping
+    ~Unk_SharedMemory();                                // closes the view and the mapping
     char FUN_140223b00() const;
 };
 
@@ -347,7 +347,7 @@ Unk_SharedMemory::Unk_SharedMemory(const char* pszName, DWORD nSize)
 }
 
 // @0x140223a90
-void Unk_SharedMemory::FUN_140223a90()
+Unk_SharedMemory::~Unk_SharedMemory()
 {
     if (m_pView != 0)
         UnmapViewOfFile(m_pView);

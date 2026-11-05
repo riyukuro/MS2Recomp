@@ -197,8 +197,8 @@ public:
 
 // The mode service (FUN_1409f7c90): one flag read from a global.
 extern int DAT_143ae2b40;
-class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
-class COptimizer;
+class Unk_AvModeSvc;   // C3: the getter's stand-in pointee (TSingleton<COptimizer>::s_instance)
+class COptimizer { public: int FUN_1409f7ea0(); };   // C3: member view (coptimizer.h)
 // The physics service (singleton behind FUN_1409f7ca0): only the closest ray cast is used here.
 class Unk_AvPhysicsSvc;
 // physxhelper.h needs NOMINMAX ahead of windows.h, so the ray cast is named on a local view.
@@ -815,7 +815,7 @@ void AvatarPC::vfunc_12()
     ClonePC::vfunc_12();
     if (IsEnabled())
         vfunc_149();
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         ((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bca390(FUN_14123c580());
 }
 
@@ -1552,11 +1552,11 @@ efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat)
     return pMat;
 }
 
-// @0x1409f72f0
-Unk_CharEquip::Unk_CharEquip()
-    : efd::Color(0.0f, 0.0f, 0.0f)
-{
-}
+// 0x1409f72f0 is NiColor::NiColor(), the SDK inline (NiColor.h): Unk_CharEquip is a typedef of NiColor
+// (tcreatecharinfo.h). Its efd::Color() base builds Color(0, 0, 0), as the exe does.
+//
+//
+//
 
 // @0x1409f7c90
 Unk_AvModeSvc* FUN_1409f7c90()
@@ -1571,7 +1571,7 @@ Unk_AvPhysicsSvc* FUN_1409f7ca0()
 }
 
 // @0x1409f7ea0
-int Unk_AvModeSvc::FUN_1409f7ea0()
+int COptimizer::FUN_1409f7ea0()
 {
     return DAT_143ae2b40;
 }

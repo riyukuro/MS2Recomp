@@ -15,7 +15,7 @@ class ASTextField;
 class ASUIComponent;
 class CInPacket;
 class NotifyObject;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIItemEventOpenBoxDialog : public UIDialog
 {
@@ -47,7 +47,7 @@ private:
     MS2Ptr<ASTextField> m_198;          // +0x198 "m_title"
     MS2Ptr<ASTextField> m_1a8;          // +0x1a8 "m_eventName"
     MS2Ptr<ASTextField> m_1b8;          // +0x1b8 "m_eventDesc"
-    MS2Ptr<Unk_140acd6e0> m_1c8;        // +0x1c8 "m_requestButton"
+    MS2Ptr<ASButton> m_1c8;        // +0x1c8 "m_requestButton"
     MS2Ptr<ASUIComponent> m_1d8;        // +0x1d8 "m_slot" (the box item slot)
     CString m_1e8;                      // +0x1e8 the name the box item is bound under
 };

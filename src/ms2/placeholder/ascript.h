@@ -18,13 +18,14 @@
 #include "ms2/placeholder/gfxvalue.h"
 
 template <class T> class MS2Ptr;
-struct Unk_BmNewTag;                   // the new-object tag (0x1401b7b90; blackmarketitemoption.h)
+struct Unk_SocketNew; typedef Unk_SocketNew Unk_BmNewTag; // the new-object tag (0x1401b7b90; blackmarketitemoption.h)
 
 template <class T>
 class MS2Ptr
 {
     template <class U> friend class MS2Ptr;
     friend struct Unk_TePtrAccess;      // taileffectobject.cpp: ResetNew on the tail info list element
+    friend struct Unk_MS2PtrAccess;     // unit_141bb1490 (#28 Release + new pooled object), ugcbuildvalidator (AddRef 140885810)
 
 public:
     MS2Ptr();
@@ -113,6 +114,8 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CString a2);             // 0x1412cc450 (inline COMDAT, defined in uiindividualpvpdialog.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1);            // 0x1409b13b0 (a1 by value: callee destroys)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x1409b1490 (ascommondepth.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, bool a1, Scaleform::GFx::Value a2);  // 0x140c4bd20 (inline COMDAT, defined in unit_140c47c80_gemstoneswappage.cpp; a2 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);   // 0x140eba060 Invoke(method, obj, unsigned) (defined in uimasterydialog.cpp; not an Invoke overload: ASArray + int callers bind to 0x140e813f0)
     // Invoke(method, Value, unsigned) (inline COMDAT 0x1422e4350, defined in asbuttonbar.cpp; a1 by value). Not an Invoke
     // overload here: callers passing unsigned to Invoke(method, Value, int) 0x1409b1490 would switch to it.
     Scaleform::GFx::Value FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2);

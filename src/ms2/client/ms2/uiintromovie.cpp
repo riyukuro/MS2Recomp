@@ -27,14 +27,14 @@ namespace egf { class Entity; }
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
-template <> MS2Ptr<Unk_ASVideoPlayer> UISwfEntity::GetChild<Unk_ASVideoPlayer>(const CString& strName);
+template <> MS2Ptr<ASVideoPlayer> UISwfEntity::GetChild<ASVideoPlayer>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -99,11 +99,11 @@ void UIIntroMovie::OnLoadInit()
 {
     UIObject::OnLoadInit();
     LoadIntroMovie();
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         int nWidth = spPlayer->FUN_1422c1500();
         int nHeight = spPlayer->FUN_1422c1530();
-        reinterpret_cast<Unk_ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e9360("maintainAspectRatio");
-        reinterpret_cast<Unk_ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e97c0(0x10, 9);
+        reinterpret_cast<ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e9360("maintainAspectRatio");
+        reinterpret_cast<ASVideoPlayer*>(spPlayer.operator->())->FUN_1422e97c0(0x10, 9);
         spPlayer->FUN_1422e9810(nWidth, nHeight);
     }
 }
@@ -142,7 +142,7 @@ void UIIntroMovie::vfunc_15()
 {
     UISwfEntity::vfunc_15();
     if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000b) {
-        if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+        if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
             if (m_78.IsEmpty()) {
                 FUN_141995e70(FUN_141995eb0());
             } else {
@@ -192,7 +192,7 @@ MS2_REPLACE_METHOD(0x1419957A0, UIIntroMovie, vfunc_16, 6, 0xA9AF6E37);
 // @0x1419957b0
 bool UIIntroMovie::vfunc_17()
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         spPlayer->FUN_1422e9810(spPlayer->FUN_1422c1500(), spPlayer->FUN_1422c1530());
     }
     return true;
@@ -205,12 +205,12 @@ void UIIntroMovie::LoadIntroMovie()
     CString strPath = FUN_14071a5b0("Table", "introMovie.xml");
     TiXmlDocument doc;
     if (((class Unk_IntroFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("introMovie")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("introMovie"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("introMovie")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("introMovie"))) {
         CStringW strFeature;
         XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode))) continue;
@@ -238,7 +238,7 @@ MS2_REPLACE_METHOD(0x141995880, UIIntroMovie, LoadIntroMovie, 1091, 0xB4EC1BD2);
 // @0x141995cd0
 void UIIntroMovie::FUN_141995cd0()
 {
-    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
+    if (MS2Ptr<ASVideoPlayer> spPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         if (m_78.IsEmpty()) {
             FUN_141995e70(FUN_141995eb0());
         } else {

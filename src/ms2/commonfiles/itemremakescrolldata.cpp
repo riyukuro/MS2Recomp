@@ -62,7 +62,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -82,7 +82,7 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 
 // CItem's records: the item data (CItem::FUN_140527840) and the enchant / option status (CItem::FUN_1405278a0).
 class Unk_ItemEquipData : public CItemData {};
-class Unk_ItemEnchantData : public CItemStatus {};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
@@ -102,7 +102,7 @@ unsigned FUN_140482050(unsigned nAmount, unsigned nScale);  // scaled amount
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 int FUN_1406198a0(int nValue, float fRate);
 
-// The option list of the remake records (Unk_RemakeOptionList50) is a vector of (option index, value) pairs.
+// The option list of the remake records (Unk_RemakeLockOptList, was Unk_RemakeOptionList50) is read here as a vector of (option index, value) pairs.
 typedef std::vector<std::pair<int, int> > Unk_RemakeOptionPairs;
 
 // The market sort-key names of an included header (names invented).
@@ -152,14 +152,14 @@ int CItemRemakeScrollTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("remakeScroll")); pNode != 0;
-         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("remakeScroll")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("remakeScroll")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("remakeScroll")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -238,7 +238,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
             for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
             {
                 int nStat = stats.GetKeyAt(pos);
-                Unk_EnchantPtr<BaseOption> spBase(stats.GetValueAt(pos));
+                MS2Ptr<BaseOption> spBase(stats.GetValueAt(pos));
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
@@ -259,7 +259,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
             for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
             {
                 int nSpecial = specials.GetKeyAt(pos);
-                Unk_EnchantPtr<BaseOption> spBase(specials.GetValueAt(pos));
+                MS2Ptr<BaseOption> spBase(specials.GetValueAt(pos));
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
@@ -480,7 +480,7 @@ void RemakeOptionBase::vfunc_2(CInPacket& in)
 }
 
 // @0x1406172f0
-// MS2-FUNCTIONAL: the exe's Unk_RemakeOptionList50 ctor is noexcept (no EH state); the shared struct here declares it without throw()
+// MS2-FUNCTIONAL: the exe's m_options vector ctor (0x14027d690) is noexcept (no EH state); std::vector<Unk_RemakeLockOpt> here is not
 RemakeOption::RemakeOption()
 {
 }
@@ -750,7 +750,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             Unk_EnchantMap::CPair* pPair = stats.Lookup(nStat);
             if (pPair == 0)
                 continue;
-            Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+            MS2Ptr<BaseOption> spBase(pPair->m_value);
             if (!spBase)
                 continue;
             CStringW strName = FUN_140631600(nStat, spBase.get());
@@ -786,7 +786,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             Unk_SocketSpecialMap::CPair* pPair = specials.Lookup(nSpecial);
             if (pPair == 0)
                 continue;
-            Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+            MS2Ptr<BaseOption> spBase(pPair->m_value);
             if (!spBase)
                 continue;
             CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());

@@ -89,7 +89,7 @@ public:
     CStringW FUN_1410c3260();                                           // the owner id
     Unk_CMISFlags3 FUN_1410c34f0();                                     // the camera / state bytes
 };
-class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
@@ -190,9 +190,9 @@ Unk_ServiceManager*FUN_1413f9850();
 ecr::RenderService* FUN_1413f9890();
 
 // A child of the movie (a button or a check box), held through MS2Ptr (dtor 0x140acd6e0).
-class Unk_140acd6e0 : public ASButton {
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
 class Unk_HmMovieEntity : public UIDialog {
 public:
 };
@@ -592,40 +592,40 @@ void UIHomeMenuDialog::FUN_140c2a780()
     int bCraft = FUN_140c2af70();
     int bDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
     int bBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_craftMode"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_craftMode"))
     {
         sp->FUN_1422ce090(bCraft);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_designMode"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_designMode"))
     {
         sp->FUN_1422ce090(bDesign);
         if (bBlueprint != 0)
             reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintMode"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintMode"))
     {
         sp->FUN_1422ce090(bBlueprint);
         reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
         if (bDesign != 0)
             reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_freeCamera"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_freeCamera"))
     {
         sp->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 1);
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintSave"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintSave"))
     {
         reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintImport"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintImport"))
     {
         reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintExport"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintExport"))
     {
         reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
     }
-    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->GetChild<Unk_140acd6e0>("m_blueprintShop"))
+    if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintShop"))
     {
         reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_1419025f0(0));
     }

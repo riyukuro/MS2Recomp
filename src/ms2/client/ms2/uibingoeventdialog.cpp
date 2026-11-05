@@ -13,10 +13,10 @@
 // MS2-PIN: ?get@?$MS2Ptr@VASItemSlot@@@@QEBAPEAVASItemSlot@@XZ 0x140bb60e0
 // MS2-PIN: ??C?$MS2Ptr@VASItemSlot@@@@QEBAPEAVASItemSlot@@XZ 0x140bb6140
 // MS2-PIN: ?GetCount@?$CAtlArray@_NV?$CElementTraits@_N@ATL@@@ATL@@QEBA_KXZ 0x140bb6c50
-// MS2-PIN: ?IsNull@?$MS2Ptr@VUnk_140acd6e0@@@@QEBA_NXZ 0x140bb5fa0
+// MS2-PIN: ?IsNull@?$MS2Ptr@VASButton@@@@QEBA_NXZ 0x140bb5fa0
 // MS2-PIN: ?IsNull@?$MS2Ptr@VASItemSlot@@@@QEBA_NXZ 0x140bb5fd0
-// MS2-PIN: ??8?$MS2Ptr@VUnk_140acd6e0@@@@QEBA_NPEAVUnk_140acd6e0@@@Z 0x140bb6090
-// MS2-PIN: ??4?$MS2Ptr@VUnk_140acd6e0@@@@QEAAAEAV0@AEBV0@@Z 0x140bb5e90
+// MS2-PIN: ??8?$MS2Ptr@VASButton@@@@QEBA_NPEAVASButton@@@Z 0x140bb6090
+// MS2-PIN: ??4?$MS2Ptr@VASButton@@@@QEAAAEAV0@AEBV0@@Z 0x140bb5e90
 // MS2-PIN: ??0?$MS2Ptr@VASItemSlot@@@@QEAA@$$QEAV0@@Z 0x140bb55f0
 // MS2-PIN: ??0?$MS2Ptr@VASItemSlot@@@@QEAA@H@Z 0x140bb5660
 // MS2-PIN: ??C?$MS2Ptr@VASMovieClip@@@@QEBAPEAVASMovieClip@@XZ 0x1409b4c60
@@ -31,7 +31,7 @@
 // MS2-PIN: ??$forward@AEBQEAVUIBingoEventDialog@@@std@@YAAEBQEAVUIBingoEventDialog@@AEBQEAV1@@Z 0x140bb5230 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVUIBingoEventDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIBingoEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIBingoEventDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140bb5250 ; order
 // MS2-PIN: ??$make_pair@AEBQEAVUIBingoEventDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIBingoEventDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIBingoEventDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140bb52a0 ; order
-// MS2-PIN: ??0Unk_BingoSlots@@QEAA@AEBUUnk_BingoNewTag@@@Z 0x140bb5580 ; unique
+// MS2-PIN: ??0Unk_BingoSlots@@QEAA@AEBUUnk_SocketNew@@@Z 0x140bb5580 ; unique
 // MS2-PIN: ??4Unk_BingoSlots@@QEAAAEAV0@AEBV0@@Z 0x140bb5e50 ; prop
 // MS2-PIN: ??4?$MS2Ptr@VASItemSlot@@@@QEAAAEAV0@AEBV0@@Z 0x140bb5f00 ; prop
 // MS2-PIN: ?IsNull@?$MS2Ptr@VASTextField@@@@QEBA_NXZ 0x140bb6030 ; order
@@ -42,30 +42,30 @@
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VASItemSlot@@@@@Z 0x140bb6410 ; prop
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VASMovieClip@@@@V?$CElementTraits@V?$MS2Ptr@VASMovieClip@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VASMovieClip@@@@@Z 0x140bb64c0 ; prop
 // MS2-PIN: ?CallConstructors@?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@CAXPEAVUnk_BingoSlots@@_K@Z 0x140bb6570 ; prop
-// MS2-PIN: ?CallConstructors@?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VUnk_140acd6e0@@@@_K@Z 0x140bb65f0 ; prop
+// MS2-PIN: ?CallConstructors@?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VASButton@@@@_K@Z 0x140bb65f0 ; prop
 // MS2-PIN: ?CallConstructors@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VASItemSlot@@@@_K@Z 0x140bb6670 ; prop
 // MS2-PIN: ?CallConstructors@?$CAtlArray@V?$MS2Ptr@VASMovieClip@@@@V?$CElementTraits@V?$MS2Ptr@VASMovieClip@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VASMovieClip@@@@_K@Z 0x140bb66f0 ; prop
 // MS2-PIN: ?CallDestructors@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VASItemSlot@@@@_K@Z 0x140bb68a0 ; unique
 // MS2-PIN: ??A?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@QEAAAEAVUnk_BingoSlots@@_K@Z 0x140bb6b70 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@QEBA_KXZ 0x140bb6c30 ; unique
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@AEAA_N_K@Z 0x140bb6c70 ; prop
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x140bb6e10 ; prop
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x140bb6e10 ; prop
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x140bb6fb0 ; prop
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VASMovieClip@@@@V?$CElementTraits@V?$MS2Ptr@VASMovieClip@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x140bb7150 ; prop
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@_NV?$CElementTraits@_N@ATL@@@ATL@@AEAA_N_K@Z 0x140bb72f0 ; unique
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@VUnk_BingoSlots@@@ATL@@SAXPEAVUnk_BingoSlots@@0_K@Z 0x140bb7490 ; prop
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@SAXPEAV?$MS2Ptr@VUnk_140acd6e0@@@@0_K@Z 0x140bb74d0 ; prop
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VASButton@@@@@ATL@@SAXPEAV?$MS2Ptr@VASButton@@@@0_K@Z 0x140bb74d0 ; prop
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VASItemSlot@@@@@ATL@@SAXPEAV?$MS2Ptr@VASItemSlot@@@@0_K@Z 0x140bb7510 ; prop
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VASMovieClip@@@@@ATL@@SAXPEAV?$MS2Ptr@VASMovieClip@@@@0_K@Z 0x140bb7550 ; prop
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@_N@ATL@@SAXPEA_N0_K@Z 0x140bb7590 ; unique
 // MS2-PIN: ?RemoveAll@?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@QEAAXXZ 0x140bb75d0 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@QEAAXXZ 0x140bb75f0 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@QEAAXXZ 0x140bb75f0 ; unique
 // MS2-PIN: ?RemoveAll@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@QEAAXXZ 0x140bb7610 ; unique
 // MS2-PIN: ?RemoveAll@?$CAtlArray@_NV?$CElementTraits@_N@ATL@@@ATL@@QEAAXXZ 0x140bb7650 ; unique
 // MS2-PIN: ?SetAt@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAX_KH@Z 0x140bb7670 ; unique
 // MS2-PIN: ?SetAt@?$CAtlArray@_NV?$CElementTraits@_N@ATL@@@ATL@@QEAAX_K_N@Z 0x140bb77b0 ; unique
 // MS2-PIN: ?SetCount@?$CAtlArray@VUnk_BingoSlots@@V?$CElementTraits@VUnk_BingoSlots@@@ATL@@@ATL@@QEAA_N_KH@Z 0x140bb7800 ; prop
-// MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x140bb7990 ; prop
+// MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x140bb7990 ; prop
 // MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VASItemSlot@@@@V?$CElementTraits@V?$MS2Ptr@VASItemSlot@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x140bb7b20 ; prop
 // MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VASMovieClip@@@@V?$CElementTraits@V?$MS2Ptr@VASMovieClip@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x140bb7cb0 ; prop
 // MS2-PIN: ?AddRefImpl@Unk_BingoSlots@@AEBAXPEAX@Z 0x140bb82d0 ; unique
@@ -120,9 +120,9 @@ static CString s_sndSuccess = "System_Bingo_Success_01";
 #include "ms2/commonfiles/gameeventvalue.h"
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
-class Unk_140acd6e0 : public ASDisplayObject
-{
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself: 0x140acce30 builds an ASButton (ctor 0x1422cdde0)
+// and every MS2Ptr<Unk_140acd6e0> COMDAT VA is shared only with MS2Ptr<ASButton>.
+
 class Unk_BingoText : public ASTextField
 {
 };
@@ -165,12 +165,12 @@ inline void* FUN_140bb9630(int n) { return (void*)(__int64)n; }
 inline int FUN_140bb9640(void* n) { return (int)(__int64)n; }
 
 // ---- GetChild specializations (one COMDAT per wrapper class) ----
-// @0x140bb4b10
-template <> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString& strName)
+// @0x140bb4b10 (owner: this unit; uiinventorydialog only declares it)
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_140acd6e0>(0);
-    return reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<Unk_140acd6e0>(strName);
+        return MS2Ptr<ASButton>(0);
+    return reinterpret_cast<AScript*>(m_30.operator->())->FUN_140acce30<ASButton>(strName);
 }
 
 // @0x140bb4a60
@@ -311,7 +311,7 @@ void UIBingoEventDialog::OnLoadComplete()
         }
         else
             text->SetTextW(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
-        MS2Ptr<Unk_140acd6e0> receive = reinterpret_cast<AScript*>(list.operator->())->FUN_140acce30<Unk_140acd6e0>("m_receiveButton");
+        MS2Ptr<ASButton> receive = reinterpret_cast<AScript*>(list.operator->())->FUN_140acce30<ASButton>("m_receiveButton");
         if (receive.IsNull())
             continue;
         reinterpret_cast<ASButton*>(receive.operator->())->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), FUN_140bb9630(i));
@@ -342,21 +342,21 @@ void UIBingoEventDialog::OnLoadComplete()
         }
         m_rewardSlots.SetAt(i, slots);
     }
-    MS2Ptr<Unk_140acd6e0> freeUse = GetChild<Unk_140acd6e0>("m_useFreeItem");
+    MS2Ptr<ASButton> freeUse = GetChild<ASButton>("m_useFreeItem");
     if (freeUse.IsNull())
         return;
     m_free.m_use = freeUse;
     static_cast<ASMovieClip*>((ASDisplayObject*)freeUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb0ea0), FUN_140bb9630(0));
-    MS2Ptr<Unk_140acd6e0> cashUse = GetChild<Unk_140acd6e0>("m_useCashItem");
+    MS2Ptr<ASButton> cashUse = GetChild<ASButton>("m_useCashItem");
     if (cashUse.IsNull())
         return;
     m_cash.m_use = cashUse;
     static_cast<ASMovieClip*>((ASDisplayObject*)cashUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb0ea0), FUN_140bb9630(1));
-    m_free.m_cancel = GetChild<Unk_140acd6e0>("m_cancelFreeItem");
+    m_free.m_cancel = GetChild<ASButton>("m_cancelFreeItem");
     if (m_free.m_cancel == 0)
         return;
     static_cast<ASMovieClip*>((ASDisplayObject*)m_free.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb13e0), FUN_140bb9630(0));
-    m_cash.m_cancel = GetChild<Unk_140acd6e0>("m_cancelCashItem");
+    m_cash.m_cancel = GetChild<ASButton>("m_cancelCashItem");
     if (m_cash.m_cancel == 0)
         return;
     static_cast<ASMovieClip*>((ASDisplayObject*)m_cash.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb13e0), FUN_140bb9630(1));
@@ -928,7 +928,7 @@ void UIBingoEventDialog::FUN_140bb2720()
         MS2Ptr<ASMovieClip> panel = m_rewardLists[i];
         if (panel == 0)
             continue;
-        MS2Ptr<Unk_140acd6e0> button = reinterpret_cast<AScript*>(panel.operator->())->FUN_140acce30<Unk_140acd6e0>("m_receiveButton");
+        MS2Ptr<ASButton> button = reinterpret_cast<AScript*>(panel.operator->())->FUN_140acce30<ASButton>("m_receiveButton");
         if (button == 0)
             continue;
         int nIndex = i;

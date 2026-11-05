@@ -123,17 +123,17 @@ Unk_PcFieldTable* FUN_140cb17d0();
 class Unk_PcBattleSpawn : public CGameEventValueBattlePetSpawn { };
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp): the position and target are built from an efd::Point3.
-struct Unk_PetBoxCameraData
-{
-    Unk_PetBoxCameraData();                                             // 0x140cb13b0
+class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
+{ public:
+    Unk_ModelViewCamera(); void ApplyRideeCamera();                                             // 0x140cb13b0
     NiPoint3 eye, target;
     float f18, f1c, f20;
     float f24;
     int n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
+typedef Unk_ModelViewCamera Unk_PetBoxCameraData; MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
 float FUN_141b48480(int a, int b);
-class Unk_ModelViewCamera { public: void ApplyRideeCamera(); };
+// (Unk_ModelViewCamera::ApplyRideeCamera is declared in the camera class above)
 class Unk_PcActor
 {
 public:
@@ -606,7 +606,7 @@ inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf230(const char* szMethod, int
 // ---- smaller COMDATs ----
 
 // @0x140cb13b0
-Unk_PetBoxCameraData::Unk_PetBoxCameraData()
+Unk_ModelViewCamera::Unk_ModelViewCamera()
     : eye(efd::Point3::ZERO)
     , target(efd::Point3::ZERO)
 {

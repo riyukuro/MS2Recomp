@@ -93,7 +93,7 @@ CGuideConditionInput::CGuideConditionInput()
 }
 
 // @0x1413a6670
-void CGuideConditionInput::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionInput::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr((class TiXmlElement*)(pElem), "tick", m_nTick);

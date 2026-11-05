@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <locale.h>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -21,8 +21,8 @@ public:
 };
 
 // Unrecovered helpers.
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+// C3 #8: the cast-only Unk_140168650 view removed
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -214,14 +214,14 @@ int CLocaleLanguage::LoadGameOptionLocale()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("gameoptionlocale")); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("gameoptionlocale"))))
+    for (TiXmlElement* pNode = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("gameoptionlocale")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("gameoptionlocale")))
     {
         LocaleLanguageDataPtr data(new CLocaleLanguageData);
         CString strLanguage;

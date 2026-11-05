@@ -13,7 +13,7 @@ class CInPacket;
 class PCBase;
 class CMatchPartyRecruitSchCond;
 struct Unk_PartyRecruitRequest;
-struct Unk_PartyRecruitInvite;
+struct Unk_PayloadIdentity;
 class CMsgBoxData;
 class CPartyManager : public TSingleton<CPartyManager> {
 public:
@@ -28,7 +28,7 @@ public:
     void UpdateMemberHp(TPtr<PCBase>);
     void UpdateMemberLevel(TPtr<PCBase>);
     void SendPartyMode1(CStringW);
-    void SendPartyMode23(const Unk_PartyRecruitInvite&);
+    void SendPartyMode23(const Unk_PayloadIdentity&);
     void SendPartyInviteFromRecruit(MS2Ptr<CMatchPartyRecruit>);
     int CountOnlineMembersOutsideTutorial();
     void SendMatchPartyMode0(const Unk_PartyRecruitRequest&);

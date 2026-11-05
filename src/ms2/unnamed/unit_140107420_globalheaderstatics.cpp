@@ -44,7 +44,7 @@ extern const void* const g_atlTraceRefs[]; const void* const g_atlTraceRefs[] = 
     &ATL::atlTraceWindowing,
 };
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 class Unk_1418036e0 { public: Unk_1418036e0(void*); private: void* m_p; };
 class Unk_1418036b0 { public: Unk_1418036b0(); private: void* m_p; int m_n; };
 
@@ -352,7 +352,7 @@ static std::pair<const char*, int> s_menuNames[] = {
 static const efd::Category s_cat_db00(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
 static const efd::Category s_cat_c520(efd::UniversalID::ECU_Any, 0xfff, 0x07001008);
 static Unk_1418036b0 s_zero;
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1418036e0 s_pointer2(NULL);
 static CString s_str001 = "02100303";
 static CString s_str002 = "buddy_agree";

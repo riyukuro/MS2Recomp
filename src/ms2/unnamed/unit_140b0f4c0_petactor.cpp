@@ -86,7 +86,7 @@ struct Unk_PetConfig { char m_pad_00[8]; Unk_PetBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The buffs of an actor.
-class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); float GetScaleMultiplier(); };   // C3: member view (additionalclilist.h)
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
 class Unk_PCBaseBuffs : public AdditionalCliList { };
 
 // The pet owner as a player: the equipped pet skin gem.
@@ -635,9 +635,9 @@ int CPet::GetGradeFx()
 }
 
 // @0x140b11020
-void CPet::FUN_140b11020()
+float CPet::FUN_140b11020()
 {
-    FUN_140291d10(m_nGradeFx);
+    return FUN_140291d10(m_nGradeFx);
 }
 
 // @0x140b11050

@@ -280,7 +280,7 @@ MS2Ptr<CSoundEventEffectParam> FUN_141775980(CString strName, CString strCategor
 }
 
 // @0x141775af0
-void CSoundEventEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CSoundEventEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "event", m_strEvent);
@@ -297,7 +297,7 @@ void CSoundEventEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "forceHearDistance", m_fViewDistance);
     XmlGetAttr((class TiXmlElement*)(pNode), "doNotStop", m_bDoNotStop);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pNode), "cooltimeID", m_nCooltimeId);
-    Unk_140165cf0* pAttach = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(pNode)->FirstChild("attachInfo"));
+    TiXmlElement* pAttach = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(pNode)->FirstChild("attachInfo"));
     if (pAttach != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pAttach), "attachToNode", m_bAttachToNode);
@@ -405,7 +405,7 @@ float CSoundEventEffectParam::FUN_1417762a0(int nJob) const
 
 // @0x141776330
 // "jobEvent" = "job:event;job:event"
-void CSoundEventEffectParam::FUN_141776330(Unk_140165cf0* pNode)
+void CSoundEventEffectParam::FUN_141776330(TiXmlElement* pNode)
 {
     CString strList;
     XmlQuery(reinterpret_cast<TiXmlElement*>(pNode), "jobEvent", strList);
@@ -424,7 +424,7 @@ void CSoundEventEffectParam::FUN_141776330(Unk_140165cf0* pNode)
 
 // @0x1417764c0
 // "byJobStartDelay" = "job:delay;job:delay"
-void CSoundEventEffectParam::FUN_1417764c0(Unk_140165cf0* pNode)
+void CSoundEventEffectParam::FUN_1417764c0(TiXmlElement* pNode)
 {
     CString strList;
     XmlQuery(reinterpret_cast<TiXmlElement*>(pNode), "byJobStartDelay", strList);

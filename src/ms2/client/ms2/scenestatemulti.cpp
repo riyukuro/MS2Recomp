@@ -63,7 +63,7 @@
 // ---- externs -----------------------------------------------------------------------------------------------------
 class CMsgBoxData;
 class UIServerListDialog;
-class Unk_1401cd100 { public: Unk_1401cd100(void*); Unk_1401cd100(const Unk_1401cd100&); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); Unk_BuddyHandle(const Unk_BuddyHandle&); private: void* m_p; };
 void* FUN_140aae430();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_141275500();
@@ -121,7 +121,7 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CString FUN_14071a5b0(const CString&, const CString&);
 class CFileSystem { public: int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };   // C3: unit-local view (def in filesystem)
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
+// C3 #8: the cast-only Unk_140168650 view removed
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -178,7 +178,7 @@ void* FUN_1401c0d90();
 #include "ms2/client/ms2/uiloadingprogress.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -205,7 +205,7 @@ static CStringW s_maintenanceExit(L"maintenanceExit");
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x14174d380
@@ -234,15 +234,15 @@ int LobbyFieldTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
         if (pRoot == 0)
             return 0;
         CString strKey("key");
         CString strJobCode("jobCode");
         CString strSelectMap("selectMap");
         CString strCreateMap("createMap");
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0;
-             pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling(strKey))))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0;
+             pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strKey)))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
@@ -321,7 +321,7 @@ CSceneStateMulti::BackUpCharacterInfo::BackUpCharacterInfo(MyPC* pPC)
     {
         m_nGender = ((class PC*)(class MyPC*)(pPC))->FUN_141658e60();
         for (int i = 0; i < 2; i++)
-            m_equip[i] = *((struct Unk_CharEquip const*)&((class PC*)(class MyPC*)(pPC))->FUN_141659220(i));
+            m_equip[i] = *((Unk_CharEquip const*)&((class PC*)(class MyPC*)(pPC))->FUN_141659220(i));
         m_nJobCode = reinterpret_cast<PC*>(pPC)->FUN_141654700();
         m_n68 = reinterpret_cast<PC*>(pPC)->FUN_141654730();
         ATL::CAtlArray<MS2Ptr<CEquipItem> > tmp;

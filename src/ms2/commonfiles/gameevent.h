@@ -16,7 +16,7 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/dungeonroomshutdowncontext.h"
-class Unk_140165cf0;
+class TiXmlElement;
 class CInPacket;
 class CInputStream;
 class COutputStream;
@@ -48,7 +48,7 @@ enum Unk_DungeonCooldownType {};
 class DungeonExtraRewardCountCtx : public CPtred {
 public:
     DungeonExtraRewardCountCtx();                           // 0x1403fd6e0
-    void Load(Unk_140165cf0* pElem);                        // 0x1403fd750
+    void Load(TiXmlElement* pElem);                        // 0x1403fd750
     int m_18;
     unsigned m_dungeonID;                                   // +0x1c "dungeonID"
     unsigned m_count;                                       // +0x20 "count"
@@ -114,7 +114,7 @@ public:
         m_98.Copy(o.m_98);
     }
     // Implicit virtual destructor: slot 0, 0x1402e4cf0 (no vftable store).
-    virtual CStringW GetTypeName();                 // event name (0x1401f8450: GameEventSale inherits it)
+    // GetTypeName (slot 1) is not overridden: the slot is ClassObject::GetTypeName 0x1401f8450 (GameEventSale inherits it).
     virtual void vfunc_2() = 0;                 // parse the CString at +0x68
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1402e2190: out->WriteInt(m_id)
     virtual void vfunc_4(Unk_GEIn* in);         // 0x1402e21d0
@@ -126,7 +126,7 @@ public:
     bool Init(int id, const CMsTime& start, const CMsTime& end, const CStringW& value1, const CStringW& value2,
               const CStringW& value3, const CStringW& value4, const CStringW& partTime, const CStringW& dayOfWeek,
               int type);                        // 0x1402e1d20
-    bool LoadXml(Unk_140165cf0* pElem);         // 0x1402e1f40
+    bool LoadXml(TiXmlElement* pElem);         // 0x1402e1f40
     bool HasFlag(int kind);                     // 0x1402e2290
     bool IsInEventTime(const CMsTime& now);     // 0x1402e22c0
     bool IsInPeriodTime(const CMsTime& now);    // 0x1402e2320
@@ -238,8 +238,8 @@ public:
     };
     // @0x1403e3ec0
     CoupleDanceContext() : m_eventId(0), m_beginTime(0), m_endTime(0), m_goodEndCount(0), m_maxRound(0), m_fieldId(0) {}
-    bool LoadReward(Unk_140165cf0* pElem);          // 0x140400c00
-    bool LoadDance(Unk_140165cf0* pElem);           // 0x140401070
+    bool LoadReward(TiXmlElement* pElem);          // 0x140400c00
+    bool LoadDance(TiXmlElement* pElem);           // 0x140401070
     void Write(COutputStream& out);                 // 0x1404015c0
     void Read(CInPacket& packet);                   // 0x140401a80
     const Step& GetStep(int index) const;           // 0x140402080
@@ -1441,7 +1441,7 @@ public:
     virtual void vfunc_6();                     // 0x1403cdf80
     GameEventSnowman();                         // 0x1403cdc90
     bool ReadSnowmanData(MS2Ptr<SnowmanContext> pContext);                              // 0x1403ce180
-    bool ReadRewardData(Unk_140165cf0* xelReward, ATL::CAtlArray<ItemEntity>& rewards); // 0x1403ce6e0
+    bool ReadRewardData(TiXmlElement* xelReward, ATL::CAtlArray<ItemEntity>& rewards); // 0x1403ce6e0
     MS2Ptr<SnowmanContext> m_d0;
     CStringW m_e0;                              // m_70
 };  // vftable 0x142d40b30, ??_G 0x1403eb110, dtor 0x1403e6b20
@@ -1710,7 +1710,7 @@ public:
         ATL::CAtlArray<CStringW> m_actions;         // +0x00 <actions><v value>
         ATL::CAtlArray<CStringW> m_messages;        // +0x20 <messages><v value>
     };
-    bool Load(Unk_140165cf0* pElem);                // 0x1404000c0
+    bool Load(TiXmlElement* pElem);                // 0x1404000c0
     struct Play {                                   // implicit ctor 0x140ce91f0, dtor 0x140ce9720
         CStringW m_actionNames[3];                  // +0x00 play/actions rock, paper, scissors
         ATL::CAtlArray<CStringW> m_messages;        // +0x18 play/messages
@@ -1991,7 +1991,7 @@ enum Unk_BlueMarbleSlotType {};
 class BonusGameBlueMarbleSlot : public CPtred {
 public:
     BonusGameBlueMarbleSlot();                      // 0x1403fc640
-    void Load(Unk_140165cf0* pElem);                // 0x1403fc6a0
+    void Load(TiXmlElement* pElem);                // 0x1403fc6a0
     Unk_BlueMarbleSlotType m_type;                  // +0x18 "type"
     int m_arg1;                                     // +0x1c "arg1"
     int m_arg2;                                     // +0x20 "arg2"

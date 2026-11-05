@@ -51,14 +51,14 @@
 #include <string>
 #include <vector>
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 : public Unk_XmlNode {};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -123,7 +123,7 @@ private:
 };
 
 std::allocator<char>& FUN_1401d2610(std::allocator<char>* pOut);
-void FUN_1402d9f20(const Unk_FmtWriter& rWriter, Unk_FmtStringRef fmt, const fmt::ArgList& args);
+// C3: FUN_1402d9f20 is fmt::BasicFormatter<char>::format(BasicStringRef<char>, const ArgList&) (format.h)
 
 // @0x1401db760
 Unk_FmtStringRef::Unk_FmtStringRef(const char* pszData, size_t nSize) : m_pszData(pszData), m_nSize(nSize)
@@ -179,7 +179,7 @@ Unk_FmtWriter::Unk_FmtWriter(Unk_FmtBuf* pBuf)
 // @0x1401df3d0
 void Unk_FmtBuf::Write(Unk_FmtStringRef fmt, fmt::ArgList args)
 {
-    FUN_1402d9f20(Unk_FmtWriter(this), fmt, args);
+    reinterpret_cast<fmt::BasicFormatter<char>&>(const_cast<Unk_FmtWriter&>(static_cast<const Unk_FmtWriter&>(Unk_FmtWriter(this)))).format(reinterpret_cast<fmt::BasicStringRef<char>&>(fmt), args);
 }
 
 // @0x1401df360
@@ -225,7 +225,7 @@ int FUN_1401d9640(CString& str)
 }
 
 // @0x1401d9a00
-int FUN_1401d9a00(CStringW& str)
+int FUN_1401d9a00(const CStringW& str)
 {
     return _wtoi(str);
 }
@@ -243,7 +243,7 @@ void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszT
 }
 
 // @0x1401d9b90
-int FUN_1401d9b90(Unk_140165cf0* pElem, const char* pszName, int* pnType)
+int FUN_1401d9b90(TiXmlElement* pElem, const char* pszName, int* pnType)
 {
     if (FALSE)
     {
@@ -275,7 +275,7 @@ CChapterBookData::CChapterBookData() : m_nId(0), m_nPrologue(0), m_nEpilogue(0)
 }
 
 // @0x1401d8bc0
-int CChapterBookData::Read(Unk_140165cf0* pElem)
+int CChapterBookData::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "prologue", m_nPrologue);
@@ -338,17 +338,17 @@ int CChapterBookTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    std::vector<Unk_140165cf0*> list;
+    std::vector<TiXmlElement*> list;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "chapterbook", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.size(); i++)
     {
-        Unk_140165cf0* pNode = list[i];
+        TiXmlElement* pNode = list[i];
         DataPtr data(new CChapterBookData);
         if (data->Read(pNode) == 0)
             return 0;

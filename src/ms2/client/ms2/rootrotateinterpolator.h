@@ -5,7 +5,7 @@
 #include <NiTransformInterpolator.h>
 #include "ms2/ms2layout.h"
 
-struct Unk_RrPoint3 { float x, y, z; };
+// C3: the former Rr point stand-in is efd::Point3 (ctor 14027dda0, != 140552700, = 140194470)
 struct Unk_RrMatrix3 { float m[9]; };
 
 class RootRotateInterpolator : public NiTransformInterpolator
@@ -18,13 +18,13 @@ public:
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue);   // 0x140dc9c80
     virtual bool AlwaysUpdate() const;                          // 0x140dca080
 
-    void FUN_140dc9e40(Unk_RrPoint3* pRotation);                // set the euler offset (degrees), rebuild the matrix
-    void SetAxis(const Unk_RrPoint3* pValue);             // set the raw point at +0x50
+    void FUN_140dc9e40(efd::Point3* pRotation);                // set the euler offset (degrees), rebuild the matrix
+    void SetAxis(const efd::Point3* pValue);             // set the raw point at +0x50
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_RrPoint3 m_axis;                                        // +0x50 rotation axis of the animated turn
-    Unk_RrPoint3 m_rotation;                                    // +0x5c euler offset in degrees
+    efd::Point3 m_axis;                                        // +0x50 rotation axis of the animated turn
+    efd::Point3 m_rotation;                                    // +0x5c euler offset in degrees
     Unk_RrMatrix3 m_matrix;                                     // +0x68
     bool m_bAlwaysUpdate;                                       // +0x8c
 };

@@ -1098,7 +1098,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
         for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spOption(stats.GetValueAt(pos));
+            MS2Ptr<BaseOption> spOption(stats.GetValueAt(pos));
             if (!spOption)
                 continue;
             if (!spOption->HasValue())
@@ -1108,7 +1108,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
             int nSpecial = specials.GetKeyAt(pos);
-            Unk_EnchantPtr<BaseOption> spOption(specials.GetValueAt(pos));
+            MS2Ptr<BaseOption> spOption(specials.GetValueAt(pos));
             if (!spOption)
                 continue;
             if (!spOption->HasValue())

@@ -14,8 +14,8 @@ class UnlimitedEnchantInfo : public CPtred
 public:
     // The stat options (key: the stat type) and the special-stat options (key: the special stat; std::less at 0x1401850d0).
     enum OptionKey { };                                             // its std::less is the unit's own COMDAT (0x1408c07c0)
-    typedef std::map<OptionKey, Unk_EnchantPtr<BaseOption> > OptionMap;
-    typedef std::map<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> > SecondaryMap;
+    typedef std::map<OptionKey, MS2Ptr<BaseOption> > OptionMap;
+    typedef std::map<Unk_SocketSpecialStat, MS2Ptr<BaseOption> > SecondaryMap;
 
     UnlimitedEnchantInfo(int nItemId, int nRarity);                 // 0x1408bb9d0
     ~UnlimitedEnchantInfo() = default;                              // 0x1408c0020 (implicit; defined where the vftable is)
@@ -28,9 +28,9 @@ public:
     void FUN_1408bbef0(CInputStream& in);                           // 0x1408bbef0 read
     void SetChanged(bool bChanged);                              // 0x1408bc1d0
     bool IsChanged();                                           // 0x1408bc1f0
-    Unk_EnchantPtr<BaseOption> FindOption(unsigned nType);       // 0x1408bc210 the option of a stat type
+    MS2Ptr<BaseOption> FindOption(unsigned nType);       // 0x1408bc210 the option of a stat type
     OptionMap& FUN_1408bc2d0();                                     // 0x1408bc2d0
-    Unk_EnchantPtr<BaseOption> FindSecondaryOption(unsigned nType);       // 0x1408bc2f0
+    MS2Ptr<BaseOption> FindSecondaryOption(unsigned nType);       // 0x1408bc2f0
     SecondaryMap& FUN_1408bc3b0();                                  // 0x1408bc3b0
     void FUN_1408bc3d0();                                           // 0x1408bc3d0 (empty)
 private:

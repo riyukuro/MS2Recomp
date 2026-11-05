@@ -18,7 +18,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class CInPacket;
-class Unk_140165cf0;
+class TiXmlElement;
 class ASScrollingList;
 class ASButton;
 class ASTextInput;
@@ -27,12 +27,12 @@ class ASMovieClip;
 // <v cmd="" useArg=""/> (or the "cmd" attribute of a <CommandSet>): one argument-taking invocation.
 struct Unk_DebugGuideArg
 {
-    Unk_DebugGuideArg(Unk_140165cf0* pElem);                    // 0x141286410
+    Unk_DebugGuideArg(TiXmlElement* pElem);                    // 0x141286410
     Unk_DebugGuideArg(CStringW strCmd, bool bUseArg);           // 0x141286460
     ~Unk_DebugGuideArg();                                       // 0x14128c740
     Unk_DebugGuideArg(Unk_DebugGuideArg&&) = default;
     Unk_DebugGuideArg(const Unk_DebugGuideArg&) = default;
-    void Read(Unk_140165cf0* pElem);                            // 0x1412864c0
+    void Read(TiXmlElement* pElem);                            // 0x1412864c0
     CStringW m_strCmd;                                          // +0x00 "cmd"
     bool m_bUseArg;                                             // +0x08 "useArg": the input box text is appended
 };
@@ -45,7 +45,7 @@ struct Unk_DebugGuideCommand
     ~Unk_DebugGuideCommand();                                   // 0x14128c760
     Unk_DebugGuideCommand(Unk_DebugGuideCommand&&) = default;
     Unk_DebugGuideCommand(const Unk_DebugGuideCommand&) = default;
-    void Read(Unk_140165cf0* pElem);                            // 0x141286520
+    void Read(TiXmlElement* pElem);                            // 0x141286520
     void AddArg(const Unk_DebugGuideArg& rArg);                    // 0x1412866e0
     CStringW m_strName;                                         // +0x00 "name"
     CStringW m_strDesc;                                         // +0x08 "desc"
@@ -56,11 +56,11 @@ MS2_CHECK_SIZE(Unk_DebugGuideCommand, 0x28);
 // <Group name="" charOnlyName="">: one entry of the left list.
 struct Unk_DebugGuideGroup
 {
-    Unk_DebugGuideGroup(Unk_140165cf0* pElem);                  // 0x141286710
+    Unk_DebugGuideGroup(TiXmlElement* pElem);                  // 0x141286710
     ~Unk_DebugGuideGroup();                                     // 0x14128c7a0
     Unk_DebugGuideGroup(Unk_DebugGuideGroup&&) = default;
     Unk_DebugGuideGroup(const Unk_DebugGuideGroup&) = default;
-    void Read(Unk_140165cf0* pElem);                            // 0x141286780
+    void Read(TiXmlElement* pElem);                            // 0x141286780
     CStringW m_strName;                                         // +0x00 "name"
     CStringW m_strCharOnly;                                     // +0x08 "charOnlyName": shown only to this character
     std::vector<Unk_DebugGuideCommand> m_commands;              // +0x10

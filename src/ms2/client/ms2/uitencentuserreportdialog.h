@@ -1,6 +1,7 @@
 // Recovered Tencent user report classes; field names and supporting wrapper names are inferred.
 #pragma once
 #include "ms2/placeholder/uidialog.h"
+#include "ms2/client/ms2/tencentuserreportdata.h"
 #include <utility>
 class CMsgBoxData;
 class COutPacket;
@@ -40,24 +41,6 @@ private:
 
 namespace TencentUserReport {
 class UITencentUserReportPage;
-struct Unk_ReportData {
-    Unk_ReportData();
-    ~Unk_ReportData();
-    void FUN_140200f80();
-    int type; int reason;
-    CStringW name; CStringW target; CStringW itemName;
-    __int64 m_20; int m_28; int m_2c; CStringW content;
-    __int64 m_38; __int64 m_40;
-    __int64 itemId; __int64 guildId;
-    int guildNumber; int m_5c; CString m_60;
-    CStringW comment; CStringW title; CString path;
-    int itemKind; int m_84; __int64 m_88; __int64 m_90;
-    CStringW m_98; CStringW reportTitle; __int64 reportId;
-    CString reportPath; CStringW reportComment;
-    __int64 m_c0; __int64 m_c8; CString m_d0;
-    int m_d8; int m_dc; __int64 m_e0;
-};
-MS2_CHECK_SIZE(Unk_ReportData, 0xe8);
 class UITencentUserReportDialog : public UIDialog {
 public:
     UITencentUserReportDialog();

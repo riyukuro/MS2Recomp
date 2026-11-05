@@ -162,7 +162,7 @@ class ItemDropData : public CPtred
 {
 public:
     ItemDropData();
-    virtual bool Load(Unk_140165cf0* pElem);
+    virtual bool Load(TiXmlElement* pElem);
     virtual CString GetTypeName();
     // The rank to drop: a random option rank when no grade list is given.
     virtual int GetDropRank(int nArg, int nLevel, bool bAssist);
@@ -220,7 +220,7 @@ class ItemDropDataGlobal : public ItemDropData
 {
 public:
     ItemDropDataGlobal();
-    virtual bool Load(Unk_140165cf0* pElem);
+    virtual bool Load(TiXmlElement* pElem);
     virtual CString GetTypeName();
     bool CheckLevel(unsigned nLevel);
 private:
@@ -234,7 +234,7 @@ class ItemDropDataIndividual : public ItemDropData
 {
 public:
     ItemDropDataIndividual();
-    virtual bool Load(Unk_140165cf0* pElem);
+    virtual bool Load(TiXmlElement* pElem);
     virtual CString GetTypeName();
     unsigned GetProperJobWeight();
     unsigned GetImProperJobWeight();
@@ -253,7 +253,7 @@ class ItemDropGlobalGroup : public CPtred
 {
 public:
     ItemDropGlobalGroup();
-    bool Load(Unk_140165cf0* pElem);
+    bool Load(TiXmlElement* pElem);
     unsigned GetId();
     std::vector<MS2Ptr<ItemDropDataGlobal>>& GetItems();
     void Add(MS2Ptr<ItemDropDataGlobal> pData);
@@ -268,7 +268,7 @@ class ItemDropGlobalBox : public CPtred
 {
 public:
     ItemDropGlobalBox();
-    bool Load(Unk_140165cf0* pElem);
+    bool Load(TiXmlElement* pElem);
     unsigned GetUnk18();
     unsigned GetDropCount(float fRate) const;
     unsigned GetDropGroupId();
@@ -295,7 +295,7 @@ class ItemDropGlobalBoxGroup : public CPtred
 public:
     ItemDropGlobalBoxGroup();
     unsigned GetId();
-    bool Load(Unk_140165cf0* pElem);
+    bool Load(TiXmlElement* pElem);
     std::vector<MS2Ptr<ItemDropGlobalBox>>& GetBoxes();
 private:
     MS2_LAYOUT_FRIEND;
@@ -312,7 +312,7 @@ public:
     unsigned GetId();
     int PickDropCount();
     unsigned GetSmartDropRate();
-    bool Load(Unk_140165cf0* pElem);
+    bool Load(TiXmlElement* pElem);
     bool CheckLevel(unsigned nLevel);
     bool IsApplySmartGenderDrop();
     bool IsServerDrop();
@@ -335,7 +335,7 @@ class ItemDropIndividualBox : public CPtred
 {
 public:
     ItemDropIndividualBox();
-    bool Load(Unk_140165cf0* pElem);
+    bool Load(TiXmlElement* pElem);
     unsigned GetId();
     unsigned GetProbVer();
 

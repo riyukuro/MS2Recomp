@@ -15,7 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -32,15 +32,15 @@ template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*,
 // The game's TinyXML element / declaration (constructed through new, which null-checks the allocation as the exe does);
 // its writers in free-function form (`this` first): InsertEndChild,
 // SetAttribute for string, int, bool, Point3-like and float values, SaveFile.
-class TiXmlElement { public: TiXmlElement(const char* pszName); private: void* m_pad[0x90 / sizeof(void*)]; };   // ctor 0x14086f2f0
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class TiXmlDeclaration { public: TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
     private: void* m_pad[0x68 / sizeof(void*)]; };                                                                // ctor 0x1408704d0
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* LinkEndChild(class TiXmlNode*);
-    const class TiXmlElement* NextSiblingElement() const;
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 void XmlSetAttr(class TiXmlElement*, char const*, CString const&);   // C3: was FUN_140874050
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
@@ -73,12 +73,12 @@ int CPCEffectDummy::LoadFile(const char* pszPath)
         Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return 0;
     }
-    Unk_140165cf0* pGroup = ((class Unk_140165cf0*)(pRoot->FirstChild("effectdummy")));
+    TiXmlElement* pGroup = ((class TiXmlElement*)(pRoot->FirstChild("effectdummy")));
     if (pGroup != 0)
     {
         m_dummies.clear();
         CEffectDummy kDummy;
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("dummy")); pElem != 0; pElem = (Unk_140165cf0*)(((class TiXmlNode*)(pElem))->NextSiblingElement()))
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->FirstChild("dummy")); pElem != 0; pElem = (TiXmlElement*)(((class TiXmlNode*)(pElem))->NextSiblingElement()))
         {
             int nGender = 0;
             XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(nGender));

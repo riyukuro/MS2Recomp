@@ -12,7 +12,7 @@
 // MS2-PIN: ??0CPair@?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@IEAA@I@Z 0x140765a40 ; prop
 // MS2-PIN: ?get@?$TPtr@UQuestMask@@@@QEBAPEAUQuestMask@@XZ 0x140765c90 ; unique
 // MS2-PIN: ??C?$TPtr@UQuestMask@@@@QEBAPEAUQuestMask@@XZ 0x140765d00 ; unique
-// MS2-PIN: ??4?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_BmNewTag@@@Z 0x140765f00 ; unique
+// MS2-PIN: ??4?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x140765f00 ; unique
 // MS2-PIN: ?NewNode@?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140766910 ; unique
 // MS2-PIN: ?NewNode@?$CAtlMap@IV?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140766b20 ; unique
 // MS2-PINS-END tplpin
@@ -47,19 +47,19 @@
 extern template class MS2Ptr<class CQuestData>; extern template class MS2Ptr<class CConditionCommonData>; // C3: only MS2Ptr<CQuest> takes the generic bodies here
 #include "ms2/placeholder/ms2ptr_impl.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
 
-class Unk_140165cf0                         // game TinyXML element
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);          // the first child with the name
-    Unk_140165cf0* FUN_140168650(const char* pszName);          // the next sibling with the name
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
 
 // Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
@@ -69,10 +69,10 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // reads an int attribute through a temp (tinyxmlhelper.h)
+int FUN_140765520(TiXmlElement* pElem, const char* pszName, int* pnOut);    // reads an int attribute through a temp (tinyxmlhelper.h)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 // A quest range as a local: Unk_Z16i with its out-of-line zeroing constructor (0x14027dcb0).
-struct Unk_QmRange { int a, b, c, d; Unk_QmRange(); };
+struct Unk_QuestMaskRange { int a, b, c, d; Unk_QuestMaskRange(); };   // C3: the ctor's spelling in commonstruct_tail.inl; was Unk_QmRange
 class CNpc   // C3: member view for the former free stand-ins
 {
 public:
@@ -174,7 +174,7 @@ int FUN_140764310(const CStringA& strStarts, const CStringA& strEnds, QuestMask*
         return 0;
     for (size_t i = 0; i < aStarts.GetCount(); ++i)
     {
-        Unk_QmRange range;
+        Unk_QuestMaskRange range;
         if (FUN_140764760(aStarts[i], aEnds[i], reinterpret_cast<Unk_Z16i*>(&range)) != 0)
             pMask->m_aRanges.Add(reinterpret_cast<Unk_Z16i&>(range));
     }
@@ -320,13 +320,13 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, MS2_QM_XML_ERR, strPath);
         return 0;
     }
-    for (Unk_140165cf0* pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("field")); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
+    for (TiXmlElement* pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("field")); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
     {
         int nFieldId = 0;
         XmlGetAttr((class TiXmlElement*)(pField), "fieldID", *(unsigned int*)(&nFieldId));
@@ -339,7 +339,7 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
                 spField = Unk_BmNewTag(0);
                 rMap.SetAt(nFieldId, spField);
             }
-            for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
+            for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
             {
                 int nKey = 0;
                 XmlGetAttr((class TiXmlElement*)(pKey), "id", *(unsigned int*)(&nKey));
@@ -348,12 +348,12 @@ int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
                 {
                     Unk_QmMaskPtr spMask(new QuestMask);
                     XmlGetAttr((class TiXmlElement*)(pKey), "enableInMask", *(int*)(&spMask->m_nEnable));
-                    for (Unk_140165cf0* pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->FirstChild("mask")); pMask != 0; pMask = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMask))->NextSibling("mask")))
+                    for (TiXmlElement* pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->FirstChild("mask")); pMask != 0; pMask = ((class TiXmlElement*)((class Unk_XmlNode*)(pMask))->NextSibling("mask")))
                     {
                         if (!FUN_14028f710((struct Unk_XmlElement*)(pMask)))
                             continue;
                         {
-                            Unk_QmRange range;
+                            Unk_QuestMaskRange range;
                             XmlGetAttr((class TiXmlElement*)(pMask), "startQuestID", *(unsigned int*)(&range.a));
                             FUN_140765520(pMask, "startQuestState", &range.c);
                             XmlGetAttr((class TiXmlElement*)(pMask), "endQuestID", *(unsigned int*)(&range.b));
@@ -512,7 +512,7 @@ int FUN_140768640(Unk_Random* pRandom, unsigned nCount, int nBase)
 // @0x140765520
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
+int FUN_140765520(TiXmlElement* pElem, const char* pszName, int* pnOut)
 {
     if (FALSE) {
         MS2_ASSERT_AT(0xe7, FALSE);

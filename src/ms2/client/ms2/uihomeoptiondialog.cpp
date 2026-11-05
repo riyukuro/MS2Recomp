@@ -26,8 +26,8 @@
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uihidesettingdialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/worldservice.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -47,17 +47,17 @@ class CubeMapInformationService { public:   // C3: member view (cubemapinformati
     int FUN_1410c3e80(int nKey);                                    // row level
     bool FUN_1410d5640();                                           // may change the options
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
-// The smart pointer to the service (C3: efd::SmartPointer<Unk_Service6100017>, the Unk_HoServicePtr view kept for the null test).
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
-class Unk_HoServicePtr
-{
-public:
-    bool FUN_140ef4cb0(int n);                                      // operator== against a raw pointer
-    Unk_HoService* m_p;
-};
+// The smart pointer to the service (C3: efd::SmartPointer<CubeMapInformationService>).
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const;   // 0x140ef4cb0 (C3: was the Unk_HoServicePtr view)
+//
+//
+//
+//
+//
 
 class Unk_HoUnused;                                                 // element of an unused local array
 class Unk_HoWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
@@ -133,8 +133,8 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-            if (reinterpret_cast<Unk_HoServicePtr&>(spService).FUN_140ef4cb0(0))
+            efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+            if (spService == (CubeMapInformationService*)0)
                 return 1;
             if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d5640() == 0)
             {
@@ -209,8 +209,8 @@ void UIHomeOptionDialog::FUN_140fa97a0()
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if ((Unk_Service6100017*)spService == 0)
+        efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+        if ((CubeMapInformationService*)spService == 0)
             return;
         for (int i = 0; i < 9; ++i)
         {

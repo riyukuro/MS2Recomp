@@ -157,7 +157,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned FUN_140767ff0();                                                             // random number
 
 #include <typeinfo>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -176,7 +176,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: comma separated list (0x140178570 ints, 0x1401788f0 strings)
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: comma separated list (0x140178570 ints, 0x1401788f0 strings)
 int Parse_14021a330(const CStringA& value);     // alliance name -> id (0 when unknown)
 int Parse_14021a480(const CStringA& value);     // season name -> id
 void FUN_1401d3700(CStringA& str);          // normalises the symbol name
@@ -195,7 +195,7 @@ int FUN_14035b710(CStringA& str)
 
 // Attribute readers: the value is stored only when the attribute is there (0).
 // @0x14035ba10
-int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_14035ba10(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -212,7 +212,7 @@ int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x14035baa0
-int FUN_14035baa0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
+int FUN_14035baa0(TiXmlElement* pElem, const char* pszName, int* pOut)
 {
     if (0)
     {
@@ -229,7 +229,7 @@ int FUN_14035baa0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 }
 
 // @0x14035bb60
-int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOut)
+int FUN_14035bb60(TiXmlElement* pElem, const char* pszName, Unk_FameSeason* pOut)
 {
     if (0)
     {
@@ -246,7 +246,7 @@ int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOu
 }
 
 // @0x14035bc20
-int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut)
+int FUN_14035bc20(TiXmlElement* pElem, const char* pszName, Unk_FameAlliance* pOut)
 {
     if (0)
     {
@@ -290,7 +290,7 @@ CFameGradeData::~CFameGradeData()
 }
 
 // @0x140358970
-int CFameGradeData::Read(Unk_140165cf0* pElem)
+int CFameGradeData::Read(TiXmlElement* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
     XmlGetAttr((class TiXmlElement*)(pElem), "grade", m_nGrade);
@@ -316,7 +316,7 @@ CFameLogData::~CFameLogData()
 }
 
 // @0x140358ad0
-int CFameLogData::Read(Unk_140165cf0* pElem)
+int CFameLogData::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "grade", m_nGrade);
@@ -337,7 +337,7 @@ CFameLimitData::~CFameLimitData()
 }
 
 // @0x140358c10
-int CFameLimitData::Read(Unk_140165cf0* pElem)
+int CFameLimitData::Read(TiXmlElement* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
     if (m_nAlliance == 0)
@@ -373,7 +373,7 @@ CFamePickAlliance::~CFamePickAlliance()
 }
 
 // @0x140358e60
-int CFamePickAlliance::Read(Unk_140165cf0* pElem)
+int CFamePickAlliance::Read(TiXmlElement* pElem)
 {
     FUN_14035bc20(pElem, "id", &m_nAlliance);
     XmlGetAttr((class TiXmlElement*)(pElem), "maxCount", m_nMaxCount);
@@ -391,7 +391,7 @@ CFamePickMethod::~CFamePickMethod()
 }
 
 // @0x140358ff0
-int CFamePickMethod::Read(Unk_140165cf0* pElem)
+int CFamePickMethod::Read(TiXmlElement* pElem)
 {
     if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
         return 0;
@@ -400,7 +400,7 @@ int CFamePickMethod::Read(Unk_140165cf0* pElem)
     FUN_14035ba10(pElem, "repeatType", &m_nRepeatType);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnAccept", m_nReloadOnAccept);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnComplete", m_nReloadOnComplete);
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("alliance")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("alliance")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("alliance")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("alliance")))
     {
         AlliancePtr spAlliance(new CFamePickAlliance);
         if (spAlliance->Read(pNode) != 0)
@@ -429,7 +429,7 @@ CFameDef::~CFameDef()
 }
 
 // @0x1403592f0
-int CFameDef::Read(Unk_140165cf0* pElem)
+int CFameDef::Read(TiXmlElement* pElem)
 {
     FUN_14035bc20(pElem, "alliance", &m_nAlliance);
     XmlGetAttr((class TiXmlElement*)(pElem), "officerNpcKind", m_nOfficerNpcKind);
@@ -451,7 +451,7 @@ CFameSeasonDef::~CFameSeasonDef()
 }
 
 // @0x140359460
-int CFameSeasonDef::Read(Unk_140165cf0* pElem)
+int CFameSeasonDef::Read(TiXmlElement* pElem)
 {
     FUN_14035bb60(pElem, "name", &m_nSeason);
     XmlGetAttr((class TiXmlElement*)(pElem), "requireQuest", m_nRequireQuest);
@@ -497,13 +497,13 @@ int CFameTable::LoadFame()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -524,13 +524,13 @@ int CFameTable::LoadFameLog()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -549,13 +549,13 @@ int CFameTable::LoadFameLimit()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("condition")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("condition")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -574,19 +574,19 @@ int CFameTable::LoadPickMethod()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
+    TiXmlElement* pEnv = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
     if (pEnv == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEnv))->FirstChild("method")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("method")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pEnv))->FirstChild("method")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("method")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -609,13 +609,13 @@ int CFameTable::LoadFameDef()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pSeason = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pSeason != 0; pSeason = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSeason))->NextSibling("season")))
+    for (TiXmlElement* pSeason = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pSeason != 0; pSeason = ((class TiXmlElement*)((class Unk_XmlNode*)(pSeason))->NextSibling("season")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pSeason)))
             continue;
@@ -623,7 +623,7 @@ int CFameTable::LoadFameDef()
         if (spSeason->Read(pSeason) == 0)
             continue;
         m_mapSeason.SetAt(spSeason->m_nSeason, spSeason);
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSeason))->FirstChild("fame")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pSeason))->FirstChild("fame")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("fame")))
         {
             DefPtr spDef(new CFameDef);
             if (spDef->Read(pNode) == 0)

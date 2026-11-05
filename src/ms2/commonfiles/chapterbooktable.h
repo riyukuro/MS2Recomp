@@ -12,7 +12,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/itemgift.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One reward of a chapter (0x40 bytes). m_nType: 1 item, 2 stat point, 3 skill point.
 struct Unk_ChapterReward
@@ -35,7 +35,7 @@ public:
     CChapterBookData();                 // 0x1401dbc90
     // ~CChapterBookData (0x1401dc0d0) is implicit: the exe stores no vftable in it.
 
-    int Read(Unk_140165cf0* pElem);     // 0x1401d8bc0 attributes of one <chapterbook>
+    int Read(TiXmlElement* pElem);     // 0x1401d8bc0 attributes of one <chapterbook>
 
     int m_nId;                          // +0x18 "id"
     unsigned m_nPrologue;               // +0x1c "prologue"

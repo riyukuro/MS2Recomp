@@ -21,7 +21,7 @@ class WeddingRewardData : public CPtred
 public:
     WeddingRewardData();                                    // 0x1409071e0
     virtual ~WeddingRewardData();                           // 0x140907240
-    bool Read(Unk_140165cf0* pNode);                        // 0x140907270
+    bool Read(TiXmlElement* pNode);                        // 0x140907270
 
     int m_nType;                                            // +0x18 "type"
     __int64 m_nRewardExp;                                   // +0x20 "rewardExp"
@@ -35,7 +35,7 @@ class WeddingExpData : public CPtred
 public:
     WeddingExpData();                                       // 0x140907310
     virtual ~WeddingExpData();                              // 0x140907360
-    bool Read(Unk_140165cf0* pNode);                        // 0x140907390
+    bool Read(TiXmlElement* pNode);                        // 0x140907390
 
     int m_nGrade;                                           // +0x18 "grade"
     __int64 m_nValue;                                       // +0x20 "value"
@@ -48,7 +48,7 @@ class WeddingMaintenanceData : public CPtred
 public:
     WeddingMaintenanceData();                               // 0x1409073f0
     virtual ~WeddingMaintenanceData();                      // 0x140907470
-    bool Read(Unk_140165cf0* pNode);                        // 0x1409074a0
+    bool Read(TiXmlElement* pNode);                        // 0x1409074a0
     bool IsMaintenance(int nWorld, const CMsTime& time);    // 0x1409077a0
 
     int m_nWorld;                                           // +0x18 "world" (0: every world)
@@ -64,7 +64,7 @@ class WeddingSkillData : public CPtred
 public:
     WeddingSkillData();                                     // 0x1409078d0
     virtual ~WeddingSkillData();                            // 0x140907980
-    bool Read(Unk_140165cf0* pNode);                        // 0x1409079c0
+    bool Read(TiXmlElement* pNode);                        // 0x1409079c0
     unsigned short GetLevel(int nGrade);                    // 0x140907ad0
     float GetValue(int nGrade);                             // 0x140907b50 (percent)
 

@@ -117,19 +117,19 @@ public:
     CStringA GetDesc();
     MS2Ptr<ItemGift> GetGiftByDay(unsigned nDay);   // C3: was Unk_140ce3510::FUN_140ce3710
 };
-class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
-};
-class Unk_140acd6e0 : public ASButton { public:
-};
+// C3: Unk_140ce3510 was GameEventAttendGiftCli itself; its holder (Unk_14102fe10 of it) is MS2Ptr<GameEventAttendGiftCli>
+#include "ms2/placeholder/ms2ptr_impl.h"
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 // The scrolling list at +0x178: slots 24/25 take the visibility and the slot array.
-class Unk_140bfc2e0 : public ASDisplayObject { public:
-    virtual void pad_6();virtual void pad_7();virtual void pad_8();virtual void pad_9();virtual void pad_10();virtual void pad_11();
-    virtual void pad_12();virtual void pad_13();virtual void pad_14();virtual void pad_15();virtual void pad_16();virtual void pad_17();
-    virtual void pad_18();virtual void pad_19();virtual void pad_20();virtual void pad_21();virtual void pad_22();virtual void pad_23();
-    virtual void vfunc_24(bool);
-    virtual void vfunc_25(const Scaleform::GFx::Value&);
-};
+#include "ms2/placeholder/asmultiselecttilecachelist.h"   // C3: the gift list is ASTileCacheList (was the stand-in Unk_140bfc2e0); slots 24/25 via ASMultiSelectTileCacheList
+class UIAllianceQuestDialog : public UIDialog { public: MS2Ptr<ASTileCacheList> FUN_140bfa760(const CString& strName); };   // C3: 0x140bfa760, the list child lookup
+//
+//
+//
+//
+//
 // The slot object (asitemslot.cpp, not recovered): an ASObj with the slot setters.
 class ASSlot : public ASObj { public:
     ASSlot(int nType);
@@ -186,11 +186,11 @@ CStringW FUN_14016a730(const char*,int);
 CString FUN_141029ca0(const CString&);
 
 // @0x14102f840
-void FUN_14102f840(ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& dst,const ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& src) { dst.Copy(src); }
+void FUN_14102f840(ATL::CAtlArray<MS2Ptr<GameEventAttendGiftCli> >& dst,const ATL::CAtlArray<MS2Ptr<GameEventAttendGiftCli> >& src) { dst.Copy(src); }
 // @0x14102f870
-template<class T> Unk_14102fe10<T> UIAttendGiftDialog::FUN_14102f870(const CString& name,Unk_14102fe10<T>& out)
+template<class T> MS2Ptr<T> UIAttendGiftDialog::FUN_14102f870(const CString& name,MS2Ptr<T>& out)
 {
-    out=FUN_140bfa760<T>(name);
+    out=reinterpret_cast<UIAllianceQuestDialog*>(this)->FUN_140bfa760(name);
     return out;
 }
 // @0x14102b4d0
@@ -236,14 +236,14 @@ bool UIAttendGiftDialog::SelectRequestedEvent(int id)
 {
     m_requested=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
-        Unk_14102fe10<Unk_140ce3510> event=it->second;
+        MS2Ptr<GameEventAttendGiftCli> event=it->second;
         if(event->GetID()==id) { m_requested=event; return true; }
     }
     FUN_140d73ff0(L"s_attendGift_not_found_event"); return false;
 }
 MS2_REPLACE_METHOD(0x14102C7A0, UIAttendGiftDialog, SelectRequestedEvent, 309, 0xF38E5CF2);
 // @0x14102c8e0
-void UIAttendGiftDialog::AddEvent(Unk_14102fe10<Unk_140ce3510> event)
+void UIAttendGiftDialog::AddEvent(MS2Ptr<GameEventAttendGiftCli> event)
 {
     m_events.insert(std::make_pair(event->GetID(),event));
     if(event->FUN_140ce3510()) m_activeEvents.Add(event);
@@ -251,7 +251,7 @@ void UIAttendGiftDialog::AddEvent(Unk_14102fe10<Unk_140ce3510> event)
 }
 MS2_REPLACE_METHOD(0x14102C8E0, UIAttendGiftDialog, AddEvent, 236, 0x8EE28BC0);
 // @0x14102c9e0
-void UIAttendGiftDialog::RemoveEvent(Unk_14102fe10<Unk_140ce3510> event)
+void UIAttendGiftDialog::RemoveEvent(MS2Ptr<GameEventAttendGiftCli> event)
 {
     m_events.erase(event->GetID());
     if(m_requested==event.get()) { m_requested=0; vfunc_67(); return; }
@@ -267,13 +267,13 @@ MS2_REPLACE_METHOD(0x14102C9E0, UIAttendGiftDialog, RemoveEvent, 364, 0xC713545C
 bool UIAttendGiftDialog::HasActiveEvents() { return m_activeEvents.GetCount()>0; }
 MS2_REPLACE_METHOD(0x14102CB60, UIAttendGiftDialog, HasActiveEvents, 61, 0x33D47331);
 // @0x14102cbb0
-Unk_14102fe10<Unk_140ce3510> UIAttendGiftDialog::FindEventByKind(int kind)
+MS2Ptr<GameEventAttendGiftCli> UIAttendGiftDialog::FindEventByKind(int kind)
 {
     for(auto it=m_events.begin();it!=m_events.end();it++) {
-        Unk_14102fe10<Unk_140ce3510> event=it->second;
+        MS2Ptr<GameEventAttendGiftCli> event=it->second;
         if(event->FUN_140ce3960()==kind) return event;
     }
-    return Unk_14102fe10<Unk_140ce3510>(0);
+    return MS2Ptr<GameEventAttendGiftCli>(0);
 }
 MS2_REPLACE_METHOD(0x14102CBB0, UIAttendGiftDialog, FindEventByKind, 270, 0x245AF2A3);
 // @0x14102ccd0
@@ -281,7 +281,7 @@ int UIAttendGiftDialog::FUN_14102ccd0()
 {
     int total=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
-        Unk_14102fe10<Unk_140ce3510> event=it->second;
+        MS2Ptr<GameEventAttendGiftCli> event=it->second;
         if(!event->FUN_140ce3a80()) total+=event->GetUsablePoints();
     }
     return total;
@@ -322,7 +322,7 @@ void UIAttendGiftDialog::RebuildActiveEvents()
 {
     m_activeEvents.RemoveAll();
     for(auto it=m_events.begin();it!=m_events.end();it++) {
-        Unk_14102fe10<Unk_140ce3510> event=it->second;
+        MS2Ptr<GameEventAttendGiftCli> event=it->second;
         if(event->FUN_140ce3510()) m_activeEvents.Add(event);
     }
 }
@@ -404,8 +404,8 @@ void UIAttendGiftDialog::OnLoadComplete()
     if(m_usePoint==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(66),__FUNCTION__)); } while(0);
     m_buttons.RemoveAll();
     for(unsigned int i=0;i<3;i++) {
-        MS2Ptr<Unk_140acd6e0> button;
-        if(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>(StringFormat("m_eventButton{0}",i),button).get()) {
+        MS2Ptr<ASButton> button;
+        if(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>(StringFormat("m_eventButton{0}",i),button).get()) {
             button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::SelectEventByIndex),FUN_140bd09d0(i));
             m_buttons.Add(button);
         }
@@ -486,7 +486,7 @@ MS2_REPLACE_METHOD(0x14102D4E0, UIAttendGiftDialog, OnAttendanceMsgBox, 209, 0xA
 // @0x14102d6e0
 void UIAttendGiftDialog::FUN_14102d6e0()
 {
-    ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510>> events;
+    ATL::CAtlArray<MS2Ptr<GameEventAttendGiftCli>> events;
     if(m_requested.get()) events.Add(m_requested);
     else FUN_14102f840(events,m_activeEvents);
     for(unsigned int i=0;i<3;i++) {
@@ -551,8 +551,8 @@ void UIAttendGiftDialog::FUN_14102da40()
             }
         }
     }
-    m_giftList->vfunc_25(slots.FUN_1422bb870());
-    m_giftList->vfunc_24(true);
+    reinterpret_cast<ASMultiSelectTileCacheList*>(m_giftList.operator->())->vfunc_25(slots.FUN_1422bb870());
+    reinterpret_cast<ASMultiSelectTileCacheList*>(m_giftList.operator->())->vfunc_24(true);
     CStringW strPeriod;
     if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->GetID())) {
         int nItemId=m_selected->FUN_140ce3980();

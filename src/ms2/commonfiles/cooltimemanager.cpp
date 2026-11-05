@@ -100,7 +100,7 @@
 #include "ms2/ms2recover.h"
 #include <vector>
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -138,14 +138,14 @@ void CooltimeManager::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "v", "cooltimeID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         unsigned nId = 0;
         unsigned long nTick = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "cooltimeID", nId);

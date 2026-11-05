@@ -43,7 +43,7 @@ unsigned GameObjectEffectNifCtx::GetGameOID() const
 }
 
 // @0x140474740
-void GameObjectEffectNifCtx::LoadXml(Unk_140165cf0* pNode)
+void GameObjectEffectNifCtx::LoadXml(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "gameOID", m_nGameOID);
     XmlGetAttr((class TiXmlElement*)(pNode), "nifPath", m_strNifPath);

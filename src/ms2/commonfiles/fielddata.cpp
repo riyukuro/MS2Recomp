@@ -288,7 +288,7 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <utility>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 { public:  
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -297,14 +297,14 @@ public:
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_140165cf0 : public Unk_XmlNode {
-public:
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 
 
-};
+
+
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
-CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
+CStringW FUN_1401bf530(TiXmlElement*,const char*,CStringW);
 CString FUN_14071a5b0(const CString&,const CString&);
 void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -316,7 +316,7 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d
 
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>), FUN_140178670 (CAtlArray<unsigned>)
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>), FUN_140178670 (CAtlArray<unsigned>)
 bool FUN_14028d470(float,float);
 template <class T> T XmlConvert(const CString&);
 class CLogString* GetLogString();
@@ -345,9 +345,9 @@ static CCacheData s_spawnCache;
 static CLockCriticalSection s_fieldLock;
 static CLockCriticalSection s_spawnLock;
 void LoadMapSpawnTag();
-int FUN_1403759c0(Unk_140165cf0*,const char*,std::vector<short>&);
-int FUN_140375a40(Unk_140165cf0*,const char*,int&);
-int FUN_140375ad0(Unk_140165cf0*,const char*,int&);
+int FUN_1403759c0(TiXmlElement*,const char*,std::vector<short>&);
+int FUN_140375a40(TiXmlElement*,const char*,int&);
+int FUN_140375ad0(TiXmlElement*,const char*,int&);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -494,12 +494,12 @@ void LoadMapSpawnTag()
             TiXmlDocument doc;
             if (GetFileSystem()->FUN_1403974b0(&doc,path,0,true,false)) {
                 s_spawnCache.FUN_1401d1160(path);
-                Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+                TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
                 if (root) {
-                    std::vector<Unk_140165cf0*> nodes;
+                    std::vector<TiXmlElement*> nodes;
                     FUN_14028fd90((struct Unk_XmlElement*)root,"region","mapCode","spawnPointID",(std::vector<struct Unk_XmlElement*>&)nodes);
                     for (size_t i=0;i<nodes.size();++i) {
-                        Unk_140165cf0* node=nodes[i];
+                        TiXmlElement* node=nodes[i];
                         TPtr<CFieldSpawnTag> tag(new CFieldSpawnTag);
                         XmlGetAttr((class TiXmlElement*)(node), "mapCode", tag->mapCode);
                         XmlGetAttr((class TiXmlElement*)(node), "spawnPointID", tag->spawnPointId);
@@ -572,15 +572,15 @@ void CFieldData::LoadFieldData()
     if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.RemoveAll(); }
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
-    Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (!root) {
         Unk_FieldLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
         return;
     }
-    for (Unk_140165cf0* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("fieldData"));node;node=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("fieldData"))) {
+    for (TiXmlElement* node=((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("fieldData"));node;node=((class TiXmlElement*)((class Unk_XmlNode*)(node))->NextSibling("fieldData"))) {
         unsigned id;
         XmlGetAttr((class TiXmlElement*)(node), "id", id);
-        Unk_140165cf0* selected=((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(node)));
+        TiXmlElement* selected=((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(node)));
         if (!selected) continue;
         MS2Ptr<CFieldData> field(new CFieldDataCli);
         field->m_nFieldID=id;
@@ -649,17 +649,17 @@ bool CFieldData::FUN_1403744a0(int id)
 }
 
 // @0x140374530
-bool CFieldData::vfunc_1(Unk_140165cf0* node)
+bool CFieldData::vfunc_1(TiXmlElement* node)
 {
     m_strLocale=Unk_ReadString((class Unk_XmlNode*)(node), "locale", CString(""));
     m_strFeature=FUN_1401bf530(node,"feature",CStringW(L""));
-    Unk_140165cf0* xblock=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("xblock"));
+    TiXmlElement* xblock=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("xblock"));
     if (xblock) XmlGetAttr((class TiXmlElement*)(xblock), "name", m_strXBlock);
     if (m_strXBlock.IsEmpty()) {
         Unk_AdditionalLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<xblock> FieldData]");
         return false;
     }
-    Unk_140165cf0* property=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("property"));
+    TiXmlElement* property=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("property"));
     if (property) {
         XmlGetAttr((class TiXmlElement*)(property), "mapCategoryCode", m_nMapCategoryCode);
         XmlGetAttr((class TiXmlElement*)(property), "revivalreturnid", m_nRevivalReturnId);
@@ -720,18 +720,18 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
             m_fCubeSkillIntervalTime=0.1f<m_fCubeSkillIntervalTime?m_fCubeSkillIntervalTime:0.1f;
         XmlQuery((class TiXmlElement*)(property), "bigDataCharacterSkillUseLog", m_bBigDataCharacterSkillUseLog);
     }
-    Unk_140165cf0* drop=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("drop"));
+    TiXmlElement* drop=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("drop"));
     if (drop) {
         XmlGetAttr((class TiXmlElement*)(drop), "maplevel", m_nMapLevel);
         XmlGetAttr((class TiXmlElement*)(drop), "dropRank", m_nDropRank);
         XmlTokenList(drop,"globalDropBoxID",m_globalDropBoxIds);
     }
     if (m_nRevivalReturnId==0) m_nRevivalReturnId=m_nFieldID;
-    Unk_140165cf0* split=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("split"));
+    TiXmlElement* split=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("split"));
     if (split) XmlGetAttr((class TiXmlElement*)(split), "globalSplit", m_nGlobalSplit);
-    Unk_140165cf0* camera=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("camera"));
+    TiXmlElement* camera=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("camera"));
     if (camera) XmlGetAttr((class TiXmlElement*)(camera), "hangle", m_fCameraHAngle);
-    Unk_140165cf0* cash=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("cashCall"));
+    TiXmlElement* cash=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("cashCall"));
     if (cash) {
         XmlGetAttr((class TiXmlElement*)(cash), "cashTaxiNotDeparture", m_nCashTaxiNotDeparture);
         XmlGetAttr((class TiXmlElement*)(cash), "cashTaxiNotDestination", m_nCashTaxiNotDestination);
@@ -740,7 +740,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         XmlGetAttr((class TiXmlElement*)(cash), "RecallOtherUserProhibit", m_nRecallOtherUserProhibit);
     }
     m_nIndoorMask=1;
-    Unk_140165cf0* indoor=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("indoor"));
+    TiXmlElement* indoor=((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("indoor"));
     if (indoor) {
         int type=0;
         XmlGetAttr((class TiXmlElement*)(indoor), "type", type);
@@ -891,7 +891,7 @@ template<class T> void Unk_FieldSplit(const CString& text,std::vector<T>& out,co
     Unk_FieldSplitImpl(text,out,delimiter);
 }
 // @0x1403759c0
-int FUN_1403759c0(Unk_140165cf0* node,const char* attribute,std::vector<short>& out)
+int FUN_1403759c0(TiXmlElement* node,const char* attribute,std::vector<short>& out)
 {
     CString value;
     int result=XmlGetAttr((class TiXmlElement*)(node), attribute, value);
@@ -899,7 +899,7 @@ int FUN_1403759c0(Unk_140165cf0* node,const char* attribute,std::vector<short>& 
     return result;
 }
 // @0x140375a40
-int FUN_140375a40(Unk_140165cf0* node,const char* attribute,int& out)
+int FUN_140375a40(TiXmlElement* node,const char* attribute,int& out)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -915,7 +915,7 @@ int FUN_140375a40(Unk_140165cf0* node,const char* attribute,int& out)
     return result;
 }
 // @0x140375ad0
-int FUN_140375ad0(Unk_140165cf0* node,const char* attribute,int& out)
+int FUN_140375ad0(TiXmlElement* node,const char* attribute,int& out)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)

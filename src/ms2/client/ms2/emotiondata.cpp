@@ -17,7 +17,7 @@
 #include "ms2/commonfiles/filesystem.h"
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -62,7 +62,7 @@ CEmotionData::~CEmotionData()
 }
 
 // @0x1411bccd0
-bool CEmotionData::Load(Unk_140165cf0* pNode)
+bool CEmotionData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
     XmlGetAttr((class TiXmlElement*)(pNode), "faceName", m_strFaceName);
@@ -87,14 +87,14 @@ bool CEmotionData::Load(Unk_140165cf0* pNode)
         if (arr.GetCount() > 2)
             m_anims[4] = arr[2];
     }
-    Unk_140165cf0* pTexture = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pNode))->FirstChild("textureani"));
+    TiXmlElement* pTexture = ((class TiXmlElement *)((class Unk_XmlNode*)(pNode))->FirstChild("textureani"));
     if (pTexture != 0)
     {
         m_spTextureAni.AssignRaw(new CTextureAnimationData);
         if (!m_spTextureAni->FUN_141847e30(pTexture))
             m_spTextureAni = NULL;
     }
-    for (Unk_140165cf0* pEffect = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pNode))->FirstChild("effect")); pEffect != 0; pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
+    for (TiXmlElement* pEffect = ((class TiXmlElement *)((class Unk_XmlNode*)(pNode))->FirstChild("effect")); pEffect != 0; pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
     {
         m_effects.Add();
         CString& strFile = m_effects.GetAt(m_effects.GetCount() - 1);
@@ -164,9 +164,9 @@ CEmotionGroup::CEmotionGroup()
 }
 
 // @0x1411bd5c0
-void CEmotionGroup::Load(Unk_140165cf0* pRoot)
+void CEmotionGroup::Load(TiXmlElement* pRoot)
 {
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "emotion", "name", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
@@ -295,7 +295,7 @@ void CEmotionTable::LoadCommon()
         TiXmlDocument doc;
         if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
             return;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+        TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
             Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", files[i]);
@@ -355,14 +355,14 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return NULL;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return NULL;
     }
     MS2Ptr<CEmotionGroup> spGroup;
-    Unk_140165cf0* pImport = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("import"));
+    TiXmlElement* pImport = ((class TiXmlElement *)((class Unk_XmlNode*)(pRoot))->FirstChild("import"));
     if (pImport != 0)
     {
         CString strName;

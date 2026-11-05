@@ -20,13 +20,13 @@
 
 // The shared header statics of this unit (each header brings its own copies, constructed in include order).
 #include "ms2/placeholder/unk_1402a9d70.h"
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill1 = "skill";
 static CString s_stun1 = "stun";
-static Unk_Handle1401cd100 s_handle1(0);
+static Unk_BuddyHandle s_handle1(0);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController1;
 static CString s_sortNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -39,7 +39,7 @@ static CString s_stun3 = "stun";
 static CString s_sortNames4[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill4 = "skill";
 static CString s_stun4 = "stun";
-static Unk_Handle1401cd100 s_handle2(0);
+static Unk_BuddyHandle s_handle2(0);
 static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController3;
 #ifndef MS2_HOOK_DLL   // s_systemKillSlayer: the exe's object at 0x143af6008, which other units reach as DAT_143af6008 (the hook DLL binds it)
@@ -48,7 +48,7 @@ CString DAT_143af6008 = "System_KillSlayer";
 extern CString DAT_143af6008;
 #endif
 static CString s_sortNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_Handle1401cd100 s_handle3(0);
+static Unk_BuddyHandle s_handle3(0);
 static CString s_sortNames6[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 #include "uiscenegame.h"
@@ -956,10 +956,10 @@ class CGameOption   // C3: member view for the former free stand-ins
 {
 public:
     int LoadCharacterOption();
+    struct Unk_InterfaceFlag* FUN_140c58ac0();
 };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was (char*, char, int)
-void* FUN_140c58ac0(class Unk_KsInputState*);   // C3: was FUN_140c58ac0
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was (char*, char)
 UIMassiveEvent* FUN_140e01890(int nId);
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -1089,7 +1089,7 @@ void UISceneGamePlay::vfunc_11()
     FUN_141b70290();
     ((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->LoadCharacterOption();
     FUN_14125f670(FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())), *((bool*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), false);
-    FUN_14125bd20(((struct Unk_InterfaceFlag*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))), *((bool*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))));
+    FUN_14125bd20(((struct Unk_InterfaceFlag*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), *((bool*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
 }
 MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
 

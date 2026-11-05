@@ -23,7 +23,7 @@
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/ascorelist.h"
 #include <NiRenderStep.h>
-
+class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // CGameOption view, defined in uichaosdpsdialog.cpp (0x140e09150)
 // ---- unit-local stand-ins for classes whose units are not recovered yet ----
 
 // The graphics option block (Unk_AeGameOption::FUN_1409a8ac0): HDR, shimmer, mirror flags and the shadow quality.
@@ -138,7 +138,7 @@ void UIGraphicOptionDialog::OnLoadInit()
         }
     }
     if (m_30.get() != 0) {
-        m_30->Invoke("initData", TSingleton<CGameOption>::GetInstance()->FUN_140e09150()->m_f08);
+        m_30->Invoke("initData", reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_f08);
     }
 }
 MS2_REPLACE_METHOD(0x141947000, UIGraphicOptionDialog, OnLoadInit, 641, 0x9F3488BD);

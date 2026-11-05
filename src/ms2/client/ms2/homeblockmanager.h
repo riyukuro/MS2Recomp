@@ -6,6 +6,7 @@
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/socketptr.h"
 class CBuddy;
 class PCBase;
@@ -18,8 +19,8 @@ template<> struct Unk_SocketRef<PCBase> {
 MS2_SOCKETPTR_BOXED(PCBase)
 class HomeBlockManager : public TSingleton<HomeBlockManager> {
 public:
-    typedef Unk_PayloadPtr<HomeBlockInfo> HomePtr;
-    typedef Unk_PayloadPtr<CBuddy> BuddyPtr;
+    typedef MS2Ptr<HomeBlockInfo> HomePtr;
+    typedef MS2Ptr<CBuddy> BuddyPtr;
     HomeBlockManager();
     virtual ~HomeBlockManager();
     void FUN_140a46b90(CInPacket&);

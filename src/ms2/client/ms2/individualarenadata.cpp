@@ -14,7 +14,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include <typeinfo>
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -22,11 +22,11 @@ public:
 };
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+// C3 #8: the cast-only Unk_140168650 view removed
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
+int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
@@ -81,14 +81,14 @@ bool CIndividualArenaDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
     std::auto_ptr<IndividualArenaStringMap> strings = MakeIndividualArenaStringMap();
     if (strings.get() == 0)
         return false;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("individualArena")); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("individualArena"))))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("individualArena")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("individualArena")))
     {
         int nType = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "arenaType", nType);

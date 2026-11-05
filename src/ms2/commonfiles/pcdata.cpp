@@ -23,17 +23,17 @@
 
 __int64 GetServerTime();                                    // the server time
 
-// The Crypto++ CRC32 hash object (vftable + running value, 0x10 bytes); only the pieces this unit touches.
-class Unk_Crc32
-{
-public:
-    Unk_Crc32();                                            // 0x142351b30
-    ~Unk_Crc32();                                           // forwards to ~HashTransformation (0x14038f3b0)
-    void* m_vfptr;
-    unsigned m_nCrc;
-    unsigned m_pad;
-};
-MS2_CHECK_SIZE(Unk_Crc32, 0x10);
+// The Crypto++ CRC32 hash object: ctor 0x142351b30 (in the library), implicit dtor 0x140720aa0 (here).
+#include "cryptopp562/crc.h"
+MS2_CHECK_SIZE(CryptoPP::CRC32, 0x10);
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- CPCData ---------------------------------------------------------------------------------------------------------------
 
@@ -319,13 +319,13 @@ int CPCDataPack::FUN_140720850()
     int nCrcItems = 0;
     int nCrcExtra = 0;
     try {
-        Unk_Crc32 crc;
+        CryptoPP::CRC32 crc;
         int nOut;
-        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
         nCrcRecord = nOut;
-        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
         nCrcItems = nOut;
-        reinterpret_cast<CryptoPP::HashTransformation&>(crc).CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
         nCrcExtra = nOut;
     } catch (CryptoPP::Exception&) {
         return 0;
@@ -333,11 +333,11 @@ int CPCDataPack::FUN_140720850()
     return nCrcRecord + nCrcItems + nCrcExtra;
 }
 
-// @0x140720aa0
-Unk_Crc32::~Unk_Crc32()
-{
-    reinterpret_cast<CryptoPP::HashTransformation*>(this)->CryptoPP::HashTransformation::~HashTransformation();
-}
+// 0x140720aa0 is the implicit CryptoPP::CRC32::~CRC32 (emitted by the local above)
+//
+//
+//
+//
 
 // ---- CByteBuffer members defined here ------------------------------------------------------------------------------------
 

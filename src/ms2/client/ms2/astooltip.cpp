@@ -679,7 +679,7 @@ void FUN_1409e5480()
 
 // Formats one stat option value row; kind 2 (random options) marks the top of the roll range as "best".
 // @0x1409c5210
-bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue)
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue)
 {
     if (spItem == 0 || spOption == 0)
         return false;
@@ -717,7 +717,7 @@ bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
 
 // The special option twin of FUN_1409c5210.
 // @0x1409c56f0
-bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue)
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, MS2Ptr<BaseOption> spOption, const CStringW& strValue)
 {
     if (spItem == 0 || spOption == 0)
         return false;
@@ -1029,10 +1029,10 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
                 nColor = nActiveColor;
             CStringW strPartTitle = StringFormat(strPartFormat, nColor, n);
             CStringW strOptions;
-            spPart->FUN_1407bccf0([&strOptions, &strStatFormat, &nColor](const std::pair<SetItemOptionPart::StatKey, Unk_EnchantPtr<BaseOption> >& v) {
+            spPart->FUN_1407bccf0([&strOptions, &strStatFormat, &nColor](const std::pair<SetItemOptionPart::StatKey, MS2Ptr<BaseOption> >& v) {
                 strOptions.Append(StringFormat(strStatFormat, nColor, FUN_140631600(v.first, v.second.get())));
             });
-            spPart->FUN_1407bcdb0([&strOptions, &strStatFormat, &nColor, &pItem](const std::pair<SetItemOptionPart::SpecialKey, Unk_EnchantPtr<BaseOption> >& v) {
+            spPart->FUN_1407bcdb0([&strOptions, &strStatFormat, &nColor, &pItem](const std::pair<SetItemOptionPart::SpecialKey, MS2Ptr<BaseOption> >& v) {
                 strOptions.Append(StringFormat(strStatFormat, nColor, FUN_140631830(v.first, v.second->GetValue(), pItem->FUN_140527840())));
             });
             const ATL::CAtlArray<int>& arrSkills = spPart->FUN_1407bc9d0();
@@ -1158,7 +1158,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 Unk_EnchantMap::CPair* pPair = mapStats.Lookup(nStat);
                 if (pPair == 0)
                     continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                MS2Ptr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
                 if (i == 0 && pData->FUN_14053f750(nStat))
@@ -1208,7 +1208,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     Unk_SocketSpecialMap::CPair* pPair = mapSpecials.Lookup(eSpecial);
                     if (pPair == 0)
                         continue;
-                    Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                    MS2Ptr<BaseOption> spBase(pPair->m_value);
                     if (!spBase)
                         continue;
                     CStringW strValue;
@@ -1289,7 +1289,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             strText.Append(strSeparator);
         strText.Append(StringFormat(FUN_1409e6010((int)k, pItem), strKind));
     }
-    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pStatus->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spEnchant(pStatus->GetEnchant());
     if (spEnchant != 0)
     {
         if (spEnchant->FUN_14058c8a0() == 0)
@@ -1301,7 +1301,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 for (POSITION pos = mapEnchant.GetStartPosition(); pos != 0; mapEnchant.GetNext(pos))
                 {
                     int nStat = mapEnchant.GetKeyAt(pos);
-                    Unk_EnchantPtr<BaseOption> spBase(mapEnchant.GetValueAt(pos));
+                    MS2Ptr<BaseOption> spBase(mapEnchant.GetValueAt(pos));
                     if (!spBase)
                         continue;
                     strRows.Append(StringFormat(strRowFormat, FUN_140631af0(nStat, spBase, pStatus)));
@@ -1351,7 +1351,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 for (UnlimitedEnchantInfo::OptionMap::const_iterator it = mapOptions.begin(); it != mapOptions.end(); ++it)
                 {
                     int nKey = it->first;
-                    Unk_EnchantPtr<BaseOption> spBase(it->second);
+                    MS2Ptr<BaseOption> spBase(it->second);
                     CStringW strRow;
                     if (nKey == 0x1c || nKey == 0x1b || nKey == 0x14)
                         strRow = FUN_140631af0(nKey, spBase, pStatus);
@@ -1366,7 +1366,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                 for (UnlimitedEnchantInfo::SecondaryMap::const_iterator it = mapSpecials.begin(); it != mapSpecials.end(); ++it)
                 {
                     int nSpecial = it->first;
-                    Unk_EnchantPtr<BaseOption> spBase(it->second);
+                    MS2Ptr<BaseOption> spBase(it->second);
                     strRows.Append(StringFormat(strRowFormat, FUN_140631830(nSpecial, spBase->GetValue(), pItem->FUN_140527840())));
                 }
             }
@@ -1423,7 +1423,7 @@ void ASTooltip::FUN_1409cb7b0(CItem* pItem)
 {
     if (pItem == 0 || pItem->FUN_140527840() == 0)
         return;
-    Unk_ItemEnchantData* pEnchant = pItem->FUN_1405278a0();
+    CItemStatus* pEnchant = pItem->FUN_1405278a0();
     if (pEnchant == 0)
         return;
     FUN_1409e5480();
@@ -1495,7 +1495,7 @@ void ASTooltip::FUN_1409cc090(CItem* pItem)
     CItemData* pData = pItem->FUN_140527840();
     if (pData == 0)
         return;
-    Unk_ItemEnchantData* pEnchant = pItem->FUN_1405278a0();
+    CItemStatus* pEnchant = pItem->FUN_1405278a0();
     if (pEnchant == 0)
         return;
     MS2Ptr<CItemOption> spOption(reinterpret_cast<CItemStatus*>(pEnchant)->m_spOption);
@@ -1508,7 +1508,7 @@ void ASTooltip::FUN_1409cc090(CItem* pItem)
         int nOptions = 0;
         int nAdditional = 0;
         FUN_1409e5480();
-        ATL::CAtlMap<int, Unk_EnchantPtr<BaseOption>, Unk_EnchantKeyTraits, ATL::CElementTraits<Unk_EnchantPtr<BaseOption> > >& mapStats = spOption->GetStatMap(0);
+        ATL::CAtlMap<int, MS2Ptr<BaseOption>, Unk_EnchantKeyTraits, ATL::CElementTraits<MS2Ptr<BaseOption> > >& mapStats = spOption->GetStatMap(0);
         for (POSITION pos = mapStats.GetStartPosition(); pos != 0; mapStats.GetNext(pos))
         {
             int nStat = mapStats.GetKeyAt(pos);
@@ -1913,8 +1913,8 @@ void ASTooltip::FUN_1409ce950(CItem* pItem)
     else
     {
         if ((CPtred*)spLife != 0 && static_cast<NpcShopItemLife*>(spLife.get())->FUN_14026f0f0())
-            // the slot holds the item's NpcShopItemLife reference (same 16-byte handle as Unk_ShopLifeRef)
-            FUN_1409cf4d0(reinterpret_cast<Unk_ShopLifeRef&>(spLife));
+            // the slot holds the item's NpcShopItemLife (C3 #10: was the Unk_ShopLifeRef view)
+            FUN_1409cf4d0(spLife);
         else if (static_cast<Unk_ItemDataIntView*>(spData.operator->())->HasPeriod() || spData->IsPCBangItem())
             FUN_1409d6a40(pItem->FUN_1405276c0(), 0);
     }
@@ -1964,11 +1964,11 @@ MS2_REPLACE_METHOD(0x1409CF010, ASTooltip, FUN_1409cf010, 1208, 0x498EDCFE);
 
 // itemUsePeriod of a shop item life: a duration (1), an end date (2), weekly (3) or monthly (4) expiry.
 // @0x1409cf4d0
-void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
+void ASTooltip::FUN_1409cf4d0(MS2SvrPtr<CPtred> spLife)
 {
     if (spLife == 0)
         return;
-    switch (spLife->m_type)
+    switch (static_cast<NpcShopItemLife*>(spLife.get())->m_type)
     {
     case 1:
     {
@@ -1976,7 +1976,7 @@ void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
         CStringW strDays(L"");
         CStringW strHours(L"");
         CStringW strMinutes(L"");
-        __time64_t tSpan = (unsigned)(spLife->m_value * 60);
+        __time64_t tSpan = (unsigned)(static_cast<NpcShopItemLife*>(spLife.get())->m_value * 60);
         ATL::CTimeSpan span(tSpan);
         if (span.GetDays() > 0)
             strDays = FormatStringId<__int64>(0xc5, span.GetDays());
@@ -1998,17 +1998,17 @@ void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
     }
     case 2:
     {
-        int nYear = spLife->m_time.GetYear();
-        int nMonth = spLife->m_time.GetMonth();
-        int nDay = spLife->m_time.GetDay();
-        int nHour = spLife->m_time.GetHour();
-        int nMinute = spLife->m_time.GetMinute();
+        int nYear = static_cast<NpcShopItemLife*>(spLife.get())->m_time.GetYear();
+        int nMonth = static_cast<NpcShopItemLife*>(spLife.get())->m_time.GetMonth();
+        int nDay = static_cast<NpcShopItemLife*>(spLife.get())->m_time.GetDay();
+        int nHour = static_cast<NpcShopItemLife*>(spLife.get())->m_time.GetHour();
+        int nMinute = static_cast<NpcShopItemLife*>(spLife.get())->m_time.GetMinute();
         FUN_1407cbb20("itemUsePeriod", FormatStringId<CStringW>(0xbf, BlockFormat(0xb8, nYear, nMonth, nDay, nHour, nMinute)));
         break;
     }
     case 3:
     {
-        unsigned nWeeks = spLife->m_value;
+        unsigned nWeeks = static_cast<NpcShopItemLife*>(spLife.get())->m_value;
         if (nWeeks == 0)
             nWeeks = 1;
         FUN_1407cbb20("itemUsePeriod", FUN_14028dfa0(CStringW(L"s_item_end_time_tooltip_expirationtype_weekly"), nWeeks));
@@ -2016,7 +2016,7 @@ void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
     }
     case 4:
     {
-        unsigned nMonths = spLife->m_value;
+        unsigned nMonths = static_cast<NpcShopItemLife*>(spLife.get())->m_value;
         if (nMonths == 0)
             nMonths = 1;
         FUN_1407cbb20("itemUsePeriod", FUN_14028dfa0(CStringW(L"s_item_end_time_tooltip_expirationtype_monthly"), nMonths));
@@ -2024,7 +2024,7 @@ void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
     }
     }
 }
-// not hooked: by-value Unk_ShopLifeRef parameter (the callee destroys it)
+// not hooked: by-value MS2SvrPtr<CPtred> parameter (the callee destroys it)
 
 // itemCompare: the stat change of equipping the item (stats, special stats, the item level score).
 // @0x1409cfbf0
@@ -2304,10 +2304,10 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                 bool bTrophy = false;
                 if (bServer)
                 {
-                    Unk_SSGHouseKey key;
-                    key.m_nA = nTrophyId;
-                    key.m_nB = nTrophyLevel;
-                    if (reinterpret_cast<std::set<Unk_SSGHouseKey>&>(DAT_143ab32d8).find(key) != reinterpret_cast<std::set<Unk_SSGHouseKey>&>(DAT_143ab32d8).end())
+                    Unk_TrophyKey key;
+                    key.m_nId = nTrophyId;
+                    key.m_nLevel = nTrophyLevel;
+                    if (DAT_143ab32d8.find(key) != DAT_143ab32d8.end())
                         bTrophy = true;
                 }
                 else
@@ -2377,7 +2377,7 @@ void ASTooltip::FUN_1409d1d80(CItem* pItem)
 {
     if (pItem == 0)
         return;
-    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
     if (!spEnchant)
         return;
     MS2Ptr<CItemData> spData(pItem->FUN_140527840());
@@ -2448,7 +2448,7 @@ void ASTooltip::FUN_1409d26d0(CItem* pItem)
 {
     if (pItem == 0)
         return;
-    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
     if (!spEnchant)
         return;
     CStringW strMain = TSingleton<CStringTable>::GetInstance()->GetItemDescription(pItem->FUN_1405276c0(), "mainDescription");
@@ -3205,12 +3205,12 @@ void ASTooltip::FUN_1409d7900(int nItemId)
     ItemFunction& func = spData->function;
     if (func.name == L"ItemChangeBeauty")
     {
-        unsigned nCount = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d2380();
+        unsigned nCount = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d2380();
         if (nCount == 0)
             return;
         if (nCount > 0)
         {
-            int nShopId = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d1fd0(0, 0);
+            int nShopId = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d1fd0(0, 0);
             if (nShopId == 0)
                 return;
             Unk_SocketPtr<Unk_TooltipBeautyItems> spItems = FUN_1406e5af0(nShopId);
@@ -3240,16 +3240,16 @@ void ASTooltip::FUN_1409d7900(int nItemId)
     }
     else if (func.name == L"OpenCoupleEffectBox")
     {
-        unsigned nCount = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d2380();
+        unsigned nCount = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d2380();
         if (nCount < 2)
             return;
-        int nId = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d1fd0(0, 0);
+        int nId = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d1fd0(0, 0);
         if (nId == 0)
             return;
         MS2Ptr<CItemData> spItem = FUN_14053f870(nId);
         if (spItem == 0)
             return;
-        int nRank = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d1fd0(1, 0);
+        int nRank = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d1fd0(1, 0);
         if (nRank == 0)
             return;
         std::vector<ItemDropResult> drops;
@@ -3258,10 +3258,10 @@ void ASTooltip::FUN_1409d7900(int nItemId)
     }
     else if (func.name == L"ItemRemakeScroll")
     {
-        unsigned nCount = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d2380();
+        unsigned nCount = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d2380();
         if (nCount == 0)
             return;
-        unsigned nScrollId = ((class Unk_CommandArgs&)(func.parameter)).FUN_1408d1f60(0, 0);
+        unsigned nScrollId = ((ItemFunctionArgs&)(func.parameter)).FUN_1408d1f60(0, 0);
         CItemRemakeScrollDataPtr spInfo = CItemRemakeScrollTable::GetInstance()->GetData(nScrollId);
         if (spInfo == 0 || spInfo->m_arrItemTypes.IsEmpty() == true)
             return;
@@ -3347,7 +3347,7 @@ void ASTooltip::FUN_1409d8800(MS2Ptr<CItemData> spData)
         return;
     if (!FUN_1406a6030(spData))
         return;
-    if (static_cast<Unk_ItemDataMeratView*>(spData.operator->())->FUN_14053d740() == 0)
+    if (spData->IsMeratMarketRegisterable() == 0)
         FUN_1407cbb20("ugcItemLimitRegister", GetStringCommon(0x9b9));
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D8800, ASTooltip, FUN_1409d8800, 206, 0xE07649E6); }
@@ -3372,14 +3372,14 @@ void ASTooltip::FUN_1409d88e0(MS2Ptr<CItem> spItem)
         if (spItem->FUN_140525f60())
             bRegistrable = FUN_1406a5a50(spItem, reinterpret_cast<const Unk_MeratItemOwner*>(&owner));
         else
-            bRegistrable = static_cast<Unk_ItemDataMeratView*>(spData.operator->())->FUN_14053d740() == 1;
+            bRegistrable = spData->IsMeratMarketRegisterable() == 1;
     }
     else if (spItem->FUN_140525680())
     {
         if (spItem->FUN_140525790())
             bRegistrable = FUN_1406a5a50(spItem, reinterpret_cast<const Unk_MeratItemOwner*>(&owner));
         else
-            bRegistrable = static_cast<Unk_ItemDataMeratView*>(spData.operator->())->FUN_14053d740() == 1;
+            bRegistrable = spData->IsMeratMarketRegisterable() == 1;
     }
     if (!bRegistrable)
         FUN_1407cbb20("ugcItemLimitRegister", GetStringCommon(0x9b9));
@@ -3401,7 +3401,7 @@ void ASTooltip::FUN_1409d8d90(CItem* pItem, CStringW& strOut)
 {
     if (pItem == 0)
         return;
-    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->GetEnchant());
     if (!spEnchant)
         return;
     if (!pItem->FUN_140527840()->FUN_14053cbc0())
@@ -4567,10 +4567,10 @@ int ASTooltip::FUN_1409e0450(int nItemId, __int64 nExpiry)
         return 0;
     bool bFollowEndDate = false;
     int nBoxId = 0;
-    unsigned nArgs = ((class Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d2380();
+    unsigned nArgs = ((ItemFunctionArgs&)(spData->function.parameter)).FUN_1408d2380();
     if (nArgs > 0)
     {
-        nBoxId = ((class Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1fd0(nArgs - 1, 0);
+        nBoxId = ((ItemFunctionArgs&)(spData->function.parameter)).FUN_1408d1fd0(nArgs - 1, 0);
     }
     else
     {
@@ -5160,7 +5160,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                 Unk_EnchantMap::CPair* pPair = mapStats.Lookup(nStat);
                 if (pPair == 0)
                     continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                MS2Ptr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
                 if (i == 0 && spItem->FUN_140527840()->FUN_14053f750(nStat))
@@ -5208,7 +5208,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                 Unk_SocketSpecialMap::CPair* pPair = mapSpecials.Lookup(eSpecial);
                 if (pPair == 0)
                     continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                MS2Ptr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
                 CStringW strValue;
@@ -5319,7 +5319,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest)
                 Unk_EnchantMap::CPair* pPair = mapStats.Lookup(nStat);
                 if (pPair == 0)
                     continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                MS2Ptr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
                 if (reinterpret_cast<CItemOptionTable*>(FUN_140166430())->IsHighRollValue(spItem, nStat, 2, spBase->GetValue()) == true)
@@ -5337,7 +5337,7 @@ void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest)
                 Unk_SocketSpecialMap::CPair* pPair = mapSpecials.Lookup(eSpecial);
                 if (pPair == 0)
                     continue;
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+                MS2Ptr<BaseOption> spBase(pPair->m_value);
                 if (!spBase)
                     continue;
                 if (reinterpret_cast<CItemOptionTable*>(FUN_140166430())->IsHighRollSpecialValue(spItem, pPair->m_key, 2, spBase->GetValue()) == true)

@@ -74,7 +74,7 @@ int FUN_1406516a0();                                                // the servi
 template <class T> void Unk_OptLog(CLogString* log, int level, int category, const wchar_t* format, const T& first);
 
 // GFxMovie as FUN_1422ae7d0 sees it: slot 10 takes the HAL and the Renderer2D by value (gfxmovie.h types both parameters
-// with the Ptr<Unk_GFxHandleObj> stand-in; the copies made here are this obj's Ptr<HAL> / Ptr<Renderer2D> COMDATs).
+// as Ptr<Unk_GFxUIHal>/Ptr<Unk_GFxUIRenderer2D>; the copies made here are this obj's Ptr<HAL> / Ptr<Renderer2D> COMDATs).
 class Unk_GmMovie
 {
 public:

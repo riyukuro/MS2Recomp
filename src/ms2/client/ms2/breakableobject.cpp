@@ -445,7 +445,7 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
 }
 
 // @0x140adf310
-bool CBreakableObject::FUN_140adf310()
+int CBreakableObject::FUN_140adf310()
 {
     return m_bC1;
 }

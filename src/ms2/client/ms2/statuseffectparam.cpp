@@ -98,7 +98,7 @@ CStatusEffectParam::CStatusEffectParam()
 }
 
 // @0x1418010a0
-void CStatusEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CStatusEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "category", m_strCategory);

@@ -11,7 +11,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <key> row of itemDefine.xml, 0x28 bytes; vftable has the deleting dtor only.
 class CBankItemDefine : public CPtred
@@ -47,7 +47,7 @@ MS2_CHECK_SIZE(CBankData, 0x48);
 MS2_CHECK_OFFSET(CBankData, m_slots, 0x28);
 
 class Unk_BankItem;
-int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);
+int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);
 
 // RTTI CBankTable, 0xa8 bytes: TSingleton at +0, CValidData at +8.
 class CBankTable : public TSingleton<CBankTable>, public CValidData<CBankTable>

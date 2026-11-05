@@ -64,53 +64,53 @@ MS2_CHECK_OFFSET(CDirWatcher, m_hDir, 0x20);
 
 inline TSingleton<CDirWatcher>::TSingleton() { s_instance = static_cast<CDirWatcher*>(this); }
 
-// Listener told when a watched file changes on disk (held by value in the statics; deleted via slot 0).
-class Unk_CacheListener {
-public:
-    virtual ~Unk_CacheListener();
-    virtual Unk_CacheListener* Clone() = 0;
-    virtual void OnChanged(CString strPath, FILETIME kTime) = 0;
-};
-
-class Unk_CacheListenerPtr {
-public:
-    // @0x1401d2530
-    Unk_CacheListenerPtr() : m_p(0) {}
-    Unk_CacheListenerPtr(const Unk_CacheListenerPtr& kOther) : m_p(Clone(kOther.m_p)) {}
-    // @0x1401d28a0
-    ~Unk_CacheListenerPtr() { Release(); }
-    // @0x1401d2a40
-    Unk_CacheListenerPtr& operator=(const Unk_CacheListenerPtr& kOther)
-    {
-        Release();
-        m_p = Clone(kOther.m_p);
-        return *this;
-    }
-    // @0x1401d2ff0
-    bool IsNull() const { return m_p == 0; }
-    // @0x1401d2c50
-    void OnChanged(CString strPath, FILETIME kTime) { m_p->OnChanged(strPath, kTime); }
-private:
-    // @0x1401d2210
-    static Unk_CacheListener* Clone(Unk_CacheListener* p)
-    {
-        if (p == 0)
-            return 0;
-        Unk_CacheListener* pCopy = p->Clone();
-        return pCopy;
-    }
-    // @0x1401d3eb0
-    void Release()
-    {
-        if (m_p != 0)
-        {
-            delete m_p;
-            m_p = 0;
-        }
-    }
-    Unk_CacheListener* m_p;
-};
-MS2_CHECK_SIZE(Unk_CacheListenerPtr, 8);
+// The file-change listener held by value in the statics: TFunctor<void, ParamList<CString, ParamList<FILETIME>>>
+// (ms2memfile.cpp builds it from a CFileSystem member; tfunctor2.h). Its out-of-line members here:
+// ctor 0x1401d2530, dtor 0x1401d28a0, operator= 0x1401d2a40, IsNull 0x1401d2ff0, operator() 0x1401d2c50,
+// Clone 0x1401d2210, Clear 0x1401d3eb0.
+#include "ms2/placeholder/tfunctor2.h"
+typedef TFunctor<void, ParamList<CString, ParamList<FILETIME, EmptyParam> > > Unk_FileChangeFunctor;
+MS2_CHECK_SIZE(Unk_FileChangeFunctor, 8);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class Unk_1401b4ec0 {
 public:
@@ -162,7 +162,7 @@ template<class T, class U> inline void Unk_FileLog(CLogString* log, int level, i
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(first, second), args));
 }
 
-static Unk_CacheListenerPtr s_listener;         // 0x143aac5b0
+static Unk_FileChangeFunctor s_listener;         // 0x143aac5b0
 CDirWatcher* TSingleton<CDirWatcher>::s_instance = 0;   // 0x143aac5b8
 static Unk_FileTimeMap s_map(10);               // 0x143aac580
 CLockCriticalSection g_cacheLock;               // 0x143aac550
@@ -283,7 +283,7 @@ void FUN_1401d1400(CString strPath)
     {
         FILETIME kOld;
         if (!s_listener.IsNull() && s_map.Lookup(strPath, kOld) && memcmp(&kOld, &kWrite, 1) != 0)
-            s_listener.OnChanged(strPath, kWrite);
+            s_listener(strPath, kWrite);
         s_map.SetAt(strPath, kWrite);
     }
 }
@@ -298,7 +298,7 @@ unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime)
 }
 
 // @0x1401d17b0
-void FUN_1401d17b0(Unk_CacheListenerPtr kListener)
+void FUN_1401d17b0(Unk_FileChangeFunctor kListener)
 {
     s_listener = kListener;
 }

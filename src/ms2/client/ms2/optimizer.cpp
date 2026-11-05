@@ -50,10 +50,10 @@ class MyPC;
 MyPC* FUN_14161e580(const TPtr<PC>& spPC);                       // QueryInterface 0x6200004
 class Unk_OptWorld;
 class Unk_OptObjMap;                                                // the world's actor table
-TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
-void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
-PC* FUN_140aac420(const TPtr<PC>& spRef);                           // the actor
-PC* FUN_140aac440(const TPtr<PC>& spRef);                           // operator->
+// C3: TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
+// C3: void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
+// TPtr<PC>::get 0x140aac420 and TPtr<PC>::operator-> 0x140aac440 (tptr.h, defined in randomtargeteffect.cpp)
+//
 class Unk_AkoMyPC;
 template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0
 class MyPC   // C3: member view for the former free stand-ins
@@ -88,7 +88,7 @@ public:
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString FUN_1412755b0();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -699,25 +699,25 @@ void COptimizer::FUN_14161d130(bool bForce)
             {
                 std::list<Entry> candidates;
                 Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
-                for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; FUN_140c20a30(pMap, &pos))
+                for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetNext(pos))
                 {
-                    TPtr<PC>& spRef = FUN_140c20a80(pMap, pos);
-                    if (FUN_140aac420(spRef) != 0)
+                    TPtr<PC>& spRef = reinterpret_cast<TPtr<PC>&>(((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetValueAt(pos));
+                    if (spRef.get() != 0)
                     {
                         if (FUN_14161e580(spRef) != 0)
                             continue;
-                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200044)
+                        if (spRef->GetClassID() == 0x6200044)
                             continue;
-                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200047)
+                        if (spRef->GetClassID() == 0x6200047)
                             continue;
-                        if (FUN_140aac440(spRef)->GetClassID() == 0x620005e)
+                        if (spRef->GetClassID() == 0x620005e)
                             continue;
-                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200016)
+                        if (spRef->GetClassID() == 0x6200016)
                             continue;
-                        unsigned __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
+                        unsigned __int64 nUid = spRef->FUN_141656a80();
                         if (selected.find(nUid) == selected.end())
                         {
-                            candidates.push_back(Entry(FUN_140aac440(spRef)->FUN_140f4a450(), FUN_140aac420(spRef)));
+                            candidates.push_back(Entry(spRef->FUN_140f4a450(), spRef.get()));
                         }
                     }
                 }
@@ -782,9 +782,9 @@ void COptimizer::ApplyModeToAllPlayers(int nFlags)
         if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
             Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
-            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; FUN_140c20a30(pMap, &pos))
+            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetNext(pos))
             {
-                TPtr<PC> spActor(FUN_140c20a80(pMap, pos));
+                TPtr<PC> spActor(reinterpret_cast<TPtr<PC>&>(((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetValueAt(pos)));
                 ApplyFlagsToPlayer(spActor.get(), nFlags);
             }
         }
@@ -861,7 +861,7 @@ void COptimizer::SetModeAndLimit(int nFlags, int nLimit)
 MyPC* FUN_14161e580(const TPtr<PC>& spPC)
 {
     MyPC* pMyPC = 0;
-    if ((FUN_140aac420(spPC) ? true : false) && FUN_140aac440(spPC)->TypeCast(0x6200004, (void**)&pMyPC))
+    if ((spPC.get() ? true : false) && spPC->TypeCast(0x6200004, (void**)&pMyPC))
         return pMyPC;
     else
         return 0;

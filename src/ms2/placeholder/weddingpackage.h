@@ -15,7 +15,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/itemgift.h"               // ItemEntity
 
-class Unk_140165cf0;                                // game TinyXML element (xmlattr.h)
+class TiXmlElement;                                // game TinyXML element (xmlattr.h)
 
 // <weddingItem>: an item the hall hands out on reservation.
 class WeddingRewardItem : public CPtred
@@ -23,7 +23,7 @@ class WeddingRewardItem : public CPtred
 public:
     WeddingRewardItem();                                    // 0x1409063b0
     virtual ~WeddingRewardItem();                           // 0x140906400
-    bool Read(Unk_140165cf0* pNode);                        // 0x140906440
+    bool Read(TiXmlElement* pNode);                        // 0x140906440
     void CopyFrom(MS2Ptr<WeddingRewardItem> spOther);       // 0x140906490 (name invented; no callers)
 
     ItemEntity m_item;                                      // +0x18
@@ -36,7 +36,7 @@ class WeddingCompleteRewardItem : public CPtred
 public:
     WeddingCompleteRewardItem();                            // 0x1409064e0
     virtual ~WeddingCompleteRewardItem();                   // 0x140906540
-    bool Read(Unk_140165cf0* pNode);                        // 0x140906580
+    bool Read(TiXmlElement* pNode);                        // 0x140906580
 
     ItemEntity m_item;                                      // +0x18
     bool m_bNightReward;                                    // +0x48 "nightReward"
@@ -48,7 +48,7 @@ class WeddingHallData : public CPtred
 public:
     WeddingHallData();                                      // 0x1409065e0
     virtual ~WeddingHallData();
-    bool Read(Unk_140165cf0* pNode);                        // 0x140906740
+    bool Read(TiXmlElement* pNode);                        // 0x140906740
 
     int m_nId;                                              // +0x18 "id"
     int m_nGrade;                                           // +0x1c "grade"
@@ -75,7 +75,7 @@ class WeddingPackage : public CPtred
 public:
     WeddingPackage();                                       // 0x140906ed0
     virtual ~WeddingPackage();
-    bool Read(Unk_140165cf0* pNode);                        // 0x140906f80
+    bool Read(TiXmlElement* pNode);                        // 0x140906f80
 
     MS2Ptr<WeddingHallData> FUN_140907110(int nHallId);     // the hall of an id (null: none)
 

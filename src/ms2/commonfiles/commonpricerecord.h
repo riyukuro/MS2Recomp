@@ -17,7 +17,7 @@ public:
     void Write(COutputStream* pOut);                                // 0x140269c30
     void Read(CInputStream* pIn);                                   // 0x140269ca0
     void ClearAmount();                                             // 0x140269d10
-    bool LoadXml(Unk_140165cf0* pNode);                             // 0x140269d30
+    bool LoadXml(TiXmlElement* pNode);                             // 0x140269d30
 
     int m_type;                                                     // +0x00 (one byte on the wire)
     int m_subType;                                                  // +0x04 (one byte on the wire)

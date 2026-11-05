@@ -10,7 +10,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uirecallscrollnotifydialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
-
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/uirecallscrollnotifydialog.h"
 #include "ms2/placeholder/uibottomcenteralignmanager.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -69,13 +69,13 @@ UIRecallScrollNotifyDialog::UIRecallScrollNotifyDialog()
 
 // @0x14129cdc0 implicit ~UIRecallScrollNotifyDialog
 
-// @0x14129cca0
-// MS2-FUNCTIONAL: pointer assignment glue, emitted by the compiler's own MS2Ptr operator=
-MS2Ptr<ASMovieClip>* FUN_14129cca0(MS2Ptr<ASMovieClip>* pDst, MS2Ptr<ASMovieClip>* pSrc)
-{
-    *pDst = *pSrc;
-    return pDst;
-}
+// 0x14129cca0 is MS2Ptr<ASMovieClip>::operator=<ASTileList>(const MS2Ptr<ASTileList>&) (ascript.h),
+// emitted by the OnLoadComplete stores below: AddRef the source, Release this, copy +8.
+
+
+
+
+
 
 // @0x14129bc10
 CString UIRecallScrollNotifyDialog::GetTypeName() { return "RecallScrollNotifyDialog"; }
@@ -115,9 +115,9 @@ void UIRecallScrollNotifyDialog::vfunc_26()
 void UIRecallScrollNotifyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_clips[1] = FUN_140ba4b70("m_partyNotify");
-    m_clips[0] = FUN_140ba4b70("m_guildNotify");
-    m_clips[2] = FUN_140ba4b70("m_weddingNotify");
+    m_clips[1] = GetChild<ASTileList>("m_partyNotify");
+    m_clips[0] = GetChild<ASTileList>("m_guildNotify");
+    m_clips[2] = GetChild<ASTileList>("m_weddingNotify");
     CMsTime now(GetServerTime());
     for (int i = 0; i < 3; i++) {
         if (m_times[i] > now) {

@@ -87,14 +87,14 @@
 #include "ms2/placeholder/fieldspawn.h"      // C3: TPtr<CFieldSpawnTag>
 #include "ms2/commonfiles/dungeonroom.h"   // C3: DungeonRoomTable::GetRooms, MS2Ptr<DungeonRoom>
 class CFieldDataCli;   // C3: the real class (fielddatacli.h), MS2Ptr<CFieldDataCli>::get
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    TiXmlElement(const char* pszName);
-    virtual ~TiXmlElement();
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
 class TiXmlDeclaration   // C3: member view
 {
 public:
@@ -133,20 +133,20 @@ public:
 
 typedef std::map<CString, std::set<CString> > Unk_VoiceGroupMap;   // trigger voice group -> sub sound names
 
-class Unk_140165cf0;
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
-Unk_140165cf0* FUN_140165cf0(Unk_140165cf0* pParent, const char* pszName);       // FirstChildElement
+class TiXmlElement;
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_XmlNode* NextSibling(char const*);
+    class Unk_XmlNode* FirstChild(char const*);   class Unk_XmlNode* NextSibling(char const*);
 };
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-    bool RemoveChild(class TiXmlNode*);
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -181,12 +181,12 @@ public:
     int FUN_140a2a180();   // C3: was free FUN_140a2a180
     // Property readers: (entity element, model name, property name, out).
     int FUN_140a2a920(const CString& strModel, CString strFilter);
-    int FUN_140a2aab0(Unk_140165cf0* pEntity, CString strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData> >* pOut);
-    int FUN_140a2afd0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, efd::Point3* pOut);
-    int FUN_140a2b270(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b550(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b9d0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
-    int FUN_140a2bc30(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
+    int FUN_140a2aab0(TiXmlElement* pEntity, CString strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData> >* pOut);
+    int FUN_140a2afd0(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, efd::Point3* pOut);
+    int FUN_140a2b270(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, int* pOut);
+    int FUN_140a2b550(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, int* pOut);
+    int FUN_140a2b9d0(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
+    int FUN_140a2bc30(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
 };
 MS2_CHECK_SIZE(Unk_ModelMgr, 0x98);
 
@@ -274,10 +274,10 @@ size_t FUN_1418311c0(Unk_RefArrayA* pArray);
 
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rValue);
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rValue);
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                      // root element
+int FUN_1408733e0(TiXmlElement* pElem, const char* pszName, CString& rValue);
+int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rValue);
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);                      // root element
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
 class CLogString;
@@ -345,22 +345,22 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             int nDeleted = 0;
             if (GetFileSystem()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
                 continue;
-            Unk_140165cf0* pGame = FUN_140165cf0(&doc, "game");
+            TiXmlElement* pGame = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("game"));
             if (pGame == NULL)
                 continue;
-            Unk_140165cf0* pNode = FUN_140165cf0(pGame, "entitySet");
+            TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
             if (pNode == NULL)
                 continue;
             CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
-            for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
-                 pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pNode))->NextSibling("entity"))) {
-                CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("modelName"), 0);
+            for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
+                 pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
+                CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("modelName"), 0);
                 if (mgr.FUN_140a2a920(strModel, strModelFilter) != 0) {
-                    for (Unk_140165cf0* pProp = FUN_140165cf0(pNode, "property"); pProp != NULL;
-                         pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pProp))->NextSibling("property"))) {
-                        CString strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
+                    for (TiXmlElement* pProp = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("property")); pProp != NULL;
+                         pProp = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pProp))->NextSibling("property"))) {
+                        CString strName = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pProp))->Attribute("name"), 0);
                         if (FUN_141827210(props, strName) != -1) {
-                            ((class TiXmlNode*)(class Unk_140165cf0*)(pNode))->RemoveChild((class TiXmlNode*)(pProp));
+                            ((class TiXmlNode*)(class TiXmlElement*)(pNode))->RemoveChild((class TiXmlNode*)(pProp));
                             nDeleted++;
                         }
                     }
@@ -381,24 +381,24 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             int nDeleted = 0;
             if (GetFileSystem()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
                 continue;
-            Unk_140165cf0* pBlock = FUN_140165cf0(&doc, "block");
+            TiXmlElement* pBlock = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("block"));
             if (pBlock == NULL)
                 continue;
-            Unk_140165cf0* pNode = FUN_140165cf0(pBlock, "entities");
+            TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("entities"));
             if (pNode == NULL)
                 continue;
             CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_141827280("{0} Read block {1}", i, blocks[i]));
-            for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
-                 pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pNode))->NextSibling("entity"))) {
-                CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("model-name"), 0);
+            for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
+                 pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
+                CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("model-name"), 0);
                 if (mgr.FUN_140a2a920(strModel, strModelFilter) != 0) {
-                    Unk_140165cf0* pProps = FUN_140165cf0(pNode, "properties");
+                    TiXmlElement* pProps = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("properties"));
                     if (pProps != NULL) {
-                        for (Unk_140165cf0* pProp = FUN_140165cf0(pProps, "property"); pProp != NULL;
-                             pProp = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pProp))->NextSibling("property"))) {
-                            CString strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pProp))->Attribute("name"), 0);
+                        for (TiXmlElement* pProp = ((TiXmlElement*)((class Unk_XmlNode*)(pProps))->FirstChild("property")); pProp != NULL;
+                             pProp = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pProp))->NextSibling("property"))) {
+                            CString strName = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pProp))->Attribute("name"), 0);
                             if (FUN_141827210(props, strName) != -1) {
-                                ((class TiXmlNode*)(class Unk_140165cf0*)(pProps))->RemoveChild((class TiXmlNode*)(pProp));
+                                ((class TiXmlNode*)(class TiXmlElement*)(pProps))->RemoveChild((class TiXmlNode*)(pProp));
                                 nDeleted++;
                             }
                         }
@@ -709,11 +709,11 @@ bool FUN_1418226b0(bool bLog)
     if (GetFileSystem()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0) {
         bResult = false;
     } else {
-        Unk_140165cf0* pRoot = FUN_140165cf0(&docField, "ms2");
+        TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docField))->FirstChild("ms2"));
         if (pRoot == NULL) {
             bResult = false;
         } else {
-            for (Unk_140165cf0* pField = FUN_140165cf0(pRoot, "fieldData"); pField != NULL; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pField))->NextSibling("fieldData"))) {
+            for (TiXmlElement* pField = ((TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("fieldData")); pField != NULL; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pField))->NextSibling("fieldData"))) {
                 unsigned int nFieldId;
                 XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
                 if (bLog) {
@@ -724,32 +724,32 @@ bool FUN_1418226b0(bool bLog)
                 }
                 if (nFieldId >= 90000000)
                     continue;
-                Unk_140165cf0* pBlock = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pField)));
+                TiXmlElement* pBlock = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pField)));
                 if (pBlock == NULL)
                     continue;
-                Unk_140165cf0* pXblock = FUN_140165cf0(pBlock, "xblock");
+                TiXmlElement* pXblock = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("xblock"));
                 if (pXblock == NULL)
                     continue;
 
                 CString strXblock;
-                strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", ((class TiXmlElement*)(class Unk_140165cf0*)(pXblock))->Attribute("name"));
+                strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", ((class TiXmlElement*)(class TiXmlElement*)(pXblock))->Attribute("name"));
                 TiXmlDocument docXblock;
                 if (GetFileSystem()->FUN_1403974b0(&docXblock, strXblock, 0, true, false) == 0) {
                     strErrors.AppendFormat("** Not Find XBlockPath. \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
-                Unk_140165cf0* pGame = FUN_140165cf0(&docXblock, "game");
+                TiXmlElement* pGame = ((TiXmlElement*)((class Unk_XmlNode*)(&docXblock))->FirstChild("game"));
                 if (pGame == NULL) {
                     strErrors.AppendFormat("** invalid xblock format. (not find <game>) \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
-                Unk_140165cf0* pEntitySet = FUN_140165cf0(pGame, "entitySet");
+                TiXmlElement* pEntitySet = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
                 if (pEntitySet == NULL) {
                     strErrors.AppendFormat("** invalid xblock format. (not find <entitySet>) \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
-                for (Unk_140165cf0* pEntity = FUN_140165cf0(pEntitySet, "entity"); pEntity != NULL; pEntity = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pEntity))->NextSibling("entity"))) {
-                    CString strModel = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pEntity))->Attribute("modelName"), 0);
+                for (TiXmlElement* pEntity = ((TiXmlElement*)((class Unk_XmlNode*)(pEntitySet))->FirstChild("entity")); pEntity != NULL; pEntity = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEntity))->NextSibling("entity"))) {
+                    CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pEntity))->Attribute("modelName"), 0);
                     if (mgr.FUN_140a2a920(strModel, CString("SpawnPointNPC")) != 0) {
                         Unk_RefArrayA npcs;
                         mgr.FUN_140a2aab0(pEntity, CString(strModel), "NpcList", (ATL::CAtlArray<TPtr<CNpcSpawnData> >*)&npcs);
@@ -849,10 +849,10 @@ bool FUN_1418226b0(bool bLog)
     TiXmlDocument docTime;
     if (GetFileSystem()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pTimeRoot = FUN_140165cf0(&docTime, "ms2");
+    TiXmlElement* pTimeRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docTime))->FirstChild("ms2"));
     if (pTimeRoot == NULL)
         return false;
-    for (Unk_140165cf0* pEvent = FUN_140165cf0(pTimeRoot, "event"); pEvent != NULL; pEvent = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pEvent))->NextSibling("event"))) {
+    for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pTimeRoot))->FirstChild("event")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("event"))) {
         if (!FUN_14028f710((Unk_XmlElement *)pEvent))
             continue;
         int nEventId = 0;
@@ -893,12 +893,12 @@ bool FUN_1418226b0(bool bLog)
     TiXmlDocument docGame;
     if (GetFileSystem()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pGameRoot = FUN_140165cf0(&docGame, "ms2");
+    TiXmlElement* pGameRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docGame))->FirstChild("ms2"));
     if (pGameRoot == NULL) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strGameEvent);
         return false;
     }
-    for (Unk_140165cf0* pEvent = FUN_140165cf0(pGameRoot, "gameEvent"); pEvent != NULL; pEvent = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pEvent))->NextSibling("gameEvent"))) {
+    for (TiXmlElement* pEvent = ((TiXmlElement*)((class Unk_XmlNode*)(pGameRoot))->FirstChild("gameEvent")); pEvent != NULL; pEvent = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pEvent))->NextSibling("gameEvent"))) {
         if (!FUN_14028f710((Unk_XmlElement *)pEvent))
             continue;
         CStringW strEventType = FUN_1401bf530(pEvent, "eventType", CStringW(L""));
@@ -909,7 +909,7 @@ bool FUN_1418226b0(bool bLog)
         TiXmlDocument docNpc;
         if (((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFromString(&docNpc, strNpcFile) == 0)
             continue;
-        Unk_140165cf0* pNpcRoot = FUN_140345b40(&docNpc);
+        TiXmlElement* pNpcRoot = FUN_140345b40(&docNpc);
         if (pNpcRoot == NULL)
             continue;
         unsigned int nNpcId = 0;

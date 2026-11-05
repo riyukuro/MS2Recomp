@@ -56,11 +56,11 @@ public:
     MS2Ptr<Unk_SSGNamedObj> FUN_141bc5a20(CString strName);     // a named field object
     MyPC* FUN_141bd0cc0();                                      // the local player actor
 };
-class Unk_QgNavi : public CQuestNavigator
-{
-};
+// C3: 0x140e7c990 is TSingleton<CQuestNavigator>::GetInstance's body; it returns CQuestNavigator*
+//
+//
 class CQuestNavigator;
-Unk_QgNavi* FUN_140e7c990() { return reinterpret_cast<Unk_QgNavi*>(TSingleton<CQuestNavigator>::s_instance); }           // 0x140e7c990
+CQuestNavigator* FUN_140e7c990() { return TSingleton<CQuestNavigator>::s_instance; }           // 0x140e7c990
 class Unk_QgUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins

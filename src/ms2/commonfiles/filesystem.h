@@ -10,6 +10,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr (BufferPtr)
 #include "ms2/placeholder/tfunctor.h"
 typedef TFunctor<unsigned long, ParamList<unsigned long, ParamList<unsigned char*,
     ParamList<unsigned long, ParamList<unsigned char**, ParamList<unsigned long, EmptyParam>>>>>> Unk_FileTransform;
@@ -58,7 +59,7 @@ MS2_CHECK_OFFSET(Unk_FileArchive, index, 0x20);
 
 class CFileSystem : public TSingleton<CFileSystem> {
 public:
-    typedef Unk_PayloadPtr<CFileBuffer> BufferPtr;
+    typedef MS2Ptr<CFileBuffer> BufferPtr;
     typedef ATL::CRBMap<CString, BufferPtr, ATL::CStringElementTraits<CString>> Cache;
     CFileSystem();
     virtual ~CFileSystem();

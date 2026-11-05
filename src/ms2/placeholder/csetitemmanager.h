@@ -44,7 +44,7 @@ public:
     void SetM100(int nValue);                                                       // 0x1407b06e0
     void Refresh();                                                                 // 0x1407b0750 rebuilds the bonuses
     void GetList(UidList& out);                                                     // 0x1407b0b90 the additional effects
-    Unk_EnchantPtr<BaseOption> GetOption(int nStat);                                // 0x1407b0c00
+    MS2Ptr<BaseOption> GetOption(int nStat);                                // 0x1407b0c00
     int GetSpecialAbility(SAType nType);                                            // 0x1407b0cb0
     int HasOptions();                                                               // 0x1407b0d20
     int HasSpecialAbilities();                                                      // 0x1407b0d90

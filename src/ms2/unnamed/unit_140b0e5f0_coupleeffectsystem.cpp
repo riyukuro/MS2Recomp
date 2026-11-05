@@ -74,7 +74,7 @@ float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
                                        int nGemId)
-    : m_bInRange(0), m_bActive(0), m_bRequested(0), m_nEffectId(0), m_posEffect(reinterpret_cast<const Vector3&>(efd::Point3::ZERO)), m_pOwner(pOwner),
+    : m_bInRange(0), m_bActive(0), m_bRequested(0), m_nEffectId(0), m_posEffect(efd::Point3::ZERO), m_pOwner(pOwner),
       m_bLinked(bLinked), m_nCoupleType(nCoupleType), m_nPartnerId(nPartnerId), m_strName(strName), m_nGemId(nGemId)
 {
     FUN_140b0ecd0();
@@ -114,7 +114,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
             {
                 if (m_timer.FUN_140868c00() != 0)
                 {
-                    float fMove = FUN_140966f00(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const Unk_CoupleVec&>(FUN_140b0f160()))));
+                    float fMove = FUN_140966f00(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_140b0f160()))));
                     if (fMove > 50.0f && m_nEffectId != 0)
                         FUN_140b0f3a0(1);
                 }
@@ -202,7 +202,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
 {
     if (m_nEffectId != 0)
         return;
-    reinterpret_cast<NiPoint3&>(m_posEffect) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_CoupleVec&>(FUN_140b0f160()))));   // NiPoint3::operator= (0x14097faa0)
+    reinterpret_cast<NiPoint3&>(m_posEffect) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(&static_cast<const NiPoint3&>(FUN_140b0f160())));   // NiPoint3::operator= (0x14097faa0)
     Unk_CoupleXform xf;
     reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
     xf.m_fScale = 1.0f;
@@ -253,19 +253,19 @@ CString CoupleEffectSystem::FUN_140b0efb0()
 }
 
 // @0x140b0f160
-Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
+NiPoint3 CoupleEffectSystem::FUN_140b0f160()
 {
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
-        return Unk_CoupleVec(reinterpret_cast<const Vector3&>(efd::Point3::ZERO));
+        return NiPoint3(efd::Point3::ZERO);
 #ifdef __clang__
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    return Unk_CoupleVec(reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f));
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f))));
 #else
-    return Unk_CoupleVec(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))
                              .FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())))
-                             .FUN_140ae9180(2.0f));
+                             .FUN_140ae9180(2.0f))));
 #endif
 }
 

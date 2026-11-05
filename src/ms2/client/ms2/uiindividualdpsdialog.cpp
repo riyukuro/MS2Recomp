@@ -40,7 +40,7 @@ public:
     __int64 FUN_141656a80();
 };
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-
+class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // CGameOption view, defined in uichaosdpsdialog.cpp (0x140e09150)
 // The AS root object of the dialog, with the invoke the exe instantiates for it.
 class Unk_IndAS : public AScript
 {
@@ -118,7 +118,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 {
     if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
-        reinterpret_cast<Unk_IndOpt*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())->m_bFlag = 0;
+        reinterpret_cast<Unk_IndOpt*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()))->m_bFlag = 0;
         CBattleRecordManager::GetInstance()->StopGroup(m_nGroup);
         vfunc_67();
         return 1;
@@ -145,7 +145,7 @@ int UIIndividualDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIIndividualDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_14125bb90(reinterpret_cast<const Unk_InterfaceState*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150())) == 0)
+    if (FUN_14125bb90(reinterpret_cast<const Unk_InterfaceState*>(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()))) == 0)
         vfunc_67();
     else
     {

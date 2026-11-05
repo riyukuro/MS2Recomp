@@ -18,7 +18,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "entityworldmanager.h"
-
+#include "ms2/placeholder/ecrcameraservice.h"   // C3: Unk_ServiceManager::GetSystemServiceAs<T> (was the free FUN_140998330 view)
 // The ClassInfo initializer is the first dynamic initializer of the object, ahead of the shared header statics.
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CProxyObject);
 
@@ -36,7 +36,7 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);      // @0x1400fe
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400fe670
 
 // ---- unit-local placeholders and externals ----
-
+#include <efd/AssetLocatorService.h>   // GetSystemServiceAs<efd::AssetLocatorService> (0x140998330)
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -66,7 +66,7 @@ class Unk_GameContext   // C3: member view for the former free stand-ins
 public:
     class efd::ServiceManager* FUN_140af8310();
 };
-void* FUN_140998330(Unk_PxServiceMgr* pMgr);                        // a system service (NULL when absent)
+// C3: FUN_140998330 was Unk_ServiceManager::GetSystemServiceAs<efd::AssetLocatorService> (NULL when absent)
 
 // the proxy manager: the proxies by entity id
 class Unk_ProxyMgr
@@ -203,7 +203,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
     FUN_1416c3670();
     if (bEnable != 0)
     {
-        void* pService = FUN_140998330(((class Unk_PxServiceMgr*)((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->FUN_140af8310()));
+        void* pService = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->FUN_140af8310())->GetSystemServiceAs<efd::AssetLocatorService>();
         if (pService == 0)
             return;
         Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();

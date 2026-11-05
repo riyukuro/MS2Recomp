@@ -34,6 +34,7 @@
 #include <NiDevImageConverter.h>
 #include <efd/utf8string.h>
 #include "ms2/placeholder/casyncimageloader.h"
+#include "ms2/placeholder/gfximageloader.h"   // C3: GFxImageLoader::Protocol (FUN_140a59830)
 #include "ms2/commonfiles/chatemoticontable.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cthread_startup.h"
@@ -331,13 +332,12 @@ void CAsyncImageLoader::ClearQueues()
 
 // Creates the Scaleform image for a file name (a plain path or an emoticon id), starts its asynchronous load and returns
 // the image; a cached texture is bound at once.
-struct Unk_ImgReq
-{
-    int m_pad_00[2];
-    CString m_name;                                         // +0x08
-    char m_pad_10[0x10];
-    int m_kind;                                             // +0x20 5 = emoticon id
-};
+// C3: the request is the image loader's parsed url, GFxImageLoader::Protocol (m_strPath +0x08, m_nType +0x20, 5 =
+// emoticon id, 0x28 bytes); this is the GFxImageLoader::ImageCallback that ms2.cpp registers.
+//
+//
+//
+//
 
 // Image::GetSize (slot 5) returns the size by value; the shared Unk_GfxImage declares it with an out pointer.
 class Unk_GfxImageSizeView
@@ -353,14 +353,14 @@ public:
 #define MS2_IMAGE_SIZE(p) (reinterpret_cast<Unk_GfxImageSizeView*>(p)->GetSize())
 
 // @0x140a59830
-Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
+Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtocol, Scaleform::Render::TextureManager* pCtx)
 {
     CString strFile;
-    switch (pReq->m_kind)
+    switch (kProtocol.m_nType)
     {
     case 5:
         {
-            int nId = FUN_1407181d0(pReq->m_name);
+            int nId = FUN_1407181d0(kProtocol.m_strPath);
             ChatEmoticonDataPtr spData = CChatEmoticonTable::GetInstance()->FUN_1401e7120(nId);
             if (!spData)
                 break;
@@ -368,7 +368,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         }
         break;
     default:
-        strFile = pReq->m_name;
+        strFile = kProtocol.m_strPath;
     }
     NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     if (pkConverter == 0)
@@ -387,12 +387,12 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     Unk_ImgSize size(uiWidth, uiHeight);
     const int nFormat = 3;
     Unk_GfxImage* pImage = (Unk_GfxImage*)Scaleform::Render::Image::Create((Scaleform::Render::ImageFormat)nFormat, 1,
-        reinterpret_cast<const Scaleform::Render::ImageSize&>(size), nUse, 0, (Scaleform::Render::TextureManager*)pCtx, 0);
+        reinterpret_cast<const Scaleform::Render::ImageSize&>(size), nUse, 0, pCtx, 0);
     if (pImage == 0)
         return 0;
     void* pTarget = pImage->vfunc_24(pCtx);
     if (pTarget == 0)
-        return pImage;
+        return (Scaleform::Render::Image*)pImage;
     do
     {
         efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(CString(strFile), 0);
@@ -402,23 +402,23 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         if (pRendererData == 0)
             break;
         reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((NiDX9TextureData*)pRendererData)->GetD3DTexture()));
-        return pImage;
+        return (Scaleform::Render::Image*)pImage;
     } while (0);
     CAsyncImageLoader::GetInstance()->QueueImage(strFile, Unk_GfxRef(pImage));
     // The placeholder shown until the file is read: a half transparent fill of the image size.
     NiPointer<NiPixelData> spFill = NiNew NiPixelData(MS2_IMAGE_SIZE(pImage).m_w, MS2_IMAGE_SIZE(pImage).m_h,
                                                       DAT_1439fb040, 1, 1);
     if ((NiPixelData*)spFill == 0)
-        return pImage;
+        return (Scaleform::Render::Image*)pImage;
     unsigned int uiPixel = 0x3f000000;     // r, g, b 0 and alpha 0x3f
     NiRect<unsigned int> kRect(0, MS2_IMAGE_SIZE(pImage).m_w, 0, MS2_IMAGE_SIZE(pImage).m_h);
     FillPixelRect((const unsigned char*)&uiPixel, spFill, kRect);
     NiPointer<NiSourceTexture> spPlaceholder = NiSourceTexture::Create_ThreadSafe(spFill, reinterpret_cast<NiTexture::FormatPrefs &>(DAT_1439fc800), true);
     if ((NiSourceTexture*)spPlaceholder == 0)
-        return pImage;
+        return (Scaleform::Render::Image*)pImage;
     NiTexture::RendererData* pData = spPlaceholder->GetRendererData();
     if (pData == 0)
-        return pImage;
+        return (Scaleform::Render::Image*)pImage;
     reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((NiDX9TextureData*)pData)->GetD3DTexture()));
-    return pImage;
+    return (Scaleform::Render::Image*)pImage;
 }

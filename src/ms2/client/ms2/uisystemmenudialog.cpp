@@ -64,9 +64,9 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SmClickDe
 typedef Delegate<bool(int, const CMsgBoxData&)> SmBoxDelegate;
 
 // The exit button.
-class Unk_140acd6e0 : public ASButton
-{
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
 
 // The scene movie: the "buildChannelList" invoke shape (array, int, string).
 class Unk_SmScript : public AScript
@@ -165,7 +165,7 @@ void UISystemMenuDialog::vfunc_67()
 void UISystemMenuDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    m_188 = GetChild<Unk_140acd6e0>("m_exitRoom");
+    m_188 = GetChild<ASButton>("m_exitRoom");
     {
         MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (spField.get() != 0)

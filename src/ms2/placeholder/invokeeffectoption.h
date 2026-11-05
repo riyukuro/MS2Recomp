@@ -10,11 +10,11 @@ class InvokeEffectOption : public CPtred
 {
 public:
     InvokeEffectOption();                                   // 0x140266f10
-    void FUN_140267220(MS2Ptr<InvokeEffectOption> spOther);    // add another option's count and rate
-    void FUN_140267300(float fRate);                        // set the rate
-    void FUN_140267330(int nCount);                         // set the count
-    float FUN_140267350();                                  // the rate
-    int FUN_140267370();                                    // the count
+    bool HasWork(); bool HasCount(); bool HasAmount();      // 0x140267090 / 0x1402670e0 / 0x140267120 (unit_140267090)
+    void Assign(MS2Ptr<InvokeEffectOption> spOther);        // 0x140267160 copy another option's count and rate
+    void Accumulate(MS2Ptr<InvokeEffectOption> spOther);    // 0x140267220 add another option's count and rate
+    void SetAmount(float fRate); void SetCount(int nCount); // 0x140267300 / 0x140267330
+    float GetAmount(); int GetCount();                      // 0x140267350 the rate / 0x140267370 the count
 
     int m_nA;                                               // +0x18 stat option type
     int m_nB;                                               // +0x1c count

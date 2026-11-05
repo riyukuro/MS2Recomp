@@ -7,6 +7,14 @@
 // MS2-PIN: ??1CSetItemManager@@UEAA@XZ 0x1407b5ef0
 // MS2-PIN: ??1CSetItemProxy@@UEAA@XZ 0x1407b5f90
 // MS2-PIN: memmove_s 0x1407bc390
+// MS2-PIN: ??$_Call@AEAV<lambda_139169c20169df97f37d68e9c11f515a>@@AEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@_Invoker_functor@std@@SAXAEAV<lambda_139169c20169df97f37d68e9c11f515a>@@AEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@1@@Z 0x1407b1f60 ; unique
+// MS2-PIN: ??$_Call@AEAV<lambda_d9f6fbbd6b0a841527635be964ea555f>@@AEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@_Invoker_functor@std@@SAXAEAV<lambda_d9f6fbbd6b0a841527635be964ea555f>@@AEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@1@@Z 0x1407b1ee0 ; unique
+// MS2-PIN: ??$invoke@AEAV<lambda_139169c20169df97f37d68e9c11f515a>@@AEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@YAXAEAV<lambda_139169c20169df97f37d68e9c11f515a>@@AEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@0@@Z 0x1407b4e70 ; unique
+// MS2-PIN: ??$invoke@AEAV<lambda_d9f6fbbd6b0a841527635be964ea555f>@@AEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@YAXAEAV<lambda_d9f6fbbd6b0a841527635be964ea555f>@@AEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@0@@Z 0x1407b4e30 ; unique
+// MS2-PIN: ?_Delete_this@?$_Func_impl_no_alloc@V<lambda_d9f6fbbd6b0a841527635be964ea555f>@@XAEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@EEAAX_N@Z 0x1407b8320 ; unique
+// MS2-PIN: ?_Delete_this@?$_Func_impl_no_alloc@V<lambda_139169c20169df97f37d68e9c11f515a>@@XAEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@EEAAX_N@Z 0x1407b8360 ; unique
+// MS2-PIN: ?_Get@?$_Func_impl_no_alloc@V<lambda_d9f6fbbd6b0a841527635be964ea555f>@@XAEBU?$pair@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@EEBAPEBXXZ 0x1407b99c0 ; unique
+// MS2-PIN: ?_Get@?$_Func_impl_no_alloc@V<lambda_139169c20169df97f37d68e9c11f515a>@@XAEBU?$pair@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@EEBAPEBXXZ 0x1407b99e0 ; unique
 // The exe RTTI spells both handles TPtr<...> (TPtrValue/MS2Ptr here): pin the two box vftables.
 // MS2-PIN: ??_7?$TPtredDummy@V?$map@U?$pair@IW4T@eSetItemLayer@@@std@@V?$MS2Ptr@VCSetItemProxy@@@@U?$less@U?$pair@IW4T@eSetItemLayer@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IW4T@eSetItemLayer@@@std@@V?$MS2Ptr@VCSetItemProxy@@@@@std@@@2@@std@@@@6B@ 0x142d8d410
 // MS2-PIN: ??_7?$TPtredDummy@V?$map@U?$pair@IW4T@eSetItemLayer@@@std@@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@U?$less@U?$pair@IW4T@eSetItemLayer@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IW4T@eSetItemLayer@@@std@@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@@std@@@2@@std@@@@6B@ 0x142d8d430
@@ -253,17 +261,17 @@ void CSetItemManager::Refresh()
             MS2Ptr<SetItemOptionPart> spPart = parts[j];
             if (bActive)
             {
-                spPart->FUN_1407bccf0([this](const std::pair<SetItemOptionPart::StatKey, Unk_EnchantPtr<BaseOption> >& entry) {
+                spPart->FUN_1407bccf0([this](const std::pair<SetItemOptionPart::StatKey, MS2Ptr<BaseOption> >& entry) {
                     if (entry.second->HasValue())
                     {
-                        Unk_EnchantPtr<BaseOption> spOption;
+                        MS2Ptr<BaseOption> spOption;
                         if (!m_options.Lookup(reinterpret_cast<const int&>(entry.first), spOption))
                             spOption.AssignRaw(new BaseOption);
                         spOption->FUN_140266dd0(entry.second.get());
                         m_options.SetAt(reinterpret_cast<const int&>(entry.first), spOption);
                     }
                 });
-                spPart->FUN_1407bcdb0([this](const std::pair<SetItemOptionPart::SpecialKey, Unk_EnchantPtr<BaseOption> >& entry) {
+                spPart->FUN_1407bcdb0([this](const std::pair<SetItemOptionPart::SpecialKey, MS2Ptr<BaseOption> >& entry) {
                     if (entry.second->HasValue())
                         m_specials[(const SAType&)entry.first] += entry.second->GetValue();
                 });
@@ -292,9 +300,9 @@ void CSetItemManager::GetList(UidList& out)
 }
 
 // @0x1407b0c00
-Unk_EnchantPtr<BaseOption> CSetItemManager::GetOption(int nStat)
+MS2Ptr<BaseOption> CSetItemManager::GetOption(int nStat)
 {
-    Unk_EnchantPtr<BaseOption> spOption;
+    MS2Ptr<BaseOption> spOption;
     Unk_1401b4ec0 lock(m_lock, 1);
     m_options.Lookup(nStat, spOption);
     return spOption;

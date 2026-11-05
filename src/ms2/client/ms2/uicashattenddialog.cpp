@@ -6,7 +6,7 @@
 // MS2-PIN: ??$FUN_140bc7a40@VASItemSlot@@@@YA_NAEBVValue@GFx@Scaleform@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@IAEAV?$vector@V?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@I@Z 0x140bc7a40
 // MS2-PIN: ??$FUN_140bc7a40@VUnk_CadCheck@@@@YA_NAEBVValue@GFx@Scaleform@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@IAEAV?$vector@V?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@I@Z 0x140bc7c10
 // MS2-PIN: ??$FUN_140e159f0@VASGaugeControl@@@AScript@@QEAA?AV?$MS2Ptr@VASGaugeControl@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x140bc6da0
-// MS2-PIN: ??$FUN_140e159f0@VUnk_CadGiftClip@@@AScript@@QEAA?AV?$MS2Ptr@VUnk_CadGiftClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x140bc6f20
+// MS2-PIN: ??$FUN_140e159f0@VASItemRendererBase@@@AScript@@QEAA?AV?$MS2Ptr@VASItemRendererBase@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x140bc6f20
 // MS2-PIN: ??$FUN_140e159f0@VUnk_CadGiftList@@@AScript@@QEAA?AV?$MS2Ptr@VUnk_CadGiftList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x140bc7280
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$BY0CJ@D@ArgType@internal@fmt@@QEAA@AEAY0CJ@$$CBD@Z 0x140bc5760 ; prop
@@ -78,14 +78,14 @@
 // MS2-PIN: ??1?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@QEAA@XZ 0x140bcbc40 ; unique
 // MS2-PIN: ??1?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@QEAA@XZ 0x140bcbc80 ; prop
 // MS2-PIN: ??1?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUICashAttendGifList@@@@V?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@std@@@std@@QEAA@XZ 0x140bcbcc0 ; prop
-// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_140acd6e0@@@@_K@Z 0x140bcc290 ; unique
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VASButton@@@@_K@Z 0x140bcc290 ; unique
 // MS2-PIN: ??A?$vector@V?$MS2Ptr@UItemEntity@@@@V?$allocator@V?$MS2Ptr@UItemEntity@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@UItemEntity@@@@_K@Z 0x140bcc310 ; prop
 // MS2-PIN: ??A?$vector@V?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VASItemSlot@@@@_K@Z 0x140bcc340 ; unique
 // MS2-PIN: ??A?$vector@V?$MS2Ptr@VUnk_CadCheck@@@@V?$allocator@V?$MS2Ptr@VUnk_CadCheck@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VUnk_CadCheck@@@@_K@Z 0x140bcc370 ; prop
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_CadGiftClip@@@@QEBAPEAVUnk_CadGiftClip@@XZ 0x140bcc3a0 ; unique
-// MS2-PIN: ??D?$MS2Ptr@VUnk_CadGiftClip@@@@QEBAAEAVUnk_CadGiftClip@@XZ 0x140bcc450 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VASItemRendererBase@@@@QEBAPEAVASItemRendererBase@@XZ 0x140bcc3a0 ; unique
+// MS2-PIN: ??D?$MS2Ptr@VASItemRendererBase@@@@QEBAAEAVASItemRendererBase@@XZ 0x140bcc450 ; unique
 // MS2-PIN: ??D?$MS2Ptr@VASMovieClip@@@@QEBAAEAVASMovieClip@@XZ 0x140bcc460 ; prop
-// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VUnk_140acd6e0@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_140acd6e0@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VUnk_140acd6e0@@@@@Z 0x140bcca20 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VASButton@@@@V?$CElementTraits@V?$MS2Ptr@VASButton@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VASButton@@@@@Z 0x140bcca20 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@UItemEntity@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@UItemEntity@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@UItemEntity@@@@@std@@@2@XZ 0x140bce480 ; prop
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VASItemSlot@@@@@2@XZ 0x140bce5d0 ; unique
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VUICashAttendGifList@@@@V?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VUICashAttendGifList@@@@@2@XZ 0x140bce650 ; unique
@@ -137,6 +137,7 @@
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/placeholder/asgaugecontrol.h"
 #include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/commonfiles/attendgiftdatagroup.h"   // AttendGiftDataGroupPtr, the day group
 
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -163,11 +164,10 @@ class Unk_AttendTable { public:
     int FUN_1409617d0(int nKind,unsigned nId,const int& nDefault);
 };
 
-// One day of a cash attend event: the reward items (ItemAble at +0x18 of each) from +0x18.
-class Unk_CadDay : public CPtred { public: std::vector<MS2Ptr<ItemEntity> > m_items; };
-// The day pointer helpers belong to attendgiftdatagroup.cpp.
-template<> Unk_CadDay* MS2Ptr<Unk_CadDay>::operator->() const;
-template<> MS2Ptr<Unk_CadDay>::~MS2Ptr();
+// The reward items of a day (AttendGiftDataGroup::m_gifts at +0x18; ItemAble at +0x18 of each), viewed as entities.
+class Unk_CadDay : public CPtred { public: std::vector<MS2Ptr<ItemEntity> > m_items; };   // layout view only
+//
+//
 template<> std::vector<MS2Ptr<ItemEntity> >::size_type std::vector<MS2Ptr<ItemEntity> >::size() const noexcept;
 
 // gameeventcli.cpp (not recovered).
@@ -178,17 +178,13 @@ class GameEventCashAttendCli : public GameEventCashAttend { public:
     int GetUsablePoints();                        // usable points
     CStringW GetEventName();                   // event name
     CStringW GetDesc();                   // description (tooltip)
-    MS2Ptr<Unk_CadDay> FUN_140ce3fc0(unsigned nDay);
+    AttendGiftDataGroupPtr GetDayGroup(unsigned nDay);   // 0x140ce3fc0
     CMsTime GetBeginTime();                    // begin
     CMsTime GetEndTime();                    // end
 };
 
-// The event button (attendgift: Unk_140acd6e0).
-class Unk_140acd6e0 : public ASButton { };
-// The gift row clip (0x88 bytes, ctor 0x1422e1f00).
-class Unk_CadGiftClip : public ASItemRendererBase { public:
-    Unk_CadGiftClip(const Scaleform::GFx::Value& v,int nMovieId);
-};
+// The event button is ASButton (it was the stand-in Unk_140acd6e0).
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 // The array loaders' container over a Value (0x80 bytes: ctor 0x1422c6570, dtor 0x1422c65c0).
 class Unk_CadNode : public ASDisplayObjectContainer { public:
     template<class T> MS2Ptr<T> FUN_140bc7400(const CString& strName);
@@ -219,7 +215,7 @@ template<> Unk_CadCheck* MS2Ptr<Unk_CadCheck>::operator->() const;
 template<> MS2Ptr<Unk_CadCheck>& MS2Ptr<Unk_CadCheck>::operator=(const MS2Ptr&);
 template<> MS2Ptr<Unk_CadCheck>& MS2Ptr<Unk_CadCheck>::operator=(int);
 // The button binder's lookup is an earlier COMDAT (0x140bb4b10).
-template<> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString&);
+template<> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString&);
 // The AS objects this unit binds children of: the gauge binder and the item slot lookup.
 class Unk_CadScript : public AScript { public:
     template<class T> MS2Ptr<T> FUN_140bc6e60(const CString& strName,MS2Ptr<T>& outChild);
@@ -244,7 +240,7 @@ void* FUN_140bd09d0(unsigned n) { return (void*)(unsigned __int64)n; }
 
 // @0x140bc1b00
 // MS2-FUNCTIONAL: bind/loader temporaries get a different frame layout (exe 25 bytes longer); calls and logic identical.
-UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<Unk_CadGiftClip> spClip)
+UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<ASItemRendererBase> spClip)
     : m_clip(spClip), m_pDialog(pDialog)
 {
     m_clip->FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendGifList::FUN_140bc2620),0);
@@ -276,19 +272,19 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     unsigned nDay=((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(params.pArgs[0]))->GetUInt();
     m_bg1->vfunc_4(nDay%2==0);
     m_bg2->vfunc_4(nDay%2==1);
-    MS2Ptr<Unk_CadDay> spDay=spEvent->FUN_140ce3fc0(nDay);
+    AttendGiftDataGroupPtr spDay=spEvent->GetDayGroup(nDay);
     if(spDay==NULL) { FUN_140bc2b10(); return; }
     bool bPassed=nDay<spEvent->GetAttendedDays();
     ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
     m_disabled->vfunc_4(bPassed);
     FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
-        if(i>=spDay->m_items.size()) {
+        if(i>=reinterpret_cast<Unk_CadDay*>(spDay.operator->())->m_items.size()) {
             m_rewardItems[i]->vfunc_4(false);
             m_checks[i]->vfunc_4(false);
             continue;
         }
-        m_rewardItems[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(*spDay->m_items[i].operator->())));
+        m_rewardItems[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(*reinterpret_cast<Unk_CadDay*>(spDay.operator->())->m_items[i].operator->())));
         m_rewardItems[i]->FUN_1409ba6d0();
         m_rewardItems[i]->vfunc_4(true);
         m_checks[i]->vfunc_4(bPassed);
@@ -342,14 +338,14 @@ void UICashAttendDialog::OnLoadComplete()
     do { static_cast<Unk_CadScript*>(m_30.operator->())->FUN_140bc6e60("m_progressGauge",m_progressGauge);
     if(m_progressGauge==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(138),__FUNCTION__)); } while(0);
     for(unsigned int i=1;i<=5;i++) {
-        MS2Ptr<Unk_CadGiftClip> spClip;
+        MS2Ptr<ASItemRendererBase> spClip;
         if(FUN_140bc7070(StringFormat("m_giftList{0}",i),spClip).get()) {
             m_rows.push_back(new UICashAttendGifList(this,spClip));
         }
     }
     m_eventButtons.RemoveAll();
     for(unsigned int i=0;i<7;i++) {
-        MS2Ptr<Unk_140acd6e0> spButton;
+        MS2Ptr<ASButton> spButton;
         if(FUN_140bc6d10(StringFormat("m_eventButton{0}",i),spButton).get()) {
             spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICashAttendDialog::OnEventTabClick),FUN_140bd09d0(i));
             m_eventButtons.Add(spButton);

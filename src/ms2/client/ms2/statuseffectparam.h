@@ -12,7 +12,7 @@ class CStatusEffectParam : public CEffectParam
 {
 public:
     CStatusEffectParam();                                       // 0x141801040
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x1418010a0 <category="ice|fire|poison|dark|super">
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x1418010a0 <category="ice|fire|poison|dark|super">
     virtual CEffectPtr vfunc_6();                               // 6 0x1418010f0 new CStatusEffect
 public:
     CString m_strCategory;          // +0x48 "category" attribute

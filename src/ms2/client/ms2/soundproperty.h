@@ -19,7 +19,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;    // game TinyXML element
+class TiXmlElement;    // game TinyXML element
 class GameObject;
 
 // <hitSound AttackMaterial= DefenceMeterial= soundID=/>: the key of the hit sound table, ordered by attack material
@@ -51,7 +51,7 @@ public:
     SystemSoundProperty();                                      // 0x141790a20
     // implicit dtor 0x1417a07b0
 
-    void Load(Unk_140165cf0* pElem);                            // 0x141790ae0
+    void Load(TiXmlElement* pElem);                            // 0x141790ae0
     CString GetCategory(int nGender);                          // 0x141790e00 (FUN_ name kept: the callers bind it)
     CString GetSoundName(unsigned nGender, int nJob);           // 0x141790ed0
     unsigned GetCooltimeId() const;                             // 0x141791120
@@ -76,7 +76,7 @@ public:
     TriggerVoiceProperty();                                     // 0x141791140
     // implicit dtor 0x1417a0800
 
-    void Load(Unk_140165cf0* pElem);                            // 0x1417911e0
+    void Load(TiXmlElement* pElem);                            // 0x1417911e0
     bool GetVoice(unsigned nGender, int nJob, CString& strOut); // 0x141791400
     void CollectNames(std::set<CString>& rOut);                 // 0x141791620
 

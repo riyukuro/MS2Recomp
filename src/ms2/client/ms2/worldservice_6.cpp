@@ -288,7 +288,7 @@ template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessa
 // ---- the typed entry points worldservice_1.cpp declares for these COMDATs ----
 // worldservice_1 calls the map members by address through these declarations; the exe bodies are the
 // ATL ones (GetValueAt: ATLENSURE(pos) then the node's value at +8). The Lookup entries are in unit_141bf99b8.
-struct Unk_WsC_ActorRef;
+class UgcBannerObject;              // C3: FUN_141c00800 returns MS2Ptr<UgcBannerObject>* (the m_708 values)
 class Unk_WsC_GameObj;
 class FieldProperty;
 // CAtlMap::GetValueAt names its node (CNode* pNode = static_cast<CNode*>(pos)); CRBTree::GetValueAt does not.
@@ -307,8 +307,8 @@ efd::SmartPointer<Unk_WsC_GameObj>* FUN_141c007a0(ATL::CRBMap<unsigned, Unk_WsV0
     WS_TREE_VALUE_AT(efd::SmartPointer<Unk_WsC_GameObj>*);
 }
 
-Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsC_ActorRef*); }
-// MS2-PIN: ?FUN_141c00800@@YAPEAUUnk_WsC_ActorRef@@PEAX0@Z 0x141c00800
+MS2Ptr<UgcBannerObject>* FUN_141c00800(void* map, void* pos) { WS_TREE_VALUE_AT(MS2Ptr<UgcBannerObject>*); }
+// MS2-PIN: ?FUN_141c00800@@YAPEAV?$MS2Ptr@VUgcBannerObject@@@@PEAX0@Z 0x141c00800
 
 void* FUN_141c009e0(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 

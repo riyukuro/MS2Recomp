@@ -386,8 +386,8 @@ struct Unk_ShopRowObj : public ASObj
     void FUN_141b07000(const char* szName, int n);                      // set an int member via ASData
 };
 
-// the outfit handle UIEquipIconContainer takes (only null is passed here; full class in uiequipiconcontainer.cpp)
-class Unk_EquipOutfit : public CPtred {};
+// the outfit handle UIEquipIconContainer takes is MS2Ptr<Customize> (only null is passed here)
+// C3: was the Unk_EquipOutfit stand-in
 
 // the product type of a merat item (inline accessor of CNpcShopMeratItemCli)
 inline int FUN_141b0a1d0(CNpcShopMeratItemCli* p) { return p->m_40; }
@@ -461,8 +461,8 @@ public:
 CStringW FUN_141425950(unsigned int nItemId);                                    // the item's name
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc's name
 __int64 FUN_1418ff5a0(int nType, __int64 nArg, int nArg2);              // the owned currency amount
-class Unk_140acd6e0;
-void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>* pOut);   // bind a child of the root
+class ASButton;
+void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pOut);   // bind a child of the root
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The AS function object wrapping a delegate (the same view as uiitemcoloringdialog.cpp).
@@ -932,7 +932,7 @@ void UIShopDialog::OnLoadComplete()
     SetTab(m_nGroup, 1);
     if (m_bProbInfo) {
         CString strName("m_probInfo");
-        FUN_14134a480(*m_spShop, strName, reinterpret_cast<MS2Ptr<Unk_140acd6e0>*>(&m_spProbInfo));
+        FUN_14134a480(*m_spShop, strName, reinterpret_cast<MS2Ptr<ASButton>*>(&m_spProbInfo));
     }
     m_bReady = 1;
     ((class Unk_ShopRequestCheck*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
@@ -2761,7 +2761,7 @@ void UIShopDialog::AddPreviewIcon(MS2Ptr<CItem> spItem)
     int nEquipSlot = nSlot;
     if (nEquipSlot == 0)
         nEquipSlot = FUN_140ec1950(spItem);
-    MS2Ptr<ASEquipIcon> spIcon = m_spEquip->FUN_140e2a090(nEquipSlot, spItem, MS2Ptr<AScript>((ASSlot*)spSlot), MS2Ptr<Unk_EquipOutfit>(0));
+    MS2Ptr<ASEquipIcon> spIcon = m_spEquip->FUN_140e2a090(nEquipSlot, spItem, MS2Ptr<AScript>((ASSlot*)spSlot), MS2Ptr<Customize>(0));
     if (spIcon.get()) {
         spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIShopDialog::OnEquipmentTooltip),
                               (long long)spIcon.get());
@@ -2937,7 +2937,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
             int nNpc = FUN_141b0a280(spProduct.operator->());
             int nLevel = FUN_141b0a270(spProduct.operator->());
             if (0 < nLevel) {
-                Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNpc = TSingleton<CGuildXmlData>::GetInstance()->GetNpc((Unk_GuildNpcKind)nNpc, nLevel);
+                MS2Ptr<CGuildXmlData::GuildNpc> spNpc = TSingleton<CGuildXmlData>::GetInstance()->GetNpc((Unk_GuildNpcKind)nNpc, nLevel);
                 if (spNpc == 0)
                     return 0;
                 CStringW strText = FUN_14028dfa0<CStringW, int>(CStringW(L"s_shop_require_guild_npc_level"),

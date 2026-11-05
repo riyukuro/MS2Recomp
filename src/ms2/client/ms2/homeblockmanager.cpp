@@ -2,9 +2,9 @@
 // MS2-UNIT: ?\homeblockmanager.cpp
 // MS2-RANGE: 0x140a46ab0-0x140a4c470 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@$0A@@?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@QEAA@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@Z 0x140a48100 ; unique
-// MS2-PIN: ??$?0_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@$0A@@?$pair@$$CB_KV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@QEAA@$$QEAU?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@1@@Z 0x140a481f0 ; unique
-// MS2-PIN: ??$make_pair@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@YA?AU?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@0@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@Z 0x140a49bd0 ; unique
+// MS2-PIN: ??$?0AEA_JAEAV?$MS2Ptr@VHomeBlockInfo@@@@$0A@@?$pair@_JV?$MS2Ptr@VHomeBlockInfo@@@@@std@@QEAA@AEA_JAEAV?$MS2Ptr@VHomeBlockInfo@@@@@Z 0x140a48100 ; unique
+// MS2-PIN: ??$?0_JV?$MS2Ptr@VHomeBlockInfo@@@@$0A@@?$pair@$$CB_KV?$MS2Ptr@VHomeBlockInfo@@@@@std@@QEAA@$$QEAU?$pair@_JV?$MS2Ptr@VHomeBlockInfo@@@@@1@@Z 0x140a481f0 ; unique
+// MS2-PIN: ??$make_pair@AEA_JAEAV?$MS2Ptr@VHomeBlockInfo@@@@@std@@YA?AU?$pair@_JV?$MS2Ptr@VHomeBlockInfo@@@@@0@AEA_JAEAV?$MS2Ptr@VHomeBlockInfo@@@@@Z 0x140a49bd0 ; unique
 // MS2-PIN: ??_G?$TSingleton@VHomeBlockManager@@@@UEAAPEAXI@Z 0x140a4a6b0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\homeblockmanager.cpp"
@@ -14,11 +14,12 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<HomeBlockInfo>/<CBuddy> COMDATs (HomePtr, BuddyPtr)
 #include "hook/ms2hook.h"
 
 // Earlier object owns this specialization (0x140979fc0).
-template<> Unk_PayloadPtr<CBuddy>::~Unk_PayloadPtr();
-template<> void Unk_PayloadPtr<CBuddy>::Reference(CBuddy*);
+template<> MS2Ptr<CBuddy>::~MS2Ptr();
+template<> void MS2Ptr<CBuddy>::Reference(CBuddy*);
 // Two-argument scoped lock helper shared with ugcmappackageinfo.
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&,int); ~Unk_1401b4ec0(); private: void* m_p; };
 MS2_CHECK_SIZE(Unk_1401b4ec0,8);

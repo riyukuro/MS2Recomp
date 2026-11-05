@@ -2383,8 +2383,8 @@ int UIMessageBox::FUN_1419fff10(int nButton)
 
 // ---- template / helper zone ----
 
-// The count check of the store / inventory "tag,count" boxes.
-template <class A, class B> inline void Unk_MessageBoxCountMessage(int nId, int nA, int nB, const A& a, const B& b);
+// The count check of the store / inventory "tag,count" boxes (defined in itembreakmanager.cpp).
+template <class A, class B> inline void Unk_BreakMessage(int nId, int nA, int nB, const A& a, const B& b);
 
 // @0x141a00180
 static int FUN_141a00180(MS2Ptr<CItem> spItem, int nCount)
@@ -2395,7 +2395,7 @@ static int FUN_141a00180(MS2Ptr<CItem> spItem, int nCount)
     if (nCount <= 0 || nCount > nHave)
     {
         int nOne = 1;
-        Unk_MessageBoxCountMessage(0xee, 1, 1, nOne, nHave);
+        Unk_BreakMessage(0xee, 1, 1, nOne, nHave);
         return 0;
     }
     return 1;

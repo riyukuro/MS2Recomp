@@ -16,7 +16,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/client/ms2/uidialog.h"
 
-class Unk_140acd6e0;
+class ASButton;
 class TriggerDebugDialog;
 
 class UIDialogCenterDialog : public UIDialog
@@ -40,13 +40,13 @@ public:
     void FUN_141295cb0(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: trigger debug (pick an xml)
     CString FUN_1412965f0(CString strInitialDir, const char* pszFilter);   // GetOpenFileName in a directory
     void SendSetDebugModeMode9(CString strPath);                // close the trigger debug window of a path
-    MS2Ptr<Unk_140acd6e0> FUN_141296150(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
+    MS2Ptr<ASButton> FUN_141296150(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
     void FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId);        // a button that opens a dialog
     void FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // a button with a callback
 
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<MS2Ptr<Unk_140acd6e0> > m_buttons;   // +0x178
+    ATL::CAtlArray<MS2Ptr<ASButton> > m_buttons;   // +0x178
     ATL::CAtlMap<CString, unsigned __int64> m_map;      // +0x198
     CLockCriticalSection m_lock;                        // +0x1e0
     ATL::CRBMap<CString, MS2Ptr<TriggerDebugDialog>, ATL::CStringElementTraitsI<CString> > m_triggers;   // +0x210 lower-cased xml path -> window

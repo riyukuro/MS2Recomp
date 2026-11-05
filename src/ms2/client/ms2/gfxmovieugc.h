@@ -25,7 +25,7 @@ public:
     virtual void vfunc_4(void* pUnused, const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 4 0x14127d4b0 (empty)
     virtual int vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags);   // 6 0x14127d4d0 load + build the render chain
     virtual int vfunc_7(int x, int y);                              //  7 0x14127d640 viewport + mouse move
-    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle);   // 9 0x14127d720 render into the target
+    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle);   // 9 0x14127d720 render into the target
     virtual void vfunc_11();                                        // 11 0x14127d900 release everything
     virtual void vfunc_12();                                        // 12 0x14127d9d0 device lost: clear the texture, drop the target
     virtual bool vfunc_13();                                        // 13 0x14127da50 device reset: rebuild the chain

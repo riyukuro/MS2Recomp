@@ -99,7 +99,7 @@
 // MS2-PIN: ??$move@AEAV?$MS2Ptr@VDropNifData@@@@@std@@YA$$QEAV?$MS2Ptr@VDropNifData@@@@AEAV1@@Z 0x140569560 ; prop
 // MS2-PIN: ??$move@AEAV?$MS2Ptr@VItemModelData@@@@@std@@YA$$QEAV?$MS2Ptr@VItemModelData@@@@AEAV1@@Z 0x140569570 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCItemData@@@@QEAA@$$QEAV0@@Z 0x14056a0e0 ; unique
-// MS2-PIN: ??0?$Unk_BmPtr@VCColorPaletteInfo@@@@QEAA@AEBUUnk_BmNewTag@@@Z 0x14056a460 ; unique
+// MS2-PIN: ??0?$Unk_BmPtr@VCColorPaletteInfo@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x14056a460 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VItemHousing@@@@QEAA@$$QEAV0@@Z 0x14056a600 ; unique
 // MS2-PIN: ??0?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@1@@Z 0x14056aa20 ; prop
 // MS2-PIN: ??0?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCItemData@@@@V?$allocator@V?$MS2Ptr@VCItemData@@@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCItemData@@@@AEAV?$allocator@V?$MS2Ptr@VCItemData@@@@@1@@Z 0x14056b3f0 ; prop
@@ -199,7 +199,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdefaultdata.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -442,7 +442,7 @@ void CItemDataTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -502,13 +502,13 @@ void CItemDataTable::LoadBlackMarketSearchable()
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -719,19 +719,19 @@ void CItemDataTable::LoadItemFile(const CString& strPath, std::vector<ItemDataPt
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
         ItemDataPtr spItem(new CItemData);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         spItem->SetItemId(nId);
-        Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
+        TiXmlElement* pEnv = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
         spItem->Load(pEnv);
@@ -749,19 +749,19 @@ void CItemDataTable::LoadItemDataFile(unsigned nFile)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
         ItemDataPtr spItem(new CItemData);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         spItem->SetItemId(nId);
-        Unk_140165cf0* pEnv = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
+        TiXmlElement* pEnv = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pNode)));
         if (pEnv == 0)
             continue;
         spItem->Load(pEnv);
@@ -931,12 +931,12 @@ void CItemDataTable::LoadItemNameIds(std::vector<unsigned>& out)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "id", reinterpret_cast<std::vector<struct Unk_XmlElement*>&>(nodes));
-    MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
+    MS2_FOR_EACH(TiXmlElement* pNode, nodes)
     {
         unsigned nId;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -959,12 +959,12 @@ CString CItemDataTable::GetDefaultUiMaterialSound()
 }
 
 // @0x1405597a0
-void CItemDataTable::LoadDropStyle(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadDropStyle(TiXmlElement* pRoot)
 {
-    Unk_140165cf0* pStyle = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropStyle"));
+    TiXmlElement* pStyle = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropStyle"));
     if (pStyle == 0)
         return;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pStyle))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pStyle))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         MS2Ptr<ItemDropEffect> spEffect(new ItemDropEffect);
         spEffect->Load(pNode);
@@ -973,19 +973,19 @@ void CItemDataTable::LoadDropStyle(Unk_140165cf0* pRoot)
 }
 
 // @0x1405598c0
-void CItemDataTable::LoadDropItemAsset(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadDropItemAsset(TiXmlElement* pRoot)
 {
-    Unk_140165cf0* pAsset = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropItemAsset"));
+    TiXmlElement* pAsset = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("dropItemAsset"));
     if (pAsset == 0)
         return;
-    for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAsset))->FirstChild("Item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("Item")))
+    for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pAsset))->FirstChild("Item")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("Item")))
     {
         unsigned nItemId = 0;
         XmlGetAttr((class TiXmlElement*)(pItem), "itemID", reinterpret_cast<unsigned int&>(nItemId));
         if (nItemId == 0)
             continue;
         std::vector<MS2Ptr<DropNifData> >& nifs = m_mapDropNif[nItemId];
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             MS2Ptr<DropNifData> spNif(new DropNifData);
             spNif->FUN_1405434f0(pNode);
@@ -995,9 +995,9 @@ void CItemDataTable::LoadDropItemAsset(Unk_140165cf0* pRoot)
 }
 
 // @0x140559a50
-void CItemDataTable::LoadGradeNif(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadGradeNif(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradeNif")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("gradeNif")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradeNif")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("gradeNif")))
     {
         int nGrade;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nGrade));
@@ -1007,9 +1007,9 @@ void CItemDataTable::LoadGradeNif(Unk_140165cf0* pRoot)
 }
 
 // @0x140559b40
-void CItemDataTable::LoadGradePetNif(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadGradePetNif(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradePetNif")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("gradePetNif")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradePetNif")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("gradePetNif")))
     {
         int nGrade;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nGrade));
@@ -1019,9 +1019,9 @@ void CItemDataTable::LoadGradePetNif(Unk_140165cf0* pRoot)
 }
 
 // @0x140559c30
-void CItemDataTable::LoadGradeEffect(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadGradeEffect(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradeEffect")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("gradeEffect")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("gradeEffect")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("gradeEffect")))
     {
         int nGrade;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nGrade));
@@ -1031,9 +1031,9 @@ void CItemDataTable::LoadGradeEffect(Unk_140165cf0* pRoot)
 }
 
 // @0x140559d20
-void CItemDataTable::LoadTextColor(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadTextColor(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Text")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Text")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("Text")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("Text")))
     {
         int nGrade;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nGrade));
@@ -1045,9 +1045,9 @@ void CItemDataTable::LoadTextColor(Unk_140165cf0* pRoot)
 }
 
 // @0x140559e60
-void CItemDataTable::LoadWeaponSpeed(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadWeaponSpeed(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("weaponspeed")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("weaponspeed")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("weaponspeed")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("weaponspeed")))
     {
         int nWeapon;
         int nRank;
@@ -1058,9 +1058,9 @@ void CItemDataTable::LoadWeaponSpeed(Unk_140165cf0* pRoot)
 }
 
 // @0x140559f00
-void CItemDataTable::LoadRevisionRatio(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadRevisionRatio(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("revisionratio")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("revisionratio")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("revisionratio")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("revisionratio")))
     {
         int nKey;
         float fRatio;
@@ -1071,13 +1071,13 @@ void CItemDataTable::LoadRevisionRatio(Unk_140165cf0* pRoot)
 }
 
 // @0x140559fa0
-void CItemDataTable::LoadEnchant(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadEnchant(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("enchant")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("enchant")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("enchant")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("enchant")))
     {
         int nWeapon = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "weapon", reinterpret_cast<int&>(nWeapon));
-        for (Unk_140165cf0* pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("effect")); pEffect != 0; pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
+        for (TiXmlElement* pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("effect")); pEffect != 0; pEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
         {
             int nLevel = 0;
             XmlGetAttr((class TiXmlElement*)(pEffect), "level", reinterpret_cast<int&>(nLevel));
@@ -1090,9 +1090,9 @@ void CItemDataTable::LoadEnchant(Unk_140165cf0* pRoot)
 }
 
 // @0x14055a120
-void CItemDataTable::LoadUnlimitedEnchant(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadUnlimitedEnchant(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("unlimitedenchant")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("unlimitedenchant")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("unlimitedenchant")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("unlimitedenchant")))
     {
         int nWeapon = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "weapon", reinterpret_cast<int&>(nWeapon));
@@ -1112,13 +1112,13 @@ void CItemDataTable::LoadUiMaterialSound()
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("uiMaterial")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("uiMaterial")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("uiMaterial")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("uiMaterial")))
     {
         int nId = 0;
         CString strSound("");
@@ -1136,14 +1136,14 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_1401b4ec0 lock(m_cs, 1);
-    for (Unk_140165cf0* pPalette = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("colorPalette")); pPalette != 0; pPalette = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPalette))->NextSibling("colorPalette")))
+    for (TiXmlElement* pPalette = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("colorPalette")); pPalette != 0; pPalette = ((class TiXmlElement*)((class Unk_XmlNode*)(pPalette))->NextSibling("colorPalette")))
     {
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pPalette), "id", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(nId)));
@@ -1155,7 +1155,7 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
         }
         else
             spInfo->Clear();
-        for (Unk_140165cf0* pColor = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPalette))->FirstChild("color")); pColor != 0; pColor = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pColor))->NextSibling("color")))
+        for (TiXmlElement* pColor = ((class TiXmlElement*)((class Unk_XmlNode*)(pPalette))->FirstChild("color")); pColor != 0; pColor = ((class TiXmlElement*)((class Unk_XmlNode*)(pColor))->NextSibling("color")))
         {
             CString str;
             MS2Ptr<ItemColorEx> spColor(new ItemColorEx(nId));
@@ -1191,13 +1191,13 @@ void CItemDataTable::LoadMusicScore()
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("MusicScore")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("MusicScore")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("MusicScore")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("MusicScore")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -1216,13 +1216,13 @@ void CItemDataTable::LoadHousing()
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("housing")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("housing")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("housing")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("housing")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
@@ -1473,9 +1473,9 @@ void CItemDataTable::AddItemTag(ItemTagKey eTag, CString strName)
 }
 
 // @0x14055f190
-void CItemDataTable::LoadTagItemIds(Unk_140165cf0* pRoot)
+void CItemDataTable::LoadTagItemIds(TiXmlElement* pRoot)
 {
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("tag")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("tag")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("tag")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("tag")))
     {
         CString strName;
         unsigned nItemId = 0;
@@ -1548,7 +1548,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -1575,13 +1575,13 @@ bool CItemDataTable::LoadModelFile(unsigned nFile)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ItemModel")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("ItemModel")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("ItemModel")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("ItemModel")))
     {
         ModelPtr spModel(new ItemModelData);
         unsigned nId = 0;

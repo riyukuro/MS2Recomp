@@ -17,10 +17,13 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/tptr.h"
 
 class ImageLoaderParam;
 class GfxImageLoaderParam;
-class Unk_GfxImage;
+// The image is spelt Unk_UISwfEntity_25 by the UI users of TPtr<> (uirenderview.cpp: same slot 24 renderer image).
+class Unk_UISwfEntity_25;
+typedef Unk_UISwfEntity_25 Unk_GfxImage;
 
 // The 16-byte reference to a request kept in the queues: +0 unused, the pointer at +8 (same shape as logstring.h's
 // Unk_1406583d0). Copies add a reference, moves steal it.
@@ -92,7 +95,7 @@ struct Unk_ImgSize
 };
 
 // A Scaleform image of the UI (slot 1 adds a reference, slot 2 releases it).
-class Unk_GfxImage
+class Unk_UISwfEntity_25
 {
 public:
     virtual void vfunc_0();
@@ -123,25 +126,25 @@ public:
 };
 
 // The counted pointer to it (TPtr<>); passed by value, the callee destroys it.
-class Unk_GfxRef
+template <> class TPtr<Unk_UISwfEntity_25>
 {
 public:
     // @0x140a5a450
-    Unk_GfxRef(Unk_GfxImage* p)
+    TPtr(Unk_GfxImage* p)
     {
         if (p)
             p->AddRef();
         m_p = p;
     }
-    Unk_GfxRef(const Unk_GfxRef& o);    // declared (non-trivial): the by-value argument goes by reference to a caller temp
+    TPtr(const TPtr& o);    // declared (non-trivial): the by-value argument goes by reference to a caller temp
     // @0x140a5a8c0
-    ~Unk_GfxRef()
+    ~TPtr()
     {
         if (m_p)
             m_p->Release();
     }
     // @0x140a5aac0
-    Unk_GfxRef& operator=(const Unk_GfxRef& o)
+    TPtr& operator=(const TPtr& o)
     {
         if (o.get())
             o.operator->()->AddRef();
@@ -158,6 +161,7 @@ public:
 private:
     Unk_GfxImage* m_p;
 };
+typedef TPtr<Unk_UISwfEntity_25> Unk_GfxRef;   // ua17: the definer of the users' TPtr<Unk_UISwfEntity_25> members
 
 class CAsyncImageLoader : public CThread, public TSingleton<CAsyncImageLoader>
 {

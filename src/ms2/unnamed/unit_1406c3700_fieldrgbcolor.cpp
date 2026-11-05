@@ -12,7 +12,7 @@
 
 class CInputStream;
 class COutputStream;
-CInputStream& FUN_14070f340(CInputStream& in, unsigned char& value);       // operator>>(unsigned char&)
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read1/Read3/Read5 (0x14070f340/3c0/440)
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);      // operator<<(unsigned char)
 
 // The 0..1 float colour (unit-local; fieldproperty.h and lighteffectparam.cpp overlay the same type).
@@ -70,9 +70,9 @@ MS2_REPLACE_METHOD(0x1406C3800, Unk_Rgb3b, SetColor, 63, 0x018959BA);
 // @0x1406c3850
 CInputStream& operator>>(CInputStream& in, Unk_Rgb3b& kColor)
 {
-    FUN_14070f340(in, kColor.m_r);
-    FUN_14070f340(in, kColor.m_g);
-    FUN_14070f340(in, kColor.m_b);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(kColor.m_r);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(kColor.m_g);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(kColor.m_b);
     return in;
 }
 

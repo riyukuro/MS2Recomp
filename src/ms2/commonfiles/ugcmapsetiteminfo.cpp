@@ -37,7 +37,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -45,8 +45,8 @@ public:
 };
 
 // Unrecovered helpers (same ones the other xml table loaders use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
-class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+// C3 #8: the cast-only Unk_140168650 view removed
 class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
@@ -133,14 +133,14 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return UGCMapSetItemDataPtr(0);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return UGCMapSetItemDataPtr(0);
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("UGCMapSetItem")); pNode != 0;
-         pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("UGCMapSetItem"))))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("UGCMapSetItem")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("UGCMapSetItem")))
     {
         data = new CUGCMapSetItemData;
         XmlGetAttr((class TiXmlElement*)(pNode), "group", *(unsigned int*)&static_cast<int&>(data->m_nGroup));

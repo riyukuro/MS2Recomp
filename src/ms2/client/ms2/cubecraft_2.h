@@ -19,7 +19,7 @@ class CCubeGuideWrapper;   // cubeguide.h
 class CGodModeInfo;        // 0x30-byte floating "god mode" marker (cubecraft_1.cpp)
 class CItem;
 class Cube;
-class Unk_Service6100017;   // the cube grid service (class id 0x06100017)
+class CubeMapInformationService;   // the cube grid service (class id 0x06100017; C3: was Unk_Service6100017)
 
 // The 16-byte pointer-sized pair {vptr slot, T*} of the guide wrapper smart pointer is MS2Ptr<CCubeGuideWrapper>.
 class Unk_PCCubeCraft
@@ -100,7 +100,7 @@ public:
     efd::SmartPointer<NiNode> m_spNode;     // +0x158
     int m_nHud;                             // +0x160 (1 shown)
     int m_nMode;                            // +0x164
-    efd::SmartPointer<Unk_Service6100017> m_svc;   // +0x168
+    efd::SmartPointer<CubeMapInformationService> m_svc;   // +0x168
     MS2Ptr<CGodModeInfo> m_spGod;           // +0x170
     bool m_bFirstMove;                      // +0x180
     int m_nCheck;                           // +0x184 the validator result

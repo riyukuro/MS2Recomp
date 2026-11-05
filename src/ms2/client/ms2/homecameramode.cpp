@@ -577,7 +577,7 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             reinterpret_cast<efd::Matrix3&>(kX).MakeXRotation(ptRot.x * -0.0174532924f);
             reinterpret_cast<efd::Matrix3&>(kY).MakeYRotation(ptRot.y * -0.0174532924f);
             reinterpret_cast<efd::Matrix3&>(kZ).MakeZRotation(ptRot.z * -0.0174532924f);
-            kRot = kX.FUN_140a33480(kY).FUN_140a33480(kZ);
+            kRot = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kX) * reinterpret_cast<const efd::Matrix3&>(kY) * reinterpret_cast<const efd::Matrix3&>(kZ)));
             Vector3 kDir;
             Vector3 kUp;
             Vector3 kRight;

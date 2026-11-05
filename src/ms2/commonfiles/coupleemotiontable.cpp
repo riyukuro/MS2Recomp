@@ -18,7 +18,7 @@
 #include "ms2/commonfiles/filesystem.h"
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -30,7 +30,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
+unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);      // splits into a std::vector<CString>
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -54,7 +54,7 @@ inline void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, cons
 }
 
 // @0x1402c8970
-inline bool Unk_CoupleEmotionBool(Unk_140165cf0* pElem, const char* pszName, bool bDefault)
+inline bool Unk_CoupleEmotionBool(TiXmlElement* pElem, const char* pszName, bool bDefault)
 {
     bool bValue;
     if (XmlGetAttr((class TiXmlElement*)(pElem), pszName, bValue) != 0)
@@ -114,14 +114,14 @@ int CCoupleEmotionTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("coupleEmotion")); pElem != 0;
-         pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("coupleEmotion")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("coupleEmotion")); pElem != 0;
+         pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("coupleEmotion")))
     {
         MS2Ptr<CCoupleEmotionData> spData(new CCoupleEmotionData);
         spData->m_nId = FUN_140197390(pElem, "code", 0);

@@ -95,7 +95,7 @@
 // MS2-PIN: ??1?$CRBMap@IV?$SmartPointer@VCNpc@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VCNpc@@@efd@@@4@@ATL@@QEAA@XZ 0x141bf4bb0 ; m_148
 // MS2-PIN: ??1?$CRBMap@IV?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@4@@ATL@@QEAA@XZ 0x141bf4bd0 ; m_0e8
 // MS2-PIN: ??1?$CRBMap@IV?$TPtr@VPC@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@VPC@@@@@3@@ATL@@QEAA@XZ 0x141bf4bf0 ; m_118
-// MS2-PIN: ??1?$CRBMap@IV?$MS2Ptr@VUnk_WsRec708@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsRec708@@@@@3@@ATL@@QEAA@XZ 0x141bf4c10 ; m_708
+// MS2-PIN: ??1?$CRBMap@IV?$MS2Ptr@VUgcBannerObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUgcBannerObject@@@@@3@@ATL@@QEAA@XZ 0x141bf4c10 ; m_708
 // MS2-PIN: ??1?$CRBMap@PEAVGameObject@@PEAVEntity@egf@@V?$CElementTraits@PEAVGameObject@@@ATL@@V?$CElementTraits@PEAVEntity@egf@@@5@@ATL@@QEAA@XZ 0x141bf4c30 ; m_6d8
 // MS2-PIN: ??1?$CRBMap@PEAVEntity@egf@@V?$MS2Ptr@VUnk_RideeFieldObj@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_RideeFieldObj@@@@@5@@ATL@@QEAA@XZ 0x141bf4c50 ; m_4e0
 // MS2-PIN: ??1?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VCReactor@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VCReactor@@@efd@@@2@@ATL@@QEAA@XZ 0x141bf4c70 ; m_7c8
@@ -121,7 +121,7 @@
 // MS2-PIN: ??1?$set@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@@std@@QEAA@XZ 0x141bf5ed0 ; m_048
 // MS2-PIN: ??1?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@2@@std@@QEAA@XZ 0x141bf5ef0 ; FUN_141bdb1b0 local
 // MS2-PIN: ??1?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@2@@std@@QEAA@XZ 0x141bf5f20 ; m_a00
-// MS2-PIN: ??1?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VUnk_WsLogPayload@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VUnk_WsLogPayload@@@std@@@2@@std@@QEAA@XZ 0x141bf5f50 ; m_a18
+// MS2-PIN: ??1?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@@2@@std@@QEAA@XZ 0x141bf5f50 ; m_a18
 // MS2-PIN: ??1?$vector@V?$MS2Ptr@VUnk_WsActorUpdater@@@@V?$allocator@V?$MS2Ptr@VUnk_WsActorUpdater@@@@@std@@@std@@QEAA@XZ 0x141bf5f80 ; m_9a0
 // MS2-PIN: ??0?$list@PEAVEntity@egf@@V?$allocator@PEAVEntity@egf@@@std@@@std@@QEAA@XZ 0x141bf2fa0 ; m_088 / m_098
 // MS2-PIN: ??0?$map@HV?$MS2Ptr@VUnk_WsRec1f8@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VUnk_WsRec1f8@@@@@std@@@3@@std@@QEAA@XZ 0x141bf2fc0 ; m_1f8
@@ -136,7 +136,7 @@
 // MS2-PIN: ??0?$set@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@@std@@QEAA@XZ 0x141bf32d0 ; m_048
 // MS2-PIN: ??0?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@2@@std@@QEAA@XZ 0x141bf3300 ; FUN_141bdb1b0 local
 // MS2-PIN: ??0?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@2@@std@@QEAA@XZ 0x141bf3330 ; m_a00
-// MS2-PIN: ??0?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VUnk_WsLogPayload@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VUnk_WsLogPayload@@@std@@@2@@std@@QEAA@XZ 0x141bf3360 ; m_a18
+// MS2-PIN: ??0?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@@2@@std@@QEAA@XZ 0x141bf3360 ; m_a18
 // MS2-PIN: ??0?$vector@V?$MS2Ptr@VUnk_WsActorUpdater@@@@V?$allocator@V?$MS2Ptr@VUnk_WsActorUpdater@@@@@std@@@std@@QEAA@XZ 0x141bf3390 ; m_9a0
 // MS2-PIN: ??1?$SmartPointer@VCEntityHider@@@efd@@QEAA@XZ 0x141bf5410 ; m_990 value
 // MS2-PIN: ??1?$SmartPointer@VCEntityShower@@@efd@@QEAA@XZ 0x141bf5440 ; m_980 value
@@ -151,7 +151,7 @@
 // MS2-PIN: ??1?$MS2Ptr@VUnk_WsPtreda80@@@@QEAA@XZ 0x141bf5600 ; m_a80 (Release 0x141c28d40)
 // MS2-PIN: ??1?$MS2Ptr@VFieldProperty@@@@QEAA@XZ 0x141bf5630 ; m_780 value (Release 0x141c28d80)
 // MS2-PIN: ??1?$MS2Ptr@VUnk_WsActorUpdater@@@@QEAA@XZ 0x141bf5660 ; m_9a0 element (Release 0x141c28dc0)
-// MS2-PIN: ??1?$MS2Ptr@VUnk_WsRec708@@@@QEAA@XZ 0x141bf5690 ; m_708 value (Release 0x141c28e00)
+// MS2-PIN: ??1?$MS2Ptr@VUgcBannerObject@@@@QEAA@XZ 0x141bf5690 ; m_708 value (Release 0x141c28e00)
 // MS2-PIN: ??4?$Unk_WsNiPtr@UUnk_WsElem@@@@QEAAAEAV0@PEAUUnk_WsElem@@@Z 0x141bf68e0 ; m_348 = (FUN_141bbc580, FUN_141bbd640)
 // MS2-PIN: ??4?$SmartPointer@VCReactor@@@efd@@QEAAAEAV01@AEBV01@@Z 0x141bf6950 ; m_7c8 SetAt
 // MS2-PIN: ??4?$SmartPointer@VCSkillMagicControlGuide@@@efd@@QEAAAEAV01@AEBV01@@Z 0x141bf69d0 ; m_5a0 SetAt
@@ -164,9 +164,10 @@
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_WsPtreda80@@@@QEAAAEAV1@PEAVUnk_WsPtreda80@@@Z 0x141bf6ef0 ; m_a80
 // MS2-PIN: ??4?$MS2Ptr@VFieldProperty@@@@QEAAAEAV0@AEBV0@@Z 0x141bf6f60 ; m_780 SetAt
 // MS2-PIN: ??4?$MS2Ptr@VUnk_WsActorUpdater@@@@QEAAAEAV0@AEBV0@@Z 0x141bf6fa0 ; m_9a0
-// MS2-PIN: ??4?$MS2Ptr@VUnk_WsRec708@@@@QEAAAEAV0@AEBV0@@Z 0x141bf7020 ; m_708 SetAt
+// MS2-PIN: ??4?$MS2Ptr@VUgcBannerObject@@@@QEAAAEAV0@AEBV0@@Z 0x141bf7020 ; m_708 SetAt
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #define NOMINMAX                                // NxPhysics (gameobject.h)
+#define MS2_TPTRVALUE_MOVE      // lvalue copies add a reference, moves steal it (the exe pair move ctor 0x141bf3230 -> 0x140b2d2a0)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
 #include "ms2/ms2recover.h"
@@ -184,6 +185,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/tptrvalue.h"
+#include "gamerankingcli.h"                 // CGameRankingData (the m_a18 rank record)
 #include "ms2/placeholder/notifyworld.h"
 #include "ms2/placeholder/cinteractwebobject.h"
 #include "ms2/commonfiles/fieldproperty.h"
@@ -215,7 +217,7 @@ class Unk_AkoLiftTarget : public CPtred {};             // m_540 value: the lift
 class Unk_WsB_Lift : public CPtred {};                  // m_510 value: the liftable objects by name
 class Unk_RideeFieldObj : public CPtred {};             // m_4b0 / m_4e0 value: the field markers by name / by entity
 class Unk_WsEffect848 : public CPtred {};               // m_848 value: an applied field effect
-class Unk_WsRec708 : public CPtred {};                  // m_708 value
+#include "ms2/client/ms2/ugcbannerobject.h"            // m_708 value: UgcBannerObject
 class Unk_WsRec1f8 : public CPtred {};                  // m_1f8 value
 class Unk_WsActorUpdater : public CPtred {};            // m_9a0 element pointee (MS2ActorUpdater)
 class Unk_WsEntity738 : public efd::IBase {};           // m_738 value (efd ref counting: slot 1 IncRefCount, slot 2 DecRefCount)
@@ -260,7 +262,7 @@ MS2_CHECK_SIZE(Unk_WsVisibleObject, 0x20);
 // The trigger box enter / leave records of FUN_141bc3560 (ctors 0x141bf34d0 / 0x141bf3460).
 struct Unk_WsTagLeave
 {
-    Unk_WsTagLeave() : m_name(""), m_tagId(0), m_10(0), m_14(0), m_18(0), m_1c(0) {}
+    Unk_WsTagLeave() : m_name(""), m_tagId(0), m_10(0), m_14(0), m_18(0), m_1c(0) {}   ~Unk_WsTagLeave();   // 0x141bf5ff0
     CString m_name;                         // +0x00
     unsigned __int64 m_tagId;               // +0x08
     unsigned m_10;
@@ -270,7 +272,7 @@ struct Unk_WsTagLeave
 };
 struct Unk_WsTagEnter
 {
-    Unk_WsTagEnter() : m_name(""), m_tagId(0), m_10(0), m_14(0), m_18(0), m_1c(0), m_20(0), m_pos(0, 0, 0) {}
+    Unk_WsTagEnter() : m_name(""), m_tagId(0), m_10(0), m_14(0), m_18(0), m_1c(0), m_20(0), m_pos(0, 0, 0) {}   ~Unk_WsTagEnter();   // 0x141bf6010
     CString m_name;                         // +0x00
     unsigned __int64 m_tagId;               // +0x08
     unsigned m_10;
@@ -281,20 +283,18 @@ struct Unk_WsTagEnter
     D3DXVECTOR3 m_pos;                      // +0x24
 };
 
-// The m_a18 log payload: a 16-byte reference with a stealing move (0x140b2d2a0) and an add-ref copy (0x140b2d2d0).
-class Unk_WsLogPayload
-{
-public:
-    Unk_WsLogPayload(const Unk_WsLogPayload& o);
-    Unk_WsLogPayload(Unk_WsLogPayload&& o);
-    ~Unk_WsLogPayload();
-    void* m_00;
-    void* m_p;
-};
+// The m_a18 element is pair<CStringA, TPtrValue<CGameRankingData> >, the type the other worldservice parts pin for
+// its vector members. TPtrValue<CGameRankingData> has the stealing copy 0x140b2d2a0, the add-ref const copy
+// 0x140b2d2d0 and ~TPtrValue 0x140b2da40.
+
+
+
+
+
 
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_WsEntityList;
 typedef std::pair<CStringA, CStringW> Unk_WsTextEntry;          // m_a00 element
-typedef std::pair<CStringA, Unk_WsLogPayload> Unk_WsLogEntry;   // m_a18 element
+typedef std::pair<CStringA, TPtrValue<CGameRankingData> > Unk_WsLogEntry;   // m_a18 element
 
 // The message handler / functor classes of the CU (ctors in the EE_HANDLER statics of the part 1 dynamic initializers;
 // their dtors 0x141bf51f0..0x141bf53f0 lie here).
@@ -398,7 +398,7 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     { ATL::CRBMap<unsigned, efd::SmartPointer<CNpc> > m; WsDriveRB(m, efd::SmartPointer<CNpc>()); }              // m_148
     { ATL::CRBMap<unsigned, efd::SmartPointer<GameObject> > m; WsDriveRB(m, efd::SmartPointer<GameObject>()); }  // m_0e8
     { ATL::CRBMap<unsigned, TPtr<PC> > m; TPtr<PC> v(0); WsDriveRB(m, v); }                                       // m_118
-    { ATL::CRBMap<unsigned, MS2Ptr<Unk_WsRec708> > m; WsDriveRB(m, MS2Ptr<Unk_WsRec708>()); }                     // m_708
+    { ATL::CRBMap<unsigned, MS2Ptr<UgcBannerObject> > m; WsDriveRB(m, MS2Ptr<UgcBannerObject>()); }                     // m_708
     { ATL::CRBMap<egf::Entity*, MS2Ptr<Unk_RideeFieldObj> > m; WsDriveRB(m, MS2Ptr<Unk_RideeFieldObj>()); }      // m_4e0
     { ATL::CRBMap<CStringA, MS2Ptr<Unk_RideeFieldObj> > m; WsDriveRB(m, MS2Ptr<Unk_RideeFieldObj>()); }          // m_4b0
     { ATL::CRBMap<CStringA, efd::SmartPointer<CReactor> > m; WsDriveRB(m, efd::SmartPointer<CReactor>()); }      // m_7c8
@@ -463,22 +463,22 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     { ATL::CAtlArray<void*> a; }
     w->TSingleton<WorldService>::~TSingleton();
 }
-struct Unk_WsF_TagLeave;
+// (worldservice_1 sends these records as the 0x27 / 0x26 packet payloads)
 // The packet payload's only nontrivial member is its leading CString; destroy that member.
 // @0x141bf5ff0
-void FUN_141bf5ff0(Unk_WsF_TagLeave* p)
+Unk_WsTagLeave::~Unk_WsTagLeave()
 {
-    struct Holder { CString m_str; };
-    reinterpret_cast<Holder*>(p)->m_str.CString::~CString();
+    //
+    //
 }
 
-struct Unk_WsF_TagEnter;
+//
 // The packet payload's only nontrivial member is its leading CString; destroy that member.
 // @0x141bf6010
-void FUN_141bf6010(Unk_WsF_TagEnter* p)
+Unk_WsTagEnter::~Unk_WsTagEnter()
 {
-    struct Holder { CString m_str; };
-    reinterpret_cast<Holder*>(p)->m_str.CString::~CString();
+    //
+    //
 }
 
 // The implicit TextureLayerManager ctor (emitted by the NiNew above).
@@ -522,6 +522,7 @@ Unk_WsP16* FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
 // MS2-PIN: ??1CNode@?$CAtlMap@HV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAA@XZ 0x141bf6140 ; la1: exe body calls this CPair dtor 141bf64c0
 // MS2-PIN: ??1CNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAA@XZ 0x141bf6160 ; la1: exe body calls this CPair dtor 141bf64e0
 // MS2-PIN: ??1CNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@QEAA@XZ 0x141bf6200 ; la1: exe body calls this CPair dtor 141bf6580
-// MS2-PIN: ??0CNode@?$CRBTree@IV?$MS2Ptr@VUnk_WsRec708@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsRec708@@@@@3@@ATL@@QEAA@IAEBV?$MS2Ptr@VUnk_WsRec708@@@@@Z 0x141bf3b40 ; la1: exe body calls this CPair ctor 141bf42f0
+// MS2-PIN: ??0CNode@?$CRBTree@IV?$MS2Ptr@VUgcBannerObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUgcBannerObject@@@@@3@@ATL@@QEAA@IAEBV?$MS2Ptr@VUgcBannerObject@@@@@Z 0x141bf3b40 ; la1: exe body calls this CPair ctor 141bf42f0
 // MS2-PIN: ??1CNode@?$CRBTree@HHV?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x141bf6400 ; la1: trivial pair dtor (141bf67c0), called from CRBTree<Unk_WsKindKey,int>; 141bf61a0 releases a SmartPointer (CAtlMap CSkillMagicControlGuide node)
 // MS2-PIN: ??1CNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x141bf6120 ; la1: calls the TPtrValue CPair dtor 141bf64a0 (-> TPtrValue<CAtlList> dtor 1409f20e0); 141bf61a0 is the CSkillMagicControlGuide CNode
+// MS2-PIN: ??1CNode@?$CRBTree@IV?$MS2Ptr@VUgcBannerObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUgcBannerObject@@@@@3@@ATL@@QEAA@XZ 0x141bf62e0 ; m_708 node dtor; ugcbannerobject.h brings ~map<unsigned,unsigned> (same 24-byte body), which took the look-alike order

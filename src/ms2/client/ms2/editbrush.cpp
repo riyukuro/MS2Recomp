@@ -179,7 +179,7 @@ void PaintBrush::vfunc_4()
 void PaintBrush::vfunc_5()
 {
     ATL::CAtlArray<NiMeshHWInstance*> aInstances;
-    BrushService()->CollectNear(m_ptPos, m_fRadius, aInstances);
+    BrushService()->CollectNear(reinterpret_cast<const efd::Point3&>(m_ptPos), m_fRadius, aInstances);
     for (unsigned i = 0; i < aInstances.GetCount(); ++i)
     {
         NiMeshHWInstance* pInstance = aInstances[i];
@@ -276,7 +276,7 @@ static float NoiseAngle(NoiseBrush* pBrush)
 void NoiseBrush::vfunc_4()
 {
     ATL::CAtlArray<NiMeshHWInstance*> aInstances;
-    BrushService()->CollectNear(m_ptPos, m_fRadius, aInstances);
+    BrushService()->CollectNear(reinterpret_cast<const efd::Point3&>(m_ptPos), m_fRadius, aInstances);
     for (unsigned i = 0; i < aInstances.GetCount(); ++i)
     {
         NiMeshHWInstance* pInstance = aInstances[i];

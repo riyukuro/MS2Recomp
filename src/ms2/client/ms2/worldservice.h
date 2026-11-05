@@ -87,18 +87,18 @@ class TextureLayerManager;                              // NiObject subclass (0x
 class ChaosLightEffectLayerManager;                     // 0x28 bytes
 class CWireframeManager;                                // 0x48 bytes
 
-// Gamebryo NiPointer<T> stand-in (8 bytes). The real NiPointer is in CoreRuntime (not on the game include path); the
-// per-T COMDATs (e.g. ctor 0x141bf1020, dtor 0x141bf54e0, operator= 0x141bf6ad0 for m_340) all have this shape.
-void FUN_140980460(void* obj);                          // NiRefObject::IncRefCount
-void FUN_1405a93d0(void* obj);                          // NiRefObject::DecRefCount
+// Gamebryo NiPointer<T> stand-in (8 bytes). The real NiPointer is in CoreRuntime (not on the game include path); the per-T COMDATs (e.g. ctor 0x141bf1020, dtor 0x141bf54e0, operator= 0x141bf6ad0 for m_340) all have this shape.
+#include <NiRefObject.h>                                // C3: real NiRefObject::IncRefCount / DecRefCount (were FUN_140980460 / FUN_1405a93d0)
+// 0x140980460 = NiRefObject::IncRefCount                          // NiRefObject::IncRefCount
+// 0x1405a93d0 = NiRefObject::DecRefCount                          // NiRefObject::DecRefCount
 template <class T> class Unk_WsNiPtr
 {
 public:
-    Unk_WsNiPtr(T* p = 0) : m_p(p) { if (m_p) FUN_140980460(m_p); }
-    ~Unk_WsNiPtr() { if (m_p) FUN_1405a93d0(m_p); }
+    Unk_WsNiPtr(T* p = 0) : m_p(p) { if (m_p) reinterpret_cast<NiRefObject*>(m_p)->IncRefCount(); }
+    ~Unk_WsNiPtr() { if (m_p) reinterpret_cast<NiRefObject*>(m_p)->DecRefCount(); }
     Unk_WsNiPtr& operator=(T* p)
     {
-        if (m_p != p) { if (m_p) FUN_1405a93d0(m_p); m_p = p; if (m_p) FUN_140980460(m_p); }
+        if (m_p != p) { if (m_p) reinterpret_cast<NiRefObject*>(m_p)->DecRefCount(); m_p = p; if (m_p) reinterpret_cast<NiRefObject*>(m_p)->IncRefCount(); }
         return *this;
     }
     T* get() const { return m_p; }
@@ -193,18 +193,18 @@ struct Unk_WsV980 { void* p; };                                  // intrusive po
 struct Unk_WsV990 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
 // m_980 / m_990 values as FUN_141bd86e0 / FUN_141bd87a0 return them (by value); the ctors are exe COMDATs pinned in
 // worldservice_1.cpp, the dtors are defined there inline over the release COMDATs.
-struct Unk_WsR980 : Unk_WsP8
-{
-    Unk_WsR980(int zero);                   // 0x141bf0f50
-    Unk_WsR980(const Unk_WsV980& src);      // 0x141bf0f10
-    ~Unk_WsR980();                          // 0x141bf5440
-};
-struct Unk_WsR990 : Unk_WsP8
-{
-    Unk_WsR990(int zero);                   // 0x141bf0ed0
-    Unk_WsR990(const Unk_WsV990& src);      // 0x141bf0e90
-    ~Unk_WsR990();                          // 0x141bf5410
-};
+// (the m_980 value FUN_141bd86e0 returns is efd::SmartPointer<CEntityShower>)
+//
+//
+//
+//
+//
+// (the m_990 value FUN_141bd87a0 returns is efd::SmartPointer<CEntityHider>)
+//
+//
+//
+//
+//
 // The by-value m_3f0 value / key that FUN_141bc3470 takes (callee releases both); their == / get / dtor are the
 // exe COMDATs, defined inline in worldservice_1.cpp.
 struct Unk_WsR3f0Val : Unk_WsP16
@@ -218,12 +218,12 @@ struct Unk_WsR3f0Key : Unk_WsP16
     ~Unk_WsR3f0Key();                       // 0x1410a6d40
 };
 struct Unk_WsV9a0 { void* p0; void* p1; };                      // p1 = an actor-like object (OnTick, G)
-class Unk_WsK_Rank : public CPtred {};                          // rank record shown by the interact display image (refcounted)
-template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*);   // explicit specialization lives in unit_141bb15d0
-template <> void MS2Ptr<Unk_WsK_Rank>::AddRefImpl(void*) const;   // ditto: the generic one would add-ref m_p, not m_p - 0x18
+#include "ms2/placeholder/tptrvalue.h"                  // TPtrValue<T> (the rank record pointer of m_a18)
+struct CGameRankingData;                                // gamerankingcli.h: the rank record shown by the interact display image
+// (m_a18 holds TPtrValue<CGameRankingData>: ~TPtrValue 0x140b2da40 / const copy 0x140b2d2d0, ws_1 FUN_141bdb0f0)
 // queued (name, text) / (name, rank) entries: the exe's vector elements are plain std::pair instantiations
 struct Unk_WsVa00 : std::pair<CStringA, CStringW> {};
-struct Unk_WsVa18 : std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > {};
+struct Unk_WsVa18 : std::pair<CStringA, TPtrValue<CGameRankingData> > {};
 struct Unk_WsVab0 { __int64 m_expireTick; };
 struct Unk_WsVac0 { void* p; };
 struct Unk_WsVad0 { void* p0; void* p1; };
@@ -232,7 +232,7 @@ class Unk_WsPtred : public CPtred {};
 class CPortal;                                           // m_350 value (FindPortalByDestMap)
 class NiPoint3;                                          // FUN_141bc2c90 position (by value)
 class CFieldDataCli;                                     // m_298 value (FUN_141bd30a0, fielddatacli.h)
-class Unk_WsRec708;                                      // m_708 value (defined in worldservice.cpp#1 / #4)
+class UgcBannerObject; class Unk_GoField;               // m_708 value (ugcbannerobject.h); m_2f8 value (CCameraTargetBounding)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
 {
 public:                                        // the local player (fields as accessed by WorldService; helper C)
@@ -278,7 +278,7 @@ public:
     void FUN_141bbae40(void* p);                        // m_048.insert(p)
     void FUN_141bbae80(void* p);                        // m_048.erase(p) if present
     int FUN_141bc32b0();                                // return m_398
-    void FUN_141bc1640();                               // m_148 COMDAT 0x141bfe6b0
+    unsigned FUN_141bc1640();                           // m_148 COMDAT 0x141bfe6b0
     void FUN_141bc1670();                               // m_118 COMDAT 0x141bfe6c0
     void FUN_141bc16a0();                               // m_348 COMDAT 0x141bf7c40
     void FUN_141bc6f60(int a804, int a800, int a808);
@@ -383,18 +383,18 @@ public:
     void FUN_141bc5ab0(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5ab0
     void RemoveRefObject(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5b30
     efd::SmartPointer<class Unk_WsB_RefObj> FindRefObject(unsigned __int64 key); // 0x141bc5bb0
-    void AddProp(MS2Ptr<class Unk_WsB_Prop> prop); // 0x141bc5c40
+    void AddProp(MS2Ptr<class CInteractObject> prop); // 0x141bc5c40
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
     void FUN_141bc5fb0(void* out, int category); // 0x141bc5fb0
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6090(const Vector3& pos, int skipDisabled); // 0x141bc6090
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc6510(const Vector3& pos, int kind); // 0x141bc6510
+    MS2Ptr<class CInteractObject> FUN_141bc6090(Vector3 pos, int skipDisabled); // 0x141bc6090
+    MS2Ptr<class CInteractObject> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
+    MS2Ptr<class CInteractObject> FUN_141bc6510(Vector3 pos, int kind); // 0x141bc6510
     MS2Ptr<class CInteractObject> FindProp(const CString& name); // 0x141bc66b0
     void FUN_141bc6760(const CString& name, int arg3, int category, int arg5); // 0x141bc6760
     void FUN_141bc6860(const CString& name, int arg3, int category); // 0x141bc6860
     void FUN_141bc6930(int kind, int arg); // 0x141bc6930
-    efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(const Vector3& pos, int skipUnusable); // 0x141bc6c60
+    efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(Vector3 pos, int skipUnusable); // 0x141bc6c60 (pos by value: callers copy it)
     efd::SmartPointer<class Unk_WsB_Spawn> FindSpawnByName(const CString& name); // 0x141bc6eb0
     int FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const;  // 0x141bc6fb0 (returns 0/1 in eax)
     class FieldProperty* FindFieldProperty(unsigned type); // 0x141bcab60
@@ -410,17 +410,17 @@ public:
     void FUN_141bc8e00(); // 0x141bc8e00
     void AddVibrator(unsigned __int64 key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0 (key by value, as m_468's SetAt)
     MS2Ptr<class Unk_WsB_Vibrator> FindVibrator(unsigned __int64 key); // 0x141bc8f60 (key by value in r8, as m_468's Lookup)
-    void FUN_141bc9020(CString name, class Unk_WsB_ShakeRef shake, CString shakeName, bool flag); // 0x141bc9020
+    void FUN_141bc9020(CString name, MS2Ptr<class CSkillRecord> shake, CString shakeName, bool flag); // 0x141bc9020
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
     void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
-    int  FUN_141bc9830(int* id, CString& name, float maxDist); // 0x141bc9830
+    int  FUN_141bc9830(int* id, CString& name, float maxDist, int unused); // 0x141bc9830 (PC::FUN_14165c1b0 passes 0; the body never reads it)
     void AddProxyObject(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
     void RemoveProxyObject(unsigned id); // 0x141bc9b30
     MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id); // 0x141bc9be0
     MS2Ptr<class CProxyGameObject> FUN_141bc9c60(void* owner); // 0x141bc9c60
-    MS2Ptr<class Unk_WsB_Notice> FUN_141bc9d60(const CStringW& text); // 0x141bc9d60
-    MS2Ptr<class Unk_WsB_Notice> FUN_141bc9e70(int kind); // 0x141bc9e70
+    MS2Ptr<class CProxyGameObject> FUN_141bc9d60(const CStringW& text); // 0x141bc9d60
+    MS2Ptr<class CProxyGameObject> FUN_141bc9e70(int kind); // 0x141bc9e70
     int FUN_141bca2e0(); // 0x141bca2e0
     int FUN_141bca3c0(float z); // 0x141bca3c0
     int FUN_141bca4f0(float* z); // 0x141bca4f0
@@ -446,7 +446,7 @@ public:
     int GetState();                                // return m_state
     egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
     int FUN_141bcfff0(int id, struct Unk_WsC_NpcAnim* out);
-    egf::Entity* FUN_141bd0220(const Vector3& pos, float maxDist);
+    egf::Entity* FUN_141bd0220(Vector3 pos, float maxDist);
     struct Unk_WsC_TagPtr FUN_141bd0420(unsigned key);
     egf::Entity* FUN_141bd04d0(unsigned key);
     egf::Entity* FUN_141bd0560(unsigned key, unsigned prop, float x, float y);
@@ -491,8 +491,8 @@ public:
     CStringW* FUN_141bd3080();                          // &m_290
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();              // copy of m_298
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
-    class Unk_WsA_GoFieldRef FUN_141bd3210(Vector3 pt);   // field object containing pt, else the nearest (m_2f8)
-    class Unk_WsA_GoFieldRef FUN_141bd3430(unsigned __int64 key); // m_2f8 lookup
+    MS2Ptr<Unk_GoField> FUN_141bd3210(Vector3 pt);        // field object containing pt, else the nearest (m_2f8)
+    MS2Ptr<Unk_GoField> FUN_141bd3430(unsigned __int64 key);      // m_2f8 lookup
     TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
     ChaosLightEffectLayerManager* GetChaosLightEffectLayerManager();      // return m_spChaosLightEffectLayerManager
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0(); // &m_118
@@ -546,14 +546,14 @@ public:
     void FUN_141bd8680(int v);                          // m_8f8 = v
     int FUN_141bd86a0();                                // m_8f4
     int FUN_141bd86c0();                                // m_8f8
-    Unk_WsR980 FUN_141bd86e0(egf::EntityID id);             // m_980 lookup
-    Unk_WsR990 FUN_141bd87a0(egf::EntityID id);             // m_990 lookup
+    efd::SmartPointer<class CEntityShower> FUN_141bd86e0(egf::EntityID id);             // m_980 lookup
+    efd::SmartPointer<class CEntityHider> FUN_141bd87a0(egf::EntityID id);             // m_990 lookup
     bool FUN_141bd8860(void* pNpc);                     // move a pending npc from m_990 to m_980
     bool FUN_141bd8ae0(void* pNpc);                     // move a pending npc from m_980 to m_990
     bool FUN_141bd8e30(egf::EntityID entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by value: every exe caller copies it)
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
-    void FUN_141bd9410(MS2Ptr<class Unk_WsB_Prop> spObj); // show a debug tooltip over an interactive object (releases spObj)
+    void FUN_141bd9410(MS2Ptr<class CInteractObject> spObj); // show a debug tooltip over an interactive object (releases spObj)
     void FUN_141bd97a0(unsigned __int64 id);            // remove the debug tooltip of id
     int FUN_141bd9870();                                // per-class table value of the local player
     int FUN_141bd98d0();                                // m_2c0
@@ -571,7 +571,7 @@ public:
     void FUN_141bda460();                               // m_ac0.clear()
     void FUN_141bda490(unsigned key, void* pOutList);   // copy the m_208[key] list into *pOutList
     void FUN_141bda580();                               // rebuild m_708 from the ugc banner objects
-    MS2Ptr<Unk_WsRec708> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
+    MS2Ptr<UgcBannerObject> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
     void FUN_141bda780();                               // expire the timed entries of m_ab0
     void FUN_141bda9c0(int v);                          // m_890 operation
     int FUN_141bda9f0();                                // m_890 operation: the enabled count

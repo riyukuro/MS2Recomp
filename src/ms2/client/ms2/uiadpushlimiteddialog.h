@@ -20,7 +20,7 @@ class ASData;
 class ASDialog;
 class ASUIComponent;
 class AdPushEntityLimitedBundle;
-class Unk_CadGiftClip;
+class ASItemRendererBase;
 class UIMsg;
 class UISwfEntity;
 
@@ -57,7 +57,7 @@ private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ShopBannerInfo> m_spBanner;                              // +0x178 the running banner of the offer
     bool m_bBannerEmpty;                                            // +0x188 the banner had no image yet
-    MS2Ptr<Unk_CadGiftClip> m_spRenderer;                            // +0x190 "m_limitedRenderer" (inside m_maxComp; the gift row clip class of uicashattenddialog.cpp)
+    MS2Ptr<ASItemRendererBase> m_spRenderer;                          // +0x190 "m_limitedRenderer" (inside m_maxComp; ascorelist.h)
     MS2Ptr<ASUIComponent> m_spMaxComp;                              // +0x1a0 "m_maxComp"
     MS2Ptr<AdPushEntityLimitedBundle> m_spOwner;                    // +0x1b0 the bundle that owns this window
     bool m_bFloating;                                               // +0x1c0 positioned by the owner (maximized)

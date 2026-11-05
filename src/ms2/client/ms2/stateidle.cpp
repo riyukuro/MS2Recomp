@@ -69,8 +69,8 @@ class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey)
 
 // The player-side views of the actor (PC members seen through the PCBase pointer of FUN_1417b8370).
 class Unk_PCD88 : public CBoneRotateManager { };    // the target the player is bound to
-// The actor's +0xd00 action table lookup (returns an int; pcbase.h declares it void).
-class Unk_SiActor { public: int FUN_141679120(int n); };
+// C3: the +0xd00 action table lookup is PCBase::FUN_141679120 (pcbase.h).
+
 #define AsPC(p) reinterpret_cast<PC*>(p)
 
 
@@ -652,7 +652,7 @@ void StateIdle::FUN_1417cef60()
         Unk_PCD88* pTarget = AsPC(pPC)->FUN_14165c2d0().get();
         if (pTarget != 0 && pTarget->IsLooking() == 0 && m_timerBore.FUN_140868c00() != 0)
         {
-            int nBore = reinterpret_cast<Unk_SiActor*>(m_pOwner)->FUN_141679120(0x27);
+            int nBore = m_pOwner->FUN_141679120(0x27);
             vfunc_2(nBore + 2);
             if (m_n10 < 2)
                 m_n10 = 2;

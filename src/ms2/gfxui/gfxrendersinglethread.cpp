@@ -30,15 +30,15 @@
 NiDX9Renderer* FUN_1422cf0a0();
 LPDIRECT3DDEVICE9 FUN_1422cf0d0();
 
-// Scaleform::Render::Renderer2D (render_renderer2d.h) as the frame calls see it; the placeholder keeps its own class
-// because the exe's HAL layout differs from the SDK's, so the members are reached through a cast.
+// Scaleform::Render::Renderer2D / D3D9::HAL (render_renderer2d.h, d3d9_hal.h) as this unit sees them; the placeholder keeps
+// its own classes because the exe's HAL layout differs from the SDK's, so the members are reached through casts.
 namespace Scaleform { namespace Render {
-class Renderer2D
-{
+class HAL : public RefCountBase<HAL, StatRender_Mem> {};
+namespace D3D9 { class HAL : public Render::HAL { public: HAL(ThreadCommandQueue* commandQueue = 0); char m_pad_10[0xa7a0 - 0x10]; }; }  // 0x14272dc10
+class Renderer2D : public RefCountBase<Renderer2D, StatRender_Mem> {
 public:
-    GlyphCacheConfig* GetGlyphCacheConfig() const;
-    bool BeginFrame();
-    void EndFrame();
+    Renderer2D(HAL* hal);   // 0x142581fe0
+    GlyphCacheConfig* GetGlyphCacheConfig() const; bool BeginFrame(); void EndFrame(); void* m_pImpl;
 };
 } }
 
@@ -46,7 +46,7 @@ ecr::RenderService* Unk_GetRenderService(char* pCell);              // gfxmovieb
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
 
 // GFxMovie as vfunc_6 sees it: slot 9 takes the HAL and the Renderer2D by value (gfxmovie.h types both parameters with
-// the Ptr<Unk_GFxHandleObj> stand-in; the copies made here are this obj's Ptr<HAL>/Ptr<Renderer2D> COMDATs).
+// Ptr<Unk_GFxUIHal>/Ptr<Unk_GFxUIRenderer2D>; the copies made here are this obj's Ptr<HAL>/Ptr<Renderer2D> COMDATs).
 class Unk_GrstMovie
 {
 public:
@@ -89,8 +89,8 @@ int GFxRenderSingleThread::vfunc_3()
     D3DPRESENT_PARAMETERS kPresentParams;
     memcpy(&kPresentParams, FUN_1422cf0a0()->GetPresentParams(), sizeof(kPresentParams));
 
-    m_renderHAL = *new Unk_GFxUIHal(0);
-    m_spRenderer2D = *new Unk_GFxUIRenderer2D(m_renderHAL.GetPtr());
+    m_renderHAL = reinterpret_cast<Unk_GFxUIHal&>(*new Scaleform::Render::D3D9::HAL(0));
+    m_spRenderer2D = reinterpret_cast<Unk_GFxUIRenderer2D&>(*new Scaleform::Render::Renderer2D(reinterpret_cast<Scaleform::Render::HAL*>(m_renderHAL.GetPtr())));
 
     Scaleform::Render::GlyphCacheParams kGlyphParams;
     kGlyphParams.NumTextures = 32;

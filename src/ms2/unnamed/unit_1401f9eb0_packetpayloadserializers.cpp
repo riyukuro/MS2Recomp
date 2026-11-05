@@ -9,9 +9,9 @@
 // MS2-PIN: ??$ReadNarrow@UUnk_NarrowLimit@@@Unk_PayloadReader@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_NarrowLimit@@@Z 0x140202d00
 // MS2-PIN: ??_GInfo@CCPetInfoPacket@@UEAAPEAXI@Z 0x140203e10
 // MS2-PIN: ??_GChangeColorItem@CCItemColoringPacket@@UEAAPEAXI@Z 0x140203dd0
-// MS2-PIN: ??0?$Unk_PayloadPtr@VBaseOption@@@@QEAA@XZ 0x140203480
+// MS2-PIN: ??0?$MS2Ptr@VBaseOption@@@@QEAA@XZ 0x140203480
 // MS2-PIN: ??0Unk_PetLock@@QEAA@AEAVCLockCriticalSection@@H@Z 0x140203610
-// MS2-PIN: ??1?$Unk_PayloadPtr@VBaseOption@@@@QEAA@XZ 0x140203970
+// MS2-PIN: ??1?$MS2Ptr@VBaseOption@@@@QEAA@XZ 0x140203970
 // MS2-PIN: ?Check@?$Unk_Allowed@H$01@@QEAA_NH@Z 0x140204050
 // MS2-PIN: ?Check@?$Unk_Minimum@E@@QEBA_NE@Z 0x1402040c0
 // MS2-PIN: ?Check@?$Unk_140203550@E@@QEBA_NE@Z 0x1402041a0
@@ -19,55 +19,55 @@
 // MS2-PIN: ??$ReadPoint@UUnk_PayloadPoint@@@Unk_PayloadReader@@QEAA?AUUnk_PayloadPoint@@XZ 0x140204500
 // MS2-PIN: ??$WritePoint@UUnk_PayloadPoint@@@Unk_PointWriter@@QEAAXAEBUUnk_PayloadPoint@@@Z 0x140204610
 // MS2-PIN: ?Find@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEBAPEAU__POSITION@@IPEAU3@@Z 0x140204740
-// MS2-PIN: ?FreePlexes@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140204dd0
-// MS2-PIN: ?FreePlexes@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140204e20
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAIXZ 0x140205020
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAIXZ 0x140205030
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140204dd0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140204e20
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAIXZ 0x140205020
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAIXZ 0x140205030
 // MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_PetOption@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_PetOption@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x140205290
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140207c80
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140207d60
-// MS2-PIN: ?AddRef@?$Unk_PayloadPtr@VBaseOption@@@@AEBAXXZ 0x140207e70
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140207c80
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAXXZ 0x140207d60
+// MS2-PIN: ?AddRef@?$MS2Ptr@VBaseOption@@@@AEBAXXZ 0x140207e70
 // MS2-PIN: ?AddRef@?$Unk_PayloadPtr@VCItemExtraData@@@@AEBAXXZ 0x140207ea0
-// MS2-PIN: ?Release@?$Unk_PayloadPtr@VBaseOption@@@@AEAAXXZ 0x140208020
+// MS2-PIN: ?Release@?$MS2Ptr@VBaseOption@@@@AEAAXXZ 0x140208020
 // MS2-PIN: ?Release@?$Unk_PayloadPtr@VCItemExtraData@@@@AEAAXXZ 0x140208060
-// MS2-PIN: ??0?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@QEAA@$$QEAV0@@Z 0x140203330
-// MS2-PIN: ??0?$Unk_PayloadPtr@VBaseOption@@@@QEAA@AEBV0@@Z 0x140203410
-// MS2-PIN: ??0?$Unk_PayloadPtr@VBaseOption@@@@QEAA@PEAVBaseOption@@@Z 0x140203450
+// MS2-PIN: ??0?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@QEAA@$$QEAV0@@Z 0x140203330
+// MS2-PIN: ??0?$MS2Ptr@VBaseOption@@@@QEAA@AEBV0@@Z 0x140203410
+// MS2-PIN: ??0?$MS2Ptr@VBaseOption@@@@QEAA@PEAVBaseOption@@@Z 0x140203450
 // MS2-PIN: ??0?$Unk_PayloadPtr@VCItem@@@@QEAA@$$QEAV0@@Z 0x1402034a0
 // MS2-PIN: ??0?$Unk_PayloadPtr@VCItem@@@@QEAA@AEBV0@@Z 0x1402034d0
 // MS2-PIN: ??0?$Unk_PayloadPtr@VCItem@@@@QEAA@H@Z 0x140203510
 // MS2-PIN: ??1?$Unk_PayloadPtr@VCItemExtraData@@@@QEAA@XZ 0x1402039a0
-// MS2-PIN: ?get@?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@QEBAPEAVChangeColorItem@CCItemColoringPacket@@XZ 0x140203c50
-// MS2-PIN: ?get@?$Unk_PayloadPtr@UUnk_ItemFactory@@@@QEBAPEAUUnk_ItemFactory@@XZ 0x140203c60
-// MS2-PIN: ??C?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@QEBAPEAVChangeColorItem@CCItemColoringPacket@@XZ 0x140203c90
-// MS2-PIN: ??C?$Unk_PayloadPtr@VBaseOption@@@@QEBAPEAVBaseOption@@XZ 0x140203ca0
+// MS2-PIN: ?get@?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@QEBAPEAVChangeColorItem@CCItemColoringPacket@@XZ 0x140203c50
+// MS2-PIN: ?get@?$MS2Ptr@VCItemData@@@@QEBAPEAVCItemData@@XZ 0x140203c60
+// MS2-PIN: ??C?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@QEBAPEAVChangeColorItem@CCItemColoringPacket@@XZ 0x140203c90
+// MS2-PIN: ??C?$MS2Ptr@VBaseOption@@@@QEBAPEAVBaseOption@@XZ 0x140203ca0
 // MS2-PIN: ??0Unk_PayloadPoint@@QEAA@XZ 0x140203800
 // MS2-PIN: ??$ReadMarkup@UUnk_WideMaximum@@@Unk_PayloadReader@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_WideMaximum@@AEAH@Z 0x140202b40
 // MS2-PIN: ??$SAL_Assume_bytecap_for_opt_@VCNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@ATL@@YAPEAVCNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@0@PEAV120@_K@Z 0x140203140
-// MS2-PIN: ??A?$CAtlArray@V?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@V?$CElementTraits@V?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_PayloadPtr@VChangeColorItem@CCItemColoringPacket@@@@_K@Z 0x140204e70
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@V?$CElementTraits@V?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VChangeColorItem@CCItemColoringPacket@@@@_K@Z 0x140204e70
 // MS2-PIN: ?GetCount@?$CAtlMap@IUUnk_PetOption@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_PetOption@@@3@@ATL@@QEBA_KXZ 0x140204f00
-// MS2-PIN: ?GetCount@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBA_KXZ 0x140204f10
-// MS2-PIN: ?GetCount@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBA_KXZ 0x140204f20
+// MS2-PIN: ?GetCount@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBA_KXZ 0x140204f10
+// MS2-PIN: ?GetCount@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBA_KXZ 0x140204f20
 // MS2-PIN: ?GetKeyAt@?$CAtlMap@IUUnk_PetOption@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_PetOption@@@3@@ATL@@QEBAAEBIPEAU__POSITION@@@Z 0x140205040
-// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAAEBW4Unk_PacketOptionA@@PEAU__POSITION@@@Z 0x1402050b0
-// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAAEBW4Unk_PacketOptionB@@PEAU__POSITION@@@Z 0x140205120
+// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAAEBW4Unk_PacketOptionA@@PEAU__POSITION@@@Z 0x1402050b0
+// MS2-PIN: ?GetKeyAt@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAAEBW4Unk_PacketOptionB@@PEAU__POSITION@@@Z 0x140205120
 // MS2-PIN: ?Get@?$Unk_PayloadConstant@H@@QEAAAEAHXZ 0x1402056b0
-// MS2-PIN: ?Reference@?$Unk_PayloadPtr@VBaseOption@@@@CAXPEAVBaseOption@@@Z 0x140207ef0
+// MS2-PIN: ?Reference@?$MS2Ptr@VBaseOption@@@@CAXPEAVBaseOption@@@Z 0x140207ef0
 // MS2-PIN: ?Reference@?$Unk_PayloadPtr@VCItemExtraData@@@@CAXPEAVCItemExtraData@@@Z 0x140207f10
-// MS2-PIN: ?AddRefImpl@?$Unk_PayloadPtr@VBaseOption@@@@AEBAXPEAX@Z 0x140207f80
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VBaseOption@@@@AEBAXPEAX@Z 0x140207f80
 // MS2-PIN: ?AddRefImpl@?$Unk_PayloadPtr@VCItemExtraData@@@@AEBAXPEAX@Z 0x140207fb0
-// MS2-PIN: ?ReleaseImpl@?$Unk_PayloadPtr@VBaseOption@@@@AEAAXPEAX@Z 0x140208130
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VBaseOption@@@@AEAAXPEAX@Z 0x140208130
 // MS2-PIN: ?ReleaseImpl@?$Unk_PayloadPtr@VCItemExtraData@@@@AEAAXPEAX@Z 0x140208180
-// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_PacketOptionA@@II@Z 0x140204400
-// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x1402055d0
-// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_PacketOptionB@@II@Z 0x140204480
-// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x140205640
+// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_PacketOptionA@@II@Z 0x140204400
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x1402055d0
+// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_PacketOptionB@@II@Z 0x140204480
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x140205640
 // MS2-PIN: ??0?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAA@I@Z 0x140203150
 // MS2-PIN: ??0CNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAA@I@Z 0x140203660
 // MS2-PIN: ??1?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAA@XZ 0x1402038f0
 // MS2-PIN: ??1CNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAA@XZ 0x140203a30
-// MS2-PIN: ??1CPair@?$CAtlMap@W4Unk_PacketOptionA@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEAA@XZ 0x140203a80
-// MS2-PIN: ??1CPair@?$CAtlMap@W4Unk_PacketOptionB@@V?$Unk_PayloadPtr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$Unk_PayloadPtr@VBaseOption@@@@@4@@ATL@@QEAA@XZ 0x140203aa0
+// MS2-PIN: ??1CPair@?$CAtlMap@W4Unk_PacketOptionA@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionA@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEAA@XZ 0x140203a80
+// MS2-PIN: ??1CPair@?$CAtlMap@W4Unk_PacketOptionB@@V?$MS2Ptr@VBaseOption@@@@V?$CElementTraits@W4Unk_PacketOptionB@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VBaseOption@@@@@4@@ATL@@QEAA@XZ 0x140203aa0
 // MS2-PIN: ??_GCNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAAPEAXI@Z 0x140203d10
 // MS2-PIN: ?AddTail@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@QEAAPEAU__POSITION@@I@Z 0x140203f00
 // MS2-PIN: ?FreeNode@?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@AEAAXPEAVCNode@12@@Z 0x140204a20
@@ -84,7 +84,9 @@
 #include "ms2/placeholder/ccitemcoloringpacket.h"
 #include "ms2/placeholder/cmeratmarketpacket.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/citemdata.h"   // C3: CItemData::CreateExtraData (0x14053e6c0)
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItem> for the item wire
+#include "ms2/client/ms2/tencentuserreportdata.h"
 #include "ms2/commonfiles/constraints.h"   // C3: Unk_1402c41d0..Unk_1402c43f0
 #include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Object::Error
 // Invented constraint names; the representation follows commonfiles/constraints.h calls.
@@ -225,28 +227,27 @@ struct Unk_PetLock {
     CLockCriticalSection* lock;
 };
 extern int DAT_1439ed004;
-struct Unk_ItemFactory {Unk_PayloadPtr<CItemExtraData> FUN_14053e6c0();};
-Unk_PayloadPtr<Unk_ItemFactory> FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);   // C3: was Unk_PayloadPtr<Unk_ItemFactory> (Unk_ItemFactory = CItemData)
 struct Unk_ColorItems {
     void* prefix0;void* prefix8;void* prefix10;
-    ATL::CAtlArray<Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>> items;
+    ATL::CAtlArray<MS2Ptr<CCItemColoringPacket::ChangeColorItem>> items;
     void FUN_140200950(COutputStream&);
     void FUN_140200a50(void*);
-    void FUN_140200bc0(Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>);
+    void FUN_140200bc0(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
     void FUN_140200c10();
     bool FUN_140200c40();
-    Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> FUN_140200c70(size_t);
-    Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> FUN_140200d40();
+    MS2Ptr<CCItemColoringPacket::ChangeColorItem> FUN_140200c70(size_t);
+    MS2Ptr<CCItemColoringPacket::ChangeColorItem> FUN_140200d40();
     size_t FUN_140200e10();
 };
 MS2_CHECK_SIZE(Unk_ColorItems,0x38);
 MS2_CHECK_OFFSET(Unk_ColorItems,items,0x18);
-struct Unk_PayloadIdentitySource {
-    void* p0;void* p8;void* p10;__int64 id;int type;int p24;
-    void* p28;void* p30;void* p38;void* p40;void* p48;void* p50;
-    CStringW name;
-};
-MS2_CHECK_SIZE(Unk_PayloadIdentitySource,0x60);
+#include "ms2/placeholder/cmatchpartyrecruit.h"   // C3: Unk_PayloadIdentitySource = CMatchPartyRecruit (recruitId 0x18, fieldId 0x20, ownerName 0x58)
+
+
+
+
+
 struct Unk_PayloadNames {
     Unk_PayloadNames();
     int a,b,c,d;CStringW name,other;
@@ -255,38 +256,13 @@ MS2_CHECK_SIZE(Unk_PayloadNames,0x20);
 struct Unk_PayloadIdentity {
     Unk_PayloadIdentity();
     Unk_PayloadIdentity(__int64,int,CStringW);
-    Unk_PayloadIdentity(Unk_PayloadPtr<Unk_PayloadIdentitySource>);
+    Unk_PayloadIdentity(MS2Ptr<CMatchPartyRecruit>);   // = partymanager's party recruit invite (0x1401fbeb0)
     __int64 id;int type;CStringW name;
 };
 MS2_CHECK_SIZE(Unk_PayloadIdentity,0x18);
 struct Unk_PayloadZero {Unk_PayloadZero();int value;};
 MS2_CHECK_SIZE(Unk_PayloadZero,4);
-struct Unk_PayloadValue {
-    // @0x1402038a0
-    Unk_PayloadValue(){Reset();}
-    // @0x140204340
-    void Copy(const Unk_PayloadValue& other){Reset();type=other.type;value=other.value;}
-    // @0x140207730
-    void Reset(){type=0;value=0;}
-    int type;__int64 value;
-};
-MS2_CHECK_SIZE(Unk_PayloadValue,16);
-struct Unk_PayloadDetails {
-    Unk_PayloadDetails();void FUN_140200f80();void FUN_140201790(const Unk_PayloadDetails&);
-    int a,b;
-    CStringW s8,s10,s18;
-    __int64 q20;int i28;
-    CStringW s30;
-    Unk_PayloadValue v38;
-    __int64 q48,q50;int i58;
-    CString s60;CStringW s68,s70;CString s78;
-    int i80;__int64 q88,q90;
-    CStringW s98,sa0;__int64 qa8;CString sb0;CStringW sb8;
-    __int64 qc0,qc8;CString sd0;int id8;__int64 qe0;
-};
-MS2_CHECK_SIZE(Unk_PayloadDetails,0xe8);
-MS2_CHECK_OFFSET(Unk_PayloadDetails,v38,0x38);
-MS2_CHECK_OFFSET(Unk_PayloadDetails,s98,0x98);
+using TencentUserReport::Unk_ReportData;   // C3: the report record (tencentuserreportdata.h)
 struct Unk_PayloadItemWire {
     void FUN_1401fcdd0(COutputStream&,MS2Ptr<CItem>);
     MS2Ptr<CItem> FUN_1401fce40(CInputStream&);
@@ -504,14 +480,14 @@ void CCCreateItemPacket::vfunc_0(COutputStream& stream)
         stream.WriteUInt8(static_cast<unsigned char>(optionsA[index].GetCount()));
         for(POSITION pos=optionsA[index].GetStartPosition();pos;optionsA[index].GetNext(pos)){
             Unk_PacketOptionA key=optionsA[index].GetKeyAt(pos);
-            Unk_PayloadPtr<BaseOption> option=optionsA[index].GetValueAt(pos);
+            MS2Ptr<BaseOption> option=optionsA[index].GetValueAt(pos);
             stream.WriteInt32(key);
             option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
         }
         stream.WriteUInt8(static_cast<unsigned char>(optionsB[index].GetCount()));
         for(POSITION second=optionsB[index].GetStartPosition();second;optionsB[index].GetNext(second)){
             Unk_PacketOptionB key=optionsB[index].GetKeyAt(second);
-            Unk_PayloadPtr<BaseOption> option=optionsB[index].GetValueAt(second);
+            MS2Ptr<BaseOption> option=optionsB[index].GetValueAt(second);
             stream.WriteInt32(key);
             option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
         }
@@ -531,14 +507,14 @@ void CCCreateItemPacket::vfunc_1(void* packet)
         unsigned int count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
         for(unsigned int n=0;n<count;++n){
             Unk_PacketOptionA key=static_cast<Unk_PacketOptionA>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32());
-            Unk_PayloadPtr<BaseOption> option=new BaseOption;
+            MS2Ptr<BaseOption> option=new BaseOption;
             option->FUN_140266d60(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
             optionsA[index].SetAt(key,option);
         }
         unsigned int secondCount=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
         for(unsigned int n=0;n<secondCount;++n){
             Unk_PacketOptionB key=static_cast<Unk_PacketOptionB>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32());
-            Unk_PayloadPtr<BaseOption> option=new BaseOption;
+            MS2Ptr<BaseOption> option=new BaseOption;
             option->FUN_140266d60(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
             optionsB[index].SetAt(key,option);
         }
@@ -733,9 +709,9 @@ Unk_PayloadIdentity::Unk_PayloadIdentity(__int64 value,int kind,CStringW text):i
 }
 
 // @0x1401fbeb0
-Unk_PayloadIdentity::Unk_PayloadIdentity(Unk_PayloadPtr<Unk_PayloadIdentitySource> source):id(0),type(0)
+Unk_PayloadIdentity::Unk_PayloadIdentity(MS2Ptr<CMatchPartyRecruit> source):id(0),type(0)
 {
-    if(source.get()!=0){id=source->id;type=source->type;name=source->name;}
+    if(source.get()!=0){id=source->recruitId;type=source->fieldId;name=source->ownerName;}
 }
 
 // @0x1401fbf70
@@ -1716,9 +1692,9 @@ void CCItemColoringPacket::ChangeColorItem::FUN_1402001b0(void* packet)
 {
     flag18=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;flag19=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;flag1a=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;
     value1c=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();value20=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();value28=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();type=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
-    Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
+    MS2Ptr<CItemData> factory=FUN_14053f870(type);
     if(factory.get()!=0){
-        extra=factory->FUN_14053e6c0();
+        extra=factory->CreateExtraData();
         if(extra.get()!=0)extra->vfunc_6(*reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8));
     }
 }
@@ -1738,9 +1714,9 @@ void CCItemColoringPacket::ChangeColorItem::FUN_140200590(CInputStream& stream)
 {
     flag18=(&stream)->ReadUInt8()==1?true:false;flag19=(&stream)->ReadUInt8()==1?true:false;flag1a=(&stream)->ReadUInt8()==1?true:false;
     value1c=(&stream)->ReadInt32();value20=(&stream)->ReadInt64();value28=(&stream)->ReadInt64();type=(&stream)->ReadInt32();
-    Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
+    MS2Ptr<CItemData> factory=FUN_14053f870(type);
     if(factory.get()!=0){
-        extra=factory->FUN_14053e6c0();
+        extra=factory->CreateExtraData();
         if(extra.get()!=0)extra->vfunc_6(*(&stream));
     }
 }
@@ -1751,9 +1727,9 @@ void CCItemColoringPacket::ChangeColorItem::FUN_1402007b0(const ChangeColorItem&
 {
     flag18=other.flag18;flag19=other.flag19;flag1a=other.flag1a;
     value1c=other.value1c;value20=other.value20;value28=other.value28;type=other.type;
-    Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
+    MS2Ptr<CItemData> factory=FUN_14053f870(type);
     if(factory.get()!=0){
-        if((extra=factory->FUN_14053e6c0()).get())extra->vfunc_3(other.extra.get());
+        if((extra=factory->CreateExtraData()).get())extra->vfunc_3(other.extra.get());
     }
 }
 MS2_REPLACE_METHOD(0x1402007B0, CCItemColoringPacket::ChangeColorItem, FUN_1402007b0, 409, 0xF37BFA3C);
@@ -1764,7 +1740,7 @@ void Unk_ColorItems::FUN_140200950(COutputStream& stream)
     size_t count=items.GetCount();
     stream.WriteUInt8(static_cast<unsigned char>(count));
     for(size_t index=0;index<count;++index){
-        Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=items[index];
+        MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=items[index];
         if(item.get()){stream.WriteUInt8(1);item->FUN_1402000a0(stream);}
         else stream.WriteUInt8(0);
     }
@@ -1779,7 +1755,7 @@ void Unk_ColorItems::FUN_140200a50(void* packet)
     for(size_t index=0;index<count;++index){
         unsigned char flag=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
         if(flag==1){
-            Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=new CCItemColoringPacket::ChangeColorItem;
+            MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=new CCItemColoringPacket::ChangeColorItem;
             item->FUN_1402001b0(packet);
             FUN_140200bc0(item);
         }
@@ -1787,7 +1763,7 @@ void Unk_ColorItems::FUN_140200a50(void* packet)
 }
 
 // @0x140200bc0
-void Unk_ColorItems::FUN_140200bc0(Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item)
+void Unk_ColorItems::FUN_140200bc0(MS2Ptr<CCItemColoringPacket::ChangeColorItem> item)
 {
     items.Add(item);
 }
@@ -1808,25 +1784,25 @@ bool Unk_ColorItems::FUN_140200c40()
 MS2_REPLACE_METHOD(0x140200C40, Unk_ColorItems, FUN_140200c40, 31, 0xA55FE3CB);
 
 // @0x140200c70
-Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200c70(size_t index)
+MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200c70(size_t index)
 {
-    if(items.IsEmpty())return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
-    if(index>=items.GetCount())return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+    if(items.IsEmpty())return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
+    if(index>=items.GetCount())return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
     return items[index];
 }
 MS2_REPLACE_METHOD(0x140200C70, Unk_ColorItems, FUN_140200c70, 191, 0xA11E03C4);
 
 // @0x140200d40
-Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
+MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
 {
-    Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=FUN_140200c70(0);
+    MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=FUN_140200c70(0);
     if(item.get()!=0){
         items.RemoveAt(0,1);
         return item;
     }
     else{
         FUN_140200c10();
-        return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+        return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
     }
 }
 MS2_REPLACE_METHOD(0x140200D40, Unk_ColorItems, FUN_140200d40, 188, 0x633FE9CD);
@@ -1839,19 +1815,19 @@ size_t Unk_ColorItems::FUN_140200e10()
 MS2_REPLACE_METHOD(0x140200E10, Unk_ColorItems, FUN_140200e10, 31, 0x55BB308A);
 
 // @0x140200e40
-Unk_PayloadDetails::Unk_PayloadDetails()
+Unk_ReportData::Unk_ReportData()
 {
     FUN_140200f80();
 }
 
 // @0x140200f80
-void Unk_PayloadDetails::FUN_140200f80()
+void Unk_ReportData::FUN_140200f80()
 {
-    a=0;b=0;s8=L"";s18=L"";q20=0;i28=0;s30=L"";v38.Reset();
-    q48=0;q50=0;i58=0;s60=L"";s68=L"";i80=0;q88=0;q90=0;s98=L"";sa0=L"";
-    qa8=0;sb0="";sb8=L"";qc0=0;qc8=0;sd0="";id8=0;qe0=0;
+    type=0;reason=0;name=L"";itemName=L"";m_20=0;m_28=0;content=L"";m_38.Reset();
+    itemId=0;guildId=0;guildNumber=0;m_60=L"";comment=L"";itemKind=0;m_88=0;m_90=0;m_98=L"";reportTitle=L"";
+    reportId=0;reportPath="";reportComment=L"";m_c0=0;m_c8=0;m_d0="";m_d8=0;m_e0=0;
 }
-MS2_REPLACE_METHOD(0x140200F80, Unk_PayloadDetails, FUN_140200f80, 503, 0x9645EFC9);
+MS2_REPLACE_METHOD(0x140200F80, Unk_ReportData, FUN_140200f80, 503, 0x9645EFC9);
 
 // @0x140201180
 void FUN_140201180(unsigned char* payload, COutputStream& stream)
@@ -1895,14 +1871,14 @@ void FUN_140201360(unsigned char* payload, void* inputPacket)
 }
 
 // @0x140201790
-void Unk_PayloadDetails::FUN_140201790(const Unk_PayloadDetails& other)
+void Unk_ReportData::FUN_140201790(const Unk_ReportData& other)
 {
-    a=other.a;b=other.b;s8=other.s8;s18=other.s18;q20=other.q20;i28=other.i28;s30=other.s30;
-    v38.Copy(other.v38);q48=other.q48;q50=other.q50;i58=other.i58;s60=other.s60;s68=other.s68;
-    q88=other.q88;q90=other.q90;s98=other.s98;sa0=other.sa0;qa8=other.qa8;sb0=other.sb0;sb8=other.sb8;
-    qc0=other.qc0;qc8=other.qc8;sd0=other.sd0;id8=other.id8;qe0=other.qe0;
+    type=other.type;reason=other.reason;name=other.name;itemName=other.itemName;m_20=other.m_20;m_28=other.m_28;content=other.content;
+    m_38.Copy(other.m_38);itemId=other.itemId;guildId=other.guildId;guildNumber=other.guildNumber;m_60=other.m_60;comment=other.comment;
+    m_88=other.m_88;m_90=other.m_90;m_98=other.m_98;reportTitle=other.reportTitle;reportId=other.reportId;reportPath=other.reportPath;reportComment=other.reportComment;
+    m_c0=other.m_c0;m_c8=other.m_c8;m_d0=other.m_d0;m_d8=other.m_d8;m_e0=other.m_e0;
 }
-MS2_REPLACE_METHOD(0x140201790, Unk_PayloadDetails, FUN_140201790, 622, 0xBF6F7AEF);
+MS2_REPLACE_METHOD(0x140201790, Unk_ReportData, FUN_140201790, 622, 0xBF6F7AEF);
 
 // @0x140201a10
 void FUN_140201a10(unsigned char* payload, COutputStream& stream)

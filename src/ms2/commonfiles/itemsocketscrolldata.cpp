@@ -20,7 +20,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -57,7 +57,7 @@ CItemSocketScrollData::~CItemSocketScrollData()
 }
 
 // @0x140624810
-void CItemSocketScrollData::Read(Unk_140165cf0* pElem)
+void CItemSocketScrollData::Read(TiXmlElement* pElem)
 {
     ItemSocketScrollType eType = ITEM_SOCKET_SCROLL_TYPE_0;
     XmlValue(pElem, "type", eType);
@@ -104,7 +104,7 @@ CItemSocketScrollDataServer::~CItemSocketScrollDataServer()
 }
 
 // @0x140624ac0
-void CItemSocketScrollDataServer::Read(Unk_140165cf0* pElem)
+void CItemSocketScrollDataServer::Read(TiXmlElement* pElem)
 {
     CItemSocketScrollData::Read(pElem);
     if (m_eType == ITEM_SOCKET_SCROLL_TYPE_1)
@@ -138,7 +138,7 @@ int CItemSocketScrollTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -146,7 +146,7 @@ int CItemSocketScrollTable::Load()
     }
     const CString& strTag = CString("scroll");
     const CString& strKey = CString("id");
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

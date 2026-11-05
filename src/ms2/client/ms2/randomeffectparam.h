@@ -73,7 +73,7 @@ class CRandomEffectParam : public CEffectParam
 {
 public:
     CRandomEffectParam();                                           // 0x1416f44e0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                     // 1 0x1416f4540 "prob" + child <effect>s
+    virtual void vfunc_1(TiXmlElement* pNode);                     // 1 0x1416f4540 "prob" + child <effect>s
     virtual bool vfunc_2();                                         // 2 0x1416f4640 warn when there is no child
     virtual bool vfunc_5(int n);                                    // 5 0x1416f46c0 every child's vfunc_5
     virtual CEffectPtr vfunc_6();                                   // 6 0x1416f47b0 new CRandomEffect

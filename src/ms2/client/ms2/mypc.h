@@ -120,7 +120,7 @@ public:
     virtual void vfunc_66(int n);                           // 66 0x1415216c0
     virtual void vfunc_90(void* p);                         // 90 0x141521760
     virtual void vfunc_91(void* p);                         // 91 0x1415219a0
-    virtual MS2Ptr<Unk_PCBaseComp_b18> vfunc_104(bool a, bool b, bool c);  // 104 0x1415219d0
+    virtual MS2Ptr<CSkillRecord> vfunc_104(bool a, bool b, bool c);  // 104 0x1415219d0
     virtual bool vfunc_102(MS2Ptr<CSkillRecord> skill);     // 102 0x141521fc0
     virtual void vfunc_59(int nState, StateData* pData, int nSub, int bForce);   // 59 0x141522c60
     virtual int vfunc_58();                                 // 58 0x141522cc0
@@ -160,7 +160,7 @@ public:
     void FUN_14152a2f0(int n);
     CSkillSystem* FUN_141523bc0();                          // the skill system
     CQuestManager* FUN_141523ba0();                         // the quest manager (FUN_140764020)
-    Unk_MyPCStateCtl* FUN_141523be0();                      // the state controller
+    StatePcGuideObjectController* FUN_141523be0();          // the state controller (C3: was Unk_MyPCStateCtl*)
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141523c00();
     UserUGCMapInfo* FUN_141523c50();
     void FUN_141523c80();                                   // pick the housing cube under the player
@@ -212,8 +212,8 @@ public:
     unsigned short GetSkillLevel(int nSkillId);             // the learned level of nSkillId (1 when not learned)
     int FUN_14152e970(int nId);                             // the free skill points of nId
     bool FUN_14152e7f0();                                   // a worn item still counts (not expired)
-    size_t FUN_14152eb20();
-    size_t FUN_14152eb50();
+    unsigned FUN_14152eb20();   // m_list1650 count, read 32-bit by the function cube
+    unsigned FUN_14152eb50();
     void ResetDailyRecords();
     int IsDailyRecordStale();
     void FUN_14152ec40(__int64 n);
@@ -242,6 +242,7 @@ public:
     void FUN_141524a80(bool bForce);                        // stop moving for a cast
     void FUN_14152b2d0(__int64 nItemUid);                   // summon the pet of an inventory item
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
+    MS2Ptr<class CStatPointManager> FUN_140c25130();        // the stat point manager handle (uihighlightgamemenu.cpp)
     bool FUN_1415302e0(int nItemId);                         // the cube item is locked (housing level, achievement)
     void FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* pScoreDiff);   // the stat change of equipping pItem
     static void FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, int* pSpecials, int* pScore);   // sum the items' stats

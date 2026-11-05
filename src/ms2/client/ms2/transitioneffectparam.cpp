@@ -200,7 +200,7 @@ MS2_REPLACE_METHOD(0x14185f6f0, TransitionEffect, FUN_14185f6f0, 793, 0xE0359D10
 
 // Keyframe XML reader shared by the light and chaos-light effect params (sits just before this TU's range start).
 // MS2-RANGE: 0x14185f0b0-0x14185f1d0 .text$mn
-class Unk_140165cf0;                                                    // game TinyXML element
+class TiXmlElement;                                                    // game TinyXML element
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
@@ -210,10 +210,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 CString FUN_140188f50(const char* psz, int nCodePage);                  // CString from a C string
 
 // @0x14185f0b0
-void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime)
+void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime)
 {
     pData->m_nInterpolation = 0;
-    CString strType = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("type"), 0);
+    CString strType = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("type"), 0);
     if (strType.CompareNoCase("FastInEaseOut") == 0)
         pData->m_nInterpolation = 1;
     else if (strType.CompareNoCase("EaseInFastOut") == 0)

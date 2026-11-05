@@ -3,12 +3,12 @@
 #include <afx.h>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/stream.h"
-struct Unk_CommonPosition {
-    Unk_CommonPosition(); // 0x140203800, empty default constructor
-    Unk_CommonPosition(float,float,float);
-    float x,y,z;
-};
-MS2_CHECK_SIZE(Unk_CommonPosition,0xc);
+// The position is a D3DXVECTOR3: its ctors are the SDK inlines 0x140203800 () and 0x14027db40 (float, float, float).
+#include <d3dx9math.h>
+//
+//
+//
+MS2_CHECK_SIZE(D3DXVECTOR3,0xc);
 class BillBoardInfo : public CPtred {
 public:
     BillBoardInfo();
@@ -23,7 +23,7 @@ public:
     CStringW title,text;
     bool enabled;
     int localState,localIndex;
-    Unk_CommonPosition position;
+    D3DXVECTOR3 position;
     __int64 start,end;
 };
 MS2_CHECK_SIZE(BillBoardInfo,0x88);

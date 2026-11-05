@@ -83,28 +83,28 @@ private:
 };
 MS2_CHECK_SIZE(Unk_PCBaseBuffTracker, 0x70);
 
-// +0x748: the actor's buffs (0x1a0; ctor 0x14096ef20(p, owner); unit 0x14096ef20..). FUN_1416749a0 returns it as the
-// Unk_PCBaseBuffs view that ridee.cpp / pcbase.cpp declare. The recovered class is AdditionalCliList
-// (additionalclilist.h, ?\additionalcli.cpp#2); this opaque view keeps pcbase.h free of the table headers.
-class Unk_PCBaseBuffList
-{
-public:
-    Unk_PCBaseBuffList(PCBase* pOwner);                     // 0x14096ef20
-    ~Unk_PCBaseBuffList();
-    void FUN_140970490();                                   // clear
-    void FUN_140971150();                                   // refresh after an equip change (pc.cpp)
-    bool FUN_140970ad0();                                   // a buff keeps the actor busy (pc.cpp)
-    void FUN_140970420(double dTime);                       // per-frame update
-    float FUN_1409705d0();                                  // scale
-    int FUN_1409701d0(int nKind);
-    int FUN_140970eb0(float& fOut);                         // a buff fixes the height
-    void FUN_14096fb20(int nTrigger);                       // fire the buffs triggered by a hit (pc.cpp)
-    int FUN_140970c10(SkillAttackData* pAttack, int n);     // a buff ignores the attack's hit reaction (pc.cpp)
-    unsigned FUN_140970b30();                               // a buff blocks the hit reaction (pc.cpp)
-    MS2Ptr<AdditionalCli> FUN_14096fc80(int nEffectLevel);  // the buff of an effect (pc.cpp)
-private:
-    char m_pad[0x1a0];
-};
+// +0x748: the actor's buffs, AdditionalCliList (additionalclilist.h, ?\additionalcli.cpp#2; 0x1a0, ctor 0x14096ef20(p, owner),
+// dtor 0x14096f000). FUN_1416749a0 returns it as the Unk_PCBaseBuffs view that ridee.cpp / pcbase.cpp declare.
+#include "ms2/client/ms2/additionalclilist.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class Unk_PCBaseFlags
 {
@@ -222,7 +222,7 @@ public:
     virtual void vfunc_101(MS2Ptr<CSkillRecord> skill, int n, void* q);  // 101 0x141672de0
     virtual bool vfunc_102(MS2Ptr<CSkillRecord> skill);                  // 102 0x141673890 (base: return true)
     virtual MS2Ptr<Unk_PCBaseComp_b18> vfunc_103();         // 103 0x1416738c0 (checks +0x8e8 list)
-    virtual MS2Ptr<Unk_PCBaseComp_b18> vfunc_104(bool a, bool b, bool c);  // 104 0x1416739c0 (base: null; 3 bools per Ridee)
+    virtual MS2Ptr<CSkillRecord> vfunc_104(bool a, bool b, bool c);  // 104 0x1416739c0 (base: null; 3 bools per Ridee)
     virtual void vfunc_105(efd::Point3 kPos, void* b, void* c, int d);   // 105 0x141673a10 (kPos by value per Ridee)
     virtual void vfunc_106(const efd::Point3& kMove, double dTime, int nFlags);   // 106 0x141674750 move by a delta
     virtual void vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale); // 107 0x141674020 knock-back from a hit
@@ -401,7 +401,7 @@ public:
     efd::SmartPointer<NiAVObject> FUN_1416757c0(CString strName);   // 0x1416757c0 node of +0xb88
     efd::SmartPointer<NiAVObject> FUN_1416758a0(CString strName);   // 0x1416758a0 node of +0xbb8
     efd::SmartPointer<NiAVObject> FUN_141675930();          // 0x141675930 copy of +0xbe8
-    int FUN_141675cd0(const NiPoint3& kPos, CString strUnused, CString* pName, float* pDist);   // 0x141675cd0 nearest node in +0xbb8
+    int FUN_141675cd0(NiPoint3 kPos, CString strUnused, CString* pName, float* pDist);   // 0x141675cd0 nearest node in +0xbb8
     int FUN_141675e60();                                     // 0x141675e60 +0xbb8 not empty
     void* FUN_141675eb0();                                   // 0x141675eb0 &m_pushControl (statemanager.cpp)
     void FUN_141676320(MS2Ptr<RideOnAction> spAction);       // 0x141676320 (by value)
@@ -423,7 +423,7 @@ public:
     void FUN_141678160(const NiPoint3& kPos);                // 0x141678160 m_posBF4 = kPos
     unsigned int GetSkillUseDisableMask();                            // 0x141678680 skill-use disable mask (buffs | field)
     int FUN_141678820();                                     // 0x141678820 +0xc68 when the field checks climbing
-    void FUN_141679120(int n);                               // 0x141679120 (+0xd00 slot 4)
+    int FUN_141679120(int n);                                // 0x141679120 (+0xd00 slot 4)
     efd::utf8string FUN_141679170(int a, int b);             // 0x141679170 (+0xd00 slot 6)
     NiPoint3 FUN_14166dbb0();                               // 0x14166dbb0
     CString FUN_14166dc50();                                // 0x14166dc50 model name
@@ -471,7 +471,7 @@ public:
     CColorBoostManager m_colorBoost;        // +0x648 (0x48)
     CPushControl m_pushControl;         // +0x690 (0x48)
     Unk_PCBaseBuffTracker m_unk_6d8;    // +0x6d8
-    Unk_PCBaseBuffList m_unk_748;       // +0x748 buffs
+    AdditionalCliList m_unk_748;        // +0x748 buffs
     CAtlList<MS2Ptr<Unk_PCBaseComp_b18> > m_unk_8e8;   // +0x8e8 (init 0x14167de50(p,10)); head probed by vfunc_103
     CStringW m_strW918;                 // +0x918
     NiPoint3 m_pos920;                  // +0x920 = ZERO

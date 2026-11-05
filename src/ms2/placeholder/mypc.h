@@ -64,7 +64,7 @@ public:
     void FUN_141530700(int bFlag);
     void FUN_14152a2d0(int n);
     void FUN_141699a20();                                   // scenestategame OnAddUser
-    void FUN_14152ed60(class Unk_UserProxy* pProxy);        // scenestategame OnAddUser
+    void FUN_14152ed60(const struct Unk_MyPCGameBegin* pData);   // scenestategame OnAddUser (C3: was Unk_UserProxy*; mypc.cpp's game-begin view)
     void FUN_1416634a0(__int64 nCharId);                    // PC member (scenestategame OnAddUser)
     int FUN_141527eb0();                                    // (scenestategame storage update)
     int FUN_141529620();

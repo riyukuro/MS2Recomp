@@ -20,7 +20,7 @@ class Unk_GsPageScript;
 struct Unk_GsFound;
 class CBuddy;
 class CGuildMember;
-template <class T> class Unk_BuddyPtr;
+template <class T> class MS2Ptr;
 
 // A page of the dialog: owns the AS object of its page movie clip and points back at the dialog.
 class UIWeddingGuestPage : public CPtred

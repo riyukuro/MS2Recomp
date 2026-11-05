@@ -10,7 +10,7 @@ struct SkillHasBuffCondition
 {
     SkillHasBuffCondition();                                // 0x1407e6170
     bool operator!=(const SkillHasBuffCondition& o);        // 0x1407e61c0
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e6250
+    int Load(TiXmlElement* pElem);                         // 0x1407e6250
     int Save(void* pElem);                                  // 0x1407e6300
     BOOL HasContent();                                      // 0x1407e6400
 
@@ -28,7 +28,7 @@ struct SkillBeginCondition
     SkillBeginCondition();                                  // 0x1407e6440
     bool operator!=(const SkillBeginCondition& o);          // 0x1407e64b0
     bool IsDefault();                                       // 0x1407e6580
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e6610
+    int Load(TiXmlElement* pElem);                         // 0x1407e6610
     int Save(void* pParent);                                // 0x1407e6740
 
     float m_fProbability;                                   // +0x00

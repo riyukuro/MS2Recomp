@@ -13,7 +13,7 @@
 // MS2-PIN: ??0?$MS2Ptr@VCustomize@@@@QEAA@PEAVCustomize@@@Z 0x140f0b010
 // MS2-PIN: ??1?$MS2Ptr@VTData@UIBillDialog@@@@QEAA@XZ 0x140f0b210
 // MS2-PIN: ??1TData@UIBillDialog@@UEAA@XZ 0x140f0b270
-// MS2-PIN: ??4?$Unk_14102fe10@VUnk_140bfc2e0@@@@QEAAAEAV0@AEBV0@@Z 0x140f0b2d0
+// MS2-PIN: ??4?$MS2Ptr@VASTileCacheList@@@@QEAAAEAV0@AEBV0@@Z 0x140f0b2d0
 // MS2-PIN: ?get@?$MS2Ptr@VTData@UIBillDialog@@@@QEBAPEAVTData@UIBillDialog@@XZ 0x140f0b4c0
 // MS2-PIN: ?get@?$MS2Ptr@VUnk_BSCamera@@@@QEBAPEAVUnk_BSCamera@@XZ 0x140f0b4d0
 // MS2-PIN: ??C?$MS2Ptr@VTData@UIBillDialog@@@@QEBAPEAVTData@UIBillDialog@@XZ 0x140f0b4e0
@@ -54,8 +54,8 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uibeautyshopstyledialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uibeautyshopstyledialog.h"
-template <> Unk_14102fe10<Unk_140bfc2e0>::Unk_14102fe10(const Unk_14102fe10& o);
-template <> bool Unk_14102fe10<Unk_140bfc2e0>::operator==(Unk_140bfc2e0* p) const;
+//
+//
 static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};   // @0x1400ddde0
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -120,19 +120,19 @@ public:
 };
 
 // The style slot list ("m_items" of "m_customStyle").
-class Unk_140bfc2e0 : public ASDisplayObject
+#include "ms2/placeholder/asmultiselecttilecachelist.h"   // C3: the style list is ASTileCacheList (was Unk_140bfc2e0 / Unk_BSStyleEntity)
+//
+//
+//
+//
+//
+//
+//
+//
+class Unk_ReportScript    // the m_30 root script view; GetChild<T> is defined in uitencentuserreportdialog.cpp (0x140ede0c0)
 {
 public:
-};
-class Unk_BSStyleEntity : public ASGameEntity
-{
-public:
-    Unk_14102fe10<Unk_140bfc2e0> FUN_140bfa6a0(const CString& strName);
-};
-class Unk_BSRootScript : public AScript
-{
-public:
-    MS2Ptr<ASGameEntity> FUN_140ede0c0(const CString& strName);
+    template<class T> MS2Ptr<T> GetChild(const CString& name);
 };
 
 class ASTooltip : public AScript
@@ -150,30 +150,30 @@ private:
 };
 MS2_CHECK_SIZE(ASTooltip, 0x60);
 
-// The colour palette rows (FUN_140281980: the ingredient/palette tables).
-class Unk_BSColorRow : public CPtred
-{
-public:
-    char m_pad_18[0x24 - 0x18];
-    unsigned m_achieve;                         // +0x24 achieve required to use the colour
-    int m_grade;                                // +0x28 grade of that achieve
-    unsigned m_nameId;                              // +0x2c name string (0x48 table; 0x49: description)
-};
-MS2_CHECK_OFFSET(Unk_BSColorRow, m_nameId, 0x2c);
-typedef MS2Ptr<Unk_BSColorRow> Unk_BSColorPtr;
-class Unk_BSColorList : public CPtred
-{
-public:
-    unsigned FUN_140570e10();                                   // count
-    const Unk_BSColorPtr& FUN_140570dd0(size_t nIndex);         // row
-};
-class Unk_BSColorTable
-{
-public:
-    Unk_BSColorPtr FUN_1405587f0(int nPalette, int nIndex);     // row of the extended palette
-    Unk_BSColorPtr FUN_140558960(int nPalette, int nIndex);     // row
-    MS2Ptr<Unk_BSColorList> FUN_140558ad0(int nPalette);        // palette
-};
+// The colour palette rows are ItemColorEx (CItemDataTable::GetPaletteColor*, 0x1405587f0 / 0x140558960 / 0x140558ad0):
+// the former unit-local views Unk_BSColorRow / Unk_BSColorList / Unk_BSColorTable went to the real classes.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The price row of a beauty shop entry.
 class Unk_BSPriceRow : public CPtred
@@ -555,14 +555,14 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
     bool bShowRgb = !bHideRgb;
     if (nPalette > 0)
     {
-        Unk_BSColorPtr spRow = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558960(nPalette, nIndex);
+        MS2Ptr<ItemColorEx> spRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorBySN(nPalette, nIndex);
         if (spRow.get())
         {
             CStringW strRgb = LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB);
             CStringW strName;
-            if (spRow->m_nameId > 0)
+            if (static_cast<unsigned>(spRow->m_n2c) > 0)
             {
-                unsigned nNameId = spRow->m_nameId;
+                unsigned nNameId = static_cast<unsigned>(spRow->m_n2c);
                 CStringW strColor = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, nNameId);
                 if (!strColor.IsEmpty())
                 {
@@ -578,8 +578,8 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
             if (strName.IsEmpty() && bShowRgb == true)
                 strName = strRgb;
             CStringW strAchieve;
-            if (spRow->m_achieve > 0 && ((class CAchieveManager*)FUN_1406c7600())->IsBeforeStartGrade(spRow->m_achieve, spRow->m_grade) == 0)
-                strAchieve = FUN_14093bd40(spRow->m_achieve, spRow->m_grade, L"");
+            if (static_cast<unsigned>(spRow->m_n24) > 0 && ((class CAchieveManager*)FUN_1406c7600())->IsBeforeStartGrade(static_cast<unsigned>(spRow->m_n24), spRow->m_n28) == 0)
+                strAchieve = FUN_14093bd40(static_cast<unsigned>(spRow->m_n24), spRow->m_n28, L"");
             if (!strAchieve.IsEmpty())
                 strOut = strName.IsEmpty() == true
                              ? strAchieve
@@ -630,23 +630,23 @@ int FUN_140f02bc0();
 
 // The nIndex-th colour of a palette (past the palette: the extended palette, when enabled).
 // @0x140f022f0
-Unk_BSColorPtr FUN_140f022f0(int nPalette, unsigned nIndex)
+MS2Ptr<ItemColorEx> FUN_140f022f0(int nPalette, unsigned nIndex)
 {
-    MS2Ptr<Unk_BSColorList> spList = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(nPalette);
+    Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spList = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nPalette);
     if (spList == 0)
-        return Unk_BSColorPtr(0);
-    Unk_BSColorPtr spRow(0);
-    unsigned nCount = spList->FUN_140570e10();
+        return MS2Ptr<ItemColorEx>(0);
+    MS2Ptr<ItemColorEx> spRow(0);
+    unsigned nCount = static_cast<unsigned>(spList->GetCount());
     if (nCount <= nIndex)
     {
         if (!((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb7))
-            return Unk_BSColorPtr(0);
+            return MS2Ptr<ItemColorEx>(0);
         int nOffset = nIndex - nCount;
         int nExtraPalette = FUN_140f02bc0();
-        spRow = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405587f0(nExtraPalette, nOffset);
+        spRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColor(nExtraPalette, nOffset);
     }
     else
-        spRow = spList->FUN_140570dd0(nIndex);
+        spRow = spList->GetAt(nIndex);
     return spRow;
 }
 
@@ -664,7 +664,7 @@ void FUN_140f024e0(ASData* pArgs, int* pnPalette, int* pnType)
     static_cast<ASObj&>(obj).FUN_1407cbb20("colorTooltip", LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB));
 }
 
-bool FUN_140f026f0(Unk_BSColorPtr spRow, bool* pbLocked);
+bool FUN_140f026f0(MS2Ptr<ItemColorEx> spRow, bool* pbLocked);
 bool FUN_140f02790(unsigned nAchieve, int nGrade, bool* pbLocked);
 
 // @0x140f02650
@@ -675,19 +675,19 @@ bool FUN_140f02650(int nItemId, unsigned nIndex, bool* pbLocked)
     unsigned nPalette = FUN_140f015f0(nItemId);
     if (nPalette > 0)
     {
-        Unk_BSColorPtr spRow = FUN_140f022f0(nPalette, nIndex);
+        MS2Ptr<ItemColorEx> spRow = FUN_140f022f0(nPalette, nIndex);
         return FUN_140f026f0(spRow, pbLocked);
     }
     return true;
 }
 
 // @0x140f026f0
-bool FUN_140f026f0(Unk_BSColorPtr spRow, bool* pbLocked)
+bool FUN_140f026f0(MS2Ptr<ItemColorEx> spRow, bool* pbLocked)
 {
     *pbLocked = false;
     if (spRow == 0)
         return false;
-    return FUN_140f02790(spRow->m_achieve, spRow->m_grade, pbLocked);
+    return FUN_140f02790(static_cast<unsigned>(spRow->m_n24), spRow->m_n28, pbLocked);
 }
 
 // @0x140f02790
@@ -735,12 +735,12 @@ bool FUN_140f029b0(int nItemId, unsigned nIndex)
 }
 
 // @0x140f029f0
-bool FUN_140f029f0(Unk_BSColorPtr spRow)
+bool FUN_140f029f0(MS2Ptr<ItemColorEx> spRow)
 {
     if (spRow == 0)
         return false;
     bool bLocked = false;
-    FUN_140f026f0(Unk_BSColorPtr(spRow), &bLocked);
+    FUN_140f026f0(MS2Ptr<ItemColorEx>(spRow), &bLocked);
     return bLocked;
 }
 
@@ -749,7 +749,7 @@ bool FUN_140f02a80(int nPalette, int nIndex)
 {
     if (!nPalette)
         return false;
-    Unk_BSColorPtr spRow = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558960(nPalette, nIndex);
+    MS2Ptr<ItemColorEx> spRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorBySN(nPalette, nIndex);
     return FUN_140f029f0(spRow);
 }
 
@@ -1384,9 +1384,9 @@ bool UIBeautyShopStyleDialog::FUN_140f06e10()
         bSale = nRet == 0;
     }
     m_30->Invoke("initData", L"$s_beauty_title_my_style_hair", bCap, bSale);
-    m_270 = static_cast<Unk_BSRootScript*>(m_30.operator->())->FUN_140ede0c0("m_customStyle");
+    m_270 = reinterpret_cast<Unk_ReportScript*>(m_30.operator->())->GetChild<ASGameEntity>("m_customStyle");
     if (m_270.get())
-        m_items = static_cast<Unk_BSStyleEntity*>(m_270.operator->())->FUN_140bfa6a0("m_items");
+        m_items = m_270.operator->()->FUN_140bfa6a0<ASTileCacheList>("m_items");   // C3: AScript::FUN_140bfa6a0<ASTileCacheList>
     m_198.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     int nSlot = FUN_140f01070(nKind);
     if (nKind == 1)
@@ -1714,7 +1714,7 @@ int UIBeautyShopStyleDialog::FUN_140f08be0()
 {
     if (m_198 == 0)
         return 0;
-    Unk_14102fe10<Unk_140bfc2e0> spList(m_items);
+    MS2Ptr<ASTileCacheList> spList(m_items);
     if (spList == 0)
         return 0;
     if (reinterpret_cast<ASCoreList*>(m_items.operator->())->GetSelectedIndex() == -1)
@@ -1987,25 +1987,25 @@ MS2Ptr<CMsgBoxData> FUN_140f0a930(CStringW strText, int nType, Delegate<bool(int
     return spBox;
 }
 
-// The style slot list holder (Unk_14102fe10, uiattendgiftdialog.h): the COMDATs of this unit.
-// @0x140f0afb0
-template <> Unk_14102fe10<Unk_140bfc2e0>::Unk_14102fe10(const Unk_14102fe10& o) : m_p(o.m_p)
-{
-    AddRef();
-}
-
-// @0x140f0b310
-template <> Unk_14102fe10<Unk_140bfc2e0>& Unk_14102fe10<Unk_140bfc2e0>::operator=(int)
-{
-    Release();
-    return *this;
-}
-
-// @0x140f0b480
-template <> bool Unk_14102fe10<Unk_140bfc2e0>::operator==(Unk_140bfc2e0* p) const
-{
-    return m_p == p;
-}
+// The style list (MS2Ptr<ASTileCacheList>): its copy ctor 0x140f0afb0, reset 0x140f0b310 and test 0x140f0b480 COMDATs come from ms2ptr_impl.h.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The range-checked vector::at is out of line in the exe (0x140f0ba50).
 template MS2Ptr<CItem>& std::vector<MS2Ptr<CItem> >::at(size_t);

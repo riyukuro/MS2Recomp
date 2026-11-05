@@ -4,14 +4,14 @@
 // MS2-RANGE: 0x1408bb9d0-0x1408c3140 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@1@XZ 0x1408c0260 ; unique
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@1@XZ 0x1408c0280 ; unique
-// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@1@XZ 0x1408c02a0 ; probe
-// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@1@XZ 0x1408c02c0 ; probe
-// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1408c27e0 ; probe
-// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1408c2810 ; probe
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@W4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@U?$less@W4Unk_SocketSpecialStat@@@std@@V?$allocator@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@2@AEBW4Unk_SocketSpecialStat@@@Z 0x1408c2d00 ; unique
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@W4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@U?$less@W4OptionKey@UnlimitedEnchantInfo@@@std@@V?$allocator@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@5@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$Unk_EnchantPtr@VBaseOption@@@@@std@@@std@@@std@@@2@AEBW4OptionKey@UnlimitedEnchantInfo@@@Z 0x1408c2de0 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@1@XZ 0x1408c0260 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@1@XZ 0x1408c0280 ; unique
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@1@XZ 0x1408c02a0 ; probe
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@1@XZ 0x1408c02c0 ; probe
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1408c27e0 ; probe
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1408c2810 ; probe
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@W4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@U?$less@W4Unk_SocketSpecialStat@@@std@@V?$allocator@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@2@AEBW4Unk_SocketSpecialStat@@@Z 0x1408c2d00 ; unique
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@W4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@U?$less@W4OptionKey@UnlimitedEnchantInfo@@@std@@V?$allocator@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@5@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@@std@@@std@@@2@AEBW4OptionKey@UnlimitedEnchantInfo@@@Z 0x1408c2de0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\unlimitedenchantinfo.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -106,7 +106,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
     for (unsigned i = 0; i < nCount; i++)
     {
         OptionKey key = static_cast<OptionKey>(static_cast<unsigned short>(in.ReadInt16()));
-        Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+        MS2Ptr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
         m_options.insert(std::make_pair(key, spOption));
     }
@@ -115,7 +115,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
     for (unsigned i = 0; i < nCount2; i++)
     {
         Unk_SocketSpecialStat key = static_cast<Unk_SocketSpecialStat>(static_cast<unsigned short>(in.ReadInt16()));
-        Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+        MS2Ptr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
         m_secondary.insert(std::make_pair(key, spOption));
     }
@@ -134,11 +134,11 @@ bool UnlimitedEnchantInfo::IsChanged()
 }
 
 // @0x1408bc210
-Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FindOption(unsigned nType)
+MS2Ptr<BaseOption> UnlimitedEnchantInfo::FindOption(unsigned nType)
 {
     OptionMap::iterator it = m_options.find(reinterpret_cast<const OptionKey&>(nType));
     if (it == m_options.end())
-        return Unk_EnchantPtr<BaseOption>(0);
+        return MS2Ptr<BaseOption>(0);
     return it->second;
 }
 
@@ -149,11 +149,11 @@ UnlimitedEnchantInfo::OptionMap& UnlimitedEnchantInfo::FUN_1408bc2d0()
 }
 
 // @0x1408bc2f0
-Unk_EnchantPtr<BaseOption> UnlimitedEnchantInfo::FindSecondaryOption(unsigned nType)
+MS2Ptr<BaseOption> UnlimitedEnchantInfo::FindSecondaryOption(unsigned nType)
 {
     SecondaryMap::iterator it = m_secondary.find(reinterpret_cast<const Unk_SocketSpecialStat&>(nType)); // the exe's parameter is the key itself
     if (it == m_secondary.end())
-        return Unk_EnchantPtr<BaseOption>(0);
+        return MS2Ptr<BaseOption>(0);
     return it->second;
 }
 

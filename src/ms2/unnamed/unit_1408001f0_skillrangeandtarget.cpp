@@ -20,19 +20,19 @@ void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_14087
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
-class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CString FUN_14028ef00(efd::Point3 kPoint);                                      // point -> "x, y, z"
 void TrimCommas(CString& str);                                                  // 0x140552c60
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes; the writers only build it and insert it).
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);          // 0x14086f2f0
-    virtual ~TiXmlElement();                    // 0x14086f450
-private:
-    void* unknown08[17];
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
 MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // @0x1408001f0
@@ -64,7 +64,7 @@ bool Unk_RangeShape::FUN_1408002b0(const Unk_RangeShape& o)
 }
 
 // @0x1408003b0
-void Unk_RangeShape::Load(Unk_140165cf0* pElem)
+void Unk_RangeShape::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "rangeType", m_str);
     if (m_str == "box")
@@ -147,9 +147,9 @@ bool Unk_RangeProperty::FUN_140800920(const Unk_RangeProperty& o)
 }
 
 // @0x140800b50
-void Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
+void Unk_RangeProperty::LoadElement(TiXmlElement* pElem, CString strName)
 {
-    Unk_140165cf0* pRange = pElem->FUN_140165cf0(strName);
+    TiXmlElement* pRange = pElem->FirstChildElement(strName);
     if (pRange == 0)
         return;
     {

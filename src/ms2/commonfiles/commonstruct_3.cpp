@@ -272,12 +272,12 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 // _Vector_alloc::_Copy_alloc for std::allocator: nothing to copy.
 void FUN_14027a4a0(__int64 a, __int64 b);                       // _Pocca
 void FUN_14027a4e0(__int64 a, __int64 b);                       // _Pocca
-__int64 FUN_1402882f0(__int64 vec);                             // _Getal
+struct Unk_RemakeLockOpt; typedef std::_Vector_alloc<std::_Vec_base_types<Unk_RemakeLockOpt, std::allocator<Unk_RemakeLockOpt> > > Unk_Cs3RemakeAlloc;   // 0x1402882f0 = its _Getal
 __int64 FUN_1402883f0(__int64 vec);                             // _Getal
 // @0x140287550
 void FUN_140287550(__int64 a, __int64 b)
 {
-    FUN_14027a4a0(FUN_1402882f0(a), b);
+    FUN_14027a4a0(reinterpret_cast<__int64>(&reinterpret_cast<Unk_Cs3RemakeAlloc*>(a)->_Getal()), b);
 }
 
 // @0x140287580
@@ -306,11 +306,11 @@ Unk_TVal* FUN_140287ee0(void* tree)
 }
 
 void FUN_140277470(__int64 first, __int64 last, __int64 al);   // _Destroy_range (trivially destructible: no-op)
-__int64 FUN_1402882f0(__int64 vec);                             // _Getal
+// 0x1402882f0 = Unk_Cs3RemakeAlloc::_Getal
 // vector<__int64>::_Destroy(first, last): forwards to the no-op range destroy of the trivially destructible elements.
 // MS2-FUNCTIONAL: the exe returns whatever the callee left in rax; the callers ignore it
 // @0x1402875b0
 void FUN_1402875b0(__int64 vec, __int64 first, __int64 last)
 {
-    FUN_140277470(first, last, FUN_1402882f0(vec));
+    FUN_140277470(first, last, reinterpret_cast<__int64>(&reinterpret_cast<Unk_Cs3RemakeAlloc*>(vec)->_Getal()));
 }

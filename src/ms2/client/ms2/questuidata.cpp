@@ -57,8 +57,8 @@ void FUN_1401d3700(CString& str);                                       // lower
 void FUN_140399100(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrFiles, CString strPrefix, bool bRecursive);
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   // int attribute with default
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);   // int attribute with default
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
@@ -93,7 +93,7 @@ static ATL::CAtlMap<int, MS2Ptr<CCacheData> > s_caches(17, 0.75f, 0.25f, 2.25f, 
 
 // @0x1400fec10 (s_strSortTypeNames), @0x1400fecd0 / @0x1400fed00 (skill / stun), @0x1400fed30 (the condition table)
 #include "ms2/placeholder/header_statics_a.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -179,7 +179,7 @@ void FUN_1416e4590(CString strPath)
     TiXmlDocument doc;
     if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -187,7 +187,7 @@ void FUN_1416e4590(CString strPath)
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
     spCache->FUN_1401d1160(strPath);
-    for (Unk_140165cf0* pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest != 0; pQuest = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
+    for (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest != 0; pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pQuest)))
             continue;
@@ -685,13 +685,13 @@ void FUN_1416e7c00(CString strPath)
     TiXmlDocument doc;
     if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("chapter")); pChapter != 0; pChapter = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChapter))->NextSibling("chapter")))
+    for (TiXmlElement* pChapter = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("chapter")); pChapter != 0; pChapter = ((class TiXmlElement*)((class Unk_XmlNode*)(pChapter))->NextSibling("chapter")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pChapter)))
             continue;

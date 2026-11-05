@@ -104,7 +104,7 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/client/ms2/uiupperhuddialog.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 class PCBase;
@@ -122,7 +122,7 @@ public:
 struct Unk_TeFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_TeFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TeFramework DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 class Unk_TeWorld
 {
 public:
@@ -152,7 +152,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                         /
 CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);                 // the value as a string
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // system message
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Unk_TeBoxDelegate cb);
-MS2Ptr<CMsgBoxData> FUN_141a879a0(CStringW strText, int nType, Unk_TeBoxDelegate cb, CStringW strTag);
+template <class A> MS2Ptr<CMsgBoxData> Unk_PmShowYesNo(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, A arg);   // C3: was FUN_141a879a0 (uipartydialog)
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                          // show the box
 CString FUN_141b6e500(const CString& strDir, const char* pszFilter, const CString& strDefault);   // open-file dialog
 CString FUN_141b6e880(const CString& strDir, const char* pszFilter, const CString& strDefault);   // save-file dialog
@@ -271,7 +271,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             return 1;
         Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::FUN_141b2b2b0);
         CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), FUN_1422b9490(pArgs[0]));
-        FUN_141a879a0(strText, 1, cb, FUN_1422b9490(pArgs[1]));
+        Unk_PmShowYesNo<CStringW>(strText, 1, cb, FUN_1422b9490(pArgs[1]));
         return 1;
     }
     return 0;
@@ -302,11 +302,11 @@ void UITriggerEditorDialog::OnLoadComplete()
         packet.WriteInt32(m_nCubeId);
         FUN_140710590(packet);
     }
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_newStateButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton1)).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_newStateButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton1)).get())
         m_spButton1->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba00), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_rollbackButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton2)).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_rollbackButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton2)).get())
         m_spButton2->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2ba30), 0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_clearContentButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_spButton3)).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_clearContentButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spButton3)).get())
         m_spButton3->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2bb10), 0);
 }
 MS2_REPLACE_METHOD(0x141B2AA10, UITriggerEditorDialog, OnLoadComplete, 1827, 0x93A07744);

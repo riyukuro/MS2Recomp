@@ -442,10 +442,10 @@ int FUN_140d00e90(const Scaleform::GFx::Value& root, CString strName)
 }
 
 // @0x140d00fb0
-void FUN_140d00fb0(const efd::Point3& kWorld, efd::Point2* pScreen)
+void FUN_140d00fb0(Vector3 kWorld, efd::Point2* pScreen)
 {
     NiPoint3 kPos;
-    if (CameraMgr::GetInstance()->FUN_140af0700(kWorld, kPos))
+    if (CameraMgr::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(kWorld), kPos))
     {
         kPos *= FUN_14025e7a0()->FUN_1422afec0(2);
         *pScreen = efd::Point2(kPos.x, kPos.y);

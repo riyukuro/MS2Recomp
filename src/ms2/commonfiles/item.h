@@ -40,7 +40,7 @@ public:
     int FUN_14062ff70(unsigned nType);
     int GetStatValue(unsigned nType, int nWhich, int nSub);
     int FUN_140630290(unsigned nType, int nWhich, int nSub);
-    unsigned short GetEnchantLevel();
+    unsigned GetEnchantLevel();   // 32-bit: the blackmarket caller 0x1401bcccf stores eax with no movzx
     float GetEnchantRatio(unsigned nType);
     int HasOptionEntry(int nSub, int nWhich, unsigned nType);
     CStringW GetSpecialStatText(int nSub, unsigned nType, void* pArg);
@@ -50,7 +50,7 @@ public:
     int CopyGroup4From(MS2Ptr<CItemStatus> spOther);    // 0x1406308a0 take over the options of another status
 
     MS2Ptr<CItemOption> m_spOption;             // +0x18
-    Unk_EnchantPtr<CItemEnchantInfo> m_spEnchant;   // +0x28
+    MS2Ptr<CItemEnchantInfo> m_spEnchant;   // +0x28
     MS2Ptr<UnlimitedEnchantInfo> m_spUnlimited;     // +0x38
 };
 MS2_CHECK_SIZE(CItemStatus, 0x48);

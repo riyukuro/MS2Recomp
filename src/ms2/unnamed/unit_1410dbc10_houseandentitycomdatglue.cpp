@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x1410dbc10-0x1410dc420 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
-// MS2-PIN: ??$DynamicCast@VUnk_Service6100017@@VISystemService@efd@@@efd@@YAPEAVUnk_Service6100017@@PEAVISystemService@0@@Z 0x1410dbdf0
+// MS2-PIN: ??$DynamicCast@VCubeMapInformationService@@VISystemService@efd@@@efd@@YAPEAVCubeMapInformationService@@PEAVISystemService@0@@Z 0x1410dbdf0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2layout.h"
@@ -39,10 +39,10 @@ struct Unk_EntityPropertyAccess : egf::Entity
 };
 
 // The service that owns the cube-map information (class id 0x06100017), the same stand-in as unit_140fa9eb0's.
-class Unk_Service6100017 : public efd::ISystemService {
-public:
-    static const efd::ClassID CLASS_ID = 0x06100017;
-};
+// C3: Unk_Service6100017 was CubeMapInformationService (cubemapinformationservice_3.h)
+//
+//
+//
 
 
 struct Unk_CMISDemolishUI;
@@ -63,7 +63,7 @@ void FUN_1410dbc10(egf::Entity* e, unsigned id, const int* pVal)
 // @0x1410dbd50 / 0x1410dbda0 / 0x1410dbdf0
 template const egf::EntityChangeMessage* efd::DynamicCast<const egf::EntityChangeMessage, efd::IMessage>(const efd::IMessage*);
 template const ecr::SceneGraphAddedMessage* efd::DynamicCast<const ecr::SceneGraphAddedMessage, efd::IMessage>(const efd::IMessage*);
-template Unk_Service6100017* efd::DynamicCast<Unk_Service6100017, efd::ISystemService>(efd::ISystemService*);
+template CubeMapInformationService* efd::DynamicCast<CubeMapInformationService, efd::ISystemService>(efd::ISystemService*);
 
 // @0x1410dbe40 / 0x1410dbee0
 template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<efd::IMessage>, unsigned>::GenerateFactoryMethod<egf::EntityChangeMessage>();

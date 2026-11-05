@@ -43,7 +43,7 @@ public:
     int GetState();                                            // the state
     void FUN_140adeaa0(int nSyncA, int nSyncB, int nSyncC);         // the moving-object sync values
     void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
-    bool FUN_140adf310();                                           // m_bC1
+    int FUN_140adf310();                                            // m_bC1 (int: the caller tests eax)
     int IsTombStone();                                            // tomb stone
     int FUN_140adf350();                                            // m_n184
     void FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone

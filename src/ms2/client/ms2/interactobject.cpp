@@ -142,7 +142,7 @@ public:
 
 
 
-class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); };   // PCBase +0x748
+#include "ms2/client/ms2/additionalclilist.h"   // PCBase +0x748 (C3: the local AdditionalCliList view is gone)
 class Unk_IoPlayer : public Unk_IoPlayerBase
 {
 public:
@@ -180,9 +180,9 @@ struct Unk_IoRanking
 MS2_CHECK_SIZE(Unk_IoRanking, 0x80);
 class Unk_IoWorld : public WorldService
 {
-public:
-    void FUN_141bdb0f0(CString strKey, TPtrValue<CGameRankingData> spRank);
 };
+// 0x141bdb0f0 queues a ranking entry; worldservice_1.cpp defines it as a free function on the service.
+void FUN_141bdb0f0(WorldService* self, CStringA name, TPtrValue<CGameRankingData> value);
 class Unk_IoQuestEval
 {
 public:
@@ -1137,18 +1137,18 @@ private:
 #define TIXML_ENCODING_DEFINED
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
 #endif
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);                                      // 0x14086f2f0
-    virtual ~TiXmlElement();                                                // 0x14086f450
-    virtual const char* Parse(const char* p, class TiXmlParsingData* pData, TiXmlEncoding nEncoding);   // 0x1408782b0
-    void* m_buf[0x88 / 8];
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
 typedef TiXmlElement Unk_IoXmlElem;
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-CStringW FUN_1401bf530(class Unk_140165cf0* p, const char* pszName, CStringW strDefault);
-int FUN_140197350(class Unk_140165cf0*, char const*, int);   // C3: was FUN_140197350
+CStringW FUN_1401bf530(class TiXmlElement* p, const char* pszName, CStringW strDefault);
+int FUN_140197350(class TiXmlElement*, char const*, int);   // C3: was FUN_140197350
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned __int64&);   // C3: was FUN_140873320
 // @0x1414038e0
 static unsigned __int64 FUN_1414038e0(Unk_IoXmlElem* p, const char* pszName, unsigned __int64 nDefault)
@@ -1191,10 +1191,10 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             return;
         CString strMark = Unk_ReadString((class Unk_XmlNode*)(&elem), "mark", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
-        m_strGuildName = FUN_1401bf530((Unk_140165cf0*)&elem, "name", CStringW(L""));
-        m_nGuildRank = FUN_140197350((class Unk_140165cf0*)(&elem), "rank", 0);
-        m_nGuildTrophy = FUN_140197350((class Unk_140165cf0*)(&elem), "trophy", 0);
-        m_nGuildScore = FUN_140197350((class Unk_140165cf0*)(&elem), "score", 0);
+        m_strGuildName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
+        m_nGuildRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
+        m_nGuildTrophy = FUN_140197350((class TiXmlElement*)(&elem), "trophy", 0);
+        m_nGuildScore = FUN_140197350((class TiXmlElement*)(&elem), "score", 0);
         if (strMark.GetLength() < 1 || nSn < 1)
             return;
         CString strPath = FUN_141029590(nSn, strMark, GetName(), CString(""));
@@ -1209,9 +1209,9 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             return;
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
-        m_strCharName = FUN_1401bf530((Unk_140165cf0*)&elem, "name", CStringW(L""));
-        m_nCharTrophy = FUN_140197350((class Unk_140165cf0*)(&elem), "trophy", 0);
-        m_nCharRank = FUN_140197350((class Unk_140165cf0*)(&elem), "rank", 0);
+        m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
+        m_nCharTrophy = FUN_140197350((class TiXmlElement*)(&elem), "trophy", 0);
+        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1224,9 +1224,9 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             return;
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
-        m_strCharName = FUN_1401bf530((Unk_140165cf0*)&elem, "name", CStringW(L""));
-        m_nCharBuildPoint = FUN_140197350((class Unk_140165cf0*)(&elem), "build_point", 0);
-        m_nCharRank = FUN_140197350((class Unk_140165cf0*)(&elem), "rank", 0);
+        m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
+        m_nCharBuildPoint = FUN_140197350((class TiXmlElement*)(&elem), "build_point", 0);
+        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1239,9 +1239,9 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             return;
         CString strPortrait = Unk_ReadString((class Unk_XmlNode*)(&elem), "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
-        m_strCharName = FUN_1401bf530((Unk_140165cf0*)&elem, "name", CStringW(L""));
-        m_nCharScore = FUN_140197350((class Unk_140165cf0*)(&elem), "score", 0);
-        m_nCharRank = FUN_140197350((class Unk_140165cf0*)(&elem), "rank", 0);
+        m_strCharName = FUN_1401bf530((TiXmlElement*)&elem, "name", CStringW(L""));
+        m_nCharScore = FUN_140197350((class TiXmlElement*)(&elem), "score", 0);
+        m_nCharRank = FUN_140197350((class TiXmlElement*)(&elem), "rank", 0);
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
@@ -1375,7 +1375,7 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
         }
     }
     if (spRank.get() != 0 && reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance()) != 0)
-        reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance())->FUN_141bdb0f0(CString(strName), static_cast<const TPtrValue<CGameRankingData>&>(spRank));
+        FUN_141bdb0f0(WorldService::GetInstance(), CString(strName), static_cast<const TPtrValue<CGameRankingData>&>(spRank));
     return 0;
 }
 

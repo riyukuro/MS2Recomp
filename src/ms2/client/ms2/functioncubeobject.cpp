@@ -8,8 +8,8 @@
 // MS2-PIN: ??1?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@XZ 0x14122db20 ; prop
 // MS2-PIN: ??4?$MS2Ptr@VFunctionCubeData@@@@QEAAAEAV0@H@Z 0x14122dd10 ; unique
 // MS2-PIN: ??4?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEAAAEAV0@H@Z 0x14122de50 ; unique
-// MS2-PIN: ??4Unk_FcSkillText@@QEAAAEAU0@AEBU0@@Z 0x14122df20 ; unique
-// MS2-PIN: ??4Unk_FcNotice@@QEAAAEAU0@AEBU0@@Z 0x14122def0 ; unique
+// MS2-PIN: ??4OpenWeb@CObjectData@@QEAAAEAU01@AEBU01@@Z 0x14122df20 ; unique
+// MS2-PIN: ??4NoticePopup@CObjectData@@QEAAAEAU01@AEBU01@@Z 0x14122def0 ; unique
 // MS2-PIN: ??1FunctionCubeData@@UEAA@XZ 0x14122dbb0 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEBA_NPEAVUIUGCCubeNoticePopup@@@Z 0x14122dfc0 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@V?$CElementTraits@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@2@@ATL@@QEAAAEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@1@_K@Z 0x14122e040 ; unique
@@ -134,7 +134,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEBAPEAVUIUGCCubeNoticePopup@@XZ 0x14122e0f0
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141234b10
 // MS2-PIN: ?IsEmpty@?$CRBTree@V?$MS2Ptr@VUnk_FcTag@@@@V?$MS2Ptr@VUnk_FcArea@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcTag@@@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcArea@@@@@4@@ATL@@QEBA_NXZ 0x141236a30
-// MS2-PIN: ??0Unk_FcVec3@@QEAA@AEBVPoint3@efd@@@Z 0x14027dcf0
+// (C3 #72: the Unk_FcVec3 ctor pin went; the box takes NiPoint3, built by NiPoint3(const efd::Point3&) 0x14027dcf0)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\functioncubeobject.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
@@ -193,7 +193,7 @@ MS2_CHECK_OFFSET(Unk_FcItemRow, m_spText, 0x100);
 class Cube;
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
-public:
+public: virtual ~CubeMapInformationService(); virtual void IncRefCount(); virtual void DecRefCount();   // slots 0-2 (efd::SmartPointer)
     __int64 FUN_1410c3180();
     Cube* GetCubeByKey(int nKey);                                   // the placed cube / item row of a key
     bool FUN_1410c35c0();                                           // design mode
@@ -203,23 +203,23 @@ class Unk_FcItemSvc : public Unk_FcRefObj
 {
 public:
 };
-class Unk_FcItemSvcPtr
-{
-public:
-    Unk_FcItemSvcPtr(Unk_FcItemSvc* p)
-    {
-        m_p = p;
-        if (m_p)
-            m_p->vfunc_1();
-    }
-    ~Unk_FcItemSvcPtr();                                            // 0x1401cd150
-    bool FUN_140ef4cb0(int) const;                                  // == NULL
-private:
-    Unk_FcItemSvc* m_p;
-};
+typedef efd::SmartPointer<CubeMapInformationService> Unk_FcItemSvcPtr;   // C3: was a {m_p} view; ctor 0x1401cd0b0, dtor 0x1401cd150
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework* pFramework);   // the service 0x6100017 lookup (0x1401cd040, the definer's signature)
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework* pFramework);   // the service 0x6100017 lookup (0x1401cd040, the definer's signature)
 
 // The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the block as pointers, no /GS buffer; the exe frame leaves 0x70 bytes for the local).
 struct Unk_FcSoundReqL
@@ -339,7 +339,7 @@ public:
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/cube.h"
@@ -354,9 +354,9 @@ public:
     ~NoticeMessage();
     void* m_storage[14];
 };
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
-
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const;   // 0x140ef4cb0 (C3: was Unk_FcItemSvcPtr::FUN_140ef4cb0)
 // Physics helper (singleton): the interaction-start call.
 class CPhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -496,11 +496,11 @@ unsigned char CFunctionCubeObject::FUN_141236b10()
 }
 
 // The pos / rot properties are efd::Point3 locals; each goes to the box through NiPoint3(const efd::Point3&).
-struct Unk_FcVec3 { float x, y, z; Unk_FcVec3(const efd::Point3& pt); };   // NiPoint3 implicitly built from a point (0x14027dcf0)
+//
 struct Unk_FcBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion
 {
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
-    virtual void vfunc_3(Unk_FcVec3 ptPos, Unk_FcVec3 ptDir, float fScale);   // 0x140ada620 place by angles
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);   // 0x140ada620 place by angles
 };
 
 // @0x141225610
@@ -587,10 +587,10 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
 // @0x141226340
 CStringW CFunctionCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (spSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return L"";
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return L"";
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
@@ -820,11 +820,11 @@ int CFunctionCubeObject::FUN_1412271f0()
 // @0x141227270
 int CFunctionCubeObject::FUN_141227270()
 {
-    return m_spData->m_skill.m_strA != "";
+    return m_spData->m_skill.m_strUrl != "";
 }
 
 // @0x1412272b0
-Unk_FcSkillText CFunctionCubeObject::GetWebLinkInfo()
+CObjectData::OpenWeb CFunctionCubeObject::GetWebLinkInfo()
 {
     return m_spData->m_skill;
 }
@@ -848,10 +848,10 @@ void CFunctionCubeObject::FUN_1412273b0()
 {
     if (FUN_140966fc0() != 0xc)
         return;
-    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (spSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return;
-    MS2Ptr<Unk_FcItemRow> spRow(reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this)))));
+    MS2Ptr<Unk_FcItemRow> spRow(reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this)))));
     if (spRow == 0)
         return;
     MS2Ptr<Unk_FcItemText> spText(spRow->m_spText);
@@ -1042,8 +1042,8 @@ void CFunctionCubeObject::OpenTriggerEditor()
 // @0x141228100
 void CFunctionCubeObject::OpenObjectStore()
 {
-    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(m_nArg));
+    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(m_nArg));
     if (pRow == 0)
         return;
     DAT_143ab2d80.ResetId(pRow->m_18, FUN_141226cd0());   // the exe passes the row's +0x18 qword, not the item id
@@ -1121,9 +1121,9 @@ public:
     void ResetDailyRecords();   // C3: was free ResetDailyRecords
 public:
     void ReadDailyRecords(class CInPacket&);   // C3: was free ReadDailyRecords
+    unsigned FUN_14152eb20();                                       // times fed today
+    unsigned FUN_14152eb50();                                       // times played today
 };
-unsigned FUN_14152eb20(Unk_FcActor* p);                             // times fed today
-unsigned FUN_14152eb50(Unk_FcActor* p);                             // times played today
 void* FUN_1409670e0();                                              // the housing manager
 
 // Housing item rows of the cube (16 / 24 byte smart pointers, destroyed by exe helpers).
@@ -1543,10 +1543,10 @@ CStringW CBreedingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (kSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(kSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
@@ -1680,10 +1680,10 @@ CStringW CFarmingCubeObject::vfunc_6()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (kSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(kSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(kSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
@@ -1884,10 +1884,10 @@ void CNurturingCubeObject::vfunc_5(float fZ)
 // @0x14122bab0
 CStringW CNurturingCubeObject::vfunc_6()
 {
-    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (spSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return CStringW(L"");
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return CStringW(L"");
     return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reinterpret_cast<Cube*>(pRow)->FUN_1408b4f20());
@@ -1926,10 +1926,10 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcActor* pActor = static_cast<Unk_FcActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
-    Unk_FcItemSvcPtr spSvc(reinterpret_cast<Unk_FcItemSvc*>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8))));
-    if (spSvc.FUN_140ef4cb0(0))
+    Unk_FcItemSvcPtr spSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spSvc) == (CubeMapInformationService*)0)
         return 0;
-    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
+    Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return 0;
     if (m_obj.m_strQuestTag != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
@@ -1960,7 +1960,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             m_bNotice = 0;
             return 1;
         }
-        if (FUN_14152eb20(pActor) < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat)->Get())
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb20() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat)->Get())
         {
             m_bNotice = 0;
             return 1;
@@ -1974,7 +1974,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             FUN_14122c7b0(4);
             return 0;
         }
-        if (FUN_14152eb50(pActor) < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play)->Get())
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb50() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play)->Get())
         {
             m_bNotice = 0;
             return 1;
@@ -2028,14 +2028,14 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
                 }
                 else
                 {
-                    unsigned nDone = FUN_14152eb20(pActor);
+                    unsigned nDone = ((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb20();
                     CStringW str = FUN_14028dfa0<CStringW, unsigned int, unsigned int>(CStringW(L"s_msg_nurturing_eat_success"), FUN_1401aa6a0(FUN_14122c410()), nDone, nEat);
                     FUN_1412751f0(str, 1, 1);
                 }
             }
             else
             {
-                unsigned nDone = FUN_14152eb50(pActor);
+                unsigned nDone = ((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb50();
                 CStringW str = FUN_14028dfa0<CStringW, unsigned int, unsigned int>(CStringW(L"s_msg_nurturing_play_success"), FUN_1401aa6a0(FUN_14122c410()), nDone,
                     *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play)->Get());
                 FUN_1412751f0(str, 1, 1);
@@ -2458,10 +2458,10 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                 }
                 else if (spCube->FUN_141227270() != 0)
                 {
-                    Unk_FcSkillText kText = spCube->GetWebLinkInfo();
-                    CString strA(kText.m_strA);
-                    CString strB(kText.m_strB);
-                    int nValue = kText.m_nValue;
+                    CObjectData::OpenWeb kText = spCube->GetWebLinkInfo();
+                    CString strA(kText.m_strUrl);
+                    CString strB(kText.m_strTarget);
+                    int nValue = kText.m_nOpenType;
                     if (nValue == 0)
                     {
                         FUN_1418fe220(strA);

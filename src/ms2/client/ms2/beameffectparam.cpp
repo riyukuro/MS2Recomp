@@ -17,28 +17,28 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Game TinyXML element: FirstChildElement.
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
-};
+// C3 #12: was a local TiXml view
+
+
+
+
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers.
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (point attribute)
-float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
+float FUN_1401973d0(TiXmlElement* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
-template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 
 // @0x140a0c300
 CBeamEffectParam::CBeamEffectParam()
@@ -68,7 +68,7 @@ static int FUN_140a0c890(const CString& str)
 // @0x140a0c900
 // The exe copy is a commonfiles	inyxmlhelper.h template instance (line 250: assert(FALSE) for an unsupported type
 // stays behind as a dead branch).
-static int FUN_140a0c900(Unk_140165cf0* pNode, const char* pszName, int& nOut)
+static int FUN_140a0c900(TiXmlElement* pNode, const char* pszName, int& nOut)
 {
     if (0)
     {
@@ -85,7 +85,7 @@ static int FUN_140a0c900(Unk_140165cf0* pNode, const char* pszName, int& nOut)
 
 // @0x140a0c3a0
 // Not hooked: constructs BeamPointCurveInfo / BeamDirectionCurveInfo with this unit's (DLL) constructors and vftables.
-void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CBeamEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlTokenList(pNode, "texturePath", m_arrTexturePath);
@@ -93,7 +93,7 @@ void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
         return;
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
     XmlGetAttr((class TiXmlElement*)(pNode), "quality", m_nQuality);
-    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"), 0);
+    CString strAlpha = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("alphaMode"), 0);
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)
@@ -103,7 +103,7 @@ void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (strAlpha.CompareNoCase("ADD") == 0)
             m_nAlphaMode = 2;
     }
-    Unk_140165cf0* pBeam = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("beamInfo"));
+    TiXmlElement* pBeam = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("beamInfo"));
     if (pBeam == 0)
         return;
     int nType = 0;
@@ -135,7 +135,7 @@ CEffectPtr CBeamEffectParam::vfunc_6()
 }
 
 // @0x140a0c770
-bool BeamInfo::vfunc_1(Unk_140165cf0* pNode)
+bool BeamInfo::vfunc_1(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return false;
@@ -144,7 +144,7 @@ bool BeamInfo::vfunc_1(Unk_140165cf0* pNode)
 MS2_REPLACE_METHOD(0x140A0C770, BeamInfo, vfunc_1, 25, 0x4C645368);
 
 // @0x140a0c790
-bool BeamPointCurveInfo::vfunc_1(Unk_140165cf0* pNode)
+bool BeamPointCurveInfo::vfunc_1(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return false;
@@ -157,7 +157,7 @@ bool BeamPointCurveInfo::vfunc_1(Unk_140165cf0* pNode)
 MS2_REPLACE_METHOD(0x140A0C790, BeamPointCurveInfo, vfunc_1, 96, 0xE8CF1295);
 
 // @0x140a0c800
-bool BeamDirectionCurveInfo::vfunc_1(Unk_140165cf0* pNode)
+bool BeamDirectionCurveInfo::vfunc_1(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return false;

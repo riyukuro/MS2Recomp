@@ -1,7 +1,7 @@
 // datatablemap.h - DataTableMap<T, K, KTraits> (RTTI .?AV?$DataTableMap@VWebGuide@@V?$CStringT@D...@ATL@@V?$CStringElementTraits@...@3@@@):
 // a DataTable<T> that keeps its rows in an ATL::CAtlMap<K, MS2Ptr<T>, KTraits> under T::GetKey(). NOT an original header.
 // Layout 0x80 for T = WebGuide: DataTable (0x38) + the map at +0x38 (ctor 0x141b81e40 builds it with 17, .75, .25, 2.25, 10).
-// WebGuideTable keeps its TSingleton at +0x80. The row type provides CString GetKey() const and LoadXml(Unk_140165cf0*).
+// WebGuideTable keeps its TSingleton at +0x80. The row type provides CString GetKey() const and LoadXml(TiXmlElement*).
 #pragma once
 
 #include <afx.h>

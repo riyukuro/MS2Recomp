@@ -20,16 +20,16 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/avatarpc.h"
+#include "ms2/placeholder/costumesettable.h"
 
 __int64 FUN_14028d0e0();                                    // the current server time
 int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
 
-class CostumeSetTable;
 
 // @0x140b1db00
-Unk_CostumeTable* FUN_140b1db00()
+CostumeSetTable* FUN_140b1db00()
 {
-    return reinterpret_cast<Unk_CostumeTable*>(TSingleton<CostumeSetTable>::s_instance);
+    return TSingleton<CostumeSetTable>::s_instance;
 }
 
 // @0x140b1d2b0
@@ -45,14 +45,14 @@ CostumeManager::~CostumeManager()
 // @0x140b1d360
 void CostumeManager::FUN_140b1d360(int nCostumeId)
 {
-    MS2Ptr<Unk_CostumeRow> spRow = FUN_140b1db00()->FUN_1405360b0(nCostumeId, ((class PC*)(m_pOwner))->FUN_141658e60());
+    MS2SvrPtr<CostumeSet> spRow = FUN_140b1db00()->GetSet(nCostumeId, ((class PC*)(m_pOwner))->FUN_141658e60());
     if (spRow == 0)
         return;
     if (m_nCostumeId != 0)
         FUN_140b1d890(m_nCostumeId);
-    for (POSITION pos = spRow->m_mapPart2.GetStartPosition(); pos != 0; spRow->m_mapPart2.GetNext(pos))
+    for (POSITION pos = ((Unk_CostumeRow*)spRow.operator->())->m_mapPart2.GetStartPosition(); pos != 0; ((Unk_CostumeRow*)spRow.operator->())->m_mapPart2.GetNext(pos))
     {
-        int nItemId = spRow->m_mapPart2.GetValueAt(pos);
+        int nItemId = ((Unk_CostumeRow*)spRow.operator->())->m_mapPart2.GetValueAt(pos);
         if (nItemId == 0)
             continue;
         MS2Ptr<CItem> spItem(new CItem);
@@ -66,9 +66,9 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);
     }
-    for (POSITION pos = spRow->m_mapPart1.GetStartPosition(); pos != 0; spRow->m_mapPart1.GetNext(pos))
+    for (POSITION pos = ((Unk_CostumeRow*)spRow.operator->())->m_mapPart1.GetStartPosition(); pos != 0; ((Unk_CostumeRow*)spRow.operator->())->m_mapPart1.GetNext(pos))
     {
-        int nItemId = spRow->m_mapPart1.GetValueAt(pos);
+        int nItemId = ((Unk_CostumeRow*)spRow.operator->())->m_mapPart1.GetValueAt(pos);
         if (nItemId == 0)
             continue;
         MS2Ptr<CItem> spItem(new CItem);

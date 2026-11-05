@@ -126,8 +126,8 @@ class CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
 int FUN_1408a13d0(NiPoint3 kPos);                           // column key of a position (C3: ridee.cpp / mypc.cpp's declaration)
 Unk_Int3 FUN_1408a1430(NiPoint3 kPos);                      // cube cell of a position (all 3 ints; C3: actionkeyobject.cpp's declaration)
-Vector3 FUN_1408a15b0(Unk_Int3 kCube, Vector3* pOut);   // position of a column (also in pOut)
-unsigned int FUN_1408a03c0(Unk_Int3 kCube);                      // key of a column
+efd::Point3 FUN_1408a15b0(Unk_Int3 kCube, efd::Point3& kOut);   // position of a column (also in kOut)
+int FUN_1408a03c0(Unk_Int3 kCube);                               // key of a column
 
 // The client paths (texture directory at +0x100) and the texture factory.
 struct Unk_RainPaths
@@ -332,7 +332,7 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
         return false;
 
     Vector3 kLocal;
-    FUN_1408a15b0(kDrop.GetPos(), &kLocal);
+    FUN_1408a15b0(kDrop.GetPos(), reinterpret_cast<efd::Point3&>(kLocal));
     kLocal.z = kLocal.z + 3.0f;
     kPosition = kEmitterToPSys * AsPoint(kLocal);
     kVelocity = AsPoint(g_143b01a60);

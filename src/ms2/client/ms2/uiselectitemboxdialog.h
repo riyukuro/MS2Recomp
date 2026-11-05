@@ -49,7 +49,7 @@ public:
     void FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler::Params& params);   // list selection changed
     void FUN_140f9a700();                                               // refresh the slots, counters and the ok label
 
-    MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>* pOut);
+    // C3: FUN_140e8d030 (bind the tile list) is UISelectSuperWorldChatDialog's (uisidepopuptalk.h), called through a view in the .cpp
     MS2Ptr<ASTextField> FUN_140e48d80(const CString& strName, MS2Ptr<ASTextField>* pOut);
 
 protected:

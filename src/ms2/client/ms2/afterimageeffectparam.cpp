@@ -14,7 +14,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp); they return 0 on success.
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -38,7 +38,7 @@ CAfterImageEffectParam::~CAfterImageEffectParam()
 }
 
 // @0x140987520
-void CAfterImageEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CAfterImageEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     if (XmlGetAttr((class TiXmlElement*)(pNode), "imageSize", m_nImageSize))

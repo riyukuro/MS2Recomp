@@ -76,6 +76,9 @@
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCQuest@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1416d4310
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\questmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <atlcoll.h>   // CAtlArray<unsigned> ctor/dtor belong to earlier objects (see the MS2Ptr<CQuest> note below); declared before any include instantiates them
+template<> ATL::CAtlArray<unsigned>::CAtlArray() throw();
+template<> ATL::CAtlArray<unsigned>::~CAtlArray() throw();
 #include "questmanager_2.h"
 #include "questmanager_1.h"
 #include "pcbase.h"
@@ -135,12 +138,9 @@
 #include "ms2/client/ms2/mentoringmanager.h"  // C3: was a local member view
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
-// These instances belong to earlier objects, not the look-alike destructors
-// for other quest pointer types in this object's COMDAT tail.
+// These instances belong to earlier objects, not the look-alike destructors for other quest pointer types in this object's COMDAT tail.
 template<> MS2Ptr<CQuest>::~MS2Ptr();
 template<> bool MS2Ptr<CQuest>::IsNull() const;
-template<> ATL::CAtlArray<unsigned>::CAtlArray() throw();
-template<> ATL::CAtlArray<unsigned>::~CAtlArray() throw();
 template<> size_t ATL::CAtlArray<unsigned>::GetCount() const throw();
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/commonfiles/famegradedata.h"
@@ -166,6 +166,7 @@ extern template class MS2Ptr<class SidePopupTalkParam>;
 extern template class MS2Ptr<class StampEventContext>;
 extern template class MS2Ptr<class UIObject>;
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/tptr.h"
 
 
 static UICommon::CMyPCKeyInputController s_keyController;
@@ -201,19 +202,19 @@ void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1410943b0(class PCBase*, int);   // C3: was FUN_1410943b0
 class Unk_QgQuestTable : public QuestDataTable {
 };
-class Unk_QuestDungeonRecord {
-public:
-};
-template<> Unk_PayloadPtr<Unk_QuestDungeonRecord>::~Unk_PayloadPtr();
-class Unk_QuestNotifyState {
-public:
-    Unk_PayloadPtr<Unk_QuestDungeonRecord> FUN_140d9f2c0();
-};
+// C3: Unk_QuestDungeonRecord = DungeonRecordManagerCli, Unk_QuestNotifyState = CMyCharacter (GetRecord 0x140d9f2c0)
+
+
+
+
+
+
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
     unsigned int GetDungeonEnterState(unsigned long);
+    MS2Ptr<DungeonRecordManagerCli> GetRecord();   // 0x140d9f2c0 the dungeon record manager
 };
 class CGuildManager;
 extern __int64 DAT_143ab2828;
@@ -268,10 +269,10 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int stringId, int, int);
 class Unk_QmNpcTable { public:  };
 int FUN_141261b90(struct Unk_GsEtc* pFilter, int questId);   // C3: free function (was Unk_QmQuestFilter::FUN_141261b90)
-class Unk_QnState { public: struct Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (was Unk_QmOptions)
+// C3: FUN_140c9b8b0 is CGameOption's (cgameoption.h); was the Unk_QnState view
 class CPortal { public: Vector3 FUN_14169d2f0(); };   // C3: member view (portal.h)
 CStringW FUN_140763550(int questId, int state);     // one tooltip line of a quest
-PCBase* FUN_140aac420(Unk_WsV118* user);              // the user's object (CComPtrBase::operator T*)
+// the user's object: TPtr<PCBase>::get 0x140aac420 (tptr.h)
 // CRBTree<unsigned, Unk_WsV118> members belong to other objects (0x140c20a10, 0x14112e170, 0x14112e2b0).
 template<> POSITION ATL::CRBTree<unsigned, Unk_WsV118, ATL::CElementTraits<unsigned>, ATL::CElementTraits<Unk_WsV118>>::GetHeadPosition() const throw();
 template<> ATL::CRBTree<unsigned, Unk_WsV118, ATL::CElementTraits<unsigned>, ATL::CElementTraits<Unk_WsV118>>::CPair*
@@ -516,21 +517,21 @@ MS2_REPLACE_METHOD_VIA(0x1416c9c10, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9c70
 int CQuestManager::vfunc_o10_15(int id)
 {
-    return ((DungeonRecordManagerCli*)(((class Unk_QuestNotifyState*)FUN_140931510())->FUN_140d9f2c0()).operator->())->GetRoomValue5c(id);
+    return FUN_140931510()->GetRecord()->GetRoomValue5c(id);
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9c70, CQuestManager, CQuestManagerCommon, vfunc_o10_15, 100, 0xC93D21FB);
 
 // @0x1416c9ce0
 int CQuestManager::vfunc_o10_16(int id)
 {
-    return ((class CMyCharacter*)(void*)(((class Unk_QuestNotifyState*)FUN_140931510())))->GetDungeonEnterState(id);
+    return FUN_140931510()->GetDungeonEnterState(id);
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9ce0, CQuestManager, CQuestManagerCommon, vfunc_o10_16, 35, 0xF17E0AF2);
 
 // @0x1416c9d10
 int CQuestManager::vfunc_o10_17(int id)
 {
-    return ((DungeonRecordManagerCli*)(((class Unk_QuestNotifyState*)FUN_140931510())->FUN_140d9f2c0()).operator->())->CanClaimHelperReward(id) != 0;
+    return FUN_140931510()->GetRecord()->CanClaimHelperReward(id) != 0;
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9d10, CQuestManager, CQuestManagerCommon, vfunc_o10_17, 129, 0xBEDFE2F6);
 
@@ -1870,7 +1871,7 @@ int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
     int best = 0;
     for (unsigned questId : *quests) {
         int questState = 4;
-        if (all == 0 && FUN_141261b90((struct Unk_GsEtc*)reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0(), questId) == 0) continue;
+        if (all == 0 && FUN_141261b90((struct Unk_GsEtc*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0(), questId) == 0) continue;
         int score = FUN_1416d1100(npcId, questId, &questState);
         if (score > best) {
             best = score;
@@ -1971,7 +1972,7 @@ void CQuestManager::FUN_1416d1a30(unsigned questId)
         m_targets250[questId] = std::set<unsigned __int64>();
     ATL::CRBMap<unsigned, Unk_WsV118>* users = world->FUN_141bd36b0();
     for (POSITION pos = users->GetHeadPosition(); pos != 0; users->GetNext(pos)) {
-        PCBase* pc = FUN_140aac420(&users->GetValueAt(pos));
+        PCBase* pc = reinterpret_cast<TPtr<PCBase>&>(users->GetValueAt(pos)).get();
         if (pc == 0) continue;
         if (world->FUN_141bd0cc0() == pc) continue;
         if (quest->CheckUserFind(pc) == 0) continue;

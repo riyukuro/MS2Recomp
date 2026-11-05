@@ -25,7 +25,7 @@ class ASMovieClipLoader;                // 0x80, base ASEventDispatcher (vftable
 class ASMouseCursor;                    // 0x90, base ASGameEntity (vftable 0x14310d408; methods "unlock", "changeType")
 // Targets of the two Ptr<> arguments of vfunc_9/10: the first is a ref-counted Scaleform render/handle object (released through
 // 0x14257dcb0, Ptr dtor 0x14127c550), the second the Renderer2D (Ptr dtor 0x14127c5c0, ms2/placeholder/gfxrenderer2d.h).
-class Unk_GFxHandleObj;
+class Unk_GFxUIHal;      // gfxrenderer2d.h (Render::D3D9::HAL)
 class Unk_GFxUIRenderer2D;
 
 #define MS2_GFX_PTR(T) Scaleform::Ptr<T>
@@ -50,8 +50,8 @@ public:
     virtual int vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags);
     virtual int vfunc_7(int x, int y);                              //  7 0x1422bd880 returns 1; sends a mouse-move event
     virtual void vfunc_8(float fTime);                              //  8 0x1422bda00 advance
-    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj), MS2_GFX_PTR(Unk_GFxUIRenderer2D));    //  9 0x1422bdb90 (both Ptr<> by value)
-    virtual void vfunc_10(MS2_GFX_PTR(Unk_GFxHandleObj), MS2_GFX_PTR(Unk_GFxUIRenderer2D));   // 10 0x1422bdc50
+    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal), MS2_GFX_PTR(Unk_GFxUIRenderer2D));    //  9 0x1422bdb90 (both Ptr<> by value)
+    virtual void vfunc_10(MS2_GFX_PTR(Unk_GFxUIHal), MS2_GFX_PTR(Unk_GFxUIRenderer2D));   // 10 0x1422bdc50
     virtual void vfunc_11();                                        // 11 0x1422bdd20 release the movie handles
     virtual void vfunc_12();                                        // 12 0x1422bddd0 (empty)
     virtual bool vfunc_13();                                        // 13 0x1422bdde0 returns true

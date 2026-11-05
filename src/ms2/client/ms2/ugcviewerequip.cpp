@@ -198,7 +198,7 @@ public:
     virtual void vfunc_3();
     virtual void vfunc_4(int nDialog);
 };
-void FUN_140c381b0(UIItemBlueprintCreateDialog* pDialog, MS2Ptr<CUploadFile> spFile);   // show the uploaded image
+// UIItemBlueprintCreateDialog::FUN_140c381b0 (show the uploaded image): uiitemblueprintcreatedialog.h
 CStringW FUN_14016a730(const char* psz, int n);             // narrow -> wide
 extern __int64 DAT_143ab2820;                               // my account id
 extern __int64 DAT_143ab2828;                               // my character id
@@ -1212,7 +1212,7 @@ int CUgcViewerBlueprintImage::vfunc_3(MS2Ptr<CUploadFile> spFile)
     UIItemBlueprintCreateDialog* pDialog = FUN_1418a6920();
     if (pDialog == 0)
         return 0;
-    FUN_140c381b0(pDialog, spFile);
+    pDialog->FUN_140c381b0(spFile);
     return 1;
 }
 

@@ -11,7 +11,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/tptrvalue.h"
 
-class Unk_140165cf0;    // game TinyXML element (ms2/placeholder/xmlattr.h)
+class TiXmlElement;    // game TinyXML element (ms2/placeholder/xmlattr.h)
 
 // One <key> row of a web-finder table (RTTI TPtredDummy<struct GameDictionaryData>; ctor 0x1403b86f0 zeroes all five).
 struct GameDictionaryData
@@ -38,7 +38,7 @@ public:
     void LoadNpc();                                         // 0x1403b7400
     void LoadMob();                                         // 0x1403b75f0
     void LoadItem();                                        // 0x1403b77e0
-    void LoadEntry(DataMap& map, Unk_140165cf0* pElem);     // 0x1403b79d0: rows with value="0" are skipped
+    void LoadEntry(DataMap& map, TiXmlElement* pElem);     // 0x1403b79d0: rows with value="0" are skipped
     std::list<DataPtr> GetAll(int nType);                   // 0x1403b7af0: the non-null entries of one table
     DataPtr Get(int nType, int nId);                        // 0x1403b7c40
     void SetMobLevel(int nId, int nLevel);                  // 0x1403b7d30

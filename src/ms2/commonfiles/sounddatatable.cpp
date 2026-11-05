@@ -3,13 +3,13 @@
 // MS2-RANGE: 0x1408179d0-0x14081c780 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?_Allocate@_Default_allocate_traits@std@@SAPEAX_K@Z 0x14081b310 ; unique
-// MS2-PIN: ?Clone@CAtlStringMgr@ATL@@UEAAPEAUIAtlStringMgr@2@XZ 0x14081b340 ; order
+// MS2-PIN: ?ToDeclaration@TiXmlDeclaration@@UEBAPEBV1@XZ 0x14081b340 ; inline in tinyxml.h, was the view's tag (ICF twin of CAtlStringMgr::Clone)
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\sounddatatable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "sounddatatable.h"
-#include "ms2/placeholder/tixmldocument.h"
-#include "ms2/placeholder/tixmlprinter.h"   // C3: TiXmlString (dtor 0x1401646b0)
+#include "ms2/commonfiles/tinyxml.h"   // C3: the real TinyXML, before filesystem.h, so placeholder/tixmldocument.h steps aside
+// (TiXmlString comes from tinystr.h; was placeholder/tixmlprinter.h)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
@@ -20,13 +20,13 @@ public:
 };
 
 // Unrecovered helpers (same ones the other xml table loaders use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
+// C3: was class Unk_140165cf0 (TiXmlElement; NextSiblingElement() = TiXmlNode::NextSiblingElement, 0x1403f0510)
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);                     // integer attribute
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);                     // integer attribute
 int FUN_1406516b0();                                                      // current language id
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
 CString FUN_14016a5c0(const char* psz, int nFlags);                       // path conversion
@@ -34,81 +34,81 @@ void XmlSetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, cl
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 
 
-// Unit-local views of the game's TinyXML (bare global names, not efd::).
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);          // 0x14086f2f0
-    virtual ~TiXmlElement();                    // 0x14086f450
-private:
-    void* m_data[0x11];
-};
-class TiXmlNode
-{
-public:
-    virtual ~TiXmlNode();                                                // 0x14086dd00
-    virtual void Print(FILE*, int) const = 0;
-    virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding) = 0;
-    // Each const overload is declared before its non-const one, as in tinyxml.h: MSVC lays overloads out in reverse
-    // declaration order, so this keeps the slots of the vftable the linker may keep identical to the real one.
-    // @0x14081b360
-    virtual const TiXmlDocument* ToDocument() const { return 0; }
-    // @0x14081b350
-    virtual TiXmlDocument* ToDocument() { return 0; }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    virtual const TiXmlElement* ToElement() const { return 0; }
-    virtual TiXmlElement* ToElement() { return 0; }
-    virtual const void* ToComment() const { return 0; }
-    virtual void* ToComment() { return 0; }
-    virtual const void* ToUnknown() const { return 0; }
-    virtual void* ToUnknown() { return 0; }
-    virtual const void* ToText() const { return 0; }
-    virtual void* ToText() { return 0; }
-    virtual const class TiXmlDeclaration* ToDeclaration() const { return 0; }
-    virtual class TiXmlDeclaration* ToDeclaration() { return 0; }
-    virtual TiXmlNode* Clone() const = 0;
-    virtual bool Accept(class TiXmlVisitor*) const = 0;
-private:
-    void* m_base[9];
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);   // C3: was free FUN_14086e000
-};
-class TiXmlDeclaration : public TiXmlNode
-{
-public:
-    TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // 0x1408704d0
-    // @0x14081ad20
-    virtual ~TiXmlDeclaration() {}      // inline as in tinyxml.h (the out-of-line copy clashed with commonfiles/tinyxml.cpp in the DLL)
-    // @0x14081b2d0
-    virtual void Print(FILE* f, int nDepth) const { Print(f, nDepth, 0); }
-    virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding);   // tinyxmlparser.cpp: declaration only, an inline body here would be the vftable the linker keeps for every TiXmlDeclaration
-    // @0x14081b340
-    virtual const TiXmlDeclaration* ToDeclaration() const { return this; }
-    // @0x14081b330
-    virtual TiXmlDeclaration* ToDeclaration() { return this; }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    virtual TiXmlNode* Clone() const;   // commonfiles/tinyxml.cpp
-    virtual bool Accept(class TiXmlVisitor*) const;             // 0x140870920, commonfiles/tinyxml.cpp
-    virtual void Print(FILE*, int, class TiXmlString*) const;   // 0x140870700, commonfiles/tinyxml.cpp
-private:
-    TiXmlString m_version, m_encoding, m_standalone;
-};
-MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
+// C3: TiXmlElement / TiXmlNode / TiXmlDeclaration were unit-local views; they are now commonfiles/tinyxml.h.
+// Its inline bodies emitted here (formerly tagged in the views): TiXmlNode::ToDocument const 14081b360 / non-const
+// 14081b350, TiXmlDeclaration::~TiXmlDeclaration 14081ad20, Print(FILE*, int) 14081b2d0, ToDeclaration const
+// 14081b340 / non-const 14081b330.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x14081b310
-Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc)
+TiXmlElement* DocRootElement(TiXmlDocument* pDoc)
 {
     return FUN_140345b40(pDoc);
 }
@@ -143,7 +143,7 @@ int CSoundDataTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"failed to read {0}", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -310,17 +310,17 @@ void CSoundDataTable::SetTriggerVoiceSounds(const SoundList& list)
 }
 
 // @0x140818c30
-int CSoundDataTable::ParseSection(Unk_140165cf0* pRoot, const char* pszTag, int nType, SoundMap& map)
+int CSoundDataTable::ParseSection(TiXmlElement* pRoot, const char* pszTag, int nType, SoundMap& map)
 {
     if (pRoot == 0)
     {
         MS2_ASSERT_AT(0x50, 0);
         return 0;
     }
-    Unk_140165cf0* pSection = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszTag));
+    TiXmlElement* pSection = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(pszTag));
     if (pSection == 0)
         return 0;
-    for (Unk_140165cf0* pElem = FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pSection)); pElem != 0; pElem = pElem->NextSiblingElement())
+    for (TiXmlElement* pElem = FUN_140345b40(reinterpret_cast<TiXmlDocument*>(pSection)); pElem != 0; pElem = pElem->NextSiblingElement())
     {
         CString strId;
         strId = Unk_ReadString((class Unk_XmlNode*)(pElem), "id", CString(""));

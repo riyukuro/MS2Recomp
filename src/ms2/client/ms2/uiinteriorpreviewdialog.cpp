@@ -158,7 +158,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        CString strPackage = FUN_14016a600(reinterpret_cast<Unk_CommandArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
+        CString strPackage = FUN_14016a600(reinterpret_cast<ItemFunctionArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
         UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
         if (spPackage == (CUGCMapPackageData*)0)
             return;

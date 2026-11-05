@@ -142,7 +142,7 @@
 // fx14: byte-identical DelegateImpl copy ctors, bound through the clone (vfunc_1) of each exe vftable (0x142db7ff8 ASItemSlot, 0x142db8020 ASAdditionalEffectSlot)
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVASItemSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x1409bb6d0 ; vftable
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVASAdditionalEffectSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x1409bb630 ; vftable
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_AdditionalEffect@@@@AEAAXPEAX@Z 0x1409c1a30 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VAdditionalLevelData@@@@AEAAXPEAX@Z 0x1409c1a30 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asitemslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #define MS2_ASUICOMPONENT_SLOTS   // C3: slots 3 and 16-24 are ASUIComponent's (not redeclared below)
@@ -299,22 +299,22 @@ public:
 Unk_ItemPreview* FUN_1409bb9e0();
 
 // The additional effect (buff) record and its table.
-class Unk_AdditionalEffect : public CPtred
-{
-public:
-};
+// C3: the record is AdditionalLevelData (FUN_140aafef0 is SkillDataTableCli's, skilldatatablecli.h)
+//
+//
+//
 class SkillData;
-class SkillDataTableCli;
+class SkillDataTableCli { public: MS2Ptr<AdditionalLevelData> FUN_140aafef0(int nId, unsigned short nLevel); };   // C3: member view
 class SkillDataTable   // C3: member view (def in skilloverlapcompare)
 {
 public:
     MS2Ptr<SkillData> GetSkillData(unsigned nSkillId);
 };
-class Unk_SlotTables                                            // the client table set (FUN_1401958b0)
-{
-public:
-    MS2Ptr<Unk_AdditionalEffect> FUN_140aafef0(int nId, unsigned short nLevel);
-};
+//
+//
+//
+//
+//
 
 // ---- ASItemSlot TU ----
 
@@ -505,7 +505,7 @@ ASAdditionalEffectSlot::~ASAdditionalEffectSlot()
 // @0x1409badd0
 void ASAdditionalEffectSlot::SendSlotData()
 {
-    MS2Ptr<Unk_AdditionalEffect> spEffect = ((Unk_SlotTables*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(m_nId, m_nLevel);
+    MS2Ptr<AdditionalLevelData> spEffect = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_nId, m_nLevel);
     if (spEffect == 0)
         return;
     ASSlot slot(2);
@@ -524,7 +524,7 @@ void ASAdditionalEffectSlot::SetEffect(int nId, unsigned short nLevel)
 // @0x1409baf60
 void ASAdditionalEffectSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
 {
-    MS2Ptr<Unk_AdditionalEffect> spEffect = ((Unk_SlotTables*)TSingleton<SkillDataTableCli>::GetInstance())->FUN_140aafef0(m_nId, m_nLevel);
+    MS2Ptr<AdditionalLevelData> spEffect = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_nId, m_nLevel);
     if (spEffect == 0)
         return;
     ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 1, 2);
@@ -669,10 +669,10 @@ public:
     Unk_ItemPlusInfo* FUN_140630d90();
     CItemEnchantInfo* GetEnchant();
 };
-class Unk_ItemEnchantData
-{
-public:
-};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
+
+
+
 class CItemEnchantInfo
 {
 public:
@@ -1291,8 +1291,8 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
         SetUgcTag(pItem->GetUgcTag());
         if (pPlayer != NULL)
             FUN_1409c2af0(pItem, pPlayer);
-        SetItemEnchant(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->GetEnchant());
-        SetItemUnlimitedEnchant(((CItemStatus*)(Unk_ItemEnchantData*)(pItem->FUN_1405278a0()))->FUN_140630d90());
+        SetItemEnchant(((CItemStatus*)(pItem->FUN_1405278a0()))->GetEnchant());
+        SetItemUnlimitedEnchant(((CItemStatus*)(pItem->FUN_1405278a0()))->FUN_140630d90());
         FUN_1409c1f40(pItem);
         SetItemPiece(spData->IsPieceItem());
         FUN_1409c3040(spData);

@@ -13,13 +13,13 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // One <category> row. RTTI CInstrumentCategoryData, 0x38 bytes, base CPtred.
 class CInstrumentCategoryData : public CPtred
 {
 public:
-    CInstrumentCategoryData(Unk_140165cf0* pNode);      // 0x14072c300
+    CInstrumentCategoryData(TiXmlElement* pNode);      // 0x14072c300
     virtual ~CInstrumentCategoryData();                 // 0x14072c420
     CStringW GetName() const;                           // 0x14072c480 string table text of the category
     bool IsPercussion() const;                          // 0x14072c500
@@ -36,7 +36,7 @@ MS2_CHECK_SIZE(CInstrumentCategoryData, 0x38);
 class CInstrumentData : public CPtred
 {
 public:
-    CInstrumentData(Unk_140165cf0* pNode);              // 0x14072bdc0
+    CInstrumentData(TiXmlElement* pNode);              // 0x14072bdc0
     virtual ~CInstrumentData();                         // 0x14072c080
     CStringW GetName() const;                           // 0x14072c150
     CStringW GetCategoryName() const;                   // 0x14072c240

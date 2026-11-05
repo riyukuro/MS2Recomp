@@ -14,7 +14,7 @@
 
 class ASMovieClip;
 class ASUIComponent;
-class Unk_140acd6e0;
+class ASButton;
 class NotifyObject;
 
 class UINoticeDialog : public UIWebBrowserBase
@@ -50,8 +50,8 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASMovieClip> m_mainWindow;                               // +0x198 "m_mainWindow"
-    MS2Ptr<Unk_140acd6e0> m_showButton;                             // +0x1a8 "m_showButton"
-    MS2Ptr<Unk_140acd6e0> m_maviewButton;                           // +0x1b8 "m_maviewButton"
+    MS2Ptr<ASButton> m_showButton;                             // +0x1a8 "m_showButton"
+    MS2Ptr<ASButton> m_maviewButton;                           // +0x1b8 "m_maviewButton"
     MS2Ptr<ASUIComponent> m_hitArea;                                // +0x1c8 "m_hitArea"
     MS2Ptr<ASUIComponent> m_renderTarget;                           // +0x1d8 "m_renderTarget"
     Unk_AasImagePtr m_spImage;                                      // +0x1e8 the page image

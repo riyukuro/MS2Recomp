@@ -13,7 +13,7 @@ class ASMovieClip;
 class ASTextField;
 class ASItemSlot;
 class CMsgBoxData;
-class Unk_140acd6e0;
+class ASButton;
 class Unk_BingoClip;
 class Unk_BingoScript;
 
@@ -66,8 +66,8 @@ struct Unk_BingoPanel
     MS2Ptr<ASMovieClip> m_icon;                 // +0x00
     MS2Ptr<ASItemSlot> m_slot;                  // +0x10
     MS2Ptr<ASTextField> m_text;                 // +0x20
-    MS2Ptr<Unk_140acd6e0> m_use;              // +0x30
-    MS2Ptr<Unk_140acd6e0> m_cancel;           // +0x40
+    MS2Ptr<ASButton> m_use;              // +0x30
+    MS2Ptr<ASButton> m_cancel;           // +0x40
     MS2Ptr<ASMovieClip> m_effect;               // +0x50
     void FUN_140bb69a0();                       // clears every member
     void FUN_140bb7fd0();                       // idle look
@@ -138,7 +138,7 @@ private:
     MS2Ptr<ASMovieClip> m_board5;               // +0x258
     MS2Ptr<ASMovieClip> m_firework;             // +0x268
     ATL::CAtlArray<MS2Ptr<ASMovieClip> > m_rewardLists;   // +0x278
-    ATL::CAtlArray<MS2Ptr<Unk_140acd6e0> > m_receive;   // +0x298
+    ATL::CAtlArray<MS2Ptr<ASButton> > m_receive;   // +0x298
     ATL::CAtlArray<Unk_BingoSlots> m_rewardSlots;   // +0x2b8
     Unk_BingoPanel m_free;                      // +0x2d8
     Unk_BingoPanel m_cash;                      // +0x338

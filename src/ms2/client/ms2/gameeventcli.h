@@ -13,7 +13,7 @@
 #include "ms2/commonfiles/attendgiftdatagroup.h"
 
 class NotifyObject;
-class Unk_140165cf0;
+class TiXmlElement;
 
 
 // One <v> of the worldmap icon event's xml (the field icon the UGC portal map shows); 0x40 bytes, vftable 0x142d41d40-ish.
@@ -21,7 +21,7 @@ class EventIconInfo : public CPtred
 {
 public:
     EventIconInfo();                            // 0x140ce8dd0
-    int Load(Unk_140165cf0* pElem);             // 0x140cea090
+    int Load(TiXmlElement* pElem);             // 0x140cea090
     unsigned m_nFieldId;                        // +0x18 "fieldID"
     CStringW m_strIconFrame;                    // +0x20 "iconFrame"
     CStringW m_strEventStr;                     // +0x28 "eventStr"
@@ -179,11 +179,11 @@ class GameEventUpdateStringCli : public GameEventUpdateString
 {
 public:
     GameEventUpdateStringCli();
-    void FUN_140ce4c60(Unk_140165cf0* pElem);
-    void FUN_140ce4c90(Unk_140165cf0* pElem);
-    void FUN_140ce4cc0(Unk_140165cf0* pElem);
-    void FUN_140ce4cf0(Unk_140165cf0* pElem);
-    void FUN_140ce4d20(Unk_140165cf0* pElem);
+    void FUN_140ce4c60(TiXmlElement* pElem);
+    void FUN_140ce4c90(TiXmlElement* pElem);
+    void FUN_140ce4cc0(TiXmlElement* pElem);
+    void FUN_140ce4cf0(TiXmlElement* pElem);
+    void FUN_140ce4d20(TiXmlElement* pElem);
     virtual CStringW GetTypeName();
     virtual void OnStart();
     virtual void vfunc_6();

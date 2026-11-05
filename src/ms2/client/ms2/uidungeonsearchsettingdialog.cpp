@@ -52,7 +52,7 @@ public:
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
 MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);              // new ASCheckBox(v, n)
-MS2Ptr<ASItemRendererBase> FUN_140bc6120(int nMovieId, const Scaleform::GFx::Value& v);      // new ASItemRendererBase(v, n)
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140bc6120 (T = ASItemRendererBase; defined in uicashattenddialog.cpp)
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                           // wrap in a color tag
@@ -298,7 +298,7 @@ template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c12120(const Scaleform::GFx::Val
         return MS2Ptr<T>(0);
     Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
     if (child.IsObject())
-        return FUN_140bc6120(m_nMovieId, child);
+        return Unk_ASCreate<ASItemRendererBase>(m_nMovieId, child);
     if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
     int nCount = spObj->FUN_1422c6670();

@@ -132,7 +132,7 @@ CStringW CGuideConditionQuestComplete::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A7EC0, CGuideConditionQuestComplete, GetTypeName, 61, 0x4D8EFF74);
 
 // @0x1413a7f10
-void CGuideConditionQuestComplete::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionQuestComplete::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 8;
@@ -171,7 +171,7 @@ CStringW CGuideConditionQuestProgress::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A8020, CGuideConditionQuestProgress, GetTypeName, 61, 0xE4F4DB14);
 
 // @0x1413a8070
-void CGuideConditionQuestProgress::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionQuestProgress::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 7;
@@ -210,7 +210,7 @@ CStringW CGuideConditionDead::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A8180, CGuideConditionDead, GetTypeName, 61, 0x117DC4A7);
 
 // @0x1413a81d0
-void CGuideConditionDead::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionDead::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 0xb;

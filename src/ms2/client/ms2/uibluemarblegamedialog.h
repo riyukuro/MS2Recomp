@@ -19,7 +19,7 @@
 class ASTextField;
 class CInPacket;
 class CMsgBoxData;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIBlueMarbleGameDialog : public UIDialog
 {

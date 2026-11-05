@@ -109,10 +109,10 @@ CLogString* GetLogString();                            // the log
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
-void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& first,
-                   const unsigned& second);
+template <class A, class B> void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
+                                               const A& first, const B& second);   // characterability.cpp's template
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
+struct Unk_XmlElement; void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);   // commonutil.cpp
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 const CString& GetStatName(unsigned nStat);             // the xml name of a stat (stat.cpp)
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
@@ -751,7 +751,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
             {
                 for (POSITION pos = kStats.GetStartPosition(); pos != NULL; kStats.GetNext(pos))
                 {
-                    Unk_EnchantPtr<BaseOption> spBase = kStats.GetValueAt(pos);
+                    MS2Ptr<BaseOption> spBase = kStats.GetValueAt(pos);
                     if (spBase->m_nIndex != nIndex - 1)
                         continue;
                     int nKey = kStats.GetKeyAt(pos);
@@ -765,7 +765,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                 }
                 for (POSITION pos = kSpecials.GetStartPosition(); pos != NULL; kSpecials.GetNext(pos))
                 {
-                    Unk_EnchantPtr<BaseOption> spBase = kSpecials.GetValueAt(pos);
+                    MS2Ptr<BaseOption> spBase = kSpecials.GetValueAt(pos);
                     if (spBase->m_nIndex != nIndex - 1)
                         continue;
                     int nKey = kSpecials.GetKeyAt(pos);
@@ -799,7 +799,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
             nSum += kValue.second;
         pOut->push_back(StringFormat(L"{0}:{1}", kCount.first, nSum));
         if (GetLogString() != 0)
-            FUN_1401e0850(GetLogString(), 0xb, 0x13, L"{0}:{1}", kCount.first, nSum);
+            FUN_1401e0850<CString, unsigned>(GetLogString(), 0xb, 0x13, L"{0}:{1}", kCount.first, nSum);
         for (auto& kValue : kCount.second)
         {
             unsigned nValue = kValue.first;
@@ -875,23 +875,23 @@ bool CItemOptionTable::LoadItemOptionConstant()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
-    std::vector<Unk_140165cf0*> elems;
-    FUN_14028f5d0(pRoot, "option", elems);
+    std::vector<TiXmlElement*> elems;
+    FUN_14028f5d0(reinterpret_cast<Unk_XmlElement*>(pRoot), "option", reinterpret_cast<std::vector<Unk_XmlElement*>&>(elems));
     // @0x140606110 (the lambda body)
-    Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](Unk_140165cf0* pElem) {
+    Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](TiXmlElement* pElem) {
         int nCode = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), "code", *(unsigned int*)&static_cast<int&>(nCode));
         if (nCode == 0)
             return;
-        std::vector<Unk_140165cf0*> children;
-        FUN_14028f5d0(pElem, "rank", children);
+        std::vector<TiXmlElement*> children;
+        FUN_14028f5d0(reinterpret_cast<Unk_XmlElement*>(pElem), "rank", reinterpret_cast<std::vector<Unk_XmlElement*>&>(children));
         for (auto& pChild : children)
         {
             MS2Ptr<ItemOptionConstant> spConstant(new ItemOptionConstant);
@@ -912,17 +912,17 @@ bool CItemOptionTable::LoadItemOptionRandom()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
-    std::vector<Unk_140165cf0*> elems;
-    FUN_14028f5d0(pRoot, "option", elems);
+    std::vector<TiXmlElement*> elems;
+    FUN_14028f5d0(reinterpret_cast<Unk_XmlElement*>(pRoot), "option", reinterpret_cast<std::vector<Unk_XmlElement*>&>(elems));
     // @0x140606320 (the lambda body)
-    Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](Unk_140165cf0* pElem) {
+    Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](TiXmlElement* pElem) {
         MS2Ptr<ItemOptionRandom> spRandom(new ItemOptionRandom);
         if (!spRandom->Load(pElem))
             return;
@@ -945,13 +945,13 @@ bool CItemOptionTable::LoadItemOptionVariation()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("option"))
+    for (TiXmlElement* pElem : pRoot->FirstChildElement("option"))
     {
         MS2Ptr<ItemOptionVariationData> spData(new ItemOptionVariationData);
         spData->FUN_1405d3870(pElem);

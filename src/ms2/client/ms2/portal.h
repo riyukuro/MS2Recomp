@@ -29,8 +29,8 @@ struct Unk_PortalBox
 
     NxBounds3 m_bounds;                                                 // +0x00 local box
     NxBox m_obb;                                                        // +0x18 the box in world space
-    Unk_CtbMat34 m_pose;                                                // +0x54
-    Unk_CtbMat34 m_inverse;                                             // +0x84
+    NxMat34 m_pose;                                                     // +0x54
+    NxMat34 m_inverse;                                                  // +0x84
 };
 MS2_CHECK_SIZE(Unk_PortalBox, 0xb4);
 MS2_CHECK_OFFSET(Unk_PortalBox, m_obb, 0x18);

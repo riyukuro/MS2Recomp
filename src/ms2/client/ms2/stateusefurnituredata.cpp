@@ -108,13 +108,13 @@ struct Unk_UfDirRet : public efd::Point3
 {
 };
 
-// NiPoint3 with the exe's out-of-line conversion ctor and move assignment.
-struct Unk_CamNiPoint3
-{
-    Unk_CamNiPoint3(const Vector3& pt);                                 // 0x14027dcf0
-    Unk_CamNiPoint3& operator=(Unk_CamNiPoint3&& pt);                   // 0x14097faa0
-    float x, y, z;
-};
+// (Unk_CamNiPoint3 was a view of the real NiPoint3(const efd::Point3&) 0x14027dcf0 and NiPoint3::operator=(NiPoint3&&) 0x14097faa0)
+//
+//
+//
+//
+//
+//
 
 int FUN_140de9280(std::basic_string<char, std::char_traits<char>, std::allocator<char>> const&, char const*);   // compare
 
@@ -252,7 +252,7 @@ void StateUseFurniture::vfunc_3(double fTime)
                     static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
                 Unk_NiMatrix3 kAdd;
                 FUN_140b86230(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
-                Unk_NiMatrix3 kProd(kRot.FUN_140a33480(kAdd));
+                Unk_NiMatrix3 kProd(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Matrix3&>(kAdd))));
                 kRot = kProd;
                 FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kDir));
                 Vector3 kCol0;
@@ -264,12 +264,12 @@ void StateUseFurniture::vfunc_3(double fTime)
                 Vector3 kCol2;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
                 kCol2.FUN_140968990();
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol1.FUN_14097fc90(-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y));
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol0.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol2.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
+                reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kPos.FUN_14097fd50(
+                    kCol1.FUN_14097fc90(-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y))));
+                reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kPos.FUN_14097fd50(
+                    kCol0.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)))));
+                reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kPos.FUN_14097fd50(
+                    kCol2.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)))));
                 m_pOwner->vfunc_19(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(kPos)));
                 m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
             }
@@ -304,12 +304,12 @@ void StateUseFurniture::vfunc_8(double fTime)
         pPC->vfunc_59(3, 0, 0, 0);
     else
     {
-        MS2Ptr<Unk_PCBaseComp_b18> spRec = pPC->vfunc_104(true, false, false);
+        MS2Ptr<CSkillRecord> spRec = pPC->vfunc_104(true, false, false);
         if (spRec.get() != 0)
         {
             spRec->m_vPos50 = m_vPos;
             pPC->vfunc_19(reinterpret_cast<const efd::Point3&>(m_vPos));
-            pPC->vfunc_102(reinterpret_cast<MS2Ptr<CSkillRecord>&>(spRec));
+            pPC->vfunc_102(spRec);
         }
     }
 }

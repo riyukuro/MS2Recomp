@@ -6,7 +6,7 @@
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // classes are declared in src/ms2/placeholder/asevent.h. The obj's tail is ~ASTextEvent and the scalar deleting dtors.
 #include "ms2/placeholder/ms2stdafx.h"
-
+#include <vector>   // C3: std::vector<GFx::Value>::size (the ASArgList)
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asevent.h"
 
@@ -28,7 +28,7 @@ ASEvent::ASEvent(const CString& strType, bool bBubbles, bool bCancelable, int nM
         FUN_1422bce70(args.FUN_1409b1f70(0), strType);
         FUN_1422bcce0(args.FUN_1409b1f70(1), bBubbles);
         FUN_1422bcce0(args.FUN_1409b1f70(2), bCancelable);
-        pMovie->CreateObject(&m_value, "flash.events.Event", args.FUN_1409b1f70(0), (unsigned)args.FUN_1409b2840());
+        pMovie->CreateObject(&m_value, "flash.events.Event", args.FUN_1409b1f70(0), (unsigned)reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size());
     }
 }
 

@@ -20,7 +20,7 @@ struct Unk_140694210
 };
 
 COutputStream& FUN_14070f960(COutputStream& out, long value);   // packet.cpp stream operators
-CInputStream& FUN_14070f440(CInputStream& in, long& value);
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read1/Read3/Read5 (0x14070f340/3c0/440)
 
 // @0x140693e60
 CManufacture::CManufacture()
@@ -103,5 +103,5 @@ void FUN_1406942f0(Unk_140694210& v, CByteBuffer& in)
 {
     v.m_00 = in.ReadUnicodeString();
     v.m_08 = in.ReadUInt8();
-    FUN_14070f440(in, (long&)v.m_0c);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(in)).Read5((long&)v.m_0c);
 }

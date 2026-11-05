@@ -19,7 +19,7 @@
 class ASMovieClip;
 class ASTextField;
 class CMsgBoxData;
-class Unk_140acd6e0;
+class ASButton;
 
 // The house the cube service reports (its owner keeps it in an MS2Ptr; only these fields are read here).
 struct Unk_HouseMarkInfo
@@ -82,7 +82,7 @@ private:
     int m_nIconType;                    // +0x40 0 sale, 1 waiting, 2 my house, 3 open, 4 closed
     int m_n44;                          // +0x44
     MS2Ptr<ASMovieClip> m_clip;         // +0x48
-    MS2Ptr<Unk_140acd6e0> m_btn;        // +0x58
+    MS2Ptr<ASButton> m_btn;        // +0x58
     MS2Ptr<ASTextField> m_debugText;    // +0x68
 };
 MS2_CHECK_SIZE(UIHouseMarkEntity, 0x78);

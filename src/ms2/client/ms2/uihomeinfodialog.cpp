@@ -76,11 +76,11 @@ public:
     virtual void vfunc_24(bool bRefresh);
 };
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
-// The second panel type the visitors book button is looked up on.
-class Unk_HiPanelB : public AScript
-{
-public:
-};
+// The home info panel the visitors book button is looked up on: an ASGameEntity (the MS2Ptr dtor/bool/-> at
+// 0x140ba7b40/bf0/c00 and GetChild 0x140ede180 carry only the ASGameEntity name besides stand-ins).
+class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
+
+
 
 // The entity application framework (global at 0x143b059e8) and the cube service (class id 0x06100017).
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
@@ -96,7 +96,7 @@ extern __int64 DAT_143ab2898;                                       // wallet: m
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/client/ms2/addresstable.h"   // C3: CAddressTable::FormatChecked
-
+class Unk_ReportDialogAccess : public UIDialog { public: template<class T> MS2Ptr<T> GetChild(const CString& name); };   // C3: the child lookup 0x140ede180 (defined in uitencentuserreportdialog.cpp)
 template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
 class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
 {
@@ -118,7 +118,7 @@ public:
     unsigned __int64 FUN_1410d5780();                                      // merat balance
     void FUN_1410d5930(Unk_CMISTree<0x11e>* ids);                   // the visitors
 };
-class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
 public:
@@ -129,8 +129,8 @@ public:
 class Unk_HiPc : public MyPC
 {
 public:
-    __int64 FUN_141662830();                                        // time of the last bank use
-    __int64 FUN_141662870();                                        // time of the last doctor use
+    // FUN_141662830 / FUN_141662870 (last bank / doctor use time): PC's own members (fittingdollpc.h)
+
 };
 class Unk_HiWorld
 {
@@ -574,7 +574,7 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             FUN_1412c5f00();
             FUN_1412c6070();
             int bBook = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0x3e);
-            if (MS2Ptr<Unk_HiPanelB> spPanel = FUN_140ede180("m_homeInfoPanel"))
+            if (MS2Ptr<ASGameEntity> spPanel = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_homeInfoPanel"))
             {
                 if (MS2Ptr<ASButton> spBook = spPanel->FUN_140acce30<ASButton>("m_visitorsBook"))
                 {

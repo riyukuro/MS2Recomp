@@ -7,7 +7,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/stream.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 class GameObjectEffectNifCtx : public CPtred
 {
@@ -16,7 +16,7 @@ public:
     virtual ~GameObjectEffectNifCtx() = default;                     // 0x140474960 (scalar deleting 0x140474990)
 
     unsigned GetGameOID() const;                                // 0x140474720
-    void LoadXml(Unk_140165cf0* pNode);                         // 0x140474740
+    void LoadXml(TiXmlElement* pNode);                         // 0x140474740
     void Write(COutputStream& out) const;                       // 0x1404747f0
     void Read(CInputStream& in);                                // 0x140474870
 

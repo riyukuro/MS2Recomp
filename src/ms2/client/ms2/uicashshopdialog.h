@@ -26,7 +26,7 @@ class CCashUnlockDialog;
 class UIMsg;
 class ASTileList;
 class Unk_CashBannerRecord;
-class Unk_CashButton;
+// (Unk_CashButton: the m_btnNext / m_btnPrev children are ASButton)
 
 // One banner of the shop (the left / right image): the narrowed strings of the banner record.
 class CashBannerInfo : public CPtred
@@ -142,7 +142,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_CashButton> FUN_140bb4b10(const CString& strName);   // child lookup (shared COMDAT)
+    // child lookup 0x140bb4b10 = UISwfEntity::GetChild<ASButton>
 
     int m_nCash;                                                    // +0x178 the cash balance
     int m_nCategory;                                                // +0x17c the page

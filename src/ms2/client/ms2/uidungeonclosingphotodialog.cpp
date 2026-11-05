@@ -37,7 +37,7 @@
 #include "ms2/client/ms2/uimassiveevent.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"
-#include "ms2/client/ms2/uimodelview.h"
+#include "ms2/client/ms2/uirenderview.h"
 #include "ms2/commonfiles/serverpacketdef.h"
 static CString s_winSound = "BattleField_Win";
 
@@ -45,14 +45,14 @@ static CString s_winSound = "BattleField_Win";
 enum Unk_ClosingJob { Unk_ClosingJob_None };
 class Unk_ClosingThing : public PCGemEquip { };
 class PC { public: class Unk_MyPCEquip* FUN_14165f460(); int FUN_141654730(); };   // C3: unit-local view (def in pc); the gem equipment
-struct Unk_PetBoxCameraData
-{
-    Unk_PetBoxCameraData();
+class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
+{ public:
+    Unk_ModelViewCamera(); void ApplyCharCamera();
     efd::Point3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
+typedef Unk_ModelViewCamera Unk_PetBoxCameraData; MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
 class Unk_ClosingActor
 {
 public:

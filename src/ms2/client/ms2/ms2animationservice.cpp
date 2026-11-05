@@ -54,7 +54,7 @@
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, GameObject>)
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/filepreload_1.h"
-class Unk_140165cf0;
+class TiXmlElement;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:

@@ -21,7 +21,7 @@
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -32,7 +32,7 @@ public:
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // int or enum value by name
+int FUN_140179060(TiXmlElement* pElem, const char* pszName, int& nOut);   // int or enum value by name
 class Unk_140166410;   // the game settings (CFeatureManager)
 Unk_140166410* FUN_140166410();
 
@@ -108,7 +108,7 @@ static int ReadMultiType(CString& str)
 // @0x1404c1e80 (tinyxmlhelper.h line 250)
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-static int FUN_1404c1e80(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
+static int FUN_1404c1e80(TiXmlElement* pElem, const char* pszName, int* pnOut)
 {
     if (FALSE)
     {
@@ -136,13 +136,13 @@ bool CGloabalFactor::LoadMultiControl()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("multi")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("multi")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("multi")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("multi")))
     {
         int nType = 0;
         int nKey = 0;

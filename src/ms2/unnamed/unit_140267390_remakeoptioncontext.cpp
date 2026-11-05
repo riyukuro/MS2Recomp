@@ -14,25 +14,25 @@
 // The item option pointers (MS2Ptr<CItemOption>; the members are the exe's out-of-line copies in commonstruct_2.cpp).
 class CItemOption;
 
-// std::vector of 8-byte values (v2525: _Buy multiplies the count by 8).
-struct Unk_RemakeOptionList50 {
-    Unk_RemakeOptionList50() noexcept;                              // 0x14027d690 (std::vector default ctor, noexcept)
-    ~Unk_RemakeOptionList50();                                      // 0x14027e3f0
-    Unk_RemakeOptionList50& operator=(const Unk_RemakeOptionList50& o); // 0x14027eb30
-    void* m_p[3];
-};
-MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);
+// The +0x50 member is the remake packets' option list, std::vector<Unk_RemakeLockOpt> (ctor 0x14027d690, dtor
+// 0x14027e3f0, operator= 0x14027eb30). C3 #13: was the Unk_RemakeOptionList50 view.
+#include "ms2/placeholder/citemremakeoptionpacket.h"   // Unk_RemakeLockOpt
+//
+//
+//
+//
+//
 
-// The +0x68 member is a std::vector<MS2Ptr<Probability::LogContext> > (ctor 0x14027d750, dtor 0x14027e4b0). This view
-// carries the copy and clear the exe keeps out of line. C3: was the member type (rows 214/380).
-void FUN_1402876b0(void* list, void* first, void* last);    // vector<MS2Ptr<CPtred>>::_Destroy
-struct Unk_RemakeOptionList68 {
-    Unk_RemakeOptionList68& operator=(const Unk_RemakeOptionList68& o); // 0x14027ebb0
-    // 0x14028a690 (commonstruct.cpp's vector::clear; no other definition): _Destroy(_Myfirst, _Mylast), _Mylast = _Myfirst
-    void clear() { FUN_1402876b0(this, m_p[0], m_p[1]); m_p[1] = m_p[0]; }
-    void* m_p[3];
-};
-MS2_CHECK_SIZE(Unk_RemakeOptionList68, 0x18);
+// The +0x68 member is a std::vector<MS2Ptr<Probability::LogContext> > (ctor 0x14027d750, dtor 0x14027e4b0, operator=
+// 0x14027ebb0, clear 0x14028a690). C3 #13: the Unk_RemakeOptionList68 view that carried the last two is gone.
+//
+//
+//
+//
+//
+//
+//
+//
 
 class RemakeOptionContext : public CPtred
 {
@@ -48,7 +48,7 @@ public:
     MS2Ptr<CItemOption> m_option38;     // +0x38
     int m_value48;                      // +0x48
     int m_value4c;                      // +0x4c
-    Unk_RemakeOptionList50 m_list50;    // +0x50
+    std::vector<Unk_RemakeLockOpt> m_list50;    // +0x50 (C3 #13: was Unk_RemakeOptionList50)
     std::vector<MS2Ptr<Probability::LogContext> > m_list68;    // +0x68 (C3: was Unk_RemakeOptionList68)
 };
 MS2_CHECK_SIZE(RemakeOptionContext, 0x80);
@@ -72,7 +72,7 @@ RemakeOptionContext::RemakeOptionContext(const RemakeOptionContext& other)
     m_value48 = other.m_value48;
     m_value4c = other.m_value4c;
     m_list50 = other.m_list50;
-    reinterpret_cast<Unk_RemakeOptionList68&>(m_list68) = reinterpret_cast<const Unk_RemakeOptionList68&>(other.m_list68);
+    m_list68 = other.m_list68;
 }
 
 // @0x1402675b0
@@ -80,5 +80,5 @@ RemakeOptionContext::~RemakeOptionContext()
 {
     m_option28 = 0;
     m_option38 = 0;
-    reinterpret_cast<Unk_RemakeOptionList68&>(m_list68).clear();
+    m_list68.clear();
 }

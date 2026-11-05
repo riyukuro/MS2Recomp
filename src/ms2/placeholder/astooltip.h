@@ -15,6 +15,8 @@ class CItem;
 class CItemData;
 template <class T> class Unk_GalleryPtr;     // unit-local smart pointer of uigalleryeventdialog.h
 class Unk_GalleryItem;
+template <class T> class MS2SvrPtr;          // ms2svrptr.h
+class CPtred;
 
 class ASTooltip : public ASObj
 {
@@ -112,7 +114,7 @@ public:
     void FUN_1409cd9c0(CItem* pItem);                                    // itemSellPrice / notExchange
     void FUN_1409ce5f0(CItem* pItem);                                    // itemCreateTime (+ designOrgItemName)
     void FUN_1409ce950(CItem* pItem);                                    // itemUsePeriod (the expiry time)
-    void FUN_1409cf4d0(class Unk_ShopLifeRef spLife);                    // itemUsePeriod from the shop item life (by value: callee destroys)
+    void FUN_1409cf4d0(MS2SvrPtr<CPtred> spLife);                       // itemUsePeriod from the shop item life (NpcShopItemLife; by value: callee destroys)
     void FUN_1409cfbf0(CItem* pItem);                                    // itemCompare (the stat change of equipping)
     void FUN_1409d0710(CItem* pItem);                                    // itemDescription
     void FUN_1409d0a80(CItem* pItem);

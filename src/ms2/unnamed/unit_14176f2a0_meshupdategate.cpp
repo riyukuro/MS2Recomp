@@ -19,7 +19,7 @@
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 class Unk_Clock;
-ecr::SceneGraphService* FUN_1410a68f0(char* pCell);             // scene graph service lookup
+struct Unk_CcSvcCell; ecr::SceneGraphService* FUN_1410a68f0(Unk_CcSvcCell* pCell);   // scene graph service lookup (cubecraft_1)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
@@ -56,7 +56,7 @@ bool CMeshUpdateGate::FUN_14176f410(egf::Entity* pEntity, float fInterval)
     if (FUN_14176f740(fInterval) && bShown != IsActive())
     {
         bShown = bShown ^ 1;
-        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
         if (bShown)
             reinterpret_cast<MS2SceneGraphService*>((ecr::SceneGraphService*)spService)->RemoveEntityFromUpdate(pEntity);
         else
@@ -81,7 +81,7 @@ bool CMeshUpdateGate::FUN_14176f500(egf::Entity* pEntity, float fInterval, float
             bShown = bShown ^ 1;
             if (pEntity)
             {
-                efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+                efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
                 if (bShown)
                     reinterpret_cast<MS2SceneGraphService*>((ecr::SceneGraphService*)spService)->RemoveEntityFromUpdate(pEntity);
                 else
@@ -91,7 +91,7 @@ bool CMeshUpdateGate::FUN_14176f500(egf::Entity* pEntity, float fInterval, float
     }
     else if (bShown)
     {
-        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
         reinterpret_cast<MS2SceneGraphService*>((ecr::SceneGraphService*)spService)->MarkEntityDynamic(pEntity);
         m_bActive = true;
         bShown = true;
@@ -108,7 +108,7 @@ void CMeshUpdateGate::FUN_14176f680(egf::Entity* pEntity)
 {
     if (pEntity && IsActive())
     {
-        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+        efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<Unk_CcSvcCell*>(&DAT_143b059e8)));
         reinterpret_cast<MS2SceneGraphService*>((ecr::SceneGraphService*)spService)->MarkEntityDynamic(pEntity);
         m_bActive = false;
         m_bPending = true;

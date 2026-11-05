@@ -13,7 +13,7 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loaders are)
+class TiXmlElement;    // xml element (declared where the loaders are)
 
 class AdditionalLevelData;  // the VIP effect (skill) found for an effect id / level
 

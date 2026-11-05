@@ -11,7 +11,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/itemgift.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // Skill point kind of a reward ("subJobLevel": 1 / 2). Name and type invented: the map GetSkillPoints fills has its own
 // copy of the std::map glue (try_emplace 0x14037e600, gameevent's map<int,int> is 0x1403e13d0) and of less<K>::operator()

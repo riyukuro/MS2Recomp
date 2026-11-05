@@ -52,8 +52,8 @@ MS2_CHECK_OFFSET(Unk_ProdPremium, m_1cc, 0x1cc);
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143ac3df0
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143ac3e98
 
-// The exe's swap-assign of an Unk_ShopLifeRef from a raw pointer (a COMDAT of the exe, 0x140db8b90).
-Unk_ShopLifeRef& FUN_140db8b90(Unk_ShopLifeRef& ref, NpcShopItemLife* p);
+// C3 #10: the exe's swap-assign from a raw pointer (COMDAT 0x140db8b90) is MS2SvrPtr<CPtred>::operator=(CPtred*),
+// instantiated below.
 
 // ---- CNpcShopProductBase --------------------------------------------------------------------------------------------
 
@@ -177,8 +177,8 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
         bool bLife = in.ReadBool();
         if (bLife)
         {
-            FUN_140db8b90(m_d8, new NpcShopItemLife());
-            m_d8.operator->()->Read(in);
+            m_d8 = new NpcShopItemLife();
+            static_cast<NpcShopItemLife*>(m_d8.get())->Read(in);
         }
         Unk_SplitA(m_b0, &m_20, ",");
         SetBuyItemCount(nBought);
@@ -186,7 +186,7 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
         m_40->FUN_140523c40(nItemId, nRarity, nCount);
         m_40->FUN_140524eb0(in);
         m_40->FUN_14052b340(m_b8);
-        m_40->FUN_14052b870(reinterpret_cast<const Unk_ItemSlot188&>(m_d8));
+        m_40->FUN_14052b870(m_d8);
     }
     else if (nMode == 7)
     {
@@ -405,7 +405,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
     if (m_d8)
     {
         CMsTime tmNow(GetServerTime());
-        if (!m_d8.operator->()->IsNotExpired(tmNow))
+        if (!static_cast<NpcShopItemLife*>(m_d8.get())->IsNotExpired(tmNow))
         {
             strError = GetStringCommonByKey(L"s_blackmarket_error_buy_expired");
             return false;
@@ -578,14 +578,14 @@ MS2Ptr<CItem> CNpcShopMeratItemCli::GetItem()
 }
 
 // @0x140db8b90
-Unk_ShopLifeRef& FUN_140db8b90(Unk_ShopLifeRef& ref, NpcShopItemLife* p)
-{
-    Unk_ShopLifeRef tmp(p);
-    NpcShopItemLife* pOld = ref.m_p;
-    ref.m_p = tmp.m_p;
-    tmp.m_p = pOld;
-    return ref;
-}
+template MS2SvrPtr<CPtred>& MS2SvrPtr<CPtred>::operator=(CPtred*);
+// (C3 #10: was the hand-written FUN_140db8b90 swap-assign on Unk_ShopLifeRef)
+//
+//
+//
+//
+//
+//
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142ca5690-0x142ca56f0 .text$yd
 
@@ -618,5 +618,5 @@ MS2_REPLACE_METHOD(0x140db8400, CNpcShopProductCli, FUN_140db8400, 371, 0x3F8AEA
 MS2_REPLACE_METHOD(0x140db8580, CNpcShopProductCli, FUN_140db8580, 122, 0x6C68DD87);
 MS2_REPLACE_METHOD(0x140db8600, CNpcShopProductCli, CheckStarPointEvent, 190, 0x38C72280);
 MS2_REPLACE_METHOD(0x140db8a00, CNpcShopMeratItemCli, vfunc_2, 186, 0xBEA2FAF8);
-MS2_REPLACE(0x140db8b90, FUN_140db8b90, 97, 0x7C708882);
+MS2_REPLACE_IMPL(0x140db8b90, static_cast<MS2SvrPtr<CPtred>& (*)(MS2SvrPtr<CPtred>&, CPtred*)>([](MS2SvrPtr<CPtred>& self, CPtred* p) -> MS2SvrPtr<CPtred>& { return self = p; }), "MS2SvrPtr<CPtred>::operator=", 97, 0x7C708882);
 

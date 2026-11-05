@@ -40,7 +40,7 @@ template <class A, class B> inline void Unk_SoundLog(CLogString* log, int level,
 }
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp); they return 0 on success.
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
+int FUN_1408731e0(TiXmlElement* pNode, const char* pszName, int& nOut);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 CLogString* GetLogString();                                        // the logger
@@ -72,7 +72,7 @@ CSoundMusicEffectParam::CSoundMusicEffectParam()
 }
 
 // @0x14178fdb0
-void CSoundMusicEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CSoundMusicEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "cueID", reinterpret_cast<int&>(m_nCueID));

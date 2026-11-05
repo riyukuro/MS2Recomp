@@ -145,9 +145,9 @@ void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat 
 
 
 // The local player's buffs (PCBase +0x748).
-class AdditionalCliList { public: int HasEnabledWithEventBuffType(int nType); MS2Ptr<AdditionalCli> FindEnabledByEventBuffType(int nType); };   // C3: member view (additionalclilist.h)
+#include "ms2/client/ms2/additionalclilist.h"   // AdditionalCliList / AdditionalCli (C3: the local views are gone)
 class Unk_PCBaseBuffs : public AdditionalCliList { };
-class AdditionalCli : public CPtred {};
+//
 
 // The safe riding map table (FUN_140ba4fa0).
 class CAdventureLevelTableHelper { public: bool IsReached(unsigned nLevel); };   // C3: member view (adventureleveltablehelper.h)

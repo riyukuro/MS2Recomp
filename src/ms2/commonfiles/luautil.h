@@ -79,7 +79,7 @@ public:
     CLua();                                             // 0x140672770
     virtual ~CLua();                                    // 0x1406727e0
     virtual bool vfunc_1();                             // 0x1406731f0 BindFunctions: load the scripts and validate them
-    virtual bool IsClient();                            // 0x14067bc80 in CLuaClient (false)
+    virtual bool IsClient() = 0;                        // pure in the exe (_purecall slot); 0x14067bc80 in CLuaClient
     virtual void Validate();                            // 0x140673450 calls every formula once with zeros
     virtual ContextPtr GetContext(); // 0x140673670 creates the context on first use
 

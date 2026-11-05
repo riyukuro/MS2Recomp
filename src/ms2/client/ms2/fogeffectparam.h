@@ -9,7 +9,7 @@ class CFogEffectParam : public CEffectParam
 {
 public:
     CFogEffectParam();                                          // 0x1412208a0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141220910 <fog color="r,g,b" near far>
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141220910 <fog color="r,g,b" near far>
     virtual CEffectPtr vfunc_6();                               // 6 0x141220aa0 new CFogEffect
 public:
     unsigned int m_dwColor;         // +0x48 fog "color" as D3DCOLOR_XRGB (0xffffffff if fewer than 3 components)

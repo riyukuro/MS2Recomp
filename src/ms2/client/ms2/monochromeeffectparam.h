@@ -9,7 +9,7 @@ class MonochromeEffectParam : public CPostEffectParam
 {
 public:
     MonochromeEffectParam();                                       // 0x1414876d0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                    // 1 0x141487730
+    virtual void vfunc_1(TiXmlElement* pNode);                    // 1 0x141487730
 public:
     float m_fSaturationMin;         // +0x60 "saturationMin"
     float m_fSaturationMax;         // +0x64 "saturationMax" = 1

@@ -2725,10 +2725,10 @@ bool CUgcGetCostTable::FUN_1408984b0(__int64 nStart, __int64 nLength, CostList& 
 }
 
 // @0x140896c50
-CUgcCharBookMark::CUgcCharBookMark(MS2Ptr<Unk_CharBookMarkOwner> spOwner)
+CUgcCharBookMark::CUgcCharBookMark(MS2Ptr<CUgcBookMark> spOwner)
     : m_map(10)
 {
-    m_spOwner = spOwner;
+    m_spOwner = reinterpret_cast<MS2Ptr<Unk_CharBookMarkOwner>&>(spOwner);
     FUN_140896d90();
 }
 
@@ -2747,12 +2747,12 @@ void CUgcCharBookMark::FUN_140896d90()
 }
 
 // @0x140896dd0
-void CUgcCharBookMark::FUN_140896dd0(MS2Ptr<Unk_MeratEquipEntry> spEntry)
+void CUgcCharBookMark::FUN_140896dd0(MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    if (spEntry.get() != 0)
+    if (reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct).get() != 0)
     {
-        m_list.Add(spEntry);
-        m_map.SetAt(spEntry->m_oid, spEntry);
+        m_list.Add(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct));
+        m_map.SetAt(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct)->m_oid, reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct));
     }
 }
 
@@ -2763,10 +2763,10 @@ void CUgcCharBookMark::FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> 
 }
 
 // @0x140896e80
-MS2Ptr<Unk_MeratEquipEntry> CUgcCharBookMark::FUN_140896e80(const Unk_MeratOid& oid)
+MS2Ptr<CMeratMarketProduct> CUgcCharBookMark::FUN_140896e80(const Unk_MeratProductKey& key)
 {
-    MS2Ptr<Unk_MeratEquipEntry> spEntry(0);
-    m_map.Lookup(reinterpret_cast<const Unk_MeratProductKey&>(oid), spEntry);
+    MS2Ptr<CMeratMarketProduct> spEntry(0);
+    m_map.Lookup(key, reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spEntry));
     return spEntry;
 }
 

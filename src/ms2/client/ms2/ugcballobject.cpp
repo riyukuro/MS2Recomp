@@ -34,7 +34,7 @@ void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the th
 struct Unk_UtilFloat3;
 void FUN_140710590(COutPacket& packet);                             // send
 struct Unk_UbPoint { float x, y, z; };                         // plain three-float point (no ctor)
-struct Unk_UbPointReader { Unk_UbPoint FUN_140204500(); };      // reads a point (three floats); Unk_PayloadReader::ReadPoint (unit_1401f9eb0)
+struct Unk_PayloadPoint { Unk_PayloadPoint(); float values[3]; }; struct Unk_PayloadReader { template<class T> T ReadPoint(); };   // C3: unit_1401f9eb0's packet reader (ReadPoint 0x140204500); was Unk_UbPointReader
 NxVec3 FUN_141b6e0e0(const efd::Point3& kPt);               // Point3 -> NxVec3 (C3: was const Vector3&)
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);          // NxVec3 -> Point3 (the definer's signature)
 struct Unk_UbBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion (NiPoint3(const efd::Point3&), 0x14027dcf0)
@@ -323,10 +323,10 @@ void FUN_140dee4a0(CInPacket& packet)
     {
         int nObjectId = packet.ReadInt32();
         __int64 nOwner = packet.ReadInt64();
-        Unk_UbPoint kPos = reinterpret_cast<Unk_UbPointReader*>(&packet)->FUN_140204500();
+        Unk_PayloadPoint kPos = reinterpret_cast<Unk_PayloadReader*>(&packet)->ReadPoint<Unk_PayloadPoint>();
         float fRadius = packet.ReadFloat();
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
-        if (!pBall->FUN_140decfc0(nOwner, nObjectId, kPos, fRadius))
+        if (!pBall->FUN_140decfc0(nOwner, nObjectId, reinterpret_cast<Unk_UbPoint&>(kPos), fRadius))
             break;
         if (!pWorld->FUN_141bbb1e0(pBall, 0, 1))
             break;

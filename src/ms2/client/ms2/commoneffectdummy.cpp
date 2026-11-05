@@ -44,9 +44,9 @@ CEffectDummy* CommonEffectDummy::Find(const CString& name)
 }
 
 // @0x140a40200
-void CommonEffectDummy::Clear()
+size_t CommonEffectDummy::Clear()
 {
-    m_pGroup->FUN_140a515c0();
+    return m_pGroup->FUN_140a515c0();
 }
 
 // @0x140a40230

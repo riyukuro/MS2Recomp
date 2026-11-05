@@ -4,7 +4,7 @@
 // MS2-RANGE: 0x140edb370-0x140edea60 .text$mn
 // MS2-RANGE: 0x142ca85d0-0x142ca8690 .text$yd
 // MS2-PIN: ??_GNotifyBlindTarget@@UEAAPEAXI@Z 0x140ede740
-// MS2-PIN: ??_7?$Unk_ReportDelegateImpl@U?$pair@PEAVUITencentUserReportDialog@TencentUserReport@@P812@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Unk_ReportDelegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@ 0x142e691b0
+// MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUITencentUserReportDialog@TencentUserReport@@P812@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@ 0x142e691b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitencentuserreportdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/gfxmanager.h"
@@ -73,62 +73,62 @@ extern const int g_reportTypes[16]; // exe table; no mutable DLL-local copy
 void FUN_141275260(int message, int a, int b);
 CStringW GetStringCommon(int id);
 
-template<class F> class Unk_ReportDelegate;
-template <class R, class A1, class A2>
-class Unk_ReportDelegate<R(A1, A2)>
-{
-public:
-    class Unk_ReportDelegateImplBase
-    {
-    public:
-        Unk_ReportDelegateImplBase();
-        virtual ~Unk_ReportDelegateImplBase();                            // 0
-        virtual Unk_ReportDelegateImplBase* vfunc_1() const = 0;          // 1 clone
-        virtual R vfunc_2(A1 a1, A2 a2) = 0;                           // 2 Invoke
-        virtual bool vfunc_3(const Unk_ReportDelegateImplBase* p) const = 0;     // 3 equals
-    };
+// C3: Unk_ReportDelegate<R(A1,A2)> / Unk_ReportMessageBox are gone: the callback type is Delegate<bool(int, const CMsgBoxData&)>
+// (delegate.h) and 0x141a027c0 is CMsgBoxData::SetCallback (uimessageboxdata.h).
 
-    template <class F>
-    class Unk_ReportDelegateImpl : public Unk_ReportDelegateImplBase
-    {
-    public:
-        Unk_ReportDelegateImpl(const Unk_ReportDelegateImpl& o) : m_f(o.m_f) {}
-        Unk_ReportDelegateImpl(const F& f) : m_f(f) {}
-        virtual Unk_ReportDelegateImplBase* vfunc_1() const { return new Unk_ReportDelegateImpl(*this); }
-        virtual R vfunc_2(A1 a1, A2 a2) { return Call(m_f, a1, a2); }
-        virtual bool vfunc_3(const Unk_ReportDelegateImplBase* p) const
-        {
-            const Unk_ReportDelegateImpl* o = dynamic_cast<const Unk_ReportDelegateImpl*>(p);
-            if (!o)
-                return false;
-            return m_f == o->m_f;
-        }
 
-    private:
-        template <class C, class M> static R Call(std::pair<C*, M>& p, A1 a1, A2 a2) { return (p.first->*p.second)(a1, a2); }
 
-        F m_f;
-    };
 
-    Unk_ReportDelegate() : m_pImpl(0) {}
-    template <class C>
-    Unk_ReportDelegate(C* const& obj, R (C::*const& f)(A1, A2))     // f by const&: the caller copies the PMF before it stores `this` (uiobject.cpp agent)
-        : m_pImpl(new Unk_ReportDelegateImpl<std::pair<C*, R (C::*)(A1, A2)> >(std::make_pair(obj, f)))
-    {
-    }
-    Unk_ReportDelegate(const Unk_ReportDelegate& o);        // declared (appended by the uiobject.cpp agent): a user copy ctor makes a by-value
-                                        // Unk_ReportDelegate argument go by reference to a caller temp that the callee destroys
-                                        // (UIObject::OnLoadComplete 0x14131ec00); without it the ABI passes it in a register
-    ~Unk_ReportDelegate();
 
-private:
-    Unk_ReportDelegateImplBase* m_pImpl;          // +0x00
-};
 
-class Unk_ReportMessageBox {
-public:
-    void FUN_141a027c0(Unk_ReportDelegate<bool(int, const CMsgBoxData&)>);
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nA, int nB, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -224,7 +224,7 @@ int UITencentUserReportDialog::vfunc_28(const char* method, const Scaleform::GFx
         MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x8a7, 0, L"");
         if (box.get()) {
             box->FUN_141a024a0(0);
-            reinterpret_cast<Unk_ReportMessageBox*>(box.operator->())->FUN_141a027c0(Unk_ReportDelegate<bool(int, const CMsgBoxData&)>(this, &UITencentUserReportDialog::FUN_140edbc00));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UITencentUserReportDialog::FUN_140edbc00));
             FUN_140d73c60(box);
             return 1;
         }

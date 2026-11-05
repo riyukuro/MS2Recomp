@@ -21,7 +21,7 @@ class NiPoint3;
 struct Unk_PopupPos
 {
     Unk_PopupPos() {}                   // a user ctor keeps a local copy free of a /GS cookie
-    Unk_PopupPos(const efd::Point3& kPt);   // 0x14027dcf0 (the shared NiPoint3-from-Point3 copy)
+    // its (const efd::Point3&) ctor was NiPoint3's (0x14027dcf0); vfunc_60 returns a NiPoint3
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_PopupPos, 0xc);
@@ -145,7 +145,7 @@ public:
     virtual int vfunc_57(int nForce);                               // 57 0x141a7d0c0
     virtual int vfunc_58();                                         // 58 0x141a7d1f0
     virtual float vfunc_59();                                       // 59 0x141a7d250 returns 0
-    virtual Unk_PopupPos vfunc_60();                                // 60 0x141a7d260
+    virtual NiPoint3 vfunc_60();                                    // 60 0x141a7d260
     virtual float vfunc_61();                                       // 61 0x141a7d360
     // ---- agents: append non-virtual UIPopupEntity members below this line (sorted by address) ----
     void FUN_141a7d0a0();                                           // m_8c = 1 (ignore the range limit)

@@ -9,7 +9,7 @@
 //   (unit_140987430, CAfterImageEffectParam), not by effectservice.
 // - vfunc_6 creates the runtime effect object; it returns NiPointer<CEffect> (8 bytes, hidden return pointer;
 //   NiPointer(T*) COMDAT 0x1409878c0). CEffect (the runtime effect, NiRefObject-based, 13 slots) is declared below.
-// - The XML node type is the game's TinyXML element (Unk_140165cf0, see commonfiles/fielddata.h).
+// - The XML node type is the game's TinyXML element (TiXmlElement, see commonfiles/fielddata.h).
 #pragma once
 #include <afx.h>
 #include <NiRefObject.h>
@@ -20,7 +20,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/delegate.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 class NiAVObject;
 class NiTransform;
 // Effect owner/target context passed to CEffectParam::vfunc_7 and CEffect::vfunc_3 (getters 0x140a53110/53010/53050/
@@ -138,7 +138,7 @@ public:
     explicit CEffectParam(int nType);                       // 0x1411a01d0
     virtual ~CEffectParam() = default;                      // 0x140987960 (inline, no vptr store), ??_G 0x1411a1db0
 
-    virtual void vfunc_1(Unk_140165cf0* pNode);             // 1 0x1411a0290 load startDelay/duration/lodSkipLevel/.../ignoreOptimize
+    virtual void vfunc_1(TiXmlElement* pNode);             // 1 0x1411a0290 load startDelay/duration/lodSkipLevel/.../ignoreOptimize
     virtual bool vfunc_2();                                 // 2 0x1411a03d0 validate (warns for types 4,7-10,12,15 with no duration)
     virtual bool vfunc_3();                                 // 3 0x14119e920 return true
     virtual void vfunc_4();                                 // 4 0x14119e930 {}

@@ -43,7 +43,7 @@ class ChaosLightEffectParam : public TransitionEffectParam
 public:
     ChaosLightEffectParam();                                    // 0x1410415b0 (type 0xe)
     virtual ~ChaosLightEffectParam() = default;                 // 0x1410439b0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141045a60 load the scalars and the keyframes
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141045a60 load the scalars and the keyframes
     virtual CEffectPtr vfunc_6();                               // 6 0x141046110 new ChaosLightEffect
 
     ChaosLightEffectParam& FUN_141043a30(const ChaosLightEffectParam& rSrc);   // 0x141043a30 copy assign

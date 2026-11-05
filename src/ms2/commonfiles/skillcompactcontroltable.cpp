@@ -30,7 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -53,13 +53,13 @@ errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const 
 }
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 : public Unk_XmlNode {};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
       // the content switches
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);
+enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 unsigned char FUN_1401d1320(CCacheData*);                                 // the file changed since it was loaded
@@ -105,13 +105,13 @@ int CSkillCompactControlTable::Load()
         return 0;
     }
     s_cache.FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("job")); pJob != 0; pJob = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
+    for (TiXmlElement* pJob = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("job")); pJob != 0; pJob = ((class TiXmlElement*)((class Unk_XmlNode*)(pJob))->NextSibling("job")))
     {
         Unk_CcSkillListPtr spList;
         spList = Unk_SocketNew(0);
@@ -119,7 +119,7 @@ int CSkillCompactControlTable::Load()
         XmlValue(pJob, "code", *(Unk_JobGroupID*)&nCode);
         __int64 nBaseSP = 50;
         XmlGetAttr((class TiXmlElement*)(pJob), "baseSP", nBaseSP);
-        for (Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->FirstChild("skill")); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
+        for (TiXmlElement* pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pJob))->FirstChild("skill")); pSkill != 0; pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pSkill)))
                 continue;

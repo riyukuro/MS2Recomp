@@ -67,13 +67,13 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);
 class Unk_GcSmartRef { public: void* FUN_1413b4130() const; };
 class CGuideEntity : public CPtred {};   // C3: handle pointees
 class CFieldDataCli : public CPtred {};
-class Unk_WsB_Prop : public CPtred {};
+// (the world's interact object is the CInteractObject view of unit_1413a9df0.h)
 class CGuideManager { public: MS2Ptr<CGuideEntity> FindEntity(int nId); bool IsCleared(int nId); };
 #include "ms2/placeholder/citemdata.h"
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -134,10 +134,10 @@ CStringW CGuideConditionAnyOne::GetTypeName()
 
 // @0x1413aa120
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
-void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionAnyOne::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pChild);
         if (ref.get())
             GE_CONDS(m_conds).Add(ref);
@@ -178,10 +178,10 @@ CStringW CGuideConditionAllOf::GetTypeName()
 
 // @0x1413aa390
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
-void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionAllOf::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("condition")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("condition"))) {
         MS2Ptr<CGuideCondition> ref = FUN_1413a52c0(pChild);
         if (ref.get())
             GE_CONDS(m_conds).Add(ref);
@@ -223,7 +223,7 @@ CStringW CGuideConditionAchieveExistTrophy::GetTypeName()
 }
 
 // @0x1413aa630
-void CGuideConditionAchieveExistTrophy::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionAchieveExistTrophy::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     FUN_1413b1d00(pElem, "achieveType", m_type);
@@ -259,7 +259,7 @@ CStringW CGuideConditionGuideOpen::GetTypeName()
 }
 
 // @0x1413aa890
-void CGuideConditionGuideOpen::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionGuideOpen::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 13;
@@ -303,7 +303,7 @@ CStringW CGuideConditionGuideClear::GetTypeName()
 }
 
 // @0x1413aab00
-void CGuideConditionGuideClear::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionGuideClear::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 2;
@@ -346,7 +346,7 @@ CStringW CGuideConditionExistShortcut::GetTypeName()
 }
 
 // @0x1413aad30
-void CGuideConditionExistShortcut::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionExistShortcut::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nSlotIndex = 0;
@@ -422,7 +422,7 @@ CStringW CGuideConditionMyPlayerLevel::GetTypeName()
 }
 
 // @0x1413ab190
-void CGuideConditionMyPlayerLevel::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionMyPlayerLevel::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 4;
@@ -474,7 +474,7 @@ CStringW CGuideConditionPlaceUgcCube::GetTypeName()
 }
 
 // @0x1413ab400
-void CGuideConditionPlaceUgcCube::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionPlaceUgcCube::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nItemId = 0;
@@ -523,7 +523,7 @@ CStringW CGuideConditionPlaceUgcCubeItem::GetTypeName()
 }
 
 // @0x1413ab800
-void CGuideConditionPlaceUgcCubeItem::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionPlaceUgcCubeItem::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     FUN_1413b1e70(pElem, "pos", m_pos);
@@ -572,7 +572,7 @@ CStringW CGuideConditionPlaceUgcCubeByIconType::GetTypeName()
 }
 
 // @0x1413abc30
-void CGuideConditionPlaceUgcCubeByIconType::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionPlaceUgcCubeByIconType::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nIconType = 0;
@@ -608,7 +608,7 @@ CStringW CGuideConditionInteractObject::GetTypeName()
 }
 
 // @0x1413abe40
-void CGuideConditionInteractObject::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionInteractObject::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "interactId", m_nInteractId);
@@ -622,7 +622,7 @@ int CGuideConditionInteractObject::vfunc_3()
     Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    CInteractObject* pObj = reinterpret_cast<CInteractObject*>(WorldService::GetInstance()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).operator Unk_WsB_Prop*());
+    CInteractObject* pObj = WorldService::GetInstance()->FUN_141bc6510(pPC->vfunc_18(), m_nInteractId).operator CInteractObject*();
     if (pObj == 0)
         return 0;
     float fDist = pPC->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
@@ -654,7 +654,7 @@ CStringW CGuideConditionLastClosedTextTip::GetTypeName()
 }
 
 // @0x1413ac1d0
-void CGuideConditionLastClosedTextTip::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionLastClosedTextTip::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nEntityId = 0;
@@ -693,7 +693,7 @@ CStringW CGuideConditionConstructSlot::GetTypeName()
 }
 
 // @0x1413ac450
-void CGuideConditionConstructSlot::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionConstructSlot::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nSlotIdx = 0;
@@ -768,7 +768,7 @@ CStringW CGuideConditionServerTime::GetTypeName()
 }
 
 // @0x1413ac840
-void CGuideConditionServerTime::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionServerTime::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "dateTime", m_time);

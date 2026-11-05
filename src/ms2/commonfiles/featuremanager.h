@@ -14,7 +14,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;                        // game TinyXML element
+class TiXmlElement;                        // game TinyXML element
 
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
 
@@ -74,7 +74,7 @@ public:
     int FUN_14036de00();
     CStringW SelectHigherLevelFeatureName(const CStringW& strA, const CStringW& strB);     // the one with the higher feature level
     CStringW FUN_14036dfa0(const CStringW& strA, const CStringW& strB);     // the one matching this locale
-    Unk_140165cf0* FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* pB);    // the winner of two <feature> rows
+    TiXmlElement* FUN_14036e160(TiXmlElement* pA, TiXmlElement* pB);    // the winner of two <feature> rows
     bool FUN_14036e4c0();                                       // locale KR
     bool IsRegionCN();                                       // locale CN
     bool IsRegionNA();                                       // locale NA

@@ -30,7 +30,7 @@ class NiMesh;
 class NiAVObject;
 class NiDataStreamRef;
 struct Unk_UVRect;                               // defined in unit_141073440
-struct Unk_StreamElementDesc;
+#include "ms2/placeholder/meshmergerelems.h"   // Unk_StreamElementDesc, Unk_AtlasResult (as in unit_1410799d0)
 typedef efd::map<unsigned char, unsigned char> Unk_ByteMap;
 typedef efd::set<unsigned char> Unk_ByteSet;
 typedef efd::vector<unsigned char> Unk_ByteVec;
@@ -54,14 +54,14 @@ void* FUN_141072ed0(void*);
 void* FUN_141072f30(void*);
 
 void* FUN_141073040(void*);                      // per-type node accessors (forward 2)
-void* FUN_141073100(void*);
-void* FUN_141073280(void*);
+// 0x141073100 / 0x141073280 = _Vector_alloc<..Unk_StreamElementDesc / Unk_AtlasResult..>::_Getal() const
+//
 
 Unk_Node8* FUN_1410722e0(void*);                 // per-type node accessors reading +8
 Unk_Node8* FUN_1410723a0(void*);
 
-void FUN_141063d00(void*, void*);
-void FUN_141063d70(void*, void*);
+// 0x141063d00 / 0x141063d70 = vector<Unk_AtlasResult>::emplace_back<const&> / vector<Unk_StreamElementDesc>::emplace_back<&&>
+//
 
 void FUN_141075730(void*, void*, bool);          // the flag-setting helpers
 void FUN_141075770(void*, void*, bool);
@@ -71,10 +71,10 @@ void FUN_141075830(void*, void*, bool);
 void FUN_141075870(void*, void*, bool);
 
 Unk_Node0* FUN_1410749b0(void*);                 // the two node-pointer getters of a distance pair
-Unk_Node0* FUN_141074a70(void*);
-Unk_Node0* FUN_1410747f0(void*);
-Unk_Node0* FUN_141074bf0(void*);
-Unk_Node0* FUN_141074970(void*);
+// 0x141074a70 / 0x1410747f0 = std::vector<Unk_StreamElementDesc>::_Mylast / _Myfirst
+//
+// 0x141074bf0 / 0x141074970 = efd::vector<Unk_AtlasResult>::_Mylast / _Myfirst
+//
 
 // ---------------------------------------------------------------------------
 // the sentinel and the 16 flag-passing forwards
@@ -276,7 +276,7 @@ u64 FUN_14107a260(void* p)
 // @0x14107a2b0
 u64 FUN_14107a2b0(void* p)
 {
-    u64 nValue = FUN_141079ed0(FUN_141073100(p));
+    u64 nValue = FUN_141079ed0((void*)&((const std::vector<Unk_StreamElementDesc>*)p)->_Getal());
     u64 nLimit = (std::numeric_limits<i64>::max)();
     return std::_Min_value(nLimit, nValue);
 }
@@ -324,7 +324,7 @@ u64 FUN_14107a440(void* p)
 // @0x14107a490
 u64 FUN_14107a490(void* p)
 {
-    u64 nValue = FUN_14107a0c0(FUN_141073280(p));
+    u64 nValue = FUN_14107a0c0((void*)&((const efd::vector<Unk_AtlasResult>*)p)->_Getal());
     u64 nLimit = (std::numeric_limits<i64>::max)();
     return std::_Min_value(nLimit, nValue);
 }
@@ -378,7 +378,7 @@ void FUN_14107a5b0(void* p1, void* p2)
 // @0x14107a5e0
 void FUN_14107a5e0(void* p1, void* p2)
 {
-    FUN_141063d70(p1, &reinterpret_cast<char&>(std::move(*(Unk_StreamElementDesc*)p2)));
+    ((std::vector<Unk_StreamElementDesc>*)p1)->emplace_back(std::move(*(Unk_StreamElementDesc*)p2));
 }
 
 // @0x14107a610
@@ -420,7 +420,7 @@ void FUN_14107a700(void* p1, void* p2)
 // @0x14107a730
 void FUN_14107a730(void* p1, void* p2)
 {
-    FUN_141063d00(p1, p2);
+    ((efd::vector<Unk_AtlasResult>*)p1)->emplace_back(*(const Unk_AtlasResult*)p2);
 }
 
 // @0x14107a760
@@ -543,7 +543,7 @@ i64 FUN_14107aa00(void* p)
 // @0x14107aa40
 i64 FUN_14107aa40(void* p)
 {
-    return (FUN_141074a70(p)->m_nValue - FUN_1410747f0(p)->m_nValue) >> 4;
+    return ((i64)((const std::vector<Unk_StreamElementDesc>*)p)->_Mylast() - (i64)((const std::vector<Unk_StreamElementDesc>*)p)->_Myfirst()) >> 4;
 }
 
 // @0x14107aa80
@@ -579,5 +579,5 @@ i64 FUN_14107ab90(void* p)
 // @0x14107abe0
 i64 FUN_14107abe0(void* p)
 {
-    return (FUN_141074bf0(p)->m_nValue - FUN_141074970(p)->m_nValue) / 0x18;
+    return ((i64)((const efd::vector<Unk_AtlasResult>*)p)->_Mylast() - (i64)((const efd::vector<Unk_AtlasResult>*)p)->_Myfirst()) / 0x18;
 }

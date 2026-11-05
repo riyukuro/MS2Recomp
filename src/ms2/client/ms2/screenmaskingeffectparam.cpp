@@ -47,7 +47,7 @@ ScreenMaskingEffectParam::ScreenMaskingEffectParam()
 }
 
 // @0x140dca130
-void ScreenMaskingEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void ScreenMaskingEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CPostEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "blendingMin", m_fBlendingMin);

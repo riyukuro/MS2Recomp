@@ -11,7 +11,7 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <scroll> row, 0xc0 bytes (CPtred base).
 class CEnchantScrollData : public CPtred
@@ -20,7 +20,7 @@ public:
     CEnchantScrollData();                   // 0x14034d030
     virtual ~CEnchantScrollData();          // 0x14034d130
 
-    int Read(Unk_140165cf0* pElem);         // 0x14034d190 attributes of one <scroll>
+    int Read(TiXmlElement* pElem);         // 0x14034d190 attributes of one <scroll>
     unsigned GetMaxRank();                  // 0x14034d370
     unsigned GetMinKey();                   // 0x14034d400
     unsigned GetMaxKey();                   // 0x14034d4a0
@@ -56,7 +56,7 @@ public:
     void* m_pad_298;
     void* m_pad_2a0;
     void* m_pad_2a8;
-    char m_params;                          // +0x2b0 the function params (Unk_CommandArgs)
+    char m_params;                          // +0x2b0 the function params (ItemFunctionArgs)
 };
 MS2_CHECK_OFFSET(Unk_EnchantItemData, m_strFunction, 0x290);
 MS2_CHECK_OFFSET(Unk_EnchantItemData, m_params, 0x2b0);
@@ -68,7 +68,7 @@ public:
     CEnchantScrollRecipe();                 // 0x14034d530
     virtual ~CEnchantScrollRecipe();        // 0x14034d5f0
 
-    int Read(Unk_140165cf0* pElem);         // 0x14034d660 attributes of one <recipe>
+    int Read(TiXmlElement* pElem);         // 0x14034d660 attributes of one <recipe>
     CString GetRewardName();                // 0x14034dbe0
 
     int m_nId;                              // +0x18 "id"

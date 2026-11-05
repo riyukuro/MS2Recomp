@@ -12,14 +12,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -34,7 +34,7 @@ typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // @0x14064ca50
-int CLearningQuestData::Read(Unk_140165cf0* pElem)
+int CLearningQuestData::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "category", m_nCategory);
@@ -71,7 +71,7 @@ int CLearningQuestTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -81,7 +81,7 @@ int CLearningQuestTable::Load()
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "learning", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.size(); i++)
     {
-        Unk_140165cf0* pNode = (Unk_140165cf0*)list[i];
+        TiXmlElement* pNode = (TiXmlElement*)list[i];
         DataPtr data(new CLearningQuestData);
         if (data->Read(pNode) == 0)
             return 0;

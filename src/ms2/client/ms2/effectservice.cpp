@@ -162,7 +162,7 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -192,13 +192,13 @@ public:
 MS2_CHECK_SIZE(CRibbonEffectParam, 0x68);
 
 // Game TinyXML element.
-class Unk_140165cf0;
+class TiXmlElement;
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
-int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
-int FUN_140873220(Unk_140165cf0* pNode, const char* pszName, int& nOut);
-int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
-int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
+int FUN_1408731e0(TiXmlElement* pNode, const char* pszName, int& nOut);
+int FUN_140873220(TiXmlElement* pNode, const char* pszName, int& nOut);
+int FUN_140873360(TiXmlElement* pNode, const char* pszName, float& fOut);
+int FUN_1408733e0(TiXmlElement* pNode, const char* pszName, CString& strOut);
 
 // String / path helpers (commonfiles).
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // path combine
@@ -603,7 +603,7 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
@@ -611,10 +611,10 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
     }
     CEffectDataPtr spData(new CEffectData());
     spData->FUN_1401d1160(strFile);
-    Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effect"));
+    TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("effect"));
     if (pNode == 0)
         return CEffectDataPtr(0);
-    for (; pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("effect")))
+    for (; pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("effect")))
     {
         CEffectParamPtr spParam = FUN_1411a04e0(strPath, pNode);
         if (spParam == 0)
@@ -648,7 +648,7 @@ CEffectParam::CEffectParam(int nType)
 }
 
 // @0x1411a0290
-void CEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "startDelay", reinterpret_cast<float&>(m_fStartDelay));
     XmlGetAttr((class TiXmlElement*)(pNode), "duration", reinterpret_cast<float&>(m_fDuration));
@@ -698,7 +698,7 @@ CEffectPtr CEffectParam::vfunc_6()
 }
 
 // @0x1411a04e0
-CEffectParamPtr FUN_1411a04e0(const CString& strName, Unk_140165cf0* pNode)
+CEffectParamPtr FUN_1411a04e0(const CString& strName, TiXmlElement* pNode)
 {
     int nType = 0;
     FUN_1411a16c0(pNode, "type", nType);
@@ -829,7 +829,7 @@ MS2_REPLACE(0x1411a12f0, FUN_1411a12f0, 884, 0x97B11DA4);
 // @0x1411a16c0
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-int FUN_1411a16c0(Unk_140165cf0* pNode, const char* pszName, int& nType)
+int FUN_1411a16c0(TiXmlElement* pNode, const char* pszName, int& nType)
 {
     if (FALSE)
     {
@@ -1179,8 +1179,8 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 // @0x1400e7c90
 static const efd::Category s_catEffectChannel(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143ad1638(0);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+static Unk_BuddyHandle s_dat_143ad1638(0);
 static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 
 int Unk_EsEffectGroup::m_sTotalEffectCount = 0;

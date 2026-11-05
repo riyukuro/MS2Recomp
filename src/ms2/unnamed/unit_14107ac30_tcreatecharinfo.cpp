@@ -66,26 +66,26 @@ MS2_CHECK_OFFSET(Unk_PCArg125, m_strName, 0x3e8);
 class Unk_MyPCEquip : public PCGemEquip {};
 int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, PC* pPC);
 
-// The rim light settings (declared the same way by uirimlightdialog.cpp; the data is defined here).
-struct Unk_Color3
-{
-    Unk_Color3();
-    Unk_Color3(float r, float g, float b);                  // 0x14097f250
-    float r, g, b;
-};
+// The rim light settings (declared the same way by uirimlightdialog.cpp; the data is defined here). The SSS colour is
+// a NiPoint3 (r, g, b in x, y, z): NiPoint3(float, float, float) 0x14097f250, NiPoint3() 0x1405522f0, and the
+// copy assignment 0x14097fad0.
+//
+//
+//
+//
 class Unk_RimLight
 {
 public:
     static void FUN_14107b2a0(float fYaw, float fPitch);                 // s_fYaw = fYaw, s_fPitch = fPitch
-    static void FUN_14107b320(const Unk_Color3& color, float fPower);    // s_sssColor = color, s_fSSSPower = fPower
+    static void FUN_14107b320(const NiPoint3& color, float fPower);      // s_sssColor = color, s_fSSSPower = fPower
     static float s_fPitch;              // 0x1439f6fec
     static float s_fYaw;                // 0x143acd4b0
-    static Unk_Color3 s_sssColor;       // 0x143acd550
+    static NiPoint3 s_sssColor;         // 0x143acd550
     static float s_fSSSPower;           // 0x1439f6ff0
 };
 float Unk_RimLight::s_fPitch = 30.0f;
 float Unk_RimLight::s_fYaw;
-Unk_Color3 Unk_RimLight::s_sssColor(1.0f, 0.2f, 0.2f);
+NiPoint3 Unk_RimLight::s_sssColor(1.0f, 0.2f, 0.2f);
 float Unk_RimLight::s_fSSSPower = 1.0f;
 
 // A shader constant key (a Gamebryo fixed string); the values are set by applyeffect.cpp's helpers.
@@ -121,7 +121,7 @@ bool Unk_IsFinite(const efd::Point3& kPoint);   // bonerotateinterpolator.cpp
 __declspec(noreturn) void FUN_140159b70(long hr);
 void FUN_14107b050(const Vector3& kDir);
 void FUN_14107b2d0();
-void FUN_14097fad0(Unk_Color3* pDst, const Unk_Color3* pSrc);
+//
 void FUN_14107cad0(NiFixedString* pName, void* pData, int n);
 bool FUN_14107cb00(NiFixedString* pName, void* pData, int n);
 
@@ -296,9 +296,9 @@ void FUN_14107b2d0()
 MS2_REPLACE(0x14107b2d0, FUN_14107b2d0, 59, 0x1F4B3C77);
 
 // @0x14107b320
-void Unk_RimLight::FUN_14107b320(const Unk_Color3& color, float fPower)
+void Unk_RimLight::FUN_14107b320(const NiPoint3& color, float fPower)
 {
-    FUN_14097fad0(&s_sssColor, &color);
+    s_sssColor = color;
     s_fSSSPower = fPower;
 }
 

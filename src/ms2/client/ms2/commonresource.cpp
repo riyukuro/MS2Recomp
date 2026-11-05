@@ -25,13 +25,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class TiXmlNode { public: const TiXmlElement* NextSiblingElement() const; };   // C3: 0x14086e770 (tinyxml.cpp)
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
+// (TiXmlNode::NextSiblingElement(): in the shared view above; the non-const 0x1403f0510 wrapper is the exe callee)
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };          // C3: 0x140165cf0
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
@@ -41,7 +41,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                       // the document's first child element
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);                       // the document's first child element
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
 CString Name_14021a6b0(int n);                                           // int to string
 
@@ -288,18 +288,18 @@ bool CommonResource::LoadXml()
             m_caches.Add(spCache);
         }
     }
-    Unk_140165cf0* pRoot = (class Unk_140165cf0*)(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = (class TiXmlElement*)(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = FUN_140345b40((TiXmlDocument*)(pRoot)); pNode != 0; pNode = (class Unk_140165cf0*)(((class TiXmlNode*)(pNode))->NextSiblingElement()))
+    for (TiXmlElement* pNode = FUN_140345b40((TiXmlDocument*)(pRoot)); pNode != 0; pNode = (class TiXmlElement*)(((class TiXmlNode*)(pNode))->NextSiblingElement()))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
-        CString strKey = FUN_140188f50(((class Unk_140165cf0*)(pNode))->Value(), 0);
-        CString strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("value"), 0);
+        CString strKey = FUN_140188f50(((class TiXmlElement*)(pNode))->Value(), 0);
+        CString strValue = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("value"), 0);
         m_map.SetAt(strKey, strValue);
     }
     SetInit(true);

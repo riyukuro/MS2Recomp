@@ -44,7 +44,7 @@
 #include "ms2/client/ms2/material/ms2materials.h"   // C3: MS2StandardMaterial::ms_RTTI
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -52,27 +52,27 @@ public:
 };
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-class Unk_140165cf0                                                     // game TinyXML element
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);                  // FirstChildElement(name)
-    Unk_140165cf0* FUN_140168650(const char* pszName);                  // NextSiblingElement(name)
-};
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+// C3 #12: was a local TiXml view
+
+
+
+
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);                          // null-safe CString
-void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
+void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
 void FUN_141b6ed40(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
 
-// Out-of-line colour constructor (0x140a56db0), shared with other units' views.
-struct Unk_Colc : NiColor { Unk_Colc(float r, float g, float b); };
+// The out-of-line colour constructor (0x140a56db0) is the definer's Unk_Vec3Cli(float, float, float).
+#include "ms2/client/ms2/fielddatacli.h"   // Unk_Vec3Cli: the out-of-line colour ctor 0x140a56db0 (was a local Unk_Colc view)
 
 // Layout view of the NiPixelData smart pointer: this unit carries its own operator-> COMDAT copy (0x1410474c0),
 // distinct from the one in the shared symbol table, so it needs its own mangled name.
@@ -111,7 +111,7 @@ ChaosLightTransitionData::ChaosLightTransitionData()
 }
 
 // @0x141045a60
-void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void ChaosLightEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "node", m_strNode);
@@ -121,7 +121,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "blink", m_bBlink);
     XmlGetAttr((class TiXmlElement*)(pNode), "blinkBoostStart", *(int*)(&m_nBlinkBoostStart));
     XmlGetAttr((class TiXmlElement*)(pNode), "layer", *(int*)(&m_nLayer));
-    const char* pszRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rgb");
+    const char* pszRgb = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("rgb");
     if (pszRgb != 0)
     {
         Vector3 kRgb;
@@ -141,11 +141,11 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     spFirst->m_fBlue = m_fBlue;
     ChaosLightTransitionData* pPrev = spFirst;
     float fTime = m_fStartDelay;
-    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("transition")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("transition")))
+    for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("transition")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("transition")))
     {
         NiPointer<ChaosLightTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) ChaosLightTransitionData);
         FUN_14185f0b0(spData.operator->(), pKey, &fTime);
-        CString strLoop = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("loop"), 0);
+        CString strLoop = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("loop"), 0);
         if (strLoop.CompareNoCase("true") == 0 && m_nLoopIndex == -1)
             m_nLoopIndex = (int)m_arrData.GetCount();
         spData.operator->()->m_fFresnelBoost = pPrev->m_fFresnelBoost;
@@ -157,7 +157,7 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         XmlGetAttr((class TiXmlElement*)(pKey), "fresnelBoost", spData.operator->()->m_fFresnelBoost);
         XmlGetAttr((class TiXmlElement*)(pKey), "fresnelExponent", spData.operator->()->m_fFresnelExponent);
         XmlGetAttr((class TiXmlElement*)(pKey), "dimmer", spData.operator->()->m_fDimmer);
-        const char* pszKeyRgb = ((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("rgb");
+        const char* pszKeyRgb = ((class TiXmlElement*)(class TiXmlElement*)(pKey))->Attribute("rgb");
         if (pszKeyRgb != 0)
         {
             Vector3 kRgb;
@@ -279,8 +279,8 @@ void ChaosLightEffectLayer::FUN_141046410(const ChaosLightEffectParam& rParam)
     m_param.FUN_141043a30(rParam);
     if (!m_bActive)
         return;
-    Unk_Colc kColor(m_param.m_fRed, m_param.m_fGreen, m_param.m_fBlue);
-    FUN_1410479a0(m_spMesh, DAT_143ae5170, kColor);
+    Unk_Vec3Cli kColor(m_param.m_fRed, m_param.m_fGreen, m_param.m_fBlue);
+    FUN_1410479a0(m_spMesh, DAT_143ae5170, reinterpret_cast<const NiColor&>(kColor));
     FUN_141047ac0(m_spMesh, DAT_143ae5158, m_param.m_fFresnelBoost);
     FUN_141047ac0(m_spMesh, DAT_143ae5160, m_param.m_fFresnelExponent);
     FUN_141047ac0(m_spMesh, DAT_143ae5168, m_param.m_fDimmer);

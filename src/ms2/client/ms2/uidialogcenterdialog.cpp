@@ -43,8 +43,8 @@ public:
 };
 
 // The movie child "UIDialogCenterDialog_btn": a clip with a label, a position and a click delegate.
-class Unk_140acd6e0 : public ASButton {};   // C3: view of the real button class (built as an ASButton)
-MS2_CHECK_SIZE(Unk_140acd6e0, 0x88);
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+MS2_CHECK_SIZE(ASButton, 0x88);
 
 class ASDialog : public ASDisplayObjectContainer {};
 
@@ -159,16 +159,16 @@ UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 }
 
 // @0x1412968a0
-static MS2Ptr<Unk_140acd6e0> FUN_1412968a0(int nMovieId, CString strLinkage, __int64 a, int b)
+static MS2Ptr<ASButton> FUN_1412968a0(int nMovieId, CString strLinkage, __int64 a, int b)
 {
     Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
     if (pMovie == 0)
-        return MS2Ptr<Unk_140acd6e0>(0);
+        return MS2Ptr<ASButton>(0);
     Scaleform::GFx::Value v;
     pMovie->CreateObject(&v, strLinkage, reinterpret_cast<const Scaleform::GFx::Value*>(a), b);
     if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() != 0)
-        return MS2Ptr<Unk_140acd6e0>(0);
-    MS2Ptr<Unk_140acd6e0> spBtn(static_cast<Unk_140acd6e0*>(new ASButton(v, nMovieId)));
+        return MS2Ptr<ASButton>(0);
+    MS2Ptr<ASButton> spBtn(static_cast<ASButton*>(new ASButton(v, nMovieId)));
     return spBtn;
 }
 
@@ -428,7 +428,7 @@ void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
 }
 
 // @0x141296150
-MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn, CStringW strLabel)
+MS2Ptr<ASButton> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn, CStringW strLabel)
 {
     const int nX = 0xc;
     const int nY = 0x4e;
@@ -437,7 +437,7 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
     int x = nColumn * nWidth + nX;
     int y = nRow * nHeight + nY;
     {
-        MS2Ptr<Unk_140acd6e0> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
+        MS2Ptr<ASButton> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
         if (spBtn.get() != 0)
         {
             spBtn->SetPositionUInt(x, y);
@@ -447,14 +447,14 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
             return spBtn;
         }
     }
-    return MS2Ptr<Unk_140acd6e0>(0);
+    return MS2Ptr<ASButton>(0);
 }
 
 // @0x141296370
 void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId)
 {
     CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
-    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
+    MS2Ptr<ASButton> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
         reinterpret_cast<ASObj*>(spBtn.operator->())->FUN_1409c0d20("dialogID", nDialogId);
@@ -466,7 +466,7 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
 void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
-    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
+    MS2Ptr<ASButton> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
         spBtn->FUN_1422ce240(cb, 0);
 }

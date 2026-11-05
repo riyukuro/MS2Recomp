@@ -75,7 +75,7 @@
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/xmlattr.h"
 #include <efd/Point3.h>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -160,12 +160,12 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 class Unk_140166410* FUN_140166410();                          // TSingleton<CFeatureManager>::GetInstance (exe copy)
 
 struct Unk_XmlElement;                                          // XML element node
-class Unk_140165cf0;
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
+class TiXmlElement;
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 CString FUN_14015f710(Unk_XmlElement* pElem, const char* pszName, CString strDefault);
 bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
-Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
-Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);         // next sibling
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 void FUN_140873420(Unk_XmlElement* pElem, const char* pszName, CStringW& strOut);
 
 struct Unk_XmlElementList;
@@ -1032,7 +1032,7 @@ void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Un
 // @0x14028f650
 bool FUN_14028f650(Unk_XmlElement* pElem)
 {
-    CStringW strFeature = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), "feature", CStringW(L""));
+    CStringW strFeature = FUN_1401bf530(reinterpret_cast<TiXmlElement*>(pElem), "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
@@ -1049,7 +1049,7 @@ bool FUN_14028f710(Unk_XmlElement* pElem)
     bool bMatch = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
     if (bMatch)
         return false;
-    CStringW strFeature = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), "feature", CStringW(L""));
+    CStringW strFeature = FUN_1401bf530(reinterpret_cast<TiXmlElement*>(pElem), "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
@@ -1074,7 +1074,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
             continue;
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
-        pResult = reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(pResult), reinterpret_cast<Unk_140165cf0 *>(pElem)));
+        pResult = reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(pResult), reinterpret_cast<TiXmlElement *>(pElem)));
     }
     return pResult;
 }
@@ -1149,10 +1149,10 @@ CStringW FUN_14028ee20(unsigned int nFlags, CStringW strText)
 
 // "x,y,z" of a float triple.
 // @0x14028ef00
-CString FUN_14028ef00(const Unk_CommonVec3* pVec)
+CString FUN_14028ef00(efd::Point3 kPoint)
 {
     CString strOut;
-    strOut.Format("%f,%f,%f", (double)pVec->x, (double)pVec->y, (double)pVec->z);
+    strOut.Format("%f,%f,%f", (double)kPoint.x, (double)kPoint.y, (double)kPoint.z);
     return strOut;
 }
 
@@ -1758,7 +1758,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1796,7 +1796,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pSub), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1993,7 +1993,7 @@ struct Unk_BstrBlock
     static void* operator new(size_t nBytes);                   // 0x140297a40
 };
 
-extern void FUN_140297790(void* p);
+// FUN_140297790 = std::_Tree<...pair<int,Unk_XmlElement*>...>::~_Tree (Unk_XmlSlotSet's base dtor)
 extern void** FUN_140298fc0(void* pHolder);
 extern void FUN_14029b680(void** pp);
 void* FUN_140297d20(Unk_BstrHolderRef* p);
@@ -2141,7 +2141,7 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         CStringW strKey = (const wchar_t*)FUN_140297d20((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -2163,7 +2163,7 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
 // @0x1402978a0
 void FUN_1402978a0(void* p)
 {
-    FUN_140297790(p);
+    static_cast<Unk_XmlSlotSet::_Mybase*>(p)->_Tree::~_Tree();
 }
 
 // @0x140297a20

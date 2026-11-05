@@ -27,7 +27,7 @@ class ASMovieClip;
 class CInPacket;
 class COutPacket;
 class CMsgBoxData;
-class Unk_ClButton;
+// (Unk_ClButton: the m_deleteAccount / m_serverlist children are ASButton)
 
 class UICharacterListDialog : public UIDialog, public UIUGCEventListener
 {
@@ -107,7 +107,7 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1418eb540
     virtual void vfunc_ugc_1(void* p, CString str);         // UGC 1 0x1418ed310
 
-    MS2Ptr<Unk_ClButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
+    // child lookup 0x140bb4b10 = UISwfEntity::GetChild<ASButton>
     void FUN_1418ef700();                                   // 0x1418ef700 the burning level-up icons
     void FUN_1418ef980(unsigned __int64 nId);               // 0x1418ef980 the burning level-up popup of a character
     void OnClickBurningLevelupDescBtn();                                   // 0x1418f0140 the burning level-up description

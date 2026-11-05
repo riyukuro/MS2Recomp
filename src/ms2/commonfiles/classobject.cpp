@@ -64,10 +64,10 @@ MS2_REPLACE(0x1401F8DF0, FUN_1401f8df0, 271, 0xEF910EA6);
 // ---- login packet payloads --------------------------------------------------------------------------------------
 // The structs are named after their layout only; the owning request/response classes are not recovered yet.
 
-// The payload reader of unit_1401f9eb0, which owns the template ReadNarrowWrapper<Unk_NarrowLimit> (0x140202cb0).
-struct Unk_PayloadReader : Unk_SPDReader {
-    template<class C> CString ReadNarrowWrapper(C constraint);
-};
+// The payload reader of unit_1401f9eb0, which owns the template ReadNarrowWrapper<Unk_NarrowLimit> (0x140202cb0),
+// is declared in serverpacketdef.h.
+//
+//
 
 struct Unk_LoginMachineId { unsigned char m_data[16]; };                    // encoded by 0x14067c2c0, decoded by 0x14067c310
 MS2_CHECK_SIZE(Unk_LoginMachineId, 16);
@@ -125,8 +125,8 @@ MS2_REPLACE(0x1401F9020, FUN_1401f9020, 252, 0x01402197);
 // @0x1401f9130
 void FUN_1401f9130(Unk_LoginA* p, Unk_PayloadReader& in)
 {
-    Unk_SPDByteRange range;
-    p->m_nType = in.FUN_140202740(*FUN_140203550(&range, 1, 2));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
     p->m_s08 = in.ReadNarrowWrapper(Unk_NarrowLimit(0x20));
     p->m_s10 = in.ReadNarrowWrapper(Unk_NarrowLimit(0x10));
     p->m_n18 = (unsigned short)in.ReadInt16();
@@ -160,8 +160,8 @@ MS2_REPLACE(0x1401F9370, FUN_1401f9370, 238, 0xC5A4FE67);
 // @0x1401f9470
 void FUN_1401f9470(Unk_LoginB* p, Unk_PayloadReader& in)
 {
-    Unk_SPDByteRange range;
-    p->m_nType = in.FUN_140202740(*FUN_140203550(&range, 1, 2));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
     p->m_s08 = in.ReadUnicodeStringA();
     p->m_s10 = in.ReadUnicodeStringA();
     p->m_n18 = (unsigned short)in.ReadInt16();
@@ -198,8 +198,8 @@ MS2_REPLACE(0x1401F9680, FUN_1401f9680, 280, 0x4C0A9F22);
 // @0x1401f97a0
 void FUN_1401f97a0(Unk_LoginC* p, Unk_PayloadReader& in)
 {
-    Unk_SPDByteRange range;
-    p->m_nType = in.FUN_140202740(*FUN_140203550(&range, 1, 2));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
     p->m_n08 = in.ReadInt64();
     FUN_1406c33f0(p->m_blob10, &in);
     FUN_1406c33f0(p->m_blob30, &in);
@@ -238,8 +238,8 @@ MS2_REPLACE(0x1401F9960, FUN_1401f9960, 288, 0x69F24D7E);
 // @0x1401f9a90
 void FUN_1401f9a90(Unk_LoginD* p, Unk_PayloadReader& in)
 {
-    Unk_SPDByteRange range;
-    p->m_nType = in.FUN_140202740(*FUN_140203550(&range, 1, 2));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    p->m_nType = Unk_Read8(&in, Unk_140203550<unsigned char>(1, 2));
     p->m_n08 = in.ReadInt64();
     p->m_s10 = in.ReadString();
     p->m_n18 = (unsigned short)in.ReadInt16();

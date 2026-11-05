@@ -18,7 +18,7 @@ public:
     explicit CPostEffectParam(int nType);                   // 0x140dbcbc0
     // implicit virtual dtor: COMDAT 0x140c901a0 (postshimmerrenderstep) has no vptr reset, so it is compiler-generated
 
-    virtual void vfunc_1(Unk_140165cf0* pNode);             // 1 0x140dbcc40 + useFade/fade*Duration/holdDuration/interpolators
+    virtual void vfunc_1(TiXmlElement* pNode);             // 1 0x140dbcc40 + useFade/fade*Duration/holdDuration/interpolators
     virtual CEffectPtr vfunc_6();                           // 6 0x140dbce60 new CPostEffect (0x38)
     virtual bool vfunc_7(Unk_EffectTarget* p);              // 7 0x140dbcf00 base || p->+8 == 3
 

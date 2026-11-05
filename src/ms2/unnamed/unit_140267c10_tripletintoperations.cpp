@@ -14,7 +14,7 @@ struct Unk_IntArr { void* m_p; unsigned __int64 m_n; unsigned __int64 m_max; int
 void FUN_1402237c0(struct Unk_LevelArray*);   // C3: was FUN_1402237c0
 
 class Unk_IntTriple;
-unsigned __int64 FUN_140267c10(Unk_IntTriple* pTriple);   // Sum, as the exe's Get() calls it (the result is not widened)
+// (Get() calls Sum() directly: Get returns int, so the sum is not widened.)
 
 class Unk_IntTriple
 {
@@ -22,7 +22,7 @@ public:
     int Sum();                                              // 0x140267c10
     void Add(int nIndex, int nValue);                       // 0x140267c70
     void ReadArray(Unk_IntArr* pArr);                       // 0x140267d00
-    unsigned __int64 Get(int nIndex);                       // 0x140267d70 (3: the sum)
+    int Get(int nIndex);                                    // 0x140267d70 (3: the sum)
     void WriteArray(Unk_IntArr* pArr);                      // 0x140267dc0
     int m_v[3];
 };
@@ -57,13 +57,13 @@ void Unk_IntTriple::ReadArray(Unk_IntArr* pArr)
 }
 
 // @0x140267d70
-unsigned __int64 Unk_IntTriple::Get(int nIndex)
+int Unk_IntTriple::Get(int nIndex)
 {
     if (nIndex < 0 || 3 < nIndex)
         return 0;
     if (nIndex == 3)
-        return FUN_140267c10(this);
-    return (unsigned)m_v[nIndex];
+        return Sum();
+    return m_v[nIndex];
 }
 
 // @0x140267dc0

@@ -12,7 +12,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;                    // the tinyxml element wrapper
+class TiXmlElement;                    // the tinyxml element wrapper
 class CItem;
 
 // One <rePackingScroll> row. RTTI CItemRePackingScrollData, 0x68 bytes, base CPtred, only the deleting destructor is

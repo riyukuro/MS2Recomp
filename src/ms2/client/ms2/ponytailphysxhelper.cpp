@@ -104,7 +104,7 @@ void* FUN_141200a90(class CEquipModel*);   // C3: was FUN_141200a90
 void FUN_141202240(CEquipModel* pPart, void* pXf);                  // sets the part's local transform
 void FUN_1412021a0(class CEquipModel*, class NiTransform*);   // C3: was FUN_1412021a0
 void FUN_1412021f0(class CEquipModel*, class NiTransform*);   // C3: was FUN_1412021f0
-void FUN_1412024f0(class CEquipModel*, class NiPoint3*, float*, float*, void*, void*, void*);   // C3: was FUN_1412024f0
+namespace efd { class Point3; } void FUN_1412024f0(class CEquipModel*, class NiPoint3*, efd::Point3*, float*, void*, void*, void*);   // equipmodel.cpp
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
 float FUN_141422340(CEquipModel* pPart, int nIndex);         // customize value nIndex of the part
 void FUN_1414225d0(MS2Ptr<CEquipModel> spPart, int nIndex, float fValue);   // stores value nIndex
@@ -137,11 +137,11 @@ class NiPhysXProp   // C3: member view for the former free stand-ins
 public:
     class NiPhysXPropDesc* GetSnapshot();
 };
-class Unk_WindPropDesc   // C3: member view for the former free stand-ins
-{
+#include <NiPhysXJointDesc.h>
+class NiPhysXPropDesc {   // C3: member view (the prop snapshot's joint accessors; NiPhysXPropDesc.h would clash with the views here)
 public:
-    unsigned int GetActorCount() const;
-    NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
+    unsigned int GetJointCount() const;                         // 0x14120ac30
+    NiPhysXJointDescPtr GetJointAt(unsigned uiIndex);           // 0x14120abd0
 };
 class NiPhysXD6JointDesc   // C3: member view for the former free stand-ins
 {
@@ -554,7 +554,7 @@ static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, CEqui
             ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
             if (pThis->m_spPicker.operator CItemPickingHelper*() && pThis->m_spPicker->GetPickedIndex() == nPickIndex)
                 mTurn.FUN_14107cc40(3.1415927f, kFwd);
-            mRot = Unk_NiMatrix3(mTurn.FUN_140a33480(reinterpret_cast<const Unk_EfdMatrix3&>(mBasis)));
+            mRot = Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(mBasis))));
         }
         else
         {
@@ -826,7 +826,7 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
     NiPoint3 kC = reinterpret_cast<NiPoint3&>(DAT_143b01a60);
     NiPoint3 kD = reinterpret_cast<NiPoint3&>(DAT_143b01a60);
     float fScale = 1.0f;
-    FUN_1412024f0((class CEquipModel*)(spPart.operator->()), &kB, (float*)(&kC), &fScale, (void*)(&kA), (void*)(&kD), 0);
+    FUN_1412024f0((class CEquipModel*)(spPart.operator->()), &kB, reinterpret_cast<efd::Point3*>(&kC), &fScale, (void*)(&kA), (void*)(&kD), 0);
     FUN_1412021a0((class CEquipModel*)(spPart.operator->()), &pPart->m_kStart);
     FUN_141200e30((class CEquipModel*)(spPart.operator->()), 0);
     reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
@@ -1035,7 +1035,7 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(CEquipModel* pModel, const voi
     NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0((class CEquipModel*)(pModel));
     if (pNode == 0)
         return;
-    Unk_NiPoint3 kReference(((struct Unk_EfdMatrix3*)&((class NiAVObject*)(class NiObjectNET*)(pNode))->GetWorldRotate())->FUN_140a00720(DAT_143a08cd8));
+    Unk_NiPoint3 kReference(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiObjectNET*)(pNode))->GetWorldRotate()) * reinterpret_cast<const efd::Point3&>(DAT_143a08cd8))));
     for (unsigned i = 0; i < nJoints; i++)
     {
         NiPhysXProp* pInfo = pProp->GetPropAt(pKfm->FUN_14143ff70(), i);
@@ -1044,10 +1044,10 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(CEquipModel* pModel, const voi
         void* pSet = ((void*)((class NiPhysXProp*)(void*)(pInfo))->GetSnapshot());
         if (pSet == 0)
             continue;
-        unsigned nCount = ((class Unk_WindPropDesc*)(void*)(pSet))->GetActorCount();
+        unsigned nCount = ((class NiPhysXPropDesc*)(void*)(pSet))->GetJointCount();
         for (unsigned j = 0; j < nCount; j++)
         {
-            void* pComp = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiPhysXD6JointDesc::ms_RTTI), (NiPhysXActorDesc*)((class Unk_WindPropDesc*)(void*)(pSet))->GetActorAt(j)));
+            void* pComp = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiPhysXD6JointDesc::ms_RTTI), (NiPhysXJointDesc*)((class NiPhysXPropDesc*)(void*)(pSet))->GetJointAt(j)));
             if (pComp)
             {
                 Unk_PonyJoint* pJoint = (Unk_PonyJoint*)((void*)((class NiPhysXD6JointDesc*)(void*)(pComp))->GetJoint());

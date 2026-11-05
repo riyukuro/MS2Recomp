@@ -109,7 +109,7 @@ PCActionDataTable* TSingleton<PCActionDataTable>::s_instance;
 #endif
 
 // The names attribute of a node (a list of strings), outside this unit.
-int FUN_1406cfaa0(Unk_140165cf0* pNode, const char* szName, std::vector<CStringA>& out);
+int FUN_1406cfaa0(TiXmlElement* pNode, const char* szName, std::vector<CStringA>& out);
 
 // MS2-PIN: ??_7PCActionDataTable@@6B?$TSingleton@VPCActionDataTable@@@@@ 0x142dae568
 // MS2-PIN: ??_7PCActionDataTable@@6B?$DataTable@VPCActionGroup@@@@@ 0x142dae578
@@ -136,7 +136,7 @@ PCActionList::PCActionList()
 }
 
 // @0x140948470
-void PCActionList::Load(Unk_140165cf0* pNode)
+void PCActionList::Load(TiXmlElement* pNode)
 {
     FUN_1406cfaa0(pNode, "names", m_names);
 }
@@ -203,14 +203,14 @@ int PCActionGroupDefault::Id()
 }
 
 // @0x1409486f0
-void PCActionGroupDefault::LoadXml(Unk_140165cf0* pNode)
+void PCActionGroupDefault::LoadXml(TiXmlElement* pNode)
 {
     m_lists.clear();
     {
         MS2Ptr<PCActionList> spEmpty(0);
         m_lists.resize(kPCActionTypes, spEmpty);
     }
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         int nType = kPCActionTypes;
         ReadAction(pChild, "type", &nType);
@@ -279,10 +279,10 @@ int PCActionGroupCustom::Id()
 MS2_REPLACE_METHOD(0x140948B60, PCActionGroupCustom, Id, 14, 0x72E52537);
 
 // @0x140948b80
-void PCActionGroupCustom::LoadXml(Unk_140165cf0* pNode)
+void PCActionGroupCustom::LoadXml(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "groupID", m_nId);
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {
         int nType = kPCActionTypes;
         ReadAction(pChild, "type", &nType);
@@ -385,7 +385,7 @@ void PCActionDataTable::Loaded()
 }
 
 // @0x1409493b0
-MS2Ptr<PCActionGroup> PCActionDataTable::Create(Unk_140165cf0* pNode)
+MS2Ptr<PCActionGroup> PCActionDataTable::Create(TiXmlElement* pNode)
 {
     unsigned nId = 0;
     XmlGetAttr((class TiXmlElement*)(pNode), "groupID", nId);
@@ -571,7 +571,7 @@ MS2_REPLACE(0x140949600, ActionType, 2401, 0xA959F041);
 // @0x14094a400
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-int ReadAction(Unk_140165cf0* pNode, const char* szName, int* pnType)
+int ReadAction(TiXmlElement* pNode, const char* szName, int* pnType)
 {
     if (FALSE)
     {

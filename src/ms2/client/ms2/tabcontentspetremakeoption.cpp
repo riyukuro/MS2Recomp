@@ -182,7 +182,7 @@ ItemPtr FUN_1419be700(unsigned __int64 uid);
 int FUN_14053feb0(int nItemId);                                         // the default rank of an item id
 // The CItem sub-objects: the binding state (CItemTransfer) and the status record (its option at +0x18).
 class Unk_ItemOwnerRef : public CItemTransfer {};
-class Unk_ItemEnchantData : public CItemStatus {};
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 
 // Chat/system notices and message boxes.
 void FUN_141275260(int nMsgId, int a1, int a2);
@@ -1107,7 +1107,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
         for (size_t i = 0; i < aLocked.GetCount(); i++)
         {
             if (stat.FUN_140619290(aLocked[i], lockOpt.m_nIndex, lockOpt.m_nValue))
-                reinterpret_cast<Unk_RemakeLockOptList&>(remake.m_options).push_back(lockOpt);
+                remake.m_options.push_back(lockOpt);
         }
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
@@ -1152,7 +1152,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_remakeOptionIngredient");
         if (ingredient)
         {
-            if (MS2Ptr<ASButton> bag = ingredient->FUN_140accef0<ASButton>("m_itemBag"))
+            if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
                 reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(1);
         }
     }
@@ -1161,7 +1161,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_remakeOptionIngredient");
         if (ingredient)
         {
-            if (MS2Ptr<ASButton> bag = ingredient->FUN_140accef0<ASButton>("m_itemBag"))
+            if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
                 reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(0);
         }
     }

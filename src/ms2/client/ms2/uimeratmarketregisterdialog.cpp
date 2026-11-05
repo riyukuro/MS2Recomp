@@ -123,7 +123,7 @@ extern Unk_CubeStock DAT_143ab2e50;
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_140633d50(MS2Ptr<CItem> spItem);           // the item can be traded
-bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const __int64* pOwner);
+struct Unk_MeratItemOwner; bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner);   // meratmarketbasketinfo.cpp
 void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax);
 __int64 FUN_1406a5240(int nItemId);
 __int64 FUN_141b71960(const char* sz);
@@ -139,8 +139,8 @@ bool FUN_1418ff110(int nType, __int64 nValue, bool b);          // the player ca
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool b);       // money text by pay type
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409404f0(__int64 nValue);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
@@ -642,7 +642,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
         for (POSITION pos = listEquip.GetHeadPosition(); pos != 0; listEquip.GetNext(pos))
         {
             MS2Ptr<CItem> spWorn = listEquip.GetAt(pos)->GetItem();
-            if (spWorn.get() != 0 && FUN_1406a5a50(spWorn, &owner.m_nAccount))
+            if (spWorn.get() != 0 && FUN_1406a5a50(spWorn, reinterpret_cast<const Unk_MeratItemOwner*>(&owner.m_nAccount)))
                 arrCandidates.Add(spWorn);
         }
     }

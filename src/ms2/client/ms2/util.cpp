@@ -60,8 +60,8 @@
 #include <NiMatrix3.h>
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/formatstringid.h"
-CStringW BlockFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"   // BlockFormat<...> over FUN_14028dee0 (commonutil.cpp)
+//
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/client/ms2/memorydepletiondlg.h"
@@ -118,7 +118,7 @@ extern NiFixedString DAT_143ae50c8, DAT_143ae50d0, DAT_143ae50d8;            // 
 extern NiFixedString DAT_143ae5140;                                 // float extra-data key
 extern NiFixedString DAT_143ae5200;                                          // default material name
 class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };
-struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
+struct Unk_Colc { float x, y, z; };   // an rgb view; its out-of-line ctor 0x140a56db0 is Unk_Vec3Cli(float, float, float)
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_NodeQueue
@@ -1035,8 +1035,8 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
 // @0x141b70c50
 void FUN_141b70c50(NiAVObject* pObj, float fValue, float fEmissive)
 {
-    Unk_Colc kGrey(0.78431f, 0.78431f, 0.78431f);
-    FUN_141b70cb0(pObj, fValue, kGrey, fEmissive);
+    Unk_Vec3Cli kGrey(0.78431f, 0.78431f, 0.78431f);
+    FUN_141b70cb0(pObj, fValue, reinterpret_cast<const Unk_Colc&>(kGrey), fEmissive);
 }
 MS2_REPLACE(0x141b70c50, FUN_141b70c50, 87, 0xDAFF5EB1);
 
@@ -1049,7 +1049,7 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
     }
     NiMaterialProperty* pMaterial = (NiMaterialProperty*)NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, (class NiObject const*)(pObj->GetProperty(NiProperty::MATERIAL)));
     if (pMaterial != NULL)
-        ((class NiMaterialProperty*)(class NiMaterialProperty*)(pMaterial))->SetEmittance(*(class NiColor const*)&static_cast<Unk_Colc const&>(Unk_Colc(fEmissive, fEmissive, fEmissive)));
+        ((class NiMaterialProperty*)(class NiMaterialProperty*)(pMaterial))->SetEmittance(*(class NiColor const*)&static_cast<Unk_Vec3Cli const&>(Unk_Vec3Cli(fEmissive, fEmissive, fEmissive)));
     FUN_141047ac0(pObj, DAT_143ae5120, fValue);
     FUN_1410479a0(pObj, DAT_143ae5128, reinterpret_cast<const NiColor&>(kColor));
     if (DAT_143ae2b34 != 0) {
@@ -1188,7 +1188,7 @@ float FUN_141b72600(float fBase, float fExp);
 float FUN_141b725e0(float fValue);
 
 // @0x141b71390
-Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd, float fT)
+Vector3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
 {
     if (reinterpret_cast<const efd::Point3&>(kStart) == reinterpret_cast<const efd::Point3&>(kControl) || reinterpret_cast<const efd::Point3&>(kEnd) == reinterpret_cast<const efd::Point3&>(kControl)) {
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
@@ -1205,7 +1205,7 @@ Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vect
 }
 
 // @0x141b71550
-float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd)
+float FUN_141b71550(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
 {
     Vector3 kA;
     Vector3 kB;

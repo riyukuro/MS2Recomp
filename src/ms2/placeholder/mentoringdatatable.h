@@ -8,7 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;                                        // the tinyxml element wrapper
+class TiXmlElement;                                        // the tinyxml element wrapper
 
 class MentoringDataTable : public TSingleton<MentoringDataTable>
 {
@@ -18,7 +18,7 @@ public:
 
     bool Init();                                            // 0x14069bd60
     bool Load();                                            // 0x14069bd90
-    void LoadConfig(Unk_140165cf0* pConfig);                // 0x14069bf00
+    void LoadConfig(TiXmlElement* pConfig);                // 0x14069bf00
     unsigned int GetAttendRewardCoin(short nDay);           // 0x14069bff0
     void GetAttendRewardCoins(std::vector<unsigned int>& rOut);      // 0x14069c070 (appends)
     unsigned int GetRewardableCoin(unsigned int nCoin, unsigned int nTodayCoin, bool bMentee);   // 0x14069c0a0

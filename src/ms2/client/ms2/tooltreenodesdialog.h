@@ -8,7 +8,7 @@
 #include <afxcmn.h>
 
 #include "ms2/ms2layout.h"
-
+#include "ms2/placeholder/tfunctor_small.h"
 class Unk_TreeNode;
 
 // The callback implementation object: a clone-able polymorphic function (slot 0 deleting dtor, 1 clone, 2 call).
@@ -37,7 +37,7 @@ class CToolTreeNodesDialog : public CDialog
 {
     DECLARE_DYNAMIC(CToolTreeNodesDialog)
 public:
-    CToolTreeNodesDialog(Unk_ToolCallback callback, CWnd* pParent);   // 0x1418589d0
+    CToolTreeNodesDialog(TFunctor<void, ParamList<CString, EmptyParam> > callback, CWnd* pParent);   // 0x1418589d0
     virtual ~CToolTreeNodesDialog();                                  // 0x141858a70 (deleting dtor 0x141858f70)
 
     virtual void DoDataExchange(CDataExchange* pDX);                  // slot 66, 0x141858ad0

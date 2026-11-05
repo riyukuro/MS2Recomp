@@ -169,13 +169,13 @@ void StateFall::vfunc_8(double fTime)
     Unk_FallBuff* pBuff = (Unk_FallBuff*)m_pOwner->FUN_14166d240();
     reinterpret_cast<Unk_FallPointSlots*>(m_pOwner)->vfunc_22(
         reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
-    MS2Ptr<Unk_PCBaseComp_b18> spRec = m_pOwner->vfunc_104(true, false, false);
+    MS2Ptr<CSkillRecord> spRec = m_pOwner->vfunc_104(true, false, false);
     if (spRec.get() != 0)
     {
         if (reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9bd0() == 0x1d ||
             reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9bd0() == 0x20 ||
             reinterpret_cast<MS2Ptr<SkillData>&>(spRec->m_table30)->FUN_1407e9d70())
-            m_pOwner->vfunc_102(reinterpret_cast<const MS2Ptr<CSkillRecord>&>(spRec));
+            m_pOwner->vfunc_102(spRec);
     }
     else if (pPC->FUN_1416764a0() != 0)
     {

@@ -146,7 +146,7 @@
 #include "ms2/placeholder/asslider.h"
 
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -188,9 +188,9 @@ public:
 
 
 // The score owner check (the account of the local player).
-struct Unk_WmOwner
+struct Unk_BillOwner
 {
-    void FUN_1409aff60();
+    Unk_BillOwner();                                        // 0x1409aff60, the definer's spelling (asbilldata); was Unk_WmOwner::FUN_1409aff60
     __int64 m_nAccount;
     unsigned m_n8;
     void* m_p10;                                            // a pointer-size id (a pointer member keeps /GS off, as in the exe)
@@ -257,23 +257,23 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // V
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser, int nMovieId);   // 0x1422c8430
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);   // 0x1422c8430
     virtual ~ASFunction();
 private:
     void* m_40;
 };
 
 // The game TinyXML nodes the .ms2mml files are written with (RTTI names; the parent copies them on insert).
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* szName);                                       // 0x14086f2f0
-    virtual ~TiXmlElement();                                                // 0x14086f450
-private:
-    void* m_pad[(0x90 - 8) / sizeof(void*)];
-public:
-    void SetAttribute(char const*, int);   // C3: was free FUN_14086f920
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
 class TiXmlText
 {
 public:
@@ -291,12 +291,12 @@ public:
 private:
     void* m_pad[(0x68 - 8) / sizeof(void*)];
 };
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* FirstChild();
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 
 // A TinyXML node through its vtable (slot 11: ToText).
 class Unk_WmXmlNode
@@ -313,7 +313,7 @@ public:
     virtual void vfunc_8();
     virtual void vfunc_9();
     virtual void vfunc_10();
-    virtual Unk_140165cf0* ToText();
+    virtual TiXmlElement* ToText();
 };
 
 // The TiXmlDocument fields after the TiXmlNode part (tinyxml.h: error, errorId, errorDesc).
@@ -712,13 +712,13 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
         FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_cant_edit"), 1, 1);
         return false;
     }
-    Unk_WmOwner owner;
-    owner.FUN_1409aff60();
+    Unk_BillOwner owner;
+//
     owner.m_nAccount = DAT_143ab2820;
     owner.m_n8 = DAT_143ab2830;
     owner.m_p10 = (void*)DAT_143ab2838;
     owner.m_n18 = DAT_143ab2834;
-    if (!((class Unk_CommonOwner*)(struct Unk_WmOwner const*)(&owner))->Matches(pScore->m_note.m_n00, pScore->m_note.m_n08))
+    if (!((class Unk_CommonOwner*)(struct Unk_BillOwner const*)(&owner))->Matches(pScore->m_note.m_n00, pScore->m_note.m_n08))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_not_write_myself"), 1, 1);
         return false;
@@ -1166,7 +1166,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
     bool bLoaded = doc.LoadFile(FUN_14016a600(strPath, 0), TIXML_ENCODING_UNKNOWN);
     if (bLoaded)
     {
-        Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+        TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
         if (pRoot == 0)
             return;
         int nMax = GetMaxNoteLength();
@@ -1174,7 +1174,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
         int nMaxChords = 10;
         int nChords = 0;
         CString strMelody;
-        Unk_140165cf0* pMelody = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("melody");
+        TiXmlElement* pMelody = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("melody");
         if (pMelody != 0)
         {
             FUN_140ff3230(pMelody, nMax, strMelody, &nTotal);
@@ -1188,7 +1188,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
         ASArray chords(2);
         if (nTotal < nMax)
         {
-            for (Unk_140165cf0* pChord = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("chord"); pChord != 0; pChord = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChord))->NextSibling("chord")))
+            for (TiXmlElement* pChord = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("chord"); pChord != 0; pChord = ((class TiXmlElement*)((class Unk_XmlNode*)(pChord))->NextSibling("chord")))
             {
                 CString strChord;
                 if (FUN_140ff3230(pChord, nMax, strChord, &nTotal))
@@ -1271,15 +1271,15 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
 }
 
 // @0x140ff3230
-bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& strOut, int* pnTotal)
+bool UIWriteMusicDialog::FUN_140ff3230(TiXmlElement* pElem, int nMax, CString& strOut, int* pnTotal)
 {
     strOut.Empty();
     if (pElem == 0)
         return false;
-    Unk_WmXmlNode* pChild = ((class Unk_WmXmlNode*)((class TiXmlNode*)(class Unk_140165cf0*)(pElem))->FirstChild());
+    Unk_WmXmlNode* pChild = ((class Unk_WmXmlNode*)((class TiXmlNode*)(class TiXmlElement*)(pElem))->FirstChild());
     if (pChild == 0)
         return false;
-    Unk_140165cf0* pText = pChild->ToText();
+    TiXmlElement* pText = pChild->ToText();
     if (pText == 0)
         return false;
     strOut = pText->Value();

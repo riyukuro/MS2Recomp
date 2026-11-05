@@ -24,7 +24,7 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 class CLogString* GetLogString();   // C3: was CLogString::GetInstance
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -103,13 +103,13 @@ void CUserConditionEventData::Load()
     CString strPath = FUN_14071a5b0("Table", "userConditionEvent.xml");
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_UceLog(GetLogString(), 1, 0x13, MS2_UCE_XML_ERR, "userConditionEvent.xml");
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("event")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("event")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("event")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("event")))
     {
         Ptr spData(new CUserConditionEventData);
         spData->FUN_1401d1160(CString(strPath));
@@ -117,20 +117,20 @@ void CUserConditionEventData::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), "gameEventID", reinterpret_cast<int&>(spData->m_nGameEventId));
         CString strInfo;
         strInfo.Format("eventID=%u gameEventID=%u", (unsigned)spData->m_nId, (unsigned)spData->m_nGameEventId);
-        Unk_140165cf0* pCondition = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("condition"));
+        TiXmlElement* pCondition = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("condition"));
         if (pCondition != 0)
         {
             if (((class CConditionCommonData*)(class CConditionCommonData*)(spData->m_spCondition.get()))->Load((class Unk_ConditionXml*)(pCondition), L"UserConditionEvent", spData->m_nId) == 0)
                 continue;
         }
-        Unk_140165cf0* pNotify = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("notify"));
+        TiXmlElement* pNotify = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("notify"));
         if (pNotify != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pNotify), "preview", reinterpret_cast<int&>(spData->m_notify.m_nPreview));
             XmlGetAttr((class TiXmlElement*)(pNotify), "useNotify", reinterpret_cast<int&>(spData->m_notify.m_nUseNotify));
             spData->m_notify.m_strDescKey = Unk_ReadString((class Unk_XmlNode*)(pNotify), "descKey", "");
             spData->m_notify.m_strDescArg = Unk_ReadString((class Unk_XmlNode*)(pNotify), "descArg", "");
-            for (Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNotify))->FirstChild("attachment")); pAttach != 0; pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
+            for (TiXmlElement* pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pNotify))->FirstChild("attachment")); pAttach != 0; pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
             {
                 Unk_UceAttachment attach;
                 XmlGetAttr((class TiXmlElement*)(pAttach), "job", reinterpret_cast<int&>(attach.m_nJob));
@@ -141,14 +141,14 @@ void CUserConditionEventData::Load()
                     spData->m_notify.m_attachments.Add(attach);
             }
         }
-        Unk_140165cf0* pMail = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("mail"));
+        TiXmlElement* pMail = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("mail"));
         if (pMail != 0)
         {
             XmlGetAttr((class TiXmlElement*)(pMail), "context", reinterpret_cast<int&>(spData->m_mail.m_nContext));
             XmlGetAttr((class TiXmlElement*)(pMail), "useMail", reinterpret_cast<int&>(spData->m_mail.m_nUseMail));
             XmlGetAttr((class TiXmlElement*)(pMail), "meso", reinterpret_cast<__int64&>(spData->m_mail.m_nMeso));
             XmlGetAttr((class TiXmlElement*)(pMail), "merat", reinterpret_cast<__int64&>(spData->m_mail.m_nMerat));
-            for (Unk_140165cf0* pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pMail))->FirstChild("attachment")); pAttach != 0; pAttach = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
+            for (TiXmlElement* pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pMail))->FirstChild("attachment")); pAttach != 0; pAttach = ((class TiXmlElement*)((class Unk_XmlNode*)(pAttach))->NextSibling("attachment")))
             {
                 Unk_UceAttachment attach;
                 XmlGetAttr((class TiXmlElement*)(pAttach), "job", reinterpret_cast<int&>(attach.m_nJob));

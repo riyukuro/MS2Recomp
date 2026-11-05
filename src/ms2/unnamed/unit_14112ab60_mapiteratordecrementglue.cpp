@@ -157,8 +157,8 @@ struct Unk_DkPoint : public Unk_Int3
 Unk_Int3 Unk_DkSub(const Unk_DkPoint& a, const Unk_DkPoint& b) { return a - b; }
 Unk_Int3 Unk_DkAdd(const Unk_DkPoint& a, const Unk_DkPoint& b) { return a + b; }
 
-unsigned __int64 FUN_1411283f0(const void* pLink);
-struct Unk_DkLessLink { bool operator()(const void* a, const void* b) const { return FUN_1411283f0(a) < FUN_1411283f0(b); } };
+template <int N> class Unk_Link { public: void* Get() const; };   // C3: member view (unit_141127a90); was the free FUN_1411283f0 = Get<0>
+struct Unk_DkLessLink { bool operator()(const void* a, const void* b) const { return reinterpret_cast<const Unk_Link<0>*>(a)->Get() < reinterpret_cast<const Unk_Link<0>*>(b)->Get(); } };
 struct Unk_DkLessPtr { bool operator()(const void* a, const void* b) const { return (unsigned __int64)reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(a)->get() < (unsigned __int64)reinterpret_cast<const MS2Ptr<CFunctionCubeObject>*>(b)->get(); } };
 struct Unk_DkLessInt { bool operator()(const int& a, const int& b) const { return a < b; } };
 struct Unk_DkLessInt2 { bool operator()(const int& a, const int& b) const { return a < b; } };
@@ -175,7 +175,7 @@ void Unk_DkLessAnchor(const void* a, const void* b, const int& c, const int& d)
 float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
 struct Unk_DkNearer
-{
+{   Unk_DkNearer(GameObject* pPlayer) { m_pPlayer = pPlayer; }   // 0x141123230 (emitted by unit_141121cf0)
     GameObject* m_pPlayer;
     // @0x14112cbc0
     bool operator()(egf::EntityPtr kA, egf::EntityPtr kB) const

@@ -11,7 +11,7 @@
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/socketptr.h"
 
-class Unk_140165cf0;                    // xml element (declared where the loader is)
+class TiXmlElement;                    // xml element (declared where the loader is)
 
 class CAddressData;
 // TPtr<CAddressData> (RTTI template name): the 16-byte intrusive pointer, pointer at +8. Spelled Unk_AddressPtr.

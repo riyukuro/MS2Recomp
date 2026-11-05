@@ -23,7 +23,7 @@
 // The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090), returned in an MS2Ptr<ASCheckBox>.
 class Unk_GsCheck : public ASButton { };
 class ASCheckBox;
-class Unk_GsEntity : public UIDialog { public: MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName); };
+class UIItemPetBoxDialog : public UIDialog { public: MS2Ptr<ASCheckBox> FindCheckBox(const CString& strName); };   // C3: FUN_140e52670, the check box child
 
 // The worn equipment: the gem in a slot.
 class Unk_GsEquip : public PCGemEquip { };
@@ -165,7 +165,7 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 int UIGemSettingDialog::FUN_141946a70(CString strName)
 {
     {
-        MS2Ptr<ASCheckBox> hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
+        MS2Ptr<ASCheckBox> hCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox(strName);
         if ((ASCheckBox*)hCheck != 0)
             return reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce0e0();
     }
@@ -175,7 +175,7 @@ int UIGemSettingDialog::FUN_141946a70(CString strName)
 // @0x141946b10
 void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
 {
-    MS2Ptr<ASCheckBox> hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
+    MS2Ptr<ASCheckBox> hCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox(strName);
     if ((ASCheckBox*)hCheck != 0)
         reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce090(nValue);
 }

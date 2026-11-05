@@ -24,7 +24,7 @@ class ClonePC;
 
 // The gem tables' rows (the table itself is ?\itemgempropertytable.cpp, placeholder/citemgempropertytable.h). The rows
 // are read from Table/ItemGemProperty_*.xml by vfunc_1; the ctors / dtors / vftables are in that unit.
-class Unk_140165cf0;    // game TinyXML element (xmlattr.h)
+class TiXmlElement;    // game TinyXML element (xmlattr.h)
 
 // RTTI CGemDataBase, 0x20 bytes, base CPtred: abstract, the row's gem id and an unread dword.
 class CGemDataBase : public CPtred
@@ -32,7 +32,7 @@ class CGemDataBase : public CPtred
 public:
     CGemDataBase();                                                 // 0x1405af210
     virtual ~CGemDataBase();                                        //  0 0x1405af570 (??_G 0x1405af840)
-    virtual bool vfunc_1(Unk_140165cf0* pElem) = 0;                 //  1 reads the row's attributes (pure)
+    virtual bool vfunc_1(TiXmlElement* pElem) = 0;                 //  1 reads the row's attributes (pure)
     int m_nGemId;                                                   // +0x18
     int m_nUnused;                                                  // +0x1c
 };
@@ -48,7 +48,7 @@ public:
     public:
         TModelAttr();                                               // 0x1405af3f0
         // ~TModelAttr is implicit: 0x1405af6b0, ??_G 0x1405af9c0 (no vptr store in the exe)
-        bool FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix);   // 0x1405ac3b0 reads "<prefix>kfm" ...
+        bool FUN_1405ac3b0(TiXmlElement* pElem, const CString& strPrefix);   // 0x1405ac3b0 reads "<prefix>kfm" ...
         void FUN_1405ac670();                                       // 0x1405ac670 preloads the effects
         CString m_strKfm;                                           // +0x18
         CString m_strRegenEffect;                                   // +0x20
@@ -59,7 +59,7 @@ public:
 
     CGemTombStoneData();                                            // 0x1405af300
     // ~CGemTombStoneData is implicit: 0x1405af630, ??_G 0x1405af900 (no vptr store in the exe)
-    virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405ac760
+    virtual bool vfunc_1(TiXmlElement* pElem);                     //  1 0x1405ac760
 
     efd::Point3 m_ptRotation;                                       // +0x20 "rotation"
     TModelAttr m_attrA;                                             // +0x30
@@ -75,7 +75,7 @@ class CGemSwimData : public CGemDataBase
 public:
     CGemSwimData();                                                 // 0x1405af280
     // ~CGemSwimData is implicit: 0x1405af5d0, ??_G 0x1405af8c0 (no vptr store in the exe)
-    virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405ac860
+    virtual bool vfunc_1(TiXmlElement* pElem);                     //  1 0x1405ac860
     CString GetIdleAnimName();                                        // 0x1405ac8f0 "SwimIdle_<kf>"
     CString GetRunAnimName();                                        // 0x1405ac940 "SwimRun_<kf>"
     CString GetDashAnimName();                                        // 0x1405ac990 "SwimDash_<kf>"
@@ -94,7 +94,7 @@ class CGemCharEffectData : public CGemDataBase
 public:
     CGemCharEffectData();                                           // 0x1405aca90
     // ~CGemCharEffectData is implicit: 0x1405af4f0, ??_G 0x1405af800 (no vptr store in the exe)
-    virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405acb20
+    virtual bool vfunc_1(TiXmlElement* pElem);                     //  1 0x1405acb20
     CString GetEffectByGender(int nPartnerGem);                         // 0x1405acbd0 the effect name of the partner gem
     CString GetCoupleEffect(int nOwnerGem, int nPartnerGem);          // 0x1405acc80 the couple effect name
 
@@ -112,7 +112,7 @@ class CGemEffectData : public CGemDataBase
 public:
     CGemEffectData();                                               // 0x1405af240
     // ~CGemEffectData is implicit: 0x1405af5a0, ??_G 0x1405af880 (no vptr store in the exe)
-    virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405acd40
+    virtual bool vfunc_1(TiXmlElement* pElem);                     //  1 0x1405acd40
     CString m_strEffect;                                            // +0x20 the equip effect name
 };
 MS2_CHECK_SIZE(CGemEffectData, 0x28);

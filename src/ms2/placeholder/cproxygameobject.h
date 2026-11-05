@@ -10,16 +10,16 @@ class CInputStream;
 class CPortal;
 class NpcDataCli;
 
-// +0x88: 0x1c-byte value (ctor 0x140964630, dtor 0x140964e40).
-class Unk_ProxyValue88
-{
-public:
-    Unk_ProxyValue88();
-    ~Unk_ProxyValue88();
-    int m_pad_00; int m_pad_04; int m_pad_08; int m_pad_0c;
-    int m_pad_10; int m_pad_14; int m_pad_18;
-};
-MS2_CHECK_SIZE(Unk_ProxyValue88, 0x1c);
+#include "ms2/client/ms2/questmanager_2.h"   // +0x88: Unk_QmNpcQuestState (ctor 0x140964630, dtor 0x140964e40), 0x20 bytes
+typedef Unk_QmNpcQuestState Unk_ProxyValue88;
+//{
+//public:
+//    Unk_ProxyValue88();
+//    ~Unk_ProxyValue88();
+//    int m_pad_00; int m_pad_04; int m_pad_08; int m_pad_0c;
+//    int m_pad_10; int m_pad_14; int m_pad_18;
+//};
+MS2_CHECK_SIZE(Unk_ProxyValue88, 0x20);
 
 // +0xd0: 0xc-byte value (ctor 0x140267ba0, cleared by 0x140267c10).
 class Unk_ProxyValueD0
@@ -59,7 +59,7 @@ public:
     CString FUN_1416c2520();
     CStringW FUN_1416c2570();
     CStringW FUN_1416c2600();
-    void FUN_1416c2920();
+    int FUN_1416c2920();
     Unk_ProxyValueD0* FUN_1416c2950();
     int FUN_1416c2990(int nTemplateId);
     void FUN_1416c2a80();
@@ -81,8 +81,8 @@ public:
     int m_7c;
     int m_80;
     int m_84;
-    Unk_ProxyValue88 m_88;
-    int m_a4;
+    Unk_QmNpcQuestState m_88;                       // +0x88..+0xa8
+    // int m_a4: m_88.m_wantText (+0xa4)
     unsigned short m_a8;
     int m_ac;
     int m_b0;
@@ -101,7 +101,7 @@ MS2_CHECK_OFFSET(CProxyGameObject, kind, 0x68);
 MS2_CHECK_OFFSET(CProxyGameObject, m_28, 0x28);
 MS2_CHECK_OFFSET(CProxyGameObject, m_6c, 0x6c);
 MS2_CHECK_OFFSET(CProxyGameObject, m_88, 0x88);
-MS2_CHECK_OFFSET(CProxyGameObject, m_a4, 0xa4);
+MS2_CHECK_OFFSET(CProxyGameObject, m_88.m_wantText, 0xa4);
 MS2_CHECK_OFFSET(CProxyGameObject, m_c0, 0xc0);
 MS2_CHECK_OFFSET(CProxyGameObject, m_d0, 0xd0);
 MS2_CHECK_OFFSET(CProxyGameObject, m_dc, 0xdc);

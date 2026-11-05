@@ -69,7 +69,7 @@ MS2_CHECK_SIZE(Unk_HcCastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB, const CStringW& strExtra);   // show
+    void StartCastingText(class ICastingEventListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB, const CStringW& strExtra);   // show
     void FUN_1418e1390();                                                          // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);

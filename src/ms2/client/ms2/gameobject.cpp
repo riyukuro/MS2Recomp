@@ -80,13 +80,13 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_GoField, m_nFieldId, 0x18);
 
-// A view of the world service.
-class Unk_GoWorld : public WorldService
-{
-public:
-    MS2Ptr<Unk_GoField> FUN_141bd3210(NiPoint3 kPos);
-    MS2Ptr<Unk_GoField> FUN_141bd3430(unsigned __int64 nFieldId);
-};
+// The field lookups are WorldService's own (worldservice.h, defined in worldservice_1.cpp):
+// FUN_141bd3210(Vector3) is the field containing a point, else the nearest;
+// FUN_141bd3430 is the m_2f8 lookup by field id.
+//
+//
+//
+//
 
 // The object vfunc_26 places at the actor every frame.
 class Unk_GoAttachment
@@ -102,7 +102,7 @@ public:
 // @0x14123ee80
 inline BGTransparencyMgr* TSingleton<BGTransparencyMgr>::GetInstance() { return TSingleton<BGTransparencyMgr>::s_instance; }
 
-class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
+// C3: FUN_1409f7ea0 is COptimizer's (coptimizer.h); FUN_1409f7c90 returns the singleton
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 
 class Unk_GoAnimSvc
@@ -125,12 +125,12 @@ struct Unk_GoCamEvent
 // Anchor handles collected by vfunc_27 (16-byte smart handle over the array element).
 class NxVec3;
 // The anchor handle is MS2Ptr<CBoxCollision>; the stand-in stays as vfunc_27's array element type.
-class Unk_GoAnchorPtr
-{
-public:
-    ~Unk_GoAnchorPtr();                 // 0x140a00490
-    void* m_pad[2];
-};
+// (vfunc_27 fills a CAtlArray<MS2Ptr<CBoxCollision> >: the old Unk_GoAnchorPtr view shared all its VAs)
+//
+//
+//
+//
+//
 struct Unk_UtilFloat3;
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
 float FUN_140966f00(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
@@ -369,14 +369,14 @@ NiPoint3 GameObject::vfunc_17()
     if (m_spField.get())
     {
         Unk_GoField* pField = m_spField.operator->();
-        if (static_cast<Unk_GoWorld*>(WorldService::GetInstance())->FUN_141bd3430(pField->m_nFieldId).get())
+        if (WorldService::GetInstance()->FUN_141bd3430(pField->m_nFieldId).get())
         {
             if (m_spField->vfunc_2(kPos))
                 return kPos;
         }
     }
     m_spField = 0;
-    MS2Ptr<Unk_GoField> spField = static_cast<Unk_GoWorld*>(WorldService::GetInstance())->FUN_141bd3210(kPos);
+    MS2Ptr<Unk_GoField> spField = WorldService::GetInstance()->FUN_141bd3210(reinterpret_cast<Vector3&>(kPos));
     if (spField.get() != 0)
     {
         m_spField = spField;
@@ -501,7 +501,7 @@ MS2_REPLACE_METHOD(0x14123c430, GameObject, FUN_14123c430, 28, 0xF376627F);
 // @0x14123c460
 egf::EntityID GameObject::FUN_14123c460()
 {
-    if (((Unk_AvModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
+    if (((COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID;
     return m_unk_80 != 0 ? GO_ENTITY()->GetEntityID() : egf::kENTITY_INVALID;
 }
@@ -509,7 +509,7 @@ egf::EntityID GameObject::FUN_14123c460()
 // @0x14123c500
 unsigned __int64 GameObject::FUN_14123c500()
 {
-    if (((Unk_AvModeSvc*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
+    if (((COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
         return m_kEntityID.GetValue();
     return m_unk_80 != 0 ? ((egf::Entity*)(void*)(GO_ENTITY()))->GetEntityIDValue() : egf::kENTITY_INVALID.GetValue();
 }
@@ -580,7 +580,7 @@ Unk_GoAttachment* GameObject::vfunc_26()
 MS2_REPLACE_METHOD(0x14123c740, GameObject, vfunc_26, 8, 0x7F371472);
 
 // @0x14123c750
-void GameObject::vfunc_27(ATL::CAtlArray<Unk_GoAnchorPtr>& kArr)
+void GameObject::vfunc_27(ATL::CAtlArray<MS2Ptr<CBoxCollision> >& kArr)
 {
 }
 MS2_REPLACE_METHOD(0x14123c750, GameObject, vfunc_27, 11, 0x02239C70);
@@ -597,7 +597,7 @@ int GameObject::vfunc_29(GameObject* pTarget, efd::Point3* pOut)
 {
     if (pTarget == 0)
         return 0;
-    ATL::CAtlArray<Unk_GoAnchorPtr> kAnchors;
+    ATL::CAtlArray<MS2Ptr<CBoxCollision> > kAnchors;
     if (kAnchors.IsEmpty())
         vfunc_27(kAnchors);
     if (kAnchors.IsEmpty())
@@ -606,7 +606,7 @@ int GameObject::vfunc_29(GameObject* pTarget, efd::Point3* pOut)
     NiPoint3 kBest(efd::Point3::ZERO);
     for (unsigned int i = 0; i < kAnchors.GetCount(); i++)
     {
-        MS2Ptr<CBoxCollision> spAnchor(reinterpret_cast<MS2Ptr<CBoxCollision>&>(kAnchors[i]));
+        MS2Ptr<CBoxCollision> spAnchor(kAnchors[i]);
         if (spAnchor == NULL)
             continue;
         NiPoint3 kPt(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&spAnchor->m_kBox.GetCenter())))));

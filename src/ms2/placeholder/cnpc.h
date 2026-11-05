@@ -69,7 +69,7 @@ public:
     virtual int vfunc_10() override;                        // 0x14108f0a0
     virtual void vfunc_12() override;                       // 0x14108f710
     virtual void vfunc_14() override;                       // 0x14108fb00
-    virtual void vfunc_27(ATL::CAtlArray<Unk_GoAnchorPtr>& kArr) override;   // 0x14108fc70
+    virtual void vfunc_27(ATL::CAtlArray<MS2Ptr<CBoxCollision> >& kArr) override;   // 0x14108fc70
     virtual void vfunc_28(void* p) override;                // 0x14108fcb0
     virtual void vfunc_32(bool b) override;                 // 0x141090cd0
     virtual void vfunc_33(void* a, void* b) override;      // 0x141097c40

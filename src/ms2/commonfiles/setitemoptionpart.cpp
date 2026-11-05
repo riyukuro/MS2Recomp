@@ -2,7 +2,9 @@
 // MS2-UNIT: ?\setitemoptionpart.cpp
 // MS2-RANGE: 0x1407bc4b0-0x1407c4980 .text$mn
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ??0?$Unk_EnchantPtr@VBaseOption@@@@QEAA@_J@Z 0x1407bf260
+// MS2-PIN: ??0?$MS2Ptr@VBaseOption@@@@QEAA@$$T@Z 0x1407bf260
+// MS2-PIN: ?deallocate@?$allocator@U?$_List_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_List_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1407c3da0 ; unique
+// MS2-PIN: ?deallocate@?$allocator@U?$_List_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_List_node@U?$pair@$$CBW4OptionKey@UnlimitedEnchantInfo@@V?$MS2Ptr@VBaseOption@@@@@std@@PEAX@2@_K@Z 0x1407c3dd0 ; unique
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\setitemoptionpart.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/commonfiles/setitemoptionpart.h"
@@ -13,7 +15,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
-template <class C> int XmlTokenList(Unk_140165cf0*, const char*, C&);
+template <class C> int XmlTokenList(TiXmlElement*, const char*, C&);
 
 const CStringA& GetStatName(unsigned nStat);                                // the xml name of a stat (stat.cpp)
 CStringA const & FUN_14081d380(int);  // C3: the definition's signature
@@ -28,7 +30,7 @@ SetItemOptionPart::SetItemOptionPart() : m_nCount(0)
 }
 
 // @0x1407bc580
-bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
+bool SetItemOptionPart::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "count", m_nCount);
     if (m_nCount == 0)
@@ -49,7 +51,7 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
 
     for (StatKey nStat : DAT_1439f48d0)
     {
-        Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+        MS2Ptr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), (const char*)GetStatName(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
@@ -60,7 +62,7 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
     for (unsigned i = 0; i < 4; i++)
     {
         SpecialKey nStat = pSpecials[(int)i];
-        Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
+        MS2Ptr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), (const char*)FUN_14081d380(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
@@ -89,7 +91,7 @@ ATL::CAtlArray<unsigned short>& SetItemOptionPart::FUN_1407bc9f0()
 }
 
 // @0x1407bca10
-void SetItemOptionPart::FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> spOption)
+void SetItemOptionPart::FUN_1407bca10(StatKey nStat, MS2Ptr<BaseOption> spOption)
 {
     if (!spOption->HasValue())
         return;
@@ -97,7 +99,7 @@ void SetItemOptionPart::FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> 
 }
 
 // @0x1407bcac0
-void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, Unk_EnchantPtr<BaseOption> spOption)
+void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, MS2Ptr<BaseOption> spOption)
 {
     if (!spOption->HasValue())
         return;
@@ -105,39 +107,39 @@ void SetItemOptionPart::FUN_1407bcac0(SpecialKey nStat, Unk_EnchantPtr<BaseOptio
 }
 
 // @0x1407bcb70
-Unk_EnchantPtr<BaseOption> SetItemOptionPart::FUN_1407bcb70(StatKey nStat) const
+MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcb70(StatKey nStat) const
 {
     StatMap::const_iterator it = m_stats.find(nStat);
     if (it == m_stats.end())
-        return Unk_EnchantPtr<BaseOption>(0LL);
+        return MS2Ptr<BaseOption>(nullptr);
     return it->second;
 }
 
 // @0x1407bcc30
-Unk_EnchantPtr<BaseOption> SetItemOptionPart::FUN_1407bcc30(SpecialKey nStat) const
+MS2Ptr<BaseOption> SetItemOptionPart::FUN_1407bcc30(SpecialKey nStat) const
 {
     SpecialMap::const_iterator it = m_specials.find(nStat);
     if (it == m_specials.end())
-        return Unk_EnchantPtr<BaseOption>(0LL);
+        return MS2Ptr<BaseOption>(nullptr);
     return it->second;
 }
 
 // @0x1407bccf0
-void SetItemOptionPart::FUN_1407bccf0(std::function<void(const std::pair<StatKey, Unk_EnchantPtr<BaseOption> >&)> fn)
+void SetItemOptionPart::FUN_1407bccf0(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn)
 {
-    for (std::pair<const StatKey, Unk_EnchantPtr<BaseOption> >& rValue : m_stats)
+    for (std::pair<const StatKey, MS2Ptr<BaseOption> >& rValue : m_stats)
     {
-        std::pair<StatKey, Unk_EnchantPtr<BaseOption> > entry(rValue);
+        std::pair<StatKey, MS2Ptr<BaseOption> > entry(rValue);
         fn(entry);
     }
 }
 
 // @0x1407bcdb0
-void SetItemOptionPart::FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, Unk_EnchantPtr<BaseOption> >&)> fn)
+void SetItemOptionPart::FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn)
 {
-    for (std::pair<const SpecialKey, Unk_EnchantPtr<BaseOption> >& rValue : m_specials)
+    for (std::pair<const SpecialKey, MS2Ptr<BaseOption> >& rValue : m_specials)
     {
-        std::pair<SpecialKey, Unk_EnchantPtr<BaseOption> > entry(rValue);
+        std::pair<SpecialKey, MS2Ptr<BaseOption> > entry(rValue);
         fn(entry);
     }
 }

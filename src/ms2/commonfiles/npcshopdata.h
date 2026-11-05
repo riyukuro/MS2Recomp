@@ -27,12 +27,12 @@
 #include "ms2/placeholder/cnpcshopbuyperiod.h"
 #include "ms2/placeholder/cnpcshopitemnew.h"
 #include "ms2/placeholder/cnpcshopmeratitembase.h"
-#include "ms2/commonfiles/commonstruct_wa.h"         // NpcShopItemLife, Unk_ShopLifeRef
+#include "ms2/commonfiles/commonstruct_wa.h"         // NpcShopItemLife
 #include "ms2/commonfiles/itemdroptable.h"           // ItemDropPicker<T>
 
 class CInPacket;
 class COutputStream;
-class Unk_140165cf0;                                 // TinyXML element (xmlattr.h)
+class TiXmlElement;                                 // TinyXML element (xmlattr.h)
 
 // The enum attributes read through tinyxmlhelper.h's XmlValue<E> (one instantiation per enum; names invented).
 enum eItemFrameType {};                              // <item frameType>
@@ -49,7 +49,7 @@ public:
     void FUN_1406dc1e0();                            // reset
     void FUN_1406dc230(COutputStream& out);          // write
     void FUN_1406dc2c0(CInPacket& in);               // read
-    void FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
+    void FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
                        const CString& strPrice);     // read the four attributes (names given by the caller)
     const CString& GetIconTag() const;            // icon tag
     unsigned GetItemId() const;                  // payment item id
@@ -100,7 +100,7 @@ public:
     eShopSaleTag m_eSaleTag;                         // +0x84 saleTag
     bool m_bWearForPreview;                          // +0x88 wearForPreview
     MS2SvrPtr<CNpcShopBuyPeriod> m_spPeriod;         // +0x90
-    Unk_ShopLifeRef m_spLife;                        // +0xa0
+    MS2SvrPtr<CPtred> m_spLife;                      // +0xa0 (NpcShopItemLife)
     unsigned m_nProb;                                // +0xb0 prob
     bool m_bCheckGameEvent;                          // +0xb4 checkGameEvent
 };
@@ -116,7 +116,7 @@ public:
     int FUN_1406df190();                             // three server-side checks (always TRUE here)
     int FUN_1406df1b0();
     int FUN_1406df1d0();
-    int Read(CString& strError, Unk_140165cf0* pElem);   // validate after reading
+    int Read(CString& strError, TiXmlElement* pElem);   // validate after reading
     void FUN_1406e2bc0(MS2Ptr<CNpcShopItemNew> spItem);           // add a "new" item
 
     unsigned m_nShopId;                              // +0x18 shopID

@@ -136,7 +136,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PciUIMgr { public: void FUN_141adc530(int nId); };
 
-class Unk_PciMyPC : public PC { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };
+class Unk_PciMyPC : public PC {};   class MyPC { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };   // C3: member view (FUN_140c25130 is MyPC's)
 class Unk_PciFieldInfo : public CPtred
 {
 public:
@@ -147,11 +147,11 @@ class Unk_PciWorld
 {
 public:
 };
-class AdditionalCliList   // C3: member view for the former free stand-ins
-{
-public:
-    __int64 GetTotalShieldValue();
-};
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
+//
+//
+//
+//
 NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour value as NiColor
 
 class Unk_PciCfgU16 { };
@@ -778,18 +778,18 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
         if ((unsigned short)pPC->vfunc_78() >= FUN_140ba4b30((class Unk_ALConstU16*)&((struct Unk_PciConstants*)FUN_1401d3200())->m_9298))
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
-                                    (unsigned int)pPC->FUN_140c25130()->GetTotal(),
-                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
-                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
-                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
-                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)4));
+                                    (unsigned int)((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
+                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
+                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)4));
             goto show;
         }
     }
-    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), pPC->FUN_140c25130()->GetTotal(),
-                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
-                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
-                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
+    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), ((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
+                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
 show:
     ASTooltip tooltip((void*)pPC, 1, 2);
     tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
@@ -1022,8 +1022,8 @@ void UIPCInfoDialog::vfunc_87()
         Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        nRemaining = pPC->FUN_140c25130()->GetRemaining();
-        nUsed = pPC->FUN_140c25130()->GetUsed();
+        nRemaining = ((MyPC*)pPC)->FUN_140c25130()->GetRemaining();
+        nUsed = ((MyPC*)pPC)->FUN_140c25130()->GetUsed();
     }
     for (unsigned int i = 0; i < aStats.GetCount(); i++)
     {
@@ -1046,7 +1046,7 @@ void UIPCInfoDialog::vfunc_87()
                 Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPC != 0)
                 {
-                    unsigned int nPoints = pPC->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
+                    unsigned int nPoints = ((MyPC*)pPC)->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
                     if (nPoints > 0)
                         nColor = 0xffa200;
                 }

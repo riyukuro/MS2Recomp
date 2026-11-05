@@ -94,7 +94,7 @@ class Unk_StepProfiler
 public:
     explicit Unk_StepProfiler(CString strName);                     // 0x1402e11c0 (by value: the ctor destroys it)
     ~Unk_StepProfiler();                                            // 0x1402e1260
-    void FUN_1402e12c0(const char* pszFormat, ...);                 // starts the next step (logs the previous one)
+    // FUN_1402e12c0 (starts the next step, logs the previous one) is Unk_PerfLog's (unit_1402e12c0)
 
     CLockCriticalSection m_lock;                                    // +0x00
     CString m_strName;                                              // +0x30

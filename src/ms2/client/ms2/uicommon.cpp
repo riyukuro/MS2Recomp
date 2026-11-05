@@ -162,7 +162,7 @@ extern CStringW DAT_143af1bc8;
 #include "ms2/placeholder/cwebbrowserservice.h"  // C3: CWebBrowserService::FUN_141b794e0
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;               // @0x140111980
@@ -238,9 +238,9 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 int FUN_140930190();
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
 
 // The map data kept behind the world's counted pointer (field +0x5c: the max player count?).
 class Unk_UcMapData : public CPtred
@@ -391,8 +391,8 @@ int FUN_1418fd330(__int64 nOwner)
         return 0;
     }
     int nValue = 0;
-    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
-    if ((grid.operator Unk_Service6100017*() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410c35c0())
+    efd::SmartPointer<CubeMapInformationService> grid(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+    if ((grid.operator CubeMapInformationService*() ? true : false) && reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410d2f10() != 0 && !reinterpret_cast<Unk_UcCubeSvc*>(grid.operator->())->FUN_1410c35c0())
     {
         nValue = 1;
     }
@@ -1169,7 +1169,7 @@ public:
     void* m_pad_00[0x52];
     CStringW m_strType;                                             // +0x290
     void* m_pad_298; void* m_pad_2a0; void* m_pad_2a8;
-    Unk_CommandArgs m_args;                                         // +0x2b0
+    ItemFunctionArgs m_args;                                         // +0x2b0
 };
 MS2_CHECK_OFFSET(Unk_UcItemData, m_strType, 0x290);
 MS2_CHECK_OFFSET(Unk_UcItemData, m_args, 0x2b0);
@@ -1703,7 +1703,7 @@ UICommon::CAlignmentInfo::CAlignmentInfo(int nAlign, float x, float y)
 }
 
 // @0x1419015e0
-void UICommon::CAlignmentInfo::FUN_1419015e0(Unk_140165cf0* pNode)
+void UICommon::CAlignmentInfo::FUN_1419015e0(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return;
@@ -1714,7 +1714,7 @@ void UICommon::CAlignmentInfo::FUN_1419015e0(Unk_140165cf0* pNode)
 MS2_REPLACE_METHOD(0x1419015e0, UICommon::CAlignmentInfo, FUN_1419015e0, 109, 0x52121057);
 
 // @0x141901660
-bool UICommon::CAlignmentInfo::FUN_141901660(Unk_140165cf0* pNode)
+bool UICommon::CAlignmentInfo::FUN_141901660(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return false;

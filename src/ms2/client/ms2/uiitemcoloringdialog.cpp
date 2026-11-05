@@ -66,7 +66,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 
 // GetChild COMDATs are owned by unit_140ba6b20 (ASMovieClip, 0x140ba7930) and uibingoeventdialog (0x140bb4b10)
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
-template <> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString& strName);
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -93,9 +93,9 @@ public:
 };
 
 // A button child ("m_save", "m_reset", "m_addBasket").
-class Unk_140acd6e0 : public ASMovieClip
-{
-};
+#include "ms2/placeholder/asbutton.h"   // C3: the button child is ASButton (was the stand-in Unk_140acd6e0)
+//
+//
 
 class ASFunction : public AScript
 {
@@ -222,7 +222,7 @@ public:
 struct Unk_ColorItems       // the view of ChangeColors in unit_1401f9eb0
 {
     void FUN_140200950(COutputStream&);
-    void FUN_140200bc0(Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>);
+    void FUN_140200bc0(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
 };
 CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice);   // the price text
 void FUN_14134a2e0(Unk_BSFee* pFee);                                       // "not enough" message
@@ -742,7 +742,7 @@ MS2_REPLACE_METHOD(0x1419aef10, UIItemColoringDialog, FUN_1419aef10, 93, 0x9C2EF
 int UIItemColoringDialog::FUN_1419aef80()
 {
     if (m_30.get() != 0) {
-        if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_save"))
+        if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_save"))
             return spButton->FUN_1422c2030();
     }
     return 0;
@@ -753,7 +753,7 @@ MS2_REPLACE_METHOD(0x1419aef80, UIItemColoringDialog, FUN_1419aef80, 189, 0x409C
 void UIItemColoringDialog::FUN_1419af050(int bEnable)
 {
     if (m_30.get() != 0) {
-        if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_save"))
+        if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_save"))
             spButton->FUN_1422c1fe0(bEnable);
     }
 }
@@ -763,7 +763,7 @@ MS2_REPLACE_METHOD(0x1419af050, UIItemColoringDialog, FUN_1419af050, 172, 0x929E
 void UIItemColoringDialog::FUN_1419af110(int bEnable)
 {
     if (m_30.get() != 0) {
-        if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_reset"))
+        if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_reset"))
             spButton->FUN_1422c1fe0(bEnable);
     }
 }
@@ -773,7 +773,7 @@ MS2_REPLACE_METHOD(0x1419af110, UIItemColoringDialog, FUN_1419af110, 172, 0xF4E3
 void UIItemColoringDialog::SetAddBasketButtonEnabled(int bEnable)
 {
     if (m_30.get() != 0) {
-        if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_addBasket"))
+        if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_addBasket"))
             spButton->FUN_1422c1fe0(bEnable);
     }
 }
@@ -1028,7 +1028,7 @@ void UIItemColoringDialog::FUN_1419b0700()
         m_268->GetModifiedAndSelect(spBasket->GetItemUid(), spItem);
         if (spItem == 0)
             continue;
-        Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> spChange(new CCItemColoringPacket::ChangeColorItem());
+        MS2Ptr<CCItemColoringPacket::ChangeColorItem> spChange(new CCItemColoringPacket::ChangeColorItem());
         if (spChange == 0)
             continue;
         spChange->flag18 = GetShopId() != 0;

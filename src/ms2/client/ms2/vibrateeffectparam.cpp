@@ -18,7 +18,7 @@
 #include "ms2/client/ms2/camera.h"
 
 // Game TinyXML element and its float attribute helper (commonfiles\tinyxmlhelper.cpp).
-class Unk_140165cf0;
+class TiXmlElement;
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // Game log (commonfiles singleton 0x140166440).
@@ -63,7 +63,7 @@ CVibrateEffectParam::CVibrateEffectParam()
 }
 
 // @0x141b72690
-void CVibrateEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CVibrateEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "freq", m_fFreq);

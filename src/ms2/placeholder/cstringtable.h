@@ -19,7 +19,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 class CStringTable : public TSingleton<CStringTable>, public CValidData<CStringTable>
 {
 public:
@@ -94,9 +94,9 @@ public:
     CStringW FUN_141813300(int nTab);                       // an inventory tab name
     CStringW FUN_141813610(int a, int b, int c);
     CStringW FUN_141813790(CStringW strFormat, CStringW strArgs);   // formats the text with ','-separated arguments
-    void FUN_141813970(Unk_140165cf0* pRoot);               // item descriptions
-    void FUN_1418139b0(Unk_140165cf0* pRoot);               // level descriptions
-    void FUN_1418139f0(Unk_140165cf0* pRoot);               // skill descriptions
+    void FUN_141813970(TiXmlElement* pRoot);               // item descriptions
+    void FUN_1418139b0(TiXmlElement* pRoot);               // level descriptions
+    void FUN_1418139f0(TiXmlElement* pRoot);               // skill descriptions
     int FUN_141813c80(CachePtr spCache, CString strParser, CString strParserValue);   // loads a table's files
     int LoadNames(CachePtr spCache);                    // ... with the "name" attribute
     int FUN_141813f10(CachePtr spCache);                    // ... "raceName"
@@ -106,11 +106,11 @@ public:
     int FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache);
     CStringW FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned short* pnLevel, const CString& strTag);
     CStringW FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnLevel, const CString& strTag);
-    DescPtr FUN_1418154e0(Unk_140165cf0* pNode);            // a description row of the item tags
-    DescPtr FUN_141815650(Unk_140165cf0* pNode, ATL::CAtlArray<CString>& rTags);
-    DescPtr FUN_1418158b0(Unk_140165cf0* pNode);            // a description row of the skill tags
-    void LoadDescEntries(DescMap& rMap, Unk_140165cf0* pRoot);
-    void FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot);
+    DescPtr FUN_1418154e0(TiXmlElement* pNode);            // a description row of the item tags
+    DescPtr FUN_141815650(TiXmlElement* pNode, ATL::CAtlArray<CString>& rTags);
+    DescPtr FUN_1418158b0(TiXmlElement* pNode);            // a description row of the skill tags
+    void LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot);
+    void FUN_141815b30(LevelDescMap& rMap, TiXmlElement* pRoot);
 
     static void CheckInit();                                // 0x1418178d0 message box when the tables are not loaded
     static void SetInit(bool b);                            // 0x14181c6c0

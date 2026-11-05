@@ -20,10 +20,10 @@
 // value (TPtredDummy<T>, size 0x18 + sizeof(T)). The smart pointer below points at the value, not at the wrapper.
 #include "ms2/placeholder/tptreddummy.h"
 
-struct Unk_FieldNewTag
-{
-    explicit Unk_FieldNewTag(int);                          // 0x1401b7b90 (returns its this, no code)
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_FieldNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_FieldNewTag;
+
+
 
 CPtred* FUN_1401ba820(CPtred* p);                           // marks a freshly allocated box (sets the count to 1)
 

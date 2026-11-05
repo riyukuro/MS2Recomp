@@ -78,25 +78,25 @@ static CString s_strTabIndex = "tabIndex";
 
 // ---- unit-local views of exe types ----
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_AqList : public AScript
-{
-public:
-    Unk_AqList(const Scaleform::GFx::Value& v, int nMovieId);           // 0x1422cf590
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-private:
-    void* m_unrecovered_40[9];
-};
-MS2_CHECK_SIZE(Unk_AqList, 0x88);
+#include "ms2/placeholder/asmultiselecttilecachelist.h"   // C3: the list control is ASTileCacheList (ctor 0x1422cf590; was the stand-in Unk_AqList)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-class Unk_140acd6e0 : public ASMovieClip { public:
-};
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
+//
 
 Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int nMode);              // the default script of an npc
 Unk_ScriptPtr<CTalkScript> FUN_140856980(int nNpcId, const CStringW& strTag); // the script with the tag
@@ -273,9 +273,9 @@ void UIAllianceQuestDialog::OnLoadComplete()
     FUN_140bf7630();
     FUN_140bf70f0();
     FUN_140bf6ef0();
-    if (MS2Ptr<Unk_140acd6e0> spAcceptAll = GetChild<Unk_140acd6e0>("m_acceptAll"))
+    if (MS2Ptr<ASButton> spAcceptAll = GetChild<ASButton>("m_acceptAll"))
         spAcceptAll->FUN_1422c1fe0(FUN_140bf8900());
-    if (MS2Ptr<Unk_140acd6e0> spCompleteAll = GetChild<Unk_140acd6e0>("m_completeAll"))
+    if (MS2Ptr<ASButton> spCompleteAll = GetChild<ASButton>("m_completeAll"))
         spCompleteAll->FUN_1422c1fe0(FUN_140bf8ab0());
 }
 
@@ -495,7 +495,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
         quests.push_back(spData);
     }
     std::sort(quests.begin(), quests.end(), FUN_140bfa2d0);
-    if (MS2Ptr<Unk_AqList> spList = FUN_140bfa760("m_list"))
+    if (MS2Ptr<ASTileCacheList> spList = FUN_140bfa760("m_list"))
     {
         reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
         spList->Invoke("resetRenderer");
@@ -509,8 +509,8 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             row.FUN_1407cb9c0("enabled", 0);
             row.FUN_1409c0e60("buttonStr", L"");
             row.FUN_1407cbb20("complete", strRequire);
-            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: was Unk_AqList::FUN_1422dd230
-            spList->vfunc_24(true);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: the ASCoreList method
+            reinterpret_cast<ASButton*>(spList.operator->())->vfunc_24(true);   // C3: slot 24 validateNow
             return;
         }
         CStringW strLimit = FUN_140bf9e10();
@@ -587,9 +587,9 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             }
             row.FUN_1407cb9c0("enabled", bEnabled);
             row.FUN_1407cbb20("buttonStr", strButton);
-            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: was Unk_AqList::FUN_1422dd230
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: the ASCoreList method
         }
-        spList->vfunc_24(true);
+        reinterpret_cast<ASButton*>(spList.operator->())->vfunc_24(true);   // C3: slot 24 validateNow
     }
 }
 
@@ -905,11 +905,11 @@ template<class T> MS2Ptr<T> AScript::FUN_140bfa6a0(const CString& strName)
 }
 
 // @0x140bfa760
-MS2Ptr<Unk_AqList> UIAllianceQuestDialog::FUN_140bfa760(const CString& strName)
+MS2Ptr<ASTileCacheList> UIAllianceQuestDialog::FUN_140bfa760(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
-        return MS2Ptr<Unk_AqList>(0);
-    return m_30.operator->()->FUN_140bfa6a0<Unk_AqList>(strName);
+        return MS2Ptr<ASTileCacheList>(0);
+    return m_30.operator->()->FUN_140bfa6a0<ASTileCacheList>(strName);
 }
 
 // @0x140bfc580 the id of the quest

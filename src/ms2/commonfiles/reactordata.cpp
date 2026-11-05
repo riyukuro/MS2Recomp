@@ -19,16 +19,16 @@
 // MS2-PIN: ?RemoveNode@?$CAtlMap@HV?$MS2Ptr@VReactorStateData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VReactorStateData@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14076f4e0 ; prop
 // MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VReactorData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VReactorData@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VReactorData@@@@@Z 0x14076f5a0 ; prop
 // MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VReactorStateData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VReactorStateData@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VReactorStateData@@@@@Z 0x14076f650 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@2@XZ 0x14076fc60 ; unique
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ 0x14076fc80 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@2@XZ 0x14076fc60 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_List_node@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ 0x14076fc80 ; unique
 // MS2-PIN: ?begin@?$vector@HV?$allocator@H@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@2@XZ 0x1407700c0 ; unique
 // MS2-PIN: ?end@?$vector@HV?$allocator@H@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@2@XZ 0x1407702c0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1ReactorCondition@@UEAA@XZ 0x14076cda0
 // MS2-PIN: ??1ReactorConditionItem@@UEAA@XZ 0x14076cdc0
-// MS2-PIN: ??8?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cec0
+// MS2-PIN: ??8?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cec0
 // MS2-PIN: ??8?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cf00
-// MS2-PIN: ??9?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVUnk_140165cf0@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cf50
+// MS2-PIN: ??9?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@P6A?AV?$MS2Ptr@VReactorCondition@@@@PEAVTiXmlElement@@@ZV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cf50
 // MS2-PIN: ??9?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14076cf90
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@H@std@@V?$_Vector_val@U?$_Simple_types@H@std@@@2@$00@std@@QEAAAEAV?$allocator@H@2@XZ 0x14076fc70
 // MS2-PIN: ?IsNull@?$MS2Ptr@VReactorCondition@@@@QEBA_NXZ 0x14076ce60
@@ -45,7 +45,7 @@
 #include "hook/ms2hook.h"
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -53,23 +53,23 @@ public:
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-int FUN_140197350(Unk_140165cf0*, const char*, int nDefault);           // int attribute with default
-unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
-float FUN_1401973d0(Unk_140165cf0*, const char*, float fDefault);
-CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
-template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
+int FUN_140873420(TiXmlElement*, const char*, CStringW&);
+int FUN_140197350(TiXmlElement*, const char*, int nDefault);           // int attribute with default
+unsigned int FUN_140197390(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
+float FUN_1401973d0(TiXmlElement*, const char*, float fDefault);
+CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW strDefault);
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
+TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 int FUN_140768010(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -78,7 +78,7 @@ bool CReactorDataTable::s_bInit;
 #endif
 
 // @0x14076a1e0
-ReactorStateData::ConditionPtr FUN_14076a1e0(Unk_140165cf0* pNode)
+ReactorStateData::ConditionPtr FUN_14076a1e0(TiXmlElement* pNode)
 {
     if (pNode == 0)
         return ReactorStateData::ConditionPtr(0);
@@ -112,7 +112,7 @@ static int ParseStateType(CStringA& str);
 // @0x14076bfc0
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
-static int ReadStateType(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
+static int ReadStateType(TiXmlElement* pElem, const char* pszName, int* pnOut)
 {
     if (FALSE)
     {
@@ -130,7 +130,7 @@ static int ReadStateType(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\reactordata.cpp"
 
 // @0x14076a550
-bool ReactorStateData::Load(Unk_140165cf0* pNode)
+bool ReactorStateData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     ReadStateType(pNode, "type", &m_nType);
@@ -140,7 +140,7 @@ bool ReactorStateData::Load(Unk_140165cf0* pNode)
     m_strStartAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "startAni", CStringA(""));
     m_strIdleAni = Unk_ReadString((class Unk_XmlNode*)(pNode), "idleAni", CStringA(""));
     m_strActionStringKey = FUN_1401bf530(pNode, "actionStringKey", CStringW(L""));
-    typedef ConditionPtr (*CondLoader)(Unk_140165cf0*);
+    typedef ConditionPtr (*CondLoader)(TiXmlElement*);
     std::list<std::pair<CondLoader, CStringA> > loaders;
     loaders.push_back(std::make_pair(FUN_14076a1e0, "condItem"));
     std::list<std::pair<CondLoader, CStringA> >& rLoaders = loaders;
@@ -148,7 +148,7 @@ bool ReactorStateData::Load(Unk_140165cf0* pNode)
     for (std::list<std::pair<CondLoader, CStringA> >::const_iterator it = rLoaders.begin(); it != itEnd; ++it)
     {
         const std::pair<CondLoader, CStringA>& kLoader = *it;
-        ConditionPtr cond = static_cast<ConditionPtr&&>(kLoader.first(((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild(kLoader.second))));
+        ConditionPtr cond = static_cast<ConditionPtr&&>(kLoader.first(((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild(kLoader.second))));
         if (cond.IsNull())
             continue;
         m_conditions.AddTail(cond);
@@ -168,7 +168,7 @@ ReactorData::~ReactorData()
 }
 
 // @0x14076ab40
-bool ReactorData::Load(Unk_140165cf0* pNode)
+bool ReactorData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
     XmlTokenList(pNode, "createAnimation", m_createAnims);
@@ -203,13 +203,13 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
             MS2_ASSERT_AT(0xff, 0);
             return false;
         }
-        Unk_140165cf0* pRoot = FUN_140345b40(&doc);
+        TiXmlElement* pRoot = FUN_140345b40(&doc);
         if (pRoot == 0)
         {
             MS2_ASSERT_AT(0x106, 0);
             return false;
         }
-        for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("v")))
+        for (TiXmlElement* pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pItem != 0; pItem = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->NextSibling("v")))
         {
             ItemEntity item;
             item.vfunc_2(pItem);
@@ -264,13 +264,13 @@ bool CReactorDataTable::LoadReactors()
     CString strPath(m_strReactorXml);
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactor")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reactor")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactor")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("reactor")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -293,13 +293,13 @@ bool CReactorDataTable::LoadStates()
     CString strPath(m_strStateXml);
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactorState")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reactorState")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("reactorState")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("reactorState")))
     {
         StatePtr state(new ReactorStateData);
         if (!state->Load(pNode))

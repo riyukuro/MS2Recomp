@@ -32,24 +32,24 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 177,182 | 176,940 (99.9%) | 231 (0.1%) | 100.0% |
+| Game · ms2 | 177,182 | 176,941 (99.9%) | 230 (0.1%) | 100.0% |
 | Runtime & middleware | 22,011 | 20,795 (94.5%) | 1,086 (4.9%) | 99.4% |
-| Gamebryo engine | 16,771 | 16,699 (99.6%) | 60 (0.4%) | 99.9% |
-| Game framework · egf | 12,723 | 12,668 (99.6%) | 36 (0.3%) | 99.9% |
-| Libraries | 6,704 | 6,334 (94.5%) | 32 (0.5%) | 95.0% |
-| Foundation | 12,618 | 12,533 (99.3%) | 65 (0.5%) | 99.8% |
+| Gamebryo engine | 16,773 | 16,701 (99.6%) | 60 (0.4%) | 99.9% |
+| Game framework · egf | 12,727 | 12,672 (99.6%) | 36 (0.3%) | 99.9% |
+| Libraries | 6,704 | 6,336 (94.5%) | 31 (0.5%) | 95.0% |
+| Foundation | 12,612 | 12,530 (99.3%) | 62 (0.5%) | 99.8% |
 | Imports | 782 | 778 (99.5%) | 1 (0.1%) | 99.6% |
-| **Total** | **248,791** | 246,747 (99.2%) | 1,511 (0.6%) | 99.8% |
+| **Total** | **248,791** | 246,753 (99.2%) | 1,506 (0.6%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
 | Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 70 | | | |
 | Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
 | Rebuilt identically, but no unit's address range covers it | 3 | | | |
-| *Not done, still to write* | 126 | | | |
+| *Not done, still to write* | 125 | | | |
 
-Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 533 functions that are neither matched nor equivalent. Counting the 407 that are not missing, 99.9% is done.
+Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 532 functions that are neither matched nor equivalent. Counting the 407 that are not missing, 99.9% is done.
 
-Link aliases: 1,807 left, down from 19,884 on 2026-10-31. An alias is a `/alternatename` line in `data/fullexe/plain/alias.rsp`. The linker uses it to send a call that the recovered code makes under a placeholder name or signature to the real function. An alias goes away once every caller uses the real declaration; the goal is 0.
+Link aliases: 968 left, down from 19,884 on 2026-10-31. An alias is a `/alternatename` line in `data/fullexe/plain/alias.rsp`. The linker uses it to send a call that the recovered code makes under a placeholder name or signature to the real function. An alias goes away once every caller uses the real declaration; the goal is 0.
 <!-- progress:end -->
 
 ## Layout

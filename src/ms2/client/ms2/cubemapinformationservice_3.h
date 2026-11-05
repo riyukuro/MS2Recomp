@@ -73,15 +73,15 @@ struct Unk_CMISFlags3
 
 // Null handle (ctor 0x1401cd100) of the header statics: the file-static none id DAT_143acf820.
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-// Entity id handle copied from the none id (copy ctor 0x1408b6b20).
-struct Unk_CMISEntityRef
-{
-    Unk_CMISEntityRef(const Unk_CMISEntityRef&);                 // 0x1408b6b20
-    bool FUN_140965410(const Unk_1401cd100& none) const;     // operator==
-    void* m_p;
-};
+// C3: the entity id handle copied from the none id is egf::EntityID (copy ctor 0x1408b6b20).
+typedef egf::EntityID Unk_CMISEntityRef;
+//
+//
+//
+//
+//
 
-struct Unk_CMISObj208; struct Unk_CMISObj480;
+class CFieldDataCli; class CItemData; struct Unk_CMISObj480; class SaleStateData; class SalesInfo; class UICubeUGCHead; class SetItemEffectInfo; class CFunctionCubeObject; struct Unk_CMISCubeTimer; struct Unk_CMISMarkRec; struct Unk_CMISCell; namespace egfPhysX { class EntityActorData; }
 
 struct Unk_CMISElem388;
 struct Unk_CMISHandle388; struct Unk_CMISHandle3a8;
@@ -134,8 +134,8 @@ public:
     Cube* GetCubeAtCell(Unk_Int3 pt);
     Cube* GetCubeAtPoint(Vector3 pt);
     Cube* GetCubeByKey(int nKey);
-    Cube* FindCubeByEntityRef(const Unk_CMISEntityRef& ref);
-    Cube* FUN_1410b8c90(const Unk_CMISEntityRef& ref);
+    Cube* FindCubeByEntityRef(egf::EntityID ref);
+    Cube* FUN_1410b8c90(egf::EntityID kId);
     Cube* FUN_1410b8d90(Cube* pBase, int nOffset, int nField44);
     Cube* GetCubeByEntity(egf::Entity* pEntity);
     Cube* GetCubeByRaycast(Vector3 ptFrom, Vector3* pHit, float fRange);
@@ -179,10 +179,10 @@ public:
     bool FUN_1410cb900();
     Unk_CMISTree<260>* FUN_1410ce7e0();
     void FUN_1410cf130(void*, void* p);
-    Unk_CMISTree<268>* FUN_1410d3360();
+    Unk_CubeOwners* FUN_1410d3360();
     Unk_CMISTree<269>* FUN_1410d3380();
-    ATL::CAtlArray<Unk_CMISElem388*>* FUN_1410d4660();
-    ATL::CAtlArray<Unk_CMISElem3a8*>* FUN_1410d4920();
+    ATL::CAtlArray<MS2Ptr<class UGCMapDesignInfo>>* FUN_1410d4660();      // a388
+    ATL::CAtlArray<MS2Ptr<class UGCMapBlueprintInfo>>* FUN_1410d4920();   // a3a8
     bool FUN_1410d5530();
     void FUN_1410d5700(unsigned __int64 v);
     unsigned __int64 FUN_1410d5730();
@@ -191,6 +191,7 @@ public:
     void FUN_1410d5ab0();
     void FUN_1410d5ae0(int v);
     int FUN_1410d5b00();
+    CStringW FUN_1410d5d80(int nMessage);   // the message's string-table text (cubemapinformationservice_head.cpp)
     void SetTimerEnabled(bool b);
     bool HasTimerExpired(int n);
     int FUN_1410d2ee0();
@@ -204,7 +205,7 @@ public:
     void FUN_1410d5830(unsigned __int64 key);
     bool FUN_1410d58c0(unsigned __int64 key);
     void FUN_1410d5930(Unk_CMISTree<286>* pOut);
-    void* FindPhysXActor(Unk_CMISEntityRef key);
+    void* FindPhysXActor(egf::EntityID key);
     int ContainsEntityRef(Unk_CMISEntityRef ref);
     int IsCellInBounds(Unk_Int3 pt);
     int FUN_1410d4340(Unk_CubePoint* pOut);
@@ -229,12 +230,12 @@ public:
     void FUN_1410cef70(const egf::EntityChangeMessage* pMsg, efd::Category cat);
     void FUN_1410cf160(egf::Entity* pEntity);
     void FUN_1410cf5c0(egf::Entity* pEntity);
-    int FUN_1410cdd80(Vector3* pFrom, Vector3* pTo, float fDist, Unk_Int3* pOffset);
+    int FUN_1410cdd80(Vector3 ptFrom, Vector3 ptTo, float fDist, Unk_Int3 kOffset);
     int FUN_1410ca900(int nGroup);
     int FUN_1410c88b0(PCBase* pActor);
     int FUN_1410c81c0(int nGroup, int* pnWidth, int* pnHeight, int* pnDepth);
     void FUN_1410c7a50(int nA, int nB, int nState, __int64 nValue);
-    int FUN_1410c6980(class Cube* pCube, int nKind, class Unk_CMISItemRef rItem, __int64 nOwner, int nMode);
+    int FUN_1410c6980(class Cube* pCube, int nKind, MS2Ptr<CItemData> spItem, __int64 nOwner, int nMode);
     int FUN_1410cba80(int nDir, int nField50, Unk_Int3* pCell, Unk_CMISPt3* pPos);
     void AddOwner(Unk_CubeOwnerPtr spOwner);
     void RemoveOwner(Unk_CubeOwnerPtr spOwner);
@@ -270,7 +271,7 @@ public:
     Unk_CubeOwnerMap* GetGroupOwners(int nGroup);
     bool FUN_1410c3cd0(int nKey);
     void FUN_1410c2ce0(egf::Entity* pEntity);
-    bool FUN_1410be0c0(Unk_Int3 pt, int nGroup, int nFloor, struct Unk_CMISCell56* pVal);
+    bool FUN_1410be0c0(Unk_Int3 pt, int nGroup, int nFloor, struct Unk_CMISCell* pVal);
     int FUN_1410ce310();
     int TryGetHouseMarkPosition(int nKey, Vector3* pOut);
     CStringW GetOwnerName(int nA, int nB);
@@ -322,7 +323,7 @@ public:
     void FUN_1410bf470();
     void FUN_1410ce600(int nItemId, Unk_Int3 pt, int nZ);
     Unk_CMISEntityRef FUN_1410cb1b0();
-    void FUN_1410bf610(struct Unk_CMISCubeList* pPlaced, struct Unk_CMISSetRef rSet, struct Unk_CMISCubeList* pOthers);
+    void FUN_1410bf610(struct Unk_CMISCubeList* pPlaced, MS2SvrPtr<class CUGCMapSetItemData> rSet, struct Unk_CMISCubeList* pOthers);
     void FUN_1410c4850(__int64 nOwner, Unk_Int3 pt, class CubeItemInfo* pInfo, float fRot, int nField50, int nField54,
         unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
     void FUN_1410c4b50(Unk_Int3 pt, bool bKeep);
@@ -352,7 +353,7 @@ public:
     void FUN_1410c3330(CStringW* pOut);
     void FUN_1410c79a0(int nA, int nB);
     void* FUN_1410c7c20(int nA, int nB);
-    int FUN_1410cdf60(Unk_Int3* pA, Unk_Int3* pB);
+    int FUN_1410cdf60(Unk_Int3 kFrom, Unk_Int3 kDir);   // C3: by value (the exe callers copy the cells)
     void RemoveFunctionCubeObject(int nId);
     void AddEntityRef(Unk_Int3 pt, const Unk_CMISEntityRef& ref);
     void FUN_1410d4680(ATL::CAtlArray<Unk_CMISHandle3a8>* pSrc);
@@ -360,40 +361,40 @@ public:
     void FUN_1410d59c0(ATL::CAtlArray<MS2Ptr<Cube>>* pOut);
 
     __int64 f28;                                    // not touched by the ctor
-    Unk_CMISTree<256> f30;
+    efd::set<egf::EntityID> f30;
     void* f40 = 0;
-    Unk_CMISTree<257> f48;
-    Unk_CMISTree<258> f58;
-    Unk_CMISTree<256> f68;
-    Unk_CMISTree<259> f78;
-    Unk_CMISTree<260> f88;
-    Unk_CMISTree<260> f98;
-    Unk_CMISTree<259> fa8;
-    Unk_CMISTree<260> fb8;
-    Unk_CMISTree<261> fc8;
-    Unk_CMISTree<262> fd8;
-    Unk_CMISTree<263> fe8;
-    Unk_CMISTree<264> ff8;
-    Unk_CMISTree<265> f108;
-    Unk_CMISTree<266> f118;
-    Unk_CMISTree<267> f128;
-    Unk_CMISTree<268> f138;
-    Unk_CMISTree<269> f148;
+    efd::map<egf::EntityID, __int64> f48;   // C3: was Unk_CMISTree<257>
+    efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> > f58;   // C3: was Unk_CMISTree<258>
+    efd::set<egf::EntityID> f68;
+    efd::map<egf::EntityID, MS2Ptr<Cube> > f78;   // C3: was Unk_CMISTree<259>
+    efd::map<int, MS2Ptr<Cube> > f88;   // C3: was Unk_CMISTree<260>
+    efd::map<int, MS2Ptr<Cube> > f98;   // C3: was Unk_CMISTree<260>
+    efd::map<egf::EntityID, MS2Ptr<Cube> > fa8;   // C3: was Unk_CMISTree<259>
+    efd::map<int, MS2Ptr<Cube> > fb8;   // C3: was Unk_CMISTree<260>
+    efd::map<int, efd::map<__int64, MS2Ptr<Cube> > > fc8;   // C3: was Unk_CMISTree<261>
+    efd::map<int, efd::set<int> > fd8;   // C3: was Unk_CMISTree<262>
+    efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> > fe8;   // C3: was Unk_CMISTree<263>
+    efd::map<int, efd::SmartPointer<egf::Entity> > ff8;   // C3: was Unk_CMISTree<264>
+    efd::map<int, egf::EntityID> f108;   // C3: was Unk_CMISTree<265>
+    efd::map<int, MS2Ptr<FittingDollData> > f118;   // C3: was Unk_CMISTree<266>
+    efd::set<int> f128;   // C3: was Unk_CMISTree<267>
+    std::map<int, std::map<int, Unk_PayloadPtr<CubeOwner> > > f138;   // C3: was Unk_CMISTree<268>
+    std::map<__int64, Unk_PayloadPtr<CubeOwner> > f148;   // C3: was Unk_CMISTree<269>
     egf::EntityPtr f158;
     bool f160;                                      // cleared by FUN_1410b76d0
     Timer t168;
-    Unk_CMISTree<270> f1a0;
+    efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int> f1a0;   // C3: was Unk_CMISTree<270>
     int f1b0 = 0, f1b4 = 0, f1b8 = 0;
     __int64 f1c0 = 0;
     CStringW s1c8;
     CStringW s1d0;
     int f1d8 = 0, f1dc = 0, f1e0 = 1;
-    Unk_CMISTree<271> f1e8;
+    efd::map<int, efd::vector<egf::EntityID> > f1e8;   // C3: was Unk_CMISTree<271>
     Unk_CMISTree<272> f1f8;
-    Unk_PayloadPtr<Unk_CMISObj208> f208;
+    MS2Ptr<CFieldDataCli> f208;   // C3: the current field data (WorldService::FUN_141bd30a0); was Unk_PayloadPtr<Unk_CMISObj208>
     Unk_UGCMapPtr f218;
-    Unk_CMISTree<273> f228;
-    Unk_CMISTree<274> f238;
+    std::map<int, MS2Ptr<UICubeUGCHead> > f228;   // C3: was Unk_CMISTree<273>
+    std::map<int, MS2Ptr<SalesInfo> > f238;   // C3: was Unk_CMISTree<274>
     bool f248 = false;
     int f24c = 0;
     Timer t250;
@@ -401,17 +402,17 @@ public:
     Unk_CMISTree<276> f298;
     Unk_CMISTree<277> f2a8;
     Unk_CMISTree<278> f2b8;
-    Unk_CMISTree<265> f2c8;
+    efd::map<int, egf::EntityID> f2c8;   // C3: was Unk_CMISTree<265>
     Unk_CMISEntityRef f2d8;
-    Unk_CMISTree<265> f2e0;
+    efd::map<int, egf::EntityID> f2e0;   // C3: was Unk_CMISTree<265>
     int f2f0 = 0, f2f4 = 0, f2f8 = 0, f2fc = 0;
     Unk_CubePoint p300;
     Unk_CubePoint p30c;
     void* f318[3];
     int f330 = 0;
     Unk_CMISTree<285> f338;
-    Unk_CMISTree<279> f348;
-    Unk_CMISTree<270> f358;
+    efd::map<int, MS2Ptr<SetItemEffectInfo> > f348;   // C3: was Unk_CMISTree<279>
+    efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int> f358;   // C3: was Unk_CMISTree<270>
     Unk_CMISTree<280> f368;
     Unk_CMISTree<281> f378;
     ATL::CAtlArray<Unk_CMISElem388*> a388;
@@ -422,14 +423,14 @@ public:
     Timer t3e0;
     Unk_CMISFlags3 f418;
     unsigned __int64 f420, f428;
-    Unk_CMISTree<286> f430;
-    Unk_CMISTree<283> f440;
+    std::set<unsigned __int64> f430;   // C3: was Unk_CMISTree<286>
+    std::map<int, std::map<unsigned, std::set<int> > > f440;   // C3: was Unk_CMISTree<283>
     int f450 = 1;
     ATL::CAtlArray<Unk_CMISElem458*> a458;
     __int64 f478 = 0;
     Unk_PayloadPtr<Unk_CMISObj480> f480;
     int f490 = 0, f494 = 0;
-    Unk_CMISTree<284> f498;
+    std::set<MS2Ptr<CFunctionCubeObject> > f498;   // C3: was Unk_CMISTree<284>
 };
 MS2_CHECK_OFFSET(CubeMapInformationService,f30,0x30);
 MS2_CHECK_OFFSET(CubeMapInformationService,f40,0x40);

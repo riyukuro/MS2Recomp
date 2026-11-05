@@ -24,7 +24,7 @@
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -56,7 +56,7 @@ int FUN_14037c8c0(CString& str)
 }
 
 // @0x14037cb70
-int FUN_14037cb70(Unk_140165cf0* pElem, const char* pszName, int* pnType)
+int FUN_14037cb70(TiXmlElement* pElem, const char* pszName, int* pnType)
 {
     if (FALSE)
     {
@@ -98,13 +98,13 @@ int CFieldMissionTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pRound = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("round")); pRound != 0; pRound = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRound))->NextSibling("round")))
+    for (TiXmlElement* pRound = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("round")); pRound != 0; pRound = ((class TiXmlElement*)((class Unk_XmlNode*)(pRound))->NextSibling("round")))
     {
         RewardPtr spReward(new CFieldMissionReward);
         int nRound = 0;

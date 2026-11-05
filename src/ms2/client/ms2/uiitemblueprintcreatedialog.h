@@ -2,48 +2,17 @@
 #pragma once
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ascript.h"   // MS2Ptr
 #include <utility>
 class ASButton;
 class ASTextInput;
 class CUgcUploadCtrl;
 class CUgcViewerBlueprintImage;
-class Unk_BpViewerBase;
-class Unk_BpImage;
+class CUploadFile;
 class Unk_BpItem;
 class CItem;
 class CMsgBoxData;
 enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
-// Unit-local intrusive pointer family. Names are invented; the template instances occur in this CU.
-template<class T> class Unk_BpPtr {
-    template<class U> friend class Unk_BpPtr;
-public:
-    Unk_BpPtr() : p(0) {}
-    Unk_BpPtr(int) : p(0) {}
-    Unk_BpPtr(T* ptr) : p(ptr) { AddRef(); }
-    Unk_BpPtr(const Unk_BpPtr& other) : p(other.p) { AddRef(); }
-    ~Unk_BpPtr() { Release(); }
-    Unk_BpPtr& operator=(int) { Release(); return *this; }
-    Unk_BpPtr& operator=(T* ptr) { Unk_BpPtr temp(ptr); T* old = p; p = temp.p; temp.p = old; return *this; }
-    Unk_BpPtr& operator=(const Unk_BpPtr& other) { other.AddRef(); Release(); p = other.p; return *this; }
-    template<class U> Unk_BpPtr& operator=(const Unk_BpPtr<U>& other) { other.AddRef(); Release(); p = other.p; return *this; }
-    bool operator==(T* ptr) const { return p == ptr; }
-    T* get() const { return p; }
-    T* operator->() const { return p; }
-private:
-    static void AddRefObject(T* ptr) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(ptr)); }
-    void AddRefImpl(void*) const { AddRefObject(p); }
-    void ReleaseImpl(void*) {
-        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p)) == 0) {
-            AddRefObject(p);
-            CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));
-        }
-    }
-    void AddRef() const { if (p) AddRefImpl((void*)0); }
-    void Release() { if (p) { ReleaseImpl((void*)0); p = 0; } }
-    void* pad;
-    T* p;
-};
-MS2_CHECK_SIZE(Unk_BpPtr<CUgcUploadCtrl>, 0x10);
 class UIItemBlueprintCreateDialog : public UIDialog {
 public:
     UIItemBlueprintCreateDialog();
@@ -55,8 +24,8 @@ public:
     virtual int vfunc_48() { return 0x4f7b; }
     void FUN_140c36b40(Unk_BpItem*);
     void OpenForItem(__int64);
-    void FUN_140c370a0(const int&, Unk_BpPtr<Unk_BpImage>);
-    void FUN_140c37360(Unk_BpPtr<Unk_BpImage>, const int&);
+    void FUN_140c370a0(const int&, MS2Ptr<CUploadFile>);
+    void FUN_140c37360(MS2Ptr<CUploadFile>, const int&);
     void UpdateCreateButtonEnabled();
     void OnAddIconClick(const Scaleform::GFx::FunctionHandler::Params&);
     void OnAddImageClick(const Scaleform::GFx::FunctionHandler::Params&);
@@ -66,7 +35,7 @@ public:
     bool FUN_140c37f90(int, const CMsgBoxData&);
     CStringW GetTrimmedName();
     void FUN_140c38150();
-    void FUN_140c381b0(Unk_BpPtr<Unk_BpImage>);
+    void FUN_140c381b0(MS2Ptr<CUploadFile>);
     void FUN_140c38240();
     void FUN_140c38400();
 private:
@@ -74,9 +43,9 @@ private:
     MS2Ptr<ASButton> m_addIcon, m_addImage, m_create;
     MS2Ptr<ASTextInput> m_input;
     int m_type;
-    Unk_BpPtr<CUgcUploadCtrl> m_upload;
+    MS2Ptr<CUgcUploadCtrl> m_upload;
     MS2Ptr<CItem> m_item;
-    Unk_BpPtr<Unk_BpImage> m_icon, m_image;
+    MS2Ptr<CUploadFile> m_icon, m_image;
     std::pair<Unk_BpCurrency, __int64> m_fee;
     __int64 m_itemId;
     int m_ready, m_dirty;

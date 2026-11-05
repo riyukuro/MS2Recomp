@@ -15,7 +15,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;                    // the tinyxml element wrapper (FUN_140165cf0 = FirstChildElement)
+class TiXmlElement;                    // the tinyxml element wrapper (FUN_140165cf0 = FirstChildElement)
 
 // One <list> row. RTTI CUGCDesignData, 0x58 bytes, base CPtred; vftable 0x142ce5ea8 (1 slot: deleting destructor).
 class CUGCDesignData : public CPtred
@@ -26,7 +26,7 @@ public:
 
     // @0x14089e270 reads the row's attributes (0 when the element is null). nDefaultMarketMaxPrice is used when the
     // row has no marketMaxPrice.
-    bool Parse(Unk_140165cf0* pElem, __int64 nDefaultMarketMaxPrice);
+    bool Parse(TiXmlElement* pElem, __int64 nDefaultMarketMaxPrice);
 
     int m_nItemID;                          // +0x18 "itemID" (the map key; set by the loader, not by Parse)
     int m_nItemGrade;                       // +0x1c "itemGrade"

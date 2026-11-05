@@ -76,7 +76,7 @@ public:
     MS2Ptr<CSkillSet> GetSkillSet();               // the temporary (ridee) skill set, if any
     void FUN_141768100(int nSkillId);                       // remove a temporary skill
     MS2Ptr<CSkillRecord> FUN_141764e30(Unk_InventorySkillRequest& kReq);   // cast a request
-    MS2Ptr<Unk_PCBaseComp_b18> FUN_141764e30(Unk_InventorySkillRequest* pReq);   // the same, the record as the casting skill (vfunc_104)
+    // C3: the pointer overload stand-in (MS2Ptr<Unk_PCBaseComp_b18>) is gone: slot 104 returns MS2Ptr<CSkillRecord>
     int FUN_1417674a0(int n);                               // the pending skill id
     float FUN_141765fe0(int nSkillId, int n);              // the cooldown left of nSkillId
     int CanUseRechargeSkill(MS2Ptr<CSkillRecord> spRecord);       // the record may be cast during its cooldown

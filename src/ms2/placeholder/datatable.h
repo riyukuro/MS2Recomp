@@ -12,7 +12,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 
-class Unk_140165cf0;    // xml element
+class TiXmlElement;    // xml element
 
 template <class T>
 class DataTable
@@ -22,7 +22,7 @@ public:
     // implicit destructor: only the lock is destroyed, no vftable reset
     virtual void Add(MS2Ptr<T> spRow) = 0;                  // slot 0
     virtual void Loaded() {}                                // slot 1 (0x141b82910 for T = WebGuide)
-    virtual MS2Ptr<T> Create(Unk_140165cf0* pNode) = 0;     // slot 2
+    virtual MS2Ptr<T> Create(TiXmlElement* pNode) = 0;     // slot 2
     int Load(CString strDir, CString strFile, CString strElement);   // 0x141b82a10 for T = WebGuide
     CLockCriticalSection m_lock;                            // +0x08
 };
@@ -34,5 +34,5 @@ class DataTableBase : public DataTable<T>
 {
 public:
     DataTableBase() {}
-    MS2Ptr<T> Create(Unk_140165cf0*) { return MS2Ptr<T>(new T); }
+    MS2Ptr<T> Create(TiXmlElement*) { return MS2Ptr<T>(new T); }
 };

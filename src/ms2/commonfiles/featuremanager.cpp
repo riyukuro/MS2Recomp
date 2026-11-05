@@ -760,14 +760,14 @@ bool CFeatureManager::LoadFeatureSetting()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pSetting = pRoot->FUN_140165cf0("setting"); pSetting != 0;
-         pSetting = pSetting->FUN_140168650("setting"))
+    for (TiXmlElement* pSetting = pRoot->FirstChildElement("setting"); pSetting != 0;
+         pSetting = pSetting->NextSiblingElement("setting"))
     {
         CString strUnused;
         CString strType;
@@ -790,14 +790,14 @@ bool CFeatureManager::LoadFeature()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pFeature = pRoot->FUN_140165cf0("feature"); pFeature != 0;
-         pFeature = pFeature->FUN_140168650("feature"))
+    for (TiXmlElement* pFeature = pRoot->FirstChildElement("feature"); pFeature != 0;
+         pFeature = pFeature->NextSiblingElement("feature"))
     {
         CStringW strName;
         int nLevel = 0;
@@ -1046,7 +1046,7 @@ CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& st
 }
 
 // @0x14036e160
-Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* pB)
+TiXmlElement* CFeatureManager::FUN_14036e160(TiXmlElement* pA, TiXmlElement* pB)
 {
     CheckInit();
     if (pB == 0)

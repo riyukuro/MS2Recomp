@@ -187,11 +187,11 @@ MS2_CHECK_OFFSET(Unk_VtmCaches, m_nTexDependTime, 0x104);
 class Unk_VtmSession : public WorldService                                                         // the game session (entity/model counters)
 {
 public:
-    unsigned FUN_141bc1640();
+    // (FUN_141bc1640 is WorldService's own: unsigned entity count)
     unsigned FUN_141bd86a0();
     unsigned FUN_141bd86c0();
 };
-class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0af0(); };   // EntityWorldManager block/game-object entity counts, read 32-bit (the real members return size_t)
+// EntityWorldManager::FUN_1411d0ab0/af0: block/game-object entity counts (size_t, narrowed to the tracker's 32-bit arg)
 class Unk_GoGpuMgr { public: unsigned __int64 GetVideoMem(); };            // memory/system statistics (gameoption.cpp)
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 namespace ecr { class SceneGraphService; }
@@ -362,11 +362,11 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         }
         m_spEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85a0(), bForce, 0);
         m_spInfiniteEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85c0(), bForce, 0);
-        m_spNpcCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc1640(), bForce, 0);
+        m_spNpcCount->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bc1640(), bForce, 0);
         m_spVertices->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86a0(), bForce, 0);
         m_spTriangles->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86c0(), bForce, 0);
-        m_spBlockEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0ab0(), bForce, 0);
-        m_spGameObjectEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0af0(), bForce, 0);
+        m_spBlockEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0ab0(), bForce, 0);
+        m_spGameObjectEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0af0(), bForce, 0);
         m_spEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0b30(), bForce, 0);
         m_spLoadedMap->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cfbe0(), bForce, 0);
 

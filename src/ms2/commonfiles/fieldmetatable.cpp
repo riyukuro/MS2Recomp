@@ -11,7 +11,7 @@
 // MS2-PIN: ??$make_pair@AEAIAEAI@std@@YA?AU?$pair@II@0@AEAI0@Z 0x1406fe730 ; unique
 // MS2-PIN: ??0?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@QEAA@AEBV0@@Z 0x1406feb00 ; unique
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@II@std@@UUnk_FieldTimeSpan@@@std@@PEAX@std@@@std@@QEAA@XZ 0x1406fee10 ; unique
-// MS2-PIN: ??4?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_FieldNewTag@@@Z 0x1406ffb10 ; unique
+// MS2-PIN: ??4?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x1406ffb10 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@U?$pair@II@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@II@std@@UUnk_FieldTimeSpan@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@II@std@@UUnk_FieldTimeSpan@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@U?$pair@II@std@@@2@XZ 0x140703f80 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@U?$pair@II@std@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@II@std@@UUnk_FieldTimeSpan@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@II@std@@UUnk_FieldTimeSpan@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@U?$pair@II@std@@@2@XZ 0x140703f90 ; unique
 // MS2-PINS-END tplpin
@@ -34,7 +34,7 @@
 // MS2-PIN: ??0CNode@?$CAtlMap@IUUnk_FieldTaxi@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_FieldTaxi@@@3@@ATL@@QEAA@II@Z 0x1406fef10
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@IEAA@H@Z 0x1406fefa0
 // MS2-PIN: ??0CPair@?$CAtlMap@IUUnk_FieldTaxi@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_FieldTaxi@@@3@@ATL@@IEAA@I@Z 0x1406fefe0
-// MS2-PIN: ??8?$MS2Ptr@VUnk_NpcRecord@@@@QEBA_NPEAVUnk_NpcRecord@@@Z 0x1406ff460
+// MS2-PIN: ??8?$MS2Ptr@VCNpcData@@@@QEBA_NPEAVCNpcData@@@Z 0x1406ff460
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1406ff750
 // MS2-PIN: ?NewNode@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x1407010d0
 // MS2-PIN: ?NewNode@?$CAtlMap@IUUnk_FieldTaxi@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_FieldTaxi@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x1407012e0
@@ -71,13 +71,13 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -85,12 +85,12 @@ public:
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char*);              // first child element (also takes a document)
-    Unk_140165cf0* FUN_140168650(const char*);              // next sibling element
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -104,8 +104,8 @@ __int64 GetServerTime();                                    // the current serve
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 
 // The npc record the table checks existence of.
-class Unk_NpcRecord : public CPtred {};
-MS2Ptr<Unk_NpcRecord> FUN_1406cd330(int nNpcId);
+class CNpcData : public CPtred {};   // C3: local view of npcdata.h's class (that header clashes with this TU's TiXmlElement)
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 // The locale / feature gate: is the feature named by the field's <feature> enabled.
 
@@ -181,7 +181,7 @@ void CFieldMetaTable::LoadFieldMetaData()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -189,13 +189,13 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <npc id=><field id= startTime= endTime=/></npc>
-    for (Unk_140165cf0* pNpc = pRoot->FUN_140165cf0("npc"); pNpc != 0; pNpc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc")))
+    for (TiXmlElement* pNpc = pRoot->FirstChildElement("npc"); pNpc != 0; pNpc = ((class TiXmlElement*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc")))
     {
         unsigned nNpcId;
         XmlGetAttr((class TiXmlElement*)(pNpc), "id", nNpcId);
         if (FUN_1406cd330(nNpcId) == 0)
             continue;
-        for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
+        for (TiXmlElement* pField = pNpc->FirstChildElement("field"); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -213,7 +213,7 @@ void CFieldMetaTable::LoadFieldMetaData()
                 m_fieldNpcs.SetAt(nFieldId, pNpcs);
             }
             pNpcs.get()->AddTail(nNpcId);
-            if (((class TiXmlElement*)(class Unk_140165cf0*)(pField))->Attribute("startTime") != 0 && ((class TiXmlElement*)(class Unk_140165cf0*)(pField))->Attribute("endTime") != 0)
+            if (((class TiXmlElement*)(class TiXmlElement*)(pField))->Attribute("startTime") != 0 && ((class TiXmlElement*)(class TiXmlElement*)(pField))->Attribute("endTime") != 0)
             {
                 CString strStart;
                 CString strEnd;
@@ -233,7 +233,7 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <taxiStation field= IsHomePrivilege=/>
-    for (Unk_140165cf0* pTaxi = pRoot->FUN_140165cf0("taxiStation"); pTaxi != 0; pTaxi = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTaxi))->NextSibling("taxiStation")))
+    for (TiXmlElement* pTaxi = pRoot->FirstChildElement("taxiStation"); pTaxi != 0; pTaxi = ((class TiXmlElement*)((class Unk_XmlNode*)(pTaxi))->NextSibling("taxiStation")))
     {
         unsigned nField = 0;
         XmlGetAttr((class TiXmlElement*)(pTaxi), "field", nField);
@@ -247,7 +247,7 @@ void CFieldMetaTable::LoadFieldMetaData()
 
     // <fieldPortal field= indoor=><portal targetField= portalType= id= portalIndoor=/></fieldPortal>
     std::map<unsigned long, bool> outdoor;
-    for (Unk_140165cf0* pPortal = pRoot->FUN_140165cf0("fieldPortal"); pPortal != 0; pPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPortal))->NextSibling("fieldPortal")))
+    for (TiXmlElement* pPortal = pRoot->FirstChildElement("fieldPortal"); pPortal != 0; pPortal = ((class TiXmlElement*)((class Unk_XmlNode*)(pPortal))->NextSibling("fieldPortal")))
     {
         unsigned long nField = 0;
         int nIndoor = 0;
@@ -262,7 +262,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         pTargets2 = Unk_FieldNewTag(0);
         m_portalTargets2.SetAt(nField, pTargets2);
         unsigned nTarget = 0;
-        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
+        for (TiXmlElement* pTo = pPortal->FirstChildElement("portal"); pTo != 0; pTo = ((class TiXmlElement*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
         {
             XmlGetAttr((class TiXmlElement*)(pTo), "targetField", nTarget);
             if (FUN_1406fc870(nTarget) == 0)
@@ -293,7 +293,7 @@ void CFieldMetaTable::LoadFieldMetaData()
         pIndoor = Unk_FieldNewTag(0);
         m_indoorPortals.SetAt(nField, pIndoor);
         unsigned nIndoorTarget = 0;
-        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
+        for (TiXmlElement* pTo = pPortal->FirstChildElement("portal"); pTo != 0; pTo = ((class TiXmlElement*)((class Unk_XmlNode*)(pTo))->NextSibling("portal")))
         {
             int nPortalIndoor = 0;
             XmlGetAttr((class TiXmlElement*)(pTo), "portalIndoor", nPortalIndoor);
@@ -309,11 +309,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <interactObject id=><field id=/></interactObject>
-    for (Unk_140165cf0* pObj = pRoot->FUN_140165cf0("interactObject"); pObj != 0; pObj = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pObj))->NextSibling("interactObject")))
+    for (TiXmlElement* pObj = pRoot->FirstChildElement("interactObject"); pObj != 0; pObj = ((class TiXmlElement*)((class Unk_XmlNode*)(pObj))->NextSibling("interactObject")))
     {
         int nObjId = 0;
         XmlGetAttr((class TiXmlElement*)(pObj), "id", nObjId);
-        for (Unk_140165cf0* pField = pObj->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
+        for (TiXmlElement* pField = pObj->FirstChildElement("field"); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -328,11 +328,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <pet id=><field id=/></pet>
-    for (Unk_140165cf0* pPet = pRoot->FUN_140165cf0("pet"); pPet != 0; pPet = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPet))->NextSibling("pet")))
+    for (TiXmlElement* pPet = pRoot->FirstChildElement("pet"); pPet != 0; pPet = ((class TiXmlElement*)((class Unk_XmlNode*)(pPet))->NextSibling("pet")))
     {
         unsigned nPetId = 0;
         XmlGetAttr((class TiXmlElement*)(pPet), "id", nPetId);
-        for (Unk_140165cf0* pField = pPet->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
+        for (TiXmlElement* pField = pPet->FirstChildElement("field"); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
@@ -347,11 +347,11 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <liftable id=><field id=/></liftable>
-    for (Unk_140165cf0* pLift = pRoot->FUN_140165cf0("liftable"); pLift != 0; pLift = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLift))->NextSibling("liftable")))
+    for (TiXmlElement* pLift = pRoot->FirstChildElement("liftable"); pLift != 0; pLift = ((class TiXmlElement*)((class Unk_XmlNode*)(pLift))->NextSibling("liftable")))
     {
         unsigned nLiftId = 0;
         XmlGetAttr((class TiXmlElement*)(pLift), "id", nLiftId);
-        for (Unk_140165cf0* pField = pLift->FUN_140165cf0("field"); pField != 0; pField = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
+        for (TiXmlElement* pField = pLift->FirstChildElement("field"); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
             unsigned nFieldId = 0;
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);

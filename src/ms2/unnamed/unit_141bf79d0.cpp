@@ -16,10 +16,10 @@ typedef unsigned __int64 u64;
 
 // ---- the container / container-map callees (defined outside this unit) ----
 void* FUN_141beef50(void* pMap, void* pKeyBuf, void* pKey);   // insert, returns the node
-void* FUN_141beef90(void* pMap, void* pKeyBuf, void* pKey);
-void* FUN_141beefd0(void* pMap, void* pKeyBuf, void* pKey);
-void* FUN_141bef010(void* pMap, void* pKeyBuf, void* pKey);
-void* FUN_141bef050(void* pMap, void* pKeyBuf, void* pKey);
+// 0x141beef90 = std::map<int, Unk_WsV1f8>::try_emplace<>
+// 0x141beefd0 = std::map<unsigned, Unk_WsVac0>::try_emplace<>
+// 0x141bef010 = std::map<unsigned __int64, Unk_WsV1d8>::try_emplace<>
+// 0x141bef050 = std::map<unsigned __int64, Unk_WsV2e8>::try_emplace<>
 void* FUN_141bef090(void* pMap, void* pKeyBuf, void* pKey);
 void* FUN_141bef0d0(void* pMap, void* pKeyBuf, void* pKey);
 void* FUN_1403b8210(void* pKey);                               // key normalisation
@@ -74,29 +74,29 @@ u64 FUN_141bf79d0(void* pMap, void* pKey)
 // @0x141bf7a10
 u64 FUN_141bf7a10(void* pMap, void* pKey)
 {
-    Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7df0(FUN_141beef90(pMap, &keybuf, pKey)) + 8;
+    // the pair<iterator, bool> scratch is the try_emplace result temp
+    return (u64)FUN_141bf7df0((void*)&reinterpret_cast<const Unk_InsertPair&>(static_cast<const std::pair<std::map<int, Unk_WsV1f8>::iterator, bool>&>(reinterpret_cast<std::map<int, Unk_WsV1f8>*>(pMap)->try_emplace(*static_cast<const int*>(pKey))))) + 8;
 }
 
 // @0x141bf7a50
 u64 FUN_141bf7a50(void* pMap, void* pKey)
 {
-    Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7e10(FUN_141beefd0(pMap, &keybuf, pKey)) + 8;
+    // the pair<iterator, bool> scratch is the try_emplace result temp
+    return (u64)FUN_141bf7e10((void*)&reinterpret_cast<const Unk_InsertPair&>(static_cast<const std::pair<std::map<unsigned, Unk_WsVac0>::iterator, bool>&>(reinterpret_cast<std::map<unsigned, Unk_WsVac0>*>(pMap)->try_emplace(*static_cast<const unsigned*>(pKey))))) + 8;
 }
 
 // @0x141bf7a90
 u64 FUN_141bf7a90(void* pMap, void* pKey)
 {
-    Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7e90(FUN_141bef010(pMap, &keybuf, pKey)) + 8;
+    // the pair<iterator, bool> scratch is the try_emplace result temp
+    return (u64)FUN_141bf7e90((void*)&reinterpret_cast<const Unk_InsertPair&>(static_cast<const std::pair<std::map<unsigned __int64, Unk_WsV1d8>::iterator, bool>&>(reinterpret_cast<std::map<unsigned __int64, Unk_WsV1d8>*>(pMap)->try_emplace(*static_cast<const unsigned __int64*>(pKey))))) + 8;
 }
 
 // @0x141bf7ad0
 u64 FUN_141bf7ad0(void* pMap, void* pKey)
 {
-    Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7eb0(FUN_141bef050(pMap, &keybuf, pKey)) + 8;
+    // the pair<iterator, bool> scratch is the try_emplace result temp
+    return (u64)FUN_141bf7eb0((void*)&reinterpret_cast<const Unk_InsertPair&>(static_cast<const std::pair<std::map<unsigned __int64, Unk_WsV2e8>::iterator, bool>&>(reinterpret_cast<std::map<unsigned __int64, Unk_WsV2e8>*>(pMap)->try_emplace(*static_cast<const unsigned __int64*>(pKey))))) + 8;
 }
 
 // @0x141bf7b10

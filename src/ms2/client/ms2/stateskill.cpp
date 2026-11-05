@@ -2492,7 +2492,7 @@ void StateSkill::FUN_1417f27d0()
     kParam.m_nDuration = m_nCastDuration;
     kParam.m_str28 = FUN_14028dfa0<CStringW>(CStringW(L"s_action_skill_cating_progress"), CStringTable::GetInstance()->FUN_141811980(4, nSkillId));
     FUN_1418e0ad0(&kParam, spSkill->m_spParamCastingBar);
-    pBar->StartCasting(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &kParam);
+    pBar->StartCasting(static_cast<ICastingEventListener*>(this), &kParam);
     m_nCastEnd = 0;
     m_nCastDuration = 0;
     m_nCastId = m_spRecord->m_nCastId;
@@ -2509,7 +2509,7 @@ void StateSkill::FUN_1417f2a90(bool bFinish)
         return;
     if (!pBar->vfunc_9())
         return;
-    if (reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)) != pBar->FUN_1417f5e90())
+    if (static_cast<ICastingEventListener*>(this) != pBar->FUN_1417f5e90())
         return;
     if (bFinish)
         pBar->UpdateValue(1.0f);

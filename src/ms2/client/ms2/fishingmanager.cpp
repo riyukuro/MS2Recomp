@@ -137,7 +137,7 @@ public:
     Cube* GetCubeAtCell(Unk_Int3 kCell);                    // the cube at a cell
 };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 template <> MS2Ptr<Cube>::MS2Ptr(Cube* p);                  // 0x140884fb0
 extern template class MS2Ptr<Cube>;
 
@@ -145,7 +145,7 @@ extern template class MS2Ptr<Cube>;
 int FUN_1408a13d0(NiPoint3 kPos);                           // the grid cell key of a point
 Unk_Int3 FUN_1408a1430(NiPoint3 kPos);                      // the grid cell of a point
 Unk_Int3 FUN_1408a0400(int nKey);                           // the grid cell of a key
-efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, const efd::Point3& kOffset);   // the cell centre
+efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, efd::Point3& kOffset);     // the cell centre
 
 // The local player with the members this unit calls.
 class Unk_FmPC : public MyPC
@@ -214,38 +214,38 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;                                   // the account's GM level
 
-// The fishing line (Unk_FishLine of cubecraft_1.h, CFishingGuideObject + 0xda8) with its members.
-class Unk_FishLineBody
-{
-public:
-    Unk_FishLineBody();
-    ~Unk_FishLineBody();                                    // 0x140cd7e40
-    void FUN_140cd7eb0(int nKind, efd::Point3 kPos);        // start
-    void Destroy();                                   // stop
-    void FUN_140cd80d0();                                   // update
-    int FUN_140cd85b0();                                    // the line is out
-    int FUN_140cd85e0();                                    // the grid cell under the float
-    efd::Point3 FUN_140cd8630();                            // the float position
-    void FUN_140cd8740(efd::Point3 kPos);                   // the float landed
-    void FUN_140cd89c0(efd::Point3 kPos);                   // retarget the line
-    void ReleaseGuide();                                   // drop the guide model
-    static void SnapToCell(efd::Point3 kPos);            // snap to the grid (the exe passes a copy: no effect)
-
-    CFishingGuideObject* m_pOwner;                          // +0x00
-    CCubeGuideWrapper* m_pGuide;                            // +0x08 the line model
-    int m_nKind;                                            // +0x10 0 = water, 1 = spot
-    Timer m_flyTimer;                                       // +0x18 the throw flight
-    efd::Point3 m_kTarget;                                  // +0x50
-    efd::Point3 m_kLanding;                                 // +0x5c
-    unsigned m_nEffect;                                     // +0x68 the splash effect
-    Timer m_waitTimer;                                      // +0x70
-};
-MS2_CHECK_SIZE(Unk_FishLineBody, 0xa8);
+// The fishing line is Unk_FishLine of cubecraft_1.h (CFishingGuideObject + 0xda8); its members are defined below.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x140ce02b0
-static Unk_FishLineBody* FUN_140ce02b0(CFishingGuideObject* pGuide)
+static Unk_FishLine* FUN_140ce02b0(CFishingGuideObject* pGuide)
 {
-    return reinterpret_cast<Unk_FishLineBody*>(&pGuide->m_fishLine);   // the same 0xa8 bytes, typed
+    return &pGuide->m_fishLine;
 }
 
 // ---- template glue first emitted here ----
@@ -263,10 +263,10 @@ template <class T> T* Unk_FmGetDialog(eUIClassID nId)
     return 0;
 }
 
-// ---- Unk_FishLineBody ----
+// ---- Unk_FishLine ----
 
 // @0x140cd7e40
-Unk_FishLineBody::~Unk_FishLineBody()
+Unk_FishLine::~Unk_FishLine()
 {
     Destroy();
     m_pOwner = 0;
@@ -274,7 +274,7 @@ Unk_FishLineBody::~Unk_FishLineBody()
 }
 
 // @0x140cd7eb0
-void Unk_FishLineBody::FUN_140cd7eb0(int nKind, efd::Point3 kPos)
+void Unk_FishLine::FUN_140cd7eb0(int nKind, efd::Point3 kPos)
 {
     CString strModel = nKind ? ((struct Unk_FmNames*)FUN_1401d31f0())->m_strLineGuide1 : ((struct Unk_FmNames*)FUN_1401d31f0())->m_strLineGuide0;
     CNifCubeGuide* pGuide = new CNifCubeGuide();
@@ -293,7 +293,7 @@ void Unk_FishLineBody::FUN_140cd7eb0(int nKind, efd::Point3 kPos)
 }
 
 // @0x140cd8080
-void Unk_FishLineBody::Destroy()
+void Unk_FishLine::Destroy()
 {
     ReleaseGuide();
     if (m_nEffect != 0)
@@ -302,7 +302,7 @@ void Unk_FishLineBody::Destroy()
         m_nEffect = 0;
     }
 }
-MS2_REPLACE_METHOD(0x140CD8080, Unk_FishLineBody, Destroy, 68, 0x785D1C07);
+MS2_REPLACE_METHOD(0x140CD8080, Unk_FishLine, Destroy, 68, 0x785D1C07);
 
 // The out-of-line ease of the fly-to-landing timer (clamped 0..1, sqrt(1 - (t - 1)^2)); the exe emits it as a
 // lambda's operator(), shared by the transition / scale / cube-craft users of the same helper.
@@ -319,7 +319,7 @@ float Unk_EaseOut::Evaluate(float t)
 }
 
 // @0x140cd80d0
-void Unk_FishLineBody::FUN_140cd80d0()
+void Unk_FishLine::FUN_140cd80d0()
 {
     if (m_pGuide == 0 || m_pOwner == 0)
         return;
@@ -364,22 +364,22 @@ void Unk_FishLineBody::FUN_140cd80d0()
 }
 
 // @0x140cd85b0
-int Unk_FishLineBody::FUN_140cd85b0()
+int Unk_FishLine::FUN_140cd85b0()
 {
     return m_waitTimer.FUN_140868c00();
 }
-MS2_REPLACE_METHOD(0x140CD85B0, Unk_FishLineBody, FUN_140cd85b0, 31, 0x3385E2D8);
+MS2_REPLACE_METHOD(0x140CD85B0, Unk_FishLine, FUN_140cd85b0, 31, 0x3385E2D8);
 
 // @0x140cd85e0
-int Unk_FishLineBody::FUN_140cd85e0()
+int Unk_FishLine::FUN_140cd85e0()
 {
     return FUN_1408a13d0(*reinterpret_cast<const NiPoint3*>(&static_cast<const efd::Point3&>(FUN_140cd8630())));
 }
-MS2_REPLACE_METHOD(0x140CD85E0, Unk_FishLineBody, FUN_140cd85e0, 61, 0xB115E804);
+MS2_REPLACE_METHOD(0x140CD85E0, Unk_FishLine, FUN_140cd85e0, 61, 0xB115E804);
 
 // @0x140cd8630
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-efd::Point3 Unk_FishLineBody::FUN_140cd8630()
+efd::Point3 Unk_FishLine::FUN_140cd8630()
 {
     if (m_pGuide == 0)
         return efd::Point3::ZERO;
@@ -389,7 +389,7 @@ efd::Point3 Unk_FishLineBody::FUN_140cd8630()
 }
 
 // @0x140cd8740
-void Unk_FishLineBody::FUN_140cd8740(efd::Point3 kPos)
+void Unk_FishLine::FUN_140cd8740(efd::Point3 kPos)
 {
     if (m_nEffect != 0)
     {
@@ -424,7 +424,7 @@ void Unk_FishLineBody::FUN_140cd8740(efd::Point3 kPos)
 
 // @0x140cd89c0
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-void Unk_FishLineBody::FUN_140cd89c0(efd::Point3 kPos)
+void Unk_FishLine::FUN_140cd89c0(efd::Point3 kPos)
 {
     efd::Point3 kBelow = kPos - efd::Point3(0.0f, 0.0f, 75.0f);
     int nKind = TSingleton<CFishingManager>::GetInstance()->FUN_140cdb110(kBelow);
@@ -436,7 +436,7 @@ void Unk_FishLineBody::FUN_140cd89c0(efd::Point3 kPos)
 }
 
 // @0x140cd8a90
-void Unk_FishLineBody::ReleaseGuide()
+void Unk_FishLine::ReleaseGuide()
 {
     if (m_pGuide != 0)
     {
@@ -445,17 +445,17 @@ void Unk_FishLineBody::ReleaseGuide()
         m_pGuide = 0;
     }
 }
-MS2_REPLACE_METHOD(0x140CD8A90, Unk_FishLineBody, ReleaseGuide, 131, 0xE3D986D7);
+MS2_REPLACE_METHOD(0x140CD8A90, Unk_FishLine, ReleaseGuide, 131, 0xE3D986D7);
 
 // @0x140cd8b20
-void Unk_FishLineBody::SnapToCell(efd::Point3 kPos)
+void Unk_FishLine::SnapToCell(efd::Point3 kPos)
 {
     Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(kPos));
     kPos.x = (float)kCell.x * 150.0f;
     kPos.y = (float)kCell.y * 150.0f;
     kPos.z = (float)kCell.z * 150.0f;
 }
-MS2_REPLACE(0x140CD8B20, Unk_FishLineBody::SnapToCell, 124, 0x5088FE3E);
+MS2_REPLACE(0x140CD8B20, Unk_FishLine::SnapToCell, 124, 0x5088FE3E);
 
 // @0x140cd8d50
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
@@ -885,7 +885,7 @@ int CFishingManager::FUN_140cdb250()
         return 0;
     if (pGuide->FUN_14166cc80() != 0x7a)
         return 0;
-    Unk_FishLineBody* pBody = FUN_140ce02b0(pGuide);
+    Unk_FishLine* pBody = FUN_140ce02b0(pGuide);
     return pBody->FUN_140cd85b0();
 }
 
@@ -951,7 +951,7 @@ void CFishingManager::FUN_140cdb450()
                 param.m_str20 = "blue";
                 param.m_str28 = FUN_140cddc70(texts);
                 param.m_nDuration = 5000;
-                pBar->RestartCasting(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &param);
+                pBar->RestartCasting(static_cast<ICastingEventListener*>(this), &param);
             }
             Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPC != 0)
@@ -1229,7 +1229,7 @@ unsigned CFishingManager::FUN_140cdc950()
     CFishingGuideObject* pGuide = efd::DynamicCast<CFishingGuideObject>(pPC->GetGuide(1));
     if (pGuide == 0)
         return 0;
-    Unk_FishLineBody* pBody = FUN_140ce02b0(pGuide);
+    Unk_FishLine* pBody = FUN_140ce02b0(pGuide);
     return pBody->FUN_140cd85e0();
 }
 
@@ -1359,7 +1359,7 @@ void CFishingManager::FUN_140cdd1f0()
         if (m_bCountdown != 0)
             nDuration = m_nBiteEnd - FUN_141472bc0();
         CStringW strEnd(L"");
-        pBar->StartCastingText(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), FUN_140cddc70(texts), nDuration, false, true, strEnd);
+        pBar->StartCastingText(static_cast<ICastingEventListener*>(this), FUN_140cddc70(texts), nDuration, false, true, strEnd);
     }
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)

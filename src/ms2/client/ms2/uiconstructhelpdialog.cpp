@@ -21,8 +21,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
 
@@ -37,13 +37,13 @@ class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
-// The smart pointer to the service (C3: efd::SmartPointer<Unk_Service6100017>, the Unk_HoServicePtr view kept for the null test).
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);   // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                             // 0x1401cd150
-class Unk_HoServicePtr;
-unsigned char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
+// The smart pointer to the service (C3: efd::SmartPointer<CubeMapInformationService>).
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const;   // 0x140ef4cb0 (C3: was the Unk_HoServicePtr view)
+//
 
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -86,8 +86,8 @@ void UIConstructHelpDialog::vfunc_67()
 void UIConstructHelpDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (FUN_140ef4cb0(reinterpret_cast<Unk_HoServicePtr*>(&spService), 0))
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == (CubeMapInformationService*)0)
         return;
     if (m_30.get() != 0)
         m_30->Invoke("setMode", !reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c35c0());
@@ -116,8 +116,8 @@ int UIConstructHelpDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 void UIConstructHelpDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (FUN_140ef4cb0(reinterpret_cast<Unk_HoServicePtr*>(&spService), 0))
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == (CubeMapInformationService*)0)
         return;
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())

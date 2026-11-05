@@ -10,7 +10,7 @@
 #include "ms2/placeholder/socketptr.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // The sub job code (the exe keys the row map by an enum, so its ATL traits take the key by reference).
 enum Unk_SubJobCode { Unk_SubJobCode_None = 0 };

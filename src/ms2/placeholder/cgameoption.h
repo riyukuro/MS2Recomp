@@ -85,6 +85,8 @@ public:
     Unk_StatusState* FUN_140b123b0();                       // &m_status
     Unk_StatusFlag* FUN_140ea41a0();                        // &m_statusChar
     Unk_SoundFlag* FUN_1411b1f30();                         // &m_soundChar
+    Unk_GoConnect* FUN_140cfd260();                         // &m_connect (0x140cfd260, gameoptionlanguage.cpp)
+    Unk_LgState* FUN_140cfd280();                           // &m_language (0x140cfd280, gameoptionlanguage.cpp)
     Unk_GoAutoLoot* FUN_141533e20() { return &m_autoLoot; }  // 0x141533e20 (inline COMDAT; client\ms2\mypc.cpp)
 public:
     Unk_CameraState m_camera;                               // +0x08 ctor 0x14125b400

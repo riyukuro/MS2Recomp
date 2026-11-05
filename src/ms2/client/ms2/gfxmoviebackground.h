@@ -61,7 +61,7 @@ public:
     virtual int vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags);   // 6 0x141279df0 load + build the render chain
     virtual int vfunc_7(int x, int y);                                      //  7 0x141279f90 viewport + mouse move
     virtual void vfunc_8(float fTime);                                      //  8 0x14127a070 advance, push "updatePos"
-    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle);   // 9 0x14127a3a0
+    virtual void vfunc_9(MS2_GFX_PTR(Unk_GFxUIHal) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle);   // 9 0x14127a3a0
     virtual void vfunc_11();                                                // 11 0x14127a580
     virtual void vfunc_12();                                                // 12 0x14127a6c0
     virtual bool vfunc_13();                                                // 13 0x14127a7e0

@@ -17,7 +17,7 @@ class CSwooshEffectParam : public CEffectParam
 {
 public:
     CSwooshEffectParam();                                       // 0x14181cf50
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x14181d010
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x14181d010
     virtual bool vfunc_3();                                     // 3 0x14181d1e0 preload the nif (true when none)
     virtual void vfunc_4();                                     // 4 0x14181d290 release the nif cache entry
     virtual bool vfunc_5(int n);                                // 5 0x14181d330 load the nif into the cache

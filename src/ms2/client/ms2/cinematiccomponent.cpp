@@ -38,8 +38,8 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/commonfiles/maid.h"
 #include "ms2/commonfiles/npcdata.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_nextKey = "cinematic_nextkey";          // @0x1400e5330
@@ -56,22 +56,22 @@ public:
     virtual int vfunc_128();
 };
 
-// The reward block of the open talk (inside the talk manager).
-class Unk_CinReward : public UITalkManager::CTalkRewardData { };
-
-// The talk manager (FUN_140967100): the state of the open dialogue.
-class Unk_CinTalk
-{
-public:
-    Unk_CinReward* FUN_141082d60() { return &m_reward; }        // @0x141082d60
-    unsigned char FUN_141082ec0() { return m_flags; }           // @0x141082ec0
-public:
-    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48;
-    unsigned char m_flags;                                      // +0x50
-    char m_51; short m_52; int m_54; void* m_58;
-    Unk_CinReward m_reward;                                     // +0x60
-};
-MS2_CHECK_OFFSET(Unk_CinTalk, m_reward, 0x60);
+// C3: the Unk_CinTalk / Unk_CinReward views were UITalkManager (the TSingleton<UITalkManager> instance; m_nFlags +0x50,
+// m_reward +0x60) and its UITalkManager::CTalkRewardData. FUN_141082d60 / FUN_141082ec0 are its inline accessors.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class UITalkCinematic : public UIObject
 {
@@ -110,12 +110,12 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 extern __int64 DAT_143ab2898;
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
-class Unk_Service6100017 : public CubeMapInformationService { };
-class Unk_CinSvc : public Unk_Service6100017 { public: void vfunc_1(); };
+// C3: the Unk_Service6100017 view was CubeMapInformationService (cubemapinformationservice_3.h)
+class Unk_CinSvc : public CubeMapInformationService { public: void vfunc_1(); };
 class Unk_CinFramework { public: void* m_0; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_CinFramework*)&egf::g_bapiContext)          // C3: was extern Unk_CinFramework DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 int FUN_1408a0890(int, int, int*);
 
 // Quest helpers.
@@ -358,7 +358,7 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
         unsigned bAny = 0;
         ASObj reward(2);
         reward.FUN_1407cbb20("title", GetStringCommon(0x94b));
-        Unk_CinReward* pReward = ((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->FUN_141082d60();
+        UITalkManager::CTalkRewardData* pReward = TSingleton<UITalkManager>::GetInstance()->FUN_141082d60();
         if (pReward->m_nMerat != 0) {
             bAny = 1;
             reward.FUN_1407cbb20("exp", FUN_1409404f0(pReward->m_nMerat));
@@ -857,7 +857,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
         return;
     {
         {
-            int nFlags = ((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance())->FUN_141082ec0();
+            int nFlags = TSingleton<UITalkManager>::GetInstance()->FUN_141082ec0();
             Unk_CinIconArray icons;
             if ((nFlags & 0x20) != 0) {
                 Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->FUN_141092fa0(), 0);
@@ -880,7 +880,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                 }
             }
             if ((nFlags & 4) != 0) {
-                Unk_CinTalk* pTalk = ((class Unk_CinTalk*)TSingleton<UITalkManager>::GetInstance());
+                UITalkManager* pTalk = TSingleton<UITalkManager>::GetInstance();
                 for (size_t j = 0; j < (size_t)(__int64)(int)((UITalkManager*)pTalk)->FUN_141b21860(); j++) {
                     Unk_CinIcon icon;
                     int nQuestId = ((UITalkManager*)pTalk)->GetIdAt((unsigned)j);
@@ -1021,14 +1021,14 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
-    efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    efd::SmartPointer<CubeMapInformationService> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     reinterpret_cast<Unk_CinSvc*>(spSvc.operator->())->FUN_1410ccc00(pc->FUN_141529620(), 0, 0);
     if (nMsg == 0x493e2) {
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         int nOut = 0;
         if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pc->FUN_141529620(), &nOut) == 0)
             return 0;
-        efd::SmartPointer<Unk_Service6100017> spSvc2(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+        efd::SmartPointer<CubeMapInformationService> spSvc2(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
         if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->FUN_141656ad0()) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);

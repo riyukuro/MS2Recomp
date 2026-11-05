@@ -29,7 +29,8 @@
         char m_pad[size];                                              \
     };
 
-UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40, 0x10)
+struct Unk_TailSetVal; struct Unk_TailSetLess { bool operator()(const Unk_TailSetVal&, const Unk_TailSetVal&) const { return false; } }; void FUN_140932870(void*); void FUN_140932b40(std::set<Unk_TailSetVal, Unk_TailSetLess>* pThis);   // unit_14092f420
+struct Unk_Be790B { Unk_Be790B() { FUN_140932870(this); } ~Unk_Be790B() { FUN_140932b40(reinterpret_cast<std::set<Unk_TailSetVal, Unk_TailSetLess>*>(this)); } char m_pad[0x10]; };
 // the UGC cube stock (ugcmapitem.h's Unk_CubeStock, defined there): only its ctor/dtor are called here
 class Unk_CubeStock
 {
@@ -39,7 +40,6 @@ public:
 private:
     char m_pad[0x30];
 };
-
 // 0x143ab2e80 is trademanagerex.h's Unk_TradeItemTable (0x58): the exe's dynamic init / atexit call its own ctor/dtor
 // (0x14185b130 / 0x14185b170, pinned in trademanagerex_1). The dtor runs ~CAtlArray<MS2Ptr<CItem>> (0x1408f2340), so the
 // slot array releases its items at exit.
@@ -49,10 +49,10 @@ struct Unk_Be790TreeA
     ~Unk_Be790TreeA();
     char m_pad[0x30];
 };
-void FUN_140932400(void*, int);
-void FUN_140932930(void*);
-Unk_Be790TreeA::Unk_Be790TreeA(int nBlock) { FUN_140932400(this, nBlock); }
-Unk_Be790TreeA::~Unk_Be790TreeA() { FUN_140932930(this); }
+template <class N> struct Unk_TailTree; struct Unk_TailNodeA; Unk_TailTree<Unk_TailNodeA>* FUN_140932400(Unk_TailTree<Unk_TailNodeA>* pThis, size_t nBlock);
+void FUN_140932930(Unk_TailTree<Unk_TailNodeA>* pThis);   // unit_14092f420
+Unk_Be790TreeA::Unk_Be790TreeA(int nBlock) { FUN_140932400(reinterpret_cast<Unk_TailTree<Unk_TailNodeA>*>(this), nBlock); }
+Unk_Be790TreeA::~Unk_Be790TreeA() { FUN_140932930(reinterpret_cast<Unk_TailTree<Unk_TailNodeA>*>(this)); }
 
 #ifndef MS2_HOOK_DLL   // s_str2a40: the exe's object at 0x143ab2a40, which other units reach as DAT_143ab2a40 (the hook DLL binds it)
 CStringA DAT_143ab2a40;

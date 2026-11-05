@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class CMsgBoxData;
-class Unk_140acd6e0;                                    // a button child
+class ASButton;                                    // a button child
 
 class UISystemMenuDialog : public UIDialog, public UIServerEventListener
 {
@@ -45,7 +45,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_180;                                          // +0x180 the selected channel
-    MS2Ptr<Unk_140acd6e0> m_188;                        // +0x188 "m_exitRoom"
+    MS2Ptr<ASButton> m_188;                        // +0x188 "m_exitRoom"
     bool m_198;                                         // +0x198 the system option notify red circle
 };
 MS2_CHECK_SIZE(UISystemMenuDialog, 0x1a0);

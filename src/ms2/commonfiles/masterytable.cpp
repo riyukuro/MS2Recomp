@@ -49,7 +49,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -62,7 +62,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);     // enum value (mastery type)
+enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);     // enum value (mastery type)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
@@ -94,7 +94,7 @@ CMasteryTable::Mastery::Mastery() : m_nGrade(0), m_nValue(0)
 }
 
 // @0x1406694a0
-int CMasteryReceipe::Load(Unk_140165cf0* pNode)
+int CMasteryReceipe::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
     XmlValue(pNode, "masteryType", *(Unk_InteractMasteryType*)&m_nType);
@@ -176,19 +176,19 @@ int CMasteryTable::LoadMastery()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pType = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mastery")); pType != 0; pType = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pType))->NextSibling("mastery")))
+    for (TiXmlElement* pType = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mastery")); pType != 0; pType = ((class TiXmlElement*)((class Unk_XmlNode*)(pType))->NextSibling("mastery")))
     {
         int nType = 0;
         XmlGetAttr((class TiXmlElement*)(pType), "type", reinterpret_cast<int&>(nType));
         if (nType < 0 || nType >= 12)
             continue;
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pType))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pType))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
@@ -227,13 +227,13 @@ int CMasteryTable::LoadReceipes()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("receipe")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("receipe")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("receipe")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("receipe")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -266,13 +266,13 @@ int CMasteryTable::LoadDifferentials()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         int nDifference = 0;
         DifferentialPtr spFactor(new DifferentialFactor);

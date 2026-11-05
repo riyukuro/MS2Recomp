@@ -8,7 +8,7 @@ class ASCheckBox;
 class UIQuestDebugDialog : public UIDialog, public UIQuestEventListener
 {
 public:
-    MS2Ptr<class ASTextArea> FUN_140c26f60(const CString&);   // GetChild<ASTextArea> (0x140c26f60)
+    // C3: FUN_140c26f60 is UISwfEntity::GetChild<ASTextArea> (0x140c26f60)
     UIQuestDebugDialog();
     virtual ~UIQuestDebugDialog();
     virtual CString GetTypeName();

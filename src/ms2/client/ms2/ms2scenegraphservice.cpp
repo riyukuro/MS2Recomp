@@ -60,6 +60,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/tptr.h"
 
 using efd::UInt32;
 using efd::utf8string;
@@ -87,7 +88,7 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class Unk_SgRidee : public Ridee { };                   // Ridee: seat the rider
 class Unk_SgRider : public PCBase { };                    // PCBase: the actor that rides
 struct Unk_SgWorldObjectRef;                                            // map value: intrusive pointer to the object
-Unk_SgRider* FUN_140aac420(Unk_SgWorldObjectRef* pRef);
+// the map value is a TPtr<PCBase>: get 0x140aac420 (tptr.h)
 class Unk_SgWorldObjects;
 
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
@@ -318,7 +319,7 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
             Unk_SgWorldObjects* pObjects = (Unk_SgWorldObjects*)WorldService::GetInstance()->FUN_141bd36b0();
             for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetNext(pos))
             {
-                Unk_SgRider* pRider = FUN_140aac420(((struct Unk_SgWorldObjectRef*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos)));
+                Unk_SgRider* pRider = static_cast<Unk_SgRider*>(((TPtr<PCBase>*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos))->get());
                 if (pRider != NULL)
                 {
                     Unk_SgRidee* pRidee = static_cast<Unk_SgRidee*>(pRider->FUN_1416764a0());

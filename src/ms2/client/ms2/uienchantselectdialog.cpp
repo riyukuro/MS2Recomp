@@ -19,7 +19,7 @@
 #include "ms2/commonfiles/scriptptr.h"           // C3: Unk_ScriptPtr<CTalkScript>
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -92,10 +92,10 @@ void UIEnchantSelectDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_close");
     FUN_1419260d0("m_webGuideButton", 0);
-    ASButton* pType1 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_type1Button", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_type1Button)).get());
+    ASButton* pType1 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type1Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type1Button)).get());
     if (pType1 != 0)
         m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)1);
-    ASButton* pType2 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_type2Button", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_type2Button)).get());
+    ASButton* pType2 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type2Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type2Button)).get());
     if (pType2 != 0)
         m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)2);
     if (MS2Ptr<ASMovieClip> recommend = GetChild<ASMovieClip>("m_recommendType2"))

@@ -124,7 +124,7 @@ CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
 bool FUN_140e45240(const CStringW& s, const char* c);
-CStringA FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item);
+CStringA FUN_140e01de0(MS2Ptr<CMeratMarketProduct> item);
 class ASWindow   // C3: member view for the former free stand-ins
 {
 public:
@@ -160,26 +160,26 @@ AdPushEntityBase::AdPushEntityBase(const int& nId)
 
 // The XML helpers (TinyXML calls the exe resolves to these addresses).
 class Unk_AdXmlNode;
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    void Clear();
-    bool RemoveChild(class TiXmlNode*);
-    TiXmlNode* LinkEndChild(TiXmlNode* addThis);
-};
-class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
-class Unk_140165cf0   // C3: member view for the former free stand-ins
-{
-public:
-    class Unk_140165cf0* NextSiblingElement();
-    char const* Value() const;
-};
+class TiXmlElement* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
+// C3 #12: was a local TiXml view
+
+
+
+
+
 class TiXmlElement* XmlChild(class TiXmlElement*, char const*, bool);   // C3: was FUN_140872ec0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -189,13 +189,13 @@ void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* szName);
-private:
-    void* m_pad[0x90 / sizeof(void*)];
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
 class Unk_AdXmlNode {};
 
 // UIAdPushDialog
@@ -292,7 +292,7 @@ int UIAdPushDialog::vfunc_4()
             for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)FUN_140345b40((class TiXmlDocument*)(pAccount))); pNode;)
             {
                 Unk_AdXmlNode* pCur = pNode;
-                pNode = ((class Unk_AdXmlNode*)((class Unk_140165cf0*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement());
+                pNode = ((class Unk_AdXmlNode*)((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement());
                 __int64 nSaleEnd = 0;
                 XmlGetAttr((class TiXmlElement*)(pCur), "saleEndTime", nSaleEnd);
                 CMsTime saleEnd(nSaleEnd);
@@ -434,13 +434,13 @@ void UIAdPushDialog::vfunc_67()
 }
 
 // @0x140e406c0
-bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, bool bMinimized)
+bool UIAdPushDialog::AddBundle(MS2Ptr<CMeratMarketProduct> item, int n4c, int n50, bool bMinimized)
 {
     if (item == 0 || reinterpret_cast<CMeratMarketProduct*>(item.operator->())->GetType() != 3)
         return false;
-    if (item->m_n124 == 0)
+    if (item->m_premium.m_nf4 == 0)
         return false;
-    if (m_sns.find(item->m_nSn) != m_sns.end())
+    if (m_sns.find(item->m_premium.m_nId) != m_sns.end())
         return false;
     if (!reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->IsPushableProduct(reinterpret_cast<const MS2Ptr<CMeratMarketProduct>&>(item)))
         return false;
@@ -450,7 +450,7 @@ bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, 
     bundle->m_n50 = n50;
     bundle->m_n4c = n4c;
     bundle->m_bMinimized = bMinimized;
-    m_sns.insert(item->m_nSn);
+    m_sns.insert(item->m_premium.m_nId);
     m_pending.SetAt(nId, bundle.get());
     return true;
 }
@@ -476,7 +476,7 @@ bool UIAdPushDialog::RemoveBundle(MS2Ptr<AdPushEntityLimitedBundle> bundle)
     RemoveEntityKey(nId);
     int nSn = 0;
     if (bundle->m_item.get())
-        nSn = bundle->m_item->m_nSn;
+        nSn = bundle->m_item->m_premium.m_nId;
     if (0 < nSn)
         m_sns.erase(nSn);
     return true;
@@ -518,7 +518,7 @@ bool UIAdPushDialog::Refresh(unsigned nFlags)
 }
 
 // @0x140e40de0
-void UIAdPushDialog::UpdateBundles(MS2Ptr<Unk_AdMarketItem> item)
+void UIAdPushDialog::UpdateBundles(MS2Ptr<CMeratMarketProduct> item)
 {
     if (m_30 == 0)
         return;
@@ -638,9 +638,9 @@ Unk_AdXmlNode* UIAdPushDialog::FindByName(Unk_AdXmlNode* pRoot, const CStringA& 
 {
     if (!pRoot)
         return 0;
-    for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)FUN_140345b40((class TiXmlDocument*)(pRoot))); pNode; pNode = ((class Unk_AdXmlNode*)((class Unk_140165cf0*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement()))
+    for (Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)FUN_140345b40((class TiXmlDocument*)(pRoot))); pNode; pNode = ((class Unk_AdXmlNode*)((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->NextSiblingElement()))
     {
-        if (strName.CompareNoCase(((class Unk_140165cf0*)(class Unk_AdXmlNode*)(pNode))->Value()) == 0)
+        if (strName.CompareNoCase(((class TiXmlElement*)(class Unk_AdXmlNode*)(pNode))->Value()) == 0)
             return pNode;
     }
     return 0;
@@ -868,14 +868,14 @@ void AdPushEntityLimitedBundle::Reset()
 }
 
 // @0x140e42740
-void AdPushEntityLimitedBundle::Update(MS2Ptr<Unk_AdMarketItem> item)
+void AdPushEntityLimitedBundle::Update(MS2Ptr<CMeratMarketProduct> item)
 {
     if (item == 0)
         return;
-    if (m_item->m_nSn != item->m_nSn)
+    if (m_item->m_premium.m_nId != item->m_premium.m_nId)
         return;
     SetMarketItem(item);
-    if (reinterpret_cast<CMeratMarketPremiumProduct*>(&item->m_info)->IsSoldOut())
+    if (item->m_premium.IsSoldOut())
         vfunc_3();
 }
 
@@ -933,7 +933,7 @@ void AdPushEntityLimitedBundle::SetMaximizePos(float x, float y)
 }
 
 // @0x140e42cf0
-void AdPushEntityLimitedBundle::SetMarketItem(MS2Ptr<Unk_AdMarketItem> p)
+void AdPushEntityLimitedBundle::SetMarketItem(MS2Ptr<CMeratMarketProduct> p)
 {
     m_item = p;
 }
@@ -941,7 +941,7 @@ void AdPushEntityLimitedBundle::SetMarketItem(MS2Ptr<Unk_AdMarketItem> p)
 // @0x140e42d40
 bool AdPushEntityLimitedBundle::vfunc_1()
 {
-    int nRemain = m_item->m_nRemain;
+    int nRemain = m_item->m_premium.m_n104;
     if (m_endTime == 0)
     {
         if (0 < nRemain)
@@ -960,8 +960,8 @@ bool AdPushEntityLimitedBundle::vfunc_1()
             MS2Ptr<AScript> script(new AScript(2));
             if (script.get())
             {
-                Unk_AdItemInfo& info = m_item->m_info;
-                CStringA strIcon = reinterpret_cast<CDBPremiumProduct&>(info).GetIconPath();
+                CMeratMarketPremiumProduct& info = m_item->m_premium;
+                CStringA strIcon = info.GetIconPath();
                 static_cast<AScript*>(script.operator->())->FUN_1407cba60(s_strIconPath, CStringA(strIcon));
                 script->FUN_1407cbbe0("visible", true);
                 script->FUN_1407cb9c0("id", m_nId);
@@ -985,9 +985,9 @@ bool AdPushEntityLimitedBundle::vfunc_1()
         {
             if (m_item.get())
             {
-                MS2Ptr<CMeratMarketProduct> fresh = reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d578d0(reinterpret_cast<const Unk_MeratProductKey&>(m_item->m_id));
+                MS2Ptr<CMeratMarketProduct> fresh = reinterpret_cast<CMeratMarketMan*>(FUN_140939a00())->FUN_140d578d0(m_item->m_key);
                 if (fresh.get())
-                    SetMarketItem(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(fresh));
+                    SetMarketItem(fresh);
             }
             m_dlg->FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle>(this));
             if (!m_dlg->FUN_140e044b0())
@@ -1041,16 +1041,16 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
 {
     if (pNode == 0)
         return;
-    if ((m_item.get() ? true : false) && reinterpret_cast<CMeratMarketPremiumProduct*>(&m_item->m_info)->IsSoldOut())
+    if ((m_item.get() ? true : false) && m_item->m_premium.IsSoldOut())
     {
         if (pRoot)
             ((class TiXmlNode*)(class Unk_AdXmlNode*)(pRoot))->RemoveChild((class TiXmlNode*)(pNode));
         return;
     }
-    XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_id.FUN_1409b0470());
+    XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_key.FUN_1409b0470());
     XmlSetAttr((class TiXmlElement*)(pNode), "minimize", m_bMinimized);
     XmlSetAttr((class TiXmlElement*)(pNode), "endTime", *(__int64 const*)&static_cast<__int64&>(m_endTime));
-    __int64 nSaleEnd = reinterpret_cast<CMeratMarketPremiumProduct*>(&m_item->m_info)->GetEndDate(0).Get();
+    __int64 nSaleEnd = m_item->m_premium.GetEndDate(0).Get();
     XmlSetAttr((class TiXmlElement*)(pNode), "saleEndTime", *(__int64 const*)&static_cast<__int64&>(nSaleEnd));
     unsigned nWidth = 0, nHeight = 0;
     reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetStageSize(2, (int*)&nWidth, (int*)&nHeight);
@@ -1078,13 +1078,13 @@ void AdPushEntityLimitedBundle::vfunc_5(Unk_AdXmlNode* pNode)
 // @0x140e43930
 CStringA AdPushEntityLimitedBundle::vfunc_6()
 {
-    return FUN_140e01de0(MS2Ptr<Unk_AdMarketItem>(m_item));
+    return FUN_140e01de0(MS2Ptr<CMeratMarketProduct>(m_item));
 }
 
 // @0x140e439a0
 bool AdPushEntityLimitedBundle::vfunc_7()
 {
-    if ((m_item.get() ? true : false) && m_item->m_nB8 == 1)
+    if ((m_item.get() ? true : false) && m_item->m_premium.m_nBuyLimit == 1)
         return true;
     return false;
 }
@@ -1096,7 +1096,7 @@ void AdPushEntityLimitedBundle::vfunc_8(Scaleform::GFx::Value* pValue, ASData* p
         return;
     ASTooltip tip(4, 2);
     bool bMinimized = m_bMinimized;
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((class CMeratMarketPremiumProduct*)(&m_item->m_info), bMinimized);
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((&m_item->m_premium), bMinimized);
     *pValue = tip.FUN_1422bb870();
 }
 

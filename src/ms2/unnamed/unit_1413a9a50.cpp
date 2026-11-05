@@ -72,7 +72,7 @@ CStringW CGuideConditionFieldId::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A9C20, CGuideConditionFieldId, GetTypeName, 61, 0x959B8408);
 
 // @0x1413a9c70
-void CGuideConditionFieldId::vfunc_2(Unk_140165cf0* pElem)
+void CGuideConditionFieldId::vfunc_2(TiXmlElement* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_n18 = 1;

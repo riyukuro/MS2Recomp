@@ -60,16 +60,16 @@ MS2_CHECK_OFFSET(CBuddy,m_a4,0xa4);
 MS2_CHECK_OFFSET(CBuddy,m_c8,0xc8);
 MS2_CHECK_OFFSET(CBuddy,flags,0xd4);
 class Unk_BuddyGuard { public: Unk_BuddyGuard(CLockCriticalSection&); ~Unk_BuddyGuard(); operator int(); private: void* p; };
-template<class T> class Unk_BuddyPtr {
-public:
-    Unk_BuddyPtr() : p(0) {} Unk_BuddyPtr(int); Unk_BuddyPtr(T*); Unk_BuddyPtr(const Unk_BuddyPtr&); Unk_BuddyPtr(Unk_BuddyPtr&&); ~Unk_BuddyPtr();
-    Unk_BuddyPtr& operator=(const Unk_BuddyPtr& o) { o.AddRef(); Release(); p=o.p; return *this; }
-    Unk_BuddyPtr& operator=(T* value) { Unk_BuddyPtr temp(value); T* old=p; p=temp.p; temp.p=old; return *this; }
-    T* get() const; T* operator->() const; bool operator==(T*) const;
-    bool operator!() const { return p==0; }
-private: void AddRef() const; void Release(); void AddRefImpl(void*) const; void ReleaseImpl(void*); static void Reference(CPtred*); void* pad; T* p;
-};
-MS2_CHECK_SIZE(Unk_BuddyPtr<CBuddy>,16);
+// C3: the buddy handle is MS2Ptr<CBuddy> (was the stand-in Unk_BuddyPtr<T>; every member VA is an MS2Ptr<T> body)
+#include "ms2/placeholder/ascript.h"
+//
+//
+//
+//
+//
+//
+//
+MS2_CHECK_SIZE(MS2Ptr<CBuddy>,16);
 struct Unk_BuddyRequest {
     Unk_BuddyRequest() : protocol(0),id(0) {} ~Unk_BuddyRequest() {}
     void FUN_1401fc790(COutPacket&);
@@ -82,7 +82,7 @@ struct Unk_BuddyResponse {
 };
 class CBuddyManager : public TSingleton<CBuddyManager> {
 public:
-    typedef Unk_BuddyPtr<CBuddy> Ptr;
+    typedef MS2Ptr<CBuddy> Ptr;
     CBuddyManager(); virtual ~CBuddyManager();
     void FUN_140ae2e90(Unk_BuddyInput&);
     void SendBuddyRequest(Unk_BuddyRequest&);

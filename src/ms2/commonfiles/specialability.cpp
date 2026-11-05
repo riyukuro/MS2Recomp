@@ -7,7 +7,7 @@
 // MS2-PIN: ??1?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@W4SAType@@@std@@QEAA@XZ 0x140821a50 ; unique
 // MS2-PIN: ??1?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@W4SAType@@@std@@QEAA@XZ 0x140821a70 ; unique
 // MS2-PIN: ??_G?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@QEAAPEAXI@Z 0x140822350 ; unique
-// MS2-PIN: ??4?$Unk_BmBoxPtr@V?$CAtlList@W4eSpecialAbility@@V?$CElementTraits@W4eSpecialAbility@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_BmNewTag@@@Z 0x140822510 ; unique
+// MS2-PIN: ??4?$Unk_BmBoxPtr@V?$CAtlList@W4eSpecialAbility@@V?$CElementTraits@W4eSpecialAbility@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x140822510 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140825c10 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140825c20 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@USpecialAbilityInfo@@@std@@V?$_Vector_val@U?$_Simple_types@USpecialAbilityInfo@@@std@@@2@$00@std@@QEAAAEAV?$allocator@USpecialAbilityInfo@@@2@XZ 0x140825c90 ; unique
@@ -35,7 +35,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -48,7 +48,7 @@ CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);        
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
+int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& strOut);
 
 // The row table (DAT_143ab1a40, constructed by skilltieroptionmanager.cpp's static init range); m_specialTo in the source.
 extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;
@@ -177,10 +177,10 @@ int LoadSpecialAbilityStringTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->NextSibling("key")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pElem))->NextSibling("key")))
     {
         CStringA strOption;
         int nId;
@@ -205,10 +205,10 @@ int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pElem))->NextSibling("key")))
+    for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pElem))->NextSibling("key")))
     {
         CStringW strName;
         CStringW strUnused;

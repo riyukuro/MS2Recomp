@@ -58,14 +58,14 @@ template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
 
-// The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
+// The prop snapshot's joint accessors (the joint array is at +0x30), the same calls as
 // equipmodelforceapplier.cpp's, whose accessors were first emitted there.
-class Unk_WindPropDesc
-{
-public:
-    unsigned GetActorCount() const;                             // 0x14120ac30
-    NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
-};
+typedef NiPhysXPropDesc Unk_WindPropDesc;   // its joint accessors, GetJointCount 0x14120ac30 and GetJointAt 0x14120abd0
+// {
+// public:
+//     unsigned GetActorCount() const;                             // 0x14120ac30
+//     NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
+// };
 
 // The custom data of the worn hair item (CItem::FUN_140527870): the pose per row of the item model.
 class Unk_HpxHairData : public Unk_UserProxyItemData
@@ -597,9 +597,9 @@ void UIHairPhysxDialog::FUN_141983010()
     {
         m_1f8.RemoveAll();
         m_228.RemoveAll();
-        for (unsigned i = 0; i < pDesc->GetActorCount(); i++)
+        for (unsigned i = 0; i < pDesc->GetJointCount(); i++)
         {
-            NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetActorAt(i));
+            NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetJointAt(i));
             NxD6Joint* pJoint;
             if (pJointDesc != 0 && (pJoint = pJointDesc->GetJoint()) != 0)
             {
@@ -678,9 +678,9 @@ void UIHairPhysxDialog::FUN_141983730()
     if ((pDesc = reinterpret_cast<Unk_WindPropDesc*>(pProp->GetSnapshot())) == 0)
         return;
     ATL::CAtlArray<CString> arrJoints;
-    for (unsigned i = 0; i < pDesc->GetActorCount(); i++)
+    for (unsigned i = 0; i < pDesc->GetJointCount(); i++)
     {
-        NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetActorAt(i));
+        NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetJointAt(i));
         NxD6Joint* pJoint;
         if (pJointDesc != 0 && (pJoint = pJointDesc->GetJoint()) != 0)
         {
@@ -812,9 +812,9 @@ void UIHairPhysxDialog::FUN_141984360()
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_transform"))
     {
         spText->SetTextA("");
-        for (unsigned i = 0; i < pDesc->GetActorCount(); i++)
+        for (unsigned i = 0; i < pDesc->GetJointCount(); i++)
         {
-            NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetActorAt(i));
+            NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetJointAt(i));
             NxD6Joint* pJoint;
             if (pJointDesc != 0 && (pJoint = pJointDesc->GetJoint()) != 0)
             {

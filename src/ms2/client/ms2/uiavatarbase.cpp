@@ -247,7 +247,7 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
                 float fClamp = m_kPos.z - kTarget.z > 0.0f ? -fLimit : fLimit;
                 kTarget.z = m_kPos.z + fClamp;
             }
-            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate())->FUN_140a00720(m_kPivot));
+            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate()) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
         }
         ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(kNewPos));
         if (bUpdate)
@@ -859,7 +859,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
     if (reinterpret_cast<const efd::Point3&>(m_kAngleBase) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
-        *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(pRot->FUN_140a00720(m_kPivot));
+        *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
     else
         *pOut = *pPos;
 }
@@ -2372,7 +2372,7 @@ void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& k
     *reinterpret_cast<NiPoint3*>(reinterpret_cast<char*>(pNode) + 0x74) = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(
         reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(
         reinterpret_cast<const Vector3&>(kPos).FUN_14097fd50(reinterpret_cast<const Vector3&>(kPivot))
-            .FUN_140965c40(pRot->FUN_140a00720(reinterpret_cast<const Vector3&>(kPivot)))))));
+            .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(kPivot))))))));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc950-0x142cbca30 .text$yd

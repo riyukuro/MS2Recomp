@@ -29,25 +29,25 @@ public:
     Scaleform::GFx::Value FUN_141935bc0(const char* szMethod, CString strBind, unsigned int nSlot, CStringW strName, CString strIcon, int nFlag);   // "bind"
 };
 
-// The result items of the open box: a growable array of item handles inside the talk manager's reward block.
-class Unk_GbItems
-{
-public:
-private:
-    void* m_data; size_t m_count; size_t m_max; size_t m_grow;
-};
-class Unk_GbReward
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    Unk_GbItems m_items;                                         // +0x18
-};
-MS2_CHECK_OFFSET(Unk_GbReward, m_items, 0x18);
-class Unk_GbTalk
-{
-public:
-    Unk_GbReward* FUN_141082d60();
-};
+// C3: the Unk_GbTalk / Unk_GbReward / Unk_GbItems views were UITalkManager and its CTalkRewardData (m_items +0x18, the
+// result item array); FUN_141082d60 is UITalkManager's inline accessor.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
@@ -142,7 +142,7 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp(szMethod, "OnResult") == 0) {
-        reinterpret_cast<UITalkManager*>(((class Unk_GbTalk*)TSingleton<UITalkManager>::GetInstance()))->SendNpcTalkMode2(0);
+        TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         return 1;
     }
     else if (_stricmp(szMethod, "OnHideComplete") == 0) {
@@ -157,7 +157,7 @@ int UIGambleDialog::FUN_141935710()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        Unk_GbReward* pReward = ((class Unk_GbTalk*)TSingleton<UITalkManager>::GetInstance())->FUN_141082d60();
+        UITalkManager::CTalkRewardData* pReward = TSingleton<UITalkManager>::GetInstance()->FUN_141082d60();
         if (reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount() <= 0)
             return 0;
         reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount());

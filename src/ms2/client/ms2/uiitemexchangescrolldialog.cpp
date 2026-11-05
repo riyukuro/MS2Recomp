@@ -40,16 +40,16 @@
 // ---- unit-local views of exe objects ----
 
 // A button of the movie.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
 
 // The AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser, int nMovieId);
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);   // C3: the definition takes __int64 (gfxui/asfunction.cpp)
     ~ASFunction();
 private:
     void* m_40;
@@ -175,7 +175,7 @@ void UIItemExchangeScrollDialog::vfunc_26()
 void UIItemExchangeScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_spOk = GetChild<Unk_140acd6e0>("m_ok");
+    m_spOk = GetChild<ASButton>("m_ok");
     FUN_140f53a70();
     FUN_140f52880();
     m_spScroll = GetChild<ASMovieClip>("m_scroll");
@@ -506,7 +506,7 @@ void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
     FUN_140f514c0(&spInfo->m_requireEquip, CString("recipe"), obj, 0xc, nCount, MS2Ptr<CItem>(spTarget));
     FUN_140f514c0(&spInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(spTarget));
     for (unsigned __int64 i = 0; i < pContainer->FUN_14026bee0(); i++)
-        FUN_140f51e90(pContainer->FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, 1);
+        FUN_140f51e90(pContainer->FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, 1);
     m_30->Invoke("setData", obj);
     if (m_spOk.get() != 0)
         m_spOk->FUN_1422c1fe0(FUN_140f524d0(nCount));
@@ -539,7 +539,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
         // the exe null-tests spScroll here, not spReq
         if (spScroll == 0)
             continue;
-        CIngredientInfo* pIng = pRequire->FUN_14026bdc0(i).FUN_14027f250();
+        CIngredientInfo* pIng = pRequire->FUN_14026bdc0(i).get();
         if (pIng == 0)
             continue;
         int nHave = 0;
@@ -628,7 +628,7 @@ void UIItemExchangeScrollDialog::FUN_140f53bb0(ASObj& obj, CExchangeItemInfo* pI
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
+        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
     obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
     obj.FUN_1407cb9c0("itemMaxCount", nMax);
     obj.FUN_1407cb9c0("itemMinCount", nMin);
@@ -674,7 +674,7 @@ void UIItemExchangeScrollDialog::FUN_140f544d0(ASObj& obj, CExchangeItemInfo* pI
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
+        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
     obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
     obj.FUN_1407cb9c0("itemMaxCount", nMax);
     obj.FUN_1407cb9c0("itemMinCount", nMin);
@@ -934,14 +934,14 @@ void UIItemExchangeScrollDialog::FUN_140f55d10()
     MS2Ptr<ASMovieClip> spScroll(m_spScroll);
     if (spScroll.get() != 0)
     {
-        m_spDebugAddMax = spScroll->FUN_140acce30<Unk_140acd6e0>("m_debugAddMax");
+        m_spDebugAddMax = spScroll->FUN_140acce30<ASButton>("m_debugAddMax");
         if (m_spDebugAddMax.get() != 0)
         {
             m_spDebugAddMax->vfunc_4(bDebug);
             m_spDebugAddMax->FUN_1422ce240(
                 Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemExchangeScrollDialog::FUN_140f55b90), 0);
         }
-        m_spDebugAdd10 = spScroll->FUN_140acce30<Unk_140acd6e0>("m_debugAdd10");
+        m_spDebugAdd10 = spScroll->FUN_140acce30<ASButton>("m_debugAdd10");
         if (m_spDebugAdd10.get() != 0)
         {
             m_spDebugAdd10->vfunc_4(bDebug);

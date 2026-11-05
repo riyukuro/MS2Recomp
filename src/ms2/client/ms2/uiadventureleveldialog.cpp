@@ -5,21 +5,21 @@
 // MS2-PIN: ?vfunc_oa0_9@UIStatusEventListener@@UEAAXG@Z 0x140ba4fd0
 // MS2-PIN: ??1CreateParam@ItemInfoSlot@@UEAA@XZ 0x140ba4e80
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$_Kfn@$$CBIVUnk_ALMissionState@@@?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@SAAEBIAEBU?$pair@$$CBIVUnk_ALMissionState@@@1@@Z 0x140ba4d60 ; prop
-// MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@AEBI@Z 0x140ba4d70 ; unique
-// MS2-PIN: ??$addressof@$$CBU?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@YAPEBU?$pair@$$CBIVUnk_ALMissionState@@@0@AEBU10@@Z 0x140ba4e10 ; unique
+// MS2-PIN: ??$_Kfn@$$CBIVCAdventureLevelMissionData@@@?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@SAAEBIAEBU?$pair@$$CBIVCAdventureLevelMissionData@@@1@@Z 0x140ba4d60 ; prop
+// MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@1@AEBI@Z 0x140ba4d70 ; unique
+// MS2-PIN: ??$addressof@$$CBU?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@YAPEBU?$pair@$$CBIVCAdventureLevelMissionData@@@0@AEBU10@@Z 0x140ba4e10 ; unique
 // MS2-PIN: ?vfunc_oa0_3@UIStatusEventListener@@UEAAXHH@Z 0x140ba4fc0 ; unique
 // MS2-PIN: ?vfunc_oa0_4@UIStatusEventListener@@UEAAXHH@Z 0x140ba4fe0 ; unique
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBI0@Z 0x140ba4ff0 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x140ba5070 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@2@XZ 0x140ba5080 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@2@XZ 0x140ba5090 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEAAAEAU?$less@I@2@XZ 0x140ba50a0 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEBAAEBU?$less@I@2@XZ 0x140ba50c0 ; prop
-// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBAAEBIPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@@Z 0x140ba50e0 ; unique
-// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBAAEBIAEBU?$pair@$$CBIVUnk_ALMissionState@@@2@@Z 0x140ba5110 ; unique
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@@2@AEBI@Z 0x140ba5130 ; unique
-// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@@2@AEBI@Z 0x140ba5210 ; unique
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBI0@Z 0x140ba4ff0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x140ba5070 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@2@XZ 0x140ba5080 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@2@XZ 0x140ba5090 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAAEAU?$less@I@2@XZ 0x140ba50a0 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEBAAEBU?$less@I@2@XZ 0x140ba50c0 ; prop
+// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@IEBAAEBIPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@@Z 0x140ba50e0 ; unique
+// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@IEBAAEBIAEBU?$pair@$$CBIVCAdventureLevelMissionData@@@2@@Z 0x140ba5110 ; unique
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@2@AEBI@Z 0x140ba5130 ; unique
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@std@@@std@@@2@AEBI@Z 0x140ba5210 ; unique
 // MS2-PINS-END tplpin
 //
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
@@ -98,14 +98,14 @@ void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
 extern template class MS2Ptr<AdditionalLevelData>;
 
 // The state of a mission of the player.
-class Unk_ALMissionState
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    unsigned int m_18;                                              // progress
-    bool m_1c;                                                      // reward received
-};
-extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
+// The mission state is CAdventureLevelMissionData (adventureleveltablehelper.h): +0x18 progress, +0x1c reward received.
+//
+//
+//
+//
+//
+//
+extern std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;   // 0x143ab3318, the mission progress (userproxy)
 
 // The claimed level rewards.
 extern std::set<unsigned int> DAT_143ab3308;
@@ -306,14 +306,14 @@ void UIAdventureLevelDialog::FUN_140ba3200()
 int UIAdventureLevelDialog::FUN_140ba3240()
 {
     int nCount = 0;
-    for (std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
-        if (it->second.m_1c != 0)
+    for (std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.begin(); it != DAT_143ab3318.end(); ++it) {
+        if (it->second.m_b1c != 0)
             continue;
         const unsigned int* pId = &it->first;
         const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(*pId);
         if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
             continue;
-        if (it->second.m_18 < (unsigned int)pMission->m_nCount)
+        if ((unsigned int)it->second.m_nId < (unsigned int)pMission->m_nCount)
             continue;
         nCount++;
     }
@@ -406,7 +406,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         return;
     spList->Invoke("resetRenderer");
     spList->FUN_1422dd1d0();
-    for (std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
+    for (std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.begin(); it != DAT_143ab3318.end(); ++it) {
         const unsigned int* pId = &it->first;
         const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(*pId);
         if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
@@ -415,8 +415,8 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         obj.FUN_1409c0d20("id", it->first);
         FUN_140ba45c0(obj, it->first);
         obj.FUN_1407cbb20("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), reinterpret_cast<const unsigned int&>(pMission->m_nCount)));
-        obj.FUN_1407cbbe0("received", it->second.m_1c);
-        obj.FUN_1407cbbe0("completed", it->second.m_18 >= (unsigned int)pMission->m_nCount);
+        obj.FUN_1407cbbe0("received", it->second.m_b1c);
+        obj.FUN_1407cbbe0("completed", (unsigned int)it->second.m_nId >= (unsigned int)pMission->m_nCount);
         spList->AddItem(obj);
     }
     spList->vfunc_24(true);
@@ -543,12 +543,12 @@ void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
     const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(nMissionId);
     if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
         return;
-    std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.find(nMissionId);
-    if (it == g_unkMissionStates.end())
+    std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.find(nMissionId);
+    if (it == DAT_143ab3318.end())
         return;
-    if (it->second.m_1c != 0)
+    if (it->second.m_b1c != 0)
         return;
-    if (it->second.m_18 < (unsigned int)pMission->m_nCount)
+    if ((unsigned int)it->second.m_nId < (unsigned int)pMission->m_nCount)
         return;
     Unk_ALClaimMission claim;
     claim.m_op = 5;

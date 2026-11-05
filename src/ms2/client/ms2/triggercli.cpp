@@ -13,7 +13,7 @@
 // MS2-PIN: ??$construct@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@?$_Default_allocator_traits@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@SAXAEAV?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@1@QEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@$$QEAV34@@Z 0x14119be50 ; manual
 // MS2-PIN: ??1?$vector@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@std@@V?$allocator@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@std@@@2@@std@@QEAA@XZ 0x14119c560 ; manual
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VTriggerCli@@@@AEBAXPEAX@Z 0x14119e6d0 ; manual
-// MS2-PIN: ?AddRefImpl@?$Unk_PayloadPtr@VCFileBuffer@@@@AEBAXPEAX@Z 0x14119e6d0 ; manual
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCFileBuffer@@@@AEBAXPEAX@Z 0x14119e6d0 ; manual
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\triggercli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "triggercli.h"
@@ -30,7 +30,7 @@
 #include "ms2/placeholder/formatstringid.h"  // C3: FormatStringId<...> over FUN_14028dee0 by its real name
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -41,10 +41,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 // ---- unit-local views of exe objects ----
 
 // tinyxml writer / reader helpers (the same ones the other trigger units use)
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);   // FirstChildElement of the document
-int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
+int FUN_140873420(TiXmlElement* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
 void FUN_1401d3700(CString& s);
-CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // attribute or the default
+CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);   // attribute or the default
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // path join
 
 class CLogString;
@@ -78,7 +78,7 @@ public:
 struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_TrgFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TrgFramework DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: the 0x06100017 service
 int FUN_1407071e0(int nItemId);
 int FUN_140707710(int nItemId);
 int FUN_140707660(int nItemId);
@@ -157,13 +157,13 @@ int TriggerCli::LoadFile(const CString& strPath)
         return 0;
     CString strNorm(strPath);
     FUN_1401d3700(strNorm);
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
+    for (TiXmlElement* pState = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class TiXmlElement*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
         LoadState(pState);
     return 1;
 }
@@ -174,10 +174,10 @@ int TriggerCli::LoadBuffer(CFileSystem::BufferPtr spBuffer)
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromBuffer(&doc, spBuffer) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
+    for (TiXmlElement* pState = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("state")); pState != 0; pState = ((class TiXmlElement*)((class Unk_XmlNode*)(pState))->NextSibling("state")))
         LoadState(pState);
     return 1;
 }
@@ -192,13 +192,13 @@ int TriggerCli::LoadEditorTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
+    for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         CStringW strCond = FUN_1401bf530(pKey, "cond", CStringW(L""));
         CStringW strAct = FUN_1401bf530(pKey, "act", CStringW(L""));
@@ -392,7 +392,7 @@ TriggerCli::StatePtr TriggerCli::GetState(const CStringW& strName)
 }
 
 // @0x14119b140
-void TriggerCli::LoadState(Unk_140165cf0* pNode)
+void TriggerCli::LoadState(TiXmlElement* pNode)
 {
     CStringW strName;
     XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);

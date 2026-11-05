@@ -11,14 +11,14 @@
 
 class PCBase;
 
-// NiPoint3 built from an efd::Point3 (0x14027dcf0).
+#include <NiPoint3.h>   // C3: the effect position is a real NiPoint3 (NiPoint3(const efd::Point3&) 0x14027dcf0)
 struct Vector3;
-struct Unk_CoupleVec
-{
-    Unk_CoupleVec(const Vector3& pt);               // 0x14027dcf0
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_CoupleVec, 12);
+//
+//
+//
+//
+//
+//
 
 class CoupleEffectSystem : public CPtred
 {
@@ -37,7 +37,7 @@ public:
     void FUN_140b0eed0();                                   // remove the effect
     bool FUN_140b0ef20();                                   // current map allows the effect
     CString FUN_140b0efb0();                                // effect name from the gem table
-    Unk_CoupleVec FUN_140b0f160();                          // midpoint of owner and partner
+    NiPoint3 FUN_140b0f160();                               // midpoint of owner and partner
     void FUN_140b0f260();                                   // send the start request
     void FUN_140b0f3a0(int nMode);                          // 0 start, 1 stop
 
@@ -48,7 +48,7 @@ public:
     Timer m_timer;                                          // +0x28
     unsigned m_nEffectId;                                      // +0x60 handle of the spawned effect
     Unk_IntervalTimer m_tick;                               // +0x64
-    Unk_CoupleVec m_posEffect;                              // +0x6c
+    NiPoint3 m_posEffect;                                   // +0x6c
     PCBase* m_pOwner;                                       // +0x78
     int m_bLinked;                                          // +0x80
     int m_nCoupleType;                                      // +0x84

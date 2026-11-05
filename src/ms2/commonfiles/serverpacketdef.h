@@ -5,17 +5,17 @@
 #include "ms2/commonfiles/stream.h"
 #include "ms2/commonfiles/constraints.h"
 
-// Inclusive byte range built by 0x140203550 and consumed by 0x140202740.
-struct Unk_SPDByteRange { unsigned char lo, hi; };
-MS2_CHECK_SIZE(Unk_SPDByteRange, 2);
-Unk_SPDByteRange* FUN_140203550(Unk_SPDByteRange* out, unsigned char lo, unsigned char hi);
-
+// Inclusive range constraint and the constrained byte read: unit_1401f9eb0's Unk_140203550<T> (ctor 0x140203550 for
+// unsigned char) and Unk_Read8 (0x140202740). Declared only; unit_1401f9eb0 holds the definitions.
+template<class T> struct Unk_140203550 { T minimum, maximum; Unk_140203550(T constraintMin, T constraintMax); bool Check(T value) const; };
+template<class Constraint> unsigned char Unk_Read8(void* packet, Constraint constraint);
 // Reader wrapper: CIOBuffer at +0, CInputStream at +8. Only the constrained read helpers used here are declared.
 class Unk_SPDReader : public CIOBuffer, public CInputStream {
 public:
-    unsigned char FUN_140202740(Unk_SPDByteRange range);
-    CStringW FUN_140202f40(Unk_WideMaximum maxLen);
+    // the constrained byte read is the free Unk_Read8 (0x140202740); the wide read is Unk_PayloadReader::ReadWide (0x140202f40)
 };
+// The payload reader of unit_1401f9eb0 (same object: CIOBuffer + CInputStream at +8), which owns the constrained read templates.
+struct Unk_PayloadReader : Unk_SPDReader { template<class C> CString ReadNarrowWrapper(C constraint); template<class C> CStringW ReadWide(C constraint); };
 
 // Plain data record copied into Unk_SPDA.
 struct Unk_SPD0 {

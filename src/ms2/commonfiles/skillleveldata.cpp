@@ -35,7 +35,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "hook/ms2hook.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -65,9 +65,9 @@ void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873c
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
 void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);   // C3: was FUN_1408740a0
-class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);        // int attribute with a default
-float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault);    // float attribute with a default
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);        // int attribute with a default
+float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault);    // float attribute with a default
 float FUN_14028d280(unsigned uMilliseconds);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* pszSep);  // split into strings (achievedata.cpp; C3: was FUN_14015f0b0)
@@ -116,39 +116,39 @@ template <class T> bool IsSameVector(const std::vector<T>& a, const std::vector<
 }
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
-class Unk_TiXmlAttribute
-{
-public:
-    void* unknown00[7];                         // TiXmlBase, document, name, value, prev
-    Unk_TiXmlAttribute* next;                   // +0x38
-};
+// C3 #12: was a local TiXml view
+
+
+
+
+
 MS2_CHECK_SIZE(Unk_TiXmlAttribute, 0x40);
 
-class Unk_TiXmlAttributeSet
-{
-public:
-    // @0x140552d70
-    Unk_TiXmlAttribute* First() { return (sentinel.next == &sentinel) ? 0 : sentinel.next; }
-    Unk_TiXmlAttribute sentinel;
-};
+// C3 #12: was a local TiXml view
 
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);      // 0x14086f2f0
-    virtual ~TiXmlElement();                // 0x14086f450
-    // @0x140552e00
-    bool HasAttributes() { return attributeSet.First() == 0 ? false : true; }
-    // @0x140552e40
-    bool HasChildren() { return firstChild == 0 ? false : true; }
-    // @0x140552e70
-    bool HasContent() { return HasAttributes() || HasChildren(); }
-private:
-    void* unknown00[4];                         // TiXmlBase, parent, type
-    void* firstChild;                           // +0x28
-    void* unknown30[4];                         // lastChild, value, prev, next
-    Unk_TiXmlAttributeSet attributeSet;         // +0x50
-};
+
+
+
+
+
+
+// C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // @0x1408011f0
@@ -178,9 +178,9 @@ bool Unk_SkillSensor::FUN_140801270(const Unk_SkillSensor& o)
 }
 
 // @0x1408013f0
-void Unk_SkillSensor::LoadElement(Unk_140165cf0* pElem, CString strName)
+void Unk_SkillSensor::LoadElement(TiXmlElement* pElem, CString strName)
 {
-    Unk_140165cf0* pSensor = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild(strName));
+    TiXmlElement* pSensor = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild(strName));
     if (pSensor == 0)
         return;
     Load(pSensor);
@@ -290,7 +290,7 @@ bool SkillActionSkill::operator!=(const SkillActionSkill& o)
 }
 
 // @0x140801c40
-int SkillActionSkill::Load(Unk_140165cf0* pElem)
+int SkillActionSkill::Load(TiXmlElement* pElem)
 {
     XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "level", CString("")), m_arrLevel, ",");
     XmlSplit(Unk_ReadString((class Unk_XmlNode*)(pElem), "skillID", CString("")), m_arrSkillID, ",");
@@ -339,7 +339,7 @@ bool SkillActionAdditional::operator!=(const SkillActionAdditional& o)
 }
 
 // @0x140802210
-int SkillActionAdditional::Load(Unk_140165cf0* pElem)
+int SkillActionAdditional::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "additionalID", reinterpret_cast<unsigned int&>(m_nAdditionalID));
     XmlGetAttr((class TiXmlElement*)(pElem), "level", reinterpret_cast<unsigned short&>(m_nLevel));
@@ -385,7 +385,7 @@ bool SkillGlideData::FUN_140802640(const SkillGlideData& o)
 }
 
 // @0x140802830
-void SkillGlideData::Load(Unk_140165cf0* pElem)
+void SkillGlideData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
     XmlGetAttr((class TiXmlElement*)(pElem), "gravity", reinterpret_cast<float&>(m_fGravity));
@@ -407,9 +407,9 @@ void SkillGlideData::Load(Unk_140165cf0* pElem)
 }
 
 // @0x140802a40
-int SkillGlideData::FUN_140802a40(Unk_140165cf0* pElem)
+int SkillGlideData::FUN_140802a40(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pGlide = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("glideProperty"));
+    TiXmlElement* pGlide = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("glideProperty"));
     if (pGlide != 0)
         Load(pGlide);
     return 1;
@@ -449,9 +449,9 @@ bool Unk_SkillBlock170::FUN_140802d00(const Unk_SkillBlock170& o)
 }
 
 // @0x140802d50
-int Unk_SkillBlock170::FUN_140802d50(Unk_140165cf0* pElem)
+int Unk_SkillBlock170::FUN_140802d50(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pPush = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
+    TiXmlElement* pPush = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
     if (pPush != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pPush), "up", reinterpret_cast<float&>(m_fUp));
@@ -490,9 +490,9 @@ bool Unk_SkillBlockA4::FUN_140802e40(const Unk_SkillBlockA4& o)
 }
 
 // @0x140802ef0
-int Unk_SkillBlockA4::Load(Unk_140165cf0* pElem)
+int Unk_SkillBlockA4::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pCombo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("combo"));
+    TiXmlElement* pCombo = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("combo"));
     if (pCombo != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pCombo), "inputSkill", reinterpret_cast<unsigned int&>(m_nInputSkill));
@@ -548,9 +548,9 @@ bool Unk_SkillBlock160::FUN_1408030c0(const Unk_SkillBlock160& o)
 }
 
 // @0x140803140
-int Unk_SkillBlock160::Load(Unk_140165cf0* pElem)
+int Unk_SkillBlock160::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pTargeting = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("autoTargeting"));
+    TiXmlElement* pTargeting = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("autoTargeting"));
     if (pTargeting != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pTargeting), "autoTargetingMaxDegree", reinterpret_cast<float&>(m_fMaxDegree));
@@ -597,9 +597,9 @@ bool Unk_SkillBlockB0::FUN_1408033b0(const Unk_SkillBlockB0& o)
 }
 
 // @0x1408034a0
-int Unk_SkillBlockB0::Load(Unk_140165cf0* pElem)
+int Unk_SkillBlockB0::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pChange = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("changeSkill"));
+    TiXmlElement* pChange = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("changeSkill"));
     if (pChange != 0)
     {
         XmlTokenList(pChange, "changeSkillCheckEffectID", m_arrCheckEffectID);
@@ -650,9 +650,9 @@ bool Unk_SkillBlock150::FUN_1408037e0(const Unk_SkillBlock150& o)
 }
 
 // @0x140803860
-int Unk_SkillBlock150::Load(Unk_140165cf0* pElem)
+int Unk_SkillBlock150::Load(TiXmlElement* pElem)
 {
-    Unk_140165cf0* pMagic = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("magicControl"));
+    TiXmlElement* pMagic = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("magicControl"));
     if (pMagic != 0)
     {
         XmlValue(pMagic, "enable", m_eEnable);
@@ -920,7 +920,7 @@ float SkillLevelData::FUN_140804660()
 }
 
 // @0x140804690
-int SkillLevelData::Load(Unk_140165cf0* pElem)
+int SkillLevelData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "value", reinterpret_cast<unsigned short&>(m_nLevel));
     XmlGetAttr((class TiXmlElement*)(pElem), "sp", reinterpret_cast<int&>(m_nSp));
@@ -938,17 +938,17 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
         Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", nSkillId);
         return 0;
     }
-    Unk_140165cf0* pDetect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("detectProperty"));
+    TiXmlElement* pDetect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("detectProperty"));
     if (pDetect != 0)
         m_detect.Load(pDetect);
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("actionAdditional")))
     {
         MS2Ptr<SkillActionAdditional> spAction(new SkillActionAdditional);
         if (!spAction->Load(pChild))
             return 0;
         m_vAdditional.push_back(spAction);
     }
-    for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("motion")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("motion")))
+    for (TiXmlElement* pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("motion")); pChild != 0; pChild = ((class TiXmlElement*)((class Unk_XmlNode*)(pChild))->NextSibling("motion")))
     {
         MS2Ptr<SkillMotionData> spMotion(new SkillMotionData);
         if (!spMotion->FUN_1408080d0(pChild))
@@ -1128,10 +1128,10 @@ __int64 SkillMotionData::FUN_140808040()
 }
 
 // @0x1408080d0
-int SkillMotionData::FUN_1408080d0(Unk_140165cf0* pElem)
+int SkillMotionData::FUN_1408080d0(TiXmlElement* pElem)
 {
     Load(pElem);
-    for (Unk_140165cf0* pChild : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("attack")))
+    for (TiXmlElement* pChild : ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("attack")))
     {
         MS2Ptr<SkillAttackData> spAttack(new SkillAttackData);
         if (!spAttack->Load(pChild))
@@ -1156,7 +1156,7 @@ int SkillMotionData::FUN_140808240(void* pParent)
 }
 
 // @0x140808350
-void SkillMotionData::Load(Unk_140165cf0* pElem)
+void SkillMotionData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "sequenceName", m_strSequenceName);
     XmlGetAttr((class TiXmlElement*)(pElem), "sequenceSpeed", reinterpret_cast<float&>(m_fSequenceSpeed));

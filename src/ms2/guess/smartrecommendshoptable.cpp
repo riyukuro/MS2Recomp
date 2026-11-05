@@ -28,7 +28,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/citemoptiontable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -53,7 +53,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);
+int FUN_140873420(TiXmlElement* pNode, const char* pszName, CStringW& rOut);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CSmartRecommendShopTable::s_bInit;
@@ -144,13 +144,13 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
         if (reinterpret_cast<Unk_RsLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return 0;
         m_spData->FUN_1401d1160(CString(strPath));
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("recommend")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("recommend")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("recommend")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("recommend")))
         {
             MS2Ptr<CRecommendItem> spItem(new CRecommendItem);
             XmlGetAttr((class TiXmlElement*)(pNode), "code", spItem->m_nCode);

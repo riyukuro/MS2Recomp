@@ -86,8 +86,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class MS2InputService { public: int FUN_140d8ee40() const; };   // C3: member view
 MS2InputService* FUN_140a58540();
 
-class Unk_ClubBuffTable;
-Unk_ClubBuffTable* FUN_140b1a4e0();
+CClubDataTable* FUN_140b1a4e0();
 
 
 // The AS array push helpers (an AS array is built from objects and strings).
@@ -558,7 +557,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
 void CMsgBoxData::FUN_141a05f30(ASObj& obj)
 {
     ATL::CAtlArray<CClubDataTable::BuffPtr> buffs;
-    reinterpret_cast<CClubDataTable*>(FUN_140b1a4e0())->FUN_140211990(buffs);
+    FUN_140b1a4e0()->FUN_140211990(buffs);
     ASArray list(2);
     for (size_t i = 0; i < buffs.GetCount(); i++)
     {

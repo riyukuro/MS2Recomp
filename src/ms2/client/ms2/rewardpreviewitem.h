@@ -14,7 +14,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/placeholder/dclevelrange.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 class ItemDropResult;
 class PC;
 
@@ -32,7 +32,7 @@ class RewardPreviewItem : public CPtred
 {
 public:
     RewardPreviewItem();                                            // 0x140dc2ef0
-    void Load(Unk_140165cf0* pElem);                                // 0x140dc2f80
+    void Load(TiXmlElement* pElem);                                // 0x140dc2f80
     void Set(ItemDropResult& result);                               // 0x140dc3020 (dungeon room dialog: the drop results)
     bool IsValid(PC* pPC);                                          // 0x140dc3090 job and level requirements
     RewardPreviewItemTag GetItemTag();                              // 0x140dc30e0
@@ -61,7 +61,7 @@ class RewardPreviewInfo : public CPtred
 {
 public:
     RewardPreviewInfo();                                            // 0x140dc3760
-    void Load(Unk_140165cf0* pElem);                                // 0x140dc37b0
+    void Load(TiXmlElement* pElem);                                // 0x140dc37b0
     void GetAll(ATL::CAtlList<ItemEntity>& items);                  // 0x140dc38d0
     void GetValid(PC* pPC, ATL::CAtlList<ItemEntity>& items);       // 0x140dc3950 the items valid for the player
     void GetValidArray(PC* pPC, ATL::CAtlArray<MS2Ptr<RewardPreviewItem> >& items);   // 0x140dc3a10

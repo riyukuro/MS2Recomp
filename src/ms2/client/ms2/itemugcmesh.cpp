@@ -192,14 +192,14 @@ void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& str);
 
 // The local player (a MyPC) and the world that owns it.
-#pragma pack(push, 4)
-struct Unk_UgcColor
-{
-    void* m_rg;                                                     // NiColor-like 12-byte value (FUN_141b6dea0 copies 12 bytes);
-    float m_b;                                                      // the pointer member keeps the local out of /GS like the exe
-};
-#pragma pack(pop)
-void FUN_141b6dea0(Unk_UgcColor* pOut, unsigned nArgb);
+// C3: the colour-table lookup returns a NiColor (util.cpp:245); the 12-byte result is built in the caller's local.
+//
+//
+//
+//
+//
+//
+NiColor FUN_141b6dea0(unsigned nArgb);
 struct Unk_UtilFloat3;                                              // util.cpp
 struct Unk_Colc;                                                    // util.cpp
 unsigned FUN_141b6df90(const Unk_UtilFloat3* pColor);
@@ -374,14 +374,14 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 }
 
 // @0x141422840
-void FUN_141422840(CEquipModel* pPart, Vector3 kPos, Vector3 kEuler, float fScale)
+void FUN_141422840(CEquipModel* pPart, const Vector3& kPos, const Vector3& kEuler, float fScale)
 {
     if (pPart == 0)
         return;
     FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 0, fScale);
     FUN_1414225d0(MS2Ptr<CEquipModel>(pPart), 1, fScale);
-    FUN_1412014f0(pPart, &kPos);
-    FUN_141201620(pPart, &kEuler);
+    FUN_1412014f0(pPart, const_cast<Vector3*>(&kPos));
+    FUN_141201620(pPart, const_cast<Vector3*>(&kEuler));
     FUN_141422b30(pPart, *FUN_141201c90(pPart), kPos, kEuler, fScale);
 }
 
@@ -567,8 +567,8 @@ int FUN_141423650(unsigned* pArgb, int nSlot, Unk_UgcPlayer* pPlayer)
         if (pPlayer == 0)
             return 0;
     }
-    Unk_UgcColor kColor;
-    FUN_141b6dea0(&kColor, *pArgb);
+    NiColor kColor = FUN_141b6dea0(*pArgb);
+    //
     ((PC*)pPlayer)->FUN_1416591e0(nSlot == 0 ? 0 : 1, *(const NiColor*)&kColor);
     FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), nSlot == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
@@ -595,8 +595,8 @@ int FUN_141423760(const ItemColorEx& kLook, PC* pPlayer)
     unsigned __int64 nCount = 2;
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
-        Unk_UgcColor kColor;
-        FUN_141b6dea0(&kColor, reinterpret_cast<const Unk_UgcLook&>(kLook).m_aColor[i]);
+        NiColor kColor = FUN_141b6dea0(reinterpret_cast<const Unk_UgcLook&>(kLook).m_aColor[i]);
+        //
         pPlayer->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
         FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
@@ -619,8 +619,8 @@ int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
     unsigned __int64 nCount = reinterpret_cast<const CAtlArray<int>&>(kColors).GetCount() < 2 ? reinterpret_cast<const CAtlArray<int>&>(kColors).GetCount() : 2;
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
-        Unk_UgcColor kColor;
-        FUN_141b6dea0(&kColor, (*(CAtlArray<unsigned>*)&kColors)[i]);
+        NiColor kColor = FUN_141b6dea0((*(CAtlArray<unsigned>*)&kColors)[i]);
+        //
         ((PC*)pPlayer)->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
         FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }

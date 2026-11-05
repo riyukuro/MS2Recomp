@@ -31,6 +31,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/unnamed/unit_140e3efd0.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"   // C3: CMeratMarketProduct (the ad push market item)
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/usercommandcli.h"
@@ -78,7 +79,7 @@ class Unk_OxKeyBinds : public CKeyTable
 };
 
 // The command arguments of a chat / AS command ("/ugcox camera 3").
-class Unk_OxArgs : public Unk_CommandArgs
+class Unk_OxArgs : public ItemFunctionArgs
 {
 };
 
@@ -843,18 +844,17 @@ bool CMsgBoxData::FUN_140e01c50(unsigned int nIndex, __int64& nOut) const
 
 // @0x140e01cc0
 MS2_EMIT_CRT_MEMMOVE_S();
-
 // "limited_<serial>": the market item's key in the limited offers table.
 // @0x140e01de0
-CString FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item)
+CString FUN_140e01de0(MS2Ptr<CMeratMarketProduct> item)
 {
     if (item.get() != 0)
-        return StringFormat<CString>("limited_{0}", CString(item->m_id.FUN_1409b0470()));
+        return StringFormat<CString>("limited_{0}", CString(item->m_key.FUN_1409b0470()));
     return CString("");
 }
 
 // @0x140e01ef0
-bool FUN_140e01ef0(Unk_140165cf0* pElem)
+bool FUN_140e01ef0(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return false;
@@ -862,7 +862,7 @@ bool FUN_140e01ef0(Unk_140165cf0* pElem)
 }
 
 // @0x140e01f10
-bool FUN_140e01f10(Unk_140165cf0* pElem)
+bool FUN_140e01f10(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return true;

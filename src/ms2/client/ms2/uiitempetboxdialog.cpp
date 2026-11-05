@@ -43,13 +43,13 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uirenderview.h"
-#include "ms2/client/ms2/uimodelview.h"  // C3: Unk_ModelViewCamera::ApplyRideeCamera
+#include "ms2/client/ms2/uirenderview.h"  // C3: Unk_ModelViewCamera is unit-local below
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
 #include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
 #include "ms2/commonfiles/itemdatatable.h"
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
@@ -81,14 +81,14 @@ class Unk_PetBoxUIMgr { public: void FUN_141adc530(int); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;
 // avatar of a pet (0xc8 bytes, RTTI UIAvatarPet : UIAvatarBase), rendered into an AS clip
-struct Unk_PetBoxCameraData
-{
-    Unk_PetBoxCameraData();
+class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
+{ public:
+    Unk_ModelViewCamera(); void ApplyRideeCamera();
     NiPoint3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
+typedef Unk_ModelViewCamera Unk_PetBoxCameraData; MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
 class Unk_PetBoxActor
 {
 public:
@@ -199,9 +199,9 @@ void UIItemPetBoxDialog::OnLoadComplete()
     m_sent = false;
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_singleOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_singleOpen)).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_singleOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_singleOpen)).get())
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_multiOpenButton", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_multiOpen)).get())
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_multiOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_multiOpen)).get())
         m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)1);
     if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
         if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())

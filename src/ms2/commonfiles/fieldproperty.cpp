@@ -19,7 +19,7 @@ COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's s
 COutputStream & FUN_14070f860(COutputStream &, unsigned char);  // C3: the definition's signature
 COutputStream & FUN_14070f9e0(COutputStream &, __int64);  // C3: the definition's signature
 COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's signature
-void FUN_1406c3700(Unk_Rgb3b*);                          // Unk_Rgb3b default init (zero)
+// (0x1406c3700 = Unk_Rgb3b::Unk_Rgb3b(), the default ctor of the member colours)
 COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
 void FUN_1406c38b0(Unk_PktOut*, Unk_Rgb3b*);            // write rgb
 class Unk_OSInput   // C3: member view for the former free stand-ins
@@ -253,12 +253,12 @@ int FieldPropertyWeather::vfunc_3() { return 7; }
 int FUN_1403814f0(FieldPropertyWeather* p) { return p->m_nWeather; }
 
 // @0x140381510
-FieldPropertyAmbientLight::FieldPropertyAmbientLight() { FUN_1406c3700(&m_color); m_bFlag = false; m_fValue = 0; }
+FieldPropertyAmbientLight::FieldPropertyAmbientLight() { m_bFlag = false; m_fValue = 0; }
 
 // @0x140381580
-FieldPropertyAmbientLight::FieldPropertyAmbientLight(const Unk_Rgb3b& color, bool bFlag, float fValue)
+FieldPropertyAmbientLight::FieldPropertyAmbientLight(const Unk_Rgb3b& color, bool bFlag, float fValue) : m_color(color)
 {
-    m_color = color;
+
     m_bFlag = bFlag;
     m_fValue = fValue;
 }
@@ -291,13 +291,13 @@ bool FUN_140381710(FieldPropertyAmbientLight* p) { return p->m_bFlag; }
 float FUN_140381730(FieldPropertyAmbientLight* p) { return p->m_fValue; }
 
 // @0x140381750
-FieldPropertyDirectionalLight::FieldPropertyDirectionalLight() { FUN_1406c3700(&m_color1); FUN_1406c3700(&m_color2); m_bFlag = false; m_fValue = 0; }
+FieldPropertyDirectionalLight::FieldPropertyDirectionalLight() { m_bFlag = false; m_fValue = 0; }
 
 // @0x1403817d0
-FieldPropertyDirectionalLight::FieldPropertyDirectionalLight(const Unk_Rgb3b& c1, const Unk_Rgb3b& c2, bool bFlag, float fValue)
+FieldPropertyDirectionalLight::FieldPropertyDirectionalLight(const Unk_Rgb3b& c1, const Unk_Rgb3b& c2, bool bFlag, float fValue) : m_color1(c1), m_color2(c2)
 {
-    m_color1 = c1;
-    m_color2 = c2;
+
+
     m_bFlag = bFlag;
     m_fValue = fValue;
 }

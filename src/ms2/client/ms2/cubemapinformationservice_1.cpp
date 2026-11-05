@@ -41,7 +41,7 @@
 
 class CubeMapInformationService;
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
-CubeMapInformationService* FUN_1401cd070(const void*);
+#include <efd/ServiceManager.h>   // C3: FUN_1401cd070 = efd::ServiceManager::GetSystemServiceAs<CubeMapInformationService>
 Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
 
 // The shared WorldService declaration uses this handle spelling. Its per-type
@@ -65,7 +65,7 @@ template<> inline void MS2Ptr<Unk_WsB_Vibrator>::ReleaseImpl(void*) {
     }
 }
 // @0x1410b27c0
-inline CubeMapInformationService* GetCubeMapService() { return FUN_1401cd070(((void const*)FUN_1413f9850())); }
+inline CubeMapInformationService* GetCubeMapService() { return ((efd::ServiceManager*)FUN_1413f9850())->GetSystemServiceAs<CubeMapInformationService>(); }
 
 // @0x1410b2510
 void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {

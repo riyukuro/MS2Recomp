@@ -25,7 +25,7 @@
 #include "hook/ms2hook.h"
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -59,7 +59,7 @@ CSidePopupCondition::CSidePopupCondition()
 }
 
 // @0x140e8d860
-void CSidePopupCondition::vfunc_2(Unk_140165cf0* pElem)
+void CSidePopupCondition::vfunc_2(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "key", m_nId);
 }
@@ -171,7 +171,7 @@ CSidePopupConditionQuestProgress::CSidePopupConditionQuestProgress()
 }
 
 // @0x140e8de10
-void CSidePopupConditionQuestProgress::vfunc_2(Unk_140165cf0* pElem)
+void CSidePopupConditionQuestProgress::vfunc_2(TiXmlElement* pElem)
 {
     CSidePopupCondition::vfunc_2(pElem);
     XmlTokenList(pElem, "args", m_args);
@@ -226,14 +226,14 @@ void CSidePopupTalkTable::Init()
     TiXmlDocument doc;
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "popup", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pElem = nodes[i];
+        TiXmlElement* pElem = nodes[i];
         CStringA strType;
         XmlGetAttr((class TiXmlElement*)(pElem), "eventType", strType);
         CStringW strClass = StringFormat(L"CSidePopupCondition{0}", strType);

@@ -63,9 +63,9 @@ public:
 };
 
 // A button child of the page; "is enabled" is ASMovieClip::FUN_1422c2030.
-class Unk_140acd6e0 : public ASMovieClip
-{
-};
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
+//
+//
 
 // The hair apply effect request.
 struct Unk_IEEffectRequest
@@ -521,7 +521,7 @@ void UIItemEditDialog::FUN_1419bdb50(int bEnable)
 // @0x1419bdb90
 int UIItemEditDialog::FUN_1419bdb90()
 {
-    if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
+    if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
         return spSave->FUN_1422c2030();
     return 0;
 }
@@ -529,13 +529,13 @@ int UIItemEditDialog::FUN_1419bdb90()
 // @0x1419bdc40
 void UIItemEditDialog::FUN_1419bdc40(int bEnable)
 {
-    if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
+    if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
         spSave->FUN_1422c1fe0(bEnable);
 }
 
 // @0x1419bdce0
 void UIItemEditDialog::FUN_1419bdce0(int bEnable)
 {
-    if (MS2Ptr<Unk_140acd6e0> spReset = GetChild<Unk_140acd6e0>("m_reset"))
+    if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_reset"))
         spReset->FUN_1422c1fe0(bEnable);
 }

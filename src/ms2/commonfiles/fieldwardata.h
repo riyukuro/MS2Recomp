@@ -12,7 +12,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 class Unk_Random;
 
 // RTTI FieldWarData, 0x38 bytes (one <fieldWar> element).
@@ -21,7 +21,7 @@ class FieldWarData : public CPtred
 public:
     FieldWarData();                                 // 0x1403820e0
     virtual ~FieldWarData();                        // 0x140382170
-    void Load(Unk_140165cf0* pElem);                // 0x1403821a0
+    void Load(TiXmlElement* pElem);                // 0x1403821a0
     unsigned GetFieldWarID() const;                 // 0x1403822b0
     unsigned GetFieldWarGroupID() const;            // 0x1403822d0
     bool IsValid() const;                           // 0x1403822f0 always true

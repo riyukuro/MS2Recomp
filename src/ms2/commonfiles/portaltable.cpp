@@ -65,20 +65,20 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <vector>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (same ones the other xml table loaders use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
-unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
+CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW);
+unsigned int FUN_140197390(TiXmlElement *, char const *, unsigned int);  // C3: the definition's signature
 
 struct Unk_XmlElement;
 void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);   // collect the named children
@@ -103,7 +103,7 @@ bool CPortalTable::LoadNames()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -115,7 +115,7 @@ bool CPortalTable::LoadNames()
     std::vector<Unk_XmlElement*>::const_iterator itEnd = rList.end();
     for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
-        Unk_140165cf0* pNode = (Unk_140165cf0*)*it;
+        TiXmlElement* pNode = (TiXmlElement*)*it;
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
         int nPortalId = FUN_140197390(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;
@@ -134,7 +134,7 @@ bool CPortalTable::LoadRandomTargets()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -146,7 +146,7 @@ bool CPortalTable::LoadRandomTargets()
     std::vector<Unk_XmlElement*>::const_iterator itEnd = rList.end();
     for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
-        Unk_140165cf0* pNode = (Unk_140165cf0*)*it;
+        TiXmlElement* pNode = (TiXmlElement*)*it;
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
         int nPortalId = FUN_140197390(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;

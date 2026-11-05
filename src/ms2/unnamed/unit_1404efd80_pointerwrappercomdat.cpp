@@ -35,14 +35,14 @@ void Unk_Anchor_1404efd80(CPtred& a, const CPtred& b, Unk_GuildStrEntry& c, cons
     g = h;
 }
 
-template bool Unk_PayloadPtr<CGuildXmlData::GuildHouse>::operator==(CGuildXmlData::GuildHouse*) const;      // at 0x1404eff20
-template bool Unk_PayloadPtr<CGuildXmlData::GuildProperty>::operator==(CGuildXmlData::GuildProperty*) const;  // at 0x1404eff60
-template bool Unk_PayloadPtr<CGuildXmlData::GuildSkill>::operator==(CGuildXmlData::GuildSkill*) const;       // at 0x1404effa0
+template bool MS2Ptr<CGuildXmlData::GuildHouse>::operator==(CGuildXmlData::GuildHouse*) const;      // at 0x1404eff20
+template bool MS2Ptr<CGuildXmlData::GuildProperty>::operator==(CGuildXmlData::GuildProperty*) const;  // at 0x1404eff60
+template bool MS2Ptr<CGuildXmlData::GuildSkill>::operator==(CGuildXmlData::GuildSkill*) const;       // at 0x1404effa0
 template bool MS2Ptr<CGuildGrade>::operator==(CGuildGrade*) const;                                        // at 0x1404effe0
 template bool MS2Ptr<CGuildMember>::operator==(CGuildMember*) const;                                      // at 0x1404f0020
 template bool MS2Ptr<CGuildNpc>::operator==(CGuildNpc*) const;                                            // at 0x1404f0060
-template bool Unk_PayloadPtr<CGuildNpcShop>::operator==(CGuildNpcShop*) const;                            // at 0x1404f00a0
+template bool MS2Ptr<CGuildNpcShop>::operator==(CGuildNpcShop*) const;                            // at 0x1404f00a0
 template bool MS2Ptr<CGuildCustomEvent>::operator==(CGuildCustomEvent*) const;                            // at 0x1404f00e0
 template bool MS2Ptr<CGuildSkill>::operator==(CGuildSkill*) const;                                        // at 0x1404f0120
-template bool Unk_PayloadPtr<CGuildXmlData::GuildNpc>::operator==(CGuildXmlData::GuildNpc*) const;           // at 0x1404f0160
-template bool Unk_PayloadPtr<CGuildXmlData::GuildEvent>::operator==(CGuildXmlData::GuildEvent*) const;       // at 0x1404f01a0
+template bool MS2Ptr<CGuildXmlData::GuildNpc>::operator==(CGuildXmlData::GuildNpc*) const;           // at 0x1404f0160
+template bool MS2Ptr<CGuildXmlData::GuildEvent>::operator==(CGuildXmlData::GuildEvent*) const;       // at 0x1404f01a0

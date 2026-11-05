@@ -73,7 +73,6 @@ class Unk_ALCurrent;
 class Unk_AttendGiftDataGroup;
 class Unk_BreakRecipes;
 class Unk_BreakRules;
-class Unk_ClubBuffTable;
 class Unk_ClubManager;
 class Unk_EmoNpcTable;
 class Unk_EnchantRates;
@@ -248,7 +247,7 @@ class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-class Unk_ClubBuffTable* FUN_140b1a4e0();   // C3: was FUN_140b1a4e0
+class CClubDataTable* FUN_140b1a4e0();   // C3: was FUN_140b1a4e0
 class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900

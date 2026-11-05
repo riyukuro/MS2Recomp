@@ -123,7 +123,7 @@ public:
 class UICastingBar : public UIObject
 {
 public:
-    void StartCastingText(class Unk_CastingListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB,
+    void StartCastingText(class ICastingEventListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB,
                        const CStringW& strExtra);                          // show
     void FUN_1418e1390();                                                  // cancel
 };
@@ -265,7 +265,7 @@ void StateSummon::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(nLabel), nDuration, false,
+            pBar->StartCastingText(static_cast<ICastingEventListener*>(this), GetStringCommon(nLabel), nDuration, false,
                                 true, strExtra);
         }
     }
@@ -434,7 +434,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(0x651), nDuration, false,
+            pBar->StartCastingText(static_cast<ICastingEventListener*>(this), GetStringCommon(0x651), nDuration, false,
                                 true, strExtra);
         }
         CStringA strArg("");
@@ -510,7 +510,7 @@ void StateRecall::vfunc_4(StateData* pData)
         if (pBar != 0)
         {
             CStringW strExtra(L"");
-            pBar->StartCastingText((class Unk_CastingListener*)static_cast<ICastingEventListener*>(this), GetStringCommon(0x657), nDuration, false,
+            pBar->StartCastingText(static_cast<ICastingEventListener*>(this), GetStringCommon(0x657), nDuration, false,
                                 true, strExtra);
         }
     }

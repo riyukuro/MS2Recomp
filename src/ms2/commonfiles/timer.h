@@ -52,14 +52,14 @@ MS2_CHECK_OFFSET(Timer, m_nPauseTime, 0x24);
 MS2_CHECK_OFFSET(Timer, m_fLastRatio, 0x28);
 MS2_CHECK_OFFSET(Timer, m_pClock, 0x30);
 
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 class TimeRange
 {
 public:
     TimeRange();                                                            // 0x140868cd0
     TimeRange(const CMsTime& start, const CMsTime& end);                    // 0x140868d10
-    void FUN_140868d60(Unk_140165cf0* pNode);                               // load "startTime"/"endTime"
+    void FUN_140868d60(TiXmlElement* pNode);                               // load "startTime"/"endTime"
     void FUN_140868db0(COutputStream& out) const;                           // write
     void FUN_140868e70(CInPacket& in);                                      // read
     CMsTime& FUN_140868f20();                                               // start

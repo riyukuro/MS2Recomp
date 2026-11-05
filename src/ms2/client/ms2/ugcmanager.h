@@ -119,7 +119,7 @@ private:
 };
 MS2_CHECK_SIZE(CUgcImageConverter, 0x38);
 
-// Result of the file helpers (also used by UIItemBlueprintCreateDialog as Unk_BpImageResult). The name is invented.
+// Result of the file helpers (also used by UIItemBlueprintCreateDialog). The name is invented.
 struct Unk_UgcFileResult
 {
     Unk_UgcFileResult() { Reset(); }                        // 0x14186e3a0
@@ -138,6 +138,7 @@ struct Unk_UgcFileResult
 MS2_CHECK_SIZE(Unk_UgcFileResult, 0x20);
 
 Unk_UgcFileResult ChangeFormat(int nType, MS2Ptr<CUploadFile> pUploadFile, int nSize, bool bPng);
+Unk_UgcFileResult SaveIconImage(CStringW strFile);                      // 0x14186cc30 (ugcmanager_1.cpp)
 efd::SmartPointer<NiTexture> LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng);
 efd::SmartPointer<NiTexture> LoadCachedTexture(const CStringW& strPath);
 int ConvertIconFile(const CStringW& strPath);

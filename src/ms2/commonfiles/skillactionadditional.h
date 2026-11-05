@@ -12,7 +12,7 @@ class SkillActionAdditional : public CPtred
 public:
     SkillActionAdditional();                                // 0x140802090
     bool operator!=(const SkillActionAdditional& o);        // 0x140802120
-    int Load(Unk_140165cf0* pElem);                         // 0x140802210
+    int Load(TiXmlElement* pElem);                         // 0x140802210
 
     unsigned m_nAdditionalID;                               // +0x18 "additionalID"
     unsigned short m_nLevel;                                // +0x1c "level"

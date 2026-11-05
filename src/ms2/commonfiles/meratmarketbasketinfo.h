@@ -23,7 +23,7 @@
 #include "ms2/commonfiles/meratproductkey.h"
 #include "ms2/placeholder/mstime.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 class CUgcPremiumProduct;
 
 // Unk_MeratProductKey: ms2/commonfiles/meratproductkey.h
@@ -176,7 +176,7 @@ public:
     bool IsSelling(__int64 nOffset);                        // 0x1406a0da0
     bool IsEventPeriod(__int64 nOffset);                    // 0x1406a0ea0
     bool FUN_1406a0fe0();
-    BOOL LoadXml(Unk_140165cf0* pElem);                     // 0x1406a12a0
+    BOOL LoadXml(TiXmlElement* pElem);                     // 0x1406a12a0
     int GetGrade();                                         // 0x1406a1630
     int GetCurrency();                                      // 0x1406a1650
     int GetDisplayId();                                     // 0x1406a1670

@@ -92,7 +92,7 @@ public:
     // MS2_REPLACE_METHOD_VIA)
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);                                          //  0 returns 0
 
-    // Returns the AS child `strName` of this entity's movie (COMDAT template; 0x14135b280 for T = Unk_ASVideoPlayer).
+    // Returns the AS child `strName` of this entity's movie (COMDAT template; 0x14135b280 for T = ASVideoPlayer).
     template <class T> MS2Ptr<T> GetChild(const CString& strName);
 
     CString FUN_1422db6e0();                                // m_20 (the manager key)

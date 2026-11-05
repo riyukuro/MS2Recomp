@@ -105,7 +105,7 @@ public:
     efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string, efd::Point3, efd::Point3, float, int, int);
 };
 NiAVObject* FUN_141b6efc0(egf::Entity*);
-void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
+// C3: FUN_140a38a50 is egf::Entity::SetPropertyValue<efd::Point3> (0x140a38a50)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 {
@@ -341,11 +341,11 @@ MS2_REPLACE_METHOD(0x1410b1120, CKfmCubeGuide, FUN_1410b1120, 762, 0xBCF2509E);
 void CKfmCubeGuide::vfunc_1() {
     if (entity != NULL && parent != NULL) {
         NiPoint3 position = parent->GetWorldTranslate();
-        FUN_140a38a50(entity.operator->(), 0xfd95ca52, position);
+        entity.operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(position));
         NiPoint3 direction;
         NiMatrix3 rotation = parent->GetWorldRotate();
         FUN_140a0b1f0(rotation, reinterpret_cast<efd::Point3&>(direction));
-        FUN_140a38a50(entity.operator->(), 0x68c7c29d, direction);
+        entity.operator->()->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(direction));
     }
     if (rootReady == 0) {
         NiPointer<NiNode> root = NiDynamicCast(NiNode, FUN_141b6efc0(entity.data()));
@@ -367,7 +367,7 @@ void CKfmCubeGuide::vfunc_1() {
     }
 }
 // @0x1410b1710
-void CKfmCubeGuide::vfunc_2(const NiPoint3& position) { FUN_140a38a50(entity.operator->(), 0xfd95ca52, position); }
+void CKfmCubeGuide::vfunc_2(const NiPoint3& position) { entity.operator->()->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(position)); }
 MS2_REPLACE_METHOD(0x1410b1710, CKfmCubeGuide, vfunc_2, 54, 0x5F732E7A);
 // @0x1410b1750
 NiPoint3 CKfmCubeGuide::vfunc_3() { NiPoint3 position; reinterpret_cast<egf::Entity*>(entity.operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(position)); return position; }
@@ -376,7 +376,7 @@ MS2_REPLACE_METHOD(0x1410b1750, CKfmCubeGuide, vfunc_3, 93, 0xB16325BF);
 void CKfmCubeGuide::vfunc_4(const NiMatrix3& rotation) {
     NiPoint3 angles;
     FUN_140a0b1f0(rotation, reinterpret_cast<efd::Point3&>(angles));
-    FUN_140a38a50(entity.operator->(), 0x68c7c29d, angles);
+    entity.operator->()->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(angles));
 }
 MS2_REPLACE_METHOD(0x1410b17c0, CKfmCubeGuide, vfunc_4, 79, 0x6E878803);
 // @0x1410b1820

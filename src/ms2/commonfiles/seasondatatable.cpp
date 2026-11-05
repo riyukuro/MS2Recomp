@@ -100,7 +100,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -113,7 +113,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
-int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);    // int attribute with default
+int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);    // int attribute with default
 CString FUN_140651390();                                                        // the language suffix of a text table
 CString FUN_14071ae20(const CString& strFile);                                  // path of a string table file
 __int64 GetServerTime();                                                       // the server time
@@ -509,14 +509,14 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     TPtrValue<Seasons> spSeasons;
     spSeasons = Unk_GrNewTag(0);
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("Season")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("Season"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("Season")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("Season"))) {
         MS2Ptr<CSeasonData> spData(new CSeasonData);
         spData->m_type = type;
         XmlGetAttr((class TiXmlElement*)(pNode), "seasonID", reinterpret_cast<int&>(spData->m_nSeasonID));
@@ -612,10 +612,10 @@ int CSeasonDataTable::ReadNames()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
         return 0;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("season"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("season")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("season"))) {
         CStringA strKind;
         XmlGetAttr((class TiXmlElement*)(pNode), "type", strKind);
         int nSeason;
@@ -694,13 +694,13 @@ int CSeasonDataTable::ReadRewards()
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     ATL::CAtlList<MS2Ptr<CSeasonRewardData> > entries(10);
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("SeasonReward")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("SeasonReward"))) {
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("SeasonReward")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("SeasonReward"))) {
         MS2Ptr<CSeasonRewardData> spData(new CSeasonRewardData);
         XmlGetAttr((class TiXmlElement*)(pNode), "rewardID", reinterpret_cast<int&>(spData->m_nRewardID));
         XmlGetAttr((class TiXmlElement*)(pNode), "rankType", reinterpret_cast<int&>(spData->m_nRankType));

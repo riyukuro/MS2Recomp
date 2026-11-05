@@ -1106,17 +1106,17 @@ CStringW FUN_141277be0(MS2Ptr<CItemData> item)
 }
 MS2_REPLACE(0x141277be0, FUN_141277be0, 478, 0xA2D611FC);
 
-class Unk_ConstString : public Scaleform::GFx::Value {
-public:
-    bool FUN_141278ab0() { return GetType() == 7; }              // COMDAT 0x141278ab0
-    const wchar_t* FUN_1412788a0() { return mValue.pStringW; }   // COMDAT 0x1412788a0
-};
+// C3: the former Unk_ConstString view is Scaleform::GFx::Value itself:
+//   COMDAT 0x141278ab0 = Value::IsStringW (gfx_value.h)
+//   COMDAT 0x1412788a0 = Value::GetStringW (gfx_value.h)
+//   (both carry the SDK names in symbols.tsv)
+//
 CStringW XmlWide(const char*);
 
 // @0x141277dd0
-CStringW FUN_141277dd0(Unk_ConstString* pValue)
+CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue)
 {
-    return CStringW(pValue->FUN_141278ab0() ? pValue->FUN_1412788a0() : (const wchar_t*)XmlWide(pValue->GetString()));
+    return CStringW(pValue->IsStringW() ? pValue->GetStringW() : (const wchar_t*)XmlWide(pValue->GetString()));
 }
 MS2_REPLACE(0x141277dd0, FUN_141277dd0, 194, 0x729980BF);
 

@@ -16,7 +16,7 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/nipoint3.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 class Unk_GcCondList;
 
 // The [min, max] pair of a trigger range: valid when max >= min and not both 0. The ctor zeroes it (0x1405c38a0, the
@@ -35,7 +35,7 @@ class CGuideCondition : public ClassObject
 public:
     CGuideCondition();                                      // 0x1413a54e0
     virtual ~CGuideCondition();                             // 0 0x1413a5540
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a5670: "value" / negate attributes
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a5670: "value" / negate attributes
     virtual int vfunc_3();                                  // 3 0x1413a56d0: 0
     virtual void vfunc_4();                                 // 4 0x1413a56e0
     virtual void vfunc_5();                                 // 5 0x1413a56f0: logs "Nothing TestCase"
@@ -60,7 +60,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a9bc0
     CGuideConditionFieldId();                               // 0x1413b2cf0
     virtual CStringW GetTypeName();                             // 1 0x1413a9c20
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a9c70
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a9c70
     virtual int vfunc_3();                                  // 3 0x1413a9d40
     virtual CStringW vfunc_7();                             // 7 0x1413a9df0
     virtual int vfunc_8();                                  // 8 0x1413a9ec0
@@ -77,7 +77,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a9610
     CGuideConditionCountItem();                             // 0x1413b2b60
     virtual CStringW GetTypeName();                             // 1 0x1413a9670
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a96c0: itemType / minValue / maxValue
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a96c0: itemType / minValue / maxValue
     virtual int vfunc_3();                                  // 3 0x1413a9770
     virtual CStringW vfunc_7();                             // 7 0x1413a9820
     virtual int vfunc_8();                                  // 8 0x1413a98f0: 0
@@ -110,7 +110,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a6580
     CGuideConditionInput();                                 // 0x1413a6630
     virtual CStringW GetTypeName();                             // 1 0x1413a65e0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6670
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a6670
     virtual int vfunc_3();                                  // 3 0x1413a66c0
     virtual void vfunc_4();                                 // 4 0x1413a67d0
     virtual CStringW vfunc_7();                       // 7 0x1413a6800
@@ -223,7 +223,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a7e60
     CGuideConditionQuestComplete();                         // 0x1413b32b0
     virtual CStringW GetTypeName();                             // 1 0x1413a7ec0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a7f10
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a7f10
     virtual int vfunc_3();                                  // 3 0x1413a7f50
     virtual int vfunc_8();                                  // 8 0x1413a7f90
 };
@@ -236,7 +236,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a7fc0
     CGuideConditionQuestProgress();                         // 0x1413b32e0
     virtual CStringW GetTypeName();                             // 1 0x1413a8020
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a8070
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a8070
     virtual int vfunc_3();                                  // 3 0x1413a80b0
     virtual int vfunc_8();                                  // 8 0x1413a80f0
 };
@@ -249,7 +249,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a8120
     CGuideConditionDead();                                  // 0x1413b2bc0
     virtual CStringW GetTypeName();                             // 1 0x1413a8180
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a81d0
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a81d0
     virtual int vfunc_3();                                  // 3 0x1413a8210
     virtual int vfunc_8();                                  // 8 0x1413a8260
 };
@@ -275,7 +275,7 @@ public:
     CGuideConditionDialog();                                // 0x1413a60c0
     // implicit ~CGuideConditionDialog();                   // 0 0x1413b38a0 (??_G 0x1413b4700)
     virtual CStringW GetTypeName();                             // 1 0x1413a6070
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6480: dialogName / dialogID / isOpen / subIndex / control
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a6480: dialogName / dialogID / isOpen / subIndex / control
     virtual int vfunc_3();                                  // 3 0x1413a6140
     virtual CStringW vfunc_7();                             // 7 0x1413a6300
     virtual int vfunc_8();                                  // 8 0x1413a6430
@@ -305,7 +305,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a6e30
     CGuideConditionPosition();                              // 0x1413a6ee0
     virtual CStringW GetTypeName();                             // 1 0x1413a6e90
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6f30: the "cube" children (pos="x,y,z" range=75)
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a6f30: the "cube" children (pos="x,y,z" range=75)
     virtual int vfunc_3();                                  // 3 0x1413a70e0
     virtual CStringW vfunc_7();                             // 7 0x1413a7220
 
@@ -342,7 +342,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a8370
     CGuideConditionEquipSkill();                            // 0x1413a8420
     virtual CStringW GetTypeName();                             // 1 0x1413a83d0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a8460: "isEquip"
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a8460: "isEquip"
     virtual int vfunc_3();                                  // 3 0x1413a84b0
     virtual CStringW vfunc_7();                             // 7 0x1413a8530
 
@@ -392,7 +392,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a8900
     CGuideConditionEquipItem();                             // 0x1413b2c20
     virtual CStringW GetTypeName();                             // 1 0x1413a8960
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a89b0: slotType / slotName / itemID / itemRangeBeginID / itemRangeLastID
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a89b0: slotType / slotName / itemID / itemRangeBeginID / itemRangeLastID
     virtual int vfunc_3();                                  // 3 0x1413a8aa0
     virtual CStringW vfunc_7();                             // 7 0x1413a8da0
 
@@ -424,7 +424,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a8fc0
     CGuideConditionDesignItem();                            // 0x1413b2bf0
     virtual CStringW GetTypeName();                             // 1 0x1413a9020
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a9070: "itemType"
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a9070: "itemType"
     virtual int vfunc_3();                                  // 3 0x1413a90d0
     virtual CStringW vfunc_7();                             // 7 0x1413a9260
     virtual int vfunc_8();                                  // 8 0x1413a9310: 0
@@ -441,7 +441,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a9320
     CGuideConditionExistItem();                             // 0x1413b2c60
     virtual CStringW GetTypeName();                             // 1 0x1413a9380
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a93d0: itemId / itemType / iconType
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a93d0: itemId / itemType / iconType
     virtual int vfunc_3();                                  // 3 0x1413a9480
     virtual CStringW vfunc_7();                             // 7 0x1413a9540
 
@@ -512,7 +512,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aa070
     CGuideConditionAnyOne();
     virtual CStringW GetTypeName();                             // 1 0x1413aa0d0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa120: the nested conditions
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aa120: the nested conditions
     virtual int vfunc_3();                                  // 3 0x1413aa1d0
     virtual void vfunc_4();                                 // 4 0x1413aa250
 
@@ -527,7 +527,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aa2e0
     CGuideConditionAllOf();
     virtual CStringW GetTypeName();                             // 1 0x1413aa340
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa390
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aa390
     virtual int vfunc_3();                                  // 3 0x1413aa500
     virtual bool vfunc_6(Unk_GcCondList* pFailed);          // 6 0x1413aa440: true; appends the failing conditions
 
@@ -542,7 +542,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aa580
     CGuideConditionAchieveExistTrophy();
     virtual CStringW GetTypeName();                             // 1 0x1413aa5e0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa630: achieveType
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aa630: achieveType
     virtual int vfunc_3();                                  // 3 0x1413aa680
     virtual CStringW vfunc_7();                             // 7 0x1413aa6c0
 
@@ -557,7 +557,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aa7e0
     CGuideConditionGuideOpen();
     virtual CStringW GetTypeName();                             // 1 0x1413aa840
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aa890: id (kind 13)
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aa890: id (kind 13)
     virtual int vfunc_3();                                  // 3 0x1413aa8f0
     virtual CStringW vfunc_7();                             // 7 0x1413aa990
     virtual int vfunc_8();                                  // 8 0x1413aaa40: 0
@@ -573,7 +573,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aaa50
     CGuideConditionGuideClear();
     virtual CStringW GetTypeName();                             // 1 0x1413aaab0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aab00: id (kind 2)
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aab00: id (kind 2)
     virtual int vfunc_3();                                  // 3 0x1413aab60
     virtual CStringW vfunc_7();                             // 7 0x1413aaba0
     virtual int vfunc_8();                                  // 8 0x1413aac50
@@ -589,7 +589,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413aac80
     CGuideConditionExistShortcut();
     virtual CStringW GetTypeName();                             // 1 0x1413aace0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aad30: slotIndex / skillID
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aad30: slotIndex / skillID
     virtual int vfunc_3();                                  // 3 0x1413aadb0
     virtual CStringW vfunc_7();                             // 7 0x1413aae10
 
@@ -627,7 +627,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ab0e0
     CGuideConditionMyPlayerLevel();
     virtual CStringW GetTypeName();                             // 1 0x1413ab140
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab190: kind 4
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ab190: kind 4
     virtual int vfunc_3();                                  // 3 0x1413ab1d0
     virtual int vfunc_8();                                  // 8 0x1413ab240: 0
 };
@@ -651,7 +651,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ab350
     CGuideConditionPlaceUgcCube();
     virtual CStringW GetTypeName();                             // 1 0x1413ab3b0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab400: itemId / minCount / maxCount
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ab400: itemId / minCount / maxCount
     virtual int vfunc_3();                                  // 3 0x1413ab490
     virtual CStringW vfunc_7();                             // 7 0x1413ab5b0
 
@@ -668,7 +668,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ab750
     CGuideConditionPlaceUgcCubeItem();
     virtual CStringW GetTypeName();                             // 1 0x1413ab7b0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ab800: pos / isAttachable
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ab800: pos / isAttachable
     virtual int vfunc_3();                                  // 3 0x1413ab870
     virtual CStringW vfunc_7();                             // 7 0x1413ab9e0
 
@@ -684,7 +684,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413abb80
     CGuideConditionPlaceUgcCubeByIconType();
     virtual CStringW GetTypeName();                             // 1 0x1413abbe0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413abc30: iconType
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413abc30: iconType
     virtual int vfunc_3();                                  // 3 0x1413abc90
     virtual CStringW vfunc_7();                             // 7 0x1413abce0
 
@@ -699,7 +699,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413abd90
     CGuideConditionInteractObject();
     virtual CStringW GetTypeName();                             // 1 0x1413abdf0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413abe40: interactId / distance / state
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413abe40: interactId / distance / state
     virtual int vfunc_3();                                  // 3 0x1413abec0
     virtual CStringW vfunc_7();                             // 7 0x1413ac050
 
@@ -716,7 +716,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ac120
     CGuideConditionLastClosedTextTip();
     virtual CStringW GetTypeName();                             // 1 0x1413ac180
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac1d0: entityId (throws on 0)
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ac1d0: entityId (throws on 0)
     virtual int vfunc_3();                                  // 3 0x1413ac290
     virtual CStringW vfunc_7();                             // 7 0x1413ac2f0
 
@@ -731,7 +731,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ac3a0
     CGuideConditionConstructSlot();
     virtual CStringW GetTypeName();                             // 1 0x1413ac400
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac450: slotIdx / isIndoor / isOutdoor
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ac450: slotIdx / isIndoor / isOutdoor
     virtual int vfunc_3();                                  // 3 0x1413ac4f0: 1
     virtual void vfunc_5();                                 // 5 0x1413ac510
     virtual CStringW vfunc_7();                             // 7 0x1413ac520
@@ -761,7 +761,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ac790
     CGuideConditionServerTime();
     virtual CStringW GetTypeName();                             // 1 0x1413ac7f0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ac840: dateTime
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ac840: dateTime
     virtual int vfunc_3();                                  // 3 0x1413ac890
     virtual void vfunc_5();                                 // 5 0x1413ac8e0: logs the times
     virtual CStringW vfunc_7();                             // 7 0x1413acbe0
@@ -789,7 +789,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ace40
     CGuideConditionHasMoney();
     virtual CStringW GetTypeName();                             // 1 0x1413acea0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413acef0: moneyType
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413acef0: moneyType
     virtual int vfunc_3();                                  // 3 0x1413ad020
     virtual CStringW vfunc_7();                             // 7 0x1413ad250
 
@@ -807,7 +807,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413adb00
     CGuideConditionBattleState();// 0x1413b2a10
     virtual CStringW GetTypeName();                             // 1 0x1413adb60
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413adbb0
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413adbb0
     virtual int vfunc_3();                                  // 3 0x1413adbf0
     virtual int vfunc_8();                                  // 8 0x1413adc50
 };
@@ -864,7 +864,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413ad7e0
     CGuideConditionJobCode();// 0x1413b2f30
     virtual CStringW GetTypeName();                             // 1 0x1413ad840
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ad890
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ad890
     virtual int vfunc_3();                                  // 3 0x1413ad8d0
     virtual int vfunc_8();                                  // 8 0x1413ad940
 };
@@ -909,7 +909,7 @@ class CGuideConditionMentoringPage : public CGuideCondition
 public:
     CGuideConditionMentoringPage();// 0x1413b3020
     virtual CStringW GetTypeName();                             // 1 0x1413ae9f0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413aea40
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413aea40
     virtual int vfunc_3();                                  // 3 0x1413aea80
     virtual CStringW vfunc_7();                             // 7 0x1413aebb0
 
@@ -923,7 +923,7 @@ class CGuideConditionMenuExpand : public CGuideCondition
 public:
     CGuideConditionMenuExpand();// 0x1413b3060
     virtual CStringW GetTypeName();                             // 1 0x1413adeb0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413adf00
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413adf00
     virtual int vfunc_3();                                  // 3 0x1413adf50
     virtual CStringW vfunc_7();                             // 7 0x1413adfd0
 
@@ -992,7 +992,7 @@ class CGuideConditionSubJobCode : public CGuideCondition
 public:
     CGuideConditionSubJobCode();// 0x1413b3450
     virtual CStringW GetTypeName();                             // 1 0x1413ad9b0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413ada00
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413ada00
     virtual int vfunc_3();                                  // 3 0x1413ada50
 
     CAtlArray<int> m_subJobCodes;                           // +0x28
@@ -1029,7 +1029,7 @@ class CGuideConditionButtonSelected : public CGuideCondition
 public:
     CGuideConditionButtonSelected();                        // 0x1413aed50
     virtual CStringW GetTypeName();                             // 1 0x1413aed00
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af0c0: dialogName / childName (rejects "not")
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413af0c0: dialogName / childName (rejects "not")
     virtual int vfunc_3();                                  // 3 0x1413aedb0
     virtual CStringW vfunc_7();                             // 7 0x1413af190
 
@@ -1044,7 +1044,7 @@ class CGuideConditionContract : public CGuideCondition
 public:
     CGuideConditionContract();                              // 0x1413af330
     virtual CStringW GetTypeName();                             // 1 0x1413af2e0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af560: dialogID / childName / dialogName
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413af560: dialogID / childName / dialogName
     virtual int vfunc_3();                                  // 3 0x1413af3b0
     virtual CStringW vfunc_7();                             // 7 0x1413af5e0
 
@@ -1061,7 +1061,7 @@ class CGuideConditionHomeMode : public CGuideCondition
 public:
     CGuideConditionHomeMode();                              // 0x1413af7f0
     virtual CStringW GetTypeName();                             // 1 0x1413af7a0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413af880
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413af880
     virtual int vfunc_3();                                  // 3 0x1413af830
     virtual CStringW vfunc_7();                             // 7 0x1413af8d0
 
@@ -1077,7 +1077,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413af980
     CGuideConditionEnterDungeon();                          // 0x1413afa30
     virtual CStringW GetTypeName();                             // 1 0x1413af9e0
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413afa70
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413afa70
     virtual int vfunc_3();                                  // 3 0x1413afab0
     virtual int vfunc_8();                                  // 8 0x1413afb10
 };
@@ -1090,7 +1090,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413afb20
     CGuideConditionChatEmoticon();                          // 0x1413afbd0
     virtual CStringW GetTypeName();                             // 1 0x1413afb80
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413afc10
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413afc10
     virtual int vfunc_3();                                  // 3 0x1413afc50
     virtual int vfunc_8();                                  // 8 0x1413afca0
 };
@@ -1103,7 +1103,7 @@ public:
     static ClassObject* CreateObject();                     // 0x1413a59a0
     CGuideConditionTrigger();                               // 0x1413a5a50
     virtual CStringW GetTypeName();                             // 1 0x1413a5a00
-    virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a5ad0
+    virtual void vfunc_2(TiXmlElement* pElem);             // 2 0x1413a5ad0
     virtual int vfunc_3();                                  // 3 0x1413a5bb0
     virtual CStringW vfunc_7();                             // 7 0x1413a5c80
 

@@ -64,7 +64,7 @@
 class TShopPaymentAttr { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const & GetIconTag(void) const; enum ePaymentType FUN_1406dc510(void) const; unsigned int GetItemId(void) const; };
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
-class Unk_140acd6e0 : public ASButton {};                       // the button wrapper; its click callback is ASButton::FUN_1422ce240
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 
 
 CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narrow
@@ -665,12 +665,12 @@ MS2_REPLACE(0x14134a5a0, FUN_14134a5a0, 112, 0x127C11A5);
 
 // @0x14134a480
 // Binds the probability info button (KR builds only) and opens ShopProbInfoUrl on click.
-void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>* pButton)
+void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pButton)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         return;
     if (*pButton == 0)
-        *pButton = root.FUN_140acce30<Unk_140acd6e0>(strName);
+        *pButton = root.FUN_140acce30<ASButton>(strName);
     if (*pButton == 0)
         return;
     (*pButton)->vfunc_4(true);

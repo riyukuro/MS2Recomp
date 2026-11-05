@@ -14,7 +14,7 @@
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/commonfiles/os.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 struct Unk_AsOut;       // the AS object a tab is written into (AScript layout)
 
 class CShopCategoryTable : public TSingleton<CShopCategoryTable>, public CValidData<CShopCategoryTable>, public CCacheData
@@ -27,7 +27,7 @@ public:
 
         TabInfo(int nKind);                                                 // 0x1407c9f40
         virtual ~TabInfo();                                                 // 0x1407ca000
-        virtual bool Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spParent);   // 0x1407ca080 one <tab>
+        virtual bool Load(TiXmlElement* pElem, MS2Ptr<TabInfo> spParent);   // 0x1407ca080 one <tab>
         virtual void Write(Unk_AsOut* pOut);                                // 0x1407ca3a0 the tab as an AS object
         CStringW GetName();                                                 // 0x1407ca4e0 the tab caption
         int GetId() const { return m_nId; }                                 // 0x1407ccb40
@@ -47,7 +47,7 @@ public:
     struct SortTabInfo : public TabInfo
     {
         SortTabInfo();                                                      // 0x1407ca540
-        virtual bool Load(Unk_140165cf0* pElem, MS2Ptr<TabInfo> spParent);   // 0x1407ca590
+        virtual bool Load(TiXmlElement* pElem, MS2Ptr<TabInfo> spParent);   // 0x1407ca590
         virtual void Write(Unk_AsOut* pOut);                                // 0x1407ca770
 
         bool m_bSortGender;                 // +0x78 "sortGender"
@@ -65,9 +65,9 @@ public:
     virtual ~CShopCategoryTable();                                          // 0x1407caad0
 
     void Load();                                                            // 0x1407cab80 every file in m_caches
-    void LoadCategories(Unk_140165cf0* pRoot);                              // 0x1407cad10 the <category> list
+    void LoadCategories(TiXmlElement* pRoot);                              // 0x1407cad10 the <category> list
     TabPtr NewTab(int nTabType);                                            // 0x1407caee0
-    void LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& rMap, TabList* pList, TabPtr spParent);   // 0x1407cb000
+    void LoadTabs(int nTabType, TiXmlElement* pParent, TabMap& rMap, TabList* pList, TabPtr spParent);   // 0x1407cb000
     void Clear();                                                           // 0x1407cb360
     bool Reload(bool bForce);                                               // 0x1407cb390 reload when a file changed
     TabListPtr GetTabs(int nCategory);                                      // 0x1407cb490

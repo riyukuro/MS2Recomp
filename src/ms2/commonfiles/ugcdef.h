@@ -686,9 +686,9 @@ public:
     virtual ~CUgcCharBookMark();                            // 0x140896d00
 
     void FUN_140896d90();                                   // clear the map and the list
-    void FUN_140896dd0(MS2Ptr<Unk_MeratEquipEntry> spEntry);                // add an entry (list + map)
+    // 0x140896dd0 adds an entry (list + map); declared below with its recovered type
     void FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> >& out);  // copy of the list
-    MS2Ptr<Unk_MeratEquipEntry> FUN_140896e80(const Unk_MeratOid& oid);         // the entry of a key
+    // 0x140896e80, the entry of a key, is declared below with its recovered types
     MS2Ptr<Unk_MeratEquipEntry> FUN_140896f00(__int64 nId);                 // the entry whose +0x288 is nId
     // The same exe functions typed with the recovered classes (Unk_CharBookMarkOwner = CUgcBookMark, Unk_MeratEquipEntry =
     // CMeratMarketProduct, Unk_MeratOid = Unk_MeratProductKey; client\ms2\meratmarketman.cpp calls these).

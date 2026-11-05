@@ -55,7 +55,7 @@
 #include "worldservice.h"
 #include "pcbase.h"
 #include "ms2/commonfiles/filebuffer_1.h"
-#include "ms2/unnamed/payloadptr_1401f9eb0.h"   // C3: CFileSystem::BufferPtr, UITriggerEditorDialog::FUN_141b2b7e0's argument
+#include "ms2/placeholder/ascript.h"   // C3: MS2Ptr<CFileBuffer> (UITriggerEditorDialog::FUN_141b2b7e0's argument)
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/sidepopuptalkparam.h"
 #include "ms2/placeholder/statetriggeremotiondata.h"
@@ -145,7 +145,7 @@ public:
     virtual void vfunc_84();
     void FUN_140ee57b0(int nA, int nB);
 };
-class UITriggerEditorDialog { public: int FUN_141b2b7e0(Unk_PayloadPtr<CFileBuffer> spBuffer); };   // C3: member view (uitriggereditordialog.h); 0x141b2b7e0 shows a downloaded script
+class UITriggerEditorDialog { public: int FUN_141b2b7e0(MS2Ptr<CFileBuffer> spBuffer); };   // C3: member view (uitriggereditordialog.h); 0x141b2b7e0 shows a downloaded script
 template <class T> T* Unk_FcDialog(int nId);   // C3: the dialog of a UI id (functioncubeobject.cpp)
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
@@ -520,7 +520,7 @@ void CTriggerService::OnTextPopup(CInPacket* pEvent)
     spBuffer->SetText(strWide);
     UITriggerEditorDialog* pUi = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
     if (pUi != 0)
-        pUi->FUN_141b2b7e0(reinterpret_cast<Unk_PayloadPtr<CFileBuffer>&>(spBuffer));   // MS2Ptr<CFileBuffer> and the payload pointer share their copy 0x1403a58f0
+        pUi->FUN_141b2b7e0(spBuffer);   // copy 0x1403a58f0
 }
 
 // @0x141862110

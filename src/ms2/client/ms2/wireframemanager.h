@@ -22,15 +22,15 @@ struct Unk_WfEntTraits : public ATL::CElementTraitsBase<egf::EntityPtr>
     }
 };
 
-class Unk_WireframeRegistrar
-{
-public:
-    Unk_WireframeRegistrar(const void* pNameRecord, size_t nReserved);
-
-    const void* m_pNameRecord;          // +0x00
-    size_t      m_nReserved;            // +0x08
-};
-extern Unk_WireframeRegistrar g_wireframeRegistrar;           // 0x143af8110
+// C3: the TU's "registrar" is the class's NiRTTI: its ctor 0x141d16b90 is NiRTTI::NiRTTI(const char*, const NiRTTI*)
+// ([this] = m_pcName, [this+8] = m_pkBaseRTTI), and vfunc_2 returns its address (GetRTTI).
+#include <NiRTTI.h>
+//
+//
+//
+//
+//
+extern NiRTTI g_wireframeRegistrar;           // 0x143af8110
 
 class CWireframeManager : public NiRefObject
 {

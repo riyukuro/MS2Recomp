@@ -62,7 +62,7 @@ void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void* FUN_141bd0cc0();
+    void* FUN_141bd0cc0();  MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id);   // 0x141bc9be0
     static class WorldService* GetInstance();
 };
 class GameObject   // C3: member view for the former free stand-ins
@@ -88,8 +88,8 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;   // the owned titles (scenestategame.cpp)
 class Unk_IntTriple { public: int Sum(); };
 class Unk_NametagScore : public Unk_IntTriple {};    // the trophy points
-class Unk_NametagTrophy { public: Unk_NametagScore* FUN_140938ad0(); };
-class CAchieveManager;
+class Unk_NametagTrophy;   // = CAchieveManager: FUN_1406c7600 returns its singleton (l.446)
+class CAchieveManager { public: struct Unk_AchieveTab* GetTally(); };   // C3: member view (achievemanager.h, 0x140938ad0), the trophy points
 struct Unk_NametagFlags { char m_pad[0x30]; unsigned char m_bEnabled; };
 class MentoringDataTable;
 Unk_NametagTrophy* FUN_1406c7600();
@@ -102,7 +102,7 @@ public:
     char m_pad[0xd0 - 0x18];
     Unk_NametagScore m_score;
 };
-struct Unk_NtPlayer { MS2Ptr<Unk_NametagChar> FUN_141bc9be0(int nCharId); };
+struct Unk_NtPlayer;   // its FUN_141bc9be0 was WorldService::FindProxyObject (0x141bc9be0)
 
 // The unit's init flag and singleton are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -134,17 +134,17 @@ int CNametagSymbolTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "symbol", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         if (pNode == 0)
             continue;
         CNametagSymbolDataPtr spData(new CNametagSymbolData);
@@ -247,7 +247,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         case NAMETAG_CONDITION_LEVEL:
             return pActor->vfunc_78() >= 50;
         case NAMETAG_CONDITION_TROPHY_POINT:
-            return FUN_1406c7600()->FUN_140938ad0()->Sum() >= 1000;
+            return reinterpret_cast<Unk_NametagScore*>(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->GetTally())->Sum() >= 1000;
         case NAMETAG_CONDITION_TITLE:
             return Unk_ArrayFind<unsigned>(DAT_143ab3268, reinterpret_cast<const unsigned&>(spData->m_nCode)) != -1;
         case NAMETAG_CONDITION_ENCHANT:
@@ -312,12 +312,12 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     case NAMETAG_CONDITION_TROPHY_POINT:
     {
         CStringW strIcon(spData->m_strIcon);
-        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(((void*)WorldService::GetInstance()))->FUN_141bc9be0(((class GameObject*)(class Unk_NametagActor*)(pActor))->FUN_14123c580());
-        if (spChar.get() != 0)
+        MS2Ptr<class CProxyGameObject> spChar = WorldService::GetInstance()->FindProxyObject(((class GameObject*)(class Unk_NametagActor*)(pActor))->FUN_14123c580());
+        if (reinterpret_cast<MS2Ptr<Unk_NametagChar>&>(spChar).get() != 0)
         {
-            if (spChar->m_score.Sum() < 2000)
+            if (reinterpret_cast<MS2Ptr<Unk_NametagChar>&>(spChar)->m_score.Sum() < 2000)
                 strIcon += L"1000";
-            else if (spChar->m_score.Sum() < 3000)
+            else if (reinterpret_cast<MS2Ptr<Unk_NametagChar>&>(spChar)->m_score.Sum() < 3000)
                 strIcon += L"2000";
             else
                 strIcon += L"3000";

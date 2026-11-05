@@ -28,9 +28,9 @@ public:
 float FUN_140a4e660(float fY, float fX);                    // atan2
 
 // @0x14160c230
-float FUN_14160c230(const Vector3* p)
+float FUN_14160c230(const Vector3& v)
 {
-    return p->x * p->x + p->y * p->y + p->z * p->z;
+    return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 MS2_REPLACE(0x14160C230, FUN_14160c230, 72, 0x8F023533);
 
@@ -48,7 +48,7 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
     *pPos = FUN_1409ab5c0(1.0f - fT, m_vStart).FUN_14097fd50(FUN_1409ab5c0(fT, m_vEnd));
     pPos->z = pPos->z + m_fHeight * 4.0f * fT * (1.0f - fT);
     Vector3 vDir = m_vEnd.FUN_140965c40(m_vStart);
-    if (FUN_14160c230(&vDir) > 0.0f)
+    if (FUN_14160c230(vDir) > 0.0f)
         *pAngle = 90.0f + FUN_140a4e660(vDir.y, vDir.x) * 180.0f / 3.1415927f;
 }
 

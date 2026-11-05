@@ -267,7 +267,7 @@ public:
     explicit BasicFormatter(BasicWriter<Char, std::allocator<Char> >& w) : writer_(w) {}   // 0x1401cfc60 (wide)
     const Char* format(const Char*&, const internal::Arg&);
     // MS2: BasicFormatter<wchar_t>::format(WStringRef, const ArgList&) 0x1402daa70, not recovered.
-    void FUN_1402daa70(BasicStringRef<Char> format, const ArgList& args);
+    void FUN_1402daa70(BasicStringRef<Char> format, const ArgList& args); void format(BasicStringRef<Char> format, const ArgList& args);   // MS2: format is 0x1402d9f20 for char (gb:fmt/format lib)
 private:
     BasicWriter<Char, std::allocator<Char> >& writer_;              // +0x18
     const Char* start_;                                             // +0x20

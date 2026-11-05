@@ -77,7 +77,7 @@ public:
     CString FUN_141a32750(NpcDataCli* pNpc);                    // NpcIcon
     CString GetStateForIcon(const CString& strIcon);              // NpcState
     CString GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon);   // NpcLayer
-    CStringW GetFriendHomeTooltip(Unk_BuddyPtr<CBuddy> spBuddy);       // BuddyHomeText
+    CStringW GetFriendHomeTooltip(MS2Ptr<CBuddy> spBuddy);       // BuddyHomeText
 
     MS2Ptr<ASMovieClip> m_clip;                                 // +0x18
     CString m_icon;                                             // +0x28 mcname
@@ -140,10 +140,10 @@ MS2_CHECK_SIZE(UIMinimapEntityProxyPortal, 0x80);
 class UIMinimapEntityBuddyHome : public UIMinimapEntity
 {
 public:
-    explicit UIMinimapEntityBuddyHome(Unk_BuddyPtr<CBuddy> spBuddy);   // 0x141a34550
+    explicit UIMinimapEntityBuddyHome(MS2Ptr<CBuddy> spBuddy);   // 0x141a34550
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a345c0
 
-    Unk_BuddyPtr<CBuddy> m_buddy;                               // +0x68
+    MS2Ptr<CBuddy> m_buddy;                               // +0x68
 };
 MS2_CHECK_SIZE(UIMinimapEntityBuddyHome, 0x78);
 
@@ -306,7 +306,7 @@ public:
     void FUN_141a3dbb0();                                       // BuildTaxi
     void FUN_141a3dda0();                                       // BuildReturn
     void FUN_141a3df40();                                       // BuildTelescope
-    void FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy);           // AddBuddyHome
+    void FUN_141a3e2d0(MS2Ptr<CBuddy> spBuddy);           // AddBuddyHome
     void FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity);   // AddTrigger
     bool FUN_141a3e7d0(EntityPtr spEntity);                     // CreateEntity
     void FUN_141a3ea10();                                       // BuildEntities
@@ -318,7 +318,7 @@ public:
     void FUN_141a3f600(ProxyPtr spProxy);                       // RemoveProxy
     void FUN_141a3f730(MS2Ptr<ASMovieClip> spClip, ProxyPtr spProxy);   // RemoveClip
     void FUN_141a3f930(EntityPtr spEntity);                     // RemoveEntity
-    void FUN_141a3f9f0(Unk_BuddyPtr<CBuddy> spBuddy);           // RemoveBuddyHome
+    void FUN_141a3f9f0(MS2Ptr<CBuddy> spBuddy);           // RemoveBuddyHome
     void FUN_141a3fb10();                                       // RemoveAllEntities
     void FUN_141a3fd20();                                       // ClearEntityContainers
     void FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n);   // RefreshProxy

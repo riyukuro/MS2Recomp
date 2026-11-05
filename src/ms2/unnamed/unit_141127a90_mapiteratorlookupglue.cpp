@@ -190,15 +190,15 @@ Unk_IterA<12>* FUN_14111daa0(void*, Unk_IterA<12>*, void*);
 Unk_IterA<13>* FUN_14111dae0(void*, Unk_IterA<13>*, void*);
 Unk_IterA<13>* FUN_14111db20(void*, Unk_IterA<13>*, void*);
 Unk_IterA<14>* FUN_14111db60(void*, Unk_IterA<14>*, void*);
-char* FUN_140d7b4e0(Unk_Cursor*);
+// 0x140d7b4e0 = std::map<int, bool>::iterator::operator-> (the ICF copy FUN_141127f50 calls)
 Unk_Cursor* FUN_14111dba0(void*, Unk_Cursor*, void*);
-char* FUN_14025cf40(Unk_Cursor*);
-Unk_Cursor* FUN_14111dbe0(void*, Unk_Cursor*, void*);
+#include <map>
+#include "ms2/placeholder/ms2svrptr.h"   // C3: the real maps of FUN_141127f90 / FUN_141128010 (below)
 void* FUN_140181b80(Unk_Key*);
-char* FUN_1404482f0(Unk_Cursor*);
+// 0x1404482f0 = std::map<unsigned long, unsigned long>::iterator::operator-> (the ICF copy FUN_141127fd0 calls)
 Unk_Cursor* FUN_14111dc20(void*, Unk_Cursor*, void*);
-char* FUN_1409ee2e0(Unk_Cursor*);
-Unk_Cursor* FUN_14111dc60(void*, Unk_Cursor*, void*);
+#include "ms2/commonfiles/ugcmapsetiteminfo.h"
+
 Unk_IterA<15>* FUN_14111dca0(void*, Unk_IterA<15>*, void*);
 Unk_IterA<16>* FUN_14111dce0(void*, Unk_IterA<16>*, void*);
 void* FUN_1404eb810(Unk_Key*);
@@ -217,8 +217,8 @@ class Cube;
 template <class T> class MS2Ptr;
 std::pair<const int, MS2Ptr<Cube> >* FUN_140885360(void* pIter);   // ugcbuildvalidator.cpp
 Unk_Cursor* FUN_14111dfa0(void*, Unk_Cursor*, void*);
-Unk_Elem52** FUN_141148ff0(Unk_Array52*);
-int** FUN_141149030(Unk_ArrayInt*);
+#include <efd/StdContainers.h>   // C3: FUN_141148ff0 / FUN_141149030 were the vectors' _Myfirst()
+struct Unk_CMISElem52; enum Unk_CMISKindC : int;   // cubemapinformationservice_tail.h
 
 // @0x1411284e0
 char* FUN_1411284e0(Unk_IterB<21>* pIter)
@@ -507,28 +507,28 @@ char* FUN_141127f10(void* pMap, void* key)
 char* FUN_141127f50(void* pMap, Unk_Key* pKey)
 {
     Unk_InsPair<Unk_Cursor> it;
-    return (FUN_140d7b4e0(FUN_14111dba0(pMap, &it.first, FUN_140181b70(pKey))) + 4);
+    return (char*)&reinterpret_cast<std::map<int, bool>::iterator*>(FUN_14111dba0(pMap, &it.first, FUN_140181b70(pKey)))->operator->()->second;
 }
 
 // @0x141127f90
 char* FUN_141127f90(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_Cursor> it;
-    return (FUN_14025cf40(FUN_14111dbe0(pMap, &it.first, FUN_140181b80(pKey))) + 4);
+    // C3: std::map<unsigned, int>::operator[](unsigned&&): try_emplace 0x14111dbe0, iterator::operator-> 0x14025cf40, std::move<unsigned&> 0x140181b80
+    return (char*)&((std::map<unsigned, int>*)pMap)->try_emplace(std::move(*(unsigned*)pKey)).first->second;
 }
 
 // @0x141127fd0
 char* FUN_141127fd0(void* pMap, Unk_Key* pKey)
 {
     Unk_InsPair<Unk_Cursor> it;
-    return (FUN_1404482f0(FUN_14111dc20(pMap, &it.first, FUN_140181b80(pKey))) + 4);
+    return (char*)&reinterpret_cast<std::map<unsigned long, unsigned long>::iterator*>(FUN_14111dc20(pMap, &it.first, FUN_140181b80(pKey)))->operator->()->second;
 }
 
 // @0x141128010
 char* FUN_141128010(void* pMap, Unk_Key* pKey)
 {
-    Unk_InsPair<Unk_Cursor> it;
-    return (FUN_1409ee2e0(FUN_14111dc60(pMap, &it.first, FUN_140181b80(pKey))) + 8);
+    // C3: std::map<unsigned, MS2SvrPtr<CUGCMapSetItemInfo>>::operator[](unsigned&&): try_emplace 0x14111dc60, operator-> 0x1409ee2e0, std::move 0x140181b80
+    return (char*)&((std::map<unsigned, MS2SvrPtr<CUGCMapSetItemInfo> >*)pMap)->try_emplace(std::move(*(unsigned*)pKey)).first->second;
 }
 
 // @0x141128050
@@ -625,12 +625,12 @@ char* FUN_141128350(void* pMap, void* key)
 // @0x141128390
 Unk_Elem52* FUN_141128390(Unk_Array52* pArray, unsigned long long uIndex)
 {
-    return (*FUN_141148ff0(pArray) + uIndex);
+    return (reinterpret_cast<Unk_Elem52*&>(reinterpret_cast<std::vector<Unk_CMISElem52, efd::CustomAllocator<Unk_CMISElem52> >*>(pArray)->_Myfirst()) + uIndex);
 }
 
 // @0x1411283c0
 int* FUN_1411283c0(Unk_ArrayInt* pArray, unsigned long long uIndex)
 {
-    return (*FUN_141149030(pArray) + uIndex);
+    return (reinterpret_cast<int*&>(reinterpret_cast<std::vector<Unk_CMISKindC>*>(pArray)->_Myfirst()) + uIndex);
 }
 

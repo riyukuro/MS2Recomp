@@ -58,7 +58,7 @@ class SkillOverlapCompare : public CPtred
 public:
     SkillOverlapCompare();                                  // 0x1407e5bf0
     bool operator!=(const SkillOverlapCompare& o);          // 0x1407e5c50
-    void Load(Unk_140165cf0* pElem);                        // 0x1407e5cc0
+    void Load(TiXmlElement* pElem);                        // 0x1407e5cc0
 
     ATL::CAtlArray<unsigned> m_arrHasBuffCount;             // +0x18
     ATL::CAtlArray<SkillCompareSign> m_arrHasBuffCountCompare;  // +0x38
@@ -73,7 +73,7 @@ struct SkillCondition
     SkillCondition();                                       // 0x1407e69f0
     bool operator!=(const SkillCondition& o);               // 0x1407e6ac0
     bool IsDefault();                                       // 0x1407e6cd0
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e6f20
+    int Load(TiXmlElement* pElem);                         // 0x1407e6f20
     int Save(void* pParent);                                // 0x1407e7210
 
     float m_fDefaultRechargingCooldownTime;                 // +0x00
@@ -101,7 +101,7 @@ struct Unk_SkillBlockA4
 {
     Unk_SkillBlockA4();                                     // 0x140802df0
     bool FUN_140802e40(const Unk_SkillBlockA4& o);          // is different
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     int FUN_140802fc0(int nSkill);                          // the output skill of an input skill (else nSkill)
     int FUN_140802ff0(int nSkill);                          // whether nSkill is the output skill
     int FUN_140803040();                                    // the output skill (0 without a combo)
@@ -120,7 +120,7 @@ struct Unk_SkillBlockB0
 {
     Unk_SkillBlockB0();                                     // 0x140803330
     bool FUN_1408033b0(const Unk_SkillBlockB0& o);          // is different
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     ATL::CAtlArray<unsigned> m_arrCheckEffectID;            // +0x00
     ATL::CAtlArray<unsigned short> m_arrCheckEffectLevel;   // +0x20
     ATL::CAtlArray<unsigned> m_arrCheckEffectOverlapCount;  // +0x40
@@ -136,7 +136,7 @@ struct Unk_SkillBlock150
 {
     Unk_SkillBlock150();                                    // 0x140803790
     bool FUN_1408037e0(const Unk_SkillBlock150& o);         // is different
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     int Save(void* pParent);
     SkillMagicControl m_eEnable;                            // +0x00 "enable"
     float m_fMoveSpeed;                                     // +0x04
@@ -150,7 +150,7 @@ struct Unk_SkillBlock160
 {
     Unk_SkillBlock160();                                    // 0x140803070
     bool FUN_1408030c0(const Unk_SkillBlock160& o);         // is different
-    int Load(Unk_140165cf0* pElem);
+    int Load(TiXmlElement* pElem);
     int FUN_1408031f0(void* pParent);
     __int64 FUN_140803210();                                // key bits of the block
     float m_fMaxDegree;                                     // +0x00
@@ -165,7 +165,7 @@ struct Unk_SkillBlock170
 {
     Unk_SkillBlock170();                                    // 0x140802cd0
     bool FUN_140802d00(const Unk_SkillBlock170& o);         // is different
-    int FUN_140802d50(Unk_140165cf0* pElem);
+    int FUN_140802d50(TiXmlElement* pElem);
     int FUN_140802dd0(void* pParent);
     float m_fUp;                                            // +0x00 "up"
     float m_fBack;                                          // +0x04 "back"
@@ -177,7 +177,7 @@ struct Unk_SkillSensor : public Unk_RangeShape
 {
     Unk_SkillSensor();                                      // 0x1408011f0
     bool FUN_140801270(const Unk_SkillSensor& o);           // is different
-    void LoadElement(Unk_140165cf0* pElem, CString strName);
+    void LoadElement(TiXmlElement* pElem, CString strName);
     void SaveElement(void* pParent, CString strName);
     unsigned m_nSensorStartDelay;                           // +0x40
     unsigned m_nSensorSplashStartDelay;                     // +0x44
@@ -195,8 +195,8 @@ class SkillMotionData : public CPtred
 public:
     SkillMotionData();                                      // 0x1408073a0
     bool FUN_140807620(const SkillMotionData& o);           // is different
-    int FUN_1408080d0(Unk_140165cf0* pElem);                // reads a <motion>
-    void Load(Unk_140165cf0* pElem);               // reads its attributes
+    int FUN_1408080d0(TiXmlElement* pElem);                // reads a <motion>
+    void Load(TiXmlElement* pElem);               // reads its attributes
     int FUN_140808240(void* pParent);                       // writes a <motion>
     SkillAttackData* FUN_140807e20(int nAttack);            // one attack (0 if out of range)
     SkillAttackData* FUN_140807e80(const CString& strPoint);    // one attack by its point
@@ -275,7 +275,7 @@ public:
     const CString& FUN_140804500(int nKind, int nMotion);   // an effect of a motion (kind 2/3/4)
     int FUN_1408045f0(int nMotion, int nAttack);            // the magic path id of an attack
     float FUN_140804660();                                  // the cooldown
-    int Load(Unk_140165cf0* pElem);                // reads a <level>
+    int Load(TiXmlElement* pElem);                // reads a <level>
     int FUN_140804ae0(void* pParent);                       // writes a <level>
     __int64 FUN_140804c90(unsigned __int64 nMotion);        // the cooldown key of a motion (0 if out of range)
 
@@ -303,8 +303,8 @@ class SkillGlideData : public CPtred
 public:
     SkillGlideData();                                       // 0x1408024f0
     bool FUN_140802640(const SkillGlideData& o);            // is different
-    void Load(Unk_140165cf0* pElem);               // reads a <glide>
-    int FUN_140802a40(Unk_140165cf0* pElem);                // reads the <glideProperty> of a skill
+    void Load(TiXmlElement* pElem);               // reads a <glide>
+    int FUN_140802a40(TiXmlElement* pElem);                // reads the <glideProperty> of a skill
     int FUN_140802a90(void* pParent);
     int FUN_140802ab0();                                    // the id
     CStringW* FUN_140802ad0();
@@ -340,7 +340,7 @@ public:
     virtual ~SkillData();                                   // 0x1407e86e0
     bool operator!=(const SkillData& o);                    // 0x1407e8790
     MS2Ptr<SkillLevelData> FUN_1407e90a0(unsigned short nLevel);  // the data of one level
-    void Load(Unk_140165cf0* pElem);                        // 0x1407e9130
+    void Load(TiXmlElement* pElem);                        // 0x1407e9130
     unsigned GetId();                                       // 0x1407e9a40
     SkillMainType GetMainType();                            // 0x1407e9a60
     SkillRangeType GetRangeType();                          // 0x1407e9a80

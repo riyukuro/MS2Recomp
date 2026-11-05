@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;    // xml element (declared where the loaders are)
+class TiXmlElement;    // xml element (declared where the loaders are)
 
 // One <key> row of MaidSalary.xml: salary type and amount (8 bytes).
 struct Unk_PriceSalary

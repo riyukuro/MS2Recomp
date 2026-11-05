@@ -9,7 +9,7 @@
 #include <NiAVObject.h>
 #include <NiRenderer.h>
 
-struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };   // ctor 0x140a56db0
+#include "ms2/client/ms2/fielddatacli.h"   // Unk_Vec3Cli: the out-of-line colour ctor 0x140a56db0 (was a local Unk_Colc view)
 
 // ---- out-of-unit callees ----
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
@@ -85,7 +85,7 @@ void MS2OverdrawProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, N
         NiRenderObject* obj = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(i));
         Unk_OverdrawState state(obj);
         saved.push_back(state);
-        FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50f0, reinterpret_cast<const NiColor&>(static_cast<const Unk_Colc&>(Unk_Colc(0.003921569f, 0.0f, 0.0f))));
+        FUN_1410479a0((class NiObjectNET*)(obj), DAT_143ae50f0, reinterpret_cast<const NiColor&>(static_cast<const Unk_Vec3Cli&>(Unk_Vec3Cli(0.003921569f, 0.0f, 0.0f))));
         obj->PurgeRendererData(GetNiRenderer());
         obj->ApplyAndSetActiveMaterial(m_spOverdrawMaterial, 0xffffffff);
         obj->AttachProperty(m_spZBuffer);

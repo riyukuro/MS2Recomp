@@ -46,14 +46,14 @@ CPostEffectParam::CPostEffectParam(int nType)
 }
 
 // @0x140dbcc40
-void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CPostEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "useFade", m_bUseFade);
     XmlGetAttr((class TiXmlElement*)(pNode), "fadeStartDuration", m_fFadeStartDuration);
     XmlGetAttr((class TiXmlElement*)(pNode), "fadeEndDuration", m_fFadeEndDuration);
     XmlGetAttr((class TiXmlElement*)(pNode), "holdDuration", m_fHoldDuration);
-    if (const char* pszStart = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("fadeStartInterpolator"))
+    if (const char* pszStart = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("fadeStartInterpolator"))
     {
         CString str(pszStart);
         str.MakeLower();
@@ -64,7 +64,7 @@ void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
         else if (str == "exp")
             m_nFadeStartInterpolator = 3;
     }
-    if (const char* pszEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("fadeEndInterpolator"))
+    if (const char* pszEnd = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("fadeEndInterpolator"))
     {
         CString str(pszEnd);
         str.MakeLower();

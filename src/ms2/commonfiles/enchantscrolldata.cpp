@@ -25,9 +25,9 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/os.h"
-#include "ms2/client/ms2/usercommandcli.h"   // C3: Unk_CommandArgs, the item function params
+#include "ms2/client/ms2/usercommandcli.h"   // C3: ItemFunctionArgs, the item function params
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -37,7 +37,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -47,7 +47,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was 
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 
-void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
+void FUN_140873420(TiXmlElement*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -57,7 +57,7 @@ class CGloabalFactor   // C3: member view for the former free stand-ins
 public:
     float FUN_1404c1810(int, int);
 };
-int FUN_14034e730(Unk_140165cf0* pElem, const char* pszName, int* pnOut);
+int FUN_14034e730(TiXmlElement* pElem, const char* pszName, int* pnOut);
 
 // Sort names of the item list (header static of this unit).
 #ifndef MS2_HOOK_DLL
@@ -77,7 +77,7 @@ CEnchantScrollData::~CEnchantScrollData()
 }
 
 // @0x14034d190
-int CEnchantScrollData::Read(Unk_140165cf0* pElem)
+int CEnchantScrollData::Read(TiXmlElement* pElem)
 {
     FUN_14034e730(pElem, "scrollType", &m_nScrollType);
     XmlGetAttr((class TiXmlElement*)(pElem), "minLv", m_nMinLv);
@@ -154,7 +154,7 @@ CEnchantScrollRecipe::~CEnchantScrollRecipe()
 }
 
 // @0x14034d660
-int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
+int CEnchantScrollRecipe::Read(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", m_nId);
     XmlGetAttr((class TiXmlElement*)(pElem), "recipeType", m_nRecipeType);
@@ -170,9 +170,9 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
         return 0;
     if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_strFunction != L"EnchantScroll")
         return 0;
-    if (reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d2380() == 0)
+    if (reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d2380() == 0)
         return 0;
-    m_nScrollId = reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d1f60(0, 0);
+    m_nScrollId = reinterpret_cast<ItemFunctionArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d1f60(0, 0);
     CEnchantScrollTable::ScrollPtr scroll = CEnchantScrollTable::GetInstance()->FindScroll(m_nScrollId);
     if (scroll.IsNull())
         return 0;
@@ -241,13 +241,13 @@ int CEnchantScrollTable::LoadScrolls()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("scroll")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("scroll")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("scroll")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("scroll")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -268,13 +268,13 @@ int CEnchantScrollTable::LoadRecipes()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("recipe")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("recipe")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -340,7 +340,7 @@ int CEnchantScrollTable::HasRecipe(int nType, int nRank)
 }
 
 // @0x14034e730
-int FUN_14034e730(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
+int FUN_14034e730(TiXmlElement* pElem, const char* pszName, int* pnOut)
 {
     if (FALSE)
     {

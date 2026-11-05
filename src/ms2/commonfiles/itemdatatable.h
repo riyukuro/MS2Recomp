@@ -23,7 +23,7 @@
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/placeholder/citemdata.h"
 
-class Unk_140165cf0;    // game TinyXML element
+class TiXmlElement;    // game TinyXML element
 CString FUN_14016a5c0(const char* psz, int n);     // the class name of a type_info name
 
 // The key of the grade nif / grade effect / text colour maps (its own hash and compare COMDATs: an enum).
@@ -55,9 +55,9 @@ private:
 };
 MS2_CHECK_SIZE(CColorPaletteInfo, 0x38);
 
-// (trophyID, trophyLevel) of a housing row: the key of CItemDataTable::m_setTrophy.
-struct Unk_TrophyKey
+struct Unk_TrophyKey   // (trophyID, trophyLevel) of a housing row: the key of CItemDataTable::m_setTrophy (and DAT_143ab32d8)
 {
+    Unk_TrophyKey();                                                                 // 0x1409ed810 (inline in astooltip_local.h)
     Unk_TrophyKey(unsigned nId, unsigned nLevel) : m_nId(nId), m_nLevel(nLevel) {}  // 0x14056beb0
     bool operator<(const Unk_TrophyKey& o) const                                     // 0x14056e500
     {
@@ -148,23 +148,23 @@ public:
     static bool s_bInit;                                                    // 0x143aaf964
 
 private:
-    void LoadDropStyle(Unk_140165cf0* pRoot);                               // 0x1405597a0
-    void LoadDropItemAsset(Unk_140165cf0* pRoot);                           // 0x1405598c0
-    void LoadGradeNif(Unk_140165cf0* pRoot);                                // 0x140559a50
-    void LoadGradePetNif(Unk_140165cf0* pRoot);                             // 0x140559b40
-    void LoadGradeEffect(Unk_140165cf0* pRoot);                             // 0x140559c30
-    void LoadTextColor(Unk_140165cf0* pRoot);                               // 0x140559d20
-    void LoadWeaponSpeed(Unk_140165cf0* pRoot);                             // 0x140559e60
-    void LoadRevisionRatio(Unk_140165cf0* pRoot);                           // 0x140559f00
-    void LoadEnchant(Unk_140165cf0* pRoot);                                 // 0x140559fa0
-    void LoadUnlimitedEnchant(Unk_140165cf0* pRoot);                        // 0x14055a120
+    void LoadDropStyle(TiXmlElement* pRoot);                               // 0x1405597a0
+    void LoadDropItemAsset(TiXmlElement* pRoot);                           // 0x1405598c0
+    void LoadGradeNif(TiXmlElement* pRoot);                                // 0x140559a50
+    void LoadGradePetNif(TiXmlElement* pRoot);                             // 0x140559b40
+    void LoadGradeEffect(TiXmlElement* pRoot);                             // 0x140559c30
+    void LoadTextColor(TiXmlElement* pRoot);                               // 0x140559d20
+    void LoadWeaponSpeed(TiXmlElement* pRoot);                             // 0x140559e60
+    void LoadRevisionRatio(TiXmlElement* pRoot);                           // 0x140559f00
+    void LoadEnchant(TiXmlElement* pRoot);                                 // 0x140559fa0
+    void LoadUnlimitedEnchant(TiXmlElement* pRoot);                        // 0x14055a120
     void LoadUiMaterialSound();                                             // 0x14055a230
     void LoadColorPalette(const CString& strPath);                          // 0x14055a4a0
     void LoadMusicScore();                                                  // 0x14055ad50
     void LoadHousing();                                                     // 0x14055b030
     void InitItemTags();                                                    // 0x14055b3f0
     void AddItemTag(ItemTagKey eTag, CString strName);                      // 0x14055f090
-    void LoadTagItemIds(Unk_140165cf0* pRoot);                              // 0x14055f190
+    void LoadTagItemIds(TiXmlElement* pRoot);                              // 0x14055f190
     void OnItemLoaded(ItemDataPtr spItem);                                  // 0x14055f2c0
     ItemDataPtr FindItemData(int nItemId);                                  // 0x14055f300
     MS2Ptr<ItemTagParam> FindTag(ItemTagKey eTag);                          // 0x14055f440

@@ -43,7 +43,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // 
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an id
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -111,7 +111,7 @@ CString Unk_EnchantStatSet::FUN_14058d890()
     CString str;
     for (POSITION pos = m_stats.GetStartPosition(); pos != 0; m_stats.GetNext(pos))
     {
-        Unk_EnchantPtr<BaseOption> spOption = m_stats.GetValueAt(pos);
+        MS2Ptr<BaseOption> spOption = m_stats.GetValueAt(pos);
         if (str.GetLength() != 0)
             str += ",";
         str += Unk_SocketFormat("{0}", spOption->GetValue());
@@ -125,7 +125,7 @@ CString Unk_EnchantStatSet::FUN_14058d9f0()
     CString str;
     for (POSITION pos = m_stats.GetStartPosition(); pos != 0; m_stats.GetNext(pos))
     {
-        Unk_EnchantPtr<BaseOption> spOption = m_stats.GetValueAt(pos);
+        MS2Ptr<BaseOption> spOption = m_stats.GetValueAt(pos);
         if (str.GetLength() != 0)
             str += ",";
         str += Unk_SocketFormat("{0}", spOption->FUN_140266e10());
@@ -153,17 +153,17 @@ int CItemEnchantLimitTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "limit", "slot", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); ++i)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         MS2Ptr<EnchantLimit> spLimit(new EnchantLimit);
         XmlGetAttr((class TiXmlElement*)(pNode), "minLv", reinterpret_cast<unsigned short&>(spLimit->m_nMinLv));
         XmlGetAttr((class TiXmlElement*)(pNode), "maxLv", reinterpret_cast<unsigned short&>(spLimit->m_nMaxLv));
@@ -204,7 +204,7 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
     if (pItem->GetRequiredLevel() > spLimit->m_nMaxLv)
         return 0;
 
-    Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->GetEnchant());
     if (!spInfo)
         return 0;
     if (spInfo->GetLevel() >= spLimit->m_nMaxGrade)

@@ -213,7 +213,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // Bag registry (GFx bind data).
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
-#include "ms2/client/ms2/uimodelview.h"  // C3: Unk_ModelViewCamera::ApplyRideeCamera
+#include "ms2/client/ms2/uirenderview.h"  // C3: Unk_ModelViewCamera is unit-local below
 void FUN_140dbc420(const CString& strBag);                                    // release the inventory bag
 void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 namespace NotifyContext { class BindData; }
@@ -226,14 +226,14 @@ public:
 };
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp).
-struct Unk_PetBoxCameraData
-{
-    Unk_PetBoxCameraData();                                             // 0x140cb13b0
+class Unk_ModelViewCamera   // uimodelview.h's camera preset (0x30), unit-local field names
+{ public:
+    Unk_ModelViewCamera(); void ApplyRideeCamera();                                             // 0x140cb13b0
     NiPoint3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
+typedef Unk_ModelViewCamera Unk_PetBoxCameraData; MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
 class Unk_PetBoxActor
 {
 public:

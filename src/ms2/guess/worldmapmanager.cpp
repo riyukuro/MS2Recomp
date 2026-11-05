@@ -166,7 +166,7 @@
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -211,7 +211,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // T
 unsigned char FUN_1401d1320(CCacheData* p);                                 // file changed since load
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CString FUN_14015f710(Unk_140165cf0* pNode, const char* pszName, CString strDefault);   // an attribute (default by value)
+CString FUN_14015f710(TiXmlElement* pNode, const char* pszName, CString strDefault);   // an attribute (default by value)
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
@@ -385,7 +385,7 @@ WorldMapManager::~WorldMapManager()
 }
 
 bool WorldMapTileLess(const MS2Ptr<UIWorldMap::MapTile>& a, const MS2Ptr<UIWorldMap::MapTile>& b);
-int FUN_141b9d850(Unk_140165cf0* pNode, const char* pszName, int* pOut);
+int FUN_141b9d850(TiXmlElement* pNode, const char* pszName, int* pOut);
 void FUN_141bb0380(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTile);
 
 // @0x141b95640
@@ -403,16 +403,16 @@ int WorldMapManager::LoadWorldMapFiles()
         TiXmlDocument doc;
         if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             continue;
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2worldmap"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2worldmap"));
         if (pRoot == 0)
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             continue;
         }
-        Unk_140165cf0* pGroup = ((class Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
+        TiXmlElement* pGroup = ((class TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(pRoot)));
         if (pGroup == 0)
             continue;
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("portal")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("portal")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->FirstChild("portal")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("portal")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
@@ -422,7 +422,7 @@ int WorldMapManager::LoadWorldMapFiles()
                 continue;
             m_8.insert(nCode);
         }
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("map")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("map")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->FirstChild("map")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("map")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
@@ -561,13 +561,13 @@ int WorldMapManager::LoadFieldNameInfo()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
     {
         unsigned nId;
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
@@ -626,13 +626,13 @@ void WorldMapManager::LoadWorldMapNames(ATL::CAtlArray<CString>& names)
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("xml")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("xml")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("xml")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("xml")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -1495,7 +1495,7 @@ int WorldMapQuestTier(MS2Ptr<CQuestData> spQuest, const int& a, const int& b, co
 
 // @0x141b9d850
 // The "tileType" enum attribute of a map tile.
-int FUN_141b9d850(Unk_140165cf0* pNode, const char* pszName, int* pOut)
+int FUN_141b9d850(TiXmlElement* pNode, const char* pszName, int* pOut)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -1514,10 +1514,10 @@ int FUN_141b9d850(Unk_140165cf0* pNode, const char* pszName, int* pOut)
 // ---- the UIWorldMap records ----
 
 // The pooled factories behind MS2Ptr<T>(Unk_BmNewTag) (initializers in unit_141bb1490.cpp).
-void FUN_141bb1490(struct Unk_141bb1490_Obj8*);   // C3: was FUN_141bb1490
-void FUN_141bb14c0(struct Unk_141bb1490_Obj8*);   // C3: was FUN_141bb14c0
-void FUN_141bb14f0(struct Unk_141bb1490_Obj8*);   // C3: was FUN_141bb14f0
-void FUN_141bb1520(struct Unk_141bb1490_Obj8*);   // C3: was FUN_141bb1520
+struct Unk_MS2PtrAccess { static void FUN_141bb1490(MS2Ptr<UIWorldMap::AddtionalInfo>& sp);   // C3: unit_141bb1490
+    static void FUN_141bb14c0(MS2Ptr<UIWorldMap::FieldSearchInfo>& sp);   // C3: unit_141bb1490
+    static void FUN_141bb14f0(MS2Ptr<UIWorldMap::IconInfo>& sp);   // C3: unit_141bb1490
+    static void FUN_141bb1520(MS2Ptr<UIWorldMap::MapTile>& sp); };   // C3: unit_141bb1490
 
 // @0x141b9d8e0
 UIWorldMap::AddtionalInfo* FUN_141b9d8e0(void*)
@@ -1547,28 +1547,28 @@ UIWorldMap::MapTile* FUN_141b9da20(void*)
 template <> MS2Ptr<UIWorldMap::AddtionalInfo>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    FUN_141bb1490((struct Unk_141bb1490_Obj8*)(this));
+    Unk_MS2PtrAccess::FUN_141bb1490(*this);
 }
 
 // @0x141bacaf0
 template <> MS2Ptr<UIWorldMap::FieldSearchInfo>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    FUN_141bb14c0((struct Unk_141bb1490_Obj8*)(this));
+    Unk_MS2PtrAccess::FUN_141bb14c0(*this);
 }
 
 // @0x141bacb60
 template <> MS2Ptr<UIWorldMap::IconInfo>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    FUN_141bb14f0((struct Unk_141bb1490_Obj8*)(this));
+    Unk_MS2PtrAccess::FUN_141bb14f0(*this);
 }
 
 // @0x141bacbb0
 template <> MS2Ptr<UIWorldMap::MapTile>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    FUN_141bb1520((struct Unk_141bb1490_Obj8*)(this));
+    Unk_MS2PtrAccess::FUN_141bb1520(*this);
 }
 
 // @0x141badbe0

@@ -15,7 +15,7 @@
 
 class COutputStream;
 class CInPacket;
-class Unk_140165cf0;     // game TinyXML element
+class TiXmlElement;     // game TinyXML element
 
 // RTTI CRankUgcMarketBuy, 0x48 bytes. The wire format is the field order of Write / Read.
 class CRankUgcMarketBuy : public CPtred

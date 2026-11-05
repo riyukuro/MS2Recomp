@@ -8,6 +8,7 @@
 #include "mapmetamanager.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
+#include "ms2/client/ms2/arccontroller.h"   // Unk_ArcFlight (FUN_141479ed0)
 #include <egf/Entity.h>
 #include <egf/EntityManager.h>
 #include <efd/Point3.h>
@@ -74,25 +75,12 @@ float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's defini
 bool FUN_14028d470(float a, float b);                                        // nearly equal
 Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize);   // direction from -> to (dropitem.cpp)
 
-// Launch solution for a projectile of the given speed under gravity: the low-angle arc from origin to target.
-struct Unk_ArcSolution
-{
-    float m_flightScale;        // +0x00 horizontal distance / (cos * speed)
-    float m_speed;              // +0x04
-    float m_gravity;            // +0x08
-    efd::Point3 m_target;       // +0x0c
-    efd::Point3 m_direction;    // +0x18
-    efd::Point3 m_origin;       // +0x24
-    float m_cos;                // +0x30
-    float m_sin;                // +0x34
-
-    void FUN_141479ed0(efd::Point3 origin, efd::Point3 target, float speed, float gravity);
-};
-
+// The launch solution (Unk_ArcFlight, arccontroller.h) for a projectile of the given speed under gravity: the low-angle
+// arc from origin to target.
 // @0x141479ed0
-void Unk_ArcSolution::FUN_141479ed0(efd::Point3 origin, efd::Point3 target, float speed, float gravity)
+void Unk_ArcFlight::FUN_141479ed0(Vector3 origin, Vector3 target, float speed, float gravity)
 {
-    float distance = FUN_140966ea0(reinterpret_cast<const Vector3&>(target), reinterpret_cast<const Vector3&>(origin));
+    float distance = FUN_140966ea0(target, origin);
     if (FUN_14028d470(distance, 0.0f)) {
         m_speed = speed;
         return;
@@ -112,19 +100,19 @@ void Unk_ArcSolution::FUN_141479ed0(efd::Point3 origin, efd::Point3 target, floa
         float angle = __imp_atanf(tangent);
         m_speed = speed;
 #ifdef __clang__
-        const Vector3& kDir = FUN_141192780(reinterpret_cast<Vector3&>(origin), reinterpret_cast<Vector3&>(target), true);
-        m_direction = reinterpret_cast<const efd::Point3&>(kDir);
+        const Vector3& kDir = FUN_141192780(origin, target, true);
+        m_direction = kDir;
 #else
-        m_direction = reinterpret_cast<const efd::Point3&>(FUN_141192780(reinterpret_cast<Vector3&>(origin), reinterpret_cast<Vector3&>(target), true));
+        m_direction = FUN_141192780(origin, target, true);
 #endif
         m_target = target;
         m_origin = origin;
         m_gravity = gravity;
-        m_cos = __imp_cosf(angle);
-        m_sin = __imp_sinf(angle);
+        m_angle.x = __imp_cosf(angle);
+        m_angle.y = __imp_sinf(angle);
         if (__imp_cosf(angle) <= 0.0f)
             m_flightScale = 0.0f;
         else
-            m_flightScale = distance / (m_cos * speed);
+            m_flightScale = distance / (m_angle.x * speed);
     }
 }

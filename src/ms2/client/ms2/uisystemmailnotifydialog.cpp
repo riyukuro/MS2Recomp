@@ -111,14 +111,14 @@ public:
 };
 
 // The button children: click callback, label.
-class Unk_140acd6e0 : public ASMovieClip
-{
-};
+// class Unk_140acd6e0 (ASButton): the view went to the real class.
+#include "ms2/placeholder/asbutton.h"
+//
 
 // The reward icon slot of the event clip: it shows the item bound under a name.
-class Unk_SmSlot : public ASMDragTarget
-{
-};
+// C3: Unk_SmSlot is ASMDragTarget itself: 0x140c3bb40 (MakeDropChild<ASMDragTarget>, uiitemdropinfodialog) is its
+// factory, and every MS2Ptr<Unk_SmSlot> COMDAT VA at 0x140c3c250-0x140c3c820 is shared only with ASMDragTarget.
+
 
 // The AS root of the dialog: the hit test of the event clip.
 class Unk_SmScript : public AScript
@@ -142,8 +142,8 @@ class Unk_SmClip : public ASMovieClip
 
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
-template <> MS2Ptr<Unk_SmSlot> Unk_ASCreate<Unk_SmSlot>(int, const Scaleform::GFx::Value&);          // 0x140c3bb40
-template <> MS2Ptr<Unk_140acd6e0> Unk_SmNode::FUN_deep<Unk_140acd6e0>(const Scaleform::GFx::Value&, const CString&);   // 0x140d01e70
+template <> MS2Ptr<ASMDragTarget> Unk_ASCreate<ASMDragTarget>(int, const Scaleform::GFx::Value&);          // 0x140c3bb40
+class Unk_Finder : public ASDisplayObjectContainer { public: MS2Ptr<ASButton> FUN_140d01e70(const Scaleform::GFx::Value& root, const CString& strName); };   // 0x140d01e70, the definer's spelling (unit_140cff310); was Unk_SmNode::FUN_deep<ASButton>
 
 #define MS2_ASDOC_ASSERT(line, expression) \
     (void)((expression) || (_wassert(L"outControl", L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\asdisplayobjectcontainer.h", (unsigned)(line)), 0))
@@ -210,7 +210,7 @@ template <class T> MS2Ptr<T> Unk_SmNode::FUN_deep(const Scaleform::GFx::Value& v
     }
     return MS2Ptr<T>(0);
 }
-
+template <> inline MS2Ptr<ASButton> Unk_SmNode::GetChild<ASButton>(const CString& strName, MS2Ptr<ASButton>& outControl) { outControl = reinterpret_cast<Unk_Finder*>(this)->FUN_140d01e70(m_value, strName); MS2_ASDOC_ASSERT(0x5a, !outControl.IsNull()); return outControl; }   // @0x1412a6780
 // @0x1412a4590
 UISystemMailNotifyDialog::UISystemMailNotifyDialog()
     : m_bOnTime(0), m_nHideAt(0)
@@ -239,7 +239,7 @@ CString UISystemMailNotifyDialog::GetTypeName()
 void UISystemMailNotifyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_140acd6e0* pShow = reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_btnShow", m_btnShow).get();
+    ASButton* pShow = reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnShow", m_btnShow).get();
     if (pShow != 0)
         m_btnShow->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISystemMailNotifyDialog::FUN_1412a5d10), (void*)0);
     if (m_bOnTime != 0)
@@ -247,7 +247,7 @@ void UISystemMailNotifyDialog::OnLoadComplete()
         ASMovieClip* pOnTime = reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_onTimeEvent", m_onTimeEvent).get();
         if (pOnTime != 0)
         {
-            Unk_140acd6e0* pButton = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_onTimeEvent.operator->()))->GetChild<Unk_140acd6e0>("m_onTimeEventButton", m_btnOnTime).get();
+            ASButton* pButton = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_onTimeEvent.operator->()))->GetChild<ASButton>("m_onTimeEventButton", m_btnOnTime).get();
             if (pButton != 0)
                 m_btnOnTime->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISystemMailNotifyDialog::FUN_1412a5de0), (void*)0);
             m_onTimeEvent->vfunc_3(1);
@@ -260,10 +260,10 @@ void UISystemMailNotifyDialog::OnLoadComplete()
         ASMovieClip* pEvent = reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_event", m_event).get();
         if (pEvent != 0)
         {
-            Unk_140acd6e0* pDetail = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<Unk_140acd6e0>("m_detail", m_btnDetail).get();
+            ASButton* pDetail = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<ASButton>("m_detail", m_btnDetail).get();
             if (pDetail != 0)
                 m_btnDetail->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISystemMailNotifyDialog::FUN_1412a5ce0), (void*)0);
-            Unk_140acd6e0* pClose = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<Unk_140acd6e0>("m_close", m_btnClose).get();
+            ASButton* pClose = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<ASButton>("m_close", m_btnClose).get();
             if (pClose != 0)
                 m_btnClose->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISystemMailNotifyDialog::FUN_1412a5db0), (void*)0);
             m_event->vfunc_3(0);
@@ -360,8 +360,8 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
     if (rewards.GetCount() > 0)
     {
         FUN_1412a5eb0(&rewards[0]);
-        MS2Ptr<Unk_SmSlot> spSlot;
-        Unk_SmSlot* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<Unk_SmSlot>("m_slot", spSlot).get();
+        MS2Ptr<ASMDragTarget> spSlot;
+        ASMDragTarget* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<ASMDragTarget>("m_slot", spSlot).get();
         if (pSlotClip != 0)
             spSlot->FUN_1422e4840(m_strSlot);
         FUN_140cfefe0((&*m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));

@@ -12,7 +12,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/tfunctor.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 class NotifyGameEventChanged;
 
 // How a menu tree node decides that it is shown (gameMenu.xml "filterType").
@@ -62,7 +62,7 @@ class CGameMenuItem : public CPtred
 {
 public:
     CGameMenuItem();                                        // 0x140cf08d0
-    void Load(Unk_140165cf0* pElem);                        // 0x140cf0970
+    void Load(TiXmlElement* pElem);                        // 0x140cf0970
     bool HasId(int nId);                                    // 0x140cf0b50 this node or a descendant is the entry
     bool IsVisible();                                       // 0x140cf0bf0 the filter passes
     bool IsAffectedBy(NotifyGameEventChanged* pNotify);     // 0x140cf0e90 the event change touches this subtree

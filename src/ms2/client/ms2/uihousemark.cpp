@@ -17,7 +17,7 @@
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1419910b0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1419910e0 ; unique
 // MS2-PIN: ??$Call@VUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141991120 ; unique
-// MS2-PIN: ??$Call@VUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141991150 ; unique
+// MS2-PIN: ??$Call@VUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std// C3: Unk_140acd6e0 (the house button of the mark) is ASButton itself.AEBVCMsgBoxData@@@Z 0x141991150 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141991180 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIHouseMarkEntity@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1419911e0 ; unique
 // MS2-PIN: ??$_Destroy_range1@V?$allocator@PEAV?$MS2Ptr@VUIHouseMarkEntity@@@@@std@@@std@@YAXPEAPEAV?$MS2Ptr@VUIHouseMarkEntity@@@@0AEAV?$allocator@PEAV?$MS2Ptr@VUIHouseMarkEntity@@@@@0@U?$integral_constant@_N$00@0@@Z 0x14198d710 ; manual (called by _Destroy_range of the deque map)
@@ -72,7 +72,7 @@ struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
-template <int N> struct Unk_CMISTree;                              // the owners tree (Unk_CubeOwners)
+// C3: FUN_1410d3360 returns the Unk_CubeOwners map (was Unk_CMISTree<0x10c>*)
 class CubeMapInformationService : public efd::ISystemService {   // C3: member view (the real header brings dynamic initializers)
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
@@ -80,15 +80,15 @@ public:
     int FUN_1410c8470(int nGroup, int nMapId, int* pnStatus, __int64* pnStartTime);  // the contract of a group
     int FUN_1410c8670(int nGroup, int* pnSub);                      // the icon state of a group
     CStringW FUN_1410c7ce0(int nGroup, int nBlock);                 // the address text
-    Unk_CMISTree<0x10c>* FUN_1410d3360();                           // the owners by group and block
+    Unk_CubeOwners* FUN_1410d3360();                                // the owners by group and block
 };
-class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
+class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* framework);   // the cube service from the framework
 
-// The house button of the mark.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-};
+// C3: Unk_140acd6e0 (the house button of the mark) is ASButton itself.
+
+
+
+
 
 // The house contract dialog (UI 0x4e76).
 template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961690
@@ -174,7 +174,7 @@ void UIHouseMarkEntity::FUN_14198ae60(MS2Ptr<ASMovieClip> spClip)
     if (m_clip == NULL)
         return;
     FUN_14198c0d0(false);
-    m_btn = m_clip->FUN_140acce30<Unk_140acd6e0>("m_btn");
+    m_btn = m_clip->FUN_140acce30<ASButton>("m_btn");
     if (m_btn.get() != NULL)
     {
         m_btn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c670), 0);
@@ -315,7 +315,7 @@ MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, FUN_14198b340, 608, 0x1077E10
 // @0x14198b5b0
 void UIHouseMarkEntity::FUN_14198b5b0()
 {
-    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     int nSub;
     int nState = spService->FUN_1410c8670(m_nId, &nSub);
     if (m_nIconType != nState)
@@ -386,7 +386,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
         return;
-    efd::SmartPointer<CubeMapInformationService> spService((CubeMapInformationService*)FUN_1401cd040(&DAT_143b059e8));
+    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService == (CubeMapInformationService*)NULL)
         return;
     int nResult = 0;
@@ -397,7 +397,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     int nState = 3;
     CStringW strOwner;
     {
-        Unk_CubeOwners* pOwners = (Unk_CubeOwners*)spService->FUN_1410d3360();
+        Unk_CubeOwners* pOwners = spService->FUN_1410d3360();
         Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
         if (spOwner.get() != NULL)
         {

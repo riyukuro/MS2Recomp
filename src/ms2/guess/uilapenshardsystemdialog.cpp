@@ -2008,7 +2008,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67ce0()
         return;
     if (!(((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode()))
         return;
-    if (MS2Ptr<ASMovieClip> spButton = m_body->FUN_140acce30<ASMovieClip>("m_fillIngredientDebug"))
+    if (MS2Ptr<ASButton> spButton = m_body->FUN_140acce30<ASButton>("m_fillIngredientDebug"))
         spButton->vfunc_3(1);
 }
 

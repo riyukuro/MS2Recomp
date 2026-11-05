@@ -433,7 +433,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
         if (stat.FUN_140619290(option, lockOpt.m_nIndex, lockOpt.m_nValue))
-            reinterpret_cast<Unk_RemakeLockOptList&>(dbg.m_options).push_back(lockOpt);
+            dbg.m_options.push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
@@ -475,7 +475,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
         if (stat.FUN_140619290(option, lockOpt.m_nIndex, lockOpt.m_nValue))
-            reinterpret_cast<Unk_RemakeLockOptList&>(dbg.m_options).push_back(lockOpt);
+            dbg.m_options.push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(7);
@@ -1025,7 +1025,7 @@ void UIItemRemakeOptionDialog::FUN_1412a2380(unsigned __int64 uid, int nOption, 
         }
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(item), false);
         if (stat.FUN_140619290(nOption, lockOpt.m_nIndex, lockOpt.m_nValue))
-            reinterpret_cast<Unk_RemakeLockOptList&>(option.m_options).push_back(lockOpt);
+            option.m_options.push_back(lockOpt);
     }
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(0);

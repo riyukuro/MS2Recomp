@@ -26,8 +26,8 @@ int FUN_1406514e0(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<i
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
 CStringA FUN_14016a5c0(const char* psz, int n);
 class Unk_Be790Xml;
-class Unk_140165cf0;
-Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
+class TiXmlElement;
+TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 void FUN_140873420(Unk_Be790Xml* pElem, const char* pszName, CStringW& rOut);   // string attribute
 class Unk_Be790Loader : public CFileSystem { };
 CFileSystem* GetFileSystem();

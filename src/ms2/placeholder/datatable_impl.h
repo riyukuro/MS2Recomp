@@ -1,5 +1,5 @@
 // datatable_impl.h - the body of DataTable<T>::Load (0x141b82a10 for T = WebGuide). NOT an original header.
-// Include it in the unit that instantiates the loader. The row type T provides LoadXml(Unk_140165cf0*).
+// Include it in the unit that instantiates the loader. The row type T provides LoadXml(TiXmlElement*).
 #pragma once
 
 #include "ms2/placeholder/datatable.h"
@@ -14,7 +14,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 class Unk_CriticalSectionLock;
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins (shared by the includers)
+class Unk_XmlNode   // C3: member view for the former element stand-ins (shared by the includers)
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -29,13 +29,13 @@ int DataTable<T>::Load(CString strDir, CString strFile, CString strElement)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strElement)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strElement)))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strElement)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strElement)))
     {
         if (!FUN_14028f710(reinterpret_cast<struct Unk_XmlElement*>(pNode)))
             continue;

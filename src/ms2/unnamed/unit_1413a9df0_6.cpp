@@ -167,7 +167,7 @@ public:
 int FUN_14138a170(const CStringA& str);
 
 // @0x1413b1d00
-int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
+int FUN_1413b1d00(TiXmlElement* pElem, const char* pszName, Unk_GcOptInt& oOut)
 {
     FUN_1413747d0((unsigned char*)(&oOut));
     int n;
@@ -178,7 +178,7 @@ int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
 }
 
 // @0x1413b1d60
-int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
+int FUN_1413b1d60(TiXmlElement* pElem, const char* pszName, void* pOut)
 {
     CStringA str;
     int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
@@ -194,7 +194,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
 }
 
 // @0x1413b1e70
-int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut)
+int FUN_1413b1e70(TiXmlElement* pElem, const char* pszName, Unk_GcOptVec3& oOut)
 {
     Unk_GcClear0((char*)(&oOut));
     Vector3 pt;
@@ -205,7 +205,7 @@ int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut
 }
 
 // @0x1413b1ed0
-int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut)
+int FUN_1413b1ed0(TiXmlElement* pElem, const char* pszName, Unk_GcOptBool& oOut)
 {
     Unk_GcClear1((char*)(&oOut));
     bool b;
@@ -216,7 +216,7 @@ int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut
 }
 
 // @0x1413b1f30
-int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut)
+int FUN_1413b1f30(TiXmlElement* pElem, const char* pszName, int& nOut)
 {
     // the tinyxmlhelper.h template's compile-time-false guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -233,7 +233,7 @@ int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut)
 }
 
 // @0x1413b1fc0
-int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut)
+int FUN_1413b1fc0(TiXmlElement* pElem, const char* pszName, int& nOut)
 {
     // the tinyxmlhelper.h template's compile-time-false guard (ASSERT(FALSE) of its line 250)
     if (false)

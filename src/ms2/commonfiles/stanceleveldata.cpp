@@ -18,7 +18,7 @@
 #include <algorithm>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -43,7 +43,7 @@ StanceLevelData::~StanceLevelData()
 }
 
 // @0x140829150
-bool StanceLevelData::Load(Unk_140165cf0* pNode)
+bool StanceLevelData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "level", m_nLevel);
     XmlGetAttr((class TiXmlElement*)(pNode), "hitCount", m_nHitCount);
@@ -74,13 +74,13 @@ StanceData::~StanceData()
 }
 
 // @0x140829330
-bool StanceData::Load(Unk_140165cf0* pNode)
+bool StanceData::Load(TiXmlElement* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "stanceAdditionalID", m_nStanceAdditionalID);
     XmlGetAttr((class TiXmlElement*)(pNode), "hitCountAdditinoalID", m_nHitCountAdditionalID);
     XmlTokenList(pNode, "damageSkillIDs", m_damageSkillIDs);
     XmlTokenList(pNode, "finishStanceSkillIDs", m_finishStanceSkillIDs);
-    for (Unk_140165cf0* pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("level")); pLevel != 0; pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLevel))->NextSibling("level")))
+    for (TiXmlElement* pLevel = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("level")); pLevel != 0; pLevel = ((class TiXmlElement*)((class Unk_XmlNode*)(pLevel))->NextSibling("level")))
     {
         MS2Ptr<StanceLevelData> spLevel(new StanceLevelData);
         if (spLevel->Load(pLevel) == 0)
@@ -148,13 +148,13 @@ bool StanceTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         DataPtr spData(new StanceData);
         if (spData->Load(pNode) == 0)

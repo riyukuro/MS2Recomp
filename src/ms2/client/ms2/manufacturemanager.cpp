@@ -112,8 +112,8 @@ MS2_CHECK_OFFSET(Unk_MfRecipe, m_aIngredients, 0x38);
 
 class Unk_MfNpc;                                                // the npc (a CNpc; FUN_141093800 is its maid)
 
-class Unk_MfRecipeTable { public: Unk_MfValuePtr<Unk_MfRecipe> FUN_1406855c0(int nRecipeId); };
-class Unk_MfMsgTable { public: Unk_MfValuePtr<Unk_MfMaidMsg> FUN_14067fd60(int nMaidId); };
+#include "ms2/placeholder/cmaidrecipetable.h"   // C3: CMaidRecipeTable::Find (0x1406855c0); Unk_MfRecipe is the CMaidRecipe layout view
+// Unk_MfMsgTable::FUN_14067fd60 was CMaidManufactureMsgTable::Find (0x14067fd60, maid.h)
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 class Unk_MfPC { public: };
@@ -135,7 +135,7 @@ public:
     static class WorldService* GetInstance();
 };
 void*FUN_1401c0d90();
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
 __int64 GetServerTime();                                        // server time
@@ -295,12 +295,12 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
     if (pPC == 0)
         return 0;
     {
-        Unk_MfValuePtr<Unk_MfRecipe> spRecipe = reinterpret_cast<Unk_MfRecipeTable*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(nRecipeId);
+        MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(nRecipeId);
         if (spRecipe.get() != 0)
         {
-            for (unsigned __int64 i = 0; i < spRecipe->m_aIngredients.size(); i++)
+            for (unsigned __int64 i = 0; i < reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_aIngredients.size(); i++)
             {
-                Unk_MfValuePtr<Unk_MfIngredient> spIng = spRecipe->m_aIngredients[i];
+                Unk_MfValuePtr<Unk_MfIngredient> spIng = reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_aIngredients[i];
                 if (spIng.IsNull())
                     continue;
                 unsigned nItemId = reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemId();
@@ -320,11 +320,11 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                     return 0;
                 }
             }
-            if (0 < spRecipe->m_nMeso)
+            if (0 < reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_nMeso)
             {
                 int nCode = 0;
                 efd::SmartPointer<Unk_MfCubeService> spService(((class Unk_MfCubeService*)FUN_1401cd040(&DAT_143b059e8)));
-                int nOk = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d2fb0(DAT_143ab2820, spRecipe->m_nMeso, &nCode);
+                int nOk = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d2fb0(DAT_143ab2820, reinterpret_cast<Unk_MfRecipe*>(spRecipe.operator->())->m_nMeso, &nCode);
                 if (nOk == 0)
                 {
                     *pnResult = 8;
@@ -467,36 +467,36 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
     MS2Ptr<CMaid> spMaid = reinterpret_cast<CNpc*>(pNpc)->FUN_141093800();
     if (spMaid.IsNull())
         return strText;
-    Unk_MfValuePtr<Unk_MfMaidMsg> spMsg = reinterpret_cast<Unk_MfMsgTable*>(CMaidManufactureMsgTable::GetInstance())->FUN_14067fd60(spMaid.get()->m_nMaidId);
-    if (spMsg.IsNull())
+    TPtrValue<MaidManufactureMsg> spMsg = CMaidManufactureMsgTable::GetInstance()->Find(spMaid.get()->m_nMaidId);
+    if (reinterpret_cast<Unk_MfValuePtr<Unk_MfMaidMsg>&>(spMsg).IsNull())
         return strText;
     switch (nType)
     {
     case 0:
-        strText = spMsg.get()->m_strSelectItem;
+        strText = spMsg->selectItem;
         break;
     case 1:
         FUN_141276180(s_strMaidRequest, "");
-        strText = spMsg.get()->m_strCraftRequest;
+        strText = spMsg->craftRequest;
         break;
     case 2:
         FUN_141276180(s_strMaidReceive, "");
-        strText = spMsg.get()->m_strReceiveItem;
+        strText = spMsg->receiveItem;
         break;
     case 3:
         FUN_141276180(s_strMaidReceiveJackpot, "");
         FUN_141276180(s_strMaidFirework, "");
-        strText = spMsg.get()->m_strReceiveJackpot;
+        strText = spMsg->receiveJackpot;
         break;
     case 4:
         FUN_141276180(s_strMaidCancel, "");
-        strText = spMsg.get()->m_strCraftCancel;
+        strText = spMsg->craftCancel;
         break;
     case 8:
-        strText = spMsg.get()->m_strNotEnoughIgd;
+        strText = spMsg->notEnoughIgd;
         break;
     case 0x12:
-        strText = spMsg.get()->m_strExpired;
+        strText = spMsg->expired;
         break;
     case 5:
     case 6:

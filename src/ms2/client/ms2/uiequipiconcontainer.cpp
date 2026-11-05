@@ -28,11 +28,11 @@ CString FUN_140719210(long n);
 class Unk_ItemEquipData : public CItemData
 {
 };
-class Unk_EquipOutfit : public CPtred
-{
-public:
-    void FUN_140cd3750(ATL::CAtlMap<int, MS2Ptr<CItem> >& mapItems);       // fills slot -> item
-};
+#include "ms2/client/ms2/customize.h"
+// C3: Unk_EquipOutfit was Customize; its FUN_140cd3750 is Customize::GetAddedItems (0x140cd3750),
+// which fills a uid-keyed ItemMap (the CAtlMap<int, ...> COMDATs folded with the unsigned __int64 ones).
+//
+//
 
 // @0x140e29f60
 UIEquipIconContainer::UIEquipIconContainer()
@@ -48,7 +48,7 @@ UIEquipIconContainer::~UIEquipIconContainer()
 }
 
 // @0x140e2a090
-MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Unk_EquipOutfit> pOutfit)
+MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit)
 {
     MS2Ptr<ASEquipIcon> pIcon = FUN_140e2a740(nSlot);
     if (pIcon == 0)
@@ -71,8 +71,8 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
         MS2Ptr<ASEquipIcon> pOther = FUN_140e2a740(nOther);
         if (pOther.get() != 0)
         {
-            ATL::CAtlMap<int, MS2Ptr<CItem> > mapItems(17, 0.75f, 0.25f, 2.25f, 10);
-            pOutfit->FUN_140cd3750(mapItems);
+            Customize::ItemMap mapItems(17, 0.75f, 0.25f, 2.25f, 10);
+            pOutfit->GetAddedItems(mapItems);
             bool bRemove = true;
             for (POSITION pos = mapItems.GetStartPosition(); pos != 0; mapItems.GetNext(pos))
             {

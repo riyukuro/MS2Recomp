@@ -25,11 +25,11 @@
 #include <set>
 #include <tuple>
 #include <vector>
-
+#include "ms2/placeholder/ms2svrptr.h"   // C3 #10: MS2SvrPtr<CPtred> (was Unk_ShopLifeRef)
 // The STL/ATL instances the folded COMDATs are named after in the exe (C3: the calls go to their members).
 enum Unk_LimitValue : int;
 enum Unk_AdditionalEventValue : int;
-class CUserLimitHistory;
+class CUserLimitHistory; class AdditionalEffectEventCtx; class CItemOption;
 typedef MS2Ptr<CIngredientInfo> PIng;
 typedef MS2Ptr<Probability::LogContext> PLog;
 typedef std::vector<__int64> VI64;
@@ -85,19 +85,19 @@ i64 FUN_14027b180(i64 first, i64 last, i64 dest, i64 al)
 }
 
 // @0x14027b250
-// std::_Uninitialized_copy(first, last, dest, al)
-i64 FUN_14027b250(i64 first, i64 last, i64 dest, i64 al)
-{
-    i64 f = FUN_140278740(first);
-    i64 l = FUN_140278740(last);
-    i64 d = FUN_1402787b0(dest, FUN_140278950(&f, &l));
-    char tag1;
-    char pad;
-    char* p = &tag1;
-    char t = FUN_14027a670(&f, &d);
-    FUN_14027a700(&dest, FUN_14027b440(f, l, d, al, t, *FUN_140177620(p, &pad)));
-    return dest;
-}
+// std::_Uninitialized_move<PIng*, PIng*, allocator<PIng>>, called by vector<PIng>::_Umove 0x140289b00
+template PIng* std::_Uninitialized_move<PIng*, PIng*, std::allocator<PIng>>(PIng*, PIng*, PIng*, std::allocator<PIng>&);
+// MS2-PIN: ??$_Uninitialized_move@PEAV?$MS2Ptr@VCIngredientInfo@@@@PEAV1@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@YAPEAV?$MS2Ptr@VCIngredientInfo@@@@PEAV1@00AEAV?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@0@@Z 0x14027b250 ; unique
+
+
+
+
+
+
+
+
+
+
 
 void FUN_140277870(i64, i64);
 void FUN_1402769e0(i64*, i64, Unk_StlTag);
@@ -189,9 +189,9 @@ i64 FUN_14027c230(i64); i64 FUN_14027c1f0(i64);
 Unk_Q8* FUN_14027d650(Unk_Q8*, Unk_Q8*);
 i64 FUN_140274bb0(i64, Unk_StlTag, i64, i64);
 Unk_Ref16* FUN_14027c980(Unk_Ref16*, Unk_Ref16*);
-Unk_Ref16* FUN_14027ccb0(Unk_Ref16*, Unk_Ref16*);
-Unk_Ref16* FUN_14027c9b0(Unk_Ref16*, Unk_Ref16*);
-Unk_Ref16* FUN_14027cc30(Unk_Ref16*, Unk_Ref16*);
+
+
+// (0x14027cc30 is Unk_HistRef::Unk_HistRef(const Unk_HistRef&))
 
 // @0x14027b6f0
 void FUN_14027b6f0(i64 al, i64 where, i64 src) { ::new((void*)where) i64(*(i64*)FUN_14027c140(src)); }
@@ -219,15 +219,15 @@ void FUN_14027b930(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(C
 // @0x14027b980
 void FUN_14027b980(i64 al, i64 where, i64 src) { ::new((void*)where) CString(*(CString*)(i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)src))); }
 // @0x14027b9d0
-void FUN_14027b9d0(i64 al, i64 where, i64 src) { FUN_14027c9b0(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c190(src)); }
+void FUN_14027b9d0(i64 al, i64 where, i64 src) { ((PIng*)::new((void*)where) Unk_Ref16)->PIng::MS2Ptr(*(PIng*)FUN_14027c190(src)); }
 // @0x14027ba20
-void FUN_14027ba20(i64 al, i64 where, i64 src) { FUN_14027c9b0(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c1d0(src)); }
+void FUN_14027ba20(i64 al, i64 where, i64 src) { ((PIng*)::new((void*)where) Unk_Ref16)->PIng::MS2Ptr(*(PIng*)FUN_14027c1d0(src)); }
 // @0x14027ba70
 void FUN_14027ba70(i64 al, i64 where, i64 src) { FUN_14027c980(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c210(src)); }
 // @0x14027bac0
-void FUN_14027bac0(i64 al, i64 where, i64 src) { FUN_14027cc30(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c1e0(src)); }
+void FUN_14027bac0(i64 al, i64 where, i64 src) { reinterpret_cast<Unk_HistRef*>(::new((void*)where) Unk_Ref16)->Unk_HistRef::Unk_HistRef(*(Unk_HistRef*)FUN_14027c1e0(src)); }
 // @0x14027bb10
-void FUN_14027bb10(i64 al, i64 where, i64 src) { FUN_14027ccb0(::new((void*)where) Unk_Ref16, (Unk_Ref16*)FUN_14027c1a0(src)); }
+void FUN_14027bb10(i64 al, i64 where, i64 src) { ((PLog*)::new((void*)where) Unk_Ref16)->PLog::MS2Ptr(*(PLog*)FUN_14027c1a0(src)); }
 // @0x14027bb60
 void FUN_14027bb60(i64*, i64) {}
 // @0x14027bb70
@@ -252,23 +252,23 @@ i64 FUN_140277600(i64, i64, Unk_StlTag); i64 FUN_140277630(i64, i64, Unk_StlTag)
 // @0x14027bc40
 i64 FUN_14027bc40(i64 first, i64 last) { Unk_StlTag t; return FUN_140277600(first, last, t); }
 // @0x14027bc70
-i64 FUN_14027bc70(i64 first, i64 last) { Unk_StlTag t; return FUN_140277630(first, last, t); }
+template std::_Iter_diff_t<PIng*> std::distance<PIng*>(PIng*, PIng*);
 // @0x14027bca0
 i64 FUN_14027bca0(i64 first, i64 last) { Unk_StlTag t; return FUN_140277660(first, last, t); }
 
 // vector::push_back(const T&) bodies: construct at end when it has room, otherwise reallocate
-bool FUN_140288510(i64); bool FUN_140288470(i64); bool FUN_1402884c0(i64);
+bool FUN_140288470(i64); bool FUN_1402884c0(i64);
 void FUN_140277990(i64, i64); void FUN_140277a50(i64, i64); void FUN_140277b10(i64, i64); void FUN_140277bd0(i64, i64);
-i64 FUN_140277c90(i64, i64, i64); i64 FUN_140277ee0(i64, i64, i64); i64 FUN_140278130(i64, i64, i64); i64 FUN_140278370(i64, i64, i64);
+i64 FUN_140277ee0(i64, i64, i64); i64 FUN_140278130(i64, i64, i64);
 // @0x14027bcd0
-void FUN_14027bcd0(i64 vec, i64 val)
-{
-    if (FUN_140288510(vec)) {
-        FUN_140277990(vec, FUN_14027c1d0(val));
-    } else {
-        i64 r = FUN_140277c90(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), FUN_14027c1d0(val));
-    }
-}
+template decltype(auto) VIng::emplace_back<const PIng&>(const PIng&);   // vector<MS2Ptr<CIngredientInfo>>::emplace_back (was FUN_14027bcd0)
+//
+//
+//
+//
+//
+//
+//
 // @0x14027bd40
 void FUN_14027bd40(i64 vec, i64 val)
 {
@@ -288,14 +288,14 @@ void FUN_14027bdb0(i64 vec, i64 val)
     }
 }
 // @0x14027be20
-void FUN_14027be20(i64 vec, i64 val)
-{
-    if (FUN_140288510(vec)) {
-        FUN_140277bd0(vec, FUN_14027c210(val));
-    } else {
-        i64 r = FUN_140278370(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), FUN_14027c210(val));
-    }
-}
+template decltype(auto) VIng::emplace_back<PIng>(PIng&&);   // vector<MS2Ptr<CIngredientInfo>>::emplace_back (was FUN_14027be20)
+//
+//
+//
+//
+//
+//
+//
 
 // _Tree::emplace_hint(where, piecewise_construct, tuple<K&&>, tuple<>)
 i64 FUN_140277000(i64, i64, i64, i64); struct Unk_TIter; struct Unk_TNode; Unk_TIter* FUN_140278d90(void*, Unk_TIter*, Unk_TIter, i64, Unk_TNode*);
@@ -316,10 +316,10 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
     i64 f = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&first);
     i64 l = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&last);
     for (; f != l; f += 0x10) {
-        Unk_Ref16 slot;
-        Unk_Ref16* tmp = &slot;
-        Unk_Ref16* copy = FUN_14027c9b0(tmp, (Unk_Ref16*)f);
-        if (reinterpret_cast<bool (*)(int*, Unk_Ref16*)>(&FUN_14026b560)(&key, copy))
+
+
+
+        if (reinterpret_cast<bool (*)(int*, PIng)>(&FUN_14026b560)(&key, *(PIng*)f))
             break;
     }
     FUN_14027a740((i64)&first, &f);
@@ -329,8 +329,8 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
 
 // fmt::internal::MakeValue<BasicFormatter<wchar_t>>(const int&): the generic ostream-formatted argument (type 0xa)
 struct Unk_FmtVal : fmt::internal::Value { int type; };
-struct Unk_Str16 { private: i64 w0, w1; };
-Unk_Str16* FUN_140182090(Unk_Str16*, const std::wstring&);
+// C3: the 16-byte argument value is built by fmt::internal::MakeValue<BasicFormatter<wchar_t>>(const std::wstring&)
+// (0x140182090, ms2/fmt/format.h)
 // @0x14027bff0
 // fmt: an int writes the argument directly; the disabled path formats through a wide stream.
 void FUN_14027bff0(i64 ctx, i64* out, int* value)
@@ -344,8 +344,8 @@ void FUN_14027bff0(i64 ctx, i64* out, int* value)
         std::wostringstream oss;
         oss << *value;
         std::wstring text = oss.str();
-        Unk_Str16 packed;
-        *(Unk_Str16*)pv = *FUN_140182090(&packed, text);
+        //
+        *(fmt::internal::Value*)pv = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(text);
         v.type = 10;
     }
     *out = (i64)reinterpret_cast<fmt::BasicFormatter<wchar_t>*>(ctx)->format(*(const wchar_t**)out, *(const fmt::internal::Arg*)&v);
@@ -394,17 +394,17 @@ i64 FUN_14027c240(i64 a, i64 b) { FUN_140274c00(a, FUN_14027c1f0(b)); return a; 
 i64 FUN_14027c270(i64* p) { return FUN_14027c1f0(*p); }
 
 // vector<Unk_IngRef>::insert(where, first, last)
-struct Unk_E16; void FUN_140279de0(void*, Unk_E16*, i64, i64);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
+// MS2-PIN: ??$distance@PEAV?$MS2Ptr@VCIngredientInfo@@@@@std@@YA_JPEAV?$MS2Ptr@VCIngredientInfo@@@@0@Z 0x14027bc70 ; unique
 // @0x14027c290
-i64 FUN_14027c290(i64 self, i64 out, i64 where, i64 first, i64 last)
-{
-    Unk_StlTag t;
-    FUN_1402769a0((i64)&first, (i64)&last);
-    i64 idx = (where - *(i64*)(i64)&reinterpret_cast<VPtred*>(self)->_Myfirst()) >> 4;
-    reinterpret_cast<void (*)(i64, i64, i64, i64, Unk_StlTag)>(&FUN_140279de0)(self, where, reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&first), reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&last), t);
-    FUN_140288770(self, out, idx);
-    return out;
-}
+template VIng::iterator VIng::insert<VIng::iterator, void>(VIng::const_iterator, VIng::iterator, VIng::iterator);
+
+
+
+
+
+
+
+
 
 // fmt::internal::make_type<T>(const T&) instances: forward to the per-type MakeValue::type()
 // @0x14027c340
@@ -489,28 +489,28 @@ i64* FUN_14027c940(i64* t, i64 v) { *t = v; return t; }
 int* FUN_14027c960(int* t, bool v) { *t = v; return t; }
 
 // ---- Unk_Ref16 (refcounted pointer wrapper: {vptr-ish, p}) ctors; the addref helpers are the exe's per-type AddRef ----
-void FUN_1402864c0(Unk_Ref16*); void FUN_1402864f0(Unk_Ref16*); void FUN_140286520(Unk_Ref16*);
-void FUN_140286550(Unk_Ref16*); void FUN_1402865b0(Unk_Ref16*); void FUN_1402865e0(Unk_Ref16*);
-void FUN_140286610(Unk_Ref16*); void FUN_140286640(Unk_Ref16*); void FUN_140286670(Unk_Ref16*);
+// (the copies of the real types are explicit instantiations: MS2Ptr<T>/TPtrValue<T> copy ctors, AddRef in the body)
+void FUN_140286550(Unk_Ref16*); class CUgcItemLook; void FUN_1402865e0(Unk_Ref16*);
+void FUN_140286670(Unk_Ref16*);
 // @0x14027c980
 Unk_Ref16* FUN_14027c980(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; o->m_p = 0; return t; }
 // @0x14027c9b0
-Unk_Ref16* FUN_14027c9b0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_1402864c0(t); return t; }
+template MS2Ptr<CIngredientInfo>::MS2Ptr(const MS2Ptr<CIngredientInfo>&);
 // @0x14027c9f0
-Unk_Ref16* FUN_14027c9f0(Unk_Ref16* t, int) { t->m_p = 0; return t; }
+template MS2Ptr<CIngredientInfo>::MS2Ptr(int);
 // @0x14027ca10
-Unk_Ref16* FUN_14027ca10(Unk_Ref16* t, void* p) { t->m_p = p; FUN_1402864c0(t); return t; }
+template MS2Ptr<CIngredientInfo>::MS2Ptr(CIngredientInfo*);
 // @0x14027ca40
-Unk_Ref16* FUN_14027ca40(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_1402864f0(t); return t; }
+template TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>::TPtrValue(const TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>&);
 // @0x14027ca80
 Unk_Ref16* FUN_14027ca80(Unk_Ref16* t, int) { t->m_p = 0; return t; }
 // @0x14027caa0
-Unk_Ref16* FUN_14027caa0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_140286520(t); return t; }
-struct Unk_RefT : Unk_Ref16 { Unk_RefT(void* p); ~Unk_RefT(); };
+template MS2Ptr<AdditionalEffectEventCtx>::MS2Ptr(const MS2Ptr<AdditionalEffectEventCtx>&);
+class CAdditionalEvent; typedef MS2Ptr<CAdditionalEvent> Unk_RefT;   // C3: was a Unk_Ref16 view
 // @0x14027cae0
-Unk_RefT::Unk_RefT(void* p) { m_p = p; FUN_140286550(this); }
+template MS2Ptr<CAdditionalEvent>::MS2Ptr(CAdditionalEvent*);
 // @0x14027cb10
-Unk_Ref16* FUN_14027cb10(Unk_Ref16* t) { t->m_p = 0; return t; }
+template MS2Ptr<CAdditionalEvent>::MS2Ptr();
 // @0x14027cb30
 Unk_Ref16* FUN_14027cb30(Unk_Ref16* t, int) { t->m_p = 0; return t; }
 // @0x14027cb50
@@ -518,26 +518,26 @@ Unk_Ref16* FUN_14027cb50(Unk_Ref16* t) { t->m_p = 0; return t; }
 // @0x14027cb70
 Unk_Ref16* FUN_14027cb70(Unk_Ref16* t, int) { t->m_p = 0; return t; }
 // @0x14027cb90
-Unk_Ref16* FUN_14027cb90(Unk_Ref16* t, int) { t->m_p = 0; return t; }
+template MS2Ptr<CUgcItemLook>::MS2Ptr(int);
 // @0x14027cbb0
-Unk_Ref16* FUN_14027cbb0(Unk_Ref16* t, void* p) { t->m_p = p; FUN_1402865b0(t); return t; }
+template MS2Ptr<CUgcItemLook>::MS2Ptr(CUgcItemLook*);
 // @0x14027cbe0
-Unk_Ref16* FUN_14027cbe0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; o->m_p = 0; return t; }
+Unk_HistRef::Unk_HistRef(Unk_HistRef&& o) { m_p = o.m_p; o.m_p = 0; }   // was the free FUN_14027cbe0(Unk_Ref16*, Unk_Ref16*)
 // @0x14027cc10
 Unk_Ref16* FUN_14027cc10(Unk_Ref16* t, void*) { t->m_p = 0; return t; }
 // @0x14027cc30
-Unk_Ref16* FUN_14027cc30(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_1402865e0(t); return t; }
+Unk_HistRef::Unk_HistRef(const Unk_HistRef& o) { m_p = o.m_p; FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(this)); }   // was the free FUN_14027cc30(Unk_Ref16*, Unk_Ref16*)
 // @0x14027cc70
-Unk_Ref16* FUN_14027cc70(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_140286610(t); return t; }
+template MS2Ptr<CUserLimitHistory>::MS2Ptr(const MS2Ptr<CUserLimitHistory>&);
 // @0x14027ccb0
-Unk_Ref16* FUN_14027ccb0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_140286640(t); return t; }
+template PLog::MS2Ptr(const PLog&);
 // @0x14027ccf0
-Unk_Ref16* FUN_14027ccf0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; o->m_p = 0; return t; }
+template MS2SvrPtr<CPtred>::MS2SvrPtr(MS2SvrPtr<CPtred>&&);
 // @0x14027cd20
-Unk_Ref16* FUN_14027cd20(Unk_Ref16* t, void* p) { t->m_p = p; FUN_140286670(t); return t; }
+template MS2SvrPtr<CPtred>::MS2SvrPtr(CPtred*);
 
 // ---- TPtredDummy<CAtlList<TPtr<CUserLimitHistory>>>-style box: CPtred base, the list at +0x18 ----
-#include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 struct Unk_ListBox : CPtred {
     Unk_List value;
     Unk_ListBox();
@@ -613,7 +613,7 @@ Unk_PairHolder* FUN_14027d250(Unk_PairHolder* t) { FUN_140274a50((i64)&t->pair, 
 // @0x14027d280
 Unk_PairHolder* FUN_14027d280(Unk_PairHolder* t) { FUN_140274a80((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d2b0
-Unk_PairHolder* FUN_14027d2b0(Unk_PairHolder* t) { FUN_140274ab0((i64)&t->pair, Unk_StlTag()); return t; }
+template std::_Vector_alloc<std::_Vec_base_types<PIng, std::allocator<PIng>>>::_Vector_alloc();
 // @0x14027d2e0
 Unk_PairHolder* FUN_14027d2e0(Unk_PairHolder* t) { FUN_140274ae0((i64)&t->pair, Unk_StlTag()); return t; }
 // @0x14027d310
@@ -632,7 +632,7 @@ Unk_Z24* FUN_14027d450(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
 // @0x14027d490
 Unk_Z24* FUN_14027d490(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
 // @0x14027d4d0
-Unk_Z24* FUN_14027d4d0(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
+template std::_Vector_val<std::_Simple_types<PIng>>::_Vector_val();
 // @0x14027d510
 Unk_Z24* FUN_14027d510(Unk_Z24* t) { t->a = 0; t->b = 0; t->c = 0; return t; }
 // @0x14027d550
@@ -646,7 +646,7 @@ void* FUN_14027d580(void* t) { return t; }
 // @0x14027d590
 void* FUN_14027d590(void* t) { return t; }
 // @0x14027d5a0
-void* FUN_14027d5a0(void* t) { return t; }
+template std::allocator<PIng>::allocator() noexcept;
 // @0x14027d5b0
 void* FUN_14027d5b0(void* t) { return t; }
 // @0x14027d5c0
@@ -654,7 +654,7 @@ Unk_CommonBytes4* FUN_14027d5c0(Unk_CommonBytes4* t) noexcept { memset(&t->raw, 
 // @0x14027d5e0
 Unk_PairHolder* FUN_14027d5e0(Unk_PairHolder* t) { FUN_14027cdf0(t); return t; }
 // @0x14027d600
-Unk_PairHolder* FUN_14027d600(Unk_PairHolder* t) { char loc; FUN_14027cf40(t, (i64)&loc); return t; }
+Unk_RewardMap::Unk_RewardMap() { char loc; FUN_14027cf40(reinterpret_cast<Unk_PairHolder*>(this), (i64)&loc); }   // the std::map ctor; was the free FUN_14027d600(Unk_PairHolder*), aliased from this name
 // @0x14027d630
 i64* FUN_14027d630(i64* t, i64 v) { *t = v; return t; }
 // @0x14027d650
@@ -666,12 +666,12 @@ Unk_PairHolder* FUN_14027d6c0(Unk_PairHolder* t) noexcept { FUN_14027d250(t); re
 // @0x14027d6f0
 Unk_PairHolder* FUN_14027d6f0(Unk_PairHolder* t) noexcept { FUN_14027d280(t); return t; }
 // @0x14027d720
-Unk_PairHolder* FUN_14027d720(Unk_PairHolder* t) noexcept { FUN_14027d2b0(t); return t; }
+template VIng::vector() noexcept;
 // @0x14027d750
 Unk_PairHolder* FUN_14027d750(Unk_PairHolder* t) noexcept { FUN_14027d2e0(t); return t; }
 
 // ---- small value types: ctors / copy ctors (all inline COMDATs of the element types in the exe) ----
-struct CAdditionalEvent;
+class CAdditionalEvent;
 struct Unk_ListB : Unk_List { ~Unk_ListB() throw(); };
 // ATL::CAtlList dtors: RemoveAll(), then the (empty) ATLASSERT do-while
 struct Unk_ListA : Unk_List { ~Unk_ListA() throw(); };
@@ -680,7 +680,7 @@ Unk_ListA::~Unk_ListA() throw() { reinterpret_cast<ATL::CAtlList<MS2Ptr<CUserLim
 // @0x14027de90
 Unk_ListB::~Unk_ListB() throw() { reinterpret_cast<ATL::CAtlList<Unk_AdditionalEventValue>*>(this)->RemoveAll(); do {} while (0); }
 
-struct CAdditionalEvent : CPtred {
+class CAdditionalEvent : public CPtred { public:
     Unk_ListB events;
     CAdditionalEvent();
     // @0x14027e590
@@ -719,7 +719,7 @@ struct Unk_Holder10 { i64 pad0, pad1; Unk_RecB rec; Unk_Holder10(const Unk_RecB&
 Unk_Holder10::Unk_Holder10(const Unk_RecB& r) : rec(r) {}
 struct Unk_Holder10R { i64 pad0, pad1; Unk_Ref16 r; };
 // @0x14027d9a0
-Unk_Holder10R* FUN_14027d9a0(Unk_Holder10R* t, Unk_Ref16* p) { FUN_14027cc70(&t->r, p); return t; }
+Unk_Holder10R* FUN_14027d9a0(Unk_Holder10R* t, Unk_Ref16* p) { reinterpret_cast<MS2Ptr<CUserLimitHistory>*>(&t->r)->MS2Ptr<CUserLimitHistory>::MS2Ptr(*(MS2Ptr<CUserLimitHistory>*)p); return t; }
 struct Unk_IntHolder { int v; int pad[3]; int x; };
 // @0x14027d9d0
 Unk_IntHolder* FUN_14027d9d0(Unk_IntHolder* t, const int* p) { t->x = *p; return t; }
@@ -734,7 +734,7 @@ Unk_IntHolder* FUN_14027d9f0(Unk_IntHolder* t, int a, int b) { FUN_14027dac0((Un
 Unk_IntHolder* FUN_14027da30(Unk_IntHolder* t, int a, int b) { FUN_14027dae0((Unk_IntBox*)t, a); t->x = b; return t; }
 struct Unk_RefRec { i64 a; Unk_Ref16 r; int flag; int pad1c; i64 pad20, pad28, tail; };
 // @0x14027db00
-Unk_RefRec* FUN_14027db00(Unk_RefRec* t, i64 a, Unk_Ref16* b) { t->a = a; FUN_14027ca40(&t->r, b); return t; }
+Unk_RefRec* FUN_14027db00(Unk_RefRec* t, i64 a, Unk_Ref16* b) { t->a = a; reinterpret_cast<TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>*>(&t->r)->TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>::TPtrValue(*(TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>*)b); return t; }
 // @0x14027da70
 Unk_RefRec* FUN_14027da70(Unk_RefRec* t, i64 a, Unk_Ref16* b) { FUN_14027db00(t, a, b); t->flag = 1; t->tail = 0; return t; }
 struct Unk_V3 { float x, y, z; };
@@ -769,25 +769,25 @@ struct Unk_ItemAbleTwin {
 Unk_ItemAbleTwin::Unk_ItemAbleTwin() {}
 
 // ---- smart-pointer / container dtors: noexcept single-call bodies (the -2 unwind slot + nop is the noexcept frame) ----
-i64 FUN_140288dd0(void*); i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
+i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
 i64 FUN_140288f10(void*); i64 FUN_140288f50(void*); i64 FUN_140288f90(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
-i64 FUN_140289050(void*); i64 FUN_140289670(void*); i64 FUN_140289740(void*); i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
+i64 FUN_140289050(void*); struct Unk_CsI64Vec { void FUN_140289670(); }; i64 FUN_140289740(void*); i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
 i64 FUN_1402899b0(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
 void FUN_140287dc0(void*, i64);
-// @0x14027df70
-Unk_IngRef::~Unk_IngRef() { FUN_140288dd0(this); }
+// MS2-PIN: ??1?$MS2Ptr@VCIngredientInfo@@@@QEAA@XZ 0x14027df70
+template MS2Ptr<CIngredientInfo>::~MS2Ptr();
 // @0x14027e060
 Unk_HistRef::~Unk_HistRef() { FUN_140288f10(this); }
 // @0x14027e0c0
 Unk_ProdRef::~Unk_ProdRef() { FUN_140288f90(this); }
 // @0x14027e150
-Unk_ShopLifeRef::~Unk_ShopLifeRef() { FUN_140289050(this); }
+template MS2SvrPtr<CPtred>::~MS2SvrPtr();
 // @0x14027dfa0
 void FUN_14027dfa0(void* t) noexcept { FUN_140288e10(t); }
 // @0x14027dfd0
-void FUN_14027dfd0(void* t) noexcept { FUN_140288e50(t); }
+template MS2Ptr<AdditionalEffectEventCtx>::~MS2Ptr();
 // @0x14027e000
-Unk_RefT::~Unk_RefT() { FUN_140288e90(this); }
+template MS2Ptr<CAdditionalEvent>::~MS2Ptr();
 // @0x14027e030
 void FUN_14027e030(void* t) noexcept { FUN_140288ed0(t); }
 // @0x14027e090
@@ -797,7 +797,7 @@ void FUN_14027e0f0(void* t) noexcept { FUN_140288fd0(t); }
 // @0x14027e120
 void FUN_14027e120(void* t) noexcept { FUN_140289010(t); }
 // @0x14027e3f0
-void FUN_14027e3f0(void* t) noexcept { FUN_140289670(t); }
+void FUN_14027e3f0(void* t) noexcept { reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670(); }
 // @0x14027e4b0
 void FUN_14027e4b0(void* t) noexcept { FUN_1402899b0(t); }
 // @0x14027deb0
@@ -809,7 +809,7 @@ Unk_ItemVec::~Unk_ItemVec() noexcept { FUN_140289740(this); }
 // @0x14027e450
 Unk_StrVec::~Unk_StrVec() { FUN_140289810(this); }
 // @0x14027e480
-Unk_IngVec::~Unk_IngVec() { FUN_1402898e0(this); }
+template VIng::~vector();
 
 // a list/map header (std::list<Unk_HistRef> / std::map<unsigned,int>): _Tidy = clear + free the sentinel node
 // @0x14027e1b0
@@ -838,29 +838,29 @@ Unk_BackoutD::~Unk_BackoutD() { FUN_140277560(first, last, al); }
 Unk_BackoutE::~Unk_BackoutE() { FUN_1402775b0(first, last, al); }
 
 // ---- refcounted-pointer assignment: AddRef(src), Release(this), copy ----
-void FUN_140286580(Unk_Ref16*);
+// (the MS2Ptr<T>/TPtrValue<T> ones are explicit instantiations of operator=)
 // @0x14027e950
-Unk_Ref16* FUN_14027e950(Unk_Ref16* t, Unk_Ref16* o) { FUN_1402864c0(o); FUN_140288dd0(t); t->m_p = o->m_p; return t; }
+template PIng& PIng::operator=(const PIng&);
 // @0x14027e990
-Unk_Ref16* FUN_14027e990(Unk_Ref16* t, Unk_Ref16* o) { FUN_1402864f0(o); FUN_140288e10(t); t->m_p = o->m_p; return t; }
+template TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>& TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>::operator=(const TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>&);
 // @0x14027ea40
-Unk_Ref16* FUN_14027ea40(Unk_Ref16* t, Unk_Ref16* o) { FUN_140286580(o); FUN_140288ed0(t); t->m_p = o->m_p; return t; }
+template MS2Ptr<CItemOption>& MS2Ptr<CItemOption>::operator=(const MS2Ptr<CItemOption>&);
 // @0x14027ea80
 Unk_Ref16* FUN_14027ea80(Unk_Ref16* t, int) { FUN_140288ed0(t); return t; }
 // @0x14027eab0
-Unk_Ref16* FUN_14027eab0(Unk_Ref16* t, Unk_Ref16* o) { FUN_1402865e0(o); FUN_140288f10(t); t->m_p = o->m_p; return t; }
+Unk_HistRef& Unk_HistRef::FUN_14027eab0(Unk_HistRef& o) { FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(&o)); FUN_140288f10(reinterpret_cast<Unk_Ref16*>(this)); m_p = o.m_p; return *this; }   // was the free FUN_14027eab0(Unk_Ref16*, Unk_Ref16*)
 // @0x14027eaf0
-Unk_Ref16* FUN_14027eaf0(Unk_Ref16* t, Unk_Ref16* o) { FUN_140286640(o); FUN_140289010(t); t->m_p = o->m_p; return t; }
+template PLog& PLog::operator=(const PLog&);
 // operator=(T*): swap with a temporary
 // @0x14027e9d0
-Unk_Ref16* FUN_14027e9d0(Unk_Ref16* t, void* p)
-{
-    Unk_RefT tmp(p);
-    void* old = t->m_p;
-    t->m_p = tmp.m_p;
-    tmp.m_p = old;
-    return t;
-}
+template MS2Ptr<CAdditionalEvent>& MS2Ptr<CAdditionalEvent>::AssignRaw(CAdditionalEvent*);
+//
+//
+//
+//
+//
+//
+//
 
 // ---- remaining class dtors, wrappers, comparisons and array accessors ----
 struct Unk_A28 { i64 pad[5]; void* p28; };
@@ -878,11 +878,11 @@ void Unk_AnchorDtors(BillBoardInfo* b, CClientHardwareInfo* h) { b->BillBoardInf
 
 // dtors of classes whose headers are not part of this unit: member dtors, then CPtred::~CPtred
 struct Unk_DtW30 : CPtred { i64 pad[3]; CStringW s; };
-struct Unk_DtA30 : CPtred { i64 pad[3]; CString s; };
+#include "ms2/placeholder/itemcustom.h"   // ItemCustom: its implicit dtor 0x14027e890 is emitted below
 // @0x14027e4e0
 void FUN_14027e4e0(Unk_DtW30* t) { t->s.CStringW::~CStringW(); t->CPtred::~CPtred(); }
-// @0x14027e890
-void FUN_14027e890(Unk_DtA30* t) { t->s.CString::~CString(); t->CPtred::~CPtred(); }
+// 0x14027e890 = ItemCustom::~ItemCustom, implicit (no vptr store); MS2_EmitImplicitDtors_commonstruct2 odr-uses it
+// MS2-PIN: ??1ItemCustom@@UEAA@XZ 0x14027e890
 // @0x14027e510
 void FUN_14027e510(CPtred* t) { t->CPtred::~CPtred(); }
 // @0x14027e600
@@ -896,14 +896,14 @@ void FUN_14027e870(CPtred* t) { t->CPtred::~CPtred(); }
 // The CPtred-derived dtors below are implicit (the exe stores no vptr). This slice owns their VAs but not the
 // ctors, so odr-use them here to make cl emit the COMDATs; the helper itself is never called.
 void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, ChangeableProductInfo* p1, HomeBlockInfo* p2, ItemDropItemLife* p3, NpcShopItemLife* p4,
-    ATL::CAtlArray<Unk_CommonPacketLogEntry>* p5)
+    ATL::CAtlArray<Unk_CommonPacketLogEntry>* p5, ItemCustom* p6)
 {
     p5->ATL::CAtlArray<Unk_CommonPacketLogEntry>::~CAtlArray();
     p0->CUserChangeableItemHistory::~CUserChangeableItemHistory();
     p1->ChangeableProductInfo::~ChangeableProductInfo();
     p2->HomeBlockInfo::~HomeBlockInfo();
     p3->ItemDropItemLife::~ItemDropItemLife();
-    p4->NpcShopItemLife::~NpcShopItemLife();
+    p4->NpcShopItemLife::~NpcShopItemLife(); p6->ItemCustom::~ItemCustom();
 }
 // MS2-PIN: ??1CUserChangeableItemHistory@@UEAA@XZ 0x14027e7a0
 // MS2-PIN: ??1ChangeableProductInfo@@UEAA@XZ 0x14027e7e0
@@ -945,7 +945,7 @@ void FUN_140287550(i64, i64); void FUN_140287580(i64, i64);
 i64 FUN_14027eb30(i64 t, i64 o)
 {
     if (t != FUN_14027b500(o)) {
-        if (Unk_False::value) FUN_140289670((void*)t);
+        if (Unk_False::value) reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670();
         FUN_140287550(t, (i64)&reinterpret_cast<const VI64*>(o)->_Getal());
         FUN_14027b630(t, *(i64*)&reinterpret_cast<const VI64*>(o)->_Myfirst(), *(i64*)&reinterpret_cast<const VI64*>(o)->_Mylast());
     }
@@ -972,7 +972,7 @@ bool FUN_14027ece0(Unk_Ref16* t, void* p) { return t->m_p == p; }
 // @0x14027ed60
 bool FUN_14027ed60(Unk_Ref16* t, void* p) { return t->m_p == p; }
 // @0x14027ec60
-bool Unk_IngRef::operator==(CIngredientInfo* p) const { return m_p == p; }
+template bool MS2Ptr<CIngredientInfo>::operator==(CIngredientInfo*) const;
 // @0x14027ed20
 bool Unk_HistRef::operator==(CUserChangeableItemHistory* p) const { return m_p == p; }
 // @0x14027eda0
@@ -1022,18 +1022,22 @@ int& Unk_RewardMap::FUN_14027f180(unsigned& key)
 // @0x14027f1c0
 CString* Unk_StrVec::FUN_14027f1c0(size_t i) { return (CString*)*(i64*)(i64)&reinterpret_cast<VStr*>((i64)this)->_Myfirst() + i; }
 // @0x14027f1f0
-Unk_IngRef* Unk_IngVec::FUN_14027f1f0(size_t i) { return (Unk_IngRef*)*(i64*)(i64)&reinterpret_cast<VPtred*>((i64)this)->_Myfirst() + i; }
+template PIng& VIng::operator[](size_t);
 // @0x14027f220
-Unk_IngRef* Unk_IngVec::FUN_14027f220(size_t i) { return (Unk_IngRef*)*(i64*)&reinterpret_cast<const VIng*>((i64)this)->_Myfirst() + i; }
+template const PIng& VIng::operator[](size_t) const;
 // @0x14027f250
-CIngredientInfo* Unk_IngRef::FUN_14027f250() const { return m_p; }
+template CIngredientInfo* MS2Ptr<CIngredientInfo>::get() const;
 // @0x14027f260
 void* FUN_14027f260(Unk_Ref16* t) { return t->m_p; }
 // @0x14027f270
 void* FUN_14027f270(Unk_Ref16* t) { return t->m_p; }
 // @0x14027f2c0
-CIngredientInfo* Unk_IngRef::operator->() const { return m_p; }
+template CIngredientInfo* MS2Ptr<CIngredientInfo>::operator->() const;
 // @0x14027f280
 Unk_List* FUN_14027f280(Unk_ListBox* t) { return !t ? 0 : &t->value; }
 // @0x14027e7c0
 void FUN_14027e7c0(CPtred* t) { t->CPtred::~CPtred(); }
+// MS2-PIN: ??0?$MS2Ptr@VAdditionalEffectEventCtx@@@@QEAA@AEBV0@@Z 0x14027caa0
+// MS2-PIN: ??0?$MS2Ptr@VLogContext@Probability@@@@QEAA@AEBV0@@Z 0x14027ccb0
+// MS2-PIN: ??4?$MS2Ptr@VCIngredientInfo@@@@QEAAAEAV0@AEBV0@@Z 0x14027e950
+// MS2-PIN: ??1?$MS2Ptr@VAdditionalEffectEventCtx@@@@QEAA@XZ 0x14027dfd0

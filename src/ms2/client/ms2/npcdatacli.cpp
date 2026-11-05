@@ -36,17 +36,17 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/commoneffectdummy.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-class TiXmlNode   // C3: TiXmlNode::NextSiblingElement (0x14086e770) view
-{
-public:
-    const class TiXmlElement* NextSiblingElement() const;
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -72,7 +72,7 @@ template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);  
 class Unk_NpcEffectDummies
 {
 public:
-    size_t FUN_140a40200();
+    // FUN_140a40200 was CommonEffectDummy::Clear (0x140a40200), which returns the row count
 };
 
 // An entry of the Common::Constants table (the shared Object header, then the value).
@@ -162,7 +162,7 @@ bool NpcDataCli::Different(const NpcDataCli* pOther)
 }
 
 // @0x140a7c420
-bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
+bool NpcDataCli::LoadXml(TiXmlElement* pElem)
 {
     if (!CNpcData::LoadXml(pElem))
         return false;
@@ -184,17 +184,17 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(m_nGender));
     {
         CEffectDummy dummy;
-        size_t nCount = reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40200();
+        size_t nCount = TSingleton<CommonEffectDummy>::GetInstance()->Clear();
         m_effectDummies.reserve(nCount);
         for (size_t i = 0; i < nCount; i++)
         {
             if (TSingleton<CommonEffectDummy>::GetInstance()->Get((unsigned)i, &dummy))
                 m_effectDummies.push_back(dummy);
         }
-        Unk_140165cf0* pDummies = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effectdummy"));
+        TiXmlElement* pDummies = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("effectdummy"));
         if (pDummies != 0)
         {
-            for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDummies))->FirstChild("dummy")); pNode != 0; pNode = reinterpret_cast<Unk_140165cf0*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pNode)->NextSiblingElement())))
+            for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pDummies))->FirstChild("dummy")); pNode != 0; pNode = reinterpret_cast<TiXmlElement*>(const_cast<TiXmlElement*>(reinterpret_cast<const TiXmlNode*>(pNode)->NextSiblingElement())))
             {
                 bool bFound = false;
                 CStringA strName;
@@ -317,7 +317,7 @@ void NpcDataTableCli::Load(int nFile)
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
         return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -325,7 +325,7 @@ void NpcDataTableCli::Load(int nFile)
     }
     std::vector<MS2Ptr<NpcDataCli> > list;
     list.reserve(100);
-    for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")))
+    for (TiXmlElement* pNode : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")))
     {
         MS2Ptr<NpcDataCli> pData(new NpcDataCli);
         if (!pData->Load(pNode))

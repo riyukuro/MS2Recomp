@@ -42,7 +42,7 @@
 class Unk_TrScript
 {
 public:
-    Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);  // array, unsigned
+    // C3: FUN_140eba060 is AScript::FUN_140eba060(const char*, const AScript&, unsigned) (ascript.h)
 };
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -292,7 +292,7 @@ void UITimeRunEventDialog::FUN_140ee3580()
         row.FUN_1407cb9c0("visible", bReached);
         rewards.PushObj(row);
     }
-    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
     reinterpret_cast<AScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>(&spContext->m_item)), nDistance >= (unsigned)spContext->m_1c && nReceived == 0 ? true : false);
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_totalDistance"))
     {

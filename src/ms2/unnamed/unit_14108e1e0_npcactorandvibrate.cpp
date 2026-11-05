@@ -143,11 +143,11 @@ class Unk_PCBaseComp_a78 : public UINameTag::Entity {};
 class Unk_PCBaseComp_a88 : public UIEmoticon::Entity {};
 class Unk_PCBaseComp_a98 : public UIBuffBalloon::Entity {};
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity {};
-MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // new hp bar
-MS2Ptr<Unk_PCBaseComp_a78> FUN_141a60da0(int nObjectId);           // new name tag
+MS2Ptr<UIHpBar::Entity> FUN_141992920(int nObjectId);           // new hp bar
+MS2Ptr<UINameTag::Entity> FUN_141a60da0(int nObjectId);           // new name tag
 MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nObjectId);           // new emoticon (uiemoticon.cpp)
-MS2Ptr<Unk_PCBaseComp_a98> FUN_14128ef70(int nObjectId);           // new buff balloon
-MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nObjectId);           // new chat balloon
+MS2Ptr<UIBuffBalloon::Entity> FUN_14128ef70(int nObjectId);           // new buff balloon
+MS2Ptr<UIChatBalloon::Entity> FUN_1418fbdb0(int nObjectId);           // new chat balloon
 
 // The actor's ground shadow (GameObject +0x58; unit_14160fb10).
 class CObjectShadow : public NiRefObject
@@ -166,8 +166,8 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 {
 };
 
-class COptimizer { public: void AddSuppressor(egf::EntityID kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
-class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
+class COptimizer { public: int FUN_1409f7ea0(); void AddSuppressor(egf::EntityID kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
+class Unk_AvModeSvc;   // C3: the getter's stand-in pointee; FUN_1409f7ea0 is COptimizer's
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class CEmotionTable { public: void LoadTextures(unsigned int nId, CString strDir); };   // preload the npc's effects
 class CEmotionManager { public: CEmotionTable* GetNpcTable(); };
@@ -640,9 +640,9 @@ void CNpc::vfunc_47(bool b)
 }
 
 // @0x14108fc70
-void CNpc::vfunc_27(ATL::CAtlArray<Unk_GoAnchorPtr>& kArr)
+void CNpc::vfunc_27(ATL::CAtlArray<MS2Ptr<CBoxCollision> >& kArr)
 {
-    reinterpret_cast<ATL::CAtlArray<MS2Ptr<CBoxCollision> >&>(kArr).Copy(m_arrE68);
+    kArr.Copy(m_arrE68);
 }
 
 // @0x14108fcb0
@@ -693,12 +693,12 @@ unsigned short CNpc::vfunc_79()
 // @0x14108fe90
 MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (m_spA58 == 0) {
         bool bHpBar = GetNpcData()->m_bHpBar;
         if (bHpBar) {
-            Unk_PCBaseComp_a58* pBar = (m_spA58 = FUN_141992920(m_unk_70)).get();
+            Unk_PCBaseComp_a58* pBar = (m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(FUN_141992920(m_unk_70)))).get();
             if (pBar != 0)
                 m_spA58->FUN_141992140(0);
         }
@@ -710,12 +710,12 @@ MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
 // @0x141090030
 MS2Ptr<Unk_PCBaseComp_a78> CNpc::vfunc_82()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a78>(0);
     if (m_spA78.get() != 0)
         return m_spA78;
     if (GetNpcData().operator->()->GetNametag()) {
-        Unk_PCBaseComp_a78* pTag = (m_spA78 = FUN_141a60da0(m_unk_70)).get();
+        Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get();
         if (pTag != 0) {
             m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
             m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());
@@ -730,7 +730,7 @@ MS2Ptr<Unk_PCBaseComp_a78> CNpc::vfunc_82()
 MS2Ptr<Unk_PCBaseComp_a98> CNpc::vfunc_84()
 {
     if (m_spA98 == 0)
-        m_spA98 = FUN_14128ef70(m_unk_70);
+        m_spA98 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a98>&>(static_cast<const MS2Ptr<UIBuffBalloon::Entity>&>(FUN_14128ef70(m_unk_70)));
     return m_spA98;
 }
 
@@ -738,7 +738,7 @@ MS2Ptr<Unk_PCBaseComp_a98> CNpc::vfunc_84()
 // @0x1410903b0
 MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a88>(0);
     if (m_spA88.IsNull() && vfunc_116() > 0)
         m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
@@ -749,10 +749,10 @@ MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
 // @0x1410904c0
 MS2Ptr<Unk_PCBaseComp_aa8> CNpc::vfunc_85()
 {
-    if (FUN_1409f7c90()->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == 0)
-        m_spAA8 = FUN_1418fbdb0(m_unk_70);
+        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
     return m_spAA8;
 }
 
@@ -2408,7 +2408,7 @@ void CNpc::vfunc_53(float fTime)
         }
     } else {
         if (reinterpret_cast<unsigned char&>(FUN_1401d3200()->m_unk8) != 0) {
-            Unk_PCBaseComp_a78* pTag = (m_spA78 = FUN_141a60da0(m_unk_70)).get();
+            Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get();
             if (pTag != 0) {
                 m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
                 m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());

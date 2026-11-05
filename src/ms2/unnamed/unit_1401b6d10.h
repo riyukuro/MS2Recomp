@@ -12,7 +12,7 @@
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/socketptr.h"
 
-class Unk_140165cf0;                    // xml element (declared where the loader is)
+class TiXmlElement;                    // xml element (declared where the loader is)
 
 class CFieldBannerData;
 // TPtr<CFieldBannerData> (RTTI template name): the 16-byte intrusive pointer, pointer at +8. Spelled Unk_BannerPtr.
@@ -51,7 +51,7 @@ public:
 
     __int64 GetCurrentHourly();                             // 0x1401b6e90 value of the current hour (name invented)
     __int64 GetHourly(int nHour) const;                           // 0x1401b6ed0 (name invented)
-    bool Load(Unk_140165cf0* pNode);                        // 0x1401b6f20 reads the <banner> attributes
+    bool Load(TiXmlElement* pNode);                        // 0x1401b6f20 reads the <banner> attributes
     void InitHourly();                                      // 0x1401b70d0 24 zeroed entries
     int ParsePrice(CStringA strPrice);                     // 0x1401b7150 "a,b,c,..." of exactly 24 values
 

@@ -57,7 +57,7 @@ MS2_CHECK_SIZE(ClosestHitReport, 0x58);
 
 class Unk_PhysXLockOwner;           // owner of the physics lock (DAT_143b05988)
 class Unk_PhysXSceneHandle;         // scene found by name in the PhysX prop service
-class Unk_PhysPropPtr;
+namespace egfPhysX { class EntityActorData; } namespace efd { template <typename T> class SmartPointer; }
 class Unk_ActorUser;                // NxActor::userData payload
 
 class CPhysXHelper : public TSingleton<CPhysXHelper> {
@@ -69,7 +69,7 @@ public:
     NxActor* FUN_1416897d0(void* pObj);                                                      // the actor of a game object
     egf::Entity* GetEntityFromActor(NxActor* pActor);
     bool FUN_141689a10(egf::Entity* pEntity);
-    void FUN_141689ac0(Unk_PhysPropPtr pProp);
+    void FUN_141689ac0(efd::SmartPointer<egfPhysX::EntityActorData> spProp);
     void FUN_141689d00(NxActor* pActor, unsigned short nGroup, const NxGroupsMask* pMask);
     void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
     NxScene* FUN_14168a1c0();
@@ -84,7 +84,7 @@ public:
     void ClearScenes();
     void* FUN_14168a750();
     bool FUN_14168a770(const Vector3* pPoint);
-    int FUN_14168a9b0(void* pEntity, const Vector3& ptFrom);
+    int FUN_14168a9b0(void* pEntity, Vector3 ptFrom);   // by value: the exe callers pass a copy
     NxControllerManager* m_pControllerMgr;      // +0x08
     Unk_PhysXLockOwner* m_pLock;                // +0x10
     Unk_PhysXSceneHandle* m_apScene[2];         // +0x18 default / item scene

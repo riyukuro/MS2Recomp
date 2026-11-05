@@ -69,7 +69,7 @@ class Unk_PgtWorld                                                  // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);   // the proxy of a visible character by name (popup menu target)
+    // FUN_141bc9d60 (the proxy of a visible character by name, the popup menu target): WorldService's own member
 };
 
 class Unk_PgtGuildSvc                                               // the guild service: the own guild at +8
@@ -86,11 +86,11 @@ struct Unk_PgtConfig
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-class Unk_140acd6e0 : public ASDisplayObject                        // the observe button
-{
-public:
-    // FUN_1422c1fe0 (set "enabled", 0x1422c1fe0) is ASMovieClip::FUN_1422c1fe0(int), asdisplayobject.h
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
+//
 
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 
@@ -434,7 +434,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             CStringW strName = data.FUN_1422b8f40();
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
             if (pMenu != 0) {
-                MS2Ptr<CProxyGameObject> spTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bc9d60(strName);
+                MS2Ptr<CProxyGameObject> spTarget = WorldService::GetInstance()->FUN_141bc9d60(strName);
                 if (spTarget.get() != 0) {
                     Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, "", NULL);
                     reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7eb60(info, spTarget, 0xb);
@@ -505,7 +505,7 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
     int bObserved = 0;
     if (FUN_141b70f50(strName, m_strObserved))
         bObserved = 1;
-    MS2Ptr<Unk_140acd6e0> spButton = spSlot->FUN_140acce30<Unk_140acd6e0>("m_observeButton");
+    MS2Ptr<ASButton> spButton = spSlot->FUN_140acce30<ASButton>("m_observeButton");
     if (spButton == 0)
         return;
     if (bPlaying) {
@@ -553,7 +553,7 @@ void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
     std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator it = m_slots.begin();
     std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator itEnd = m_slots.end();
     for (; it != itEnd; ++it) {
-        MS2Ptr<Unk_140acd6e0> spButton = it->second->FUN_140acce30<Unk_140acd6e0>("m_observeButton");
+        MS2Ptr<ASButton> spButton = it->second->FUN_140acce30<ASButton>("m_observeButton");
         if (spButton == 0)
             continue;
         if (pTarget != 0 && it->first == ((class PCBase*)(class PCBase*)(pTarget))->FUN_141656a80())

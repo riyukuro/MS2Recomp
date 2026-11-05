@@ -5,8 +5,8 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/billboardinfo.h"
 
-// 12-byte float triple; the (float, float, float) ctor is the shared Unk_CommonPosition one (0x14027db40).
-typedef Unk_CommonPosition Unk_PDVec3;   // C3: was a local struct with its own ctor decl
+// 12-byte float triple; the (float, float, float) ctor is the D3DXVECTOR3 one (0x14027db40).
+typedef D3DXVECTOR3 Unk_PDVec3;   // C3: was a local struct with its own ctor decl
 
 // Placeholder: real class unrecovered (0x40 bytes); ctor 0x140266860, dtor 0x14027e920.
 struct QuestMask {   // the exe names it struct QuestMask (questmasktable.h)

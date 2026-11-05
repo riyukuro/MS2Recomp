@@ -46,10 +46,10 @@ static UICommon::CMyPCKeyInputController s_keyController;
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_140acd6e0 : public ASDisplayObject
-{
-public:
-};
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
 CBlackMarketTable* FUN_1401c0d80();
 class UITalkManager   // C3: member view for the former free stand-ins
 {

@@ -35,7 +35,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -87,7 +87,7 @@ bool CLoadingImageTable::LoadingImage::IsSameCondition(const LoadingImage& o) co
 }
 
 // @0x140d44100
-int CLoadingImageTable::LoadingImage::Load(Unk_140165cf0* pElem)
+int CLoadingImageTable::LoadingImage::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "code", reinterpret_cast<unsigned int&>(m_nCode));
     XmlGetAttr((class TiXmlElement*)(pElem), "startTime", m_startTime);
@@ -165,13 +165,13 @@ int CLoadingImageTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("image")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("image")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("image")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("image")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -307,7 +307,7 @@ void CLoadingImageTable::CollectImages(int nMapCode, ATL::CAtlArray<ImagePtr>& a
 }
 
 // @0x140d45660
-int CLoadingImageTable::ParseExceptMap(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<Unk_MapRange>& aOut)
+int CLoadingImageTable::ParseExceptMap(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<Unk_MapRange>& aOut)
 {
     CString str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);

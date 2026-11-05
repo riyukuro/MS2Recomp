@@ -78,13 +78,13 @@ class Unk_DecoAnimObj;
 struct Unk_DecoAnimHandle { char m_pad[0x40]; };
 struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
 // The animation service (animationmanager.cpp); play by name is its member.
-class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
-class Unk_DecoAnimSvc : public Unk_AnimSvc
-{
-public:
-    bool FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fSpeed, bool bLoop);      // 0x1411766b0
-    bool FUN_1409991a0(const egf::EntityID& kId, Unk_DecoAnimRec** ppRec);
-};
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce);
+    bool FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop); };   // 0x1411766b0 (C3: MS2's 4-arg AnimationService::SetTargetAnimation by id, like FUN_1409a1fc0 by name)
+class Unk_DecoAnimSvc : public Unk_AnimSvc {};   // C3: its FUN_1409991a0 was AnimationService::ContainsEntity (0x1409991a0), see below
+#include <egmAnimation/AnimationService.h>
+// The animation service's protected actor table, opened up like reactor.cpp's Unk_RxAnimAccess.
+struct Unk_DecoAnimAccess : egmAnimation::AnimationService
+{ using AnimationService::ActorEntry; using AnimationService::ContainsEntity; };
 class Unk_AnimSvc* FUN_1410a68d0();   // C3: was FUN_1410a68d0
 struct Unk_DecoModelCache { char m_pad[0x10]; };
 
@@ -136,7 +136,7 @@ int XmlGetAttr(class TiXmlElement*, class NiTransform&);   // C3: was FUN_140874
 void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN_140874b10
 
 // ---- cursor ray ----
-// (Unk_DecoPoint3, the efd::Point3 of the ray, is in decoeditservice.h)
+// (the ray origin / direction are NiPoint3)
 struct Unk_PickXY { float x, y; };                                  // cursor position
 struct Unk_DecoCursor : public CWindowService { };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
@@ -383,7 +383,7 @@ bool DecoEditService::AddTransform(const NiTransform& xf)
 MS2_REPLACE_METHOD(0x1411704D0, DecoEditService, AddTransform, 61, 0x47FC5A4B);
 
 // @0x141170520
-void DecoEditService::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoEditService::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     DecoLayer* pLayer = GetLayer();
     if (pLayer == 0)
@@ -412,9 +412,9 @@ efd::AsyncResult DecoEditService::OnTick()
         {
             if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
             {
-                Unk_DecoPoint3 kOrigin;
-                Unk_DecoPoint3 kDir;
-                if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->ScreenToRay(*reinterpret_cast<const NiPoint2*>(&kCursor), *reinterpret_cast<NiPoint3*>(&kOrigin), *reinterpret_cast<NiPoint3*>(&kDir)) != 0)
+                NiPoint3 kOrigin;
+                NiPoint3 kDir;
+                if (reinterpret_cast<Unk_DecoCamera*>(TSingleton<CameraMgr>::GetInstance())->ScreenToRay(*reinterpret_cast<const NiPoint2*>(&kCursor), kOrigin, kDir) != 0)
                 {
                     Vector3 kHit;
                     if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(Vector3(reinterpret_cast<const Vector3&>(kOrigin)), kHit, Vector3(reinterpret_cast<const Vector3&>(kDir)), 10000.0f, 0x201) != 0)
@@ -650,7 +650,7 @@ bool DecoItem::AddTransform(const NiTransform& xf)
 }
 
 // @0x141174ab0
-void DecoItem::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoItem::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
@@ -882,10 +882,10 @@ bool DecoLayer::SaveXml(TiXmlElement* pParent)
 }
 
 // @0x1411766b0
-bool Unk_DecoAnimSvc::FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fSpeed, bool bLoop)
+bool Unk_AnimSvc::FUN_1411766b0(const egf::EntityID& kId, unsigned int nSeq, float fSpeed, bool bLoop)
 {
     Unk_DecoAnimRec* pRec;
-    if (!FUN_1409991a0(kId, &pRec))
+    if (!reinterpret_cast<Unk_DecoAnimAccess*>(this)->ContainsEntity(kId, reinterpret_cast<Unk_DecoAnimAccess::ActorEntry*&>(pRec)))
         return false;
     pRec->m_nSeq = nSeq;
     Unk_DecoAnimObj* pObj = (Unk_DecoAnimObj*)reinterpret_cast<efd::SmartPointer<NiActorManager>&>(pRec->m_hnd).operator NiActorManager*();
@@ -1008,7 +1008,7 @@ bool DecoLayer::AddTransform(const NiTransform& xf)
 }
 
 // @0x141177580
-void DecoLayer::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoLayer::CollectNear(NiPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {

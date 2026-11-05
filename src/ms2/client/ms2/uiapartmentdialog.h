@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/uiugceventlistener.h"
 
-class Unk_140acd6e0;
+class ASButton;
 class UIMessageBox;
 
 class UIApartmentDialog : public UIDialog, public UIUGCEventListener
@@ -50,11 +50,11 @@ private:
     int m_nGroup;                                               // +0x190
     int m_nRoom;                                                // +0x194
     Unk_UGCGroup m_group;                                       // +0x198
-    MS2Ptr<Unk_140acd6e0> m_broker;                             // +0x258 "m_broker"
-    MS2Ptr<Unk_140acd6e0> m_door0;                              // +0x268
-    MS2Ptr<Unk_140acd6e0> m_door1;                              // +0x278
-    MS2Ptr<Unk_140acd6e0> m_door2;                              // +0x288
-    MS2Ptr<Unk_140acd6e0> m_contract;                           // +0x298 "m_contractButton"
+    MS2Ptr<ASButton> m_broker;                             // +0x258 "m_broker"
+    MS2Ptr<ASButton> m_door0;                              // +0x268
+    MS2Ptr<ASButton> m_door1;                              // +0x278
+    MS2Ptr<ASButton> m_door2;                              // +0x288
+    MS2Ptr<ASButton> m_contract;                           // +0x298 "m_contractButton"
 };
 MS2_CHECK_SIZE(UIApartmentDialog, 0x2a8);
 MS2_CHECK_OFFSET(UIApartmentDialog, m_nStyle, 0x180);

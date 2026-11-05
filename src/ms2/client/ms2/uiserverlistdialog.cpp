@@ -64,7 +64,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;                  
 
 // ---- unit-local views of exe objects ----
 
-// The stored login options (CGameOption -> Unk_LgSettings::FUN_140cfd260), gameoptionstruct.cpp's Unk_GsConnect.
+// The stored login options (CGameOption::FUN_140cfd260, the connect block), gameoptionstruct.cpp's Unk_GsConnect.
 // C3: its setters are gameoptionstruct.cpp's free functions on the record.
 struct Unk_GsConnect;
 void FUN_141260a30(Unk_GsConnect* p, const CStringW& strWorldName);    // remember the server name
@@ -82,7 +82,7 @@ public:
     char m_30;
     unsigned char m_bLocaledName;                               // +0x31
 };
-class Unk_LgSettings { public: CStringW* FUN_140cfd260(); };   // C3: gameoptionlanguage.cpp's view of CGameOption
+// C3: FUN_140cfd260 is CGameOption's (&m_connect, cgameoption.h)
 
 // The packet handler table.
 class Unk_SlPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
@@ -147,10 +147,10 @@ CSceneStateMulti* FUN_140f30370();
 void* FUN_14136f520(int);   // C3: was FUN_14136f520
 
 // The login request (encoded by 0x1401f9020; ctor / dtor in uilogindialog.cpp).
-void* FUN_14067c020(void* pId);                                 // zero-inits the 16-byte id
-struct Unk_LoginMachineId
-{
-    Unk_LoginMachineId() { FUN_14067c020(this); }
+class Unk_MachineId   // C3: member view (unit_14067c020_machineidcodec); was the local Unk_LoginMachineId + free FUN_14067c020
+{ public:
+    Unk_MachineId();                                            // 0x14067c020, zero-inits the 16-byte id
+    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);
     unsigned char m_data[16];
 };
 struct Unk_LoginRequest
@@ -161,7 +161,7 @@ struct Unk_LoginRequest
     CString m_strId;                                            // +0x08
     CString m_strPassword;                                      // +0x10
     unsigned m_nLoginType;                                      // +0x18
-    Unk_LoginMachineId m_machineId;                             // +0x1c
+    Unk_MachineId m_machineId;                                  // +0x1c
     int m_n2c;                                                  // +0x2c
     int m_n30;                                                  // +0x30
     CString m_strRegion;                                        // +0x38
@@ -169,7 +169,7 @@ struct Unk_LoginRequest
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
 void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
 void* FUN_140aadf70();   // C3: was FUN_140aadf70
-class Unk_MachineId { public: Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther); };   // C3: member view (unit_14067c020_machineidcodec)
+// C3: the Unk_MachineId member view moved up to the login request
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
@@ -246,7 +246,7 @@ UIServerListDialog::UIServerListDialog()
     : m_nServerId(-1), m_nChannel(-1), m_nConnecting(0), m_nSceneId(0), m_servers(10)
 {
     m_80 = 0;
-    m_strServer = reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_strServer;
+    m_strServer = reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strServer;
     FUN_141925e70(0, 1);
     ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
 }
@@ -339,7 +339,7 @@ void UIServerListDialog::ReceiveServerList(CInPacket& packet)
             m_servers.SetAt(server->m_strName, server);
         }
     }
-    FUN_141260b60((Unk_GsConnect*)reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()), DAT_143ab29d8);
+    FUN_141260b60((Unk_GsConnect*)reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), DAT_143ab29d8);
 }
 
 // @0x141ad16b0
@@ -347,7 +347,7 @@ void UIServerListDialog::OnLoadComplete()
 {
     m_nConnecting = 0;
     UIDialog::OnLoadComplete();
-    int nChannel = atoi(reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_strChannel);
+    int nChannel = atoi(reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strChannel);
     int nMin = 1;
     m_nChannel = std::max<int>(nMin, nChannel);
     FUN_141ad1d20();
@@ -378,9 +378,9 @@ int UIServerListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UISceneLobbyServer*>(pSender) != 0) {
         CString strMethod = pMsg->FUN_1422b8d30();
         if ((const char*)(strMethod = "OnReset") != 0) {
-            m_strServer = reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_strServer;
+            m_strServer = reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strServer;
             m_nServerId = -1;
-            int nChannel = atoi(reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_strChannel);
+            int nChannel = atoi(reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strChannel);
             int nMin = 1;
             m_nChannel = std::max<int>(nMin, nChannel);
             return 1;
@@ -592,7 +592,7 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         request.m_n2c = reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
-        if (reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bLocaledName == 1)
+        if (reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
             request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
@@ -639,7 +639,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
     packet.WriteUInt8(0);
     FUN_1401f9e60((struct Unk_LoginPing*)(&request), (class COutputStream*)(&packet));
     FUN_140710590(packet);
-    Unk_SlOptions* pOptions = reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260());
+    Unk_SlOptions* pOptions = reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260());
     if (pOptions != 0) {
         if (pOptions->m_nCharId != nCharId)
             ((class NotifySystem*)(void*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeMyPC));
@@ -658,7 +658,7 @@ void UIServerListDialog::FUN_141ad2ea0(int nChannel)
 {
     m_nChannel = nChannel;
     if (nChannel != 0)
-        FUN_141260ab0((Unk_GsConnect*)reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()), nChannel);
+        FUN_141260ab0((Unk_GsConnect*)reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), nChannel);
 }
 
 // @0x141ad2ef0

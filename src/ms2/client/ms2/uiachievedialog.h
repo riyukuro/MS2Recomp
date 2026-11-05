@@ -19,7 +19,7 @@
 class ASData;
 class ASObj;
 class CAchieve;
-class Unk_AcHero;
+class ASGameEntity;
 class ASScrollingList;
 
 class UIAchieveDialog : public UIDialog
@@ -102,7 +102,7 @@ public:
     int FUN_1418ad960(int nCondType, __int64 nId);                                     // the collected id is done
 
     // movie children (ICF'd child lookups of the exe)
-    MS2Ptr<Unk_AcHero> FUN_140ede180(const CString& strName);
+    // C3: FUN_140ede180 = Unk_ReportDialogAccess::GetChild<ASGameEntity> (the .cpp calls it through a view)
 
 private:
     MS2_LAYOUT_FRIEND;

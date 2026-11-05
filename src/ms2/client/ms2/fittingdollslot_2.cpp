@@ -84,9 +84,9 @@ MS2_CHECK_OFFSET(Unk_FdCube, m_n54, 0x54);
 class Unk_FdCubeSvc : public CubeMapInformationService
 {
 public:
-    Unk_FdCube* FUN_1410b8c90(egf::EntityID kId);
+    // C3: FUN_1410b8c90 is CubeMapInformationService's own (returns Cube*)
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The feature switches (FUN_140166410).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -235,7 +235,7 @@ int FittingDollSlot::vfunc_8(void* p)
     if (pItem == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
-    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
+    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pCube == 0)
         return 0;
     int bOwner = pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
@@ -314,7 +314,7 @@ int FittingDollSlot::FUN_14121ddc0()
     if (pDoll == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
-    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
+    Unk_FdCube* pCube = reinterpret_cast<Unk_FdCube*>(pSvc->FUN_1410b8c90(pDoll->FUN_14123c460()));
     if (pCube == 0)
         return 0;
     if (pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0())

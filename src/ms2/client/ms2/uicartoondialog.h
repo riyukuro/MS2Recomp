@@ -16,7 +16,7 @@
 
 class CInPacket;
 class ASObj;
-class Unk_CtButton;
+// (Unk_CtButton: the m_prev / m_next children are ASButton)
 
 class UICartoonDialog : public UIDialog
 {
@@ -40,7 +40,7 @@ public:
     int FUN_1418e0070(int nPage, ASObj* pPage);                     // 0x1418e0070 fill an AS page object (img/str/valign)
     void FUN_1418e0230();                                           // 0x1418e0230 enable the prev/next buttons
     int FUN_1418e0480();                                            // 0x1418e0480 pages shown at once
-    MS2Ptr<Unk_CtButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 bind a button child
+    // child lookup 0x140bb4b10 = UISwfEntity::GetChild<ASButton>
 
     int m_nBookId;                                                  // +0x178
     int m_nPage;                                                    // +0x17c number of pages shown so far

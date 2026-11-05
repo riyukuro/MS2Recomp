@@ -59,7 +59,7 @@ public:
     virtual float vfunc_89();                               // 89  0x1417078d0
     virtual bool vfunc_102(MS2Ptr<CSkillRecord> skill);     // 102 0x141706260
     virtual MS2Ptr<Unk_PCBaseComp_b18> vfunc_103();         // 103 0x141707010
-    virtual MS2Ptr<Unk_PCBaseComp_b18> vfunc_104(bool a, bool b, bool c);  // 104 0x1417061e0
+    virtual MS2Ptr<CSkillRecord> vfunc_104(bool a, bool b, bool c);  // 104 0x1417061e0
     virtual void vfunc_105(efd::Point3 kPos, void* b, void* c, int d);   // 105 0x141705430
     virtual int vfunc_108();                                // 108 0x141706fd0
     virtual void vfunc_110();                               // 110 0x141705620

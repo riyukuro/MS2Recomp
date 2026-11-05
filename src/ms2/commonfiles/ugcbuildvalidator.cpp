@@ -44,13 +44,13 @@ class Unk_PCItems;
 class Unk_BackUpItem;
 
 // The application service (class id 0x06100017): the cube service. The cube grid lives in it.
-class Unk_Service6100017 : public CubeMapInformationService
-{
-};
+// C3: the Unk_Service6100017 view was CubeMapInformationService (cubemapinformationservice_3.h)
+//
+//
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);
 
 class Unk_QueryObj { public: virtual ~Unk_QueryObj(); virtual void vf1(); virtual void vf2(); virtual void vf3(); virtual void vf4(); virtual bool FUN_x28(unsigned nId, void* pOut); };
 
@@ -71,7 +71,7 @@ extern __int64 DAT_143ab2820;
 // item / cube helpers
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 unsigned FUN_1408a0190(int);
-int FUN_1408a03c0(const Unk_Int3& p);   // C3: the real signature (ugcmapdata_1)
+int FUN_1408a03c0(Unk_Int3 p);   // C3: the real signature (ugcmapdata_1)
 int FUN_1407072e0(int);
 int FUN_1407075a0(int);  // C3: the definition's signature
 int FUN_1408b5620(int nItemId);
@@ -100,8 +100,8 @@ class Unk_BackUpItem : public CPtred {};
 
 // Template glue of the Cube map (std::map<int, MS2Ptr<Cube> > iterator/pointer helpers), spelled as plain functions.
 typedef std::pair<const int, MS2Ptr<Cube> > Unk_CubeEntry;
-void FUN_140885810(MS2Ptr<Cube>* pPtr);
-Unk_CubeEntry* FUN_1408853a0(void* pIter);
+struct Unk_MS2PtrAccess { static MS2Ptr<Cube>* FUN_140884f70(MS2Ptr<Cube>* pDst, const MS2Ptr<Cube>* pSrc); };   // C3: MS2Ptr<T> friend (ascript.h): AddRef 0x140885810
+// 0x1408853a0 = the map iterator's operator* (FUN_140885360 calls it directly)
 
 // @0x140884eb0
 Unk_CubeEntry* FUN_140884eb0(Unk_CubeEntry* pEntry)
@@ -110,10 +110,10 @@ Unk_CubeEntry* FUN_140884eb0(Unk_CubeEntry* pEntry)
 }
 
 // @0x140884f70
-MS2Ptr<Cube>* FUN_140884f70(MS2Ptr<Cube>* pDst, const MS2Ptr<Cube>* pSrc)
+MS2Ptr<Cube>* Unk_MS2PtrAccess::FUN_140884f70(MS2Ptr<Cube>* pDst, const MS2Ptr<Cube>* pSrc)
 {
     *(Cube**)((char*)pDst + 8) = *(Cube**)((char*)pSrc + 8);
-    FUN_140885810(pDst);
+    pDst->AddRef();
     return pDst;
 }
 
@@ -132,7 +132,7 @@ Unk_CubeEntry* FUN_140885de0(Unk_CubeEntry* pEntry)
 // @0x140885360
 Unk_CubeEntry* FUN_140885360(void* pIter)
 {
-    return FUN_140885de0(FUN_1408853a0(pIter));
+    return FUN_140885de0(&**reinterpret_cast<std::map<int, MS2Ptr<Cube> >::iterator*>(pIter));
 }
 
 // @0x140885e00
@@ -800,7 +800,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
                 *pErr = 0x1e;
                 return 0;
             }
-            std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0(Unk_Int3((Unk_Int3&)spCube->position))));
+            std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)spCube->position)));
             for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
             {
                 MS2Ptr<Cube> spOther = it->second;
@@ -887,10 +887,9 @@ MS2_REPLACE_METHOD(0x140883370, CUGCBuildValidatorCli, vfunc_15, 322, 0x0CDE86A6
 int CUGCBuildValidatorCli::vfunc_16(unsigned* pErr)
 {
     *pErr = 0x13;
-    if ((Unk_Service6100017*)m_pCubeService == 0)
+    if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
-    alignas(16) Unk_Int3 cell = (Unk_Int3&)m_point;   // the exe copies the cell into a 16-aligned slot
-    std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0(cell)));
+    std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)m_point)));
     if (pColumn->find(m_nDirection) != pColumn->end())
         return 0;
     return 1;
@@ -901,7 +900,7 @@ MS2_REPLACE_METHOD(0x1408834c0, CUGCBuildValidatorCli, vfunc_16, 228, 0x5E3BDC67
 int CUGCBuildValidatorCli::vfunc_17(unsigned* pErr)
 {
     *pErr = 0x11;
-    if ((Unk_Service6100017*)m_pCubeService == 0)
+    if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
     Cube* pCube = m_pCubeService->GetCubeAtCell(m_pCubeService->StepCellInDirection((Unk_Int3&)m_point, m_nDirection));
     if (pCube == 0)
@@ -916,7 +915,7 @@ MS2_REPLACE_METHOD(0x1408835b0, CUGCBuildValidatorCli, vfunc_17, 234, 0xDB98255F
 int CUGCBuildValidatorCli::vfunc_18(unsigned* pErr)
 {
     *pErr = 0x28;
-    if ((Unk_Service6100017*)m_pCubeService == 0)
+    if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
     Cube* pCube = m_pCubeService->GetCubeAtCell((Unk_Int3&)m_point);
     if (pCube == 0)
@@ -931,14 +930,14 @@ MS2_REPLACE_METHOD(0x1408836a0, CUGCBuildValidatorCli, vfunc_18, 154, 0x87F2E982
 int CUGCBuildValidatorCli::vfunc_19(unsigned* pErr)
 {
     *pErr = 0x29;
-    if ((Unk_Service6100017*)m_pCubeService == 0)
+    if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
     Cube* pCube = m_pCubeService->GetCubeAtCell((Unk_Int3&)m_point);
     if (pCube == 0)
         return 0;
     if (pCube->field68 != 0)
     {
-        std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0(Unk_Int3((Unk_Int3&)m_point))));
+        std::map<int, MS2Ptr<Cube> >* pColumn = reinterpret_cast<std::map<int, MS2Ptr<Cube> >*>(m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_Int3&)m_point)));
         for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
         {
             Cube* pOther = it->second.get();
@@ -954,7 +953,7 @@ MS2_REPLACE_METHOD(0x140883740, CUGCBuildValidatorCli, vfunc_19, 349, 0xC2AD0930
 int CUGCBuildValidatorCli::vfunc_20(unsigned* pErr)
 {
     *pErr = 0x16;
-    if ((Unk_Service6100017*)m_pCubeService == 0)
+    if ((CubeMapInformationService*)m_pCubeService == 0)
         return 0;
     Cube* pCube = m_pCubeService->GetCubeAtCell((Unk_Int3&)m_point);
     if (pCube == 0)
@@ -979,7 +978,7 @@ int CUGCBuildValidatorCli::vfunc_20(unsigned* pErr)
                 return 0;
             if (((struct ItemInstallData*)(struct ItemInstallData*)(&spData->install))->FUN_140548cb0() != 0)
             {
-                if (m_pCubeService->FUN_1410d2f40(FUN_1408a03c0(Unk_Int3((Unk_Int3&)m_point))) == 0)
+                if (m_pCubeService->FUN_1410d2f40(FUN_1408a03c0((Unk_Int3&)m_point)) == 0)
                 {
                     Unk_CubePoint above = m_point;
                     above.z = above.z + 1;
@@ -1237,7 +1236,7 @@ Cube* CUGCBuildValidatorCli::vfunc_34()
     {
         Unk_CubePoint below = m_point;
         below.z = below.z - 1;
-        int nKey = FUN_1408a03c0(Unk_Int3((Unk_Int3&)below));
+        int nKey = FUN_1408a03c0((Unk_Int3&)below);
         Cube* pCube = reinterpret_cast<CubeMapInformationService*>(m_pCubeService.operator->())->GetCubeByKey(nKey);
         return pCube;
     }

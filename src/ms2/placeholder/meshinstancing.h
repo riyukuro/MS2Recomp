@@ -24,7 +24,7 @@ struct Unk_InstancingCell {
 };
 MS2_CHECK_SIZE(Unk_InstancingCell, 0x10);
 // The scale triple of an instanced entity (property 0x213f5f94, default 180).
-struct Unk_InstancingScale { Unk_InstancingScale(float x, float y, float z); float x, y, z; };   // ctor 0x1406c4340
+typedef efd::Color Unk_InstancingScale;   // was a view of efd::Color; ctor 0x1406c4340 is efd::Color(float, float, float)
 // The entity ids an instancing covers; compared as sets (methods in ?\hardwareinstancingservice.cpp).
 class Unk_InstanceIdList {
 public:

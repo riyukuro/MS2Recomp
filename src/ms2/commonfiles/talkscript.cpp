@@ -75,13 +75,13 @@
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-    int QueryIntAttribute(const char* name, int* value) const;   // 0x14086f600
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
+//
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -113,7 +113,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);
-enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(class Unk_140165cf0*, const char*, E&);       // job condition
+enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(class TiXmlElement*, const char*, E&);       // job condition
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140767ff0();                                                           // random
@@ -587,7 +587,7 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
 {
     if (pNode == 0)
         return;
-    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("randomPick") != 0)
+    if (((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("randomPick") != 0)
         XmlGetBool((class TiXmlElement*)(pNode), "randomPick", *(int*)(&script->m_randomPick));
     for (Unk_ScriptXmlNode* child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("content")); child != 0; child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(child))->NextSibling("content")))
     {
@@ -602,9 +602,9 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
 // @0x140859320
 void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 {
-    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupProp") != 0)
+    if (((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("popupProp") != 0)
         ((class TiXmlElement*)(pNode))->QueryIntAttribute("popupProp", &script->m_popupProp);
-    if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupState") != 0)
+    if (((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("popupState") != 0)
         ((class TiXmlElement*)(pNode))->QueryIntAttribute("popupState", &script->m_popupState);
     for (Unk_ScriptXmlNode* child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("content")); child != 0; child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(child))->NextSibling("content")))
     {
@@ -660,7 +660,7 @@ void FUN_140857f20(CStringA path)
             script->m_questId = questId;
             XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
             XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
-            XmlValue((class Unk_140165cf0*)node, "jobCondition", *(Unk_JobGroupID*)&script->m_jobCondition);
+            XmlValue((class TiXmlElement*)node, "jobCondition", *(Unk_JobGroupID*)&script->m_jobCondition);
             FUN_140859160(node, script);
             talks->SetAt(script->m_id, script);
         }

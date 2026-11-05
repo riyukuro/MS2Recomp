@@ -28,31 +28,31 @@ CStringW FUN_140cd7d20()
 }
 MS2_REPLACE(0x140CD7D20, FUN_140cd7d20, 86, 0x9225298E);
 
-// The fishing line's ctor. Unk_FishLine (cubecraft_1.h) only proves the owner pointer and the size, so the ctor is written
-// on a same-layout view: two timers (the line's flight / reel phases), the start and end points, a counter.
-struct Unk_FishLineInit
-{
-    Unk_FishLineInit();
-    void* m_pOwner;             // +0x00 (set by the guide object)
-    __int64 m_08;               // +0x08
-    int m_10;                   // +0x10
-    Timer m_timer18;            // +0x18
-    efd::Point3 m_vStart;       // +0x50
-    efd::Point3 m_vEnd;         // +0x5c
-    int m_68;                   // +0x68
-    Timer m_timer70;            // +0x70
-};
-MS2_CHECK_OFFSET(Unk_FishLineInit, m_timer18, 0x18);
-MS2_CHECK_OFFSET(Unk_FishLineInit, m_vStart, 0x50);
-MS2_CHECK_OFFSET(Unk_FishLineInit, m_timer70, 0x70);
-MS2_CHECK_SIZE(Unk_FishLineInit, sizeof(Unk_FishLine));
+// The fishing line's ctor (Unk_FishLine of cubecraft_1.h).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x140cd7d80
-Unk_FishLineInit::Unk_FishLineInit()
+Unk_FishLine::Unk_FishLine()
 {
-    m_08 = 0;
-    m_10 = 0;
-    m_vStart = efd::Point3::ZERO;
-    m_vEnd = efd::Point3::ZERO;
-    m_68 = 0;
+    m_pGuide = 0;
+    m_nKind = 0;
+    m_kTarget = efd::Point3::ZERO;
+    m_kLanding = efd::Point3::ZERO;
+    m_nEffect = 0;
 }

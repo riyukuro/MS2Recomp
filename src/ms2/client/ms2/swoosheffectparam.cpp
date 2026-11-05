@@ -118,7 +118,7 @@
 #include "ms2/client/ms2/filepreload_1.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/effectservice.h"
-class Unk_140165cf0;
+class TiXmlElement;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
@@ -171,13 +171,13 @@ public:
 
 // Scene nodes of the effect system. EffectNode (400 bytes) carries the effect-space point; SeparateNode (0x138) follows
 // only the selected parts of its parent's transform.
-class Unk_SeparateNode : public NiNode
-{
-public:
-    Unk_SeparateNode(unsigned char nX, unsigned char nY, unsigned char nZ);   // 0x141751380
-    char m_pad_node[0x138 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
+#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+//
+//
+//
+//
+//
+//
 
 struct Unk_SwooshTarget { char m_pad_00[0x10]; void* m_hNode; };            // +0x10 handle of the owner's scene node
 MS2_CHECK_OFFSET(Unk_SwooshTarget, m_hNode, 0x10);
@@ -204,7 +204,7 @@ CSwooshEffectParam::CSwooshEffectParam()
 }
 
 // @0x14181d010
-void CSwooshEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CSwooshEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "texturePath", m_strTexturePath);
@@ -216,7 +216,7 @@ void CSwooshEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "sampling", m_nSampling);
     m_nQuality = FUN_140ad02f0(m_nQuality, 4);
     m_nSampling = FUN_140ad02f0(m_nSampling, 0x3c);
-    CString strAlpha(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("alphaMode"));
+    CString strAlpha(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("alphaMode"));
     if (strAlpha.GetLength() > 0)
     {
         if (strAlpha.CompareNoCase("SWOOSH") == 0)

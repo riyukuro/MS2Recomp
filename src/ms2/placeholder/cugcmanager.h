@@ -56,10 +56,10 @@ class NiTexture;
 CPtred* FUN_1401ba820(CPtred* p);                           // sets the count of a new box to 1
 
 // The creating-constructor tag of the boxed pointer below (`Unk_UgcBoxPtr<T> p(Unk_UgcNewTag(0))`).
-struct Unk_UgcNewTag
-{
-    explicit Unk_UgcNewTag(int);                            // 0x1401b7b90 (returns its this, no code)
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_UgcNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_UgcNewTag;
+
+
 
 // TPtr<T> over a TPtredDummy<T> box (16 bytes, the pointer at +8 points at the boxed value). Name invented; the same
 // template as Unk_BmBoxPtr (blackmarketitemoption.h).

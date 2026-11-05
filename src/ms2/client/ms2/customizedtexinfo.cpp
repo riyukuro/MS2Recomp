@@ -19,24 +19,29 @@
 #include <NiPixelData.h>
 #include <NiPoint2.h>
 #include <efd/Color.h>
+#include <NiColor.h>
 #include <stdlib.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local types (names invented) ----
 
+// The colours are NiColorA (ctors 0x14097f220 / 0x14097f1d0 / 0x140987930). This ctor-less view carries the
+// unit's own colour operators and helpers, which take and return the 4 floats; CTI() views a NiColorA as one.
 struct Unk_CtiColor                                             // 4 floats (r, g, b, a)
 {
     float r, g, b, a;
-    Unk_CtiColor();                                             // 0x14097f220
-    Unk_CtiColor(float fR, float fG, float fB, float fA);       // 0x14097f1d0
+    // Never called (no symbol is referenced). A user-declared ctor keeps the view out of /GS's POD-buffer
+    // heuristic, which put a cookie into the by-value operators when it was ctor-less.
+    Unk_CtiColor();
     Unk_CtiColor operator*(float fScale) const;                 // 0x141166d50
     Unk_CtiColor operator-(const Unk_CtiColor& kRhs);           // 0x141166e20
     Unk_CtiColor operator+(const Unk_CtiColor& kRhs);           // 0x141166ec0
     Unk_CtiColor& operator+=(const Unk_CtiColor& kRhs);         // 0x141166f60
-    explicit Unk_CtiColor(const Unk_CtiColor* pSrc);            // 0x140987930 NiColorA(const efd::ColorA&): this = rcx, source = rdx
 };
 MS2_CHECK_SIZE(Unk_CtiColor, 0x10);
+#define CTI(x) reinterpret_cast<Unk_CtiColor&>(x)
+#define CTI_SRC(x) (*reinterpret_cast<const efd::ColorA*>(&static_cast<const Unk_CtiColor&>(x)))
 
 struct Unk_CtiPixel { unsigned char r, g, b, a; };              // one RGBA8 pixel
 
@@ -61,7 +66,7 @@ public:
 
     efd::SmartPointer<NiTexture> m_spBase;                      // +0x10 (ctor 0x14097ed60, dtor 0x14097f4a0, assign 0x14097f9b0)
     efd::SmartPointer<NiTexture> m_spDecal;                     // +0x18
-    Unk_CtiColor m_akColor[3];                                  // +0x20
+    NiColorA m_akColor[3];                                      // +0x20
     float m_fParam0, m_fParam1, m_fParam2, m_fParam3;           // +0x50
 };
 MS2_CHECK_SIZE(CCustomizedTexInfo, 0x60);
@@ -96,7 +101,7 @@ CCustomizedTexInfo::CCustomizedTexInfo()
     m_fParam2 = 0.0f;
     m_fParam3 = 1.0f;
     for (int i = 0; i < 3; ++i)
-        m_akColor[i] = Unk_CtiColor(0.0f, 0.0f, 0.0f, 0.0f);
+        m_akColor[i] = NiColorA(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 // @0x141166020
@@ -157,20 +162,20 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
         for (unsigned x = 0; x < nWidth; ++x)
         {
             NiPoint2 kUV(((float)x + 0.5f) / (float)nWidth, ((float)y + 0.5f) / (float)nHeight);
-            Unk_CtiColor kColor;
+            NiColorA kColor;
             Unk_CtiPixel kPix;
             FUN_141166d20(&kPix);
-            Unk_CtiColor kBase;
+            NiColorA kBase;
             SamplePixelData(hBaseA, kUV, (Unk_TexColor*)&kPix, true);
-            FUN_1411671d0(&kPix, &kBase);
+            FUN_1411671d0(&kPix, &CTI(kBase));
             if ((NiPixelData*)hDecalA != 0)
             {
-                Unk_CtiColor kMask;
+                NiColorA kMask;
                 SamplePixelData(hDecalA, kUV, (Unk_TexColor*)&kPix, true);
-                FUN_1411671d0(&kPix, &kMask);
-                Unk_CtiColor kTint(&static_cast<const Unk_CtiColor&>(FUN_141166de0(kMask.r, pA->m_akColor[0]) + FUN_141166de0(kMask.g, pA->m_akColor[1])
-                    + FUN_141166de0(1.0f - kMask.r, pA->m_akColor[2])));
-                Unk_CtiColor kMix(&static_cast<const Unk_CtiColor&>(kBase + FUN_141166de0(kMask.a, kTint - kBase)));
+                FUN_1411671d0(&kPix, &CTI(kMask));
+                NiColorA kTint(CTI_SRC(FUN_141166de0(kMask.r, CTI(pA->m_akColor[0])) + FUN_141166de0(kMask.g, CTI(pA->m_akColor[1]))
+                    + FUN_141166de0(1.0f - kMask.r, CTI(pA->m_akColor[2]))));
+                NiColorA kMix(CTI_SRC(CTI(kBase) + FUN_141166de0(kMask.a, CTI(kTint) - CTI(kBase))));
                 kColor = kMix;
                 kColor.a = 1.0f;
             }
@@ -180,30 +185,30 @@ void* FUN_141166110(CCustomizedTextureManager* pMgr, CCustomizedTexInfo* pA, CCu
             }
             if ((NiPixelData*)hBaseB != 0)
             {
-                Unk_CtiColor kBase2;
+                NiColorA kBase2;
                 SamplePixelData(hBaseB, kUV, (Unk_TexColor*)&kPix, true);
-                FUN_1411671d0(&kPix, &kBase2);
+                FUN_1411671d0(&kPix, &CTI(kBase2));
                 if ((NiPixelData*)hDecalB != 0)
                 {
-                    Unk_CtiColor kMask2;
+                    NiColorA kMask2;
                     SamplePixelData(hDecalB, kUV, (Unk_TexColor*)&kPix, true);
-                    FUN_1411671d0(&kPix, &kMask2);
-                    Unk_CtiColor kTint2(&static_cast<const Unk_CtiColor&>(FUN_141166de0(kMask2.r, pB->m_akColor[0]) + FUN_141166de0(kMask2.g, pB->m_akColor[1])
-                        + FUN_141166de0(1.0f - kMask2.r, pB->m_akColor[2])));
-                    Unk_CtiColor kMix2(&static_cast<const Unk_CtiColor&>(kBase2 + FUN_141166de0(kMask2.a, kTint2 - kBase2)));
+                    FUN_1411671d0(&kPix, &CTI(kMask2));
+                    NiColorA kTint2(CTI_SRC(FUN_141166de0(kMask2.r, CTI(pB->m_akColor[0])) + FUN_141166de0(kMask2.g, CTI(pB->m_akColor[1]))
+                        + FUN_141166de0(1.0f - kMask2.r, CTI(pB->m_akColor[2]))));
+                    NiColorA kMix2(CTI_SRC(CTI(kBase2) + FUN_141166de0(kMask2.a, CTI(kTint2) - CTI(kBase2))));
                     kColor = kMix2;
                     kColor.a = 1.0f;
                 }
                 else
                 {
-                    kColor += kBase2;
+                    CTI(kColor) += CTI(kBase2);
                 }
             }
             kColor.r = kColor.r * 0.5019608f;
             kColor.g = kColor.g * 0.5019608f;
             kColor.b = kColor.b * 0.5019608f;
-            FUN_141167050(&kColor);
-            FUN_1411670f0(&kColor, &kPix);
+            FUN_141167050(&CTI(kColor));
+            FUN_1411670f0(&CTI(kColor), &kPix);
             unsigned nPacked;
             FUN_1411671b0(&kPix, &nPacked);
             efd::Memcpy(pDst, &nPacked, 4);

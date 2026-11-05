@@ -22,6 +22,7 @@
 #include "ms2/commonfiles/filebuffer_1.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CFileBuffer> COMDATs (CFileSystem::BufferPtr)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)

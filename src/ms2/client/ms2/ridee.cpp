@@ -119,7 +119,7 @@ private:
     char m_pad_40[0x48 - 0x40];
 };
 
-// MS2Ptr members instantiated by other objs.
+class UIHpBar { public: class Entity; };   // view for FUN_141992920 (uihpbar.h: C2011 on the CFieldDataCli view); MS2Ptr members below are instantiated by other objs
 template <> MS2Ptr<Unk_PCBaseComp_b18>::MS2Ptr(int nNull);                              // 0x141532470
 template <> MS2Ptr<Unk_PCBaseComp_b18>::MS2Ptr(const MS2Ptr& o);                         // 0x141532430
 template <> MS2Ptr<Unk_PCBaseComp_b18>::~MS2Ptr();                                      // 0x140964b60
@@ -197,10 +197,10 @@ class Unk_RideeEffects
 public:
 };
 
-class Unk_AvModeSvc   // C3: member view (real class not in this TU)
+class Unk_AvModeSvc   // C3: the getter's stand-in pointee
 {
 public:
-    int FUN_1409f7ea0();
+    // FUN_1409f7ea0 is COptimizer's (coptimizer.h)
 };
 class Unk_RideeGameMode
 {
@@ -212,7 +212,7 @@ class Unk_RideeEntity;
 class Unk_RideePhysX : public CPhysXHelper
 {
 public:
-    int FUN_14168a9b0(Unk_RideeEntity* pEntity, NiPoint3 kPos);
+    // FUN_14168a9b0: CPhysXHelper's own (void*, Vector3 by value)
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // the physics service (0x1409f7ca0, avatarpc.cpp, the definer's signature)
 
@@ -298,17 +298,17 @@ public:
 
 // The application service (class id 0x06100017) found through the framework cell (buddy.cpp keeps the same view).
 class Cube;
-class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view
-class Unk_Service6100017 : public efd::ISystemService
-{
+// C3: Unk_Service6100017 was CubeMapInformationService (member view below)
+class CubeMapInformationService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
+    Cube* GetCubeAtPoint(Vector3 pt);
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
-ecr::SceneGraphService* FUN_1410a68f0(Unk_EntityAppFramework* pFramework);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
+ecr::SceneGraphService* FUN_1410a68f0(struct Unk_CcSvcCell* pCell);   // the definer's spelling (cubecraft_1)
 
 extern int DAT_143ae2b30;                                           // no rendering (server/tool build)
 #define g_kCubeGuideZero (*(const NiPoint3*)&efd::Point3::ZERO) // C3: 0x143b01a60, was extern const NiPoint3 g_kCubeGuideZero
@@ -322,10 +322,10 @@ void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int uiPropId, const
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
 MS2Ptr<Unk_StateArg22> FUN_140835450(int nState);                   // new state record
-MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // hp bar
+class Unk_GuideRecord : public Unk_StateArg22 { };                  // the controller's record type (cubecraft_1.h; GetCurrent)
+MS2Ptr<UIHpBar::Entity> FUN_141992920(int nObjectId);           // hp bar
 void FUN_141275260(int nSound, int a, int b);
 int FUN_141276180(const CString& strKey, const CString& strArg);  // system notice
-
 // PCBase's node map and its m_unk_6d8 buff tracker.
 void FUN_141682f60(void* pTracker, PCBase* pOwner);
 class Unk_PCMove   // C3: member view for the former free stand-ins
@@ -555,7 +555,7 @@ void Ridee::vfunc_24(int n)
         m_unk_40 = m_pRider->vfunc_25();
         if (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_140ddcc90() == 0)
         {
-            efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(&DAT_143b059e8));
+            efd::SmartPointer<ecr::SceneGraphService> spService(FUN_1410a68f0(reinterpret_cast<struct Unk_CcSvcCell*>(&DAT_143b059e8)));
             if (m_unk_40 != 0)
             {
                 bool bValue = false;
@@ -824,7 +824,7 @@ void Ridee::vfunc_67(efd::Point3* pDir, efd::Point3* pSide)
 MS2_REPLACE_METHOD(0x141706180, Ridee, vfunc_67, 82, 0xB163C752);
 
 // @0x1417061e0
-MS2Ptr<Unk_PCBaseComp_b18> Ridee::vfunc_104(bool a, bool b, bool c)
+MS2Ptr<CSkillRecord> Ridee::vfunc_104(bool a, bool b, bool c)
 {
     return m_pRider->vfunc_104(a, b, c);
 }
@@ -920,9 +920,9 @@ void Ridee::FUN_141706650(bool bForce)
     }
 
     bool bSend = false;
-    MS2Ptr<Unk_StateArg22> spCur = m_controller.FUN_1417b7620();
+    MS2Ptr<Unk_GuideRecord> spCur = ((StatePcGuideObjectController*)&m_controller)->GetCurrent();
     if (bForce || m_bDF8 || spCur == 0 || spCur->m_vel3c != m_pos98 || spCur->m_nState != GetCurStateId()
-        || FUN_14166ccb0()->vfunc_22(spCur))
+        || FUN_14166ccb0()->vfunc_22(reinterpret_cast<MS2Ptr<Unk_StateArg22>&>(spCur)))
         bSend = true;
     if (!bSend)
         return;
@@ -974,10 +974,10 @@ void Ridee::FUN_141706650(bool bForce)
                 {
                     NiPoint3 kPropPos;
                     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
-                    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+                    efd::SmartPointer<CubeMapInformationService> spService(FUN_1401cd040(&DAT_143b059e8));
                     if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->GetCubeAtPoint(reinterpret_cast<Vector3&>(kPropPos)) && vfunc_99(0) == 0)
                     {
-                        if (reinterpret_cast<Unk_RideePhysX*>(FUN_1409f7ca0())->FUN_14168a9b0(pEntity, vfunc_18()))
+                        if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->FUN_14168a9b0(pEntity, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18()))))
                             spNew->m_nA0 = FUN_1408a13d0(kPropPos);
                     }
                 }
@@ -1113,12 +1113,12 @@ MS2_REPLACE_METHOD(0x141707750, Ridee, GetData, 67, 0x6F354F30);
 // @0x1417077a0
 MS2Ptr<Unk_PCBaseComp_a58> Ridee::vfunc_80()
 {
-    if (((Unk_AvModeSvc*)(FUN_1409f7c90()))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
+    if (((COptimizer*)(FUN_1409f7c90()))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (!TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayPartyHpGauge)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (m_spA58 == 0)
-        m_spA58 = FUN_141992920(m_unk_70);
+        m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(FUN_141992920(m_unk_70)));
     return m_spA58;
 }
 MS2_REPLACE_METHOD(0x1417077a0, Ridee, vfunc_80, 290, 0xFB08F93E);

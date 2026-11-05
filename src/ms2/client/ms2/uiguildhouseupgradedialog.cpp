@@ -47,13 +47,13 @@ static CString s_strStun = "stun";
 // ---- out-of-unit callees (names describe uses) ----
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDelegate;
 
-// The upgrade button.
-class Unk_140acd6e0 : public ASButton
-{
-public:
-    void FUN_1422cdf20(bool b);
-    void FUN_1422c1fe0(unsigned n);
-};
+// C3: Unk_140acd6e0 (the upgrade button) is ASButton itself.
+
+
+
+
+
+
 class Unk_GpAS : public AScript
 {
 public:
@@ -70,7 +70,7 @@ template<> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString&
 template<> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString&);
 template<> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString&);
 template<> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&);
-template<> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString&);
+template<> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString&);
 
 typedef CGuildXmlData::GuildHouse GuildHouse;
 
@@ -108,7 +108,7 @@ void UIGuildHouseUpgradeDialog::OnLoadComplete()
         m_tab->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
     if (FUN_140e3b6e0<ASTileList>("m_themeList", m_themeList).get())
         reinterpret_cast<ASCoreList*>(m_themeList.operator->())->AddListIndexChangeHandler(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
-    if (FUN_140bc6d10<Unk_140acd6e0>("m_upgradeButton", m_upgradeButton).get())
+    if (FUN_140bc6d10<ASButton>("m_upgradeButton", m_upgradeButton).get())
         ((class ASButton*)(m_upgradeButton))->FUN_1422ce240(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abf0), 0);
     FUN_140e3a770();
     FUN_140e39da0();
@@ -127,7 +127,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         return;
     int nLevel = m_tab->GetSelectedIndex() + 1;
     int nTheme = reinterpret_cast<ASCoreList*>(m_themeList.operator->())->GetSelectedIndex() + 1;
-    Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
+    MS2Ptr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
     if (house == 0)
         return;
     MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_themeTitle");
@@ -225,7 +225,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a910(const Scaleform::GFx::FunctionHand
     for (size_t i = 0; i < ids.size(); i++)
     {
         ASObj obj(2);
-        Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, ids[i]);
+        MS2Ptr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, ids[i]);
         if (house == 0)
             return;
         ((class AScript&)(obj)).FUN_1407cbb20("imgpath", CStringW(house->f58));
@@ -254,7 +254,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
     {
         if (nLevel == nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
+            MS2Ptr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_change_theme"), FUN_140763e10(house->f30),
@@ -266,7 +266,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
         }
         else if (nLevel > nGuildLevel)
         {
-            Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
+            MS2Ptr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
             if (house == 0)
                 return;
             CStringW strText = FUN_14028dfa0<CStringW, int, CStringW>(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), nLevel,

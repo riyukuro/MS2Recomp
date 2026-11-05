@@ -67,7 +67,7 @@ int FUN_1412755a0();
 int FUN_141276180(const CString&,const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_1422baa20 { public: Scaleform::GFx::Value FUN_1422baa20(const char*); Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); Scaleform::GFx::Value FUN_140ba26d0(const char*,unsigned int);
-    Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); };
+    Scaleform::GFx::Value FUN_1422bb3c0(); }; class Unk_PiComp { public: Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* szArg); };   // Invoke(method, wide string), the definer's spelling (tabcontentspetinfo)
 // @0x141959330
 UIGuideEvent::UIGuideEvent() : m_sound(0),m_guide(0),m_tip(0),m_lastTip(0),m_tips(10),
     m_strings(17,.75f,.25f,2.25f,10),m_voices(17,.75f,.25f,2.25f,10),m_expiry(0),m_arrows(17,.75f,.25f,2.25f,10) { FUN_14195b970(); }
@@ -454,7 +454,7 @@ void UIGuideEvent::FUN_14195a520(unsigned int guideId, unsigned int stringId, in
         m_30->Invoke("showTutorial");
     } else {
         m_tutorial->Invoke("alignment");
-        GuideAS(m_tutorial)->FUN_140cbe3a0("gotoAndPlayText", L"show");
+        reinterpret_cast<Unk_PiComp*>(GuideAS(m_tutorial))->FUN_140cbe3a0("gotoAndPlayText", L"show");
     }
     m_guide = guideId;
 }

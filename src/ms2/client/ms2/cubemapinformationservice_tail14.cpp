@@ -787,7 +787,7 @@ extern int DAT_143ae2b3c;
 struct IMessageStatics : efd::IMessage { using efd::IMessage::ms_pParentClassMap; };
 #define DAT_143b023e0 (*reinterpret_cast<void**>(&IMessageStatics::ms_pParentClassMap))   // C3: was extern void* DAT_143b023e0
 
-void* FUN_141128450(void* p);
+template <int N> class Unk_Head { public: void* Get() const; };   // C3: FUN_141128450 is Unk_Head<0>::Get (unit_141127a90_mapiteratorlookupglue.cpp)
 u64 FUN_140c20b50(void* a, u64 b);
 unsigned FUN_1410dc0d0();
 CCubeMotionManager* GetCubeMotionManager();
@@ -867,7 +867,7 @@ unsigned FUN_14112e110(char* p) { return *reinterpret_cast<unsigned*>(p + 0x40);
 const efd::utf8string& FUN_14112e120(egf::Entity* pEntity)
 {
     if (reinterpret_cast<efd::SmartPointer<const egf::FlatModel>*>(reinterpret_cast<char*>(pEntity) + 0x48)->operator const egf::FlatModel*())
-        return static_cast<egf::PropertyDescriptor*>(FUN_141128450(reinterpret_cast<char*>(pEntity) + 0x48))->GetName();
+        return static_cast<egf::PropertyDescriptor*>(reinterpret_cast<const Unk_Head<0>*>(reinterpret_cast<char*>(pEntity) + 0x48)->Get())->GetName();
     return efd::utf8string::NullString();
 }
 

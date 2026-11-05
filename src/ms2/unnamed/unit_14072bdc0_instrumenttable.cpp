@@ -19,7 +19,7 @@
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -44,7 +44,7 @@ bool CInstrumentDataTable::s_bInit;
 #endif
 
 // @0x14072bdc0
-CInstrumentData::CInstrumentData(Unk_140165cf0* pNode)
+CInstrumentData::CInstrumentData(TiXmlElement* pNode)
     : m_nId(0), m_nCategory(0), m_bExpensive(false), m_strAsset(), m_nEquipItemId(0), m_nSoloRelayScoreCount(1),
       m_strReadyEffect(), m_strPlayEffect(), m_strAnimationReady(), m_strAnimationPlayIdle(),
       m_strAnimationPlayLevel1(), m_strAnimationPlayLevel2(), m_strAnimationPlayLevel3(), m_strAnimationPlayLevel4()
@@ -96,7 +96,7 @@ CStringW CInstrumentData::GetCategoryName() const
 }
 
 // @0x14072c300
-CInstrumentCategoryData::CInstrumentCategoryData(Unk_140165cf0* pNode)
+CInstrumentCategoryData::CInstrumentCategoryData(TiXmlElement* pNode)
     : m_nId(0), m_nGMId(0), m_nPercussionId(0), m_strIcon(), m_strDefaultOctave()
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
@@ -155,13 +155,13 @@ bool CInstrumentDataTable::LoadInstruments()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("instrument")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("instrument")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("instrument")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("instrument")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -178,13 +178,13 @@ bool CInstrumentDataTable::LoadCategories()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("category")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("category")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

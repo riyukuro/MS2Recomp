@@ -14,7 +14,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/commonfiles/itemdroptable.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <itemSocket> row, 0x30 bytes.
 class CItemSocketData : public CPtred

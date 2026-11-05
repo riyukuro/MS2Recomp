@@ -3,16 +3,16 @@
 // MS2-RANGE: 0x140110b20-0x140110f20 .text$di
 // MS2-RANGE: 0x1418d3050-0x1418dcba0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$Unk_PayloadPtr@VCBuddy@@@@V?$allocator@V?$Unk_PayloadPtr@VCBuddy@@@@@std@@@std@@@std@@QEAA@XZ 0x1418d8d90 ; unique
-// MS2-PIN: ??0?$vector@V?$Unk_PayloadPtr@VCBuddy@@@@V?$allocator@V?$Unk_PayloadPtr@VCBuddy@@@@@std@@@std@@QEAA@XZ 0x1418d8e10 ; unique
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCBuddy@@@@V?$allocator@V?$MS2Ptr@VCBuddy@@@@@std@@@std@@@std@@QEAA@XZ 0x1418d8d90 ; unique
+// MS2-PIN: ??0?$vector@V?$MS2Ptr@VCBuddy@@@@V?$allocator@V?$MS2Ptr@VCBuddy@@@@@std@@@std@@QEAA@XZ 0x1418d8e10 ; unique
 // MS2-PIN: ??_EUICommunityDialog@@WBHI@EAAPEAXI@Z 0x1418d8ea0 ; unique
 // MS2-PIN: ??_EUICommunityDialog@@WBIA@EAAPEAXI@Z 0x1418d8eac ; unique
 // MS2-PIN: ??_EUICommunityDialog@@WBII@EAAPEAXI@Z 0x1418d8eb8 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1418d8ed0 ; unique
 // MS2-PIN: ??_GUICommunityDialog@@UEAAPEAXI@Z 0x1418d8f10 ; unique
-// MS2-PIN: ??A?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x1418d8f50 ; unique
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCBuddy@@@@_K@Z 0x1418d8f50 ; unique
 // MS2-PIN: ?vfunc_48@UICommunityDialog@@UEAAHXZ 0x1418d8fb0 ; unique
-// MS2-PIN: ?_Tidy@?$vector@V?$Unk_PayloadPtr@VCBuddy@@@@V?$allocator@V?$Unk_PayloadPtr@VCBuddy@@@@@std@@@std@@AEAAXXZ 0x1418d9000 ; unique
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VCBuddy@@@@V?$allocator@V?$MS2Ptr@VCBuddy@@@@@std@@@std@@AEAAXXZ 0x1418d9000 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d9110 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1418d9170 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418d91f0 ; unique
@@ -131,22 +131,22 @@ class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener* p); vo
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
 // A counted reference to a CProxyGameObject (the entity events hand it by value; the callee destroys it).
-struct Unk_BdProxyRef;
-Unk_BdProxyRef* FUN_140ac58f0(Unk_BdProxyRef* pDst, const void* pSrc);
-void FUN_1406c70a0(Unk_BdProxyRef* p);
-struct Unk_BdProxyRef
-{
-    Unk_BdProxyRef() : m_unk_00(0), m_p(0) {}
-    Unk_BdProxyRef(const void* pSrc) { FUN_140ac58f0(this, pSrc); }
-    Unk_BdProxyRef(const Unk_BdProxyRef& other) { FUN_140ac58f0(this, &other); }
-    ~Unk_BdProxyRef() { FUN_1406c70a0(this); }
-    CProxyGameObject* operator->() const { return m_p; }
-    bool IsNull() const { return m_p == 0; }
-    CProxyGameObject* get() const { return m_p; }
-    void* m_unk_00;
-    CProxyGameObject* m_p;
-};
-MS2_CHECK_SIZE(Unk_BdProxyRef, 16);
+typedef MS2Ptr<CProxyGameObject> Unk_BdProxyRef;  // groups4 A1: was a {vt, p} view; its ctor/dtor/get/->/IsNull rows are the real MS2Ptr<CProxyGameObject> members
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The actor of an entity id (a PC); slot 77 (+0x268) is its name.
 class Unk_BdActor
@@ -274,7 +274,7 @@ int FUN_1418d3050(const CStringW& strMemo, CStringW& strResult)
 // Unit-local free functions (the row builders and the manager wrappers).
 void FUN_1418d7af0(ASObj* pObj, void* pTrophy);
 int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab);
-int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew);
+int FUN_1418d8540(ASObj* pRow, MS2Ptr<CProxyGameObject> ref, int bNew);
 int FUN_1418d8ac0(ASObj* pRow);
 
 // @0x1418d3190
@@ -882,15 +882,15 @@ void UICommunityDialog::vfunc_buddy_14()
 // @0x1418d5e90
 void UICommunityDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 {
-    if (reinterpret_cast<Unk_BdProxyRef*>(&spActor)->IsNull() || vfunc_55() != 0
-        || (*reinterpret_cast<Unk_BdProxyRef*>(&spActor))->FUN_1416c2040() == 0)
+    if (spActor.IsNull() || vfunc_55() != 0
+        || spActor->FUN_1416c2040() == 0)
     {
         return;
     }
     if (m_190 == 0)
     {
         ASObj obj(2);
-        if (FUN_1418d8540(&obj, static_cast<const void*>(&spActor), 1) != 0)
+        if (FUN_1418d8540(&obj, spActor, 1) != 0)
         {
             m_19c = 1;
             m_30->Invoke("addBuddy", obj.FUN_1422bb870());
@@ -903,8 +903,8 @@ void UICommunityDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 // @0x1418d6060
 void UICommunityDialog::vfunc_4(MS2Ptr<CProxyGameObject> spActor)
 {
-    if (reinterpret_cast<Unk_BdProxyRef*>(&spActor)->IsNull() || vfunc_55() != 0
-        || (*reinterpret_cast<Unk_BdProxyRef*>(&spActor))->FUN_1416c2040() == 0)
+    if (spActor.IsNull() || vfunc_55() != 0
+        || spActor->FUN_1416c2040() == 0)
     {
         return;
     }
@@ -914,7 +914,7 @@ void UICommunityDialog::vfunc_4(MS2Ptr<CProxyGameObject> spActor)
     }
     m_19c = 1;
     {
-        CString strId = FUN_140719530((unsigned __int64)(*reinterpret_cast<Unk_BdProxyRef*>(&spActor))->FUN_1416c22f0());
+        CString strId = FUN_140719530((unsigned __int64)spActor->FUN_1416c22f0());
         m_30->Invoke("removeBuddy", CString(strId));
     }
 }
@@ -922,7 +922,7 @@ void UICommunityDialog::vfunc_4(MS2Ptr<CProxyGameObject> spActor)
 // @0x1418d61d0
 void UICommunityDialog::vfunc_5(MS2Ptr<CProxyGameObject> spActor, int n)
 {
-    if (reinterpret_cast<Unk_BdProxyRef*>(&spActor)->IsNull() || vfunc_55() != 0)
+    if (spActor.IsNull() || vfunc_55() != 0)
     {
         return;
     }
@@ -935,7 +935,7 @@ void UICommunityDialog::vfunc_5(MS2Ptr<CProxyGameObject> spActor, int n)
     if (n > 0)
     {
         ASObj obj(2);
-        if (FUN_1418d8540(&obj, static_cast<const void*>(&spActor), 0) != 0)
+        if (FUN_1418d8540(&obj, spActor, 0) != 0)
             m_30->Invoke("updateBuddy", obj.FUN_1422bb870());
     }
 }
@@ -1076,7 +1076,7 @@ void UICommunityDialog::FUN_1418d6a90()
     {
         for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
         {
-            Unk_BdProxyRef ref(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos))));
+            MS2Ptr<CProxyGameObject> ref(((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)));
             if (ref.get() != 0 && (ref->FUN_1416c2040() != 0 || ref->FUN_1416c1ff0() != 0))
             {
                 ASObj row(2);
@@ -1324,7 +1324,7 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
 }
 
 // @0x1418d8540
-int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
+int FUN_1418d8540(ASObj* pRow, MS2Ptr<CProxyGameObject> ref, int bNew)
 {
     if (ref.IsNull())
         return 0;
@@ -1369,13 +1369,13 @@ int FUN_1418d8ac0(ASObj* pRow)
 // @0x1418d90d0
 unsigned __int64 FUN_1418d90d0(void* it)
 {
-    return *((unsigned __int64*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_PayloadPtr<CBuddy>, std::allocator<Unk_PayloadPtr<CBuddy>>>>*)(void*)(it))->_Myfirst());
+    return *((unsigned __int64*)&((std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<CBuddy>, std::allocator<MS2Ptr<CBuddy>>>>*)(void*)(it))->_Myfirst());
 }
 
 // @0x1418d90f0
 unsigned __int64 FUN_1418d90f0(void* it)
 {
-    return *((unsigned __int64*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_PayloadPtr<CBuddy>, std::allocator<Unk_PayloadPtr<CBuddy>>>>*)(void*)(it))->_Mylast());
+    return *((unsigned __int64*)&((std::_Vector_alloc<std::_Vec_base_types<MS2Ptr<CBuddy>, std::allocator<MS2Ptr<CBuddy>>>>*)(void*)(it))->_Mylast());
 }
 
 // @0x1418d9370

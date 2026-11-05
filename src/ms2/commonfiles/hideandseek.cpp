@@ -56,7 +56,7 @@ static CString s_skill("skill");
 // @0x1400b9010
 static CString s_stun("stun");
 
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -65,12 +65,12 @@ public:
 #ifndef MS2_HOOK_DLL
 // @0x1400b9040
 #include "ms2/placeholder/unk_1402a9d70.h"
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
 static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142c9aa30
 #endif
 

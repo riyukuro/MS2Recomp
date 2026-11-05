@@ -101,7 +101,7 @@ MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void StartCasting(class Unk_CastingListener* pListener, const struct Unk_CastingParam* pInfo);   // show (0x1418e12b0)
+    void StartCasting(class ICastingEventListener* pListener, const struct Unk_CastingParam* pInfo);   // show (0x1418e12b0)
     void FUN_1418e1390();                                                        // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
@@ -133,7 +133,7 @@ class Unk_SiNpc : public CNpc
 class Unk_SiWorld : public WorldService
 {
 public:
-    MS2Ptr<CInteractObject> FUN_141bc6090(Vector3 pt, int nSkipDisabled);   // the interactable object at a point
+    // (FUN_141bc6090, the interactable object at a point: WorldService's own member, point by value)
 };
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
@@ -293,7 +293,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             spObject->vfunc_6(reinterpret_cast<Unk_InteractCursor*>(&kInfo));
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar)
-                pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
+                pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
     else if (m_n10 == 0x8b)
@@ -605,7 +605,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
-            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
+            pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
     }
 }
 
@@ -700,7 +700,7 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
         {
             Unk_CastInfo kInfo;
             FUN_1417d3700(&kInfo);
-            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
+            pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
 }

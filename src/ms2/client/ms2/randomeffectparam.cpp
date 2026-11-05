@@ -24,17 +24,17 @@ public:
     Unk_XmlNode* FirstChild(char const*);
     Unk_XmlNode* NextSibling(char const*);
 };
-class Unk_140165cf0
-{
-public:
-};
+// C3 #12: was a local TiXml view
+
+
+
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
 template <class C> void XmlSplit(const CString&, C&, const char*);  // split to uints
 
 // Effect factory (effectservice): parse one <effect> element / create the runtime effect of a param.
-CEffectParamPtr FUN_1411a04e0(const CString& strOwner, Unk_140165cf0* pNode);
+CEffectParamPtr FUN_1411a04e0(const CString& strOwner, TiXmlElement* pNode);
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
 
 // Game log (commonfiles singleton 0x140166440).
@@ -80,12 +80,12 @@ CRandomEffectParam::CRandomEffectParam()
 }
 
 // @0x1416f4540
-void CRandomEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void CRandomEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    CString strProb = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("prob"), 0);
+    CString strProb = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("prob"), 0);
     XmlSplit(strProb, (ATL::CAtlArray<unsigned int>&)m_arrWeights, ", ");
-    for (Unk_140165cf0* pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pNode))->FirstChild("effect")); pChild; pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pChild))->NextSibling("effect")))
+    for (TiXmlElement* pChild = ((TiXmlElement*)((Unk_XmlNode*)(TiXmlElement*)(pNode))->FirstChild("effect")); pChild; pChild = ((TiXmlElement*)((Unk_XmlNode*)(TiXmlElement*)(pChild))->NextSibling("effect")))
     {
         CEffectParamPtr spParam = FUN_1411a04e0(m_str20, pChild);
         if (spParam.get())

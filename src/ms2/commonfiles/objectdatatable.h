@@ -11,7 +11,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/placeholder/tixmldocument.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // The table. RTTI CObjectDataTable, 0xf0 bytes: CCacheData +0, TSingleton +0x28, CValidData +0x30, the xml document
 // +0x38, the id -> row map +0xa8. Created by CGameApp::InitInstance (?\ms2.cpp).
@@ -38,7 +38,7 @@ public:
     void Load();                            // 0x14070c590 Table/ObjectData.xml
     DisplayPtr GetData(int nId);            // 0x14070c710 the row of an id (null when missing); reloads a changed file
     void Reload();                          // 0x14070c7c0
-    void LoadDisplays(Unk_140165cf0* pRoot);    // 0x14070c800
+    void LoadDisplays(TiXmlElement* pRoot);    // 0x14070c800
 
     static void CheckInit();                // 0x14070cfb0
     static void SetInit(bool b);            // 0x14070de80

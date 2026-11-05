@@ -161,11 +161,11 @@ void Unk_CMISDriveTail6()
 
 void FUN_14112fe10(struct Unk_Obj8* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> link
 void FUN_14112faf0(void* pThis);      // MS2Ptr<CFunctionCubeObject> link
-void FUN_14112fb20(void* pThis);      // MS2Ptr<AutomaticCreateCubeInfo> AddRef
+void FUN_14112fb20(struct Unk_BoxedPointer* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> AddRef (unit_14112fa90)
 void FUN_140dd7940(void* pThis);      // MS2Ptr<SaleStateData> link
 void FUN_140ba1c80(void* pThis);      // MS2Ptr<SetItemEffectInfo> link
 void FUN_14112fb50(void* pThis);      // MS2Ptr<Unk_CMISHouseRef> link
-void FUN_14112fb80(void* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISDesignPtr> link
+struct Unk_BoxedPointer; void FUN_14112fb80(Unk_BoxedPointer* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISDesignPtr> link (unit_14112fa90)
 void FUN_140fac7c0(void* pThis);
 void FUN_140fac7f0(void* pThis);
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
@@ -190,7 +190,7 @@ void* FUN_14111e770(void* pThis, void* pRaw)
 void* FUN_14111e800(void* pThis, void* pRaw)
 {
     *(void**)((char*)pThis + 8) = pRaw;
-    FUN_14112fb20(pThis);
+    FUN_14112fb20(static_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
 
@@ -237,7 +237,7 @@ void* FUN_14111e9a0(void* pThis, int nUnused)
 void* FUN_14111e9c0(void* pThis, void* pOther)
 {
     *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_14112fb80(pThis);
+    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
 
@@ -245,7 +245,7 @@ void* FUN_14111e9c0(void* pThis, void* pOther)
 void* FUN_14111ea00(void* pThis, void* pRaw)
 {
     *(void**)((char*)pThis + 8) = pRaw;
-    FUN_14112fb80(pThis);
+    FUN_14112fb80(reinterpret_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
 

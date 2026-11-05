@@ -23,7 +23,7 @@ class CMsgBoxData;
 class NotifyObject;
 class ASGameEntity;
 class ASMovieClip;
-class Unk_140bfc2e0;        // the AS list of the style slots ("m_items")
+class ASTileCacheList;      // the AS list of the style slots ("m_items")
 class Unk_BSPartHandle;     // a handle to the part the customize controller edits (uibeautyshopdialog.cpp)
 
 // The item customize listener (vftable 0x142e6f3a0, 6 slots, no virtual destructor): the customize controller
@@ -159,7 +159,7 @@ public:
     virtual void vfunc_67();
     void SetData(MS2Ptr<TData> spData);
     void FUN_1418cda70(int nPrice);
-    MS2Ptr<class Unk_BSCheckBox> FUN_140e52670(const CString& strName);     // check box child lookup (a UIDialog member)
+    // C3: the check box child lookup 0x140e52670 is UIItemPetBoxDialog::FindCheckBox (uibeautyshopdialog.cpp view)
     MS2Ptr<class ASTextField> FUN_140bb4cf0(const CString& strName);        // text field child lookup (a UIDialog member)
 
 private:
@@ -244,7 +244,7 @@ private:
     int m_268;                                  // +0x268 the player wears a cap
     int m_26c;                                  // +0x26c the shop mode (4: billable, 2: no confirm)
     MS2Ptr<ASGameEntity> m_270;                 // +0x270 "m_customStyle"
-    Unk_14102fe10<Unk_140bfc2e0> m_items;       // +0x280 "m_items" of m_270
+    MS2Ptr<ASTileCacheList> m_items;            // +0x280 "m_items" of m_270
     unsigned m_290;                             // +0x290 open slots
     unsigned m_294;                             // +0x294 expected styles
     std::vector<MS2Ptr<CItem> > m_298;          // +0x298 the saved styles

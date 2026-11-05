@@ -8,7 +8,7 @@
 // MS2-PIN: ??$forward@AEBQEAVUIGameRankingDialog@@@std@@YAAEBQEAVUIGameRankingDialog@@AEBQEAV1@@Z 0x140e35f80 ; unique
 // MS2-PIN: ??0?$CAtlList@V?$Unk_RankPtr@VGameRankingCategory@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingCategory@@@@@ATL@@@ATL@@QEAA@I@Z 0x140e360a0 ; unique
 // MS2-PIN: ??0?$CAtlList@V?$MS2Ptr@VDungeonRoom@@@@V?$CElementTraits@V?$MS2Ptr@VDungeonRoom@@@@@ATL@@@ATL@@QEAA@I@Z 0x140e36100 ; prop
-// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@AEBUUnk_RankNewTag@@@Z 0x140e36380 ; unique
+// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140e36380 ; unique
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@UCGameRankingParam::KeyTraits@@V?$CElementTraits@V?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@@ATL@@@ATL@@IEAA@AEBH@Z 0x140e366b0 ; unique
 // MS2-PIN: ??1?$CAtlList@V?$MS2Ptr@VDungeonRoom@@@@V?$CElementTraits@V?$MS2Ptr@VDungeonRoom@@@@@ATL@@@ATL@@QEAA@XZ 0x140e36950 ; unique
 // MS2-PIN: ??1?$TPtredDummy@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@UEAA@XZ 0x140e36a50 ; unique

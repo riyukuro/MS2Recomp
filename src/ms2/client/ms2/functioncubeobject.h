@@ -39,25 +39,8 @@ class Unk_Entity;
 typedef ATL::CAtlArray<CString> Unk_FcStrList;
 typedef ATL::CAtlArray<Unk_FcStrList> Unk_FcStrListList;
 
-// A text pair + number (FunctionCubeData +0x118): copy ctor 0x14122da50, assign 0x14122df20.
-struct Unk_FcSkillText
-{
-    Unk_FcSkillText();                                            // 0x140708950
-    ~Unk_FcSkillText();                                           // 0x140708dc0
-    CString m_strA;                                               // +0x00
-    CString m_strB;                                               // +0x08
-    int m_nValue;                                                 // +0x10
-};
-MS2_CHECK_SIZE(Unk_FcSkillText, 0x18);
-
-// The notice popup type (FunctionCubeData +0x130): implicit assign 0x14122def0.
-struct Unk_FcNotice
-{
-    Unk_FcNotice();                                               // 0x140708810
-    ~Unk_FcNotice();                                              // 0x140708d40
-    CStringW m_strType;                                           // +0x00
-};
-MS2_CHECK_SIZE(Unk_FcNotice, 0x8);
+// The web link (FunctionCubeData +0x118: copy ctor 0x14122da50, assign 0x14122df20) and the notice popup type
+// (+0x130: implicit assign 0x14122def0) are CObjectData::OpenWeb / NoticePopup (objectdata.h).
 
 // The object's data row, copied from the cube table row when the object is created. Heap 0x138.
 // vftable 0x142ec4d50 (1 slot), scalar deleting dtor 0x14122e2c0, ctor 0x14122d840, dtor 0x14122dbb0.
@@ -98,8 +81,8 @@ public:
     int m_n104;                                                   // +0x104
     CString m_str108;                                             // +0x108
     int m_n110;                                                   // +0x110
-    Unk_FcSkillText m_skill;                                      // +0x118
-    Unk_FcNotice m_notice;                                        // +0x130
+    CObjectData::OpenWeb m_skill;                                      // +0x118
+    CObjectData::NoticePopup m_notice;                                        // +0x130
 };
 MS2_CHECK_SIZE(FunctionCubeData, 0x138);
 
@@ -150,8 +133,8 @@ struct Unk_FcRow
     CString m_str178;                                             // +0x178
     CObjectData::Nurturing m_objData;                                      // +0x180
     char m_pad_278[8];
-    Unk_FcSkillText m_skill;                                      // +0x280
-    Unk_FcNotice m_notice;                                        // +0x298
+    CObjectData::OpenWeb m_skill;                                      // +0x280
+    CObjectData::NoticePopup m_notice;                                        // +0x298
 };
 MS2_CHECK_OFFSET(Unk_FcRow, m_anims, 0x40);
 MS2_CHECK_OFFSET(Unk_FcRow, m_aAnim, 0x80);
@@ -263,7 +246,7 @@ public:
     void FUN_1412271c0(int nState);                               // 0x1412271c0
     int FUN_1412271f0();                                          // 0x1412271f0
     int FUN_141227270();                                                   // 0x141227270
-    Unk_FcSkillText GetWebLinkInfo();                              // 0x1412272b0
+    CObjectData::OpenWeb GetWebLinkInfo();                              // 0x1412272b0
     void FUN_141227310();                                         // 0x141227310
     void FUN_141227360();                                         // 0x141227360
     void FUN_1412273b0();                                         // 0x1412273b0

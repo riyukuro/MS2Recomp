@@ -147,7 +147,7 @@ UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by U
 class CubeMapInformationService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount); };
 class Unk_MfCubeService : public CubeMapInformationService { };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)

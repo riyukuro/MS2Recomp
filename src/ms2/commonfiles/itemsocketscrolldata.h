@@ -13,7 +13,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/commonfiles/itemdroptable.h"         // ItemDropPicker
 
-class Unk_140165cf0;                    // the tinyxml element wrapper (FUN_140165cf0 = FirstChildElement)
+class TiXmlElement;                    // the tinyxml element wrapper (FUN_140165cf0 = FirstChildElement)
 
 // The xml "type" attribute (read through the enum reader, so it is an enum). Only the value 1 is told apart.
 enum ItemSocketScrollType
@@ -29,7 +29,7 @@ class CItemSocketScrollData : public CPtred
 public:
     CItemSocketScrollData();                // 0x140624700
     virtual ~CItemSocketScrollData();       // 0x140624790
-    virtual void Read(Unk_140165cf0* pElem);    // 0x140624810
+    virtual void Read(TiXmlElement* pElem);    // 0x140624810
 
     ItemSocketScrollType m_eType;           // +0x18 "type"
     int m_nUnk1c;                           // +0x1c (1 by default; not read from the xml)
@@ -52,7 +52,7 @@ class CItemSocketScrollDataServer : public CItemSocketScrollData
 public:
     CItemSocketScrollDataServer();          // 0x140624a10
     virtual ~CItemSocketScrollDataServer(); // 0x140624a80
-    virtual void Read(Unk_140165cf0* pElem);    // 0x140624ac0
+    virtual void Read(TiXmlElement* pElem);    // 0x140624ac0
 
     unsigned int m_nSuccessProb;            // +0x70 "successProb" (type 1 only)
     unsigned int m_nOpenCount;              // +0x74 "openCount" (type 1 only)

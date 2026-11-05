@@ -37,13 +37,13 @@
 #include "ms2/client/ms2/effectparam.h"   // C3: CEffect::ms_RTTI
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 #include "ms2/commonfiles/ugcmapdata.h"   // C3: Unk_UGCGroup, the row FUN_1408a0d30 fills
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -51,18 +51,18 @@ public:
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 : public Unk_XmlNode {};
+// C3 #12: was a local TiXml view
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);                         // the full path of a table file
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
+CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);   // string attribute with default
 
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 Unk_SocketNew FUN_1401b7b90(Unk_SocketNew* pOut, int n);                  // new-tag construct
 
 // The ctor/dtor of the CAfterImageEffect RTTI live in the same .text$di range.
@@ -83,25 +83,25 @@ const NiRTTI CAfterImageEffect::ms_RTTI("CAfterImageEffect", &CEffect::ms_RTTI);
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 #endif
 
-// Unk_BuddyPtr<CBuddy> members that this unit instantiates (one COMDAT each, like the exe's TPtr<CBuddy>).
-template<class T> Unk_BuddyPtr<T>::~Unk_BuddyPtr() { Release(); }
-template<class T> T* Unk_BuddyPtr<T>::get() const { return p; }
-template<class T> T* Unk_BuddyPtr<T>::operator->() const { return p; }
-template<class T> void Unk_BuddyPtr<T>::Release() { if (p) { ReleaseImpl(0); p = 0; } }
-template<class T> void Unk_BuddyPtr<T>::ReleaseImpl(void*)
-{
-    if (CPtred::ReleasePtred(p) == 0) {
-        Reference(p);
-        CPtred::DeletePtred(p);
-    }
-}
-template<class T> void Unk_BuddyPtr<T>::Reference(CPtred* v) { CPtred::AddRefPtred(v); }
+// C3: the MS2Ptr<CBuddy> members that this unit instantiates (one COMDAT each, like the exe's TPtr<CBuddy>):
+// ~ 0x140979fc0, get 0x14097a170, -> 0x14097a1e0, Reference 0x14097bf60, Release 0x14097c0c0, ReleaseImpl 0x14097c1a0
+#include "ms2/placeholder/ms2ptr_impl.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x140978f40
 CAddressTable::CAddressTable()
@@ -131,19 +131,19 @@ int CAddressTable::LoadTable()
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("address")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("address")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("address")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("address")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         Unk_AddressPtr data(new CAddressData);
-        data->m_nMapCode = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("mapcode"));
-        data->m_nBlockCode = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("blockCode"));
+        data->m_nMapCode = atoi(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("mapcode"));
+        data->m_nBlockCode = atoi(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("blockCode"));
         data->m_strBlockName = FUN_1401bf530(pNode, "blockNameKor", CStringW(L""));
         data->m_strBlockModifier = FUN_1401bf530(pNode, "blockModifierKor", CStringW(L""));
         Unk_AddressBlockMapPtr blocks;

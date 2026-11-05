@@ -33,11 +33,11 @@
 // MS2-PIN: ??$iter_swap@PEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@PEAV12@@std@@YAXPEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@0@0@Z 0x140fb3b80 ; prop
 // MS2-PIN: ??$sort@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@std@@UUnk_UgcpNameLess@@@std@@YAXV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@0@0UUnk_UgcpNameLess@@@Z 0x140fb3bb0 ; unique
 // MS2-PIN: ??$sort@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@std@@@std@@@std@@UUnk_UgcpStrLess@@@std@@YAXV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@std@@@std@@@0@0UUnk_UgcpStrLess@@@Z 0x140fb3c30 ; unique
-// MS2-PIN: ??0?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3ce0 ; unique
+// MS2-PIN: ??0?$CAtlArray@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3ce0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VMapTile@UIWorldMap@@@@QEAA@AEBV0@@Z 0x140fb3d20 ; unique
-// MS2-PIN: ??1?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3f00 ; unique
+// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@QEAA@XZ 0x140fb3f00 ; unique
 // MS2-PIN: ??9?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140fb4010 ; prop
-// MS2-PIN: ??A?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x140fb4050 ; unique
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCBuddy@@@@_K@Z 0x140fb4050 ; unique
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@1@XZ 0x140fb40c0 ; unique
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@1@XZ 0x140fb40e0 ; prop
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4110 ; prop
@@ -45,7 +45,7 @@
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4180 ; prop
 // MS2-PIN: ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140fb4230 ; unique
 // MS2-PIN: ??_GUIUGCPortalDialog@@UEAAPEAXI@Z 0x140fb4360 ; unique
-// MS2-PIN: ?CallDestructors@?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@CAXPEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x140fb43a0 ; unique
+// MS2-PIN: ?CallDestructors@?$CAtlArray@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@CAXPEAV?$MS2Ptr@VCBuddy@@@@_K@Z 0x140fb43a0 ; unique
 // MS2-PIN: ?AddRef@?$MS2Ptr@VMapTile@UIWorldMap@@@@AEBAXXZ 0x140fb4420 ; unique
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VMapTile@UIWorldMap@@@@AEBAXPEAX@Z 0x140fb4450 ; unique
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@V?$allocator@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@2@@std@@@std@@QEAAAEAPEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@2@XZ 0x140fb4550 ; prop

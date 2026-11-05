@@ -19,8 +19,8 @@
 
 // The packet stream operators (commonfiles\packet.cpp).
 
-CInputStream& FUN_14070f3c0(CInputStream& in, unsigned short& value);
-CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read1/Read3/Read5 (0x14070f340/3c0/440)
+// C3: FUN_14070f3c0 = Unk_OSInput member (os.h)
 
 
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
@@ -58,7 +58,7 @@ inline CInputStream& operator>>(CInputStream& in, Unk_DungeonTimedValue<unsigned
 // @0x14031bf80
 inline CInputStream& operator>>(CInputStream& in, Unk_DungeonTimedValue<unsigned short>& v)
 {
-    FUN_14070f3c0(in, v.value);
+    reinterpret_cast<Unk_OSInput&>(in).Read3(reinterpret_cast<unsigned short&>(v.value));
     reinterpret_cast<Unk_OSInput&>(in).Read8(reinterpret_cast<unsigned __int64&>(v.expire));
     return in;
 }
@@ -206,7 +206,7 @@ CInputStream& operator>>(CInputStream& in, DungeonRecord& record)
     reinterpret_cast<Unk_OSInput&>(in).Read1(record.m_bonusCount);
     in >> record.m_extraCount;
     reinterpret_cast<Unk_OSInput&>(in).Read5(record.m_5c);
-    FUN_14070f3c0(in, record.m_60);
+    reinterpret_cast<Unk_OSInput&>(in).Read3(reinterpret_cast<unsigned short&>(record.m_60));
     in >> record.m_68;
     in >> record.m_flags;
     record.ResolveRoom();

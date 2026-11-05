@@ -9,7 +9,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -17,22 +17,22 @@ public:
 };
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
 CLogString* GetLogString();
 template <class T> void Unk_FeatureLog(CLogString* log, int level, int category, const wchar_t* format, const T& arg);   // C3: was FUN_14036e770
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-class TiXmlElement   // C3: member view for the former FUN_14086f500 stand-in
-{
-public:
-    const char* Attribute(const char* name, int* i) const;
-};
+// C3 #12: was a local TiXml view
+
+
+
+
 
 // @0x141375cb0
 CGraphicOptionTable::CGraphicOptionTable()
@@ -52,12 +52,12 @@ void CGraphicOptionTable::Load()
 {
     if (GetFileSystem()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
     {
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&m_doc)))->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&m_doc)))->FirstChild("ms2"));
         if (pRoot != 0)
         {
             CString strKey;
             int nValue;
-            for (Unk_140165cf0* pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pOption != 0; pOption = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pOption))->NextSibling("option")))
+            for (TiXmlElement* pOption = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("option")); pOption != 0; pOption = ((class TiXmlElement*)((class Unk_XmlNode*)(pOption))->NextSibling("option")))
             {
                 CString strName = Unk_ReadString((class Unk_XmlNode*)(pOption), "name", CString(""));
                 for (unsigned int i = 1; i <= 5; i++)
@@ -75,7 +75,7 @@ void CGraphicOptionTable::Load()
                     }
                 }
             }
-            for (Unk_140165cf0* pShadow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shadow")); pShadow != 0; pShadow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pShadow))->NextSibling("shadow")))
+            for (TiXmlElement* pShadow = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shadow")); pShadow != 0; pShadow = ((class TiXmlElement*)((class Unk_XmlNode*)(pShadow))->NextSibling("shadow")))
             {
                 CString strName = Unk_ReadString((class Unk_XmlNode*)(pShadow), "name", CString(""));
                 int bSet1 = 0;

@@ -49,7 +49,7 @@ TextureOverrideEffectParam::TextureOverrideEffectParam()
 }
 
 // @0x14184b590
-void TextureOverrideEffectParam::vfunc_1(Unk_140165cf0* pNode)
+void TextureOverrideEffectParam::vfunc_1(TiXmlElement* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     XmlGetAttr((class TiXmlElement*)(pNode), "texturepath", m_strTexturePath);

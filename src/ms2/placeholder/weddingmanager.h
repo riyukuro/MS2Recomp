@@ -20,7 +20,7 @@ class CMsgBoxData;
 class PCBase;
 class AScript;
 template <class T> class MS2Ptr;
-class Unk_WeddingMail;
+class CMailInfo;   // C3: the ticket mail (was the stand-in Unk_WeddingMail)
 
 class WeddingManager : public TSingleton<WeddingManager>
 {
@@ -72,7 +72,7 @@ public:
     bool IsPartnerOnline();                                 // 0x141b8a580
     bool IsInProgress();                                    // 0x141b89990
     bool CanStartWedding(__int64 partnerId);                // 0x141b867e0
-    void ReadTicketMail(MS2Ptr<Unk_WeddingMail> mail, AScript* script);   // 0x141b873c0
+    void ReadTicketMail(MS2Ptr<CMailInfo> mail, AScript* script);   // 0x141b873c0
     void ShowError(int code);                               // 0x141b87760
     void RefreshTicketsIfDirty();                           // 0x141b89030
     void CollectTickets(std::map<unsigned __int64, WeddingHallTicket>& out);   // 0x141b896f0

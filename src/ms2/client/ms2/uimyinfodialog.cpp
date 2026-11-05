@@ -116,7 +116,7 @@ class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 class Unk_MiPc : public MyPC
 {
 public:
-    MS2Ptr<CStatPointManager> FUN_140c25130();                  // the stat point manager
+    // FUN_140c25130 (the stat point manager) is MyPC's own (mypc.h)
 };
 class CEquipItem : public CPtred { public: MS2Ptr<CItem> GetItem(); };   // ?\equipitem.cpp, only the member this unit calls
 
@@ -1096,9 +1096,9 @@ bool UIMyInfoDialog::FUN_141a5c640(int nButton, const CMsgBoxData& kData)
         int nTab = kData.FUN_141a02e50(0, m_nTab);
         if ((m_30.get() ? true : false) && nTab != m_nTab && (m_spInfo.operator PCInfo*() ? true : false) && m_spInfo->m_mapEquip2.IsEmpty() == true)
         {
-            MS2Ptr<ASMovieClip> spTab = m_30->FUN_140be23c0<ASMovieClip>("m_tab");
+            MS2Ptr<ASButtonBar> spTab = m_30->FUN_140be23c0<ASButtonBar>("m_tab");
             if (spTab.get() != 0)
-                reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
+                spTab->SetSelectedIndex(nTab);
         }
     }
     return true;

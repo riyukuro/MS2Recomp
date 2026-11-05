@@ -20,7 +20,7 @@ class LightningEffectParam : public CEffectParam
 {
 public:
     LightningEffectParam();                                     // 0x14144b790
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x14144b880
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x14144b880
     virtual CEffectPtr vfunc_6();                               // 6 0x14144bb00 new LightningEffect
 public:
     MS2_LAYOUT_FRIEND;

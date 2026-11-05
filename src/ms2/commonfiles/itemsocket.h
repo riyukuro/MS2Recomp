@@ -115,8 +115,8 @@ public:
     bool GetGemStats(Unk_EnchantMap& kOut);       // 0x140621b10 copy the stat options (+0x40)
     bool FUN_140621b60(Unk_EnchantMap* pOut);       // 0x140621b60
     bool GetGemSpecialStats(Unk_SocketSpecialMap& kOut); // 0x140621b80 copy the special-stat options (+0x88)
-    Unk_EnchantPtr<BaseOption> GetSpecialOption(Unk_SocketSpecialStat nStat);   // 0x140621be0
-    Unk_EnchantPtr<BaseOption> FUN_140621ca0(int nStat);        // 0x140621ca0
+    MS2Ptr<BaseOption> GetSpecialOption(Unk_SocketSpecialStat nStat);   // 0x140621be0
+    MS2Ptr<BaseOption> FUN_140621ca0(int nStat);        // 0x140621ca0
     bool CanExpandSlotsTo(unsigned nCount);            // 0x140621cf0
     int GetFirstGemId();                            // 0x140621d60 the first gemstone id
     int AllGemsPass(Unk_GemFilter pfnFilter);     // 0x140621e60 every gemstone passes

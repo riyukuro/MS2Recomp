@@ -40,20 +40,20 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* NextSiblingElement(); };
+// C3 #12: was a local TiXml view
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
@@ -168,25 +168,25 @@ bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
     TiXmlDocument doc;
     if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("StateEffect")); pNode != 0; pNode = pNode->NextSiblingElement())
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("StateEffect")); pNode != 0; pNode = pNode->NextSiblingElement())
     {
-        const char* pszType = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("stateType");
+        const char* pszType = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("stateType");
         int nStateType = FUN_1417b90f0(pszType);
         if (nStateType != 0)
         {
             StateEffectData data;
-            const char* pszEffect = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("effect");
+            const char* pszEffect = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("effect");
             if (pszEffect != 0)
             {
                 data.m_nStateType = nStateType;
                 data.m_strEffect = pszEffect;
-                Unk_140165cf0* pInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("Info"));
+                TiXmlElement* pInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("Info"));
                 if (pInfo != 0)
                 {
                     XmlGetAttr((class TiXmlElement*)(pInfo), "emotionSkillID", *(unsigned int*)&static_cast<int&>(data.m_nEmotionSkillId));

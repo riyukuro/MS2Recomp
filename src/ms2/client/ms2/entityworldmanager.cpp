@@ -153,11 +153,11 @@ bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, uns
 struct Unk_EntityAppFramework;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
+class CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 CLogString* GetLogString();
 bool Unk_IsFinite(const efd::Point3&);   // C3: was FUN_140a33ff0
-void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
+// C3: FUN_140a38a50 is egf::Entity::SetPropertyValue<efd::Point3> (0x140a38a50)
 class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
 {
 public:
@@ -257,8 +257,8 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
     if (entity.data() != nullptr) {
         if (!Unk_IsFinite(position)) position = efd::Point3::ZERO;
         if (!Unk_IsFinite(rotation)) rotation = efd::Point3::ZERO;
-        FUN_140a38a50(entity, 0xfd95ca52, position);
-        FUN_140a38a50(entity, 0x68c7c29d, rotation);
+        ((egf::Entity*)entity)->SetPropertyValue<efd::Point3>(0xfd95ca52, position);
+        ((egf::Entity*)entity)->SetPropertyValue<efd::Point3>(0x68c7c29d, rotation);
         static_cast<Unk_CachedEntity*>((egf::Entity*)entity)->SetPropertyValue<float>(0x2d7cad2d, scale);
         bool enable = enabled == 0 ? true : false;
         FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x2a7fd9f4, enable);
@@ -522,9 +522,9 @@ const char* EntityWorldManager::GetDisplayName() const { return "EntityWorldMana
 // @0x1411d0a60
 void EntityWorldManager::FUN_1411d0a60(unsigned map, int group) { if (map != 0) mapGroups[map].insert(reinterpret_cast<const unsigned&>(group)); }
 // @0x1411d0ab0
-size_t EntityWorldManager::FUN_1411d0ab0() { return worlds[currentMap].loadedEntities.size(); }
+unsigned EntityWorldManager::FUN_1411d0ab0() { return worlds[currentMap].loadedEntities.size(); }
 // @0x1411d0af0
-size_t EntityWorldManager::FUN_1411d0af0() { return worlds[currentMap].createdEntities.size(); }
+unsigned EntityWorldManager::FUN_1411d0af0() { return worlds[currentMap].createdEntities.size(); }
 // @0x1411d0b30
 efd::UInt32 EntityWorldManager::FUN_1411d0b30() { return entities->GetCount(); }
 // @0x1411d0b60 (the exe spills an unused first argument)

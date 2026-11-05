@@ -313,7 +313,7 @@ void UIReportDialog::FUN_141ab9b10(const CStringW& strTarget, const CStringW& st
 MS2_REPLACE_METHOD(0x141AB9B10, UIReportDialog, FUN_141ab9b10, 99, 0xB82CC288);
 
 // @0x141ab9b80
-void UIReportDialog::FUN_141ab9b80(const Unk_MeratProductKey& key, __int64 nItemId, CStringW strItem, CStringW strTarget, int nFlag)
+void UIReportDialog::FUN_141ab9b80(Unk_MeratProductKey key, __int64 nItemId, CStringW strItem, CStringW strTarget, int nFlag)
 {
     FUN_141ab9890();
     m_key = key;

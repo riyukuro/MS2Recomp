@@ -33,7 +33,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -255,24 +255,24 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     TiXmlDocument doc;
     if (((class Unk_CsLoader*)GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
         return;
     m_nSelectJob = 0;
     m_jobs.RemoveAll();
     m_randomJobs.RemoveAll();
     JobMap mapJobs(17, 0.75f, 0.25f, 2.25f, 10);
-    Unk_140165cf0* pDisplay = 0;
-    Unk_140165cf0* pDisplayAny = 0;
-    Unk_140165cf0* pData = 0;
-    Unk_140165cf0* pSelected = 0;
-    for (Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pGroup != 0; pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
+    TiXmlElement* pDisplay = 0;
+    TiXmlElement* pDisplayAny = 0;
+    TiXmlElement* pData = 0;
+    TiXmlElement* pSelected = 0;
+    for (TiXmlElement* pGroup = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("group")); pGroup != 0; pGroup = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->NextSibling("group")))
     {
         CString strType("");
         XmlQuery((class TiXmlElement*)(pGroup), "name", strType);
         if (strType.CompareNoCase("data") == 0)
         {
-            pData = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("list"));
+            pData = ((class TiXmlElement*)((class Unk_XmlNode*)(pGroup))->FirstChild("list"));
         }
         else
         {
@@ -294,7 +294,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     if (pDisplay != 0)
     {
         CStringW strBest;
-        for (Unk_140165cf0* pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDisplay))->FirstChild("list")); pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
+        for (TiXmlElement* pRow = ((class TiXmlElement*)((class Unk_XmlNode*)(pDisplay))->FirstChild("list")); pRow != 0; pRow = ((class TiXmlElement*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
         {
             CStringW strFeature;
             XmlGetAttr((class TiXmlElement*)(pRow), "feature", strFeature);
@@ -310,7 +310,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     }
     if (pData != 0)
     {
-        for (Unk_140165cf0* pRow = pData; pRow != 0; pRow = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
+        for (TiXmlElement* pRow = pData; pRow != 0; pRow = ((class TiXmlElement*)((class Unk_XmlNode*)(pRow))->NextSibling("list")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pRow)))
                 continue;

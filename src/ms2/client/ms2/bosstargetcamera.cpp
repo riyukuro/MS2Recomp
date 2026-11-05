@@ -73,32 +73,32 @@ struct Unk_PropertyCacheEntry
 {
     // 0x140947490 (another obj)
     Unk_PropertyCacheEntry(unsigned nId, void* pValue, unsigned nType) : m_id(nId), m_pValue(pValue), m_type(nType) {}
-
+    Unk_PropertyCacheEntry() : m_id(0), m_pValue(NULL), m_type(0) {}       // 0x1409474d0 (efd::map operator[])
     unsigned m_id;
     void* m_pValue;
     unsigned m_type;
 };
 MS2_CHECK_SIZE(Unk_PropertyCacheEntry, 0x18);
 
-class Unk_PropertyCacheIter
-{
-public:
-    Unk_PropertyCacheIter();
-    bool FUN_140947540(const Unk_PropertyCacheIter& other) const;     // operator==
+#include <efd/StdContainers.h>
+// C3: the cache map is the real efd::map<unsigned, Unk_PropertyCacheEntry> (its find / end / operator[] /
+// const_iterator::operator== COMDATs: 0x140948250 / 0x1409481f0 / 0x140947580 / 0x140947540; glue in actioncameramode,
+// see propertycache.h).
+typedef efd::map<unsigned, Unk_PropertyCacheEntry> Unk_PropertyCacheMap;
 
-    void* m_p;
-};
 
-class Unk_PropertyCacheMap
-{
-public:
-    Unk_PropertyCacheIter FUN_1409481f0();                          // end()
-    Unk_PropertyCacheIter FUN_140948250(const unsigned& nId);       // find
-    Unk_PropertyCacheEntry& FUN_140947580(const unsigned& nId);     // operator[]
 
-    void* m_pHead;                                                  // std::map: head node and size
-    size_t m_nSize;
-};
+
+
+
+
+
+
+
+
+
+
+
 
 class Unk_CachedEntity : public egf::Entity
 {
@@ -410,11 +410,11 @@ static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Vector3
 {
     if (pEntity->m_c8)
     {
-        if (pEntity->m_d0.FUN_140948250(nId).FUN_140947540(pEntity->m_d0.FUN_1409481f0()))
+        if (pEntity->m_d0.find(nId) == pEntity->m_d0.end())
         {
             Vector3 ptOld;
             pEntity->GetPropertyValueUnsafe(nId, &ptOld, efd::GetClassIDFromType<efd::Point3>());
-            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, ::new Vector3(ptOld), efd::GetClassIDFromType<efd::Point3>());
+            pEntity->m_d0[nId] = Unk_PropertyCacheEntry(nId, ::new Vector3(ptOld), efd::GetClassIDFromType<efd::Point3>());
         }
     }
 }

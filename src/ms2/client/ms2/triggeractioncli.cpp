@@ -413,14 +413,14 @@ bool TriggerObject::Contains(const Vector3& pt)
         Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
         NxBounds3 bounds;
         bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
-        Unk_CtbMat34 pose(true);
-        pose.m_pos.x = ptPos.x;
-        pose.m_pos.y = ptPos.y;
-        pose.m_pos.z = ptPos.z;
-        ((class NxMat33*)(struct Unk_CtbMat33*)(&pose.m_rot))->id();
-        ((class NxMat33*)(struct Unk_CtbMat33*)(&pose.m_rot))->rotZ((ptRot.z * 3.1415927f) / 180.0f);
+        NxMat34 pose(true);
+        pose.t.x = ptPos.x;
+        pose.t.y = ptPos.y;
+        pose.t.z = ptPos.z;
+        pose.M.id();
+        pose.M.rotZ((ptRot.z * 3.1415927f) / 180.0f);
         NxBox obb;
-        NxCreateBox(obb, bounds, *(class NxMat34 const*)(&pose));
+        NxCreateBox(obb, bounds, pose);
         return NxBoxContainsPoint(obb, static_cast<const NxVec3&>(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(pt))));
     }
     return false;

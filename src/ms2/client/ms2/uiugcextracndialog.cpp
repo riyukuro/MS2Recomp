@@ -90,12 +90,12 @@ public:
     virtual int vfunc_54(CStringW strA, CStringW strB, int nMode, CStringW strPath);   // MS2: slot 54 (+0x1b0)
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-struct Unk_UgcMode { unsigned char m_0; unsigned char m_1; unsigned char m_2; };   // 3 bytes, so returned in memory
-class Unk_UgcPlace : public CubeMapInformationService
-{
-public:
-    Unk_UgcMode FUN_1410c34f0();
-};
+// C3: the house service is CubeMapInformationService (cubemapinformationservice_3.h); FUN_1410c34f0 returns its
+// Unk_CMISFlags3 (3 bools, returned in memory). Was a local stand-in view deriving from it.
+//
+//
+//
+//
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
 public:
@@ -216,7 +216,7 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
     CStringW strPath = TakeScreenshotJpg(0, 1);
     if (nResult == 0 && !strPath.IsEmpty())
     {
-        if (((class Unk_UgcShot*)FUN_140d86260())->vfunc_54(((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, strPath) == 1)
+        if (((class Unk_UgcShot*)FUN_140d86260())->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, strPath) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return true;
@@ -252,8 +252,8 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     }
     else
     {
-        const Unk_UgcMode& mode = ((class Unk_UgcPlace*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
-        TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.m_2);
+        const Unk_CMISFlags3& mode = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34f0();
+        TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.c);
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
     FUN_140fad2b0();

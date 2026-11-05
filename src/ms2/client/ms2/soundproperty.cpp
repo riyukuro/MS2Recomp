@@ -80,7 +80,7 @@
 // MS2-PIN: ??$construct@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x14179e090
 // MS2-PIN: ??0?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEAA@XZ 0x14179f080
 // MS2-PIN: ??4?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEAAAEAV0@AEBV0@@Z 0x1417a0840
-// MS2-PIN: ??4?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEAAAEAV0@AEBUUnk_FieldNewTag@@@Z 0x1417a3860
+// MS2-PIN: ??4?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x1417a3860
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@UUnk_JobSoundKeyTraits@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@@ATL@@@ATL@@QEAAXXZ 0x1417a3b00
 // MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@UUnk_JobSoundKeyTraits@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@@ATL@@@ATL@@QEAAXXZ 0x1417a3b60
 // MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@UUnk_JobSoundKeyTraits@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@@ATL@@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x1417a3c40
@@ -152,13 +152,13 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
+//
+//
+//
+//
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -254,7 +254,7 @@ SystemSoundProperty::SystemSoundProperty()
 
 // MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x141790ae0
-void SystemSoundProperty::Load(Unk_140165cf0* pElem)
+void SystemSoundProperty::Load(TiXmlElement* pElem)
 {
     XmlTokenList(pElem, "soundID", m_sounds);
     XmlGetAttr((class TiXmlElement*)(pElem), "group", m_strGroup);
@@ -343,14 +343,14 @@ TriggerVoiceProperty::TriggerVoiceProperty()
 
 // MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x1417911e0
-void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
+void TriggerVoiceProperty::Load(TiXmlElement* pElem)
 {
     if (pElem != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pElem), "byGender", reinterpret_cast<int&>(m_bByGender));
         XmlGetAttr((class TiXmlElement*)(pElem), "byJob", reinterpret_cast<int&>(m_bByJob));
         {
-            CString strDefault(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("defaultSound"));
+            CString strDefault(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("defaultSound"));
             Unk_SplitA(const_cast<CStringA&>(strDefault), (ATL::CAtlArray<CStringA>*)&(m_sounds), ",");
         }
         for (unsigned __int64 i = 1; i < 12; i++)
@@ -498,10 +498,10 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("hitSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("hitSound")); pElem != 0; pElem = reinterpret_cast<TiXmlElement*>(pElem)->NextSiblingElement())
         {
             int nAttack;
             int nDefence;
@@ -527,12 +527,12 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("systemSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("systemSound")); pElem != 0; pElem = reinterpret_cast<TiXmlElement*>(pElem)->NextSiblingElement())
         {
-            CString strKey = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("key"), 0);
+            CString strKey = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("key"), 0);
             SystemPtr spProp(new SystemSoundProperty);
             spProp->Load(pElem);
             m_systemSounds.SetAt(strKey, spProp);
@@ -549,10 +549,10 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("pitchSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("pitchSound")); pElem != 0; pElem = reinterpret_cast<TiXmlElement*>(pElem)->NextSiblingElement())
         {
             int nId = 0;
             float fPitch = 0.0f;
@@ -575,25 +575,25 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("eventSound")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("eventSound")); pElem != 0; pElem = reinterpret_cast<TiXmlElement*>(pElem)->NextSiblingElement())
         {
             Unk_EventVoice voice;
             int nType = 0;
-            CString strEvent = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("event"));
-            voice.m_strSoundId = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("soundID"));
-            voice.m_strRestoreSoundId = FUN_14028d1f0(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("restoreSoundID"));
+            CString strEvent = FUN_14028d1f0(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("event"));
+            voice.m_strSoundId = FUN_14028d1f0(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("soundID"));
+            voice.m_strRestoreSoundId = FUN_14028d1f0(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("restoreSoundID"));
             if (!strEvent.IsEmpty() && (!voice.m_strSoundId.IsEmpty() || !voice.m_strRestoreSoundId.IsEmpty()))
             {
                 nType = FUN_141793500(CString(strEvent));
                 if (nType == 0)
                     continue;
-                const char* pszCaster = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("onlyCasterMyPC");
+                const char* pszCaster = ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("onlyCasterMyPC");
                 if (pszCaster != 0)
                     voice.m_bOnlyCasterMyPC = strcmp(pszCaster, "true") == 0;
-                voice.m_strGroup = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("group");
+                voice.m_strGroup = ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("group");
                 if (!voice.m_strGroup.IsEmpty())
                     FUN_1401d3700(voice.m_strGroup);
                 int nJob = 0;
@@ -615,12 +615,12 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
     {
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("voice")); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(pElem)->NextSiblingElement())
+        for (TiXmlElement* pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("voice")); pElem != 0; pElem = reinterpret_cast<TiXmlElement*>(pElem)->NextSiblingElement())
         {
-            CString strKey = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("key"), 0);
+            CString strKey = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("key"), 0);
             VoicePtr spProp(new TriggerVoiceProperty);
             spProp->Load(pElem);
             m_triggerVoices.SetAt(strKey, spProp);

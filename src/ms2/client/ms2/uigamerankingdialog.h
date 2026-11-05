@@ -62,10 +62,10 @@ public:
 MS2_CHECK_SIZE(GameRankingTabData, 0x30);
 
 // The tag that selects the "make a fresh object" constructor of the handles (0x1401b7b90, no code).
-struct Unk_RankNewTag
-{
-    explicit Unk_RankNewTag(int);
-};
+#include "ms2/placeholder/socketptr.h"   // C3: Unk_RankNewTag = Unk_SocketNew (one tag type; its ctor 0x1401b7b90 is shared)
+typedef Unk_SocketNew Unk_RankNewTag;
+
+
 
 // ---- unit-local smart pointers (16 bytes: field 0 unused, field 1 the pointee) ----
 

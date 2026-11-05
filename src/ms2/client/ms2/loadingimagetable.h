@@ -15,7 +15,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/placeholder/mstime.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // The 16-byte CPtred smart pointer of the two row classes (the pointee's count is at CPtred +0x8, the pointer at +0x8).
 template <class T>
@@ -66,7 +66,7 @@ public:
         LoadingImage();                                         // 0x140d43fe0
         virtual ~LoadingImage() = default;                      // 0x140d474f0
         bool IsSameCondition(const LoadingImage& o) const;      // 0x140d44070
-        int Load(Unk_140165cf0* pElem);                         // 0x140d44100
+        int Load(TiXmlElement* pElem);                         // 0x140d44100
         int IsCommon() const;                                   // 0x140d44280 no map code
         int IsInPeriod() const;                                 // 0x140d442c0
         int IsExceptMap(int nMapCode) const;                    // 0x140d44390
@@ -102,7 +102,7 @@ public:
     CString GetImageFile(int nMapCode, int bCommon);            // 0x140d44e80
     CString GetMovieFile(int nMapCode, unsigned nIndex);            // 0x140d44f90
     void CollectImages(int nMapCode, ATL::CAtlArray<ImagePtr>& aOut, int bCommon);   // 0x140d452d0
-    static int ParseExceptMap(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<Unk_MapRange>& aOut);   // 0x140d45660
+    static int ParseExceptMap(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<Unk_MapRange>& aOut);   // 0x140d45660
 
     // @0x140d47ae0
     static void CheckInit();

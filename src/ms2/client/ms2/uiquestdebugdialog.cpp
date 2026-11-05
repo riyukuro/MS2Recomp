@@ -173,7 +173,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (quest.IsNull()) return 1;
             void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
             if (!actor) return 1;
-            if (MS2Ptr<ASTextArea> desc = FUN_140c26f60("m_desc")) {
+            if (MS2Ptr<ASTextArea> desc = GetChild<ASTextArea>("m_desc")) {
                 CStringW text;
                 CStringW expLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_exp");
                 CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_meso");

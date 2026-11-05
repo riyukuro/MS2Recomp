@@ -20,7 +20,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "hook/ms2hook.h"
 
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -356,10 +356,10 @@ void SkillDataTableCli::LoadAdditionalFile(CString strPath)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pElem : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("additional")))
+    for (TiXmlElement* pElem : ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("additional")))
     {
         MS2Ptr<AdditionalData> spData(new AdditionalData);
         spData->Load(pElem);

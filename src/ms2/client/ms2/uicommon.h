@@ -11,7 +11,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
 
-class Unk_140165cf0;    // game TinyXML element
+class TiXmlElement;    // game TinyXML element
 
 namespace UICommon {
 
@@ -20,8 +20,8 @@ class CAlignmentInfo : public CPtred
 public:
     CAlignmentInfo();                                                       // 0x1419014c0 (centre, defaults 5)
     CAlignmentInfo(int nAlign, float x, float y);                           // 0x141901540
-    void FUN_1419015e0(Unk_140165cf0* pNode);                                         // write offsetX / offsetY / alignType
-    bool FUN_141901660(Unk_140165cf0* pNode);                                         // read them back
+    void FUN_1419015e0(TiXmlElement* pNode);                                         // write offsetX / offsetY / alignType
+    bool FUN_141901660(TiXmlElement* pNode);                                         // read them back
     void FUN_141901760(MS2Ptr<AScript> spScript);                           // remember the dialog's current placement
     void FUN_141901880(MS2Ptr<AScript> spScript, float fParentW, float fParentH, float fW, float fH);   // classify the position
     void FUN_141901b20(int nAlign, float x, float y);

@@ -15,7 +15,7 @@ class CMsgBoxData;
 class NotifyObject;
 class CItem;
 class Unk_BSPriceRow;                                   // a row of the shop (CBeautyShopItem)
-class Unk_140acd6e0;                                    // the "m_probInfo" child
+class ASButton;                                    // the "m_probInfo" child
 class Unk_BSPartObj;
 class ASTextField;
 class ASMovieClip;
@@ -138,7 +138,7 @@ private:
     unsigned int m_2dc;                                 // +0x2dc palette id (the exe compares it unsigned: jbe)
     int m_2e0;
     int m_2e4;                                          // +0x2e4 -1
-    MS2Ptr<Unk_140acd6e0> m_2e8;                        // +0x2e8 "m_probInfo"
+    MS2Ptr<ASButton> m_2e8;                        // +0x2e8 "m_probInfo"
 };
 MS2_CHECK_SIZE(UIBeautyShopDialog, 0x2f8);
 MS2_CHECK_OFFSET(UIBeautyShopDialog, m_198, 0x198);

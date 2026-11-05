@@ -38,7 +38,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-#include "ms2/unnamed/unit_140b0e5f0.h"            // Unk_CoupleVec (out-of-line NiPoint3 copy 0x14027dcf0)
+#include "ms2/unnamed/unit_140b0e5f0.h"            // NiPoint3(const efd::Point3&) 0x14027dcf0
 
 // The unit's own header static, ahead of the shared header statics.
 static CStringW s_strCoupleEmotion(L"coupleEmotion");                             // @0x1400c90a0
@@ -1288,7 +1288,7 @@ bool FUN_140b84dc0(const NiPoint3& kPoint)
         return false;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const Vector3*)&kPoint))
         return false;
-    Unk_CoupleVec kDown(reinterpret_cast<const Vector3&>(efd::Point3::ZERO));
+    NiPoint3 kDown(efd::Point3::ZERO);
     Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
     if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;

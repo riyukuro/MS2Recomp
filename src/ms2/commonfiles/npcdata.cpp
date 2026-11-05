@@ -16,7 +16,7 @@
 // MS2-PIN: ??0?$MS2Ptr@VCRegionSpawnResult@@@@QEAA@AEBV0@@Z 0x1406d46c0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCRegionSpawnResult@@@@QEAA@PEAVCRegionSpawnResult@@@Z 0x1406d4700 ; prop
 // MS2-PIN: ??0?$Unk_BmPtr@VCNpcRegionSpawnData@@@@QEAA@AEBV0@@Z 0x1406d47e0 ; prop
-// MS2-PIN: ??0?$Unk_BmPtr@VCNpcRegionSpawnData@@@@QEAA@AEBUUnk_BmNewTag@@@Z 0x1406d4820 ; unique
+// MS2-PIN: ??0?$Unk_BmPtr@VCNpcRegionSpawnData@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x1406d4820 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCCacheData@@@@QEAA@PEAVCCacheData@@@Z 0x1406d4850 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCRegionSpawnProb@@@@QEAA@H@Z 0x1406d48e0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCRegionSpawnProb@@@@QEAA@PEAVCRegionSpawnProb@@@Z 0x1406d4900 ; prop
@@ -80,17 +80,17 @@
 
 #include <stdlib.h>
 #include <NiPoint3.h>
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    TiXmlElement(const char* pszName);          // 0x14086f2f0
-    virtual ~TiXmlElement();                    // 0x14086f450
-    char const* Attribute(char const*) const;
-    void SetDoubleAttribute(char const *, double);
-private:
-    void* m_data[0x11];
-};
+class TiXmlElement;
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
+
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -100,7 +100,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -116,9 +116,9 @@ static CStringA s_sortNames7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
 void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0
-class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& kChild); };   // C3: member view (was free FUN_14086e000)
+// C3 #12: was a local TiXml view
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement* pParent);          // first child element (commonutil.cpp)
-#define FUN_14028f8d0(p) ((Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(p)))
+#define FUN_14028f8d0(p) ((TiXmlElement*)FUN_14028f8d0((struct Unk_XmlElement*)(p)))
 bool FUN_14028d470(float a, float b);                                           // approx equal
 
 
@@ -128,7 +128,7 @@ Unk_NpcModel::Unk_NpcModel() : m_fScale(1.0f), m_fAniSpeed(1.0f), m_nSpawnAlphaA
 }
 
 // @0x1406c8990
-void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
+void Unk_NpcModel::WriteXml(TiXmlElement* pParent) const
 {
     static Unk_NpcModel s_default;
     if (*this != s_default)
@@ -308,7 +308,7 @@ Unk_NpcShape::Unk_NpcShape()
 }
 
 // @0x1406c9080
-void Unk_NpcShape::WriteXml(Unk_140165cf0*) const
+void Unk_NpcShape::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C9080, Unk_NpcShape, WriteXml, 11, 0x02239C70);
@@ -340,7 +340,7 @@ CNpcData::NodeCollision::NodeCollision() : m_vVolume(0.0f, 0.0f, 0.0f), m_vOffse
 }
 
 // @0x1406c9200
-void CNpcData::NodeCollision::WriteXml(Unk_140165cf0*) const
+void CNpcData::NodeCollision::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C9200, CNpcData::NodeCollision, WriteXml, 11, 0x02239C70);
@@ -364,7 +364,7 @@ Unk_NpcCapsule::Unk_NpcCapsule() : m_fRadius(0), m_fHeight(0), m_nIgnore(0)
 }
 
 // @0x1406c92f0
-void Unk_NpcCapsule::WriteXml(Unk_140165cf0*) const
+void Unk_NpcCapsule::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C92F0, Unk_NpcCapsule, WriteXml, 11, 0x02239C70);
@@ -388,7 +388,7 @@ Unk_NpcPush::Unk_NpcPush() : m_fBack(0), m_fUp(0), m_fKnockback(0)
 }
 
 // @0x1406c93b0
-void Unk_NpcPush::WriteXml(Unk_140165cf0*) const
+void Unk_NpcPush::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C93B0, Unk_NpcPush, WriteXml, 11, 0x02239C70);
@@ -412,7 +412,7 @@ Unk_NpcDead::Unk_NpcDead() : m_fTime(0), m_nRevival(0), m_nCount(0), m_fLifeTime
 }
 
 // @0x1406c94b0
-void Unk_NpcDead::WriteXml(Unk_140165cf0*) const
+void Unk_NpcDead::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C94B0, Unk_NpcDead, WriteXml, 11, 0x02239C70);
@@ -462,7 +462,7 @@ Unk_NpcNormal::Unk_NpcNormal() : m_nMoveArea(0)
 }
 
 // @0x1406c9790
-void Unk_NpcNormal::WriteXml(Unk_140165cf0*) const
+void Unk_NpcNormal::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C9790, Unk_NpcNormal, WriteXml, 11, 0x02239C70);
@@ -484,7 +484,7 @@ Unk_NpcDrop::Unk_NpcDrop() : m_fDropHeight(0), m_fDropDistanceBase(50.0f), m_nDr
 }
 
 // @0x1406c98b0
-void Unk_NpcDrop::WriteXml(Unk_140165cf0*) const
+void Unk_NpcDrop::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C98B0, Unk_NpcDrop, WriteXml, 11, 0x02239C70);
@@ -537,7 +537,7 @@ Unk_NpcCorpse::Unk_NpcCorpse() : m_nHitAble(0), m_fOffsetNametag(0), m_fAdded(0)
 }
 
 // @0x1406c9dc0
-void Unk_NpcCorpse::WriteXml(Unk_140165cf0*) const
+void Unk_NpcCorpse::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C9DC0, Unk_NpcCorpse, WriteXml, 11, 0x02239C70);
@@ -567,7 +567,7 @@ Unk_NpcEffect::Unk_NpcEffect()
 }
 
 // @0x1406c9ec0
-void Unk_NpcEffect::WriteXml(Unk_140165cf0*) const
+void Unk_NpcEffect::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406C9EC0, Unk_NpcEffect, WriteXml, 11, 0x02239C70);
@@ -595,7 +595,7 @@ Unk_NpcInteract::Unk_NpcInteract() : m_nCastingTime(0), m_nCoolTime(0), m_bShowC
 }
 
 // @0x1406ca010
-void Unk_NpcInteract::WriteXml(Unk_140165cf0*) const
+void Unk_NpcInteract::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406CA010, Unk_NpcInteract, WriteXml, 11, 0x02239C70);
@@ -623,7 +623,7 @@ Unk_NpcLookAt::Unk_NpcLookAt() : m_n0(0), m_n1(0), m_b0(false), m_b1(false)
 }
 
 // @0x1406ca120
-void Unk_NpcLookAt::WriteXml(Unk_140165cf0*) const
+void Unk_NpcLookAt::WriteXml(TiXmlElement*) const
 {
 }
 MS2_REPLACE_METHOD(0x1406CA120, Unk_NpcLookAt, WriteXml, 11, 0x02239C70);
@@ -768,12 +768,12 @@ bool CNpcData::operator!=(const CNpcData& o) const
 MS2_REPLACE_METHOD(0x1406CA6B0, CNpcData, operator!=, 1820, 0xEB2C3925);
 
 // @0x1406cade0
-bool CNpcData::Load(Unk_140165cf0* pRoot)
+bool CNpcData::Load(TiXmlElement* pRoot)
 {
     XmlGetAttr((class TiXmlElement*)(pRoot), "id", (unsigned&)m_nId);
     if (m_nId == 0)
         return false;
-    Unk_140165cf0* pElem = FUN_14028f8d0(pRoot);
+    TiXmlElement* pElem = FUN_14028f8d0(pRoot);
     if (!pElem)
         return false;
     return LoadXml(pElem);
@@ -971,10 +971,10 @@ class CLogString* GetLogString();
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
+int FUN_1408731e0(TiXmlElement*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
+int FUN_140873420(TiXmlElement*, const char*, CStringW&);
+CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);
 class Unk_140166410* FUN_140166410();   // C3: was void*
@@ -1255,14 +1255,14 @@ void CNpcDataTable::LoadRegionSpawn()
         reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0xc, L"NpcDataTable.cpp:Init : File not found NpcRegionSpawnData.xml");
         return;
     }
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("NpcRegionSpawnData")); pNode != 0;
-         pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("NpcRegionSpawnData")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("NpcRegionSpawnData")); pNode != 0;
+         pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("NpcRegionSpawnData")))
     {
         CStringW strFeature;
         CString strLocale;
@@ -1274,7 +1274,7 @@ void CNpcDataTable::LoadRegionSpawn()
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
         Unk_BmPtr<CNpcRegionSpawnData> pData(Unk_BmNewTag(0));
-        pData->m_nNpcId = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("npcID"));
+        pData->m_nNpcId = atoi(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("npcID"));
         CStringW strMain = FUN_1401bf530(pNode, "mainTags", L"");
         FUN_14025a680(strMain, pData->m_aTags[0], L",");
         CStringW strSub = FUN_1401bf530(pNode, "subTags", L"");
@@ -1395,16 +1395,16 @@ MS2_REPLACE(0x1406CEFB0, Unk_ParsePropertyTag, 1023, 0x6D7FA8CF);
 
 // --- CNpcData::LoadXml ------------------------------------------------------------------------------------------------
 enum Unk_NpcRank {};                                                                    // the npc class (gameevent.h)
-extern template int XmlValue<Unk_NpcRank>(Unk_140165cf0* pElem, const char* pszName, Unk_NpcRank& eOut);   // 0x1403d8350
+extern template int XmlValue<Unk_NpcRank>(TiXmlElement* pElem, const char* pszName, Unk_NpcRank& eOut);   // 0x1403d8350
 unsigned FUN_14021c7c0(const CString& str);                                             // the id of a string key
 int Parse_14021bc30(const CStringA& strName);                                           // event tag by name
 const CString& GetStatName(unsigned nStat);                                             // xml name of the nStat-th stat
-void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
+class Unk_MeratLog { public: template <class T> void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* format, const T& value); };   // C3: 0x1406a6d70 = Log<unsigned int> (meratmarketbasketinfo.cpp)
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);
-template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
-template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
-int FUN_1403759c0(Unk_140165cf0*, const char*, std::vector<short>&);
+template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
+int FUN_1403759c0(TiXmlElement*, const char*, std::vector<short>&);
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -1414,7 +1414,7 @@ class Unk_PcBangTable* FUN_140541580();   // C3: was Unk_BossNotifyMgr*
 #define FUN_140541580() ((GameDictionaryManager*)FUN_140541580())
 
 // @0x1406cfaa0
-int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut)
+int FUN_1406cfaa0(TiXmlElement* pElem, const char* pszName, std::vector<CString>& rOut)
 {
     CStringA str;
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
@@ -1426,7 +1426,7 @@ MS2_REPLACE(0x1406CFAA0, FUN_1406cfaa0, 121, 0x2DA8BB28);
 
 // @0x1406cfb20
 // MS2-FUNCTIONAL: the exe inlines the CStringA default ctor (stringmgr assert) and duplicates the dtor on both paths
-static int FUN_1406cfb20(Unk_140165cf0* pElem, const char* pszName, int& nOut)
+static int FUN_1406cfb20(TiXmlElement* pElem, const char* pszName, int& nOut)
 {
     // the tinyxmlhelper.h enum-by-name reader's compile-time-false type guard (ASSERT(FALSE) of its line 250)
     if (false)
@@ -1444,7 +1444,7 @@ static int FUN_1406cfb20(Unk_140165cf0* pElem, const char* pszName, int& nOut)
 
 // @0x1406cae60
 // MS2-FUNCTIONAL: 8 KB loader; the xml reads are in the exe's order, the frame/temporary layout is not matched
-bool CNpcData::LoadXml(Unk_140165cf0* pElem)
+bool CNpcData::LoadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "stringID", m_strStringId);
     XmlGetAttr((class TiXmlElement*)(pElem), "friendly", reinterpret_cast<int&>(m_nFriendly));
@@ -1514,7 +1514,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_eventTags.set(nTag, true);
     }
 
-    Unk_140165cf0* pModel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("model"));
+    TiXmlElement* pModel = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("model"));
     if (pModel)
     {
         XmlGetAttr((class TiXmlElement*)(pModel), "kfm", m_model.m_strKfm);
@@ -1527,7 +1527,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pModel), "walkSpeed", reinterpret_cast<float&>(m_fWalkSpeed));
         XmlGetAttr((class TiXmlElement*)(pModel), "runSpeed", reinterpret_cast<float&>(m_fRunSpeed));
     }
-    Unk_140165cf0* pStat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("stat"));
+    TiXmlElement* pStat = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("stat"));
     if (pStat)
     {
         for (int i = 0; i < 0x23; ++i)
@@ -1551,7 +1551,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseSpaRate_1", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
         }
     }
-    Unk_140165cf0* pDistance = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("distance"));
+    TiXmlElement* pDistance = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("distance"));
     if (pDistance)
     {
         XmlGetAttr((class TiXmlElement*)(pDistance), "avoid", reinterpret_cast<float&>(m_distance.m_a));
@@ -1562,14 +1562,14 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pDistance), "customLastSightHeightUp", reinterpret_cast<float&>(m_distance.m_f));
         XmlGetAttr((class TiXmlElement*)(pDistance), "customLastSightHeightDown", reinterpret_cast<float&>(m_distance.m_g));
     }
-    Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
+    TiXmlElement* pSkill = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
     if (pSkill)
     {
         XmlTokenList(pSkill, "ids", m_skill.m_aIds);
         FUN_1403759c0(pSkill, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
         XmlTokenList(pSkill, "probs", m_skill.m_aProbs);
     }
-    Unk_140165cf0* pAdditionalEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
+    TiXmlElement* pAdditionalEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
     if (pAdditionalEffect)
     {
         CString strCodes = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "codes", CString(""));
@@ -1593,7 +1593,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         CString strRewardLevels = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "rewardLevels", CString(""));
         XmlSplit(strRewardLevels, m_effect.m_aRewardLevels, ",");
     }
-    Unk_140165cf0* pInteract = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("interact"));
+    TiXmlElement* pInteract = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("interact"));
     if (pInteract)
     {
         XmlGetAttr((class TiXmlElement*)(pInteract), "interactFunction", m_interact.m_strFunction);
@@ -1602,7 +1602,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pInteract), "interactCoolTime", m_interact.m_nCoolTime);
         XmlGetAttr((class TiXmlElement*)(pInteract), "interactIsShowCastingBar", reinterpret_cast<bool&>(m_interact.m_bShowCastingBar));
     }
-    Unk_140165cf0* pCollision = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("collision"));
+    TiXmlElement* pCollision = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("collision"));
     if (pCollision)
     {
         XmlGetAttr((class TiXmlElement*)(pCollision), "shape", m_collision.m_strShape);
@@ -1613,10 +1613,10 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pCollision), "depthOffset", reinterpret_cast<int&>(m_collision.m_nDepthOffset));
         XmlGetAttr((class TiXmlElement*)(pCollision), "heightOffset", reinterpret_cast<int&>(m_collision.m_nHeightOffset));
     }
-    Unk_140165cf0* pNodeCollisions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeCollisions"));
+    TiXmlElement* pNodeCollisions = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeCollisions"));
     if (pNodeCollisions)
     {
-        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNodeCollisions))->FirstChild("collision")))
+        for (TiXmlElement* pNode : ((class TiXmlElement*)((class Unk_XmlNode*)(pNodeCollisions))->FirstChild("collision")))
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             XmlGetAttr((class TiXmlElement*)(pNode), "targetNode", spNode->m_strTargetNode);
@@ -1625,10 +1625,10 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_aNodeCollision.Add(spNode);
         }
     }
-    Unk_140165cf0* pNodeServerCollisions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeServerCollisions"));
+    TiXmlElement* pNodeServerCollisions = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeServerCollisions"));
     if (pNodeServerCollisions)
     {
-        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNodeServerCollisions))->FirstChild("collision")))
+        for (TiXmlElement* pNode : ((class TiXmlElement*)((class Unk_XmlNode*)(pNodeServerCollisions))->FirstChild("collision")))
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             XmlGetAttr((class TiXmlElement*)(pNode), "volume", reinterpret_cast<efd::Point3&>(spNode->m_vVolume));
@@ -1636,7 +1636,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_aNodeServerCollision.Add(spNode);
         }
     }
-    Unk_140165cf0* pCapsule = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("capsule"));
+    TiXmlElement* pCapsule = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("capsule"));
     if (pCapsule)
     {
         XmlGetAttr((class TiXmlElement*)(pCapsule), "radius", reinterpret_cast<float&>(m_capsule.m_fRadius));
@@ -1645,10 +1645,10 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         if (m_capsule.m_fRadius <= 0.0f || m_capsule.m_fHeight <= 0.0f)
         {
             int nId = GetId();
-            FUN_1406a6d70(GetLogString(), 0, 0, 0x16, L"NpcID={0}, Capsule.radius, Capsule.height는 0보다 커야합니다.", nId);
+            reinterpret_cast<Unk_MeratLog*>(GetLogString())->Log<unsigned int>(0, 0, 0x16, L"NpcID={0}, Capsule.radius, Capsule.height는 0보다 커야합니다.", reinterpret_cast<const unsigned&>(nId));
         }
     }
-    Unk_140165cf0* pDead = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dead"));
+    TiXmlElement* pDead = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("dead"));
     if (pDead)
     {
         XmlGetAttr((class TiXmlElement*)(pDead), "time", reinterpret_cast<float&>(m_dead.m_fTime));
@@ -1659,14 +1659,14 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pDead), "lifeTime", reinterpret_cast<float&>(m_dead.m_fLifeTime));
         XmlGetAttr((class TiXmlElement*)(pDead), "extendRoomTime", reinterpret_cast<unsigned long&>(m_dead.m_nExtendRoomTime));
     }
-    Unk_140165cf0* pPush = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
+    TiXmlElement* pPush = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
     if (pPush)
     {
         XmlGetAttr((class TiXmlElement*)(pPush), "back", reinterpret_cast<float&>(m_push.m_fBack));
         XmlGetAttr((class TiXmlElement*)(pPush), "up", reinterpret_cast<float&>(m_push.m_fUp));
         XmlGetAttr((class TiXmlElement*)(pPush), "knockback", reinterpret_cast<float&>(m_push.m_fKnockback));
     }
-    Unk_140165cf0* pNormal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("normal"));
+    TiXmlElement* pNormal = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("normal"));
     if (pNormal != 0)
     {
         CString strAction = Unk_ReadString((class Unk_XmlNode*)(pNormal), "action", CString(""));
@@ -1692,7 +1692,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         m_normal.m_aActions.Add(std::make_pair("Idle_A", nProb));
         m_normal.m_nMoveArea = 200;
     }
-    Unk_140165cf0* pDropItemInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dropiteminfo"));
+    TiXmlElement* pDropItemInfo = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("dropiteminfo"));
     if (pDropItemInfo)
     {
         XmlTokenList(pDropItemInfo, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
@@ -1705,8 +1705,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "fireVelocity", reinterpret_cast<float&>(m_drop.m_fFireVelocity));
     }
-    Unk_140165cf0* pLookAt = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
-    Unk_140165cf0* pCorpse = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
+    TiXmlElement* pLookAt = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
+    TiXmlElement* pCorpse = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
     if (pCorpse)
     {
         XmlGetAttr((class TiXmlElement*)(pCorpse), "width", reinterpret_cast<float&>(m_corpse.m_shape.m_fWidth));

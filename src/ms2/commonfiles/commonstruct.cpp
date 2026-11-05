@@ -61,11 +61,11 @@ void BillBoardInfo::Read(CInputStream& in) {
 }
 MS2_REPLACE_METHOD(0x14026D100, BillBoardInfo, Read, 629, 0xFBD6EFDC);
 // @0x14026d380
-// MS2-FUNCTIONAL: scalar position temporary omits the original reset security cookie.
+// (the D3DXVECTOR3 temporary gives the exe security-cookie reset)
 void BillBoardInfo::Clear() {
     owner=0; localValue=0; firstId=0; secondId=0; type=0; value=0;
     enabled=false; localState=0; start=0; end=0; localIndex=0;
-    position=Unk_CommonPosition(0,0,0);
+    position=D3DXVECTOR3(0,0,0);
     firstName=L""; secondName=L""; title=L""; text=L"";
 }
 MS2_REPLACE_METHOD(0x14026D380, BillBoardInfo, Clear, 320, 0xD8223397);
@@ -248,5 +248,5 @@ MS2_REPLACE_METHOD(0x14026E600, CClientHardwareInfo, Get, 137, 0x8CE2105F);
 // @0x14026e690
 void CClientHardwareInfo::Set(const CStringW& value) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { m_hardware=value; } }
 MS2_REPLACE_METHOD(0x14026E690, CClientHardwareInfo, Set, 101, 0x13760137);
-// @0x14027db40
-Unk_CommonPosition::Unk_CommonPosition(float a,float b,float c) : x(a),y(b),z(c) {}
+// 0x14027db40 is D3DXVECTOR3(float, float, float), the d3dx9math.inl inline (emitted here by Clear)
+//

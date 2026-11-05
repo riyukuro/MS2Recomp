@@ -63,7 +63,7 @@ class CNifEffectParam : public CEffectParam
 public:
     CNifEffectParam();                                          // 0x141548990
     virtual ~CNifEffectParam() = default;                       // 0x14154f1c0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141548b90 parse the <nif> element
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141548b90 parse the <nif> element
     virtual bool vfunc_2();                                     // 2 0x1415491c0 validate
     virtual bool vfunc_3();                                     // 3 0x1415491f0 preload the nif (true when none)
     virtual void vfunc_4();                                     // 4 0x1415492a0 release the nif cache entry

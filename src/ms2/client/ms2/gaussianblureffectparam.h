@@ -9,7 +9,7 @@ class GaussianBlurEffectParam : public CPostEffectParam
 {
 public:
     GaussianBlurEffectParam();                                     // 0x140cfd2a0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                    // 1 0x140cfd300
+    virtual void vfunc_1(TiXmlElement* pNode);                    // 1 0x140cfd300
 public:
     float m_fOffsetMin;             // +0x60 "offsetMin"
     float m_fOffsetMax;             // +0x64 "offsetMax" = 1

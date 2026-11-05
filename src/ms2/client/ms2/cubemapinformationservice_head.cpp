@@ -35,11 +35,11 @@ static CString s_strNoWall("system_notice_error_warningNoWall");
 static CString s_strNotThisPlace("system_notice_error_warningNotThisPlace");
 static CString s_strOnlyWall("system_notice_error_warningOnlyWall");
 
-class Unk_Service6100017
-{
-public:
-    CStringW FUN_1410d5d80(int nMessage);                      // the message's string-table text
-};
+// C3: the Unk_Service6100017 view is CubeMapInformationService (cubemapinformationservice_3.h)
+//
+//
+//
+//
 
 class Unk_MyPCHousingSvc
 {
@@ -174,7 +174,7 @@ int Unk_MyPCHousingSvc::FUN_1410d5bc0(int nMessage, CString& strOut)
 }
 
 // @0x1410d5d80
-CStringW Unk_Service6100017::FUN_1410d5d80(int nMessage)
+CStringW CubeMapInformationService::FUN_1410d5d80(int nMessage)
 {
     int nId = 0x691;
     switch (nMessage) {
@@ -316,7 +316,7 @@ void Unk_MyPCHousingSvc::FUN_1410d6590(int nMessage)
             CString strNone("");
             FUN_141276180(strKey, strNone);
         }
-        CStringW strText = reinterpret_cast<Unk_Service6100017*>(this)->FUN_1410d5d80(nMessage);
+        CStringW strText = reinterpret_cast<CubeMapInformationService*>(this)->FUN_1410d5d80(nMessage);
         if (!strText.IsEmpty()) {
             FUN_1412751f0(strText, 1, 1);
         }

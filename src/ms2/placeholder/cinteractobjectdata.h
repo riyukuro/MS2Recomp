@@ -17,7 +17,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cvaliddata.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // One <conditionAdditionalEffect> entry: first = the effect "id", second = its "level". The exe's element is a
 // std::pair<unsigned, unsigned short> (its non-trivial operator= picks the element-wise vector glue); the derived
@@ -85,7 +85,7 @@ public:
     struct ExpInfo
     {
         ExpInfo() : m_eType(Unk_InteractExpType_None), m_fRate(0) {}
-        void Load(Unk_140165cf0* pElem, const char* pszType, const char* pszRate);  // 0x14051c920
+        void Load(TiXmlElement* pElem, const char* pszType, const char* pszRate);  // 0x14051c920
         int IsValid();                  // 0x14051ca60
         Unk_InteractExpType m_eType;    // +0x00 (uiminimapentity.cpp: 3 builds a telescope)
         float m_fRate;                  // +0x04
@@ -236,7 +236,7 @@ public:
     CInteractObjectData();              // 0x14051caa0
     virtual ~CInteractObjectData();     // 0x14051cd40
 
-    bool Load(Unk_140165cf0* pElem);    // 0x14051ce70
+    bool Load(TiXmlElement* pElem);    // 0x14051ce70
     int FUN_14051f270();                // the <quest> mask has entries
 
     // The table: every row by "id" (the loaders read both files).

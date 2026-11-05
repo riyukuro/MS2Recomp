@@ -54,7 +54,7 @@ public:
 };
 
 // The page buttons of the movie.
-class Unk_140acd6e0 : public ASMovieClip { public: };
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 
 // The packet dispatcher (register / unregister a handler by opcode).
 class Unk_WbPackets
@@ -255,9 +255,9 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
         nEnd = 0;
     if (nEnd > (int)m_tickets.size())
         nEnd = (int)m_tickets.size();
-    if (MS2Ptr<Unk_140acd6e0> spNext = GetChild<Unk_140acd6e0>("m_nextPage"))
+    if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_nextPage"))
         spNext->FUN_1422c1fe0(nEnd == (int)m_tickets.size());
-    if (MS2Ptr<Unk_140acd6e0> spPrev = GetChild<Unk_140acd6e0>("m_prevPage"))
+    if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_prevPage"))
         spPrev->FUN_1422c1fe0(nFirst == 0);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
         spPage->SetTextW(StringFormat<int>(L"{0}", m_nPage));

@@ -205,7 +205,7 @@ class Unk_MLevelCtrl : public Unk_MCtl
 public:
     Scaleform::GFx::Value FUN_140eb9e40(const char* szMethod, int a1, int a2, CStringW a3, int a4);
     Scaleform::GFx::Value FUN_140eb9f50(const char* szMethod, unsigned int a1, unsigned int a2, CStringW a3, int a4);
-    Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);
+    // C3: FUN_140eba060 is AScript::FUN_140eba060(const char*, const AScript&, unsigned) (ascript.h)
     Scaleform::GFx::Value FUN_140eba120(const char* szMethod, const AScript& a1, unsigned __int64 a2, int a3);
     Scaleform::GFx::Value FUN_140eba380(const char* szMethod, unsigned __int64 a1, unsigned int a2, CStringW a3, int a4);
 };
@@ -248,12 +248,12 @@ namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& a
 extern ATL::CAtlArray<int> DAT_143ab32b8;   // scenestategame.cpp
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
 typedef ATL::CAtlMap<unsigned int, MS2Ptr<Unk_MHouseRec> > Unk_MHouseMap;
-class Unk_MHouseTable
-{
-public:
-    Unk_MHouseMap& FUN_140886640();
-    MS2Ptr<Unk_MHouseRec> FUN_1408865b0(int nId);
-};
+// C3: the Unk_MHouseTable view is gone. FUN_140886640 / FUN_1408865b0 are
+// UGCCubeCategoryTable::GetBonusInteriors / GetInterior (ugccubecategorytable.h).
+// Unk_CubePtr<Interior> shares its copy ctor / dtor / operator-> VAs with
+// MS2Ptr<Unk_MHouseRec>; IsNull (0x140ebaa20) is read through a reference cast.
+
+
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 typedef ATL::CAtlArray<MS2Ptr<ItemHousing> > Unk_MFurnArray;
 // The warehouse item table (warehouseitem.h CWarehouseItemTable::FUN_1408fbe90): the first stored item with this id, as a
@@ -431,7 +431,7 @@ void UIMasteryDialog::OnLoadComplete()
     for (size_t i = 0; i < 4; i++)
         reinterpret_cast<Unk_MArray&>(last).PushInt(m_lastSelected[i]);
     reinterpret_cast<ASObj*>(m_30.operator->())->FUN_1409eb1d0("m_lastSelectedIndex", last);
-    if (MS2Ptr<Unk_MLevelCtrl> spScrollCtrl = FUN_140c02990("m_magicScrollControl"))
+    if (MS2Ptr<ASUIComponent> spScrollCtrl = GetChild<ASUIComponent>("m_magicScrollControl"))
         spScrollCtrl->Invoke("setSelectedSlotIndex", FUN_140eb6870() - 1);
     if (MS2Ptr<ASEventDispatcher> spMainTab = FindControl("m_mainTab"))
         spMainTab->Invoke("setSelectedButtonByIndex", m_nMainTab);
@@ -628,7 +628,7 @@ void UIMasteryDialog::vfunc_72()
         if (pBar) {
             CStringW strKey = m_craft.FUN_140eaddf0() ? L"s_mastery_manufacture_progress" : L"s_mastery_magicscroll_progress";
             CStringW strText = FUN_14028dfa0(strKey, m_craft.m_nDone, m_craft.m_nTotal);
-            pBar->StartCastingText((Unk_CastingListener*)(ICastingEventListener*)this, strText, nTime, false, true, L"");
+            pBar->StartCastingText((ICastingEventListener*)this, strText, nTime, false, true, L"");
         }
         m_craft.m_nPending = 0;
     }
@@ -724,7 +724,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
         return;
     int nOld = GetCachedTypeValue(nType);
     int nNow = (int)reinterpret_cast<PC*>(pPc)->GetMastery(nType);
-    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+    if (MS2Ptr<ASUIComponent> spLevel = GetChild<ASUIComponent>("m_levelControl")) {
         int nGrade = FUN_1409670c0()->Grade(nType, nNow);
         int bMax = nGrade == FUN_1409670c0()->MaxGrade(nType);
         int nBase = FUN_1409670c0()->Value(nType, nGrade);
@@ -740,7 +740,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
         }
         if (!bKeep || bChanged) {
             CStringW strGrade = StringFormat(L"{0} {1}", FUN_1409670c0()->TypeName(nType), FUN_1409670c0()->GradeName(nType, nGrade));
-            spLevel->FUN_140eb9f50("setPcGrade", nCur, nMax, strGrade, bMax);
+            reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eb9f50("setPcGrade", nCur, nMax, strGrade, bMax);
             if (MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>("m_guideBar"))
                 spGuide->Invoke("setPC", (unsigned int)nNow);
         }
@@ -765,7 +765,7 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+    if (MS2Ptr<ASUIComponent> spLevel = GetChild<ASUIComponent>("m_levelControl")) {
         if (MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>("m_guideBar")) {
             ASObj obj(2);
             FUN_140eb6920(nType, nIndex, obj);
@@ -934,7 +934,7 @@ void UIMasteryDialog::FUN_140eb24a0()
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+    if (MS2Ptr<ASUIComponent> spLevel = GetChild<ASUIComponent>("m_levelControl")) {
         ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_mastery))->FUN_140d43990();
         spLevel->Invoke("removeGradeAll");
         unsigned short nCur = DAT_143ab291c;
@@ -968,14 +968,14 @@ void UIMasteryDialog::FUN_140eb24a0()
             }
             reinterpret_cast<Unk_MArray&>(rows).PushObj(row);
         }
-        spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
+        reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
         CStringW strGrade = StringFormat(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
         if (DAT_143ab291c == FUN_140933200()->FUN_140ebb020()) {
-            spLevel->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
+            reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
         } else {
             MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery((unsigned short)(DAT_143ab291c + 1));
             if (spNext)
-                spLevel->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_nValue, CStringW(strGrade), 0);
+                reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_nValue, CStringW(strGrade), 0);
         }
     }
 }
@@ -995,7 +995,7 @@ void UIMasteryDialog::FUN_140eb2d10()
         static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
         spList->FUN_1407cb9c0("rowHeight", 0x39);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdb)) {
-            Unk_MHouseMap& map = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886640();
+            Unk_MHouseMap& map = reinterpret_cast<Unk_MHouseMap&>(TSingleton<UGCCubeCategoryTable>::GetInstance()->GetBonusInteriors());
             for (POSITION pos = map.GetStartPosition(); pos; map.GetNext(pos)) {
                 unsigned int nKey = map.GetKeyAt(pos);
                 MS2Ptr<Unk_MHouseRec> spRec(map.GetValueAt(pos));
@@ -1020,8 +1020,8 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    MS2Ptr<Unk_MHouseRec> spHouse = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408865b0(nId);
-    if (spHouse.IsNull())
+    UGCCubeCategoryTable::InteriorPtr spHouse = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetInterior(nId);
+    if (reinterpret_cast<MS2Ptr<Unk_MHouseRec>&>(spHouse).IsNull())
         return;
     if (m_30.get()) {
         Unk_MFurnArray furn;
@@ -1051,7 +1051,7 @@ void UIMasteryDialog::FUN_140eb3460()
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
         return;
     int nTab = FUN_140eb8ac0();
-    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+    if (MS2Ptr<ASUIComponent> spCtrl = GetChild<ASUIComponent>("m_magicScrollControl")) {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd1))
             spCtrl->Invoke("setExpansion");
         int nG0 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 4);
@@ -1099,7 +1099,7 @@ void UIMasteryDialog::FUN_140eb3460()
             row.FUN_1409adc90("grade", spRec->m_scroll.vfunc_o18_1());
             spList->AddItem(row);
         }
-        if (MS2Ptr<Unk_MLevelCtrl> spCtrl2 = FUN_140c02990("m_magicScrollControl")) {
+        if (MS2Ptr<ASUIComponent> spCtrl2 = GetChild<ASUIComponent>("m_magicScrollControl")) {
             if (MS2Ptr<ASEventDispatcher> spGrade = spCtrl2->FUN_140eb9cf0<ASEventDispatcher>("m_gradeGroup"))
                 m_30c = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spGrade->GetMember("selectedIndex")))->GetInt();
             if (MS2Ptr<ASEventDispatcher> spSlot = spCtrl2->FUN_140eb9cf0<ASEventDispatcher>("m_slotGroup"))
@@ -1232,7 +1232,7 @@ bool UIMasteryDialog::OnRestoreMagicScrollSelectionMsgBox(int nResult, const CMs
 {
     if (nResult != 0)
         return true;
-    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+    if (MS2Ptr<ASUIComponent> spCtrl = GetChild<ASUIComponent>("m_magicScrollControl")) {
         spCtrl->Invoke("setSelectedSlotIndex", m_308);
         spCtrl->Invoke("setSelectedGradeIndex", m_30c);
     }
@@ -1756,7 +1756,7 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<CMasteryReceipe> spRec)
 // @0x140eb82e0
 int UIMasteryDialog::GetSelectedMagicScrollSlot()
 {
-    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+    if (MS2Ptr<ASUIComponent> spCtrl = GetChild<ASUIComponent>("m_magicScrollControl")) {
         int nSlot = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spCtrl->Invoke("getSelectedSlotIndex")))->GetInt() + 1;
         if (nSlot < 0)
             nSlot = 0;
@@ -1770,7 +1770,7 @@ int UIMasteryDialog::GetSelectedMagicScrollSlot()
 // @0x140eb8410
 int UIMasteryDialog::GetSelectedMagicScrollGrade()
 {
-    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+    if (MS2Ptr<ASUIComponent> spCtrl = GetChild<ASUIComponent>("m_magicScrollControl")) {
         int nGrade = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spCtrl->Invoke("getSelectedGradeIndex")))->GetInt();
         if (nGrade == 0)
             return 4;
@@ -1930,10 +1930,10 @@ int FUN_140eb8cd0(MS2Ptr<ItemHousing> spFurn)
         return 1;
     if (DAT_143ab291c < spFurn->interiorLevel)
         return 0;
-    MS2Ptr<Unk_MHouseRec> spHouse = reinterpret_cast<Unk_MHouseTable*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408865b0(spFurn->categoryIndex);
-    if (spHouse.IsNull())
+    UGCCubeCategoryTable::InteriorPtr spHouse = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetInterior(spFurn->categoryIndex);
+    if (reinterpret_cast<MS2Ptr<Unk_MHouseRec>&>(spHouse).IsNull())
         return 0;
-    if (DAT_143ab291c < spHouse->m_nLevel)
+    if (DAT_143ab291c < spHouse->m_nRequireLevel)
         return 0;
     if (spFurn->trophyID == 0)
         return 1;
@@ -2046,7 +2046,7 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9f50(const char* szMethod, unsign
 }
 
 // @0x140eba060
-Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2)
+Scaleform::GFx::Value AScript::FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2)
 {
     ASArgList args;
     args.FUN_1409b2800(2);

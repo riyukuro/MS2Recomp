@@ -9,6 +9,8 @@
 #include <efd/Point3.h>
 #include <NiPoint3.h>
 #include <NiColor.h>
+#include <NiPoint2.h>   // C3: NiPoint2() 0x140c90180, NiPoint2(const efd::Point2&) 0x140db9c80
+#include <NiRect.h>     // C3: NiRect<float>(float, float, float, float) 0x14097eac0
 #include <atlcoll.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -17,11 +19,9 @@
 
 // ---- unit-local vector types (names invented) ----
 struct Unk_DbEfdPt2 { float x, y; };                                            // efd::Point2
-struct Unk_DbPt2 : Unk_DbEfdPt2                                                 // NiPoint2
-{
-    Unk_DbPt2();                                                                // 0x140c90180
-    Unk_DbPt2(const Unk_DbEfdPt2& kRhs);                                        // 0x140db9c80
-};
+//
+//
+//
 struct Unk_DbVec3 { float x, y, z; };
 struct Unk_DbEfdPt3 { Unk_DbEfdPt3() {} float x, y, z; };                       // efd::Point3
 struct Unk_DbInt4
@@ -30,11 +30,11 @@ struct Unk_DbInt4
     Unk_DbInt4() {}
     Unk_DbInt4(int a_, int b_, int c_, int d_);                                 // 0x140db9c30
 };
-struct Unk_DbFloat4                                                             // NiRect<float>
-{
-    float x, y, z, w;
-    Unk_DbFloat4(float fX, float fY, float fZ, float fW);                       // 0x14097eac0
-};
+//
+//
+//
+//
+//
 
 // ---- exe callees ----
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
@@ -49,12 +49,12 @@ extern const char DAT_142e36e40[];                                              
 int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...);
 
 // @0x140db9610
-Unk_DbPt2 FUN_140db9610(const CStringA& kText)
+NiPoint2 FUN_140db9610(const CStringA& kText)
 {
-    Unk_DbPt2 kPt;
+    NiPoint2 kPt;
     int nParsed = FUN_140db9ca0((const char*)kText, 0x80, "%f, %f", &kPt.x, &kPt.y);
     if (nParsed != 2)
-        return Unk_DbPt2(DAT_143b02320);
+        return NiPoint2(efd::Point2::ZERO);
     return kPt;
 }
 
@@ -83,16 +83,16 @@ Unk_DbInt4 FUN_140db9760(const CStringA& kText)
 }
 
 // @0x140db98a0
-Unk_DbFloat4 FUN_140db98a0(const CStringA& kText)
+NiRect<float> FUN_140db98a0(const CStringA& kText)
 {
-    Unk_DbFloat4 kRes(0, 0, 0, 0);
+    NiRect<float> kRes(0, 0, 0, 0);
     CAtlArray<CStringA> arrParts;
     if (FUN_14028c3e0(kText, arrParts, DAT_142e36e40, 4) == 0)
-        return Unk_DbFloat4(0, 0, 0, 0);
-    kRes.x = FUN_140718450(arrParts[0]);
-    kRes.y = FUN_140718450(arrParts[1]);
-    kRes.z = FUN_140718450(arrParts[2]);
-    kRes.w = FUN_140718450(arrParts[3]);
+        return NiRect<float>(0, 0, 0, 0);
+    kRes.m_left = FUN_140718450(arrParts[0]);
+    kRes.m_right = FUN_140718450(arrParts[1]);
+    kRes.m_top = FUN_140718450(arrParts[2]);
+    kRes.m_bottom = FUN_140718450(arrParts[3]);
     return kRes;
 }
 
@@ -133,11 +133,11 @@ Unk_DbInt4::Unk_DbInt4(int a_, int b_, int c_, int d_)
     d = d_;
 }
 
-// @0x140db9c80
-Unk_DbPt2::Unk_DbPt2(const Unk_DbEfdPt2& kRhs)
-{
-    *static_cast<Unk_DbEfdPt2*>(this) = kRhs;
-}
+// 0x140db9c80 is the SDK inline NiPoint2(const efd::Point2&), emitted by FUN_140db9610 above
+//
+//
+//
+//
 
 // @0x140db9ca0
 int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...)

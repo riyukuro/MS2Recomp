@@ -31,7 +31,7 @@ void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector
 bool FieldWarDataTable::s_bInit;
 #endif
 
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -50,7 +50,7 @@ FieldWarData::~FieldWarData()
 }
 
 // @0x1403821a0
-void FieldWarData::Load(Unk_140165cf0* pElem)
+void FieldWarData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "fieldWarID", m_fieldWarID);
     XmlGetAttr((class TiXmlElement*)(pElem), "fieldWarGroupID", m_fieldWarGroupID);
@@ -141,14 +141,14 @@ bool FieldWarDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "fieldWar", "fieldWarID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
     for (size_t i = 0; i < nodes.size(); i++)
     {
-        Unk_140165cf0* pNode = nodes[i];
+        TiXmlElement* pNode = nodes[i];
         MS2Ptr<FieldWarData> spData(new FieldWarData);
         spData->Load(pNode);
         if (!spData->IsValid())

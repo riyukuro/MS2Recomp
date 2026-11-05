@@ -399,7 +399,7 @@
 #include "ms2/placeholder/worldmapmanager.h"
 #include "ms2/unnamed/unit_1406125d0.h"
 #include "ms2/unnamed/unit_140ad1860.h"
-
+class Unk_PerfLog { public: void FUN_1402e12c0(const char* pszFormat, ...); };   // C3: unit_1402e12c0's interval logger = CGameApp::m_profiler (Unk_StepProfiler, same 0x58 layout)
 // The create-or-get step InitInstance runs for every manager singleton: the live instance if one exists, else a new
 // one (its ctor registers it). One COMDAT per T (0x141498d90-0x14149fc10, sorted by T); the name is invented.
 template <class T>
@@ -527,7 +527,7 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 #undef min
 #undef max
 #include <NiPhysXParticle.h>
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -739,14 +739,14 @@ void MS2::MessageLoop()
 }
 MS2_REPLACE_METHOD(0x14148A820, MS2, MessageLoop, 372, 0x6165E8A6);
 // ---- MS2::PrepareShaderCache callees: the game TinyXML (bare global names, not efd::) and the shader file helpers
-class TiXmlElement   // C3: member view of the game TinyXML element
-{
-public:
-    TiXmlElement(const char* pszName);                          // 0x14086f2f0
-    virtual ~TiXmlElement();                                    // 0x14086f450
-private:
-    void* m_data[0x11];
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
 MS2_CHECK_SIZE(TiXmlElement, 0x90);
 class TiXmlDeclaration   // C3: member view
 {
@@ -766,12 +766,12 @@ private:
     void* m_data[0x9];
 };
 MS2_CHECK_SIZE(TiXmlComment, 0x50);
-Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);             // the root element
-class TiXmlNode   // C3: member view for the former free stand-in FUN_14086e000
-{
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-};
+TiXmlElement* DocRootElement(TiXmlDocument* pDoc);             // the root element
+// C3 #12: was a local TiXml view
+
+
+
+
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 CString FUN_1409a2360(const char* psz, int n);                  // text conversion
 void FUN_141b70490(const CStringA& strDir);                     // deletes a directory tree
@@ -794,10 +794,10 @@ void MS2::PrepareShaderCache()
     NiFragmentMaterial::SetDefaultLockProgramCache(false);
     if (kDoc.LoadFile(strVersionFile, TIXML_ENCODING_UNKNOWN))
     {
-        Unk_140165cf0* pRoot;
-        Unk_140165cf0* pShader;
+        TiXmlElement* pRoot;
+        TiXmlElement* pShader;
         if (CreateDirectoryA(strCurrent, NULL) == 0 && (pRoot = DocRootElement(&kDoc)) != NULL &&
-            (pShader = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("shader"))) != NULL)
+            (pShader = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("shader"))) != NULL)
         {
             XmlGetAttr((class TiXmlElement*)(pShader), "ver", reinterpret_cast<int&>(nVersion));
             if (nVersion != 8)
@@ -1622,7 +1622,7 @@ BOOL CGameApp::InitInstance()
     if (!GetLogString()->Start(0, THREAD_PRIORITY_LOWEST, 0, 0, 0))
         throw Exception(CString("LogString thread failed"));
     Unk_SingletonCreator<ClientLogManager>::CreateInstance();
-    m_profiler.FUN_1402e12c0("StartUp");
+    reinterpret_cast<Unk_PerfLog&>(m_profiler).FUN_1402e12c0("StartUp");
     SetThreadLocale(0x412);
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)

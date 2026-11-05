@@ -9,7 +9,7 @@ class RadialBlurEffectParam : public CPostEffectParam
 {
 public:
     RadialBlurEffectParam();                                       // 0x1416ec120
-    virtual void vfunc_1(Unk_140165cf0* pNode);                    // 1 0x1416ec180
+    virtual void vfunc_1(TiXmlElement* pNode);                    // 1 0x1416ec180
 public:
     float m_fDistMin;               // +0x60 "distMin"
     float m_fDistMax;               // +0x64 "distMax" = 1

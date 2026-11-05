@@ -11,8 +11,8 @@ class COutPacket;
 #include "ms2/placeholder/tptreddummy.h"
 CPtred* FUN_1401ba820(CPtred*);
 
-// Argument of the smart pointer's creating constructor (0x1401b7b90 builds it; same shape as Unk_PopupNewTag).
-struct Unk_PktNewTag { explicit Unk_PktNewTag(int); };
+#include "ms2/placeholder/socketptr.h"   // the smart pointer's creating-ctor argument (Unk_SocketNew)
+typedef Unk_SocketNew Unk_PktNewTag;   // C3: one tag type (Unk_SocketNew), ctor 0x1401b7b90
 
 // Intrusive smart pointer to the value of a TPtredDummy<T> (name invented; same shape as Unk_PopupPtr of
 // client\ms2\uicommunitypopup.h, plus operator*).

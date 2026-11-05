@@ -55,7 +55,6 @@ class UIStatusEventDispatcher   // C3: member view for the former free stand-ins
 public:
     void FUN_141b0ce20(int, int);
 };
-void FUN_140200e40(Unk_ReportData* pData);                          // the report struct's ctor
 
 UIRewardNotify* FUN_140938cd0(int nUiType);
 

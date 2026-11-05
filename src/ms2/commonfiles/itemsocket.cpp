@@ -622,19 +622,19 @@ bool CItemSocket::GetGemSpecialStats(Unk_SocketSpecialMap& kOut)
 }
 
 // @0x140621be0
-Unk_EnchantPtr<BaseOption> CItemSocket::GetSpecialOption(Unk_SocketSpecialStat nStat)
+MS2Ptr<BaseOption> CItemSocket::GetSpecialOption(Unk_SocketSpecialStat nStat)
 {
     if (m_kSpecial.IsEmpty())
-        return Unk_EnchantPtr<BaseOption>(0);
-    Unk_EnchantPtr<BaseOption> spOption(0);
+        return MS2Ptr<BaseOption>(0);
+    MS2Ptr<BaseOption> spOption(0);
     m_kSpecial.Lookup(nStat, spOption);
     return spOption;
 }
 
 // @0x140621ca0
-Unk_EnchantPtr<BaseOption> CItemSocket::FUN_140621ca0(int)
+MS2Ptr<BaseOption> CItemSocket::FUN_140621ca0(int)
 {
-    return Unk_EnchantPtr<BaseOption>(0);
+    return MS2Ptr<BaseOption>(0);
 }
 
 // @0x140621cf0
@@ -938,11 +938,11 @@ void CItemSocket::AccumulateStatOptions(MS2Ptr<CItemOption> spOption)
         return;
     for (POSITION pos = kFrom.GetStartPosition(); pos != 0; kFrom.GetNext(pos))
     {
-        Unk_EnchantPtr<BaseOption> spFrom = kFrom.GetValueAt(pos);
+        MS2Ptr<BaseOption> spFrom = kFrom.GetValueAt(pos);
         if (spFrom == 0)
             continue;
         int nStat = kFrom.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spSum(0);
+        MS2Ptr<BaseOption> spSum(0);
         if (m_kStat.Lookup(nStat, spSum))
             spSum->SetValue(spSum->GetValue() + spFrom->GetValue());
         else
@@ -960,11 +960,11 @@ void CItemSocket::AccumulateSpecialOptions(MS2Ptr<CItemOption> spOption)
         return;
     for (POSITION pos = kFrom.GetStartPosition(); pos != 0; kFrom.GetNext(pos))
     {
-        Unk_EnchantPtr<BaseOption> spFrom = kFrom.GetValueAt(pos);
+        MS2Ptr<BaseOption> spFrom = kFrom.GetValueAt(pos);
         if (spFrom == 0)
             continue;
         Unk_SocketSpecialStat nStat = kFrom.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spSum(0);
+        MS2Ptr<BaseOption> spSum(0);
         if (m_kSpecial.Lookup(nStat, spSum))
             spSum->SetValue(spSum->GetValue() + spFrom->GetValue());
         else

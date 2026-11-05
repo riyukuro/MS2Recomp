@@ -4,14 +4,14 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?GetOwner@IEquipModelForceApplier@@QEBAPEAVCEquipModel@@XZ 0x141209800 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?GetActorAt@Unk_WindPropDesc@@QEAA?AV?$SmartPointer@VNiPhysXActorDesc@@@efd@@I@Z 0x14120abd0
-// MS2-PIN: ?GetActorCount@Unk_WindPropDesc@@QEBAIXZ 0x14120ac30
+// MS2-PIN: ?GetJointAt@NiPhysXPropDesc@@QEAA?AV?$SmartPointer@VNiPhysXJointDesc@@@efd@@I@Z 0x14120abd0
+// MS2-PIN: ?GetJointCount@NiPhysXPropDesc@@QEBAIXZ 0x14120ac30
 // MS2-PIN: ??$GetService@VPropService@ecrPhysX@@@@YAPEAVPropService@ecrPhysX@@XZ 0x14120a220
 // MS2-PIN: ??$GetSystemServiceAs@VPropService@ecrPhysX@@@Unk_ServiceManager@@QEBAPEAVPropService@ecrPhysX@@XZ 0x14120a240
 // MS2-PIN: ??$DynamicCast@VPropService@ecrPhysX@@VISystemService@efd@@@efd@@YAPEAVPropService@ecrPhysX@@PEAVISystemService@0@@Z 0x14120a1d0
 // MS2-PIN: ??0?$CAtlMap@PEAVNxActor@@PEAV1@V?$CElementTraits@PEAVNxActor@@@ATL@@V23@@ATL@@QEAA@IMMMI@Z 0x14120a350
-// MS2-PIN: ??1?$SmartPointer@VUnk_WindSub@@@efd@@QEAA@XZ 0x14120a5d0
-// MS2-PIN: ??1?$SmartPointer@VNiPhysXActorDesc@@@efd@@QEAA@XZ 0x14120a600
+// MS2-PIN: ??1?$SmartPointer@VNiPhysXActorDesc@@@efd@@QEAA@XZ 0x14120a5d0
+// MS2-PIN: ??1?$SmartPointer@VNiPhysXJointDesc@@@efd@@QEAA@XZ 0x14120a600
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -29,6 +29,7 @@
 #include <NiPhysXProp.h>
 #include <NiPhysXPropDesc.h>
 #include <NiPhysXActorDesc.h>
+#include <NiPhysXJointDesc.h>   // C3: the wind loop walks the snapshot's joints
 #include "ms2/placeholder/ecrcameraservice.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
@@ -74,28 +75,27 @@ float FUN_1409f25a0(float f);                                       // cos
 Unk_ServiceManager* FUN_1413f9850();                                // the framework's service manager
 template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }   // 0x14120a220
 
-// The sub-object of an actor description that holds the PhysX actor (+0x60).
-class Unk_WindSub : public NiRefObject
-{
-public:
-    NxActor* FUN_14120ab90() const { return m_pActor; }
-    char m_pad_10[0x50];
-    NxActor* m_pActor;                                              // +0x60
-};
-typedef NiPointer<Unk_WindSub> Unk_WindSubPtr;
-
-// The exe's NiPhysXPropDesc keeps its actor array at +0x30 (the engine header's NiPhysXPropDesc has it at +0x18), so the
-// two accessors used here are declared on a unit-local view of the snapshot description.
-class Unk_WindPropDesc
-{
-public:
-    unsigned GetActorCount() const { return m_kActors.GetSize(); }
-    NiPhysXActorDescPtr GetActorAt(unsigned uiIndex) { return m_kActors.GetAt(uiIndex); }
-    char m_pad_00[0x30];
-    NiTObjectArray<NiPhysXActorDescPtr> m_kActors;                  // +0x30
-};
-// NiPhysXActorDesc view: the sub-object smart pointer for slot nIdx (0x141ef37e0, returned by value).
-class Unk_WindActorDesc { public: Unk_WindSubPtr FUN_141ef37e0(unsigned nIdx); };
+// C3: the former views are SDK classes. The snapshot's array at +0x30 is NiPhysXPropDesc::m_kJoints (GetJointCount 0x14120ac30,
+// GetJointAt 0x14120abd0). The two-slot loop is NiPhysXJointDesc::GetActor(l) (0x141ef37e0, m_aspActors[2]), and the sub-object
+// holding the NxActor at +0x60 is NiPhysXActorDesc (GetActor 0x14120ab90).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x141209640
 IEquipModelForceApplierPtr FUN_141209640(CEquipModel* pModel)
@@ -193,11 +193,11 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     for (unsigned i = 0; i < nProps; i++) {
         NiPhysXProp* pProp = pService->GetPropAt(static_cast<CKfmModel*>(pModel)->FUN_14143ff70(), i);
         for (unsigned j = 0; j < pProp->GetSourcesCount(); j++) {
-            Unk_WindPropDesc* pDesc = reinterpret_cast<Unk_WindPropDesc*>(pProp->GetSnapshot());
-            for (unsigned k = 0; k < pDesc->GetActorCount(); k++) {
-                NiPhysXActorDesc* pActorDesc = pDesc->GetActorAt(k);
+            NiPhysXPropDesc* pDesc = pProp->GetSnapshot();
+            for (unsigned k = 0; k < pDesc->GetJointCount(); k++) {
+                NiPhysXJointDesc* pJointDesc = pDesc->GetJointAt(k);
                 for (unsigned l = 0; l < 2; l++) {
-                    NxActor* pActor = reinterpret_cast<Unk_WindActorDesc*>(pActorDesc)->FUN_141ef37e0(l)->FUN_14120ab90();
+                    NxActor* pActor = pJointDesc->GetActor(l)->GetActor();
                     if (pActor && pActor->isDynamic() && !pActor->readBodyFlag(NX_BF_KINEMATIC)
                         && mapActors.Lookup(pActor) == 0) {
                         mapActors.SetAt(pActor, pActor);

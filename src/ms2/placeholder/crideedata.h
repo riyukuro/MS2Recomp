@@ -15,7 +15,7 @@
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/client/ms2/effectdummy.h"
 
-class Unk_140165cf0;
+class TiXmlElement;
 
 // Common base of the riding table sections: one pure virtual (vftable 0x142d8a8d8).
 class IDataCheck
@@ -31,7 +31,7 @@ namespace RideeData
     {
         Rider();                                            // 0x140781d80
         bool FUN_140781ef0(const Rider& o);                 // differs
-        void FUN_140782110(Unk_140165cf0* pNode);           // load one seat
+        void FUN_140782110(TiXmlElement* pNode);           // load one seat
 
         int m_nPassengerId;                                 // +0x00 "passengerid"
         CString m_strRideBone;                              // +0x08 "rideBone"
@@ -84,7 +84,7 @@ namespace RideeData
         Basic();                                            // 0x140782860
         virtual int vfunc_0();                             // 0x140782f90
         bool FUN_140782b10(const Basic& o);                 // differs
-        int FUN_140782fb0(Unk_140165cf0* pRoot);            // load <basic> (+ the default seat)
+        int FUN_140782fb0(TiXmlElement* pRoot);            // load <basic> (+ the default seat)
 
         int m_nId;                                          // +0x08 "id"
         int m_nParentId;                                    // +0x0c "pID"
@@ -128,11 +128,11 @@ namespace RideeData
     class Collision : public IDataCheck
     {
     public:
-        int FUN_1407836c0(Unk_140165cf0*);                                       // always 1 (name invented)
+        int FUN_1407836c0(TiXmlElement*);                                       // always 1 (name invented)
         Collision();                                        // 0x1407836e0
         virtual int vfunc_0();                             // 0x1407837e0
         bool FUN_140783760(const Collision& o);             // differs
-        int FUN_140783800(Unk_140165cf0* pRoot);            // load <collision>
+        int FUN_140783800(TiXmlElement* pRoot);            // load <collision>
 
         float m_fWidth;                                     // +0x08
         float m_fHeight;                                    // +0x0c
@@ -145,11 +145,11 @@ namespace RideeData
     class Shadow : public IDataCheck
     {
     public:
-        int FUN_1407838c0(Unk_140165cf0*);                                       // always 1 (name invented)
+        int FUN_1407838c0(TiXmlElement*);                                       // always 1 (name invented)
         Shadow();                                           // 0x1407838e0
         virtual int vfunc_0();                             // 0x140783960
         bool FUN_140783930(const Shadow& o);                // differs
-        int FUN_140783980(Unk_140165cf0* pRoot);            // load <shadow>
+        int FUN_140783980(TiXmlElement* pRoot);            // load <shadow>
 
         float m_fScale;                                     // +0x08
     };
@@ -159,11 +159,11 @@ namespace RideeData
     class FaceCamera : public IDataCheck
     {
     public:
-        int FUN_1407839e0(Unk_140165cf0*);                                       // always 1 (name invented)
+        int FUN_1407839e0(TiXmlElement*);                                       // always 1 (name invented)
         FaceCamera();                                       // 0x140783a00
         virtual int vfunc_0();                             // 0x140783ae0
         bool FUN_140783a70(const FaceCamera& o);            // differs
-        int FUN_140783b00(Unk_140165cf0* pRoot);            // load <faceCamera>
+        int FUN_140783b00(TiXmlElement* pRoot);            // load <faceCamera>
 
         efd::Point3 m_vLookAtPosition;                      // +0x08
         efd::Point3 m_vCameraPosition;                      // +0x14
@@ -174,11 +174,11 @@ namespace RideeData
     class Stat : public IDataCheck
     {
     public:
-        int FUN_140783d70(Unk_140165cf0*);                                       // always 1 (name invented)
+        int FUN_140783d70(TiXmlElement*);                                       // always 1 (name invented)
         Stat();                                             // 0x140783d90
         virtual int vfunc_0();                             // 0x140783e40
         bool FUN_140783de0(const Stat& o);                  // differs
-        int FUN_140783e60(Unk_140165cf0* pRoot);            // load <stat>
+        int FUN_140783e60(TiXmlElement* pRoot);            // load <stat>
 
         __int64 m_values[0x23];                             // +0x08
     };
@@ -188,12 +188,12 @@ namespace RideeData
     class Passengers : public IDataCheck
     {
     public:
-        int FUN_140783f30(Unk_140165cf0*);                                       // always 1 (name invented)
+        int FUN_140783f30(TiXmlElement*);                                       // always 1 (name invented)
         Passengers();                                       // 0x140783f50
         virtual int vfunc_0();                             // 0x140783ff0
         bool FUN_140783fb0(const Passengers& o);            // differs
-        int FUN_140784010(Unk_140165cf0* pRoot);            // load <passengers>
-        int FUN_140784120(Unk_140165cf0*);                         // always 1 (name invented)
+        int FUN_140784010(TiXmlElement* pRoot);            // load <passengers>
+        int FUN_140784120(TiXmlElement*);                         // always 1 (name invented)
         int FUN_140784140();                               // there are seats
         size_t FUN_140784180();                             // seat count
         Unk_RiderPtr FUN_1407841b0(int nIndex);             // seat nIndex (null when out of range)

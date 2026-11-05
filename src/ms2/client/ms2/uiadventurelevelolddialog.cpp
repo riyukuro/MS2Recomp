@@ -113,20 +113,20 @@ public:
 };
 
 // The state of a mission of the player.
-class Unk_ALMissionState
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    unsigned int m_18;                                              // progress
-    bool m_1c;                                                      // reward received
-};
-extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
+// The mission state is CAdventureLevelMissionData (adventureleveltablehelper.h): +0x18 progress, +0x1c reward received.
+//
+//
+//
+//
+//
+//
+extern std::map<unsigned int, CAdventureLevelMissionData> DAT_143ab3318;   // 0x143ab3318, the mission progress (userproxy)
 
 // The claimed level rewards (global 0x143ab3308): find / end / iterator compare are COMDATs of earlier units.
 extern std::set<unsigned int> DAT_143ab3308;
 
-// The ability manager of the player and the current ability state.
-class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_ALAbilityMgr : public AdditionalCliList { };
+#include "ms2/client/ms2/additionalclilist.h"   // the ability manager of the player (C3: the local AdditionalCliList view is gone)
+class Unk_ALAbilityMgr : public AdditionalCliList { };
 class PCBase { public: class Unk_PCBaseBuffs* FUN_1416749a0(); };   // C3: member view
 class Unk_ALCurrent { public: };
 extern void* DAT_143aac280;

@@ -5,7 +5,7 @@
 // MS2-RANGE: 0x142ca02d0-0x142ca0330 .text$yd
 // MS2-PIN: ??0Unk_BuddyRequest@@QEAA@XZ 0x140ae5c70
 // MS2-PIN: ??1Unk_BuddyRequest@@QEAA@XZ 0x140ae5e60
-// MS2-PIN: ?GetCount@?$CAtlList@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEBA_KXZ 0x140ae6560
+// MS2-PIN: ?GetCount@?$CAtlList@V?$MS2Ptr@VCBuddy@@@@V?$CElementTraits@V?$MS2Ptr@VCBuddy@@@@@ATL@@@ATL@@QEBA_KXZ 0x140ae6560
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\buddymanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "buddymanager.h"
@@ -15,6 +15,7 @@
 #include "ms2/placeholder/uibuddyeventdispatcher.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/commonfiles/serverpacketdef.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CBuddy> default ctor 0x140ae5c20, = 0x140ae5f40, AssignRaw 0x140ae5f80
 static const CString s_buddyAgree("buddy_agree");
 static const CString s_buddyDeny("buddy_deny");
 static const CString s_buddyRequest("buddy_request");
@@ -23,8 +24,7 @@ class Unk_BuddyOptions { public: Unk_BuddySettings& GetSettings() { return setti
     void* pad_0;
     void* pad_8;
     void* pad_10;
-    void* pad_18;
-    void* pad_20;
+    void* pad_18; void* pad_20;
     void* pad_28;
     void* pad_30;
     void* pad_38;
@@ -101,14 +101,14 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     case 15: FUN_140ae5190(); break;
     case 1: {
         unsigned count=(&input.stream)->vfunc_3();
-        for(unsigned i=0;i<count;++i) { buddy=new CBuddy; if(buddy.get()) { buddy->FUN_1401cc7c0(input); AddBuddy(buddy); } }
+        for(unsigned i=0;i<count;++i) { buddy.AssignRaw(new CBuddy); if(buddy.get()) { buddy->FUN_1401cc7c0(input); AddBuddy(buddy); } }
         break;
     }
     case 8: case 9: {
         unsigned position=input.vfunc_0(); __int64 id=(&input.stream)->vfunc_4(); reinterpret_cast<CInPacket&>(input).SetOffset(position);
         buddy=FindById(id);
         if(buddy==0) {
-            buddy=new CBuddy;
+            buddy.AssignRaw(new CBuddy);
             if(buddy.get()) {
                 buddy->FUN_1401cc7c0(input);
                 if(response.protocol==9 && reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings().autoReject && buddy->FUN_1401cc5d0()) {

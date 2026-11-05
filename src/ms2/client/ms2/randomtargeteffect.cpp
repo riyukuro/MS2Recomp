@@ -443,6 +443,12 @@ template <> TPtr<PCBase>::~TPtr()
         ((Unk_RteTPtrTarget*)m_p)->Release();
 }
 
+// get / operator-> share the 0x140aac420 / 0x140aac440 COMDATs with CComPtrBase<..>::operator T* above.
+template <> PC* TPtr<PC>::get() const { return m_p; }
+template <> PC* TPtr<PC>::operator->() const { return m_p; }
+template <> PCBase* TPtr<PCBase>::get() const { return m_p; }
+template <> PCBase* TPtr<PCBase>::operator->() const { return m_p; }
+
 // pc.cpp's view of SetScale (it drops the result).
 class Unk_PCRandomTargetView
 {

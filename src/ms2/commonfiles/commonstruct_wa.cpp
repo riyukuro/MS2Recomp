@@ -15,7 +15,7 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit
-
+#include "ms2/placeholder/ms2svrptr.h"   // C3 #10: Clone returns MS2SvrPtr<CPtred>
 // Scoped lock helper (ctor 0x1401b4ec0, dtor 0x1401b5120).
 class Unk_1401b4ec0 {
 public:
@@ -23,7 +23,7 @@ public:
     ~Unk_1401b4ec0();
     void* m_p;
 };
-// The STL/ATL instances behind the unit's views (C3: the calls go to their members).
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<T> bodies (CIngredientContainer); the STL/ATL instances below back the views
 typedef std::vector<MS2Ptr<CIngredientInfo>> VIng;
 typedef std::vector<CString> VStr;
 typedef std::vector<ItemEntity> VItem;
@@ -175,15 +175,15 @@ CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
         Unk_IngRef ref(*it);
         if (ref == 0) continue;
         Unk_IngRef copy(new CIngredientInfo(ref->m_a, ref->m_c, ref->m_b));
-        m_items.FUN_14028b330(copy);
+        reinterpret_cast<VIng&>(m_items).push_back(copy);
     }
-}
+} struct Unk_IngGetView { void* m_unk; CIngredientInfo* m_p; CIngredientInfo* FUN_140281f10() const { return m_p; } };  // 0x140281f10: a second `return m_p` getter on MS2Ptr<CIngredientInfo> (its other row is a TPtredDummy MS2Ptr ??C, so not an MS2Ptr member)
 // @0x14026b890
 bool CIngredientContainer::IsDifferentFrom(CIngredientContainer* other) {
     if (reinterpret_cast<VIng&>(m_items).size() != reinterpret_cast<VIng&>(other->m_items).size()) return true;
     size_t count = reinterpret_cast<VIng&>(m_items).size();
     for (size_t i = 0; i < count; ++i) {
-        if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->IsDifferent(other->m_items.FUN_14027f220(i)->FUN_140281f10())) return true;
+        if (reinterpret_cast<Unk_IngGetView*>(&reinterpret_cast<VIng&>(m_items)[i])->FUN_140281f10()->IsDifferent(reinterpret_cast<const Unk_IngGetView*>(&reinterpret_cast<const VIng&>(other->m_items)[i])->FUN_140281f10())) return true;
     }
     return false;
 }
@@ -208,18 +208,18 @@ void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
 void CIngredientContainer::FUN_14026bbf0(int a, int b) {
     if (a == 0 || b == 0) return;
     Unk_IngRef ref(new CIngredientInfo(a, b, 0));
-    m_items.FUN_14028b300(ref);
+    reinterpret_cast<VIng&>(m_items).push_back(static_cast<Unk_IngRef&&>(ref));
 }
 // @0x14026bca0
 void CIngredientContainer::AddIngredient(Unk_IngRef r) {
     if (r == 0) return;
-    m_items.FUN_14028b330(r);
+    reinterpret_cast<VIng&>(m_items).push_back(r);
 }
 // @0x14026bd10
 void CIngredientContainer::FUN_14026bd10(int a, int b) {
     if (a == 0 || b == 0) return;
     Unk_IngRef ref(new CIngredientInfo(0, b, a));
-    m_items.FUN_14028b300(ref);
+    reinterpret_cast<VIng&>(m_items).push_back(static_cast<Unk_IngRef&&>(ref));
 }
 // @0x14026bdc0
 Unk_IngRef CIngredientContainer::FUN_14026bdc0(size_t index) {
@@ -274,31 +274,31 @@ void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
         Unk_IngRef cur = other->FUN_14026bdc0(i);
         if (cur == 0 || cur->IsEmpty()) continue;
         Unk_IngRef found = FUN_14026c450(cur->m_a);
-        if (found.FUN_14027f250() != 0) {
+        if (found.get() != 0) {
             int* dst = &found->m_c;
             *dst = *dst + cur->m_c;
         } else {
-            pending.FUN_14028b330(cur);
+            reinterpret_cast<VIng&>(pending).push_back(cur);
         }
     }
     if (!reinterpret_cast<VIng&>(pending).empty()) {
-        Unk_It t30, t28, t20;
+
         Unk_It result;
-        Unk_It pos = *m_items.FUN_14028aa90(&t30);
-        m_items.FUN_14027c290(&result, pos, *pending.FUN_14028a260(&t20), *pending.FUN_14028aa90(&t28));
+        Unk_It pos = *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).end()));
+        m_items.FUN_14027c290(&result, pos, *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(pending).begin())), *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(pending).end())));
     }
 }
 // @0x14026c450
 Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
     int keyBuffer;
-    Unk_It lower, t40, t48, t50;
-    FUN_14027bf30(&lower, *m_items.FUN_14028a260(&t48), *m_items.FUN_14028aa90(&t40), *FUN_14026b540(&keyBuffer, key));
-    if (FUN_14027f000(&lower, m_items.FUN_14028aa90(&t50))) return *reinterpret_cast<Unk_IngRef*>(&**reinterpret_cast<VIng::iterator*>(&lower));
+    Unk_It lower;
+    FUN_14027bf30(&lower, *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).begin())), *(Unk_It*)(&static_cast<const VIng::iterator&>(reinterpret_cast<VIng&>(m_items).end())), *FUN_14026b540(&keyBuffer, key));
+    if (reinterpret_cast<const VIng::const_iterator&>(lower) != reinterpret_cast<VIng&>(m_items).end()) return *reinterpret_cast<Unk_IngRef*>(&**reinterpret_cast<VIng::iterator*>(&lower));
     return Unk_IngRef(0);
 }
 // @0x14026c550
 bool Unk_IngHolder::FUN_14026c550(Unk_IngHolder* other) {
-    if (m_container.FUN_140281f00()->IsDifferentFrom(other->m_container.FUN_140281f00())) return true;
+    if (reinterpret_cast<MS2Ptr<CIngredientContainer>&>(m_container).operator CIngredientContainer*()->IsDifferentFrom(reinterpret_cast<MS2Ptr<CIngredientContainer>&>(other->m_container).operator CIngredientContainer*())) return true;
     return false;
 }
 
@@ -314,16 +314,16 @@ void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
     out.WriteInt32((int)reinterpret_cast<MapII&>(m_rewards).size());
     Unk_It t80, t88, t90, t98;
     Unk_RewardMap& rewards = m_rewards;
-    Unk_It end = *rewards.FUN_14028a910(&t80);
-    for (Unk_It it = *rewards.FUN_14028a130(&t88); FUN_14027ef80(&it, &end); ++*reinterpret_cast<MapII::const_iterator*>(&it)) {
+    Unk_It end = *(Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(rewards).end()));
+    for (Unk_It it = *(Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(rewards).begin())); FUN_14027ef80(&it, &end); ++*reinterpret_cast<MapII::const_iterator*>(&it)) {
         Unk_RewardPair* entry = (Unk_RewardPair*)(void*)&**reinterpret_cast<MapII::const_iterator*>(&it);
         out.WriteUInt8(entry->key);
         out.WriteInt32(entry->value);
     }
     out.WriteInt32((int)reinterpret_cast<VItem&>(m_items).size());
     Unk_ItemVec& items = m_items;
-    Unk_It end2 = *items.FUN_14028aa30(&t90);
-    for (Unk_It it2 = *items.FUN_14028a200(&t98); FUN_14027efc0(&it2, &end2); ++*reinterpret_cast<VItem::const_iterator*>(&it2)) {
+    Unk_It end2 = *(Unk_It*)(&static_cast<const VItem::iterator&>(reinterpret_cast<VItem&>(items).end()));
+    for (Unk_It it2 = *(Unk_It*)(&static_cast<const VItem::iterator&>(reinterpret_cast<VItem&>(items).begin())); reinterpret_cast<const VItem::const_iterator&>(it2) != reinterpret_cast<const VItem::const_iterator&>(end2); ++*reinterpret_cast<VItem::const_iterator*>(&it2)) {
         ItemEntity* item = (ItemEntity*)(void*)&**reinterpret_cast<VItem::const_iterator*>(&it2);
         out.WriteInt32(item->m_itemId);
         out.WriteInt32(item->m_count);
@@ -343,7 +343,7 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
     }
     int itemCount = in.ReadInt32();
     for (int i = 0; i < itemCount; ++i) {
-        m_items.FUN_14028b2a0(ItemEntity());
+        reinterpret_cast<VItem&>(m_items).push_back(ItemEntity());
         Unk_It tmp;
         ItemEntity* item = &**reinterpret_cast<std::reverse_iterator<VItem::iterator>*>(m_items.FUN_14028b360(&tmp));
         item->m_itemId = in.ReadInt32();
@@ -359,7 +359,7 @@ __int64 DungeonRewardInfo::FUN_14026cbf0() {
     int key = 2;
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
+    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
     return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cc70
@@ -367,7 +367,7 @@ unsigned DungeonRewardInfo::FUN_14026cc70() {
     int key = 3;
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
+    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
     return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026ccf0
@@ -375,14 +375,14 @@ __int64 DungeonRewardInfo::FUN_14026ccf0() {
     int key = 1;
     Unk_It found, t18;
     m_rewards.FUN_14028adf0(&found, &key);
-    if (FUN_14027ee20(&found, m_rewards.FUN_14028a970(&t18))) return 0;
+    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::const_iterator&>(static_cast<const MapII&>(reinterpret_cast<MapII&>(m_rewards)).end())))) return 0;
     return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cd70
 unsigned DungeonRewardInfo::FUN_14026cd70(unsigned key) {
     Unk_It t20, t18;
     Unk_It found = *m_rewards.FUN_14028ad10(&t20, (int*)&key);
-    if (FUN_14027ee20(&found, m_rewards.FUN_14028a910(&t18))) return 0;
+    if (FUN_14027ee20(&found, (Unk_It*)(&static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(m_rewards).end())))) return 0;
     return *(unsigned*)((char*)(void*)reinterpret_cast<MapII::const_iterator*>(&found)->operator->() + 4);
 }
 // @0x14026cdf0
@@ -450,12 +450,12 @@ bool NpcShopItemLife::IsDifferentFrom(NpcShopItemLife* other) {
     return false;
 }
 // @0x14026eab0
-Unk_ShopLifeRef NpcShopItemLife::Clone() {
-    Unk_ShopLifeRef ref(new NpcShopItemLife());
-    ref->m_type = m_type;
-    ref->m_time = m_time;
-    ref->m_value = m_value;
-    ref->m_onlyVisible = m_onlyVisible;
+MS2SvrPtr<CPtred> NpcShopItemLife::Clone() {
+    MS2SvrPtr<CPtred> ref(new NpcShopItemLife());
+    static_cast<NpcShopItemLife*>(ref.get())->m_type = m_type;   // get = 0x14027f340
+    static_cast<NpcShopItemLife*>(ref.get())->m_time = m_time;
+    static_cast<NpcShopItemLife*>(ref.get())->m_value = m_value;
+    static_cast<NpcShopItemLife*>(ref.get())->m_onlyVisible = m_onlyVisible;
     return ref;
 }
 // @0x14026ebc0
@@ -678,13 +678,13 @@ CChangeableHistoryInfo::~CChangeableHistoryInfo() { reinterpret_cast<LHist&>(m_l
 void CChangeableHistoryInfo::FUN_14026fab0() {
     Unk_1401b4ec0 lock(m_lock, 1);
     int total = 0;
-    Unk_It it, saved, t30, t28;
+    Unk_It it, saved;
     m_list.FUN_14028a1a0(&it);
-    while (FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t30))) {
+    while (FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end())))) {
         Unk_HistRef ref(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
         if (ref == 0) {
             saved = it;
-            it = *m_list.FUN_14028aca0(&t28, saved);
+            it = *(Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).erase(*reinterpret_cast<LHist::const_iterator*>(&saved))));
             continue;
         }
         total = total + ref->m_40;
@@ -698,19 +698,19 @@ int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
     Unk_1401b4ec0 lock(m_lock, 1);
     if (mode == 1) {
         Unk_HistList* list = &m_list;
-        Unk_It cur, end;
+        Unk_It cur;
         list->FUN_140289d20(&cur);
-        list->FUN_140289d80(&end);
-        for (; FUN_14027ef40(&cur, &end); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+        LHist::_Unchecked_iterator end = reinterpret_cast<LHist*>(list)->_Unchecked_end();
+        for (; FUN_14027ef40(&cur, reinterpret_cast<Unk_It*>(&end)); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
             Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             total = total + (*ref)->m_40;
         }
     } else if (mode == 2) {
         Unk_HistList* list = &m_list;
-        Unk_It cur, end;
+        Unk_It cur;
         list->FUN_140289d20(&cur);
-        list->FUN_140289d80(&end);
-        for (; FUN_14027ef40(&cur, &end); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
+        LHist::_Unchecked_iterator end = reinterpret_cast<LHist*>(list)->_Unchecked_end();
+        for (; FUN_14027ef40(&cur, reinterpret_cast<Unk_It*>(&end)); ++*reinterpret_cast<LHist::_Unchecked_iterator*>(&cur)) {
             Unk_HistRef* ref = reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::_Unchecked_iterator*>(&cur));
             if ((*ref)->m_28 != id) continue;
             total = total + (*ref)->m_40;
@@ -724,19 +724,19 @@ void CChangeableHistoryInfo::FUN_14026fda0(Unk_HistRef entry) {
     if ((__int64)m_48 != entry->m_30) return;
     if (!(m_4c == entry->m_3c)) return;
     Unk_1401b4ec0 lock(m_lock, 1);
-    m_list.FUN_14028b260(entry);
+    reinterpret_cast<LHist&>(m_list).push_back(reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>&>(entry));
     m_total = m_total + entry->m_40;
 }
 // @0x14026fea0
 bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
     Unk_1401b4ec0 lock(m_lock, 1);
-    Unk_It it, saved, t20, t18;
+    Unk_It it, saved;
     m_list.FUN_14028a1a0(&it);
-    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t20)); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+    for (; FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()))); ++*reinterpret_cast<LHist::iterator*>(&it)) {
         if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_18 == id) {
             m_total = m_total - (*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_40;
             saved = it;
-            m_list.FUN_14028aca0(&t18, saved);
+            reinterpret_cast<LHist&>(m_list).erase(*reinterpret_cast<LHist::const_iterator*>(&saved));
             return true;
         }
     }
@@ -749,8 +749,8 @@ Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
     Unk_HistRef best(*m_list.FUN_14028aef0());
     Unk_It t30, it;
     FUN_14027c480(&it, *m_list.FUN_14028a1a0(&t30), 1);
-    Unk_It t28;
-    for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t28)); ++*reinterpret_cast<LHist::iterator*>(&it)) {
+
+    for (; FUN_14027ef00(&it, (Unk_It*)(&static_cast<const LHist::iterator&>(reinterpret_cast<LHist&>(m_list).end()))); ++*reinterpret_cast<LHist::iterator*>(&it)) {
         if ((*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)))->m_38 < best->m_38) best.FUN_14027eab0(*reinterpret_cast<Unk_HistRef*>(&**reinterpret_cast<LHist::iterator*>(&it)));
     }
     return best;

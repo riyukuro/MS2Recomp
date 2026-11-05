@@ -26,6 +26,7 @@
 #include "gameobject.h"
 #include "ms2actorupdater.h"
 #include "ms2/placeholder/iworldservicecallback.h"
+#include "gamerankingcli.h"                             // CGameRankingData (Veca18's rank record)
 
 namespace egf { class Entity; }
 
@@ -91,7 +92,7 @@ typedef std::map<egf::EntityID, efd::SmartPointer<CEntityShower> > Map980;      
 typedef std::map<egf::EntityID, efd::SmartPointer<CEntityHider> > Map990;                // +0x990
 typedef std::vector<MS2Ptr<MS2ActorUpdater> > Vec9a0;                                    // +0x9a0
 typedef std::vector<std::pair<CStringA, CStringW> > Veca00;                              // +0xa00
-typedef std::vector<std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > > Veca18;                 // +0xa18
+typedef std::vector<std::pair<CStringA, TPtrValue<CGameRankingData> > > Veca18;                 // +0xa18
 typedef std::vector<std::pair<CStringA, CStringA> > VecTextPair;                         // local of FUN_141bdb1b0 (ctor 0x141bf3300, dtor 0x141bf5ef0)
 typedef std::map<egf::EntityID, __int64> Mapab0;                                         // +0xab0 (server-time deadline)
 typedef std::map<unsigned, efd::SmartPointer<egf::Entity> > Mapac0;                      // +0xac0 (see below)

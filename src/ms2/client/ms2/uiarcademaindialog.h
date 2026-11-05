@@ -22,12 +22,12 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/carcadedatatable.h"
 #include "ms2/placeholder/clockcriticalsection.h"
-#include "ms2/placeholder/gamerankingcli.h"
+#include "ms2/client/ms2/gamerankingcli.h"
 #include "ms2/placeholder/tptrvalue.h"
 
 class CInPacket;
 class CMsgBoxData;
-class Unk_140acd6e0;
+class ASButton;
 class ASMovieClip;
 
 class UIArcadeMainDialog : public UIDialog
@@ -35,7 +35,7 @@ class UIArcadeMainDialog : public UIDialog
 public:
     // The cached ranking of one arcade game: the ten best (score, name) rows.
     struct RankPage { std::pair<int, CStringW> m_rows[10]; };
-    typedef TPtrValue<ATL::CAtlArray<Unk_RankDataPtr> > RankingList;                // the rows of one board
+    typedef TPtrValue<ATL::CAtlArray<TPtrValue<CGameRankingData> > > RankingList;    // the rows of one board
     typedef std::vector<std::pair<int, RankingList> > RankingResults;               // arcade id -> rows, from the worker
 
     UIArcadeMainDialog();                                           // 0x140ef5640
@@ -67,10 +67,10 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_140acd6e0> m_buttons[9];                             // +0x178 "m_game1".."m_game9"
+    MS2Ptr<ASButton> m_buttons[9];                             // +0x178 "m_game1".."m_game9"
     MS2Ptr<ASMovieClip> m_rankView;                                 // +0x208 "m_rankingInfo"
     MS2Ptr<ASMovieClip> m_emptyView;                                // +0x218 "m_rankingEmpty"
-    MS2Ptr<Unk_140acd6e0> m_enter;                                  // +0x228 "m_enter"
+    MS2Ptr<ASButton> m_enter;                                  // +0x228 "m_enter"
     std::vector<MS2SvrPtr<CArcadeMainData> > m_games;               // +0x238 the games shown on the buttons
     CStringW m_bannerPath;                                          // +0x250 "./Data/Resource/Image/Map/Arcade/"
     int m_nSelected;                                                // +0x258 the selected button (-1 none)

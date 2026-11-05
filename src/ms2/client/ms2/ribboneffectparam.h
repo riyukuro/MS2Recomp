@@ -17,7 +17,7 @@ class CRibbonEffectParam : public CEffectParam
 {
 public:
     CRibbonEffectParam();                                       // 0x141701380
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141701410 texturePath / nifPath / width / quality / alphaMode
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141701410 texturePath / nifPath / width / quality / alphaMode
     virtual bool vfunc_5(int n);                                // 5 0x141701560 preload the nif
     virtual CEffectPtr vfunc_6();                               // 6 0x141701610 new CRibbonEffect
 public:

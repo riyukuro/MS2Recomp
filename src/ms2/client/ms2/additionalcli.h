@@ -15,7 +15,7 @@
 class PCBase;
 class CInPacket;
 
-#ifndef MS2_ADDITIONALCLI_DEFINED   // notifychangebuff.h has a size-only stand-in (w539: include this header first)
+#ifndef MS2_ADDITIONALCLI_DEFINED   // notifychangebuff.h includes this header (its size-only stand-in is gone)
 #define MS2_ADDITIONALCLI_DEFINED
 class AdditionalCli : public CPtred
 {

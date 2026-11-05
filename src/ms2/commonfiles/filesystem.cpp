@@ -31,7 +31,7 @@
 // MS2-PIN: ??0?$AlgorithmParametersTemplate@PEBH@CryptoPP@@QEAA@AEBV01@@Z 0x1403a4f40 ; unique
 // MS2-PIN: ??0?$AlgorithmParametersTemplate@PEBH@CryptoPP@@QEAA@PEBDAEBQEBH_N@Z 0x1403a4f90 ; unique
 // MS2-PIN: ??0?$AllocatorWithCleanup@E$00@CryptoPP@@QEAA@XZ 0x1403a4ff0 ; unique
-// MS2-PIN: ??0?$Unk_PayloadPtr@VCFileBuffer@@@@QEAA@XZ 0x1403a5980 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VCFileBuffer@@@@QEAA@XZ 0x1403a5980 ; unique
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@1@@Z 0x1403a5e40 ; unique
 // MS2-PIN: ??0InputRejected@?$InputRejecting@VBufferedTransformation@CryptoPP@@@CryptoPP@@QEAA@XZ 0x1403a6870 ; prop
 // MS2-PIN: ??0InputRejected@?$InputRejecting@VFilter@CryptoPP@@@CryptoPP@@QEAA@AEBU012@@Z 0x1403a68f0 ; prop
@@ -47,10 +47,10 @@
 // MS2-PIN: ??1Store@CryptoPP@@UEAA@XZ 0x1403a7590 ; prop
 // MS2-PIN: ??1StringSource@CryptoPP@@UEAA@XZ 0x1403a75d0 ; prop
 // MS2-PIN: ??1StringStore@CryptoPP@@UEAA@XZ 0x1403a75f0 ; unique
-// MS2-PIN: ?IsNull@?$Unk_PayloadPtr@VCFileBuffer@@@@QEBA_NXZ 0x1403a7710 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCFileBuffer@@@@QEBA_NXZ 0x1403a7710 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1403a7890 ; unique
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1403a7a20 ; prop
-// MS2-PIN: ?get@?$Unk_PayloadPtr@VCFileBuffer@@@@QEBAPEAVCFileBuffer@@XZ 0x1403a7b10 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCFileBuffer@@@@QEBAPEAVCFileBuffer@@XZ 0x1403a7b10 ; unique
 // MS2-PIN: ??E?$_String_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@std@@QEAAAEAV01@XZ 0x1403a7e30 ; unique
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1403a7ec0 ; prop
 // MS2-PIN: ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@UUnk_FileArchiveEntry@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1403a7f70 ; unique
@@ -90,7 +90,7 @@
 // MS2-PIN: ?Put2@?$InputRejecting@VFilter@CryptoPP@@@CryptoPP@@UEAA_KPEBE_KH_N@Z 0x1403aa490 ; unique
 // MS2-PIN: ?ResizeBuffers@CipherModeBase@CryptoPP@@MEAAXXZ 0x1403aade0 ; unique
 // MS2-PIN: ?Resynchronize@SimpleKeyingInterface@CryptoPP@@UEAAXPEBEH@Z 0x1403aae20 ; unique
-// MS2-PIN: ?SetAt@?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$Unk_PayloadPtr@VCFileBuffer@@@@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$Unk_PayloadPtr@VCFileBuffer@@@@@2@@ATL@@QEAAPEAU__POSITION@@PEBDAEBV?$Unk_PayloadPtr@VCFileBuffer@@@@@Z 0x1403ab020 ; unique
+// MS2-PIN: ?SetAt@?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCFileBuffer@@@@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCFileBuffer@@@@@2@@ATL@@QEAAPEAU__POSITION@@PEBDAEBV?$MS2Ptr@VCFileBuffer@@@@@Z 0x1403ab020 ; unique
 // MS2-PIN: ?SetAutoSignalPropagation@?$AutoSignaling@V?$InputRejecting@VBufferedTransformation@CryptoPP@@@CryptoPP@@@CryptoPP@@UEAAXH@Z 0x1403ab090 ; unique
 // MS2-PIN: ?SetAutoSignalPropagation@?$SourceTemplate@VStringStore@CryptoPP@@@CryptoPP@@UEAAXH@Z 0x1403ab0b0 ; unique
 // MS2-PIN: ?SetFeedbackSize@CipherModeBase@CryptoPP@@MEAAXI@Z 0x1403ab0f0 ; unique
@@ -194,6 +194,7 @@
 #include "cryptopp562/base64.h"
 #undef NDEBUG
 #include <assert.h>
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CFileBuffer> COMDATs (BufferPtr)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -274,12 +275,12 @@ CFileSystem::CFileSystem() : cache(10), packed(false), alternatePaths(false), mo
 CFileSystem::~CFileSystem() {
     for (auto it = archives.begin(); it != archives.end(); ++it) {
         reinterpret_cast<CPackFile*>((*it))->Close();
-        delete *it;
+        delete reinterpret_cast<CPackFile*>(*it);
     }
     archives.clear();
     for (auto it = patchArchives.begin(); it != patchArchives.end(); ++it) {
         reinterpret_cast<CPackFile*>((*it))->Close();
-        delete *it;
+        delete reinterpret_cast<CPackFile*>(*it);
     }
     patchArchives.clear();
     FUN_140351e90();
@@ -314,11 +315,11 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
                 path.assign(*it);
                 if (!path.empty()) {
                     if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
-                    Unk_FileArchive* archive = new Unk_FileArchive;
+                    Unk_FileArchive* archive = reinterpret_cast<Unk_FileArchive*>(new CPackFile);
                     reinterpret_cast<CPackFile*>(archive)->SetDecode(Unk_FileTransform(this, &CFileSystem::DecryptByMagic));
                     reinterpret_cast<CPackFile*>(archive)->SetDecodeShort(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
                     if (reinterpret_cast<CPackFile*>(archive)->Open(path, nullptr) == 0) {
-                        delete archive;
+                        delete reinterpret_cast<CPackFile*>(archive);
                         continue;
                     }
                     archives.push_back(archive);
@@ -337,7 +338,7 @@ int CFileSystem::FUN_140396d00(const char* directory) {
     if (!FUN_140398190()) return 0;
     for (auto it = patchArchives.begin(); it != patchArchives.end(); ++it) {
         reinterpret_cast<CPackFile*>((*it))->Close();
-        delete *it;
+        delete reinterpret_cast<CPackFile*>(*it);
     }
     patchArchives.clear();
     ClearCache();
@@ -362,11 +363,11 @@ int CFileSystem::FUN_140396d00(const char* directory) {
                 path = *it;
                 if (!path.empty()) {
                     if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
-                    Unk_FileArchive* archive = new Unk_FileArchive;
+                    Unk_FileArchive* archive = reinterpret_cast<Unk_FileArchive*>(new CPackFile);
                     reinterpret_cast<CPackFile*>(archive)->SetDecode(Unk_FileTransform(this, &CFileSystem::DecryptByMagic));
                     reinterpret_cast<CPackFile*>(archive)->SetDecodeShort(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
                     if (reinterpret_cast<CPackFile*>(archive)->Open(path, directory) == 0) {
-                        delete archive;
+                        delete reinterpret_cast<CPackFile*>(archive);
                         continue;
                     }
                     patchArchives.push_back(archive);

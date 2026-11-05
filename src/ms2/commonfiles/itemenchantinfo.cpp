@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemenchantinfo.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemenchantinfo.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // MS2Ptr<CItemEnchantInfo> bodies (0x14058d040..0x14058d570): the first obj that uses them
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 template<class Map> void CopyEnchantMap(Map& to,const Map& from) {
@@ -33,8 +34,8 @@ CItemEnchantInfo::CItemEnchantInfo(int id, int rarity) : m_id(id), m_rarity(rari
 
 // Hook deferred: cloning would construct CItemEnchantInfo with DLL-local RTTI.
 // @0x14058c3b0
-Unk_EnchantPtr<CItemEnchantInfo> CItemEnchantInfo::Clone() {
-    Unk_EnchantPtr<CItemEnchantInfo> result(new CItemEnchantInfo(m_id,m_rarity));
+MS2Ptr<CItemEnchantInfo> CItemEnchantInfo::Clone() {
+    MS2Ptr<CItemEnchantInfo> result(new CItemEnchantInfo(m_id,m_rarity));
     result->m_level=m_level; result->m_charge=m_charge; result->m_version=m_version;
     result->m_history=m_history;
     CopyEnchantMap(result->m_options,m_options);
@@ -183,7 +184,7 @@ void CItemEnchantInfo::Write(Unk_EnchantWrite& stream) const {
     stream.vfunc_1(static_cast<unsigned char>(count));
     for (POSITION pos=m_options.GetStartPosition();pos;m_options.GetNext(pos)) {
         int key=m_options.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> option=m_options.GetValueAt(pos);
+        MS2Ptr<BaseOption> option=m_options.GetValueAt(pos);
         stream.vfunc_3(key); option->FUN_140266d20(stream);
     }
 }
@@ -197,7 +198,7 @@ void CItemEnchantInfo::Read(Unk_EnchantRead& stream) {
     int count=stream.vfunc_1();
     for(int i=0;i<count;++i) {
         int key=stream.vfunc_3();
-        Unk_EnchantPtr<BaseOption> option(new BaseOption);
+        MS2Ptr<BaseOption> option(new BaseOption);
         option->FUN_140266d60(stream);
         m_options.SetAt(key,option);
     }
@@ -249,8 +250,8 @@ int CItemEnchantInfo::GetVersion() {
 MS2_REPLACE_METHOD(0x14058CDC0, CItemEnchantInfo, GetVersion, 14, 0xD26D6807);
 
 // @0x14058cde0
-Unk_EnchantPtr<BaseOption> CItemEnchantInfo::GetOption(int key) {
-    Unk_EnchantPtr<BaseOption> result;
+MS2Ptr<BaseOption> CItemEnchantInfo::GetOption(int key) {
+    MS2Ptr<BaseOption> result;
     m_options.Lookup(key,result);
     return result;
 }

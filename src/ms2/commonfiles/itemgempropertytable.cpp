@@ -30,7 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/os.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -129,7 +129,7 @@ bool CItemGemPropertyTable::FUN_1405ac260()
 }
 
 // @0x1405ac3b0
-bool CGemTombStoneData::TModelAttr::FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix)
+bool CGemTombStoneData::TModelAttr::FUN_1405ac3b0(TiXmlElement* pElem, const CString& strPrefix)
 {
     const CString& strFmt = "{0}{1}";
     const CString& strKfm = StringFormat(strFmt, strPrefix, "kfm");
@@ -171,7 +171,7 @@ void CGemTombStoneData::TModelAttr::FUN_1405ac670()
 }
 
 // @0x1405ac760
-bool CGemTombStoneData::vfunc_1(Unk_140165cf0* pElem)
+bool CGemTombStoneData::vfunc_1(TiXmlElement* pElem)
 {
     const CString& strRotation = "rotation";
     XmlGetAttr((class TiXmlElement*)(pElem), strRotation, reinterpret_cast<efd::Point3&>(m_ptRotation));
@@ -181,7 +181,7 @@ bool CGemTombStoneData::vfunc_1(Unk_140165cf0* pElem)
 }
 
 // @0x1405ac860
-bool CGemSwimData::vfunc_1(Unk_140165cf0* pElem)
+bool CGemSwimData::vfunc_1(TiXmlElement* pElem)
 {
     XmlQuery((class TiXmlElement*)(pElem), "kf", m_strKf);
     XmlQuery((class TiXmlElement*)(pElem), "idleEffect", m_strIdleEffect);
@@ -234,7 +234,7 @@ CGemCharEffectData::CGemCharEffectData()
 }
 
 // @0x1405acb20
-bool CGemCharEffectData::vfunc_1(Unk_140165cf0* pElem)
+bool CGemCharEffectData::vfunc_1(TiXmlElement* pElem)
 {
     XmlQuery((class TiXmlElement*)(pElem), "EffectMale", m_strMale);
     XmlQuery((class TiXmlElement*)(pElem), "EffectFemale", m_strFemale);
@@ -265,7 +265,7 @@ CString CGemCharEffectData::GetCoupleEffect(int nOwnerGem, int nPartnerGem)
 }
 
 // @0x1405acd40
-bool CGemEffectData::vfunc_1(Unk_140165cf0* pElem)
+bool CGemEffectData::vfunc_1(TiXmlElement* pElem)
 {
     XmlQuery((class TiXmlElement*)(pElem), "Effect", m_strEffect);
     return true;
@@ -313,14 +313,14 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
         return false;
     }
     const CString& strId = "id";
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

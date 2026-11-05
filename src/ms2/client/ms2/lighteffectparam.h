@@ -58,7 +58,7 @@ class CLightEffectParam : public TransitionEffectParam
 {
 public:
     CLightEffectParam();                                        // 0x1414494d0
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141449600
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141449600
     virtual CEffectPtr vfunc_6();                               // 6 0x14144a0f0 new CLightEffect
 public:
     MS2_LAYOUT_FRIEND;

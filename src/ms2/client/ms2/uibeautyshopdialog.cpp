@@ -159,20 +159,20 @@ public:
 };
 
 // The style slot list ("m_items" of "m_customStyle").
-class Unk_140bfc2e0 : public ASDisplayObject
+// C3: the style list views Unk_140bfc2e0 / Unk_BSStyleEntity were unused here (the list is ASTileCacheList)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+class Unk_ReportScript    // the m_30 root script view; GetChild<T> is defined in uitencentuserreportdialog.cpp (0x140ede0c0)
 {
 public:
-    int FUN_1422dccd0();                        // the selected index (-1: none)
-};
-class Unk_BSStyleEntity : public ASGameEntity
-{
-public:
-    Unk_14102fe10<Unk_140bfc2e0> FUN_140bfa6a0(const CString& strName);
-};
-class Unk_BSRootScript : public AScript
-{
-public:
-    MS2Ptr<ASGameEntity> FUN_140ede0c0(const CString& strName);
+    template<class T> MS2Ptr<T> GetChild(const CString& name);
 };
 
 class ASTooltip : public AScript
@@ -190,32 +190,32 @@ private:
 };
 MS2_CHECK_SIZE(ASTooltip, 0x60);
 
-// The colour palette rows (TSingleton<CItemDataTable>: the ingredient/palette tables).
-class Unk_BSColorRow : public CPtred
-{
-public:
-    char m_pad_18[0x24 - 0x18];
-    int m_achieve;                              // +0x24 achieve required to use the colour
-    int m_grade;                                // +0x28 grade of that achieve
-    int m_nameId;                               // +0x2c name string (0x48 table; 0x49: description)
-};
-MS2_CHECK_OFFSET(Unk_BSColorRow, m_nameId, 0x2c);
-typedef MS2Ptr<Unk_BSColorRow> Unk_BSColorPtr;
-class Unk_BSColorList : public CPtred
-{
-public:
-    unsigned FUN_140570e10();                                   // count
-    const Unk_BSColorPtr& FUN_140570dd0(size_t nIndex);         // row
-};
-class Unk_BSColorTable
-{
-public:
-    Unk_BSColorPtr FUN_1405587f0(int nPalette, int nIndex);     // row of the extended palette
-    Unk_BSColorPtr FUN_140558960(int nPalette, int nIndex);     // row
-    MS2Ptr<Unk_BSColorList> FUN_140558ad0(int nPalette);        // palette
-};
+// The colour palette rows are ItemColorEx (CItemDataTable::GetPaletteColor*, 0x1405587f0 / 0x140558960 / 0x140558ad0):
+// the former unit-local views Unk_BSColorRow / Unk_BSColorList / Unk_BSColorTable went to the real classes.
+#include "ms2/commonfiles/itemdatatable.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 class CItemDataTable;
-template <> class TSingleton<CItemDataTable> { public: static CItemDataTable* GetInstance(); };   // C3: was FUN_140281980
+// TSingleton<CItemDataTable> (0x140281980): itemdatatable.h
 
 // The price row of a beauty shop entry (a CBeautyShopItem, made with its ctor).
 class Unk_BSPriceRow : public CPtred
@@ -447,11 +447,11 @@ bool FUN_140f09810(ASObj& obj, bool bEnabled);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
 CStringW FUN_1418fe870(int nKind, int* pnZero, unsigned nItemId);                 // the item icon url
 extern Unk_Inventory g_143ab2a90;                                            // the player's inventory
-class Unk_140acd6e0 : public ASMovieClip
-{
-public:
-};
-void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>* pOut);     // bind a child of the root
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
+//
+//
+//
+void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pOut);     // bind a child of the root
 bool FUN_14166c930();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140f327a0(MS2Ptr<CItemData> spData, int nColor, ASObj& obj, int n);
@@ -1181,7 +1181,7 @@ int UIBeautyShopDialog::IsSaveButtonEnabled()
 {
     if (m_30.get())
     {
-        if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
+        if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
             return spSave->FUN_1422c2030();
     }
     return 0;
@@ -1192,7 +1192,7 @@ void UIBeautyShopDialog::SetSaveButtonEnabled(int nValue)
 {
     if (m_30.get())
     {
-        if (MS2Ptr<Unk_140acd6e0> spSave = GetChild<Unk_140acd6e0>("m_save"))
+        if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
             spSave->FUN_1422c1fe0(nValue);
     }
 }
@@ -1202,7 +1202,7 @@ void UIBeautyShopDialog::SetResetButtonEnabled(int nValue)
 {
     if (m_30.get())
     {
-        if (MS2Ptr<Unk_140acd6e0> spReset = GetChild<Unk_140acd6e0>("m_reset"))
+        if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_reset"))
             spReset->FUN_1422c1fe0(nValue);
     }
 }
@@ -2194,7 +2194,7 @@ int UIBeautyShopDialog::FUN_1418cbdc0(int nItemId)
 {
     if (m_2dc > 0)
     {
-        MS2Ptr<Unk_BSColorList> spPalette = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(m_2dc);
+        Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spPalette = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(m_2dc);
         if (spPalette.get() != 0)
             return m_2dc;
     }
@@ -2291,7 +2291,7 @@ public:
     virtual void vfunc_13(const CString& strMode);              // "normal" / "checkbox"
 };
 
-// The bill's check box ("m_checkbox").
+class UIItemPetBoxDialog : public UIDialog { public: MS2Ptr<class ASCheckBox> FindCheckBox(const CString& strName); };   // C3: 0x140e52670; below, the bill's check box ("m_checkbox")
 class Unk_BSCheckBox : public ASDisplayObject
 {
 public:
@@ -2353,12 +2353,12 @@ void UIBillDialog::OnLoadComplete()
             int bEnabled = m_188->m_60;
             if (!strCheck.IsEmpty())
             {
-                if (MS2Ptr<Unk_BSCheckBox> spCheck = FUN_140e52670("m_checkbox"))
+                if (MS2Ptr<ASCheckBox> spCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_checkbox"))
                 {
                     reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422cdfb0(strCheck);
                     reinterpret_cast<ASMovieClip*>(spCheck.operator->())->FUN_1422c1fe0(bEnabled);
                     reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(bEnabled);
-                    spCheck->vfunc_24(true);
+                    reinterpret_cast<Unk_BSCheckBox*>(spCheck.operator->())->vfunc_24(true);
                 }
                 if (MS2Ptr<ASTextField> spWarning = GetChild<ASTextField>("m_warning"))
                     spWarning->SetTextW(m_188->m_58);

@@ -11,7 +11,7 @@
 // MS2-PIN: ??$_Insert_nohint@AEBUItemEntity@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@UItemEntity@@UUnk_GachaLess@@V?$allocator@UItemEntity@@@std@@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UItemEntity@@@std@@@std@@@std@@_N@1@_NAEBUItemEntity@@U_Not_a_node_tag@1@@Z 0x140c43f30 ; unique
 // MS2-PIN: ??$_Resize@V<lambda_1ce543df77f4c2698d934f14847b16dd>@@@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@AEAAX_KV<lambda_1ce543df77f4c2698d934f14847b16dd>@@@Z 0x140c454c0 ; unique
 // MS2-PIN: ??$_Uninitialized_value_construct_n1@PEAUItemEntity@@_KV?$allocator@UItemEntity@@@std@@@std@@YAPEAUItemEntity@@QEAU1@_KAEAV?$allocator@UItemEntity@@@0@U?$integral_constant@_N$0A@@0@@Z 0x140c45920 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_GachaText@@@@QEBAPEAVUnk_GachaText@@XZ 0x140c461f0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VASLabel@@@@QEBAPEAVASLabel@@XZ 0x140c461f0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c475f0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140c47990 ; unique
 // MS2-PIN: ??$Call@VUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140c479d0 ; unique
@@ -19,7 +19,7 @@
 // MS2-PIN: ??$?0VUIItemGachaBoxDialog@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBQEAVUIItemGachaBoxDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140c43430 ; manual
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemGachaBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140c45d30 ; manual
 // MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@UItemEntity@@UUnk_GachaLess@@V?$allocator@UItemEntity@@@std@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UItemEntity@@@std@@@std@@@2@AEBUItemEntity@@@Z 0x140c478b0 ; manual
-// MS2-PIN: ??8?$MS2Ptr@VUnk_GachaText@@@@QEBA_NPEAVUnk_GachaText@@@Z 0x140c460f0 ; manual
+// MS2-PIN: ??8?$MS2Ptr@VASLabel@@@@QEBA_NPEAVASLabel@@@Z 0x140c460f0 ; manual
 // MS2-PIN: ?Reference@?$MS2Ptr@VCItem@@@@CAXPEAVCItem@@@Z 0x140c46540 ; manual
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCItem@@@@AEBAXPEAX@Z 0x140c46580 ; manual
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCItem@@@@AEAAXPEAX@Z 0x140c47260 ; manual
@@ -85,18 +85,18 @@ typedef ItemDropResult Unk_GachaDrop;
 #define GACHA_ITEMS (m_result)
 #define GACHA_BINDS (m_slotBinds)
 #define GACHA_BAGS (m_bagIds)
-#define GACHA_PARAMS(p) reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>((p).operator->()) + 0x2b0)
-class Unk_GachaText;
+#define GACHA_PARAMS(p) reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>((p).operator->()) + 0x2b0)
+// C3: the 0x88-byte text child is ASLabel (ctor 0x1422e4900, the one 0x140c43580 calls). Its getter 0x140c436d0 is
+// AScript::FUN_140c436d0<ASLabel> (ascript.h), defined below; uiitemlulluboxdialog, uiitempetboxdialog,
+// uiguilddialog and the other ASLabel callers link to it.
 class Unk_GachaClip : public ASMovieClip
 {
-public:
-    MS2Ptr<Unk_GachaText> FUN_140c436d0(const CString&);
 };
-// the 0x88-byte text wrapper handed out by FUN_140c436d0
-class Unk_GachaText : public ASLabel
-{
-};
-MS2_CHECK_SIZE(Unk_GachaText, 0x88);
+template <> MS2Ptr<ASLabel> AScript::FUN_140c436d0<ASLabel>(const CString& strName);
+
+
+
+MS2_CHECK_SIZE(ASLabel, 0x88);
 extern Unk_Inventory g_143ab2a90;
 int FUN_141276180(const CString&, const CString&);
 void FUN_14141f970(const CString&);
@@ -391,12 +391,12 @@ void UIItemGachaBoxDialog::FUN_140c41c30(int itemId)
         return;
     if (box->FUN_140527840() == 0)
         return;
-    int gachaId = reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
+    int gachaId = reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
     GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
     if (gacha == 0)
         return;
     m_boxItemId = itemId;
-    m_machineId = reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(1, 0);
+    m_machineId = reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(1, 0);
     m_uiType = gacha->m_nUi;
     m_season = gacha->GetSeason();
     m_title = box->FUN_140527b10();
@@ -506,7 +506,7 @@ GachaBoxDataPtr UIItemGachaBoxDialog::FUN_140c43110()
     MS2Ptr<CItem> box = g_143ab2a90.FUN_140a5e2e0(m_boxItemId);
     if (box == 0)
         return GachaBoxDataPtr(0);
-    int gachaId = reinterpret_cast<Unk_CommandArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
+    int gachaId = reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
     GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
     if (gacha == 0)
         return GachaBoxDataPtr(0);
@@ -522,19 +522,19 @@ static bool FUN_140c43260(Unk_GachaDrop a, Unk_GachaDrop b)
 }
 
 // @0x140c43580
-MS2Ptr<Unk_GachaText> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASLabel> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<Unk_GachaText> sp(reinterpret_cast<Unk_GachaText*>(new ASLabel(v, nMovieId)));
+    MS2Ptr<ASLabel> sp(new ASLabel(v, nMovieId));
     return sp;
 }
 
 // @0x140c436d0
-MS2Ptr<Unk_GachaText> Unk_GachaClip::FUN_140c436d0(const CString& strName)
+template <> MS2Ptr<ASLabel> AScript::FUN_140c436d0<ASLabel>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
         return FUN_140c43580(m_nMovieId, v);
-    return MS2Ptr<Unk_GachaText>(0);
+    return MS2Ptr<ASLabel>(0);
 }
 
 // @0x140c43790
@@ -567,7 +567,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
         if (slot == 0)
             return;
-        MS2Ptr<Unk_GachaText> name = static_cast<Unk_GachaClip*>(single.operator->())->FUN_140c436d0("m_itemName");
+        MS2Ptr<ASLabel> name = single->FUN_140c436d0<ASLabel>("m_itemName");
         if (name == 0)
             return;
         ItemEntity& e = GACHA_ITEMS[0];

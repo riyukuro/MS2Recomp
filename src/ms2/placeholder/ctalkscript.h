@@ -15,16 +15,8 @@
 
 class CInPacket;
 
-// The page list of a script: an array of 16-byte handles to the page contents (count 0x14078fae0, element 0x14078f350).
-class Unk_CtsContentList
-{
-public:
-    unsigned __int64 FUN_14078fae0();                       // GetCount
-    MS2Ptr<CScriptContent>& FUN_14078f350(__int64 nIndex);  // GetAt
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18;
-};
-MS2_CHECK_SIZE(Unk_CtsContentList, 0x20);
+// The page list of a script (m_contents) is ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent>>, an array of 16-byte
+// handles to the page contents (GetCount 0x14078fae0, operator[] 0x14078f350).
 
 // The condition talk ids (an int array: count 0x140186260).
 class Unk_CtsIdList
@@ -53,7 +45,7 @@ public:
     Unk_CtsIdList m_gotoConditionTalkIds;                   // +0x40
     int m_randomPick;                                       // +0x60
     int m_pad64;
-    Unk_CtsContentList m_contents;                          // +0x68
+    ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent>> m_contents;   // +0x68
     bool m_88;                                              // +0x88
 };
 MS2_CHECK_OFFSET(CTalkScript, m_npcId, 0x24);

@@ -283,15 +283,15 @@ public:
     Cube* GetCubeByEntity(egf::Entity* pEntity);
     Cube* FUN_1410b9080(Cube* pBase, int nOffset);
 };
-class Unk_Service6100017;
-template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
-template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
-template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;
-template <> Unk_Service6100017* efd::SmartPointer<Unk_Service6100017>::operator->() const;
+class CubeMapInformationService;
+template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                               // 0x1401cd150
+template <> efd::SmartPointer<CubeMapInformationService>::operator CubeMapInformationService*() const;
+template <> CubeMapInformationService* efd::SmartPointer<CubeMapInformationService>::operator->() const;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 struct Unk_EntityAppFramework;
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pKey);
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* pKey);
 float FUN_140966ea0(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966ea0)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pRight, efd::Point3* pSide);
 
@@ -326,7 +326,7 @@ public:
     void SetActor(int nObjectId);
     void* m_storage[14];
 };
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class Unk_PCMove { public: Vector3 FUN_141683290(); Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The animation service.
@@ -633,9 +633,9 @@ MS2_REPLACE_METHOD(0x1417b7fa0, State, vfunc_7, 10, 0x96F6F902);
 // @0x1417b7fb0
 void State::vfunc_8(double fTime)
 {
-    MS2Ptr<Unk_PCBaseComp_b18> spSkill = m_pOwner->vfunc_104(false, false, false);
+    MS2Ptr<CSkillRecord> spSkill = m_pOwner->vfunc_104(false, false, false);
     if (spSkill.get())
-        m_pOwner->vfunc_102(reinterpret_cast<MS2Ptr<CSkillRecord>&>(spSkill));
+        m_pOwner->vfunc_102(spSkill);
 }
 MS2_REPLACE_METHOD(0x1417b7fb0, State, vfunc_8, 173, 0xE555EBD3);
 
@@ -983,10 +983,10 @@ MS2_REPLACE_METHOD(0x1417b9430, State, vfunc_35, 31, 0x6B5D2CCA);
 // @0x1417b9460
 bool State::FUN_1417b9460()
 {
-    MS2Ptr<Unk_PCBaseComp_b18> spSkill = m_pOwner->vfunc_104(true, false, false);
+    MS2Ptr<CSkillRecord> spSkill = m_pOwner->vfunc_104(true, false, false);
     if (spSkill == 0)
         return false;
-    m_pOwner->vfunc_102(reinterpret_cast<MS2Ptr<CSkillRecord>&>(spSkill));
+    m_pOwner->vfunc_102(spSkill);
     return true;
 }
 MS2_REPLACE_METHOD(0x1417b9460, State, FUN_1417b9460, 202, 0x2798BF0C);
@@ -1040,8 +1040,8 @@ void StateClimb::vfunc_4(StateData* pData)
         if (reinterpret_cast<PC*>(pMyPC)->FUN_14165f100())
             reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
     }
-    efd::SmartPointer<Unk_Service6100017> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
-    if (kSvc.operator Unk_Service6100017*()) {
+    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (kSvc.operator CubeMapInformationService*()) {
         efd::Point3 kPos;
         m_pOwner->vfunc_18();
         if (PCBase* pPC = efd::DynamicCast<PC, PCBase>(m_pOwner)) {
@@ -1186,8 +1186,8 @@ MS2_REPLACE_METHOD(0x1417bc9b0, StateClimb, EndOfSequence, 701, 0x726973E7);
 // @0x1417bcc80
 int StateClimb::FUN_1417bcc80()
 {
-    efd::SmartPointer<Unk_Service6100017> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
-    if (kSvc.operator Unk_Service6100017*() == 0)
+    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (kSvc.operator CubeMapInformationService*() == 0)
         return 0;
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 54.0f);
@@ -1229,8 +1229,8 @@ MS2_REPLACE_METHOD(0x1417bcf20, StateClimb, FUN_1417bcf20, 256, 0xD1B40E82);
 // @0x1417bd030
 int StateClimb::FUN_1417bd030(int bLeft)
 {
-    efd::SmartPointer<Unk_Service6100017> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
-    if (kSvc.operator Unk_Service6100017*() == 0)
+    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (kSvc.operator CubeMapInformationService*() == 0)
         return 0;
     efd::Point3 kRight;
     efd::Point3 kSide;
@@ -1269,8 +1269,8 @@ MS2_REPLACE_METHOD(0x1417bd310, StateClimb, FUN_1417bd310, 259, 0x8EE1AB12);
 // @0x1417bd420
 int StateClimb::FUN_1417bd420(void* pWall)
 {
-    efd::SmartPointer<Unk_Service6100017> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
-    if (kSvc.operator Unk_Service6100017*()) {
+    efd::SmartPointer<CubeMapInformationService> kSvc(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&DAT_143b059e8)));
+    if (kSvc.operator CubeMapInformationService*()) {
         efd::Point3 kFacing = m_pOwner->GetForwardDirection();
         int anFlags[2];
         if (kFacing.x == 1.0f) {

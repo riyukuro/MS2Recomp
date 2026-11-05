@@ -24,7 +24,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/client/ms2/skillrecord.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -35,7 +35,7 @@ public:
 #include <efd/ISystemService.h>
 #include <NiAVObject.h>   // C3: NiAVObject::GetTranslate, GetRotate
 // The ref'd service (class id 0x06100017) the framework hands out; buddy.cpp keeps the same view.
-class Unk_Service6100017 : public efd::ISystemService { };
+// C3: Unk_Service6100017 was CubeMapInformationService (cubemapinformationservice_3.h)
 struct Unk_EntityAppFramework;
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -75,9 +75,9 @@ public:
     void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
 };
 
-Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* p);   // the service from the framework (DAT_143b059e8)
-// FindCubeByEntityRef takes the ref by const&, but this caller copies the id.
-class Unk_VibCubeSvc : public CubeMapInformationService { public: void* FUN_1410b8be0(egf::EntityID kId); };
+CubeMapInformationService* FUN_1401cd040(Unk_EntityAppFramework* p);   // the service from the framework (DAT_143b059e8)
+// FindCubeByEntityRef (0x1410b8be0) takes the id by value: this caller copies it.
+
 
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
 int FUN_140768010(int nRange, int nBase);                           // random number in [nBase, nBase + nRange)
@@ -272,8 +272,8 @@ int CEntityVibrator::FUN_1411cba60()
             if (1.0f <= fK) {
                 SetPosition(m_48);
                 SetRotation(m_54);
-                efd::SmartPointer<Unk_Service6100017> com(FUN_1401cd040(&DAT_143b059e8));
-                if ((Unk_Service6100017*)com != 0) {
+                efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+                if ((CubeMapInformationService*)com != 0) {
                     reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
                 }
                 if (!m_a8) {
@@ -281,8 +281,8 @@ int CEntityVibrator::FUN_1411cba60()
                         ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(m_entity.operator egf::Entity*(), 0, 0, 1);
                     }
                 }
-                Unk_VibCubeSvc* pCube = static_cast<Unk_VibCubeSvc*>(GetCubeMapService());
-                if (pCube->FUN_1410b8be0(m_entity.operator->()->GetEntityID()) != 0) {
+                CubeMapInformationService* pCube = GetCubeMapService();
+                if (pCube->FindCubeByEntityRef(m_entity.operator->()->GetEntityID()) != 0) {
                     Unk_VibCubeSub* pSub = reinterpret_cast<Unk_VibCubeSub*>(pCube->FUN_1410b9e70());
                     Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
                     pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
@@ -344,8 +344,8 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
             ((CPhysXHelper*)FUN_1409f7ca0())->FUN_141689ec0(entB, 5, 0, 1);
         }
     }
-    efd::SmartPointer<Unk_Service6100017> com(FUN_1401cd040(&DAT_143b059e8));
-    if ((Unk_Service6100017*)com != 0) {
+    efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+    if ((CubeMapInformationService*)com != 0) {
         reinterpret_cast<CubeMapInformationService*>(com.operator->())->RemovePhysXActor(reinterpret_cast<const Unk_CMISEntityRef&>(m_entity.operator->()->GetEntityID()));
     }
     DAT_143ad1b20 = DAT_143ad1b20 + 1;
@@ -467,8 +467,8 @@ void CEntityVibrator::FUN_1411cd3b0()
     SetPosition(m_48);
     SetRotation(m_54);
     if (m_7c != 0) {
-        efd::SmartPointer<Unk_Service6100017> com(FUN_1401cd040(&DAT_143b059e8));
-        if ((Unk_Service6100017*)com != 0) {
+        efd::SmartPointer<CubeMapInformationService> com(FUN_1401cd040(&DAT_143b059e8));
+        if ((CubeMapInformationService*)com != 0) {
             reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
         }
         if (!m_a8) {

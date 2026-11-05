@@ -39,7 +39,7 @@ public:
     explicit BasicWriter(const Allocator& alloc = Allocator()) : buffer_(alloc) {}
     std::size_t size() const { return buffer_.size(); }
     std::basic_string<Char> str() const { return std::basic_string<Char>(&buffer_[0], buffer_.size()); }
-    void write(BasicStringRef<Char> format, ArgList args) { BasicFormatter<Char>(*this).FUN_1402daa70(format, args); }
+    void write(BasicStringRef<Char> format, ArgList args) { BasicFormatter<Char>(*this).format(format, args); }
 
 private:
     internal::Array<Char, internal::INLINE_BUFFER_SIZE, Allocator> buffer_;

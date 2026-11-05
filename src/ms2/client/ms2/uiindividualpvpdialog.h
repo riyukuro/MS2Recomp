@@ -12,7 +12,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/astextfield.h"
 
-class Unk_140acd6e0;
+class ASButton;
 
 class UIIndividualPvPDialog : public UIDialog
 {
@@ -43,12 +43,12 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_140acd6e0> m_spJoin;                             // +0x178 "m_joinPVP"
-    MS2Ptr<Unk_140acd6e0> m_spRegister;                         // +0x188 "m_registPVP"
-    MS2Ptr<Unk_140acd6e0> m_spUnregister;                       // +0x198 "m_unregistPVP"
+    MS2Ptr<ASButton> m_spJoin;                             // +0x178 "m_joinPVP"
+    MS2Ptr<ASButton> m_spRegister;                         // +0x188 "m_registPVP"
+    MS2Ptr<ASButton> m_spUnregister;                       // +0x198 "m_unregistPVP"
     MS2Ptr<ASTextField> m_spName;                               // +0x1a8 "m_arenaName"
     MS2Ptr<ASTextField> m_spDetail;                             // +0x1b8 "m_arenaDetail"
-    std::map<int, MS2Ptr<Unk_140acd6e0> > m_arenas;             // +0x1c8 arena id -> "m_arena<id>"
+    std::map<int, MS2Ptr<ASButton> > m_arenas;             // +0x1c8 arena id -> "m_arena<id>"
     int m_nLastPage;                                            // +0x1d8 1; the remembered arena
     int m_nSelected;                                            // +0x1dc the selected arena
     CStringW m_strBannerDir;                                    // +0x1e0 the banner folder

@@ -1,7 +1,7 @@
 // uivideocontents.h - PLACEHOLDER for UIVideoContents (RTTI .?AVUIVideoContents@@, 0x78 bytes). NOT an original
 // header. Base UIObject. Primary vftable 0x142ef50c8 (55 slots), IMessageListener-in-UIVideoContents 0x142ef5288.
-// Ctor 0x14135aa20, dtor 0x14135aaa0. Its code (and the COMDATs GetChild<Unk_ASVideoPlayer> 0x14135b280,
-// MS2Ptr<Unk_ASVideoPlayer> members 0x14135b390..0x14135b3d0) lives in client\ms2\uiupperhuddialog.cpp.
+// Ctor 0x14135aa20, dtor 0x14135aaa0. Its code (and the COMDATs GetChild<ASVideoPlayer> 0x14135b280,
+// MS2Ptr<ASVideoPlayer> members 0x14135b390..0x14135b3d0) lives in client\ms2\uiupperhuddialog.cpp.
 // Ownership and slot rules: uiswfentity.h.
 #pragma once
 
@@ -14,12 +14,12 @@
 
 // The AS video player clip ("m_videoPlayer"): ASVideoPlayer (RTTI .?AVASVideoPlayer@@, base ASVideo, vftable 0x143116770:
 // only the dtor is overridden), recovered with ?\asvideoplayer.cpp (src/ms2/gfxui/asvideoplayer.cpp, 0x1422e92e0-
-// 0x1422e9a40). The Unk_ name is kept for the existing callers; the comments name the AS member / method each one uses.
-class Unk_ASVideoPlayer : public ASVideo
+// 0x1422e9a40). The comments name the AS member / method each one uses.
+class ASVideoPlayer : public ASVideo
 {
 public:
-    Unk_ASVideoPlayer(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e92e0
-    virtual ~Unk_ASVideoPlayer();                                       // 0 0x1422e9330 (scalar deleting 0x1422e9a00)
+    ASVideoPlayer(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e92e0
+    virtual ~ASVideoPlayer();                                       // 0 0x1422e9330 (scalar deleting 0x1422e9a00)
     void FUN_1422e9360(const CString& strMode);     // set "scaleMode"
     CString FUN_1422e93b0();                        // "scaleMode"
     void FUN_1422e9440(int n);                      // (empty)
@@ -45,7 +45,7 @@ public:
     void FUN_1422e99b0(float fX, float fY);         // setScale(x, y)
     // width / height: ASDisplayObject::FUN_1422c1500 / FUN_1422c1530 (inherited)
 };
-MS2_CHECK_SIZE(Unk_ASVideoPlayer, 0x80);
+MS2_CHECK_SIZE(ASVideoPlayer, 0x80);
 
 class UIVideoContents : public UIObject
 {

@@ -17,7 +17,7 @@
 #include "ms2/placeholder/uiugceventlistener.h"
 
 class CUgcPreReserve;
-class Unk_WcTitle;
+class ASLabel;
 
 // The broken-down time (0x30 bytes, unit_14088dbf0) built by FUN_14088dfa0(out, time, hourOffset).
 struct Unk_DateParts
@@ -89,7 +89,7 @@ private:
     int m_228;                                                  // +0x228 the tick of the last check
     int m_22c;                                                  // +0x22c the thumbnail needs a refresh
     int m_230;                                                  // +0x230 the hours before the check time
-    MS2Ptr<Unk_WcTitle> m_238;                                  // +0x238 the price text
+    MS2Ptr<ASLabel> m_238;                                      // +0x238 the price text ("m_labelMeso")
 };
 MS2_CHECK_SIZE(UIUGCBannerDialog, 0x248);
 MS2_CHECK_OFFSET(UIUGCBannerDialog, m_188, 0x188);

@@ -39,10 +39,10 @@
 #include "ms2/commonfiles/stream.h"
 // commonstruct_wa.h gives NpcShopItemLife the real handle type; this unit only sees the 16-byte m_slot188, so keep its local stand-in.
 #define NpcShopItemLife Unk_WaNpcShopItemLife
-#define Unk_ShopLifeRef Unk_WaShopLifeRef
+//
 #include "ms2/commonfiles/commonstruct_wa.h"
 #undef NpcShopItemLife
-#undef Unk_ShopLifeRef
+//
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2format.h"
 #include <vector>
@@ -68,7 +68,7 @@ class Unk_ItemEquipData : public CItemData
 {
 };
 class Unk_BmPriceMgr* FUN_1401c0db0();
-class Unk_ItemEnchantData : public CItemStatus { };
+// C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 class Unk_ItemOwnerRef : public CItemTransfer {};
 extern __int64 GetServerTime();
 
@@ -930,7 +930,7 @@ __int64 CItem::FUN_1405293b0()
 MS2_REPLACE_METHOD(0x1405293B0, CItem, FUN_1405293b0, 89, 0x8AEEB83D);
 
 // @0x1405294a0
-unsigned char CItem::FUN_1405294a0()
+int CItem::FUN_1405294a0()
 {
     MS2_ASSERT_MSG_AT(0xb4c, L"m_pCoupleInfo != NULL", m_spCouple.get() != 0);
     return m_spCouple->m_b28;
@@ -1100,9 +1100,9 @@ Unk_UserProxyItemData* CItem::FUN_140527870()
 MS2_REPLACE_METHOD(0x140527870, CItem, FUN_140527870, 33, 0x82E03B80);
 
 // @0x1405278a0
-Unk_ItemEnchantData* CItem::FUN_1405278a0()
+CItemStatus* CItem::FUN_1405278a0()
 {
-    return static_cast<Unk_ItemEnchantData*>(m_spStatus.get());
+    return m_spStatus.get();
 }
 MS2_REPLACE_METHOD(0x1405278A0, CItem, FUN_1405278a0, 33, 0x1C66B116);
 
@@ -2362,7 +2362,7 @@ MS2_REPLACE_METHOD(0x140528E80, CItem, FUN_140528e80, 254, 0x4CEA5801);
 // @0x140528f90
 int CItem::FUN_140528f90()
 {
-    Unk_ItemEnchantData* pEnchant = FUN_1405278a0();
+    CItemStatus* pEnchant = FUN_1405278a0();
     if (pEnchant == 0)
         return 0;
     CItemEnchantInfo* pInfo = pEnchant->GetEnchant();

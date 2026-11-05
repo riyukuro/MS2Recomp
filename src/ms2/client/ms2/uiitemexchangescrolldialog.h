@@ -22,7 +22,7 @@ class ASData;
 class ASObj;
 class CItem;
 class CInPacket;
-class Unk_140acd6e0;
+class ASButton;
 
 class UIItemExchangeScrollDialog : public UIDialog, public UIStatusEventListener
 {
@@ -76,11 +76,11 @@ private:
     ATL::CAtlArray<CString> m_infoKeys;                             // +0x190 "<name>_info_<n>" slot binds
     ATL::CAtlArray<CString> m_dragKeys;                             // +0x1b0 "<name>_drag_<n>" slot binds
     MS2Ptr<ASMovieClip> m_spScroll;                                 // +0x1d0 "m_scroll"
-    MS2Ptr<Unk_140acd6e0> m_spOk;                                   // +0x1e0 "m_ok"
+    MS2Ptr<ASButton> m_spOk;                                   // +0x1e0 "m_ok"
     MS2Ptr<CExchangeItemInfo> m_spExchange;                         // +0x1f0 the table row
     MS2SvrPtr<CIngredientContainer> m_spIngredients;                // +0x200 the ingredients the server sent (upgrade)
-    MS2Ptr<Unk_140acd6e0> m_spDebugAddMax;                          // +0x210 "m_debugAddMax"
-    MS2Ptr<Unk_140acd6e0> m_spDebugAdd10;                           // +0x220 "m_debugAdd10"
+    MS2Ptr<ASButton> m_spDebugAddMax;                          // +0x210 "m_debugAddMax"
+    MS2Ptr<ASButton> m_spDebugAdd10;                           // +0x220 "m_debugAdd10"
 };
 MS2_CHECK_SIZE(UIItemExchangeScrollDialog, 0x230);
 MS2_CHECK_OFFSET(UIItemExchangeScrollDialog, m_uidScroll, 0x180);

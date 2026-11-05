@@ -9,9 +9,9 @@
 //   - Ctor/dtor/vfunc_1/vfunc_2 and table accessors are owned by fielddata.cpp; other isolated units bind through
 //     progress/symbols-manual.tsv (ctor/dtor/vfuncs) or the FUN_<va> auto-binding (statics). Do NOT define them in
 //     another unit. An override calls the base as `CFieldData::vfunc_1(node)`.
-//   - The XML node type is the game's TinyXML element, spelled `Unk_140165cf0` like the done units
-//     (FirstChildElement = Unk_140165cf0::FUN_140165cf0). Only forward-declared here, so a unit may still define its
-//     local `class Unk_140165cf0 { ... };` after including this header.
+//   - The XML node type is the game's TinyXML element, spelled `TiXmlElement` like the done units
+//     (FirstChildElement = TiXmlElement::FUN_140165cf0). Only forward-declared here, so a unit may still define its
+//     local `class TiXmlElement { ... };` after including this header.
 //   - Do not change the slot list or the layout. If a layout is proven wrong, report it to the coordinator.
 //
 // Proven (exe):
@@ -45,7 +45,7 @@
 #include "ms2/placeholder/cobjectcount.h"
 #include "ms2/placeholder/cptred.h"
 
-class Unk_140165cf0;   // game TinyXML element (TiXmlElement/TiXmlNode); FirstChildElement = FUN_140165cf0
+class TiXmlElement;   // game TinyXML element (TiXmlElement/TiXmlNode); FirstChildElement = FUN_140165cf0
 
 class CFieldData : public CObjectCount<CFieldData>, public CPtred
 {
@@ -55,7 +55,7 @@ public:
     // slot 1 (0x140374530): reads the <fieldData> element's children (<locale>, <feature>, <xblock>, <property>, a
     // drop node, <split>, <camera>, <cashCall>, <indoor>). Returns false when <xblock> is empty or channelGroupID is
     // out of 0..7 or the entrance buff ID/level counts differ.
-    virtual bool vfunc_1(Unk_140165cf0* node);
+    virtual bool vfunc_1(TiXmlElement* node);
     // slot 2 (0x1403757a0): return m_nCapacity.
     virtual int vfunc_2();
 

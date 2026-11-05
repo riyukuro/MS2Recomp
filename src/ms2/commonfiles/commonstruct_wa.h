@@ -7,6 +7,7 @@
 #include "ms2/commonfiles/stream.h"
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/mstime.h"
@@ -18,40 +19,19 @@ MS2_CHECK_SIZE(Unk_It, 8);
 class CIngredientInfo;
 class CIngredientContainer;
 
-// Intrusive smart pointer (16 bytes: unknown, pointer) to CIngredientInfo. Template COMDATs at 0x14027c9b0.. (later part).
-class Unk_IngRef {
-public:
-    Unk_IngRef(int);                       // 0x14027c9f0
-    Unk_IngRef(CIngredientInfo*);          // 0x14027ca10
-    Unk_IngRef(const Unk_IngRef&);         // 0x14027c9b0
-    ~Unk_IngRef();                         // 0x14027df70
-    bool operator==(CIngredientInfo*) const;   // 0x14027ec60
-    CIngredientInfo* operator->() const;       // 0x14027f2c0
-    CIngredientInfo* FUN_14027f250() const;
-    CIngredientInfo* FUN_140281f10() const;
-    void* m_unknown; CIngredientInfo* m_p;
-};
-MS2_CHECK_SIZE(Unk_IngRef, 16);
+// The ingredient smart pointer: MS2Ptr<CIngredientInfo> (ascript.h). Its member COMDATs are at 0x14027c9b0.. (later part):
+// MS2Ptr(int) 0x14027c9f0, MS2Ptr(T*) 0x14027ca10, copy 0x14027c9b0, ~ 0x14027df70, == 0x14027ec60, get 0x14027f250,
+// -> 0x14027f2c0. Unk_IngRef is the old stand-in name, kept until the callers are renamed.
+typedef MS2Ptr<CIngredientInfo> Unk_IngRef;
 
 // std::vector<Unk_IngRef> (24 bytes)
 class Unk_IngVec {
 public:
     Unk_IngVec() noexcept;                 // 0x14027d720
     ~Unk_IngVec();                         // 0x14027e480
-    void FUN_14028a610() noexcept;         // clear
-    void FUN_14028b3a0(size_t);            // reserve
-    size_t FUN_14028b500();                // size
-    void FUN_14028b330(Unk_IngRef&);       // push_back
-    void FUN_14028b300(Unk_IngRef&);       // push_back (rvalue)
-    Unk_IngRef* FUN_14028a0b0(size_t);
-    Unk_IngRef* FUN_14028a0f0(size_t);
-    Unk_IngRef* FUN_14027f1f0(size_t);
-    Unk_IngRef* FUN_14027f220(size_t);
-    bool FUN_14028a8c0();                  // empty
-    Unk_IngRef* FUN_140289d60();
-    Unk_IngRef* FUN_140289dc0();
-    Unk_It* FUN_14028aa90(Unk_It*);        // end
-    Unk_It* FUN_14028a260(Unk_It*);        // begin
+    // clear, reserve, size, at/at const, empty, _Unchecked_begin/end, begin, end, push_back(const&) and
+    // operator[] const: called as the std::vector members (no stand-in callers left)
+    // push_back(T&&) 0x14028b300: also called as the std::vector member
     void FUN_14027c290(Unk_It*, Unk_It, Unk_It, Unk_It);   // insert(range), returns the iterator
     void* m_begin; void* m_end; void* m_cap;
 };
@@ -194,24 +174,9 @@ public:
 };
 MS2_CHECK_SIZE(WeddingHallReservationFee, 0x40);
 
-// Smart pointer (16 bytes) to NpcShopItemLife.
+template <class T> class MS2SvrPtr;   // NpcShopItemLife's handle: MS2SvrPtr<CPtred> (ms2svrptr.h, the type CItem's slot +0x188 holds)
 class NpcShopItemLife;
-class Unk_ShopLifeRef {
-public:
-    Unk_ShopLifeRef(NpcShopItemLife*);                 // 0x14027cd20
-    Unk_ShopLifeRef(Unk_ShopLifeRef&&);                // 0x14027ccf0
-    Unk_ShopLifeRef();                                 // 0x14052c0d0 (npcshopproductbase.cpp)
-    Unk_ShopLifeRef(const Unk_ShopLifeRef&);           // 0x14052c090 (npcshopproductbase.cpp)
-    ~Unk_ShopLifeRef();                                // 0x14027e150
-    NpcShopItemLife* operator->() const;               // 0x14027f340
-    Unk_ShopLifeRef(int) { m_p = 0; }                  // 0x1406ee480 (inline COMDAT, commonfiles\npcshopdata.cpp)
-    Unk_ShopLifeRef& operator=(const Unk_ShopLifeRef&); // 0x14052caa0
-    operator NpcShopItemLife*() const;                 // 0x14052ce00
-    NpcShopItemLife& operator*() const { return *m_p; } // 0x1406f24f0 (inline COMDAT, commonfiles\npcshopdata.cpp)
-    bool operator==(NpcShopItemLife* p) const { return m_p == p; }   // 0x1409ede90 (inline COMDAT, client\ms2\astooltip.cpp)
-    void* m_unknown; NpcShopItemLife* m_p;
-};
-MS2_CHECK_SIZE(Unk_ShopLifeRef, 16);
+// C3 #10: the Unk_ShopLifeRef view (NpcShopItemLife's 16-byte handle) is MS2SvrPtr<CPtred>; the class is gone.
 
 class Unk_UIntArr {
 public:
@@ -235,7 +200,7 @@ public:
     NpcShopItemLife();                     // 0x14026e9b0
     // ~NpcShopItemLife (0x14027e8e0) is implicit: the exe dtor stores no vptr.
     bool IsDifferentFrom(NpcShopItemLife* other);
-    Unk_ShopLifeRef Clone();
+    MS2SvrPtr<CPtred> Clone();
     bool FUN_14026ebc0(void* xml);
     void Write(COutputStream& out);
     void Read(CInPacket& in);
@@ -297,12 +262,10 @@ public:
     ~Unk_HistList();                       // 0x14027e3a0
     void FUN_14028a4b0() noexcept;                // clear
     Unk_It* FUN_14028a1a0(Unk_It*) noexcept;   // begin
-    Unk_It* FUN_14028a9d0(Unk_It*);        // end
-    Unk_It* FUN_14028aca0(Unk_It*, Unk_It);// erase
+    // C3: end / erase / push_back / _Unchecked_end (14028a9d0 / 14028aca0 / 14028b260 / 140289d80)
+    // are called as std::list<MS2Ptr<CUserChangeableItemHistory>> members (LHist in commonstruct_wa.cpp).
     Unk_HistRef* FUN_14028aef0();          // front (returns pointer to element)
-    void FUN_14028b260(Unk_HistRef&);      // push_back
     Unk_It* FUN_140289d20(Unk_It*);        // _Unchecked_begin
-    void FUN_140289d80(Unk_It*);           // end
     __int64 FUN_14028b410();               // size
     void* m_head; size_t m_size;
 };

@@ -10,7 +10,7 @@
 class CMsgBoxData;
 class NotifyObject;
 class Unk_BSCamera;
-class Unk_140acd6e0;                                    // a button child
+class ASButton;                                    // a button child
 
 class UIItemEditDialog : public UIDialog, public UIItemEventListener, public IItemCustomizeEventListener
 {

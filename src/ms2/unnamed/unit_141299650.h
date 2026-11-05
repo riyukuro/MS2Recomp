@@ -31,7 +31,7 @@ public:
     void Summon();                                              // 0x141299be0 send the typed name
     void SetName(CString strName);                              // 0x141299eb0 m_178 = strName
     MS2Ptr<ASTextInput> FUN_14129a040(const CString& strName, MS2Ptr<ASTextInput>& out);    // 0x14129a040 bind a text input
-    MS2Ptr<ASButton> FUN_140bc6d10(const CString& strName, MS2Ptr<ASButton>& out);   // bind a button
+    // C3: the button binder is UICashAttendDialog::FUN_140bc6d10<ASButton> (0x140bc6d10), called through a view in the .cpp
 
 private:
     MS2_LAYOUT_FRIEND;

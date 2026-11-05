@@ -275,7 +275,7 @@
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10
 // MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@QEAAPEAXI@Z 0x141bfa050
 // MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@QEAAPEAXI@Z 0x141bfa090
-// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@QEAAPEAXI@Z 0x141bfa0d0
+// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TPtrValue@UCGameRankingData@@@@@std@@QEAAPEAXI@Z 0x141bfa0d0
 // MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f50
 // MS2-PIN: ??_G?$pair@$$CB_JV?$MS2Ptr@VUIDebugTooltip@@@@@std@@QEAAPEAXI@Z 0x141bfa010
 // MS2-PIN: ??_GNotifyCreateMyPC@@UEAAPEAXI@Z 0x141bfa9b0
@@ -311,7 +311,7 @@
 #include <egmAnimation/ActorMessages.h>
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/tptrvalue.h"
-
+#include "ms2/client/ms2/gamerankingcli.h"        // CGameRankingData (m_a18 = pair<CStringA, TPtrValue<CGameRankingData> >)
 // The container drivers of worldservice_inst.inl, copied: the CAtlMap value types whose destructors are not trivial in the exe
 // (CAtlMap::FreeNode then calls the CNode scalar deleting dtor) are unit-local stand-ins with an out-of-line dtor.
 template <class K> static K WsKey(int n) { return (K)n; }
@@ -428,7 +428,7 @@ void Unk_WsInst6(WorldService* w)
     WsDriveRB(w->m_618, 1);
     WsDriveRB(w->m_7c8, 1);
     w->m_1e8[1].insert(2);
-    TFunctor<void, EmptyParam> fnWs(w, &WorldService::FUN_141bc1640);
+    TFunctor<void, EmptyParam> fnWs(w, reinterpret_cast<void (WorldService::*)()>(&WorldService::FUN_141bc1640));
     COptimizer* pOptimizer = 0;
     TFunctor<void, EmptyParam> fnOpt(pOptimizer, reinterpret_cast<void (COptimizer::*)()>(&COptimizer::FUN_1414a5a30));
     delete new NotifyChangeServer;
@@ -578,7 +578,7 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     { std::map<__int64, MS2Ptr<UIDebugTooltip> > m; m.clear(); }                           // m_ad0
     { std::vector<std::pair<CStringA, CStringA> > v; v.clear(); }                          // FUN_141bdb1b0's local
     { std::vector<std::pair<CStringA, CStringW> > v; v.clear(); }                          // m_a00
-    { std::vector<std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > > v; v.clear(); }             // m_a18
+    { std::vector<std::pair<CStringA, TPtrValue<CGameRankingData> > > v; v.clear(); }             // m_a18
     // classes WorldService creates: their implicit ctors emit the vftables and the scalar deleting dtors
     { egmAnimation::ActorRemovedMessage msg; }
     delete new CInteractWebObject();
@@ -860,7 +860,7 @@ struct Unk_WsA_RegRef;
 struct Unk_WsE_TagPtr;
 class Unk_WsB_Marker;
 class Unk_WsB_Spawn;
-class Unk_WsB_Prop;
+class CInteractObject;
 
 // MS2-FUNCTIONAL: Lookup(key) of a stand-in map plus an MS2Ptr<CPtred> assignment (m_350)
 bool FUN_141c06aa0(void* map, unsigned key, Unk_WsA_FieldRef* out)
@@ -913,7 +913,7 @@ bool FUN_141c07140(void* map, const CString& key, efd::SmartPointer<Unk_WsB_Spaw
 }
 
 // MS2-FUNCTIONAL: Lookup(key) of the map worldservice_1 passes plus an MS2Ptr<CPtred> assignment (m_678)
-bool FUN_141c07290(void* map, const CString& key, MS2Ptr<Unk_WsB_Prop>& out)
+bool FUN_141c07290(void* map, const CString& key, MS2Ptr<CInteractObject>& out)
 {
     ATL::CRBMap<CString, Unk_WsV678>::CPair* p = static_cast<ATL::CRBMap<CString, Unk_WsV678>*>(map)->Lookup(key);
     return WsLookupOut(p ? &p->m_value : 0, &out);

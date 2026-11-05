@@ -29,7 +29,7 @@ enum SkillStateHit { };
 struct SkillArrow
 {
     SkillArrow();                                           // 0x1407dee30
-    int Load(Unk_140165cf0* pElem);                         // 0x1407df190
+    int Load(TiXmlElement* pElem);                         // 0x1407df190
     void Save(void* pParent);                               // 0x1407df6e0
     bool operator!=(const SkillArrow& o) const;             // 0x1407def80
     int IsNonTargetOne() const;                             // 0x1407dfbb0
@@ -56,7 +56,7 @@ MS2_CHECK_SIZE(SkillArrow, 0x68);
 struct SkillDamage
 {
     SkillDamage();                                          // 0x1407dfbf0
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e01c0
+    int Load(TiXmlElement* pElem);                         // 0x1407e01c0
     void Save(void* pParent);                               // 0x1407e0720
     bool operator!=(const SkillDamage& o) const;            // 0x1407dfdf0
     int RollPush() const;                                   // 0x1407e0ee0
@@ -103,7 +103,7 @@ MS2_CHECK_SIZE(SkillDamage, 0xb0);
 struct SkillPause
 {
     SkillPause();                                           // 0x1407e1020
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e10c0
+    int Load(TiXmlElement* pElem);                         // 0x1407e10c0
     int Save(void* pParent) const;                          // 0x1407e1150
     bool operator!=(const SkillPause& o) const;             // 0x1407e1060
     float GetShakeRate() const;                             // 0x1407e1170
@@ -117,7 +117,7 @@ MS2_CHECK_SIZE(SkillPause, 0xc);
 struct SkillChain
 {
     SkillChain();                                           // 0x1407e11b0
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e1220
+    int Load(TiXmlElement* pElem);                         // 0x1407e1220
     int Save(void* pParent) const;                          // 0x1407e12d0
     bool operator!=(const SkillChain& o) const;             // 0x1407e11e0
     int HasEffect() const;                                  // 0x1407e12f0
@@ -134,7 +134,7 @@ public:
     unsigned char HasPause() const;                         // 0x1407e19c0
     SkillAttackMethodType GetAttackMethodType() const;      // 0x1407e1a10
     const CString& GetArrowEffect() const;                  // 0x1407e1a30
-    int Load(Unk_140165cf0* pElem);                         // 0x1407e1a50
+    int Load(TiXmlElement* pElem);                         // 0x1407e1a50
     int Save(void* pParent);                                // 0x1407e2180
 
     SkillAttackType m_eAttackType;                          // +0x18 "attacktype"

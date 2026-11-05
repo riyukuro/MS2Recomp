@@ -200,7 +200,7 @@ public:
     class PCBase* GetRider();
 };
 #include "ms2/client/ms2/pcbase.h"
-class AdditionalCliList { public: unsigned FUN_1409709b0(); int FUN_140970a40(); };   // C3: member view
+#include "ms2/client/ms2/additionalclilist.h"   // C3: AdditionalCliList (the local member view is gone)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {

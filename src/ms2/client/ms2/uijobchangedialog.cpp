@@ -40,7 +40,7 @@
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/commonfiles/os.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -57,7 +57,7 @@ class ASDialog : public ASDisplayObject
 class Unk_JcFileSystem : public CFileSystem { };
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);
+CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
@@ -210,11 +210,11 @@ void UIJobChangeDialog::LoadJobPreview()
     bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* root = ((class Unk_140165cf0*)((class Unk_XmlNode*)(((Unk_140165cf0*)&doc)))->FirstChild("ms2"));
+    TiXmlElement* root = ((class TiXmlElement*)((class Unk_XmlNode*)(((TiXmlElement*)&doc)))->FirstChild("ms2"));
     if (root == 0)
         return;
-    for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
-         node = ((Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("job")))
+    for (TiXmlElement* node = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
+         node = ((TiXmlElement*)((class Unk_XmlNode*)(node))->NextSibling("job")))
     {
         int nJob = 0;
         int nDifficulty = 0;
@@ -222,8 +222,8 @@ void UIJobChangeDialog::LoadJobPreview()
         XmlGetAttr((class TiXmlElement*)(node), "difficulty", nDifficulty);
         MS2Ptr<JobPreview> sp(new JobPreview());
         sp->m_nDifficulty = nDifficulty;
-        for (Unk_140165cf0* skill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("skill")); skill != 0;
-             skill = ((Unk_140165cf0*)((class Unk_XmlNode*)(skill))->NextSibling("skill")))
+        for (TiXmlElement* skill = ((class TiXmlElement*)((class Unk_XmlNode*)(node))->FirstChild("skill")); skill != 0;
+             skill = ((TiXmlElement*)((class Unk_XmlNode*)(skill))->NextSibling("skill")))
         {
             int nSkill = 0;
             int nLevel = 0;
@@ -243,11 +243,11 @@ void UIJobChangeDialog::LoadJobDescription()
     bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* root = ((class Unk_140165cf0*)((class Unk_XmlNode*)(((Unk_140165cf0*)&doc)))->FirstChild("ms2"));
+    TiXmlElement* root = ((class TiXmlElement*)((class Unk_XmlNode*)(((TiXmlElement*)&doc)))->FirstChild("ms2"));
     if (root == 0)
         return;
-    for (Unk_140165cf0* node = ((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
-         node = ((Unk_140165cf0*)((class Unk_XmlNode*)(node))->NextSibling("job")))
+    for (TiXmlElement* node = ((class TiXmlElement*)((class Unk_XmlNode*)(root))->FirstChild("job")); node != 0;
+         node = ((TiXmlElement*)((class Unk_XmlNode*)(node))->NextSibling("job")))
     {
         int nJob = 0;
         XmlGetAttr((class TiXmlElement*)(node), "code", nJob);

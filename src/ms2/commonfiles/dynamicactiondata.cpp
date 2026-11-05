@@ -31,21 +31,21 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                               // path of a Table file
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
+CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW);
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CString FUN_14016a5c0(const char* psz, int n);
 
@@ -136,7 +136,7 @@ void CDynamicActionData::Load()
     CString strPath = FUN_14071ae20("korDynamicAction.xml");
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -146,13 +146,13 @@ void CDynamicActionData::Load()
     spDefaults = Unk_GrNewTag(0);
     TPtrValue<std::set<unsigned> > spAll;
     spAll = Unk_GrNewTag(0);
-    std::vector<Unk_140165cf0*> nodes;
+    std::vector<TiXmlElement*> nodes;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "key", "skillID", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&nodes));
-    std::vector<Unk_140165cf0*>& rNodes = nodes;
-    std::vector<Unk_140165cf0*>::const_iterator itEnd = rNodes.end();
-    for (std::vector<Unk_140165cf0*>::const_iterator it = rNodes.begin(); it != itEnd; ++it)
+    std::vector<TiXmlElement*>& rNodes = nodes;
+    std::vector<TiXmlElement*>::const_iterator itEnd = rNodes.end();
+    for (std::vector<TiXmlElement*>::const_iterator it = rNodes.begin(); it != itEnd; ++it)
     {
-        Unk_140165cf0* pNode = *it;
+        TiXmlElement* pNode = *it;
         MS2Ptr<CDynamicActionData> spRow(new CDynamicActionData);
         spRow->FUN_1401d1160(CString(strPath));
         XmlGetAttr((class TiXmlElement*)(pNode), "skillID", spRow->m_nSkillId);

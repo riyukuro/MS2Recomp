@@ -20,7 +20,7 @@ class ASObj;
 class ASTextField;
 class CLearningQuestData;
 class NotifyObject;
-class Unk_140acd6e0;
+class ASButton;
 
 class UILearningQuestDialog : public UIDialog, public UIQuestEventListener, public UIStatusEventListener
 {

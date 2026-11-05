@@ -534,15 +534,11 @@ void* FUN_140bd6960(void* p);
 size_t* FUN_140bd6e60(Unk_EdListVal* pList);
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode);
 void* FUN_140bd69b0(void* p);
-void FUN_140bd4a30(Unk_EdAlc* pAlc, void* p);
-void FUN_140bd76e0(Unk_EdAlc* pAlc, Unk_EdNode* pNode, size_t nCount);
 void FUN_140bd4cc0(Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd4b50(Unk_EdNode** p);
 void FUN_140bd4d50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
-Unk_EdMapPair* FUN_140bd57f0(Unk_EdIter* pIt);
-Unk_EdMapPair* FUN_140bd47c0(Unk_EdMapPair* p);
 Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p);
 void* FUN_140bd69d0(void* p);
 Unk_EdListVal* FUN_140bd6890(Unk_EdListVal* pList);
@@ -556,22 +552,27 @@ void FUN_140bd7140(Unk_EdListVal* pList);
 void FUN_140bd5c10(CPtred* p);
 Unk_EdIter* FUN_140bd4bc0(void* pTree, Unk_EdIter* pOut, const int* pKey);
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt);
-Unk_EdTreeNode* FUN_140bd6d90(Unk_EdTreeNode* pNode);
-Unk_EdNode** FUN_140bd6e20(Unk_EdListVal* pList);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void FUN_140a3cfe0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdAlc* FUN_140bd6a00(Unk_EdListVal* pList);
 void FUN_140bd7520(Unk_EdListVal* pList) noexcept;
 void FUN_140bd66f0(Unk_EdListVal* pList, Unk_EdNode* pNode);
 Unk_EdIter* FUN_140bd4ed0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
+// The real containers behind the views above (the std members are called directly).
+typedef std::list<MS2Ptr<UIChatEmoticonInfo> > Unk_EdEmoList;
+typedef std::map<int, Unk_EdEmoList> Unk_EdEmoMap;
+typedef std::allocator<std::_List_node<UIChatEmoticonTab, void*> > Unk_EdTabNodeAlc;
+typedef std::_Default_allocator_traits<Unk_EdTabNodeAlc> Unk_EdTabNodeTraits;
+typedef std::_Tree_val<std::_Tree_simple_types<Unk_EdEmoMap::value_type> > Unk_EdEmoTreeVal;
+typedef std::_List_alloc<std::_List_base_types<MS2Ptr<UIChatEmoticonInfo>, std::allocator<MS2Ptr<UIChatEmoticonInfo> > > > Unk_EdEmoListAlc;
 
 // @0x140bd2f60
 void FUN_140bd2f60(Unk_EdAlc* pAlc, Unk_EdNode* pNode) noexcept
 {
     Unk_EdAlc alc;
-    FUN_140bd4a30(&alc, FUN_140bd4790(&pNode->m_pNext));
-    FUN_140bd4a30(&alc, FUN_140bd4790(&pNode->m_pPrev));
-    FUN_140bd76e0(&alc, pNode, 1);
+    Unk_EdTabNodeTraits::destroy(reinterpret_cast<Unk_EdTabNodeAlc&>(alc), (UIChatEmoticonTab*)FUN_140bd4790(&pNode->m_pNext));
+    Unk_EdTabNodeTraits::destroy(reinterpret_cast<Unk_EdTabNodeAlc&>(alc), (UIChatEmoticonTab*)FUN_140bd4790(&pNode->m_pPrev));
+    Unk_EdTabNodeTraits::deallocate(reinterpret_cast<Unk_EdTabNodeAlc&>(alc), reinterpret_cast<std::_List_node<UIChatEmoticonTab, void*>*>(pNode), 1);
 }
 
 // @0x140bd4d30
@@ -708,7 +709,7 @@ Unk_EdTreeIter* FUN_140bd58c0(Unk_EdTreeIter* pIt)
         pIt->m_pNode = pParent;
     }
     else
-        pIt->m_pNode = FUN_140bd6d90(pIt->m_pNode->m_pRight);
+        pIt->m_pNode = reinterpret_cast<Unk_EdTreeNode*>(Unk_EdEmoTreeVal::_Min(reinterpret_cast<Unk_EdEmoTreeVal::_Nodeptr>(pIt->m_pNode->m_pRight)));
     return pIt;
 }
 
@@ -750,7 +751,7 @@ void FUN_140bd66f0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 {
     Unk_EdAlc* pAlc = FUN_140bd6a00(pList);
-    FUN_140bd4a30(pAlc, std::addressof(*reinterpret_cast<int*>(pNode + 1)));
+    Unk_EdTabNodeTraits::destroy(reinterpret_cast<Unk_EdTabNodeAlc&>(*pAlc), (UIChatEmoticonTab*)std::addressof(*reinterpret_cast<int*>(pNode + 1)));
     FUN_140bd2f60(pAlc, pNode);
 }
 
@@ -804,7 +805,7 @@ Unk_EdIter* FUN_140bd7180(Unk_EdListVal* pList, Unk_EdIter* pOut)
 // @0x140bd71c0
 Unk_EdIter* FUN_140bd71c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
 {
-    FUN_140bd4ed0(pOut, (*FUN_140bd6e20(pList))->m_pNext, 0);
+    FUN_140bd4ed0(pOut, reinterpret_cast<Unk_EdNode*>(reinterpret_cast<Unk_EdEmoListAlc*>(pList)->_Myhead()->_Next), 0);
     return pOut;
 }
 
@@ -1000,11 +1001,11 @@ Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVa
 // @0x140bd5770
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt)
 {
-    return FUN_140bd7d50(FUN_140bd57f0(pIt));
+    return FUN_140bd7d50(reinterpret_cast<Unk_EdMapPair*>(&**reinterpret_cast<Unk_EdEmoMap::iterator*>(pIt)));
 }
 
 // @0x140bd7d50
 Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p)
 {
-    return FUN_140bd47c0(p);
+    return reinterpret_cast<Unk_EdMapPair*>(std::addressof(*reinterpret_cast<Unk_EdEmoMap::value_type*>(p)));
 }

@@ -24,7 +24,7 @@ CString FUN_140651350();                           // localized base path
 struct Unk_FmtArg { const void* m_value; void* m_fn; };
 struct Unk_FmtPack { i64 m_n; const Unk_FmtArg* m_args; };
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // StringFormat over the string table (0x14028dfa0, the definer's signature)
-Unk_FmtPack* FUN_140163e50(Unk_FmtPack* pOut, i64 nTypes, Unk_FmtArg arg); // fmt::internal::make_args
+// C3: FUN_140163e50 = fmt::ArgList::ArgList(ULongLong, const internal::Value*) (format.h); the arg is a caller copy
 
 // fmt::BasicFormatter<wchar_t>::format over a boxed argument.
 
@@ -103,8 +103,8 @@ i64 FUN_140cc27c0(int*)
 CStringW FUN_140cc25a0(CStringW strKey, int* pValue)
 {
     Unk_FmtArg arg;
-    Unk_FmtPack pack;
-    return FUN_14028dfa0(strKey, reinterpret_cast<const fmt::ArgList&>(*FUN_140163e50(&pack, FUN_140cc27a0(pValue), *FUN_140cc2570(&arg, pValue))));
+    // (the ArgList temporary takes the former make_args out-param slot)
+    return FUN_14028dfa0(strKey, fmt::ArgList(FUN_140cc27a0(pValue), reinterpret_cast<const fmt::internal::Value*>(&static_cast<const Unk_FmtArg&>(Unk_FmtArg(*FUN_140cc2570(&arg, pValue))))));
 }
 
 // @0x140cc27d0 - the CRT's bounds-checked memmove_s (UCRT static-inline copy, unreferenced in this TU).

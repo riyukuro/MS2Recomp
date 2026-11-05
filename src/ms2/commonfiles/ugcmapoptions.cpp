@@ -32,7 +32,7 @@
 class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
-Vector3 FUN_1408a15b0(Unk_Int3 kCell, Vector3& kOffset);   // the world position of a cube cell
+efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, efd::Point3& kOffset);   // the world position of a cube cell
 
 // ---- UGCMapOptions -------------------------------------------------------------------------------------------------
 
@@ -527,10 +527,10 @@ int Cube::FUN_1408b51d0()
 MS2_REPLACE_METHOD(0x1408B51D0, Cube, FUN_1408b51d0, 405, 0x984A0955);
 
 // @0x1408b5370
-Vector3 Cube::FUN_1408b5370()
+efd::Point3 Cube::FUN_1408b5370()
 {
     Vector3 kOffset;
-    return FUN_1408a15b0((Unk_Int3&)position, kOffset);
+    return FUN_1408a15b0((Unk_Int3&)position, reinterpret_cast<efd::Point3&>(kOffset));
 }
 MS2_REPLACE_METHOD(0x1408B5370, Cube, FUN_1408b5370, 82, 0xC52D8A9F);
 

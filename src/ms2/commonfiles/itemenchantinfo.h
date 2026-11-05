@@ -4,6 +4,7 @@
 #include <atlcoll.h>
 #include <utility>
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ascript.h"   // MS2Ptr
 class Unk_EnchantWrite {
 public:
     virtual void vfunc_0(bool);
@@ -19,34 +20,6 @@ public:
     virtual void vfunc_2();
     virtual int vfunc_3();
     virtual __int64 vfunc_4();
-};
-template<class T> class Unk_EnchantPtr {
-public:
-    Unk_EnchantPtr();
-    Unk_EnchantPtr(const Unk_EnchantPtr&);
-    Unk_EnchantPtr(Unk_EnchantPtr&& o) : p(o.p) { o.p=0; }
-    Unk_EnchantPtr(T* value) : p(value) { AddRef(); }
-    explicit Unk_EnchantPtr(int) : p(0) {}  // `Unk_EnchantPtr<T>(0)`: the int is homed as a dword (0x1405ccda0, itemoptiondata.cpp)
-    explicit Unk_EnchantPtr(__int64) : p(0) {}  // `Unk_EnchantPtr<T>(0LL)`: the qword is homed (0x1407bf260, setitemoptionpart.cpp)
-    ~Unk_EnchantPtr() { Release(); }
-    Unk_EnchantPtr& operator=(const Unk_EnchantPtr&);
-    T* operator->() const { return p; }
-    bool operator!() const { return p == 0; }   // 0x14058f0c0 (CItemEnchantInfo; itemenchantlimittable.cpp)
-    bool operator==(T* value) const { return p == value; }   // 0x1419ca6e0 (CItemEnchantInfo; uiitemenchantdialog.cpp)
-    operator T*() const { return p; }       // 0x140633420 (CItemEnchantInfo)
-    T* get() const { return p; }            // 0x1405c4950 (BaseOption; itemsocketsystemutil.cpp)
-    Unk_EnchantPtr& AssignRaw(T* value) { Unk_EnchantPtr tmp(value); T* old = p; p = tmp.p; tmp.p = old; return *this; }   // 0x1406332d0 (CItemEnchantInfo)
-private:
-    void AddRef() const { if (p) AddRefImpl(0); }
-    static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }
-    void AddRefImpl(void*) const { AddRefObject(p); }
-    void Release() { if (p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) {
-        if (CPtred::ReleasePtred(reinterpret_cast<CPtred*>(p)) == 0) {
-            AddRefObject(p); CPtred::DeletePtred(reinterpret_cast<CPtred*>(p));
-        }
-    }
-    void* pad; T* p;
 };
 class BaseOption {
 public:
@@ -76,13 +49,13 @@ struct Unk_EnchantHistory {
 MS2_CHECK_SIZE(Unk_EnchantHistory, 0x18);
 // Preserve the enum-like const-reference key ABI used by the original map.
 struct Unk_EnchantKeyTraits : ATL::CElementTraits<int> { typedef const int& INARGTYPE; };
-typedef ATL::CAtlMap<int,Unk_EnchantPtr<BaseOption>,Unk_EnchantKeyTraits> Unk_EnchantMap;
+typedef ATL::CAtlMap<int,MS2Ptr<BaseOption>,Unk_EnchantKeyTraits> Unk_EnchantMap;
 class CItemEnchantInfo : public CPtred {
 public:
     CItemEnchantInfo(int,int);
     ~CItemEnchantInfo() = default;
     static int Version() { return 1; }
-    Unk_EnchantPtr<CItemEnchantInfo> Clone();
+    MS2Ptr<CItemEnchantInfo> Clone();
     void Reset();
     int GetAttemptCount();
     int IncrementAttemptCount();
@@ -113,7 +86,7 @@ public:
     int NeedsChargeVersionUpdate();
     void SetVersion(int version);
     int GetVersion();
-    Unk_EnchantPtr<BaseOption> GetOption(int key);
+    MS2Ptr<BaseOption> GetOption(int key);
     void FUN_14058ce60();
 private:
     MS2_LAYOUT_FRIEND;

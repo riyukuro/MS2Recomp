@@ -22,7 +22,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <egf/Entity.h>   // C3: egf::EntityPtr (efd::SmartPointer<egf::Entity>::operator->)
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -31,13 +31,13 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered xml loader helpers (the same ones the other table units use).
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);       // FirstChildElement
-    Unk_140165cf0* FUN_140168650(const char* pszName);       // NextSiblingElement
-};
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+// C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
@@ -179,7 +179,7 @@ void UgcHomeOptionData::LoadBg()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcBackground.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapBg.RemoveAll();
@@ -187,7 +187,7 @@ void UgcHomeOptionData::LoadBg()
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "list", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
     for (unsigned __int64 i = 0; i < list.size(); ++i)
     {
-        Unk_140165cf0* pNode = reinterpret_cast<Unk_140165cf0*&>(list[i]);
+        TiXmlElement* pNode = reinterpret_cast<TiXmlElement*&>(list[i]);
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         CString strPath;
@@ -204,11 +204,11 @@ void UgcHomeOptionData::LoadLight()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapLight.RemoveAll();
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
@@ -227,11 +227,11 @@ void UgcHomeOptionData::LoadCamera()
     bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
-    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
+    TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     m_mapCamera.RemoveAll();
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
+    for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
     {
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);

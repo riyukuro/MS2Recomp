@@ -64,7 +64,7 @@ public:
 };
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT lives in another unit).
-class Unk_WhisperConstValue { public: int FUN_140ad5c50(); };
+class Unk_SSGConstValue { public: int FUN_140ad5c50(); };
 
 // The UGC info behind CItem::FUN_1405278d0 holds its look at +0x18.
 struct Unk_WhisperItemUgc : public CPtred
@@ -157,7 +157,7 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52c80(const char* szMethod, Sca
 UIWhisperNotifyDialog::UIWhisperNotifyDialog()
     : m_whisperTimes(17, 0.75f, 0.25f, 2.25f, 10), m_systemTimes(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_nCooldown = reinterpret_cast<Unk_WhisperConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->WisperIgnoreTime)->FUN_140ad5c50();
+    m_nCooldown = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->WisperIgnoreTime)->FUN_140ad5c50();
     FUN_141925e70(0, 1);
 }
 

@@ -15,20 +15,20 @@ class SetItemOptionPart : public CPtred
 public:
     typedef UnlimitedEnchantInfo::OptionKey StatKey;                // the stat type (16 stats)
     typedef Unk_SocketSpecialStat SpecialKey;                       // the special ability (4 abilities)
-    typedef std::unordered_map<StatKey, Unk_EnchantPtr<BaseOption> > StatMap;
-    typedef std::unordered_map<SpecialKey, Unk_EnchantPtr<BaseOption> > SpecialMap;
+    typedef std::unordered_map<StatKey, MS2Ptr<BaseOption> > StatMap;
+    typedef std::unordered_map<SpecialKey, MS2Ptr<BaseOption> > SpecialMap;
 
     SetItemOptionPart();                                            // 0x1407bc4b0
-    bool Load(Unk_140165cf0* pElem);                       // 0x1407bc580 load the part from its xml element
+    bool Load(TiXmlElement* pElem);                       // 0x1407bc580 load the part from its xml element
     unsigned GetCount();                                       // 0x1407bc9b0 the part count
     ATL::CAtlArray<int>& FUN_1407bc9d0();                           // 0x1407bc9d0 the additional effect ids
     ATL::CAtlArray<unsigned short>& FUN_1407bc9f0();                // 0x1407bc9f0 the additional effect levels
-    void FUN_1407bca10(StatKey nStat, Unk_EnchantPtr<BaseOption> spOption);         // 0x1407bca10
-    void FUN_1407bcac0(SpecialKey nStat, Unk_EnchantPtr<BaseOption> spOption);      // 0x1407bcac0
-    Unk_EnchantPtr<BaseOption> FUN_1407bcb70(StatKey nStat) const;                  // 0x1407bcb70
-    Unk_EnchantPtr<BaseOption> FUN_1407bcc30(SpecialKey nStat) const;               // 0x1407bcc30
-    void FUN_1407bccf0(std::function<void(const std::pair<StatKey, Unk_EnchantPtr<BaseOption> >&)> fn);       // 0x1407bccf0
-    void FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, Unk_EnchantPtr<BaseOption> >&)> fn);    // 0x1407bcdb0
+    void FUN_1407bca10(StatKey nStat, MS2Ptr<BaseOption> spOption);         // 0x1407bca10
+    void FUN_1407bcac0(SpecialKey nStat, MS2Ptr<BaseOption> spOption);      // 0x1407bcac0
+    MS2Ptr<BaseOption> FUN_1407bcb70(StatKey nStat) const;                  // 0x1407bcb70
+    MS2Ptr<BaseOption> FUN_1407bcc30(SpecialKey nStat) const;               // 0x1407bcc30
+    void FUN_1407bccf0(std::function<void(const std::pair<StatKey, MS2Ptr<BaseOption> >&)> fn);       // 0x1407bccf0
+    void FUN_1407bcdb0(std::function<void(const std::pair<SpecialKey, MS2Ptr<BaseOption> >&)> fn);    // 0x1407bcdb0
     CStringA& FUN_1407bce70();                                      // 0x1407bce70 animationPrefix
     CStringA& FUN_1407bce90();                                      // 0x1407bce90 setEffect
     CStringA& FUN_1407bceb0();                                      // 0x1407bceb0 groundAttribute

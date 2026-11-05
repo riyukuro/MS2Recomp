@@ -20,10 +20,10 @@ class ASTextInput;
 class ASDropdownMenu;
 class ASCheckBox;
 
-// The random packet id range (min, max): Get() returns a random id in the range.
+#include "ms2/placeholder/citemmergeoptionproxy.h"   // Unk_MergeRange: m_range (ctor 0x1405c38a0, Set 0x1405c6380); Unk_DpRange = its random getter view
 struct Unk_DpRange
 {
-    Unk_DpRange();                                              // 0x1405c38a0
+    // (ctor 0x1405c38a0 is Unk_MergeRange's: m_range is an Unk_MergeRange)
     void FUN_1405c6380(int nMin, int nMax);                     // set the range
     int FUN_141291f20();                                        // 0x141291f20 a random value of the range
     int m_nMin;
@@ -77,7 +77,7 @@ private:
     MS2Ptr<ASCheckBox> m_ignoreAdminPacket;                    // +0x330 "m_ignoreAdminPacket"
     MS2Ptr<ASButton> m_usePacketCount;                      // +0x340 "m_usePacketCount"
     MS2Ptr<ASButton> m_usePostClose;                        // +0x350 "m_usePostClose"
-    Unk_DpRange m_range;                                        // +0x360 random packet ids
+    Unk_MergeRange m_range;                                     // +0x360 random packet ids
     int m_nRandomRemain;                                        // +0x368
     int m_nRandomLength;                                        // +0x36c
     int m_nRandomDelay;                                         // +0x370

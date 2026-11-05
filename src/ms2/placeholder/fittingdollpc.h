@@ -12,7 +12,7 @@ class NiColor;
 class CEquipmentSlotLayerInfo;   // MS2Ptr<T> (cequipmentslotlayerinfo.h)
 class Unk_PCWaterGunInfo;   // MS2Ptr<T> (?\watergunbattleinfo.cpp)
 struct Vector3;
-struct Unk_CharEquip;   // tcreatecharinfo.h (0xc)
+typedef NiColor Unk_CharEquip;   // the equip colour (tcreatecharinfo.h, 0xc)
 
 // Heap-only views. PC derives PCBase (ctor 14164dfd0), and FittingDollPC
 // derives PC (ctor 14121b350). No constructors or vftables are emitted here.
@@ -303,8 +303,8 @@ public:
     __int64 FUN_141662670();                                // +0x1140
     int FUN_1416626b0();                                    // +0x1148, reset on a new day of +0x1140
     int FUN_141662730();                                    // +0x114c
-    int FUN_141662830();                                    // +0x1184 the last bank call time
-    int FUN_141662870();                                    // +0x1188
+    __int64 FUN_141662830();                                // +0x1184 the last bank call time
+    __int64 FUN_141662870();                                // +0x1188
     float FUN_1416628b0(int nOption, unsigned nKey);        // an invoke effect option rate of the equipment
     float FUN_1416628f0(int nOption, unsigned nKey);        // an invoke effect option count of the equipment
     float FUN_141662930(int nSpecial);                      // a special ability rate of the equipment
@@ -425,7 +425,11 @@ public:
     CStringA m_strDD0;                                      // +0xdd0 (vfunc_130)
     int m_nGenderDD8;                                       // +0xdd8 (FUN_141658e40 / FUN_141658e60)
     unsigned short m_nLevelDDC;                             // +0xddc the level (vfunc_131 / vfunc_78; ctor: 1)
+#ifdef MS2_PC_REAL_EQUIPMENT   // pc.cpp defines the real member (PC::PC/~PC call CEquipment's ctor/dtor); the other units see the Unk_PCEquipSet view until the "CEquipment views" sweep
+    CEquipment m_kEquipDE0; static_assert(sizeof(CEquipment) == sizeof(Unk_PCEquipSet), "CEquipment / Unk_PCEquipSet layout");   // +0xde0 equip holder
+#else
     Unk_PCEquipSet m_kEquipDE0;                             // +0xde0 equip holder (FUN_1411e3de0)
+#endif
     Unk_PCItemSlots4 m_kItemsF78;                           // +0xf78 (FUN_1416561c0)
     MS2Ptr<JobSystemCli> m_spJobFB8;                        // +0xfb8 (FUN_1416546d0)
     MS2Ptr<Unk_PCActionTimer> m_spFC8;                      // +0xfc8
@@ -470,8 +474,8 @@ public:
     int m_n114c;                                            // +0x114c
     unsigned int m_aMastery1150[12];                        // +0x1150 mastery exp (GetMastery)
     float m_f1180;                                          // +0x1180 (ctor: 1.0)
-    int m_n1184;                                            // +0x1184
-    int m_n1188;                                            // +0x1188
+    unsigned m_n1184;                                       // +0x1184
+    unsigned m_n1188;                                       // +0x1188
     __int64 m_n1190;                                        // +0x1190
     int m_n1198;                                            // +0x1198
     int m_n119c;                                            // +0x119c

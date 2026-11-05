@@ -75,7 +75,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
-class Unk_CommandArgs { public: int FUN_1408d1f60(unsigned int, int); };
+// C3: ItemFunctionArgs (citemdata.h) replaces the local member view
 // ---- unit-local views of exe objects ----
 
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
@@ -359,7 +359,7 @@ CItemSocketScrollDataPtr UIItemSocketScrollDialog::FUN_140f65b30(MS2Ptr<CItemDat
 {
     if (spData == 0)
         return CItemSocketScrollDataPtr(0);
-    int nId = ((unsigned int)((class Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60((unsigned int)(0), 0));
+    int nId = ((unsigned int)((ItemFunctionArgs&)(spData->function.parameter)).FUN_1408d1f60((unsigned int)(0), 0));
     CItemSocketScrollDataPtr spRow = CItemSocketScrollTable::GetInstance()->GetData(nId);
     return spRow;
 }

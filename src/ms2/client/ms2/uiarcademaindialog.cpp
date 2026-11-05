@@ -13,7 +13,7 @@
 // MS2-PIN: ??__Es_strStun2@@YAXXZ 0x1400ddac0 ; probe
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400ddaf0 ; probe
 // MS2-PIN: ??__Es_unk1402a9d70b@@YAXXZ 0x1400ddb20 ; probe
-// MS2-PIN: ??$?0AEAHAEAV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@$0A@@?$pair@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@std@@QEAA@AEAHAEAV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@Z 0x140ef8d80 ; unique
+// MS2-PIN: ??$?0AEAHAEAV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@$0A@@?$pair@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@std@@QEAA@AEAHAEAV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@Z 0x140ef8d80 ; unique
 // MS2-PIN: ??$?0PEAVUIArcadeMainDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z$0A@@?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@QEAA@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140ef8ec0 ; order
 // MS2-PIN: ??$?0VUIArcadeMainDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIArcadeMainDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140ef8f00 ; unique
 // MS2-PIN: ??$?0PEAVUIArcadeMainDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z$0A@@?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@QEAA@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140ef8f90 ; order
@@ -24,24 +24,24 @@
 // MS2-PIN: ??$forward@AEBQEAVUIArcadeMainDialog@@@std@@YAAEBQEAVUIArcadeMainDialog@@AEBQEAV1@@Z 0x140efbfc0 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVUIArcadeMainDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140efc060 ; order
 // MS2-PIN: ??$make_pair@AEBQEAVUIArcadeMainDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140efc0b0 ; order
-// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140efc3c0 ; unique
-// MS2-PIN: ??0?$pair@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@std@@QEAA@$$QEAU01@@Z 0x140efc6d0 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140efc3c0 ; unique
+// MS2-PIN: ??0?$pair@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@std@@QEAA@$$QEAU01@@Z 0x140efc6d0 ; unique
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x140efce40 ; order
 // MS2-PIN: ?get@?$MS2Ptr@VASMovieClip@@@@QEBAPEAVASMovieClip@@XZ 0x140efcee0 ; order
-// MS2-PIN: ??A?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@QEAAAEAUUnk_RankDataPtr@@_K@Z 0x140efd510 ; unique
-// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140efd560 ; unique
-// MS2-PIN: ?GetKeyAt@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x140efd580 ; unique
-// MS2-PIN: ?GetNext@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140efd5e0 ; unique
-// MS2-PIN: ?GetValueAt@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@QEAAAEAV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@PEAU__POSITION@@@Z 0x140efd630 ; unique
-// MS2-PIN: ?InsertImpl@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@Z 0x140efd690 ; unique
-// MS2-PIN: ?LeftRotate@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140efd7d0 ; unique
-// MS2-PIN: ?Minimum@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140efd970 ; unique
-// MS2-PIN: ?NewNode@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@Z 0x140efd9e0 ; unique
-// MS2-PIN: ?RBInsert@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@IEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@Z 0x140efdd10 ; unique
-// MS2-PIN: ?RightRotate@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140efe070 ; unique
-// MS2-PIN: ?SetAt@?$CRBMap@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@Z 0x140efe180 ; unique
-// MS2-PIN: ?SetNil@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x140efe1f0 ; unique
-// MS2-PIN: ?Successor@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140efe260 ; unique
+// MS2-PIN: ??A?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@QEAAAEAV?$TPtrValue@UCGameRankingData@@@@_K@Z 0x140efd510 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140efd560 ; unique
+// MS2-PIN: ?GetKeyAt@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x140efd580 ; unique
+// MS2-PIN: ?GetNext@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140efd5e0 ; unique
+// MS2-PIN: ?GetValueAt@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAAEAV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@PEAU__POSITION@@@Z 0x140efd630 ; unique
+// MS2-PIN: ?InsertImpl@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@Z 0x140efd690 ; unique
+// MS2-PIN: ?LeftRotate@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140efd7d0 ; unique
+// MS2-PIN: ?Minimum@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140efd970 ; unique
+// MS2-PIN: ?NewNode@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@Z 0x140efd9e0 ; unique
+// MS2-PIN: ?RBInsert@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEAAPEAVCNode@12@HAEBV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@Z 0x140efdd10 ; unique
+// MS2-PIN: ?RightRotate@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140efe070 ; unique
+// MS2-PIN: ?SetAt@?$CRBMap@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@Z 0x140efe180 ; unique
+// MS2-PIN: ?SetNil@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x140efe1f0 ; unique
+// MS2-PIN: ?Successor@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140efe260 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140eff100 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140eff110 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140effbc0 ; unique
@@ -58,7 +58,7 @@
 // MS2-PIN: ??$emplace_back@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEAAX$$QEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@1@@Z 0x140efbdc0
 // MS2-PIN: ??$_Emplace_back_with_unused_capacity@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@AEAAX$$QEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@1@@Z 0x140ef99a0
 // MS2-PIN: ??$_Emplace_reallocate@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEAAPEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@1@QEAU21@$$QEAU21@@Z 0x140ef9b20
-// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@6B@ 0x142e6d4e8
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@6B@ 0x142e6d4e8
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiarcademaindialog.cpp"    // assumed
@@ -99,7 +99,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::GetArcadeOpen (0x1403ecfe0)
 namespace GameRanking { class Page; }
-template <> MS2Ptr<GameRanking::Page>::~MS2Ptr();                   // 0x140b2db30
+// C3: ~MS2Ptr<GameRanking::Page> (0x140b2db30) comes from gamerankingcli.h
 class CGameRankingCli;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
@@ -126,7 +126,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ArcClickD
 typedef Delegate<bool(int, const CMsgBoxData&)> ArcBoxDelegate;
 
 // The game buttons and the enter button.
-class Unk_140acd6e0 : public ASButton {};   // its click callback is ASButton::FUN_1422ce240
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140763e10(int nScore);                                         // the score as text
@@ -155,13 +155,13 @@ class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x14016
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_ArcConfigRoot { char m_pad_00[8]; Unk_ArcConfig m_config; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-// Unk_RankDataPtr seen through its own row getter (the exe's COMDAT at 0x140efcde0; returns the boxed row).
-struct Unk_ArcRankDataView
-{
-    Unk_RankData* FUN_140efcde0() const { return m_p; }
-    void* m_00;
-    Unk_RankData* m_p;
-};
+// C3: the row view Unk_ArcRankDataView was TPtrValue<CGameRankingData> (its getter 0x140efcde0 is ::get).
+
+
+
+
+
+
 
 // the xml helpers (TinyXML element: 0x90 bytes, ctor 0x14086f2f0, dtor 0x14086f450)
 #ifndef TIXML_ENCODING_DEFINED   // also tixmldocument.h and tinyxml.h
@@ -169,15 +169,15 @@ struct Unk_ArcRankDataView
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
 #endif
 class TiXmlParsingData;
-class TiXmlElement
-{
-public:
-    TiXmlElement(const char* pszName);
-    virtual ~TiXmlElement();
-    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
-private:
-    void* m_unknown[0x88 / sizeof(void*)];
-};
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
+
+
+
+
+
+
+
+
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -265,11 +265,11 @@ void UIArcadeMainDialog::OnLoadComplete()
     {
         int nNo = i + 1;
         CString strName = StringFormat<int>("m_game{0}", nNo);
-        m_buttons[i] = GetChild<Unk_140acd6e0>(strName);
+        m_buttons[i] = GetChild<ASButton>(strName);
         if (m_buttons[i].get() != 0)
             m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), FUN_140bb9630(i));
     }
-    m_enter = reinterpret_cast<AScript*>(m_rankView.operator->())->FUN_140acce30<Unk_140acd6e0>("m_enter");
+    m_enter = reinterpret_cast<AScript*>(m_rankView.operator->())->FUN_140acce30<ASButton>("m_enter");
     if (m_enter.get() != 0)
         m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
@@ -388,7 +388,7 @@ void UIArcadeMainDialog::FUN_140ef6920()
 void UIArcadeMainDialog::FUN_140ef6960(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nIndex = FUN_140bd09c0(params.pUserData);
-    if (m_buttons[nIndex] == (Unk_140acd6e0*)0)
+    if (m_buttons[nIndex] == (ASButton*)0)
         return;
     if (nIndex < 0 || nIndex >= 9)
         return;
@@ -669,12 +669,12 @@ void UIArcadeMainDialog::FUN_140ef8380(RankingResults results)
         {
             for (size_t j = 0; j < list->GetCount(); j++)
             {
-                Unk_RankDataPtr rank = (*list.operator->())[j];
-                if (reinterpret_cast<Unk_ArcRankDataView*>(&rank)->FUN_140efcde0() != 0)
+                TPtrValue<CGameRankingData> rank = (*list.operator->())[j];
+                if (rank.get() != 0)
                 {
-                    CStringW strName = rank.FUN_140b2e1e0()->m_cname;
-                    int nScore = (int)rank.FUN_140b2e1e0()->m_nPoint;
-                    int nPos = rank.FUN_140b2e1e0()->m_nRank;
+                    CStringW strName = rank->m_name;
+                    int nScore = (int)rank->m_point;
+                    int nPos = rank->m_rank;
                     m_ranks[nId].m_rows[nPos - 1].first = nScore;
                     m_ranks[nId].m_rows[nPos - 1].second = strName;
                 }
@@ -704,17 +704,17 @@ unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
     return 0;
 }
 
-// The real ranking key (client/ms2/gamerankingcli.h). The placeholder only forward-declares it; this unit needs the
-// ctor/dtor for its key array. C3: was Unk_RankKey (rows 209/377: its ctor/dtor were aliases of these).
-struct CGameRankingParam::Key
-{
-    Key();                                              // 0x140b356e0
-    ~Key();                                             // 0x140b35780
-    int m_type;
-    int m_sub;
-    int m_date;
-};
-MS2_CHECK_SIZE(CGameRankingParam::Key, 0xc);
+// The ranking key is the real CGameRankingParam::Key (client/ms2/gamerankingcli.h). C3: was Unk_RankKey.
+
+
+
+
+
+
+
+
+
+
 // @0x140ef87e0
 // MS2-FUNCTIONAL: the ranking service handles are the placeholder views of gamerankingcli.h
 unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
@@ -727,14 +727,14 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     CGameRankingParam::Key keys[6];   // C3: was Unk_RankKey
     int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
     for (int i = 1; i < 6; i++)
-        reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b870(reinterpret_cast<Unk_RankKey*>(&keys[i]), 10, i, 0, nRegion);
+        reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->BuildKey(keys[i], 10, i, 0, nRegion);
     for (int i = 1; i < 6; i++)
     {
         MS2Ptr<GameRanking::Page> req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Query(keys[i], 1, 1);
         if (req == 0)
         {
             CGameRankingParam request;
-            request.m_key.FUN_140b35820(reinterpret_cast<const Unk_RankKey&>(keys[i]));
+            request.m_key = keys[i];
             reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Request(&request);
         }
     }
@@ -748,7 +748,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
             if (completed.Lookup(i) != 0)
                 continue;
             RankingList rows(Unk_GrNewTag(0));
-            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b440(reinterpret_cast<const Unk_RankKey&>(keys[i]), 1, *rows.get(), CStringW(L""), 0);
+            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->Read(keys[i], 1, *rows.get(), CStringW(L""), 0);
             if (rows->GetCount() != 0)
                 completed.SetAt(i, rows);
         }

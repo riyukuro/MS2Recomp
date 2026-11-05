@@ -11,9 +11,9 @@
 // MS2-PIN: memcpy_s 0x140ae98a0
 // MS2-PIN: memmove_s 0x140ae99f0
 // MS2-PIN: ?GetWorldRightVector@NiCamera@@QEBA?AVNiPoint3@@XZ 0x140af83f0
-// MS2-PIN: ??0Unk_CamNiPoint3@@QEAA@AEBUVector3@@@Z 0x14027dcf0
-// MS2-PIN: ??4Unk_CamPoint3@@QEAAAEAU0@AEBVNiPoint3@@@Z 0x140194470
-// MS2-PIN: ??4Unk_CamNiPoint3@@QEAAAEAU0@$$QEAU0@@Z 0x14097faa0
+//
+//
+//
 // MS2-PIN: ?GetWorldUpVector@NiCamera@@QEBA?AVNiPoint3@@XZ 0x140af8450
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?TypeCast@Camera@@UEBA_NIPEAPEAX@Z 0x140ae7c40 ; unique
@@ -125,7 +125,7 @@
 #include <efd/utf8string.h>
 
 // ---- out-of-unit callees ----
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140168650(const char*); };
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CString FUN_140188f50(const char* psz, int n);                         // CString from an attribute value
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -255,19 +255,19 @@ struct Unk_CameraPathRow
     int m_c;                                                            // +0x0c
 };
 MS2_CHECK_SIZE(Unk_CameraPathRow, 0x10);
-// NiPoint3 with the out-of-line conversion / move-assign of the exe.
-struct Unk_CamNiPoint3
-{
-    Unk_CamNiPoint3(const Vector3& pt);                                 // 0x14027dcf0
-    Unk_CamNiPoint3& operator=(Unk_CamNiPoint3&& pt);                   // 0x14097faa0
-    float x, y, z;
-};
-// efd::Point3 with the out-of-line assignment from a NiPoint3 of the exe.
-struct Unk_CamPoint3
-{
-    Unk_CamPoint3& operator=(const NiPoint3& pt);                       // 0x140194470
-    float x, y, z;
-};
+// (Unk_CamNiPoint3 / Unk_CamPoint3 were views of the real NiPoint3(const efd::Point3&) 0x14027dcf0,
+// NiPoint3::operator=(NiPoint3&&) 0x14097faa0 and efd::Point3::operator=(const efd::Point3&) 0x140194470)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 class CNifLoadingService
 {
 public:
@@ -275,14 +275,14 @@ public:
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                            // the entity's scene root
-// A NiNode that follows only some parts of its parent's transform (0x138 bytes; unrecovered class).
-class Unk_SeparateNode : public NiNode
-{
-public:
-    Unk_SeparateNode(Unk_CamMoveBits kUpdate);                          // 0x141751470
-    char m_pad_node[0x138 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
+#include "ms2/guess/separatenode.h"   // Unk_SeparateNode (was a local view)
+//
+//
+//
+//
+//
+//
+//
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_NodeQueue
 {
@@ -316,13 +316,13 @@ static ATL::CRBMap<CString, CString> s_testValues(10);
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/camera_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class Unk_140165cf0;
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class TiXmlElement;
+// C3 #12: was a local TiXml view
+
+
+
+
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -465,13 +465,13 @@ BOOL LoadTestCamerValue()
         if (!GetFileSystem()->FUN_1403974b0(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
             return FALSE;
     }
-    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (!pRoot)
         return FALSE;
-    for (Unk_140165cf0* pKey = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("key"); pKey; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
+    for (TiXmlElement* pKey = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("key"); pKey; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
-        CString strName = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("name"), 0);
-        CString strValue = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pKey))->Attribute("value"), 0);
+        CString strName = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pKey))->Attribute("name"), 0);
+        CString strValue = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pKey))->Attribute("value"), 0);
         values.SetAt(strName, strValue);
     }
     if (Unk_LockGuard guard = s_testValueLock)
@@ -566,11 +566,11 @@ CMapCameraData::~CMapCameraData()
 // @0x140ae8d40
 void CMapCameraData::vfunc_1(void* pParam)
 {
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "distance", m_distance);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "hAngle", m_hAngle);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "vAngle", m_vAngle);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "zoomOutHeightOffset", m_zoomOutHeightOffset);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "zoomInHeightOffset", m_zoomInHeightOffset);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "distance", m_distance);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "hAngle", m_hAngle);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "vAngle", m_vAngle);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "zoomOutHeightOffset", m_zoomOutHeightOffset);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "zoomInHeightOffset", m_zoomInHeightOffset);
 }
 
 // @0x140ae8df0
@@ -616,14 +616,14 @@ CBossTargetCameraData::CBossTargetCameraData(const CBossTargetCameraData& o) : C
 void CBossTargetCameraData::vfunc_1(void* pParam)
 {
     CMapCameraData::vfunc_1(pParam);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "distanceOffset", m_distanceOffset);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "detachDistance", m_detachDistance);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "viewOffsetZ", m_viewOffsetZ);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "zoomOut", m_zoomOut);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "lerpSpeedMin", m_lerpSpeedMin);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "lerpSpeedMax", m_lerpSpeedMax);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "lerpDelayDistanceMin", m_lerpDelayDistanceMin);
-    XmlGetAttr((class TiXmlElement*)((Unk_140165cf0*)pParam), "lerpDelayDistanceMax", m_lerpDelayDistanceMax);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "distanceOffset", m_distanceOffset);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "detachDistance", m_detachDistance);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "viewOffsetZ", m_viewOffsetZ);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "zoomOut", m_zoomOut);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "lerpSpeedMin", m_lerpSpeedMin);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "lerpSpeedMax", m_lerpSpeedMax);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "lerpDelayDistanceMin", m_lerpDelayDistanceMin);
+    XmlGetAttr((class TiXmlElement*)((TiXmlElement*)pParam), "lerpDelayDistanceMax", m_lerpDelayDistanceMax);
 }
 
 // ---- efd::Point3 operators (COMDATs of this obj) ----
@@ -1773,11 +1773,11 @@ void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return;
     m_mapCache.FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (!pRoot)
         return;
-    for (Unk_140165cf0* pElem = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("localTargetCamera"); pElem;
-         pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("localTargetCamera")))
+    for (TiXmlElement* pElem = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("localTargetCamera"); pElem;
+         pElem = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->NextSibling("localTargetCamera")))
     {
         DWORD nId = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), "id", *(unsigned int*)(&nId));
@@ -1877,14 +1877,14 @@ void CameraMgr::LoadMapCamera(unsigned int nMapId)
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return;
     m_mapCache.FUN_1401d1160(strPath);
-    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
+    TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (!pRoot)
         return;
-    Unk_140165cf0* pElem = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("defaultCamera");
+    TiXmlElement* pElem = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(pRoot)->FirstChild("defaultCamera");
     if (pElem)
     {
         CString strType;
-        const char* pszType = ((class TiXmlElement*)(class Unk_140165cf0*)(pElem))->Attribute("type");
+        const char* pszType = ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("type");
         if (pszType)
         {
             strType = pszType;
@@ -2222,7 +2222,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     spRoot->SetName("Camera Effect Root");
     m_effect.m_spCameraNode = spRoot;
     NiTransform kTransform;
-    reinterpret_cast<Unk_CamNiPoint3&>(kTransform.m_Translate) = pParam->m_kTranslate;
+    kTransform.m_Translate = reinterpret_cast<const efd::Point3&>(pParam->m_kTranslate);
     kTransform.m_Rotate.FromEulerAnglesXYZ((pParam->m_kRotation.x * 3.1415927f) / 180.0f,
         (pParam->m_kRotation.y * 3.1415927f) / 180.0f, (pParam->m_kRotation.z * 3.1415927f) / 180.0f);
     kTransform.m_fScale = 1.0f;
@@ -2236,7 +2236,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
             spParent = pTargetRoot;
         if (!pParam->m_update.FUN_140afc5a0())
         {
-            Unk_SeparateNode* pSeparate = EE_NEW Unk_SeparateNode(pParam->m_update);
+            Unk_SeparateNode* pSeparate = EE_NEW Unk_SeparateNode(reinterpret_cast<const Unk_LightUpdateBits&>(pParam->m_update));
             pSeparate->AttachChild(spRoot, false);
             m_effect.m_spCameraNode = pSeparate;
         }
@@ -2347,7 +2347,7 @@ void CameraMgr::FUN_140af1f70()
                 else
                 {
                     NiTransform kCamera = pCamera->GetLocalTransform();
-                    reinterpret_cast<Unk_CamNiPoint3&>(kCamera.m_Translate) = FUN_140a17e10();
+                    kCamera.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_140a17e10()));
                     Vector3 ptRot = FUN_140af8290();
                     kCamera.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f,
                         (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);
@@ -2424,7 +2424,7 @@ void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
             m_effect.m_24 = pRow->m_c;
             m_effect.m_fStart = 0;
             m_effect.m_20 = pRow->m_f8;
-            reinterpret_cast<Unk_CamPoint3&>(m_effect.m_ptOffset) = m_effect.m_spCameraNode->GetLocalTransform().m_Translate;
+            reinterpret_cast<efd::Point3&>(m_effect.m_ptOffset) = m_effect.m_spCameraNode->GetLocalTransform().m_Translate;
             m_effect.m_fMaxTime = 0;
             NiTimeController* pTime = m_effect.m_spCameraNode->GetControllers();
             while (pTime)

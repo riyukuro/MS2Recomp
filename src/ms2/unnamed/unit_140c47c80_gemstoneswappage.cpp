@@ -134,7 +134,7 @@ typedef std::map<Unk_GsCostTag, int> Unk_GsCosts;
 class Unk_GsClip : public AScript {
 public:
     MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString& strName);                        // "m_itemBag" child
-    Scaleform::GFx::Value FUN_140c4bd20(const char* szMethod, bool a1, Scaleform::GFx::Value a2);
+    // C3: FUN_140c4bd20 is AScript::Invoke(const char*, bool, Value) (ascript.h)
 };
 
 // The slot callback delegate's out-of-line members (delegate.h declares them only).
@@ -191,7 +191,7 @@ inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strNam
 }
 
 // @0x140c4bd20
-inline Scaleform::GFx::Value Unk_GsClip::FUN_140c4bd20(const char* szMethod, bool a1, Scaleform::GFx::Value a2)
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, Scaleform::GFx::Value a2)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
@@ -435,7 +435,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49250(int index)
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_source_gemstone", &gems);
     data.FUN_1409eb1d0("gemstones", gems);
-    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->FUN_140c4bd20("select", true, data.FUN_1422bb870());
+    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", true, data.FUN_1422bb870());
 }
 
 // @0x140c49580
@@ -453,7 +453,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_dest_gemstone", &gems);
     data.FUN_1409eb1d0("gemstones", gems);
-    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->FUN_140c4bd20("select", false, data.FUN_1422bb870());
+    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", false, data.FUN_1422bb870());
 }
 
 // @0x140c49850

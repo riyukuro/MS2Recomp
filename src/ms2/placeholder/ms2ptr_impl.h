@@ -40,7 +40,7 @@ template <class T> T& MS2Ptr<T>::operator*() const { return *m_p; }
 template <class T> bool MS2Ptr<T>::IsNull() const { return m_p == 0; }
 template <class T> void MS2Ptr<T>::AddRef() const { if (m_p) AddRefImpl(0); }
 template <class T> void MS2Ptr<T>::AddRefImpl(void*) const { Reference(m_p); }
-template <class T> void MS2Ptr<T>::Reference(T* p) { CPtred::AddRefPtred(p); }
+template <class T> void MS2Ptr<T>::Reference(T* p) { CPtred::AddRefPtred((CPtred*)p); }
 template <class T> void MS2Ptr<T>::Release()
 {
     if (m_p)
@@ -51,9 +51,9 @@ template <class T> void MS2Ptr<T>::Release()
 }
 template <class T> void MS2Ptr<T>::ReleaseImpl(void*)
 {
-    if (CPtred::ReleasePtred(m_p) == 0)
+    if (CPtred::ReleasePtred((CPtred*)m_p) == 0)   // (CPtred*): reinterpret for an incomplete T (commonstruct_2: CUserLimitHistory) - relies on CPtred at offset 0
     {
         Reference(m_p);
-        CPtred::DeletePtred(m_p);
+        CPtred::DeletePtred((CPtred*)m_p);
     }
 }

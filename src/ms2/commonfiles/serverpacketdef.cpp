@@ -43,23 +43,23 @@ MS2_REPLACE_METHOD(0x1407A3490, Unk_SPDA, FUN_1407a3490, 355, 0x8BEDCA45);
 
 // @0x1407a3640
 void Unk_SPDA::FUN_1407a3640(Unk_SPDReader& in) {
-    Unk_SPDByteRange range;
-    type = in.FUN_140202740(*FUN_140203550(&range, 0, 0x14));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    type = Unk_Read8(&in, Unk_140203550<unsigned char>(0, 0x14));
     switch (type) {
     case 2:
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
-        s2 = in.FUN_140202f40(Unk_WideMaximum(0x32));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
+        s2 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x32));
         break;
     case 3: case 4: case 6: case 7: case 0x11:
         value = in.ReadInt64();
         break;
     case 5: case 10:
         value = in.ReadInt64();
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
-        s2 = in.FUN_140202f40(Unk_WideMaximum(0x32));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
+        s2 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x32));
         break;
     case 0x10:
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
         break;
     }
 }
@@ -113,15 +113,15 @@ MS2_REPLACE_METHOD(0x1407A3980, Unk_SPDB, FUN_1407a3980, 752, 0xDE36C697);
 
 // @0x1407a3cc0
 void Unk_SPDB::FUN_1407a3cc0(Unk_SPDReader& in) {
-    Unk_SPDByteRange range;
-    type = in.FUN_140202740(*FUN_140203550(&range, 0, 0x14));
+    // (range: Unk_140203550<unsigned char> argument temp)
+    type = Unk_Read8(&in, Unk_140203550<unsigned char>(0, 0x14));
     switch (type) {
     case 0xf:
         break;
     case 2:
         flag = in.ReadUInt8();
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
-        s2 = in.FUN_140202f40(Unk_WideMaximum(0x32));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
+        s2 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x32));
         break;
     case 4: case 6: case 0x11:
         flag = in.ReadUInt8();
@@ -137,20 +137,20 @@ void Unk_SPDB::FUN_1407a3cc0(Unk_SPDReader& in) {
     case 5: case 10:
         flag = in.ReadUInt8();
         value = in.ReadInt64();
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
-        s2 = in.FUN_140202f40(Unk_WideMaximum(0x32));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
+        s2 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x32));
         break;
     case 0xe:
         kind = in.ReadUInt8();
         value = in.ReadInt64();
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
         break;
     case 0xb:
         value = in.ReadInt64();
         break;
     case 0xc:
         flag = in.ReadUInt8();
-        s1 = in.FUN_140202f40(Unk_WideMaximum(0x18));
+        s1 = static_cast<Unk_PayloadReader&>(in).ReadWide(Unk_WideMaximum(0x18));
         break;
     }
 }

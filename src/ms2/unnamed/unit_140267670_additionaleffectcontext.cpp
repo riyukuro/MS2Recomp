@@ -13,9 +13,9 @@
 
 // Refcounted-pointer wrapper (commonstruct_2.cpp): {unknown, pointer}; destroyed by the out-of-line Release.
 struct Unk_Ref16 { void* m_unknown; void* m_p; };
-struct Unk_RefT : Unk_Ref16 { Unk_RefT(); ~Unk_RefT(); };     // ctor 0x14027cb10, dtor 0x14027e000
-// Another instantiation of the same wrapper (copy ctor 0x14027caa0, dtor 0x14027dfd0); passed by value.
-struct Unk_RefA : Unk_Ref16 { Unk_RefA(const Unk_RefA&); ~Unk_RefA(); };
+class CAdditionalEvent; typedef MS2Ptr<CAdditionalEvent> Unk_RefT;   // C3: was a Unk_Ref16 view (ctor 0x14027cb10, dtor 0x14027e000)
+// The by-value argument is MS2Ptr<AdditionalEffectEventCtx> (copy ctor 0x14027caa0, dtor 0x14027dfd0;
+// explicit instantiations in commonstruct_2.cpp).
 
 // Event list owner (size 0x48); ctor 0x14027d780 and dtor live in commonstruct_2.cpp. The ctor is implicit: new T() zero-fills.
 struct Unk_List;
@@ -23,7 +23,7 @@ Unk_List* FUN_14027c650(Unk_List* l, int blockSize) noexcept;
 struct Unk_AEList { void* pad[6]; Unk_AEList() { FUN_14027c650((Unk_List*)this, 10); } };
 enum Unk_AdditionalEventValue { Unk_AdditionalEventValue_None = 0 };   // as commonstructptred.h
 typedef ATL::CAtlList<Unk_AdditionalEventValue> Unk_AEValueList;
-struct CAdditionalEvent : CPtred {
+class CAdditionalEvent : public CPtred { public:
     Unk_AEList events;
     void Add(Unk_AdditionalEventValue value);   // 0x1402804b0
     virtual ~CAdditionalEvent();
@@ -31,7 +31,7 @@ struct CAdditionalEvent : CPtred {
 MS2_CHECK_SIZE(CAdditionalEvent, 0x48);
 
 class AdditionalEffectEventCtx;
-Unk_Ref16* FUN_14027e9d0(Unk_Ref16* t, void* p);
+// C3: 0x14027e9d0 is MS2Ptr<CAdditionalEvent>::AssignRaw (commonstruct_2.cpp)
 bool FUN_14027ece0(Unk_Ref16* t, void* p);
 // The pointer reads are MS2Ptr<T>::operator T* (0x14027f2e0 / 0x14027f2f0) over the {unknown, pointer} wrapper.
 #define FUN_14027f2e0(t) ((AdditionalEffectEventCtx*)*reinterpret_cast<MS2Ptr<AdditionalEffectEventCtx>*>(t))
@@ -42,10 +42,10 @@ class AdditionalEffectEventCtx : public CPtred
 public:
     AdditionalEffectEventCtx();                     // 0x140267670
     AdditionalEffectEventCtx(int value);            // 0x1402676d0
-    AdditionalEffectEventCtx(Unk_RefA other);     // 0x140267750
+    AdditionalEffectEventCtx(MS2Ptr<AdditionalEffectEventCtx> other);     // 0x140267750
     virtual ~AdditionalEffectEventCtx();            // 0x1402677e0 (??_G 0x14027f9f0)
     void Init();                                    // 0x140267820
-    void CopyFrom(Unk_RefA other);                // 0x140267960
+    void CopyFrom(MS2Ptr<AdditionalEffectEventCtx> other);                // 0x140267960
 
     __int64 m_18;
     __int64 m_20;
@@ -80,7 +80,7 @@ AdditionalEffectEventCtx::AdditionalEffectEventCtx(int value)
 }
 
 // @0x140267750
-AdditionalEffectEventCtx::AdditionalEffectEventCtx(Unk_RefA other)
+AdditionalEffectEventCtx::AdditionalEffectEventCtx(MS2Ptr<AdditionalEffectEventCtx> other)
 {
     CopyFrom(other);
 }
@@ -106,13 +106,13 @@ void AdditionalEffectEventCtx::Init()
     m_58 = 0;
     m_5c = 0;
     m_60 = 0;
-    FUN_14027e9d0(&m_events, new CAdditionalEvent());
+    m_events.AssignRaw(new CAdditionalEvent());
 }
 
 // @0x140267960
-void AdditionalEffectEventCtx::CopyFrom(Unk_RefA other)
+void AdditionalEffectEventCtx::CopyFrom(MS2Ptr<AdditionalEffectEventCtx> other)
 {
-    if (FUN_14027ece0(&other, 0) != 0)
+    if (FUN_14027ece0((Unk_Ref16*)&other, 0) != 0)
         return;
     m_18 = FUN_14027f2e0(&other)->m_18;
     m_20 = FUN_14027f2e0(&other)->m_20;
@@ -129,6 +129,6 @@ void AdditionalEffectEventCtx::CopyFrom(Unk_RefA other)
     m_58 = FUN_14027f2e0(&other)->m_58;
     m_5c = FUN_14027f2e0(&other)->m_5c;
     m_60 = FUN_14027f2e0(&other)->m_60;
-    FUN_14027e9d0(&m_events, new CAdditionalEvent());
+    m_events.AssignRaw(new CAdditionalEvent());
     reinterpret_cast<Unk_AEValueList&>(FUN_14027f2f0(&m_events)->events).AddTailList(&reinterpret_cast<Unk_AEValueList&>(FUN_14027f2f0(&FUN_14027f2e0(&other)->m_events)->events));
 }

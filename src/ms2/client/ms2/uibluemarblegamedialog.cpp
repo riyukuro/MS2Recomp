@@ -42,7 +42,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 // The dice button of the movie.
-class Unk_140acd6e0 : public ASMovieClip { public: };
+#include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -526,7 +526,7 @@ CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCou
 // @0x140f24140
 void UIBlueMarbleGameDialog::FUN_140f24140(int bEnabled)
 {
-    if (MS2Ptr<Unk_140acd6e0> spButton = GetChild<Unk_140acd6e0>("m_dice"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_dice"))
         spButton->FUN_1422c1fe0(bEnabled);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

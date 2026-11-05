@@ -8,7 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 
-class Unk_140165cf0;    // xml element (declared where the loader is)
+class TiXmlElement;    // xml element (declared where the loader is)
 
 // One <groupInfo> row, 0x20 bytes.
 class PetGroupInfo : public CPtred
@@ -16,7 +16,7 @@ class PetGroupInfo : public CPtred
 public:
     PetGroupInfo();                                     // 0x140721000
     virtual ~PetGroupInfo();                            // 0x140721040
-    bool Load(Unk_140165cf0* pNode);                    // 0x140721070
+    bool Load(TiXmlElement* pNode);                    // 0x140721070
 
     int m_nGroupId;                                     // +0x18 "groupId"
 };

@@ -41,7 +41,7 @@ class CFieldDataCli : public CFieldData {
 public:
     CFieldDataCli();                                // 0x140a54160
     virtual ~CFieldDataCli();                       // 0x140a54540, sdd 0x140a56fb0
-    virtual bool vfunc_1(Unk_140165cf0* node);      // 0x140a55500
+    virtual bool vfunc_1(TiXmlElement* node);      // 0x140a55500
 
     MS2Ptr<CMinimap> m_spMinimap;                   // +0x160
     NiPoint3 m_vecDummyTargetPos;                 // +0x170 <camera dummyTargetPos>

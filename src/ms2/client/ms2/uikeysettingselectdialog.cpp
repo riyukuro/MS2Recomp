@@ -18,7 +18,7 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"  // C3: was a local member view
 #include "ms2/client/ms2/gameoptioninputdefault.h"  // C3: was a local member view
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -40,13 +40,13 @@ public:
 };
 
 
-class Unk_KsInputState                                                  // singleton at FUN_1409a8b10
-{
-public:
-    char m_pad[0x30];
-    char m_mouse[1];                                                    // +0x30
-};
-void* FUN_140c58ac0(Unk_KsInputState* p);
+// C3: the former input-state stand-in is CGameOption (singleton at FUN_1409a8b10); its +0x30 member is
+//     CGameOption::m_interfaceChar, and 0x140c58ac0 is CGameOption::FUN_140c58ac0 (cgameoption.h)
+//
+//
+//
+//
+//
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was FUN_14125bd20
 class UIGameOptionDialog* FUN_140a02e60(int);   // C3: was FUN_140a02e60
 class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
@@ -85,12 +85,12 @@ void UIKeySettingSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)FUN_1409331f0())))->GetLocked() == 0;
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_button1", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_button1)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button1", reinterpret_cast<MS2Ptr<ASButton>&>(m_button1)))
     {
         m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
         m_button1->FUN_1422c1fe0(bOn);
     }
-    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_button2", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(m_button2)))
+    if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button2", reinterpret_cast<MS2Ptr<ASButton>&>(m_button2)))
     {
         m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
         m_button2->FUN_1422c1fe0(bOn);
@@ -104,14 +104,14 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
     if (nButton == 2)
     {
         ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), true);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), true);
     }
     else
     {
         ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), false);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), false);
     }
-    ((class CGameOption*)(class Unk_KsInputState*)(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
+    TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     void* pDlg = ((void*)FUN_140a02e60(0x4ef3));
     if (pDlg != 0)
         ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();
@@ -123,9 +123,9 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
 }
 
 // @0x140c58ac0
-void* FUN_140c58ac0(Unk_KsInputState* p)
+Unk_InterfaceFlag* CGameOption::FUN_140c58ac0()
 {
-    return p->m_mouse;
+    return &m_interfaceChar;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3000-0x142ca3090 .text$yd

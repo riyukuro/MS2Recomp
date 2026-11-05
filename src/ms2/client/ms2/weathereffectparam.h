@@ -9,7 +9,7 @@ class WeatherEffectParam : public CEffectParam
 {
 public:
     WeatherEffectParam();                                       // 0x141b77250
-    virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141b772a0 <... fallType>
+    virtual void vfunc_1(TiXmlElement* pNode);                 // 1 0x141b772a0 <... fallType>
     virtual CEffectPtr vfunc_6();                               // 6 0x141b772f0 new WeatherEffect
 public:
     unsigned m_nFallType;           // +0x48 XML "fallType"

@@ -19,7 +19,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -56,11 +56,11 @@ bool CUGCDesignTable::s_bInit;
 
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
-class Unk_140165cf0 : public Unk_XmlNode {
-public:
+#include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 
 
-};
+
+
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -68,7 +68,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
-enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);   // "saleTag"
+enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);   // "saleTag"
    // the feature/locale singleton
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
@@ -88,7 +88,7 @@ CUGCDesignData::CUGCDesignData()
 }
 
 // @0x14089e270
-bool CUGCDesignData::Parse(Unk_140165cf0* pElem, __int64 nDefaultMarketMaxPrice)
+bool CUGCDesignData::Parse(TiXmlElement* pElem, __int64 nDefaultMarketMaxPrice)
 {
     if (pElem == 0)
         return false;
@@ -139,13 +139,13 @@ bool CUGCDesignTable::Reload()
         // The exe converts the cache's CString to const char* inline (no named pointer local).
         if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) == 0)
             return false;
-        Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
+        TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
             return false;
         __int64 nDefaultMarketMaxPrice =
             FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660));
-        for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
-             pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
+        for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
+             pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;

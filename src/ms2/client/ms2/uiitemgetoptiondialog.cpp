@@ -20,10 +20,10 @@
 // ---- unit-local views of exe types ----
 
 // The check box child.
-class Unk_GoEntity : public UIDialog
+class UIItemPetBoxDialog : public UIDialog   // C3: was Unk_GoEntity
 {
 public:
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);
+    MS2Ptr<ASCheckBox> FindCheckBox(const CString& strName);   // 0x140e52670
 };
 
 // The auto-loot options as the server gets them: one dword per group and the grade.
@@ -124,23 +124,23 @@ void UIItemGetOptionDialog::vfunc_67()
 void UIItemGetOptionDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (MS2Ptr<ASCheckBox> hEquip = ((Unk_GoEntity*)this)->FUN_140e52670("m_equip"))
+    if (MS2Ptr<ASCheckBox> hEquip = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_equip"))
         hEquip.get()->FUN_1422ce090(m_opt.FUN_1419dae70());
-    if (MS2Ptr<ASCheckBox> hConsume = ((Unk_GoEntity*)this)->FUN_140e52670("m_consume"))
+    if (MS2Ptr<ASCheckBox> hConsume = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_consume"))
         hConsume.get()->FUN_1422ce090(m_opt.FUN_1419dae50());
-    if (MS2Ptr<ASCheckBox> hEtc = ((Unk_GoEntity*)this)->FUN_140e52670("m_etc"))
+    if (MS2Ptr<ASCheckBox> hEtc = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_etc"))
         hEtc.get()->FUN_1422ce090(m_opt.FUN_1419dae60());
-    if (MS2Ptr<ASCheckBox> hMeso = ((Unk_GoEntity*)this)->FUN_140e52670("m_meso"))
+    if (MS2Ptr<ASCheckBox> hMeso = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_meso"))
         hMeso.get()->FUN_1422ce090(m_opt.FUN_1419daea0());
-    if (MS2Ptr<ASCheckBox> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
+    if (MS2Ptr<ASCheckBox> hMerat = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_merat"))
         hMerat.get()->FUN_1422ce090(m_opt.FUN_1419dae90());
-    if (MS2Ptr<ASCheckBox> hToken = ((Unk_GoEntity*)this)->FUN_140e52670("m_token"))
+    if (MS2Ptr<ASCheckBox> hToken = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_token"))
         hToken.get()->FUN_1422ce090(m_opt.FUN_1419daed0());
-    if (MS2Ptr<ASCheckBox> hOther = ((Unk_GoEntity*)this)->FUN_140e52670("m_other"))
+    if (MS2Ptr<ASCheckBox> hOther = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_other"))
         hOther.get()->FUN_1422ce090(m_opt.FUN_1419daeb0());
-    if (MS2Ptr<ASCheckBox> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
+    if (MS2Ptr<ASCheckBox> hGem = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_gemstone"))
         hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
-    if (MS2Ptr<ASCheckBox> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
+    if (MS2Ptr<ASCheckBox> hPet = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_pet"))
         hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
     if (MS2Ptr<ASDropdownMenu> hRank = ((UISwfEntity*)this)->GetChild<ASDropdownMenu>("m_equipRank"))
     {
@@ -301,7 +301,7 @@ int UIItemGetOptionDialog::vfunc_46()
 {
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8d))
     {
-        if (MS2Ptr<ASCheckBox> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
+        if (MS2Ptr<ASCheckBox> hPet = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_pet"))
         {
             ASCheckBox* pCheck = hPet.get();
             pCheck->vfunc_4(false);
@@ -310,7 +310,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e))
     {
-        if (MS2Ptr<ASCheckBox> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
+        if (MS2Ptr<ASCheckBox> hGem = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_gemstone"))
         {
             ASCheckBox* pCheck = hGem.get();
             pCheck->vfunc_3(0);
@@ -318,7 +318,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN() == true)
     {
-        if (MS2Ptr<ASCheckBox> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
+        if (MS2Ptr<ASCheckBox> hMerat = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_merat"))
         {
             ASCheckBox* pCheck = hMerat.get();
             pCheck->vfunc_3(0);
@@ -365,20 +365,20 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
     }
     else
     {
-        Unk_GoPacket data;
-        data.m_nMeso = m_opt.FUN_1419daea0();
+        Unk_PetFlags data;   // ccpetinfopacket.h's (ctor 0x1401ff780), the Unk_GoPacket layout: a..j = meso, merat, etc, token, equip, consume, gemstone, pet, other, grade
+        data.a = m_opt.FUN_1419daea0();
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
-            data.m_nMerat = m_opt.FUN_1419dae90();
-        data.m_nEtc = m_opt.FUN_1419dae60();
-        data.m_nToken = m_opt.FUN_1419daed0();
-        data.m_nEquip = m_opt.FUN_1419dae70();
-        data.m_nConsume = m_opt.FUN_1419dae50();
-        data.m_nOther = m_opt.FUN_1419daeb0();
-        data.m_nGrade = m_opt.FUN_1419dae30();
+            data.b = m_opt.FUN_1419dae90();
+        data.c = m_opt.FUN_1419dae60();
+        data.d = m_opt.FUN_1419daed0();
+        data.e = m_opt.FUN_1419dae70();
+        data.f = m_opt.FUN_1419dae50();
+        data.i = m_opt.FUN_1419daeb0();
+        data.j = m_opt.FUN_1419dae30();
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
-            data.m_nGemstone = m_opt.FUN_1419dae80();
+            data.g = m_opt.FUN_1419dae80();
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
-            data.m_nPet = m_opt.FUN_1419daec0();
+            data.h = m_opt.FUN_1419daec0();
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.WriteUInt8(6);
         FUN_1401ff810((unsigned char*)(&data), *(class COutputStream*)(&packet));

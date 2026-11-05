@@ -8,18 +8,19 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
+namespace egf { class Entity; }   // the property bag at Unk_CameraOwner+0x10
 
 class Unk_CachedEntity;
 void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // bool property setter
 
 // The object that owns the camera modes (CCameraMode::m_pOwner); it forwards the settings to the engine camera
-// through a property bag at +0x10 (hash-keyed setters).
-class Unk_CameraPropertyBag
-{
-public:
-    int FUN_1409457c0(unsigned int nHash, const float& fValue);     // egf::Entity::SetPropertyValue<float>
-    int FUN_1408a20a0(unsigned int nHash, bool& bValue) const;      // egf::Entity::GetPropertyValue<bool>
-};
+// through the egf::Entity at +0x10 (hash-keyed property setters).
+// (Unk_CameraPropertyBag was a view of egf::Entity: SetPropertyValue<float> 0x1409457c0, GetPropertyValue<bool> 0x1408a20a0)
+//
+//
+//
+//
+//
 
 class Unk_CameraOwner
 {
@@ -33,30 +34,14 @@ public:
         if (m_10)
             FUN_14098c6e0((Unk_CachedEntity*)m_10, 0x2310d55e, b);
     }
-    // @0x140af8160
-    bool FUN_140af8160()
-    {
-        bool b = false;
-        if (m_10)
-            m_10->FUN_1408a20a0(0x2310d55e, b);
-        return b;
-    }
-    // @0x140af9a10
-    void FUN_140af9a10(float f)
-    {
-        if (m_10)
-            m_10->FUN_1409457c0(0xd2c672d5, f);
-    }
-    // @0x140af9990
-    void FUN_140af9990(float f)
-    {
-        if (m_10)
-            m_10->FUN_1409457c0(0x4b35f1d, f);
-    }
+    // The egf::Entity property accessors; the bodies are below, under the <egf/Entity.h> guard.
+    inline bool FUN_140af8160();
+    inline void FUN_140af9a10(float f);
+    inline void FUN_140af9990(float f);
 
     void* m_pad_00;
     void* m_pad_08;
-    Unk_CameraPropertyBag* m_10;                // +0x10
+    egf::Entity* m_10;                          // +0x10
 };
 
 // The camera settings block at CCameraMode+0x20 (0x28 bytes). The ctor (0x140ae7ce0), the copy ctor (0x140ae7d90)
@@ -237,3 +222,29 @@ MS2_CHECK_SIZE(CCameraMode, 0x78);
 MS2_CHECK_OFFSET(CCameraMode, m_pOwner, 0x18);
 MS2_CHECK_OFFSET(CCameraMode, m_setting, 0x20);
 MS2_CHECK_OFFSET(CCameraMode, m_70, 0x70);
+
+// The Unk_CameraOwner property accessors need the complete egf::Entity. They are only defined in TUs that include
+// <egf/Entity.h> before this header: including it here would add egf's kENTITY_INVALID / kEVT_INVALID dynamic
+// initializers to TUs whose exe objs have none.
+#ifdef EE_ENTITY_H
+// @0x140af8160
+inline bool Unk_CameraOwner::FUN_140af8160()
+{
+    bool b = false;
+    if (m_10)
+        m_10->GetPropertyValue<bool>(0x2310d55e, b);
+    return b;
+}
+// @0x140af9a10
+inline void Unk_CameraOwner::FUN_140af9a10(float f)
+{
+    if (m_10)
+        m_10->SetPropertyValue<float>(0xd2c672d5, f);
+}
+// @0x140af9990
+inline void Unk_CameraOwner::FUN_140af9990(float f)
+{
+    if (m_10)
+        m_10->SetPropertyValue<float>(0x4b35f1d, f);
+}
+#endif

@@ -123,7 +123,7 @@ public:
     static int FUN_140eb8f40(const void* pA, const void* pB);  // 0x140eb8f40
     static int FUN_140eb9160(const void* pA, const void* pB);  // 0x140eb9160
 
-    MS2Ptr<Unk_MLevelCtrl> FUN_140c02990(const CString& strName);   // child lookup
+    // C3: the child lookup 0x140c02990 is UISwfEntity::GetChild<ASUIComponent> (uiswfentity.h)
     MS2Ptr<ASEventDispatcher> FindControl(const CString& strName);
 
 private:

@@ -327,6 +327,8 @@ public:
     virtual Unk_KmPt vfunc_20();   // a ctor-less point: the exe copies the return into the local
 };
 
+// NiPoint3 : efd::Point3 as a by-value efd::Point3 argument: the slice copies to a temp, then into the argument
+struct Unk_PalNiPoint3 : Vector3 {};
 // the refcounted cube manager (a COM-like interface: slot 1 AddRef, slot 2 Release)
 class CubeMapInformationService   // C3: member view (real class not in this TU)
 {
@@ -337,7 +339,7 @@ public:
     bool FUN_1410c35c0();
     __int64 GetOwnerId(int nA, int nB);
     class Cube* FUN_1410b8790(Unk_Int3 pt);
-    int FUN_1410cdd80(Vector3* pFrom, Vector3* pTo, float fDist, Unk_Int3* pOffset);
+    int FUN_1410cdd80(Vector3 ptFrom, Vector3 ptTo, float fDist, Unk_Int3 kOffset);
     bool FUN_1410d55d0(int a, int b);
 };
 class Unk_CubeMgr
@@ -359,7 +361,7 @@ struct Unk_CubeSpRef
     Unk_CubeMgr* m_p;
     Unk_CubeSpRef(Unk_CubeMgr* p) : m_p(p) { if (m_p) m_p->vfunc_1(); }
     ~Unk_CubeSpRef() { if (m_p) m_p->vfunc_2(); }
-    bool FUN_140ef4cb0(Unk_CubeMgr* p);
+    // C3: FUN_140ef4cb0 is efd::SmartPointer<CubeMapInformationService>::operator== (below)
 };
 
 
@@ -396,7 +398,7 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 UGCCubePalette* GetUGCCubePalette();
 class Unk_CubeStock   // C3: member view for the former free stand-ins
 {
@@ -407,14 +409,14 @@ public:
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uioxquizdialog.h"
-#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class ASTextInput : public ASMovieClip { public: CStringW GetText(); };   // C3: member view (astextinput.h clashes with the local ASUIComponent)
 #include <NiPick.h>
 #include <NiMesh.h>
 #include <ecr/PickService.h>
 class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };   // C3: the cube material RTTI
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
-class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 extern Unk_CubeStock DAT_143ab2e50;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 extern int DAT_1439f4a7c;
@@ -432,13 +434,13 @@ bool FUN_140ef0630(RTypeTbl* p, __int64 n);
 bool FUN_140ef0670(RSortTbl* p, __int64 n);
 bool FUN_140ef06b0(RCatTbl* p, __int64 n);
 void* FUN_140ef0750(RCatTbl* p);
-void FUN_14088cfc0(RCatElem* p);
-void FUN_14088d5d0(RCatElem* p);
+// C3: FUN_14088cfc0 / FUN_14088d5d0 are Unk_CubePtr<TabInfo>::AddRef / Release,
+// reached through the Unk_CubePtrAccess friend (FUN_140ef0500 below).
 unsigned __int64 FUN_140ef0ae0(void* pTbl);
 unsigned __int64 FUN_140ef0af0(void* pTbl);
 void* FUN_140ef0a60(void* pTbl, unsigned __int64 n);
 void* FUN_140ef0aa0(void* pTbl, unsigned __int64 n);
-RCatElem* FUN_140ef0500(RCatElem* pDst, RCatElem* pSrc);
+struct Unk_CubePtrAccess { static UGCCubeCategoryTable::TabPtr* FUN_140ef0500(UGCCubeCategoryTable::TabPtr* pDst, UGCCubeCategoryTable::TabPtr* pSrc); };
 bool FUN_140ef05f0(RSortElem* p, __int64 n);
 unsigned char FUN_140930c50();
 unsigned char FUN_140930ce0();
@@ -446,9 +448,9 @@ unsigned char FUN_140930ce0();
 // ---- controls ----
 
 // the UISwfEntity::GetChild<T> instances: members returning the handle by value, named by the literal
-struct Unk_UcpChildGet
+class UIItemPetBoxDialog   // C3: was Unk_UcpChildGet
 {
-    MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);
+public: MS2Ptr<ASCheckBox> FindCheckBox(const CString& strName);   // 0x140e52670
 };
 void FUN_140ba4b70(void* pDlg, RCubeList* pRet, const CString& strName);
 class UIDailyMissionDialog   // C3: member view (the list getter folds with this unit's)
@@ -623,9 +625,9 @@ void ASObj::FUN_140ef00a0(const char* szName, int n)
 
 
 // @0x140ef4cb0
-bool Unk_CubeSpRef::FUN_140ef4cb0(Unk_CubeMgr* p)
+template <> bool efd::SmartPointer<CubeMapInformationService>::operator==(CubeMapInformationService* pObject) const
 {
-    return m_p == p;
+    return m_pObject == pObject;
 }
 
 // @0x140ef4dd0
@@ -1366,12 +1368,12 @@ void UIUGCCubePaletteDialog::FUN_140eeca50()
         spCtl->FUN_1422c1fe0(0);
         ((Unk_CubeCtl*)(void*)(spCtl.operator->()))->vfunc_3(0);
     }
-    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140e52670("m_useable"))
+    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_useable"))
     {
         spCtl->FUN_1422c1fe0(1);
         spCtl->FUN_1422ce090(m_filter.flag2);
     }
-    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140e52670("m_ownership"))
+    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_ownership"))
     {
         if (FUN_140930c50() != 0)
         {
@@ -1595,7 +1597,7 @@ void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCate
                 obj.FUN_1409c0d20("categorylist", spSub.operator->()->m_nCategory);
                 ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->AddItemRow(obj);
                 if (spFirst == 0)
-                    FUN_140ef0500(reinterpret_cast<RCatElem*>(&spFirst), reinterpret_cast<RCatElem*>(&spSub));
+                    Unk_CubePtrAccess::FUN_140ef0500(&spFirst, &spSub);
             }
         }
         int nIndex;
@@ -2005,12 +2007,8 @@ void UGCKeyMode1::vfunc_1()
             NiPoint3 vUp(0, 0, 250.0f);
             Vector3 vPos = *((Vector3*)&static_cast<NiAVObject*>(static_cast<NiMesh*>(pObj))->GetWorldTranslate());
             Unk_NiPoint3 vEnd(*reinterpret_cast<const Vector3*>(&static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + NiPoint3(0, 0, 75.0f))));
-            Unk_Int3 vOff = DAT_143ab2398;
-            Unk_KmPt vTo;
-            vTo = pPlayer->vfunc_20();
-            Vector3 vFrom = vPos;
-            Vector3 vFromArg = vFrom;
-            if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410cdd80(&vFromArg, reinterpret_cast<Vector3*>(&vTo), 200.0f, &vOff) != 0)
+            // by value, right to left: DAT_143ab2398 and the vfunc_20 point are copied into argument temps, vPos twice
+            if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410cdd80(reinterpret_cast<const Unk_PalNiPoint3&>(vPos), reinterpret_cast<const Vector3&>(static_cast<const Unk_KmPt&>(pPlayer->vfunc_20())), 200.0f, DAT_143ab2398) != 0)
             {
                 Vector3 vAt = *reinterpret_cast<Vector3*>(&vEnd);
                 void* pCube = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(vAt);
@@ -2036,12 +2034,12 @@ void UGCKeyMode1::vfunc_5(void*, float, float)
     if (pWorld == 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
-    if (spMgr.FUN_140ef4cb0(0) != 0)
+    if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
-    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()))
+    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()))
         FUN_140ef3840();
     else
         FUN_140ef2fb0();
@@ -2097,13 +2095,8 @@ void UGCKeyMode2::vfunc_1()
             NiPoint3 vUp(0, 0, 250.0f);
             Vector3 vPos = *((Vector3*)&static_cast<NiAVObject*>(static_cast<NiMesh*>(pObj))->GetWorldTranslate());
             Unk_NiPoint3 vEnd(*reinterpret_cast<const Vector3*>(&static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + NiPoint3(0, 0, 75.0f))));
-            Unk_Int3 vOff = DAT_143ab2398;
-            Unk_KmPt vTo;
-            vTo = pPlayer->vfunc_20();
-            // the NiPoint3 -> efd::Point3 by-value args: each is copied to a temp, then copied again into the argument
-            Vector3 vFrom = vPos;
-            Vector3 vFromArg = vFrom;
-            if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410cdd80(&vFromArg, reinterpret_cast<Vector3*>(&vTo), 200.0f, &vOff) != 0)
+            // by value, right to left: DAT_143ab2398 and the vfunc_20 point are copied into argument temps, vPos twice
+            if (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410cdd80(reinterpret_cast<const Unk_PalNiPoint3&>(vPos), reinterpret_cast<const Vector3&>(static_cast<const Unk_KmPt&>(pPlayer->vfunc_20())), 200.0f, DAT_143ab2398) != 0)
             {
                 Vector3 vAt = *reinterpret_cast<Vector3*>(&vEnd);
                 void* pCube = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(vAt);
@@ -2129,12 +2122,12 @@ void UGCKeyMode2::vfunc_5(void*, float, float)
     if (pWorld == 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
-    if (spMgr.FUN_140ef4cb0(0) != 0)
+    if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     void* pEditor = ((class Unk_CubeHolder*)((class MyPC*)(void*)(pWorld))->GetActiveCubeCraft());
     if (pEditor == 0)
         return;
-    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()))
+    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()))
         FUN_140ef3840();
     else
         FUN_140ef2fb0();
@@ -2234,7 +2227,7 @@ void FUN_140ef2fb0()
     if (((class Unk_PCCubeCraft*)pEditor)->GetPending() != 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
-    if (spMgr.FUN_140ef4cb0(0) != 0)
+    if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     UGCCubePalette::CubePtr spCube = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->GetSelected();
     if (spCube == (UGCCubePalette::UGCCube*)0)
@@ -2249,8 +2242,8 @@ void FUN_140ef2fb0()
         unsigned int nMax = spCube->FUN_140defed0();
         int nMapId = reinterpret_cast<Unk_WorldMgr*>(WorldService::GetInstance())->FUN_141bd3060();
         int nStyle = FUN_1408a18d0((__int64)((class PCBase*)(pWorld))->FUN_141656a80());
-        if (((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(1) != 0 || ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410c3600(3) != 0 || nCount > nMax ||
-            ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())))->FUN_1410d55d0(nMapId, nStyle) != 0 || FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) != 0 ||
+        if (((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410c3600(1) != 0 || ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410c3600(3) != 0 || nCount > nMax ||
+            ((CubeMapInformationService*)(Unk_CubeMgr*)(reinterpret_cast<Unk_CubeMgr*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())))->FUN_1410d55d0(nMapId, nStyle) != 0 || FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820) != 0 ||
             FUN_140930ce0() != 0 || FUN_140930c50() != 0)
         {
             FUN_140ef37d0();
@@ -2329,16 +2322,16 @@ void FUN_140ef3840()
     if (((class Unk_PCCubeCraft*)(void*)(pEditor))->FUN_1410a8ab0() != 0)
         return;
     Unk_CubeSpRef spMgr(((class Unk_CubeMgr*)FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext))));
-    if (spMgr.FUN_140ef4cb0(0) != 0)
+    if ((reinterpret_cast<efd::SmartPointer<CubeMapInformationService>&>(spMgr) == (CubeMapInformationService*)0) != 0)
         return;
     UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
     if (pDlg == 0)
         return;
     bool bShown = false;
-    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()) != 0)
+    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->HasCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()) != 0)
     {
-        MS2Ptr<Cube> spCube(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()));
-        void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->GetOwnerId(spCube.get()->field50, spCube.get()->field54);
+        MS2Ptr<Cube> spCube(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->GetCubeAtPoint(((class Unk_PCCubeCraft*)(void*)(pEditor))->GetPtCell()));
+        void* pLayer = (void*)reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->GetOwnerId(spCube.get()->field50, spCube.get()->field54);
         if ((void*)((class PC*)pWorld)->FUN_141656ad0() == pLayer)
         {
             if (FUN_1408b5570(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
@@ -2348,7 +2341,7 @@ void FUN_140ef3840()
             }
             else if (FUN_1408b54c0(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
             {
-                if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
+                if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                 {
                     int nStr = 0x470;
                     if (((class Unk_UserSvc*)FUN_140166410())->FUN_14036d570(0xd4) != 0)
@@ -2368,7 +2361,7 @@ void FUN_140ef3840()
                 }
                 else if (FUN_1408b5820(((class Cube*)(spCube.get(), spCube.get()))->FUN_1408b4f20()) != 0)
                 {
-                    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
+                    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spMgr).operator->())->FUN_1410c35c0() == 0)
                     {
                         FUN_140d73bc0(0x473, 1, static_cast<IMessageListener*>(pDlg), CStringW(L"remove"));
                         bShown = true;
@@ -2629,10 +2622,10 @@ Unk_CubeTimer::~Unk_CubeTimer()
 // MS2-PIN: ??1UGCKeyController@@QEAA@XZ 0x140ef04e0 ; implicit dtor (~MS2Ptr<UGCKeyMode>)
 
 // @0x140ef0500
-RCatElem* FUN_140ef0500(RCatElem* pDst, RCatElem* pSrc)
+UGCCubeCategoryTable::TabPtr* Unk_CubePtrAccess::FUN_140ef0500(UGCCubeCategoryTable::TabPtr* pDst, UGCCubeCategoryTable::TabPtr* pSrc)
 {
-    FUN_14088cfc0(pSrc);
-    FUN_14088d5d0(pDst);
+    pSrc->AddRef();
+    pDst->Release();
     pDst->m_p = pSrc->m_p;
     return pDst;
 }

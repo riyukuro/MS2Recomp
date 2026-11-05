@@ -187,7 +187,7 @@ struct Unk_WsC_TagPtr                                     // smart pointer to th
     Unk_PCEntList* operator->() const;                      // 0x1409f2190
 };
 
-class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
+class CubeMapInformationService* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 
@@ -638,7 +638,7 @@ int CMouseInteractWeaponObject::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         pRay->strCursor = GetStringCommon(0x63c);
-        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_1408b5370());
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->FUN_1408b5370();
         return true;
     }
     return false;
@@ -649,7 +649,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         m_qwObjectId = hit->field18;
-        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_1408b5370());
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = hit->FUN_1408b5370();
         return true;
     }
     return false;
@@ -685,7 +685,7 @@ MS2Ptr<Cube> CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, con
             continue;
         if (hit->field50 != 0)
             continue;
-        Vector3 vPos = hit->FUN_1408b5370();
+        efd::Point3 vPos = hit->FUN_1408b5370();
         float fSize = 150.0f;
         Unk_NiPoint3 vCenter(reinterpret_cast<const Vector3&>(vPos));
         vCenter.z += fSize * 0.5;

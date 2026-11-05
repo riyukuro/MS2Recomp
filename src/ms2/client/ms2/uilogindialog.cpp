@@ -35,7 +35,7 @@
 #include "ms2/guess/machineidmanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/commonfiles/os.h"
-class Unk_140acd6e0 : public ASButton {};   // C3: the button view of the definer's instantiation
+// C3: Unk_140acd6e0 (the button view) is ASButton itself.
 class UICashAttendDialog { public: template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out); };   // C3: the child binder (0x140bc6d10, uicashattenddialog.cpp)
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
@@ -65,8 +65,8 @@ public:
     bool m_bSaveId;                                             // +0x30
     bool m_bLocaledName;                                        // +0x31
 };
-class Unk_LgSettings { public: CStringW* FUN_140cfd260(); };
-class CGameOption;
+// C3: FUN_140cfd260 is CGameOption's (&m_connect)
+#include "ms2/placeholder/cgameoption.h"
 struct Unk_GsConnect;
 void FUN_141260e00(Unk_GsConnect* pConnect, bool bLocaledName);
 
@@ -211,7 +211,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         MS2Ptr<ASCheckBox> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<ASCheckBox>("m_chkLocaledName");
         if (spLocale)
         {
-            FUN_141260e00(reinterpret_cast<Unk_GsConnect*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
+            FUN_141260e00(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
         }
     }
     int nLoginType = 0;
@@ -235,7 +235,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         request.m_n2c = ((class CMachineIDManager*)FUN_140aadf70())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
-        if (reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bLocaledName == 1)
+        if (reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
             request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
@@ -265,11 +265,11 @@ void UILoginDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     CString strId = DAT_143af37a0;
     if (strId.IsEmpty())
-        strId = reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_strSavedId;
+        strId = reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strSavedId;
     bool bSaveId = !strId.IsEmpty();
-    bool bLocaledName = reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bLocaledName;
+    bool bLocaledName = reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName;
     bLocaledName = true;
-    reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bSaveId = bSaveId;
+    reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bSaveId = bSaveId;
     static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, FUN_1406521f0(FUN_1406516b0()));
     if (!DAT_143af37a0.IsEmpty())
     {
@@ -343,7 +343,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (arg.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             bool bSave = arg.PopBool();
-            reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bSaveId = bSave;
+            reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bSaveId = bSave;
             return 1;
         }
     }
@@ -476,7 +476,7 @@ MS2Ptr<ASTextInput> UILoginDialog::FUN_1419e25e0()
 bool UILoginDialog::FUN_1419e2690(int, const CMsgBoxData&)
 {
     MS2Ptr<ASCheckBox> spLocale;
-    reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_chkLocaledName", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(spLocale));
+    reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_chkLocaledName", reinterpret_cast<MS2Ptr<ASButton>&>(spLocale));
     spLocale->FUN_1422ce090(1);
     return true;
 }
@@ -490,7 +490,7 @@ bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
     else
     {
         MS2Ptr<ASCheckBox> spLocale;
-        reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<Unk_140acd6e0>("m_chkLocaledName", reinterpret_cast<MS2Ptr<Unk_140acd6e0>&>(spLocale));
+        reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_chkLocaledName", reinterpret_cast<MS2Ptr<ASButton>&>(spLocale));
         spLocale->FUN_1422ce090(1);
     }
     return true;

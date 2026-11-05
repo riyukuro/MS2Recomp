@@ -10,6 +10,8 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/filebuffer_1.h"
 #include "ms2/ms2format.h"
+extern template class MS2Ptr<class UIObject>;
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CFileBuffer> COMDATs (CFileSystem::BufferPtr)
 #include "ms2/ms2recover.h"
 #include "ms2/unnamed/unit_1406125d0.h"
 #include "hook/ms2hook.h"

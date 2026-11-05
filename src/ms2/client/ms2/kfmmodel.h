@@ -46,12 +46,12 @@ MS2_CHECK_OFFSET(Unk_KfmConfig, m_fScale, 0x44);
 MS2_CHECK_OFFSET(Unk_KfmConfig, m_arrAnimNames, 0xa0);
 MS2_CHECK_OFFSET(Unk_KfmConfig, m_aPonyTail, 0xb8);
 
-// Pony-tail physics helper owned (intrusively counted) by the model; the model ticks it once per update.
-class Unk_KfmPhysics : public NiRefObject
-{
-public:
-    virtual void Update(double fTime);                      // slot 2 (after ~NiRefObject, DeleteThis)
-};
+// The model's environment-force applier (intrusively counted; FUN_141209640 builds it), ticked once per update:
+// IEquipModelForceApplier (RTTI name), slot 2 OnTick.
+#include "ms2/client/ms2/equipmodelforceapplier.h"
+//
+//
+//
 
 class CKfmModel : public CEquipModel, public NiActorManager::CallbackObject
 {
@@ -126,7 +126,7 @@ public:
     int m_nUpdateTransform;                         // +0x124 (vfunc_11 pending)
     unsigned char m_bPhysicsLoaded;                 // +0x128 set by vfunc_33
     egf::EntityPtr m_spEntity;                      // +0x130
-    efd::SmartPointer<Unk_KfmPhysics> m_pPhysics;   // +0x138 intrusive-counted physics helper (FUN_1414423d0 assigns)
+    efd::SmartPointer<IEquipModelForceApplier> m_pPhysics;   // +0x138 intrusive-counted force applier (FUN_1414423d0 assigns)
 };
 MS2_CHECK_SIZE(CKfmModel, 0x140);
 MS2_CHECK_OFFSET(CKfmModel, m_nUpdateHR, 0x120);
