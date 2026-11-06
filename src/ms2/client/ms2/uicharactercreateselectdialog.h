@@ -19,7 +19,7 @@
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/cptred.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CMsgBoxData;
 
 class UICharacterCreateSelectDialog : public UIDialog

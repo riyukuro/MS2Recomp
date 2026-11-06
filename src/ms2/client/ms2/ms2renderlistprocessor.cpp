@@ -100,7 +100,7 @@ DecoEditService* BrushService();
 // ---- file-scope statics (.text$di) -------------------------------------------------------------------------------------
 // This range also holds the initializers of the neighbouring processor TUs (their RTTI objects and the header statics every
 // one of them carries: the condition table, the skill/stun labels, a condition map, a null handle).
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_BuddyHandle (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 #ifndef MS2_HOOK_DLL   // the exe's own RTTI objects are the registered ones
 // @0x1400f8ee0
@@ -120,7 +120,7 @@ const NiRTTI MS2OverdrawProcessor::ms_RTTI("MS2OverdrawProcessor", &MS2RenderLis
 #endif
 static CString s_strSkill2("skill");
 static CString s_strStun2("stun");
-static Unk_BuddyHandle s_pointer3(NULL);
+static egf::EntityID s_pointer3(0);
 // @0x1400f9190
 static CString s_skill("skill");
 // @0x1400f91c0

@@ -225,8 +225,8 @@ static const efd::Category s_catEntityChannel(efd::UniversalID::ECU_Any, 0xfff, 
 // @0x14010eb40
 static const efd::Category s_catAnimationChannel(efd::UniversalID::ECU_Any, 0xfff, 0x07001008);
 // @0x14010eb70
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
-static Unk_BuddyHandle s_pointer(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);
 // @0x14010eb90
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x14010ebe0

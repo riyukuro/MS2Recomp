@@ -139,8 +139,8 @@ extern int DAT_143ab2914;                                       // the GM level
 
 // the trophies updated by the server (refreshed per frame) and the claim sound
 ATL::CAtlMap<unsigned int, int> DAT_143af0f30;
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* h); void* m_p; };     // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
-Unk_BuddyHandle DAT_143af0fc8(0);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+egf::EntityID DAT_143af0fc8(0);   // @0x14010fb50
 static CString kTrophyRewardGet("system_Trophy_Reward_Get");
 
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600

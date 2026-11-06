@@ -20,13 +20,13 @@
 
 // The shared header statics of this unit (each header brings its own copies, constructed in include order).
 #include "ms2/placeholder/unk_1402a9d70.h"
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill1 = "skill";
 static CString s_stun1 = "stun";
-static Unk_BuddyHandle s_handle1(0);
+static egf::EntityID s_handle1(0);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController1;
 static CString s_sortNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -39,7 +39,7 @@ static CString s_stun3 = "stun";
 static CString s_sortNames4[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill4 = "skill";
 static CString s_stun4 = "stun";
-static Unk_BuddyHandle s_handle2(0);
+static egf::EntityID s_handle2(0);
 static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController3;
 #ifndef MS2_HOOK_DLL   // s_systemKillSlayer: the exe's object at 0x143af6008, which other units reach as DAT_143af6008 (the hook DLL binds it)
@@ -48,7 +48,7 @@ CString DAT_143af6008 = "System_KillSlayer";
 extern CString DAT_143af6008;
 #endif
 static CString s_sortNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_BuddyHandle s_handle3(0);
+static egf::EntityID s_handle3(0);
 static CString s_sortNames6[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 #include "uiscenegame.h"

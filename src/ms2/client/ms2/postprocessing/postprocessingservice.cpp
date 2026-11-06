@@ -1336,8 +1336,8 @@ static CString s_strStun = "stun";
 // @0x1400fc8c0
 const efd::Category DAT_143ae4c20(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
-static Unk_BuddyHandle s_pointer(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 inline TSingleton<PostProcessingService>::TSingleton() { s_instance = static_cast<PostProcessingService*>(this); }

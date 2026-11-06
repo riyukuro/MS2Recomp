@@ -20,7 +20,7 @@
 
 namespace efd { class File; }
 class NiTexture;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CItem;
 
 // A local image file offered for upload (0x58, vftable 0x142f8dd48; ugcmanager.cpp#4). Name from RTTI.

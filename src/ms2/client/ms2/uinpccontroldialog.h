@@ -27,7 +27,7 @@ struct Unk_CtlSkill
 MS2_CHECK_SIZE(Unk_CtlSkill, 8);
 
 class AiDebugDialog;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASTextField;
 class ASScrollingList;
 class Unk_CtlIntArray;

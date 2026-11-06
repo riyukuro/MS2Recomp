@@ -165,12 +165,12 @@ public:
     virtual bool vfunc_2(int nSkillId);                     // 2 the skill is learned
 };
 class Unk_SsBuffs : public AdditionalCliList { };
-class Unk_SsWorld : public WorldService
-{
-public:
-    Unk_SsPc* FUN_141bd0cc0();
-    class Unk_SsFieldObj* FUN_141bd2bf0(NiPoint3 kPos, int nObjectId);       // a field object near the position
-};
+//
+//
+//
+//
+//
+//
 
 unsigned int FUN_14092f4e0(int);   // C3: was FUN_14092f4e0
 int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // put an entry on a quick slot
@@ -445,7 +445,7 @@ int SkillSlot::vfunc_13()
     }
     else
     {
-        reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bc9fd0(nKey);
+        WorldService::GetInstance()->FUN_141bc9fd0(nKey);
     }
     return vfunc_10();
 }
@@ -1333,7 +1333,7 @@ int SkillSlot::FUN_141760c00()
         {
             if (spItem->FUN_140527840()->IsRideItem())
             {
-                if (!reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bcb210())
+                if (!WorldService::GetInstance()->FUN_141bcb210())
                     return 1;
                 if ((int)FUN_141760220(1) <= 0)
                     return 1;
@@ -2806,7 +2806,7 @@ void CSkillSystem::FUN_141768e70(int nId, unsigned short nLevel, __int64 nExpire
 // @0x141768fb0
 int CSkillSystem::FUN_141768fb0(unsigned int nSkillId, unsigned short nLevel)
 {
-    if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bcb150() && (nSkillId == 0x5607ed1 || nSkillId == 0x5607ed2))
+    if (WorldService::GetInstance()->FUN_141bcb150() && (nSkillId == 0x5607ed1 || nSkillId == 0x5607ed2))
         return 1;
     MS2Ptr<Unk_HsInfo> spInfo = m_pOwner->GetHideAndSeekInfo();
     bool bInfo;
@@ -3047,7 +3047,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
     }
     if (spLevel->GetSkill()->GetMainType() == 5)
     {
-        if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bdb660(4) != 0)
+        if (WorldService::GetInstance()->FUN_141bdb660(4) != 0)
             return 0x12;
     }
     if (spLevel->GetSkill()->FUN_1407e9d70())
@@ -3181,7 +3181,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         {
             if (reinterpret_cast<CFieldData*>(spMap.operator->())->GetMapType() == 3)
             {
-                if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bdb660(6) != 0)
+                if (WorldService::GetInstance()->FUN_141bdb660(6) != 0)
                     return 0xf;
             }
             if (spMap->m_nCheckFly == 0)
@@ -3194,13 +3194,13 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         {
             if (spMap->m_nCheckClimb == 0)
                 return 0x10;
-            if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bdb660(1) != 0)
+            if (WorldService::GetInstance()->FUN_141bdb660(1) != 0)
                 return 0x11;
         }
     }
     if (pData->FUN_1407e9f30())
     {
-        if (reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bdb660(2) != 0)
+        if (WorldService::GetInstance()->FUN_141bdb660(2) != 0)
             return 0x13;
     }
     ATL::CAtlArray<unsigned>& rRequire = rCond.m_arrRequireEffect;
@@ -3226,7 +3226,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
     }
     if (!rCond.m_arrRequireMapCodes.IsEmpty())
     {
-        int nMapId = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd3060();
+        int nMapId = WorldService::GetInstance()->FUN_141bd3060();
         int bFound = 0;
         for (unsigned i = 0; i < rCond.m_arrRequireMapCodes.GetCount(); i = i + 1)
         {
@@ -3264,7 +3264,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         return 0xb;
     if (m_pOwner->GetLapenshardSkillLevel(pData->GetId()) > 0)
     {
-        if (CFieldData::FUN_1403744a0(reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd3060()))
+        if (CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060()))
             return 0x1b;
     }
     ATL::CAtlArray<Unk_SkillWeapon>& rWeapons = rCond.m_arrWeapon;
@@ -3305,7 +3305,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
     }
     if (pData->GetMainType() == 0x11)
     {
-        Unk_SsFieldObj* pObj = reinterpret_cast<Unk_SsWorld*>(WorldService::GetInstance())->FUN_141bd2bf0(reinterpret_cast<Unk_SsPc*>(m_pOwner)->vfunc_18(), static_cast<GameObject*>(m_pOwner)->FUN_14123c580());
+        Unk_WsC_GameObj* pObj = WorldService::GetInstance()->FUN_141bd2bf0(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<Unk_SsPc*>(m_pOwner)->vfunc_18())), static_cast<GameObject*>(m_pOwner)->FUN_14123c580());
         if (pObj != 0)
             return 0x1d;
     }

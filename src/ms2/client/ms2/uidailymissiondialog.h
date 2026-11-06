@@ -16,7 +16,7 @@
 
 class ASData;
 class ASMovieClip;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class NotifyObject;
 class ASButtonBar;

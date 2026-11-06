@@ -21,7 +21,7 @@
 
 class ASArray;
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CMsgBoxData;
 class CSeasonData;
 class ASScrollingList;

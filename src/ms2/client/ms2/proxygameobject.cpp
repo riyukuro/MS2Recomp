@@ -354,7 +354,7 @@ MS2_REPLACE_METHOD(0x1416C2920, CProxyGameObject, FUN_1416c2920, 33, 0x5153CC8C)
 Unk_ProxyValueD0* CProxyGameObject::FUN_1416c2950()
 {
     if (FUN_1416c1ff0() != 0) {
-        return ((class Unk_ProxyValueD0*)((class CAchieveManager*)(class Unk_Svc6c7600*)(((class Unk_Svc6c7600*)FUN_1406c7600())))->GetTally());
+        return ((Unk_ProxyValueD0*)((class CAchieveManager*)(class Unk_Svc6c7600*)(((class Unk_Svc6c7600*)FUN_1406c7600())))->GetTally());
     }
     return &m_d0;
 }

@@ -62,7 +62,7 @@ struct Unk_SharedMemory
     void* m_pView;                                      // +0x28
     Unk_SharedMemory(const char* pszName, DWORD nSize); // 0x140223990
     ~Unk_SharedMemory();                                // closes the view and the mapping
-    char FUN_140223b00() const;
+    bool IsValid() const;                               // 0x140223b00
 };
 
 // @0x1402226b0
@@ -358,14 +358,14 @@ Unk_SharedMemory::~Unk_SharedMemory()
 }
 
 // @0x140223b00
-char Unk_SharedMemory::FUN_140223b00() const
+bool Unk_SharedMemory::IsValid() const
 {
-    int bOk;
-    if (m_pView != 0 && m_pView != 0)
-        bOk = 1;
-    else
-        bOk = 0;
-    return bOk;
+    // the view is mapped. The exe tests m_pView twice
+    // (ms2rendercontext.h has the class and calls it IsValid);
+    // Under /Od the && keeps a dword 1/0 temp
+    // and returns its low byte.
+    return m_pView != 0
+        && m_pView != 0;
 }
 
 // @0x140223b40

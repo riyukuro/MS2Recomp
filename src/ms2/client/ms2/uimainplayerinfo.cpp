@@ -666,11 +666,11 @@ void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
     if (p2.get() == 0 || p3 == 0)
         return;
     m_camera = 0;
-    if (reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).get() != 0)
+    if (m_ridee.get() != 0)
     {
-        reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->vfunc_28(p1, p2, p3, p4);
-        m_camera = reinterpret_cast<UIAvatarBase*>(reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).operator->())->GetView();
-        MS2SvrPtr<CRideeData> spMount = reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->GetRow();
+        m_ridee->vfunc_28(p1, p2, p3, p4);
+        m_camera = reinterpret_cast<UIAvatarBase*>(m_ridee.operator->())->GetView();
+        MS2SvrPtr<CRideeData> spMount = m_ridee->GetRow();
         Unk_MpCamData data;
         data.m_target = spMount->m_faceCamera.m_vLookAtPosition;
         data.m_eye = spMount->m_faceCamera.m_vCameraPosition;
@@ -824,7 +824,7 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
         obj.FUN_1407cb9c0("rideOff", holder->GetData()->m_basic.m_nEnableRideOffUI);
         obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, holder->GetData()->m_basic.m_nId));
         m_ridee.AssignRaw(new UIAvatarRidee(holder->GetData()));
-        reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee)->vfunc_1(0);
+        m_ridee->vfunc_1(0);
     } while (0);
     if (m_nSlotMode == nMode)
         return;
@@ -974,7 +974,7 @@ void UIMainPlayerInfo::FUN_1419f13b0(int bInfinity, int bForce)
 {
     if (m_bInfinity == bInfinity && bForce == 0)
         return;
-    if (reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(m_ridee).get() != 0)
+    if (m_ridee.get() != 0)
         return;
     if (m_playerInfo == 0)
         return;
@@ -1538,22 +1538,22 @@ Unk_MpRideeCtl* FUN_1419f3810()
     return ((Unk_MpRideeCtl*)((MyPC*)(Unk_MpPC*)(pPc))->GetActiveCubeCraft());
 }
 
-// @0x1419f41d0
-Unk_MpRideePtr& Unk_MpRideePtr::operator=(int nNull)
-{
-    Release();
-    return *this;
-}
-
-// @0x1419f4200
-Unk_MpRideePtr& Unk_MpRideePtr::AssignRaw(UIAvatarRidee* p)
-{
-    Unk_MpRideePtr tmp(p);
-    UIAvatarRidee* pOld = m_p;
-    m_p = tmp.m_p;
-    tmp.m_p = pOld;
-    return *this;
-}
+// s63 L5: m_ridee is MS2Ptr<UIAvatarRidee>; its operator=(int) (0x1419f41d0) and AssignRaw (0x1419f4200) are
+// the generic ms2ptr_impl.h bodies.
+// MS2-PIN: ??4?$MS2Ptr@VUIAvatarRidee@@@@QEAAAEAV0@H@Z 0x1419f41d0 ; s63: `m_ridee = 0` (UIMainPlayerInfo)
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUIAvatarRidee@@@@QEAAAEAV1@PEAVUIAvatarRidee@@@Z 0x1419f4200 ; s63: m_ridee.AssignRaw (UIMainPlayerInfo)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x1419EEA30, UIMainPlayerInfo, GetTypeName, 61, 0x5EF64259);

@@ -9,7 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/asuicomponent.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASButton;
 class ASDataProvider;
 

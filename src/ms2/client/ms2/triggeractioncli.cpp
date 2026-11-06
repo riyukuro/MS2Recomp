@@ -142,7 +142,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // registrar of ClassObject factories, atexit helpers
 ClassObject* FUN_140de5570();
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 struct Unk_RegMarker {};                // empty: the initializer stores nothing after the call
 
 // ---- dynamic initializers ----
@@ -157,7 +157,7 @@ static CStringA s_strSkill("skill");
 static CStringA s_strStun("stun");
 // @0x1400d6790
 static char s_dat_143ac4e80[8];
-static Unk_RegMarker s_dat_143ac4e80_init = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143ac4e80)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
+static Unk_RegMarker s_dat_143ac4e80_init = (reinterpret_cast<egf::EntityID*>(&s_dat_143ac4e80)->egf::EntityID::EntityID(0), Unk_RegMarker());
 
 // ---- TriggerActionCli ----
 

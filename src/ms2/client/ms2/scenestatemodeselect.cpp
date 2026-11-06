@@ -37,11 +37,11 @@ public:
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateModeSelect);
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);                                       // @0x1400c5320
 
 // @0x140aadff0
 CSceneStateModeSelect::CSceneStateModeSelect()

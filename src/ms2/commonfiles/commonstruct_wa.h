@@ -244,7 +244,7 @@ MS2_CHECK_SIZE(CUserChangeableItemHistory, 0x50);
 // Smart pointer to CUserChangeableItemHistory.
 class Unk_HistRef {
 public:
-    Unk_HistRef(int);                              // 0x14027cc10
+    Unk_HistRef(decltype(nullptr));                // 0x14027cc10 (spills rdx: nullptr_t, not int)
     Unk_HistRef(const Unk_HistRef&);               // 0x14027cc30
     Unk_HistRef(Unk_HistRef&&);                    // 0x14027cbe0
     ~Unk_HistRef();                                // 0x14027e060

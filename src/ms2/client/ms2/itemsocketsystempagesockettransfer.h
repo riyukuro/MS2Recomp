@@ -7,7 +7,7 @@
 #include "itemsocketsystempagegemstonemanage.h"
 #include "ms2/placeholder/gfxvalue.h"
 class CMsgBoxData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CIngredientContainer;
 struct Unk_SockUidPair;
 

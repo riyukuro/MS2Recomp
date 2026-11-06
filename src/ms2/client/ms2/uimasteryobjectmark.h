@@ -24,7 +24,7 @@ class CInteractObject;
 class CInteractGatheringObject;
 class CFunctionCubeObject;
 class CHomemadeCubeObject;
-class ASObj;
+class AScript; typedef AScript ASObj;
 
 class UIMasteryObjectMark : public UIObject
 {

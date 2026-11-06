@@ -17,7 +17,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CAchieve;
 class ASGameEntity;
 class ASScrollingList;

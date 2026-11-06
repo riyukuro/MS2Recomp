@@ -117,7 +117,7 @@ int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned 
     Unk_UserProxy& user = pMember->user;
     obj.FUN_1409c0d20("rank", nRank);
     obj.FUN_1409c48f0("level", user.m_34);
-    ((class ASObj*)(class ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
+    ((ASObj*)(ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
     ((class AScript&)(obj)).FUN_1407cbb20("name", user.FUN_1408f19e0());
     double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);

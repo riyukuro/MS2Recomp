@@ -7,7 +7,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 static Unk_1402a9d70 s_condition0(17, 0.75f, 0.25f, 2.25f, 10);
 
@@ -19,7 +19,7 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);                                              // @0x1400c60e0
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 static CString s_sortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

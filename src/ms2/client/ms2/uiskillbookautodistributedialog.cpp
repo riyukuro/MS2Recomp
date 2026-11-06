@@ -30,7 +30,7 @@
 // MS2-PIN: ??$forward_as_tuple@AEBH@std@@YA?AV?$tuple@AEBH@0@AEBH@Z 0x140ed2c20 ; unique
 // MS2-PIN: ??$move@AEAV?$tuple@AEBH@std@@@std@@YA$$QEAV?$tuple@AEBH@0@AEAV10@@Z 0x140ed2d10 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140ed3080 ; unique
-// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140ed3120 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140ed3120 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCMsgBoxData@@@@QEAA@H@Z 0x140ed3220 ; unique
 // MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x140ed3460 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VCSkillBookTreeTabConfig@@@@QEBA_NPEAVCSkillBookTreeTabConfig@@@Z 0x140ed3aa0 ; unique

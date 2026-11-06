@@ -18,7 +18,7 @@
 #include "ms2/placeholder/uistatuseventlistener.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASTileList;
 
 class UIAdventureLevelDialog : public UIDialog, public UIStatusEventListener

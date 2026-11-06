@@ -105,13 +105,13 @@ public:
 // node + 8 bytes of slack): ctor 0x1422c6570, dtor 0x1422c65c0); its child lookups go through the Unk_Finder view.
 MS2_CHECK_SIZE(ASDisplayObjectContainer, 0x80);
 
-class Unk_BuddyHandle    // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
-{
-public:
-    Unk_BuddyHandle(void*);
-private:
-    void* m_p;
-};
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+// {
+// public:
+//     Unk_BuddyHandle(void*);
+// private:
+//     void* m_p;
+// };
 
 // ---- out-of-unit callees ----
 
@@ -475,7 +475,7 @@ static CString s_strTopLeft("topLeft");
 // @0x1400d1d80
 static CString s_strTopRight("topRight");
 // @0x1400d1db0
-static Unk_BuddyHandle s_hGfx(NULL);
+static egf::EntityID s_hGfx(0);
 
 // @0x140d01040
 int FUN_140d01040(CString& strAlign)

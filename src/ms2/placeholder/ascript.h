@@ -17,7 +17,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/gfxvalue.h"
 
-template <class T> class MS2Ptr;
+template <class T> class MS2Ptr; template <class T> class Unk_DTCtxPtr;   // s63: the DT reward owning handle (gameeventdtreward.h)
 struct Unk_SocketNew; typedef Unk_SocketNew Unk_BmNewTag; // the new-object tag (0x1401b7b90; blackmarketitemoption.h)
 
 template <class T>
@@ -37,7 +37,7 @@ public:
     MS2Ptr(T* p);                       // m_p = p; AddRef() (0x140f9c100 for T = UISwfEntity)
     MS2Ptr(const MS2Ptr& o);            // 0x1409b9940 for T = AScript
     // Converting copy (U derives from T): m_p = o.m_p; AddRef() (0x1405ace70 for T = CGemDataBase, U = CGemTombStoneData).
-    template <class U> MS2Ptr(const MS2Ptr<U>& o) { m_p = o.m_p; AddRef(); }
+    template <class U> MS2Ptr(const MS2Ptr<U>& o) { m_p = o.m_p; AddRef(); }   MS2Ptr(const Unk_DTCtxPtr<T>& o);   // s63: from the DT handle, 0x14041ba70 (gameeventdtreward.h)
     ~MS2Ptr();                          // 0x1409b9a00 for T = AScript
     // Converting assignment (U derives from T). Inline: its COMDAT is in the first unit that assigns (0x1422dca80 for
     // T = AScript, U = ASDisplayObject, in uiswfentity.cpp).
@@ -372,5 +372,61 @@ protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the mo
         int m_nMovieId;                 // +0x18 movie id given to the ctor (ASCommonDepth reads it)
     };
     Scaleform::GFx::Value m_value;      // +0x20
+public:   // the ASObj stand-in's members (below) were public
+    // Members once declared on the ASObj stand-in (asobj.h; ASObj is a typedef of AScript). Setters by value type,
+    // most of them per-unit inline COMDATs of one AScript::Set<T> template.
+    // (ItemDropResult: the drop row filler FUN_1409c5bd0)
+    // The bool/CString/CStringW/int setters FUN_1407cbbe0/cba60/cbb20/cb9c0 and FUN_1422bb2b0 (a member as text) are
+    // AScript's own (commonfiles/shopcategorytable.cpp, gfxui/ascript.cpp): calls through an ASObj bind those names.
+    void FUN_1409c10e0(const char* szName, int n);                       // set an int member (uimeratmarketdialog.cpp "saleState")
+    void FUN_1409c0dc0(const char* szName, const char* szValue);         // set a string member from a char*
+    void FUN_1409c0e60(const char* szName, const wchar_t* szValue);      // set a string member from a wchar_t*
+    void FUN_1409c1180(const char* szName, __int64 n);                   // set a 64-bit member
+    void FUN_1409c48f0(const char* szName, short n);                     // set a short member
+    void FUN_140be2660(const char* szName, int n);                       // 0x140be2660 set an int member through an ASData (inline COMDAT, defined in uiclosetdialog.cpp)
+    void FUN_140ef0000(const char* szName, int n);                       // same (uiugccubepalettedialog.cpp copy)
+    void FUN_140ef00a0(const char* szName, int n);                       // same (second copy)
+    void FUN_140f8f970(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uipartysearchdialog.cpp)
+    void FUN_140f8fa10(const char* szName, unsigned int n);              // same, unsigned
+    void FUN_1409adc90(const char* szName, int n);                       // set an int member (item rank; UISnowmanEventDialog)
+    void FUN_140f43b40(const char* szName, int n);                       // set an int member (fishing medal; UIRewardNotify)
+    void FUN_1409eb310(const char* szName, int n);                       // set an int member via ASData (astooltip.cpp)
+    void FUN_1409eb3b0(const char* szName, long n);                      // set a long member via ASData (astooltip.cpp)
+    void FUN_1409eb270(const char* szName, const AScript& obj);            // set a member to another AS object
+    void FUN_1409eb1d0(const char* szName, const class ASArray& arr);    // set a member to an AS array (UITalkCinematic components)
+    void FUN_140c16160(const char* szName, ASArray arr);                 // set a member to an AS array (arr by value: the callee destroys it; uiitemextractionscrolldialog)
+    void FUN_140e846b0(const char* szName, size_t n);                    // set a size_t member (a Set<unsigned __int64> COMDAT, in uirpseventdialog's range)
+    void FUN_140e35d00(const char* szName, int n);                       // set an int member (inline COMDAT, uigamerankingdialog.cpp)
+    void FUN_140e35da0(const char* szName, int n);                       // same body, a second instance (uigamerankingdialog.cpp)
+    void FUN_140c1f8b0(const char* szName, int n);                       // set an int member (hide and seek result rows)
+    void FUN_140bd0d90(const char* szName, int n);                       // set an int member (job code, uimainplayerinfo)
+    void FUN_140c0e050(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uidungeoncategory.cpp)
+    void FUN_140c43830(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiitemgachaboxdialog.cpp)
+    void FUN_141aafcd0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiquesteventlistener.cpp)
+    void FUN_1409c4990(const char* szName, unsigned long n);             // set a colour member (uiavatarbase.cpp)
+    void FUN_140cfd0d0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, gameoptionlanguage.cpp)
+    void FUN_140cfd170(const char* szName, int n);                       // same body, a second instance
+    void FUN_140f3f020(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uienchantscrolldialog.cpp)
+    void FUN_140fbd930(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uivipgoodsshopdialog.cpp)
+    void FUN_141b62da0(const char* szName, int n);                       // set an int (enum) member via ASData (inline COMDAT, uiworldmapdialog.cpp: "tileType")
+    void FUN_141a65c70(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uinpccontroldialog.cpp)
+    void FUN_140fe95a0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiweddingpage.cpp)
+    void FUN_1412d4860(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiitemoptioncreatedialog.cpp)
+    void FUN_1412d4900(const char* szName, int n);                       // same, a second instance
+    void FUN_1412d49a0(const char* szName, int n);                       // same, a third instance
+    void FUN_140ec3230(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uimeratmarketcommon.cpp)
+    void FUN_140f17290(const char* szName, int n);                       // same body, another COMDAT (inline, uiblackmarketpage.cpp: the stat group)
+    void FUN_141253870(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, gameoptioninputdefault.cpp)
+    void FUN_1422bae10(const char* szName, int& n);                      // read an int member (uiitemcreatedialog.cpp)
+    void FUN_141b2ffc0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uitriggereditordialog.cpp)
+    void FUN_141a07250(const char* szName, int n);                       // set an int member (uimessagebox's range; the trigger state positions)
+    void FUN_1422bad80(const char* szName, int& n);                      // read an int member (uiugcitemeditdialog.cpp)
+    void FUN_1422bafe0(const char* szName, bool& b);                     // read a bool member (uiugcitemeditdialog.cpp)
+    void FUN_141b46af0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiugcitemeditdialog.cpp)
+    void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
+    void FUN_140e88a10(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uisidepopuptalk_1.cpp: the popup "type")
+    void FUN_141a472c0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiminimapentity.cpp: "groupType")
+    bool FUN_1409c5bd0(class ItemDropResult* pDrop);                    // fill a drop/reward row (icon, name, grade, count; astooltip.cpp)
 };
+typedef AScript ASObj;   // the exe has no ASObj class: the old stand-in name (asobj.h) is AScript
 MS2_CHECK_SIZE(AScript, 0x40);

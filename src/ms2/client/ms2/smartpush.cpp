@@ -172,12 +172,12 @@ public:
     virtual Vector3 vfunc_18();                                         // 18 0x14166bbe0
 };
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
-// Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
-class CubeMapInformationService
-{
-public:
-    bool FUN_1410d5640();                                              // the home of the map is the player's
-};
+// CubeMapInformationService: the real header (B22 removed the Unk_BuddyHandle / Unk_1401cd100 clash).
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // B22 follow-up: was a local member view (the Unk_BuddyHandle clash is gone)
+//{
+//public:
+//    bool FUN_1410d5640();                                              // the home of the map is the player's
+//};
 class Unk_SpHome : public CubeMapInformationService {};
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {

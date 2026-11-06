@@ -21,7 +21,7 @@
 class Unk_GpNode;
 class Unk_GpButton;
 class NotifyObject;
-class ASObj;
+class AScript; typedef AScript ASObj;
 
 class UIGamePadMenuDialog : public UIDialog
 {

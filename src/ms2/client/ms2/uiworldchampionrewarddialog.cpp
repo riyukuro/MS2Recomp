@@ -97,7 +97,7 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 
-void FUN_140bc7c10(const Scaleform::GFx::Value&, CString, int, std::vector<MS2Ptr<ASMovieClip>>&, int);
+class Unk_CadCheck; template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);   // C3: was FUN_140bc7c10 (uicashattenddialog, T = Unk_CadCheck)
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 class Unk_WcAvatar {
 public:
@@ -207,7 +207,7 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
-    FUN_140bc7c10(m_30.get()->FUN_1422bb890(), "m_stepSlot", 10, m_stepSlotVecotr, 0);
+    FUN_140bc7a40<Unk_CadCheck>(m_30.get()->FUN_1422bb890(), "m_stepSlot", 10, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_stepSlotVecotr), 0);
     std::vector<MS2Ptr<ASMovieClip>>& slots = m_stepSlotVecotr;
     for (std::vector<MS2Ptr<ASMovieClip>>::const_iterator end = slots.end(), it = slots.begin(); it != end; ++it) {
         MS2Ptr<ASMovieClip> slot = *it;

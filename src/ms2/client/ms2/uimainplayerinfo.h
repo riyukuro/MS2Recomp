@@ -32,25 +32,25 @@ class Unk_UISwfEntity_25;
 class Unk_MpAchieve;
 class Unk_MpSlot;
 
-// The ridee avatar of the render target (an UIAvatarRidee, new 0xd8): 16-byte handle, pointer at +8. It is
-// MS2Ptr<UIAvatarRidee>; readers go through a reinterpret_cast, and the members defined here keep the stand-in's names.
+// The ridee avatar of the render target (an UIAvatarRidee, new 0xd8): MS2Ptr<UIAvatarRidee> (s63 L5: was the
+// stand-in Unk_MpRideePtr). Its members are the generic ms2ptr_impl.h bodies: ctor(int) 0x141314100, ctor(T*)
+// 0x141314120, move ctor 0x1413140d0, operator== 0x141314e40, dtor 0x1413146e0, operator=(int) 0x1419f41d0,
+// AssignRaw 0x1419f4200, AddRef 0x1413163f0, Release 0x141316680.
 class UIAvatarRidee;
-class Unk_MpRideePtr
-{
-public:
-    explicit Unk_MpRideePtr(int nNull);                     // 0x141314100
-    Unk_MpRideePtr(UIAvatarRidee* p);                       // 0x141314120
-    Unk_MpRideePtr(const Unk_MpRideePtr& o);                // 0x1413140d0 (uimeratmarketdialog.cpp)
-    bool operator==(UIAvatarRidee* p) const;                // 0x141314e40 (uimeratmarketdialog.cpp)
-    ~Unk_MpRideePtr();                                      // 0x1413146e0
-    Unk_MpRideePtr& operator=(int nNull);                   // 0x1419f41d0
-    Unk_MpRideePtr& AssignRaw(UIAvatarRidee* p);            // 0x1419f4200
-    void AddRef() const;                                    // 0x1413163f0 (declared only; the MS2Ptr<T>::AddRef COMDAT)
-    void Release();                                         // 0x141316680
-    void* m_0;
-    UIAvatarRidee* m_p;
-};
-MS2_CHECK_SIZE(Unk_MpRideePtr, 0x10);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // The render-target camera of the ridee avatar (8-byte handle; the same COMDATs as Unk_PetBoxCameraPtr).
 class Unk_MpCamera;
@@ -167,7 +167,7 @@ private:
     int m_bCommonMinimize;                              // +0x21c "commonMinimize"
     int m_nSlotMode;                                    // +0x220 1 = riding / hide and seek slot mode
     unsigned int m_nHideMask;                           // +0x224 reasons to hide the panel (0 = shown)
-    Unk_MpRideePtr m_ridee;                             // +0x228
+    MS2Ptr<UIAvatarRidee> m_ridee;                      // +0x228
     efd::SmartPointer<UIRenderView> m_camera;                           // +0x238
 };
 MS2_CHECK_SIZE(UIMainPlayerInfo, 0x240);

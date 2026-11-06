@@ -16,7 +16,7 @@
 #include "ms2/placeholder/uientityeventlistener.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CProxyGameObject;
 class CMsgBoxData;
 

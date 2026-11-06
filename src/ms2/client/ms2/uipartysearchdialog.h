@@ -7,7 +7,7 @@
 #include "ms2/placeholder/cmatchpartyrecruit.h"
 #include <atlcoll.h>
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASArray;
 class ASTextInput;
 

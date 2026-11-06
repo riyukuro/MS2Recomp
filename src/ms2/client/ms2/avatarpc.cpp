@@ -1620,7 +1620,7 @@ int COptimizer::FUN_1409f7ea0()
 // pointer holder and the array.
 struct Unk_AvBox { void* m_pad_00; void* m_p; };
 struct Unk_AvPtrArray { void** m_pData; unsigned __int64 m_nSize; unsigned __int64 m_nAlloc; int m_nGrowBy; };
-void FUN_1401b6ac0(Unk_AvBox* p);
+// s63 L4: 0x1401b6ac0 is MS2Ptr<CItemData>::Release (private; reached through operator=(int) below).
 void FUN_14015b310(void* p, unsigned __int64 n);
 void* FUN_140159860(unsigned __int64 n, void* p);
 void FUN_140159b70(unsigned nHr);
@@ -1664,12 +1664,12 @@ void* FUN_1409f72e0(void* p)
     return p;
 }
 
-// @0x1409fac60
-Unk_AvBox* FUN_1409fac60(Unk_AvBox* p, unsigned nFlags)
-{
-    FUN_1401b6ac0(p);
-    return p;
-}
+// s63 L4: 0x1409fac60 is MS2Ptr<CItemData>::operator=(int) (`p = 0`: Release, return *this), the generic
+// ms2ptr_impl.h body; it was FUN_1409fac60 on the Unk_AvBox view, calling Release as FUN_1401b6ac0.
+template MS2Ptr<CItemData>& MS2Ptr<CItemData>::operator=(int);
+// MS2-PIN: ??4?$MS2Ptr@VCItemData@@@@QEAAAEAV0@H@Z 0x1409fac60 ; s63: generic operator=(int) (look-alike of every T)
+//
+//
 
 // @0x1409f7480
 void FUN_1409f7480(NiRefObject** pp) noexcept

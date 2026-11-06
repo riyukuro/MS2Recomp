@@ -39,8 +39,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 // ---- unit-local stand-ins for helpers of other units (opaque) ----
 namespace egf { class Entity; }
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_FpEntityList;
-struct Unk_PCEntListPtr {           // 16 byte handle filled by FUN_141bd0420 (C3: was Unk_Handle; pc.cpp defines it)
-    ~Unk_PCEntListPtr();                            // 0x1409f20e0
+struct Unk_WsC_TagPtr {             // 16 byte handle filled by WorldService::FUN_141bd0420 (worldservice_1.cpp defines it)
+    ~Unk_WsC_TagPtr();                              // 0x1409f20e0
     Unk_FpEntityList* operator->() const;           // 0x1409f2190
     void* m_a; void* m_p;
 };
@@ -72,6 +72,7 @@ public:
     void FUN_141bcabf0();
     void* FUN_141bd0cc0();
     void FUN_141bcad60(void* p, int n);
+    Unk_WsC_TagPtr FUN_141bd0420(unsigned key);   // the entities of a model
     static class WorldService* GetInstance();
 };
 class CEffectService;
@@ -102,9 +103,8 @@ class CameraMgr   // C3: member view
 public:
     void FUN_140aeb900(bool b);
 };
-struct Unk_PCWorld {                // the world service (FUN_1403ed2d0; the view name pc.cpp uses)
-    Unk_PCEntListPtr FUN_141bd0420(unsigned hash);    // the entities of a model
-};
+// C3: was the Unk_PCWorld view of WorldService (FUN_1403ed2d0)
+//   for FUN_141bd0420 (the entities of a model): it is WorldService's own member.
 void* FUN_140b285a0(void* p);
 void* FUN_140b285b0(void* p);
 // 0x1406c3780 = Unk_Rgb3b::ToColor (rgb bytes -> 0..1 floats, fieldproperty.h)
@@ -201,7 +201,7 @@ void FieldPropertyWeatherCli::vfunc_5() { TSingleton<CEffectService>::GetInstanc
 // @0x140b27930
 void FieldPropertyAmbientLightCli::vfunc_4()
 {
-    Unk_PCEntListPtr h = static_cast<Unk_PCWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x169ea355);
+    Unk_WsC_TagPtr h = WorldService::GetInstance()->FUN_141bd0420(0x169ea355);
     if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
         return;
     efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));
@@ -221,7 +221,7 @@ Unk_Vec3f FieldPropertyAmbientLightCli::FUN_140b27a80() const { return m_color.T
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
 {
-    Unk_PCEntListPtr h = static_cast<Unk_PCWorld*>(((void*)WorldService::GetInstance()))->FUN_141bd0420(0x628f2cf9);
+    Unk_WsC_TagPtr h = WorldService::GetInstance()->FUN_141bd0420(0x628f2cf9);
     if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
         return;
     efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));

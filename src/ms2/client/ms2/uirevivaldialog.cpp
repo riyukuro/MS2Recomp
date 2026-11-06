@@ -606,7 +606,7 @@ int UIRevivalDialog::FUN_141abc9d0()
 {
     if (m_30 == 0)
         return 0;
-    MS2Ptr<ASCheckBox> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
+    MS2Ptr<ASCheckBox> spCoupon = GetChild<ASCheckBox>("m_coupon");
     if (spCoupon == 0)
         return 0;
     if (spCoupon->FUN_1422c2030() == 0)
@@ -748,7 +748,7 @@ void UIRevivalDialog::FUN_141abd640()
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<ASCheckBox> spCoupon = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_coupon");
+    MS2Ptr<ASCheckBox> spCoupon = GetChild<ASCheckBox>("m_coupon");
     if (spCoupon == 0)
         return;
     MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(4);

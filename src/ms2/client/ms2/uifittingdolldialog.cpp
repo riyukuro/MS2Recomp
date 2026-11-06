@@ -41,7 +41,7 @@
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 // The dialog movie's root (an ASDialog): "bagID" / "owner" are plain members of the movie, the drag events are methods.
 class ASDialog : public ASDisplayObject
@@ -151,7 +151,7 @@ static CString s_strSkill("skill");
 static CString s_strStun("stun");
 
 // @0x140113450
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);
 
 // @0x140113470
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);

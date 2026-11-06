@@ -45,13 +45,13 @@
 
 // ---- statics of the unit's header (init order: sort names, a pointer, the key controller, skill, stun, a pointer) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);   // @0x1400e1c90
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);   // @0x1400e1d40
 
 // ---- unit-local views of exe types ----
 

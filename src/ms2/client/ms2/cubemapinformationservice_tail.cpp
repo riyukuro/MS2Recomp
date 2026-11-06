@@ -6,8 +6,7 @@
 // unit map). The CU's own code lives in cubemapinformationservice_1/2/3.cpp, which call these instances through FUN_
 // externs, so the container operations are driven from the functions at the end of this file.
 // Key/value types: from the node sizes (allocate/deallocate), the value offset in the node, the comparators and the
-// destroy chains of each family; record class names from RTTI (SalesInfo, SaleStateData, SetItemEffectInfo,
-// AutomaticCreateCubeInfo, UICubeUGCHead), the others invented.
+// destroy chains of each family; record class names from RTTI (SalesInfo, SaleStateData, SetItemEffectInfo, AutomaticCreateCubeInfo, UICubeUGCHead), the others invented.
 // MS2-UNIT: unit_141148d70
 // MS2-RANGE: 0x141148d70-0x141159a60 .text$mn
 // MS2-PINS-BEGIN tplpin
@@ -753,3 +752,4 @@ void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz)
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@HH@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@HH@std@@PEAX@2@@Z 0x14114b250 ; exe _Extract caller type (re-keyed probe)
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@std@@QEAAXPEAU?$_Tree_node@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@PEAX@2@@Z 0x14114b330 ; exe _Extract caller type (re-keyed probe)
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@@std@@QEAAXPEAU?$_Tree_node@V?$MS2Ptr@VCFunctionCubeObject@@@@PEAX@2@@Z 0x14114b410 ; exe _Extract caller type (re-keyed probe)
+// MS2-PIN: ?empty@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEBA_NXZ 0x1411517a0 ; ua13: calls this type's _Myfirst/_Mylast 0x1408abb00/0x1408abb40, only caller 0x1410c93c0 (its local vector<EntityPtr>)

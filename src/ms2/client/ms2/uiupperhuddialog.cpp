@@ -108,7 +108,7 @@ class UIPcBangDialog;
 // ---- statics (the exe runs them in this order; the header-local objects come twice, with the key input, the
 // string constants and the handle in between) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 static CString s_sort8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};   // @0x1400f1000
 static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};                      // @0x1400f10d0
@@ -120,7 +120,7 @@ static CString s_jobCode = "jobCode";                                           
 static CString s_sortValue = "sortValue";                                                           // @0x1400f12a0
 static CString s_tabIndex = "tabIndex";                                                             // @0x1400f12d0
 static CString s_maidFinish = "maid_Finish";                                                        // @0x1400f1300
-static Unk_BuddyHandle s_handle(0);                                                             // @0x1400f1330
+static egf::EntityID s_handle(0);                                                             // @0x1400f1330
 static CString s_skill2 = "skill";                                                                  // @0x1400f1350
 static CString s_stun2 = "stun";                                                                    // @0x1400f1380
 static CString s_sort7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};                    // @0x1400f13b0

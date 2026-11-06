@@ -119,17 +119,17 @@ template <> ItemDropResult* MS2Ptr<ItemDropResult>::get() const { return m_p; } 
 //
 //
 MS2Ptr<CItemData> FUN_14053f870(int);
-class ASObj : public AScript {
-public: ASObj(int); virtual ~ASObj();
-    bool FUN_1409c5bd0(ItemDropResult*);
-};
+typedef AScript ASObj;   // FUN_1409c5bd0 is AScript's (ascript.h)
+
+
+
 class ASArray : public AScript {
 public: int PushValue(Scaleform::GFx::Value);
 };
 class ASDataProvider : public ASArray {
 public: ASDataProvider(int); virtual ~ASDataProvider();
 };
-MS2_CHECK_SIZE(ASObj, 0x40);
+
 MS2_CHECK_SIZE(ASDataProvider, 0x40);
 CStringW FUN_1409eb450(int);
 

@@ -17,7 +17,7 @@ typedef unsigned long long u64;
 
 // ---- out-of-unit callees ----
 void* FUN_14214a770(void* sched, int behaviorType);
-class Unk_BuddyHandleBase { public: Unk_BuddyHandleBase(void* h); void* handle; };    // ctor 0x1401cd130 (buddy.cpp)
+#include <efd/UniversalID.h>   // B22: was class Unk_BuddyHandleBase (ctor 0x1401cd130 = efd::UniversalID(efd::UInt64))
 void FUN_140159b70(long hr);
 void FUN_14015b310(void* p, u64 sz);
 
@@ -194,7 +194,7 @@ bool FUN_140d86e00(long long* a, long long* b) { return *a == *b; }
 // @0x140d86e40
 bool FUN_140d86e40(void* a, void* b) { return !FUN_140d86e00((long long*)a, (long long*)b); }
 // @0x140d86da0
-void* FUN_140d86da0(void* a, void* b) { ((Unk_BuddyHandleBase*)a)->Unk_BuddyHandleBase::Unk_BuddyHandleBase(b); return a; }
+void* FUN_140d86da0(void* a, void* b) { ((efd::UniversalID*)a)->efd::UniversalID::UniversalID((efd::UInt64)b); return a; }
 // @0x140d86df0
 void FUN_140d86df0(void* p) {}
 // @0x140d873f0

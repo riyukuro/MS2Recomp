@@ -215,7 +215,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
 {
     ASObj row(2);
     row.FUN_140c1f8b0("team", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0());
-    ((class ASObj*)(class ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
+    ((ASObj*)(ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
     ((class AScript&)(row)).FUN_1407cbb20("charName", pPC->vfunc_77());
     row.FUN_1409c0d20("kill", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a660());
     ((class AScript&)(row)).FUN_1407cb9c0("death", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0() != 0);

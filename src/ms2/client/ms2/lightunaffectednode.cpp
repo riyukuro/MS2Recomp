@@ -13,8 +13,8 @@
 const NiRTTI LightUnaffectedNode::ms_RTTI("LightUnaffectedNode", &NiNode::ms_RTTI);
 
 // @0x1400f7420
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: in place of the header's Unk_LUNHolder)
-static Unk_BuddyHandle s_holder(0);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_holder(0);
 
 // @0x14144df10
 NiObject* LightUnaffectedNode::CreateClone(NiCloningProcess& kCloning)

@@ -13,7 +13,7 @@
 #include <atlcoll.h>
 
 class CMsgBoxData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CItemData;
 
 class UIMeratMarketRegisterDialog : public UIModalDialog

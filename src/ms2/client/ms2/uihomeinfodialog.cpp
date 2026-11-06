@@ -170,7 +170,7 @@ int FUN_1418fcee0();
 int FUN_1418fd280();
 int FUN_1418fd2f0();
 int FUN_140930190();
-bool FUN_140930c50();
+unsigned char FUN_140930c50();
 __int64 FUN_140930240();
 __int64 FUN_140930ae0();
 int FUN_14092f640();   // C3: was FUN_14092f640
@@ -459,7 +459,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                 reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
                 if (ids.empty())
                 {
-                    spConv->vfunc_4(FUN_140930c50());
+                    spConv->vfunc_4(reinterpret_cast<bool (*)()>(&FUN_140930c50)());   // C3: the exe hands the uchar result straight to the bool param
                     reinterpret_cast<Unk_HiList*>(spList.operator->())->vfunc_24(true);
                 }
                 else

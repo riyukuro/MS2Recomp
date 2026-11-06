@@ -1,7 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CubeMapInformationService COMDAT tail slice 0x1410dc570-
 // 0x1410e29c0 (queue unit_1410dc570): the public map::try_emplace / operator[] wrappers of the service's member trees,
-// swap/make_pair/sort helpers and the CAtlArray<void*> ctors. Same driver family as cubemapinformationservice_tail2.cpp;
-// the container types are shared in cubemapinformationservice_tail.h. Not an original file.
+// swap/make_pair/sort helpers and the CAtlArray<void*> ctors. Same driver family as cubemapinformationservice_tail2.cpp; the container types are shared in cubemapinformationservice_tail.h. Not an original file.
 // MS2-UNIT: unit_1410dc570
 // MS2-RANGE: 0x1410dc570-0x1410e29c0 .text$mn
 // MS2-GUESS-LOOKALIKES
@@ -33,8 +32,7 @@
 #include "ms2/ms2format.h"
 
 struct Unk_CMISPawn;
-// The ordering FUN_1410bb610 sorts its entity list with: by distance from the pawn (ctor 0x141123230, operator()
-// 0x14112cbc0, outside this slice).
+// The ordering FUN_1410bb610 sorts its entity list with: by distance from the pawn (ctor 0x141123230, operator() 0x14112cbc0, outside this slice).
 class GameObject; struct Unk_DkNearer   // C3: was Unk_CMISByDistance (operator() 0x14112cbc0, unit_14112ab60)
 {
     Unk_DkNearer(GameObject* pPlayer) { m_pPlayer = pPlayer; }                 // 0x141123230
@@ -205,3 +203,5 @@ void Unk_CMISDriveTail11()
 // MS2-PIN: ??$_Construct1@PEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@AEAPEAU12@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@PEAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@1@AEAPEAU51@@Z 0x1410dfb80 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$_Construct1@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@$$QEAVEntityID@egf@@@2@V?$tuple@$$V@2@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@PEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAVEntityID@egf@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1410e0cc0 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$_Destroy1@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@PEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@1@U?$integral_constant@_N$00@1@@Z 0x1410e2820 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
+// MS2-PIN: ??$_Construct1@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@PEAX@std@@AEAPEAU12@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@PEAX@std@@@efd@@PEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@PEAX@1@AEAPEAU51@@Z 0x1410dfc70 ; ua13: KindB-uchar node-ptr _Construct1, only caller construct<KindB,uchar> 0x1411180c0
+// MS2-PIN: ??$_Construct1@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@PEAX@std@@AEAPEAU12@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@PEAX@std@@@efd@@PEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@PEAX@1@AEAPEAU51@@Z 0x1410dfcc0 ; ua13: KindB-int node-ptr _Construct1, only caller construct<KindB,int> 0x141118100

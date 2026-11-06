@@ -40,13 +40,13 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/ms2.h"
 #include "ms2/placeholder/ecrcameraservice.h"   // Unk_ServiceManager
-class Unk_BuddyHandle {
-public:
-    Unk_BuddyHandle(void*);
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+//public:
+//    Unk_BuddyHandle(void*);
+//private:
+//    void* m_p;
+//};
+// MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 
 // @0x1400fb920
 static CString s_physSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -55,7 +55,7 @@ static CString s_physSkill("skill");
 // @0x1400fba10
 static CString s_physStun("stun");
 // @0x1400fba40
-static Unk_BuddyHandle s_physNone(NULL);
+static egf::EntityID s_physNone(0);
 // @0x1400fba60
 static Unk_1402a9d70 s_physCondition(17, 0.75f, 0.25f, 2.25f, 10);
 

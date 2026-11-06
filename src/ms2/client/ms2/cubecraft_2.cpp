@@ -144,8 +144,8 @@ efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptCenter);   // fills the 
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400e5be0
 static CString s_str143acf628("skill");                                                    // @0x1400e5ca0
 static CString s_str143acf620("stun");                                                     // @0x1400e5cd0
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };           // ctor 0x1401cd100
-static Unk_BuddyHandle s_dat_143acf668(0);                                             // @0x1400e5d00
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143acf668(0);                                               // @0x1400e5d00
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);                          // @0x1400e5d20
 static CString DAT_143acf6b8("system_notice_error_warningNoBuild");                        // @0x1400e5d70
 static CString DAT_143acf6c0("ugc_moveblock");                                             // @0x1400e5da0

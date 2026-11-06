@@ -215,22 +215,22 @@ class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 // The wide-string formatter with a leading string id (0x14028dee0), instantiated here for <CStringW, CString>.
 
 // The cube / housing service (singleton behind 0x1409670e0; also the object behind the COM-style reference to 0x143b059e8).
-// Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_BuddyHandle).
-class CubeMapInformationService
-{
-public:
-    __int64 FUN_1410c3180();                                        // owner id of the current plot (0 outside)
-    CStringW FUN_1410c31d0();                                       // owner name of the current plot
-    int FUN_1410c3140();
-    int FUN_1410c3100();
-    int FUN_1410c3000();
-    int FUN_1410c3650();
-    int FUN_1410b9d80(__int64 nUid);
-    int CountCubesByItemId(int nItemId);
-    int CountCubesByItemIdAndOwner(int nItemId, __int64 nRank);
-    int FUN_1410d2f10();
-    bool FUN_1410c35c0();
-};
+// CubeMapInformationService: the real header (B22 removed the Unk_BuddyHandle / Unk_1401cd100 clash).
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // B22 follow-up: was a local member view (the Unk_BuddyHandle clash is gone)
+//{
+//public:
+//    __int64 FUN_1410c3180();                                        // owner id of the current plot (0 outside)
+//    CStringW FUN_1410c31d0();                                       // owner name of the current plot
+//    int FUN_1410c3140();
+//    int FUN_1410c3100();
+//    int FUN_1410c3000();
+//    int FUN_1410c3650();
+//    int FUN_1410b9d80(__int64 nUid);
+//    int CountCubesByItemId(int nItemId);
+//    int CountCubesByItemIdAndOwner(int nItemId, __int64 nRank);
+//    int FUN_1410d2f10();
+//    bool FUN_1410c35c0();
+//};
 class Unk_UcCubeSvc : public CubeMapInformationService {};
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {

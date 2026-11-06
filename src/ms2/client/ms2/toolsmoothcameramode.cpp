@@ -25,16 +25,16 @@
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
-MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+// MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 static CString s_skill1("skill");
 static CString s_stun1("stun");
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortNames1[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 static CString s_skill2("skill");
 static CString s_stun2("stun");
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortNames2[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 

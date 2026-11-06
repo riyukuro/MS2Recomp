@@ -25,7 +25,7 @@
 class ASData;
 class ASDataProvider;
 class ASLabel;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASSlot;
 class ASMovieClip;
 class ASTextField;

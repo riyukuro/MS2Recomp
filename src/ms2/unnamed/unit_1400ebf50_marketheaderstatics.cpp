@@ -8,7 +8,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
@@ -33,7 +33,7 @@ static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSortTypeNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill5 = "skill";
 static CString s_strStun5 = "stun";
-static Unk_BuddyHandle s_pointer5(NULL);
+static egf::EntityID s_pointer5(0);                                              // @0x1400ec630
 static Unk_1402a9d70 s_condition5(17, 0.75f, 0.25f, 2.25f, 10);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cae990-0x142caec60 .text$yd

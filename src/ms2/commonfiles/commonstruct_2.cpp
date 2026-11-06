@@ -54,7 +54,7 @@ struct Unk_Q8 { i64 v; };
 struct Unk_PairMember { char c; };
 struct Unk_PairHolder { Unk_PairMember pair; };
 Unk_Q8* FUN_14027d650(Unk_Q8*, Unk_Q8*);
-Unk_Q8* FUN_140163dc0(Unk_Q8*, Unk_Q8*);
+// (0x140163dc0 is std::tuple<>::tuple(const tuple&), called directly)
 i64 FUN_140278730(i64); i64 FUN_140278740(i64);
 i64 FUN_1402787a0(i64, i64); i64 FUN_1402787b0(i64, i64);
 i64 FUN_140278920(i64*, i64*); i64 FUN_140278950(i64*, i64*);
@@ -206,7 +206,11 @@ void FUN_14027b790(i64 al, i64 where, i64 a2, i64 b2, i64 c2)
     Unk_Q8* p28 = (Unk_Q8*)&first;
     Unk_Q8* p30 = &second;
     reinterpret_cast<void (*)(void*, char, i64, i64)>(&FUN_140274bb0)(mem, *(char*)(i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
-                  (i64)FUN_140163dc0(p28, (Unk_Q8*)(i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))));
+#ifdef __clang__   // clang types an explicit ctor call as void; same call, then the slot
+                  (reinterpret_cast<std::tuple<>*>(p28)->std::tuple<>::tuple(reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))), (i64)p28));
+#else   // cl: the explicit ctor call yields the object at rax (0x140163dc0 is std::tuple<>::tuple(const tuple&))
+                  (i64)&reinterpret_cast<std::tuple<>*>(p28)->std::tuple<>::tuple(reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))));
+#endif
 }
 // @0x14027b840
 void FUN_14027b840(i64 al, i64 where, i64 src) { ::new((void*)where) Unk_P8(*(Unk_P8*)FUN_14027c170(src)); }
@@ -262,10 +266,6 @@ void FUN_140277990(i64, i64); void FUN_140277a50(i64, i64); void FUN_140277b10(i
 i64 FUN_140277ee0(i64, i64, i64); i64 FUN_140278130(i64, i64, i64);
 // @0x14027bcd0
 template decltype(auto) VIng::emplace_back<const PIng&>(const PIng&);   // vector<MS2Ptr<CIngredientInfo>>::emplace_back (was FUN_14027bcd0)
-//
-//
-//
-//
 //
 //
 //
@@ -524,7 +524,7 @@ template MS2Ptr<CUgcItemLook>::MS2Ptr(CUgcItemLook*);
 // @0x14027cbe0
 Unk_HistRef::Unk_HistRef(Unk_HistRef&& o) { m_p = o.m_p; o.m_p = 0; }   // was the free FUN_14027cbe0(Unk_Ref16*, Unk_Ref16*)
 // @0x14027cc10
-Unk_Ref16* FUN_14027cc10(Unk_Ref16* t, void*) { t->m_p = 0; return t; }
+Unk_HistRef::Unk_HistRef(decltype(nullptr)) { m_p = 0; }   // was the free FUN_14027cc10(Unk_Ref16*, void*), aliased from this name
 // @0x14027cc30
 Unk_HistRef::Unk_HistRef(const Unk_HistRef& o) { m_p = o.m_p; FUN_1402865e0(reinterpret_cast<Unk_Ref16*>(this)); }   // was the free FUN_14027cc30(Unk_Ref16*, Unk_Ref16*)
 // @0x14027cc70
@@ -652,13 +652,13 @@ void* FUN_14027d5b0(void* t) { return t; }
 // @0x14027d5c0
 Unk_CommonBytes4* FUN_14027d5c0(Unk_CommonBytes4* t) noexcept { memset(&t->raw, 0, sizeof(t->raw)); return t; }
 // @0x14027d5e0
-Unk_PairHolder* FUN_14027d5e0(Unk_PairHolder* t) { FUN_14027cdf0(t); return t; }
+Unk_HistList::Unk_HistList() { FUN_14027cdf0(reinterpret_cast<Unk_PairHolder*>(this)); }   // the std::list ctor; was the free FUN_14027d5e0(Unk_PairHolder*), aliased from this name
 // @0x14027d600
 Unk_RewardMap::Unk_RewardMap() { char loc; FUN_14027cf40(reinterpret_cast<Unk_PairHolder*>(this), (i64)&loc); }   // the std::map ctor; was the free FUN_14027d600(Unk_PairHolder*), aliased from this name
 // @0x14027d630
 template std::reverse_iterator<VItem::iterator>::reverse_iterator(VItem::iterator);
 // @0x14027d650
-Unk_Q8* FUN_14027d650(Unk_Q8* t, Unk_Q8* p) { FUN_140163dc0(t, p); *t = *p; return t; }
+Unk_Q8* FUN_14027d650(Unk_Q8* t, Unk_Q8* p) { reinterpret_cast<std::tuple<>*>(t)->std::tuple<>::tuple(*reinterpret_cast<std::tuple<>*>(p)); *t = *p; return t; }
 // @0x14027d690
 Unk_PairHolder* FUN_14027d690(Unk_PairHolder* t) noexcept { FUN_14027d220(t); return t; }
 // @0x14027d6c0
@@ -706,14 +706,14 @@ Unk_CommonPriceRecord::Unk_CommonPriceRecord() : m_usedTime(0) {}
 
 struct Unk_InnerA { void* p; };
 struct Unk_InnerB { void* p; };
-Unk_InnerA* FUN_14020a440(Unk_InnerA*, const Unk_InnerA*);
-Unk_InnerB* FUN_14020a470(Unk_InnerB*, const Unk_InnerB*);
+//
+//
 struct Unk_RecA { int v; Unk_InnerA in; Unk_RecA(const Unk_RecA&); };
 struct Unk_RecB { int v; Unk_InnerB in; Unk_RecB(const Unk_RecB&); };
 // @0x14027dd20
-Unk_RecA::Unk_RecA(const Unk_RecA& o) : v(o.v) { FUN_14020a440(&in, &o.in); }
+Unk_RecA::Unk_RecA(const Unk_RecA& o) : v(o.v) { reinterpret_cast<COutPacketPtr*>(&in)->COutPacketPtr::Unk_PktPtr(static_cast<COutPacketPtr&&>(*reinterpret_cast<COutPacketPtr*>(const_cast<Unk_InnerA*>(&o.in)))); }
 // @0x14027dd60
-Unk_RecB::Unk_RecB(const Unk_RecB& o) : v(o.v) { FUN_14020a470(&in, &o.in); }
+Unk_RecB::Unk_RecB(const Unk_RecB& o) : v(o.v) { reinterpret_cast<COutPacketPtr*>(&in)->COutPacketPtr::Unk_PktPtr(*reinterpret_cast<const COutPacketPtr*>(&o.in)); }
 struct Unk_Holder10 { i64 pad0, pad1; Unk_RecB rec; Unk_Holder10(const Unk_RecB& r); };
 // @0x14027d970
 Unk_Holder10::Unk_Holder10(const Unk_RecB& r) : rec(r) {}
@@ -742,9 +742,9 @@ struct Unk_V3 { float x, y, z; };
 Unk_V3* FUN_14027db40(Unk_V3* t, float x, float y, float z) { t->x = x; t->y = y; t->z = z; return t; }
 // @0x14027dda0
 Unk_V3* FUN_14027dda0(Unk_V3* t, float x, float y, float z) { t->x = x; t->y = y; t->z = z; return t; }
-struct Unk_Z16i { int a, b, c, d; };
+struct Unk_Z16i { int a, b, c, d; }; struct Unk_QuestMaskRange : Unk_Z16i { Unk_QuestMaskRange(); };
 // @0x14027dcb0
-Unk_Z16i* FUN_14027dcb0(Unk_Z16i* t) { t->a = 0; t->b = 0; t->c = 0; t->d = 0; return t; }
+Unk_QuestMaskRange::Unk_QuestMaskRange() { a = 0; b = 0; c = 0; d = 0; }
 // @0x14027dcf0
 Unk_V3* FUN_14027dcf0(Unk_V3* t, const Unk_V3* o) { *t = *o; return t; }
 

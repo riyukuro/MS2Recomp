@@ -26,7 +26,7 @@
 // MS2-PIN: ??0?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@H@Z 0x14103b410 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@PEAVTCashShopBillDataParam@@@Z 0x14103b430 ; unique
 // MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@AEBV0@@Z 0x14103b460 ; prop
-// MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x14103b4a0 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x14103b4a0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCashBannerInfo@@@@QEAA@AEBV0@@Z 0x14103b520 ; prop
 // MS2-PIN: ??0CAtlStringMgr@ATL@@QEAA@PEAUIAtlMemMgr@1@@Z 0x14103b660 ; unique
 // MS2-PIN: ??0CNode@?$CRBTree@HV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@@3@@ATL@@QEAA@HAEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@@Z 0x14103b770 ; prop
@@ -53,7 +53,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEAAPEAXI@Z 0x14103c1e0 ; prop
 // MS2-PIN: ??_GCAtlStringMgr@ATL@@UEAAPEAXI@Z 0x14103c2a0 ; unique
 // MS2-PIN: ??_GCashBannerInfo@@UEAAPEAXI@Z 0x14103c3e0 ; unique
-// MS2-PIN: ??4?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x14103c4a0 ; unique
+// MS2-PIN: ??4?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x14103c4a0 ; unique
 // MS2-PIN: ?FreeNode@?$CRBTree@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14103cd80 ; la1: called from RemovePostOrder 14103f580, frees via ??_G 14103c360 (deep-match)
 // MS2-PIN: ?FreeNode@?$CRBTree@HV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14103cce0 ; la1: called from RemovePostOrder 14103f520, frees via ??_G 14103c320 (deep-match)
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14103cf80 ; prop

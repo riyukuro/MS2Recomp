@@ -19,7 +19,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class ASArray;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class CMsgBoxData;
 class CQuest;

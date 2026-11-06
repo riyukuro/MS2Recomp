@@ -1179,8 +1179,8 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 // @0x1400e7c90
 static const efd::Category s_catEffectChannel(efd::UniversalID::ECU_Any, 0xfff, 0x07f00004);
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
-static Unk_BuddyHandle s_dat_143ad1638(0);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143ad1638(0);
 static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 
 int Unk_EsEffectGroup::m_sTotalEffectCount = 0;

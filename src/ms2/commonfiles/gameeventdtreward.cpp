@@ -29,8 +29,8 @@ void FUN_140274fc0(CStringW& text, void* pOut, const wchar_t* pszSep);   // C3: 
 bool FUN_1407183f0(const CStringW& value);
 int FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).
-// CUserEventManager::AddDTReward: the context handle is passed as the exe's own handle type.
-void FUN_1408d7cd0(CUserEventManager* pManager, Unk_DTCtxArg<DTRewardEventContext> spContext);
+// s63 C3: CUserEventManager::AddDTReward (0x1408d7cd0) takes MS2Ptr<DTRewardEventContext> by value; it was declared
+// here as FUN_1408d7cd0 taking the Unk_DTCtxArg stand-in. m_spContext converts through 0x14041ba70.
 
 // ---- GameEventDTReward -----------------------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ void GameEventDTReward::vfunc_2()
 void GameEventDTReward::OnStart()
 {
     if (m_spContext.get() != 0)
-        FUN_1408d7cd0(TSingleton<CUserEventManager>::GetInstance(), m_spContext);
+        TSingleton<CUserEventManager>::GetInstance()->AddDTReward(m_spContext);
 }
 
 // @0x14041b380

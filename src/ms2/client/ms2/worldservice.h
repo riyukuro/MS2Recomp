@@ -380,9 +380,9 @@ public:
     void FUN_141bc5420(class Unk_WsB_Packet* pkt); // 0x141bc5420
     void FUN_141bc5830(CString name); // 0x141bc5830
     MS2Ptr<class Unk_WsB_Lift> FindLiftByName(CString name); // 0x141bc5a20
-    void FUN_141bc5ab0(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5ab0
-    void RemoveRefObject(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5b30
-    efd::SmartPointer<class Unk_WsB_RefObj> FindRefObject(unsigned __int64 key); // 0x141bc5bb0
+    void FUN_141bc5ab0(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5ab0
+    void RemoveRefObject(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5b30
+    efd::SmartPointer<class CSkillMagicControlGuide> FindRefObject(unsigned __int64 key); // 0x141bc5bb0
     void AddProp(MS2Ptr<class CInteractObject> prop); // 0x141bc5c40
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
@@ -415,7 +415,7 @@ public:
     void FUN_141bc9480(CString name); // 0x141bc9480
     void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
     int  FUN_141bc9830(int* id, CString& name, float maxDist, int unused); // 0x141bc9830 (PC::FUN_14165c1b0 passes 0; the body never reads it)
-    void AddProxyObject(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
+    void AddProxyObject(MS2Ptr<class CProxyGameObject> obj); // 0x141bc9aa0
     void RemoveProxyObject(unsigned id); // 0x141bc9b30
     MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id); // 0x141bc9be0
     MS2Ptr<class CProxyGameObject> FUN_141bc9c60(void* owner); // 0x141bc9c60
@@ -478,7 +478,7 @@ public:
     class Unk_WsC_GameObj* FUN_141bd2170(int type, float range, int useFront, int addBonus);
     class Unk_WsC_GameObj* FUN_141bd2690(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead);
     class Unk_WsC_GameObj* FUN_141bd28d0(const Vector3& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
-    class Unk_WsC_GameObj* FUN_141bd2bf0(const Vector3& pos, int id);   // pos unused (exe caller 0x14176b489)
+    class Unk_WsC_GameObj* FUN_141bd2bf0(Vector3 pos, int id);   // pos unused; by value (exe caller 0x14176b47a copies 12 bytes)
     efd::SmartPointer<egf::Entity> FUN_141bd2cd0(CString name);
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     void FUN_141bd2ea0(void* ctx, ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int a, int b, int (*filter)(void*, class Unk_WsC_GameObj*, int, int));
@@ -510,7 +510,7 @@ public:
     void FUN_141bd3cf0(bool b);                         // m_915 = b
     bool FUN_141bd3d10();                               // return m_915
     int FUN_141bd3d50();                                // return m_918
-    void FUN_141bd3d70(const Vector3& a, const Vector3& b);   // m_8d8 = a, m_8e4 = b
+    void FUN_141bd3d70(Vector3 a, Vector3 b);   // m_8d8 = a, m_8e4 = b
     Vector3 FUN_141bd3dc0();                    // return m_8d8
     int FUN_141bd3e00();                                // player camera has the default 1100/45/30 values
     void FUN_141bd3ec0(int id, char b);                 // each m_148 object with this id: set its flag

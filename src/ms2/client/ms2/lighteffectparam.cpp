@@ -136,8 +136,8 @@ public:
 const NiRTTI CLightEffect::ms_RTTI("CLightEffect", &TransitionEffect::ms_RTTI);     // @0x1400f7290
 static CString s_str143adc8f8("skill");                                              // @0x1400f72c0
 static CString s_str143adc8f0("stun");                                               // @0x1400f72f0
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
-static Unk_BuddyHandle s_dat_143adc8e8(0);                                       // @0x1400f7320
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143adc8e8(0);                                       // @0x1400f7320
 #else
 const NiRTTI CLightEffect::ms_RTTI("CLightEffect", &TransitionEffect::ms_RTTI);
 #endif

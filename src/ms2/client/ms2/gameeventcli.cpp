@@ -182,11 +182,11 @@ public:
     int HasDTReward(unsigned short);
 };
 class CSmartPushManager;
-// @0x140ce8270 (the DT dialog hands its reward through the by-value context handle)
-class Unk_CliDTOps {
-public:
-    void FUN_140f38430(Unk_DTCtxArg<CommonUserEvent::DTRewardEventContext> pCtx);
-};
+// s63 C3: the DT dialog takes the reward as MS2Ptr<DTRewardEventContext> by value: UIDTEventDialog::FUN_140f38430
+// (uidteventdialog.h) is called directly. It was the Unk_CliDTOps view taking the Unk_DTCtxArg stand-in;
+// that handle is MS2Ptr<T> itself (gameeventdtreward.h), built by its converting ctor 0x14041ba70.
+//
+//
 
 // ---- GameEventOntimeCli ----------------------------------------------------------------------------------------------
 
@@ -309,7 +309,7 @@ void GameEventDTRewardCli::OnStart()
     UIDTEventDialog* pDlg = FindCliDialog<UIDTEventDialog>(0x4f01);
     if (pDlg) {
         if (pDlg->FUN_141924630() != 0) {
-            reinterpret_cast<Unk_CliDTOps*>(pDlg)->FUN_140f38430(m_spContext);
+            pDlg->FUN_140f38430(m_spContext);
         } else {
             if (WorldService::GetInstance()->FUN_141bcfbd0() != 0)
                 pDlg->FUN_141924680();

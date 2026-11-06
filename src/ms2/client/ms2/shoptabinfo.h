@@ -14,7 +14,7 @@
 #include "ms2/client/ms2/shopbannerinfo.h"
 #include "ms2/commonfiles/shopcategorytable.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASArray;
 class ASTooltip;
 class CItem;

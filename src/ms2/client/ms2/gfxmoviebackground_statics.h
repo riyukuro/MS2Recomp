@@ -3,6 +3,6 @@
 // reactor_statics.h).
 #pragma once
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
-static Unk_BuddyHandle s_dat_143ad62d8(NULL);                                       // @0x1400ebeb0
+static egf::EntityID s_dat_143ad62d8(0);                                       // @0x1400ebeb0

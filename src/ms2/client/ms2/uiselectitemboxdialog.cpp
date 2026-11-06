@@ -37,8 +37,8 @@
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100 (C3: the name other units use)
-static Unk_BuddyHandle s_dat_143acbc50(NULL);                                       // @0x1400e1640
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143acbc50(0);                                            // @0x1400e1640
 class UISelectSuperWorldChatDialog { public: MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>& out); };   // C3: the tile-list binder (0x140e8d030, uisidepopuptalk_2.cpp)
 #include "ms2/placeholder/asevent.h"   // C3: ASListEvent (dtor 0x140f83bb0)
 #include "ms2/ms2recover.h"

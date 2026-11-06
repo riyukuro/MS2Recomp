@@ -54,8 +54,8 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 static CStringA s_sortNamesA[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 static CStringA s_sortNamesB[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) zero-initialised pointer holder (0x1401cd100)
-static Unk_BuddyHandle s_pointer(NULL);                                         // 0x143ab02a0
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);                                              // @0x1400bb160 (data 0x143ab02a0)
 
 // @0x140661c00
 CMasteryInteriorTable::CMasteryInteriorTable()

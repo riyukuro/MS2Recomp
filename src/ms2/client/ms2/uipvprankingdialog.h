@@ -13,7 +13,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/uidialog.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class Unk_PvPRankEntry;
 
 class UIPvPRankingDialog : public UIDialog

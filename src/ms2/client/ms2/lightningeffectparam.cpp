@@ -99,8 +99,8 @@ MS2_CHECK_OFFSET(Unk_LightningTarget, m_pPoints, 0x28);
 const NiRTTI LightningEffect::ms_RTTI("LightningEffect", &CEffect::ms_RTTI);        // @0x1400f7340
 static CString s_str143adc918("skill");                                              // @0x1400f7370
 static CString s_str143adc910("stun");                                               // @0x1400f73a0
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
-static Unk_BuddyHandle s_dat_143adc920(0);                                       // @0x1400f73d0
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143adc920(0);                                         // @0x1400f73d0
 #else
 const NiRTTI LightningEffect::ms_RTTI("LightningEffect", &CEffect::ms_RTTI);
 #endif

@@ -2353,7 +2353,7 @@ void UIBillDialog::OnLoadComplete()
             int bEnabled = m_188->m_60;
             if (!strCheck.IsEmpty())
             {
-                if (MS2Ptr<ASCheckBox> spCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_checkbox"))
+                if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkbox"))
                 {
                     reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422cdfb0(strCheck);
                     reinterpret_cast<ASMovieClip*>(spCheck.operator->())->FUN_1422c1fe0(bEnabled);

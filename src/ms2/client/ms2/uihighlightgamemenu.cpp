@@ -59,11 +59,11 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 
 // Two zero-initialised handles (static initialised by the ctor 0x1401cd100 on &DAT, 0).
 struct Unk_RegMarker {};
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static void* s_dat_143abe528;
-static Unk_RegMarker s_init_143abe528 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143abe528)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
+static Unk_RegMarker s_init_143abe528 = (reinterpret_cast<egf::EntityID*>(&s_dat_143abe528)->egf::EntityID::EntityID(0), Unk_RegMarker());   // @0x1400cc730
 static void* s_dat_143abe530;
-static Unk_RegMarker s_init_143abe530 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143abe530)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
+static Unk_RegMarker s_init_143abe530 = (reinterpret_cast<egf::EntityID*>(&s_dat_143abe530)->egf::EntityID::EntityID(0), Unk_RegMarker());   // @0x1400cc750
 
 static CString s_strSortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 

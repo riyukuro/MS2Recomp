@@ -38,16 +38,16 @@ public:
 };
 
 // ---- the unit's header statics (three headers each define "skill", "stun" and a handle) ----
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strSkill1 = "skill";                // @0x1400e7d30
 static CString s_strStun1 = "stun";                  // @0x1400e7d60
-static Unk_BuddyHandle s_handle1(0);             // @0x1400e7d90
+static egf::EntityID s_handle1(0);               // @0x1400e7d90
 static CString s_strSkill2 = "skill";                // @0x1400e7db0
 static CString s_strStun2 = "stun";                  // @0x1400e7de0
-static Unk_BuddyHandle s_handle2(0);             // @0x1400e7e10
+static egf::EntityID s_handle2(0);               // @0x1400e7e10
 static CString s_strSkill3 = "skill";                // @0x1400e7e30
 static CString s_strStun3 = "stun";                  // @0x1400e7e60
-static Unk_BuddyHandle s_handle3(0);             // @0x1400e7e90
+static egf::EntityID s_handle3(0);               // @0x1400e7e90
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 // C3 #12: was a local TiXml view

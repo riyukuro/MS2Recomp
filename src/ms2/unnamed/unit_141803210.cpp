@@ -152,8 +152,8 @@ Unk_WsaStartup::~Unk_WsaStartup()
 
 // ---- small handle types whose out-of-line constructors live in this TU (statics in unit_140107420 / unit_140135c50) ----
 
-class Unk_BuddyHandleBase { public: Unk_BuddyHandleBase(void* h); void* handle; };    // ctor 0x1401cd130 (buddy.cpp)
-class Unk_1418036e0 : public Unk_BuddyHandleBase { public: Unk_1418036e0(void* h); };
+#include <efd/UniversalID.h>   // B22: was class Unk_BuddyHandleBase (ctor 0x1401cd130 = efd::UniversalID(efd::UInt64))
+class Unk_1418036e0 : public efd::UniversalID { public: Unk_1418036e0(void* h); };
 class Unk_1418036b0 { public: Unk_1418036b0(); private: void* m_p; int m_n; };
 
 // 0x1418036b0
@@ -164,7 +164,7 @@ Unk_1418036b0::Unk_1418036b0()
 }
 
 // 0x1418036e0
-Unk_1418036e0::Unk_1418036e0(void* h) : Unk_BuddyHandleBase(h)
+Unk_1418036e0::Unk_1418036e0(void* h) : efd::UniversalID((efd::UInt64)h)
 {
 }
 

@@ -2,6 +2,6 @@
 // and the condition (see ms2/placeholder/header_statics_a.h, MS2_STATICS_A_BEFORE_CONDITION). Same shape as reactor_statics.h.
 #pragma once
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
-static Unk_BuddyHandle s_dat_143acd5c8(NULL);                                              // @0x1400e5290
+static egf::EntityID s_dat_143acd5c8(0);                                              // @0x1400e5290

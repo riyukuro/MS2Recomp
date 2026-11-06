@@ -15,7 +15,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class ASArray;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class PC;
 class Unk_HsInfo;
 

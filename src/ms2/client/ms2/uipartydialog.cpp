@@ -3569,11 +3569,11 @@ struct Unk_PpInteract : CInteractObjectData
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PpEntityList;
 struct Unk_PCEntListPtr { ~Unk_PCEntListPtr(); };   // C3: FUN_1409f20e0 (release) is pc.cpp's Unk_PCEntListPtr dtor (0x1409f20e0)
 struct Unk_WsC_TagPtr;
-bool FUN_1409f2130(Unk_WsC_TagPtr* p, void* other);                         // p == other
+// (FUN_1409f2130 = Unk_WsC_TagPtr::operator==(list*), the ssg/worldservice_1 member)
 struct Unk_WsC_TagPtr
 {
     ~Unk_WsC_TagPtr() { reinterpret_cast<Unk_PCEntListPtr*>(this)->Unk_PCEntListPtr::~Unk_PCEntListPtr(); }
-    Unk_PpEntityList* operator->() const { return m_list; }
+    Unk_PpEntityList* operator->() const { return m_list; }   bool operator==(Unk_PpEntityList* p) const { return m_list == p; }   // 0x1409f2130
     void* m_unk;
     Unk_PpEntityList* m_list;
 };
@@ -3866,7 +3866,7 @@ bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
 bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
 {
     Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0xc7f9dd65);
-    if (FUN_1409f2130(&spList, 0))
+    if (spList == 0)
         return false;
     for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
     {
@@ -3893,7 +3893,7 @@ bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
 bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
 {
     Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0x72f49865);
-    if (FUN_1409f2130(&spList, 0))
+    if (spList == 0)
         return false;
     for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
     {

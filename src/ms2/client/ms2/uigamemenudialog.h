@@ -26,7 +26,7 @@
 #include "ms2/client/ms2/uigalleryeventdialog.h"        // UIQuestEventListener (13 slots)
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class CMsgBoxData;
 class GameEventVariable;

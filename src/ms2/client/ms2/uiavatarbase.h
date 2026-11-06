@@ -36,7 +36,7 @@ class AvatarCube;
 class AvatarRidee;
 class AvatarPet;
 class Unk_UISwfEntity_25;
-class ASObj;
+class AScript; typedef AScript ASObj;
 enum Unk_InventoryEquipSlot : int;     // inventory.h
 namespace ItemPreviewCommon { class CLimitCharRotate; }
 

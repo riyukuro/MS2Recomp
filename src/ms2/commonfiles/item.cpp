@@ -37,11 +37,11 @@
 #include "ms2/ms2recover.h"
 #include "ms2/fmt/format.h"
 #include "ms2/commonfiles/stream.h"
-// commonstruct_wa.h gives NpcShopItemLife the real handle type; this unit only sees the 16-byte m_slot188, so keep its local stand-in.
-#define NpcShopItemLife Unk_WaNpcShopItemLife
+// commonstruct_wa.h has the full NpcShopItemLife (CItem::m_slot188 holds its MS2SvrPtr<CPtred> handle).
+//
 //
 #include "ms2/commonfiles/commonstruct_wa.h"
-#undef NpcShopItemLife
+//
 //
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2format.h"
@@ -78,7 +78,7 @@ class CFeatureManager { public: bool FUN_14036d570(int nFeature); int FUN_14036d
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 // @0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance (s_instance is the exe's DAT_143aaf1d0)
 ItemGachaBoxTable* FUN_14052d230();
-class NpcShopItemLife : public CPtred { public: Unk_ItemSlot188 FUN_14026eab0(); };   // commonstruct_wa.h has the full class
+//
 class Unk_SingletonObj {};
 // The return type of the FUN_14052d220 definition below (TSingleton<CUgcManager>::GetInstance; callers use the real one).
 class Unk_UgcRideeMgr : public Unk_SingletonObj
@@ -2750,7 +2750,7 @@ MS2Ptr<CItem> CItem::Clone()
         spNew->m_spBinding->FUN_1406347d0(m_spBinding->FUN_14052d1c0(), m_spBinding->FUN_14052d1b0());
     }
     if (static_cast<CPtred*>(m_slot188) != 0)
-        spNew->m_slot188 = static_cast<NpcShopItemLife*>(m_slot188.get())->FUN_14026eab0();
+        spNew->m_slot188 = static_cast<NpcShopItemLife*>(m_slot188.get())->Clone();
     spNew->FUN_1405290b0();
     return spNew;
 }

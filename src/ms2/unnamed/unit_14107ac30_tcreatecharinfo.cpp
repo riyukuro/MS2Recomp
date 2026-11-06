@@ -96,7 +96,7 @@ extern NiFixedString DAT_143ae53a0;
 
 // The world service accessors this unit uses.
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_MarkerMap;
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -169,7 +169,7 @@ void FUN_142cabb00();
 struct Unk_RegMarker {};
 static char s_id[8];
 // @0x1400e5030
-static Unk_RegMarker s_initId = (reinterpret_cast<Unk_BuddyHandle*>(&s_id)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
+static Unk_RegMarker s_initId = (reinterpret_cast<egf::EntityID*>(&s_id)->egf::EntityID::EntityID(0), Unk_RegMarker());
 static char s_marker[0x48];
 // @0x1400e5050
 static Unk_RegMarker s_initMarker = (reinterpret_cast<Unk_MarkerMap*>(&s_marker)->Unk_MarkerMap::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());

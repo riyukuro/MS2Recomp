@@ -13,7 +13,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/uidialog.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CClubMember;
 class CMsgBoxData;
 class ASScrollingList;

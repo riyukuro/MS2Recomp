@@ -272,8 +272,7 @@ void FUN_141b6f220(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CTailEffectDataTable* FUN_140ad0da0();                              // the tail effect table
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PCEntList;
-// 16-byte smart pointer to a boxed entity list (TPtredDummy<T>; scenestategame.cpp's Unk_SSGEntListPtr, the same COMDATs:
-// operator-> 0x1409f2190, dtor 0x1409f20e0).
+// 16-byte smart pointer to a boxed entity list (TPtredDummy<T>; scenestategame.cpp's Unk_SSGEntListPtr, the same COMDATs: operator-> 0x1409f2190, dtor 0x1409f20e0).
 struct Unk_PCEntListPtr
 {
     Unk_PCEntList* operator->() const { return m_p; }
@@ -302,7 +301,8 @@ struct Unk_PCEntListPtr
     void* m_00;
     Unk_PCEntList* m_p;
 };
-// The world (WorldService; FUN_1403ed2d0).
+// WorldService::FUN_141bd0420's result (worldservice_1.cpp defines it; same dtor/operator-> bodies, 0x1409f20e0/0x1409f2190)
+struct Unk_WsC_TagPtr { ~Unk_WsC_TagPtr() { reinterpret_cast<Unk_PCEntListPtr*>(this)->~Unk_PCEntListPtr(); } Unk_PCEntList* operator->() const { return m_list; } void* m_unk; Unk_PCEntList* m_list; };
 class Unk_PCLocalPlayer : public MyPC                                 // the MyPC
 {
 public:
@@ -311,7 +311,7 @@ class Unk_PCWorld : public WorldService
 {
 public:
     // FUN_141bc9830 (the nearest holdable target): WorldService's own member (worldservice.h takes the 4th int)
-    struct Unk_PCEntListPtr FUN_141bd0420(unsigned int nModel);     // the entities of a model
+    // FUN_141bd0420 (the entities of a model): WorldService's own member
 };
 void FUN_1419f37f0(unsigned int);   // C3: was FUN_1419f37f0
 // CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
@@ -603,7 +603,7 @@ public:
 };
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };    // an 8-byte pointer holder
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strCustomize = "Customize";
 static CString s_strDefault = "Default";
 static CString s_strEmotion = "Emotion";
@@ -628,7 +628,7 @@ static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static efd::Category s_category(0);
-static Unk_BuddyHandle s_pointer(NULL);              // 0x143ae2e18: egf::kENTITY_INVALID (EntityID(0))
+static egf::EntityID s_pointer(0);              // 0x143ae2e18: egf::kENTITY_INVALID (EntityID(0))
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- PC ----
@@ -3178,7 +3178,7 @@ egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
     }
     else
         kMy.z += fHeight;
-    Unk_PCEntListPtr spList = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd0420(nModel);
+    Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(nModel);
     for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
     {
         efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
@@ -4584,7 +4584,7 @@ void PC::vfunc_40(float a, float b, float c, float d)
         {
             NiAVObject* pNode = (NiAVObject*)aModels[i]->vfunc_14();
             FUN_14123e020(pNode);
-            FUN_140ae1e80(pNode, a, b, c, d, reinterpret_cast<const egf::EntityID&>(s_pointer));   // s_pointer is this TU's kENTITY_INVALID
+            FUN_140ae1e80(pNode, a, b, c, d, s_pointer);   // s_pointer is this TU's kENTITY_INVALID
         }
     }
 }

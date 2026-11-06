@@ -15,6 +15,7 @@
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/delegate.h"
+class AScript; typedef AScript ASObj;   // ASObj is a typedef of AScript (asobj.h)
 
 class ASCoreList : public ASUIComponent
 {
@@ -37,7 +38,7 @@ public:
     void ScrollToSelected();                                               // scrollToSelected()
     unsigned GetItemCount();                                           // the entry count (0 without a data provider; asscrollinglist.cpp: `< 0` is an unsigned test)
     void FUN_1422dd1d0();                                               // remove every entry
-    void AddItem(const class ASObj& item);                        // append an entry
+    void AddItem(const ASObj& item);                        // append an entry
     void AddLabelItemA(const CString& strLabel);                        // append a { label } entry (narrow text)
     void AddLabelItemW(const CStringW& strLabel);                       // append a { label } entry
     void SelectByLabelA(const CString& strLabel);                        // select the entry with this label (narrow text)
@@ -81,8 +82,8 @@ public:
     int FUN_1422e1820();                                                // "scrollPosition" (the first visible row)
     void FUN_1422e1890(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // add a "listIndexChange" listener
     void FUN_1422e1910(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // remove the "listIndexChange" listener
-    void FUN_1422e1970(int nIndex, class ASObj& row);                   // replace a data provider entry
-    void FUN_1422e1a00(int nIndex, class ASObj& row);                   // "setData" on the visible renderer of an entry
+    void FUN_1422e1970(int nIndex, ASObj& row);                   // replace a data provider entry
+    void FUN_1422e1a00(int nIndex, ASObj& row);                   // "setData" on the visible renderer of an entry
 };
 MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
@@ -128,7 +129,7 @@ public:
     void ClearItems();                                               // remove every entry
     unsigned GetItemCount();                                           // the entry count (0 without a data provider)
     CStringW FUN_1422dfe00();                                           // the selected row's "label"
-    void AddItemRow(const class ASObj& row);                         // append a row object
+    void AddItemRow(const ASObj& row);                         // append a row object
     void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider" (asdropdownmenu.cpp)
     MS2Ptr<class ASDataProvider> GetDataProvider();                       // "dataProvider" (asdropdownmenu.cpp)
     void FUN_140f1fe00(const CString& strMember, __int64* pOut);        // 0x140f1fe00 the selected entry's member (inline COMDAT, defined in uiblackmarketpagemeso.cpp)

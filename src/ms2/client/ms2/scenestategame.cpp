@@ -212,9 +212,9 @@ typedef class Unk_WsB_Marker Unk_RideeFieldObj;
 class Unk_SSGWorld : public WorldService
 {
 public:
-    void FUN_141bc5ab0(efd::SmartPointer<CSkillMagicControlGuide> spGuide);   // keep the skill guide alive
+    // (FUN_141bc5ab0: WorldService::FUN_141bc5ab0(efd::SmartPointer<CSkillMagicControlGuide>), worldservice.h; keeps the skill guide alive)
     void FUN_141bc9020(CString strName, MS2Ptr<Unk_PCBaseComp_b18> spSkill, CString strBone, unsigned char nFlag);   // 0x75 start a named field skill
-    void FUN_141bd3d70(Vector3 pos, Vector3 rot);
+    // (FUN_141bd3d70: WorldService::FUN_141bd3d70(Vector3, Vector3), worldservice.h)
     MS2Ptr<class Unk_SSGNamedObj> FUN_141bc5a20(CString strName);   // a named field object (0x73)
     struct Unk_SSGEntListPtr FUN_141bd0420(unsigned int nModelHash);   // the entities of a model
     void FUN_141bc9aa0(MS2Ptr<CProxyGameObject> spProxy);   // add a field object proxy
@@ -1169,7 +1169,7 @@ MS2_CHECK_SIZE(Unk_LsSlotArg, 4);
 int FUN_1418fd6c0(__int64 nUid);
 
 // ---- statics (exe .di order) -----------------------------------------------------------------------------------
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* h); void* m_p; };     // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateGame);
 
@@ -1187,7 +1187,7 @@ static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Cre
 CString DAT_143ae7428 = "skill";
 CString DAT_143ae7420 = "stun";
 #endif
-static Unk_BuddyHandle s_handle(0);                     // @0x1400ffb90
+static egf::EntityID s_handle(0);                     // @0x1400ffb90
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInput;
 #ifndef MS2_HOOK_DLL   // the exe's objects, which the handlers read as DAT_143ae7xxx (the hook DLL binds them)
@@ -2345,7 +2345,7 @@ void CSceneStateGame::FUN_14170f930(CInPacket& packet)
         Vector3 pos = packet.ReadVector3();
         Vector3 rot = packet.ReadVector3();
         int nPortal = packet.ReadInt32();
-        ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd3d70(pos, rot);
+        WorldService::GetInstance()->FUN_141bd3d70(pos, rot);
         WorldService::GetInstance()->FUN_141bbbe40(DAT_143ab2870, 1, nPortal);
         ((Unk_SSGUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adc400();
         DAT_143ab2890 = 0;
@@ -7422,7 +7422,7 @@ public:
     virtual void vfunc_7(CInPacket& packet);                // decode the skill book
 };
 class Unk_PCSkillTree : public CPtred { };
-template <> Unk_PCSkillTree* MS2Ptr<Unk_PCSkillTree>::get() const;   // 0x1409ee2c0 (astooltip's COMDAT)
+template <> Unk_PCSkillTree* MS2Ptr<Unk_PCSkillTree>::operator->() const;   // 0x1409ee2c0 (astooltip's COMDAT; get and operator-> fold)
 template <> MS2Ptr<Unk_PCSkillTree>::~MS2Ptr();                      // 0x1409ed920
 class CSkillTierOptionManager   // C3: member view for the former free stand-ins
 {
@@ -7477,7 +7477,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
             query.m_nObject = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(pPC));
             query.SetActor(pPC->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&query));   // C3: CEffectService (effectservice.h)
-            ((class CSkillTierOptionManager*)(class Unk_PCSkillTree*)(pPC->FUN_1409eee00().get()))->Clear();
+            ((class CSkillTierOptionManager*)(class Unk_PCSkillTree*)(pPC->FUN_1409eee00().operator->()))->Clear();
             MyPC* pMyPC = (MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(pPC);
             if (pMyPC != 0)
             {
@@ -12307,7 +12307,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
             efd::SmartPointer<CSkillMagicControlGuide> spSkill = EE_NEW CSkillMagicControlGuide;
             if (spSkill->FUN_1410a5ea0(nGuideId, reinterpret_cast<efd::Point3&>(ptPos), reinterpret_cast<efd::Point3&>(ptDir), pOwner, spInfo) == 0)
                 return;
-            ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc5ab0(spSkill);
+            WorldService::GetInstance()->FUN_141bc5ab0(spSkill);
             spGuide = spSkill;
         }
         if (!spGuide)

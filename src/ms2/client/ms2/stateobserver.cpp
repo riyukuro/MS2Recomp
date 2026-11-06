@@ -59,9 +59,9 @@
 
 // ---- unit statics (.text$di): three statics ahead of the shared header statics ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strStun0 = "stun";
-static Unk_BuddyHandle s_hNull0(NULL);
+static egf::EntityID s_hNull0(0);
 static Unk_1402a9d70 s_condition0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------

@@ -60,8 +60,8 @@ extern Vector3 DAT_143a08d08;   // zero colour
 struct Unk_WsC_TagPtr
 {
     ~Unk_WsC_TagPtr();                                                      // 0x1409f20e0
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2170() const;  // get
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2190() const;  // operator->
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* get() const { return (ATL::CAtlList<efd::SmartPointer<egf::Entity> >*)m_p; }   // 0x1409f2170
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* operator->() const;     // 0x1409f2190 (worldservice_1.cpp)
     void* m_a; void* m_p; void* m_c;
 };
 void* FUN_140b285b0(void* p);
@@ -155,9 +155,9 @@ void UgcHomeOptionData::ApplyLight(unsigned char nType)
 {
     NiPoint3 color = GetLightColor(nType);
     Unk_WsC_TagPtr hTag = WorldService::GetInstance()->FUN_141bd0420(0x169ea355);
-    if ((hTag.FUN_1409f2170() != 0 ? true : false) && hTag.FUN_1409f2190()->GetCount() > 0)
+    if ((hTag.get() != 0 ? true : false) && hTag->GetCount() > 0)
     {
-        efd::SmartPointer<egf::Entity> ent(*reinterpret_cast<efd::SmartPointer<egf::Entity>*>(FUN_140b285b0(hTag.FUN_1409f2190())));
+        efd::SmartPointer<egf::Entity> ent(*reinterpret_cast<efd::SmartPointer<egf::Entity>*>(FUN_140b285b0(hTag.operator->())));
         efd::Color vec(color.x, color.y, color.z);
         FUN_140b27f00(reinterpret_cast<void*>(ent.operator->()), 0xb086f4a8, &vec);
     }

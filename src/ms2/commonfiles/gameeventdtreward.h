@@ -11,7 +11,7 @@
 
 // The exe's pointer family around the DT reward context (16 bytes, the pointer at +8; the real names are unknown):
 // Unk_DTCtxPtr is the owning handle at GameEventDTReward+0xd0 (same code shape as MS2Ptr<T>, but its COMDATs are separate
-// from the MS2Ptr<DTRewardEventContext> ones of CUserEventManager), Unk_DTCtxArg the by-value handle the event passes on.
+// from the MS2Ptr<DTRewardEventContext> ones of CUserEventManager); the event passes it on as an MS2Ptr<T> (below).
 // Both release through the one Reference() at 0x14041bf70.
 template <class T> class Unk_DTCtxPtr
 {
@@ -66,42 +66,42 @@ private:
     void* m_unk_00;
     T* m_p;
 };
-template <class T> class Unk_DTCtxArg
+// s63 C3: the by-value handle the event passes on (was the Unk_DTCtxArg stand-in) is MS2Ptr<T> itself:
+// CUserEventManager::AddDTReward (0x1408d7cd0) destroys its MS2Ptr<DTRewardEventContext> argument through 0x14041bbd0,
+// the dtor this unit emits. The generic ms2ptr_impl.h bodies give ~MS2Ptr 0x14041bbd0, AddRef 0x14041bef0 and Release
+// 0x14041bff0. The converting ctor from the owning handle (0x14041ba70) is declared in ascript.h. AddRefImpl and
+// ReleaseImpl are explicit specializations: the exe's go through Unk_DTCtxPtr<T>::Reference (0x14041bf70), and its
+// ReleaseImpl copies m_p into a local first.
+// @0x14041ba70
+template <class T> MS2Ptr<T>::MS2Ptr(const Unk_DTCtxPtr<T>& o) { m_p = o.get(); AddRef(); }
+// @0x14041bf90
+template <> inline void MS2Ptr<CommonUserEvent::DTRewardEventContext>::AddRefImpl(void*) const
 {
-public:
-    // @0x14041ba70
-    Unk_DTCtxArg(const Unk_DTCtxPtr<T>& o) { m_p = o.get(); AddRef(); }
-    Unk_DTCtxArg(const Unk_DTCtxArg& o);    // never emitted: forces the argument to be built in place
-    // @0x14041bbd0
-    ~Unk_DTCtxArg() { Release(); }
-
-private:
-    // @0x14041bef0
-    void AddRef() const { if (m_p) AddRefImpl(0); }
-    // @0x14041bf90
-    void AddRefImpl(void*) const { Unk_DTCtxPtr<T>::Reference(m_p); }
-    // @0x14041bff0
-    void Release()
+    Unk_DTCtxPtr<CommonUserEvent::DTRewardEventContext>::Reference(m_p);
+}
+// @0x14041c0b0
+template <> inline void MS2Ptr<CommonUserEvent::DTRewardEventContext>::ReleaseImpl(void*)
+{
+    CommonUserEvent::DTRewardEventContext* p = m_p;
+    if (CPtred::ReleasePtred(p) == 0)
     {
-        if (m_p)
-        {
-            ReleaseImpl(0);
-            m_p = 0;
-        }
+        Unk_DTCtxPtr<CommonUserEvent::DTRewardEventContext>::Reference(p);
+        CPtred::DeletePtred(p);
     }
-    // @0x14041c0b0
-    void ReleaseImpl(void*)
-    {
-        T* p = m_p;
-        if (CPtred::ReleasePtred(p) == 0)
-        {
-            Unk_DTCtxPtr<T>::Reference(p);
-            CPtred::DeletePtred(p);
-        }
-    }
-    void* m_unk_00;
-    T* m_p;
-};
+}
+// The generic bodies are byte-identical for every T, so they are pinned (the symbols.tsv rows exist):
+// MS2-PIN: ??1?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@QEAA@XZ 0x14041bbd0
+// MS2-PIN: ?AddRef@?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@AEBAXXZ 0x14041bef0
+// MS2-PIN: ?Release@?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@AEAAXXZ 0x14041bff0
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class GameEventDTReward : public GameEvent
 {

@@ -109,8 +109,8 @@ Unk_ResourceMgr* FUN_140a0afd0();
 const NiRTTI CRibbonEffect::ms_RTTI("CRibbonEffect", &CEffect::ms_RTTI);        // @0x1400ff2b0
 static CString s_str143ae6a00("skill");                                          // @0x1400ff2e0
 static CString s_str143ae69f8("stun");                                           // @0x1400ff310
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
-static Unk_BuddyHandle s_dat_143ae6a08(0);                                   // @0x1400ff340
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_dat_143ae6a08(0);                                   // @0x1400ff340
 #else
 const NiRTTI CRibbonEffect::ms_RTTI("CRibbonEffect", &CEffect::ms_RTTI);
 #endif

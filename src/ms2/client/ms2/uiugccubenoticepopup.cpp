@@ -24,9 +24,9 @@
 static CString s_skill("skill");
 // @0x1400e21e0
 static CString s_stun("stun");
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 // @0x1400e2210
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 

@@ -14,7 +14,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 
 // The client side of a listing: the record plus the rows the market UI shows for it. Owning unit:

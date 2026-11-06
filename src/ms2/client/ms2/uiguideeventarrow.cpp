@@ -59,8 +59,8 @@ static CString s_guideSound("system_guide_tooltip");
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
-static Unk_BuddyHandle s_pointer(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
 class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Vector3&); };
 int FUN_1412755a0();

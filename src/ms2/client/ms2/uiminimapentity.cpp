@@ -140,8 +140,8 @@ public:
 struct Unk_WsC_TagPtr
 {
     ~Unk_WsC_TagPtr();                                                    // 0x1409f20e0
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2170() const;  // get
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2190() const;  // operator->
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* get() const { return (ATL::CAtlList<efd::SmartPointer<egf::Entity> >*)m_8; }   // 0x1409f2170
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* operator->() const;     // 0x1409f2190 (worldservice_1.cpp)
     void* m_0;
     void* m_8;
 };
@@ -1896,15 +1896,15 @@ void UIMinimapDialog::FUN_141a39e60()
     if (pPC == 0 || pPC->FUN_140967010()->FUN_14050da30() == 0)
         bDisabled = true;
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
-    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
-        efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
+    if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
+        efd::SmartPointer<egf::Entity> spObject = list->GetAt(list->GetHeadPosition());
         if (spObject) {
             if (bDisabled) {
                 FUN_141a3f930(m_taxi);
                 m_taxi = 0;
             } else if (m_taxi == 0 || m_taxi->m_clip == 0) {
                 Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
-                spObject.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
+                spObject->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
                 EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
                 if (FUN_141a3e7d0(spEntity))
                     m_taxi = spEntity;
@@ -2402,7 +2402,7 @@ void UIMinimapDialog::FUN_141a42a70()
     bool bVisible = true;
     Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
     if (spRidee.operator Ridee*()) {
-        if (spRidee.operator->()->GetData()->m_basic.m_nHidePCInfo != 0)
+        if (spRidee->GetData()->m_basic.m_nHidePCInfo != 0)
             bVisible = false;
     }
     m_30->Invoke("visiblePlayers", bVisible);
@@ -2681,9 +2681,9 @@ float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
     float fRot = 0.0f;
     Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
     if (spRidee.operator Ridee*()) {
-        spRidee.operator->()->vfunc_67(&kDir, &kSide);
-        fAngle = spRidee.operator->()->FUN_14166dad0(kUp, kSide);
-        fRot = spRidee.operator->()->vfunc_20().z;
+        spRidee->vfunc_67(&kDir, &kSide);
+        fAngle = spRidee->FUN_14166dad0(kUp, kSide);
+        fRot = spRidee->vfunc_20().z;
     } else {
         pPC->vfunc_67(&kDir, &kSide);
         fAngle = pPC->FUN_14166dad0(kUp, kSide);
@@ -2713,11 +2713,11 @@ MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486)
 void UIMinimapDialog::FUN_141a3dbb0()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
-    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
-        efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
+    if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
+        efd::SmartPointer<egf::Entity> spObject = list->GetAt(list->GetHeadPosition());
         if (spObject) {
             Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
-            spObject.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
+            spObject->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
             EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
             if (FUN_141a3e7d0(spEntity))
                 m_taxi = spEntity;
@@ -2791,13 +2791,13 @@ CStringW GetStringCommon(int nStringId);                               // a comm
 void UIMinimapDialog::FUN_141a3df40()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x62f7a42c);
-    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
-        for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
-            efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
+    if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
+        for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = list->GetAt(pos);
             Vector3 kPos;
             int nId = 0;
-            spObject.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
-            spObject.operator->()->GetPropertyValue<int>(0xd460e9bc, nId);
+            spObject->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
+            spObject->GetPropertyValue<int>(0xd460e9bc, nId);
             MS2Ptr<CInteractObjectData> spData = CInteractObjectData::Get(nId);
             if (static_cast<bool>(spData.get()) && spData->m_reward.m_firstExp.m_eType != 3)
                 continue;
@@ -2828,9 +2828,9 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
     Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
     int nId = 0;
     bool bVisible = false;
-    spEntity.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
-    spEntity.operator->()->GetPropertyValue<int>(0x6c37a861, nId);
-    spEntity.operator->()->GetPropertyValue<bool>(0xa0b6b179, bVisible);
+    spEntity->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
+    spEntity->GetPropertyValue<int>(0x6c37a861, nId);
+    spEntity->GetPropertyValue<bool>(0xa0b6b179, bVisible);
     EntityPtr spMinimap = new UIMinimapEntity(7);
     spMinimap->m_icon = "triggerobject";
     spMinimap->m_layer = s_strLayerTriggerObject;
@@ -2846,16 +2846,16 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
 void UIMinimapDialog::FUN_141a3ef80()
 {
     Unk_WsC_TagPtr first = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x74b363a7);
-    if (static_cast<bool>(first.FUN_1409f2170()) && !first.FUN_1409f2190()->IsEmpty()) {
-        for (POSITION pos = first.FUN_1409f2190()->GetHeadPosition(); pos != 0; first.FUN_1409f2190()->GetNext(pos)) {
-            efd::SmartPointer<egf::Entity> spObject = first.FUN_1409f2190()->GetAt(pos);
+    if (static_cast<bool>(first.get()) && !first->IsEmpty()) {
+        for (POSITION pos = first->GetHeadPosition(); pos != 0; first->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = first->GetAt(pos);
             FUN_141a3e4e0(spObject);
         }
     }
     Unk_WsC_TagPtr second = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x4714f9ea);
-    if (static_cast<bool>(second.FUN_1409f2170()) && !second.FUN_1409f2190()->IsEmpty()) {
-        for (POSITION pos = second.FUN_1409f2190()->GetHeadPosition(); pos != 0; second.FUN_1409f2190()->GetNext(pos)) {
-            efd::SmartPointer<egf::Entity> spObject = second.FUN_1409f2190()->GetAt(pos);
+    if (static_cast<bool>(second.get()) && !second->IsEmpty()) {
+        for (POSITION pos = second->GetHeadPosition(); pos != 0; second->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = second->GetAt(pos);
             FUN_141a3e4e0(spObject);
         }
     }
@@ -2868,16 +2868,16 @@ void FUN_1401d3700(CString& str);                                    // normalis
 void UIMinimapDialog::FUN_141a3f1c0()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x6fb4d420);
-    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
+    if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
         int nId = 0;
-        for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
-            efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
+        for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = list->GetAt(pos);
             if (spObject == 0)
                 continue;
             Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
             efd::utf8string strIcon;
             efd::utf8string strUnused;
-            spObject.operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
+            spObject->GetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<efd::Point3&>(kPos));
             spObject->GetPropertyValue(0x6814a50e, strIcon);
             CString strSymbol(strIcon.c_str());
             FUN_1401d3700(strSymbol);

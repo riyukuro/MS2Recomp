@@ -12,7 +12,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 class UIWeddingPage;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class CMsgBoxData;
 

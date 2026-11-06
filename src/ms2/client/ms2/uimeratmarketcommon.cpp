@@ -1374,7 +1374,7 @@ int FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CIt
         {
             if (spItem.IsNull())
                 spItem = FUN_140ebc070(spProduct);
-            ((class ASSlot*)(class ASObj*)(pRow))->FUN_1409c3860(spItem.get(), (void*)(pPlayer), 0xd01);
+            ((class ASSlot*)(ASObj*)(pRow))->FUN_1409c3860(spItem.get(), (void*)(pPlayer), 0xd01);
         }
         pRow->FUN_1407cba60("itemID", FUN_140719210(spProduct->GetItemId()));
         pRow->FUN_1407cbb20("productOID", spProduct->m_key.FUN_1409b0470());

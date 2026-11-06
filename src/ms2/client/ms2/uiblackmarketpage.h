@@ -29,7 +29,7 @@ class CItem;
 class CMsgBoxData;
 class ASTextField;
 class ASTileList;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASArray;
 class ASData;
 namespace NotifyContext { class BindData; }

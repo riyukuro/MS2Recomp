@@ -18,7 +18,7 @@
 
 class ASData;
 class ASArray;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class Unk_MLevelCtrl;
 class ASScrollingList;
 class ASEventDispatcher;

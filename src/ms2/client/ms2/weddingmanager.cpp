@@ -69,8 +69,8 @@
 #include "ms2/placeholder/cproxygameobject.h"
 
 // ---- unit statics (.text$di): the per-TU handle, the shared header statics (header_statics_a.h) and the field war string ----
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100) ctor 0x1401cd100
-static Unk_BuddyHandle s_unk1401cd100(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_unk1401cd100(0);
 static CStringA s_systemFieldWar("System_FieldWar");
 #ifndef MS2_HOOK_DLL   // s_errorNotificationDlg: the exe's object at 0x143af7f80, which other units reach as DAT_143af7f80 (the hook DLL binds it)
 CErrorNotificationDlg DAT_143af7f80(NULL);

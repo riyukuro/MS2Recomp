@@ -12,7 +12,7 @@
 class ASMovieClip;
 class ASTextField;
 class ASButton;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASData;
 class UIMsg;
 class CInPacket;

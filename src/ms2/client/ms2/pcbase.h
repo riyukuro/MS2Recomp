@@ -109,7 +109,7 @@ MS2_CHECK_SIZE(Unk_PCBaseBuffTracker, 0x70);
 class Unk_PCBaseFlags
 {
 public:
-    Unk_PCBaseFlags();                                      // 0x140d75040
+    // (constructed through Unk_BitSet11 below)
     Unk_PCBaseFlags& FUN_140d75120(unsigned nPos, bool bValue);   // set / clear one bit
     bool FUN_140d75240(unsigned nPos) const;                // test one bit
     void Reset(unsigned nPos) { FUN_140d75120(nPos, false); }     // COMDAT 0x141682e20
@@ -131,6 +131,11 @@ public:
         return n;
     }
     unsigned char m_bits[2];
+};
+class Unk_BitSet11 : public Unk_PCBaseFlags                 // unit_140d74b20's bitset<11> view
+{
+public:
+    Unk_BitSet11();                                         // 0x140d75040
 };
 
 // 0xd40 bytes. vftable 0x142f4c6f0 (124 slots); CallbackObject vftable @+8 0x142f4cad8 (dtor thunk 0x14167f518,
@@ -527,7 +532,7 @@ public:
     NiPoint3 m_posBF4;                  // +0xbf4 = ZERO
     int m_unk_c00;                      // +0xc00
     int m_unk_c04;                      // +0xc04 = 1
-    Unk_PCBaseFlags m_unk_c08;          // +0xc08 hide reasons
+    Unk_BitSet11 m_unk_c08;             // +0xc08 hide reasons
     int m_unk_c0c;                      // +0xc0c
     efd::Point3 m_posC10;               // +0xc10 = ZERO (fall start height)
     efd::Point3 m_posC1C;               // +0xc1c the move requested this frame (vfunc_68)

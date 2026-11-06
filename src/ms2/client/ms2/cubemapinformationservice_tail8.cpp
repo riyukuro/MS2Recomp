@@ -1,7 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CubeMapInformationService COMDAT tail slice 0x14111fdf0-
 // 0x141121cf0 (queue unit_14111fdf0): the public map::try_emplace / operator[] wrappers of the service's member trees,
-// swap/make_pair/sort helpers and the CAtlArray<void*> ctors. Same driver family as cubemapinformationservice_tail2.cpp;
-// the container types are shared in cubemapinformationservice_tail.h. Not an original file.
+// swap/make_pair/sort helpers and the CAtlArray<void*> ctors. Same driver family as cubemapinformationservice_tail2.cpp; the container types are shared in cubemapinformationservice_tail.h. Not an original file.
 // MS2-UNIT: unit_14111fdf0
 // MS2-RANGE: 0x14111fdf0-0x141121cf0 .text$mn
 // MS2-GUESS-LOOKALIKES
@@ -140,3 +139,4 @@ void Unk_CMISDriveTail8()
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x1411213f0 ; sfk: called by the const_iterator ctor above it
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@@std@@QEAA@XZ 0x141120610 ; sfk: by caller (_Insert_hint of the same pair); the symbols.tsv twin row is rotated
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@XZ 0x141121510 ; sfk: called by the const_iterator ctor above it
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHVEntityID@egf@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVEntityID@egf@@@std@@@std@@@1@@Z 0x141120ab0 ; ua13: callers are map<int,EntityID> _Insert_at 0x1410ec5c0 / _Insert_nohint 0x14110ac20 / begin 0x14114e010

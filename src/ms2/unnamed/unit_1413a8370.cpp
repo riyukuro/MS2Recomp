@@ -510,7 +510,7 @@ MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 
 
 #ifndef MS2_HOOK_DLL
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 struct Unk_RegMarker {};
 
 // @0x1400f4460
@@ -547,7 +547,7 @@ static CStringA s_strStun("stun");
 
 // @0x1400f4790
 static char s_8f78[8];
-static Unk_RegMarker s_init8f78 = (reinterpret_cast<Unk_BuddyHandle*>(&s_8f78)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_RegMarker());
+static Unk_RegMarker s_init8f78 = (reinterpret_cast<egf::EntityID*>(&s_8f78)->egf::EntityID::EntityID(0), Unk_RegMarker());
 
 // @0x1400f47b0
 #include "ms2/placeholder/unk_1402a9d70.h"

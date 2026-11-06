@@ -137,8 +137,8 @@ i64* FUN_140274c80(i64* out, i64 a) { *out = FUN_14027c360(a); return out; }
 // @0x140274cb0
 i64 FUN_140274cb0(i64 out, Unk_StlTag, i64 a)
 {
-    Unk_StlTag tag = {};
-    FUN_14015e600(out, tag);
+    std::_Exact_args_t tag = {};
+    reinterpret_cast<std::tuple<>*>(out)->std::tuple<>::tuple(tag);   // 0x14015e600: tuple<>::tuple<_Exact_args_t, 0>
     ((Unk_WcPtrPair*)&((Unk_WcSelf*)out)->m_0)->FUN_140274c50(FUN_14027c1f0(a));
     return out;
 }

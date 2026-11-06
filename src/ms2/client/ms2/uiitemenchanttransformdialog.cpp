@@ -325,7 +325,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         entry.FUN_1407cbb20(s_strItemName, out->FUN_140528160());
         outputs.PushObj(entry);
     }
-    ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
+    ((ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
     if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     board->Invoke("selectItem", obj.FUN_1422bb870());

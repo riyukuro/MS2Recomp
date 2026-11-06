@@ -21,18 +21,18 @@ typedef Unk_QmNpcQuestState Unk_ProxyValue88;
 //};
 MS2_CHECK_SIZE(Unk_ProxyValue88, 0x20);
 
-// +0xd0: 0xc-byte value (ctor 0x140267ba0, cleared by 0x140267c10).
-class Unk_ProxyValueD0
-{
-public:
-    Unk_ProxyValueD0();
-    void FUN_140267c10();
-    void FUN_140267bd0();               // clear to zero (_FillZeroMan)
-    void FUN_140267e70(CInputStream& s);   // decode (the Unk_UserProxyColor body; scenestategame 0x7e)
-    int m_pad_00;
-    int m_pad_04;
-    int m_pad_08;
-};
+// +0xd0: the 12-byte three-int tally Unk_IntTriple (ctor 0x140267ba0, cleared by 0x140267bd0, Sum 0x140267c10).
+#include "ms2/placeholder/inttriple.h"
+typedef Unk_IntTriple Unk_ProxyValueD0;
+//{
+//    Unk_ProxyValueD0();
+//    void FUN_140267c10();
+//    void FUN_140267bd0();               // clear to zero (_FillZeroMan)
+//    void FUN_140267e70(CInputStream& s);   // decode (the Unk_UserProxyColor body; scenestategame 0x7e)
+//    int m_pad_00;
+//    int m_pad_04;
+//    int m_pad_08;
+//};
 MS2_CHECK_SIZE(Unk_ProxyValueD0, 0xc);
 
 class CProxyGameObject : public CPtred {

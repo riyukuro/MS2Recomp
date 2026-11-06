@@ -27,8 +27,8 @@
 // MS2-PIN: ??$make_pair@AEBQEAVCMeratMarketMan@@AEBQ81@EAAXPEAVNotifyObject@@@Z@std@@YA?AU?$pair@PEAVCMeratMarketMan@@P81@EAAXPEAVNotifyObject@@@Z@0@AEBQEAVCMeratMarketMan@@AEBQ82@EAAXPEAVNotifyObject@@@Z@Z 0x140d63d00 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVCMeratMarketMan@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVCMeratMarketMan@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVCMeratMarketMan@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140d63d50 ; prop
 // MS2-PIN: ??0?$MS2Ptr@UBuyPacket@CMeratMarketPacket@@@@QEAA@XZ 0x140d64120 ; unique
-// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140d64180 ; prop
-// MS2-PIN: ??0?$TPtrValue@V?$list@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$allocator@V?$MS2Ptr@VCMeratMarketProduct@@@@@std@@@std@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140d64210 ; prop
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140d64180 ; prop
+// MS2-PIN: ??0?$TPtrValue@V?$list@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$allocator@V?$MS2Ptr@VCMeratMarketProduct@@@@@std@@@std@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140d64210 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VASMeratMarketBuyBillData@@@@QEAA@XZ 0x140d64280 ; unique
 // MS2-PIN: ??4?$TPtrValue@V?$list@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$allocator@V?$MS2Ptr@VCMeratMarketProduct@@@@@std@@@std@@@@QEAAAEAV0@AEBV0@@Z 0x140d65370 ; prop
 // MS2-PIN: ??8?$MS2Ptr@UBuyPacket@CMeratMarketPacket@@@@QEBA_NPEAUBuyPacket@CMeratMarketPacket@@@Z 0x140d654a0 ; unique

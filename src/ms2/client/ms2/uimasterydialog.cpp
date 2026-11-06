@@ -229,7 +229,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141275260(int nStringId, int nA, int nB);
 int FUN_1407181a0(const CStringW& str);
-class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410d5640(); };   // C3: member view (the header clashes with Unk_BuddyHandle)
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // B22 follow-up: was a local member view (the Unk_BuddyHandle clash is gone)
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
 public:

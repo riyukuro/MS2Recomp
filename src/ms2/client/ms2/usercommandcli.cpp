@@ -101,13 +101,13 @@ class Unk_Restrictions;
 struct Unk_XmlElement;
 
 // Header-local objects in original initializer order. Unknown original names.
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_CommandId)
-MS2_CHECK_SIZE(Unk_BuddyHandle,8);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+// MS2_CHECK_SIZE(Unk_BuddyHandle,8);
 static CString s_sort8[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_sort7[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill="skill";
 static CString s_stun="stun";
-static Unk_BuddyHandle s_id(0);
+static egf::EntityID s_id(0);   // @0x1400f1950
 static Unk_1402a9d70 s_table(17,.75f,.25f,2.25f,10);
 static CString s_job="jobCode";
 static CString s_sort="sortValue";

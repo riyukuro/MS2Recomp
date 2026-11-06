@@ -38,14 +38,14 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- statics of the unit's headers ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 static CString s_strIconPath("iconPath");
 static CString s_strItemDesc("itemDesc");
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_BuddyHandle s_handle(0);
+static egf::EntityID s_handle(0);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

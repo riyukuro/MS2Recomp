@@ -175,7 +175,7 @@ public:
 };
 class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
    // string of (id, symbol)
-class Unk_IntTriple { public: int Sum(); };
+// Unk_IntTriple (the trophy tally, Sum 0x140267c10) comes from inttriple.h via cproxygameobject.h.
 class Unk_MiScore : public Unk_IntTriple {};                     // the trophy points
 struct Unk_AchieveTab;   // achievemanager.h
 class CAchieveManager { public: Unk_AchieveTab* GetTally(); };   // C3: member view (achievemanager.h), the trophy points
@@ -589,8 +589,8 @@ void UIMyInfoDialog::vfunc_32(void* p, int a, int b)
 // @0x141a5a1e0
 void UIMyInfoDialog::vfunc_el5(MS2Ptr<CProxyGameObject> spActor, int n)
 {
-    if ((reinterpret_cast<Unk_MiEntityRef*>(&spActor)->FUN_1406c71b0() ? true : false)
-        && reinterpret_cast<Unk_MiEntityRef*>(&spActor)->FUN_1406c71d0()->FUN_1416c1ff0() != 0)
+    if ((spActor.get() ? true : false)
+        && spActor->FUN_1416c1ff0() != 0)
         FUN_141a5a560();
 }
 

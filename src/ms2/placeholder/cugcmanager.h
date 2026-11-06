@@ -49,7 +49,7 @@ class CUgcRegistBanner;
 class CUgcBannerRollingImage;
 class CUgcUploadCtrl;
 class CUploadFile;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASArray;
 class NiTexture;
 

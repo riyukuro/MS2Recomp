@@ -24,7 +24,7 @@
 // MS2-PIN: ??$forward@AEBQEAVUIArcadeMainDialog@@@std@@YAAEBQEAVUIArcadeMainDialog@@AEBQEAV1@@Z 0x140efbfc0 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVUIArcadeMainDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140efc060 ; order
 // MS2-PIN: ??$make_pair@AEBQEAVUIArcadeMainDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIArcadeMainDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140efc0b0 ; order
-// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140efc3c0 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_SocketNew@@@Z 0x140efc3c0 ; unique
 // MS2-PIN: ??0?$pair@HV?$TPtrValue@V?$CAtlArray@V?$TPtrValue@UCGameRankingData@@@@V?$CElementTraits@V?$TPtrValue@UCGameRankingData@@@@@ATL@@@ATL@@@@@std@@QEAA@$$QEAU01@@Z 0x140efc6d0 ; unique
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x140efce40 ; order
 // MS2-PIN: ?get@?$MS2Ptr@VASMovieClip@@@@QEBAPEAVASMovieClip@@XZ 0x140efcee0 ; order

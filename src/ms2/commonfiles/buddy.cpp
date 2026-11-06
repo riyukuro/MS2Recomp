@@ -41,10 +41,10 @@ public:
 //
 
 // A header static of this unit: a pointer-sized handle constructed from 0 through a base ctor (the two COMDATs
-// 0x1401cd100 / 0x1401cd130 and the lone initializer 0x1400b4640). Its real type is unknown.
-class Unk_BuddyHandleBase { public: Unk_BuddyHandleBase(void* h) : handle(h) {} void* handle; };
-class Unk_BuddyHandle : public Unk_BuddyHandleBase { public: Unk_BuddyHandle(void* h) : Unk_BuddyHandleBase(h) {} };
-static Unk_BuddyHandle s_buddyHandle(0);
+// 0x1401cd100 / 0x1401cd130 and the lone initializer 0x1400b4640). It is egf::EntityID (B22).
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+// B22: was class Unk_BuddyHandleBase (base ctor 0x1401cd130 = efd::UniversalID(efd::UInt64))
+static egf::EntityID s_buddyHandle(0);   // @0x1400b4640
 
 // @0x1401cbd50
 CBuddy::CBuddy()

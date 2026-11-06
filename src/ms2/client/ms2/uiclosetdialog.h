@@ -22,7 +22,7 @@ class ASButton;
 class ASButtonBar;
 class ASDropdownMenu;
 class ASMovieClip;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASSlot;
 class ASTooltip;
 class CInPacket;

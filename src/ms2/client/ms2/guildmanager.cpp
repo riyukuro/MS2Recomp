@@ -112,8 +112,8 @@ public:
 extern __int64 DAT_143ab2898;   // the local character's meso
 extern int DAT_143ab2870;       // the local character's current map id
 // The housing service, looked up from its registry cell.
-// Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
-class CubeMapInformationService { public: int FUN_1410d2f10(); };
+// CubeMapInformationService: the real header (B22 removed the Unk_BuddyHandle / Unk_1401cd100 clash).
+#include "ms2/client/ms2/cubemapinformationservice_3.h"   // B22 follow-up: was a local member view (the Unk_BuddyHandle clash is gone)
 class CubeMapInformationService;
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* p);
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();

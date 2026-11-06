@@ -10,7 +10,7 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include <NiRTTI.h>
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 // The TU's NiRTTI ctor lives out of line in the exe at 0x141d16b90 ([this]=name, [this+8]=base RTTI).
 
@@ -32,7 +32,7 @@ static CString s_strTabIndex = "tabIndex";
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);                                               // @0x1400fac90
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // The TU's registration record; only its address is taken here.

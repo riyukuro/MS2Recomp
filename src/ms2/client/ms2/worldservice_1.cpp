@@ -198,7 +198,7 @@ public:
     char m_pad_1c[0x24];
 };
 class FieldProperty;
-class CSkillMagicControlGuide;
+#include "ms2/client/ms2/cubecraft_1.h"   // CSkillMagicControlGuide: the m_5a0 values
 typedef ATL::CRBMap<unsigned, Unk_WsObjEntry> Unk_Ws1F1a8;
 typedef ATL::CRBMap<CStringA, MS2Ptr<Unk_WsMarker> > Unk_Ws1F12;
 typedef ATL::CRBMap<CStringA, MS2Ptr<Unk_RideeFieldObj> > Unk_Ws1F4b0;
@@ -289,12 +289,12 @@ EE_HANDLER(WorldService, FUN_141bbfe30, ecr::SceneGraphAddedMessage);
 // @0x140120650
 EE_HANDLER(WorldService, FUN_141bc0290, ecr::SceneGraphRemovedMessage);
 #endif
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+// The null entity id header static is an egf::EntityID (ctor 0x1401cd100 = EntityID(efd::UInt64)).
 #ifndef MS2_HOOK_DLL   // s_pointer: the exe's object at 0x143af8278, which other units reach as DAT_143af8278 (the hook DLL binds it)
 // @0x140120860
-Unk_1401cd100 g_worldNullHandle(NULL);                              // 0x143af8278 (same header static as scenestatelogin)
+egf::EntityID g_worldNullHandle(0);                                 // 0x143af8278 (same header static as scenestatelogin)
 #else
-extern Unk_1401cd100 g_worldNullHandle;
+extern egf::EntityID g_worldNullHandle;
 #endif
 // TSingleton<WorldService>::s_instance (0x143aaee10) is the exe's: bound by progress/symbols-manual.tsv, not defined here, so hooked
 // functions that call GetInstance() read the live singleton instead of a DLL-local null copy.
@@ -1476,8 +1476,8 @@ public:
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
-    virtual void ShowNotice(MS2Ptr<Unk_WsB_Notice> n);   // 3
-    virtual void HideNotice(MS2Ptr<Unk_WsB_Notice> n);   // 4
+    virtual void ShowNotice(MS2Ptr<CProxyGameObject> n);   // 3
+    virtual void HideNotice(MS2Ptr<CProxyGameObject> n);   // 4
 };
 
 class Unk_WsB_Part : public CPtred {};
@@ -1667,7 +1667,7 @@ struct Unk_WsC_TagPtr
     Unk_WsC_TagPtr(const Unk_WsC_TagPtr& o) : m_list(o.m_list) { FUN_141c1f4d0(this); }   // 0x141bf1230 (adds a ref)
     Unk_WsC_TagPtr(Unk_WsC_TagPtr&& o) : m_unk(o.m_unk), m_list(o.m_list) { o.m_list = 0; }
     ~Unk_WsC_TagPtr() { reinterpret_cast<Unk_PCEntListPtr*>(this)->~Unk_PCEntListPtr(); }
-    Unk_WsC_EntityList* operator->() const { return m_list; }
+    Unk_WsC_EntityList* operator->() const { return m_list; }   Unk_WsC_EntityList* get() const { return m_list; }   bool operator==(Unk_WsC_EntityList* p) const { return m_list == p; }   // 0x1409f2190 / 0x1409f2170 / 0x1409f2130
     bool IsNull() const { return m_list == 0; }
     void* m_unk;                                                    // +0
     Unk_WsC_EntityList* m_list;                                     // +8
@@ -4468,27 +4468,27 @@ MS2Ptr<Unk_WsB_Lift> WorldService::FindLiftByName(CString name)
 MS2_REPLACE_METHOD(0x141BC5A20, WorldService, FindLiftByName, 136, 0xF90DEB9E);
 
 // @0x141bc5ab0
-void WorldService::FUN_141bc5ab0(efd::SmartPointer<Unk_WsB_RefObj> obj)
+void WorldService::FUN_141bc5ab0(efd::SmartPointer<CSkillMagicControlGuide> obj)
 {
     if (obj == 0)
         return;
-    reinterpret_cast<Unk_Ws1M8*>(&m_5a0)->SetAt((unsigned __int64)((CSkillMagicControlGuide*)(void*)(obj.data()))->FUN_1410a67f0(), reinterpret_cast<const efd::SmartPointer<Unk_WsMapV8>&>(obj));
+    reinterpret_cast<Unk_Ws1M8*>(&m_5a0)->SetAt((unsigned __int64)obj.data()->FUN_1410a67f0(), reinterpret_cast<const efd::SmartPointer<Unk_WsMapV8>&>(obj));
 }
 MS2_REPLACE_METHOD(0x141BC5AB0, WorldService, FUN_141bc5ab0, 113, 0x458FFD74);
 
 // @0x141bc5b30
-void WorldService::RemoveRefObject(efd::SmartPointer<Unk_WsB_RefObj> obj)
+void WorldService::RemoveRefObject(efd::SmartPointer<CSkillMagicControlGuide> obj)
 {
     if (obj == 0)
         return;
-    reinterpret_cast<Unk_Ws1M8*>(&m_5a0)->RemoveKey((unsigned __int64)((CSkillMagicControlGuide*)(void*)(obj.data()))->FUN_1410a67f0());
+    reinterpret_cast<Unk_Ws1M8*>(&m_5a0)->RemoveKey((unsigned __int64)obj.data()->FUN_1410a67f0());
 }
 MS2_REPLACE_METHOD(0x141BC5B30, WorldService, RemoveRefObject, 108, 0x45C808D3);
 
 // @0x141bc5bb0
-efd::SmartPointer<Unk_WsB_RefObj> WorldService::FindRefObject(unsigned __int64 key)
+efd::SmartPointer<CSkillMagicControlGuide> WorldService::FindRefObject(unsigned __int64 key)
 {
-    efd::SmartPointer<Unk_WsB_RefObj> obj(0);
+    efd::SmartPointer<CSkillMagicControlGuide> obj(0);
     reinterpret_cast<Unk_Ws1M8*>(&m_5a0)->Lookup(key, reinterpret_cast<efd::SmartPointer<Unk_WsMapV8>&>(obj));
     return obj;
 }
@@ -5176,9 +5176,9 @@ MS2_REPLACE_METHOD(0x141BC9830, WorldService, FUN_141bc9830, 583, 0x93E0E94A);
 class Unk_LsEntityEvents* FUN_140c607b0();
 // Registers a notice by its id and shows it.
 // @0x141bc9aa0
-void WorldService::AddProxyObject(MS2Ptr<Unk_WsB_Notice> notice)
+void WorldService::AddProxyObject(MS2Ptr<CProxyGameObject> notice)
 {
-    reinterpret_cast<Unk_Ws1M5*>(&m_930)->SetAt(notice->m_id, reinterpret_cast<const MS2Ptr<CProxyGameObject>&>(notice));
+    reinterpret_cast<Unk_Ws1M5*>(&m_930)->SetAt(notice->m_proxyId, notice);
     ((Unk_WsB_NoticeMgr*)FUN_140c607b0())->ShowNotice(notice);
 }
 MS2_REPLACE_METHOD(0x141BC9AA0, WorldService, AddProxyObject, 135, 0x4EAD2435);
@@ -5190,7 +5190,7 @@ void WorldService::RemoveProxyObject(unsigned id)
     {
         MS2Ptr<CProxyGameObject> notice = FindProxyObject(id);
         if (notice.get() != 0)
-            ((Unk_WsB_NoticeMgr*)FUN_140c607b0())->HideNotice(reinterpret_cast<MS2Ptr<Unk_WsB_Notice>&>(notice));
+            ((Unk_WsB_NoticeMgr*)FUN_140c607b0())->HideNotice(notice);
     }
     ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(&m_930))->RemoveKey(id);
 }
@@ -6551,7 +6551,7 @@ Unk_WsC_GameObj* WorldService::FUN_141bd28d0(const Vector3& pos, float maxDist, 
 MS2_REPLACE_METHOD(0x141BD28D0, WorldService, FUN_141bd28d0, 767, 0x4AE4497E);
 
 // @0x141bd2bf0
-Unk_WsC_GameObj* WorldService::FUN_141bd2bf0(const Vector3& /*pos*/, int id)
+Unk_WsC_GameObj* WorldService::FUN_141bd2bf0(Vector3 /*pos*/, int id)
 {
     for (void* p = (void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetHeadPosition(); p; ((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetNext(reinterpret_cast<POSITION&>(p)))
     {
@@ -7198,7 +7198,7 @@ int WorldService::FUN_141bd3d50() { return m_918; }
 MS2_REPLACE_METHOD(0x141BD3D50, WorldService, FUN_141bd3d50, 17, 0xCE1E118A);
 
 // @0x141bd3d70
-void WorldService::FUN_141bd3d70(const Vector3& a, const Vector3& b)
+void WorldService::FUN_141bd3d70(Vector3 a, Vector3 b)
 {
     m_8d8 = a;
     m_8e4 = b;
@@ -8423,7 +8423,7 @@ bool WorldService::FUN_141bd8e30(egf::EntityID entityId, bool show, float fFade)
 }
 MS2_REPLACE_METHOD(0x141BD8E30, WorldService, FUN_141bd8e30, 1152, 0xF70ACC18);
 
-int FUN_14028d260(float f);                             // (int) cast
+__int64 FUN_14028d260(float f);                             // (int) cast
 // start a time-scale change: scale a/b for the given duration
 // @0x141bd92c0
 void WorldService::FUN_141bd92c0(float scale, float scale2, float duration, int mode)
@@ -8433,7 +8433,7 @@ void WorldService::FUN_141bd92c0(float scale, float scale2, float duration, int 
     m_9c0 = scale;
     m_9c4 = scale2;
     m_9bc = mode;
-    m_9b8 = GetTickCountMs2() + FUN_14028d260(duration);
+    m_9b8 = GetTickCountMs2() + (int)FUN_14028d260(duration);
     m_9c8 = GetTickCountMs2();
     ((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->SetTimeScale(scale);
 }
@@ -9094,7 +9094,7 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
         TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0a60(m_284, obj->m_mapType);
     }
 
-    if (obj->m_entityId == reinterpret_cast<const egf::EntityID&>(g_worldNullHandle))   // the null entity id (0x143af8278)
+    if (obj->m_entityId == g_worldNullHandle)   // the null entity id (0x143af8278)
         return 0;
 
     reinterpret_cast<Unk_PortalBox*>(&obj->m_placement)->FUN_14169b080(entity);
@@ -9106,7 +9106,7 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
     proxy->m_proxyId = obj->m_proxyId;
     proxy->m_fieldId = obj->m_id;
     proxy->m_owner = obj;
-    AddProxyObject(reinterpret_cast<MS2Ptr<Unk_WsB_Notice>&>(proxy));   // registers the proxy (callee releases)
+    AddProxyObject(reinterpret_cast<MS2Ptr<CProxyGameObject>&>(proxy));   // registers the proxy (callee releases)
     reinterpret_cast<CPortal*>(obj.operator->())->FUN_14169d0e0();
 
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyAddPortal(obj.get())));

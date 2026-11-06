@@ -170,14 +170,14 @@ class CGameRule;
 extern Unk_SingletonObj* DAT_143aac4d8;
 
 // An 8-byte handle (the exe ctor 0x1401cd100 stores its argument at +0, as for the other handles).
-class Unk_BuddyHandle
-{
-public:
-    Unk_BuddyHandle(void*);                                           // 0x1401cd100
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+// {
+// public:
+//     Unk_BuddyHandle(void*);                                           // 0x1401cd100
+// private:
+//     void* m_p;
+// };
+// MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 
 typedef ATL::CRBMap<unsigned int, CStringW> Unk_BmNameMap;
 typedef Unk_BmBoxPtr<Unk_BmNameMap> Unk_BmNameMapPtr;
@@ -199,7 +199,7 @@ static Unk_BmNameTable s_mapItemNames(10);                          // 0x143aac4
 static CStringA s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143aac420
 static CStringA s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_BuddyHandle s_unk520(0);
+static egf::EntityID s_unk520(0);   // @0x1400b4640
 
 bool CBlackMarketUtil::s_bInit;
 bool CBlackMarketTable::s_bInit;

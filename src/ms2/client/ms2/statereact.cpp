@@ -41,9 +41,9 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-// The reactor looked up by its name (an efd::SmartPointer<CReactor>, 8 bytes).
-class Unk_ReactWorld { public: efd::SmartPointer<CReactor> FUN_141bc6eb0(const CString& strName); };
-
+// WorldService::FindSpawnByName's pointee is the reactor (worldservice.h's Unk_WsB_Spawn; actionkeyobject.cpp's view).
+class Unk_WsB_Spawn : public CReactor {};   // kRef: the SmartPointer<CReactor> view of the found spawn
+#define kRef reinterpret_cast<efd::SmartPointer<CReactor>&>(kSpawn)
 
 struct Unk_CastingParam; // The casting bar request (see statenurturing.cpp): duration, flags, speed and four texts.
 struct Unk_CastInfo
@@ -155,7 +155,7 @@ void StateReact::vfunc_4(StateData* pData)
                 if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
                     reinterpret_cast<PC*>(pRider)->SendRequestCube();
                 Unk_CastInfo kInfo;
-                efd::SmartPointer<CReactor> kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
+                efd::SmartPointer<Unk_WsB_Spawn> kSpawn = WorldService::GetInstance()->FindSpawnByName(m_spData->m_strTarget);
                 if (kRef == 0)
                 {
                     m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -220,7 +220,7 @@ void StateReact::vfunc_8(double fTime)
         return;
     if ((StateReactData*)m_spData != 0)
     {
-        efd::SmartPointer<CReactor> kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
+        efd::SmartPointer<Unk_WsB_Spawn> kSpawn = WorldService::GetInstance()->FindSpawnByName(m_spData->m_strTarget);
         if (static_cast<CReactor*>(kRef) != 0)
         {
             if (m_n48 != 0)
@@ -287,10 +287,10 @@ void StateReact::FUN_140b8ded0()
         return;
     if (!m_spData)
         return;
-    Unk_ReactWorld* pWorld = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance());
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
         return;
-    efd::SmartPointer<CReactor> kRef = pWorld->FUN_141bc6eb0(m_spData->m_strTarget);
+    efd::SmartPointer<Unk_WsB_Spawn> kSpawn = pWorld->FindSpawnByName(m_spData->m_strTarget);
     if (static_cast<CReactor*>(kRef) == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -303,7 +303,7 @@ void StateReact::OnCastingFinished()
 {
     m_n48 = 1;
 }
-
+#undef kRef
 // @0x140b8dfd0
 void StateReact::FUN_140b8dfd0(efd::SmartPointer<CReactor> kRef)
 {

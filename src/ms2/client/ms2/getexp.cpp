@@ -131,7 +131,7 @@ class Unk_ConfigPoint
 {
 public:
     Vector3 FUN_141273d00() const;                          // copy of the value (0x141273d00)
-    const Vector3& FUN_141274420() const;                   // the value, "constants is not set" when unset
+    // the value getter 0x141274420 is Common::Constants::Value<efd::Point3>::Get() (defined below)
     virtual void vfunc_0(); virtual void vfunc_1();
     bool m_bInit; char m_flag9, m_flagA, m_flagB; unsigned m_unkC;
     char m_pad_10[0x40];
@@ -503,18 +503,18 @@ int FUN_141274b80(Unk_ExpActor* p)
     return p != 0 && efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(p ? p->GetClassInfo() : 0), 0x6200011);
 }
 
+// @0x141274420
+template<> efd::Point3* Common::Constants::Value<efd::Point3>::Get()
+{
+    if (!m_defined)
+        Error("constants is not set");
+    return &m_value;
+}
+
 // @0x141273d00
 Vector3 Unk_ConfigPoint::FUN_141273d00() const
 {
-    return FUN_141274420();
-}
-
-// @0x141274420
-const Vector3& Unk_ConfigPoint::FUN_141274420() const
-{
-    if (!m_bInit)
-        reinterpret_cast<Common::Constants::Object*>(const_cast<Unk_ConfigPoint*>(this))->Error("constants is not set");
-    return m_value;
+    return reinterpret_cast<const Vector3&>(*reinterpret_cast<Common::Constants::Value<efd::Point3>*>(const_cast<Unk_ConfigPoint*>(this))->Get());
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

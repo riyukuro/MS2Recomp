@@ -1161,7 +1161,7 @@ void WorldMapManager::BuildNpcRewardPreview(int npc, ASObj* script)
             }
         }
     }
-    ((class AScript*)(class ASObj*)(script))->FUN_1418adf60("reward", reward);
+    ((class AScript*)(ASObj*)(script))->FUN_1418adf60("reward", reward);
     script->FUN_1407cbb20("enableLClick", GetStringCommon(0x764));
 }
 

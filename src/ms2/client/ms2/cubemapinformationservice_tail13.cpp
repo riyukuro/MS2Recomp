@@ -10,6 +10,9 @@
 // MS2-PIN: ??4?$MS2Ptr@VFittingDollData@@@@QEAAAEAV0@AEBV0@@Z 0x141126100 ; AddRef 0x14112fa90 / Release 0x141149320 are the FittingDollData ones; FUN_1410cb4c0 assigns MS2Ptr<FittingDollData> through it
 // MS2-PIN: ??4?$MS2Ptr@VCube@@@@QEAAAEAV0@AEBV0@@Z 0x141126140 ; look-alike pairing only: 0x141126140 is the Unk_CMISHousePtr assign (AddRef 0x14112fac0), the Cube one is 0x140965020
 // MS2-PIN: ??4?$Unk_PayloadPtr@VCubeOwner@@@@QEAAAEAV0@H@Z 0x141126260
+// MS2-PIN: ??4?$MS2Ptr@VSetItemEffectInfo@@@@QEAAAEAV0@AEBV0@@Z 0x141126290 ; merge 63: the look-alike guess rotated 290/340 (340 went functional)
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCFunctionCubeObject@@@@QEAAAEAV1@PEAVCFunctionCubeObject@@@Z 0x1411262d0 ; look-alike pairing: the exe body calls 0x1408b6790/0x1408b6c60
+// MS2-PIN: ??4?$Unk_PayloadPtr@VNoticeCubeInfo@@@@QEAAAEAV0@AEBV0@@Z 0x141126340 ; ICF target of the NoticeCubeInfo assign in cubemapinformationservice_3 (l.2257)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
@@ -20,9 +23,6 @@ class NoticeCubeInfo;
 
 // (Unk_CMISPropPtr::operator= is gone: the stand-in is efd::SmartPointer<egfPhysX::EntityActorData>, whose SDK operator=
 // is the exe 0x141126090)
-
-
-
 
 
 

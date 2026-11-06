@@ -9,7 +9,7 @@
 #include "ms2/placeholder/uiitemeventlistener.h"
 #include "ms2/placeholder/gfxvalue.h"
 class CMsgBoxData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 struct Unk_SockUidList;
 
 class ItemSocketSystemPageSocketUnlock : public ItemSocketSystemPageBase, public UIItemEventListener {

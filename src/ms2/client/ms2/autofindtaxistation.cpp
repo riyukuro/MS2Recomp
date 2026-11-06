@@ -85,14 +85,13 @@ public:
 
 typedef Unk_TaxiPtr<Unk_TaxiEntList> Unk_TaxiListPtr;
 
-// World service pieces reached through FUN_1403ed2d0.
+// WorldService::FUN_141bd0420's result (worldservice_1.cpp defines it): the same handle, dtor 0x1409f20e0.
+struct Unk_WsC_TagPtr : Unk_TaxiListPtr {};
 class Unk_TaxiPlayer;
-class Unk_TaxiCtx
-{
-public:
-    Unk_TaxiListPtr FUN_141bd0420(unsigned hash);
-    Unk_TaxiPlayer* FUN_141bd0cc0();
-};
+// C3: the Unk_TaxiCtx view of WorldService is gone (FUN_141bd0420
+//   and FUN_141bd0cc0 are WorldService's own members)
+//
+//
 struct Unk_TaxiInfo { char m_pad[0xb8]; int m_nValue; };
 class Unk_TaxiResTable;
 class Unk_TaxiTimer;
@@ -109,6 +108,7 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();
+    Unk_WsC_TagPtr FUN_141bd0420(unsigned hash);   // the entities of a model
     static class WorldService* GetInstance();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -205,7 +205,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
     bool bNone = reinterpret_cast<Unk_TaxiInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nValue == 0;
     if (bNone)
         return;
-    Unk_TaxiListPtr list = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
+    Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x85359406);
     if (list == 0)
         return;
     if (list->IsEmpty())
@@ -241,7 +241,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
             {
                 if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                 {
-                    Unk_TaxiListPtr list = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
+                    Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x85359406);
                     if (list.get() != 0)
                     {
                         for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos))

@@ -64,7 +64,7 @@ public:UIMentoringMentorRegisterPage(UIMentoringDialog*);virtual ~UIMentoringMen
  bool SendMentor(int,const CMsgBoxData&);
 };
 MS2_CHECK_SIZE(UIMentoringMentorRegisterPage,0x30);
-class ASObj;class Unk_MentorInstance;class Unk_MentorIdArray;
+class AScript; typedef AScript ASObj;class Unk_MentorInstance;class Unk_MentorIdArray;
 class UIMentoringMissionPage:public UIMentoringPage,public UIQuestEventListener {
 public:UIMentoringMissionPage(UIMentoringDialog*);virtual ~UIMentoringMissionPage();virtual int vfunc_1();virtual void vfunc_2();virtual void vfunc_3(Scaleform::GFx::Value*,const CString&,ASData*);virtual void vfunc_4(Scaleform::GFx::Value*,ASData*);virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);virtual CString vfunc_6();virtual CStringW vfunc_7();virtual int vfunc_8();virtual int vfunc_10(int);virtual void vfunc_o178_11(void*);
  void FUN_140c74170(ASObj&,Unk_MentorInstance*);void FUN_140c74450(int);int FUN_140c74660();__int64 FUN_140c74720();void FUN_140c74850(Unk_MentorIdArray&,int);void FUN_140c74970();

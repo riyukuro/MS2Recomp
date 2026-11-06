@@ -29,9 +29,9 @@ static CStringA s_strReportSiren("PremiumShop_ReportSiren");        // 0x143abf5
 static CStringA s_strSkill("skill");                                // 0x143abf640
 static CStringA s_strStun("stun");                                  // 0x143abf638
 struct Unk_TcHandleMarker {};
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static void* s_pHandle;                                             // 0x143abf630
-static Unk_TcHandleMarker s_initHandle = (reinterpret_cast<Unk_BuddyHandle*>(&s_pHandle)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_TcHandleMarker());
+static Unk_TcHandleMarker s_initHandle = (reinterpret_cast<egf::EntityID*>(&s_pHandle)->egf::EntityID::EntityID(0), Unk_TcHandleMarker());   // @0x1400cf000
 static CStringA s_strSortNamesA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143abf648
 static CStringA s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143abf690
 static CStringA s_strSkill2("skill");                               // 0x143abf688

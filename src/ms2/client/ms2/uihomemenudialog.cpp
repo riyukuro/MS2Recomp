@@ -42,12 +42,12 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- header statics (the exe runs them in this order: the first group, the three ui names, the second group) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strSortNamesA[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkillA = "skill";
 static CString s_strStunA = "stun";
-static Unk_BuddyHandle s_pointerA(NULL);
+static egf::EntityID s_pointerA(0);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputA;
 static CString s_strJobCode = "jobCode";
@@ -55,7 +55,7 @@ static CString s_strSortValue = "sortValue";
 static CString s_strTabIndex = "tabIndex";
 static CString s_strSkillB = "skill";
 static CString s_strStunB = "stun";
-static Unk_BuddyHandle s_pointerB(NULL);
+static egf::EntityID s_pointerB(0);
 static UICommon::CMyPCKeyInputController s_keyInputB;
 
 // ---- unit-local views of exe types ----

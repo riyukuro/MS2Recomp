@@ -21,7 +21,7 @@
 
 class ASButton;
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASTileList;
 class ASTextField;
 class CInPacket;

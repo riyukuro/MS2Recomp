@@ -20,7 +20,7 @@
 #include "ms2/placeholder/intervaltimer.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class CQuest;
 class NotifyObject;

@@ -171,8 +171,8 @@ static CString s_strSkill = "skill";
 // @0x140101840
 static CString s_strStun = "stun";
 // @0x140101870
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
-static Unk_BuddyHandle s_pointer(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);
 #endif
 
 // @0x1417b3d20

@@ -945,7 +945,7 @@ void UILapenshardShieldBar::vfunc_26()
 // @0x140c5f2a0
 void UILapenshardShieldBar::vfunc_43()
 {
-    if (MS2Ptr<ASGameEntity> spEntity = dynamic_cast<ASGameEntity*>(m_30.operator->()))
+    if (MS2Ptr<ASGameEntity> spEntity = dynamic_cast<ASGameEntity*>((AScript*)m_30))
     {
         int nX = (int)spEntity->FUN_1422c10a0();
         int nY = (int)spEntity->FUN_1422c1110();
@@ -955,7 +955,7 @@ void UILapenshardShieldBar::vfunc_43()
         UIObject* pHpBar = (UIObject*)Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d);
         if (pHpBar != 0)
         {
-            if (MS2Ptr<ASGameEntity> spHp = dynamic_cast<ASGameEntity*>(pHpBar->FUN_1422dba00().operator->()))
+            if (MS2Ptr<ASGameEntity> spHp = dynamic_cast<ASGameEntity*>((AScript*)pHpBar->FUN_1422dba00()))
                 nOffset = (int)(spHp->FUN_1422c1110() + (float)spHp->GetHeightCeil() + 30.0f);
         }
         spEntity->vfunc_2(1, 0, nOffset);

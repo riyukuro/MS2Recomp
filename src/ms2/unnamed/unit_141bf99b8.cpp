@@ -558,12 +558,12 @@ void* Unk_WsSingletonDeletingDtor(TSingleton<WorldService>* pSingleton, unsigned
 
 // The camera's entity id value. Inline in the original, its COMDAT reads the including TU's copy of the header static
 // egf::kENTITY_INVALID (worldservice.cpp's is 0x143af8278, defined in worldservice_1 as g_worldNullHandle).
-class Unk_1401cd100;
-extern Unk_1401cd100 g_worldNullHandle;
+// g_worldNullHandle is that egf::EntityID (ctor 0x1401cd100).
+extern egf::EntityID g_worldNullHandle;
 // @0x141bfe700
 unsigned __int64 Camera::FUN_141bfe700()
 {
-    return m_10 != NULL ? m_10->GetEntityIDValue() : reinterpret_cast<const egf::EntityID&>(g_worldNullHandle).GetValue();
+    return m_10 != NULL ? m_10->GetEntityIDValue() : g_worldNullHandle.GetValue();
 }
 
 // The rest of the tail over the recovered types (worldservice_tail.h, the std members, the classes WorldService creates).

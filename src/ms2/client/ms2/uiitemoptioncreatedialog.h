@@ -12,7 +12,7 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASUIComponent;
 class ASScrollingList;
 

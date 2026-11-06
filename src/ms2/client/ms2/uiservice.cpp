@@ -397,7 +397,7 @@ int FUN_141924740(UIDialog* p);
 
 // ---- statics (.text$di order) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100 (C3: named like the real view)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 CUIService* TSingleton<CUIService>::s_instance = 0;
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CUIService);                                                       // @0x14011d200
@@ -405,7 +405,7 @@ static CString s_sort8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "C
 static CString s_sort7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};                      // @0x14011d2f0
 static CString s_skill = "skill";                                                                   // @0x14011d3b0
 static CString s_stun = "stun";                                                                     // @0x14011d3e0
-static Unk_BuddyHandle s_handle(0);                                                             // @0x14011d410
+static egf::EntityID s_handle(0);                                                             // @0x14011d410
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);                                      // @0x14011d430
 static UICommon::CMyPCKeyInputController s_keyInput;                                                // @0x14011d480
 static CString s_jobCode = "jobCode";                                                               // @0x14011d4b0

@@ -6,15 +6,15 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 // The shared header statics of this unit (each header brings its own copies, constructed in include order).
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 static CString s_skill1 = "skill";
 static CString s_stun1 = "stun";
-static Unk_BuddyHandle s_handle1(0);
+static egf::EntityID s_handle1(0);   // @0x14011cc50
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill2 = "skill";
 static CString s_stun2 = "stun";
-static Unk_BuddyHandle s_handle2(0);
+static egf::EntityID s_handle2(0);   // @0x14011cd90
 static CString s_skill3 = "skill";
 static CString s_stun3 = "stun";
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

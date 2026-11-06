@@ -231,7 +231,7 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 // MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x14027f870
 // MS2-PIN: ??_G?$MS2Ptr@VCPtred@@@@QEAAPEAXI@Z 0x14027f8f0
 // MS2-PIN: ?FUN_1402804e0@CLogString@@QEAAX_K0HPEB_W@Z 0x1402804e0
-// MS2-PIN: ??4?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x140280740
+// MS2-PIN: ??4?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x140280740
 // MS2-PIN: ?CallConstructors@?$CAtlArray@UUnk_QuestMaskRange@@V?$CElementTraits@UUnk_QuestMaskRange@@@ATL@@@ATL@@CAXPEAUUnk_QuestMaskRange@@_K@Z 0x140280770
 // MS2-PIN: ?CopyElements@?$CElementTraitsBase@VUnk_CommonPriceRecord@@@ATL@@SAXPEAVUnk_CommonPriceRecord@@PEBV3@_K@Z 0x140280bc0
 // MS2-PIN: ?Owner@?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@CAPEAV?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@PEAV?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@Z 0x140281490

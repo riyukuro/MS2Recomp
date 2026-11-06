@@ -50,10 +50,10 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- statics (dynamic initializers 0x14011dd60..0x14011de30) ----
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 #ifndef MS2_HOOK_DLL
 static CString s_strStun = "stun";                                                      // @0x14011dd60
-static Unk_BuddyHandle s_pointer(NULL);                                                   // @0x14011dd90
+static egf::EntityID s_pointer(0);                                                        // @0x14011dd90
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);                       // @0x14011ddb0
 static UICommon::CMyPCKeyInputController s_keyInputController;                          // @0x14011de00
 #endif

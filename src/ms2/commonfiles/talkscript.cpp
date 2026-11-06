@@ -34,7 +34,7 @@
 // MS2-PIN: ??C?$Unk_ScriptPtr@VCCacheData@@@@QEBAPEAVCCacheData@@XZ 0x14085a5e0 ; prop
 // MS2-PIN: ??_F?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXXZ 0x14085a630 ; unique
 // MS2-PIN: ??_GCNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAPEAXI@Z 0x14085a7c0 ; unique
-// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x14085a9b0 ; unique
+// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x14085a9b0 ; unique
 // MS2-PIN: ?CreateNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14085aaf0 ; prop
 // MS2-PIN: ?CreateNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14085ac70 ; prop
 // MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14085adf0 ; unique

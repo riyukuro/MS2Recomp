@@ -148,8 +148,8 @@ private:
 struct Unk_WsC_TagPtr
 {
     ~Unk_WsC_TagPtr();                                                      // 0x1409f20e0
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2170() const;  // get
-    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* FUN_1409f2190() const;  // operator->
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* get() const { return (ATL::CAtlList<efd::SmartPointer<egf::Entity> >*)m_8; }   // 0x1409f2170
+    ATL::CAtlList<efd::SmartPointer<egf::Entity> >* operator->() const;     // 0x1409f2190 (worldservice_1.cpp)
     void* m_0;
     void* m_8;
 };
@@ -1410,11 +1410,11 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
             return;
         NiPoint3 kRot = pPlayer->vfunc_20();
         Unk_WsC_TagPtr stations = TSingleton<WorldService>::GetInstance()->FUN_141bd0420(0x85359406);
-        if (stations.FUN_1409f2170() != 0)
+        if (stations.get() != 0)
         {
-            for (POSITION pos = stations.FUN_1409f2190()->GetHeadPosition(); pos != NULL; stations.FUN_1409f2190()->GetNext(pos))
+            for (POSITION pos = stations->GetHeadPosition(); pos != NULL; stations->GetNext(pos))
             {
-                efd::SmartPointer<egf::Entity> spStation = stations.FUN_1409f2190()->GetAt(pos);
+                efd::SmartPointer<egf::Entity> spStation = stations->GetAt(pos);
                 spStation->GetPropertyValue(0x68c7c29d, reinterpret_cast<efd::Point3&>(kRot));
                 kRot.z += 180.0f;
                 FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));

@@ -53,11 +53,11 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(LapenshardSlotBag);
 #include "ms2/placeholder/header_statics_a.h"
 
 // The same statics once more, from a second include of the shared header; a null handle sits between "stun" and the map.
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_Handle1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_BuddyHandle s_handle2(NULL);
+static egf::EntityID s_handle2(0);                                       // @0x1400c4a10
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x140a702f0

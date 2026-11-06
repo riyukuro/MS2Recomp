@@ -62,7 +62,7 @@ CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);
 
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 Unk_SocketNew FUN_1401b7b90(Unk_SocketNew* pOut, int n);                  // new-tag construct
 
 // The ctor/dtor of the CAfterImageEffect RTTI live in the same .text$di range.
@@ -83,7 +83,7 @@ const NiRTTI CAfterImageEffect::ms_RTTI("CAfterImageEffect", &CEffect::ms_RTTI);
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);   // @0x1400bfc60
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";

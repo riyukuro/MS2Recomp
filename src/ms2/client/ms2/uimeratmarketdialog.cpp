@@ -195,9 +195,9 @@ static CStringA s_ugcMarketSortNames[7] = { "None", "Buy", "Like", "PriceLow", "
 static CStringA s_strSkill = "skill";
 // @0x1400eeb90
 static CStringA s_strStun = "stun";
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // zero-initialised pointer holder
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 // @0x1400eebc0
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);
 // @0x1400eebe0
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x1400eec30
@@ -2058,7 +2058,7 @@ void UIMeratMarketDialog::ShowRideeItem(MS2Ptr<CMeratMarketProduct> spProduct, M
 {
     if (spProduct == 0 || spData == 0 || m_30 == 0)
         return;
-    Unk_MpRideePtr spRidee = CreateRideeAvatar(spData);
+    MS2Ptr<UIAvatarRidee> spRidee = CreateRideeAvatar(spData);
     MS2Ptr<CItem> spItem(FUN_140ebc070(spProduct));
     if (spItem == 0)
         return;
@@ -2176,53 +2176,53 @@ void UIMeratMarketDialog::ShowKind6Item(MS2Ptr<CMeratMarketProduct> spProduct, M
     SetPreviewItem(spItem, spData, nIndex, nKind, spProduct);
 }
 
+// s63 L5: the ridee handle is MS2Ptr<UIAvatarRidee>; its move ctor (0x1413140d0), ctor(int) (0x141314100),
+// ctor(T*) (0x141314120), dtor (0x1413146e0) and AddRef (0x1413163f0) are the generic ms2ptr_impl.h bodies.
+// MS2-PIN: ??0?$MS2Ptr@VUIAvatarRidee@@@@QEAA@$$QEAV0@@Z 0x1413140d0 ; s63: return of the named spRidee (CreateRideeAvatar)
+// MS2-PIN: ??0?$MS2Ptr@VUIAvatarRidee@@@@QEAA@H@Z 0x141314100 ; s63: `return MS2Ptr<UIAvatarRidee>(0)` (CreateRideeAvatar)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @0x1412f59e0
-// @0x1413140d0
-// MS2-FUNCTIONAL: transfers the ridee handle from the temporary, matching the exe's move-style copy body.
-Unk_MpRideePtr::Unk_MpRideePtr(const Unk_MpRideePtr& other)
-{
-    m_p = other.m_p;
-    const_cast<Unk_MpRideePtr&>(other).m_p = 0;
-}
-
-// @0x141314100
-// MS2-FUNCTIONAL: initializes the null handle; the unused first word remains untouched as in the exe.
-Unk_MpRideePtr::Unk_MpRideePtr(int)
-{
-    m_p = 0;
-}
-
-// mt7: MS2Ptr<UIAvatarRidee>'s AddRef COMDAT (0x1413163f0, the body Unk_MpRideePtr::AddRef is bound to); only the
-// MS2Ptr ctor from the raw pointer reaches it
-void Unk_MmDriveRideeAddRef(UIAvatarRidee* p)
-{
-    MS2Ptr<UIAvatarRidee> sp(p);
-}
-
-// @0x141314120
-Unk_MpRideePtr::Unk_MpRideePtr(UIAvatarRidee* p)
-{
-    m_p = p;
-    AddRef();
-}
-
-// @0x1413146e0
-// MS2-FUNCTIONAL: releases the owned ridee reference.
-Unk_MpRideePtr::~Unk_MpRideePtr()
-{
-    Release();
-}
-
-Unk_MpRideePtr UIMeratMarketDialog::CreateRideeAvatar(MS2Ptr<CItemData> spData)
+MS2Ptr<UIAvatarRidee> UIMeratMarketDialog::CreateRideeAvatar(MS2Ptr<CItemData> spData)
 {
     if (spData == 0 || m_30 == 0)
-        return Unk_MpRideePtr(0);
-    Unk_MpRideePtr spRidee(dynamic_cast<UIAvatarRidee*>(GetPreviewPtr(3).operator UIAvatarBase*()));
-    ShowEquipIcons(reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(spRidee).get(), 3, 0);
+        return MS2Ptr<UIAvatarRidee>(0);
+    MS2Ptr<UIAvatarRidee> spRidee(dynamic_cast<UIAvatarRidee*>(GetPreviewPtr(3).operator UIAvatarBase*()));
+    ShowEquipIcons(spRidee.get(), 3, 0);
     // the exe tests "== 0" before dereferencing (the dialog always has the ridee view when this is reached)
-    if ((MS2Ptr<UIAvatarRidee>&)spRidee == 0 && reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(spRidee)->FUN_1418be7e0() == 0)
-        return Unk_MpRideePtr(0);
-    reinterpret_cast<MS2Ptr<UIAvatarRidee>&>(spRidee)->FUN_1418be460(spData);
+    if (spRidee == 0 && spRidee->FUN_1418be7e0() == 0)
+        return MS2Ptr<UIAvatarRidee>(0);
+    spRidee->FUN_1418be460(spData);
     return spRidee;
 }
 

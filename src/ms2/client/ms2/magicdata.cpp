@@ -562,9 +562,9 @@ struct Unk_MagicEntity {
     virtual int vf108_GetLockOn();                                 // MS2: slot 108 (+0x360)
 };
 
-// C3: the tag lookup is WorldService::FindRefObject's efd::SmartPointer<Unk_WsB_RefObj> (dtor 0x1410a6c00, data() 0x141469300,
-// operator==(T*) 0x1414691d0). The pointee view is worldservice_1.cpp's efd refcount class.
-class Unk_WsB_RefObj { public: virtual void DeleteThis(); virtual void IncRefCount(); virtual void DecRefCount(); };
+// C3: the tag lookup is WorldService::FindRefObject's efd::SmartPointer<CSkillMagicControlGuide> (dtor 0x1410a6c00, data() 0x141469300,
+// operator==(T*) 0x1414691d0). The pointee is cubecraft_1.h's CSkillMagicControlGuide.
+#include "ms2/client/ms2/cubecraft_1.h"
 //
 struct Unk_MagicActor;
 // The world manager (FUN_1403ed2d0).
@@ -1563,8 +1563,8 @@ void CMagic::FUN_1414607e0(unsigned nNow)
     Unk_MagicEntity* pOwner = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1290(m_spSkill->m_nOwnerId));
     if (pOwner == NULL)
         return;
-    efd::SmartPointer<Unk_WsB_RefObj> kLookup = WorldService::GetInstance()->FindRefObject(m_spSkill->m_nTagId);
-    if (kLookup == (Unk_WsB_RefObj*)0)
+    efd::SmartPointer<CSkillMagicControlGuide> kLookup = WorldService::GetInstance()->FindRefObject(m_spSkill->m_nTagId);
+    if (kLookup == (CSkillMagicControlGuide*)0)
         return;
     Vector3 ptNew = m_ptCurrent;
     ptNew.x = reinterpret_cast<Unk_MagicEntity*>(kLookup.data())->vf18_GetPosition().x;
@@ -2218,8 +2218,8 @@ void CMagic::FUN_141463fb0(unsigned nNow)
 {
     const Unk_MagicSkillRow* pRow;
     if (FUN_141464490()) {
-        efd::SmartPointer<Unk_WsB_RefObj> kLookup = WorldService::GetInstance()->FindRefObject(m_spSkill->m_nTagId);
-        if (kLookup == (Unk_WsB_RefObj*)0 && m_nStateTick + 1000U < nNow) {
+        efd::SmartPointer<CSkillMagicControlGuide> kLookup = WorldService::GetInstance()->FindRefObject(m_spSkill->m_nTagId);
+        if (kLookup == (CSkillMagicControlGuide*)0 && m_nStateTick + 1000U < nNow) {
             m_nState = 3;
             FUN_14145f570(nNow);
         }

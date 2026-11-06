@@ -1121,7 +1121,7 @@ else if(value.CompareNoCase("Equal")==0 || value.Compare("==")==0 || value.Compa
  }
 std::map<CStringA,unsigned,CommonEnumNoCaseLess> cache; // 0x143aac740, inferred
 
-// cashproductdata's enum table (.text$di 0x1400b48d0): its constructor is 0x140220190 (InitializeExperienceNames
+// cashproductdata's enum table (.text$di 0x1400b48d0): its constructor is 0x140220190 (defined
 // below), which fills `cache`. Defined here, after `cache`, so that the map is constructed first under any obj
 // order (the exe's XC table runs it right after this TU's initializers).
 class Unk_CashEnumTable
@@ -1134,7 +1134,7 @@ public:
 static Unk_CashEnumTable s_enumTable;
 #endif
 // inferred: 0x140220190 clears the global then inserts literal/int pairs in this order.
-void* InitializeExperienceNames(void* context) {
+Unk_CashEnumTable::Unk_CashEnumTable() {   // was the free InitializeExperienceNames(void*), aliased from this name
     cache.clear();
     cache.insert(std::make_pair("Exp_MapCommon", 0u));
     cache.insert(std::make_pair("Exp_MapHidden", 1u));
@@ -1184,7 +1184,7 @@ void* InitializeExperienceNames(void* context) {
     cache.insert(std::make_pair("Exp_DarkStream", 45u));
     cache.insert(std::make_pair("Exp_DungeonClear", 46u));
     cache.insert(std::make_pair("Exp_KillMonster", 47u));
-    return context;
+//
 }
 // @0x14021af40
 int Parse_14021af40(const CStringA& value)

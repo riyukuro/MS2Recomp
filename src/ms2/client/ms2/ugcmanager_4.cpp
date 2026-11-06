@@ -103,8 +103,8 @@ class Unk_UgcWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the player
-    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > FUN_141bd0420(unsigned nModel);   // the entities of a model
 };
+struct Unk_WsC_TagPtr : Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > {};   // WorldService::FUN_141bd0420's result (worldservice_1.cpp)
 
 // The game settings; FUN_14036d570 tests a content switch.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -2593,7 +2593,7 @@ void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<
 // Keeps the decal image of every banner object that has none in the map yet.
 void CUgcManager::FUN_141889150()
 {
-    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0420(0xc7f9dd65);
+    Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0xc7f9dd65);
     if (spList == 0)
         return;
     POSITION pos = spList->GetHeadPosition();
@@ -2638,7 +2638,7 @@ MS2_REPLACE_METHOD(0x141889150, CUgcManager, FUN_141889150, 879, 0x863C8866);
 // @0x1418894d0
 void CUgcManager::FUN_1418894d0()
 {
-    Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0420(0xc7f9dd65);
+    Unk_WsC_TagPtr spList = WorldService::GetInstance()->FUN_141bd0420(0xc7f9dd65);
     if (spList == 0)
         return;
     POSITION pos = spList->GetHeadPosition();

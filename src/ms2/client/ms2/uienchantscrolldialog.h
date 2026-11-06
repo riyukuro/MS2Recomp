@@ -10,7 +10,7 @@
 #include "ms2/client/ms2/uidialog.h"
 
 class CInPacket;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CItem;
 enum Unk_EsRank { Unk_EsRank_Min = 0 };       // the 4-byte rank ids of the scroll (an enum: the array glue is shared with the VIP ranks)
 

@@ -16,7 +16,7 @@
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"     // UIQuestEventListener (13 slots)
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASTextField;
 class CLearningQuestData;
 class NotifyObject;

@@ -1228,7 +1228,7 @@ void UIGameRankingDialog::FUN_140e34bb0(ASObj& obj, Unk_RankCatPtr spCategory)
     case 3:
     case 0xe:
     case 0x10:
-        ((class ASObj*)(class ASObj*)(&obj))->FUN_140bd0d90("jobImage", TSingleton<JobTable>::GetInstance()->GetSubJob1(spCategory->m_nSub));
+        ((ASObj*)(ASObj*)(&obj))->FUN_140bd0d90("jobImage", TSingleton<JobTable>::GetInstance()->GetSubJob1(spCategory->m_nSub));
         break;
     case 7:
     case 8:

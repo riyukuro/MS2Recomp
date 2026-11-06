@@ -71,8 +71,8 @@ struct Unk_CMISFlags3
     bool a, b, c;
 };
 
-// Null handle (ctor 0x1401cd100) of the header statics: the file-static none id DAT_143acf820.
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+// The null entity id of the header statics (DAT_143acf820, g_cubeMapNone) is an egf::EntityID: ctor 0x1401cd100 is
+// EntityID(efd::UInt64), and every use compares it with EntityID::operator==.
 // C3: the entity id handle copied from the none id is egf::EntityID (copy ctor 0x1408b6b20).
 typedef egf::EntityID Unk_CMISEntityRef;
 //
@@ -390,7 +390,7 @@ public:
     CStringW s1d0;
     int f1d8 = 0, f1dc = 0, f1e0 = 1;
     efd::map<int, efd::vector<egf::EntityID> > f1e8;   // C3: was Unk_CMISTree<271>
-    Unk_CMISTree<272> f1f8;
+    efd::map<int, Unk_CMISCubeTimer> f1f8;   // C3: was Unk_CMISTree<272>
     MS2Ptr<CFieldDataCli> f208;   // C3: the current field data (WorldService::FUN_141bd30a0); was Unk_PayloadPtr<Unk_CMISObj208>
     Unk_UGCMapPtr f218;
     std::map<int, MS2Ptr<UICubeUGCHead> > f228;   // C3: was Unk_CMISTree<273>
@@ -398,10 +398,10 @@ public:
     bool f248 = false;
     int f24c = 0;
     Timer t250;
-    Unk_CMISTree<275> f288;
+    efd::map<int, Unk_CMISMarkRec> f288;   // C3: was Unk_CMISTree<275>
     Unk_CMISTree<276> f298;
     Unk_CMISTree<277> f2a8;
-    Unk_CMISTree<278> f2b8;
+    efd::map<int, Unk_CMISCell> f2b8;   // C3: was Unk_CMISTree<278>
     efd::map<int, egf::EntityID> f2c8;   // C3: was Unk_CMISTree<265>
     Unk_CMISEntityRef f2d8;
     efd::map<int, egf::EntityID> f2e0;   // C3: was Unk_CMISTree<265>
@@ -410,7 +410,7 @@ public:
     Unk_CubePoint p30c;
     void* f318[3];
     int f330 = 0;
-    Unk_CMISTree<285> f338;
+    efd::map<int, unsigned> f338;   // C3: was Unk_CMISTree<285>
     efd::map<int, MS2Ptr<SetItemEffectInfo> > f348;   // C3: was Unk_CMISTree<279>
     efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int> f358;   // C3: was Unk_CMISTree<270>
     Unk_CMISTree<280> f368;

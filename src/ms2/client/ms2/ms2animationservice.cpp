@@ -100,8 +100,8 @@ static CString s_strSkill2 = "skill";
 // @0x1400f8940
 static CString s_strStun2 = "stun";
 // @0x1400f8970
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
-static Unk_BuddyHandle s_pointer(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_pointer(0);
 
 static int s_nReloading;                        // 0x143ae07d0: a KF reload is pending; cleared when the preload lookup ends
 

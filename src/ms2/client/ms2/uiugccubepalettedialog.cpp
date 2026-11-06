@@ -1368,12 +1368,12 @@ void UIUGCCubePaletteDialog::FUN_140eeca50()
         spCtl->FUN_1422c1fe0(0);
         ((Unk_CubeCtl*)(void*)(spCtl.operator->()))->vfunc_3(0);
     }
-    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_useable"))
+    if (MS2Ptr<ASCheckBox> spCtl = GetChild<ASCheckBox>("m_useable"))
     {
         spCtl->FUN_1422c1fe0(1);
         spCtl->FUN_1422ce090(m_filter.flag2);
     }
-    if (MS2Ptr<ASCheckBox> spCtl = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_ownership"))
+    if (MS2Ptr<ASCheckBox> spCtl = GetChild<ASCheckBox>("m_ownership"))
     {
         if (FUN_140930c50() != 0)
         {
@@ -1413,7 +1413,7 @@ void UIUGCCubePaletteDialog::FUN_140eecfe0()
             obj.FUN_1407cbb20((const char*)s_label, CStringW(spType.operator->()->m_strName));
             obj.FUN_1409c0d20("categoryID", spType.operator->()->m_nCategory);
             obj.FUN_140ef0000("filter", spType.operator->()->m_nFilter);
-            ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->AddItem(*(class ASObj const*)&static_cast<class ASObj&>(obj));
+            ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->AddItem(*(ASObj const*)&static_cast<ASObj&>(obj));
         }
     }
     int nIndex;
@@ -1507,7 +1507,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
         bool bDoubleClick = spInfo.operator->()->HasCubeTextureMesh() && (spCube->FUN_140def3d0().get() ? true : false) && spCube->FUN_140def3d0()->FUN_1408b3860() == 0;
         if (bDoubleClick)
             obj.FUN_1407cbbe0("enableDBClick", true);
-        spList.operator->()->AddItem(*(class ASObj const*)&static_cast<class ASObj&>(obj));
+        spList.operator->()->AddItem(*(ASObj const*)&static_cast<ASObj&>(obj));
     }
     if (nSelect != 0)
     {

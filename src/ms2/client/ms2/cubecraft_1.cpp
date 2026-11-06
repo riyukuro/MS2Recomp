@@ -264,7 +264,7 @@ public:
 struct Unk_NullableFloat { bool m_bSet; float m_fValue; };
 bool FUN_1410a82b0(Unk_NullableFloat*);
 const float* FUN_1410a71d0(Unk_NullableFloat*);
-void FUN_141bc5b30(Unk_GuideWorld*, efd::SmartPointer<CGuideObject>);
+// (FUN_141bc5b30 = WorldService::RemoveRefObject(efd::SmartPointer<CSkillMagicControlGuide>), worldservice.h)
 
 class MyPC   // C3: member view
 {
@@ -1362,7 +1362,7 @@ void CSkillMagicControlGuide::vfunc_128()
         if (pCur != 0 && pCur->FUN_1410a67f0() == FUN_1410a67f0())
             ReleaseGuide();
     }
-    FUN_141bc5b30(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance()), efd::SmartPointer<CGuideObject>(this));
+    WorldService::GetInstance()->RemoveRefObject(efd::SmartPointer<CSkillMagicControlGuide>(this));
     ((CMagicService*)FUN_1410a7630())->RemoveCasterModels(m_spInfo->m_n18, 1, 1);
 }
 

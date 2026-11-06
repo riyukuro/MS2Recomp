@@ -10,10 +10,10 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 // first TU
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);   // @0x14011f750
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -21,7 +21,7 @@ static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
 
 // second TU
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);   // @0x14011f910
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 #ifndef MS2_HOOK_DLL
 class CVibrateEffect { public: static const NiRTTI ms_RTTI; };
@@ -32,7 +32,7 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 
 // third TU
-static Unk_BuddyHandle s_pointer3(NULL);
+static egf::EntityID s_pointer3(0);   // @0x14011fa10
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
 // Atexit thunks of this unit's statics (gap1 yd sweep).

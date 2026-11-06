@@ -13,7 +13,7 @@
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 
 // UISceneEntity (0xa8): the base of every UI scene; the unit-local view this scene needs (the slots 60 / 61 take the AS
 // background object by value; slot 61 also gets the AS call arguments).

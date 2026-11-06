@@ -7,12 +7,12 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 // tail of one TU's statics
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);   // @0x1400e75d0
 
 // next TU
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -23,5 +23,5 @@ static CString s_strStun2 = "stun";
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
-static Unk_BuddyHandle s_pointer3(NULL);
-static Unk_BuddyHandle s_pointer4(NULL);
+static egf::EntityID s_pointer3(0);   // @0x1400e7830
+static egf::EntityID s_pointer4(0);   // @0x1400e7850

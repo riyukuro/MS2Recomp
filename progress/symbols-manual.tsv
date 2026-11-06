@@ -634,7 +634,7 @@
 ??0Unk_CommonPacketPtr@@QEAA@AEBV0@@Z	14020a470	func
 ??0CIngredientInfo@@QEAA@XZ	14027d830	func
 ??0Unk_HistRef@@QEAA@$$QEAV0@@Z	14027cbe0	func
-??0Unk_HistRef@@QEAA@H@Z	14027cc10	func
+??0Unk_HistRef@@QEAA@$$T@Z	14027cc10	func
 ??0Unk_StrVec@@QEAA@XZ	14027d6f0	func
 ??1Unk_StrVec@@QEAA@XZ	14027e450	func
 ??1ChangeableProductInfo@@UEAA@XZ	14027e7e0	func
@@ -2003,7 +2003,6 @@ D3DXFloat16To32Array	14230396f	func
 ??1?$MS2Ptr@VCDotDamageRecord@@@@QEAA@XZ	141099ed0	func
 ??C?$MS2Ptr@VCDotDamageRecord@@@@QEBAPEAVCDotDamageRecord@@XZ	141186320	func
 ?kInvalidUpdateIndex@SceneGraphData@SceneGraphService@ecr@@2IB	1430ad42c	data
-??0ASObj@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422ba780	func
 ?DAT_143ab2954@@3HA	143ab2954	data
 ?DAT_143ab32e8@@3VUnk_SSGCountMapMap@@A	143ab32e8	data
 ?DAT_143ab32f8@@3VUnk_SSGCountMap@@A	143ab32f8	data
@@ -2355,8 +2354,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ?FUN_1419b8810@Unk_ItemOptionSimulator@@QEAAXXZ	1419b8810	func
 ?FUN_1419b9030@Unk_ItemOptionSimulator@@QEAAXHHV?$MS2Ptr@VCItemOption@@@@@Z	1419b9030	func
 ?DAT_143b02320@@3UUnk_CMISPair@@A	143b02320	data
-??0Unk_CMISIntList@@QEAA@XZ	1411229d0	func
-??1Unk_CMISIntList@@QEAA@XZ	141125b70	func
 ??0StateTaxiCallData@@QEAA@H@Z	1417fcf70	func
 ??0StateCashCallData@@QEAA@H_JH@Z	141022a30	func
 ??0Unk_CMISCell56@@QEAA@AEBU0@@Z	141123050	func
@@ -2377,7 +2374,6 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0Ridee@@QEAA@XZ	141703a70	func
 ??0Unk_PCBaseBuffTracker@@QEAA@XZ	141682e90	func
 ??0Unk_PCBaseComp_b18@@QEAA@H_JAEBVCUgcItemLook@@@Z	1408970e0	func
-??0Unk_PCBaseFlags@@QEAA@XZ	140d75040	func
 ??0Unk_CMISSvcPtr@@QEAA@PEAVHardwareInstancingService@@@Z	14098c7d0	func
 ??1Unk_CMISSvcPtr@@QEAA@XZ	14098cc60	func
 ??0NotifyChangeUIBuildingCount@@QEAA@PEBH@Z	141123250	func
@@ -3656,7 +3652,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?DAT_143ab3058@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A	143ab3058	data
 ?DAT_143ab3078@@3V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@A	143ab3078	data
 ?GetMaxRound@CFieldMissionTable@@QEAAHXZ	14037c610	func
-?BuildNpcRewardPreview@WorldMapManager@@QEAAXHPEAVASObj@@@Z	141b99dc0	func
+?BuildNpcRewardPreview@WorldMapManager@@QEAAXHPEAVAScript@@@Z	141b99dc0	func
 ?ClearAddtionalInfoTooltips@WorldMapManager@@QEAAXXZ	141b98250	func
 ?ClearDungeonInfos@WorldMapManager@@QEAAXXZ	141b98180	func
 ?ClearIconInfoTooltips@WorldMapManager@@QEAAXXZ	141b980d0	func
@@ -3666,8 +3662,8 @@ __imp_NxGetUtilLib	142cced28	data
 ?GetTileGroups@WorldMapManager@@QEAAAEAV?$map@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@@std@@XZ	141b978c0	func
 ?GetWorldTiles@WorldMapManager@@QEAAAEAV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@H@Z	141b977e0	func
 ?SelectedField@WorldMapManager@@QEAAHXZ	141b97fe0	func
-?SetDungeonScript@WorldMapManager@@QEAAXV?$MS2Ptr@VIconInfo@UIWorldMap@@@@PEAVASObj@@H@Z	141b9a1e0	func
-?SetEventScript@WorldMapManager@@QEAAXIPEAVASObj@@@Z	141b9a390	func
+?SetDungeonScript@WorldMapManager@@QEAAXV?$MS2Ptr@VIconInfo@UIWorldMap@@@@PEAVAScript@@H@Z	141b9a1e0	func
+?SetEventScript@WorldMapManager@@QEAAXIPEAVAScript@@@Z	141b9a390	func
 ?Parse@MMLParser@@QEAAXXZ	140d7e780	func
 ?DAT_143ab2a90@@3VUnk_ImInventory@@A	143ab2a90	data
 ??1TiXmlElement@@QEAA@XZ	14086f450	func
@@ -3687,7 +3683,7 @@ __imp_NxGetUtilLib	142cced28	data
 ??1Unk_InvListEventBase@@UEAA@XZ	1422e22a0	func
 ??0Unk_IbUIMsg@@QEAA@XZ	1422e4490	func
 ??1Unk_IbUIMsg@@QEAA@XZ	140c30570	func
-?BuildSellerInfo@UIMeratMarketDialog@@QEAA_NAEAVASObj@@@Z	141305b40	func
+?BuildSellerInfo@UIMeratMarketDialog@@QEAA_NAEAVAScript@@@Z	141305b40	func
 ?RunQuery@UIMeratMarketDialog@@QEAAXXZ	141308de0	func
 ?SelectCategory@UIMeratMarketDialog@@QEAAXHH@Z	141308d60	func
 ?SetSlotKind@UIMeratMarketDialog@@QEAAXH@Z	141308440	func
@@ -3697,7 +3693,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func
 ??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
-?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcCharBookMark@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
+?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCUgcCharBookMark@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
 ?GetID@GameEvent@@QEAAHXZ	1402e1d00	func
 ??0Unk_ChaosChat@@QEAA@XZ	140acd570	func
 ??1Unk_ChaosChat@@QEAA@XZ	140acd770	func
@@ -14211,7 +14207,7 @@ DAT_143c492a0	143c492a0	data
 ?DAT_143b17220@@3PAEA	143b17220	data
 ?DAT_143b17228@@3PAEA	143b17228	data
 ?DAT_143b17230@@3PAEA	143b17230	data
-?g_cubeMapNone@@3VUnk_1401cd100@@A	143acf820	data
+?g_cubeMapNone@@3VEntityID@egf@@A	143acf820	data
 ?DAT_143ac2bd0@@3V?$MS2Ptr@VUnk_HeldObject@@@@A	143ac2bd0	data
 ?DAT_143adca50@@3V?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@A	143adca50	data
 ?DAT_143abf510@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A	143abf510	data
@@ -14221,7 +14217,7 @@ DAT_143c492a0	143c492a0	data
 ?DAT_143ad76a8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ad76a8	data
 ?DAT_143af7f80@@3VCErrorNotificationDlg@@A	143af7f80	data
 ?DAT_143af7e00@@3VCMemoryDepletionDlg@@A	143af7e00	data
-?g_worldNullHandle@@3VUnk_1401cd100@@A	143af8278	data
+?g_worldNullHandle@@3VEntityID@egf@@A	143af8278	data
 ?ms_RTTI@NiPSParticleSystem@@2VNiRTTI@@B	143afbfb8	data
 ?SendKeyTableMode5@@YAHHH_JHH@Z	14092fef0	func
 ?NS_AS3@fl@AS3@GFx@Scaleform@@3QEBDEB	143a2d3b0	data
@@ -14395,7 +14391,6 @@ DAT_1439f8358	1439f8358	data
 ?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B	143a07430	data
 ?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B	143a284b0	data
 ?DAT_143ac3ce8@@3VNiRTTI@@A	143ac3ce8	data
-?DAT_143ad2288@@3VUnk_1401cd100@@A	143ad2288	data
 ?FunctionTable@FunctionProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213e80	data
 ?FunctionTable@ObjectProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143214310	data
 ?s_strEmptyIcon@?A0xb6d512fb@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143af41e0	data
@@ -17294,7 +17289,7 @@ _should_initialize_environment	14274aee4	func
 ?Zero@Integer@CryptoPP@@SAAEBV12@XZ	14236cea0	func
 ?One@Integer@CryptoPP@@SAAEBV12@XZ	14236a270	func
 ??0HashVerificationFilter@CryptoPP@@QEAA@AEAVHashTransformation@1@PEAVBufferedTransformation@1@IH@Z	1423106b0	func
-?DAT_143ad2288@@3VUnk_BuddyHandle@@A	143ad2288	data
+?DAT_143ad2288@@3VEntityID@egf@@A	143ad2288	data
 ??$GetChild@VASSlider@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VASSlider@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140faff90	func
 ??$FUN_140bbe640@VASLabel@@@AScript@@QEAA?AV?$MS2Ptr@VASLabel@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV1@@Z	140fecae0	func
 ??$FUN_140accef0@VASButton@@@AScript@@QEAA?AV?$MS2Ptr@VASButton@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140accef0	func
@@ -17320,3 +17315,5 @@ _should_initialize_environment	14274aee4	func
 ?begin@?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@2@XZ	14028a1a0	func
 ?front@?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCUserChangeableItemHistory@@@@XZ	14028aef0	func
 ??0Unk_CriticalSectionLock@@QEAA@PEAVCLockCriticalSection@@H@Z	140203610	func
+?DAT_143af0fc8@@3VEntityID@egf@@A	143af0fc8	data
+?s_nullKey@@3VEntityID@egf@@A	143ab2328	data

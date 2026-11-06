@@ -19,7 +19,7 @@
 #include "ms2/commonfiles/commonstruct_wa.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CItem;
 class CInPacket;
 class ASButton;

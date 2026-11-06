@@ -70,8 +70,8 @@ public:
     void FUN_140f85f90();                                           // send the level steps of the quests to the movie
     void FUN_140f861c0();                                           // fill the contents list
     void FUN_140f869f0();                                           // send the level steps to the event dialog
-    int FUN_140f86dd0(class ASObj& rObj, int nQuest);               // one level step row: state, level text, reward
-    void FUN_140f87270(class ASObj& rObj, int nQuest, int bName);   // the item reward of a level step
+    int FUN_140f86dd0(ASObj& rObj, int nQuest);               // one level step row: state, level text, reward
+    void FUN_140f87270(ASObj& rObj, int nQuest, int bName);   // the item reward of a level step
     void FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // boss tooltip
     void FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // plain text tooltip
     int FUN_140f87a30(MS2Ptr<RecommendContnets> spRow);             // the row's level range holds the selected levels

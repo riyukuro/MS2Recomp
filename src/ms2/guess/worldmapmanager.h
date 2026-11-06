@@ -18,7 +18,7 @@
 #include "ms2/placeholder/uiworldmap.h"
 #include "ms2/placeholder/specialnpcinfo.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CCacheData;
 class CInPacket;
 class EventIconInfo;

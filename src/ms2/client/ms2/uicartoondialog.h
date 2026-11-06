@@ -15,7 +15,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class CInPacket;
-class ASObj;
+class AScript; typedef AScript ASObj;
 // (Unk_CtButton: the m_prev / m_next children are ASButton)
 
 class UICartoonDialog : public UIDialog

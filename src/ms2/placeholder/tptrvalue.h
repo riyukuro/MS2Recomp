@@ -8,12 +8,12 @@
 
 CPtred* FUN_1401ba820(CPtred*);            // sets the count of a fresh box to 1
 
-// The new-object tag of the value pointer (0x1401b7b90, returns its this, no code). The name is the one the symbol
-// table knows (first used by gamerankingcli.h).
-struct Unk_GrNewTag
-{
-    explicit Unk_GrNewTag(int);
-};
+// The new-object tag of the value pointer (0x1401b7b90, returns its this, no code). s63 C3: one tag type, Unk_SocketNew
+// (socketptr.h), as Unk_TrgNewTag / Unk_BmNewTag / Unk_RankNewTag; the old name stays as a typedef.
+#include "ms2/placeholder/socketptr.h"
+typedef Unk_SocketNew Unk_GrNewTag;
+//
+//
 
 template <class T>
 class TPtrValue

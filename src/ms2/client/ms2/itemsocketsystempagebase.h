@@ -9,7 +9,7 @@ class ItemInfoSlot;
 class CInPacket;
 class TSocketGemStoneInfo;
 class CIngredientContainer;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class Unk_SocketPageBag;
 
 class ItemSocketSystemPageBase : public CPtred

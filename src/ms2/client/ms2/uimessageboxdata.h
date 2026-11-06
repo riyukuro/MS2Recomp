@@ -21,7 +21,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/gfxvalue.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CItem;
 class CMsgBoxData;
 class ASDialog;

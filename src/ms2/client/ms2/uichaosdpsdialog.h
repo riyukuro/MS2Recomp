@@ -7,7 +7,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/intervaltimer.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 
 class UIChaosDPSDialog : public UIDialog
 {

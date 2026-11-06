@@ -15,7 +15,7 @@
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$MS2Ptr@VCItemLapenshardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItemLapenshardData@@@@@3@@ATL@@IEAA@H@Z 0x1405b6c30 ; unique
 // MS2-PIN: ??8?$TPtrValue@V?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@@QEBA_NPEAV?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@Z 0x1405b7010 ; unique
 // MS2-PIN: ?Value@?$TPtrValue@V?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@@CAPEAV?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@PEAV?$TPtredDummy@V?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@@@Z 0x1405b7090 ; unique
-// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x1405b7400 ; unique
+// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@GIV?$CElementTraits@G@ATL@@V?$CElementTraits@I@2@@ATL@@@@QEAAAEAV0@AEBUUnk_SocketNew@@@Z 0x1405b7400 ; unique
 // MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@W4Kind@CItemLapenshardTable@@@ATL@@SAHAEBW4Kind@CItemLapenshardTable@@0@Z 0x1405b75e0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCItemLapenshardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItemLapenshardData@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1405b8670 ; unique
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@W4Slot@CItemLapenshardTable@@W4Kind@2@V?$CElementTraits@W4Slot@CItemLapenshardTable@@@ATL@@V?$CElementTraits@W4Kind@CItemLapenshardTable@@@5@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1405bbf70 ; prop

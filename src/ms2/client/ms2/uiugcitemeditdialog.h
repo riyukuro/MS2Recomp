@@ -24,7 +24,7 @@
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/placeholder/uiugceventlistener.h"
 
-class ASObj;
+class AScript; typedef AScript ASObj;
 class ASData;
 class CItem;
 class CItemData;

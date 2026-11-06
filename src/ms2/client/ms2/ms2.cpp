@@ -428,7 +428,7 @@ public:
 MS2_CHECK_SIZE(Unk_InstanceEvent, 0x30);
 
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was Unk_1401cd100 from cubemapinformationservice_3.h)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 // The UI scenes: UISceneEntity subclasses registered with the UISwfEntityManager (?\uiscene*.cpp, not recovered).
 class UISceneEntity : public UISwfEntity { };
@@ -543,7 +543,7 @@ static CString s_strStun = "stun";
 // @0x1400f85c0
 static efd::Category s_kPrecacheCategory(0);
 // @0x1400f85f0
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);
 // @0x1400f8610
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x1400f8660
@@ -553,7 +553,7 @@ static CString s_strSkill2 = "skill";
 // @0x1400f86c0
 static CString s_strStun2 = "stun";
 // @0x1400f86f0
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);
 
 // ---- MS2
 // @0x141489aa0

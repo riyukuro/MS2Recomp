@@ -21,7 +21,7 @@ void* FUN_14027d590(void*); void* FUN_14027d5a0(void*); void* FUN_14027d5b0(void
 Unk_Z16* FUN_14027cf10(Unk_Z16*); Unk_Z16* FUN_14027d0b0(Unk_Z16*); Unk_Z24* FUN_14027d410(Unk_Z24*); i64 FUN_14027d450(i64);
 i64 FUN_14027d490(i64); Unk_Z24* FUN_14027d4d0(Unk_Z24*); Unk_Z24* FUN_14027d510(Unk_Z24*);
 i64 FUN_14027c1b0(i64); i64 FUN_14027c220(i64); i64 FUN_14027c1c0(i64);
-i64 FUN_14015e600(i64, Unk_StlTag);
+// (0x14015e600 is std::tuple<>::tuple<_Exact_args_t, 0>, called directly in FUN_140274cb0)
 i64 FUN_14027c1f0(i64); u64 FUN_14027c360(i64); u64 FUN_14027c380(i64); u64 FUN_14027c3a0(i64); u64 FUN_14027c3c0(i64);
 i64 FUN_14027c410(i64); i64 FUN_14027c270(i64*);
 void FUN_14027c110(i64, i64, i64*);

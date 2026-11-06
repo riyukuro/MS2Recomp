@@ -16,9 +16,9 @@
 // MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAA@XZ 0x141121db0 ; unique
 // MS2-PIN: ??0?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAA@XZ 0x141122040 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BAAB@@@QEAA@XZ 0x141122050 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBN@@@QEAA@XZ 0x1411220a0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBD@@@QEAA@XZ 0x1411220f0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBG@@@QEAA@XZ 0x141122170 ; prop
+// MS2-PIN: ??0?$map@HIU?$less@H@std@@@efd@@QEAA@XZ 0x1411220a0 ; prop
+// MS2-PIN: ??0?$map@HUUnk_CMISMarkRec@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411220f0 ; prop
+// MS2-PIN: ??0?$map@HUUnk_CMISCell@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122170 ; prop
 // MS2-PIN: ??0?$map@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411221c0 ; prop
 // MS2-PIN: ??0?$map@HV?$MS2Ptr@VFittingDollData@@@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122210 ; prop
 // MS2-PIN: ??0?$map@HV?$MS2Ptr@VSalesInfo@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@@3@@std@@QEAA@XZ 0x141122260 ; prop
@@ -31,7 +31,7 @@
 // MS2-PIN: ??0?$map@HV?$set@HU?$less@H@std@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122410 ; prop
 // MS2-PIN: ??0?$map@HV?$vector@VEntityID@egf@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122460 ; prop
 // MS2-PIN: ??0?$map@HVEntityID@egf@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411224b0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBA@@@QEAA@XZ 0x141122500 ; prop
+// MS2-PIN: ??0?$map@HUUnk_CMISCubeTimer@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122500 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBE@@@QEAA@XZ 0x141122550 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BABE@@@QEAA@XZ 0x1411225a0 ; prop
 // MS2-PIN: ??0?$map@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@@efd@@QEAA@XZ 0x141122620 ; prop
@@ -105,11 +105,11 @@ template <unsigned __int64 N> struct Unk_CMISTree;
 template <> struct Unk_CMISTree<4097> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122050: node 0x28 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<1>::map();     // 0x141122070: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<285> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411220a0: node 0x28 from the efd heap, as the exe's efd dtor frees it
-template Unk_McC<2>::map();     // 0x1411220c0: keeps the stand-in map ctor that this row pairs with
+// MS2-PIN: ??0?$map@HIU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHI@std@@@efd@@@std@@QEAA@XZ 0x1411220c0 ; exe efd::map<int,unsigned>::map() 0x1411220a0 (f338) calls it
 template <> struct Unk_CMISTree<275> : efd::map<__int64, Unk_McPad<10> > { Unk_CMISTree() {} };     // 0x1411220f0: node 0x78 from the efd heap, as the exe's efd dtor frees it
-template Unk_McC<3>::map();     // 0x141122110: keeps the stand-in map ctor that this row pairs with
+// MS2-PIN: ??0?$map@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@@std@@QEAA@XZ 0x141122110 ; exe efd::map<int,Unk_CMISMarkRec>::map() 0x1411220f0 (f288) calls it
 template <> struct Unk_CMISTree<278> : efd::map<__int64, Unk_McPad<7> > { Unk_CMISTree() {} };     // 0x141122170: node 0x60 from the efd heap, as the exe's efd dtor frees it
-template Unk_McC<4>::map();     // 0x141122190: keeps the stand-in map ctor that this row pairs with
+// MS2-PIN: ??0?$map@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@@std@@QEAA@XZ 0x141122190 ; exe efd::map<int,Unk_CMISCell>::map() 0x141122170 (f2b8) calls it
 template <> struct Unk_CMISTree<264> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x1411221c0: node 0x30 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<5>::map();     // 0x1411221e0: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<266> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122210: node 0x38 from the efd heap, as the exe's efd dtor frees it
@@ -136,7 +136,7 @@ template Unk_McC<16>::map();     // 0x141122480: keeps the stand-in map ctor tha
 template <> struct Unk_CMISTree<265> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x1411224b0: node 0x30 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<17>::map();     // 0x1411224d0: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<272> : efd::map<__int64, Unk_McPad<9> > { Unk_CMISTree() {} };     // 0x141122500: node 0x70 from the efd heap, as the exe's efd dtor frees it
-template Unk_McC<18>::map();     // 0x141122520: keeps the stand-in map ctor that this row pairs with
+// MS2-PIN: ??0?$map@HUUnk_CMISCubeTimer@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@@efd@@@std@@QEAA@XZ 0x141122520 ; exe efd::map<int,Unk_CMISCubeTimer>::map() 0x141122500 (f1f8) calls it
 template <> struct Unk_CMISTree<276> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122550: node 0x28 from the efd heap, as the exe's efd dtor frees it
 template Unk_McC<19>::map();     // 0x141122570: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<4116> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411225a0: node 0x28 from the efd heap, as the exe's efd dtor frees it
@@ -183,8 +183,8 @@ template <> struct Unk_CMISTree<496> : std::vector<egf::EntityPtr, efd::CustomAl
 #include "ms2/commonfiles/timer.h"
 
 // ---- small record types -------------------------------------------------------------------------------------------------
-class Unk_1401cd100; extern Unk_1401cd100 g_cubeMapNone;
-#define DAT_143acf820 (*(Unk_CMISEntityRef*)&g_cubeMapNone)   // C3: the null entity ref is the statics header's g_cubeMapNone (0x143acf820)
+extern egf::EntityID g_cubeMapNone;
+#define DAT_143acf820 g_cubeMapNone   // C3: the null entity ref is the statics header's g_cubeMapNone (0x143acf820)
 
 // @0x141122f30
 // The mark record of tail.h (Timer + entity pointer vector): the ctor resets the timer and clears the list.
@@ -314,9 +314,9 @@ void Unk_CMISTreeAnchor(void* p)
 {
     new (p) SalesInfo;
     new (p) Unk_CMISTree<4097>;
-    new (p) Unk_CMISTree<285>;
-    new (p) Unk_CMISTree<275>;
-    new (p) Unk_CMISTree<278>;
+    new (p) efd::map<int, unsigned>;
+    new (p) efd::map<int, Unk_CMISMarkRec>;
+    new (p) efd::map<int, Unk_CMISCell>;
     new (p) efd::map<int, efd::SmartPointer<egf::Entity> >;
     new (p) efd::map<int, MS2Ptr<FittingDollData> >;
     new (p) efd::map<int, MS2Ptr<SetItemEffectInfo> >;
@@ -330,7 +330,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) efd::set<egf::EntityID>;
     new (p) efd::map<int, efd::vector<egf::EntityID> >;
     new (p) efd::map<int, egf::EntityID>;
-    new (p) Unk_CMISTree<272>;
+    new (p) efd::map<int, Unk_CMISCubeTimer>;
     new (p) Unk_CMISTree<276>;
     new (p) Unk_CMISTree<4116>;
     new (p) efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >;

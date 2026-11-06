@@ -9,8 +9,8 @@
 
 // The null entity id is the first static of the unit (exe: first .text$di entry), i.e. it comes before the statics
 // the engine headers below define; its type is the game's egf::EntityID (8 bytes, ctor from a 64-bit id).
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
-static Unk_BuddyHandle s_nullEntityId(NULL);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+static egf::EntityID s_nullEntityId(0);
 
 #include "gameobjectcontrollerhitreport.h"
 #include <egf/Entity.h>
@@ -96,7 +96,7 @@ MS2_REPLACE_METHOD(0x140CFAF30, GameObjectControllerHitReport, FUN_140cfaf30, 45
 egf::EntityID GameObjectControllerHitReport::GetEntityID() const
 {
     if (m_entity == 0)
-        return reinterpret_cast<const egf::EntityID&>(s_nullEntityId);
+        return s_nullEntityId;
     return m_entity->GetEntityID();
 }
 MS2_REPLACE_METHOD(0x140CFAF70, GameObjectControllerHitReport, GetEntityID, 112, 0x3DF814DF);

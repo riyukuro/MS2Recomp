@@ -101,7 +101,7 @@ class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* N
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 
 // ---- header statics of the two TUs this file's initializers come from (strings, condition table, key input) ----
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
@@ -109,7 +109,7 @@ static CString s_strStun1 = "stun";
 extern float DAT_1439f8cdc;     // 360.0f
 extern float DAT_1439f8ce4;     // 250.0f
 static float s_fRange1 = DAT_1439f8cdc - DAT_1439f8ce4;        // initializer 0x140111040
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

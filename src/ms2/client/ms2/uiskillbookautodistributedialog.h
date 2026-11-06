@@ -25,7 +25,7 @@ class ASButtonBar;
 class UIMsg;
 class UISwfEntity;
 class AScript;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class JobSkill;
 
 // The skill window's "Auto Distribute" choice dialog (modal). The names and tooltips of the entries are filled by

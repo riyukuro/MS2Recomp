@@ -65,9 +65,9 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 // A zero-initialised handle (static initialised by the ctor 0x1401cd100 on &DAT, 0).
 struct Unk_UmRegMarker {};
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // ctor 0x1401cd100 (C3: was a FUN_1401cd100 declaration)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static void* s_dat_143ad7500;
-static Unk_UmRegMarker s_init_143ad7500 = (reinterpret_cast<Unk_BuddyHandle*>(&s_dat_143ad7500)->Unk_BuddyHandle::Unk_BuddyHandle(0), Unk_UmRegMarker());
+static Unk_UmRegMarker s_init_143ad7500 = (reinterpret_cast<egf::EntityID*>(&s_dat_143ad7500)->egf::EntityID::EntityID(0), Unk_UmRegMarker());   // @0x1400ee930
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController;
 #endif

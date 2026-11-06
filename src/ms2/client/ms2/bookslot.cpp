@@ -24,7 +24,7 @@ class JobSkill : public CPtred
 public:
     unsigned GetID();                                   // 0x140637cc0
 };
-
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400c3480 ; B22: statemanager_statics.h s_pointer init
 // Registry of named bags/slots (GFx bind data).
 
 BookSlotBag* FUN_140a37100(NotifyContext::BindData* p);

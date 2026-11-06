@@ -9,7 +9,7 @@
 #include <NiRTTI.h>
 #include "ms2/placeholder/unk_1402a9d70.h"
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
 #ifndef MS2_HOOK_DLL
 class CCameraMoveEffect { public: static const NiRTTI ms_RTTI; };
@@ -23,7 +23,7 @@ static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
-static Unk_BuddyHandle s_pointer1(NULL);
+static egf::EntityID s_pointer1(0);   // @0x1400c68a0
 
 // second TU
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
@@ -32,7 +32,7 @@ const NiRTTI CCameraMoveEffect::ms_RTTI("CCameraMoveEffect", &CEffect::ms_RTTI);
 #endif
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);   // @0x1400c69a0
 
 // third TU
 #ifndef MS2_HOOK_DLL
@@ -41,7 +41,7 @@ const NiRTTI CCapRotationController::ms_RTTI("CCapRotationController", &CItemCus
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
-static Unk_BuddyHandle s_pointer3(NULL);
+static egf::EntityID s_pointer3(0);   // @0x1400c6b10
 
 // fourth TU
 static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);

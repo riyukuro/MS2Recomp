@@ -1,7 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CubeMapInformationService container COMDAT tail, the
 // `_Myend` neighbourhood slice between _tail4.cpp and _tail.cpp (accessor glue of
-// the std/efd map, set and vector families). Queue name
-// unit_141145cb0. Like cubemapinformationservice_tail.cpp (unit_141148d70), _tail2/3/4.cpp the range holds
+// the std/efd map, set and vector families). Queue name unit_141145cb0. Like cubemapinformationservice_tail.cpp (unit_141148d70), _tail2/3/4.cpp the range holds
 // no original (non-COMDAT) function: it is part of the mangled-name sorted COMDAT tail of
 // client\ms2\cubemapinformationservice.cpp (0x1410d5bc0-0x14115b040). The driver is _tail3.cpp's, which
 // instantiates every family; tplpin pairs the copies that fall in this slice.
@@ -126,3 +125,4 @@ void Unk_CMISDriveTail5()
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@@4@$0A@@std@@@std@@IEBAAEBVEntityID@egf@@AEBU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@2@@Z 0x1411465d0 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@PEAX@std@@@efd@@U?$integral_constant@_N$00@2@@Z 0x141148720 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@IEBAAEBVEntityID@egf@@AEBU?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@2@@Z 0x1411465f0 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
+// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@std@@@efd@@U?$integral_constant@_N$00@2@@Z 0x141148740 ; ua13: EntityID->__int64 tree, calls its max_size 0x1411599a0, only caller 0x141159d70

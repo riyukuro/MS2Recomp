@@ -157,7 +157,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(DecoItem);
 static CString s_aSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_BuddyHandle s_pointer2(NULL);
+static egf::EntityID s_pointer2(0);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";

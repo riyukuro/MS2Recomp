@@ -3,6 +3,6 @@
 // uiitembillboarddialog_statics.h.
 #pragma once
 
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void* p); void* m_p; };     // ctor 0x1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 
-static Unk_BuddyHandle s_dat_143af2768(0);                                              // @0x1401137d0
+static egf::EntityID s_dat_143af2768(0);                                                // @0x1401137d0

@@ -1465,11 +1465,11 @@ void FUN_141205570(void* p);
 
 // Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
 // this unit's .CRT$XCU slot.
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 #ifndef MS2_HOOK_DLL   // the exe's object at 0x143ad2288 (the hook DLL binds it)
-Unk_BuddyHandle DAT_143ad2288(NULL);
+egf::EntityID DAT_143ad2288(0);   // @0x1400e8c90
 #else
-extern Unk_BuddyHandle DAT_143ad2288;
+extern egf::EntityID DAT_143ad2288;
 #endif
 
 // @0x141204e70

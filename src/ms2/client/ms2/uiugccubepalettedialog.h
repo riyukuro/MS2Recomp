@@ -23,7 +23,7 @@
 #include "ms2/placeholder/uiitemeventlistener.h"
 
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CMsgBoxData;
 
 // ---- key modes ----

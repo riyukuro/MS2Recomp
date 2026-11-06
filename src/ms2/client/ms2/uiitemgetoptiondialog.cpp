@@ -124,23 +124,23 @@ void UIItemGetOptionDialog::vfunc_67()
 void UIItemGetOptionDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (MS2Ptr<ASCheckBox> hEquip = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_equip"))
+    if (MS2Ptr<ASCheckBox> hEquip = GetChild<ASCheckBox>("m_equip"))
         hEquip.get()->FUN_1422ce090(m_opt.FUN_1419dae70());
-    if (MS2Ptr<ASCheckBox> hConsume = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_consume"))
+    if (MS2Ptr<ASCheckBox> hConsume = GetChild<ASCheckBox>("m_consume"))
         hConsume.get()->FUN_1422ce090(m_opt.FUN_1419dae50());
-    if (MS2Ptr<ASCheckBox> hEtc = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_etc"))
+    if (MS2Ptr<ASCheckBox> hEtc = GetChild<ASCheckBox>("m_etc"))
         hEtc.get()->FUN_1422ce090(m_opt.FUN_1419dae60());
-    if (MS2Ptr<ASCheckBox> hMeso = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_meso"))
+    if (MS2Ptr<ASCheckBox> hMeso = GetChild<ASCheckBox>("m_meso"))
         hMeso.get()->FUN_1422ce090(m_opt.FUN_1419daea0());
-    if (MS2Ptr<ASCheckBox> hMerat = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_merat"))
+    if (MS2Ptr<ASCheckBox> hMerat = GetChild<ASCheckBox>("m_merat"))
         hMerat.get()->FUN_1422ce090(m_opt.FUN_1419dae90());
-    if (MS2Ptr<ASCheckBox> hToken = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_token"))
+    if (MS2Ptr<ASCheckBox> hToken = GetChild<ASCheckBox>("m_token"))
         hToken.get()->FUN_1422ce090(m_opt.FUN_1419daed0());
-    if (MS2Ptr<ASCheckBox> hOther = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_other"))
+    if (MS2Ptr<ASCheckBox> hOther = GetChild<ASCheckBox>("m_other"))
         hOther.get()->FUN_1422ce090(m_opt.FUN_1419daeb0());
-    if (MS2Ptr<ASCheckBox> hGem = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_gemstone"))
+    if (MS2Ptr<ASCheckBox> hGem = GetChild<ASCheckBox>("m_gemstone"))
         hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
-    if (MS2Ptr<ASCheckBox> hPet = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_pet"))
+    if (MS2Ptr<ASCheckBox> hPet = GetChild<ASCheckBox>("m_pet"))
         hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
     if (MS2Ptr<ASDropdownMenu> hRank = ((UISwfEntity*)this)->GetChild<ASDropdownMenu>("m_equipRank"))
     {
@@ -301,7 +301,7 @@ int UIItemGetOptionDialog::vfunc_46()
 {
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8d))
     {
-        if (MS2Ptr<ASCheckBox> hPet = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_pet"))
+        if (MS2Ptr<ASCheckBox> hPet = GetChild<ASCheckBox>("m_pet"))
         {
             ASCheckBox* pCheck = hPet.get();
             pCheck->vfunc_4(false);
@@ -310,7 +310,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e))
     {
-        if (MS2Ptr<ASCheckBox> hGem = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_gemstone"))
+        if (MS2Ptr<ASCheckBox> hGem = GetChild<ASCheckBox>("m_gemstone"))
         {
             ASCheckBox* pCheck = hGem.get();
             pCheck->vfunc_3(0);
@@ -318,7 +318,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN() == true)
     {
-        if (MS2Ptr<ASCheckBox> hMerat = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox("m_merat"))
+        if (MS2Ptr<ASCheckBox> hMerat = GetChild<ASCheckBox>("m_merat"))
         {
             ASCheckBox* pCheck = hMerat.get();
             pCheck->vfunc_3(0);

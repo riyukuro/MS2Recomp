@@ -63,7 +63,7 @@
 // ---- externs -----------------------------------------------------------------------------------------------------
 class CMsgBoxData;
 class UIServerListDialog;
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); Unk_BuddyHandle(const Unk_BuddyHandle&); private: void* m_p; };
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 void* FUN_140aae430();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_141275500();
@@ -205,7 +205,7 @@ static CStringW s_maintenanceExit(L"maintenanceExit");
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-static Unk_BuddyHandle s_pointer(NULL);
+static egf::EntityID s_pointer(0);
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x14174d380

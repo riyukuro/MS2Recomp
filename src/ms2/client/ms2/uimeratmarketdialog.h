@@ -32,7 +32,7 @@
 #include "ms2/client/ms2/tmarketbilldataparam.h"
 
 class ASArray;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class TMeratMarketBillDataParam;
 class ASButton;
 class ASButtonGroup;
@@ -55,7 +55,7 @@ class CMeratMarketPremiumProduct;
 class CUgcMarketSeller;
 class ASMeratMarketProduct;
 struct Unk_PCEquipSet;
-class Unk_MpRideePtr;                                               // uimainplayerinfo.h (the ridee avatar handle)
+class UIAvatarRidee;                                                // the ridee avatar (CreateRideeAvatar)
 class CUgcCharBookMark;
 class CMeratMarketBasket;
 namespace UIMeratMarketDialogUtil { class ASOutData; class ASClickOutData; }
@@ -215,7 +215,7 @@ public:
     void ShowBlueprintItem(MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItemData> spData);                    // 0x1412f4c70
     void ShowKind5Item(MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItemData> spData);                        // 0x1412f50a0
     void ShowKind6Item(MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItemData> spData);                        // 0x1412f5540
-    Unk_MpRideePtr CreateRideeAvatar(MS2Ptr<CItemData> spData);                                                 // 0x1412f59e0
+    MS2Ptr<UIAvatarRidee> CreateRideeAvatar(MS2Ptr<CItemData> spData);                                          // 0x1412f59e0
     MS2Ptr<UIAvatarPC> CreateCubeAvatar(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);                        // 0x1412f5be0
     MS2Ptr<UIAvatarPet> CreatePetAvatar(MS2Ptr<CItemData> spData);                                              // 0x1412f5e10
     MS2Ptr<UIAvatarPC> CreateLapenshardAvatar(MS2Ptr<CItemData> spData);                                        // 0x1412f6010

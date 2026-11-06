@@ -54,13 +54,13 @@ class Unk_DTMovie : public ASMovieClip
 
 
 // An AS object created on the C++ side (AScript with type 2); the unsigned setter FUN_1409c0d20 is AScript's.
-class ASObj : public AScript
-{
-public:
-    ASObj(int nType);
-    virtual ~ASObj();
-};
-MS2_CHECK_SIZE(ASObj, 0x40);
+typedef AScript ASObj;
+
+
+
+
+
+
 
 class ASTooltip : public AScript
 {

@@ -10,7 +10,7 @@
 // MS2-PIN: ??1UIAdditionalControlDialog@@UEAA@XZ 0x1418b50b0
 // MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VAdditionalData@@@@V?$allocator@V?$MS2Ptr@VAdditionalData@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VAdditionalData@@@@@std@@@std@@@2@XZ 0x1418b5600
 // MS2-PIN: ?end@?$vector@V?$MS2Ptr@VAdditionalData@@@@V?$allocator@V?$MS2Ptr@VAdditionalData@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VAdditionalData@@@@@std@@@std@@@2@XZ 0x1418b56c0
-//
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x14010fda0 ; B22: statemanager_statics.h s_pointer init
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiadditionalcontroldialog.cpp"    // assumed
 

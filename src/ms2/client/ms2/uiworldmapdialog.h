@@ -24,7 +24,7 @@ class ASMovieClip;
 class CQuestData;
 template <class T> class Unk_FieldPtr;    // commonfiles/fieldmetatable.h
 class ASData;
-class ASObj;
+class AScript; typedef AScript ASObj;
 class CInPacket;
 class CMsgBoxData;
 class MyPC;

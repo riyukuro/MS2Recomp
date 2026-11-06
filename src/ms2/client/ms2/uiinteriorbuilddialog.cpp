@@ -36,12 +36,12 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- header statics (in the exe's order: the movie name, the shared sort names, then the seed object) ----
-class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };    // ctor 0x1401cd100 (C3: was Unk_IbSeed)
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_itemMovie = "itemMovie";                                                    // @0x1400dfa30
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400dfa60
 static CString s_strSkill = "skill";                                                         // @0x1400dfb20
 static CString s_strStun = "stun";                                                           // @0x1400dfb50
-static Unk_BuddyHandle s_ibSeed(0);                                                               // @0x1400dfb80
+static egf::EntityID s_ibSeed(0);                                                                 // @0x1400dfb80
 
 // ---- unit-local views of exe objects ----
 

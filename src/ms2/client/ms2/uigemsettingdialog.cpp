@@ -165,7 +165,7 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 int UIGemSettingDialog::FUN_141946a70(CString strName)
 {
     {
-        MS2Ptr<ASCheckBox> hCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox(strName);
+        MS2Ptr<ASCheckBox> hCheck = GetChild<ASCheckBox>(strName);
         if ((ASCheckBox*)hCheck != 0)
             return reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce0e0();
     }
@@ -175,7 +175,7 @@ int UIGemSettingDialog::FUN_141946a70(CString strName)
 // @0x141946b10
 void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
 {
-    MS2Ptr<ASCheckBox> hCheck = reinterpret_cast<UIItemPetBoxDialog*>(this)->FindCheckBox(strName);
+    MS2Ptr<ASCheckBox> hCheck = GetChild<ASCheckBox>(strName);
     if ((ASCheckBox*)hCheck != 0)
         reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce090(nValue);
 }

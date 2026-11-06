@@ -509,8 +509,7 @@ Unk_WsI_BoundRef* FUN_141bf6cb0(Unk_WsI_BoundRef* self, Unk_WsI_Bound* p)
 {
     return static_cast<Unk_WsI_BoundRef*>(WsAssignPtred(self, reinterpret_cast<CPtred*>(p)));
 }
-// MS2-FUNCTIONAL: this is the same assignment body through the generic 16-byte pointer view. It returns self like the
-// exe body: alias.py may pick it for Unk_WsA_GoFieldRef::operator= (returns a reference) at this VA.
+// MS2-FUNCTIONAL: this is the same assignment body through the generic 16-byte pointer view. It returns self like the exe body: alias.py may pick it for Unk_WsA_GoFieldRef::operator= (returns a reference) at this VA.
 // @0x141bf6cb0
 Unk_WsP16* FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
 {
@@ -526,3 +525,4 @@ Unk_WsP16* FUN_141bf6cb0(Unk_WsP16* self, Unk_WsD_FieldObj* p)
 // MS2-PIN: ??1CNode@?$CRBTree@HHV?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x141bf6400 ; la1: trivial pair dtor (141bf67c0), called from CRBTree<Unk_WsKindKey,int>; 141bf61a0 releases a SmartPointer (CAtlMap CSkillMagicControlGuide node)
 // MS2-PIN: ??1CNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@XZ 0x141bf6120 ; la1: calls the TPtrValue CPair dtor 141bf64a0 (-> TPtrValue<CAtlList> dtor 1409f20e0); 141bf61a0 is the CSkillMagicControlGuide CNode
 // MS2-PIN: ??1CNode@?$CRBTree@IV?$MS2Ptr@VUgcBannerObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUgcBannerObject@@@@@3@@ATL@@QEAA@XZ 0x141bf62e0 ; m_708 node dtor; ugcbannerobject.h brings ~map<unsigned,unsigned> (same 24-byte body), which took the look-alike order
+// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VUnk_WsB_Lift@@@@V?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VUnk_WsB_Lift@@@@AEAV?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@1@@Z 0x141bf2bb0 ; ua13: callers are the MS2Ptr<CLiftableObject> _Uninitialized_copy/move_al_unchecked 0x141bec1b0 / 0x141bec890

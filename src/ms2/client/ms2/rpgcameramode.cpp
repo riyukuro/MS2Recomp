@@ -30,15 +30,15 @@ template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-class Unk_BuddyHandle
-{
-public:
-    Unk_BuddyHandle(void*);
+#include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
+//{
+//public:
+//    Unk_BuddyHandle(void*);
 
-private:
-    void* m_p;
-};
-static Unk_BuddyHandle s_pointer(NULL);
+//private:
+//    void* m_p;
+//};
+static egf::EntityID s_pointer(0);
 #include "ms2/placeholder/unk_1402a9d70.h"   // C3: the real ATL::CAtlMap<UINT, CString>
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
