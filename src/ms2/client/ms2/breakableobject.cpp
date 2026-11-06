@@ -233,8 +233,8 @@ MS2Ptr<CBoxCollision> CBreakableObject::FUN_140addf10()
 void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
 {
     Common::Constants::Value<float>* pVolume = (nKind == 1 || nKind == 2)
-        ? &static_cast<Client::Constants*>(FUN_1401d3200())->VolumeMyPcToBreakableObject
-        : &static_cast<Client::Constants*>(FUN_1401d3200())->VolumePcToBreakableObject;
+        ? &static_cast<Client::Constants*>(GetClientConstants())->VolumeMyPcToBreakableObject
+        : &static_cast<Client::Constants*>(GetClientConstants())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
     TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nHitter, m_nHitSound, nKind, reinterpret_cast<NiPoint3&>(m_ptPos), fVolume);
     m_kHitTimer.FUN_140868750(1000);

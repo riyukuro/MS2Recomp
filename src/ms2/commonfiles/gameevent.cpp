@@ -640,13 +640,13 @@ MS2_REPLACE(0x1403BB830, FUN_1403bb830, 22, 0x75EBD94B);
 int FUN_1403bb850() { return (int)((class CGameRule*)FUN_1401c0d90())->GetChannelChatMeratCost(); }
 MS2_REPLACE(0x1403BB850, FUN_1403bb850, 22, 0xB3D82860);
 // @0x1403bb870
-unsigned FUN_1403bb870() { return *FUN_1401d3200()->MeratConsumeSuperChat.Get(); }
+unsigned FUN_1403bb870() { return *GetClientConstants()->MeratConsumeSuperChat.Get(); }
 MS2_REPLACE(0x1403BB870, FUN_1403bb870, 30, 0x8D4E122B);
 // @0x1403bb8a0
-unsigned FUN_1403bb8a0() { return *FUN_1401d3200()->MeratConsumeWorldChat.Get(); }
+unsigned FUN_1403bb8a0() { return *GetClientConstants()->MeratConsumeWorldChat.Get(); }
 MS2_REPLACE(0x1403BB8A0, FUN_1403bb8a0, 30, 0xA8A84703);
 // @0x1403bb8d0
-unsigned FUN_1403bb8d0() { return *FUN_1401d3200()->MeratConsumeChannelChat.Get(); }
+unsigned FUN_1403bb8d0() { return *GetClientConstants()->MeratConsumeChannelChat.Get(); }
 MS2_REPLACE(0x1403BB8D0, FUN_1403bb8d0, 30, 0xAE9B7E9B);
 
 // ---- GameEventSAHotTime ---------------------------------------------------------------------------------------------

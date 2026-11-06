@@ -64,7 +64,7 @@ public:
 class CGuildManager;
 bool FUN_14028d470(float a, float b);
 class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Common::Constants::Value<int> m_frameLimit; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_OptOsInfo : public COSInfo { };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
@@ -75,7 +75,7 @@ public:
     void ResetLifetime();
 };
 class Unk_GoDeviceInfo { public: CStringW FUN_141245ab0(); };   // gameoption.cpp's device info view
-class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+// (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 class CrashManagerCli;
 template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
 struct IDirect3D9* GetIDirect3D9();   // C3: was FUN_14151e7e0
@@ -209,7 +209,7 @@ void COptimizer::Update()
     {
         UpdateFrameSampling();
     }
-    reinterpret_cast<GPUManager*>(FUN_141245b20())->FUN_1413758b0();
+    TSingleton<GPUManager>::GetInstance()->FUN_1413758b0();
 }
 
 // @0x14161bdc0
@@ -256,7 +256,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     if (((void*)GetIDirect3D9()) != 0)
     {
-        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)FUN_141245b20()->FUN_141245ab0(), 0));
+        strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(), 0));
         reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
@@ -330,13 +330,13 @@ void COptimizer::WriteSystemInfoToCrashLog()
         pszKfm = "FALSE";
     }
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
-    reinterpret_cast<GPUManager*>(FUN_141245b20())->FUN_141375a80();
+    TSingleton<GPUManager>::GetInstance()->FUN_141375a80();
 }
 
 // @0x14161c360
 float COptimizer::ApplyFrameLimitFromOptions()
 {
-    m_fFrameLimit = (float)*((class Unk_OptOptions*)FUN_1401d3200())->m_frameLimit.Get();
+    m_fFrameLimit = (float)*((class Unk_OptOptions*)GetClientConstants())->m_frameLimit.Get();
     if (FUN_14028d470(m_fFrameLimit, 0))
     {
         m_nFrameDelay = 0;

@@ -21,10 +21,10 @@ struct Vector3
     // construct finds it, so the result is null-checked as in the exe. A plain `new Vector3` must be written ::new.
     static void* operator new(size_t cb, void* pWhere) throw();
     Vector3 FUN_140965c40(const Vector3& pt) const; // efd::Point3::operator-
-    Vector3 FUN_14097fd50(const Vector3& pt) const; // efd::Point3::operator+
+    // FUN_14097fd50 (efd::Point3::operator+): callers use efd::Point3 directly
     Vector3 FUN_140a00e10(const Vector3& pt) const; // efd::Point3::Cross
     float FUN_140968990();                                          // efd::Point3::Unitize (returns the old length)
-    Vector3 FUN_14097fc90(float f) const;                   // efd::Point3::operator*(float)
+    // FUN_14097fc90 (efd::Point3::operator*(float)): callers use efd::Point3 directly
     Vector3& FUN_140a4e560(const Vector3& pt);      // efd::Point3::operator+=
     float FUN_140967ac0() const;                                    // efd::Point3::Length
     Vector3 FUN_1409f7960() const;                          // efd::Point3::operator- (unary)

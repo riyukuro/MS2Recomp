@@ -1,14 +1,16 @@
 224a
-#endif
-.
-223a
-    inline __declspec(noinline) efd::utf8string getErrorMessage(efd::UInt32 errorNum);
 #else
     inline __declspec(noinline) efd::utf8string getErrorMessage();
+    inline efd::utf8string getErrorMessage(efd::UInt32 errorNum);
+#endif
 .
 222a
     // MS2: the exe's inlining of these differs per TU: Socket.cpp calls getErrorMessage() out of line (0x1428cb9e0,
     // the errorNum overload inlined into it); TCPSocket_Win32.cpp (EE_MS2_TCPSOCKET_TU) inlines getErrorMessage() and
     // calls getErrorMessage(errorNum) out of line (0x1428caa20)
 #if defined(EE_MS2_TCPSOCKET_TU)
+    inline efd::utf8string getErrorMessage();
+    inline __declspec(noinline) efd::utf8string getErrorMessage(efd::UInt32 errorNum);
+#elif defined(EE_MS2_SOCKET_ERRMSG_INLINE)
+    // MS2: Socket_Win32.cpp (setKeepAlive 0x1428ccac0) inlines both
 .

@@ -1,0 +1,3 @@
+42c
+            m_kBoundingVolume.MS2SetAtReload(i, pkChildABV);  // MS2: the exe reloads m_pBase (NiTArray.inl)
+.

@@ -321,7 +321,7 @@ MS2_CHECK_SIZE(Unk_InventoryConstants, 0xe770); // accessed prefix
 MS2_CHECK_OFFSET(Unk_InventoryConstants, bagLimit0, 0x74d8);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMinLevel, 0xe6c0);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMaxLevel, 0xe718);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 void FUN_140d73bc0(int, int, void*, CStringW);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
@@ -503,7 +503,7 @@ int Unk_Inventory::FUN_140a5d050(int category) {
 }
 MS2_REPLACE_METHOD(0x140a5d050, Unk_Inventory, FUN_140a5d050, 140, 0x437B4833);
 // @0x140a5d0f0
-unsigned __int64 Unk_Inventory::FUN_140a5d0f0() { return *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->value6ee8)->Get(); }
+unsigned __int64 Unk_Inventory::FUN_140a5d0f0() { return *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)GetClientConstants())->value6ee8)->Get(); }
 MS2_REPLACE_METHOD(0x140a5d0f0, Unk_Inventory, FUN_140a5d0f0, 35, 0xEEBD98E0);
 // @0x140a5d120
 int Unk_Inventory::FUN_140a5d120(CItem* item) {
@@ -1651,21 +1651,21 @@ int FUN_140a66510(int category) {
     int count = 48;
     Unk_InventoryArraySetting* setting = nullptr;
     switch (category) {
-    case 0: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit0; break;
-    case 1: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit1; break;
-    case 2: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit2; break;
-    case 3: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit3; break;
-    case 4: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit5; break;
-    case 5: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit6; break;
-    case 6: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit7; break;
-    case 7: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit11; break;
-    case 8: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit4; break;
-    case 9: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit8; break;
-    case 10: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit10; break;
-    case 11: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit12; break;
-    case 12: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit13; break;
-    case 13: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit14; break;
-    case 14: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit15; break;
+    case 0: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit0; break;
+    case 1: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit1; break;
+    case 2: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit2; break;
+    case 3: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit3; break;
+    case 4: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit5; break;
+    case 5: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit6; break;
+    case 6: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit7; break;
+    case 7: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit11; break;
+    case 8: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit4; break;
+    case 9: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit8; break;
+    case 10: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit10; break;
+    case 11: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit12; break;
+    case 12: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit13; break;
+    case 13: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit14; break;
+    case 14: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit15; break;
     default: MS2_ASSERT_AT(2333, 0);
     }
     if (setting != nullptr) {
@@ -1682,21 +1682,21 @@ int FUN_140a66750(int category) {
     int count = 48;
     Unk_InventoryArraySetting* setting = nullptr;
     switch (category) {
-    case 0: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit0; break;
-    case 1: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit1; break;
-    case 2: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit2; break;
-    case 3: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit3; break;
-    case 4: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit5; break;
-    case 5: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit6; break;
-    case 6: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit7; break;
-    case 7: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit11; break;
-    case 8: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit4; break;
-    case 9: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit8; break;
-    case 10: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit10; break;
-    case 11: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit12; break;
-    case 12: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit13; break;
-    case 13: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit14; break;
-    case 14: setting = &((struct Unk_InventoryConstants*)FUN_1401d3200())->bagLimit15; break;
+    case 0: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit0; break;
+    case 1: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit1; break;
+    case 2: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit2; break;
+    case 3: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit3; break;
+    case 4: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit5; break;
+    case 5: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit6; break;
+    case 6: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit7; break;
+    case 7: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit11; break;
+    case 8: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit4; break;
+    case 9: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit8; break;
+    case 10: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit10; break;
+    case 11: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit12; break;
+    case 12: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit13; break;
+    case 13: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit14; break;
+    case 14: setting = &((struct Unk_InventoryConstants*)GetClientConstants())->bagLimit15; break;
     default: MS2_ASSERT_AT(2406, 0);
     }
     if (setting != nullptr) {
@@ -1792,8 +1792,8 @@ int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
     unsigned short level = (unsigned short)player->vfunc_78();
-    if ((unsigned)level < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMinLevel)->Get() ||
-        (unsigned)level > *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)FUN_1401d3200())->autoEquipMaxLevel)->Get()) return 0;
+    if ((unsigned)level < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)GetClientConstants())->autoEquipMinLevel)->Get() ||
+        (unsigned)level > *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_InventoryConstants*)GetClientConstants())->autoEquipMaxLevel)->Get()) return 0;
     int slot = ((int)item->FUN_140527a20());
     int mode = item->FUN_14052a170();
     if (mode == 0) {

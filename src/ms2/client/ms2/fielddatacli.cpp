@@ -52,7 +52,7 @@ void FUN_14028d1a0(const CString&, int*);                                // pars
 void FUN_14028c2d0(CStringA, efd::Point3*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
 extern char DAT_143b01a60;
-bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
+// (0x1406cf9e0 is std::operator!=<unsigned short>(const vector<unsigned short>&, const vector<unsigned short>&))
 class Unk_140166420 : public CFileSystem { };
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
@@ -123,7 +123,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
     if (a->m_nMassiveEventField != b->m_nMassiveEventField) return true;
     if (a->m_nRecoveryFullHP != b->m_nRecoveryFullHP) return true;
     if (a->m_enteranceBuffIds != b->m_enteranceBuffIds) return true;
-    if (FUN_1406cf9e0(a->m_enteranceBuffLevels, b->m_enteranceBuffLevels)) return true;
+    if (reinterpret_cast<const std::vector<unsigned short>&>(a->m_enteranceBuffLevels) != reinterpret_cast<const std::vector<unsigned short>&>(b->m_enteranceBuffLevels)) return true;
     if (a->m_nEnterAdminLevel != b->m_nEnterAdminLevel) return true;
     if (a->m_nChannelGroupId != b->m_nChannelGroupId) return true;
     if (a->m_nWebFinder != b->m_nWebFinder) return true;

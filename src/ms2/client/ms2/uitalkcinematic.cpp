@@ -130,7 +130,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
 class Unk_TcSettings { public: char m_pad[0xe0f8]; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -647,7 +647,7 @@ int UITalkCinematic::FUN_141b1c530()
         return 1;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x493e2, 0, 0))
     {
-        if (m_nextKeyTimer.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((class Unk_TcSettings*)FUN_1401d3200())) + 0xe0f8)->Get()))
+        if (m_nextKeyTimer.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((class Unk_TcSettings*)GetClientConstants())) + 0xe0f8)->Get()))
             return 1;
     }
     else
@@ -1727,7 +1727,7 @@ void UITalkManager::FUN_141b21190(int nFlags, int nParam, int nPage)
 // @0x141b211d0
 int UITalkManager::IsTalkIntervalElapsed()
 {
-    if (GetTickCountMs2() - m_nLastTick < *reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_TcSettings*)FUN_1401d3200())) + 0x3730)->Get()))
+    if (GetTickCountMs2() - m_nLastTick < *reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_TcSettings*)GetClientConstants())) + 0x3730)->Get()))
         return 0;
     return 1;
 }

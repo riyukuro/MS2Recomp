@@ -6,6 +6,14 @@
 165@74s "" "  // MS2: v2525"
 165@6s "turn" "m ="
 165@4s "r" "pvM"
+122,123c
+    if (!pvMem)  // MS2: v2525
+        throw std::bad_alloc(); return pvMem;
+.
+107@15s "_" "MS2Inline"
+83c
+template<class... A> static __forceinline void* MS2InlineMalloc(size_t st, MemHint kHint, A... a)  /* MS2: the exe inlines _Malloc into _Realloc */ { EE_ASSERT(MemManager::IsInitialized()); if (st == 0) st = 1; void* pvMem = MemManager::Get().Allocate(st, EE_MEM_ALIGNMENT_DEFAULT, kHint, EE_MET_MALLOC, a...); EE_ASSERT(pvMem != NULL); if (!pvMem) throw std::bad_alloc(); return pvMem; }
+.
 78a
     if (!pvMem)  // MS2: v2525
         throw std::bad_alloc();

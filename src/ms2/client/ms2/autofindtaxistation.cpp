@@ -345,9 +345,9 @@ void CAutoFindTaxiStation::FUN_1409f1af0()
     Unk_CameraSetting setting;
     if (TSingleton<CameraMgr>::GetInstance()->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
     {
-        Vector3 delta = setting.m_c.FUN_140965c40(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540());
+        Vector3 delta = setting.m_c.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540())));
         float fLen = delta.FUN_140967ac0() * 0.5f;
-        setting.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540();
+        setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()->FUN_1409f2540()));
         Unk_CameraFlyBy mv = TSingleton<CameraMgr>::GetInstance()->MakeFlyBy(fLen / 1000.0f, setting);
         mv.m_nKind = 2;
         TSingleton<CameraMgr>::GetInstance()->FUN_140aed580(&mv, 1, 1.0f);

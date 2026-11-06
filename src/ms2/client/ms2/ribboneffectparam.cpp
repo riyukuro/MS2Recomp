@@ -392,9 +392,9 @@ void CRibbonEffect::UpdateMesh()
             else
                 kDir = kCurve[i + 1].FUN_140965c40(kCurve[i - 1]);
             kDir.FUN_140968990();
-            Vector3 kSide = kDir.FUN_140a00e10(kCamera);
-            kMinus.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, kSide)));
-            kPlus.push_back(kCurve[i].FUN_14097fd50(FUN_1409ab5c0(m_fHalfWidth, kSide)));
+            efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(kCamera));
+            kMinus.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide))));
+            kPlus.push_back(reinterpret_cast<Vector3&&>(static_cast<efd::Point3&&>(reinterpret_cast<const efd::Point3&>(kCurve[i]) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide)))))));
         }
 
         unsigned short nCount = (unsigned short)kMinus.size();

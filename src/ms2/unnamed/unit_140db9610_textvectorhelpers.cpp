@@ -41,7 +41,7 @@ int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char
 int FUN_140718170(const CStringA& kText);                                       // parses an int
 float FUN_140718450(const CStringA& kText);                                     // parses a float
 CStringA FUN_14028ef00(efd::Point3 kVec);                                            // Point3 formatter
-CStringW FUN_14028efb0(Unk_DbVec3 kVec);                                             // Point3 formatter (wide)
+CStringW FUN_14028efb0(efd::Point3 kPoint);                                               // Point3 formatter (wide)
 #define DAT_143b02320 (*(const Unk_DbEfdPt2*)&efd::Point2::ZERO)    // C3: was extern Unk_DbEfdPt2 DAT_143b02320
 extern const char DAT_142e36e3c[];                                              // token delimiter (",")
 extern const char DAT_142e36e40[];                                              // token delimiter (",")
@@ -121,7 +121,7 @@ CStringA FUN_140db9b70(Unk_DbVec3 kVec)
 // @0x140db9bd0
 CStringW FUN_140db9bd0(Unk_DbVec3 kVec)
 {
-    return FUN_14028efb0(kVec);
+    return FUN_14028efb0(*(efd::Point3*)&kVec);
 }
 
 // @0x140db9c30

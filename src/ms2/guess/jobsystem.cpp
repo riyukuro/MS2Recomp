@@ -304,13 +304,13 @@ int JobSystem::GetLevelSkillPoint(unsigned short nLevel, int nType)
         return 0;
     if (nType == 1)
     {
-        return (nLevel < FUN_1401d3200()->SkillPointLimitLevel1 ? nLevel : FUN_1401d3200()->SkillPointLimitLevel1) - 9;
+        return (nLevel < GetClientConstants()->SkillPointLimitLevel1 ? nLevel : GetClientConstants()->SkillPointLimitLevel1) - 9;
     }
     else if (nType == 2)
     {
         if (nLevel < 60)
             return 0;
-        return (nLevel < FUN_1401d3200()->SkillPointLimitLevel2 ? nLevel : FUN_1401d3200()->SkillPointLimitLevel2) - 59;
+        return (nLevel < GetClientConstants()->SkillPointLimitLevel2 ? nLevel : GetClientConstants()->SkillPointLimitLevel2) - 59;
     }
     return 0;
 }

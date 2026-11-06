@@ -147,7 +147,7 @@ void Unk_CMISDriveTail6()
     { Unk_CMISFuncCubeSet a, b; a = b; }
     { Unk_CMISOwnerById m; }
     { MS2Ptr<UIHouseMarkEntity> p; } { MS2Ptr<UGCMapBlueprintInfo> b, c((UGCMapBlueprintInfo*)0); } { MS2Ptr<UGCMapDesignInfo> d, e((UGCMapDesignInfo*)0); }
-    { MS2Ptr<FittingDollData> a; MS2Ptr<FittingDollData> b(a); } { MS2Ptr<CFunctionCubeObject> c((CFunctionCubeObject*)0), d(c); } { MS2Ptr<SetItemEffectInfo> e, g(e), k((SetItemEffectInfo*)0); } { MS2SvrPtr<CUGCMapSetItemInfo> h, i(h); }
+    { MS2Ptr<FittingDollData> a; MS2Ptr<FittingDollData> b(a); } { MS2Ptr<CFunctionCubeObject> c((CFunctionCubeObject*)0), d(c); } { MS2Ptr<SetItemEffectInfo> e, g(e), k((SetItemEffectInfo*)0); } { MS2SvrPtr<CUGCMapSetItemInfo> h, i(h); } { Unk_PayloadPtr<NoticeCubeInfo> n, m(n); }
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
     { Unk_CMISQueue q; }                                                                        // the async queue's implicit ctor 0x14111e640
@@ -159,24 +159,24 @@ void Unk_CMISDriveTail6()
 // ambiguity the generic MS2Ptr/Unk_PayloadPtr/TSingleton instantiations suffer from).
 // -----------------------------------------------------------------------------------------------------------
 
-void FUN_14112fe10(struct Unk_Obj8* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> link
+// C3: FUN_14112fe10(struct Unk_Obj8* pThis);  is MS2SvrPtr<SalesInfo>::Make (unit_14112fe10)
 // C3: FUN_14112faf0(void* pThis);  is MS2Ptr<SetItemEffectInfo>::AddRef
 void FUN_14112fb20(struct Unk_BoxedPointer* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> AddRef (unit_14112fa90)
 // C3: FUN_140dd7940(void* pThis);  is MS2Ptr<CFunctionCubeObject>::AddRef
 // C3: FUN_140ba1c80(void* pThis);  is MS2SvrPtr<CUGCMapSetItemInfo>::AddRef
-void FUN_14112fb50(struct Unk_BoxedPointer* pThis);      // MS2Ptr<Unk_CMISHouseRef> link (unit_14112fa90)
+// C3: FUN_14112fb50(void* pThis);  is Unk_PayloadPtr<NoticeCubeInfo>::AddRef
 struct Unk_BoxedPointer; void FUN_14112fb80(Unk_BoxedPointer* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISDesignPtr> link (unit_14112fa90)
 // C3: FUN_140fac7c0(void* pThis);  is MS2Ptr<UGCMapBlueprintInfo>::AddRef
 // C3: FUN_140fac7f0(void* pThis);  is MS2Ptr<UGCMapDesignInfo>::AddRef
 void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
 
 // @0x14111e6e0
-void* FUN_14111e6e0(void* pThis, void* pUnused)
-{
-    *(void**)((char*)pThis + 8) = 0;
-    FUN_14112fe10(static_cast<Unk_Obj8*>(pThis));
-    return pThis;
-}
+template MS2SvrPtr<SalesInfo>::MS2SvrPtr(const MS2SvrNewTag&);   // C3: was FUN_14111e6e0 (m_p = 0; Make())
+//
+//
+//
+//
+//
 
 // MS2-PIN: ??0?$MS2Ptr@VSetItemEffectInfo@@@@QEAA@PEAVSetItemEffectInfo@@@Z 0x14111e770 ; C3: was FUN_14111e770, the ms2ptr_impl.h MS2Ptr(T*) (AddRef 0x14112faf0)
 //
@@ -218,13 +218,13 @@ void* FUN_14111e800(void* pThis, void* pRaw)
 //
 //
 
-// @0x14111e960
-void* FUN_14111e960(void* pThis, void* pOther)
-{
-    *(void**)((char*)pThis + 8) = *(void**)((char*)pOther + 8);
-    FUN_14112fb50(static_cast<Unk_BoxedPointer*>(pThis));
-    return pThis;
-}
+// MS2-PIN: ??0?$Unk_PayloadPtr@VNoticeCubeInfo@@@@QEAA@AEBV0@@Z 0x14111e960 ; fe1: was FUN_14111e960, the payloadptr copy ctor (AddRef 0x14112fb50); callers pass spNotice by value (0x1410c49ef)
+//
+//
+//
+//
+//
+//
 
 // @0x14111e9a0
 void* FUN_14111e9a0(void* pThis, int nUnused)

@@ -67,83 +67,83 @@
 // MS2-PIN: ??_GChromaEffectRipple@ChromaSDK@@UEAAPEAXI@Z 0x140a9ada0 ; prop
 // MS2-PIN: ??_GChromaEffectSurviveWinner@ChromaSDK@@UEAAPEAXI@Z 0x140a9b040 ; prop
 // MS2-PIN: ??_GChromaEffectTalking@ChromaSDK@@UEAAPEAXI@Z 0x140a9b3d0 ; prop
-// MS2-PIN: ??$?0$$QEAH$$Z$$V@?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@$$QEAH@1@V?$tuple@$$V@1@@Z 0x140aa07f0 ; unique
+// MS2-PIN: ??$?0$$QEAW4Unk_DIKey@@$$Z$$V@?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@$$QEAW4Unk_DIKey@@@1@V?$tuple@$$V@1@@Z 0x140aa07f0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@K@std@@V?$_Vector_val@U?$_Simple_types@K@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140aa0840 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140aa08a0 ; prop
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140aa0950 ; prop
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x140aa09f0 ; unique
-// MS2-PIN: ??$?0U_Exact_args_t@std@@H$$V$0A@@?$tuple@$$QEAH@std@@QEAA@U_Exact_args_t@1@$$QEAH@Z 0x140aa0bd0 ; unique
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140aa0c80 ; prop
-// MS2-PIN: ??$?0V?$tuple@$$QEAH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@QEAA@AEAV?$tuple@$$QEAH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x140aa0e20 ; unique
-// MS2-PIN: ??$?0H$$V$0A@@?$tuple@$$QEAH@std@@QEAA@$$QEAH@Z 0x140aa0f50 ; unique
-// MS2-PIN: ??$?0H@?$_Tuple_val@$$QEAH@std@@QEAA@$$QEAH@Z 0x140aa0fb0 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@@Z 0x140aa1000 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa10f0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x140aa08a0 ; prop
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140aa0950 ; prop
+// MS2-PIN: ??$?0AEBU?$less@W4Unk_DIKey@@@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@W4Unk_DIKey@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@W4Unk_DIKey@@@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x140aa09f0 ; unique
+// MS2-PIN: ??$?0U_Exact_args_t@std@@W4Unk_DIKey@@$$V$0A@@?$tuple@$$QEAW4Unk_DIKey@@@std@@QEAA@U_Exact_args_t@1@$$QEAW4Unk_DIKey@@@Z 0x140aa0bd0 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140aa0c80 ; prop
+// MS2-PIN: ??$?0V?$tuple@$$QEAW4Unk_DIKey@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@QEAA@AEAV?$tuple@$$QEAW4Unk_DIKey@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x140aa0e20 ; unique
+// MS2-PIN: ??$?0W4Unk_DIKey@@$$V$0A@@?$tuple@$$QEAW4Unk_DIKey@@@std@@QEAA@$$QEAW4Unk_DIKey@@@Z 0x140aa0f50 ; unique
+// MS2-PIN: ??$?0W4Unk_DIKey@@@?$_Tuple_val@$$QEAW4Unk_DIKey@@@std@@QEAA@$$QEAW4Unk_DIKey@@@Z 0x140aa0fb0 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@@Z 0x140aa1000 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAW4Unk_DIKey@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa10f0 ; unique
 // MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBK@?$vector@KV?$allocator@K@std@@@std@@AEAAXAEBK@Z 0x140aa1480 ; unique
 // MS2-PIN: ??$_Emplace_reallocate@AEBK@?$vector@KV?$allocator@K@std@@@std@@QEAAPEAKQEAKAEBK@Z 0x140aa1600 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@1@Z 0x140aa2010 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@PEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@@Z 0x140aa2fb0 ; unique
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@PEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@@Z 0x140aa4000 ; unique
-// MS2-PIN: ??$_Kfn@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@SAAEBHAEBU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@@Z 0x140aa4420 ; prop
-// MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEBH@Z 0x140aa44d0 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@1@Z 0x140aa2010 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@@Z 0x140aa2fb0 ; unique
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@@Z 0x140aa4000 ; unique
+// MS2-PIN: ??$_Kfn@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@SAAEBW4Unk_DIKey@@AEBU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@@Z 0x140aa4420 ; prop
+// MS2-PIN: ??$_Lbound@W4Unk_DIKey@@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@1@AEBW4Unk_DIKey@@@Z 0x140aa44d0 ; unique
 // MS2-PIN: ??$_Ptr_copy_cat@KK@std@@YA?AU_Really_trivial_ptr_iterator_tag@0@AEBQEAK0@Z 0x140aa4570 ; prop
 // MS2-PIN: ??$_Ptr_move_cat@KK@std@@YA?AU_Really_trivial_ptr_iterator_tag@0@AEBQEAK0@Z 0x140aa4590 ; prop
-// MS2-PIN: ??$_Try_emplace@H$$V@?$map@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x140aa48c0 ; unique
+// MS2-PIN: ??$_Try_emplace@W4Unk_DIKey@@$$V@?$map@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@$$QEAW4Unk_DIKey@@@Z 0x140aa48c0 ; unique
 // MS2-PIN: ??$_Ucopy@PEAK@?$vector@KV?$allocator@K@std@@@std@@AEAAPEAKPEAK00@Z 0x140aa4a10 ; prop
 // MS2-PIN: ??$_Unfancy@K@std@@YAPEAKPEAK@Z 0x140aa4a50 ; prop
 // MS2-PIN: ??$_Uninitialized_copy@PEAKPEAKV?$allocator@K@std@@@std@@YAPEAKQEAK0PEAKAEAV?$allocator@K@0@@Z 0x140aa4a70 ; prop
 // MS2-PIN: ??$_Uninitialized_move@PEAKPEAKV?$allocator@K@std@@@std@@YAPEAKQEAK0PEAKAEAV?$allocator@K@0@@Z 0x140aa4b60 ; prop
 // MS2-PIN: ??$construct@KAEBK@?$_Default_allocator_traits@V?$allocator@K@std@@@std@@SAXAEAV?$allocator@K@1@QEAKAEBK@Z 0x140aa4e20 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa5060 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@$$QEAW4Unk_DIKey@@@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa5060 ; unique
 // MS2-PIN: ??$emplace_back@AEBK@?$vector@KV?$allocator@K@std@@@std@@QEAAXAEBK@Z 0x140aa5210 ; unique
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa5390 ; unique
-// MS2-PIN: ??$forward@$$QEAH@std@@YA$$QEAHAEAH@Z 0x140aa54e0 ; prop
-// MS2-PIN: ??$forward@AEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@YAAEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@0@AEAU10@@Z 0x140aa5520 ; prop
-// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140aa5540 ; prop
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAW4Unk_DIKey@@@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140aa5390 ; unique
+// MS2-PIN: ??$forward@$$QEAW4Unk_DIKey@@@std@@YA$$QEAW4Unk_DIKey@@AEAW41@@Z 0x140aa54e0 ; prop
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@YAAEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@0@AEAU10@@Z 0x140aa5520 ; prop
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140aa5540 ; prop
 // MS2-PIN: ??$forward@AEBK@std@@YAAEBKAEBK@Z 0x140aa5550 ; prop
-// MS2-PIN: ??$forward@AEBU?$less@H@std@@@std@@YAAEBU?$less@H@0@AEBU10@@Z 0x140aa5570 ; prop
-// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140aa55c0 ; prop
-// MS2-PIN: ??$forward@V?$tuple@$$QEAH@std@@@std@@YA$$QEAV?$tuple@$$QEAH@0@AEAV10@@Z 0x140aa5600 ; prop
-// MS2-PIN: ??$forward@H@std@@YA$$QEAHAEAH@Z 0x140aa5630 ; prop
-// MS2-PIN: ??$forward_as_tuple@H@std@@YA?AV?$tuple@$$QEAH@0@$$QEAH@Z 0x140aa56a0 ; unique
-// MS2-PIN: ??$get@$0A@$$QEAH@std@@YA$$QEAH$$QEAV?$tuple@$$QEAH@0@@Z 0x140aa56f0 ; unique
+// MS2-PIN: ??$forward@AEBU?$less@W4Unk_DIKey@@@std@@@std@@YAAEBU?$less@W4Unk_DIKey@@@0@AEBU10@@Z 0x140aa5570 ; prop
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140aa55c0 ; prop
+// MS2-PIN: ??$forward@V?$tuple@$$QEAW4Unk_DIKey@@@std@@@std@@YA$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@0@AEAV10@@Z 0x140aa5600 ; prop
+// MS2-PIN: ??$forward@W4Unk_DIKey@@@std@@YA$$QEAW4Unk_DIKey@@AEAW41@@Z 0x140aa5630 ; prop
+// MS2-PIN: ??$forward_as_tuple@W4Unk_DIKey@@@std@@YA?AV?$tuple@$$QEAW4Unk_DIKey@@@0@$$QEAW4Unk_DIKey@@@Z 0x140aa56a0 ; unique
+// MS2-PIN: ??$get@$0A@$$QEAW4Unk_DIKey@@@std@@YA$$QEAW4Unk_DIKey@@$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@0@@Z 0x140aa56f0 ; unique
 // MS2-PIN: ??$move@AEAV?$allocator@K@std@@@std@@YA$$QEAV?$allocator@K@0@AEAV10@@Z 0x140aa5740 ; prop
-// MS2-PIN: ??$move@AEAV?$tuple@$$QEAH@std@@@std@@YA$$QEAV?$tuple@$$QEAH@0@AEAV10@@Z 0x140aa5770 ; prop
+// MS2-PIN: ??$move@AEAV?$tuple@$$QEAW4Unk_DIKey@@@std@@@std@@YA$$QEAV?$tuple@$$QEAW4Unk_DIKey@@@0@AEAV10@@Z 0x140aa5770 ; prop
 // MS2-PIN: ??$move@AEAV?$vector@KV?$allocator@K@std@@@std@@@std@@YA$$QEAV?$vector@KV?$allocator@K@std@@@0@AEAV10@@Z 0x140aa5790 ; prop
-// MS2-PIN: ??$move@AEAH@std@@YA$$QEAHAEAH@Z 0x140aa57c0 ; prop
-// MS2-PIN: ??$try_emplace@$$V@?$map@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x140aa5850 ; unique
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@QEAA@XZ 0x140aa5ba0 ; prop
+// MS2-PIN: ??$move@AEAW4Unk_DIKey@@@std@@YA$$QEAW4Unk_DIKey@@AEAW41@@Z 0x140aa57c0 ; prop
+// MS2-PIN: ??$try_emplace@$$V@?$map@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@_N@1@$$QEAW4Unk_DIKey@@@Z 0x140aa5850 ; unique
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@QEAA@XZ 0x140aa5ba0 ; prop
 // MS2-PIN: ??0?$allocator@K@std@@QEAA@XZ 0x140aa5cf0 ; prop
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@QEAA@XZ 0x140aa5d10 ; prop
-// MS2-PIN: ??0?$tuple@$$QEAH@std@@QEAA@$$QEAV01@@Z 0x140aa5dd0 ; unique
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@QEAA@XZ 0x140aa5d10 ; prop
+// MS2-PIN: ??0?$tuple@$$QEAW4Unk_DIKey@@@std@@QEAA@$$QEAV01@@Z 0x140aa5dd0 ; unique
 // MS2-PIN: ??0?$vector@KV?$allocator@K@std@@@std@@QEAA@$$QEAV01@@Z 0x140aa5e50 ; unique
 // MS2-PIN: ??0?$vector@KV?$allocator@K@std@@@std@@QEAA@AEBV01@@Z 0x140aa5ed0 ; unique
-// MS2-PIN: ??A?$map@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@@std@@QEAAAEAW4RZKEY@Keyboard@ChromaSDK@@$$QEAH@Z 0x140aa6590 ; unique
+// MS2-PIN: ??A?$map@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@@std@@QEAAAEAW4RZKEY@Keyboard@ChromaSDK@@$$QEAW4Unk_DIKey@@@Z 0x140aa6590 ; unique
 // MS2-PIN: ??A?$vector@KV?$allocator@K@std@@@std@@QEAAAEAK_K@Z 0x140aa65d0 ; unique
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@1@XZ 0x140aa66b0 ; prop
-// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x140aa6aa0 ; unique
-// MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x140aa6bb0 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@1@XZ 0x140aa66b0 ; prop
+// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x140aa6aa0 ; unique
+// MS2-PIN: ??R?$less@W4Unk_DIKey@@@std@@QEBA_NAEBW4Unk_DIKey@@0@Z 0x140aa6bb0 ; unique
 // MS2-PIN: ?GetState@ChromaManagerImpl@ChromaSDK@@UEAAHXZ 0x140aa6d20 ; unique
 // MS2-PIN: ?_Buy@?$vector@KV?$allocator@K@std@@@std@@AEAA_N_K@Z 0x140aa6f40 ; unique
-// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@XZ 0x140aa7290 ; unique
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@XZ 0x140aa7290 ; unique
 // MS2-PIN: ?_Calculate_growth@?$vector@KV?$allocator@K@std@@@std@@AEBA_K_K@Z 0x140aa7370 ; unique
 // MS2-PIN: ?_Change_array@?$vector@KV?$allocator@K@std@@@std@@AEAAXQEAK_K1@Z 0x140aa7490 ; unique
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x140aa76f0 ; unique
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEBA_NAEBW4Unk_DIKey@@0@Z 0x140aa76f0 ; unique
 // MS2-PIN: ?_Destroy@?$vector@KV?$allocator@K@std@@@std@@AEAAXPEAK0@Z 0x140aa7790 ; unique
-// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@Z 0x140aa7860 ; unique
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@Z 0x140aa7860 ; unique
 // MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@KV?$allocator@K@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@K@std@@@2@XZ 0x140aa86d0 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140aa8770 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140aa8780 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@W4Unk_DIKey@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@W4Unk_DIKey@@@2@XZ 0x140aa8770 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@W4Unk_DIKey@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@W4Unk_DIKey@@@2@XZ 0x140aa8780 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@K@std@@V?$_Vector_val@U?$_Simple_types@K@std@@@2@$00@std@@QEAAAEAV?$allocator@K@2@XZ 0x140aa8790 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@K@std@@V?$_Vector_val@U?$_Simple_types@K@std@@@2@$00@std@@QEBAAEBV?$allocator@K@2@XZ 0x140aa87a0 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@K@std@@V?$_Vector_val@U?$_Simple_types@K@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@K@std@@@2@XZ 0x140aa8850 ; prop
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@KV?$allocator@K@std@@@std@@@std@@QEAAAEAV?$allocator@K@2@XZ 0x140aa8990 ; prop
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@KV?$allocator@K@std@@@std@@@std@@QEBAAEBV?$allocator@K@2@XZ 0x140aa89b0 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x140aa8a50 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x140aa8a70 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAAAEAU?$less@W4Unk_DIKey@@@2@XZ 0x140aa8a50 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEBAAEBU?$less@W4Unk_DIKey@@@2@XZ 0x140aa8a70 ; prop
 // MS2-PIN: ?_Has_unused_capacity@?$vector@KV?$allocator@K@std@@@std@@AEBA_NXZ 0x140aa8a90 ; unique
-// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEBAAEBHPEAU?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@Z 0x140aa8b60 ; unique
-// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@IEBAAEBHAEBU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@2@@Z 0x140aa8bb0 ; unique
+// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEBAAEBW4Unk_DIKey@@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@2@@Z 0x140aa8b60 ; unique
+// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@IEBAAEBW4Unk_DIKey@@AEBU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@2@@Z 0x140aa8bb0 ; unique
 // MS2-PIN: ?_Move_from@?$vector@KV?$allocator@K@std@@@std@@AEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x140aa8e70 ; unique
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@KV?$allocator@K@std@@@std@@@std@@QEAAAEAPEAKXZ 0x140aa9030 ; prop
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@KV?$allocator@K@std@@@std@@@std@@QEBAAEBQEAKXZ 0x140aa9050 ; prop
@@ -159,13 +159,13 @@
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@KV?$allocator@K@std@@@std@@AEAAXPEAK00@Z 0x140aa9850 ; unique
 // MS2-PIN: ?allocate@?$allocator@K@std@@QEAAPEAK_K@Z 0x140aa9950 ; prop
 // MS2-PIN: ?capacity@?$vector@KV?$allocator@K@std@@@std@@QEBA_KXZ 0x140aa9af0 ; prop
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@2@AEBH@Z 0x140aaa1e0 ; unique
-// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@2@AEBH@Z 0x140aaa320 ; unique
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@2@@Z 0x140aaa3a0 ; unique
-// MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEBA_KXZ 0x140aaa3e0 ; prop
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@2@AEBW4Unk_DIKey@@@Z 0x140aaa1e0 ; unique
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@@std@@@2@AEBW4Unk_DIKey@@@Z 0x140aaa320 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@PEAX@std@@@2@@Z 0x140aaa3a0 ; unique
+// MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEBA_KXZ 0x140aaa3e0 ; prop
 // MS2-PIN: ?max_size@?$vector@KV?$allocator@K@std@@@std@@QEBA_KXZ 0x140aaa400 ; unique
-// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@SAPEAU?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@2@AEAU32@@Z 0x140aaa4c0 ; prop
-// MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@HW4RZKEY@Keyboard@ChromaSDK@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHW4RZKEY@Keyboard@ChromaSDK@@@std@@@5@$0A@@std@@@std@@QEBA_KXZ 0x140aaa570 ; unique
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@std@@SAPEAU?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@2@AEAU32@@Z 0x140aaa4c0 ; prop
+// MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@W4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@U?$less@W4Unk_DIKey@@@std@@V?$allocator@U?$pair@$$CBW4Unk_DIKey@@W4RZKEY@Keyboard@ChromaSDK@@@std@@@6@$0A@@std@@@std@@QEBA_KXZ 0x140aaa570 ; unique
 // MS2-PIN: ?size@?$vector@KV?$allocator@K@std@@@std@@QEBA_KXZ 0x140aaa590 ; prop
 // MS2-PIN: ??_GChromaManagerDummy@ChromaSDK@@UEAAPEAXI@Z 0x140aaa8c0 ; unique
 // MS2-PINS-END tplpin
@@ -1502,7 +1502,7 @@ void ChromaManagerImpl::RefreshKeySkills()
 // @0x140a9bf30
 int ChromaManagerImpl::GetKeyboardKey(int nKey)
 {
-    std::map<int, Keyboard::RZKEY>::iterator it = m_keyboardKeys.find(nKey);
+    std::map<Unk_DIKey, Keyboard::RZKEY>::iterator it = m_keyboardKeys.find((const Unk_DIKey&)nKey);
     if (it != m_keyboardKeys.end())
         return (*it).second;
     return -1;
@@ -2273,106 +2273,106 @@ bool ChromaManagerImpl::LoadSDK()
 // @0x140a9f080
 void ChromaManagerImpl::InitKeyMap()
 {
-    m_keyboardKeys[0x01] = Keyboard::RZKEY_ESC;
-    m_keyboardKeys[0x3B] = Keyboard::RZKEY_F1;
-    m_keyboardKeys[0x3C] = Keyboard::RZKEY_F2;
-    m_keyboardKeys[0x3D] = Keyboard::RZKEY_F3;
-    m_keyboardKeys[0x3E] = Keyboard::RZKEY_F4;
-    m_keyboardKeys[0x3F] = Keyboard::RZKEY_F5;
-    m_keyboardKeys[0x40] = Keyboard::RZKEY_F6;
-    m_keyboardKeys[0x41] = Keyboard::RZKEY_F7;
-    m_keyboardKeys[0x42] = Keyboard::RZKEY_F8;
-    m_keyboardKeys[0x43] = Keyboard::RZKEY_F9;
-    m_keyboardKeys[0x44] = Keyboard::RZKEY_F10;
-    m_keyboardKeys[0x55] = Keyboard::RZKEY_F11;
-    m_keyboardKeys[0x56] = Keyboard::RZKEY_F12;
-    m_keyboardKeys[0x29] = Keyboard::RZKEY_OEM_1;
-    m_keyboardKeys[0x02] = Keyboard::RZKEY_1;
-    m_keyboardKeys[0x03] = Keyboard::RZKEY_2;
-    m_keyboardKeys[0x04] = Keyboard::RZKEY_3;
-    m_keyboardKeys[0x05] = Keyboard::RZKEY_4;
-    m_keyboardKeys[0x06] = Keyboard::RZKEY_5;
-    m_keyboardKeys[0x07] = Keyboard::RZKEY_6;
-    m_keyboardKeys[0x08] = Keyboard::RZKEY_7;
-    m_keyboardKeys[0x09] = Keyboard::RZKEY_8;
-    m_keyboardKeys[0x0A] = Keyboard::RZKEY_9;
-    m_keyboardKeys[0x0B] = Keyboard::RZKEY_0;
-    m_keyboardKeys[0x1E] = Keyboard::RZKEY_A;
-    m_keyboardKeys[0x30] = Keyboard::RZKEY_B;
-    m_keyboardKeys[0x2E] = Keyboard::RZKEY_C;
-    m_keyboardKeys[0x20] = Keyboard::RZKEY_D;
-    m_keyboardKeys[0x12] = Keyboard::RZKEY_E;
-    m_keyboardKeys[0x21] = Keyboard::RZKEY_F;
-    m_keyboardKeys[0x22] = Keyboard::RZKEY_G;
-    m_keyboardKeys[0x23] = Keyboard::RZKEY_H;
-    m_keyboardKeys[0x17] = Keyboard::RZKEY_I;
-    m_keyboardKeys[0x24] = Keyboard::RZKEY_J;
-    m_keyboardKeys[0x25] = Keyboard::RZKEY_K;
-    m_keyboardKeys[0x26] = Keyboard::RZKEY_L;
-    m_keyboardKeys[0x32] = Keyboard::RZKEY_M;
-    m_keyboardKeys[0x31] = Keyboard::RZKEY_N;
-    m_keyboardKeys[0x18] = Keyboard::RZKEY_O;
-    m_keyboardKeys[0x19] = Keyboard::RZKEY_P;
-    m_keyboardKeys[0x10] = Keyboard::RZKEY_Q;
-    m_keyboardKeys[0x13] = Keyboard::RZKEY_R;
-    m_keyboardKeys[0x1F] = Keyboard::RZKEY_S;
-    m_keyboardKeys[0x14] = Keyboard::RZKEY_T;
-    m_keyboardKeys[0x16] = Keyboard::RZKEY_U;
-    m_keyboardKeys[0x2F] = Keyboard::RZKEY_V;
-    m_keyboardKeys[0x11] = Keyboard::RZKEY_W;
-    m_keyboardKeys[0x2D] = Keyboard::RZKEY_X;
-    m_keyboardKeys[0x15] = Keyboard::RZKEY_Y;
-    m_keyboardKeys[0x2C] = Keyboard::RZKEY_Z;
-    m_keyboardKeys[0x52] = Keyboard::RZKEY_NUMPAD0;
-    m_keyboardKeys[0x4F] = Keyboard::RZKEY_NUMPAD1;
-    m_keyboardKeys[0x50] = Keyboard::RZKEY_NUMPAD2;
-    m_keyboardKeys[0x51] = Keyboard::RZKEY_NUMPAD3;
-    m_keyboardKeys[0x4B] = Keyboard::RZKEY_NUMPAD4;
-    m_keyboardKeys[0x4C] = Keyboard::RZKEY_NUMPAD5;
-    m_keyboardKeys[0x4D] = Keyboard::RZKEY_NUMPAD6;
-    m_keyboardKeys[0x47] = Keyboard::RZKEY_NUMPAD7;
-    m_keyboardKeys[0x48] = Keyboard::RZKEY_NUMPAD8;
-    m_keyboardKeys[0x49] = Keyboard::RZKEY_NUMPAD9;
-    m_keyboardKeys[0x74] = Keyboard::RZKEY_NUMPAD_DIVIDE;
-    m_keyboardKeys[0x37] = Keyboard::RZKEY_NUMPAD_MULTIPLY;
-    m_keyboardKeys[0x4A] = Keyboard::RZKEY_NUMPAD_SUBTRACT;
-    m_keyboardKeys[0x4E] = Keyboard::RZKEY_NUMPAD_ADD;
-    m_keyboardKeys[0x6A] = Keyboard::RZKEY_NUMPAD_ENTER;
-    m_keyboardKeys[0x53] = Keyboard::RZKEY_NUMPAD_DECIMAL;
-    m_keyboardKeys[0x46] = Keyboard::RZKEY_SCROLL;
-    m_keyboardKeys[0x77] = Keyboard::RZKEY_PAUSE;
-    m_keyboardKeys[0x80] = Keyboard::RZKEY_INSERT;
-    m_keyboardKeys[0x78] = Keyboard::RZKEY_HOME;
-    m_keyboardKeys[0x7A] = Keyboard::RZKEY_PAGEUP;
-    m_keyboardKeys[0x81] = Keyboard::RZKEY_DELETE;
-    m_keyboardKeys[0x7D] = Keyboard::RZKEY_END;
-    m_keyboardKeys[0x7F] = Keyboard::RZKEY_PAGEDOWN;
-    m_keyboardKeys[0x79] = Keyboard::RZKEY_UP;
-    m_keyboardKeys[0x7B] = Keyboard::RZKEY_LEFT;
-    m_keyboardKeys[0x7E] = Keyboard::RZKEY_DOWN;
-    m_keyboardKeys[0x7C] = Keyboard::RZKEY_RIGHT;
-    m_keyboardKeys[0x0F] = Keyboard::RZKEY_TAB;
-    m_keyboardKeys[0x3A] = Keyboard::RZKEY_CAPSLOCK;
-    m_keyboardKeys[0x0E] = Keyboard::RZKEY_BACKSPACE;
-    m_keyboardKeys[0x1C] = Keyboard::RZKEY_ENTER;
-    m_keyboardKeys[0x1D] = Keyboard::RZKEY_LCTRL;
-    m_keyboardKeys[0x82] = Keyboard::RZKEY_LWIN;
-    m_keyboardKeys[0x38] = Keyboard::RZKEY_LALT;
-    m_keyboardKeys[0x39] = Keyboard::RZKEY_SPACE;
-    m_keyboardKeys[0x76] = Keyboard::RZKEY_RALT;
-    m_keyboardKeys[0x6B] = Keyboard::RZKEY_RCTRL;
-    m_keyboardKeys[0x2A] = Keyboard::RZKEY_LSHIFT;
-    m_keyboardKeys[0x36] = Keyboard::RZKEY_RSHIFT;
-    m_keyboardKeys[0x0C] = Keyboard::RZKEY_OEM_2;
-    m_keyboardKeys[0x0D] = Keyboard::RZKEY_OEM_3;
-    m_keyboardKeys[0x1A] = Keyboard::RZKEY_OEM_4;
-    m_keyboardKeys[0x1B] = Keyboard::RZKEY_OEM_5;
-    m_keyboardKeys[0x2B] = Keyboard::RZKEY_OEM_6;
-    m_keyboardKeys[0x27] = Keyboard::RZKEY_OEM_7;
-    m_keyboardKeys[0x28] = Keyboard::RZKEY_OEM_8;
-    m_keyboardKeys[0x33] = Keyboard::RZKEY_OEM_9;
-    m_keyboardKeys[0x34] = Keyboard::RZKEY_OEM_10;
-    m_keyboardKeys[0x35] = Keyboard::RZKEY_OEM_11;
+    m_keyboardKeys[(Unk_DIKey)0x01] = Keyboard::RZKEY_ESC;
+    m_keyboardKeys[(Unk_DIKey)0x3B] = Keyboard::RZKEY_F1;
+    m_keyboardKeys[(Unk_DIKey)0x3C] = Keyboard::RZKEY_F2;
+    m_keyboardKeys[(Unk_DIKey)0x3D] = Keyboard::RZKEY_F3;
+    m_keyboardKeys[(Unk_DIKey)0x3E] = Keyboard::RZKEY_F4;
+    m_keyboardKeys[(Unk_DIKey)0x3F] = Keyboard::RZKEY_F5;
+    m_keyboardKeys[(Unk_DIKey)0x40] = Keyboard::RZKEY_F6;
+    m_keyboardKeys[(Unk_DIKey)0x41] = Keyboard::RZKEY_F7;
+    m_keyboardKeys[(Unk_DIKey)0x42] = Keyboard::RZKEY_F8;
+    m_keyboardKeys[(Unk_DIKey)0x43] = Keyboard::RZKEY_F9;
+    m_keyboardKeys[(Unk_DIKey)0x44] = Keyboard::RZKEY_F10;
+    m_keyboardKeys[(Unk_DIKey)0x55] = Keyboard::RZKEY_F11;
+    m_keyboardKeys[(Unk_DIKey)0x56] = Keyboard::RZKEY_F12;
+    m_keyboardKeys[(Unk_DIKey)0x29] = Keyboard::RZKEY_OEM_1;
+    m_keyboardKeys[(Unk_DIKey)0x02] = Keyboard::RZKEY_1;
+    m_keyboardKeys[(Unk_DIKey)0x03] = Keyboard::RZKEY_2;
+    m_keyboardKeys[(Unk_DIKey)0x04] = Keyboard::RZKEY_3;
+    m_keyboardKeys[(Unk_DIKey)0x05] = Keyboard::RZKEY_4;
+    m_keyboardKeys[(Unk_DIKey)0x06] = Keyboard::RZKEY_5;
+    m_keyboardKeys[(Unk_DIKey)0x07] = Keyboard::RZKEY_6;
+    m_keyboardKeys[(Unk_DIKey)0x08] = Keyboard::RZKEY_7;
+    m_keyboardKeys[(Unk_DIKey)0x09] = Keyboard::RZKEY_8;
+    m_keyboardKeys[(Unk_DIKey)0x0A] = Keyboard::RZKEY_9;
+    m_keyboardKeys[(Unk_DIKey)0x0B] = Keyboard::RZKEY_0;
+    m_keyboardKeys[(Unk_DIKey)0x1E] = Keyboard::RZKEY_A;
+    m_keyboardKeys[(Unk_DIKey)0x30] = Keyboard::RZKEY_B;
+    m_keyboardKeys[(Unk_DIKey)0x2E] = Keyboard::RZKEY_C;
+    m_keyboardKeys[(Unk_DIKey)0x20] = Keyboard::RZKEY_D;
+    m_keyboardKeys[(Unk_DIKey)0x12] = Keyboard::RZKEY_E;
+    m_keyboardKeys[(Unk_DIKey)0x21] = Keyboard::RZKEY_F;
+    m_keyboardKeys[(Unk_DIKey)0x22] = Keyboard::RZKEY_G;
+    m_keyboardKeys[(Unk_DIKey)0x23] = Keyboard::RZKEY_H;
+    m_keyboardKeys[(Unk_DIKey)0x17] = Keyboard::RZKEY_I;
+    m_keyboardKeys[(Unk_DIKey)0x24] = Keyboard::RZKEY_J;
+    m_keyboardKeys[(Unk_DIKey)0x25] = Keyboard::RZKEY_K;
+    m_keyboardKeys[(Unk_DIKey)0x26] = Keyboard::RZKEY_L;
+    m_keyboardKeys[(Unk_DIKey)0x32] = Keyboard::RZKEY_M;
+    m_keyboardKeys[(Unk_DIKey)0x31] = Keyboard::RZKEY_N;
+    m_keyboardKeys[(Unk_DIKey)0x18] = Keyboard::RZKEY_O;
+    m_keyboardKeys[(Unk_DIKey)0x19] = Keyboard::RZKEY_P;
+    m_keyboardKeys[(Unk_DIKey)0x10] = Keyboard::RZKEY_Q;
+    m_keyboardKeys[(Unk_DIKey)0x13] = Keyboard::RZKEY_R;
+    m_keyboardKeys[(Unk_DIKey)0x1F] = Keyboard::RZKEY_S;
+    m_keyboardKeys[(Unk_DIKey)0x14] = Keyboard::RZKEY_T;
+    m_keyboardKeys[(Unk_DIKey)0x16] = Keyboard::RZKEY_U;
+    m_keyboardKeys[(Unk_DIKey)0x2F] = Keyboard::RZKEY_V;
+    m_keyboardKeys[(Unk_DIKey)0x11] = Keyboard::RZKEY_W;
+    m_keyboardKeys[(Unk_DIKey)0x2D] = Keyboard::RZKEY_X;
+    m_keyboardKeys[(Unk_DIKey)0x15] = Keyboard::RZKEY_Y;
+    m_keyboardKeys[(Unk_DIKey)0x2C] = Keyboard::RZKEY_Z;
+    m_keyboardKeys[(Unk_DIKey)0x52] = Keyboard::RZKEY_NUMPAD0;
+    m_keyboardKeys[(Unk_DIKey)0x4F] = Keyboard::RZKEY_NUMPAD1;
+    m_keyboardKeys[(Unk_DIKey)0x50] = Keyboard::RZKEY_NUMPAD2;
+    m_keyboardKeys[(Unk_DIKey)0x51] = Keyboard::RZKEY_NUMPAD3;
+    m_keyboardKeys[(Unk_DIKey)0x4B] = Keyboard::RZKEY_NUMPAD4;
+    m_keyboardKeys[(Unk_DIKey)0x4C] = Keyboard::RZKEY_NUMPAD5;
+    m_keyboardKeys[(Unk_DIKey)0x4D] = Keyboard::RZKEY_NUMPAD6;
+    m_keyboardKeys[(Unk_DIKey)0x47] = Keyboard::RZKEY_NUMPAD7;
+    m_keyboardKeys[(Unk_DIKey)0x48] = Keyboard::RZKEY_NUMPAD8;
+    m_keyboardKeys[(Unk_DIKey)0x49] = Keyboard::RZKEY_NUMPAD9;
+    m_keyboardKeys[(Unk_DIKey)0x74] = Keyboard::RZKEY_NUMPAD_DIVIDE;
+    m_keyboardKeys[(Unk_DIKey)0x37] = Keyboard::RZKEY_NUMPAD_MULTIPLY;
+    m_keyboardKeys[(Unk_DIKey)0x4A] = Keyboard::RZKEY_NUMPAD_SUBTRACT;
+    m_keyboardKeys[(Unk_DIKey)0x4E] = Keyboard::RZKEY_NUMPAD_ADD;
+    m_keyboardKeys[(Unk_DIKey)0x6A] = Keyboard::RZKEY_NUMPAD_ENTER;
+    m_keyboardKeys[(Unk_DIKey)0x53] = Keyboard::RZKEY_NUMPAD_DECIMAL;
+    m_keyboardKeys[(Unk_DIKey)0x46] = Keyboard::RZKEY_SCROLL;
+    m_keyboardKeys[(Unk_DIKey)0x77] = Keyboard::RZKEY_PAUSE;
+    m_keyboardKeys[(Unk_DIKey)0x80] = Keyboard::RZKEY_INSERT;
+    m_keyboardKeys[(Unk_DIKey)0x78] = Keyboard::RZKEY_HOME;
+    m_keyboardKeys[(Unk_DIKey)0x7A] = Keyboard::RZKEY_PAGEUP;
+    m_keyboardKeys[(Unk_DIKey)0x81] = Keyboard::RZKEY_DELETE;
+    m_keyboardKeys[(Unk_DIKey)0x7D] = Keyboard::RZKEY_END;
+    m_keyboardKeys[(Unk_DIKey)0x7F] = Keyboard::RZKEY_PAGEDOWN;
+    m_keyboardKeys[(Unk_DIKey)0x79] = Keyboard::RZKEY_UP;
+    m_keyboardKeys[(Unk_DIKey)0x7B] = Keyboard::RZKEY_LEFT;
+    m_keyboardKeys[(Unk_DIKey)0x7E] = Keyboard::RZKEY_DOWN;
+    m_keyboardKeys[(Unk_DIKey)0x7C] = Keyboard::RZKEY_RIGHT;
+    m_keyboardKeys[(Unk_DIKey)0x0F] = Keyboard::RZKEY_TAB;
+    m_keyboardKeys[(Unk_DIKey)0x3A] = Keyboard::RZKEY_CAPSLOCK;
+    m_keyboardKeys[(Unk_DIKey)0x0E] = Keyboard::RZKEY_BACKSPACE;
+    m_keyboardKeys[(Unk_DIKey)0x1C] = Keyboard::RZKEY_ENTER;
+    m_keyboardKeys[(Unk_DIKey)0x1D] = Keyboard::RZKEY_LCTRL;
+    m_keyboardKeys[(Unk_DIKey)0x82] = Keyboard::RZKEY_LWIN;
+    m_keyboardKeys[(Unk_DIKey)0x38] = Keyboard::RZKEY_LALT;
+    m_keyboardKeys[(Unk_DIKey)0x39] = Keyboard::RZKEY_SPACE;
+    m_keyboardKeys[(Unk_DIKey)0x76] = Keyboard::RZKEY_RALT;
+    m_keyboardKeys[(Unk_DIKey)0x6B] = Keyboard::RZKEY_RCTRL;
+    m_keyboardKeys[(Unk_DIKey)0x2A] = Keyboard::RZKEY_LSHIFT;
+    m_keyboardKeys[(Unk_DIKey)0x36] = Keyboard::RZKEY_RSHIFT;
+    m_keyboardKeys[(Unk_DIKey)0x0C] = Keyboard::RZKEY_OEM_2;
+    m_keyboardKeys[(Unk_DIKey)0x0D] = Keyboard::RZKEY_OEM_3;
+    m_keyboardKeys[(Unk_DIKey)0x1A] = Keyboard::RZKEY_OEM_4;
+    m_keyboardKeys[(Unk_DIKey)0x1B] = Keyboard::RZKEY_OEM_5;
+    m_keyboardKeys[(Unk_DIKey)0x2B] = Keyboard::RZKEY_OEM_6;
+    m_keyboardKeys[(Unk_DIKey)0x27] = Keyboard::RZKEY_OEM_7;
+    m_keyboardKeys[(Unk_DIKey)0x28] = Keyboard::RZKEY_OEM_8;
+    m_keyboardKeys[(Unk_DIKey)0x33] = Keyboard::RZKEY_OEM_9;
+    m_keyboardKeys[(Unk_DIKey)0x34] = Keyboard::RZKEY_OEM_10;
+    m_keyboardKeys[(Unk_DIKey)0x35] = Keyboard::RZKEY_OEM_11;
     m_mouseLeds[EChromaSDKMouseLED::ML_SCROLLWHEEL] = Mouse::RZLED2_SCROLLWHEEL;
     m_mouseLeds[EChromaSDKMouseLED::ML_LOGO] = Mouse::RZLED2_LOGO;
     m_mouseLeds[EChromaSDKMouseLED::ML_BACKLIGHT] = Mouse::RZLED2_BACKLIGHT;

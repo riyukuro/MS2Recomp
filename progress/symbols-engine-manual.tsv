@@ -324,7 +324,7 @@ _wrap_new_Point4__SWIG_3	14221e680	func
 ?Wait@NiStreamProcessor@@QEAA_NPEBVNiSPWorkflow@@I@Z	141d00bb0	func
 ?UpdateD3DBuffers@NiDX9DataStream@@QEAAX_N@Z	1427fb780	func
 ??0NiSPStream@@QEAA@PEAXII_N@Z	141d05d50	func
-??0?$NiTArray@PEAVNiSPTask@@V?$NiTMallocInterface@PEAVNiSPTask@@@@@@QEAA@II@Z	141d05c90	func
+??0?$NiTPrimitiveArray@PEAVNiSPTask@@@@QEAA@II@Z	141d05c90	func
 ??$CreateBinding@UDX9CreateBindingContext@@@NiMeshMaterialBinding@@SA_NAEAUDX9CreateBindingContext@@AEBVNiSemanticAdapterTable@@@Z	1427e35a0	func
 ?FillPredefinedConstantValue@NiD3DXEffectParameter@@IEAA_NAEBVNiRenderCallContext@@PEAUID3DXEffect@@_N@Z	1427bf250	func
 # gb18: hit stubs with the stock logic where only the inliner differs: CreateInstanceTransformStream (exe calls
@@ -485,10 +485,9 @@ SWIG_TypeQueryModule	14205a8e0	alias	attachednifasset_luawrap
 ?UpdateSceneGraph@NiPhysXAccumPoseBufferDest@@UEAAXMAEBVNiTransform@@M_N@Z	141f18db0	alias	__niphysxaccumposebufferdest.cpp
 ?Execute@NiPhysXPSSimulatorInitialKernel@@UEAAXAEAVNiSPWorkload@@@Z	141f3ce10	alias	__niphysxpssimulatorinitialkernel.cpp
 ??$_Insert_nohint@AEBVutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_NAEBVutf8string@efd@@U_Not_a_node_tag@1@@Z	141f8b9d0	alias	__niterrainsurfacepackagefileversion0.cpp
-memcpy_s	141fb6940	alias	__niterrainsectorfileversion5.cpp
 ??$_Insert_nohint@Vutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_N$$QEAVutf8string@efd@@U_Not_a_node_tag@1@@Z	141fb7270	alias	__niterrainsectorfileversion5.cpp
-?erase@?$_Tree@V?$_Tmap_traits@IVNiIndex@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIVNiIndex@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVNiIndex@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVNiIndex@@@std@@@std@@@std@@@2@0@Z	141fb8350	alias	__niterrainsectorfileversion5.cpp
-?erase@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@std@@@std@@@2@@Z	142282130	alias	__animationservice.cpp
+?GetFilePaths@NiTerrainSectorFileVersion5@@UEAAXAEAV?$set@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@@efd@@@Z	141fb8350	func
+?erase@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@2@$0A@@std@@@std@@QEAA_KAEBVutf8string@efd@@@Z	142282130	alias	__animationservice.cpp
 ??$DumpProperty@M@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224a5c0	alias	__entitylua
 ??$DumpProperty@VAssetID@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224aec0	alias	__entitylua
 ??$DumpProperty@VColor@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224b240	alias	__entitylua
@@ -648,3 +647,5 @@ big2_prologTok	1423bf1f0	func
 ??0?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAA@PEBV?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	1423258b0	func
 ?GetVoidValue@?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@UEBA_NPEBDAEBVtype_info@@PEAX@Z	14233e220	func
 ?Assignable@?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_DSA@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAAAEAV12@XZ	1423313a0	func
+?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@I@std@@PEAX@2@@Z	1421100f0	func
+?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@I@std@@PEAX@2@@Z	14210fc70	func

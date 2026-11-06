@@ -82,7 +82,7 @@ public:
     Unk_MaidLimitBox m_maxChars1;                               // +0xa118
     Unk_MaidLimitBox m_maxChars2;                               // +0xa1c8
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 
 extern template class MS2Ptr<CBanTextChecker>;
@@ -368,8 +368,8 @@ void UIMaidDialog::FUN_1412d7aa0()
         obj.FUN_1407cbb20("ownername", CStringW(spMaid->m_profile.ownerName));
         obj.FUN_1407cbb20("belongto", CStringW(spMaid->m_profile.belongTo));
     }
-    obj.FUN_1407cb9c0("maxChars1", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars1)->Get());
-    obj.FUN_1407cb9c0("maxChars2", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)FUN_1401d3200())->m_maxChars2)->Get());
+    obj.FUN_1407cb9c0("maxChars1", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars1)->Get());
+    obj.FUN_1407cb9c0("maxChars2", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars2)->Get());
     m_30->Invoke("setData", obj);
     if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         m_30->Invoke("showDebugBtn", 1);           // an int, not a bool: the movie gets the Number 1

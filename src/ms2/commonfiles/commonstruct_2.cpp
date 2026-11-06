@@ -104,7 +104,7 @@ void FUN_1402769e0(i64*, i64, Unk_StlTag);
 void FUN_140276a10(i64*, i64, Unk_StlTag);
 // (0x140276a40 = std::_Advance1<LHist::iterator>, commonstruct_wc)
 void FUN_140276920(i64, i64); void FUN_140276960(i64, i64);
-void FUN_140276aa0(i64, i64, i64, Unk_StlTag); void FUN_140276d40(i64, i64, i64, Unk_StlTag);
+#include "ms2/placeholder/citemremakeoptionpacket.h"   // Unk_RemakeLockOpt: 0x14027b630 is vector<Unk_RemakeLockOpt>::assign
 i64 FUN_140278710(i64); i64 FUN_140278750(i64);
 
 // @0x14027b320
@@ -164,19 +164,19 @@ void FUN_14027b5d0(i64* p, i64 n) { Unk_StlTag t; FUN_140276a10(p, n, t); }
 // @0x14027b600
 template void std::advance<LHist::iterator, __int64>(LHist::iterator&, __int64);
 // @0x14027b630
-i64 FUN_14027b630(i64 a, i64 b, i64 c)
-{
-    Unk_StlTag t;
-    FUN_140276920((i64)&b, (i64)&c);
-    return reinterpret_cast<i64 (*)(i64, i64, i64, Unk_StlTag)>(&FUN_140276aa0)(a, FUN_140278710(b), FUN_140278710(c), t);
-}
+typedef std::vector<Unk_RemakeLockOpt> VRemake;
+template void VRemake::assign(Unk_RemakeLockOpt*, Unk_RemakeLockOpt*);
+//
+//
+//
+//
 // @0x14027b690
-i64 FUN_14027b690(i64 a, i64 b, i64 c)
-{
-    Unk_StlTag t;
-    FUN_140276960((i64)&b, (i64)&c);
-    return reinterpret_cast<i64 (*)(i64, i64, i64, Unk_StlTag)>(&FUN_140276d40)(a, FUN_140278750(b), FUN_140278750(c), t);
-}
+template void VLog::assign(PLog*, PLog*);
+//
+//
+//
+//
+//
 
 // ---- element construct/destroy helpers (std::allocator_traits<>::construct/destroy of the element types) ----
 struct Unk_P8 { i64 v; };
@@ -261,32 +261,32 @@ template std::_Iter_diff_t<PIng*> std::distance<PIng*>(PIng*, PIng*);
 i64 FUN_14027bca0(i64 first, i64 last) { Unk_StlTag t; return FUN_140277660(first, last, t); }
 
 // vector::push_back(const T&) bodies: construct at end when it has room, otherwise reallocate
-bool FUN_140288470(i64); bool FUN_1402884c0(i64);
-void FUN_140277990(i64, i64); void FUN_140277a50(i64, i64); void FUN_140277b10(i64, i64); void FUN_140277bd0(i64, i64);
-i64 FUN_140277ee0(i64, i64, i64); i64 FUN_140278130(i64, i64, i64);
+//
+//
+//
 // @0x14027bcd0
 template decltype(auto) VIng::emplace_back<const PIng&>(const PIng&);   // vector<MS2Ptr<CIngredientInfo>>::emplace_back (was FUN_14027bcd0)
 //
 //
 //
 // @0x14027bd40
-void FUN_14027bd40(i64 vec, i64 val)
-{
-    if (FUN_140288470(vec)) {
-        FUN_140277a50(vec, FUN_14027c200(val));
-    } else {
-        i64 r = FUN_140277ee0(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), FUN_14027c200(val));
-    }
-}
+template decltype(auto) VItem::emplace_back<ItemEntity>(ItemEntity&&);   // vector<ItemEntity>::emplace_back (was FUN_14027bd40)
+//
+//
+//
+//
+//
+//
+//
 // @0x14027bdb0
-void FUN_14027bdb0(i64 vec, i64 val)
-{
-    if (FUN_1402884c0(vec)) {
-        FUN_140277b10(vec, (i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)val)));
-    } else {
-        i64 r = FUN_140278130(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), (i64)&reinterpret_cast<CStringA&>(std::forward<CStringA>(*(CStringA*)val)));
-    }
-}
+template decltype(auto) VStr::emplace_back<CString>(CString&&);   // vector<CString>::emplace_back (was FUN_14027bdb0)
+//
+//
+//
+//
+//
+//
+//
 // @0x14027be20
 template decltype(auto) VIng::emplace_back<PIng>(PIng&&);   // vector<MS2Ptr<CIngredientInfo>>::emplace_back (was FUN_14027be20)
 //
@@ -783,7 +783,7 @@ Unk_ProdRef::~Unk_ProdRef() { FUN_140288f90(this); }
 // @0x14027e150
 template MS2SvrPtr<CPtred>::~MS2SvrPtr();
 // @0x14027dfa0
-void FUN_14027dfa0(void* t) noexcept { FUN_140288e10(t); }
+template TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>::~TPtrValue();   // was FUN_14027dfa0 calling FUN_140288e10 (the private Release)
 // @0x14027dfd0
 template MS2Ptr<AdditionalEffectEventCtx>::~MS2Ptr();
 // @0x14027e000
@@ -791,7 +791,7 @@ template MS2Ptr<CAdditionalEvent>::~MS2Ptr();
 // @0x14027e030
 template MS2Ptr<CItemOption>::~MS2Ptr();   // C3: was FUN_14027e030 calling FUN_140288ed0 (Release)
 // @0x14027e090
-void FUN_14027e090(void* t) noexcept { FUN_140288f50(t); }
+template MS2Ptr<CUserLimitHistory>::~MS2Ptr();   // was FUN_14027e090 calling FUN_140288f50 (the private Release)
 // @0x14027e0f0
 class InvokeEffectOption; template MS2Ptr<InvokeEffectOption>::~MS2Ptr();   // C3: was FUN_14027e0f0 calling FUN_140288fd0
 // @0x14027e120
@@ -930,11 +930,11 @@ void FUN_14027e900(Unk_At8* t) { reinterpret_cast<PktOut*>(&t->m)->PktOut::~PktO
 // @0x14027e690
 void FUN_14027e690(Unk_At10* t) { FUN_14027e900(&t->m); }
 // @0x14027e6b0
-void FUN_14027e6b0(Unk_At10* t) { FUN_14027e090(&t->m); }
+void FUN_14027e6b0(Unk_At10* t) { reinterpret_cast<MS2Ptr<CUserLimitHistory>*>(&t->m)->MS2Ptr<CUserLimitHistory>::~MS2Ptr(); }
 // @0x14027e6d0
 void FUN_14027e6d0(void*) {}
 // @0x14027e700
-void FUN_14027e700(Unk_At8* t) { FUN_14027dfa0(&t->m); }
+void FUN_14027e700(Unk_At8* t) { reinterpret_cast<TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>*>(&t->m)->TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory>>>::~TPtrValue(); }
 // @0x14027e6e0
 void FUN_14027e6e0(Unk_At8* t) { FUN_14027e700(t); }
 
@@ -947,7 +947,7 @@ i64 FUN_14027eb30(i64 t, i64 o)
     if (t != FUN_14027b500(o)) {
         if (Unk_False::value) reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670();
         FUN_140287550(t, (i64)&reinterpret_cast<const VI64*>(o)->_Getal());
-        FUN_14027b630(t, *(i64*)&reinterpret_cast<const VI64*>(o)->_Myfirst(), *(i64*)&reinterpret_cast<const VI64*>(o)->_Mylast());
+        reinterpret_cast<VRemake*>(t)->assign(*(Unk_RemakeLockOpt**)&reinterpret_cast<const VI64*>(o)->_Myfirst(), *(Unk_RemakeLockOpt**)&reinterpret_cast<const VI64*>(o)->_Mylast());
     }
     return t;
 }
@@ -957,7 +957,7 @@ i64 FUN_14027ebb0(i64 t, i64 o)
     if (t != FUN_14027b510(o)) {
         if (Unk_False::value) FUN_1402899b0((void*)t);
         FUN_140287580(t, (i64)&reinterpret_cast<const VPtred*>(o)->_Getal());
-        FUN_14027b690(t, *(i64*)&reinterpret_cast<const VPtred*>(o)->_Myfirst(), *(i64*)&reinterpret_cast<const VLog*>(o)->_Mylast());
+        reinterpret_cast<VLog*>(t)->assign(*(PLog**)&reinterpret_cast<const VPtred*>(o)->_Myfirst(), *(PLog**)&reinterpret_cast<const VLog*>(o)->_Mylast());
     }
     return t;
 }

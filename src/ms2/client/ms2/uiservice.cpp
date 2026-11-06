@@ -742,7 +742,7 @@ void CUIService::FUN_141ad9e50(int nScene)
             m_listOpen.AddTail((eUIClassID)0x4e28);
             m_listOpen.AddTail((eUIClassID)0x4e5f);
         }
-        if (!static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl.Get()->IsEmpty())
+        if (!static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogUrl.Get()->IsEmpty())
             m_listOpen.AddTail((eUIClassID)0x4ee9);
         if (*(static_cast<unsigned char*>(((void*)((class Unk_AeGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0())) + 0x14) != 0)   // flag byte at +0x14 (0x141ada11b)
             m_listOpen.AddTail((eUIClassID)0x4e7d);
@@ -3206,7 +3206,7 @@ void FUN_141ade430(void* p, int nMovieId)
     ASFunction fnNumeric(Delegate<void(const Unk_UisAsParams&)>(FUN_141ade900), 0, nMovieId);
     static_cast<ASObj*>(p)->FUN_1409adbe0("m_getNumericFunction", Scaleform::GFx::Value(fnNumeric.FUN_1422bb870()));
 
-    static_cast<ASObj*>(p)->FUN_1409c0d20("m_tooltipLabelMaxWidth", static_cast<Client::Constants*>(FUN_1401d3200())->TooltipLabelMaxWidth);
+    static_cast<ASObj*>(p)->FUN_1409c0d20("m_tooltipLabelMaxWidth", static_cast<Client::Constants*>(GetClientConstants())->TooltipLabelMaxWidth);
 }
 
 // ---- fmt argument of an eUIClassID (wide formatter) ----

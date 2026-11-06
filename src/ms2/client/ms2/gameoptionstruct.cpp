@@ -1093,7 +1093,7 @@ class Unk_GsMyPC : public MyPC
 public:
 };
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
-class Unk_SingletonObj1* FUN_1401d3200();                                              // the game constants
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); the game constants
 
 // The damage-form enum strings of the battle block.
 CString Name_140219790(int nForm);                                   // giveDamage / takeDamage value -> text
@@ -1474,7 +1474,7 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
         else
         {
             int nLevel = (unsigned short)pPlayer->vfunc_78();
-            if (abs(nLevel - spNpc->GetLevel()) > *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xcf88)->Get())
+            if (abs(nLevel - spNpc->GetLevel()) > *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(GetClientConstants()) + 0xcf88)->Get())
                 return 0;
             *pnType = 0;
             return 1;
@@ -1886,7 +1886,7 @@ public:
     virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64();
     virtual void vfunc_65(int nOptimalHide);
 };
-void* FUN_140d86260();
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 // MS2LightService's scene light scale (a member past ecr::LightService).
 // GetService<T>: the framework's service manager, asked for system service T (instance 0x141264100 -> 0x141264120).
 Unk_ServiceManager* FUN_1413f9850();
@@ -2377,7 +2377,7 @@ void FUN_14125ef90(Unk_GraphicState2* p)
     }
     int nMode = p->m_nOptimalHide == 1 ? 1 : 0;
     ((class COptimizer*)FUN_1409f7c90())->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, nMode);
-    ((Unk_GsNetCallbacks*)FUN_140d86260())->vfunc_65(p->m_nOptimalHide);
+    ((Unk_GsNetCallbacks*)((void*)GetClientPlatform()))->vfunc_65(p->m_nOptimalHide);
 }
 MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
 
@@ -2530,7 +2530,7 @@ void FUN_14125f2c0(Unk_GpState* p)
     p->m_bVibration = false;
     p->m_fSensitivityH = 0.25f;
     p->m_fSensitivityV = 0.25f;
-    p->m_nLStickSensitivity = *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xe5b0)->Get();
+    p->m_nLStickSensitivity = *reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(GetClientConstants()) + 0xe5b0)->Get();
 }
 MS2_REPLACE(0x14125F2C0, FUN_14125f2c0, 105, 0x15717390);
 

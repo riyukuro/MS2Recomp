@@ -50,23 +50,23 @@ bool UISceneGameCinematicPlay::vfunc_47()
 }
 
 // @0x140e84dc0
-void UISceneGameCinematicPlay::vfunc_48(int n)
+int UISceneGameCinematicPlay::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(false);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(m_6c);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(m_6c);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 
 // @0x140e84e30
-void UISceneGameCinematicPlay::vfunc_49(int n)
+int UISceneGameCinematicPlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(true);
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(m_6c);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(m_6c);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 
 // @0x140e84ea0

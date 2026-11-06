@@ -31,25 +31,25 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 typedef ATL::CAtlMap<CString, CString, ATL::CStringElementTraitsI<CString>> Unk_CmdArgMap;
 MS2_CHECK_SIZE(Unk_CmdArgMap, 0x48);
 
-// The one byte bitset of the parser flags (commonfiles\bitset.inl: operator[] line 152, Set line 243). Same code as
-// Unk_Bitset8 of gameeventbase.cpp for four bits.
-struct Unk_CmdBitset;
-struct Unk_CmdBitRef
-{
-    Unk_CmdBitRef& FUN_1414b2270(bool bValue);                  // 0x1414b2270 operator=
-    Unk_CmdBitset* m_pBits;
-    int m_nPos;
-};
-struct Unk_CmdBitset
-{
-    Unk_CmdBitset();                                            // 0x1414b2250
-    Unk_CmdBitRef FUN_140c79bc0(int nPos);                      // operator[] (ms2clientplatformbase.cpp)
-    Unk_CmdBitset& FUN_1414b22b0(unsigned nPos, bool bValue);   // Set
-    void FUN_1414b23d0(bool bFill);                             // Fill
-    void FUN_1414b2430();                                       // ClearUnusedBits
-    unsigned char m_bits[1];
-};
-MS2_CHECK_SIZE(Unk_CmdBitset, 1);
+// The one byte bitset of the parser flags, Unk_LaunchBitset<4> (commonfiles\bitset.inl: operator[] line 152, Set
+// line 243). Same code as Unk_Bitset8 of gameeventbase.cpp for four bits.
+#include "ms2/placeholder/launchbitset.h"
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+MS2_CHECK_SIZE(Unk_LaunchBitset<4>, 1);
 
 // ---- out-of-unit callees ----
 int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
@@ -83,7 +83,7 @@ void FUN_1414b21d0();                                                           
 // ---- header statics (dynamic initializers 0x1400f8990..0x1400f8b20) ----
 #ifndef MS2_HOOK_DLL
 Unk_CmdArgMap g_args(17, 0.75f, 0.25f, 2.25f, 10);
-Unk_CmdBitset g_bits;
+Unk_LaunchBitset<4> g_bits;
 CString g_strServerAddr = "";
 CString g_strNexonSn = "";
 CString g_strPassport = "";
@@ -95,7 +95,7 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 #else
 extern Unk_CmdArgMap g_args;
-extern Unk_CmdBitset g_bits;
+extern Unk_LaunchBitset<4> g_bits;
 extern CString g_strServerAddr;
 extern CString g_strNexonSn;
 extern CString g_strPassport;
@@ -192,7 +192,7 @@ int FUN_1414b15f0(CString strArg)
         return 0;
     CString strValue = strArg.Mid(10);
     g_strPassport = strValue;
-    g_bits.FUN_140c79bc0(0).FUN_1414b2270(true);
+    g_bits[0] = true;
     return 1;
 }
 
@@ -203,7 +203,7 @@ int FUN_1414b16b0(CString strArg)
         return 0;
     CString strValue = strArg.Mid(5);
     g_strSid = strValue;
-    g_bits.FUN_140c79bc0(1).FUN_1414b2270(true);
+    g_bits[1] = true;
     return 1;
 }
 
@@ -222,7 +222,7 @@ int FUN_1414b1770(CString strArg)
         g_nPort = atoi(tokens[1]);
         g_bPortSet = 1;
     }
-    g_bits.FUN_140c79bc0(3).FUN_1414b2270(true);
+    g_bits[3] = true;
     return 1;
 }
 
@@ -233,7 +233,7 @@ int FUN_1414b18c0(CString strArg)
         return 0;
     CString strValue = strArg.Mid(9);
     g_strNexonSn = strValue;
-    g_bits.FUN_140c79bc0(2).FUN_1414b2270(true);
+    g_bits[2] = true;
     return 1;
 }
 
@@ -352,22 +352,22 @@ void FUN_1414b21d0()
 }
 
 // @0x1414b2250
-Unk_CmdBitset::Unk_CmdBitset()
+template <int T> Unk_LaunchBitset<T>::Unk_LaunchBitset()
 {
     FUN_1414b23d0(false);
 }
 
 // @0x1414b2270
-Unk_CmdBitRef& Unk_CmdBitRef::FUN_1414b2270(bool bValue)
+template <int T> typename Unk_LaunchBitset<T>::reference& Unk_LaunchBitset<T>::reference::operator=(bool bValue)
 {
     m_pBits->FUN_1414b22b0(m_nPos, bValue);
     return *this;
 }
 
 // @0x1414b22b0
-Unk_CmdBitset& Unk_CmdBitset::FUN_1414b22b0(unsigned nPos, bool bValue)
+template <int T> Unk_LaunchBitset<T>& Unk_LaunchBitset<T>::FUN_1414b22b0(unsigned nPos, bool bValue)
 {
-    if (nPos >= 4) { MS2_CMDBITS_ASSERT(243, 0); }
+    if (nPos >= T) { MS2_CMDBITS_ASSERT(243, 0); }
     if (bValue)
         m_bits[(int)nPos / 8] |= 1 << ((int)nPos % 8);
     else
@@ -376,22 +376,22 @@ Unk_CmdBitset& Unk_CmdBitset::FUN_1414b22b0(unsigned nPos, bool bValue)
 }
 
 // @0x1414b23d0
-void Unk_CmdBitset::FUN_1414b23d0(bool bFill)
+template <int T> void Unk_LaunchBitset<T>::FUN_1414b23d0(bool bFill)
 {
-    for (int i = 0; i >= 0; i--)
+    for (int i = (T + 7) / 8 - 1; i >= 0; i--)
         m_bits[i] = bFill;
     if (bFill)
         FUN_1414b2430();
 }
 
 // @0x1414b2430
-void Unk_CmdBitset::FUN_1414b2430()
+template <int T> void Unk_LaunchBitset<T>::FUN_1414b2430()
 {
-    if (4 % 8)
+    if (T % 8)
     {
     }
     else
-        m_bits[(4 - 1) / 8] &= (1 << (4 % 8)) - 1;
+        m_bits[(T - 1) / 8] &= (1 << (T % 8)) - 1;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2d20-0x142cb2de0 .text$yd

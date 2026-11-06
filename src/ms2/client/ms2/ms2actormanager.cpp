@@ -96,7 +96,7 @@ void FUN_140d85cf0(Unk_ActorAccess* pkActorManager, NiControllerManager* pkManag
 }
 
 // @0x140d86260 singleton accessor (callers type the result differently; see the symbols-manual row)
-void* FUN_140d86260()
+IClientPlatform* GetClientPlatform()
 {
     return DAT_143ac2fd8;
 }

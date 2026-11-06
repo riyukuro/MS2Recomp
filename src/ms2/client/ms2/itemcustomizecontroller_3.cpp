@@ -52,7 +52,7 @@ public:
 
 struct Unk_MorphConfigFloat { char m_pad[0x58]; };
 struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; };   // the app framework
 namespace efd { class ServiceManager; }
@@ -105,7 +105,7 @@ int CItemMorphController::vfunc_3()
     ReadValues();
     ApplyMorph();
     ResetMeshHighlight();
-    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_2d90)->Read();
+    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_2d90)->Read();
     return 1;
 }
 

@@ -64,7 +64,7 @@ public:
     char m_pad[0x6c60];
     Unk_CaSlot m_slot;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The unit's log call (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0): two arguments.
 template <class A, class B> inline void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format,
@@ -281,7 +281,7 @@ int FUN_1401e0790(unsigned short nLevel, int nPoints)
 {
     unsigned short nPlayerLevel = ((unsigned short)((class CFeatureManager*)(((class Unk_CaSwitches*)FUN_140166410())))->FUN_14036de00());
     int nTotal = nLevel - nPlayerLevel;
-    nTotal += *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaState*)FUN_1401d3200())->m_slot)->Get());
+    nTotal += *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaState*)GetClientConstants())->m_slot)->Get());
     nTotal += nPoints;
     return nTotal;
 }

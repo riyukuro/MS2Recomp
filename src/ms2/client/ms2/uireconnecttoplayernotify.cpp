@@ -12,7 +12,7 @@
 
 // The reconnection manager singleton (the global is typed Unk_SingletonObj* in the symbol table).
 class Unk_SingletonObj;
-CReconnectionManagerCli* FUN_140e800e0();
+// (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 
 // @0x140e7fd50
 UIReconnectTopLayerNotify::UIReconnectTopLayerNotify()
@@ -67,8 +67,8 @@ int UIReconnectTopLayerNotify::vfunc_28(const char* szMethod, const Scaleform::G
     if (_stricmp("onCancel", szMethod) == 0)
     {
         vfunc_3();
-        if (FUN_140e800e0() != 0)
-            FUN_140e800e0()->DisableReconnect();
+        if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
+            TSingleton<CReconnectionManagerCli>::GetInstance()->DisableReconnect();
         return 1;
     }
     return 0;
@@ -82,7 +82,7 @@ void UIReconnectTopLayerNotify::FUN_140e80030()
 }
 
 // @0x140e800e0
-CReconnectionManagerCli* FUN_140e800e0()
+CReconnectionManagerCli* TSingleton<CReconnectionManagerCli>::GetInstance()
 {
     return TSingleton<CReconnectionManagerCli>::s_instance;
 }

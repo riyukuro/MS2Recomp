@@ -845,7 +845,7 @@ public:
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c768, 0xc768);
 MS2_CHECK_OFFSET(Unk_1401d3200, m_c7c0, 0xc7c0);
 MS2_CHECK_SIZE(Unk_1401d3200, 0xc7c8); // recovered prefix only
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The state object of the local player (0x1403ed2d0 singleton -> 0x141bd0cc0).
 class Unk_14166ccb0 : public StateMicroGameRps { };
@@ -973,8 +973,8 @@ void UIMicroGameRps::FUN_140e664a0()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL)
         return;
-    int nX = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c768));
-    int nY = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0)->Get() - 0x32;
+    int nX = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_1401d3200*)GetClientConstants())->m_c768));
+    int nY = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_1401d3200*)GetClientConstants())->m_c7c0)->Get() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
     int nHeight = (int)(((ASDisplayObject*)pEntity.operator->())->FUN_1422c1530() * 0.5f + nY);
     pEntity->SetPositionInt(nWidth, nHeight);

@@ -5163,7 +5163,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_BpSettings, minLength, 0x9ec0);
 MS2_CHECK_OFFSET(Unk_BpSettings, maxLength, 0x9f18);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 #define BP_BIND(bind, name, member, line) do { \
     m_30->bind(name, member); \
     if (member == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
@@ -5269,8 +5269,8 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     if (m_create.get()) m_create->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37700), 0);
     if (m_input.get()) m_input->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
     Unk_BpASObj data(2);
-    int minLength = *((class Unk_BpSettings*)FUN_1401d3200())->minLength.Get();
-    int maxLength = *((class Unk_BpSettings*)FUN_1401d3200())->maxLength.Get();
+    int minLength = *((class Unk_BpSettings*)GetClientConstants())->minLength.Get();
+    int maxLength = *((class Unk_BpSettings*)GetClientConstants())->maxLength.Get();
     data.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(L"s_ugc_itemedit_input_name", minLength, maxLength));
     data.FUN_1407cb9c0("ugcNameLengthMax", maxLength);
     {

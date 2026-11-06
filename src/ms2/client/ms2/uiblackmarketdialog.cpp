@@ -71,7 +71,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisi
 class Unk_MesoCfg { public: };
 class Unk_AvTextCfg { public: operator CString(); };
 class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_AvTextCfg m_6198; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_Cfg* FUN_1401d3200()
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); C3: was Unk_Cfg* FUN_1401d3200()
 void FUN_1418fe1c0(const CString& str);
 class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -228,7 +228,7 @@ void UIBlackMarketDialog::OnLoadComplete()
         FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
     if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
     {
-        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Common::Constants::Values<__int64>*>(&reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6078)->FUN_140f20b90() == 1);
+        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Common::Constants::Values<__int64>*>(&reinterpret_cast<Unk_Cfg*>(GetClientConstants())->m_6078)->FUN_140f20b90() == 1);
         m_30->FUN_140bbe640<ASButton>("m_mesoMarketDetailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton));
         if (m_spDetailButton.get())
             reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
@@ -476,7 +476,7 @@ void UIBlackMarketDialog::FUN_1418d1430(const Scaleform::GFx::FunctionHandler::P
 {
     if (!FUN_1418d0da0(m_spMesoSearchSingle.get()) && !FUN_1418d0da0(m_spMesoRegister.get()))
         return;
-    const CString& strUrl = reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6198.operator CString();
+    const CString& strUrl = reinterpret_cast<Unk_Cfg*>(GetClientConstants())->m_6198.operator CString();
     if (strUrl.IsEmpty() == true)
         return;
     FUN_1418fe1c0(strUrl);

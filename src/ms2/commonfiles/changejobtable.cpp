@@ -131,7 +131,7 @@ CChangeJobTable::DataPtr CChangeJobTable::Get(Unk_SubJobCode nSubJobCode)
 // @0x1401d6ce0
 int CChangeJobTable::CanChange(int nJobGroup, Unk_SubJobCode nJobCode, unsigned short nLevel)
 {
-    if (nLevel < *FUN_1401d3200()->ChangeJobLevel.Get())
+    if (nLevel < *GetClientConstants()->ChangeJobLevel.Get())
         return 0;
     if (JobTable::GetInstance()->GetSubJob1(nJobGroup) != nJobCode)
         return 0;

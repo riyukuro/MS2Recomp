@@ -263,7 +263,7 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 //
 //
 //
-void FUN_14154fda0(void* pObj);
+// (0x14154fda0 is NiAVObject::MS2SetFlag0800, an inline in NiAVObject.h)
 //
 //
 //
@@ -519,11 +519,11 @@ class Unk_ServiceManager* FUN_1413f9850();   // C3: was efd::ServiceManager*
 
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
-void FUN_140a0b330(void* pObj, bool bOn, short sFlags);
+// (0x140a0b330 is the private NiAVObject::SetBit, called by NiAVObject::MS2SetFlag0800)
 
 // Transforms (the exe's NiTransform helpers) and node transforms.
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
-void FUN_140194470(void* pDst, const void* pSrc);                   // point assign
+// (0x140194470 is efd::Point3::operator=(const Point3&))
 
 // The effect manager (singleton 0x1403ed280) and the world.
 class WorldService   // C3: member view for the former free stand-ins
@@ -935,7 +935,7 @@ MS2_REPLACE_METHOD(0x14154B080, CNifEffect, vfunc_7, 218, 0xC2FE4FBF);
 // @0x14154b160
 int CNifEffect::vfunc_8(void* p)
 {
-    FUN_140194470(p, &(const efd::Point3&)(m_spRoot.operator->()->GetWorldTranslate()));
+    *static_cast<efd::Point3*>(p) = (const efd::Point3&)(m_spRoot.operator->()->GetWorldTranslate());
     return 1;
 }
 MS2_REPLACE_METHOD(0x14154B160, CNifEffect, vfunc_8, 64, 0xEAE8C028);
@@ -1267,7 +1267,7 @@ NiNodePtr CNifEffect::FUN_14154d0d0(const CString& strPath, int nA, int nB)
     {
         if (((void*)kNode.operator->()->GetExtraData(DAT_143ae5198)) == 0)
             kNode.operator->()->AddExtraData(DAT_143ae5198, new (efd::MemHint(efd::MemHint::NONE)) NiStringExtraData((const char*)strPath));
-        FUN_14154fda0(kNode.operator->());
+        kNode.operator->()->MS2SetFlag0800();
         static_cast<NiNode*>(kWrapper.operator->())->AttachChild(static_cast<NiAVObject*>(kNode.operator NiNode*()), false);
     }
     return kWrapper;
@@ -2657,11 +2657,10 @@ Unk_NifStrCell::Unk_NifStrCell() : m_s((size_t)0x100) {}
 // @0x14154f250
 Unk_NifStrCell::~Unk_NifStrCell() {}
 
-// @0x14154fda0
-void FUN_14154fda0(void* pObj)
-{
-    FUN_140a0b330(pObj, true, 0x800);
-}
+// 0x14154fda0 is NiAVObject::MS2SetFlag0800 (header inline, pinned at the end of the file)
+//
+//
+//
 
 // The exe's GetValueAt copies for the nif / texture caches (called by CNifLoadingService::Sweep).
 template CCachedNifPtr& ATL::CRBTree<CString, CCachedNifPtr, ATL::CElementTraits<CString>, ATL::CElementTraits<CCachedNifPtr> >::GetValueAt(POSITION);
@@ -2735,3 +2734,4 @@ void Unk_SgNifLoader::FUN_1415540f0(CString strPath, NiTexture* pkTex)
 }
 // MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAVNiAVObject@@VNiString@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14154f560 ; la1: called by the map's _Tree code at 0x14154e934, calls the const operator-- 0x14154f540
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$TCircleList@V?$SmartPointer@VNiAVObject@@@efd@@@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14155ae20 ; la1: calls _Tree_const_iterator() 0x14155ad60, only caller is the exe Sweep
+// MS2-PIN: ?MS2SetFlag0800@NiAVObject@@QEAAXXZ 0x14154fda0

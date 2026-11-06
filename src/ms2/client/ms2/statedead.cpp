@@ -70,7 +70,7 @@ struct Unk_DeadTexts
     CString m_strReviveEffect;                           // +0x278
     CString m_strDeathEffect;                            // +0x280
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The npc table row: the corpse effect name at +0x448.
@@ -122,7 +122,7 @@ void StateDead::vfunc_4(StateData* pData)
             if (reinterpret_cast<Unk_DeadField*>(kField.operator->())->FUN_140375570() != 0)
             {
                 bRevive = true;
-                nAnimId = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_DeadConsts*)FUN_1401d3200())->m_reviveAnim)->Get();
+                nAnimId = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_DeadConsts*)GetClientConstants())->m_reviveAnim)->Get();
             }
         }
     }

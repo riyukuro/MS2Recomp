@@ -64,7 +64,7 @@ public:
     char m_pad_00[0x9a94];
     int m_nHoldSkill;                                                    // +0x9a94
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_HoldCamera { public: char m_pad[8]; };                         // the camera manager
 void* FUN_14025e7c0();                                                   // 0x14025e7c0 the key-binding table
 
@@ -436,7 +436,7 @@ void StateHold::FUN_1417cce10()
         return;
     if (pTarget->GetClassID() != 0x6200028)
         return;
-    Unk_InventorySkillRequest kReq(((class Unk_HoldConsts*)FUN_1401d3200())->m_nHoldSkill, 1);
+    Unk_InventorySkillRequest kReq(((class Unk_HoldConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nHoldSkill, 1);
     MS2Ptr<CSkillRecord> spRecord = pPC->FUN_141523bc0()->FUN_141765570(kReq);
     if (spRecord == 0)
         return;

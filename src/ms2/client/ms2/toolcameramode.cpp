@@ -96,7 +96,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     else
         ptRot.z = -45.0f;
     vfunc_4(ptRot);
-    ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
+    ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
     Vector3 ptPos = p->vfunc_18();
     vfunc_3(ptPos);
     Unk_EfdMatrix3 kRot;
@@ -108,7 +108,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     float fHeight = 0.0f;
     if (n == 0)
         fDist = 600.0f;
-    ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist));
+    ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptAxis) * (-fDist)));
     vfunc_3(ptPos);
     NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(p)->FUN_14123c410());
     if (!pNode)
@@ -120,7 +120,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     fHeight = (((class NiBound*)&(kBound))->GetCenter().z - ptPos.z < 0.0f) ? 0.0f : ((class NiBound*)&(kBound))->GetCenter().z - ptPos.z;
     if (n != 0)
     {
-        ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist)).FUN_14097fd50(Vector3(0.0f, 0.0f, fHeight));
+        ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptAxis) * (-fDist)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, fHeight)))));
         vfunc_3(ptPos);
     }
     m_88 = 0;
@@ -140,9 +140,9 @@ void CToolCameraMode::vfunc_8(double fTime)
     unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
     if (bLeft != 0 && bRight != 0)
     {
-        Vector3 ptPos = FUN_1409f2540();
+        efd::Point3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
-        vfunc_3(ptPos);
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
     else if (bShift == 0 && bRight != 0)
     {
@@ -160,7 +160,7 @@ void CToolCameraMode::vfunc_8(double fTime)
     if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
-        ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
+        ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
@@ -169,9 +169,9 @@ void CToolCameraMode::vfunc_8(double fTime)
         Vector3 ptForward;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
         ptForward.FUN_140968990();
-        Vector3 ptPos = FUN_1409f2540();
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
-        vfunc_3(ptPos);
+        efd::Point3 ptPos = FUN_1409f2540();
+        reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + (reinterpret_cast<const efd::Point3&>(ptRight) * m_78.x + reinterpret_cast<const efd::Point3&>(ptForward) * m_78.y) * 1000.0f * ((float)fTime)));
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
 }
 MS2_REPLACE_METHOD(0x1418532e0, CToolCameraMode, vfunc_8, 1177, 0xB27624DC);
@@ -232,7 +232,7 @@ void CToolCameraMode::vfunc_3(Vector3 pt)
 {
     if (m_90)
     {
-        Vector3 ptCur = FUN_1409f2540();
+        efd::Point3 ptCur = FUN_1409f2540();
         Vector3 ptOut;
         if (!((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd36f0(pt, &ptOut))
         {

@@ -89,7 +89,7 @@ void FUN_140de8bd0(egf::Entity* pEntity, unsigned nProp, efd::AssetID* pValue);
 
 
 Unk_Int3 FUN_1408a1430(NiPoint3 pt);                        // point -> cube cell (C3: actionkeyobject.cpp's declaration)
-class Unk_VibCubeSub : public Unk_CubeHeightIndex { };
+//
 CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
 // 3x3 matrix with column setters.
@@ -156,7 +156,7 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, MS2Ptr<CSkillRecord> param
     if (m_90 > 0 && params.operator->()->GetBrokenOffence() > nLimit) {
         m_7c = 1;
         CubeMapInformationService* pCubeSvc = GetCubeMapService();
-        Unk_VibCubeSub* pCube = reinterpret_cast<Unk_VibCubeSub*>(pCubeSvc->FUN_1410b9e70());
+        Unk_CubeHeightIndex* pCube = pCubeSvc->FUN_1410b9e70();
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
         pCube->FUN_1410b25a0(cell.x, cell.y, cell.z);
         if (m_ab != 0) {
@@ -268,7 +268,7 @@ int CEntityVibrator::FUN_1411cba60()
             Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
             Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
             float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
-            SetPosition(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
+            SetPosition(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptStart) + reinterpret_cast<const efd::Point3&>(ptDrop) * fK)));
             if (1.0f <= fK) {
                 SetPosition(m_48);
                 SetRotation(m_54);
@@ -283,7 +283,7 @@ int CEntityVibrator::FUN_1411cba60()
                 }
                 CubeMapInformationService* pCube = GetCubeMapService();
                 if (pCube->FindCubeByEntityRef(m_entity.operator->()->GetEntityID()) != 0) {
-                    Unk_VibCubeSub* pSub = reinterpret_cast<Unk_VibCubeSub*>(pCube->FUN_1410b9e70());
+                    Unk_CubeHeightIndex* pSub = pCube->FUN_1410b9e70();
                     Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
                     pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
                 }
@@ -311,7 +311,7 @@ int CEntityVibrator::FUN_1411cba60()
                 m_3c.FUN_140968990();
                 m_60 = (fOffset < 0.0f);
             }
-            SetPosition(m_48.FUN_14097fd50(m_3c.FUN_14097fc90(fOffset)));
+            SetPosition(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_48) + reinterpret_cast<const efd::Point3&>(m_3c) * fOffset)));
             return 1;
         } else {
             SetPosition(m_48);
@@ -370,13 +370,13 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
     Vector3 ptDir = m_48.FUN_140965c40(m_70);
     ptDir.FUN_140968990();
     efd::Point3 ptSide = reinterpret_cast<const efd::Point3&>(ptDir).UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
-    Vector3 ptNeg = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8)))).FUN_1409f7960();
+    efd::Point3 ptNeg = -ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
     reinterpret_cast<efd::Matrix3&>(basis).SetCol(0, ptSide);
     reinterpret_cast<efd::Matrix3&>(basis).SetCol(1, reinterpret_cast<const efd::Point3&>(ptNeg));
     reinterpret_cast<efd::Matrix3&>(basis).SetCol(2, reinterpret_cast<const efd::Point3&>(g_143a08cf8));
     Unk_VibMat comb = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(*(efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis) * *(efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot)));
     float fSpeed = (1.0f * fScale) / (fTime * 2.0f);
-    Vector3 vel = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(comb) * reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))).FUN_14097fc90(fSpeed);
+    efd::Point3 vel = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(comb) * reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))))) * fSpeed;
     NxVec3 vSize(m_98.x, m_98.y, m_98.z);
     vSize -= NxVec3(1.0f, 1.0f, 1.0f);
     NxBoxShapeDesc boxDesc;
@@ -449,8 +449,8 @@ void CEntityVibrator::FUN_1411cd0c0()
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(2, col2.x, col2.y, col2.z);
         Vector3 ptUp;
         reinterpret_cast<const efd::Matrix3&>(rot).GetCol(2, reinterpret_cast<efd::Point3&>(ptUp));
-        ptUp = ptUp.FUN_1409f7960();
-        ptPos = ptPos.FUN_14097fd50(ptUp.FUN_14097fc90(ptBox.z * 0.5f));
+        reinterpret_cast<efd::Point3&>(ptUp) = -reinterpret_cast<const efd::Point3&>(ptUp);
+        ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptUp) * (ptBox.z * 0.5f)));
         Vector3 ptEuler;
         if (((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->ToEulerAnglesXYZ(ptEuler.x, ptEuler.y, ptEuler.z)) {
             reinterpret_cast<efd::Point3&>(ptEuler) *= -57.295776f;
@@ -579,7 +579,7 @@ void CEntityVibrator::FUN_1411cdba0()
     m_7c = 1;
     m_a9 = true;
     CubeMapInformationService* pSvc = GetCubeMapService();
-    Unk_VibCubeSub* pSub = reinterpret_cast<Unk_VibCubeSub*>(pSvc->FUN_1410b9e70());
+    Unk_CubeHeightIndex* pSub = pSvc->FUN_1410b9e70();
     Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(m_ac));
     pSub->FUN_1410b25a0(cell.x, cell.y, cell.z);
 }

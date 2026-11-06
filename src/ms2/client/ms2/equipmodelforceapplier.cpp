@@ -69,7 +69,7 @@ public:
     class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 float FUN_1409f2310(float f);                                       // sin
 float FUN_1409f25a0(float f);                                       // cos
 Unk_ServiceManager* FUN_1413f9850();                                // the framework's service manager
@@ -167,17 +167,17 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     }
 
     if (!(m_fElapsed < m_fPeriod)) {
-        static float s_fVariance = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2f48)->Read();
-        static float s_fBase = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2fa0)->Read();
+        static float s_fVariance = reinterpret_cast<Common::Constants::Value<float>*>(((char*)GetClientConstants()) + 0x2f48)->Read();
+        static float s_fBase = reinterpret_cast<Common::Constants::Value<float>*>(((char*)GetClientConstants()) + 0x2fa0)->Read();
         m_fPeriod = s_fBase + s_fVariance * (rand() / 32767.0f - 0.5f);
         m_fElapsed = 0;
     }
-    static float s_fStrength = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2ff8)->Read();
+    static float s_fStrength = reinterpret_cast<Common::Constants::Value<float>*>(((char*)GetClientConstants()) + 0x2ff8)->Read();
     float fGust = s_fStrength * (float)fDeltaTime * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);
 
     Vector3 ptRot = pObj->GetRotation();
-    ptRot = ptRot.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+    ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.1415927f)).FUN_140ae9180(180.0f);
     NxVec3 vForce(-fGust * FUN_1409f25a0(ptRot.z), fGust * FUN_1409f2310(ptRot.z), 0);
     if (!vForce.isFinite()) {
         EE_LOG_AT(0x12, efd::ILogger::kERR1, ("EquipModelWindApplier::OnTick"), MS2_THIS_FILE, 0x54);

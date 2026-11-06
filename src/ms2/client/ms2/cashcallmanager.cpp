@@ -47,7 +47,7 @@ public:
     __int64 GetItemUid();
 };
 __int64 FUN_140930240();
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 bool FUN_140930b10();
 extern int DAT_1439f4a7c;
 
@@ -122,7 +122,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         {
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x83) != 0)
             {
-                if (FUN_140930240() < *reinterpret_cast<Common::Constants::Value<__int64>*>(((char*)FUN_1401d3200()) + 0x8aa8)->Get())
+                if (FUN_140930240() < *reinterpret_cast<Common::Constants::Value<__int64>*>(((char*)GetClientConstants()) + 0x8aa8)->Get())
                     return 0;
                 nKind = 3;
             }

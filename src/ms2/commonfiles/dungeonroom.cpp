@@ -665,7 +665,7 @@ bool DungeonRoom::IsSeasonRankRoom()
 {
     if (m_groupType != 3)
         return false;
-    if (m_limitPlayerLevel < (unsigned)FUN_1401d3200()->DungeonSeasonRankMinLevel)
+    if (m_limitPlayerLevel < (unsigned)GetClientConstants()->DungeonSeasonRankMinLevel)
         return false;
     return true;
 }
@@ -791,7 +791,7 @@ MS2_REPLACE_OVERLOAD(0x14031E7C0, __int64(int, int, __int64), CalcCooldownEndTim
 // @0x14031e840
 void DungeonRoom::ApplyConstants()
 {
-    if (*FUN_1401d3200()->DisableSoloPlayHighLevelDungeon.Get() && m_groupType == 1 && m_limitPlayerLevel >= 50)
+    if (*GetClientConstants()->DisableSoloPlayHighLevelDungeon.Get() && m_groupType == 1 && m_limitPlayerLevel >= 50)
         m_isPartyOnly = true;
 }
 MS2_REPLACE_METHOD(0x14031E840, DungeonRoom, ApplyConstants, 80, 0x325A4B4F);
@@ -1279,8 +1279,8 @@ MS2_REPLACE_METHOD(0x140320C30, DungeonRoomTable, GetRoomsForLevel, 362, 0x6BA38
 void DungeonRoomTable::GetMatchRooms(unsigned short nLevel, unsigned nGearScore, std::vector<DungeonRoomPtr>& out)
 {
     DungeonRoomSet::reverse_iterator it = std::lower_bound(m_matchRooms.rbegin(), m_matchRooms.rend(), std::make_pair(nGearScore, nLevel), DungeonRoomLess());
-    if ((unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount > 0)
-        out.reserve((unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount);
+    if ((unsigned)GetClientConstants()->DungeonMatchRecommendPickCount > 0)
+        out.reserve((unsigned)GetClientConstants()->DungeonMatchRecommendPickCount);
     unsigned nCount = 0;
     for (; it != m_matchRooms.rend(); it++)
     {
@@ -1289,7 +1289,7 @@ void DungeonRoomTable::GetMatchRooms(unsigned short nLevel, unsigned nGearScore,
             continue;
         out.push_back(*it);
         nCount++;
-        if (FUN_1401d3200()->DungeonMatchRecommendPickCount != 0 && nCount >= (unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount)
+        if (GetClientConstants()->DungeonMatchRecommendPickCount != 0 && nCount >= (unsigned)GetClientConstants()->DungeonMatchRecommendPickCount)
             return;
     }
 }
@@ -1300,8 +1300,8 @@ void DungeonRoomTable::GetGroupMatchRooms(DungeonGroupType nGroup, unsigned shor
 {
     DungeonRoomSet& rooms = GetGroupSet(nGroup);
     DungeonRoomSet::reverse_iterator it = std::lower_bound(rooms.rbegin(), rooms.rend(), std::make_pair(nGearScore, nLevel), DungeonRoomLess());
-    if ((unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount > 0)
-        out.reserve((unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount);
+    if ((unsigned)GetClientConstants()->DungeonMatchRecommendPickCount > 0)
+        out.reserve((unsigned)GetClientConstants()->DungeonMatchRecommendPickCount);
     unsigned nCount = 0;
     for (; it != rooms.rend(); it++)
     {
@@ -1310,7 +1310,7 @@ void DungeonRoomTable::GetGroupMatchRooms(DungeonGroupType nGroup, unsigned shor
             continue;
         out.push_back(*it);
         nCount++;
-        if (FUN_1401d3200()->DungeonMatchRecommendPickCount != 0 && nCount >= (unsigned)FUN_1401d3200()->DungeonMatchRecommendPickCount)
+        if (GetClientConstants()->DungeonMatchRecommendPickCount != 0 && nCount >= (unsigned)GetClientConstants()->DungeonMatchRecommendPickCount)
             return;
     }
 }

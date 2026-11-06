@@ -125,7 +125,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,22 +151,22 @@ void CBossTargetCamera::vfunc_6(int n)
     m_f0 = 0;
     Vector3 ptEye = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
-    Vector3 ptTarget = FUN_140a38570();
+    efd::Point3 ptTarget = FUN_140a38570();
     m_50 = m_data.m_zoomOut;
     ptEye.x = m_50 * FUN_1409f25a0(m_68) + ptTarget.x;
     ptEye.y = m_50 * FUN_1409f2310(m_68) + ptTarget.y;
     ptEye.z = m_50 * FUN_1409f2310(m_6c) + ptTarget.z;
     m_d8.m_pos = ptEye;
-    ptRot = CCameraMode::FUN_140afdd40(ptTarget, ptEye, g_143a08cf8);
+    ptRot = CCameraMode::FUN_140afdd40(reinterpret_cast<Vector3&>(ptTarget), ptEye, g_143a08cf8);
     m_d8.m_rot = ptRot;
     m_c0 = m_d8;
     m_setting.m_c = m_c0.m_pos;
     m_setting.m_18 = m_c0.m_rot;
     m_pOwner->FUN_140a38dc0(m_c0.m_pos);
     m_pOwner->FUN_140a38e00(m_c0.m_rot);
-    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
-    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
-    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1b30)->Read();
 }
 MS2_REPLACE_METHOD(0x140a377e0, CBossTargetCamera, vfunc_6, 726, 0xE9751F50);
 
@@ -175,7 +175,7 @@ void CBossTargetCamera::vfunc_8(double fTime)
 {
     Vector3 ptEye = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
-    Vector3 ptTarget = FUN_140a38570();
+    efd::Point3 ptTarget = FUN_140a38570();
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
@@ -193,7 +193,7 @@ void CBossTargetCamera::vfunc_8(double fTime)
     ptEye.y = m_50 * FUN_1409f2310(m_68) + ptTarget.y;
     ptEye.z = m_50 * FUN_1409f2310(m_6c) + ptTarget.z;
     m_d8.m_pos = ptEye;
-    ptRot = CCameraMode::FUN_140afdd40(ptTarget, ptEye, g_143a08cf8);
+    ptRot = CCameraMode::FUN_140afdd40(reinterpret_cast<Vector3&>(ptTarget), ptEye, g_143a08cf8);
     m_d8.m_rot = ptRot;
     vfunc_39(fTime);
     TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(g_143b01a60);
@@ -282,7 +282,7 @@ void CBossTargetCamera::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(fT, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(fT, m_c0.m_rot, m_d8.m_rot);
             }
@@ -347,14 +347,14 @@ Unk_CameraTargetEntity* FUN_140a38a00(Unk_BossObject* pObject)
 }
 
 // @0x140a38570
-Vector3 CBossTargetCamera::FUN_140a38570()
+efd::Point3 CBossTargetCamera::FUN_140a38570()
 {
     Vector3 ptRet(0.0f, 0.0f, 0.0f);
     Vector3 ptOther(0.0f, 0.0f, 0.0f);
     Unk_CameraTargetEntity* pTarget = vfunc_25();
     if (pTarget != NULL)
     {
-        ptOther = ptRet = pTarget->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
+        ptOther = ptRet = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ)))));
         m_50 = m_data.m_zoomOut;
     }
     Unk_BossObject* pObject = reinterpret_cast<Unk_BossObject*>(WorldService::GetInstance()->FindObjectById(m_108));
@@ -364,29 +364,29 @@ Vector3 CBossTargetCamera::FUN_140a38570()
         if (pBoss != NULL)
         {
             float fDist = 0.0f;
-            ptOther = pBoss->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ));
+            ptOther = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBoss->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_data.m_viewOffsetZ)))));
             fDist = ptOther.FUN_140965c40(ptRet).FUN_140967ac0() + m_data.m_distanceOffset;
             if (fDist > m_data.m_detachDistance)
             {
                 fDist = m_data.m_zoomOut;
-                return ptRet;
+                return reinterpret_cast<const efd::Point3&>(ptRet);
             }
             m_50 = fDist;
         }
         else
         {
-            return ptRet;
+            return reinterpret_cast<const efd::Point3&>(ptRet);
         }
     }
     else
     {
-        return ptRet;
+        return reinterpret_cast<const efd::Point3&>(ptRet);
     }
     Vector3 ptDir = ptOther.FUN_140965c40(ptRet);
     float fLen = ptDir.FUN_140968990();
-    Vector3 ptHalf = ptDir.FUN_14097fc90(fLen);
+    efd::Point3 ptHalf = reinterpret_cast<const efd::Point3&>(ptDir) * fLen;
     ptHalf.z = ptHalf.z * 0.5f;
-    return ptRet.FUN_14097fd50(ptHalf);
+    return reinterpret_cast<const efd::Point3&>(ptRet) + ptHalf;
 }
 MS2_REPLACE_METHOD(0x140a38570, CBossTargetCamera, FUN_140a38570, 822, 0xD000EB82);
 

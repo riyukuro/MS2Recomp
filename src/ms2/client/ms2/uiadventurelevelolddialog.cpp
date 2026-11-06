@@ -142,7 +142,7 @@ public:
     char m_pad_91ec[0x9298 - 0x91ec];
     Unk_ALConstU16 m_stat;                                          // +0x9298
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
@@ -331,7 +331,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5c30()
     if (pPlayer == NULL)
         return;
     float fExp = (float)DAT_143ab2958;
-    float fRatio = fExp / FUN_140ba4b50(&((class Unk_ALConfig*)FUN_1401d3200())->m_expMax);
+    float fRatio = fExp / FUN_140ba4b50(&((class Unk_ALConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_expMax);
     m_30->Invoke("setLevelAndExp", pPlayer->vfunc_141(), fRatio);
 }
 
@@ -436,7 +436,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
         obj.FUN_1409c0dc0("state", "inactive");
-    if ((int)pPlayer->vfunc_78() < (int)FUN_140ba4b30(&((class Unk_ALConfig*)FUN_1401d3200())->m_stat))
+    if ((int)pPlayer->vfunc_78() < (int)FUN_140ba4b30(&((class Unk_ALConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;

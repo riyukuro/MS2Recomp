@@ -1,1 +1,4 @@
+40c
+NiImplementRTTI(NiPhysXClothModifier, NiPhysXMeshModifier); template<> __forceinline NiDataStream::Region* NiTNewInterface<NiDataStream::Region>::Allocate(unsigned int uiNumElements) {return NiNew NiDataStream::Region[uiNumElements];} // MS2: the exe inlines the Region array allocation of AddRegion in AllocateClothData
+.
 19@13s "H" "h"

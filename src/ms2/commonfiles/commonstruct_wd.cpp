@@ -19,7 +19,7 @@
 typedef std::map<int, int> MapII;
 typedef MapII::_Mybase TreeII;
 typedef std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>> TValII;
-typedef TValII::_Nodeptr NodeII; struct WdTreeAcc : TreeII { using TreeII::_Destroy_if_node; using TreeII::_Key; };   // the protected _Tree members
+typedef TValII::_Nodeptr NodeII; struct WdTreeAcc : TreeII { using TreeII::_Destroy_if_node; using TreeII::_Key; using TreeII::_Kfn; using TreeII::_Compare; };   // the protected _Tree members
 typedef MS2Ptr<CIngredientInfo> PIng;
 typedef MS2Ptr<Probability::LogContext> PLog;
 typedef std::vector<PIng> VIng;
@@ -96,7 +96,7 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
 }
 // _Insert_hint's repeated pieces: _Key(node), _Kfn(val), _DEBUG_LT_PRED(_Getcomp(), l, r), _Insert_at(leftish, node, forward(val), newnode)
 #define WD_KEY(n) (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(n)))
-#define WD_KFN() (*(const int*)FUN_140288610(tree, val))
+#define WD_KFN() (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Kfn(*(const TreeII::value_type*)val))
 #define WD_LT(l, r) reinterpret_cast<TreeII*>(tree)->_Getcomp()(l, r)
 #define WD_INSERT_AT(left, n) FUN_140278a30(tree, out, left, (n), FUN_14027c160(val), newnode)
 #define WD_PREV(it) ((Unk_TIter*)&--*reinterpret_cast<MapII::const_iterator*>(&(it)))
@@ -325,7 +325,7 @@ Unk_TNode* FUN_14027a280(void* tree, i64 key)
     Unk_TNode* where = FUN_140287ee0(tree)->head;
     Unk_TNode* trynode = where->parent;
     while (trynode->isnil == 0) {
-        if (FUN_1402874c0(tree, (i64)&static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(trynode)), key)) {
+        if (static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Compare(static_cast<WdTreeAcc*>(reinterpret_cast<TreeII*>(tree))->_Key(reinterpret_cast<NodeII>(trynode)), *(const int*)key)) {
             trynode = trynode->right;
         } else {
             where = trynode;

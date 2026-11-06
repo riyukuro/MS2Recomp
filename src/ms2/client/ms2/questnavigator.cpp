@@ -95,7 +95,7 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 // ---- dynamic initializers (.text$di) ----
 
 #ifndef MS2_HOOK_DLL
-void FUN_1402a9d70(void*, int, float, float, float, int);
+#include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142ca3a50();                                               // the exe's atexit destructor of the marker
 struct Unk_QnMarker {};
 #endif
@@ -112,7 +112,7 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400cf5a0
 static char s_marker[0x48];
-static Unk_QnMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3a50), Unk_QnMarker());
+static Unk_QnMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3a50), Unk_QnMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.

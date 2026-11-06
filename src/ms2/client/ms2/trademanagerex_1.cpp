@@ -97,7 +97,7 @@ public:
 };
 #define TM_BOX(p) reinterpret_cast<const MS2Ptr<CMsgBoxData>&>(p)   // C3: was a view of itembreakmanager.h's Unk_BreakPtr (same COMDATs 0x140534fc0 / 0x140534fe0)
 int FUN_14025a620(class Unk_ConstVal*);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance); C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int id);
@@ -411,7 +411,7 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
         if (TM_BOX(box).operator CMsgBoxData*() != 0)
         {
             TM_BOX(box).operator->()->Append<__int64>(uid);
-            TM_BOX(box).operator->()->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788)), 1, GetStringCommon(0x2b8));
+            TM_BOX(box).operator->()->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0x3788)), 1, GetStringCommon(0x2b8));
             TM_BOX(box).operator->()->FUN_141a02460(true);
             TM_BOX(box).operator->()->FUN_141a02480(true);
             TM_BOX(box).operator->()->FUN_141a024a0(false);

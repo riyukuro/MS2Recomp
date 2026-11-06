@@ -21,7 +21,7 @@ void FUN_14112fa90(Unk_BoxedPointer* p);
 void FUN_14112fac0(Unk_BoxedPointer* p);
 void FUN_14112faf0(Unk_BoxedPointer* p);
 void FUN_14112fb20(Unk_BoxedPointer* p);
-void FUN_14112fb50(Unk_BoxedPointer* p);
+// (0x14112fb50 is Unk_PayloadPtr<NoticeCubeInfo>::AddRef, explicitly instantiated below)
 void FUN_14112fb80(Unk_BoxedPointer* p);
 void FUN_14112fbb0(Unk_BoxedPointer* p);
 void FUN_14112fbe0(void* p);
@@ -35,15 +35,15 @@ void FUN_14112fcc0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_14112fcf0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_14112fd20(Unk_BoxedPointer* p, void* pUnused);
 void FUN_14112fd50(Unk_BoxedPointer* p, void* pUnused);
-void FUN_14112fd80(Unk_BoxedPointer* p, void* pUnused);
+// (0x14112fd80 is Unk_PayloadPtr<NoticeCubeInfo>::AddRefImpl, emitted by that instantiation)
 void FUN_14112fdb0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_14112fde0(Unk_BoxedPointer* p, void* pUnused);
-class CPtred   // C3: member view for the former free stand-ins
-{
-public:
-    static void AddRefPtred(class CPtred*);
-};
-void FUN_1408b7780(void* p);   // outside this unit
+#include "ms2/unnamed/payloadptr_1401f9eb0.h"   // Unk_PayloadPtr<T> (and the real CPtred)
+class NoticeCubeInfo;
+// (0x1408b7780 is Unk_PayloadPtr<NoticeCubeInfo>::Reference)
+
+
+
 
 // ---------------------------------------------------------------------------
 // the 21 entries, in address order
@@ -77,12 +77,12 @@ void FUN_14112fb20(Unk_BoxedPointer* p)
         FUN_14112fd50(p, 0);
 }
 
-// @0x14112fb50
-void FUN_14112fb50(Unk_BoxedPointer* p)
-{
-    if (p->m_pValue != 0)
-        FUN_14112fd80(p, 0);
-}
+// 0x14112fb50 / 0x14112fd80: the real private Unk_PayloadPtr<NoticeCubeInfo>::AddRef -> AddRefImpl -> Reference(p)
+template void Unk_PayloadPtr<NoticeCubeInfo>::AddRef() const;
+
+
+
+
 
 // @0x14112fb80
 void FUN_14112fb80(Unk_BoxedPointer* p)
@@ -164,11 +164,9 @@ void FUN_14112fd50(Unk_BoxedPointer* p, void* pUnused)
     FUN_14112fc40(p->m_pValue);
 }
 
-// @0x14112fd80
-void FUN_14112fd80(Unk_BoxedPointer* p, void* pUnused)
-{
-    FUN_1408b7780(p->m_pValue);
-}
+
+
+
 
 // @0x14112fdb0
 void FUN_14112fdb0(Unk_BoxedPointer* p, void* pUnused)
@@ -182,3 +180,5 @@ void FUN_14112fde0(Unk_BoxedPointer* p, void* pUnused)
     FUN_14112fc80(p->m_pValue);
 }
 
+// MS2-PIN: ?AddRef@?$Unk_PayloadPtr@VNoticeCubeInfo@@@@AEBAXXZ 0x14112fb50
+// MS2-PIN: ?AddRefImpl@?$Unk_PayloadPtr@VNoticeCubeInfo@@@@AEBAXPEAX@Z 0x14112fd80

@@ -788,7 +788,7 @@ struct IMessageStatics : efd::IMessage { using efd::IMessage::ms_pParentClassMap
 #define DAT_143b023e0 (*reinterpret_cast<void**>(&IMessageStatics::ms_pParentClassMap))   // C3: was extern void* DAT_143b023e0
 
 template <int N> class Unk_Head { public: void* Get() const; };   // C3: FUN_141128450 is Unk_Head<0>::Get (unit_141127a90_mapiteratorlookupglue.cpp)
-u64 FUN_140c20b50(void* a, u64 b);
+class GameObject; struct Unk_WsV118 { GameObject* p; };   // as in worldservice.h (FUN_140c20b50 was the protected Successor wrapper)
 unsigned FUN_1410dc0d0();
 CCubeMotionManager* GetCubeMotionManager();
 
@@ -871,13 +871,13 @@ const efd::utf8string& FUN_14112e120(egf::Entity* pEntity)
     return efd::utf8string::NullString();
 }
 
-// @0x14112e170 exchange
-u64 FUN_14112e170(void* a, u64* pSlot)
+// 0x14112e170 / 0x14112e2b0 are the const CRBTree<UINT, Unk_WsV118>::GetNext / GetValueAt (pinned at the end); this instantiates them
+void Unk_CMISObjTreeConstInst(const ATL::CRBTree<unsigned int, Unk_WsV118>* pTree, POSITION* pPos)
 {
-    u64 old = *pSlot;
-    *pSlot = FUN_140c20b50(a, old);
-    return old;
+    pTree->GetNext(*pPos);
+    pTree->GetValueAt(*pPos);
 }
+//
 
 // @0x14112e250 CubeMapInformationService::GetRefCount
 void FUN_14112e250(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator efd::UInt32(); }
@@ -888,17 +888,17 @@ unsigned FUN_14112e290(char* p) { return *reinterpret_cast<unsigned*>(p + 0x38);
 // @0x14112e2a0
 u64 FUN_14112e2a0() { return 0x4e88; }
 
-// @0x14112e2b0 ATLENSURE(p) then &p->m_member
-char* FUN_14112e2b0(void*, char* p)
-{
-    do {
-        int cond = !!(p != 0);
-        do { } while (0);
-        if (!cond)
-            ATL::AtlThrowImpl(0x80004005);
-    } while (0);
-    return p + 8;
-}
+// (0x14112e2b0: the FUN_14112e2b0 GetValueAt stand-in is gone; see Unk_CMISObjTreeConstInst)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x14112f070 CubeMapInformationService::IncRefCount
 void FUN_14112f070(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x20)->operator++(); }
@@ -1038,3 +1038,5 @@ void Unk_CMISHandlerAnchor14()
         h2(reinterpret_cast<void (CubeMapInformationService::*)(const ecr::SceneGraphAddedMessage*, efd::Category)>(
             &CubeMapInformationService::FUN_1410cf130));
 }
+// MS2-PIN: ?GetNext@?$CRBTree@IUUnk_WsV118@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV118@@@3@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x14112e170 ; the const GetNext (was the FUN_14112e170 stand-in over the FUN_140c20b50 Successor wrapper)
+// MS2-PIN: ?GetValueAt@?$CRBTree@IUUnk_WsV118@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV118@@@3@@ATL@@QEBAAEBUUnk_WsV118@@PEAU__POSITION@@@Z 0x14112e2b0 ; the const GetValueAt (was the FUN_14112e2b0 stand-in)

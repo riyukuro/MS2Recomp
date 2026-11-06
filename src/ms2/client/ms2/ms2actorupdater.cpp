@@ -30,7 +30,7 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_kUpdateDuration;   // +0xab0
 };
 MS2_CHECK_OFFSET(Unk_AuConfig, m_kUpdateDuration, 0xab0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 void* FUN_14123ed90(CMeshUpdateGate* pGate, unsigned int nFlags) throw();
 
 // Property access on the entity (hash id, value).
@@ -44,11 +44,11 @@ MS2ActorUpdater::MS2ActorUpdater(egf::EntityID kId)
     : m_kId(kId), m_fDistA(0.0f), m_fDistB(0.0f)
 {
     m_pGate = new CMeshUpdateGate;
-    float fRate = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateRate)->Read();
+    float fRate = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateRate)->Read();
     if (fRate <= 0.0f)
         fRate = 60.0f;
     ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pGate))->FUN_14108c240(1.0f / fRate);
-    m_pGate->FUN_14123ef30(reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->Read());
+    m_pGate->FUN_14123ef30(reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateDuration)->Read());
 }
 
 // @0x1414a8380
@@ -99,7 +99,7 @@ void MS2ActorUpdater::FUN_1414a85d0(float fInterval)
         fDuration = GetDistB();
         break;
     case 2:
-        fDuration = GetDistB() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_kUpdateDuration)->Get();
+        fDuration = GetDistB() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_kUpdateDuration)->Get();
         break;
     default:
         MS2_ASSERT_AT(0x31, FALSE);

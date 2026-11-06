@@ -395,14 +395,14 @@ public:
     virtual void S42();
     virtual void Notify(int nA, int nB, int nC);                // +0x158
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // @0x140ed47e0
 int FUN_140ed47e0(MyPC* pPlayer)                                            // the character level (m_n179c)
 {
     return pPlayer->m_n179c;
 }
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW BlockFormat(int nId);                                              // common string text
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);                // notice
 void FUN_1412751b0(const CStringW& strText, int nType);                     // toast
@@ -633,10 +633,10 @@ int UISkillBookTreeDialog::CanApply()
 // @0x140ecd6d0
 int UISkillBookTreeDialog::CheckApply(bool bNotify)
 {
-    if (((class Unk_SkillService*)FUN_140d86260())->State() == 1)
+    if (((class Unk_SkillService*)((void*)GetClientPlatform()))->State() == 1)
     {
         if (bNotify == true)
-            FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x6aa8)->Get(), BlockFormat(0x5c0)), 0, 0, L"");
+            FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x6aa8)->Get(), BlockFormat(0x5c0)), 0, 0, L"");
         return 1;
     }
     return 0;
@@ -1076,7 +1076,7 @@ bool UISkillBookTreeDialog::OnAddTabConfirm(int nResult, const CMsgBoxData& box)
         Unk_BlockList command(0x4f2d);
         command.Add("AddTab", CStringW(strName), 0);
         command.SetEnabled(true);
-        if (((class Unk_SkillService*)FUN_140d86260())->Execute(command) == 1)
+        if (((class Unk_SkillService*)((void*)GetClientPlatform()))->Execute(command) == 1)
             return AddPaidTab(CStringW(strName));
     }
     return true;
@@ -1097,11 +1097,11 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
             if (spCoupon.get() != 0)
                 bHasCoupon = 1;
         }
-        unsigned __int64 nPrice = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)FUN_1401d3200()) + 0x8bb8)->Get();
+        unsigned __int64 nPrice = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)GetClientConstants()) + 0x8bb8)->Get();
         int bEnough = 0;
-        if (((class Unk_SkillService*)FUN_140d86260())->HasMoney(nPrice) == true)
+        if (((class Unk_SkillService*)((void*)GetClientPlatform()))->HasMoney(nPrice) == true)
             bEnough = 1;
-        else if (((class Unk_SkillService*)FUN_140d86260())->HasMeret(nPrice) == true)
+        else if (((class Unk_SkillService*)((void*)GetClientPlatform()))->HasMeret(nPrice) == true)
             bEnough = 1;
         if (!bHasCoupon && !bEnough)
         {
@@ -1434,9 +1434,9 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
     CStringW strText;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xca))
     {
-        unsigned short nLimit = *(unsigned short*)(((char*)FUN_1401d3200()) + 0x9718);
+        unsigned short nLimit = *(unsigned short*)(((char*)GetClientConstants()) + 0x9718);
         if (m_nJobLevel == 2)
-            nLimit = *(unsigned short*)(((char*)FUN_1401d3200()) + 0x971a);
+            nLimit = *(unsigned short*)(((char*)GetClientConstants()) + 0x971a);
         unsigned nFirst = GetJobSkillPoint(1);
         unsigned nSecond = GetJobSkillPoint(2);
         unsigned nSum = nBase + nExtra;
@@ -1955,7 +1955,7 @@ void UISkillBookTreeDialog::OnLoadComplete()
     COutPacket packet(static_cast<int>(SendOp::RequestSkillBookTree), 0);
     packet.Encode1(0);
     FUN_140710590(packet);
-    ((class Unk_SkillService*)FUN_140d86260())->Notify(0xe, 0, 1000);
+    ((class Unk_SkillService*)((void*)GetClientPlatform()))->Notify(0xe, 0, 1000);
 }
 
 // @0x140ec7890
@@ -2256,7 +2256,7 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nValue = 0;
             int nType = ((class CFeatureManager*)FUN_140166410())->FUN_14036d6d0() ? 10 : 3;
             CStringW strMoney = FUN_1418fe870(nType, &nValue, 0);
-            CStringW strText = FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_payment_add_tab"), *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)FUN_1401d3200()) + 0x8bb8)->Get(), strMoney);
+            CStringW strText = FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_payment_add_tab"), *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)GetClientConstants()) + 0x8bb8)->Get(), strMoney);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, strText, 0, L"");
             if (spBox.get() != 0)
             {

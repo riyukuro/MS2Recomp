@@ -300,9 +300,9 @@ void UICameraEditDialog::vfunc_15()
         {
             NiPoint3 kPos = pTarget->vfunc_18();
             kPos.z = kPos.z + 100.0f;
-            float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10()).FUN_140967ac0();
+            float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
             s_fArrive = (std::min)(fLength, s_fMaxArrive);
-            m_vMoveStart = CameraMgr::GetInstance()->FUN_140a17e10();
+            m_vMoveStart = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
             m_1dc = 1;
             m_vMoveTarget = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_20()));
         }
@@ -344,7 +344,7 @@ void UICameraEditDialog::vfunc_38(void* p, float x, float y)
     {
         CPoint ptMove(CPoint((int)x, (int)y) - m_ptDrag);
         float fAngle = ((float)ptMove.x / 256.0f) * 180.0f;
-        Vector3 vRotated = Vector3(0.0f, 0.0f, fAngle).FUN_14097fd50(m_vDragRotation);
+        efd::Point3 vRotated = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, fAngle))) + reinterpret_cast<const efd::Point3&>(m_vDragRotation);
         if (vRotated.z < 0.0f)
             vRotated.z = vRotated.z + 360.0f;
         if (360.0f < vRotated.z)
@@ -480,7 +480,7 @@ void UICameraEditDialog::FUN_1418de570()
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
     kPos.z = kPos.z + 100.0f;
-    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10()).FUN_140967ac0();
+    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
     if (fLength > s_fMinArrive) {
         float fStep = (float)__imp_ceil((double)s_fStepSpeed * TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
         FUN_1418de7b0(reinterpret_cast<const Vector3&>(kPos), fStep);
@@ -498,7 +498,7 @@ void UICameraEditDialog::FUN_1418de690()
         return;
     NiPoint3 kPos = pTarget->vfunc_18();
     kPos.z = kPos.z + 100.0f;
-    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10()).FUN_140967ac0();
+    float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()))).FUN_140967ac0();
     if (fLength < s_fArrive) {
         float fStep = (float)__imp_ceil((double)s_fStepSpeed * TSingleton<CMainSystem>::GetInstance()->GetDeltaTime());
         FUN_1418de7b0(reinterpret_cast<const Vector3&>(kPos), -fStep);
@@ -509,14 +509,14 @@ void UICameraEditDialog::FUN_1418de690()
 // @0x1418de7b0
 void UICameraEditDialog::FUN_1418de7b0(const Vector3& vFrom, float fStep)
 {
-    Vector3 vDirection = vFrom.FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10());
+    Vector3 vDirection = vFrom.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
     vDirection.FUN_140968990();
-    Vector3 vNext = CameraMgr::GetInstance()->FUN_140a17e10().FUN_14097fd50(vDirection.FUN_14097fc90(fStep));
-    float fLength = vFrom.FUN_140965c40(vNext).FUN_140967ac0();
+    efd::Point3 vNext = CameraMgr::GetInstance()->FUN_140a17e10() + reinterpret_cast<const efd::Point3&>(vDirection) * fStep;
+    float fLength = vFrom.FUN_140965c40(reinterpret_cast<const Vector3&>(vNext)).FUN_140967ac0();
     if (fLength > s_fArrive)
         CameraMgrMoveTo(CameraMgr::GetInstance(), m_vMoveStart);
     else
-        CameraMgrMoveTo(CameraMgr::GetInstance(), vNext);
+        CameraMgrMoveTo(CameraMgr::GetInstance(), reinterpret_cast<Vector3&>(vNext));
 }
 
 // @0x1418de920
@@ -1224,7 +1224,7 @@ int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1
 bool FUN_141900750(ASObj* pObj);                                             // fill the initData object
 unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 CString FUN_140719210(long n);
-void* FUN_140d86260();
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_141424580(MS2Ptr<CEquipItem> spEquip, unsigned int* pnColor, int n);        // the colour of the worn item (spEquip by value)
 struct Unk_UgcItemData; int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut);   // itemugcmesh (nKey = const int*)
 void FUN_140710590(COutPacket& packet);                                     // send
@@ -1714,7 +1714,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     kPacket.WriteUInt8(1);
     FUN_1401f9f20(reinterpret_cast<unsigned char*>(&kCreate), kPacket);
     FUN_140710590(kPacket);
-    IClientPlatform* pPlatform = (IClientPlatform*)FUN_140d86260();
+    IClientPlatform* pPlatform = (IClientPlatform*)((void*)GetClientPlatform());
     pPlatform->vfunc_22(0x387, "CreateCharacter");
     m_nState = 3;
     return 1;

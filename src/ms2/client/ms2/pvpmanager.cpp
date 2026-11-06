@@ -129,13 +129,14 @@ Unk_PvpTimerBlock::~Unk_PvpTimerBlock()
 
 // ---- timer helper -------------------------------------------------------------------------------------------------
 
-// @0x1412818f0
-void Unk_PvpTimer::FUN_1412818f0(float fA, float fB, float fC, bool bApply)
-{
-    m_fA = fA;
-    m_fB = fB;
-    m_fC = fC;
-    FUN_14101af70();
-    if (bApply && (m_8 > m_20 || m_8 < m_28))
-        reinterpret_cast<ATL::CAtlMap<unsigned __int64, int>&>(*this).Rehash(FUN_14101a900(m_8));
-}
+// 0x1412818f0 = the real ATL::CAtlMap<unsigned __int64, int>::SetOptimalLoad (the Unk_PvpTimer ctor calls it through the
+// map view; pin at the end). It calls the private UpdateRehashThresholds / PickSize, which were the FUN_14101af70 /
+// FUN_14101a900 wrappers.
+//
+//
+//
+//
+//
+//
+//
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXMMM_N@Z 0x1412818f0 ; the real map SetOptimalLoad (was Unk_PvpTimer::FUN_1412818f0 over the FUN_14101af70 / FUN_14101a900 wrappers)

@@ -57,7 +57,7 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42();
     virtual void vfunc_43(int nEvent, int a2, int nDelay);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
@@ -141,7 +141,7 @@ void UIVIPDialog::OnLoadComplete()
     SendPremiumClubMode1();
     m_nVipEnd = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90();
     m_nVip = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0();
-    ((class Unk_VdPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_VdPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
 }
 
 // @0x140fb80f0

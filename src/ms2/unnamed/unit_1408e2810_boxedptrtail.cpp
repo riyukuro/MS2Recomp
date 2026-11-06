@@ -17,24 +17,24 @@ struct Unk_BoxedPointer {
     void* m_pValue;             // +0x08 the boxed pointer
 };
 
-class CPtred   // C3: member view for the former free stand-ins
-{
-public:
-    static void DeletePtred(class CPtred*);
-    static int ReleasePtred(class CPtred*);
-};
+// CPtred: the real class (ms2/placeholder/cptred.h, via ascript.h below); its static helpers stay out-of-line COMDATs at /Od
+//
+//
+//
+//
+
 
 void FUN_1408e2a90(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2ae0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2b30(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2b80(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2bd0(Unk_BoxedPointer* p, void* pUnused);
-void FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused);
+class Unk_RuAux; struct Unk_MS2PtrAccess { static void FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused); };   // MS2Ptr<T> friend (ascript.h): calls the private MS2Ptr<Unk_RuAux>::Reference
 void FUN_1408e2c70(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2cc0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2d10(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2d60(Unk_BoxedPointer* p, void* pUnused);
-void FUN_14041d1b0(void* p);   // outside this unit
+#include "ms2/placeholder/ascript.h"   // 0x14041d1b0 = MS2Ptr<Unk_RuAux>::Reference (private, gameeventreturnuser.cpp); the exe folded this T's Reference into it
 void FUN_1408e2510(void* p);   // outside this unit
 void FUN_1408e2530(void* p);   // outside this unit
 void FUN_1408e2550(void* p);   // outside this unit
@@ -94,7 +94,7 @@ void FUN_1408e2910(Unk_BoxedPointer* p)
 void FUN_1408e2950(Unk_BoxedPointer* p)
 {
     if (p->m_pValue != 0) {
-        FUN_1408e2c20(p, 0);
+        Unk_MS2PtrAccess::FUN_1408e2c20(p, 0);
         p->m_pValue = 0;
     }
 }
@@ -186,11 +186,11 @@ void FUN_1408e2bd0(Unk_BoxedPointer* p, void* pUnused)
 }
 
 // @0x1408e2c20
-void FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused)
+void Unk_MS2PtrAccess::FUN_1408e2c20(Unk_BoxedPointer* p, void* pUnused)
 {
     void* pValue = p->m_pValue;
     if (CPtred::ReleasePtred((class CPtred*)(pValue)) == 0) {
-        FUN_14041d1b0(pValue);
+        MS2Ptr<Unk_RuAux>::Reference((Unk_RuAux*)pValue);
         CPtred::DeletePtred((class CPtred*)(pValue));
     }
 }

@@ -216,7 +216,7 @@ private:
 MS2_CHECK_SIZE(UIAvatarPC, 0xf0);
 // `m_avatar = 0` is this unit's inline COMDAT.
 template<> inline MS2Ptr<UIAvatarPC>& MS2Ptr<UIAvatarPC>::operator=(int) { Release(); return *this; }
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 int FUN_140768010(int,int);
 class Unk_RewardPActor;
 class Unk_RewardPlayer {public:Unk_RewardPActor* FUN_141bd0cc0();};
@@ -363,9 +363,9 @@ void UIDungeonRewardDialog::vfunc_25(void* p1,TPtr<Unk_UISwfEntity_25> p2,void* 
  data.target+=actor->vfunc_18();data.eye+=data.target;reinterpret_cast<Unk_RewardCamera*>(reinterpret_cast<UIAvatarBase*>(m_avatar.operator->())->GetView().operator->())->vfunc_13(data);
  switch(m_type) {case 1:case 4:
  if(m_win)reinterpret_cast<UIAvatarPC*>(m_avatar.operator->())->FUN_1418bc790(14,85);
- else if(reinterpret_cast<std::vector<unsigned int>*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->size()>0) {
- int index=FUN_140768010(static_cast<int>(reinterpret_cast<std::vector<unsigned int>*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0)->size()),0);
- reinterpret_cast<UIAvatarPC*>(m_avatar.operator->())->FUN_1418bce80((*reinterpret_cast<std::vector<int>*>(static_cast<char*>(((void*)FUN_1401d3200()))+0xe7e0))[index]);
+ else if(reinterpret_cast<std::vector<unsigned int>*>(static_cast<char*>(((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))+0xe7e0)->size()>0) {
+ int index=FUN_140768010(static_cast<int>(reinterpret_cast<std::vector<unsigned int>*>(static_cast<char*>(((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))+0xe7e0)->size()),0);
+ reinterpret_cast<UIAvatarPC*>(m_avatar.operator->())->FUN_1418bce80((*reinterpret_cast<std::vector<int>*>(static_cast<char*>(((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))+0xe7e0))[index]);
  }
  break; }
 }

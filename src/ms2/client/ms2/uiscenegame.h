@@ -33,8 +33,8 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);   // 41
     virtual void vfunc_43();                                    // 43
     virtual bool vfunc_47();                                    // 47
-    virtual void vfunc_48(int n);                               // 48 0x1422e7b20 show
-    virtual void vfunc_49(int n);                               // 49 0x1422e7bd0 hide
+    virtual int vfunc_48(int n);                                // 48 0x1422e7b20 show
+    virtual int vfunc_49(int n);                                // 49 0x1422e7bd0 hide
     virtual void vfunc_50();
     virtual void vfunc_51();
     virtual void vfunc_52();
@@ -73,8 +73,8 @@ public:
     virtual int vfunc_13();                                     // 13 0x141ac7650
     virtual int vfunc_14();                                     // 14 0x141ac7830
     virtual void vfunc_15();                                    // 15 0x141ac7620
-    virtual void vfunc_48(int n);                               // 48 0x141ac73a0
-    virtual void vfunc_49(int n);                               // 49 0x141ac74f0
+    virtual int vfunc_48(int n);                                // 48 0x141ac73a0
+    virtual int vfunc_49(int n);                                // 49 0x141ac74f0
     virtual void vfunc_55();                                    // 55 0x141ac78a0
     virtual void vfunc_56();                                    // 56 0x141ac78f0
 };
@@ -88,8 +88,8 @@ public:
     virtual CString GetTypeName();                                  //  1 0x141ac7fc0 "SceneGameBeautyShop"
     virtual int vfunc_13();                                     // 13 0x141ac8340
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac8370
-    virtual void vfunc_48(int n);                               // 48 0x141ac8010
-    virtual void vfunc_49(int n);                               // 49 0x141ac8130
+    virtual int vfunc_48(int n);                                // 48 0x141ac8010
+    virtual int vfunc_49(int n);                                // 49 0x141ac8130
     virtual void vfunc_50();                                    // 50 0x141ac8290
     virtual void vfunc_52();                                    // 52 0x141ac8310
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141ac84a0
@@ -122,8 +122,8 @@ public:
     virtual CString GetTypeName();                                  //  1 0x141ac94c0 "SceneGameCinematicCutScene"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac9720
     virtual bool vfunc_47();                                    // 47 0x141ac9510
-    virtual void vfunc_48(int n);                               // 48 0x141ac9520
-    virtual void vfunc_49(int n);                               // 49 0x141ac9620
+    virtual int vfunc_48(int n);                                // 48 0x141ac9520
+    virtual int vfunc_49(int n);                                // 49 0x141ac9620
     virtual void vfunc_52();                                    // 52 0x141ac9700
     virtual void vfunc_54();                                    // 54 0x141ac96d0
     virtual int vfunc_65();                                     // 65 0x141ac97b0 0x4e58
@@ -137,8 +137,8 @@ public:
     virtual ~UISceneGameCinematicTalk();                        //  0 0x141ac9810
     virtual CString GetTypeName();                                  //  1 0x141ac9850 "SceneGameCinematicTalk"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac9ab0
-    virtual void vfunc_48(int n);                               // 48 0x141ac98a0
-    virtual void vfunc_49(int n);                               // 49 0x141ac99b0
+    virtual int vfunc_48(int n);                                // 48 0x141ac98a0
+    virtual int vfunc_49(int n);                                // 49 0x141ac99b0
     virtual void vfunc_52();                                    // 52 0x141ac9a90
     virtual int vfunc_65();                                     // 65 0x141ac9c00 0x4e3f
 private:
@@ -164,8 +164,8 @@ public:
     virtual int vfunc_14();                                     // 14 0x141aca2b0
     virtual void vfunc_15();                                    // 15 0x141aca3b0
     virtual void vfunc_34(void* p, float x, float y);           // 34 0x141aca480
-    virtual void vfunc_48(int n);                               // 48 0x141ac9f20
-    virtual void vfunc_49(int n);                               // 49 0x141aca0d0
+    virtual int vfunc_48(int n);                                // 48 0x141ac9f20
+    virtual int vfunc_49(int n);                                // 49 0x141aca0d0
     virtual void vfunc_55();                                    // 55 0x141aca4e0
     virtual void vfunc_56();                                    // 56 0x141aca500
     virtual void vfunc_58();                                    // 58 0x141aca570
@@ -191,8 +191,8 @@ public:
     virtual int vfunc_13();                                     // 13 0x141acd750
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acd7d0
     virtual bool vfunc_47();                                    // 47 0x141acd280
-    virtual void vfunc_48(int n);                               // 48 0x141acd290 hide the character entities
-    virtual void vfunc_49(int n);                               // 49 0x141acd5e0 show them again
+    virtual int vfunc_48(int n);                                // 48 0x141acd290 hide the character entities
+    virtual int vfunc_49(int n);                                // 49 0x141acd5e0 show them again
     virtual void vfunc_57();                                    // 57 0x141acd730
 private:
     MS2_LAYOUT_FRIEND;

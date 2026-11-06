@@ -74,12 +74,12 @@ Scaleform::GFx::Value GFxMovie::FUN_1422bd120(CString strClassName)
     return FUN_1422be7f0("flash.utils.getDefinitionByName", strClassName);
 }
 
-// MS2-FUNCTIONAL: the exe widens the discarded bool result of Movie::Invoke (movzx eax, al); no source form found yet.
+// The exe widens the discarded bool result of Movie::Invoke (movzx eax, al): a ?: with two (void)0 arms keeps it.
 // @0x1422bd1b0
 Scaleform::GFx::Value GFxMovie::FUN_1422bd1b0(const char* szMethod)
 {
     Scaleform::GFx::Value vResult;
-    (int)m_60->Invoke(szMethod, &vResult, (const Scaleform::GFx::Value*)0, 0);
+    m_60->Invoke(szMethod, &vResult, (const Scaleform::GFx::Value*)0, 0) ? (void)0 : (void)0;
     return vResult;
 }
 

@@ -72,7 +72,7 @@ enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(TiX
    // the feature/locale singleton
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the default market max price
 
 // Defined below (0x14089fef0): the s_bInit setter the loader calls.
@@ -143,7 +143,7 @@ bool CUGCDesignTable::Reload()
         if (pRoot == 0)
             return false;
         __int64 nDefaultMarketMaxPrice =
-            FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660));
+            FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_1401d3200*)GetClientConstants())) + 0x4660));
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
              pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
         {

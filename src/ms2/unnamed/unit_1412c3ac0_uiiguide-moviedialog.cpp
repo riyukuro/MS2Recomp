@@ -23,7 +23,7 @@ public:
     char m_pad_00[0xcd70];
     Unk_GmGuideCfg m_guide;                                     // +0xcd70
 };
-Unk_SingletonObj1* FUN_1401d3200();
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_GmKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();
 
@@ -74,7 +74,7 @@ MS2_REPLACE_METHOD(0x1412C3C20, UIIGuideMovieDialog, vfunc_69, 83, 0x2124D088);
 void UIIGuideMovieDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    CString strMovie = reinterpret_cast<Unk_GmConfig*>(FUN_1401d3200())->m_guide;
+    CString strMovie = reinterpret_cast<Unk_GmConfig*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_guide;
     m_30->Invoke("initData", strMovie);
 }
 MS2_REPLACE_METHOD(0x1412C3C80, UIIGuideMovieDialog, OnLoadComplete, 204, 0x1460A601);

@@ -168,7 +168,7 @@ class Unk_AttendTable { public:
 class Unk_CadDay : public CPtred { public: std::vector<MS2Ptr<ItemEntity> > m_items; };   // layout view only
 //
 //
-template<> std::vector<MS2Ptr<ItemEntity> >::size_type std::vector<MS2Ptr<ItemEntity> >::size() const noexcept;
+//
 
 // gameeventcli.cpp (not recovered).
 class GameEventCashAttendCli : public GameEventCashAttend { public:
@@ -279,7 +279,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     m_disabled->vfunc_4(bPassed);
     FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
-        if(i>=reinterpret_cast<Unk_CadDay*>(spDay.operator->())->m_items.size()) {
+        if(i>=spDay.operator->()->m_gifts.size()) {
             m_rewardItems[i]->vfunc_4(false);
             m_checks[i]->vfunc_4(false);
             continue;

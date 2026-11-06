@@ -94,19 +94,19 @@ bool PaybackTable::Load()
     }
     std::sort(m_levels.begin(), m_levels.end(), FUN_14071bc90);
     m_nStart = 0;
-    if (*FUN_1401d3200()->PaybackStartDate.Get() != 0)
+    if (*GetClientConstants()->PaybackStartDate.Get() != 0)
     {
-        int nYear = (int)((double)*FUN_1401d3200()->PaybackStartDate.Get() / 10000.0);
-        int nMonth = *FUN_1401d3200()->PaybackStartDate.Get() / 100 % 100;
-        int nDay = *FUN_1401d3200()->PaybackStartDate.Get() % 100;
+        int nYear = (int)((double)*GetClientConstants()->PaybackStartDate.Get() / 10000.0);
+        int nMonth = *GetClientConstants()->PaybackStartDate.Get() / 100 % 100;
+        int nDay = *GetClientConstants()->PaybackStartDate.Get() % 100;
         m_nStart = MakeTime(nYear, nMonth, nDay, 0, 0, 0);
     }
     m_nEnd = 0;
-    if (*FUN_1401d3200()->PaybackEndDate.Get() != 0)
+    if (*GetClientConstants()->PaybackEndDate.Get() != 0)
     {
-        int nYear = (int)((double)*FUN_1401d3200()->PaybackEndDate.Get() / 10000.0);
-        int nMonth = *FUN_1401d3200()->PaybackEndDate.Get() / 100 % 100;
-        int nDay = *FUN_1401d3200()->PaybackEndDate.Get() % 100;
+        int nYear = (int)((double)*GetClientConstants()->PaybackEndDate.Get() / 10000.0);
+        int nMonth = *GetClientConstants()->PaybackEndDate.Get() / 100 % 100;
+        int nDay = *GetClientConstants()->PaybackEndDate.Get() % 100;
         m_nEnd = MakeTime(nYear, nMonth, nDay, 23, 59, 59);
     }
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d650())
@@ -224,7 +224,7 @@ bool PaybackTable::IsResetWindow()
         return false;
     if (now.GetHour() != 0)
         return false;
-    if (now.GetMinute() * 60 + now.GetSecond() > *FUN_1401d3200()->PaybackRewardMinutes.Get() * 60)
+    if (now.GetMinute() * 60 + now.GetSecond() > *GetClientConstants()->PaybackRewardMinutes.Get() * 60)
         return false;
     if (IsPaybackDay(now.Get()))
         return false;

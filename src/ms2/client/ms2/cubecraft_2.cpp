@@ -113,7 +113,7 @@ struct Unk_C2Consts
 MS2_CHECK_OFFSET(Unk_C2Consts, m_effectC, 0x3aa0);
 MS2_CHECK_OFFSET(Unk_C2Consts, m_liftDown, 0x3b50);
 extern int DAT_143ae0fb4;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
 void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);
@@ -828,7 +828,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     if (m_pOwner == 0)
         return;
     m_spEffectA.AssignRaw(new CItem);
-    if (!m_spEffectA->FUN_140523c40(((struct Unk_C2Consts*)FUN_1401d3200())->m_effectA.Read(), 1, 0))
+    if (!m_spEffectA->FUN_140523c40(((struct Unk_C2Consts*)GetClientConstants())->m_effectA.Read(), 1, 0))
     {
         m_spEffectA = 0;
         return;
@@ -841,7 +841,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     if (((class PC*)(m_pOwner))->IsCubeMode1() == 0)
         return;
     m_spEffectB.AssignRaw(new CItem);
-    if (!m_spEffectB->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)FUN_1401d3200())->m_effectB), 1, 0))
+    if (!m_spEffectB->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)GetClientConstants())->m_effectB), 1, 0))
     {
         m_spEffectB = 0;
         return;
@@ -852,7 +852,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectB->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectB.get(), 0);
     m_spEffectC.AssignRaw(new CItem);
-    if (!m_spEffectC->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)FUN_1401d3200())->m_effectC), 1, 0))
+    if (!m_spEffectC->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)GetClientConstants())->m_effectC), 1, 0))
     {
         m_spEffectC = 0;
         return;
@@ -1419,8 +1419,8 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
     Unk_Int3 kTopGrid = FUN_1408a1430((const NiPoint3&)kTop);
     if (GetMode() == 2)
     {
-        *pLeft = kTopGrid.z - kFloorGrid.z < *((struct Unk_C2Consts*)FUN_1401d3200())->m_liftUp.Get();
-        *pRight = kFloorGrid.z - kTopGrid.z < *((struct Unk_C2Consts*)FUN_1401d3200())->m_liftDown.Get();
+        *pLeft = kTopGrid.z - kFloorGrid.z < *((struct Unk_C2Consts*)GetClientConstants())->m_liftUp.Get();
+        *pRight = kFloorGrid.z - kTopGrid.z < *((struct Unk_C2Consts*)GetClientConstants())->m_liftDown.Get();
         if (DAT_143ae0fb4 != 0)
         {
             *pRight = 1;
@@ -1610,7 +1610,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
             Vector3 kDelta = m_ptCell.FUN_140965c40(m_ptLast);
             float fLen = kDelta.FUN_140967ac0();
             kDelta.FUN_140968990();
-            kDown = m_ptLast.FUN_14097fd50(kDelta.FUN_14097fc90(fEase).FUN_14097fc90(fLen));
+            kDown = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptLast) + reinterpret_cast<const efd::Point3&>(kDelta) * fEase * fLen));
             reinterpret_cast<Unk_C2GuideSlots*>(m_spGuide.operator->())->vfunc_2((const NiPoint3&)kDown);
             if (m_spGuide3.get() != 0)
             {

@@ -135,19 +135,19 @@ void CShopEventManager::FUN_1407ce320(int eventId)
     m_events.RemoveKey(eventId);
 }
 
-// The pointer temporary FUN_1407ce380 copies each event through before it is added (a MS2Ptr built from another one
-// through its getter; the byte-identical sibling of the plain copy at 0x1407ce960). Not referenced by the source: the
-// original TU's template layer made it from a conversion this source does not have.
+struct Unk_MmSaleCtx : PreminmMarketSaleEventContext {};   // the pointee type of meratmarketbasketinfo.cpp's sale context arrays
+template <> void MS2Ptr<Unk_MmSaleCtx>::AddRef() const;   // 0x1406ae220 (meratmarketbasketinfo.cpp)
+template <> MS2Ptr<Unk_MmSaleCtx>::~MS2Ptr();              // 0x1406a8810 (meratmarketbasketinfo.cpp)
+// The converting copy FUN_1407ce380 adds each event through: the array's element built from the map's pointer via its getter.
 // @0x1407ce9a0
-// MS2-FUNCTIONAL: the exact conversion that selects this copy is not known; the plain copy is used by FUN_1407ce380
-MS2Ptr<PreminmMarketSaleEventContext>* FUN_1407ce9a0(MS2Ptr<PreminmMarketSaleEventContext>* pDst,
-                                                     const MS2Ptr<PreminmMarketSaleEventContext>& spSrc)
+template <> template <> MS2Ptr<Unk_MmSaleCtx>::MS2Ptr(const MS2Ptr<PreminmMarketSaleEventContext>& spSrc)
 {
-    return new (pDst) MS2Ptr<PreminmMarketSaleEventContext>((PreminmMarketSaleEventContext*)spSrc);
+    m_p = (Unk_MmSaleCtx*)(PreminmMarketSaleEventContext*)spSrc;
+    AddRef();
 }
 
 // @0x1407ce380
-// MS2-FUNCTIONAL: the exe adds each event through a MS2Ptr temporary (0x1407ce9a0, dtor 0x1406a8810)
+// MS2-FUNCTIONAL: in the exe the array holds MS2Ptr<Unk_MmSaleCtx>, so Add gets a converting temporary (0x1407ce9a0, dtor 0x1406a8810); a cast to our MS2Ptr<PreminmMarketSaleEventContext> array adds a dead rax chain
 void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr, const int& nCurrency)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);

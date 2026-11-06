@@ -58,7 +58,7 @@ struct Unk_CeConstTable
     Unk_CeConstUInt m_checkInterval;                    // +0xe1a8
     Unk_CeConstFloat m_maxDistance;                     // +0xe200
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 // C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
 // (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
 // unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
@@ -108,7 +108,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80() != reinterpret_cast<PC*>(pPartner)->FUN_141663990())
             return;
         float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())));
-        if (!(fDistance > *((Common::Constants::Value<float>*)(struct Unk_CeConstFloat*)(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_maxDistance))->Get()))
+        if (!(fDistance > *((Common::Constants::Value<float>*)(struct Unk_CeConstFloat*)(&((struct Unk_CeConstTable*)GetClientConstants())->m_maxDistance))->Get()))
         {
             if (m_bInRange != 0)
             {
@@ -215,7 +215,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
     m_nEffectId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(request));
-    m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_checkInterval));
+    m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)GetClientConstants())->m_checkInterval));
 }
 
 // @0x140b0eed0
@@ -261,10 +261,10 @@ NiPoint3 CoupleEffectSystem::FUN_140b0f160()
 #ifdef __clang__
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f))));
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptOwner))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptPartner))))).FUN_140ae9180(2.0f))));
 #else
-    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))
-                             .FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())))
+    return NiPoint3(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))))
+                             + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18()))))))
                              .FUN_140ae9180(2.0f))));
 #endif
 }

@@ -87,7 +87,7 @@ public:
     char m_pad_0[0x4f70];
     Unk_PtConst m_rewardItem;                                   // +0x4f70
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -233,7 +233,7 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
     }
     else if (m_nCount >= 0)
     {
-        unsigned int nItemId = *reinterpret_cast<unsigned int*>(reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_rewardItem)->Get());
+        unsigned int nItemId = *reinterpret_cast<unsigned int*>(reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PtConfig*)GetClientConstants())->m_rewardItem)->Get());
         CString strBind = FUN_141345eb0(nItemId, m_nCount);
         CStringW strIcon = FUN_14016a730(strBind, 0);
         CStringW strReward(L"");

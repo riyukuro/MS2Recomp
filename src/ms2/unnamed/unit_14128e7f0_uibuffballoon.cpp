@@ -31,7 +31,7 @@ struct Unk_BuffCfg
     char m_pad_0000[0x378];
     Unk_BuffCfgFloat m_378;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_BuffUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -54,7 +54,7 @@ UIBuffBalloon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int
     : TimerEntity(nLayer, clip, nActorId), m_a0("")
 {
     m_a8 = 0;
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BuffCfg*)FUN_1401d3200())->m_378)->Read();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BuffCfg*)GetClientConstants())->m_378)->Read();
 }
 
 // @0x14128e890

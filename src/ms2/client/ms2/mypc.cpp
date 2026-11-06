@@ -1720,7 +1720,7 @@ MS2Ptr<CSkillRecord> MyPC::vfunc_104(bool a, bool b, bool c)
             }
             else if (m_n15f0 != 0 && nNow > (unsigned)m_n15f0)
             {
-                if ((nNow - m_n15f0) > *static_cast<Client::Constants*>(FUN_1401d3200())->KeyIsDownSkill_MaxDurationTick.Get())
+                if ((nNow - m_n15f0) > *static_cast<Client::Constants*>(GetClientConstants())->KeyIsDownSkill_MaxDurationTick.Get())
                     return 0;
             }
         }
@@ -2772,7 +2772,7 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
     DAT_143ab288c = 0;
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2 && bFlyCamera != 0)
     {
-        static float s_fVelocity = FUN_1401d3200()->CameraVelocityInPortalMove.Read();
+        static float s_fVelocity = GetClientConstants()->CameraVelocityInPortalMove.Read();
         Unk_MyPCCameraCtl* pCtl = reinterpret_cast<Unk_MyPCCameraCtl*>(reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af2520());
         Unk_CameraFlyBy kFlyBy;
         kFlyBy.m_nKind = 1;
@@ -2824,11 +2824,11 @@ MS2_REPLACE_METHOD(0x141529620, MyPC, FUN_141529620, 17, 0xACFFB766);
 // @0x141529640
 PCBase* MyPC::FindTalkableNpc()
 {
-    PCBase* pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(2, FUN_1401d3200()->TalkableDistance.Get(400.0f),
-        FUN_1401d3200()->TalkableFrontOnly.Read(), 1));
+    PCBase* pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(2, GetClientConstants()->TalkableDistance.Get(400.0f),
+        GetClientConstants()->TalkableFrontOnly.Read(), 1));
     if (!pNpc)
-        pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(1, FUN_1401d3200()->TalkableDistance.Get(400.0f),
-            FUN_1401d3200()->TalkableFrontOnly.Read(), 1));
+        pNpc = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd2170(1, GetClientConstants()->TalkableDistance.Get(400.0f),
+            GetClientConstants()->TalkableFrontOnly.Read(), 1));
     return pNpc;
 }
 // @0x1415293b0
@@ -3028,7 +3028,7 @@ MS2_REPLACE_METHOD(0x141529a50, MyPC, FUN_141529a50, 123, 0x33B013F2);
 egf::Entity* MyPC::FUN_141529750()
 {
     egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bcfd30(0x62f7a42c, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(PCBase::FUN_1416767d0())),
-        FUN_1401d3200()->TelescopeFindDistance.Read(), 1, 0);
+        GetClientConstants()->TelescopeFindDistance.Read(), 1, 0);
     if (!pEntity)
         return 0;
     efd::utf8string kValue;
@@ -3446,7 +3446,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
         case 7:
         {
             MS2Ptr<StateHoldData> spHold(new StateHoldData());
-            float fFind = FUN_1401d3200()->FindHoldTargetRange.Get(230.0f);
+            float fFind = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
             if (this->FUN_14165c1b0(&spHold->m_nTargetId, reinterpret_cast<CString*>(&spHold->m_strTargetName), fFind + 20.0f) != 0)
             {
                 PCBase* pTarget = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1290(spHold->m_nTargetId));
@@ -3805,8 +3805,8 @@ void MyPC::FocusConstructionGuideCamera(PCBase* pTarget)
         return;
     }
     NiPoint3 kPos = pTarget->vfunc_18();
-    float fZoomVelocity = FUN_1401d3200()->ConstructionGuideCamZoomVelocity.Read();
-    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af9b40(FUN_1401d3200()->ConstructionGuideCamDistance.Read());
+    float fZoomVelocity = GetClientConstants()->ConstructionGuideCamZoomVelocity.Read();
+    reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af9b40(GetClientConstants()->ConstructionGuideCamDistance.Read());
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2)
     {
         reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(pTarget), 0);
@@ -3830,8 +3830,8 @@ void MyPC::FUN_14152a700(PCBase* pTarget)
         return;
     }
     NiPoint3 kPos = pTarget->vfunc_18();
-    float fVelocity = FUN_1401d3200()->ConstructionGuideCamVelocity.Read();
-    float fZoomVelocity = FUN_1401d3200()->ConstructionGuideCamZoomVelocity.Read();
+    float fVelocity = GetClientConstants()->ConstructionGuideCamVelocity.Read();
+    float fZoomVelocity = GetClientConstants()->ConstructionGuideCamZoomVelocity.Read();
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bbbda0();
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7e30() == 2)
     {

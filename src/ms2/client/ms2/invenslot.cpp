@@ -1494,8 +1494,8 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     kMask.bits0 = 0xffffffff;
     kMask.bits1 = kMask.bits2 = kMask.bits3 = 0;
     Unk_RayCastInfo kInfo;
-    kInfo.m_origin = pPC->FUN_1416767d0();
-    kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
+    reinterpret_cast<efd::Point3&>(kInfo.m_origin) = pPC->FUN_1416767d0();
+    reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cf8);
     kInfo.m_maxDist = 0.0f;
     kInfo.m_groups = 0x389;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, &kMask) == false)

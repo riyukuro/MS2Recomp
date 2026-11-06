@@ -681,7 +681,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         if (m_30 == NULL)
             return 1;
-        int nDonate = *FUN_1401d3200()->guildDonateMeso.Get();
+        int nDonate = *GetClientConstants()->guildDonateMeso.Get();
         MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
         if (spMe == 0)
             return 0;
@@ -741,9 +741,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 return 0;
             }
         }
-        int nMin = *FUN_1401d3200()->GuildNameLengthMin.Get();
-        int nMax = *FUN_1401d3200()->GuildNameLengthMax.Get();
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_14028dee0<int, int, int>(0x3db, *FUN_1401d3200()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild")))
+        int nMin = *GetClientConstants()->GuildNameLengthMin.Get();
+        int nMax = *GetClientConstants()->GuildNameLengthMax.Get();
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_14028dee0<int, int, int>(0x3db, *GetClientConstants()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild")))
         {
             spBox->SetInput(0, L"", nMax, 0, 0);
             FUN_140d73c60(spBox);

@@ -223,7 +223,7 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46();
     virtual void SetShopBanner(CString strKey, CString strPath);   // 47
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* psz); // a plain log line
 
@@ -1110,7 +1110,7 @@ void CUgcDownloadShopBanner::ProcessResult()
         for (POSITION pos = m_list.GetHeadPosition(); pos; m_list.GetNext(pos))
         {
             MS2Ptr<CUgcShopBannerProxy> sp = m_list.GetAt(pos);
-            ((class Unk_UgcPlatform*)FUN_140d86260())->SetShopBanner(sp->m_strKey, m_strPath);
+            ((class Unk_UgcPlatform*)((void*)GetClientPlatform()))->SetShopBanner(sp->m_strKey, m_strPath);
         }
     }
     if (m_param.m_nType == 0xcc || m_param.m_nType == 0xcf || m_param.m_nType == 0xd2)

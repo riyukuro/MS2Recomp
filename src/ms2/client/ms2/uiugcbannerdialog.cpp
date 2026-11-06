@@ -166,7 +166,7 @@ UIUGCBannerDialog::UIUGCBannerDialog()
     , m_22c(0)
 {
     FUN_141924170(1);
-    m_230 = FUN_1401d3200()->UgcBannerCheckTime.Read();
+    m_230 = GetClientConstants()->UgcBannerCheckTime.Read();
 }
 
 // @0x141b34270
@@ -876,10 +876,10 @@ void UIUGCCameraDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        int nDefault = FUN_1401d3200()->UGCCameraDefaultSize.Read();
-        int nMin = FUN_1401d3200()->UGCCameraMinSize.Read();
-        int nMax = FUN_1401d3200()->UGCCameraMaxSize.Read();
-        int nPreview = FUN_1401d3200()->UGCCameraSnapshotPreviewTime.Read();
+        int nDefault = GetClientConstants()->UGCCameraDefaultSize.Read();
+        int nMin = GetClientConstants()->UGCCameraMinSize.Read();
+        int nMax = GetClientConstants()->UGCCameraMaxSize.Read();
+        int nPreview = GetClientConstants()->UGCCameraSnapshotPreviewTime.Read();
         pDialog->Invoke("open", nDefault, nMin, nMax, nPreview);
     }
 }

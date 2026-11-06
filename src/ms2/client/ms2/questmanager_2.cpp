@@ -702,7 +702,7 @@ void CQuestManager::UpdateQuests()
         m_field178 = 0;
     }
     if (m_requestTick != 0) {
-        if (GetTickCountMs2() > m_requestTick + *FUN_1401d3200()->QuestPortalSummonTime.Get()) {
+        if (GetTickCountMs2() > m_requestTick + *GetClientConstants()->QuestPortalSummonTime.Get()) {
             m_requestTick = 0;
             m_targetObject = 0;
             m_field190 = 0;
@@ -1129,7 +1129,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         MS2Ptr<CPortal> target = WorldService::GetInstance()->FUN_141bc2800(m_targetObject);
         if (target.IsNull()) return;
         NiTransform xform;   // 0x140a332d0
-        xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(target.operator->()->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
+        xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(target.operator->()->FUN_14169d2f0())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 1.0f)))))));
         ((efd::Matrix3*)&(xform.m_Rotate))->FromEulerAnglesXYZ((((Unk_QmFieldObject*)target.operator->())->m_rotX * 3.1415927f) / 180.0f, (((Unk_QmFieldObject*)target.operator->())->m_rotY * 3.1415927f) / 180.0f, (((Unk_QmFieldObject*)target.operator->())->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
         NoticeMessage request;
@@ -1645,7 +1645,7 @@ int CQuestManager::IsPortalSummonRequestActive()
 {
     if (m_requestTick == 0) return 0;
     unsigned now = FUN_141472bc0();
-    if (now > m_requestTick + *FUN_1401d3200()->QuestPortalSummonTime.Get()) return 0;
+    if (now > m_requestTick + *GetClientConstants()->QuestPortalSummonTime.Get()) return 0;
     if (now < m_requestTick) return 0;
     return 1;
 }
@@ -1748,7 +1748,7 @@ MS2_REPLACE_METHOD(0x1416d09d0, CQuestManager, FUN_1416d09d0, 570, 0xAE4283FA);
 // @0x1416d0c10
 void CQuestManager::SendQuestMode14()
 {
-    if (FUN_1416d09d0(*FUN_1401d3200()->FameContentsSkyFortressGotoMapID.Get(), 1) == 0) return;
+    if (FUN_1416d09d0(*GetClientConstants()->FameContentsSkyFortressGotoMapID.Get(), 1) == 0) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.WriteUInt8(0xe);
     FUN_140710590(packet);
@@ -1758,7 +1758,7 @@ MS2_REPLACE_METHOD(0x1416d0c10, CQuestManager, SendQuestMode14, 118, 0xAC4E24C6)
 // @0x1416d0e20
 int CQuestManager::GetRemainingMissionAttackCount()
 {
-    return *FUN_1401d3200()->FameContentsMissionAttackCount.Get() - m_refreshCount;
+    return *GetClientConstants()->FameContentsMissionAttackCount.Get() - m_refreshCount;
 }
 MS2_REPLACE_METHOD(0x1416d0e20, CQuestManager, GetRemainingMissionAttackCount, 48, 0x5BDD4442);
 
@@ -1771,7 +1771,7 @@ void CQuestManager::SendQuestMode15(int id)
     }
     if (FUN_1416d09d0(id, 1) == 0) return;
     if (FUN_1416d0e60(id) == 0) return;
-    if (m_refreshCount >= *FUN_1401d3200()->FameContentsMissionAttackCount.Get()) {
+    if (m_refreshCount >= *GetClientConstants()->FameContentsMissionAttackCount.Get()) {
         CStringW key(L"s_sky_fortress_warn_attack");
         FUN_1412751f0(GetStringCommonByKey(key), 1, 1);
         return;

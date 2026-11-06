@@ -434,7 +434,7 @@ public:
     char m_pad_00[0x8350];
     Unk_PCBaseConstStr m_8350;                                      // +0x8350 the miss effect name
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // A moving field object (platform; scenestategame.cpp/state.cpp); held by MS2Ptr, so a CPtred.
 class CBreakableObject   // C3: member view (real class not in this TU)
@@ -3435,9 +3435,9 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
 MS2_REPLACE_METHOD(0x1416773f0, PCBase, vfunc_121, 2878, 0x41C13759);
 
 // @0x141678160
-void PCBase::FUN_141678160(const NiPoint3& kPos)
+void PCBase::FUN_141678160(efd::Point3 kPos)
 {
-    m_posBF4 = kPos;
+    m_posBF4 = reinterpret_cast<const NiPoint3&>(kPos);
 }
 MS2_REPLACE_METHOD(0x141678160, PCBase, FUN_141678160, 43, 0x6EE29682);
 
@@ -3944,7 +3944,7 @@ void PCBase::FUN_141671c20(MS2Ptr<CDamageRecord> spRecord)
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
                 NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
-                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.Get();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_8350.Get();
                 ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
                 ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
                 ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
@@ -3992,7 +3992,7 @@ void PCBase::FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord)
             int nType = spRecord->m_arrTypes[i];
             if (nType == 2) {
                 NoticeMessage kQuery;   // C3: was Unk_PCBaseFxQuery
-                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)FUN_1401d3200())->m_8350.Get();
+                ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = *((class Unk_PCBaseConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_8350.Get();
                 ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = 0;
                 ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
                 ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));

@@ -32,7 +32,7 @@
 #include <string>
 #include <istream>
 #include <ostream>
-std::string* FUN_1401d2620(std::string* dst, const char* src);   // std::string(const char*)
+union CppStrInit { std::string s; CppStrInit(const char* p); ~CppStrInit() {} }; __pragma(inline_depth(0)) __forceinline CppStrInit::CppStrInit(const char* p) : s(p) {} __pragma(inline_depth()) static __forceinline std::string* CppNewString(std::string* d, const char* p) { return &(new (d) CppStrInit(p))->s; }   // std::string(const char*) 0x1401d2620 stays out of line, as in the exe
 extern const char DAT_14311c1e0[];
 extern const char DAT_14311c638[];
 extern const char DAT_14312d8d8[];
@@ -41,14 +41,14 @@ extern const char DAT_143130c28[];
 // @0x1423056e0
 std::string* FUN_1423056e0(void* self, std::string* out)
 {
-    FUN_1401d2620(out, DAT_14311c1e0);
+    CppNewString(out, DAT_14311c1e0);
     return out;
 }
 
 // @0x142305710
 std::string* FUN_142305710(void* self, std::string* out)
 {
-    FUN_1401d2620(out, DAT_14311c638);
+    CppNewString(out, DAT_14311c638);
     return out;
 }
 
@@ -149,7 +149,7 @@ struct CppTempString
 {
     union { std::string s; };
     CppTempString() {}
-    CppTempString(const char* p) { FUN_1401d2620(&s, p); }
+    CppTempString(const char* p) { CppNewString(&s, p); }
     ~CppTempString() { s.~basic_string(); }
 };
 // the same temporary, with the string's small buffer visible so /GS counts it as a buffer
@@ -157,7 +157,7 @@ struct CppTempStringBuf
 {
     __declspec(align(8)) char m_raw[sizeof(std::string)];
     std::string& s() { return *reinterpret_cast<std::string*>(m_raw); }
-    CppTempStringBuf(const char* p) { FUN_1401d2620(&s(), p); }
+    CppTempStringBuf(const char* p) { CppNewString(&s(), p); }
     ~CppTempStringBuf() { s().~basic_string(); }
 };
 // Crypto++ exception subclasses; the derived vftable is stored last
@@ -205,7 +205,7 @@ extern const std::type_info DAT_143aa1d00;
 static __forceinline bool CppGetThisObject(const CppNameValuePairs* source, const std::type_info& t, void* pObject)
 {
     CppTempString base;
-    std::string& b = *FUN_1401d2620(&base.s, DAT_14312b860);
+    std::string& b = *CppNewString(&base.s, DAT_14312b860);
     return source->GetVoidValue((std::move(b) + t.name()).c_str(), t, pObject);
 }
 
@@ -329,7 +329,7 @@ void FUN_1423772f0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* par
 std::string* FUN_1423798d0(std::string* out)
 {
     CppTempString head;
-    std::string& h = *FUN_1401d2620(&head.s, "HMAC(");
+    std::string& h = *CppNewString(&head.s, "HMAC(");
     return new (out) std::string(std::move(std::move(h) + "SHA-1") + ")");
 }
 

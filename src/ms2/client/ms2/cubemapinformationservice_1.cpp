@@ -42,7 +42,7 @@
 class CubeMapInformationService;
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 #include <efd/ServiceManager.h>   // C3: FUN_1401cd070 = efd::ServiceManager::GetSystemServiceAs<CubeMapInformationService>
-Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
+//
 
 // The shared WorldService declaration uses this handle spelling. Its per-type
 // ownership helpers are instantiated first in this object.
@@ -86,7 +86,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
     CubeMapInformationService* service=GetCubeMapService();
     int height=z;
     while(--height>0) {
-        Unk_Int3 position; FUN_1408a85a0(&position,x,y,height);
+        Unk_Int3 position(x,y,height);
         Cube* cube=((class CubeMapInformationService*)(service))->GetCubeAtCell(position);
         if(cube!=0) {
             if((egf::Entity*)cube->entity!=0) {

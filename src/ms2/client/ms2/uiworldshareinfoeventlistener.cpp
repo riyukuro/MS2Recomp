@@ -53,7 +53,7 @@ class CGameRule   // C3: member view for the former free stand-ins
 public:
     unsigned int GetAdventureLevelBonusExpRate();
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
 template <class A> CStringW FormatStringId(int nId, const A& a);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
@@ -190,7 +190,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)FUN_1401d3200()) + 0x5910)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)GetClientConstants()) + 0x5910)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
                 strA += GetStringCommon(0x2c5);
         }
     }
@@ -233,7 +233,7 @@ void FUN_1413612c0(__int64 nAmount, int nType)
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
-            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)FUN_1401d3200()) + 0x5968)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
+            if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)GetClientConstants()) + 0x5968)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
                 strText += FormatStringId<CStringW>(0x2c5, strNum);
         }
         FUN_1412751b0(strText, 5);

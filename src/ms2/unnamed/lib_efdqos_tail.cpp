@@ -3,7 +3,7 @@
 // two enum lookups and the DataDrivenEnum<UInt32>::FindEnumValue instance they call. Free functions under the exe's own
 // FUN_<va> names, so they cannot collide with the engine-stage efd definitions.
 // MS2-UNIT: lib_efdqos_tail
-// MS2-RANGE: 0x1420e5f50-0x1420e5fcc .text$mn
+// (0x1420e5f50, the AssetLoaderThreadFunctor ctor, is the engine stage's: gb:efd/AssetLoaderThreadFunctor matches it.)
 // MS2-RANGE: 0x1420e6090-0x1420e60e7 .text$mn
 // MS2-RANGE: 0x1420e62a0-0x1420e636c .text$mn
 // MS2-RANGE: 0x1420e6380-0x1420e6d15 .text$mn
@@ -36,27 +36,27 @@ struct AssetLoaderThreadFunctorLayout
     char pad18[0xd0 - 0x18];
     volatile bool m_shutdown;
 };
-extern "C" void* DAT_1430d1b68[];   // AssetLoaderThreadFunctor vftable (ThreadFunctor part)
-extern "C" void* DAT_1430d1b80[];   // AssetLoaderThreadFunctor vftable (AssetFactoryManager part)
+// The ctor (0x1420e5f50) is no longer copied here. Since the UInt32 requestQueueSize patch (engine-patches
+// efd/AssetLoaderThreadFunctor.h.ed, 2026-10-29) the engine TU's efd::AssetLoaderThreadFunctor ctor matches the exe
+// exactly, with the real ??_7AssetLoaderThreadFunctor@efd stores. The old copy stored the two vftables through the
+// DAT_1430d1b68 / DAT_1430d1b80 stand-ins (glue alias.rsp lines 625/626).
 
-// AssetLoaderThreadFunctor::AssetLoaderThreadFunctor(requestQueueSize, pForeAssetFactoryManager): a background
-// AssetFactoryManager that takes the foreground manager's sleep interval (+0xb8).
-// The real bases give the exe's unwind of ThreadFunctor if AssetFactoryManager throws; novtable leaves the stores to
-// the exe's two vftables.
-struct __declspec(novtable) AssetLoaderThreadFunctorBases : efd::ThreadFunctor, efd::AssetFactoryManager
-{
-    AssetLoaderThreadFunctorBases(efd::UInt32 requestQueueSize, efd::AssetFactoryManager* pForeAssetFactoryManager);
-    volatile bool m_shutdown;
-};
-// @0x1420e5f50
-AssetLoaderThreadFunctorBases::AssetLoaderThreadFunctorBases(efd::UInt32 requestQueueSize,
-    efd::AssetFactoryManager* pForeAssetFactoryManager)
-    : efd::AssetFactoryManager(requestQueueSize, pForeAssetFactoryManager->GetSleepInterval(), pForeAssetFactoryManager)
-{
-    *(void***)static_cast<efd::ThreadFunctor*>(this) = DAT_1430d1b68;
-    *(void***)static_cast<efd::AssetFactoryManager*>(this) = DAT_1430d1b80;
-    m_shutdown = false;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // AssetLoaderThreadFunctor::Execute: ticks the background manager (vftable +0x68, OnTick) until shut down, then calls
 // DoShutdown (vftable +0x10). MS2's YieldThread sleeps for 1 ms.

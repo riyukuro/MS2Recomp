@@ -120,7 +120,7 @@ int Unk_PortalBox::FUN_14169b080(egf::Entity* pEntity)
         return 0;
     if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot)) != 0)
         return 0;
-    Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
+    efd::Point3 ptHalf = reinterpret_cast<const efd::Point3&>(ptSize) * 0.5f;
     m_bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
     m_pose.t.x = ptPos.x;
     m_pose.t.y = ptPos.y;

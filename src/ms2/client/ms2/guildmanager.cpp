@@ -406,7 +406,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
 {
     if (FUN_1413b6160() == 1) return false;
     if (HasGuildInvite() == 1) return false;
-    int minLength = *FUN_1401d3200()->GuildNameLengthMin.Get();
+    int minLength = *GetClientConstants()->GuildNameLengthMin.Get();
     if (name.GetLength() < minLength) {
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_invalide_create_name"), 1, 1);
         return false;
@@ -420,7 +420,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
     }
     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pc == 0) return false;
-    if ((unsigned short)pc->vfunc_78() <= *FUN_1401d3200()->GuildCreateMinLevel.Get()) {
+    if ((unsigned short)pc->vfunc_78() <= *GetClientConstants()->GuildCreateMinLevel.Get()) {
         FUN_1413c66f0(1, 0x13, 0);
         return false;
     }
@@ -664,7 +664,7 @@ bool CGuildManager::FUN_1413b8540(int amount)
         return false;
     }
     int bonusRate = reinterpret_cast<CGameEventValueGuildFund*>(TSingleton<CGameEventValueManager>::GetInstance()->GuildFund())->GetRate();
-    __int64 cost = *FUN_1401d3200()->guildDonateMeso.Get() * amount;
+    __int64 cost = *GetClientConstants()->guildDonateMeso.Get() * amount;
     __int64 fund = cost;
     fund += fund * ((float)bonusRate / 10000.0f);
     __int64 guildFund = GetFund();
@@ -2969,7 +2969,7 @@ void CGuildManager::FUN_1413c5c00(CInPacket& packet)
         CStringW receiver = packet.ReadUnicodeString();
         FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_guild_storage_gift"), receiver), 0xd);
     } else if (result == 0x36) {
-        int period = *FUN_1401d3200()->guildStorageGiftNeedPeriod.Get();
+        int period = *GetClientConstants()->guildStorageGiftNeedPeriod.Get();
         FUN_1412751f0(FUN_14028dfa0<int>(L"s_guild_storage_not_enough_gift_need_period", period), 1, 1);
     }
 }
@@ -3280,7 +3280,7 @@ void CGuildManager::FUN_1413c66f0(int kind, int code, int arg)
         text = GetStringCommon(0x412);
         break;
     case 0x13:
-        text = BlockFormat<int>(0x413, *FUN_1401d3200()->GuildCreateMinLevel.Get());
+        text = BlockFormat<int>(0x413, *GetClientConstants()->GuildCreateMinLevel.Get());
         break;
     case 0x14:
         text = GetStringCommon(0x414);

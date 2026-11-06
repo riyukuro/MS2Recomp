@@ -2255,7 +2255,7 @@ MS2_CHECK_OFFSET(Unk_SsConst, m_nSkillItemC, 0xa284);
 MS2_CHECK_OFFSET(Unk_SsConst, m_kFlyCast, 0xbdc0);
 MS2_CHECK_OFFSET(Unk_SsConst, m_kCastReuse, 0xbe18);
 MS2_CHECK_OFFSET(Unk_SsConst, m_kCastRepeat, 0xbe70);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_HsInfo : public CPtred { };
 
@@ -2865,11 +2865,11 @@ unsigned FUN_1417692f0(unsigned __int64 nKey)
 int FUN_141769320(MS2Ptr<CItemData> spData)
 {
     if (spData->IsRideItem())
-        return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemA;
+        return ((class Unk_SsConst*)GetClientConstants())->m_nSkillItemA;
     else if (spData->IsPetItem())
-        return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemC;
+        return ((class Unk_SsConst*)GetClientConstants())->m_nSkillItemC;
     else if (spData->GetType() == 5)
-        return ((class Unk_SsConst*)FUN_1401d3200())->m_nSkillItemB;
+        return ((class Unk_SsConst*)GetClientConstants())->m_nSkillItemB;
     return spData->FUN_14053dc20();
 }
 
@@ -3024,7 +3024,7 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         if (pBody != 0)
         {
             nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping() && reinterpret_cast<GameObjectController*>(pBody)->FUN_1412407a0();
-            static int s_nFlyCast = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)FUN_1401d3200())->m_kFlyCast));
+            static int s_nFlyCast = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)GetClientConstants())->m_kFlyCast));
             if (s_nFlyCast != 0)
                 nFlag = reinterpret_cast<GameObjectController*>(pBody)->IsJumping();
         }
@@ -3034,11 +3034,11 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
     }
     else
     {
-        static float s_fCastReuse = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_SsConst*)FUN_1401d3200())->m_kCastReuse)->Read();
+        static float s_fCastReuse = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_SsConst*)GetClientConstants())->m_kCastReuse)->Read();
         double dLimit = (double)(m_fLastCastTime + s_fCastReuse);
         if (dLimit >= TSingleton<CMainSystem>::GetInstance()->FUN_141473280())
         {
-            int nRepeat = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)FUN_1401d3200())->m_kCastRepeat));
+            int nRepeat = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_SsConst*)GetClientConstants())->m_kCastRepeat));
             if (nRepeat == 0)
                 return 1;
             if (m_nLastCastSkill == (int)spLevel->FUN_140803dc0())
@@ -3177,7 +3177,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
             if (bBlocked != 0)
                 return 0xe;
         }
-        if (DAT_143ab2914 < 0x32 || nGlideId != ((class Unk_SsConst*)FUN_1401d3200())->m_nGlideSkill)
+        if (DAT_143ab2914 < 0x32 || nGlideId != ((class Unk_SsConst*)GetClientConstants())->m_nGlideSkill)
         {
             if (reinterpret_cast<CFieldData*>(spMap.operator->())->GetMapType() == 3)
             {

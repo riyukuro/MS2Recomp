@@ -59,20 +59,20 @@ void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
     m_ptForward.FUN_140968990();
     m_ptRight.FUN_140968990();
 
-    m_ptOrigin = ptPos.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_ptSize.y)).FUN_14097fd50(Vector3(0.0f, 0.0f, -m_ptSize.z));
-    m_ptApex = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_fApexDist));
+    m_ptOrigin = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(m_ptForward) * (-m_ptSize.y)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, -m_ptSize.z)))));
+    m_ptApex = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * (-m_fApexDist)));
 
     m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     m_spMesh->RemoveAllStreamRefs();
-    m_aCorners[0] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
-    m_aCorners[1] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[2] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[3] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
+    m_aCorners[0] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptRight) * (-m_fNearHalfWidth)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_fHeight * 2.0f)))));
+    m_aCorners[1] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptRight) * (-m_fNearHalfWidth)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f)))));
+    m_aCorners[2] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptRight) * m_fNearHalfWidth) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f)))));
+    m_aCorners[3] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptRight) * m_fNearHalfWidth) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_fHeight * 2.0f)))));
 
-    m_aCorners[4] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
-    m_aCorners[5] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[6] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[7] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
+    m_aCorners[4] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * m_fDepth) + reinterpret_cast<const efd::Point3&>(m_ptRight) * (-m_fFarHalfWidth)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_fHeight * 2.0f)))));
+    m_aCorners[5] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * m_fDepth) + reinterpret_cast<const efd::Point3&>(m_ptRight) * (-m_fFarHalfWidth)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f)))));
+    m_aCorners[6] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * m_fDepth) + reinterpret_cast<const efd::Point3&>(m_ptRight) * m_fFarHalfWidth) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f)))));
+    m_aCorners[7] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(m_ptOrigin) + reinterpret_cast<const efd::Point3&>(m_ptForward) * m_fDepth) + reinterpret_cast<const efd::Point3&>(m_ptRight) * m_fFarHalfWidth) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, m_fHeight * 2.0f)))));
 
     m_aEdgeA[0] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_ptApex))));
     m_aEdgeA[1] = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(m_aCorners[4]))));
@@ -159,8 +159,8 @@ int CFrustumCollision::IntersectsBox(const void* pBox) const
                 if (fHitLen > m_fApexDist)
                 {
                     float fT = fHitLen / fSideLen;
-                    kPtA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeA[0]).FUN_14097fd50(AsPoint3(kDirA).FUN_14097fc90(fLenA * fT))))));
-                    kPtB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(AsPoint3(m_aEdgeB[0]).FUN_14097fd50(AsPoint3(kDirB).FUN_14097fc90(fLenB * fT))))));
+                    kPtA = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(AsPoint3(m_aEdgeA[0]))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(AsPoint3(kDirA))) * (fLenA * fT)))))));
+                    kPtB = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(AsPoint3(m_aEdgeB[0]))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(AsPoint3(kDirB))) * (fLenB * fT)))))));
                     BOOL bBelow = kPtA.z < aBoxCorners[0].z;
                     BOOL bAbove = kPtB.z > aBoxCorners[4].z;
                     if (!bBelow && !bAbove)

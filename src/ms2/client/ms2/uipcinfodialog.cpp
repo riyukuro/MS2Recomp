@@ -165,7 +165,7 @@ struct Unk_PciConstants
     char m_pad_9299[0xae10 - 0x9299];
     Unk_PciCfgFloat m_ae10;                                     // +0xae10 the doubled ring divisor
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 class UIWebBrowser* FUN_140c43790(int nId);
@@ -399,7 +399,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         }
     }
     Unk_PciRange range;
-    float fDivisor = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_PciConstants*)FUN_1401d3200())->m_ae10)->Get();
+    float fDivisor = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_PciConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_ae10)->Get();
     switch (nRings)
     {
     case 0:
@@ -775,7 +775,7 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
     CStringW strText;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
     {
-        if ((unsigned short)pPC->vfunc_78() >= FUN_140ba4b30((class Unk_ALConstU16*)&((struct Unk_PciConstants*)FUN_1401d3200())->m_9298))
+        if ((unsigned short)pPC->vfunc_78() >= FUN_140ba4b30((class Unk_ALConstU16*)&((struct Unk_PciConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_9298))
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
                                     (unsigned int)((MyPC*)pPC)->FUN_140c25130()->GetTotal(),

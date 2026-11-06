@@ -320,7 +320,7 @@ public:
     virtual void vfunc_21();
     virtual int vfunc_22(MS2Ptr<Unk_GuideRecord> spRecord);    // nonzero = the record differs from the state
 };
-void FUN_141678160(PCBase*, efd::Point3);
+// PCBase::FUN_141678160 (0x141678160) takes the position by value (pcbase.h)
 class Unk_PCMove   // C3: member view for the former free stand-ins
 {
 public:
@@ -364,7 +364,7 @@ int CGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PC
     vfunc_19(kPos);
     vfunc_21(kDir);
     FUN_14123c5a0(nOwnerId);
-    ::FUN_141678160(this, reinterpret_cast<const Unk_CcActorPos*>(pOwner)->FUN_1410a7590());
+    PCBase::FUN_141678160(reinterpret_cast<const Unk_CcActorPos*>(pOwner)->FUN_1410a7590());
     FUN_1410a12e0(pOwner);
     for (int nPart = 0; nPart < 3; ++nPart)
     {
@@ -1340,7 +1340,7 @@ void CSkillMagicControlGuide::vfunc_127()
             {
                 Unk_MagicTarget* pTarget = FUN_1410a7520(&m_spInfo->m_targets, pos)->get();
                 MS2Ptr<CMagicModel> spModel(new CMagicModel());
-                spModel.get()->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTarget)), Unk_MagicTagPtr(0), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), 1, 1, 0);
+                spModel.get()->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(pTarget)), Unk_MagicTagPtr(0), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), 1, 1, 0);
             }
         }
     }
@@ -1612,15 +1612,15 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 struct Unk_SPtr { void* m_pad_00; void* m_p; };
 void FUN_1410a7db0(void*);
-void FUN_1410a7df0(void*);
+class Unk_FcTag;   // MS2Ptr<Unk_FcTag> (magicptr.h): its members are explicit instantiations below
 void FUN_1410a7cb0(Unk_SPtr*);
-void FUN_1410a7d10(Unk_SPtr*);
+//
 void FUN_1410a7e90(Unk_SPtr*, void*);
-void FUN_1410a7ef0(Unk_SPtr*, void*);
+//
 void FUN_1410a7fd0(Unk_SPtr*);
-void FUN_1410a8050(Unk_SPtr*);
+//
 void FUN_1410a8170(Unk_SPtr*, void*);
-void FUN_1410a8210(Unk_SPtr*, void*);
+//
 
 // @0x1410a69b0
 Unk_CcSvcIf** FUN_1410a69b0(Unk_CcSvcIf** p, Unk_CcSvcIf* v)
@@ -1638,7 +1638,7 @@ Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p, int) { p->m_p = 0; return p; }
 // @0x1410a6af0
 Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p, int) { p->m_p = 0; return p; }
 // @0x1410a6b10
-Unk_SPtr* FUN_1410a6b10(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7d10(p); return p; }
+template MS2Ptr<Unk_FcTag>::MS2Ptr(Unk_FcTag*);
 // @0x1410a6b90
 Unk_SPtr* FUN_1410a6b90(Unk_SPtr* p) { p->m_p = 0; return p; }
 
@@ -1658,7 +1658,7 @@ void FUN_1410a6c40(Unk_CcSvcIf** p) noexcept
 // @0x1410a6ce0
 void FUN_1410a6ce0(Unk_SPtr* p) noexcept { FUN_1410a7fd0(p); }
 // @0x1410a6d40
-void FUN_1410a6d40(Unk_SPtr* p) noexcept { FUN_1410a8050(p); }
+template MS2Ptr<Unk_FcTag>::~MS2Ptr();
 
 // @0x1410a6ee0
 template MS2Ptr<CGodModeInfo>& MS2Ptr<CGodModeInfo>::AssignRaw(CGodModeInfo*);
@@ -1681,15 +1681,15 @@ void* FUN_1410a71a0(Unk_SPtr* p) { return p->m_p; }
 // @0x1410a7cb0
 void FUN_1410a7cb0(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7e90(p, 0); }
 // @0x1410a7d10
-void FUN_1410a7d10(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7ef0(p, 0); }
+template void MS2Ptr<Unk_FcTag>::AddRef() const;
 // @0x1410a7db0
 void FUN_1410a7db0(void* p) { CPtred::AddRefPtred((class CPtred*)(p)); }
 // @0x1410a7df0
-void FUN_1410a7df0(void* p) { CPtred::AddRefPtred((class CPtred*)(p)); }
+template void MS2Ptr<Unk_FcTag>::Reference(Unk_FcTag*);
 // @0x1410a7e90
 void FUN_1410a7e90(Unk_SPtr* p, void*) { FUN_1410a7db0(p->m_p); }
 // @0x1410a7ef0
-void FUN_1410a7ef0(Unk_SPtr* p, void*) { FUN_1410a7df0(p->m_p); }
+template void MS2Ptr<Unk_FcTag>::AddRefImpl(void*) const;
 // @0x1410a7fd0
 void FUN_1410a7fd0(Unk_SPtr* p)
 {
@@ -1700,14 +1700,14 @@ void FUN_1410a7fd0(Unk_SPtr* p)
     }
 }
 // @0x1410a8050
-void FUN_1410a8050(Unk_SPtr* p)
-{
-    if (p->m_p != 0)
-    {
-        FUN_1410a8210(p, 0);
-        p->m_p = 0;
-    }
-}
+template void MS2Ptr<Unk_FcTag>::Release();
+//
+//
+//
+//
+//
+//
+//
 // @0x1410a8170
 void FUN_1410a8170(Unk_SPtr* p, void*)
 {
@@ -1718,14 +1718,14 @@ void FUN_1410a8170(Unk_SPtr* p, void*)
     }
 }
 // @0x1410a8210
-void FUN_1410a8210(Unk_SPtr* p, void*)
-{
-    if (CPtred::ReleasePtred((class CPtred*)(p->m_p)) == 0)
-    {
-        FUN_1410a7df0(p->m_p);
-        CPtred::DeletePtred((class CPtred*)(p->m_p));
-    }
-}
+template void MS2Ptr<Unk_FcTag>::ReleaseImpl(void*);
+//
+//
+//
+//
+//
+//
+//
 // MS2-FUNCTIONAL 0x1410a4d30: CFishingGuideObject catch popup - the exe guards pCatch with a nested if and reads the bird head through MS2Ptr operator-> 0x1410a7170; ours uses early returns and get(), one fewer frame slot
 // MS2-FUNCTIONAL 0x1410a1ee0: CConstructionGuideObject update - the exe goes through the MS2Ptr helpers 0x1410a70a0/0x1410a6ee0/0x1410a7190/0x1410a6fc0 and passes Point3 by value to UIBirdHead::FUN_1418ce8c0 (shared uibirdhead.h declares it by reference)
 // Atexit thunks of this unit's statics (gap1 yd sweep).

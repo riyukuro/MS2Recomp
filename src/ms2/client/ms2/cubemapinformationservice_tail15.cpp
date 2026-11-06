@@ -352,11 +352,11 @@ public:
 };
 
 // ---- the families whose exe type is only known by shape -------------------------------------------------------------
-// a record of the service holding an int -> int table as its first member (dtor 0x141125ea0 -> ~efd::map<int, int>)
-struct Unk_CMISIntIntTable
-{
-    Unk_CMISMapIntInt m_table;
-};
+// the service's cube height index (+0x2a8, ms2/placeholder/cubeheightindex.h): dtor 0x141125ea0 -> ~efd::map<int, int>
+#include "ms2/placeholder/cubeheightindex.h"
+Unk_CubeHeightIndex::~Unk_CubeHeightIndex() { m_heights.efd::map<int, int>::~map(); }
+//
+//
 
 // The pair / tree dtor chains of the exe name these value types (the tail.h typedefs of the same members differ):
 // the int -> entity id vector table (pair dtor 0x141125a70 -> ~efd::vector<EntityID> 0x141125d50), the cube groups
@@ -418,7 +418,7 @@ void Unk_CMISDriveTail15(void* p)
     Unk_CMISDestroy((Unk_CMISAutoSet*)p);
     Unk_CMISDestroy((Unk_CMISFuncCubeSet*)p);
     Unk_CMISDestroy((Unk_CMISEntityIdSet*)p);
-    Unk_CMISDestroy((Unk_CMISIntIntTable*)p);
+    Unk_CMISDestroy((Unk_CubeHeightIndex*)p);
     // vectors
     Unk_CMISDestroy((Unk_CMISIntVec*)p);
     Unk_CMISDestroy((Unk_CMISEntVec*)p);
@@ -471,7 +471,7 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@QEAA@XZ 0x1411259f0
 // MS2-PIN: ??1?$pair@$$CBHV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@@std@@QEAA@XZ 0x141125a10
 // MS2-PIN: ??1?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@QEAA@XZ 0x141125a50
-// MS2-PIN: ??1Unk_CMISIntIntTable@@QEAA@XZ 0x141125ea0
+// MS2-PIN: ??1Unk_CubeHeightIndex@@QEAA@XZ 0x141125ea0
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@$00@std@@QEAA@XZ 0x141123cf0
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@HW4Unk_CMISKindA@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124ba0
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124d50

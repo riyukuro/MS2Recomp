@@ -138,7 +138,7 @@ Unk_MdBookTable* FUN_1412db940() { return reinterpret_cast<Unk_MdBookTable*>(TSi
 class Unk_MdLevelInfo {};    // the player's manufacture level
 struct Unk_MdLevels { char m_pad[0x5180]; Unk_MdLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
 MS2_CHECK_OFFSET(Unk_MdLevels, m_5180, 0x5180);
-class Unk_SingletonObj1; Unk_SingletonObj1* FUN_1401d3200();
+class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 template <typename T> CStringW FormatStringId(int nStringId, const T& arg);
 template <typename T> CStringW BlockFormat(int nStringId, const T& arg);
@@ -253,7 +253,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
                 row.FUN_140e846b0("id", i + 1);
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
                 row.FUN_1407cb9c0("recipeID", spRef->recipeId);
-                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180)->Get())   // exe: add rax, 0x5180
+                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MdLevels*>(GetClientConstants())->m_5180)->Get())   // exe: add rax, 0x5180
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
                 else
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
@@ -907,7 +907,7 @@ void UIMDEditDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     ASArray colors(2);
-    ATL::CAtlArray<int>* pColors = reinterpret_cast<Unk_McValue<ATL::CAtlArray<int> >*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xb378)->FUN_1412788b0();
+    ATL::CAtlArray<int>* pColors = reinterpret_cast<Unk_McValue<ATL::CAtlArray<int> >*>(reinterpret_cast<char*>(GetClientConstants()) + 0xb378)->FUN_1412788b0();
     for (size_t i = 0; i < pColors->GetCount(); i++)
     {
         ASObj color(2);

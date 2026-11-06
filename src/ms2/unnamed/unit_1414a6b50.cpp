@@ -7,8 +7,8 @@
 #include "ms2/ms2recover.h"
 
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CLoadingDialog>::AddRef / AddRefImpl (0x140d4db40 is its Reference)
-void FUN_140ad85f0(void* p, int a, int b);
-class CLoadingDialog;   // the pointee: symbols row ?AddRef@?$MS2Ptr@VCLoadingDialog@@@@AEBAXXZ at 0x1414a6b50 (a second copy of the AddRef / AddRefImpl pair)
+#include <list>   // 0x140ad85f0 = _List_alloc<pair<const unsigned long, MS2Ptr<TermTagContext>>>::_Buynode0
+class CLoadingDialog; class TermTagContext;   // the pointee: symbols row ?AddRef@?$MS2Ptr@VCLoadingDialog@@@@AEBAXXZ at 0x1414a6b50 (a second copy of the AddRef / AddRefImpl pair)
 //struct Unk_1414a6b50Ptr
 //{
 //    void* pad_00;
@@ -37,5 +37,5 @@ int Unk_1414a6b50Free_Kind() { return 3; }
 // @0x1414a6bc0
 void Unk_1414a6bc0(void* p)
 {
-    FUN_140ad85f0(p, 0, 0);
+    typedef std::_List_alloc<std::_List_base_types<std::pair<const unsigned long, MS2Ptr<TermTagContext> >, std::allocator<std::pair<const unsigned long, MS2Ptr<TermTagContext> > > > > Unk_TtListAlc; reinterpret_cast<Unk_TtListAlc*>(p)->_Buynode0(nullptr, nullptr);
 }

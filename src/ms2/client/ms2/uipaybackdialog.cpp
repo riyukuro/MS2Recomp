@@ -52,8 +52,8 @@ typedef bool (*Unk_PbBuyFn)(MS2Ptr<TMarketBillDataParam>, const TMarketBillDataP
 typedef bool (*Unk_PbGiftFn)(MS2Ptr<TMarketBillDataParam>, const TMarketBillDataParam::PaymentMap&, const CStringW&, const CStringW&);
 extern template Delegate<bool(MS2Ptr<TMarketBillDataParam>, const TMarketBillDataParam::PaymentMap&)>::Delegate(Unk_PbBuyFn);
 extern template Delegate<bool(MS2Ptr<TMarketBillDataParam>, const TMarketBillDataParam::PaymentMap&, const CStringW&, const CStringW&)>::Delegate(Unk_PbGiftFn);
-TMarketBillDataParam::TooltipCallback FUN_140bbef00(bool (*pfn)(Scaleform::GFx::Value*, ASData&,
-                                                                 MS2Ptr<TMarketBillDataParam>));
+extern template class Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>)>::DelegateImpl<bool (*)(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>)>;   // TooltipCallback(&fn) below: impl COMDATs of uiblueprintmarketdialog
+// 0x140bbef00 = the TooltipCallback (Delegate) ctor, a COMDAT of uiblueprintmarketdialog
 
 class Unk_140bccd50;
 Unk_140bccd50* FUN_140bccd50();
@@ -169,7 +169,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         spParam->SetSourceKind(1);
         spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(&FUN_140ebded0);
         spParam->m_dgGift = TMarketBillDataParam::GiftCallback(&FUN_140ebef60);
-        spParam->m_dgTooltip = FUN_140bbef00(&FUN_140ebe990);
+        spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(&FUN_140ebe990);
         spParam->SetGift(false);
         {
             MS2Ptr<CItem> spItem = FUN_140ebc360(spProduct->m_premium.m_nItemId, spProduct->m_premium.GetGrade());
@@ -287,3 +287,4 @@ ASMeratMarketBuyBillData::~ASMeratMarketBuyBillData()
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142ca72a0-0x142ca73c0 .text$yd
+// MS2-PIN: ??_7?$DelegateImpl@P6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142defff0 ; TooltipCallback(&fn) inline ctor: shared COMDAT vftable (uiblueprintmarketdialog)

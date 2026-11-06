@@ -161,7 +161,7 @@ public:
     unsigned char m_pad_84c4[0x8d18 - 0x84c0 - sizeof(Unk_PetUIntSlot)];
     Unk_PetUIntSlot m_bonusLimit;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The item picked in the inventory dialog.
 class Unk_BreakSelected;
@@ -398,7 +398,7 @@ void PetComposePetEnchant::vfunc_3()
         {
             ATL::CAtlArray<IdCount> selected;
             m_pOwner->FUN_140cb4860(selected);
-            if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get() && selected.GetCount() > 0)
+            if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get() && selected.GetCount() > 0)
                 submit->FUN_1422c1fe0(1);
             else
                 submit->FUN_1422c1fe0(0);
@@ -407,7 +407,7 @@ void PetComposePetEnchant::vfunc_3()
     if (MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
         m_pOwner->FUN_140cb5300(&nPetClass, &nExp);
-        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
         {
             __int64 nNeed = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nPetClass, pet->GetRarity(), reinterpret_cast<CItem*>(pet.get())->FUN_1405282d0());
             CStringW strLevel;
@@ -495,8 +495,8 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     ids.Add(m_pOwner->GetUidPet());
     FUN_140b77500(m_strBag);
     FUN_140b773a0(m_strTarget, ids);
-    int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
-        ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
+    int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
+        ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
     ASObj obj(2);
     obj.FUN_1407cbb20(s_itemName, reinterpret_cast<CItem*>(pet.get())->FUN_140527b10());
     obj.FUN_1409c48f0(s_itemLevel, ((class CItem*)(class CItem*)(pet))->FUN_140528c20());
@@ -567,8 +567,8 @@ void PetComposePetEnchant::FUN_140cb3a30()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
-        ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
+    int nBonus = (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20() < 0
+        ? 0 : (int)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get() - reinterpret_cast<PC*>(player)->FUN_141663a20();
     ASObj obj(2);
     obj.FUN_1407cbb20("bonus", FUN_14028dfa0<int>(CStringW(L"s_pet_compose_exp_bonus"), nBonus));
     obj.FUN_1407cbb20("successMsg", FUN_14028dfa0(CStringW(L"s_pet_compose_compose_success"), m_pOwner->m_nGainBase, m_pOwner->m_nGainBonus));
@@ -815,7 +815,7 @@ void TabContentsPetCompose::FUN_140cb4ed0(__int64* pBase, __int64* pBonus)
     ATL::CAtlArray<IdCount> selected;
     FUN_140cb4860(selected);
     int nCounter = reinterpret_cast<PC*>(player)->FUN_141663a20();
-    unsigned nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_bonusLimit)->Get();
+    unsigned nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_bonusLimit)->Get();
     for (size_t i = 0; i < selected.GetCount(); i++)
     {
         IdCount& entry = selected[i];
@@ -862,7 +862,7 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     unsigned short nClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     __int64 nExp = ((class CItem*)(class CItem*)(pet))->FUN_140528b90();
     int nRank = pet->GetRarity();
-    if (!(nClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get()))
+    if (!(nClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get()))
         return;
     __int64 nBase = 0;
     __int64 nBonus = 0;
@@ -884,9 +884,9 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     if (bLevelUp)
     {
         nClass += nUp;
-        if (nClass >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+        if (nClass >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
         {
-            nClass = (unsigned short)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get();
+            nClass = (unsigned short)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get();
             nExp = 0;
         }
     }
@@ -1011,7 +1011,7 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
     }
     else
     {
-        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
         {
             const int nMax = 12;
             if (m_selected.GetCount() >= nMax)

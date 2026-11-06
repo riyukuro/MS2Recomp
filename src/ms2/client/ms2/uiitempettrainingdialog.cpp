@@ -55,7 +55,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 class Unk_PtValue { public: };
 class Unk_PtConfig { public: unsigned char m_pad[0x84c0]; Unk_PtValue m_petMaxLevel; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 #define PT_ATTR(p) reinterpret_cast<CXmlData*>(reinterpret_cast<char*>((p)) + 0x320)
 
 class CMsgBoxData : public CPtred
@@ -241,7 +241,7 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if ((unsigned)spPet->FUN_140528c20() == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get())
+    if ((unsigned)spPet->FUN_140528c20() == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)GetClientConstants())->m_petMaxLevel)->Get())
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
@@ -307,9 +307,9 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
             }
             nLevel += nUp;
             nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp(nLevel, spPet->GetRarity(), spPet->FUN_1405282d0());
-            if (nLevel >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get())
+            if (nLevel >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)GetClientConstants())->m_petMaxLevel)->Get())
             {
-                nLevel = (unsigned short)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)FUN_1401d3200())->m_petMaxLevel)->Get();
+                nLevel = (unsigned short)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PtConfig*)GetClientConstants())->m_petMaxLevel)->Get();
                 nCur = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->GetRarity(), spPet->FUN_1405282d0());
                 nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetPetExp((unsigned short)(nLevel - 1), spPet->GetRarity(), spPet->FUN_1405282d0());
             }

@@ -88,8 +88,8 @@ public:
     virtual void vfunc_74();
     virtual CStringA vfunc_75();   // 0x258: npsman.cpp reads a survey-url string (hidden-return slot)
 };
-void* FUN_140d86260();   // the client platform (0x140d86260, ms2actormanager.cpp, the definer's signature)
-#define FUN_140d86260() (static_cast<Unk_NetworkCallbacks*>(FUN_140d86260()))   // read as the Unk_NetworkCallbacks view
+class IClientPlatform* GetClientPlatform();   // the client platform (0x140d86260, ms2actormanager.cpp; C3: was void* FUN_140d86260())
+#define FUN_140d86260() (static_cast<Unk_NetworkCallbacks*>(static_cast<void*>(GetClientPlatform())))   // read as the Unk_NetworkCallbacks view
 struct Unk_NetworkLatency {
     Unk_NetworkLatency();
     void Reset(); void Clear(); void Sent(unsigned sequence); void Received(unsigned sequence);

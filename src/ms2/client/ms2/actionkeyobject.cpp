@@ -777,8 +777,8 @@ int TaxiStationAction::vfunc_1()
         return 0;
     if (pPlayer->GetCurStateId() == 0x25)
         return 0;
-    egf::Entity* pStation = WorldService::GetInstance()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(),
-        *FUN_1401d3200()->TaxiStationFindDistance.Get(), 1, 0);
+    egf::Entity* pStation = WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0())),
+        *GetClientConstants()->TaxiStationFindDistance.Get(), 1, 0);
     if (!pStation)
         return 0;
     bool bHouse = false;
@@ -868,7 +868,7 @@ int PortalAction::vfunc_1()
         return 0;
     m_spEntity = 0;
     m_spPortal = 0;
-    Vector3 pos = pPlayer->FUN_1416767d0();
+    NiPoint3 pos = pPlayer->FUN_1416767d0();
     ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
     WorldService::GetInstance()->FUN_141bc2c90(reinterpret_cast<NiPoint3&>(pos), &aPortals);
     if (aPortals.GetCount() == 0)
@@ -1325,14 +1325,14 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
     WorldService::GetInstance()->FUN_141bc58d0(&aLifts);
     if (aLifts.size() <= 0)
         return 0;
-    Vector3 pos = pPlayer->FUN_1416767d0();
+    NiPoint3 pos = pPlayer->FUN_1416767d0();
     MS2_FOR_EACH(Unk_WsB_LiftPtr spLift, aLifts)
     {
         if (((CLiftableObject*)(spLift.operator->()))->CanLift() == 0)
             continue;
         Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->FUN_141447c80();
         Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(ptLift));
-        Vector3 diff = ptLift.FUN_140965c40(pos);
+        Vector3 diff = ptLift.FUN_140965c40(reinterpret_cast<const Vector3&>(pos));
         float fDist = diff.FUN_140968990();
         if (fDist > ((CLiftableObject*)(spLift.operator->()))->GetRange())
             continue;
@@ -1484,8 +1484,8 @@ CInteractObject* InteractAction::FUN_140958e70()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Vector3 pos = pPlayer->FUN_1416767d0();
-    CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc6090(pos, 1);
+    NiPoint3 pos = pPlayer->FUN_1416767d0();
+    CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<const Vector3&>(pos), 1);
     if (!pObject)
         return 0;
     if (pObject->CheckHomePrivilege() == 0)
@@ -1660,14 +1660,14 @@ Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd2170(2, FUN_1401d3200()->InteractionDistance.Read(), 1, 0);
+    Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd2170(2, GetClientConstants()->InteractionDistance.Read(), 1, 0);
     if (!pNpc)
     {
         int nKind = 1;
         bool bRide = (pPlayer->FUN_140967420() ? true : false) && reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->HasPoint();
         if (bRide)
             nKind = reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint();
-        pNpc = WorldService::GetInstance()->FUN_141bd2170(nKind, FUN_1401d3200()->InteractionDistance.Read(), 1, 0);
+        pNpc = WorldService::GetInstance()->FUN_141bd2170(nKind, GetClientConstants()->InteractionDistance.Read(), 1, 0);
     }
     if (!pNpc)
         return 0;
@@ -1726,7 +1726,7 @@ void ViewCubeMapProfileAction::vfunc_2()
     if (m_nMapId == 0)
         return;
     efd::SmartPointer<CubeMapInformationService> spHouse = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
-    ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410ccc00(m_nMapId, 1, FUN_1401d3200()->DurationForBoundaryDisplay.Read());
+    ((CubeMapInformationService*)(spHouse.operator->()))->FUN_1410ccc00(m_nMapId, 1, GetClientConstants()->DurationForBoundaryDisplay.Read());
 }
 MS2_REPLACE_METHOD(0x140959720, ViewCubeMapProfileAction, vfunc_2, 135, 0xF03EB00E);
 // @0x1409597d0
@@ -1765,7 +1765,7 @@ int RegistUgcAction::vfunc_1()
     Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bd0220(pPlayer->vfunc_18(), FUN_1401d3200()->RegistUgcDistance.Read());
+    egf::Entity* pEntity = WorldService::GetInstance()->FUN_141bd0220(pPlayer->vfunc_18(), GetClientConstants()->RegistUgcDistance.Read());
     if (m_spEntity != pEntity)
     {
         FUN_140959d70(m_spEntity, 0);
@@ -1875,7 +1875,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
             continue;
         float fRange = 150.0f;
         pCube->entity->GetPropertyValue(0x2f9d016f, fRange);
-        if (FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->FUN_1408b5370())), pPlayer->FUN_1416767d0()) > fRange)
+        if (FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pCube->FUN_1408b5370())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0()))) > fRange)
             continue;
         if (pCube->field48 != 0)
             continue;
@@ -2037,7 +2037,7 @@ int FunctionCubeAction::vfunc_1()
         return 0;
     __int64 nAccount = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0();
     MS2Ptr<CFunctionCubeObject> spObject =
-        FUN_1409670b0()->FUN_141230f60(pPlayer->FUN_1416767d0(), FUN_1401d3200()->FunctionCubeDistance.Read(), nAccount);
+        FUN_1409670b0()->FUN_141230f60(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0())), GetClientConstants()->FunctionCubeDistance.Read(), nAccount);
     if (spObject == 0)
         return 0;
     m_n20 = spObject->vfunc_9(m_str18);
@@ -2216,7 +2216,7 @@ int HoldAction::vfunc_1()
         return 0;
     int nTargetId = 0;
     CString strName;
-    m_f24 = FUN_1401d3200()->FindHoldTargetRange.Get(230.0f);
+    m_f24 = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
     int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f24);
     if (bFound == 0)
         return 0;
@@ -2318,7 +2318,7 @@ int HoldPCAction::vfunc_1()
         return 0;
     int nTargetId = 0;
     CString strName;
-    m_f1c = FUN_1401d3200()->FindHoldTargetRange.Get(230.0f);
+    m_f1c = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
     int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f1c);
     if (bFound == 0)
         return 0;
@@ -2401,7 +2401,7 @@ int ReleasePCAction::vfunc_1()
         return 0;
     int nTargetId = 0;
     CString strName;
-    m_f1c = FUN_1401d3200()->FindHoldTargetRange.Get(230.0f);
+    m_f1c = GetClientConstants()->FindHoldTargetRange.Get(230.0f);
     int bFound = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_14165c1b0(&nTargetId, &strName, m_f1c);
     if (bFound == 0)
         return 0;
@@ -2480,7 +2480,7 @@ int GatheringAction::vfunc_1()
         if (spObject.IsNull())
             continue;
         float fDist = pPlayer->vfunc_18().FUN_140965c40(spObject->GetPos()).FUN_140967ac0();
-        int bInRange = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get() && vfunc_13(spObject);
+        int bInRange = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get() && vfunc_13(spObject);
         if (spObject->FUN_140967150() != bInRange)
             spObject->SetVisible(bInRange != 0);
         if (bInRange)
@@ -2615,7 +2615,7 @@ int HomemadeCubeAction::vfunc_1()
     {
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
         float fDist = pPlayer->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
-        bool bUsable = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get()
+        bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get()
             && FUN_14095e440(spCube);
         if (FUN_1408a1360(pPlayer->vfunc_18(), spCube->GetPosition()) == 0)
             bUsable = false;
@@ -2699,7 +2699,7 @@ int NurturingCubeAction::vfunc_1()
     {
         MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
         float fDist = pPlayer->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
-        bool bUsable = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get()
+        bool bUsable = fDist < *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get()
             && spCube->FUN_14122bda0();
         if (FUN_1408a1360(pPlayer->vfunc_18(), spCube->GetPosition()) == 0)
             bUsable = false;
@@ -2816,7 +2816,7 @@ PCBase* BannerAction::FUN_14095edf0()
     NiPoint3 ptMine = pPlayer->vfunc_18();
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > objects(10);
     WorldService::GetInstance()->FUN_141bd2db0(&objects, (int (*)(Unk_WsC_GameObj*))FUN_141274b10);
-    float fMaxDist = static_cast<float>(*static_cast<Client::Constants*>(FUN_1401d3200())->MicroGameMaxDistance.Get());
+    float fMaxDist = static_cast<float>(*static_cast<Client::Constants*>(GetClientConstants())->MicroGameMaxDistance.Get());
     float fMaxUp = 50.0f;
     float fMaxDown = 50.0f;
     PCBase* pNearest = 0;
@@ -2979,8 +2979,8 @@ CReactor* ReactorAction::FUN_14095fcb0()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    Vector3 pos = pPlayer->FUN_1416767d0();
-    efd::SmartPointer<Unk_WsB_Spawn> spReactor = WorldService::GetInstance()->FUN_141bc6c60(pos, 1);
+    NiPoint3 pos = pPlayer->FUN_1416767d0();
+    efd::SmartPointer<Unk_WsB_Spawn> spReactor = WorldService::GetInstance()->FUN_141bc6c60(reinterpret_cast<const Vector3&>(pos), 1);
     if (spReactor == 0)
         return 0;
     return spReactor;
@@ -3022,7 +3022,7 @@ int QuestUserFindAction::vfunc_1()
     if (!pTarget)
         return 0;
     float fDist = FUN_140966f00(pPlayer->vfunc_18(), pTarget->vfunc_18());
-    if (fDist > *FUN_1401d3200()->InteractionDistance.Get())
+    if (fDist > *GetClientConstants()->InteractionDistance.Get())
         return 0;
     m_n18 = nCharId;
     m_n20 = nQuestId;

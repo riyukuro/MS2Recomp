@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/dikey.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/commonfiles/timer.h"
 
@@ -47,7 +48,7 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_nCount;                                                   // +0x178 4; the sequence length
     int m_nLimitMs;                                                 // +0x17c 10000; the time limit
-    std::vector<std::pair<int, int> > m_keys;                       // +0x180 digit -> its two keys (10 entries)
+    std::vector<std::pair<Unk_DIKey, Unk_DIKey> > m_keys;           // +0x180 digit -> its two keys (10 entries)
     unsigned m_nKeyCount;                                           // +0x198 m_keys.size()
     std::vector<unsigned> m_answer;                                 // +0x1a0 the drawn sequence
     unsigned m_nIndex;                                              // +0x1b8 the next key to enter

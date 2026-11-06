@@ -82,7 +82,7 @@ public:
 template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
-void FUN_1402a9d70(void*, int, float, float, float, int);
+#include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142cab370();                                               // the exe's atexit destructor of the marker
 
 struct Unk_PvpMarker {};
@@ -104,7 +104,7 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400e3e30
 static char s_marker[0x48];
-static Unk_PvpMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cab370), Unk_PvpMarker());
+static Unk_PvpMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cab370), Unk_PvpMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.

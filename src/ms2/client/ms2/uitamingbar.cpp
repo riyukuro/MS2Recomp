@@ -38,7 +38,7 @@ struct Unk_TamingCfg
     char m_pad_0320[0x8468 - 0x2c8 - sizeof(Unk_TamingCfgFloat)];
     Unk_AdvCfgExp m_8468;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_TamingUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -73,8 +73,8 @@ UITamingBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 1;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_TamingCfg*)FUN_1401d3200())->m_2c8)->Read();
-    m_a8 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_8468.FUN_140ba77c0();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_TamingCfg*)GetClientConstants())->m_2c8)->Read();
+    m_a8 = ((struct Unk_TamingCfg*)GetClientConstants())->m_8468.FUN_140ba77c0();
     FUN_140e97e00();
 }
 
@@ -95,7 +95,7 @@ void UITamingBar::Entity::vfunc_4()
 {
     UIHudEntity::Entity::vfunc_4();
     m_a0 = 0;
-    m_a8 = ((struct Unk_TamingCfg*)FUN_1401d3200())->m_8468.FUN_140ba77c0();
+    m_a8 = ((struct Unk_TamingCfg*)GetClientConstants())->m_8468.FUN_140ba77c0();
     m_b0 = 1;
     m_b4 = 0;
     m_b8 = 0;

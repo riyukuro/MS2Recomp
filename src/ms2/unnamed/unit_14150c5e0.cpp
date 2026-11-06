@@ -52,7 +52,7 @@ public:
 };
 // The graphics-settings object (FUN_1401d3200) and its float option accessor.
 struct Unk_ShSettings;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 namespace Common { class Constants   // C3: view of clientconstants.h; Value<float>::Get() is 0x140298f40
 {
 public:
@@ -109,10 +109,10 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
             int bNear = 0;
             const NiPoint3& kPos = bParticle ? *((class NiPoint3*)&((class NiBound*)(void*)(((void*)&((class NiAVObject*)(class NiRenderObject*)(pkObject))->GetWorldBound())))->GetCenter()) : *((class NiPoint3*)&((class NiAVObject*)(class NiRenderObject*)(pkObject))->GetWorldTranslate());
             float fDz = FUN_14059d930(kPlayerPos.z - kPos.z);
-            if (fDz < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)FUN_1401d3200()) + 0xce28))->Get() * DAT_1439f8010)
+            if (fDz < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0xce28))->Get() * DAT_1439f8010)
             {
                 float fDist = FUN_141403f20(kPlayerPos, kPos);
-                if (fDist < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)FUN_1401d3200()) + 0xcdd0))->Get() * DAT_1439f8010)
+                if (fDist < *((Common::Constants::Value<float>*)(void*)((char*)((struct Unk_ShSettings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0xcdd0))->Get() * DAT_1439f8010)
                     bNear = 1;
             }
             if (bNear == 0)

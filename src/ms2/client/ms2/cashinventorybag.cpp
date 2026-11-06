@@ -110,7 +110,7 @@ class CItemData : public CPtred   // C3: member view for the former free stand-i
 public:
     bool HasStringTag(int);
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
 void FUN_1418fe1c0(const CString& str);
@@ -920,7 +920,7 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             if (spData.get() != 0)
             {
                 if (spData->HasStringTag(0x13))
-                    FUN_1418fe1c0(*reinterpret_cast<Common::Constants::Value<CString>*>((char*)((void*)FUN_1401d3200()) + 0xdaa0)->Get());
+                    FUN_1418fe1c0(*reinterpret_cast<Common::Constants::Value<CString>*>((char*)((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0xdaa0)->Get());
             }
         }
     }

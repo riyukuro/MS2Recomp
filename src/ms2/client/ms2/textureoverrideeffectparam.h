@@ -42,7 +42,7 @@ public:
     void FUN_14184bbb0(NiAVObjectPtr spNode);                   // 0x14184bbb0 add a layer per textured child
     void FUN_14184bd70();                                       // 0x14184bd70 remove all layers
 public:
-    efd::vector<NiAVObjectPtr> m_vecNodes;                      // +0x30 owner's nodes (GameObject slot 44)
+    std::vector<NiAVObjectPtr> m_vecNodes;                      // +0x30 owner's nodes (GameObject slot 44)
     ATL::CAtlArray<TextureLayerPtr> m_arrLayers;                // +0x48
     efd::SmartPointer<NiTexture> m_spTexture;                                   // +0x68
 };

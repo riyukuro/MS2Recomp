@@ -39,7 +39,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The camera target entity, with the slots past vfunc_18.
 class Unk_TargetEnt : public Unk_CameraTargetEntity
@@ -120,12 +120,12 @@ CLocalTargetCameraMode::CLocalTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<C
         }
         else
         {
-            m_d8.m_pos = FUN_1409f2540();
+            m_d8.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_1409f2540()));
             m_d8.m_rot = FUN_140af8260();
             m_c0 = m_d8;
-            m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
-            m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
-            m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+            m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1a80)->Read();
+            m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1ad8)->Read();
+            m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1b30)->Read();
         }
     }
 }
@@ -235,8 +235,8 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 t = m_188 / m_108.m_3c;
                 t = FUN_141b6fe40(t, m_108.m_60);
                 m_50 = m_108.m_38 * t + (1.0f - t) * m_18c;
-                ptCenter = ptCenter.FUN_14097fd50(m_108.m_40.FUN_14097fc90(t));
-                m_d8.m_pos = m_1a0.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_setting.m_c.FUN_140965c40(m_1a0)));
+                ptCenter = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(m_108.m_40) * t));
+                m_d8.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_1a0) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_108.m_setting.m_c.FUN_140965c40(m_1a0))))));
                 Vector3 ptDelta = ptCenter.FUN_140965c40(m_d8.m_pos);
                 if (ptDelta.x == ptDelta.y)
                     m_d8.m_pos.x += 5.0f;
@@ -256,9 +256,9 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                                    m_108.m_setting.m_18.z * -0.0174532924f);
                 Vector3 ptDir;
                 reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
-                ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
+                ptCenter = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(m_108.m_40)));
                 m_50 = m_108.m_38;
-                m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_108.m_38).FUN_14097fd50(ptCenter);
+                reinterpret_cast<efd::Point3&>(m_d8.m_pos) = -reinterpret_cast<const efd::Point3&>(ptDir) * m_108.m_38 + reinterpret_cast<const efd::Point3&>(ptCenter);
                 m_d8.m_rot = m_108.m_setting.m_18;
                 vfunc_39(fTime);
                 m_178 = 0;
@@ -281,14 +281,14 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                                    m_d8.m_rot.z * -0.0174532924f);
                 Vector3 ptDir;
                 reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
-                ptCenter = ptCenter.FUN_14097fd50(m_108.m_40.FUN_14097fc90(t));
-                m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_50).FUN_14097fd50(ptCenter);
+                ptCenter = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(m_108.m_40) * t));
+                reinterpret_cast<efd::Point3&>(m_d8.m_pos) = -reinterpret_cast<const efd::Point3&>(ptDir) * m_50 + reinterpret_cast<const efd::Point3&>(ptCenter);
                 m_d8.m_rot = CCameraMode::FUN_140afdd40(ptCenter, m_d8.m_pos, g_143a08cf8);
                 vfunc_39(fTime);
                 if (m_108.m_58)
                 {
-                    Vector3 ptRot = m_1ac.FUN_14097fd50(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac)));
-                    pTarget->vfunc_21(ptRot);
+                    efd::Point3 ptRot = reinterpret_cast<const efd::Point3&>(m_1ac) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_108.m_4c.FUN_140965c40(m_1ac))));
+                    pTarget->vfunc_21(reinterpret_cast<Vector3&>(ptRot));
                     if (pRpg)
                         ((class PCBase*)(class Unk_TargetRpg*)(pRpg))->SetTargetYaw(ptRot.z);
                 }
@@ -312,8 +312,8 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f, m_108.m_setting.m_18.z * -0.0174532924f);
         Vector3 ptDir;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(0, reinterpret_cast<efd::Point3&>(ptDir));
-        ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);
-        m_d8.m_pos = ptDir.FUN_1409f7960().FUN_14097fc90(m_108.m_38 + (float)(m_1f0 * m_108.m_6c)).FUN_14097fd50(ptCenter);
+        ptCenter = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(m_108.m_40)));
+        reinterpret_cast<efd::Point3&>(m_d8.m_pos) = -reinterpret_cast<const efd::Point3&>(ptDir) * (m_108.m_38 + (float)(m_1f0 * m_108.m_6c)) + reinterpret_cast<const efd::Point3&>(ptCenter);
         m_d8.m_rot = m_108.m_setting.m_18;
         if (m_setting.m_0 != m_108.m_setting.m_0)
             vfunc_11(m_108.m_setting.m_0);

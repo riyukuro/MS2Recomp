@@ -45,7 +45,7 @@ public:
     char m_pad[0x56a8];
     Unk_SwimScale m_scale;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
@@ -121,7 +121,7 @@ void StateSwimDash::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(static_cast<const efd::Point3&>(m_pOwner->FUN_14123c360()));
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    m_pOwner->FUN_141671960(*reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_SwimConsts*)FUN_1401d3200())->m_scale)->Get());
+    m_pOwner->FUN_141671960(*reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_SwimConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_scale)->Get());
     reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }

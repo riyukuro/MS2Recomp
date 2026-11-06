@@ -43,15 +43,15 @@ struct Unk_Node8 { i64 m_pad_00; i64 m_nValue; };// the field at +8
 
 // ---- the container helpers this unit forwards to (defined outside it) ----
 u64 FUN_141074140(void*, bool);                  // per-list insert; the flag is the uninitialised scratch
-u64 FUN_141074200(void*, bool);
-u64 FUN_141074220(void*, bool);
+#include "ms2/client/ms2/charactermeshmerger.h"   // CCharacterMeshMerger::TexNode; 0x141074200 = _Max_size1 (CString,TexNode* map node)
+#include <NiTransform.h>                          // 0x141074220 = _Max_size1 (NiTransform,Unk_MeshVec map node)
 // 0x141074260 / 0x141074320 = _Normal_allocator_traits<..map<NiMesh*,Unk_UVRect> node / Unk_AtlasResult..>::_Max_size1
 //
 
 void* FUN_141072db0(void*);                      // per-type node accessors (forward 1)
 // 0x141072e70 = _Tree_comp_alloc<..NiMesh*,Unk_UVRect..>::_Getal() const
-void* FUN_141072ed0(void*);
-void* FUN_141072f30(void*);
+struct Unk_TransformLess { bool operator()(const NiTransform& kA, const NiTransform& kB) const; };   // 0x141072ed0 = _Getal (CString map)
+// 0x141072f30 = _Tree_comp_alloc<..NiTransform,Unk_MeshVec,Unk_TransformLess..>::_Getal() const
 
 void* FUN_141073040(void*);                      // per-type node accessors (forward 2)
 // 0x141073100 / 0x141073280 = _Vector_alloc<..Unk_StreamElementDesc / Unk_AtlasResult..>::_Getal() const
@@ -63,12 +63,12 @@ Unk_Node8* FUN_1410722e0(void*);                 // per-type node accessors read
 // 0x141063d00 / 0x141063d70 = vector<Unk_AtlasResult>::emplace_back<const&> / vector<Unk_StreamElementDesc>::emplace_back<&&>
 //
 
-void FUN_141075730(void*, void*, bool);          // the flag-setting helpers
-void FUN_141075770(void*, void*, bool);
-void FUN_1410757b0(void*, void*, bool);
-void FUN_1410757f0(void*, void*, bool);
-void FUN_141075830(void*, void*, bool);
-void FUN_141075870(void*, void*, bool);
+// (was: void FUN_141075730(void*, void*, bool); the private _Select_on_container_copy_construction1)
+// (was: void FUN_141075770(void*, void*, bool); the private _Select_on_container_copy_construction1)
+// (was: void FUN_1410757b0(void*, void*, bool); the private _Select_on_container_copy_construction1)
+// (was: void FUN_1410757f0(void*, void*, bool); the private _Select_on_container_copy_construction1)
+// (was: void FUN_141075830(void*, void*, bool); the private _Select_on_container_copy_construction1)
+// (was: void FUN_141075870(void*, void*, bool); the private _Select_on_container_copy_construction1)
 
 Unk_Node0* FUN_1410749b0(void*);                 // the two node-pointer getters of a distance pair
 // 0x141074a70 / 0x1410747f0 = std::vector<Unk_StreamElementDesc>::_Mylast / _Myfirst
@@ -131,15 +131,15 @@ u64 FUN_141079f80(void* p)
 // @0x141079fa0
 u64 FUN_141079fa0(void* p)
 {
-    bool bFlag;
-    return FUN_141074200(p, bFlag);
+    std::true_type bFlag;
+    return std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<std::pair<const CString, CCharacterMeshMerger::TexNode*>, void*>>>::_Max_size1(*(const efd::CustomAllocator<std::_Tree_node<std::pair<const CString, CCharacterMeshMerger::TexNode*>, void*>>*)p, bFlag);
 }
 
 // @0x141079fc0
 u64 FUN_141079fc0(void* p)
 {
-    bool bFlag;
-    return FUN_141074220(p, bFlag);
+    std::true_type bFlag;
+    return std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<std::pair<const NiTransform, Unk_MeshVec>, void*>>>::_Max_size1(*(const efd::CustomAllocator<std::_Tree_node<std::pair<const NiTransform, Unk_MeshVec>, void*>>*)p, bFlag);
 }
 
 // @0x141079fe0
@@ -223,13 +223,13 @@ u64 FUN_14107a120(void* p)
 // @0x14107a140
 u64 FUN_14107a140(void* p)
 {
-    return FUN_141079fa0(FUN_141072ed0(p));
+    return FUN_141079fa0((void*)&((const efd::map<CString, CCharacterMeshMerger::TexNode*>*)p)->_Getal());
 }
 
 // @0x14107a160
 u64 FUN_14107a160(void* p)
 {
-    return FUN_141079fc0(FUN_141072f30(p));
+    return FUN_141079fc0((void*)&((const efd::map<NiTransform, Unk_MeshVec, Unk_TransformLess>*)p)->_Getal());
 }
 
 // @0x14107a180
@@ -423,65 +423,65 @@ void FUN_14107a730(void* p1, void* p2)
     ((efd::vector<Unk_AtlasResult>*)p1)->emplace_back(*(const Unk_AtlasResult*)p2);
 }
 
-// @0x14107a760
-void* FUN_14107a760(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_141075730(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a760: the real select_on_container_copy_construction (was the FUN_14107a760 wrapper)
+template efd::CustomAllocator<unsigned char> std::_Normal_allocator_traits<efd::CustomAllocator<unsigned char>>::select_on_container_copy_construction(const efd::CustomAllocator<unsigned char>&);
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14107a7a0
-void* FUN_14107a7a0(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_141075770(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a7a0: the real select_on_container_copy_construction (was the FUN_14107a7a0 wrapper)
+template efd::CustomAllocator<NiMesh*> std::_Normal_allocator_traits<efd::CustomAllocator<NiMesh*>>::select_on_container_copy_construction(const efd::CustomAllocator<NiMesh*>&);
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14107a7e0
-void* FUN_14107a7e0(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_1410757b0(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a7e0: the real select_on_container_copy_construction (was the FUN_14107a7e0 wrapper)
+template efd::CustomAllocator<std::_Tree_node<unsigned char, void*>> std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<unsigned char, void*>>>::select_on_container_copy_construction(const efd::CustomAllocator<std::_Tree_node<unsigned char, void*>>&);
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14107a820
-void* FUN_14107a820(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_1410757f0(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a820: the real select_on_container_copy_construction (was the FUN_14107a820 wrapper)
+template efd::CustomAllocator<std::_Tree_node<NiAVObject*, void*>> std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<NiAVObject*, void*>>>::select_on_container_copy_construction(const efd::CustomAllocator<std::_Tree_node<NiAVObject*, void*>>&);
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14107a860
-void* FUN_14107a860(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_141075830(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a860: the real select_on_container_copy_construction (was the FUN_14107a860 wrapper)
+template efd::CustomAllocator<std::_Tree_node<std::pair<const unsigned char, unsigned char>, void*>> std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<std::pair<const unsigned char, unsigned char>, void*>>>::select_on_container_copy_construction(const efd::CustomAllocator<std::_Tree_node<std::pair<const unsigned char, unsigned char>, void*>>&);
+//
+//
+//
+//
+//
+//
+//
 
-// @0x14107a8a0
-void* FUN_14107a8a0(void* p1, void* p2)
-{
-    bool bFlag;
-    int nState = 0;
-    FUN_141075870(p1, p2, bFlag);
-    nState |= 1;
-    return p1;
-}
+// 0x14107a8a0: the real select_on_container_copy_construction (was the FUN_14107a8a0 wrapper)
+template efd::CustomAllocator<std::_Tree_node<std::pair<NiMesh* const, Unk_UVRect>, void*>> std::_Normal_allocator_traits<efd::CustomAllocator<std::_Tree_node<std::pair<NiMesh* const, Unk_UVRect>, void*>>>::select_on_container_copy_construction(const efd::CustomAllocator<std::_Tree_node<std::pair<NiMesh* const, Unk_UVRect>, void*>>&);
+//
+//
+//
+//
+//
+//
+//
 
 // ---------------------------------------------------------------------------
 // the field-at-+8 readers

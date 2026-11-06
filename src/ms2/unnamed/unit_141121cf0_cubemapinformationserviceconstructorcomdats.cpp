@@ -32,7 +32,7 @@
 // MS2-PIN: ??0?$map@HV?$vector@VEntityID@egf@@@efd@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122460 ; prop
 // MS2-PIN: ??0?$map@HVEntityID@egf@@U?$less@H@std@@@efd@@QEAA@XZ 0x1411224b0 ; prop
 // MS2-PIN: ??0?$map@HUUnk_CMISCubeTimer@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122500 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBE@@@QEAA@XZ 0x141122550 ; prop
+// MS2-PIN: ??0?$map@HW4Unk_CMISKindA@@U?$less@H@std@@@efd@@QEAA@XZ 0x141122550 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BABE@@@QEAA@XZ 0x1411225a0 ; prop
 // MS2-PIN: ??0?$map@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@@efd@@QEAA@XZ 0x141122620 ; prop
 // MS2-PIN: ??0?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@efd@@QEAA@XZ 0x141122670 ; prop
@@ -40,8 +40,8 @@
 // MS2-PIN: ??0?$map@VEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122710 ; prop
 // MS2-PIN: ??0?$map@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141122760 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBK@@@QEAA@XZ 0x1411227b0 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBJ@@@QEAA@XZ 0x141122830 ; prop
-// MS2-PIN: ??0?$Unk_CMISTree@$0BBI@@@QEAA@XZ 0x141122880 ; prop
+// MS2-PIN: ??0?$map@W4Unk_CMISKindB@@HU?$less@W4Unk_CMISKindB@@@std@@@efd@@QEAA@XZ 0x141122830 ; prop
+// MS2-PIN: ??0?$map@W4Unk_CMISKindB@@_NU?$less@W4Unk_CMISKindB@@@std@@@efd@@QEAA@XZ 0x141122880 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BBP@@@QEAA@XZ 0x1411228d0 ; prop
 // MS2-PIN: ??0?$map@_JV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@QEAA@XZ 0x141122920 ; prop
 // MS2-PIN: ??0?$Unk_CMISTree@$0BAL@@@QEAA@XZ 0x1411229d0 ; prop
@@ -60,7 +60,7 @@
 // MS2-PIN: ??0?$vector@VNiTransform@@@efd@@QEAA@XZ 0x141122df0 ; prop
 // MS2-PIN: ??0?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEAA@XZ 0x141122e40 ; prop
 // MS2-PIN: ??0Category@efd@@QEAA@W4ExpectedChannelUsage@UniversalID@1@II@Z 0x141122f90 ; unique
-// MS2-PIN: ??0Unk_CMISDeadString@@QEAA@XZ 0x141123030 ; unique
+//
 // MS2-PIN: ??0EntityChangeMessage@egf@@QEAA@XZ 0x141123110 ; unique
 // MS2-PIN: ??0ISystemService@efd@@QEAA@XZ 0x1411231e0 ; unique
 // MS2-PINS-END tplpin
@@ -199,12 +199,12 @@ Unk_CMISCubeTimer::Unk_CMISCubeTimer()
     m_id = reinterpret_cast<const egf::EntityID&>(DAT_143acf820);
 }
 
-struct Unk_CMISDeadString
+// @0x141123030 (ms2/placeholder/cubeheightindex.h, CubeMapInformationService+0x2a8)
+Unk_CubeHeightIndex::Unk_CubeHeightIndex()
 {
-    Unk_CMISDeadString() { reinterpret_cast<Unk_CMISTree<4097>*>(m_buf)->Unk_CMISTree<4097>::Unk_CMISTree(); }   // 0x141122050: the exe calls the Unk_CMISTree<4097> ctor, not efd::utf8string()
-    ~Unk_CMISDeadString() { reinterpret_cast<efd::utf8string*>(m_buf)->~utf8string(); }
-    char m_buf[0x20];
-};
+    reinterpret_cast<Unk_CMISTree<4097>*>(&m_heights)->Unk_CMISTree<4097>::Unk_CMISTree();   // 0x141122050: the exe's efd::map<int, int> ctor (0x141122070 is the std::map one)
+}
+//
 
 struct Unk_CMISCellName
 {
@@ -214,7 +214,7 @@ struct Unk_CMISCellName
 };
 
 // @0x1411230b0 (the 56-byte cell value of the cell tree, tail.h's Unk_CMISCell with the exe's member types; the name is
-// built by efd::utf8string() 0x1408a8700, not the 0x141123030 tree ctor that Unk_CMISDeadString pairs with)
+// built by efd::utf8string() 0x1408a8700, not the 0x141123030 Unk_CubeHeightIndex ctor)
 struct Unk_CMISCellInit
 {
     Unk_CMISCellInit() : m_scale(0.0f, 0.0f, 0.0f) {}
@@ -331,7 +331,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) efd::map<int, efd::vector<egf::EntityID> >;
     new (p) efd::map<int, egf::EntityID>;
     new (p) efd::map<int, Unk_CMISCubeTimer>;
-    new (p) Unk_CMISTree<276>;
+    new (p) efd::map<int, Unk_CMISKindA>;
     new (p) Unk_CMISTree<4116>;
     new (p) efd::map<std::pair<int, int>, MS2Ptr<SaleStateData> >;
     new (p) efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int>;
@@ -339,8 +339,8 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) efd::map<egf::EntityID, efd::SmartPointer<egfPhysX::EntityActorData> >;
     new (p) efd::map<egf::EntityID, MS2Ptr<Cube> >;
     new (p) Unk_CMISTree<282>;
-    new (p) Unk_CMISTree<281>;
-    new (p) Unk_CMISTree<280>;
+    new (p) efd::map<Unk_CMISKindB, int>;
+    new (p) efd::map<Unk_CMISKindB, bool>;
     new (p) Unk_CMISAnchorS29;
     new (p) std::map<int, MS2Ptr<SalesInfo> >;
     new (p) std::map<int, MS2Ptr<UICubeUGCHead> >;
@@ -357,7 +357,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) std::vector<egf::EntityPtr>;
     new (p) Unk_CMISAnchorMH;
     new (p) Unk_CMISAnchorSvc;
-    new (p) Unk_CMISDeadString;
+    new (p) Unk_CubeHeightIndex;
     new (p) Unk_CMISCellInit;
     new (p) Unk_CMISCell(*(const Unk_CMISCell*)p);
     new (p) Unk_CMISIdPtr(*(const Unk_CMISIdPtr*)p);

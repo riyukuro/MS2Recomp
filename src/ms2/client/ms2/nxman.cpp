@@ -62,7 +62,7 @@ public:
 #undef NX_V
     virtual void vfunc_22(int nId, const char* pszFormat, int nValue);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 CStringA FUN_14016a600(const wchar_t* psz, int n = 0);      // wide -> narrow
 CStringW FUN_14016a730(const char* psz, int n = 0);         // narrow -> wide
@@ -250,7 +250,7 @@ int CNXMan::FUN_14160e260()
         return 3;
     else
     {
-        Unk_NxPlatform* pPlatform = ((class Unk_NxPlatform*)FUN_140d86260());
+        Unk_NxPlatform* pPlatform = ((class Unk_NxPlatform*)((void*)GetClientPlatform()));
         pPlatform->vfunc_22(0x271, "Current Patch Version = %d", 0x19f3e);
         char kLogContext[32];
         FUN_1415ca240(kLogContext);

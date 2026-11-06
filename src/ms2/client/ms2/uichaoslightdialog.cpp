@@ -6,56 +6,56 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??_GUIChaosLightDialog@@UEAAPEAXI@Z 0x141041330 ; unique
 // MS2-PIN: ?vfunc_48@UIChaosLightDialog@@UEAAHXZ 0x141041370 ; unique
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@AEAAXAEBV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141042860 ; unique
-// MS2-PIN: ??$_Uninitialized_copy@PEAV?$SmartPointer@VNiAVObject@@@efd@@PEAV12@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@YAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV12@0PEAV12@AEAV?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@Z 0x141042ce0 ; unique
-// MS2-PIN: ??$_Uninitialized_move@PEAV?$SmartPointer@VNiAVObject@@@efd@@PEAV12@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@YAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV12@0PEAV12@AEAV?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@Z 0x141042e40 ; unique
-// MS2-PIN: ?destroy@?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@QEAAXPEAV?$SmartPointer@VNiAVObject@@@2@@Z 0x141043110 ; unique
-// MS2-PIN: ??$emplace_back@AEBV?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@QEAAXAEBV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141043130 ; unique
-// MS2-PIN: ??1?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@QEAA@XZ 0x141043980
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@V?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@AEAAX$$QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141042860 ; unique
+// MS2-PIN: ??$_Uninitialized_copy@PEAV?$SmartPointer@VNiAVObject@@@efd@@PEAV12@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@YAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV12@0PEAV12@AEAV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@0@@Z 0x141042ce0 ; unique
+// MS2-PIN: ??$_Uninitialized_move@PEAV?$SmartPointer@VNiAVObject@@@efd@@PEAV12@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@YAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV12@0PEAV12@AEAV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@0@@Z 0x141042e40 ; unique
+// MS2-PIN: ??$destroy@V?$SmartPointer@VNiAVObject@@@efd@@@?$_Default_allocator_traits@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@SAXAEAV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@1@QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141043110 ; unique
+// MS2-PIN: ??$emplace_back@V?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAAX$$QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141043130 ; unique
+// MS2-PIN: ??1?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAA@XZ 0x141043980
 // MS2-PIN: ?vfunc_12@ChaosLightEffect@@UEAAHXZ 0x141044440 ; unique
 // MS2-PIN: ?GetRTTI@ChaosLightEffect@@UEBAPEBVNiRTTI@@XZ 0x141044490 ; unique
 // MS2-PINS-END tplpin
-// MS2-FUNCTIONAL 0x141042690: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410426c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141042b60: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 7 vs exe 5) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141043050: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 3) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410430a0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 3) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410430f0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141043100: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410432e0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 1 vs exe 3) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410438c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 3 vs exe 2) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141043950: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141043980: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 1) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410451c0: the exe's allocate here is std::allocator-shaped, allocate(count) with no hint parameter (spills rcx/rdx only); ours is the GB SDK CustomAllocator signature with the unused hint (r8 spill). Body is the exe's _Get_size_of_n + std::_Allocate<16> via the niavobjectnodealloc.h specialization - signature differs, same heap
-// MS2-FUNCTIONAL 0x1410451f0: the exe's allocate here is std::allocator-shaped, allocate(count) with no hint parameter (spills rcx/rdx only); ours is the GB SDK CustomAllocator signature with the unused hint (r8 spill). Body is the exe's _Get_size_of_n + std::_Allocate<16> via the niavobjectnodealloc.h specialization - signature differs, same heap
-// MS2-FUNCTIONAL 0x141045550: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callees differ: 0x141045580) - STL version, not a type error
-// MS2-FUNCTIONAL 0x141045760: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
-// MS2-FUNCTIONAL 0x1410457c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 1 vs exe 2) - STL version, not a type error
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1410426c0
+// The 16 functions 0x141042690-0x1410457c0 below were MS2-FUNCTIONAL while the vfunc_3 node list and m_vecObjects were
+// typed efd::list / efd::vector; they are std::allocator containers in the exe (see niavobjectnodealloc.h). vfunc_3
+// pushes the node with push_back(&&) (0x1410457c0 calls std::move, then emplace_back) on a named local: the
+// static_cast<NiAVObjectPtr&&> there is that rvalue (std::move would be a call in vfunc_3, a temporary a ref chain).
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1410426c0
 // MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAA@XZ 0x1410436b0
-// MS2-PIN: ??$destroy@PEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAPEAU?$_List_node@PEAVNiAVObject@@PEAX@1@@Z 0x1410430f0
-// MS2-PIN: ??0?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@QEAA@XZ 0x1410436f0
-// MS2-PIN: ??0?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@QEAA@XZ 0x141043700
-// MS2-PIN: ??1?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$CustomAllocator@PEAVNiAVObject@@@efd@@@std@@@std@@QEAA@XZ 0x1410438c0
-// MS2-PIN: ??1?$_List_buy@PEAVNiAVObject@@V?$CustomAllocator@PEAVNiAVObject@@@efd@@@std@@QEAA@XZ 0x1410438f0
-// MS2-PIN: ?allocate@?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@QEAAPEAV?$SmartPointer@VNiAVObject@@@2@_KPEBX@Z 0x1410451f0
-// MS2-PIN: ?deallocate@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAU?$_List_node@PEAVNiAVObject@@PEAX@2@_K@Z 0x141045550
-// MS2-PIN: ?deallocate@?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@QEAAXPEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@_K@Z 0x141045580
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@V?$_List_val@U?$_List_simple_types@PEAVNiAVObject@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141042690
-// MS2-PIN: ??$construct@PEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@AEAPEAU12@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAPEAU?$_List_node@PEAVNiAVObject@@PEAX@1@AEAPEAU41@@Z 0x141043000
-// MS2-PIN: ?allocate@?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@QEAAPEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@_KPEBX@Z 0x1410451c0
-// MS2-PIN: ??$_Emplace_reallocate@AEBV?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@QEAAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV23@AEBV23@@Z 0x141042920
-// MS2-PIN: ??$_Freenode0@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@?$_List_node@PEAVNiAVObject@@PEAX@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAU01@@Z 0x141042b60
-// MS2-PIN: ??$construct@V?$SmartPointer@VNiAVObject@@@efd@@AEAV12@@?$_Normal_allocator_traits@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@@std@@SAXAEAV?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@PEAV?$SmartPointer@VNiAVObject@@@3@AEAV43@@Z 0x141043050
-// MS2-PIN: ??$construct@V?$SmartPointer@VNiAVObject@@@efd@@AEBV12@@?$_Normal_allocator_traits@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@@std@@SAXAEAV?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@PEAV?$SmartPointer@VNiAVObject@@@3@AEBV43@@Z 0x1410430a0
-// MS2-PIN: ??$destroy@PEAVNiAVObject@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAPEAVNiAVObject@@@Z 0x141043100
-// MS2-PIN: ??0?$_List_buy@PEAVNiAVObject@@V?$CustomAllocator@PEAVNiAVObject@@@efd@@@std@@QEAA@XZ 0x1410432e0
-// MS2-PIN: ??1?$list@PEAVNiAVObject@@@efd@@QEAA@XZ 0x141043950
-// MS2-PIN: ?_Buynode0@?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$CustomAllocator@PEAVNiAVObject@@@efd@@@std@@@std@@QEAAPEAU?$_List_node@PEAVNiAVObject@@PEAX@2@PEAU32@0@Z 0x141044810
-// MS2-PIN: ?_Reallocate_exactly@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@AEAAX_K@Z 0x141044f10
-// MS2-PIN: ?deallocate@?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@QEAAXPEAV?$SmartPointer@VNiAVObject@@@2@_K@Z 0x1410455b0
-// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@@std@@SA_KAEBV?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@@Z 0x141045760
-// MS2-PIN: ?push_back@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@std@@QEAAXAEBV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x1410457c0
+// MS2-PIN: ??$destroy@PEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@1@QEAPEAU?$_List_node@PEAVNiAVObject@@PEAX@1@@Z 0x1410430f0
+// MS2-PIN: ??0?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@QEAA@XZ 0x1410436f0
+// MS2-PIN: ??0?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@QEAA@XZ 0x141043700
+// MS2-PIN: ??1?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@@std@@QEAA@XZ 0x1410438c0
+// MS2-PIN: ??1?$_List_buy@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@QEAA@XZ 0x1410438f0
+// MS2-PIN: ?allocate@?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@QEAAPEAV?$SmartPointer@VNiAVObject@@@efd@@_K@Z 0x1410451f0
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@2@QEAU?$_List_node@PEAVNiAVObject@@PEAX@2@_K@Z 0x141045550
+// MS2-PIN: ?deallocate@?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@QEAAXQEAU?$_List_node@PEAVNiAVObject@@PEAX@2@_K@Z 0x141045580
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@PEAVNiAVObject@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141042690
+// MS2-PIN: ??$construct@PEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@1@QEAPEAU?$_List_node@PEAVNiAVObject@@PEAX@1@AEAPEAU31@@Z 0x141043000
+// MS2-PIN: ?allocate@?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@QEAAPEAU?$_List_node@PEAVNiAVObject@@PEAX@2@_K@Z 0x1410451c0
+// MS2-PIN: ??$_Emplace_reallocate@V?$SmartPointer@VNiAVObject@@@efd@@@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAAPEAV?$SmartPointer@VNiAVObject@@@efd@@QEAV23@$$QEAV23@@Z 0x141042920
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@?$_List_node@PEAVNiAVObject@@PEAX@std@@SAXAEAV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@1@PEAU01@@Z 0x141042b60
+// MS2-PIN: ??$construct@V?$SmartPointer@VNiAVObject@@@efd@@AEAV12@@?$_Default_allocator_traits@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@SAXAEAV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@1@QEAV?$SmartPointer@VNiAVObject@@@efd@@AEAV34@@Z 0x141043050
+// MS2-PIN: ??$construct@V?$SmartPointer@VNiAVObject@@@efd@@V12@@?$_Default_allocator_traits@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@SAXAEAV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@1@QEAV?$SmartPointer@VNiAVObject@@@efd@@$$QEAV34@@Z 0x1410430a0
+// MS2-PIN: ??$destroy@PEAVNiAVObject@@@?$_Default_allocator_traits@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@1@QEAPEAVNiAVObject@@@Z 0x141043100
+// MS2-PIN: ??0?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@@std@@QEAA@XZ 0x1410432e0
+// MS2-PIN: ??1?$list@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@QEAA@XZ 0x141043950
+// MS2-PIN: ?_Buynode0@?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@@std@@QEAAPEAU?$_List_node@PEAVNiAVObject@@PEAX@2@PEAU32@0@Z 0x141044810
+// MS2-PIN: ?_Reallocate_exactly@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@AEAAX_K@Z 0x141044f10
+// MS2-PIN: ?deallocate@?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@QEAAXQEAV?$SmartPointer@VNiAVObject@@@efd@@_K@Z 0x1410455b0
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@SA_KAEBV?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@2@@Z 0x141045760
+// MS2-PIN: ?push_back@?$vector@V?$SmartPointer@VNiAVObject@@@efd@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAAX$$QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x1410457c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uichaoslightdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -354,16 +354,16 @@ bool ChaosLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTa
     GameObject* pObject = ((class NoticeMessage*)(pTarget))->GetOwner();
     if (!pObject)
         return false;
-    efd::list<NiAVObject*> listNodes;
+    std::list<NiAVObject*> listNodes;
     pObject->vfunc_44(&listNodes);
     m_vecObjects.clear();
     m_vecObjects.reserve(listNodes.size());
-    for (efd::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
+    for (std::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
     {
         if (*it)
         {
             NiAVObjectPtr spNode(*it);
-            m_vecObjects.push_back(spNode);
+            m_vecObjects.push_back(static_cast<NiAVObjectPtr&&>(spNode));
         }
     }
     if (s_bApply)

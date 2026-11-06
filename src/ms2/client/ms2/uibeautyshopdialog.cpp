@@ -336,7 +336,7 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42();
     virtual void vfunc_43(int nEvent, int a2, int nDelay);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // Client constants (the style slot counts and the slot extend price).
 class Unk_BSConstI64 { public: __int64 FUN_1402bac90(); char m_pad[0x58]; };
@@ -365,7 +365,7 @@ MS2_CHECK_OFFSET(Unk_BSConstants, m_hairGuide, 0xccb0);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_makeUpGuide, 0xcd10);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_extendCount, 0x6518);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_maxExtend, 0x65c8);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The hair apply effect.
 struct Unk_BSEffectRequest
@@ -579,7 +579,7 @@ void UIBeautyShopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_1418c8ee0();
     m_2a8 = 1;
-    ((class Unk_BSPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_BSPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9b20));
 }
@@ -2092,12 +2092,12 @@ void UIBeautyShopDialog::FUN_1418cb750(ASObj& out)
         if (nShopKind == 1)
         {
             strCategory = "hair";
-            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_hairGuide)->Get();
+            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_hairGuide)->Get();
         }
         else if (nShopKind == 2)
         {
             strCategory = "makeUp";
-            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_makeUpGuide)->Get();
+            strPath = *reinterpret_cast<Common::Constants::Value<CString>*>(&((struct Unk_BSConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_makeUpGuide)->Get();
         }
         out.FUN_1407cba60("guideCategory", CString(strCategory));
         out.FUN_1407cba60("guideMoviePath", CString(strPath));

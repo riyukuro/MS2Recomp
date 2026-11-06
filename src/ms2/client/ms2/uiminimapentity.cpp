@@ -169,7 +169,7 @@ public:
     char m_pad_ae71[0xda48 - 0xae71];
     Unk_MmConfigValue m_minimapCell;                                // +0xda48 MinimapScaleSkipSplitPixel
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CString FUN_14192ebf0(unsigned nKind);                                  // the minimap icon of an npc function
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // a string table text by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -437,7 +437,7 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
 {
     CStringW strFunction = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, pNpc->GetId());
     if (!strFunction.IsEmpty()) {
-        int nColor = pNpc->GetFriendly() > 0 ? (int)NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&((class Unk_MmGameConfig*)FUN_1401d3200())->m_colors)) : ((class NpcDataCli*)(class NpcDataCli*)(pNpc))->GetClassConstant();
+        int nColor = pNpc->GetFriendly() > 0 ? (int)NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&((class Unk_MmGameConfig*)GetClientConstants())->m_colors)) : ((class NpcDataCli*)(class NpcDataCli*)(pNpc))->GetClassConstant();
         CStringW strColored = FUN_14183e930(strFunction, nColor);
         CStringW strKey = bMultiRow ? L"s_minimap_tooltip_function_npc" : L"s_minimap_tooltip_function_npc_1row";
         const CStringW& strFormat = strKey;
@@ -2335,7 +2335,7 @@ void UIMinimapDialog::FUN_141a42bb0()
     dPanelY /= fScale;
     m_212 = false;
     ATL::CAtlMap<unsigned __int64, int> occupied;
-    int nCell = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_MmGameConfig*)FUN_1401d3200())->m_minimapCell)->Get();
+    int nCell = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_MmGameConfig*)GetClientConstants())->m_minimapCell)->Get();
     ATL::CAtlArray<EntityPtr> entities;
     FUN_141a42fe0(entities);
     for (size_t i = 0; i < entities.GetCount(); ++i) {

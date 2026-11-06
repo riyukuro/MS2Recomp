@@ -208,7 +208,7 @@ Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, c
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp)
 {
     Vector3 kForward = kEnd.FUN_140965c40(kStart);
-    Vector3 kSide = kForward.FUN_140a00e10(kUp);
+    efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kForward).Cross(reinterpret_cast<const efd::Point3&>(kUp));
     Vector3 kEuler;
     NiMatrix3 kMatrix((const efd::Point3&)kForward, (const efd::Point3&)kSide, (const efd::Point3&)kUp);
     reinterpret_cast<efd::Matrix3*>(&kMatrix)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
@@ -445,9 +445,9 @@ void CBeamEffect::UpdateMesh()
         else
             kDir = kCurve[i + 1].FUN_140965c40(kCurve[i - 1]);
         kDir.FUN_140968990();
-        Vector3 kSide = kDir.FUN_140a00e10(kCamera);
-        kLeft.push_back(kCurve[i].FUN_14097fd50(FUN_1409ab5c0(m_fHalfWidth, kSide)));
-        kRight.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, kSide)));
+        efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(kCamera));
+        kLeft.push_back(reinterpret_cast<Vector3&&>(static_cast<efd::Point3&&>(reinterpret_cast<const efd::Point3&>(kCurve[i]) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide)))))));
+        kRight.push_back(kCurve[i].FUN_140965c40(FUN_1409ab5c0(m_fHalfWidth, reinterpret_cast<Vector3&>(kSide))));
     }
 
     unsigned short nCount = (unsigned short)kLeft.size();
@@ -522,7 +522,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Unk_NiMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
-        Vector3 kMid(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Point3&>(pInfo->m_kPassThroughPoint)))))));
+        Vector3 kMid(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kStart) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Point3&>(pInfo->m_kPassThroughPoint))))))))));
         efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
@@ -553,14 +553,14 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Vector3 kAxisA, kAxisB;
         FUN_140a01250(reinterpret_cast<const efd::Point3&>(kEuler), reinterpret_cast<efd::Point3*>(&kAxisA), reinterpret_cast<efd::Point3*>(&kAxisB));
         kAxisA.FUN_140968990();
-        Vector3 kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));
-        kBend.FUN_140968990();
+        efd::Point3 kBend = reinterpret_cast<const efd::Point3&>(kAxisA) + reinterpret_cast<const efd::Point3&>(kDelta) * pInfo->m_fDirectionRate;
+        reinterpret_cast<Vector3&>(kBend).FUN_140968990();
         float fBend = fLength * pInfo->m_fLengthRate;
-        Vector3 kMid = kStart.FUN_14097fd50(kBend.FUN_14097fc90(fBend));
+        efd::Point3 kMid = reinterpret_cast<const efd::Point3&>(kStart) + reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(kBend)) * fBend;
         efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
-        kControl.push_back(kMid);
+        kControl.push_back(reinterpret_cast<Vector3&>(kMid));
         kControl.push_back(kEnd);
         kControl.push_back(kEnd);
         int nControl = (int)kControl.size();

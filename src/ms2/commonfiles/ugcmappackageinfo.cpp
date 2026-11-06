@@ -30,7 +30,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
-Unk_Int3* FUN_1408a85a0(Unk_Int3*, int, int, int);
+//
 unsigned char FUN_1401d1320(CCacheData*);
 
 typedef ATL::CRBMap<CString, UGCMapPackageDataPtr> UGCMapPackageCache;
@@ -39,11 +39,11 @@ static CLockCriticalSection s_lock;
 static UGCMapPackageCache s_cache;
 
 // @0x1408b9860
-UGCMapPackageInfo::UGCMapPackageInfo()
+UGCMapPackageInfo::UGCMapPackageInfo() : m_nItemId(0), m_nItemCount(1), m_offsetCubePoint(0, 0, 0)
 {
-    m_nItemId = 0;
-    m_nItemCount = 1;
-    FUN_1408a85a0(&m_offsetCubePoint, 0, 0, 0);
+    //
+    //
+    //
     m_fRotation = 0;
     m_nWallDir = 0;
     m_bNotPlace = 0;

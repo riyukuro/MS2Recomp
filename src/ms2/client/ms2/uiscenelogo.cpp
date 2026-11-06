@@ -73,10 +73,10 @@ CString UISceneLogo::GetTypeName()
 MS2_REPLACE_METHOD(0x141AD0480, UISceneLogo, GetTypeName, 61, 0x8DD3FAEE);
 
 // @0x141ad04d0
-void UISceneLogo::vfunc_48(int n)
+int UISceneLogo::vfunc_48(int n)
 {
     ((class Unk_SlUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adafd0(m_6c);
-    UISceneEntity::vfunc_48(n);
+    return UISceneEntity::vfunc_48(n);
 }
 MS2_REPLACE_METHOD(0x141AD04D0, UISceneLogo, vfunc_48, 53, 0x4D72E8A7);
 

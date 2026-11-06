@@ -158,7 +158,7 @@ MS2_CHECK_OFFSET(Unk_BanConstTable, m_cNameMin, 0x9ec0);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_wideTextMax, 0x9f70);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_dNameMin, 0xa0c0);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_eNameMax, 0xa1c8);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 // @0x14025a620
 int FUN_14025a620(Unk_ConstVal* slot) { return *reinterpret_cast<Common::Constants::Value<int>*>(slot)->Get(); }
 
@@ -753,8 +753,8 @@ unsigned CBanTextChecker::ScanLimit(const CStringW& str, CheckerLimit& limit)
 // @0x140225120
 int CBanTextChecker::CheckPetName(const CStringW& str, CStringW& message)
 {
-    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMin)->Get();
-    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMax)->Get();
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_nameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_nameMax)->Get();
     CheckerOption opt(0x91, true);
     CheckerLimit limit(nMin, nMax, true, false, false, true, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -789,7 +789,7 @@ int CBanTextChecker::FUN_1402253b0(const CStringW& str, CStringW& message)
 int CBanTextChecker::CheckMaidProfileField(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
-    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_dNameMax), true, false, false, false, true);
+    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)GetClientConstants())->m_dNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)GetClientConstants())->m_dNameMax), true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
 
@@ -797,15 +797,15 @@ int CBanTextChecker::CheckMaidProfileField(const CStringW& str, CStringW& messag
 int CBanTextChecker::CheckMaidName(const CStringW& str, CStringW& message)
 {
     CheckerOption opt(0xd9, true);
-    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_eNameMax), true, false, true, false, true);
+    CheckerLimit limit(FUN_14025a620(&((struct Unk_BanConstTable*)GetClientConstants())->m_eNameMin), FUN_14025a620(&((struct Unk_BanConstTable*)GetClientConstants())->m_eNameMax), true, false, true, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
 }
 
 // @0x140225630
 int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 {
-    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMin)->Get();
-    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMax)->Get();
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_cNameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_cNameMax)->Get();
     CheckerOption opt(0xf9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -814,8 +814,8 @@ int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 // @0x140225720
 int CBanTextChecker::CheckGuildName(const CStringW& str, CStringW& message)
 {
-    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMin)->Get();
-    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMax)->Get();
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_guildNameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_guildNameMax)->Get();
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -1001,7 +1001,7 @@ int CBanTextChecker::CheckMarketDescription(const CStringW& str, CStringW& messa
 // @0x140226160
 int CBanTextChecker::CheckMarketProductName(const CStringW& str, CStringW& message)
 {
-    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_wideTextMax)->Get() * 3 + 10;
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)GetClientConstants())->m_wideTextMax)->Get() * 3 + 10;
     if (str.GetLength() > nMax) return 2;
     return CheckTypes(str, 0xf8, true, message);
 }

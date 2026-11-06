@@ -97,8 +97,8 @@ void CCylinderCollision::vfunc_5()
     Vector3 akPoints[0x168];
     for (int i = 0; i < kSegments; i++)
     {
-        akPoints[i] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_radius,
-                                                      __imp_sinf((float)i * 3.1415927f / 180.0f) * m_radius, 0));
+        akPoints[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)i * 3.1415927f / 180.0f) * m_radius, 0)))));
     }
     m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spMesh, akPoints, kSegments);
@@ -106,40 +106,40 @@ void CCylinderCollision::vfunc_5()
     float fBottom = GetBottomZ() - m_center.z;
     for (int j = 0; j < kSegments; j++)
     {
-        akPoints[j] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)j * 3.1415927f / 180.0f) * m_radius,
-                                                      __imp_sinf((float)j * 3.1415927f / 180.0f) * m_radius, fTop));
+        akPoints[j] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)j * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)j * 3.1415927f / 180.0f) * m_radius, fTop)))));
     }
     m_spTopMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spTopMesh, akPoints, kSegments);
     for (int k = 0; k < kSegments; k++)
     {
-        akPoints[k] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)k * 3.1415927f / 180.0f) * m_radius,
-                                                      __imp_sinf((float)k * 3.1415927f / 180.0f) * m_radius, fBottom));
+        akPoints[k] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)k * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)k * 3.1415927f / 180.0f) * m_radius, fBottom)))));
     }
     m_spBottomMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spBottomMesh, akPoints, kSegments);
 
     int nCount = 0;
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, 0));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fTop));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fBottom));
-    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fTop));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-m_radius, 0, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(m_radius, 0, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, -m_radius, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, m_radius, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-m_radius, 0, 0)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(m_radius, 0, 0)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, -m_radius, 0)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, m_radius, 0)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-m_radius, 0, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(m_radius, 0, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, -m_radius, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, m_radius, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-m_radius, 0, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-m_radius, 0, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(m_radius, 0, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(m_radius, 0, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, -m_radius, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, -m_radius, fTop)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, m_radius, fBottom)))));
+    akPoints[nCount++] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_center) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, m_radius, fTop)))));
     m_spLineMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINES);
     BuildLines(m_spLineMesh, akPoints, nCount);
     m_aspMeshes[0] = m_spMesh;

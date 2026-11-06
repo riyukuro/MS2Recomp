@@ -82,7 +82,7 @@ class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3:
 class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 typedef Common::Constants::Value<int> Unk_MsgOption;
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class MS2InputService { public: int FUN_140d8ee40() const; };   // C3: member view
 MS2InputService* FUN_140a58540();
 
@@ -507,8 +507,8 @@ void CMsgBoxData::FillBuffObj(ASObj& obj)
 // @0x141a058c0
 void CMsgBoxData::FillUgcNoticeObj(ASObj& obj)
 {
-    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption30.Get());
-    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption88.Get());
+    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption30.Get());
+    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption88.Get());
 }
 
 // @0x141a05930

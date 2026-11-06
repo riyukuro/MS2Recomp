@@ -89,7 +89,7 @@ public:
     virtual void vfunc_56();
     virtual void vfunc_57(ATL::CAtlArray<Unk_RlPtr>* pOut);     // 57
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The client settings: the entry that holds the chosen region id.
 // C3: FUN_140cfd260 is CGameOption's (&m_connect; the region name is its first string)
@@ -139,7 +139,7 @@ UIRegionListDialog::UIRegionListDialog()
     m_nUnused198 = 0;
     m_nSelected = 0;
     m_strSaved = L"";
-    ((class Unk_RlServer*)FUN_140d86260())->vfunc_57(&m_regions);
+    ((class Unk_RlServer*)((void*)GetClientPlatform()))->vfunc_57(&m_regions);
 }
 
 // @0x140e80330

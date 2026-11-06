@@ -112,7 +112,7 @@ public:
     unsigned char unknown0[0xa020];
     ATL::CAtlArray<Unk_PriceRow*> prices;                   // +0xa020
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
@@ -125,7 +125,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
+template<> class TSingleton<ItemGachaBoxTable> { public: static ItemGachaBoxTable* GetInstance(); };   // C3: was FUN_14052d230 (real spec in itemgachaboxtable.h)
 class ItemGachaBoxTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -1073,8 +1073,8 @@ bool CItemData::IsPieceItem()
 // @0x14053d9d0
 bool CItemData::IsGachaCoinItem()
 {
-    if (((void*)FUN_14052d230()) != 0)
-        return ((class ItemGachaBoxTable*)(void*)(((void*)FUN_14052d230())))->IsCoinItem(GetItemId());
+    if (((void*)TSingleton<ItemGachaBoxTable>::GetInstance()) != 0)
+        return ((class ItemGachaBoxTable*)(void*)(((void*)TSingleton<ItemGachaBoxTable>::GetInstance())))->IsCoinItem(GetItemId());
     return false;
 }
 
@@ -1515,7 +1515,7 @@ unsigned long long CItemData::GetSellPrice(int nRank)
             unsigned short nLevel = (unsigned short)limit.levelLimit;
             if (nLevel >= 0x39)
             {
-                unsigned int nSellPrice = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((class Unk_PriceHolder*)FUN_1401d3200())->prices[nRank])->Get();
+                unsigned int nSellPrice = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((class Unk_PriceHolder*)GetClientConstants())->prices[nRank])->Get();
                 nPrice = nSellPrice;
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }

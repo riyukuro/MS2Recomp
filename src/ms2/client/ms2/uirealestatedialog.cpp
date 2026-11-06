@@ -276,13 +276,13 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("onRenew", szMethod) == 0)
     {
-        __int64 nNotice = *FUN_1401d3200()->UgcHomeExtensionNoticeDate.Get() * 60 * 60 * 24;
+        __int64 nNotice = *GetClientConstants()->UgcHomeExtensionNoticeDate.Get() * 60 * 60 * 24;
         Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
         if ((target.get() ? true : false) && target->m_n30 - GetServerTime() > nNotice)
         {
             __int64 nExpire = target->m_n30 - nNotice;
             CStringW strExpire = FUN_141ab5520(nExpire);
-            FUN_140d73aa0(FUN_14028dee0(1999, *FUN_1401d3200()->UgcHomeExtensionNoticeDate.Get(), strExpire), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FUN_14028dee0(1999, *GetClientConstants()->UgcHomeExtensionNoticeDate.Get(), strExpire), 0, 0, CStringW(L""));
         }
         else
         {
@@ -371,7 +371,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
                 {
                     if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
                     {
-                        CMsTime tWait(nTime + *FUN_1401d3200()->UgcHomeSaleWaitingTime.Get());
+                        CMsTime tWait(nTime + *GetClientConstants()->UgcHomeSaleWaitingTime.Get());
                         m_30->Invoke("setWaitingDate", BlockFormat(0x7dd, tWait.GetYear(), tWait.GetMonth(), tWait.GetDay(), tWait.GetHour(), tWait.GetMinute()));
                     }
                 }
@@ -576,7 +576,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
             reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", nState == 4 ? 2 : 1);
             if (nState == 4)
             {
-                CMsTime tWait(nTime + *FUN_1401d3200()->UgcHomeSaleWaitingTime.Get());
+                CMsTime tWait(nTime + *GetClientConstants()->UgcHomeSaleWaitingTime.Get());
                 m_30->Invoke("setWaitingDate", BlockFormat(0x7dd, tWait.GetYear(), tWait.GetMonth(), tWait.GetDay(), tWait.GetHour(), tWait.GetMinute()));
             }
             else if (nState == 1)

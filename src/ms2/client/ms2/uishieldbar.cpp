@@ -43,7 +43,7 @@ struct Unk_ShieldCfg
     char m_pad_0320[0xe610 - 0x2c8 - sizeof(Unk_ShieldCfgFloat)];
     Unk_ShieldCfgInt m_e610;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_ShieldUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -80,7 +80,7 @@ UIShieldBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_b0 = 0;
     m_b4 = 0;
     m_b8 = 0;
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ShieldCfg*)FUN_1401d3200())->m_2c8)->Read();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ShieldCfg*)GetClientConstants())->m_2c8)->Read();
 }
 
 // @0x140e856c0
@@ -195,7 +195,7 @@ float UIShieldBar::Entity::vfunc_9()
     if (pActor == 0)
         return 0.0f;
     float f = pActor->FUN_141670390();
-    return f + (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ShieldCfg*)FUN_1401d3200())->m_e610)->Get();
+    return f + (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ShieldCfg*)GetClientConstants())->m_e610)->Get();
 }
 
 // @0x140e85ed0

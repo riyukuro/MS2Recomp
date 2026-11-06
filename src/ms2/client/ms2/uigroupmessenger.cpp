@@ -242,7 +242,7 @@ CStringW FUN_141842320(const CStringW& strText);                    // text to h
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_14151f200();                                               // the click sound
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);           // a system chat line
@@ -571,7 +571,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     Unk_BlockList request(0x4e93, m_nGroupId);
                     request.Add("MessengerName", spName->GetTextW(), 0);
                     request.SetEnabled(1);
-                    if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
+                    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request) == 1)
                     {
                         if (FUN_14194ce40(spName->GetTextW()) == 1)
                             return 0;

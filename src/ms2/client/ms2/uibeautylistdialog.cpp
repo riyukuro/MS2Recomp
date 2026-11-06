@@ -92,11 +92,11 @@ bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
 // @0x140f006b0
 int UIBeautyListDialog::FUN_140f006b0(int nMapId)
 {
-    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_61f8)->Get()))
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(GetClientConstants())->m_61f8)->Get()))
         return 1;
-    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_62a8)->Get()))
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(GetClientConstants())->m_62a8)->Get()))
         return 1;
-    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(FUN_1401d3200())->m_6358)->Get()))
+    if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(GetClientConstants())->m_6358)->Get()))
         return 1;
     return 0;
 }

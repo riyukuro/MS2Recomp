@@ -25,8 +25,8 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);   // 41 0x1422e85b0
     virtual void vfunc_43();                                    // 43 0x1422e84c0
     virtual bool vfunc_47();                                    // 47
-    virtual void vfunc_48(int n);                               // 48 0x1422e7b20 show
-    virtual void vfunc_49(int n);                               // 49 0x1422e7bd0 hide
+    virtual int vfunc_48(int n);                                // 48 0x1422e7b20 show
+    virtual int vfunc_49(int n);                                // 49 0x1422e7bd0 hide
     virtual void vfunc_50();
     virtual void vfunc_51();
     virtual void vfunc_52();                                    // 52 0x1422e7dd0
@@ -60,8 +60,8 @@ public:
     virtual CString GetTypeName();                                  //  1 0x140e84d60 "SceneGameCinematicPlay"
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e84ef0
     virtual bool vfunc_47();                                    // 47 0x140e84db0 returns false
-    virtual void vfunc_48(int n);                               // 48 0x140e84dc0 show: cinematic presentation on
-    virtual void vfunc_49(int n);                               // 49 0x140e84e30 hide: cinematic presentation off
+    virtual int vfunc_48(int n);                                // 48 0x140e84dc0 show: cinematic presentation on
+    virtual int vfunc_49(int n);                                // 49 0x140e84e30 hide: cinematic presentation off
     virtual void vfunc_52();                                    // 52 0x140e84ed0 the base's
     virtual void vfunc_54();                                    // 54 0x140e84ea0 the scene manager's "camera off"
     virtual int vfunc_65() { return 0x4e59; }                   // 65 0x140e84f80 UI type id

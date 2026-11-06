@@ -149,11 +149,11 @@ int StateHomeConvenient::GetDuration()
     {
     case 1:
     case 2:
-        return static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration.Read();
+        return static_cast<Client::Constants*>(GetClientConstants())->HomeBankCallDuration.Read();
     case 3:
-        return static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallDuration.Read();
+        return static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorCallDuration.Read();
     }
-    return static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration.Read();
+    return static_cast<Client::Constants*>(GetClientConstants())->HomeBankCallDuration.Read();
 }
 
 // @0x140ddd7c0
@@ -176,9 +176,9 @@ efd::utf8string StateHomeConvenient::GetAnimation()
     switch (GetKind())
     {
     case 1:
-        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallSequence.Get()));
+        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(GetClientConstants())->HomeBankCallSequence.Get()));
     case 3:
-        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallSequence.Get()));
+        return efd::utf8string(static_cast<const char*>(*static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorCallSequence.Get()));
     }
     return efd::utf8string("Object_React_A");
 }
@@ -211,7 +211,7 @@ void StateHomeConvenient::Finish(double fTime)
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar)
                     pBar->FUN_1418e1390();
-                unsigned nNpc = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorNpcID.Get();
+                unsigned nNpc = *static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorNpcID.Get();
                 if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
                     if (CTalkScript* pScript = FUN_140856c50(nNpc, 1).get())
@@ -219,7 +219,7 @@ void StateHomeConvenient::Finish(double fTime)
                 }
                 else
                 {
-                    int nScript = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorScriptID1.Get();
+                    int nScript = *static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorScriptID1.Get();
                     if (CTalkScript* pScript = FUN_140856820(nNpc, nScript).get())
                         TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpc, 2, 0);
                 }

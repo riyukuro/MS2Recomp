@@ -11,25 +11,25 @@
 
 struct Unk_TradeConst { char m_pad[0x6000]; };
 struct Unk_TradeValInt { char m_pad[0x60]; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 
 // @0x14087d0c0
 __int64 FUN_14087d0c0()
 {
-    return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5f00)->Read();
+    return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5f00)->Read();
 }
 
 // @0x14087d0f0
 __int64 FUN_14087d0f0()
 {
-    return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5f60)->Read();
+    return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5f60)->Read();
 }
 
 // @0x14087d120
 int FUN_14087d120()
 {
-    return FUN_14025a620((class Unk_ConstVal*)((Unk_TradeValInt*)((char*)((struct Unk_TradeConst*)FUN_1401d3200()) + 0x5fc0)));
+    return FUN_14025a620((class Unk_ConstVal*)((Unk_TradeValInt*)((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5fc0)));
 }
 
 // @0x14087d150

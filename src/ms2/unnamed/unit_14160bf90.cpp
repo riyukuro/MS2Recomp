@@ -7,7 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "hook/ms2hook.h"
-
+#include <efd/Point3.h>
 // Arc between m_vStart and m_vEnd taking m_fDuration seconds, peaking m_fHeight * 1 above the straight line.
 class Unk_ArcMover
 {
@@ -45,7 +45,7 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
         m_bMoving = false;
     }
     float fT = (m_fDuration == 0.0f) ? 1.0f : m_fElapsed / m_fDuration;
-    *pPos = FUN_1409ab5c0(1.0f - fT, m_vStart).FUN_14097fd50(FUN_1409ab5c0(fT, m_vEnd));
+    *pPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(1.0f - fT, m_vStart))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fT, m_vEnd)))));
     pPos->z = pPos->z + m_fHeight * 4.0f * fT * (1.0f - fT);
     Vector3 vDir = m_vEnd.FUN_140965c40(m_vStart);
     if (FUN_14160c230(vDir) > 0.0f)

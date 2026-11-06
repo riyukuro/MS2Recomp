@@ -148,7 +148,7 @@ public:
     virtual bool vfunc_40(__int64 nPrice);                                  // can pay the price
 #undef DC_V
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // Input state, the movie manager, string helpers and message boxes.
 class Unk_StInputState : public CInputKeyHandler {};
@@ -989,7 +989,7 @@ void UIStoreDialog::FUN_141b10ed0(CStringW strText)
     }
     Unk_BlockList request(0x4e47);
     request.Add("m_inputSearch", strText, 0);
-    int nResult = ((class Unk_DictPlatform*)FUN_140d86260())->vfunc_37(&request);
+    int nResult = ((class Unk_DictPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request);
     if (nResult == 1)
     {
         CStringW strSearch = FUN_1413fa9b0(strText);
@@ -1104,7 +1104,7 @@ MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 // @0x141b11520
 void UIStoreDialog::FUN_141b11520()
 {
-    Unk_DictPlatform* pPlatform = ((class Unk_DictPlatform*)FUN_140d86260());
+    Unk_DictPlatform* pPlatform = ((class Unk_DictPlatform*)((void*)GetClientPlatform()));
     if (pPlatform->vfunc_40(DAT_143ab2d80.Value4500()) == 1)
         DAT_143ab2d80.RequestExtend();
     else

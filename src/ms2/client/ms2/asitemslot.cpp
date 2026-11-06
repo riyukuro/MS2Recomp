@@ -688,7 +688,7 @@ class Unk_ItemPlusInfo
 {
 public:
 };
-ItemGachaBoxTable* FUN_14052d230();
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 class Unk_SlotLapenTable : public CItemLapenshardTable
 {
 };
@@ -1148,7 +1148,7 @@ void ASSlot::SetItemSeason(MS2Ptr<CItemData> spData)
         return;
     int nItemId = spData->GetItemId();
     int nSeason = spData->GetOpenGachaBoxParam0();
-    ItemGachaBoxTable* pTable = FUN_14052d230();
+    ItemGachaBoxTable* pTable = TSingleton<ItemGachaBoxTable>::GetInstance();
     if (pTable != NULL && pTable->IsCoinItem(nItemId) == true)
         nSeason = pTable->GetRandomBoxIdByCoinItem(nItemId);
     if (nSeason == 0)
@@ -2553,7 +2553,7 @@ bool ASMeratMarketHomeProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, cons
             return true;
         }
         int nCoinShopId = spEntry->m_premium.m_nCoinShopId;
-        int nOpen = FUN_14052d230()->FUN_14059e6a0(nCoinShopId);
+        int nOpen = TSingleton<ItemGachaBoxTable>::GetInstance()->FUN_14059e6a0(nCoinShopId);
         if (nOpen == 0)
             return true;
         FUN_1409c0e60("extraButtonText", L"$s_itemgacha_dialog_coinshop_open");
@@ -2656,7 +2656,7 @@ void ASMeratMarketHomeProduct::FUN_1409c05d0(MS2Ptr<Unk_MeratEquipEntry> spEntry
         }
         if (spData->HasOpenGachaBoxFunction())
         {
-            int nSeason = FUN_14052d230()->GetSeasonByCoinOrBoxItemId(spData->GetOpenGachaBoxParam0());
+            int nSeason = TSingleton<ItemGachaBoxTable>::GetInstance()->GetSeasonByCoinOrBoxItemId(spData->GetOpenGachaBoxParam0());
             FUN_1409c0d20("itemSeason", nSeason);
         }
     }

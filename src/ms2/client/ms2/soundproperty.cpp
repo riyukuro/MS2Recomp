@@ -209,16 +209,16 @@ bool SoundPropertyMgr::s_bInit;
 // The exe also holds the iterator step forwarders of a map keyed by unsigned (0x1417a2db0); explicit instantiation keeps that copy.
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_EventVoice> > > > Unk_UEventIter;
 template Unk_UEventIter& Unk_UEventIter::operator--();
-// The TU's own copy of the MS2Ptr<CCacheData> copy constructor (the shared one is 0x1401ef790).
-// A view of the pointer's two slots; FUN_1417a6bd0 is the folded AddRef.
-struct Unk_CachePtrView { void* m_pad; CCacheData* m_p; void FUN_1417a6bd0() const; };
-// @0x14179f040
-MS2Ptr<CCacheData>* FUN_14179f040(MS2Ptr<CCacheData>* self, const MS2Ptr<CCacheData>* other)
-{
-    ((Unk_CachePtrView*)self)->m_p = ((const Unk_CachePtrView*)other)->m_p;
-    ((Unk_CachePtrView*)self)->FUN_1417a6bd0();
-    return self;
-}
+// 0x14179f040 is the real Unk_FieldPtr<CAtlArray<CStringA>> copy ctor (it calls that type's private AddRef, 0x1417a6bd0);
+// it was an MS2Ptr<CCacheData> look-alike over a folded FUN_1417a6bd0. The explicit instantiation emits both real names.
+#include "ms2/commonfiles/fieldmetatable.h"
+template Unk_FieldPtr<CAtlArray<CStringA> >::Unk_FieldPtr(const Unk_FieldPtr<CAtlArray<CStringA> >&);
+//
+//
+//
+//
+//
+//
 typedef std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, Unk_SoundPitch> > > > Unk_UPitchIter;
 template Unk_UPitchIter& Unk_UPitchIter::operator--();
 

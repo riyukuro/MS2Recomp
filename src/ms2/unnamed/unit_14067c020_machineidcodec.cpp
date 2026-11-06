@@ -13,7 +13,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-unsigned char& FUN_140203bf0(CByteBuffer* pBuf, unsigned __int64 nIndex);   // CByteBuffer::operator[] (the exe's copy in unit_1401f9eb0)
+// (0x140203bf0 is ATL::CAtlArray<unsigned char>::operator[](size_t); the exe passes &buf as its this)
 
 class Unk_MachineId
 {
@@ -124,7 +124,7 @@ MS2_REPLACE_METHOD(0x14067C310, Unk_MachineId, FUN_14067c310, 59, 0x9FBAB988);
 void Unk_MachineId::FUN_14067c360(CByteBuffer& buf) const
 {
     for (int i = 0; i < 16; i++)
-        FUN_140203bf0(&buf, i) = m_data[i];
+        reinterpret_cast<ATL::CAtlArray<unsigned char>&>(buf)[i] = m_data[i];
 }
 MS2_REPLACE_METHOD(0x14067C360, Unk_MachineId, FUN_14067c360, 92, 0xFCBAB457);
 

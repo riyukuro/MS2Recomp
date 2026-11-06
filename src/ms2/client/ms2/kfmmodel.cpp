@@ -13,7 +13,7 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@XZ 0x141442a80 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@std@@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@efd@@@std@@@2@XZ 0x141442a90 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?FUN_141441ec0@@YAXPEAVAssetID@efd@@PEBDEW4CachingPolicy@12@@Z 0x141441ec0
+// AssetID(const char*, ...): the game's one COMDAT, 0x141441ec0, strips a trailing ':' (AssetID.inl, on for /D_AFXDLL)
 // MS2-PIN: ?FUN_1414424f0@@YAPEAXPEAX0M@Z 0x1414424f0
 // MS2-PIN: ??_7CKfmModel@@6BCallbackObject@NiActorManager@@@ 0x142f135d0
 // MS2-FUNCTIONAL: extern-heavy; engine/game helpers are opaque FUN_ externs (see nifmodel.cpp, the same model shape
@@ -139,7 +139,7 @@ public:
 };
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
-void FUN_1402bd040(float* p);
+// (0x1402bd040 is efd::Point3::Point3())
 void FUN_1411dde50(void* owner, void* self);
 void FUN_141422b30(class CEquipModel* pPart, std::set<NiAVObjectPtr>& kNodes, const struct Vector3& kPos, const struct Vector3& kEuler, float fScale);
 
@@ -234,25 +234,25 @@ void* FUN_1414424f0(void* pIn, void* pOut, float fScale)   // pOut = *pIn * fSca
     return pOut;
 }
 
-// The exe's AssetID(const char*, ...) constructor (copy in this TU): the SDK constructor plus dropping a trailing ':'.
-struct Unk_KfmAssetIDAccess
-{
-    static void Init(efd::AssetID* p, const char* pszUrn, unsigned char nMult, efd::AssetID::CachingPolicy ePolicy)
-    {
-        new (p) efd::AssetID(pszUrn, nMult, ePolicy);
-        void* pUrn = (void*)&p->GetURN();
-        size_t nLen = ((efd::utf8string*)(void*)(pUrn))->length();
-        if (nLen != 0) {
-            if (((const efd::utf8string*)(void*)(pUrn))->operator[](nLen - 1) == ':')
-                ((efd::utf8string*)(void*)(pUrn))->clear();
-        }
-    }
-};
+// AssetID(const char*, ...) (0x141441ec0) is the SDK inline, stripping in game TUs (AssetID.inl, /D_AFXDLL):
+// its COMDAT copy in this unit drops a URN's trailing ':'.
 
-void FUN_141441ec0(efd::AssetID* p, const char* pszUrn, unsigned char nMult, efd::AssetID::CachingPolicy ePolicy)
-{
-    Unk_KfmAssetIDAccess::Init(p, pszUrn, nMult, ePolicy);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 namespace ecr { class SceneGraphService; }
 ecr::SceneGraphService* GetSceneGraphService();
 class MS2SceneGraphService { public: void SetBucketOverride(egf::EntityID entityID, int iBucket); };   // C3: member view (0x1414f1e70)
@@ -750,7 +750,7 @@ void CKfmModel::vfunc_29(void* pPos, void* pRotDeg, float fScale)
 void CKfmModel::vfunc_28(void* pPos, void* pMatrix3, float fScale)
 {
     float x, y, z;
-    FUN_1402bd040(&x);     // NiPoint3() on the x, y, z angles
+    reinterpret_cast<efd::Point3*>(&x)->efd::Point3::Point3();     // NiPoint3() on the x, y, z angles
     ((efd::Matrix3*)pMatrix3)->ToEulerAnglesXYZ(x, y, z);
     x = (x * 180.0f) / 3.1415927f;
     y = (y * 180.0f) / 3.1415927f;
@@ -1094,3 +1094,4 @@ void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2290-0x142cb2320 .text$yd
+// MS2-PIN: ??0AssetID@efd@@QEAA@PEBDEW4CachingPolicy@01@@Z 0x141441ec0

@@ -229,7 +229,7 @@ void UINoticeDialog::OnNoticeDialog(NotifyObject* pNotify)
     case 0:
         if (FUN_141924630())
         {
-            FUN_141009950(*static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogOpenSeconds.Get());
+            FUN_141009950(*static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogOpenSeconds.Get());
             FUN_141009980();
         }
         break;
@@ -274,7 +274,7 @@ void UINoticeDialog::FUN_1410097d0()
 // @0x141009870
 void UINoticeDialog::FUN_141009870()
 {
-    CString strUrl(*static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl.Get());
+    CString strUrl(*static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogUrl.Get());
     if (strUrl.IsEmpty())
         return;
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c))

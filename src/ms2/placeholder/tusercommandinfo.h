@@ -8,6 +8,7 @@ public:
     virtual ~TUserCommandInfo() = default;
     CStringW function;
     int chatType,stringId;
+    int GetChatType() const { return chatType; }   // 0x141a1cae0
     CStringW suffix,firstAlias;
 };
 MS2_CHECK_SIZE(TUserCommandInfo,0x38);

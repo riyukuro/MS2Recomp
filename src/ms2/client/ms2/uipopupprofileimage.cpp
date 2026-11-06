@@ -59,8 +59,8 @@ UIPopupProfileImage::Entity::Entity(int nLayer, const Scaleform::GFx::Value& cli
     : TimerEntity(nLayer, clip, nActorId)
 {
     m_a0 = 0;
-    m_64 = FUN_141a8fc10(&FUN_1401d3200()->PassengerProfileImageLifeTime);
-    m_54 = (float)*FUN_1401d3200()->PassengerProfileImageShowRange.Get();
+    m_64 = FUN_141a8fc10(&GetClientConstants()->PassengerProfileImageLifeTime);
+    m_54 = (float)*GetClientConstants()->PassengerProfileImageShowRange.Get();
 }
 
 // @0x141a8f450
@@ -103,7 +103,7 @@ void UIPopupProfileImage::Entity::vfunc_5()
         info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)strPath, 0));
         info.FUN_1407cb9c0("dead", ((Unk_PopupActor*)pPc)->IsDead());
         m_38->Invoke("open", info);
-        float fScale = (float)*FUN_1401d3200()->PassengerProfileImageSize.Get();
+        float fScale = (float)*GetClientConstants()->PassengerProfileImageSize.Get();
         float fSize = (fScale / 64.0f) * 100.0f;
         ((Unk_PopupEntity*)m_38.operator->())->SetScaleFloat(fSize, fSize);
     }

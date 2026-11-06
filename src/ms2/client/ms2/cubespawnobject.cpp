@@ -115,7 +115,7 @@ template <> inline CStringW* Common::Constants::Value<CStringW>::Get()
         Error("constants is not set");
     return &m_value;
 }
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 void* FUN_1401c0d90();
 
@@ -157,12 +157,12 @@ CubeSpawnObject::CubeSpawnObject()
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->RegisterState(1, reinterpret_cast<State*>(new StateIdleSpawnObject(this)));
     m_spStateMgr->RegisterState(0x19, reinterpret_cast<State*>(new StateInterActionSpawnObject(this)));
-    m_f164 = reinterpret_cast<Common::Constants*>(FUN_1401d3200())->OffsetNpcHpbar.Read();
-    m_f168 = reinterpret_cast<Common::Constants*>(FUN_1401d3200())->OffsetNpcChatballoon.Read();
-    m_f16c = reinterpret_cast<Common::Constants*>(FUN_1401d3200())->OffsetNpcNametag.Read();
+    m_f164 = reinterpret_cast<Common::Constants*>(GetClientConstants())->OffsetNpcHpbar.Read();
+    m_f168 = reinterpret_cast<Common::Constants*>(GetClientConstants())->OffsetNpcChatballoon.Read();
+    m_f16c = reinterpret_cast<Common::Constants*>(GetClientConstants())->OffsetNpcNametag.Read();
     m_f170 = 0.0f;
     m_f174 = 0.0f;
-    m_f178 = reinterpret_cast<Common::Constants*>(FUN_1401d3200())->OffsetNpcDamagenumber.Read();
+    m_f178 = reinterpret_cast<Common::Constants*>(GetClientConstants())->OffsetNpcDamagenumber.Read();
     m_mapAnim.SetAt(0x5a, "Idle_A");
     m_mapAnim.SetAt(0x62, "Grow_A");
     m_mapAnim.SetAt(99, "Full_A");
@@ -310,9 +310,9 @@ MS2_REPLACE_METHOD(0x140a4f3f0, CubeSpawnObject, FUN_140a4f3f0, 655, 0x7F90AEE9)
 // @0x140a4f690
 int CubeSpawnObject::FUN_140a4f690()
 {
-    if (m_strOwner != *reinterpret_cast<Common::Constants*>(FUN_1401d3200())->NurturingQuestTag.Get())
+    if (m_strOwner != *reinterpret_cast<Common::Constants*>(GetClientConstants())->NurturingQuestTag.Get())
         return false;
-    return ((CGameRule*)FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants*>(FUN_1401d3200())->NurturingQuestTag.Get());
+    return ((CGameRule*)FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants*>(GetClientConstants())->NurturingQuestTag.Get());
 }
 MS2_REPLACE_METHOD(0x140a4f690, CubeSpawnObject, FUN_140a4f690, 112, 0x1E480BE2);
 

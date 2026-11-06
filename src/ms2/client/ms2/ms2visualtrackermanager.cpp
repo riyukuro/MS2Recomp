@@ -206,7 +206,7 @@ namespace Scaleform { namespace GFx { class Movie; } }
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nLayer);
 CString FUN_141277f60(int nLayer);                                      // name of UI layer nLayer
 class Unk_GoDeviceInfo { public: unsigned __int64 GetBandwidth(); };   // the memory bandwidth (gameoption.cpp)
-Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+// (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 CNetworkService* FUN_140714f90();
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -439,10 +439,10 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spNifCount->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->FUN_14151e770(), bForce, 0);
         m_spTextureCount->FUN_14118b9b0(((struct Unk_VtmCaches*)FUN_140a0afd0())->FUN_14151e790(), bForce, 0);
 
-        unsigned nGpuTotalMb = ((class GPUManager*)FUN_141245b20())->FUN_141375c90();
-        unsigned nGpuUsedMb = ((class GPUManager*)FUN_141245b20())->FUN_141375c80();
-        int nGpuCore = FUN_14151e8f0(((class GPUManager*)FUN_141245b20()));
-        int nGpuPercent = ((class GPUManager*)FUN_141245b20())->FUN_141375ca0();
+        unsigned nGpuTotalMb = TSingleton<GPUManager>::GetInstance()->FUN_141375c90();
+        unsigned nGpuUsedMb = TSingleton<GPUManager>::GetInstance()->FUN_141375c80();
+        int nGpuCore = FUN_14151e8f0(TSingleton<GPUManager>::GetInstance());
+        int nGpuPercent = TSingleton<GPUManager>::GetInstance()->FUN_141375ca0();
         m_spGpuCore->FUN_14118b820(nGpuCore, true, "%");
         float fRatio = (float)nGpuPercent * 0.01f;
         m_fGpuMemoryMB = fRatio * (float)nGpuTotalMb;
@@ -694,8 +694,8 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
         D3DADAPTER_IDENTIFIER9 kIdent;
         GetIDirect3D9()->GetAdapterIdentifier(0, 0, &kIdent);
         CString strGpu(kIdent.Description);
-        if (FUN_141245b20()->GetBandwidth() != 0)
-            strGpu.Format("%s [bw:%d]", kIdent.Description, FUN_141245b20()->GetBandwidth());
+        if (reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetBandwidth() != 0)
+            strGpu.Format("%s [bw:%d]", kIdent.Description, reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetBandwidth());
         m_spGpuName = AddDebugString(m_idSystemPage, strGpu, 780, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     }
     m_spPageFile = AddDebugString(m_idSystemPage, "PageFile(MB):", 10, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));

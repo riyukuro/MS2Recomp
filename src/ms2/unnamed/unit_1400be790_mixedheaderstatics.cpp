@@ -29,8 +29,8 @@
         char m_pad[size];                                              \
     };
 
-struct Unk_TailSetVal; struct Unk_TailSetLess { bool operator()(const Unk_TailSetVal&, const Unk_TailSetVal&) const { return false; } }; void FUN_140932870(void*); void FUN_140932b40(std::set<Unk_TailSetVal, Unk_TailSetLess>* pThis);   // unit_14092f420
-struct Unk_Be790B { Unk_Be790B() { FUN_140932870(this); } ~Unk_Be790B() { FUN_140932b40(reinterpret_cast<std::set<Unk_TailSetVal, Unk_TailSetLess>*>(this)); } char m_pad[0x10]; };
+struct Unk_TailSetVal; struct Unk_TailSetLess { bool operator()(const Unk_TailSetVal&, const Unk_TailSetVal&) const { return false; } }; template <> std::set<Unk_TailSetVal, Unk_TailSetLess>::set();   /* 0x140932870, defined (implicitly) in unit_14092f420 */ void FUN_140932b40(std::set<Unk_TailSetVal, Unk_TailSetLess>* pThis);   // unit_14092f420
+struct Unk_Be790B { Unk_Be790B() { reinterpret_cast<std::set<Unk_TailSetVal, Unk_TailSetLess>*>(this)->std::set<Unk_TailSetVal, Unk_TailSetLess>::set(); } ~Unk_Be790B() { FUN_140932b40(reinterpret_cast<std::set<Unk_TailSetVal, Unk_TailSetLess>*>(this)); } char m_pad[0x10]; };
 // the UGC cube stock (ugcmapitem.h's Unk_CubeStock, defined there): only its ctor/dtor are called here
 class Unk_CubeStock
 {

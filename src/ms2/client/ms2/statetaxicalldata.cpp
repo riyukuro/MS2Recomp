@@ -189,10 +189,10 @@ void StateTaxiCall::vfunc_4(StateData* pData)
         m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strCall;
         m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strArrive;
         m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strLeave;
-        int nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallDuration)->FUN_140ad5c50();
+        int nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->FUN_140ad5c50();
         if (FUN_141b71c00((unsigned short)m_pOwner->vfunc_78()) != 0)
         {
-            nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallBestDriverDuration)->FUN_140ad5c50();
+            nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallBestDriverDuration)->FUN_140ad5c50();
             m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestCall;
             m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestArrive;
             m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestLeave;
@@ -347,13 +347,13 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
     Vector3 kPos;
     Vector3 kRot;
     NiTransform xf;
-    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcEntity*>(WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_18())), *((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->Get() + 100.0f, 1, 0));
+    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcEntity*>(WorldService::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_18())), *((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(GetClientConstants())->TaxiStationFindDistance))->Get() + 100.0f, 1, 0));
     if (pStop == 0)
     {
         kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-        Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
+        Vector3 kDir = FUN_1420834e0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))), kMat);
         xf.MakeIdentity();
         xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
     }

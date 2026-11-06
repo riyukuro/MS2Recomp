@@ -207,7 +207,7 @@ enum Unk_ClCharError : int {};                                      // the resul
 CStringW BlockFormat(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
 class Unk_ClPlayer { public: virtual void v0(); };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim);
 void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char n);
 CString FUN_141028be0(__int64 nId, const CString& strText, int n, CString strTag);
@@ -277,7 +277,7 @@ public:
     virtual void vfunc_21();
     virtual void vfunc_22(int nId, const char* szName);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 void FUN_14151f200();
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim, int nExpected);   // split
 unsigned __int64 FUN_140718370(const CStringW& str);                         // parse an id
@@ -716,14 +716,14 @@ void UICharacterListDialog::OnLoadComplete()
     }
     if (MS2Ptr<ASButton> spServer = GetChild<ASButton>("m_serverlist"))
     {
-        int nVisible = ((class Unk_ClNet*)FUN_140d86260())->vfunc_1();
+        int nVisible = ((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_1();
         ((class CFeatureManager*)FUN_140166410());
         if (CFeatureManager::IsTestServerType())
             nVisible = 1;
         spServer->FUN_1422c1fe0(nVisible);
         spServer->vfunc_3(nVisible);
     }
-    ((class Unk_ClNet*)FUN_140d86260())->vfunc_22(0x2be, "LoginStep2");
+    ((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_22(0x2be, "LoginStep2");
 }
 
 // @0x1418eb540
@@ -1280,7 +1280,7 @@ void UICharacterListDialog::RefreshSelection()
 void UICharacterListDialog::QuitGame()
 {
     if (!DAT_143ab2942)
-        ((class Unk_ClNet*)FUN_140d86260())->vfunc_22(0x3f2, "GameEnd");
+        ((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_22(0x3f2, "GameEnd");
     ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SendRequestQuitAndDisconnect();
     PostQuitMessage(0);
 }
@@ -1431,7 +1431,7 @@ void UICharacterListDialog::FUN_1418f11c0()
 {
     if ((bool)(m_30.get() != 0) && m_180 == 0)
         HidePopups();
-    if (((class Unk_ClNet*)FUN_140d86260())->vfunc_1() != 0)
+    if (((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_1() != 0)
         m_1d4 = 0x620001a;
     else
         m_1d4 = 0x6200009;
@@ -1841,7 +1841,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     {
         static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
-        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_url)->Get());
+        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_url)->Get());
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 2;
@@ -2224,10 +2224,10 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (pPC != 0)
         {
             CStringW strMsg(L"");
-            unsigned short nLimit = *(unsigned short*)((Common::Constants::Value<int>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_55a0)->Get();
+            unsigned short nLimit = *(unsigned short*)((Common::Constants::Value<int>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_55a0)->Get();
             if ((unsigned short)pPC->vfunc_78() >= nLimit)
             {
-                CStringW strTime = FUN_141b708a0(*(unsigned*)((Common::Constants::Value<int>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_55f8)->Get(), false);
+                CStringW strTime = FUN_141b708a0(*(unsigned*)((Common::Constants::Value<int>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_55f8)->Get(), false);
                 strMsg = FUN_14028dee0(5, nLimit, strTime, pPC->vfunc_77());
             }
             else
@@ -2417,17 +2417,17 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         else if (_stricmp("onClickUserConsultation", szMethod) == 0)
         {
-            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_consult)->Get());
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_consult)->Get());
             return 1;
         }
         else if (_stricmp("onClickUserPrivacyPolicy", szMethod) == 0)
         {
-            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_privacy)->Get());
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_privacy)->Get());
             return 1;
         }
         else if (_stricmp("onClickThirdPartyInfomationSharingList", szMethod) == 0)
         {
-            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)FUN_1401d3200())->m_thirdParty)->Get());
+            OpenUrl(*((Common::Constants::Value<CString>*)&((struct Unk_ClOptions*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_thirdParty)->Get());
             return 1;
         }
     }

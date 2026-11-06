@@ -61,7 +61,7 @@
 
 #include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 static CString s_strStun0 = "stun";
-static egf::EntityID s_hNull0(0);
+static egf::EntityID s_hNull0(0);   // @0x1400c5a40
 static Unk_1402a9d70 s_condition0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
@@ -478,7 +478,7 @@ void StateObserver::FUN_140ac48e0()
     const float kFrame = 60.0f;
     const float kSpeed = 10.0f;
     float fStep = (fLen / kFrame) * kSpeed;
-    Vector3 vNew = reinterpret_cast<const Vector3&>(kOwner).FUN_14097fd50(vDir.FUN_14097fc90(fStep));
+    efd::Point3 vNew = kOwner + reinterpret_cast<const efd::Point3&>(vDir) * fStep;
     m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(vNew));
 }
 

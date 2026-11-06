@@ -1351,7 +1351,7 @@ void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, in
         SkillTargetRecord* pTag = reinterpret_cast<SkillTargetRecord*>(aTags[i].get());
         pTag->m_nStartTick = 0;
         Unk_SocketPtr<CMagicModel> spModel(new CMagicModel);
-        spModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTag)), Unk_MagicTagPtr(0),
+        spModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(pTag)), Unk_MagicTagPtr(0),
             SS_SP(efd::Point3::ZERO), 0, 0, 0);
         spRecord->m_magics.AddTail(spModel);
         do
@@ -1362,8 +1362,8 @@ void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, in
             if (bLinked)
             {
                 Unk_SocketPtr<CMagicModel> spLinkModel(new CMagicModel);
-                spLinkModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTag)),
-                    Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pPrev)), SS_SP(efd::Point3::ZERO), 0, 0, 0);
+                spLinkModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(pTag)),
+                    Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(pPrev)), SS_SP(efd::Point3::ZERO), 0, 0, 0);
             }
         } while (pTag != NULL);
     }
@@ -2603,7 +2603,7 @@ void StateSkill::FUN_1417f3180(Unk_SsTagArray& aTags, const efd::Point3& kDir, M
     int nHit = 0;
     for (unsigned i = 0; i < aPicked.GetCount(); i++)
     {
-        Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+        Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new SkillTargetRecord));
         if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->GenerateSerialId(), pOwner->FUN_14123c580(),
                 aPicked[i]->FUN_14123c580(), spRecord->GetSkillId(), spRecord->GetLevel(),
                 spRecord->m_nMotion, SS_SP(kDir), 0, nHit, nAttack, spRecord->m_nSendCount))
@@ -2627,7 +2627,7 @@ void StateSkill::FUN_1417f3180(Unk_SsTagArray& aTags, const efd::Point3& kDir, M
         int nRest = nLimit - nUsed < 0 ? 0 : nLimit - nUsed;
         for (int i = 0; i < nRest; i++)
         {
-            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new SkillTargetRecord));
             if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->GenerateSerialId(), pOwner->FUN_14123c580(),
                     0, spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion, SS_SP(kDir), 0, nHit,
                     nAttack, spRecord->m_nSendCount))
@@ -2641,7 +2641,7 @@ void StateSkill::FUN_1417f3180(Unk_SsTagArray& aTags, const efd::Point3& kDir, M
     {
         if (pAttack->m_arrow.IsNonTargetOne() != 0)
         {
-            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new SkillTargetRecord));
             if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->GenerateSerialId(), pOwner->FUN_14123c580(),
                     0, spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion, SS_SP(kDir), 0, 0,
                     nAttack, spRecord->m_nSendCount))
@@ -2772,7 +2772,7 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
     }
     if (!spDetect->m_arrTargets.IsEmpty())
     {
-        Unk_MagicTagPtr spNext(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+        Unk_MagicTagPtr spNext(reinterpret_cast<Unk_FcTag*>(new SkillTargetRecord));
         efd::SmartPointer<GameObject> spHit(spDetect->m_arrTargets[0]);
         if (!SS_TAG(spNext)->FUN_141758d70(spRecord->m_nCastId, pOwner->GenerateSerialId(), pOwner->FUN_14123c580(),
                 spHit->FUN_14123c580(), spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion,

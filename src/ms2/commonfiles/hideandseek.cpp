@@ -35,7 +35,7 @@
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-void FUN_1401783d0(const CString* pText, std::vector<int>* pOut, const char* pszSep);   // split into ints
+// (0x1401783d0 is XmlSplitImpl<unsigned>(const CString&, std::vector<unsigned>&, const char*), placeholder/xmlattr.h)
 __int64 FUN_140475ff0(unsigned short nRule);                            // the rule's limit
 struct Unk_RegMarker {};
 
@@ -220,7 +220,7 @@ void HideAndSeek::LoadHideAndSeek()
         XmlGetAttr((class TiXmlElement*)(pNode), "mapCode", nMapCode);
         std::vector<int> objects;
         CString strObjects(((class TiXmlElement*)(pNode))->Attribute("ridingObject"));
-        FUN_1401783d0(&strObjects, &objects, ",");
+        XmlSplitImpl<unsigned>(strObjects, reinterpret_cast<std::vector<unsigned>&>(objects), ",");
         if (Unk_LockGuard guard = s_lock) {} else
         {
             if (nMapCode > 0)

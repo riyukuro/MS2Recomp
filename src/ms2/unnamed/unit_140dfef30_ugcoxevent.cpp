@@ -93,7 +93,7 @@ CStringW FUN_140719630(int n);
 CStringW FUN_140719a00(__int64 n);
 CStringW FUN_1409404f0(__int64 n);
 __int64 FUN_140718320(const CStringW& str);
-void FUN_1402a9d70(void*, int, float, float, float, int);
+#include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142ca6130();                                            // the exe's atexit destructor of the marker
 extern __int64 DAT_143ab2820;                                    // the own account id
 extern __int64 DAT_143ab2898;                                    // the money
@@ -122,7 +122,7 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400d6d60
 static char s_marker[0x48];
-static Unk_OxMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca6130), Unk_OxMarker());
+static Unk_OxMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca6130), Unk_OxMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.

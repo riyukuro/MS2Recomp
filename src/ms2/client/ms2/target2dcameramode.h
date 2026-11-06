@@ -40,7 +40,7 @@ public:
     virtual float vfunc_23();
     virtual void vfunc_24(Unk_CameraTargetEntity* p, int n);
     virtual Unk_CameraTargetEntity* vfunc_25();
-    virtual Vector3 vfunc_26();
+    virtual efd::Point3 vfunc_26();
     virtual float vfunc_27();
     virtual void vfunc_29(float f1, float f2, float f3);
     virtual void vfunc_37();                                        // recompute the wanted eye from the angles

@@ -66,7 +66,7 @@ struct Unk_MaidRule
     char m_pad[0x5180];
     Unk_MaidLimitSlot m_limit;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
@@ -334,7 +334,7 @@ int CMaidRecipeGroupTable::Load()
         std::vector<TPtrValue<RecipeLevel> > sorted;
         for (size_t i = 0; i < recipeIds.GetCount(); i++)
         {
-            if ((unsigned)levels[i] > *reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_MaidRule*)FUN_1401d3200())->m_limit)->Get()))
+            if ((unsigned)levels[i] > *reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_MaidRule*)GetClientConstants())->m_limit)->Get()))
                 continue;
             TPtrValue<RecipeLevel> spLevel(Unk_GrNewTag(0));
             spLevel->recipeId = recipeIds[i];

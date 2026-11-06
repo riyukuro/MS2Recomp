@@ -15,7 +15,7 @@
 template <class T> class Unk_PayloadPtr;
 
 // The option kind keying both option tables (as cubemapinformationservice_tail.h; enumerators unknown).
-enum Unk_CMISKindB { Unk_CMISKindB_None };
+enum Unk_CMISKindB : int { Unk_CMISKindB_None };
 
 // RTTI UGCMapOptions, 0x80 bytes (vftable 0x142da1bb8: the dtor slot only).
 class UGCMapOptions : public CPtred

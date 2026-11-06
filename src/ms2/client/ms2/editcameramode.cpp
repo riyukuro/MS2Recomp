@@ -96,9 +96,9 @@ void CEditCameraMode::vfunc_8(double fTime)
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0) && ((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
-        Vector3 ptPos = FUN_1409f2540();
+        efd::Point3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
-        vfunc_3(ptPos);
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
     else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
     {
@@ -129,7 +129,7 @@ void CEditCameraMode::vfunc_8(double fTime)
     if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
-        ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
+        ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
@@ -141,9 +141,9 @@ void CEditCameraMode::vfunc_8(double fTime)
         Vector3 ptForward;
         reinterpret_cast<const efd::Matrix3&>(kRot).GetCol(2, reinterpret_cast<efd::Point3&>(ptForward));
         ptForward.FUN_140968990();
-        Vector3 ptPos = FUN_1409f2540();
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptUp.FUN_14097fc90(m_78.z)).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
-        vfunc_3(ptPos);
+        efd::Point3 ptPos = FUN_1409f2540();
+        reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + ((reinterpret_cast<const efd::Point3&>(ptRight) * m_78.x + reinterpret_cast<const efd::Point3&>(ptUp) * m_78.z) + reinterpret_cast<const efd::Point3&>(ptForward) * m_78.y) * 1000.0f * ((float)fTime)));
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
 }
 MS2_REPLACE_METHOD(0x1411988e0, CEditCameraMode, vfunc_8, 1555, 0x18A044F7);

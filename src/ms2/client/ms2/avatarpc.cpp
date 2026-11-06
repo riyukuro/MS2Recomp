@@ -168,7 +168,7 @@ public:
     char m_pad_44a8[0x9a98 - 0x44a8];
     int m_nGlideAction;                                     // +0x9a98
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The object registry (FUN_1403ed2d0).
 class Unk_AvWorld : public WorldService
@@ -442,7 +442,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     spAvatar->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(aEquip[0]));
     spAvatar->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
     spAvatar->vfunc_139();
-    Unk_AvTextCfg* pCfg = (nGender == 0) ? &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgMale : &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgFemale;
+    Unk_AvTextCfg* pCfg = (nGender == 0) ? &((class Unk_AvGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_cfgMale : &((class Unk_AvGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_cfgFemale;
     CString strItems(*pCfg);
     ATL::CAtlArray<unsigned int> kItemIds;
     XmlSplit(strItems, kItemIds, ", ");
@@ -516,7 +516,7 @@ void AvatarPC::FUN_1409f41d0(const Unk_CharEquip& kEquip0, const Unk_CharEquip& 
 void AvatarPC::FUN_1409f42a0(MS2Ptr<CItemData> spData)
 {
     Unk_PayloadPtr<StateGlideData> spState(new StateGlideData());
-    Unk_AvGlobals* pGlobals = ((class Unk_AvGlobals*)FUN_1401d3200());
+    Unk_AvGlobals* pGlobals = ((class Unk_AvGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()));
     spState->m_nAction = pGlobals->m_nGlideAction;
     spState->m_nLevel = 1;
     spState->m_nItemId = ((class CItemData*)(spData.operator->()))->FUN_14053dde0();

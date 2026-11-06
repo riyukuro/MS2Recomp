@@ -257,7 +257,7 @@ class CLua   // C3: member view
 public:
     int CalcAvailableSkillPoint(unsigned short nLevel);
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class CGameOption;
 
 // lists, arrays, item records
@@ -599,7 +599,7 @@ void UIHighlightGameMenu::FUN_140c22f50()
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0xe558)->Get())
+    if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0xe558)->Get())
         return;
     ASArray names(2);
     if (*((unsigned char*)((void*)reinterpret_cast<CGameOption*>((TSingleton<CGameOption>::GetInstance()))->FUN_140b123b0()) + 0x15) == 0)

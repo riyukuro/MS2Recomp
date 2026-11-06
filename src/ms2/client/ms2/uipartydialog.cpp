@@ -231,7 +231,7 @@ class Unk_PdApp                                                         // the a
 {
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class Unk_PdPopupMenu;                                                  // UIPopUpMenu (below) as seen by the lookup
 class Unk_PopupMenu* FUN_140c30140(int);   // C3: was FUN_140c30140
 class Unk_PdClubManager : public CClubClientManager { public: };
@@ -668,14 +668,14 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e040(0x14);
         if (spItem == 0)
         {
-            int nMerat = *FUN_1401d3200()->PartyRecallMerat.Get();
+            int nMerat = *GetClientConstants()->PartyRecallMerat.Get();
             CStringW strText = BlockFormat<int>(0xc64, nMerat);
-            if (!((class IClientPlatform*)FUN_140d86260())->vfunc_40(nMerat))
+            if (!((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nMerat))
             {
                 ((class CUIService*)(class Unk_PdApp*)(((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
                 return 1;
             }
-            ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, false, 1000);
+            ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(2, false, 1000);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, static_cast<IMessageListener*>(this), CStringW(L"buy_scroll"));
             if (spBox == 0)
                 return 1;
@@ -873,7 +873,7 @@ void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params&
     }
     else
     {
-        int nMax = *FUN_1401d3200()->ClubNameLengthMax.Get();
+        int nMax = *GetClientConstants()->ClubNameLengthMax.Get();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028dfa0(CStringW(L"s_party_create_club"), nMax / 2, nMax), 0, CStringW(L""));
         if ((CMsgBoxData*)spBox != 0)
         {
@@ -2610,7 +2610,7 @@ int UIPopUpMenu::CalcMenuPositionForObject(GameObject* pObject, NiPoint3& out, f
 // @0x141a82f30
 int UIPopUpMenu::CalcMenuPosition(const NiPoint3& pos, NiPoint3& out, float fDir)
 {
-    reinterpret_cast<efd::Point3&>(out) = pos + NiPoint3(fDir * *FUN_1401d3200()->OffsetPcPopupMenu.Get(), 0, 0);
+    reinterpret_cast<efd::Point3&>(out) = pos + NiPoint3(fDir * *GetClientConstants()->OffsetPcPopupMenu.Get(), 0, 0);
     return 1;
 }
 
@@ -3299,7 +3299,7 @@ void UIPopUpMenu::FUN_141a85760()
         spReport->SetFieldb0(m_b0);
         spReport->SetFieldc0(m_c8);
         spReport->SetFieldc8(m_158);
-        ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+        ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
     }
     else
     {
@@ -3313,7 +3313,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielda8(m_a8);
             spReport->SetFieldb0(m_b0);
             spReport->SetFieldd0(m_108);
-            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+            ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
         }
         else if (m_110 == 0xf)
         {
@@ -3329,7 +3329,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFieldb8(m_90);
             spReport->SetFieldf0(m_1a8.m_18);
             spReport->SetFieldf8(m_1a8.m_20);
-            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+            ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
         }
         else if (m_110 == 0x10)
         {
@@ -3346,7 +3346,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielde0(m_1d0.m_00);
             spReport->SetFieldc0(m_1d0.m_08);
             spReport->SetFieldc8(FUN_14016a600(m_1d0.m_10, 0));
-            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+            ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
         }
         else
         {
@@ -3362,7 +3362,7 @@ void UIPopUpMenu::FUN_141a85760()
             spReport->SetFielde0(m_138);
             spReport->SetField100(m_140);
             spReport->SetField108(m_148);
-            ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+            ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
         }
     }
 }
@@ -3567,7 +3567,7 @@ struct Unk_PpInteract : CInteractObjectData
 
 // The entities of a world type hash (worldservice_1.cpp: a 16-byte box pointer to a list of entity references).
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PpEntityList;
-struct Unk_PCEntListPtr { ~Unk_PCEntListPtr(); };   // C3: FUN_1409f20e0 (release) is pc.cpp's Unk_PCEntListPtr dtor (0x1409f20e0)
+typedef TPtrValue<Unk_PpEntityList> Unk_PCEntListPtr;   // the real type of the handle (worldservice_1.cpp); dtor 0x1409f20e0
 struct Unk_WsC_TagPtr;
 // (FUN_1409f2130 = Unk_WsC_TagPtr::operator==(list*), the ssg/worldservice_1 member)
 struct Unk_WsC_TagPtr

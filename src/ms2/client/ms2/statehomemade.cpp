@@ -175,7 +175,7 @@ void StateHomemade::vfunc_4(StateData* pData)
             if (aCubes[i]->FUN_141229000(0) == 0)
                 continue;
             float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->GetPosition()).FUN_140967ac0();
-            if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+            if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
                 continue;
             if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), aCubes[i]->GetPosition()) == 0)
                 continue;
@@ -287,7 +287,7 @@ MS2_REPLACE_METHOD(0x140CA4DE0, StateHomemade, vfunc_25, 17, 0xFFB1988B);
 // @0x140ca4e00
 int StateHomemade::FUN_140ca4e00()
 {
-    unsigned nDuration = static_cast<Client::Constants*>(FUN_1401d3200())->HarvestDuration.Read();
+    unsigned nDuration = static_cast<Client::Constants*>(GetClientConstants())->HarvestDuration.Read();
     return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(((void*)TSingleton<CGameEventValueManager>::GetInstance()))->MasteryReduce()))->Apply(nDuration);
 }
 MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, FUN_140ca4e00, 62, 0xFE21669A);
@@ -331,7 +331,7 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
         if (nMode != 0 && spCube->FUN_141229000(1) == 0)
             continue;
         float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
-        if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+        if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
             continue;
         if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->GetPosition()) == 0)
             continue;

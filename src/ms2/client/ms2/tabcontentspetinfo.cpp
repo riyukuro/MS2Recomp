@@ -169,7 +169,7 @@ public:
     unsigned char m_pad_84c1[0x9d08 - 0x84c1];
     Unk_PetIntSlot m_nameLimit;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The exp table: points an (pet class, rank, item class) needs for the next level.
 void* FUN_1404a1bb0();
@@ -209,7 +209,7 @@ public:
 #undef NV
     virtual void vfunc_43(int a, int b, int c);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // Bag registry (GFx bind data).
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
@@ -477,7 +477,7 @@ void PetInfoBasic::vfunc_3()
     }
     if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
-        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+        if (nPetClass < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
         {
             __int64 nExp = pet->FUN_140528b90();
             __int64 nMax = ((CExpTable*)FUN_1404a1bb0())->GetPetExp(nPetClass, nRank, pet->FUN_1405282d0());
@@ -580,18 +580,18 @@ void PetInfoBasic::OnChangeName()
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
     if (pAuto != 0 && pAuto->vfunc_55() == 0)
         return;
-    int nLimit = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_nameLimit)->Get();
+    int nLimit = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_nameLimit)->Get();
     int nHalf = nLimit / 2;
     CStringW strText = FormatStringId(0xc0a, nHalf, nLimit);
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, strText, 0, L""))
     {
-        unsigned nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_nameLimit)->Get();
+        unsigned nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_nameLimit)->Get();
         CStringW strEmpty(L"");
         box->SetInput(2, strEmpty, nMax, 0, 0);
         box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
         FUN_140d73c60(box);
     }
-    ((class Unk_PiNetwork*)FUN_140d86260())->vfunc_43(2, 0, 1000);
+    ((class Unk_PiNetwork*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 

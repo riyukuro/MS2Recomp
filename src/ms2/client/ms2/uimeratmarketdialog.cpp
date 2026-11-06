@@ -561,7 +561,7 @@ bool FUN_141b488c0(MS2Ptr<CItemData> spData);                               // t
 bool FUN_141b48710(MS2Ptr<CItemData> spData);
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pFirst,
                    ATL::CAtlArray<MS2Ptr<CItemData> >* pSecond);           // splits a box item into its items
-class Unk_SingletonObj1* FUN_1401d3200();                               // TSingleton<Client::Constants>::GetInstance
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); TSingleton<Client::Constants>::GetInstance
 void FUN_1418bf850(MS2Ptr<Unk_MeratEquipEntry> spProduct, Unk_AvPackageKey* pKey);
 void FUN_1418bf800(unsigned nItemId, Unk_AvPackageKey* pKey);
 void FUN_141b48a20(PC* pPc, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >& first,
@@ -576,7 +576,7 @@ int FUN_1402227e0(int nValue, int nMin);
 void FUN_140ec0700(ASObj* pData, int nPremium);
 int FUN_140ebc4a0();
 void FUN_140ec1da0(int nList, int nCategory, bool* pbGender, bool* pbJob);  // which filters the category has
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 void FUN_1413160d0(ASMeratMarketBuyBillData* pBill, int nIndex);
 bool FUN_141315f00(ASMeratMarketBuyBillData* pBill);
 int FUN_1413499b0(int nTab);
@@ -591,7 +591,7 @@ extern unsigned DAT_143ab2830;
 extern __int64 DAT_143ab2838;
 extern int DAT_143ab2834;
 class ItemGachaBoxTable;
-ItemGachaBoxTable* FUN_14052d230();
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 class PaybackManagerClient;
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct);
@@ -680,7 +680,7 @@ void UIMeratMarketDialog::OnLoadComplete()
             this, &UIMeratMarketDialog::OnModelLoaded), 0);
     if (m_4f8 != 0)
         OpenBanner(m_4f8, m_500);
-    ((class IClientPlatform*)FUN_140d86260())->vfunc_43(0xe, false, 1000);
+    ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, false, 1000);
     LoadSampleScore();
 }
 
@@ -1353,7 +1353,7 @@ void UIMeratMarketDialog::LoadTab(int nTab)
         ASArray banners(2);
         m_banner.FUN_141348190(banners);
         data.FUN_1409adbe0("banners", Scaleform::GFx::Value(banners.FUN_1422bb870()));
-        data.FUN_1407cb9c0("homeBannerShowTick", *reinterpret_cast<Client::Constants*>(FUN_1401d3200())->MeratMarketHomeBannerShowTick.Get());
+        data.FUN_1407cb9c0("homeBannerShowTick", *reinterpret_cast<Client::Constants*>(GetClientConstants())->MeratMarketHomeBannerShowTick.Get());
     }
     else if (nTab == 4) {
         ((CMeratMarketMan*)FUN_140939a00())->SendMeretMarketMode11();
@@ -2781,7 +2781,7 @@ bool UIMeratMarketDialog::CheckMarketAccess(__int64 nSellerId)
 void UIMeratMarketDialog::OnClickRefreshBlueMerat()
 {
     int nMinutes = 5;
-    if (((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, true, 300000) == true)
+    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(2, true, 300000) == true)
         FUN_1412751b0(BlockFormat(0x9e5), 20);
     else
         FUN_1412751b0(BlockFormat<int>(0x9f3, nMinutes), 20);
@@ -2791,7 +2791,7 @@ void UIMeratMarketDialog::OnClickRefreshBlueMerat()
 void UIMeratMarketDialog::OnClickRefreshRedMerat()
 {
     int nMinutes = 5;
-    if (((class IClientPlatform*)FUN_140d86260())->vfunc_43(8, true, 300000) == true)
+    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(8, true, 300000) == true)
         FUN_1412751b0(BlockFormat(0x9e5), 20);
     else
         FUN_1412751b0(BlockFormat<int>(0x9f3, nMinutes), 20);
@@ -3814,7 +3814,7 @@ void UIMeratMarketDialog::OnClickUnequipAll()
 // @0x1412ffb40
 void UIMeratMarketDialog::OnClickBuyMerat()
 {
-    ((class IClientPlatform*)FUN_140d86260())->vfunc_45();
+    ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_45();
 }
 
 // "OnClickBuy": a limited sale buys at once; any other product opens its bill (a random sale product is checked
@@ -4156,7 +4156,7 @@ void UIMeratMarketDialog::OnClickExtraButton(ASData& data)
         return;
     if (spProduct->m_premium.FUN_1406a1ee0() == 0) {
         int nItemId = spProduct->m_premium.m_nItemId;
-        int nCoinItem = FUN_14052d230()->FUN_14059e6a0(nItemId);
+        int nCoinItem = TSingleton<ItemGachaBoxTable>::GetInstance()->FUN_14059e6a0(nItemId);
         if (nCoinItem == 0)
             return;
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)

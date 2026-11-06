@@ -142,14 +142,14 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
 class Unk_McMarket : public CMeratMarketMan { };
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 class Unk_McUi : public CUIService { };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class CItemCustomMusicScore   // C3: member view for the former free stand-ins
 {
 public:
     void SetFromScoreInfo(struct Unk_MusicScoreInfo const&);
 };
 class Unk_McConfig;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int FUN_140ec2b60(void* pValue);
 __int64 FUN_14028d0e0();
 extern Unk_Inventory g_143ab2a90;
@@ -258,7 +258,7 @@ MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct)
         auto& ugc = pProduct->m_ugc;
         int nItemId = ugc.m_n2c;
         if (ugc.IsMusicType() != 0)
-            nItemId = FUN_140ec2b60((char*)((class Unk_McConfig*)FUN_1401d3200()) + 0x8ff0);
+            nItemId = FUN_140ec2b60((char*)((class Unk_McConfig*)GetClientConstants()) + 0x8ff0);
         MS2Ptr<CItem> spItem = FUN_140ebc360(nItemId, ugc.m_n1f8);
         if (spItem.get() != 0)
         {
@@ -327,7 +327,7 @@ int FUN_140ebc4a0()
 // @0x140ebc540
 bool FUN_140ebc540(__int64 nPrice)
 {
-    if (((class IClientPlatform*)FUN_140d86260())->vfunc_40(nPrice) == 0)
+    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nPrice) == 0)
     {
         reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance())->ShowLackMeratAsk();
         return false;
@@ -368,10 +368,10 @@ bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nPayType)
     if (spProduct->IsUgc() != 0 && spProduct->m_ugc.IsMusicType() != 0)
     {
         int nGrade = FUN_1406a6140();
-        if (((class IClientPlatform*)FUN_140d86260())->vfunc_39(nPrice, nGrade) == 0)
+        if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_39(nPrice, nGrade) == 0)
         {
             int nAnyGrade = -1;
-            if (((class IClientPlatform*)FUN_140d86260())->vfunc_39(nPrice, nAnyGrade) == 1)
+            if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_39(nPrice, nAnyGrade) == 1)
                 FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_buy_fail_music_score_by_merat_grade"), 0, 0, CStringW(L""));
             else
                 FUN_1418ff710(FUN_14069c3e0(nPayType), nPrice, 0, 1);
@@ -1249,7 +1249,7 @@ void FUN_140ec1340(ASData& data)
             spReport->SetFieldc8(*(CStringA*)((char*)spProduct.get() + 0x390));
             spReport->m_n110 = spProduct->m_ugc.IsMusicType();
         }
-        ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+        ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_48(spReport);
     }
     else
         FUN_141275260(0x8ae, 1, 1);

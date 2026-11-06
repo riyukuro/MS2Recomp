@@ -1529,9 +1529,9 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211a40()
 
 // ---- instantiation glue of the club buff table (MS2Ptr<ClubBuffData> / CRBTree helpers), as plain functions ----
 
-extern void* FUN_140217140(void* pTree, void* pNode);
+// (FUN_140217140 is the protected CRBTree<u64, MS2Ptr<NameInfo>>::Successor; the const GetNext below calls it)
 
-extern void FUN_1402176a0(void** pThis);
+struct Unk_MS2PtrAccess { static void FUN_140217650(MS2Ptr<CClubDataTable::ClubBuffData>& sp); };   // MS2Ptr<T> friend (ascript.h): Release, then a new pooled T
 extern void* FUN_1401ba820(void* p);
 
 // the MS2Ptr<ClubBuffData> fields the raw-view helpers touch
@@ -1549,18 +1549,18 @@ void* Unk_BuffPtrAlloc(void* pTag)
     return FUN_1401ba820(Unk_NewClubBuffData(0));
 }
 
-// @0x140217650
-void Unk_BuffPtrResetNew(void** pThis)
+// @0x140217650 (FUN_1402176a0 was the private MS2Ptr<ClubBuffData>::Release; called through the friend now)
+void Unk_MS2PtrAccess::FUN_140217650(MS2Ptr<CClubDataTable::ClubBuffData>& sp)
 {
-    FUN_1402176a0(pThis);
-    ((Unk_BuffPtrView*)pThis)->m_p = Unk_BuffPtrAlloc(0);
+    sp.Release();
+    sp.m_p = static_cast<CClubDataTable::ClubBuffData*>(Unk_BuffPtrAlloc(0));
 }
 
 // @0x140211da0
 template <> MS2Ptr<CClubDataTable::ClubBuffData>::MS2Ptr(const Unk_BmNewTag&)
 {
     m_p = 0;
-    Unk_BuffPtrResetNew((void**)this);
+    Unk_MS2PtrAccess::FUN_140217650(*this);
 }
 
 // @0x140212650
@@ -1591,13 +1591,13 @@ int Unk_CompareUInt64(const unsigned __int64* a, const unsigned __int64* b)
     }
 }
 
-// @0x140213520
-void* Unk_TreePostInc(void* pTree, void** pPos)
+// 0x140213520 is the const CRBTree<u64, MS2Ptr<NameInfo>>::GetNext (pinned at the end); this instantiates it
+void Unk_JoinMapConstGetNextInst(const Club::UserClub::JoinMap* pMap, POSITION* pPos)
 {
-    void* pOld = *pPos;
-    *pPos = FUN_140217140(pTree, pOld);
-    return pOld;
+    pMap->GetNext(*pPos);
 }
+//
+//
 
 // @0x140213660
 void* Unk_TreeNodePair(void* pTree, char* pNode)
@@ -1739,3 +1739,4 @@ MS2_REPLACE_METHOD(0x140211760, CClubDataTable, FUN_140211760, 364, 0x07E0BEF5);
 MS2_REPLACE_METHOD(0x1402118e0, CClubDataTable, FUN_1402118e0, 167, 0x5FA7F1F0);
 MS2_REPLACE_METHOD(0x140211990, CClubDataTable, FUN_140211990, 168, 0xEA02FE78);
 MS2_REPLACE_METHOD(0x140211a40, CClubDataTable, FUN_140211a40, 210, 0xDE7E0A43);
+// MS2-PIN: ?GetNext@?$CRBTree@_KV?$MS2Ptr@VNameInfo@Club@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VNameInfo@Club@@@@@3@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x140213520 ; the const JoinMap GetNext (was the Unk_TreePostInc stand-in over the FUN_140217140 Successor wrapper)

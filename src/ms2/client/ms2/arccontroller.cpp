@@ -85,7 +85,7 @@ void CArcController::FUN_1409ab3b0(float fDelta)
         if (m_bRising && delta.z < m_offset.z)
             m_bRising = false;
         m_offset = delta;
-        m_position = m_arc.m_origin.FUN_14097fd50(delta);
+        m_position = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_arc.m_origin) + reinterpret_cast<const efd::Point3&>(delta)));
     }
 }
 MS2_REPLACE_METHOD(0x1409ab3b0, CArcController, FUN_1409ab3b0, 430, 0x4EB1F775);

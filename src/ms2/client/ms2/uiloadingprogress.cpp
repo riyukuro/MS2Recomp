@@ -33,7 +33,7 @@ public:
 };
 class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local player (slot 78 = the level)
 class Unk_LpConstants;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CString FUN_141900b70();
 class UICutSceneMovie* FUN_14138fd50(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
@@ -91,7 +91,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
     if (pPlayer != 0)
     {
         bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
-            < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((class Unk_LpConstants*)FUN_1401d3200()) + 0x6e28)->Get();   // level below the guide limit
+            < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((class Unk_LpConstants*)GetClientConstants()) + 0x6e28)->Get();   // level below the guide limit
     }
     if (m_30.get() != 0)
     {

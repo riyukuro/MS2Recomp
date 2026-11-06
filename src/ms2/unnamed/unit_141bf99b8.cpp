@@ -103,9 +103,9 @@
 // MS2-PIN: ?FreeNode@?$CAtlMap@_KV?$MS2Ptr@VUnk_GoField@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_GoField@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd620 ; slot 9 (m_2f8, member order)
 // MS2-PIN: ?FreeNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsB_Vibrator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsB_Vibrator@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd720 ; slot 10 (m_468, member order)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@AEAAXXZ 0x141bfe2c0 ; slot 0 (m_350, member order)
-// MS2-PIN: ?GetHeadPosition@?$CRBTree@IUUnk_WsV0e8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV0e8@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeaf0 ; probe
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetGuide@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetGuide@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeaf0 ; m_570 (real type; was the V0e8 look-alike, other node layout)
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb50 ; probe
-// MS2-PIN: ?GetTailPosition@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0 ; probe
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0 ; m_5e8 (real type; was GetTailPosition of V540, the exe is Minimum)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@AEAAXXZ 0x141bfe310 ; slot 1 (m_738, member order)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEAAXXZ 0x141bfe360 ; slot 2 (m_848, member order)
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@AEAAXXZ 0x141bfe400 ; slot 4 (m_930, member order)
@@ -126,7 +126,7 @@
 // tplpin --simulate accepted pins (w533)
 // MS2-PIN: ??_GUnk_WsVa00@@QEAAPEAXI@Z 0x141bf9e10
 // MS2-PIN: ??_G?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@QEAAPEAXI@Z 0x141bf9ed0
-// MS2-PIN: ??_GCNode@?$CAtlList@UUnk_WsV058@@V?$CElementTraits@UUnk_WsV058@@@ATL@@@ATL@@QEAAPEAXI@Z 0x141bfa230
+// MS2-PIN: ??_GCNode@?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@QEAAPEAXI@Z 0x141bfa230 ; C3: was the Unk_WsV058/Unk_WsPropRef stand-in
 // MS2-PIN: ?GetHash@CNode@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEBAIXZ 0x141bfea40 ; slot 1 (m_738, member order)
 // MS2-PIN: ?GetHash@CNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEBAIXZ 0x141bfea50 ; slot 2 (m_848, member order)
 // MS2-PIN: ?GetHash@CNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEBAIXZ 0x141bfea60 ; slot 3 (m_208, member order)
@@ -198,7 +198,7 @@
 // (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetClassDesc@WorldService@@UEBAPEBVClassInfo@efd@@XZ 0x141bfe670
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb50
-// MS2-PIN: ?GetTailPosition@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0
+// (mispaired GetTailPosition<int, Unk_WsV540> pin at 0x141bfebb0 replaced by the m_5e8 GetHeadPosition pin above)
 // (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // (stale stand-in CAtlMap pin removed: slot re-keyed by member order, see the note above Unk_WsInst6)
 // MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeea0
@@ -379,7 +379,7 @@ template <class M> static void WsDriveStd(M& m, typename M::key_type k)
     m.clear();
     for (it = m.begin(); it != m.end(); ++it) {}
 }
-
+#include "ms2/client/ms2/worldservice_real.h"     // List058 (m_058) FreeNode 0x141bfccb0
 class CRegionSkillObject : public CPtred {};     // m_3a0 value (MS2Ptr dtor 0x141746770). The 8 maps below are worldservice_4's real types
 class CBoxCollision : public CPtred {};          // m_420 value (MS2Ptr dtor 0x140a00490)
 class Unk_GoField : public CPtred {};            // m_2f8 value (MS2Ptr dtor 0x14123ebe0)
@@ -588,22 +588,22 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     delete new TSingleton<WorldService>();
     delete new TPtredDummy<ATL::CAtlList<efd::SmartPointer<egf::Entity> > >();   // ??_G 0x141bf9e50 (dtor 0x141bf56c0)
     // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
-    { Unk_WsM5 m; m.RemoveKey(0); }
+    { Unk_WsM5 m; m.RemoveKey(0); m.SetAt(0, MS2Ptr<CProxyGameObject>()); }
     // (Unk_WsM10 = m_2f8, Unk_WsM11 = m_468, Unk_WsM7 = m_780: now driven over their real types in Unk_WsInst6)
     // CreateNode<__int64, MS2Ptr<Unk_WsB_Vibrator>> 0x141bfb4f0 is m468.SetAt there
     // the enum-keyed GetNode 0x141bff930 / CreateNode 0x141bfb2f0 are m780.Lookup / SetAt there
     // CRBTree: Find, FreeNode -> CNode scalar deleting dtor
-    { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); }
+    { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); } { Unk_WsF3 a; a.Lookup(0u); } { Unk_WsF7 b; b.Lookup(0u); } { Unk_WsF17 c; c.Lookup(0ull); }
     { Unk_WsF9 m; m.Lookup(0); m.RemoveKey(0); }
     { Unk_WsF10 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
     { Unk_WsF13 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
     { Unk_WsF15 m; m.Lookup(egf::EntityID()); m.RemoveKey(egf::EntityID()); }
-    { Unk_WsF16 m; m.Lookup(Unk_WsKindKey()); m.RemoveKey(Unk_WsKindKey()); }
+    { Unk_WsF16 m; m.Lookup(Unk_WsKindKey()); m.RemoveKey(Unk_WsKindKey()); POSITION p = m.GetHeadPosition(); m.GetNext(p); }
     // CAtlArray::Add, CAtlList::AddTail (-> NewNode -> GetFreeNode), CAtlArray<void*>::CallDestructors
     { ATL::CAtlArray<GameObject*> a; a.Add(0); }
     { ATL::CAtlArray<MS2Ptr<CInteractObject> > a; a.Add(MS2Ptr<CInteractObject>()); }
     { ATL::CAtlArray<MS2Ptr<CPortal> > a; a.Add(MS2Ptr<CPortal>()); }
-    { Unk_WsL1 l; l.AddTail(NiPointer<Unk_WsProp058>()); }
+    { Unk_WsL1 l; l.AddTail(NiPointer<Unk_WsProp058>()); } { WsReal::List058 l; l.RemoveHeadNoReturn(); }
     { Unk_WsL2 l; l.AddTail(efd::SmartPointer<GameObject>()); }
     { Unk_WsL3 l; l.AddTail(efd::SmartPointer<PC>()); }
     { ATL::CAtlArray<void*> a; }
@@ -650,52 +650,146 @@ template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessa
 // The exe bodies are the ATL members of the WorldService maps; these entry points run the same members of a
 // stand-in map whose node layout matches (a 16- or 24-byte pair ahead of the tree links).
 
-// CRBTree<CString, MS2Ptr<CLiftableObject>>::GetHeadPosition (Minimum(m_pRoot)).
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void* FUN_141bfebf0(void* map)
+// The map members worldservice_1.cpp iterates, over their real key / value types (worldservice_tail.h). It calls them
+// through reinterpret_cast views of the stand-in WorldService members; the instances land on the exe VAs (pins at the end).
+void Unk_WsInstIter()
 {
-    return static_cast<ATL::CRBMap<CString, Unk_WsV678>*>(map)->GetHeadPosition();
+    { Unk_WsF1 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }       // m_540: 0x141bfead0 / 0x141bff030
+    { Unk_WsF2 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }       // m_570: 0x141bfeaf0 / 0x141bff070
+    { Unk_WsF5 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }       // m_0e8: 0x141bfeb30 / 0x141bff0b0
+    { Unk_WsF7 m; POSITION p = NULL; m.GetNext(p); }                      // m_708: 0x141bff0f0
+    { Unk_WsF8 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }       // m_6d8: 0x141bfeb70 / 0x141bff130
+    { Unk_WsF10 m; m.GetHeadPosition(); }                                 // m_7c8: 0x141bfeb90
+    { Unk_WsF11 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }      // m_5e8: 0x141bfebb0 / 0x141bff1b0
+    { Unk_WsF13 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }      // m_4b0: 0x141bfebd0 / 0x141bff1f0
+    { Unk_WsF14 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }      // m_678: 0x141bfebf0 / 0x141bff230
+    { Unk_WsF12 m; POSITION p = m.GetHeadPosition(); m.GetNext(p); }      // m_510: 0x141bfec10 / 0x141bff270
+    { Unk_WsM1 m; m.GetStartPosition(); }                                 // m_350: 0x141bffee0
+    { ATL::CAtlMap<int, efd::SmartPointer<Unk_WsEntity738> > m; m.GetStartPosition(); }   // m_738: 0x141bfff50
+    { ATL::CAtlMap<unsigned, Unk_WsV848> m; m.GetStartPosition(); }      // m_848: 0x141bfffc0
 }
 
-// CRBTree<unsigned, SmartPointer<CNpc>>::GetNext(pos): returns the node, advances pos to its successor.
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void FUN_141bff0b0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    map->GetNext(p);
-    *pos = p;
-}
 
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void FUN_141bff0b0(void* map, void** pos)
-{
-    FUN_141bff0b0(static_cast<ATL::CRBMap<unsigned, Unk_WsV0e8>*>(map), pos);
-}
 
-// CRBTree<egf::Entity*, MS2Ptr<Unk_WsMarker>>::GetNext(pos).
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void FUN_141bff0f0(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<void*, Unk_WsV208>*>(map)->GetNext(p);
-    *pos = p;
-}
 
-// CRBTree<unsigned, MS2Ptr<Unk_WsTargetF7>>::GetNext(pos).
-// MS2-FUNCTIONAL: the member of a stand-in map with the same node layout
-void FUN_141bff230(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<unsigned, Unk_WsV208>*>(map)->GetNext(p);
-    *pos = p;
-}
 
-// CAtlMap<unsigned, MS2Ptr<CProxyGameObject>>::GetStartPosition: the first non-empty bin.
-// MS2-FUNCTIONAL: the member of a stand-in map with the same header layout
-void* FUN_141bffee0(void* map)
-{
-    return static_cast<ATL::CAtlMap<unsigned, Unk_WsV208>*>(map)->GetStartPosition();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // The Lookup(key, value&) entries worldservice_1 declares for the WorldService maps (exe 0x141c06b80 / 0x141c072e0).
 struct Unk_WsC_TagPtr;
@@ -730,38 +824,6 @@ bool FUN_141c072e0(void* map, CString& key, MS2Ptr<Unk_WsB_Lift>& out)
 // Each one runs the member of the WorldService map it is called on (or of a stand-in map Unk_WsInst6 already
 // drives with the same node layout), so no new template instances come from here.
 
-// GetHeadPosition: Minimum(m_pRoot).
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_540)
-void* FUN_141bfead0(void* map) { return static_cast<ATL::CRBMap<int, Unk_WsV540>*>(map)->GetHeadPosition(); }
-
-// The three below are needed because the tplpin rows that name these VAs are lookalikes with a different node layout:
-// 0x141bfeaf0 is pinned as CRBTree<unsigned, Unk_WsV0e8> (left link at +0x18, the exe reads +0x20), 0x141bfeb30 as
-// CRBTree<unsigned, Unk_WsV708> (+0x20, the exe reads +0x18) and 0x141bfebb0 as CRBTree<int, Unk_WsV540>::GetTailPosition
-// (Maximum, the exe is Minimum at +0x18). Without a definition the fullexe took those instances, so every m_0e8 loop
-// started at the largest key and visited one entry.
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_570)
-void* FUN_141bfeaf0(void* map) { return static_cast<ATL::CRBMap<int, Unk_WsV570>*>(map)->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_0e8)
-void* FUN_141bfeb30(ATL::CRBMap<unsigned, Unk_WsV0e8>* map) { return map->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_0e8)
-void* FUN_141bfeb30(void* map) { return FUN_141bfeb30(static_cast<ATL::CRBMap<unsigned, Unk_WsV0e8>*>(map)); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_5e8)
-void* FUN_141bfebb0(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV5e8>*>(map)->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_6d8)
-void* FUN_141bfeb70(void* map) { return static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6d8>*>(map)->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_7c8)
-void* FUN_141bfeb90(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV7c8>*>(map)->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
-void* FUN_141bfebd0(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->GetHeadPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_510)
-void* FUN_141bfec10(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV510>*>(map)->GetHeadPosition(); }
 
 // GetKeyAt: ATLENSURE(pos), then the node's key (at +0).
 // MS2-FUNCTIONAL: ATL GetKeyAt written over the node layout (m_148); the exe is the member instance
@@ -778,68 +840,6 @@ CString* FUN_141bfed20(void* map, void* pos)
     return (CString*)pos;
 }
 
-// GetNext(pos): returns the node, advances pos to its successor.
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_540)
-void FUN_141bff030(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<int, Unk_WsV540>*>(map)->GetNext(p);
-    *pos = p;
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_570)
-void FUN_141bff070(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<int, Unk_WsV570>*>(map)->GetNext(p);
-    *pos = p;
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_6d8)
-void FUN_141bff130(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6d8>*>(map)->GetNext(p);
-    *pos = p;
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_5e8)
-void FUN_141bff1b0(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<CString, Unk_WsV5e8>*>(map)->GetNext(p);
-    *pos = p;
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
-void* FUN_141bff1f0_G(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    void* node = static_cast<ATL::CRBMap<CString, Unk_WsV4b0>*>(map)->GetNext(p);
-    *pos = p;
-    return node;
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_4b0)
-void FUN_141bff1f0(void* map, void** pos)
-{
-    FUN_141bff1f0_G(map, pos);
-}
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_510)
-void FUN_141bff270(void* map, void** pos)
-{
-    POSITION p = (POSITION)*pos;
-    static_cast<ATL::CRBMap<CString, Unk_WsV510>*>(map)->GetNext(p);
-    *pos = p;
-}
-
-// GetStartPosition: the first non-empty bin.
-// MS2-FUNCTIONAL: the member of the real m_738 map
-void* FUN_141bfff50(void* map) { return static_cast<ATL::CAtlMap<int, efd::SmartPointer<Unk_WsEntity738> >*>(map)->GetStartPosition(); }
-
-// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_848)
-void* FUN_141bfffc0(void* map) { return static_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(map)->GetStartPosition(); }
 
 // Lookup(key, value&): the exe assigns the 16-byte value through the map's MS2Ptr::operator=.
 static bool WsLookupOut(void* value, void* out)
@@ -925,3 +925,25 @@ bool FUN_141c07360(void* map, const unsigned __int64* key, Unk_WsA_Val16* out)
     ATL::CRBMap<unsigned __int64, Unk_WsV6a8>::CPair* p = static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6a8>*>(map)->Lookup(*key);
     return WsLookupOut(p ? &p->m_value : 0, out);
 }
+// MS2-PIN: ?FreeNode@?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfccb0 ; C3: was the Unk_WsV058/Unk_WsPropRef stand-in
+
+// The WorldService map iteration members over their real key / value types (Unk_WsInstIter; worldservice_1 calls them).
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfead0
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@IV?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb30
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@PEAVEntity@egf@@PEAV12@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V34@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb70
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VCReactor@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VCReactor@@@efd@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb90
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebd0
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebf0
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfec10
+// MS2-PIN: ?GetNext@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff030
+// MS2-PIN: ?GetNext@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetGuide@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetGuide@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff070
+// MS2-PIN: ?GetNext@?$CRBTree@IV?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff0b0
+// MS2-PIN: ?GetNext@?$CRBTree@IV?$MS2Ptr@VUnk_WsTargetF7@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsTargetF7@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff0f0
+// MS2-PIN: ?GetNext@?$CRBTree@PEAVEntity@egf@@PEAV12@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V34@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff130
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff1b0
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff1f0
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff230
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bff270
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bffee0
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfff50
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfffc0

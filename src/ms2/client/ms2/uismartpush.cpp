@@ -66,7 +66,7 @@ public:
     void FUN_140dd8730();                                       // the strip was hidden
 };
 
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 int FUN_1418dd0d0();
 class Unk_SpMgr;
@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x140FA3BA0, UISmartPush, GetTypeName, 61, 0x3DDD7BA2);
 void UISmartPush::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    ((class Unk_SpNet*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_SpNet*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x140FA3BF0, UISmartPush, OnLoadComplete, 67, 0x97CD5915);
 

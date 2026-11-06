@@ -111,11 +111,11 @@ int CActionCameraMode::vfunc_28()
 MS2_REPLACE_METHOD(0x140945460, CActionCameraMode, vfunc_28, 8, 0x7F371472);
 
 // @0x140945470
-Vector3 CActionCameraMode::vfunc_26()
+efd::Point3 CActionCameraMode::vfunc_26()
 {
     NiNode* pNode = CameraMgr::GetInstance()->FUN_1409478a0()->m_spCameraNode;
-    return pNode ? *(const Vector3*)&static_cast<const NiPoint3&>(NiPoint3(pNode->GetWorldTranslate()))
-                 : Vector3(0, 0, 0);
+    return pNode ? *(const efd::Point3*)&static_cast<const NiPoint3&>(NiPoint3(pNode->GetWorldTranslate()))
+                 : efd::Point3(0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x140945470, CActionCameraMode, vfunc_26, 186, 0xDDB40B2A);
 

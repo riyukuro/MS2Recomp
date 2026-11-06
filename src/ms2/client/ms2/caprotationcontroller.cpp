@@ -297,8 +297,8 @@ void CCapRotationController::vfunc_31()
                 Unk_EfdMatrix3 kRotZ;
                 reinterpret_cast<efd::Matrix3&>(kRotZ).MakeZRotation((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
                 kDelta = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(kRotZ) * reinterpret_cast<const efd::Point3&>(kDelta)));
-                Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
-                kAxis.FUN_140968990();
+                efd::Point3 kAxis = reinterpret_cast<const efd::Point3&>(m_kDragDir).Cross(reinterpret_cast<const efd::Point3&>(kDelta));
+                kAxis.Unitize();
                 float fAngle = SafeAcos(reinterpret_cast<const efd::Point3&>(m_kDragDir).Dot(reinterpret_cast<const efd::Point3&>(kDelta)));
                 efd::Quaternion kQuat;
                 kQuat.FromAngleAxis(fAngle, *(const efd::Point3*)&kAxis);
@@ -347,9 +347,9 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         {
             Vector3 kN = reinterpret_cast<const Vector3&>(kNormal);
             kN.FUN_140968990();
-            Vector3 kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
-            kSide.FUN_140968990();
-            Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
+            efd::Point3 kSide = -reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+            kSide.Unitize();
+            Unk_NiPoint3 kUp(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(kSide)))));
             reinterpret_cast<Vector3&>(kUp).FUN_140968990();
             Unk_NiMatrix3 kFix;
             ((efd::Matrix3*)&kFix)->FromEulerAnglesYXZ(1.5707964f, 3.1415927f, 0.0f);

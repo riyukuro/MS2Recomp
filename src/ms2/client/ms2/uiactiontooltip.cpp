@@ -62,7 +62,7 @@ public:
     Unk_AtConst m_c7c0;
 };
 MS2_CHECK_OFFSET(Unk_AtConstants, m_c7c0, 0xc7c0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
 bool Unk_GcVec3HasValue(struct Unk_GcOptVec3 const*);   // C3: was FUN_1413b58d0
@@ -240,8 +240,8 @@ void UIActionTooltip::FUN_1418b1ef0()
     {
         if (Unk_GcVec3IsNull((struct Unk_GcOptVec3 const*)(&m_kTarget)))
         {
-            int nX = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)FUN_1401d3200())->m_c768);
-            int nY = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)FUN_1401d3200())->m_c7c0);
+            int nX = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_c768);
+            int nY = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_c7c0);
             int nCenterX = (int)((float)spEntity->ASDisplayObject::FUN_1422c1500() * 0.5f + (float)nX);
             int nCenterY = (int)((float)spEntity->ASDisplayObject::FUN_1422c1530() * 0.5f + (float)nY);
             spEntity->SetPositionInt(nCenterX, nCenterY);

@@ -159,14 +159,14 @@ class Unk_AttendUIMgr { public:
     virtual void p40();virtual void p41();virtual void p42();
     virtual void vfunc_43(int,int,int);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class CMsgBoxData { public: bool IsCheckbox0Checked(); template<class T> void Append(T); __int64 FUN_141a02f10(int,__int64) const; void FUN_141a01800(int n);
     void SetCheckbox0(CStringW,bool); void SetCheckbox0Enabled(bool); void SetCallback(Delegate<bool(int,const CMsgBoxData&)>); };
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
-template <class A, class B> CStringW LocalizedMentorFormat(CStringW, const A&, const B&);   // 0x140f09c60 for <unsigned, __int64>
+//   FUN_14028dfa0 <unsigned, __int64> = 0x140f09c60 (wcformat.h)
 CStringW FUN_140b8e910(const CMsTime&);
 CStringW FUN_14083bab0(const CMsTime&,CStringW);
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -419,7 +419,7 @@ void UIAttendGiftDialog::OnLoadComplete()
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
     }
     RefreshAll();
-    ((class Unk_AttendUIMgr*)FUN_140d86260())->vfunc_43(2,0,1000);
+    ((class Unk_AttendUIMgr*)((void*)GetClientPlatform()))->vfunc_43(2,0,1000);
 }
 MS2_REPLACE_METHOD(0x14102BB00, UIAttendGiftDialog, OnLoadComplete, 2719, 0xE93CB0C4);
 // @0x14102cdc0
@@ -453,7 +453,7 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
                 MS2Ptr<CItem> found=g_143ab2a90.FUN_140a5e2e0(m_selected->FUN_140ce3900());
                 if(found.get()!=0) couponUid=found->GetItemUid();
             }
-            CStringW text=LocalizedMentorFormat(strKey,*(const unsigned*)&remain,m_selected->FUN_140ce38e0());
+            CStringW text=FUN_14028dfa0(strKey,*(const unsigned*)&remain,m_selected->FUN_140ce38e0());
             MS2Ptr<CMsgBoxData> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
                 box->FUN_141a01800(1);

@@ -72,7 +72,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_ClientConfig* FUN_1401d3200()
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance); C3: was Unk_ClientConfig* FUN_1401d3200()
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
 class Unk_Cursor

@@ -94,7 +94,7 @@ Unk_AnimSvc* FUN_1410a68d0();
 
 // ---- more unit-local placeholders / externs ------------------------------------------------------------------------------
 class Unk_NHEntMgr;                                                      // entity iteration source (FUN_1409670f0)
-class Unk_NHEntAccess;                                                   // property accessor (see fieldpropertycli.cpp)
+//
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 class AlphaShellComposite   // C3: member view for the former free stand-ins
 {
@@ -425,9 +425,9 @@ bool FUN_1413fa2e0(egf::Entity* pEntity)
 MS2_REPLACE(0x1413FA2E0, FUN_1413fa2e0, 44, 0x7EEE2184);
 
 // @0x1413fa320
-efd::Point3 FUN_1413fa320(Unk_NHEntAccess* pEntity)
+efd::Color FUN_1413fa320(egf::Entity* pEntity)
 {
-    efd::Point3 kValue(0.70588237f, 0.70588237f, 0.70588237f);
+    efd::Color kValue(0.70588237f, 0.70588237f, 0.70588237f);
     FUN_140b27ec0((void*)(pEntity), 0x213f5f94, (void*)(&kValue));
     return kValue;
 }

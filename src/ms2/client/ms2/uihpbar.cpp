@@ -51,7 +51,7 @@ struct Unk_HpCfg
     char m_pad_0000[0x2c8];
     Unk_HpCfgFloat m_2c8;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_HpUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -96,7 +96,7 @@ UIHpBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActo
     m_bc = 0;
     m_c0 = 0;
     m_c4 = 100;
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HpCfg*)FUN_1401d3200())->m_2c8)->Read();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HpCfg*)GetClientConstants())->m_2c8)->Read();
     FUN_141992680();
     FUN_141992580();
 }

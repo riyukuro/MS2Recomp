@@ -110,7 +110,7 @@ struct Unk_UmMfItem : public CPtred
 class Unk_UmLevelInfo { public: };        // the player's manufacture level
 struct Unk_UmLevels { char m_pad[0x5180]; Unk_UmLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
 MS2_CHECK_OFFSET(Unk_UmLevels, m_5180, 0x5180);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 template <class A> CStringW FormatStringId(int nId, const A& a);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
@@ -161,7 +161,7 @@ public:
     virtual bool vfunc_40(__int64 nAmount);
     virtual bool vfunc_41(__int64 nAmount);
 };
-void* FUN_140d86260();   // ms2actormanager.cpp: the client platform
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
@@ -509,7 +509,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 row.FUN_140e846b0("id", i + 1);
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
                 row.FUN_1407cb9c0("recipeID", spRef->recipeId);
-                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180)->Get())   // exe: add rax, 0x5180
+                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)GetClientConstants()))->m_5180)->Get())   // exe: add rax, 0x5180
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
                 else
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
@@ -826,7 +826,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     __int64 nCost = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
     if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
     {
-        if (!((Unk_UmWallet*)FUN_140d86260())->vfunc_41(nCost) && !((Unk_UmWallet*)FUN_140d86260())->vfunc_40(nCost))
+        if (!((Unk_UmWallet*)((void*)GetClientPlatform()))->vfunc_41(nCost) && !((Unk_UmWallet*)((void*)GetClientPlatform()))->vfunc_40(nCost))
         {
             FUN_141275260(0x35, 1, 1);
             return;
@@ -834,7 +834,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     }
     else
     {
-        if (!((Unk_UmWallet*)FUN_140d86260())->vfunc_40(nCost))
+        if (!((Unk_UmWallet*)((void*)GetClientPlatform()))->vfunc_40(nCost))
         {
             FUN_141275260(0x35, 1, 1);
             return;

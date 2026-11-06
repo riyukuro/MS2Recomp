@@ -118,7 +118,7 @@ public:
     char m_pad_9e18[0x9e68 - 0x9e18];
     Unk_ClubLimit m_nameMax;                                       // +0x9e68
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (TSingleton<CPartyManager>::GetInstance).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -894,8 +894,8 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_1412751f0(BlockFormat<int>(0x381, 3), 1, 1);
         return false;
     }
-    int nMinLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMin)->Get();
-    int nMaxLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMax)->Get();
+    int nMinLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)GetClientConstants())->m_nameMin)->Get();
+    int nMaxLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)GetClientConstants())->m_nameMax)->Get();
     if (strName.GetLength() < nMinLength || strName.GetLength() > nMaxLength)
         return false;
     if (strName.Find(L" ", 0) != -1)

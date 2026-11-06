@@ -23,7 +23,7 @@ class Unk_WpConsts { public:
     Unk_WpInt m_89f8;
     Unk_WpInt m_8a50;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_WpConsts*)
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); C3: the canonical return type (was Unk_WpConsts*)
 
 // @0x140fc1e20
 UIWebBrowserPopup::UIWebBrowserPopup()
@@ -43,10 +43,10 @@ void UIWebBrowserPopup::OnLoadInit()
     if ((m_30 == 0) != 0)
         return;
     {
-        m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_8948)->Get();
-        m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_89f8)->Get();
-        m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_89a0)->Get();
-        m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)FUN_1401d3200())->m_8a50)->Get();
+        m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)GetClientConstants())->m_8948)->Get();
+        m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)GetClientConstants())->m_89f8)->Get();
+        m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)GetClientConstants())->m_89a0)->Get();
+        m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((Unk_WpConsts*)GetClientConstants())->m_8a50)->Get();
         m_nWidth = m_nMaxWidth;
         m_nHeight = m_nMaxHeight;
     }

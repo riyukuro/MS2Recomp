@@ -21,26 +21,26 @@
 #include "ms2/placeholder/wcformat.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-// The mentee/mentor record of one user (a CPtred; +0x30 serial number, name at +0x38, a ushort at +0x40 (s_mentoring_user_info arg 1), icon url at +0x48).
-class Unk_MentorEntry : public CPtred
-{
-public:
-    unsigned char m_pad_18[0x18];
-    unsigned __int64 m_30;
-    CStringW m_38;
-    unsigned short m_40;
-    CStringW m_48;
-    int m_50;
-    int m_54;
-    bool m_58;
-};
-// The mentoring state kept by the client (singleton DAT_143abb6d8).
-class CMentoringManager   // C3: view of the real class (the counts 0x140b71720 / 0x140b71750 return int)
-{
-public:
-    int FUN_140b71650(); int GetMenteeCount(); int GetMentorCount();
-};
-class Unk_MentorInfo : public CMentoringManager { public: MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n); };
+#include "ms2/client/ms2/mentoringmanager.h"   // CMentoringManager::GetMentee, CMentor (were local entry / info views)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 class MentoringDataTable { public: unsigned int GetMaxMenteeDailyRewardCoin(); };   // C3: view of the real class
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class CMentoringManager;
@@ -79,9 +79,9 @@ CString FUN_140719530(unsigned __int64 n);                               // numb
 // FUN_14052b9d0 = FUN_14028dfa0<unsigned short, CStringW> (wcformat.h, instantiated in item.cpp)
 
 // @0x140c70240
-static Unk_MentorInfo* FUN_140c70240()
+static CMentoringManager* FUN_140c70240()
 {
-    return reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::s_instance);
+    return TSingleton<CMentoringManager>::s_instance;
 }
 
 // @0x140c6e790
@@ -108,7 +108,7 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 void ASMentoringMenteePage::Refresh()
 {
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
-    int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
+    int nMentee = FUN_140c70240()->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
     m_coin->SetTextW(FUN_14028dfa0<unsigned, unsigned>(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentee), reinterpret_cast<const unsigned&>(nReward)));
 }
@@ -200,7 +200,7 @@ MS2_REPLACE_METHOD(0x140C6F160, UIMentoringMenteePage, vfunc_8, 27, 0x39E6850C);
 // @0x140c6f190
 void UIMentoringPage::FUN_140c6f190()
 {
-    FUN_140c6f7a0("m_mentor", FUN_140c70240()->FUN_140b71680(0));
+    FUN_140c6f7a0("m_mentor", FUN_140c70240()->GetMentee(0));
     if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
         pSearchMovie->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
@@ -230,21 +230,21 @@ void UIMentoringPage::FUN_140c6f190()
 MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, FUN_140c6f190, 1536, 0xA2D1B5E6);
 
 // @0x140c6f7a0
-void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEntry)
+void UIMentoringPage::FUN_140c6f7a0(CString strName, Unk_MentorPtr<CMentor> pEntry)
 {
     MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>(strName);
     if (pClip.get())
     {
         ASObj obj(2);
-        pEntry = FUN_140c70240()->FUN_140b71680(0);
+        pEntry = FUN_140c70240()->GetMentee(0);
         if (pEntry.get())
         {
-            obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
-            obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
-            ((class AScript&)(obj)).FUN_1407cbb20("name", pEntry->m_38);
-            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
-            ((class AScript&)(obj)).FUN_1407cbb20("charName", pEntry->m_38);
-            obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
+            obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->c, FUN_14016a600(pEntry->guild, 0), 1, ""));
+            obj.FUN_1407cbbe0("isOnline", pEntry->online);
+            ((class AScript&)(obj)).FUN_1407cbb20("name", pEntry->name);
+            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->level, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->y)));
+            ((class AScript&)(obj)).FUN_1407cbb20("charName", pEntry->name);
+            obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->c));
         }
         else
         {

@@ -75,7 +75,7 @@ struct Unk_SrConstTable
     Unk_SrConstUInt m_closeDelay;                               // +0xce80
 };
 MS2_CHECK_OFFSET(Unk_SrConstTable, m_closeDelay, 0xce80);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
@@ -396,7 +396,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strItemDescription, m_item->m_strBuyButtonText, m_item->m_nNpcImageType);
                 FUN_141276180(s_strOpenSound, "");
-                m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_SrConstTable*)FUN_1401d3200())->m_closeDelay)->Get();
+                m_nCloseTick = ((class CMainSystem*)(class Unk_SrClock*)(reinterpret_cast<Unk_SrClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473390() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_SrConstTable*)GetClientConstants())->m_closeDelay)->Get();
                 if (m_item.get() != 0)
                 {
                     CString strValue = Unk_SocketFormat<unsigned int>("{0}", m_item->m_nCode);

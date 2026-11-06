@@ -181,7 +181,7 @@
 // MS2-PIN: ??$try_emplace@$$V@?$map@_KUUnk_WsV980@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsV980@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV980@@@std@@@std@@@std@@@std@@_N@1@AEB_K@Z 0x141bef050
 // MS2-PIN: ??$try_emplace@$$V@?$map@_KUUnk_WsV2e8@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@std@@@std@@@std@@_N@1@AEB_K@Z 0x141bef050
 // MS2-PIN: ??$try_emplace@$$V@?$map@HV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x141bef090
-// MS2-PIN: ??0?$CAtlList@UUnk_WsV058@@V?$CElementTraits@UUnk_WsV058@@@ATL@@@ATL@@QEAA@I@Z 0x141bef200
+// MS2-PIN: ??0?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@QEAA@I@Z 0x141bef200 ; C3: was the Unk_WsV058/Unk_WsPropRef stand-in
 // MS2-PIN: ??0?$CAtlMap@IUUnk_WsV350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV350@@@3@@ATL@@QEAA@IMMMI@Z 0x141bef260
 // MS2-PIN: ??0?$CAtlMap@IUUnk_WsV738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV738@@@3@@ATL@@QEAA@IMMMI@Z 0x141bef350
 // MS2-PIN: ??0?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAA@IMMMI@Z 0x141bef440
@@ -612,7 +612,7 @@ void Unk_WsInst3HiderInsert(WsReal::Map990& m990, egf::EntityID& id, CEntityHide
 // Helpers of part 1 (worldservice_1.cpp): the field object map value (efd::SmartPointer<GameObject>), the PhysX prop
 // pointer (add-ref 0x140ae1dd0), the callback / visible sets and the 16-byte field reference swapped by FUN_141bc2c90.
 class Unk_WsA_PropObj;
-namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
+#include "ms2/placeholder/entityactordata.h"   // C3: egfPhysX::EntityActorData member view (0x140ae1dd0, 0x140ae1b60)
 class Unk_WsA_PropPtr
 {
 public:

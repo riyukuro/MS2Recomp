@@ -84,7 +84,7 @@ public:
     void FUN_1410423d0(NiAVObjectPtr spObject);                 // 0x1410423d0 add a layer per chaos-material mesh
 public:
     MS2_LAYOUT_FRIEND;
-    efd::vector<NiAVObjectPtr> m_vecObjects;                    // +0x58 the effect's target objects (vfunc_3 fills it)
+    std::vector<NiAVObjectPtr> m_vecObjects;                    // +0x58 the effect's target objects (vfunc_3 fills it)
     ATL::CAtlArray<NiPointer<ChaosLightEffectLayer> > m_arrLayers;   // +0x70 the layer made per mesh
     ChaosLightEffectParam m_param;                              // +0x90 the current (interpolated) values: vfunc_13 writes m_param.m_f* (+0x100..0x114)
     double m_dStartTime2;                                       // +0x130 start of the blink clock

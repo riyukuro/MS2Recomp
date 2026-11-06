@@ -55,6 +55,7 @@
 #include "ms2/commonfiles/crashmanager.h"
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/cubeheightindex.h"
 
 // This scene traversal helper owns a 0x30-byte ATL list. Its constructor
 // (14098cb80), traversal (14098e0d0), and destructor (14098cf00) are external.
@@ -435,21 +436,20 @@ MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
 void CKfmCubeGuide::vfunc_11() { TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
-class Unk_CubeDisplayLookup {
-public:
-    int FUN_1410b24b0(unsigned, unsigned);
-    efd::map<int, int> m_map;               // +0x00
-};
-class Unk_CubeHeightIndex   // C3: member view for the former free stand-ins
-{
-public:
-    static int Key(int, int);
-};
+// Unk_CubeHeightIndex: ms2/placeholder/cubeheightindex.h (C3: was the Unk_CubeDisplayLookup view)
+//
+//
+//
+//
+//
+//
+//
+//
 // @0x1410b24b0
-int Unk_CubeDisplayLookup::FUN_1410b24b0(unsigned a, unsigned b) {
+int Unk_CubeHeightIndex::FUN_1410b24b0(unsigned a, unsigned b) {
     int value = INT_MIN;
     int key = Unk_CubeHeightIndex::Key(a, b);
-    m_map.find(key, value);
+    m_heights.find(key, value);
     return value;
 }
-MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeDisplayLookup, FUN_1410b24b0, 75, 0x218D804F);
+MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeHeightIndex, FUN_1410b24b0, 75, 0x218D804F);

@@ -27,7 +27,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/uiitemeventlistener.h"
 
-class ASTextInput;
+class ASTextInput; enum Unk_MessengerChatType {};   // the subject list chat type: its own vector / map / forward copies in the exe (0x141a1ab80)
 class ASTextArea;
 class ASButtonBar;
 class ASDropdownMenu;
@@ -218,8 +218,8 @@ public:
     int m_238;                                                              // +0x238
     TiXmlDocument m_doc;                                                    // +0x240 the settings handed by the browser
     UIMessengerBrowser* m_pBrowser;                                         // +0x2b0
-    std::vector<int> m_subjects;                                            // +0x2b8 the subject list's chat types
-    std::map<int, int> m_subjectIndex;                                      // +0x2d0 chat type -> subject index
+    std::vector<Unk_MessengerChatType> m_subjects;                                // +0x2b8 the subject list's chat types
+    std::map<int, Unk_MessengerChatType> m_subjectIndex;                          // +0x2d0 chat type -> subject index
     MS2Ptr<ASUIComponent> m_2e0;                                            // +0x2e0
     MS2Ptr<ASUIComponent> m_2f0;                                            // +0x2f0
     CStringW m_strLastWhisper;                                              // +0x300

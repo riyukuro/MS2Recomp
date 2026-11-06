@@ -117,11 +117,11 @@ public:
 class Unk_Clock;
 
 // The cube terrain: the height of a column (INT_MIN when empty).
-class Unk_CubeDisplayLookup   // C3: member view (real class not in this TU)
-{
-public:
-    int FUN_1410b24b0(unsigned int, unsigned int);
-};
+// The cube terrain height index is Unk_CubeHeightIndex (ms2/placeholder/cubeheightindex.h).
+//
+//
+//
+//
 class CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
 int FUN_1408a13d0(NiPoint3 kPos);                           // column key of a position (C3: ridee.cpp / mypc.cpp's declaration)
@@ -182,7 +182,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
     const int nSpan = 20;
     const int nHalf = 10;
     CubeMapInformationService* pService = GetCubeMapService();
-    Unk_CMISTree<277>* pWorld = pService->FUN_1410b9e70();
+    Unk_CubeHeightIndex* pWorld = pService->FUN_1410b9e70();
     Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<const NiPoint3&>(kPos));
     for (int dx = -nHalf; dx < nHalf; dx++)
     {
@@ -190,7 +190,7 @@ static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
         {
             int x = kCell.x + dx;
             int y = kCell.y + dy;
-            int z = ((Unk_CubeDisplayLookup*)(pWorld))->FUN_1410b24b0(x, y);
+            int z = pWorld->FUN_1410b24b0(x, y);
             if (z == INT_MIN)
                 continue;
             arrCube.Add(Unk_Int3(x, y, z + 1));

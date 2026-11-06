@@ -22,8 +22,8 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-void* FUN_141347090(void* pMap, void** pPos);
-void* FUN_1413470e0(void* pMap, void* pos);
+// (0x141347090 / 0x1413470e0 are the const CRBTree<UINT, SmartPointer<CNpc>>::GetNext / GetValueAt,
+//  pinned at the end; the loop below calls them through a const view)
 
 // Debug flags (the check boxes' state).
 extern bool DAT_143ae95e0;              // skill range, pc
@@ -34,7 +34,7 @@ extern char DAT_143ae95e3;              // collision, npc
 // The npc map iterator and the npc size setters.
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
-void* FUN_140a7b9f0(void* pMap, void* pos);
+// (FUN_140a7b9f0 was the protected CRBTree<UINT, SmartPointer<CNpc>>::Successor; the const GetNext calls it)
 class Unk_RpBody;
 class GameObjectController   // C3: member view for the former free stand-ins
 {
@@ -117,9 +117,9 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
     FUN_140a7cbe0(((void*)FUN_1406d6e90()));
     void* pMap = WorldService::GetInstance()->FUN_141bd36d0();
-    for (void* pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; FUN_141347090(pMap, &pos))
+    for (POSITION pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; reinterpret_cast<const ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetNext(pos))
     {
-        PCBase* pNpc = static_cast<efd::SmartPointer<CNpc>*>(FUN_1413470e0(pMap, pos))->operator CNpc*();
+        PCBase* pNpc = reinterpret_cast<const ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetValueAt(pos).operator CNpc*();
         if (pNpc != 0)
         {
             MS2Ptr<CNpcData> kData(reinterpret_cast<CNpc*>(pNpc)->GetNpcData());
@@ -135,13 +135,13 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
     }
 }
 
-// @0x141347090
-void* FUN_141347090(void* pMap, void** pPos)
-{
-    void* pOld = *pPos;
-    *pPos = FUN_140a7b9f0(pMap, pOld);
-    return pOld;
-}
+// (0x141347090: the FUN_141347090 GetNext stand-in is gone; the ATL const GetNext is pinned at the end)
+//
+//
+//
+//
+//
+//
 
 // @0x1413470d0
 int UIRangePreviewDialog::vfunc_48()
@@ -149,17 +149,19 @@ int UIRangePreviewDialog::vfunc_48()
     return 0x4eb5;
 }
 
-// @0x1413470e0
-void* FUN_1413470e0(void* pMap, void* pos)
-{
-    do {
-        int bOk = pos != 0 ? 1 : 0;
-        do {
-        } while (0);
-        if (bOk == 0)
-            ATL::AtlThrowImpl(0x80004005);
-    } while (0);                                        // ATLENSURE(pos != NULL)
-    return (char*)pos + 8;
-}
+// (0x1413470e0: the FUN_1413470e0 GetValueAt stand-in is gone; the ATL const GetValueAt is pinned at the end)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// MS2-PIN: ?GetNext@?$CRBTree@IV?$SmartPointer@VCNpc@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VCNpc@@@efd@@@4@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x141347090 ; the const GetNext (was the FUN_141347090 stand-in over the FUN_140a7b9f0 Successor wrapper)
+// MS2-PIN: ?GetValueAt@?$CRBTree@IV?$SmartPointer@VCNpc@@@efd@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$SmartPointer@VCNpc@@@efd@@@4@@ATL@@QEBAAEBV?$SmartPointer@VCNpc@@@efd@@PEAU__POSITION@@@Z 0x1413470e0 ; the const GetValueAt (was the FUN_1413470e0 stand-in)

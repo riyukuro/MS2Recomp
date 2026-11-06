@@ -33,8 +33,8 @@
 #include "ms2/ms2recover.h"
 
 void operator delete(void* p, size_t size);   // sized operator delete (the CRT's)
-extern char DAT_142e1af98[];                // std::ios_base vftable
-
+#include "ms2/cef/cef.h"   // CefBaseRefCounted, the (virtual) base whose vftable these objects get back
+struct Unk_CefBaseReset : CefBaseRefCounted { static __forceinline void Reset(void* p) { static_cast<Unk_CefBaseReset*>(p)->CefBaseRefCounted::~CefBaseRefCounted(); } };
 // @0x1427a54a0
 void* FUN_1427a54a0(char* self, unsigned flags)
 {
@@ -101,7 +101,7 @@ void* FUN_1427b5780(char* self, unsigned flags)
 // @0x1427b0250
 void* FUN_1427b0250(char* self, unsigned flags)
 {
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(self, 0x58);
     return self;
@@ -110,7 +110,7 @@ void* FUN_1427b0250(char* self, unsigned flags)
 // @0x1427b0280
 void* FUN_1427b0280(char* self, unsigned flags)
 {
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(self, 0x58);
     return self;
@@ -127,7 +127,7 @@ void* FUN_1427a54d0(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -144,7 +144,7 @@ void* FUN_1427aac20(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -161,7 +161,7 @@ void* FUN_1427b0d40(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -178,7 +178,7 @@ void* FUN_1427b10a0(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -195,7 +195,7 @@ void* FUN_1427b3720(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -212,7 +212,7 @@ void* FUN_1427b4640(char* self, unsigned flags)
     char* vbtable = *(char**)(self - 0x18);
     int off = *(int*)(vbtable + 4);
     *(int*)(self - 0x1c + off) = off - 0x18;
-    *(void**)self = DAT_142e1af98;
+    Unk_CefBaseReset::Reset(self);   // CefBaseRefCounted vptr
     if (flags & 1)
         operator delete(base, 0x28);
     return base;
@@ -251,7 +251,7 @@ void* FUN_142787270(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431d9618;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431d9568;
     CefVBaseOf(self)->vptr = DAT_1431d95a0;
@@ -284,7 +284,7 @@ void* FUN_14278bcd0(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431da2a8;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431da218;
     CefVBaseOf(self)->vptr = DAT_1431da240;
@@ -317,7 +317,7 @@ void* FUN_1427a9550(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431df490;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431df2b0;
     CefVBaseOf(self)->vptr = DAT_1431df380;
@@ -350,7 +350,7 @@ void* FUN_1427ad990(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431e03e8;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431e0028;
     CefVBaseOf(self)->vptr = DAT_1431e01e8;
@@ -383,7 +383,7 @@ void* FUN_1427b08f0(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431e09b0;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431e0950;
     CefVBaseOf(self)->vptr = DAT_1431e0960;
@@ -416,7 +416,7 @@ void* FUN_1427b3a60(CefStrmObj* self, int mostDerived)
     if (mostDerived)
     {
         self->vbptr = DAT_1431e1418;
-        self->iosVptr = DAT_142e1af98;
+        Unk_CefBaseReset::Reset(&self->iosVptr);   // CefBaseRefCounted vptr
     }
     self->vptr = DAT_1431e1268;
     CefVBaseOf(self)->vptr = DAT_1431e1320;
@@ -446,81 +446,81 @@ bool FUN_14279ff00(void** self)
     return ((bool (*)(void*))(*(void***)obj)[1])(obj);
 }
 
-// CefStringBase<CefStringTraitsUTF16> (vptr, cef_string_t*, owns-flag) built from the userfree string a C struct getter returns
-struct cef_string_t { const unsigned short* str; size_t length; void (*dtor)(unsigned short*); };
-extern "C" int cef_string_utf16_set(const unsigned short* src, size_t src_len, cef_string_t* output, int copy);
-extern "C" void cef_string_utf16_clear(cef_string_t* str);
-extern const void* const DAT_142e1af88[];   // CefStringBase<CefStringTraitsUTF16> vftable
-struct CefString16
+// CefString (CefStringBase<CefStringTraitsUTF16>, include/internal/cef_string_wrappers.h) returned by the CEF
+// C-to-C++ string getters: the SDK wrapper body (CEF_MEMBER_MISSING test, AttachToUserFree, copy on return).
+#include "ms2/cef/cef.h"
+#include <new>
+
+// The CToCpp wrapper object of these getters (its C struct pointer is at -8); the real class is not recovered.
+struct Unk_CefCToCppStrings
 {
-    const void* const* vt;
-    cef_string_t* str;
-    bool owner;
-    ~CefString16()
-    {
-        if (str && owner)
-        {
-            cef_string_utf16_clear(str);
-            operator delete(str, sizeof(cef_string_t));
-        }
-    }
+    CefString FUN_14278c4a0();
+    CefString FUN_14278c5b0();
+    CefString FUN_14278c6c0();
 };
-void* operator new(size_t size);
-struct CefStringTraitsUTF16;
-struct _cef_string_utf16_t;   // the SDK's name for cef_string_t
-template <class Traits> class CefStringBase
-{
-public:
-    void AttachToUserFree(_cef_string_utf16_t* str);   // 0x14277e6e0 for CefStringTraitsUTF16
-};
+// The SDK CToCpp string getter body (minSize = the end offset of the C member, offset = its offset in the C struct).
+#define CEF_CTOCPP_STRING_GETTER(minSize, offset) \
+    size_t* cs = *reinterpret_cast<size_t**>(reinterpret_cast<char*>(this) - 8); \
+    typedef cef_string_userfree_t (*Getter)(void*); \
+    if (cs[0] < minSize || !reinterpret_cast<Getter>(cs[offset / 8]))   /* CEF_MEMBER_MISSING */ \
+        return CefString(); \
+    cef_string_userfree_t retval = reinterpret_cast<Getter>(cs[offset / 8])(cs); \
+    CefString retvalStr; \
+    retvalStr.AttachToUserFree(retval); \
+    return retvalStr;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-static __forceinline CefString16* CefStringFromUserFree(CefString16* out, cef_string_t* userfree)
-{
-    CefString16 tmp;
-    tmp.vt = DAT_142e1af88;
-    tmp.str = nullptr;
-    tmp.owner = false;
-    reinterpret_cast<CefStringBase<CefStringTraitsUTF16>*>(&tmp)->AttachToUserFree(reinterpret_cast<_cef_string_utf16_t*>(userfree));
-    out->vt = DAT_142e1af88;
-    out->str = nullptr;
-    out->owner = false;
-    if (tmp.str && tmp.str->str && tmp.str->length)
-    {
-        cef_string_t* copy = static_cast<cef_string_t*>(operator new(sizeof(cef_string_t)));
-        copy->str = nullptr; copy->length = 0; copy->dtor = nullptr;
-        out->str = copy;
-        out->owner = true;
-        cef_string_utf16_set(tmp.str->str, tmp.str->length, copy, 1);
-    }
-    return out;
-}
-
-struct CefV8ExceptionStruct { size_t size; void* base[3]; void* (*fns[16])(void*); };
-struct CefV8ExceptionCToCpp { char pad[8]; };
-
-static __forceinline CefString16* CefCallStringGetter(char* self, CefString16* out, size_t minSize, size_t offset)
-{
-    size_t* cs = *reinterpret_cast<size_t**>(self - 8);
-    if (cs[0] >= minSize)
-    {
-        auto fn = reinterpret_cast<cef_string_t* (*)(void*)>(cs[offset / 8]);
-        if (fn)
-            return CefStringFromUserFree(out, fn(cs));
-    }
-    out->vt = DAT_142e1af88;
-    out->str = nullptr;
-    out->owner = false;
-    return out;
-}
-
-// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
 // @0x14278c4a0
-CefString16* FUN_14278c4a0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x28, 0x20); }
+CefString Unk_CefCToCppStrings::FUN_14278c4a0() { CEF_CTOCPP_STRING_GETTER(0x28, 0x20) }
 
-// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
 // @0x14278c5b0
-CefString16* FUN_14278c5b0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x38, 0x30); }
+CefString Unk_CefCToCppStrings::FUN_14278c5b0() { CEF_CTOCPP_STRING_GETTER(0x38, 0x30) }
 
-// MS2-FUNCTIONAL: same size check, getter call, copy and cleanup; the exe also tracks the returned CefString for unwinding (more EH states)
+// MS2-FUNCTIONAL: code bytes exact; the exe EH table has 6 states (state 5 over the getter call), ours 1
 // @0x14278c6c0
-CefString16* FUN_14278c6c0(char* self, CefString16* out) { return CefCallStringGetter(self, out, 0x30, 0x28); }
+CefString Unk_CefCToCppStrings::FUN_14278c6c0() { CEF_CTOCPP_STRING_GETTER(0x30, 0x28) }

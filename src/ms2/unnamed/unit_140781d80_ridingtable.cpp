@@ -116,7 +116,7 @@ public:
     char m_pad_00[0x33c0];
     Unk_RideeConstVal m_rideSummonCastTime;                 // +0x33c0
 };
-Unk_SingletonObj1* FUN_1401d3200();
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // @0x140781d80
 RideeData::Rider::Rider()
@@ -253,7 +253,7 @@ RideeData::Basic::Basic()
       m_strPressXEffectRun(""), m_strA0(), m_strPressXEffectIdleNonstop(""), m_strPressXEffectRunNonstop(""),
       m_strLoopEffect(""), m_strRideOffBySkillEffect("")
 {
-    m_fSummonCastTime = (float)*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RideeConsts*>(FUN_1401d3200())->m_rideSummonCastTime)->Get();
+    m_fSummonCastTime = (float)*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RideeConsts*>(GetClientConstants())->m_rideSummonCastTime)->Get();
 }
 
 // @0x140782b10

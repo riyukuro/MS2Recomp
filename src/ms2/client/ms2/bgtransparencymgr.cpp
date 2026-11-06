@@ -180,11 +180,11 @@ inline float GameObject::FUN_140a17da0() { return m_fUnk110; }
 inline float GameObject::FUN_140a17dc0() { return m_fUnk114; }
 
 // @0x140a17e10
-inline Vector3 CameraMgr::FUN_140a17e10()
+inline efd::Point3 CameraMgr::FUN_140a17e10()
 {
     if (m_spMode.get() != 0)
         return m_spMode->FUN_1409f2540();
-    return DAT_143b01a60;
+    return reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
 }
 
 // @0x140a18070
@@ -379,16 +379,16 @@ void BGTransparencyMgr::vfunc_1()
     {
     std::set<Unk_BGTRegion> kVisible;
     Unk_BGTEntitySet kHit;
-    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    efd::Point3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     WorldService::GetInstance()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
     for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
     {
         if ((*it)->FUN_14123c660() == 0 || (*it)->GetClassID() == 0x6200004)
         {
             NiPoint3 ptPos = (*it)->vfunc_18();
-            efd::Point3 ptDirA = (const efd::Point3&)kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0());
+            efd::Point3 ptDirA = kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0());
             ptDirA.Unitize();
-            efd::Point3 ptDirB = (const efd::Point3&)kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0());
+            efd::Point3 ptDirB = kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0());
             ptDirB.Unitize();
             egf::Entity* pEntityA = 0;
             egf::Entity* pEntityB = 0;
@@ -704,9 +704,9 @@ bool BGTransparencyMgr::CompareDistance(egf::Entity* pA, egf::Entity* pB)
     reinterpret_cast<egf::Entity*>(pB)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptB));
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return false;
-    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
-    float fA = (ptA - (const efd::Point3&)kCamera).Length();
-    float fB = (ptB - (const efd::Point3&)kCamera).Length();
+    efd::Point3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    float fA = (ptA - kCamera).Length();
+    float fB = (ptB - kCamera).Length();
     return fA > fB;
 }
 

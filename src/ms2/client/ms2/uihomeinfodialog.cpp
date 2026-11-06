@@ -148,7 +148,7 @@ struct Unk_HiConstTable
 };
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_bank, 0x66d0);
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_doctor, 0x67e0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class UISystemMenuDialog : public UIObject
 {
@@ -308,7 +308,7 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
         if (MS2Ptr<ASButton> spBank = spPanel->FUN_140acce30<ASButton>("m_bank"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank)->Get() * 0.001f);
+            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)GetClientConstants())->m_bank)->Get() * 0.001f);
         }
     }
 }
@@ -321,7 +321,7 @@ void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
         if (MS2Ptr<ASButton> spDoctor = spPanel->FUN_140acce30<ASButton>("m_doctor"))
         {
             float fRemain = (float)nRemainMs * 0.001f;
-            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor)->Get() * 0.001f);
+            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)GetClientConstants())->m_doctor)->Get() * 0.001f);
         }
     }
 }
@@ -799,7 +799,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c81d0()
     if (pPc->FUN_141662830() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_bank)->Get() / 1000;
+    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)GetClientConstants())->m_bank)->Get() / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662830());
     if (nElapsed > nLimit)
         return 0;
@@ -815,7 +815,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c8280()
     if (pPc->FUN_141662870() == 0)
         return 0;
     __int64 nNow = GetServerTime();
-    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)FUN_1401d3200())->m_doctor)->Get() / 1000;
+    int nLimit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_HiConstTable*)GetClientConstants())->m_doctor)->Get() / 1000;
     int nElapsed = (int)(nNow - pPc->FUN_141662870());
     if (nElapsed > nLimit)
         return 0;

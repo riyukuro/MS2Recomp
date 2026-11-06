@@ -218,7 +218,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
                 CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
-                int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
+                int nHours = (int)*GetClientConstants()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
@@ -237,7 +237,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
                 CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
-                int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
+                int nHours = (int)*GetClientConstants()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");

@@ -138,7 +138,7 @@ void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873c
 
 
 // game config table (limits of the trigger editor)
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // registrar of ClassObject factories, atexit helpers
 ClassObject* FUN_140de5570();
@@ -410,7 +410,7 @@ bool TriggerObject::Contains(const Vector3& pt)
         reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(ptPos));
         reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x9dc22aea, (efd::Point3&)(ptSize));
         reinterpret_cast<egf::Entity*>(TRIG_ENT())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(ptRot));
-        Vector3 ptHalf = ptSize.FUN_14097fc90(0.5f);
+        efd::Point3 ptHalf = reinterpret_cast<const efd::Point3&>(ptSize) * 0.5f;
         NxBounds3 bounds;
         bounds.set(-ptHalf.x, -ptHalf.y, -ptHalf.z, ptHalf.x, ptHalf.y, ptHalf.z);
         NxMat34 pose(true);
@@ -978,7 +978,7 @@ void TriggerObjectCamera::vfunc_4()
             fb.m_from.m_0 = CameraMgr::GetInstance()->FUN_140ad4b40();
             fb.m_from.m_4 = CameraMgr::GetInstance()->FUN_140af7f00();
             fb.m_from.m_8 = CameraMgr::GetInstance()->FUN_140af7ea0();
-            fb.m_from.m_c = CameraMgr::GetInstance()->FUN_140a17e10();
+            fb.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
             fb.m_from.m_18 = CameraMgr::GetInstance()->FUN_140af8290();
             fb.m_to = fb.m_from;
             fb.m_to.m_0 = CameraMgr::GetInstance()->FUN_140af24f0()->FUN_140ad4b30();
@@ -1124,7 +1124,7 @@ void TriggerStateCli::Save(void* pNode)
 // @0x140de9d40
 int TriggerStateCli::Validate(int* pnReason)
 {
-    if (m_onEnter.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x5758)->Get())
+    if (m_onEnter.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0x5758)->Get())
     {
         *pnReason = 1;
         return 0;
@@ -1147,7 +1147,7 @@ int TriggerStateCli::Validate(int* pnReason)
         *pnReason = 2;
         return 0;
     }
-    if (m_transitions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x57b0)->Get())
+    if (m_transitions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0x57b0)->Get())
     {
         *pnReason = 3;
         return 0;
@@ -1162,7 +1162,7 @@ int TriggerStateCli::Validate(int* pnReason)
                 *pnReason = 9;
                 return 0;
             }
-            if (pTrans->m_actions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)FUN_1401d3200()) + 0x5808)->Get())
+            if (pTrans->m_actions.GetCount() > *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0x5808)->Get())
             {
                 *pnReason = 5;
                 return 0;

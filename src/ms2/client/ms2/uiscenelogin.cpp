@@ -101,7 +101,7 @@ CStringW TakeScreenshotJpg(int a, int b);
 int FUN_1406c34c0();
 CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class CNetworkService* FUN_140714f90();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
@@ -147,7 +147,7 @@ CString UISceneLogin::GetTypeName()
 }
 
 // @0x141acece0
-void UISceneLogin::vfunc_48(int n)
+int UISceneLogin::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     ChromaSDK::GetChromaManager()->SetState(3);
@@ -162,11 +162,11 @@ void UISceneLogin::vfunc_48(int n)
         kMsg.AddString("OnReset");
         pDlg->OnMessage(this, &kMsg);
     }
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 
 // @0x141acee00
-void UISceneLogin::vfunc_49(int n)
+int UISceneLogin::vfunc_49(int n)
 {
     reinterpret_cast<Unk_LgPreload*>(TSingleton<CFilePreload>::GetInstance())->FUN_141ad0320();
     m_nTitleDone = 0;
@@ -178,7 +178,7 @@ void UISceneLogin::vfunc_49(int n)
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e22);
     if (((CUIService*)reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4eef)) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4eef);
-    UISceneEntity::vfunc_49(n);
+    return UISceneEntity::vfunc_49(n);
 }
 
 // @0x141aceec0
@@ -290,7 +290,7 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     if (_stricmp("OnPrev", szMethod) == 0)
     {
         if (m_nProgress != 0xffff)
-            ((class Unk_LgMsgBox*)FUN_140d86260())->vfunc_23(0x388, "NotPreloadingToModeSelect");
+            ((class Unk_LgMsgBox*)((void*)GetClientPlatform()))->vfunc_23(0x388, "NotPreloadingToModeSelect");
         TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200085);
         return 1;
     }
@@ -445,7 +445,7 @@ bool UISceneLogin::FUN_141acfb40()
 {
     if (FUN_1406c34c0() != 0)
     {
-        Unk_LgMsgBox* pBox = ((class Unk_LgMsgBox*)FUN_140d86260());
+        Unk_LgMsgBox* pBox = ((class Unk_LgMsgBox*)((void*)GetClientPlatform()));
         if (pBox->vfunc_0() == 1)
             return true;
         return false;

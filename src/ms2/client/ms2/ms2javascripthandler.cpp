@@ -72,11 +72,11 @@ static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
 void FUN_142cb2ef0();                                   // the exe's atexit destructor of the map
-void FUN_1402a9d70(void*, int, float, float, float, int);
+#include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 // @0x1400f8d20
 static char s_map[0x48];
 struct Unk_MapInit {};
-static Unk_MapInit s_initMap = (FUN_1402a9d70(&s_map, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb2ef0), Unk_MapInit());
+static Unk_MapInit s_initMap = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_map)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb2ef0), Unk_MapInit());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_map.

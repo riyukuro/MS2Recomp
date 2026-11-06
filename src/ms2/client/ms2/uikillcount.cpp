@@ -23,7 +23,7 @@ public:
     char m_pad_0000[0xc1e0];
     Unk_KcInt m_c1e0;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 int FUN_141277f40();                                                // next UI layer (unused here)
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -63,7 +63,7 @@ UIKillCount::UIKillCount()
     m_nShown = 0;
     m_nMinShow = 0;
     m_58 = 0;
-    m_nMinShow = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_KcGlobals*)FUN_1401d3200())->m_c1e0));
+    m_nMinShow = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_KcGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_c1e0));
     m_2c = 0x14;
 }
 

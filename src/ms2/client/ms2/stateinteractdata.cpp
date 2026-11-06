@@ -280,7 +280,7 @@ void StateInteraction::vfunc_4(StateData* pData)
                     if (aObjects[i]->vfunc_4() == 0)
                         continue;
                     float fDist = reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18().FUN_140965c40(aObjects[i]->GetPos()).FUN_140967ac0();
-                    if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+                    if (fDist > *static_cast<Client::Constants*>(GetClientConstants())->MasteryObjectInteractionDistance.Get())
                         continue;
                     m_aObjects.push_back(aObjects[i]);
                 }
@@ -499,7 +499,7 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
             {
                 Vector3 kRot = spObject->GetRot();
                 NiTransform kXform;
-                Unk_NiPoint3 kNiPos(spObject->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
+                Unk_NiPoint3 kNiPos(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spObject->GetPos())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 1.0f))))));
                 *reinterpret_cast<NiPoint3*>(reinterpret_cast<float*>(&kXform.m_Translate)) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&kNiPos)));
                 reinterpret_cast<efd::Matrix3*>(&kXform.m_Rotate)->FromEulerAnglesXYZ((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                                               (kRot.z * 3.1415927f) / 180.0f);
@@ -638,7 +638,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
             else
             {
                 float fDist = reinterpret_cast<GameObject*>(pNpc)->FUN_140f4a450();
-                if (*static_cast<Client::Constants*>(FUN_1401d3200())->InteractionDistance.Get() < fDist)
+                if (*static_cast<Client::Constants*>(GetClientConstants())->InteractionDistance.Get() < fDist)
                 {
                     pPC->vfunc_59(1, 0, 0, 0);
                     return;

@@ -172,7 +172,7 @@ public:
     unsigned int GetSaleGemStoneUpgradeRate();
 };
 void* FUN_1401c0d90();
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 int FUN_1406198a0(int nBase, float fRate);                          // (int)(nBase * fRate + 1e-6)
 unsigned int FUN_140482050(unsigned int, unsigned int);  // C3: the definition's signature
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
@@ -392,7 +392,7 @@ MS2_REPLACE(0x140627B50, FUN_140627b50, 35, 0xCFF64D85);
 // @0x140627b80
 int FUN_140627b80(int nA, unsigned nWanted)
 {
-    nWanted = nWanted < FUN_1406198a0(10000, *(float*)((char*)((void*)FUN_1401d3200()) + 0x90fc)) ? nWanted : FUN_1406198a0(10000, *(float*)((char*)((void*)FUN_1401d3200()) + 0x90fc));
+    nWanted = nWanted < FUN_1406198a0(10000, *(float*)((char*)((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0x90fc)) ? nWanted : FUN_1406198a0(10000, *(float*)((char*)((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0x90fc));
     unsigned nResult = (unsigned)FUN_140482050(nA, nWanted);
     return nResult < 1 ? 1 : nResult;
 }

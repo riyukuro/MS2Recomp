@@ -14,7 +14,7 @@
 // MS2-PIN: ??_GGameObject@@UEAAPEAXI@Z 0x14123edd0
 // MS2-PIN: ??0GameObject@@QEAA@XZ 0x14123b2b0
 // (functional: the exe's traits fold the constant SIZE_MAX / 24 in; this STL calls the tag-dispatched helper)
-// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@Z 0x14123f250
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@2@@Z 0x14123f250
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400ea350
 // MS2-PIN: ??0?$SmartPointer@VCObjectShadow@@@efd@@QEAA@PEAVCObjectShadow@@@Z 0x14123ea80
 // MS2-PIN: ?GetClassDesc@GameObject@@UEBAPEBVClassInfo@efd@@XZ 0x14123ee30
@@ -66,7 +66,7 @@ struct Unk_GoConfig
     Unk_GoCfgValue m_kUpdateDuration;   // +0xab0
 };
 MS2_CHECK_OFFSET(Unk_GoConfig, m_kUpdateDuration, 0xab0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The field object a position resolves to (CPtred-counted; held at GameObject+0x60).
 class Unk_GoField : public CPtred
@@ -199,11 +199,11 @@ GameObject::GameObject()
 {
     m_spAnimMgr.AssignRaw(new CAnimationManager(this));
     m_pUnk130 = new CMeshUpdateGate;
-    float fRate = ((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateRate.Read();
+    float fRate = ((struct Unk_GoConfig*)GetClientConstants())->m_kUpdateRate.Read();
     if (fRate <= 0.0f)
         fRate = 60.0f;
     ((class CMeshUpdateGate*)(class CMeshUpdateGate*)(m_pUnk130))->FUN_14108c240(1.0f / fRate);
-    m_pUnk130->FUN_14123ef30(((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration.Read());
+    m_pUnk130->FUN_14123ef30(((struct Unk_GoConfig*)GetClientConstants())->m_kUpdateDuration.Read());
 }
 
 // Deleting helper of the mesh update gate (its destructor is FUN_14176f390).
@@ -709,7 +709,7 @@ unsigned __int64 GameObject::GenerateSerialId()
 }
 
 // @0x14123cf10
-void GameObject::vfunc_33(void* a, void* b)
+void GameObject::vfunc_33(void* a, efd::Point3 kHit)
 {
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30() == 0xd)
     {
@@ -943,7 +943,7 @@ MS2_REPLACE_METHOD(0x14123d9c0, GameObject, vfunc_43, 31, 0xD80D89BD);
 // @0x14123d9f0
 void GameObject::vfunc_44(void* p)
 {
-    static_cast<std::list<NiAVObject*, efd::CustomAllocator<NiAVObject*> >*>(p)->push_back(
+    static_cast<std::list<NiAVObject*>*>(p)->push_back(
         FUN_141b6efc0(FUN_14123c410()));
 }
 MS2_REPLACE_METHOD(0x14123d9f0, GameObject, vfunc_44, 57, 0x43B2AF2D);
@@ -1126,7 +1126,7 @@ void GameObject::vfunc_54(float f)
         fDuration = FUN_14123ee40();
         break;
     case 2:
-        fDuration = FUN_14123ee40() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_kUpdateDuration)->Get();
+        fDuration = FUN_14123ee40() - *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)GetClientConstants())->m_kUpdateDuration)->Get();
         break;
     default:
         MS2_ASSERT_AT(0x180, FALSE);
@@ -1180,3 +1180,4 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(GameObject);
 static CString s_strSortTypeNames0[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill0("skill");
 static CString s_strStun0("stun");
+// MS2-PIN: ?_Getal@?$_List_alloc@U?$_List_base_types@PEAVNiAVObject@@V?$allocator@PEAVNiAVObject@@@std@@@std@@@std@@QEBAAEBV?$allocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@2@XZ 0x14123f0e0

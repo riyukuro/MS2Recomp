@@ -92,11 +92,11 @@ bool TextureOverrideEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget
     GameObject* pObject = ((class NoticeMessage*)(pTarget))->GetOwner();
     if (!pObject)
         return false;
-    efd::list<NiAVObject*> listNodes;
+    std::list<NiAVObject*> listNodes;
     pObject->vfunc_44(&listNodes);
     m_vecNodes.clear();
     m_vecNodes.reserve(listNodes.size());
-    for (efd::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
+    for (std::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
     {
         if (*it)
         {

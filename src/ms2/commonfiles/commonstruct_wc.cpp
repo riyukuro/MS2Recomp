@@ -278,61 +278,61 @@ template void std::_Advance1<LHist::iterator, __int64>(LHist::iterator&, __int64
 //
 // vector::_Assign_range(first, last, forward_iterator_tag) for 8- and 16-byte elements.
 // @0x140276aa0
-void FUN_140276aa0(i64 vec, i64 first, i64 last, Unk_StlTag)
-{
-    u64 newsize = std::_Convert_size<unsigned __int64>(FUN_14027bc40(first, last));
-    reinterpret_cast<VXml*>(vec)->_Orphan_all();
-    u64 oldsize = reinterpret_cast<VI64*>(vec)->size();
-    u64 oldcapacity = reinterpret_cast<VI64*>(vec)->capacity();
-    if (newsize > oldcapacity) {
-        if (newsize > reinterpret_cast<VI64*>(vec)->max_size())
-            FUN_140289ea0();
-        u64 newcapacity = FUN_140286ec0(vec, newsize);
-        if ((i64)reinterpret_cast<VRemake*>(vec)->_Myfirst() != 0) {
-            FUN_1402875b0(vec, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
-            reinterpret_cast<std::allocator<__int64>*>(&reinterpret_cast<VRemake*>(vec)->_Getal())->deallocate((__int64*)reinterpret_cast<VRemake*>(vec)->_Myfirst(), oldcapacity);
-        }
-        FUN_140286a60(vec, newcapacity);
-        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = FUN_14027a8c0(vec, first, last, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
-    } else if (newsize > oldsize) {
-        i64 mid = FUN_14027c420(first, oldsize);
-        FUN_140277230(first, mid, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
-        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = FUN_14027a8c0(vec, mid, last, *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
-    } else {
-        i64 newlast = (i64)reinterpret_cast<VRemake*>(vec)->_Myfirst() + newsize * 8;
-        FUN_140277230(first, last, *(i64*)&reinterpret_cast<VRemake*>(vec)->_Myfirst());
-        FUN_1402875b0(vec, newlast, *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast());
-        *(i64*)&reinterpret_cast<VI64*>(vec)->_Mylast() = newlast;
-    }
-}
+template void VRemake::_Assign_range<Unk_RemakeLockOpt*>(Unk_RemakeLockOpt*, Unk_RemakeLockOpt*, std::forward_iterator_tag);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @0x140276d40
-void FUN_140276d40(i64 vec, i64 first, i64 last, Unk_StlTag)
-{
-    u64 newsize = std::_Convert_size<unsigned __int64>(FUN_14027bca0(first, last));
-    reinterpret_cast<VI64*>(vec)->_Orphan_all();
-    u64 oldsize = reinterpret_cast<VLog*>(vec)->size();
-    u64 oldcapacity = reinterpret_cast<VLog*>(vec)->capacity();
-    if (newsize > oldcapacity) {
-        if (newsize > reinterpret_cast<VLog*>(vec)->max_size())
-            FUN_140289f20();
-        u64 newcapacity = FUN_140287100(vec, newsize);
-        if ((i64)reinterpret_cast<VLog*>(vec)->_Myfirst() != 0) {
-            FUN_1402876b0(vec, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
-            reinterpret_cast<VLog*>(vec)->_Getal().deallocate((PLog*)reinterpret_cast<VLog*>(vec)->_Myfirst(), oldcapacity);
-        }
-        FUN_140286b50(vec, newcapacity);
-        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = FUN_14027a940(vec, first, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
-    } else if (newsize > oldsize) {
-        i64 mid = FUN_14027c450(first, oldsize);
-        FUN_140277280(first, mid, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
-        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = FUN_14027a940(vec, mid, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
-    } else {
-        i64 newlast = (i64)reinterpret_cast<VLog*>(vec)->_Myfirst() + newsize * 0x10;
-        FUN_140277280(first, last, *(i64*)&reinterpret_cast<VLog*>(vec)->_Myfirst());
-        FUN_1402876b0(vec, newlast, *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast());
-        *(i64*)&reinterpret_cast<VLog*>(vec)->_Mylast() = newlast;
-    }
-}
+template void VLog::_Assign_range<PLog*>(PLog*, PLog*, std::forward_iterator_tag);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @0x140276fe0
 i64 FUN_140276fe0(i64, i64 b, i64) { return b; }
 // _Buynode with try/catch(...) cleanup as in the exe
@@ -491,37 +491,37 @@ void FUN_140277930(i64 self, i64 v)
 }
 // emplace_back with the capacity checks done: construct at _Mylast and bump it
 // @0x140277990
-void FUN_140277990(i64 vec, i64 v)
-{
-    FUN_14027ba20((i64)&reinterpret_cast<VIng*>(vec)->_Getal(), FUN_14027a9b0(*(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()), FUN_14027c1d0(v));
-    FUN_140288d20(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-    i64 result = *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
-    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() += 0x10;
-}
+template decltype(auto) VIng::_Emplace_back_with_unused_capacity<const PIng&>(const PIng&);   // was FUN_140277990
+//
+//
+//
+//
+//
+//
 // @0x140277a50
-void FUN_140277a50(i64 vec, i64 v)
-{
-    FUN_14027b8e0((i64)&reinterpret_cast<VItem*>(vec)->_Getal(), FUN_14027a990(*(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast()), FUN_14027c200(v));
-    FUN_140288d00(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast());
-    i64 result = *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast();
-    *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast() += 0x30;
-}
+template decltype(auto) VItem::_Emplace_back_with_unused_capacity<ItemEntity>(ItemEntity&&);   // was FUN_140277a50
+//
+//
+//
+//
+//
+//
 // @0x140277b10
-void FUN_140277b10(i64 vec, i64 v)
-{
-    FUN_14027b980((i64)&reinterpret_cast<VStr*>(vec)->_Getal(), FUN_14027a9a0(*(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast()), (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
-    FUN_140288d10(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast());
-    i64 result = *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast();
-    *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast() += 8;
-}
+template decltype(auto) VStr::_Emplace_back_with_unused_capacity<CString>(CString&&);   // was FUN_140277b10
+//
+//
+//
+//
+//
+//
 // @0x140277bd0
-void FUN_140277bd0(i64 vec, i64 v)
-{
-    FUN_14027ba70((i64)&reinterpret_cast<VIng*>(vec)->_Getal(), FUN_14027a9b0(*(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()), FUN_14027c210(v));
-    FUN_140288d20(vec, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
-    i64 result = *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
-    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() += 0x10;
-}
+template decltype(auto) VIng::_Emplace_back_with_unused_capacity<PIng>(PIng&&);   // was FUN_140277bd0
+//
+//
+//
+//
+//
+//
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277c90
@@ -558,70 +558,70 @@ template PIng* VIng::_Emplace_reallocate<const PIng&>(PIng*, const PIng&);
 
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277ee0
-i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
-{
-    i64 off = (where - *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst()) / 0x30;
-    i64 al = (i64)&reinterpret_cast<VItem*>(vec)->_Getal();
-    i64 oldsize = reinterpret_cast<VItem*>(vec)->size();
-    if (oldsize == reinterpret_cast<VItem*>(vec)->max_size())
-        FUN_140289ec0();
-    i64 newsize = oldsize + 1;
-    u64 newcap = FUN_140286f50(vec, newsize);
-    i64 newvec = (i64)reinterpret_cast<std::allocator<ItemEntity>*>(al)->allocate(newcap);
-    i64 constructed_last = newvec + off * 0x30 + 0x30;
-    i64 constructed_first = constructed_last;
-    try {
+template ItemEntity* VItem::_Emplace_reallocate<ItemEntity>(ItemEntity*, ItemEntity&&);   // was FUN_140277ee0
 
-        FUN_14027b8e0(al, FUN_14027a990(newvec + off * 0x30), (i64)&reinterpret_cast<ItemEntity&>(std::forward<ItemEntity>(*reinterpret_cast<ItemEntity*>(v))));
-        constructed_first = newvec + off * 0x30;
-        if (where == *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast()) {
-            FUN_140289c00(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), newvec);
-        } else {
-            FUN_140289a80(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst(), where, newvec);
-            constructed_first = newvec;
-            FUN_140289a80(vec, where, *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), newvec + off * 0x30 + 0x30);
-        }
-    } catch (...) {
-        FUN_1402875f0(vec, constructed_first, constructed_last);
-        reinterpret_cast<std::allocator<ItemEntity>*>(al)->deallocate((ItemEntity*)newvec, newcap);
-        throw;
-    }
-    FUN_140287190(vec, newvec, newsize, newcap);
-    return off * 0x30 + *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140278130
-i64 FUN_140278130(i64 vec, i64 where, i64 v)
-{
-    i64 off = (where - *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst()) >> 3;
-    i64 al = (i64)&reinterpret_cast<VStr*>(vec)->_Getal();
-    i64 oldsize = reinterpret_cast<VStr*>(vec)->size();
-    if (oldsize == reinterpret_cast<VStr*>(vec)->max_size())
-        FUN_140289ee0();
-    i64 newsize = oldsize + 1;
-    u64 newcap = FUN_140286fe0(vec, newsize);
-    i64 newvec = (i64)reinterpret_cast<std::allocator<CString>*>(al)->allocate(newcap);
-    i64 constructed_last = newvec + off * 8 + 8;
-    i64 constructed_first = constructed_last;
-    try {
+template CString* VStr::_Emplace_reallocate<CString>(CString*, CString&&);   // was FUN_140278130
 
-        FUN_14027b980(al, FUN_14027a9a0(newvec + off * 8), (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
-        constructed_first = newvec + off * 8;
-        if (where == *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast()) {
-            FUN_140289c60(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), newvec);
-        } else {
-            FUN_140289ac0(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst(), where, newvec);
-            constructed_first = newvec;
-            FUN_140289ac0(vec, where, *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), newvec + off * 8 + 8);
-        }
-    } catch (...) {
-        FUN_140287630(vec, constructed_first, constructed_last);
-        reinterpret_cast<std::allocator<CString>*>(al)->deallocate((CString*)newvec, newcap);
-        throw;
-    }
-    FUN_1402872a0(vec, newvec, newsize, newcap);
-    return (i64)reinterpret_cast<VStr*>(vec)->_Myfirst() + off * 8;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140278370
 template PIng* VIng::_Emplace_reallocate<PIng>(PIng*, PIng&&);

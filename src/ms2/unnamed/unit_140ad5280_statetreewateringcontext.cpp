@@ -99,13 +99,13 @@ void StateTreeWatering::vfunc_4(StateData* pData)
     m_n48 = 0;
     State::vfunc_4(pData);
     int nTextId;
-    int nDuration = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->SummonRideeDuration)->FUN_140ad5c50();
+    int nDuration = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->SummonRideeDuration)->FUN_140ad5c50();
     nTextId = 0;
     if (m_n10 == 0xa0)
         nTextId = 0xd1b;
     if (m_n10 == 0xa1)
     {
-        nDuration = static_cast<Client::Constants*>(FUN_1401d3200())->TreewateringEmotion.Read();
+        nDuration = static_cast<Client::Constants*>(GetClientConstants())->TreewateringEmotion.Read();
         nTextId = 0xd1c;
     }
     MS2Ptr<StateTreeWateringData> spData(dynamic_cast<StateTreeWateringData*>(pData));

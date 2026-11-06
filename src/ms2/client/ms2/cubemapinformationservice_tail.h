@@ -36,6 +36,11 @@ public:
     void* m_pTail;                                      // +0x30 (not set by the ctor)
 };
 MS2_CHECK_SIZE(SalesInfo, 0x38);
+#include "ms2/placeholder/ms2svrptr.h"
+// MS2SvrPtr<SalesInfo>::Allocate (0x1410dc3b0, the hand FUN_1410dc3b0 in unit_1410dbc10): the exe value-initializes
+// (`new SalesInfo()`: memset 0x38, then the implicit ctor), where the generic Allocate default-initializes.
+// Make 0x14112fe10, Create 0x14112fe40 (unit_14112fe10).
+template <> inline SalesInfo* MS2SvrPtr<SalesInfo>::Allocate(void*) { return new SalesInfo(); }
 class SetItemEffectInfo : public CPtred                 // 0x28, ctor 0x1411233c0
 {
 public:
@@ -77,8 +82,8 @@ public:
 };
 
 // ---- unit-local value types (names invented) -------------------------------------------------------------------------
-enum Unk_CMISKindA { Unk_CMISKindA_None };             // key of the 0x14112cb40 comparator family
-enum Unk_CMISKindB { Unk_CMISKindB_None };             // key of the 0x14112cb80 comparator family
+enum Unk_CMISKindA : int { Unk_CMISKindA_None };       // key of the 0x14112cb40 comparator family
+enum Unk_CMISKindB : int { Unk_CMISKindB_None };       // key of the 0x14112cb80 comparator family
 enum Unk_CMISKindC { Unk_CMISKindC_None };             // element of the std::vector whose allocate sorts after SmartPointer's (exe 0x14114d980)
 
 // mark record of a cube group: poll timer and the mark entities (node value of f288)
@@ -113,7 +118,7 @@ MS2_CHECK_SIZE(Unk_CMISCubeTimer, 0x48);
 
 // node value of f58: efd::SmartPointer<egfPhysX::EntityActorData> (ctor(T*) 0x140ae1340, dtor 0x140ae16b0, operator= 0x141126090;
 // those three rows carry only the SmartPointer<EntityActorData> name and the old Unk_CMISPropPtr / Unk_InteractPropPtr views)
-namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
+#include "ms2/placeholder/entityactordata.h"   // C3: egfPhysX::EntityActorData member view (0x140ae1dd0, 0x140ae1b60)
 MS2_CHECK_SIZE(efd::SmartPointer<egfPhysX::EntityActorData>, 8);
 
 

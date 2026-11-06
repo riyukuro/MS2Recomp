@@ -387,12 +387,12 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
             {
                 if (!bMyDamage && (nFlags & 1) != 0 && !bMySummon)
                 {
-                    float fScale = FUN_1401d3200()->DamageOtherScale.Read();
+                    float fScale = GetClientConstants()->DamageOtherScale.Read();
                     obj.FUN_1409c4a30("diffScale", fScale);
                 }
                 if (!bMyDamage && (nFlags & 2) != 0 && !bMySummon)
                 {
-                    float fAlpha = FUN_1401d3200()->DamageOtherAlpha.Read();
+                    float fAlpha = GetClientConstants()->DamageOtherAlpha.Read();
                     obj.FUN_1409c4a30("diffAlpha", fAlpha);
                 }
             }
@@ -577,9 +577,9 @@ MS2_REPLACE_METHOD(0x1419139F0, UIDamageText, SetObservedId, 28, 0x4BB4D3D1);
 // @0x141913a20
 void UIDamageText::FUN_141913a20()
 {
-    m_nLineHeight = FUN_14025a620((class Unk_ConstVal*)(&FUN_1401d3200()->DamageGap));
-    m_nJumpCount = (std::max)(1, *FUN_1401d3200()->DamageRenderCount.Get());
-    m_nMaxShown = (std::max)(1, *FUN_1401d3200()->DamageRenderTotalCount.Get());
+    m_nLineHeight = FUN_14025a620((class Unk_ConstVal*)(&GetClientConstants()->DamageGap));
+    m_nJumpCount = (std::max)(1, *GetClientConstants()->DamageRenderCount.Get());
+    m_nMaxShown = (std::max)(1, *GetClientConstants()->DamageRenderTotalCount.Get());
     m_nMaxList = m_nMaxShown + 10;
     m_nMaxIndex = 1000;
 }
@@ -719,13 +719,13 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     {
         if (m_bObserver)
             return 1;
-        return reinterpret_cast<GameObject*>(pActor)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageDistance)->Get();
+        return reinterpret_cast<GameObject*>(pActor)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&GetClientConstants()->DamageDistance)->Get();
     }
     else if (pTarget != 0)
     {
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
-            return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageDistance)->Get();
+            return reinterpret_cast<GameObject*>(pTarget)->FUN_140f4a450() <= *reinterpret_cast<Common::Constants::Value<float>*>(&GetClientConstants()->DamageDistance)->Get();
     }
     return 0;
 }
@@ -941,11 +941,11 @@ float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
     if (pPlayer->vfunc_18() == kPos)
         return 1.0f;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
-    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    efd::Point3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     float fDistance = (kPos - kPlayer).Length();
-    float fRange = FUN_1401d3200()->DamageDistance.Read();
-    float fToTarget = (kPos - reinterpret_cast<const efd::Point3&>(kCamera)).Length();
-    if (fToTarget > (kPlayer - reinterpret_cast<const efd::Point3&>(kCamera)).Length())
+    float fRange = GetClientConstants()->DamageDistance.Read();
+    float fToTarget = (kPos - kCamera).Length();
+    if (fToTarget > (kPlayer - kCamera).Length())
     {
         float fRatio = efd::Min<float>(1.0f, efd::Max<float>(0.0f, (fRange - fDistance) / fRange));
         return 0.5f + fRatio * 0.5f;
@@ -1205,7 +1205,7 @@ void UIDamageText::FUN_141915990()
             if ((m_pBattleOption->m_n10 & 1) != 0)
             {
                 float fLine = (float)m_nLineHeight;
-                nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageOtherScale)->Get());
+                nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&GetClientConstants()->DamageOtherScale)->Get());
                 nOtherLine2 = nOtherLine << 1;
             }
             float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
@@ -1434,7 +1434,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
     if ((m_pBattleOption->m_n10 & 1) != 0)
     {
         float fLine = (float)m_nLineHeight;
-        nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&FUN_1401d3200()->DamageOtherScale)->Get());
+        nOtherLine = (int)(fLine * *reinterpret_cast<Common::Constants::Value<float>*>(&GetClientConstants()->DamageOtherScale)->Get());
         nOtherLine2 = nOtherLine << 1;
     }
     while (pos != 0)

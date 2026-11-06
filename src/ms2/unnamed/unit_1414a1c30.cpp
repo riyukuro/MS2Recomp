@@ -304,7 +304,7 @@ template<> class TSingleton<CTradeManagerEx> { public: static CTradeManagerEx* s
 template<> class TSingleton<Client::Constants> { public: static Client::Constants* s_instance; static Client::Constants* GetInstance(); };
 template<> class TSingleton<CommonString> { public: static CommonString* s_instance; static CommonString* GetInstance(); };
 template<> class TSingleton<GPUManager> { public: static GPUManager* s_instance; static GPUManager* GetInstance(); };
-template<> class TSingleton<ItemGachaBoxTable> { public: static ItemGachaBoxTable* s_instance; };   // 0x143aaf1d0
+template<> class TSingleton<ItemGachaBoxTable> { public: static ItemGachaBoxTable* s_instance; static ItemGachaBoxTable* GetInstance(); };   // 0x143aaf1d0
 template<class T> class SingletonClass { public: static T* ms_pSingleton; };
 class GFxService;
 struct Unk_NametagFlags;
@@ -317,9 +317,9 @@ class Unk_AdditionalFlags* FUN_140186320();   // C3: was FUN_140186320
 class CLocaleLanguage* FUN_1401c0da0();   // C3: was FUN_1401c0da0
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 Unk_SingletonObj* FUN_1401d31f0();
-Unk_SingletonObj1* FUN_1401d3200();
+#define GetClientConstants() (reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))   // C3: was Unk_SingletonObj1* FUN_1401d3200()
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
-class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_PcBangTable* FUN_140541580();   // C3: was FUN_140541580
 class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
@@ -351,7 +351,7 @@ class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
 Unk_SingletonObj* FUN_140cea070();
 class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
 class CQuestNavigator* FUN_140e7c990();   // C3: was FUN_140e7c990
-class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
+// (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 UGCCubePalette* GetUGCCubePalette();
 Unk_SingletonObj* FUN_140f26650();
@@ -362,7 +362,7 @@ class CCooltimeManager   // C3: member view for the former free stand-ins
 public:
     static class CCooltimeManager* GetInstance();
 };
-class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+// (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 class Unk_MdBookTable* FUN_1412db940();   // C3: was FUN_1412db940
 class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
 class Unk_RecommendCache   // C3: member view for the former free stand-ins
@@ -410,7 +410,7 @@ extern int DAT_143a284b0; extern int DAT_143ae2b48;
 struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
 class NiShadowManager { protected: static NiShadowManager* ms_pkShadowManager; friend CResultObj FUN_1414a58c0(int idx); };
 #define DAT_143afa980 (*reinterpret_cast<char**>(&NiShadowManager::ms_pkShadowManager))   // C3: was extern char* DAT_143afa980
-void* FUN_1414a54f0_ctor(void* mem, void* self);
+// (0x1414a54f0 is the real Unk_GFxImageHandler::Clone, below)
 void* FUN_140c8f690(const efd::SmartPointer<class NiViewRenderClick>&);   // C3: was FUN_140c8f690
 class NiMaterial; class NiTexture;
 // The five CAtlMap::RemoveAll COMDATs below (and their Disable/EnableAutoRehash) belong to CReactorDataTable's and
@@ -887,7 +887,7 @@ MS2_REPLACE(0x1414A2E30, FUN_1414a2e30, 94, 0x8854C121);
 void FUN_1414a2e90()
 {
     if (TSingleton<CReconnectionManagerCli>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_140e800e0()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)TSingleton<CReconnectionManagerCli>::GetInstance()));
         TSingleton<CReconnectionManagerCli>::s_instance = 0;
     }
 }
@@ -1256,7 +1256,7 @@ MS2_REPLACE(0x1414A3D90, FUN_1414a3d90, 94, 0x6EEE7143);
 void FUN_1414a3df0()
 {
     if (TSingleton<Client::Constants>::s_instance != 0) {
-        delete FUN_1401d3200();
+        delete GetClientConstants();
         TSingleton<Client::Constants>::s_instance = 0;
     }
 }
@@ -1355,7 +1355,7 @@ MS2_REPLACE(0x1414A41B0, FUN_1414a41b0, 94, 0x37405945);
 void FUN_1414a4210()
 {
     if (TSingleton<GPUManager>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_141245b20()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)TSingleton<GPUManager>::GetInstance()));
         TSingleton<GPUManager>::s_instance = 0;
     }
 }
@@ -1409,7 +1409,7 @@ MS2_REPLACE(0x1414A43F0, FUN_1414a43f0, 94, 0x0E6BA856);
 void FUN_1414a4450()
 {
     if (TSingleton<ItemGachaBoxTable>::s_instance != 0) {
-        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)FUN_14052d230()));
+        delete reinterpret_cast<Unk_SingletonObj*>(((class Unk_SingletonObj*)TSingleton<ItemGachaBoxTable>::GetInstance()));
         TSingleton<ItemGachaBoxTable>::s_instance = 0;
     }
 }
@@ -1793,17 +1793,17 @@ template void ATL::CAtlMap<int, MS2SvrPtr<CArcadeMainData>, ATL::CDefaultElement
 template void ATL::CAtlMap<int, std::vector<std::pair<int, CStringW> >, ATL::CDefaultElementTraits<int> >::DisableAutoRehash() throw();
 // @0x1414a54d0
 template void ATL::CAtlMap<int, std::vector<MS2SvrPtr<CArcadeRewardData> >, ATL::CDefaultElementTraits<int> >::DisableAutoRehash() throw();
+#include "ms2/placeholder/gfximageloader.h"   // GFxImageLoader::Protocol
+#include "ms2/placeholder/tfunctor2.h"         // FunctorHandler<TFunctor<R, ParamList<A, ParamList<B>>>, Fn>
+namespace Scaleform { namespace Render { class Image; class TextureManager; } }
+typedef TFunctor<Scaleform::Render::Image*, ParamList<const GFxImageLoader::Protocol&,
+    ParamList<Scaleform::Render::TextureManager*, EmptyParam>>> Unk_GFxImageCallback;   // as in ms2.cpp
+typedef FunctorHandler<Unk_GFxImageCallback, Scaleform::Render::Image* (*)(const GFxImageLoader::Protocol&,
+    Scaleform::Render::TextureManager*)> Unk_GFxImageHandler;
+// the image callback handler's Clone: new FunctorHandler(*this) (was FUN_1414a54f0 over FUN_1414a54f0_ctor)
 // @0x1414a54f0
-void* FUN_1414a54f0(char* self)
-{
-    char* p = (char*)operator new(0x10);
-    void* r;
-    if (p != 0)
-        r = FUN_1414a54f0_ctor(p, self);
-    else
-        r = 0;
-    return r;
-}
+template Unk_GFxImageHandler* Unk_GFxImageHandler::Clone() const;
+//
 // @0x1414a5540
 template void ATL::CAtlMap<int, MS2Ptr<ReactorData> >::EnableAutoRehash() throw();
 // @0x1414a5560

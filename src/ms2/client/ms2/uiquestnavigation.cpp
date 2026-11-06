@@ -81,7 +81,7 @@ struct Unk_AuConfig
     char m_pad[0x5e0];
     Unk_AuCfgValue m_5e0;               // +0x5e0 the marker's screen y offset
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
@@ -307,7 +307,7 @@ Vector3 NpcNavigationEntity::vfunc_7()
 // @0x140e790f0
 float NpcNavigationEntity::vfunc_8()
 {
-    return NavigationEntity::vfunc_8() - (*reinterpret_cast<Common::Constants::Value<float>&>(((struct Unk_AuConfig*)FUN_1401d3200())->m_5e0).Get() + 30.0f);
+    return NavigationEntity::vfunc_8() - (*reinterpret_cast<Common::Constants::Value<float>&>(((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_5e0).Get() + 30.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

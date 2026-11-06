@@ -27,7 +27,7 @@ class CMotionController;
 class NiControllerSequence;
 class Unk_EffectTarget;
 class CArrowFillTargetContext;
-struct Unk_MagicTagPtr;
+class Unk_FcTag; typedef MS2Ptr<Unk_FcTag> Unk_MagicTagPtr;   // C3: was the stand-in struct Unk_MagicTagPtr (magicptr.h)
 
 // The hit pause / camera vibration of the running attack (StateSkill +0xb8).
 class Unk_SkillPauseEvent

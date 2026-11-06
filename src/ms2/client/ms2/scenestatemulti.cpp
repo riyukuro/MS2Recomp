@@ -164,7 +164,7 @@ class NiMesh;
 void FUN_1413fb630(egf::Entity*, efd::vector<NiMesh*>*);
 #include "ms2/placeholder/notifygameeventchanged.h"
 struct Unk_Settings { char m_pad[0xe258]; unsigned m_nLobbyMap; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 void* FUN_1401c0d90();
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cgameoption.h"
@@ -828,7 +828,7 @@ void CSceneStateMulti::EnterCreateMode()
 unsigned int CSceneStateMulti::GetLobbyMap()
 {
     if (IsServerTimeSameMonth())
-        return ((struct Unk_Settings*)FUN_1401d3200())->m_nLobbyMap;
+        return ((struct Unk_Settings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nLobbyMap;
     return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047b9b0();
 }
 

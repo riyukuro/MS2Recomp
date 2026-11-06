@@ -91,7 +91,7 @@ struct Unk_MakeupConfig
     Unk_MakeupConfigFloat m_2de8;                               // wheel step
     Unk_MakeupConfigFloat m_2e40;                               // drag scale
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Listener at +0xa0: slots 1 to 4 are called by this controller (the base class only knows slot 0).
 class Unk_MakeupListener
@@ -156,8 +156,8 @@ int CMakeupController::vfunc_3()
     m_bUseButton2 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547150();
     m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
     m_spScale = new (efd::MemHint(efd::MemHint::NONE)) CScaleModifier;
-    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2de8)->Read();
-    m_fDragScale = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)FUN_1401d3200())->m_2e40)->Read();
+    m_fWheelStep = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)GetClientConstants())->m_2de8)->Read();
+    m_fDragScale = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MakeupConfig*)GetClientConstants())->m_2e40)->Read();
     FindFaceMesh();
     LoadFromProxy();
     m_spPicker->SetPrevMesh(m_spFaceMesh.FUN_141412c90());

@@ -140,7 +140,7 @@ public:
 class CNetworkService { public: int ConnectTo(CString strUrl, int n, int a, int b, int c); };
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 int FUN_1406c34c0();                                            // the platform kind
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
@@ -217,7 +217,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
     int nLoginType = 0;
     if (FUN_1406c34c0() != 0)
     {
-        ((class IClientPlatform*)FUN_140d86260())->vfunc_20(nLoginType, 1);
+        ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_20(nLoginType, 1);
     }
     else
     {
@@ -241,7 +241,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
-    ((class IClientPlatform*)FUN_140d86260())->vfunc_33(DAT_143ab2820);
+    ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_33(DAT_143ab2820);
 }
 
 // @0x1419e1570
@@ -292,7 +292,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (FUN_1406c34c0() == 1)
                 {
-                    ((class IClientPlatform*)FUN_140d86260())->vfunc_72();
+                    ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_72();
                 }
                 else
                 {

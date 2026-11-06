@@ -226,7 +226,7 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
 int FUN_14074b1c0(CQuestData* pData, int nBit);                             // a quest flag bit
 int FUN_1416e8060(int nChapter);                                            // the chapter is hidden
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                              // show a message box
@@ -1376,7 +1376,7 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
     if (pPlayer->GetCurStateId() == 0x25 || pPlayer->GetCurStateId() == 0x2a)
         return;
     const float& fRange = *TSingleton<Client::Constants>::GetInstance()->TaxiStationFindDistance.Get();
-    if (TSingleton<WorldService>::GetInstance()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(), fRange, 1, 0) == 0)
+    if (TSingleton<WorldService>::GetInstance()->FUN_141bcfd30(0x85359406, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->FUN_1416767d0())), fRange, 1, 0) == 0)
     {
         FUN_140d73bc0(0x89, 0, 0, CStringW(L""));
         return;
@@ -1467,7 +1467,7 @@ bool UIWorldMapDialog::OnTaxiMeratConfirm(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0)
         return true;
-    if (!((class IClientPlatform*)FUN_140d86260())->vfunc_40(*TSingleton<Client::Constants>::GetInstance()->MeratAirTaxiPrice.Get()))
+    if (!((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(*TSingleton<Client::Constants>::GetInstance()->MeratAirTaxiPrice.Get()))
     {
         FUN_140d73bc0(0x35, 0, 0, CStringW(L""));
         return true;
@@ -2290,7 +2290,7 @@ void UIWorldMapDialog::FUN_141b60490(CStringW strText)
         return;
     Unk_BlockList request(0x4e42);
     request.Add("m_fieldSearch", CStringW(strText), false);
-    if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
+    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request) == 1)
         FUN_141b60d40(CStringW(strText));
 }
 MS2_REPLACE_METHOD(0x141B60490, UIWorldMapDialog, FUN_141b60490, 320, 0x01A1E232);
@@ -2463,7 +2463,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
         {
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x83))
             {
-                ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, 0, 1000);
+                ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
                 __int64 nPrice = *TSingleton<Client::Constants>::GetInstance()->MeratAirTaxiPrice.Get();
                 if (nPrice != 0)
                     nPrice = FUN_140632990(nPrice, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0xaa));

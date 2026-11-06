@@ -120,7 +120,7 @@ void FUN_141275260(int nStringId, int nA, int nB);                         // 0x
 // The game's constants table, the slot holding the maximum distance of a couple emotion (+0x37e0).
 class Unk_CeConstSlot { public: char m_pad0[1]; };
 class Unk_CeConsts { public: char m_pad0[0x37e0]; Unk_CeConstSlot m_maxDist; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Opaque scene-graph and math helpers of the placement search (free-function form).
 void FUN_140a0b2a0(NiAVObject* pObject);                                   // 0x140a0b2a0 detach from the parent
@@ -1206,7 +1206,7 @@ bool FUN_140b83f60(int nState)
 // @0x140b83fa0
 bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB)
 {
-    float fMax = (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CeConsts*)FUN_1401d3200())->m_maxDist)->Get();
+    float fMax = (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CeConsts*)GetClientConstants())->m_maxDist)->Get();
     float fLen = (kA - kB).Length();
     if (fLen > fMax)
         return false;

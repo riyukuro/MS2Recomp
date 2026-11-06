@@ -34,13 +34,13 @@ public:
         m_nE = nE;
         m_38 = 0;
         m_40 = 0;
-        FUN_1412818f0(fA, fB, fC, false);
+        reinterpret_cast<ATL::CAtlMap<unsigned __int64, int>&>(*this).SetOptimalLoad(fA, fB, fC, false);
     }
     ~Unk_PvpTimer() noexcept(false) { try { reinterpret_cast<ATL::CAtlMap<unsigned __int64, int>&>(*this).RemoveAll(); } catch (...) {} }         // 0x1412814e0
 
-    void FUN_1412818f0(float fA, float fB, float fC, bool bApply);      // 0x1412818f0
-    void FUN_14101af70();
-    unsigned FUN_14101a900(unsigned __int64 nValue);
+    // 0x1412818f0 = the real CAtlMap<unsigned __int64, int>::SetOptimalLoad (the ctor calls it through the map view)
+    // (was) FUN_14101af70 = CAtlMap<unsigned __int64, int>::UpdateRehashThresholds (private)
+    // (was) FUN_14101a900 = CAtlMap<unsigned __int64, int>::PickSize (private)
     void FUN_141017e80();                                               // clear
     int FUN_141017f40(__int64 nCharId);                                 // the rank of a character
     int FUN_141017f80();                                                // the row count

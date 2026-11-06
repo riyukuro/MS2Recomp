@@ -22,17 +22,17 @@ struct CppStdString
     size_t size;
     size_t res;
 };
-extern CppStdString DAT_143a29388;
+namespace CryptoPP { extern const std::string DEFAULT_CHANNEL; }   // 0x143a29388 (cryptlib.cpp)
 // @0x142cc8c20
-// std::string::_Tidy(true): free a heap buffer, then reset to the empty SSO string
+// the atexit thunk of CryptoPP::DEFAULT_CHANNEL: ~std::string (frees a heap buffer, resets to the empty SSO string)
 void FUN_142cc8c20()
 {
-    CppStdString& s = DAT_143a29388;                                    // CryptoPP::DEFAULT_CHANNEL
-    if (s.res >= 16)
-        std::allocator<char>().deallocate(s.ptr, s.res + 1);
-    s.size = 0;
-    s.res = 15;
-    s.buf[0] = 0;
+    typedef std::string Str;
+    const_cast<Str&>(CryptoPP::DEFAULT_CHANNEL).~Str();
+    _ReadWriteBarrier();   // keeps the reset stores: cl drops stores to a known-const global
+    //
+    //
+    //
 }
 
 // operator delete / aligned free / __ehvec_dtor as the exe's CRT and Crypto++ expose them

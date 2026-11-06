@@ -135,7 +135,7 @@ void FUN_140841420(CStringW& str);                                      // the m
 int FUN_1407181a0(const CStringW& str);                                 // _wtoi of a CStringW
 int FUN_14053feb0(int nItemId);                                         // default rank of an item
 bool FUN_140811640(int nKind);                                          // the first use is paid with red merat
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                         // show it
@@ -569,9 +569,9 @@ bool CSmartPushAutoFishing::FUN_140dd07b0()
         nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        if (FUN_140811640(m_nId) && ((class IClientPlatform*)FUN_140d86260())->vfunc_41(nPrice) == true)
+        if (FUN_140811640(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
             return true;
-        return ((class IClientPlatform*)FUN_140d86260())->vfunc_40(nPrice);
+        return ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nPrice);
     }
     else if (pkg->m_nMeso != 0)
     {
@@ -822,9 +822,9 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
         nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        if (FUN_140811640(m_nId) && ((class IClientPlatform*)FUN_140d86260())->vfunc_41(nPrice) == true)
+        if (FUN_140811640(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
             return true;
-        return ((class IClientPlatform*)FUN_140d86260())->vfunc_40(nPrice);
+        return ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nPrice);
     }
     else if (pkg->m_nMeso != 0)
     {
@@ -1545,3 +1545,4 @@ void CSmartPush::vfunc_2()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca5bd0-0x142ca5c60 .text$yd
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400d5f60 ; statemanager_statics.h s_pointer init (look-alike egf::kENTITY_INVALID/kEVT_INVALID inits share the shape)

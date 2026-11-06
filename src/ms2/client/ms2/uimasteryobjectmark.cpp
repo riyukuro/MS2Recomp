@@ -68,7 +68,7 @@ struct Unk_AuConfig
     Unk_AuCfgValue m_df88;
     Unk_AuCfgValue m_dfe0;              // +0xdfe0 the distance the tooltip shows within
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 CStringW GetStringCommonByKey(const CStringW& str);                    // the localized text of a string key
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -263,7 +263,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         if (CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(spObject.operator->()))
         {
             Vector3 ptScreen;
-            Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
+            efd::Point3 ptWorld = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pGather->GetPos())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 200.0f)));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
             if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist)
             {
@@ -273,10 +273,10 @@ void UIMasteryObjectMark::FUN_140e5a600()
             {
                 reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pGather->GetPos())));
-                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ddd0)->Get();
-                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de28)->Get();
+                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_ddd0)->Get();
+                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_de28)->Get();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->Get() && pGather->FUN_141402b40() != 0) ? 1 : 0;
+                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_dfe0)->Get() && pGather->FUN_141402b40() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), pGather->GetPos()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)
@@ -331,7 +331,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         if ((spHome.get() ? true : false) && nOwnerOk != 0)
         {
             Vector3 ptScreen;
-            Vector3 ptWorld = spHome->GetPosition().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
+            efd::Point3 ptWorld = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spHome->GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 200.0f)));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->GetPosition()).FUN_140967ac0();
             int nRiding = static_cast<Unk_McPc*>(pPC)->GetCubeMode() != 0;
             if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist || nRiding != 0)
@@ -347,10 +347,10 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             {
                 reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(spHome->GetPosition())));
-                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de80)->Get();
-                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8)->Get();
+                ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_de80)->Get();
+                ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_ded8)->Get();
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->Get() && spHome->FUN_141229080() != 0) ? 1 : 0;
+                int nShow = (fDist < *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_dfe0)->Get() && spHome->FUN_141229080() != 0) ? 1 : 0;
                 if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->GetPosition()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)

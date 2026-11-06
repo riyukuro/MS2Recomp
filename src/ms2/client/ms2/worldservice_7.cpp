@@ -47,7 +47,7 @@
 // MS2-PIN: ?RemoveAll@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAXXZ 0x141c16670
 //
 // MS2-PIN: ?RemoveAll@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@QEAAXXZ 0x141c16890
-// MS2-PIN: ?RemoveAll@?$CAtlList@VUnk_WsPropRef@@V?$CElementTraits@VUnk_WsPropRef@@@ATL@@@ATL@@QEAAXXZ 0x141c16150 ; m_058 (node dtor 0x141bf60a0 -> ~Unk_WsPropRef)
+// MS2-PIN: ?RemoveAll@?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@QEAAXXZ 0x141c16150 ; m_058 (node dtor 0x141bf60a0 -> ~Unk_WsPropRef); C3: was the Unk_WsV058/Unk_WsPropRef stand-in
 // MS2-PIN: ?RemoveAt@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141c17660 ; m_178 (FreeNode 0x140966ba0)
 // MS2-PIN: ?RemoveAll@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@QEAAXXZ 0x141c16de0
 // MS2-PIN: ?RemoveAll@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@2@@ATL@@QEAAXXZ 0x141c173e0
@@ -384,7 +384,7 @@ template <class M> static void WsTailRBMulti(M& m)
     m.RemoveAll();
 }
 template <class E> static E WsTailElem() { return E(); }
-template <> Unk_WsPropRef WsTailElem<Unk_WsPropRef>() { return *static_cast<const Unk_WsPropRef*>(0); }   // no default ctor; never executed
+template <> efd::SmartPointer<egfPhysX::EntityActorData> WsTailElem<efd::SmartPointer<egfPhysX::EntityActorData> >() { return *static_cast<const efd::SmartPointer<egfPhysX::EntityActorData>*>(0); }   // no default ctor; never executed
 template <class E> static void WsTailAtlList(ATL::CAtlList<E>& l)
 {
     

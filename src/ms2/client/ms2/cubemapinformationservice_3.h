@@ -16,6 +16,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/timer.h"
+#include "ms2/placeholder/cubeheightindex.h"
 #include "ms2/commonfiles/ugcbuildvalidator.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/commonfiles/ugcmapdata.h"
@@ -81,7 +82,7 @@ typedef egf::EntityID Unk_CMISEntityRef;
 //
 //
 
-class CFieldDataCli; class CItemData; struct Unk_CMISObj480; class SaleStateData; class SalesInfo; class UICubeUGCHead; class SetItemEffectInfo; class CFunctionCubeObject; struct Unk_CMISCubeTimer; struct Unk_CMISMarkRec; struct Unk_CMISCell; namespace egfPhysX { class EntityActorData; }
+class CFieldDataCli; class CItemData; struct Unk_CMISObj480; class SaleStateData; class SalesInfo; class UICubeUGCHead; class SetItemEffectInfo; class CFunctionCubeObject; struct Unk_CMISCubeTimer; struct Unk_CMISMarkRec; struct Unk_CMISCell; enum Unk_CMISKindA : int; enum Unk_CMISKindB : int; namespace egfPhysX { class EntityActorData; }
 
 struct Unk_CMISElem388;
 struct Unk_CMISHandle388; struct Unk_CMISHandle3a8;
@@ -148,7 +149,7 @@ public:
     int CountCubes();
     int CountCubesByItemId(int nItemId);
     int FUN_1410b9d80(__int64 nId);
-    Unk_CMISTree<277>* FUN_1410b9e70();
+    Unk_CubeHeightIndex* FUN_1410b9e70();
     int CountCubesByItemIdAndOwner(int nItemId, __int64 nOwnerId);
     float DirectionToAngle(int nDir);
     int VectorToDirection(Vector3 ptDir);
@@ -355,7 +356,7 @@ public:
     void* FUN_1410c7c20(int nA, int nB);
     int FUN_1410cdf60(Unk_Int3 kFrom, Unk_Int3 kDir);   // C3: by value (the exe callers copy the cells)
     void RemoveFunctionCubeObject(int nId);
-    void AddEntityRef(Unk_Int3 pt, const Unk_CMISEntityRef& ref);
+    void AddEntityRef(Unk_Int3 pt, Unk_CMISEntityRef ref);
     void FUN_1410d4680(ATL::CAtlArray<Unk_CMISHandle3a8>* pSrc);
     void FUN_1410d43c0(ATL::CAtlArray<Unk_CMISHandle388>* pSrc);
     void FUN_1410d59c0(ATL::CAtlArray<MS2Ptr<Cube>>* pOut);
@@ -399,8 +400,8 @@ public:
     int f24c = 0;
     Timer t250;
     efd::map<int, Unk_CMISMarkRec> f288;   // C3: was Unk_CMISTree<275>
-    Unk_CMISTree<276> f298;
-    Unk_CMISTree<277> f2a8;
+    efd::map<int, Unk_CMISKindA> f298;   // C3: was Unk_CMISTree<276>
+    Unk_CubeHeightIndex f2a8;   // C3: was Unk_CMISTree<277>
     efd::map<int, Unk_CMISCell> f2b8;   // C3: was Unk_CMISTree<278>
     efd::map<int, egf::EntityID> f2c8;   // C3: was Unk_CMISTree<265>
     Unk_CMISEntityRef f2d8;
@@ -413,8 +414,8 @@ public:
     efd::map<int, unsigned> f338;   // C3: was Unk_CMISTree<285>
     efd::map<int, MS2Ptr<SetItemEffectInfo> > f348;   // C3: was Unk_CMISTree<279>
     efd::map<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char> > >, int> f358;   // C3: was Unk_CMISTree<270>
-    Unk_CMISTree<280> f368;
-    Unk_CMISTree<281> f378;
+    efd::map<Unk_CMISKindB, bool> f368;   // C3: was Unk_CMISTree<280>
+    efd::map<Unk_CMISKindB, int> f378;   // C3: was Unk_CMISTree<281>
     ATL::CAtlArray<Unk_CMISElem388*> a388;
     ATL::CAtlArray<Unk_CMISElem3a8*> a3a8;
     Unk_CMISTree<282> f3c8;

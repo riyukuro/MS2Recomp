@@ -24,7 +24,7 @@
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                // the server time
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text of a key
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
@@ -110,7 +110,7 @@ void CMesoMarketProductCli::FillMarketRow(ASObj& row)
 // @0x140d6db30
 void CMesoMarketProductCli::FillCommonRow(ASObj& row)
 {
-    __int64 nBase = *reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6018)->Get();
+    __int64 nBase = *reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6018)->Get();
     __int64 nUnit = m_n28;
     if (m_n20 > nBase)
         nUnit = nUnit / (m_n20 / nBase);
@@ -118,7 +118,7 @@ void CMesoMarketProductCli::FillCommonRow(ASObj& row)
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
     row.FUN_1407cbb20("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
-                                                FUN_140d6e230(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)FUN_1401d3200()) + 0x6140)->Get()))));
+                                                FUN_140d6e230(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6140)->Get()))));
     if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
     {
         row.FUN_1407cbb20("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));

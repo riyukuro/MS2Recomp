@@ -1,0 +1,6 @@
+217c
+    { const size_t stSize = uiCodeSize; memcpy_s(pvCode, stSize, pkCode->GetBufferPointer(), stSize); } // MS2: the exe inlines the efd::Memcpy body here (EE_ASSERT is empty in release)
+.
+21c
+namespace efd { __declspec(noinline) efd::SInt32 Memcpy(void* dest, const void* src, size_t count); } // MS2: the exe calls efd::Memcpy (0x140a34190) in LoadShaderCodeFromFile (replaces a blank line)
+.

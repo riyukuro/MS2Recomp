@@ -148,7 +148,7 @@ public:
     virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44();
     virtual void vfunc_45();
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 class Unk_LtaPlayerMgr : public WorldService { };
 
@@ -380,7 +380,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
 bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        Unk_LtaWallet* wallet = ((class Unk_LtaWallet*)FUN_140d86260());
+        Unk_LtaWallet* wallet = ((class Unk_LtaWallet*)((void*)GetClientPlatform()));
         if (wallet->vfunc_40(m_178->m_merat)) {
             COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.Encode1(0x1a);
@@ -402,7 +402,7 @@ bool UILongTermAttendGiftDialog::FUN_140c6bd40(int nResult, const CMsgBoxData&)
             FUN_140d73cd0();
             return true;
         }
-        ((class Unk_LtaWallet*)FUN_140d86260())->vfunc_45();
+        ((class Unk_LtaWallet*)((void*)GetClientPlatform()))->vfunc_45();
         return true;
     }
     return true;

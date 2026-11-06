@@ -24,7 +24,7 @@
 // (0x142cc3a80 is the atexit thunk of a function-local static registered by the function at 0x141b977f0, another CU)
 // MS2-PIN: ??_7WorldService@@6BISystemService@efd@@@ 0x142ffeb98
 // MS2-PIN: ??_7WorldService@@6B?$TSingleton@VWorldService@@@@@ 0x142ffec20
-// MS2-PIN: ??0Unk_WsC_TagPtr@@QEAA@AEBU0@@Z 0x141bf1230
+//
 // MS2-PIN: ??0Unk_WsC_TagPtr@@QEAA@H@Z 0x141bf12a0
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCPortal@@@@QEBA_NXZ 0x140965190
 // MS2-PIN: ??0?$MS2Ptr@VUnk_GoField@@@@QEAA@$$QEAV0@@Z 0x141bf1390
@@ -114,9 +114,9 @@ class Unk_WsB_Vibrator;                                 // m_468 value (defined 
 typedef ATL::CAtlMap<int, MS2Ptr<CRegionSkillObject> > Unk_Ws1M3a0;
 typedef ATL::CAtlMap<unsigned __int64, MS2Ptr<CBoxCollision> > Unk_Ws1M420;
 typedef ATL::CAtlMap<__int64, MS2Ptr<Unk_WsB_Vibrator> > Unk_Ws1M468;
-//
-//
-//
+class CLiftableTargetBox; class CLiftableTargetGuide; class CReactor; class CLiftableObject; namespace egf { class Entity; }   // F1/F2/F8/F10/F14 (the GetHeadPosition / GetNext families)
+typedef ATL::CRBMultiMap<int, MS2Ptr<CLiftableTargetBox> > Unk_Ws1F1; typedef ATL::CRBMultiMap<int, MS2Ptr<CLiftableTargetGuide> > Unk_Ws1F2;   // m_540 / m_570
+typedef ATL::CRBMap<egf::Entity*, egf::Entity*> Unk_Ws1F8; typedef ATL::CRBMap<CStringA, efd::SmartPointer<CReactor> > Unk_Ws1F10; typedef ATL::CRBMap<CStringA, MS2Ptr<CLiftableObject> > Unk_Ws1F14;   // m_6d8 / m_7c8 / m_678
 //
 //
 //
@@ -579,7 +579,7 @@ public:
 public:
     bool IsSphereInFrustum(const efd::Point3&, float);   // C3: was free FUN_140af0aa0
 public:
-    Vector3 FUN_140a17e10();   // C3: was Unk_WsA_Camera/Unk_WsB_Cam::FUN_140a17e10
+    efd::Point3 FUN_140a17e10();   // C3: was Unk_WsA_Camera/Unk_WsB_Cam::FUN_140a17e10
 };
 class CMainSystem   // C3: member view for the former free stand-ins
 {
@@ -665,13 +665,13 @@ efd::SmartPointer<egf::EntityManager> WorldService::GetEntityManager()
 }
 MS2_REPLACE_METHOD(0x141BC16D0, WorldService, GetEntityManager, 67, 0xF46B12BB);
 
-void* FUN_141bffee0(void* map);                         // m_350.GetStartPosition
+// (was) void* FUN_141bffee0(void* map);                         // m_350.GetStartPosition
 void* FUN_141c00300(void* map, void* pos);              // m_350.GetValueAt(pos) (a 16-byte pointer)
 // @0x141bc2b30
 int WorldService::FUN_141bc2b30()
 {
     int sum = 0;
-    for (void* pos = FUN_141bffee0(&m_350); pos; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
         sum += *(int*)((char*)static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos))->operator->() + 0x188);
     return sum;
 }
@@ -841,7 +841,7 @@ void WorldService::FUN_141bca390(unsigned key)
 }
 MS2_REPLACE_METHOD(0x141BCA390, WorldService, FUN_141bca390, 41, 0xD16A1645);
 
-void* FUN_141bfeb30(void* map);                         // m_0e8.GetHeadPosition
+// (was) void* FUN_141bfeb30(void* map);                         // m_0e8.GetHeadPosition
 void* FUN_141c007a0(void* map, void* pos);              // m_0e8.GetValueAt
 void* FUN_140965780(void* sp);                          // SmartPointer get
 class CUGCBallObject* FUN_140dee810(GameObject*);
@@ -851,11 +851,11 @@ public:
     int FUN_140ded420(struct Unk_UbTag*, void*);
     void FUN_140ded6d0();   // C3: was free FUN_140ded6d0
 };
-void FUN_141bff0b0(void* map, void** pos);              // m_0e8.GetNext
+// (was) void FUN_141bff0b0(void* map, void** pos);              // m_0e8.GetNext
 // @0x141bca630
 void WorldService::FUN_141bca630()
 {
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         void* p = (GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos);
         if (void* q = FUN_140dee810((GameObject*)p))
@@ -864,15 +864,15 @@ void WorldService::FUN_141bca630()
 }
 MS2_REPLACE_METHOD(0x141BCA630, WorldService, FUN_141bca630, 144, 0x3A417F2A);
 
-void* FUN_141bfec10(void* map);                         // m_510.GetHeadPosition
+// (was) void* FUN_141bfec10(void* map);                         // m_510.GetHeadPosition
 void* FUN_141c00a40(void* map, void* pos);              // m_510.GetValueAt
 class Unk_WsB_Lift;
 void FUN_1409649e0(Unk_WsP16* self);                    // dtor
-void FUN_141bff270(void* map, void** pos);              // m_510.GetNext
+// (was) void FUN_141bff270(void* map, void** pos);              // m_510.GetNext
 // @0x141bc58d0
 void WorldService::FUN_141bc58d0(void* pOut)
 {
-    for (void* pos = FUN_141bfec10(&m_510); pos; FUN_141bff270(&m_510, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         void* p = ((void*)((MS2Ptr<Unk_WsB_Lift>*)(void*)(FUN_141c00a40(&m_510, pos)))->get());
         MS2Ptr<Unk_WsB_Lift> sp(static_cast<Unk_WsB_Lift*>(p));   // 0x141bf1520
@@ -881,14 +881,14 @@ void WorldService::FUN_141bc58d0(void* pOut)
 }
 MS2_REPLACE_METHOD(0x141BC58D0, WorldService, FUN_141bc58d0, 167, 0x612FE973);
 
-void* FUN_141bfead0(void* map);                         // m_540.GetHeadPosition
+// (was) void* FUN_141bfead0(void* map);                         // m_540.GetHeadPosition
 void* FUN_141c00680(void* map, void* pos);              // m_540.GetValueAt
 class Unk_AkoLiftTarget : public CPtred { public: int FUN_1410af780(); };   // m_540 value, CLiftableTargetBox (same definition as worldservice_3)
-void FUN_141bff030(void* map, void** pos);              // m_540.GetNext
+// (was) void FUN_141bff030(void* map, void** pos);              // m_540.GetNext
 // @0x141bc5980
 void WorldService::FUN_141bc5980(void* pOut)
 {
-    for (void* pos = FUN_141bfead0(&m_540); pos; FUN_141bff030(&m_540, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F1*>(&m_540)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F1*>(&m_540)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<Unk_AkoLiftTarget> sp = *static_cast<MS2Ptr<Unk_AkoLiftTarget>*>(FUN_141c00680(&m_540, pos));
         static_cast<std::vector<MS2Ptr<MS2ActorUpdater> >*>(pOut)->push_back(reinterpret_cast<const MS2Ptr<MS2ActorUpdater>&>(sp));
@@ -896,15 +896,15 @@ void WorldService::FUN_141bc5980(void* pOut)
 }
 MS2_REPLACE_METHOD(0x141BC5980, WorldService, FUN_141bc5980, 152, 0x449A17B8);
 
-void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
+// (was) void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);              // m_678.GetValueAt
-void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
+// (was) void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
 void FUN_140a7b410(Unk_WsP16* self, void* src);         // copy ctor
 void FUN_1409649b0(Unk_WsP16* self);                    // dtor
 // @0x141bc5f10
 void WorldService::FUN_141bc5f10(void* pOut)
 {
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> sp = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         ((ATL::CAtlArray<MS2Ptr<CInteractObject>>*)pOut)->Add(reinterpret_cast<const MS2Ptr<CInteractObject>&>(sp));
@@ -1126,8 +1126,8 @@ public:
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_WsB_EntityList;
 // C3: the 16-byte entity-list pointer of pc.cpp (Unk_PCEntListPtr) and scenestategame.cpp (Unk_SSGEntListPtr), the
 // COMDATs these handles share: operator-> 0x1409f2190, dtor 0x1409f20e0, get 0x1409f2170, operator== 0x1409f2130.
-struct Unk_PCEntListPtr { Unk_WsB_EntityList* operator->() const; ~Unk_PCEntListPtr(); };
-struct Unk_SSGEntListPtr { Unk_WsB_EntityList* get() const; bool operator==(Unk_WsB_EntityList* p) const; };
+typedef TPtrValue<Unk_WsB_EntityList> Unk_PCEntListPtr;   // the real type of the handle; dtor 0x1409f20e0 (operator-> callers use Unk_WsC_TagPtr::operator->)
+// (get 0x1409f2170 and operator== 0x1409f2130: the callers use Unk_WsC_TagPtr::get / operator==)
 struct Unk_WsB_TagList
 {
     Unk_WsB_TagList() : m_unk(0), m_list(0) {}
@@ -1225,7 +1225,7 @@ MS2_CHECK_OFFSET(Unk_WsB_Lift, m_entity, 0xb8);
 // @0x141bc6a20
 void WorldService::FUN_141bc6a20(int n)
 {
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> sp = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         sp->vfunc_3(n);
@@ -1869,12 +1869,12 @@ public:
     virtual void DecRefCount();
 };                                                  // singletons reached through id cells
 typedef MS2Ptr<CMsgBoxData> Unk_WsC_MsgBoxPtr;
-class CPet   // C3: member view (real class not in this TU)
-{
-public:
-    int GetKind();
-    float FUN_140b11020();      // cpet.h: FUN_140291d10(m_nGradeFx)
-};
+#include "ms2/placeholder/cpet.h"                // C3: CPet (was a member view); efd::DynamicCast<CPet, CNpc>
+//
+//
+//
+//
+//
 #include "ms2/client/ms2/dropitem.h"             // C3: CDropItem
 class Unk_MyPCDropItem   // C3: member view (real class not in this TU)
 {
@@ -2410,7 +2410,7 @@ MS2_CHECK_OFFSET(Unk_WsE_FieldObject, m_model, 0x180);
 class Unk_WsE_Proxy : public CPtred
 {
 public:
-    MS2Ptr<Unk_WsE_FieldObject> m_owner;                            // +0x18
+    MS2Ptr<CPortal> m_owner;                                        // +0x18
     unsigned char m_pad28[0x10];
     int m_proxyId;                                                  // +0x38
     unsigned char m_pad3c[0x44];
@@ -2426,7 +2426,7 @@ MS2_CHECK_SIZE(Unk_WsE_Proxy, 0xe8);
 class Unk_WsE_NotifyAdd : public CPtred
 {
 public:
-    Unk_WsE_FieldObject* m_object;                                  // +0x18
+    CPortal* m_object;                                              // +0x18
 };
 MS2_CHECK_SIZE(Unk_WsE_NotifyAdd, 0x20);
 
@@ -3436,16 +3436,16 @@ MS2_REPLACE_METHOD(0x141BBD490, WorldService, FUN_141bbd490, 419, 0xD5C5AEB3);
 typedef efd::SmartPointer<egf::Entity> Unk_WsA_EntPtr;
 unsigned __int64 FUN_141bf7db0(void*);
 typedef std::vector<MS2Ptr<MS2ActorUpdater> > Unk_Ws1UpdVec;      // m_9a0's exe type (erase 0x141c2d850)
-void* FUN_141bfebb0(void* map);                                     // m_5e8.GetHeadPosition
+// (was) void* FUN_141bfebb0(void* map);                                     // m_5e8.GetHeadPosition
 void* FUN_141c00920(void* map, void* pos);                          // m_5e8.GetValueAt
-void FUN_141bff1b0(void* map, void** pos);                          // m_5e8.GetNext
+// (was) void FUN_141bff1b0(void* map, void** pos);                          // m_5e8.GetNext
 void FUN_1401d3700(CString& s);
-void* FUN_141bfebd0(void* map);                                     // m_4b0.GetHeadPosition
+// (was) void* FUN_141bfebd0(void* map);                                     // m_4b0.GetHeadPosition
 void* FUN_141c00980(void* map, void* pos);
 struct Unk_WsA_OwnerObj;      // m_4b0 value object: owner entity, by value
 class Unk_PCActionTimer;
-void FUN_141bff1f0(void* map, void** pos);
-void* FUN_141bfec10(void* map);                                     // m_510.GetHeadPosition
+// (was) void FUN_141bff1f0(void* map, void** pos);
+// (was) void* FUN_141bfec10(void* map);                                     // m_510.GetHeadPosition
 void* FUN_141c00a40(void* map, void* pos);
 class CLiftableObject : public CPtred   // C3: member view for the former free stand-ins (liftableobject.h)
 {
@@ -3473,7 +3473,7 @@ public:
     CLiftableObject();                                  // 0x141447080
     char m_pad[0x120 - sizeof(CPtred)];                 // 0x120 bytes
 };
-void FUN_141bff270(void* map, void** pos);
+// (was) void FUN_141bff270(void* map, void** pos);
 bool FUN_141bf7850(const Unk_WsA_Iter* a, const Unk_WsA_Iter* b);   // m_2e8 iterator !=
 // @0x141bbf2f0
 void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel)
@@ -3498,7 +3498,7 @@ void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Cate
         }
         reinterpret_cast<Unk_Ws1M11*>(&m_468)->RemoveKey(ent->GetEntityIDValue());
         reinterpret_cast<Unk_Ws1M9*>(&m_420)->RemoveKey(ent->GetEntityIDValue());
-        for (void* pos = FUN_141bfebb0(&m_5e8); pos != 0; FUN_141bff1b0(&m_5e8, &pos))
+        for (void* pos = reinterpret_cast<Unk_Ws1F11*>(&m_5e8)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F11*>(&m_5e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
             if (((const efd::SmartPointer<egf::Entity>*)(const void*)(FUN_141c00920(&m_5e8, pos)))->operator==(ent))
             {
@@ -3514,7 +3514,7 @@ void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Cate
             FUN_1401d3700(key);
             ((ATL::CRBMap<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, efd::SmartPointer<egf::Entity>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>, ATL::CElementTraits<efd::SmartPointer<egf::Entity>>>*)(void*)(&m_618))->RemoveKey(key);
         }
-        for (void* pos = FUN_141bfebd0(&m_4b0); pos != 0; FUN_141bff1f0(&m_4b0, &pos))
+        for (void* pos = reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
             if (reinterpret_cast<CBreakableObject*>((Unk_WsA_OwnerObj*)(void*)reinterpret_cast<MS2Ptr<Unk_PCActionTimer>*>(FUN_141c00980(&m_4b0, pos))->operator->())->GetEntity() == ent)
             {
@@ -3523,7 +3523,7 @@ void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Cate
                 break;
             }
         }
-        for (void* pos = FUN_141bfec10(&m_510); pos != 0; FUN_141bff270(&m_510, &pos))
+        for (void* pos = reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
             if (reinterpret_cast<egf::Entity*>(reinterpret_cast<CLiftableObject*>((void*)reinterpret_cast<MS2Ptr<Unk_WsB_Lift>*>(FUN_141c00a40(&m_510, pos))->operator->())->FUN_141447ce0()) == ent)
             {
@@ -3896,14 +3896,14 @@ class Unk_WsProxyMgr                                    // m_890: proxyobject.cp
 public:
     int FUN_141c05780();                                // enabled count
 };
-class Unk_ProxyMgr   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_1416c33c0(int);
-    void FUN_1416c3670();
-    void FUN_1416c3730();
-    efd::SmartPointer<egf::Entity> FUN_1416c37e0(efd::SmartPointer<egf::Entity> spEntity);   // the entity whose proxy shows spEntity
-};
+// C3: Unk_ProxyMgr (m_890's class, proxyobject.cpp) is declared in worldservice.h now, with
+// FUN_1416c33c0 (rebuild the proxies), FUN_1416c3670 (remove every proxy), FUN_1416c3730 (draw
+// the collision shapes) and FUN_1416c37e0 (the entity whose proxy shows spEntity).
+//
+//
+//
+//
+//
 int FUN_141274aa0(class Unk_ExpActor*);                         // filter: class 0x6200028
 int FUN_141274b10(class Unk_ExpActor*);                         // filter: class 0x6200003
 int FUN_141274a30(class Unk_ExpActor*);                         // filter: class 0x6200013
@@ -4008,11 +4008,11 @@ MS2Ptr<CPortal> WorldService::FUN_141bc2800(int id)
 }
 MS2_REPLACE_METHOD(0x141BC2800, WorldService, FUN_141bc2800, 121, 0x9F34EC5D);
 
-void* FUN_141bffee0(void* map);                             // m_350.GetStartPosition
+// (was) void* FUN_141bffee0(void* map);                             // m_350.GetStartPosition
 // @0x141bc2880
 MS2Ptr<CPortal> WorldService::FindPortalByDestMap(int mapType)
 {
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         if (((class CPortal*)(class CPortal*)(cur.operator->()))->FUN_14169d280() == mapType)
@@ -4027,7 +4027,7 @@ MS2_REPLACE_METHOD(0x141BC2880, WorldService, FindPortalByDestMap, 247, 0x49D3C3
 void WorldService::FUN_141bc2980(void* outIds)
 {
     ((std::vector<int, std::allocator<int>>*)(void*)(static_cast<ATL::CAtlArray<int>*>(outIds)))->reserve(((Unk_Ws1M3a0*)(void*)(&m_350))->GetCount());
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         if (cur == 0)
@@ -4040,7 +4040,7 @@ MS2_REPLACE_METHOD(0x141BC2980, WorldService, FUN_141bc2980, 230, 0x02FC4E28);
 // @0x141bc2a70
 void WorldService::FUN_141bc2a70(int type, void* outRefs)
 {
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         if (reinterpret_cast<Unk_WsA_FieldObj*>(cur.operator->())->m_type == type)
@@ -4082,7 +4082,7 @@ MS2_REPLACE_METHOD(0x141BC24E0, WorldService, FUN_141bc24e0, 580, 0x587E85D8);
 // @0x141bc2f40
 int WorldService::FUN_141bc2f40()
 {
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         if (reinterpret_cast<Unk_WsA_FieldObj*>(cur.operator->())->m_type == 6)
@@ -4198,7 +4198,7 @@ public:
 public:
     void FUN_1417591b0();   // C3: was free FUN_1417591b0
 };
-inline bool Unk_MagicValPtr::operator==(void* p) const { return reinterpret_cast<const Unk_WsF_ValPtr*>(this)->operator==((Unk_FcArea*)p); }
+// (C3: the Unk_MagicValPtr::operator==(void*) view is gone; Unk_MagicValPtr is MS2Ptr<Unk_FcArea>, operator== 0x1412350e0)
 // (the value dtor is Unk_MagicValPtr::~Unk_MagicValPtr 0x141234e70, bound by VA)
 // (the key get is Unk_MagicTagPtr::operator-> 0x141235260, bound by VA)
 // (the key dtor is Unk_MagicTagPtr::~Unk_MagicTagPtr 0x1410a6d40, bound by VA)
@@ -4230,7 +4230,7 @@ template <> inline void swap<Unk_WsFieldRefRaw, void>(Unk_WsFieldRefRaw& a, Unk_
 // @0x141bc2c90
 void WorldService::FUN_141bc2c90(NiPoint3 pt, ATL::CAtlArray<MS2Ptr<CPortal> >* outRefs)
 {
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         Vector3 at = reinterpret_cast<Vector3&>(pt);
@@ -4255,16 +4255,16 @@ MS2_REPLACE_METHOD(0x141BC2C90, WorldService, FUN_141bc2c90, 667, 0xCF4CE358);
 
 class Unk_WsMapV10;   // C3: forward decl for a rewritten call
 MS2Ptr<Unk_WsB_Active>* FUN_141c005a0(void* map, void* pos);                // m_420.GetValueAt
-void* FUN_141bfebd0(void* map);                                             // m_4b0.GetHeadPosition
+// (was) void* FUN_141bfebd0(void* map);                                             // m_4b0.GetHeadPosition
 MS2Ptr<Unk_WsB_Marker>* FUN_141c00980_B(void* map, void* pos);                // m_4b0.GetValueAt
-void FUN_141bff1f0(void* map, void** pos);                                  // m_4b0.GetNext
+// (was) void FUN_141bff1f0(void* map, void** pos);                                  // m_4b0.GetNext
 // (Marker::GetEffect = CBreakableObject::FUN_140addf10: re-applies the bounds, returns m_spBox)
 // @0x141bc49c0
 void WorldService::FUN_141bc49c0()
 {
     for (void* pos = ((void*)((ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV10>, ATL::CElementTraits<__int64>, ATL::CElementTraits<MS2Ptr<Unk_WsMapV10>>>*)(void*)(&m_420))->GetStartPosition()); pos; reinterpret_cast<Unk_Ws1M420*>(&m_420)->GetNext(reinterpret_cast<POSITION&>(pos)))
         FUN_141c005a0(&m_420, pos)->operator->()->vfunc_1();
-    for (void* pos = FUN_141bfebd0(&m_4b0); pos; FUN_141bff1f0(&m_4b0, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         Unk_WsB_Effect* effect = (Unk_WsB_Effect*)(void*)((class CBreakableObject*)(void*)(FUN_141c00980_B(&m_4b0, pos)->operator->()))->FUN_140addf10().get();
         effect->vfunc_1();
@@ -4299,7 +4299,7 @@ MS2Ptr<Unk_WsB_Marker> WorldService::FUN_141bc4ca0(const Vector3& pos, float max
 {
     float best = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Marker> found(0);
-    for (void* p = FUN_141bfebd0(&m_4b0); p; FUN_141bff1f0(&m_4b0, &p))
+    for (void* p = reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetHeadPosition(); p; reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<Unk_WsB_Marker> marker = *FUN_141c00980_B(&m_4b0, p);
         if (type != -1 && type != reinterpret_cast<CBreakableObject*>(marker.operator->())->GetState())
@@ -4368,9 +4368,9 @@ void WorldService::FUN_141bc4fc0(float dt)
     if (!light || !light->m_bCached)
         return;
     Unk_WsC_TagPtr tags = FUN_141bd0420(0x169ea355);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags) == (Unk_WsB_EntityList*)0 || FUN_140b285a0(reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()) == 0)
+    if (tags == (Unk_WsB_EntityList*)0 || FUN_140b285a0(tags.operator->()) == 0)
         return;
-    efd::SmartPointer<egf::Entity> entity = *(efd::SmartPointer<egf::Entity>*)FUN_140b285b0(reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->());
+    efd::SmartPointer<egf::Entity> entity = *(efd::SmartPointer<egf::Entity>*)FUN_140b285b0(tags.operator->());
     Unk_Vec3f color = light->FUN_140b27a80();
 //
     light->m_fCached += dt;
@@ -4402,9 +4402,9 @@ void WorldService::FUN_141bc51d0(float dt)
     if (!light || !light->m_bCached)
         return;
     Unk_WsC_TagPtr tags = FUN_141bd0420(0x628f2cf9);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags) == (Unk_WsB_EntityList*)0 || FUN_140b285a0(reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()) == 0)
+    if (tags == (Unk_WsB_EntityList*)0 || FUN_140b285a0(tags.operator->()) == 0)
         return;
-    efd::SmartPointer<egf::Entity> entity = *(efd::SmartPointer<egf::Entity>*)FUN_140b285b0(reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->());
+    efd::SmartPointer<egf::Entity> entity = *(efd::SmartPointer<egf::Entity>*)FUN_140b285b0(tags.operator->());
     Unk_Vec3f color = light->FUN_140b27c60();
     light->m_fCached += dt;
     if (FUN_1403819b0(light) > light->m_fCached)
@@ -4522,14 +4522,14 @@ void WorldService::FUN_141bc5d60(const CString& name)
 }
 MS2_REPLACE_METHOD(0x141BC5D60, WorldService, FUN_141bc5d60, 179, 0x75E6CC43);
 
-void* FUN_141bfebf0(void* map);                                                             // m_678.GetHeadPosition
+// (was) void* FUN_141bfebf0(void* map);                                                             // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);                                                  // m_678.GetValueAt (MS2Ptr<Prop>*)
 inline MS2Ptr<CInteractObject>& Unk_WsB_PropAt(void* map, void* pos) { return *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(map, pos)); }
-void FUN_141bff230(void* map, void** pos);                                                  // m_678.GetNext
+// (was) void FUN_141bff230(void* map, void** pos);                                                  // m_678.GetNext
 // @0x141bc5e20
 void WorldService::FUN_141bc5e20(int category)
 {
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         if (category != 0 && prop->vfunc_5() != category)
@@ -4543,7 +4543,7 @@ MS2_REPLACE_METHOD(0x141BC5E20, WorldService, FUN_141bc5e20, 220, 0xFDAAF638);
 // @0x141bc5fb0
 void WorldService::FUN_141bc5fb0(void* out, int category)
 {
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         if (prop->vfunc_5() != category)
@@ -4559,7 +4559,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc6090(Vector3 pos, int skipDisable
 {
     float best = 3.402823466e+38f;
     MS2Ptr<CInteractObject> found(0);
-    for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
+    for (void* p = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); p; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, p));
         if (prop->vfunc_7() == 0 && skipDisabled != 0)
@@ -4583,7 +4583,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc62b0(const Vector3& pos, int cate
 {
     float best = 3.402823466e+38f;
     MS2Ptr<CInteractObject> found(0);
-    for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
+    for (void* p = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); p; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, p));
         if (prop->vfunc_5() != category)
@@ -4609,7 +4609,7 @@ MS2Ptr<CInteractObject> WorldService::FUN_141bc6510(Vector3 pos, int kind)
 {
     float best = 3.402823466e+38f;
     MS2Ptr<CInteractObject> found(0);
-    for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
+    for (void* p = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); p; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, p));
         if (reinterpret_cast<CInteractObject*>(prop.operator->())->GetRowId() != kind)
@@ -4666,7 +4666,7 @@ MS2_REPLACE_METHOD(0x141BC6860, WorldService, FUN_141bc6860, 198, 0x7568C646);
 // @0x141bc6930
 void WorldService::FUN_141bc6930(int kind, int arg)
 {
-    for (void* p = FUN_141bfebf0(&m_678); p; FUN_141bff230(&m_678, &p))
+    for (void* p = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); p; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<CInteractObject> prop = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, p));
         if (reinterpret_cast<CInteractObject*>(prop.operator->())->GetRowId() != kind)
@@ -4696,7 +4696,7 @@ void WorldService::FUN_141bc6af0(Unk_WsP16& handle)   // handle is an MS2Ptr<Pro
 }
 MS2_REPLACE_METHOD(0x141BC6AF0, WorldService, FUN_141bc6af0, 360, 0xC5388495);
 
-void* FUN_141bfeb90(void* map);                                                             // m_7c8.GetHeadPosition
+// (was) void* FUN_141bfeb90(void* map);                                                             // m_7c8.GetHeadPosition
 efd::SmartPointer<Unk_WsB_Spawn>* FUN_141c008c0(void* map, void* pos);                      // m_7c8.GetValueAt
 // Nearest usable spawn point whose restart radius covers pos.
 // @0x141bc6c60
@@ -4704,7 +4704,7 @@ efd::SmartPointer<Unk_WsB_Spawn> WorldService::FUN_141bc6c60(Vector3 pos, int sk
 {
     float best = 3.402823466e+38f;
     efd::SmartPointer<Unk_WsB_Spawn> found(0);
-    for (void* p = FUN_141bfeb90(&m_7c8); p; m_7c8.GetNextKey(*(__POSITION**)(void**)(&p)))
+    for (void* p = reinterpret_cast<Unk_Ws1F10*>(&m_7c8)->GetHeadPosition(); p; m_7c8.GetNextKey(*(__POSITION**)(void**)(&p)))
     {
         efd::SmartPointer<Unk_WsB_Spawn> spawn = *FUN_141c008c0(&m_7c8, p);
         if (!((class CReactor*)(class Unk_WsB_Spawn*)(spawn.data()))->FUN_140b79c30() && skipUnusable != 0)
@@ -4804,7 +4804,7 @@ int WorldService::FUN_141bc7920(std::set<void*>& visible)
     if (((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070() != 0)
     {
         NiBound bound;
-        Vector3 camPos = ((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10();
+        efd::Point3 camPos = ((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10();
         for (std::map<unsigned __int64, Unk_WsV1d8>::iterator it = m_1d8.begin(); it != m_1d8.end(); ++it)
         {
             void* obj = it->second.m_sceneNode;
@@ -5044,7 +5044,7 @@ MS2_REPLACE_METHOD(0x141BC8F60, WorldService, FindVibrator, 122, 0x30C65DB3);
 //
 // Starts a shake on the entity registered under a name, replacing a finished one.
 // @0x141bc9020
-void WorldService::FUN_141bc9020(CString name, MS2Ptr<CSkillRecord> shake, CString shakeName, bool flag)
+void WorldService::FUN_141bc9020(CString name, MS2Ptr<CSkillRecord> shake, CString shakeName, unsigned char flag)
 {
     efd::SmartPointer<egf::Entity> entity(0);
     if (!reinterpret_cast<Unk_Ws1F11*>(&m_5e8)->Lookup(name, entity))
@@ -5129,13 +5129,13 @@ void WorldService::FUN_141bc9560(CString name, CString model, unsigned char mode
 }
 MS2_REPLACE_METHOD(0x141BC9560, WorldService, FUN_141bc9560, 702, 0xC8854DBE);
 
-void* FUN_141bfeb30(void* map);                                                             // m_0e8.GetStartPosition
+// (was) void* FUN_141bfeb30(void* map);                                                             // m_0e8.GetStartPosition
 void* FUN_141c007a0(void* map, void* pos);                                                  // m_0e8.GetValueAt
-void FUN_141bff0b0(void* map, void** pos);                                                  // m_0e8.GetNext
+// (was) void FUN_141bff0b0(void* map, void** pos);                                                  // m_0e8.GetNext
 void* FUN_140965780(void* value);
 #define MS2_WS_MYPC(sp) ((void*)reinterpret_cast<efd::SmartPointer<MyPC>&>(sp).operator->())  // C3: m_2d8 holds the MyPC (efd::SmartPointer<MyPC>::operator-> 0x140dc1660)
-struct Unk_WsA_ActorHandle { void* p; };
-Unk_WsA_ActorHandle FUN_140965780_B(void* value);                                           // the value's actor handle, by value
+//
+//
 //
 // Nearest interactable actor within maxDist: its id and display name; 0 when none (an int: the exe returns a dword 0/1).
 // @0x141bc9830
@@ -5148,9 +5148,9 @@ int WorldService::FUN_141bc9830(int* id, CString& name, float maxDist, int unuse
     Vector3 origin = static_cast<Unk_WsB_Actor*>(MS2_WS_MYPC(m_2d8))->GetPosition();
     Unk_WsB_Actor* nearest = 0;
     float best = 3.402823466e+38f;
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos != 0; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
-        Unk_WsB_Actor* actor = (Unk_WsB_Actor*)efd::DynamicCast<PCBase, GameObject>((GameObject*)FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)).p);
+        Unk_WsB_Actor* actor = (Unk_WsB_Actor*)efd::DynamicCast<PCBase, GameObject>((GameObject* const&)(GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos));
         if (actor == 0)
             continue;
         if (reinterpret_cast<PCBase*>(actor)->IsDead() != 0)
@@ -5269,7 +5269,7 @@ int WorldService::FUN_141bca3c0(float z)
     Vector3 target(0.0f, 0.0f, z);
     {
         Unk_WsC_TagPtr tags = FUN_141bd0420(0xb9c85df1);
-        if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags).get() != 0)
+        if (tags.get() != 0)
         {
             for (POSITION pos = tags->GetHeadPosition(); pos != 0; tags->GetNext(pos))
             {
@@ -5296,7 +5296,7 @@ int WorldService::FUN_141bca4f0(float* z)
     Vector3 value = DAT_143b01a60;
     {
         Unk_WsC_TagPtr tags = FUN_141bd0420(0xb9c85df1);
-        if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags).get() != 0)
+        if (tags.get() != 0)
         {
             for (POSITION pos = tags->GetHeadPosition(); pos != 0; tags->GetNext(pos))
             {
@@ -5577,7 +5577,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
                 dir.z = 0.0f;
                 dir.FUN_140968990();
                 float amount = (zone->m_push * dt < best - zone->m_inner) ? zone->m_push * dt : best - zone->m_inner;
-                *velocity = dir.FUN_14097fc90(amount);
+                *velocity = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(dir) * amount));
                 changed = true;
             }
         }
@@ -5587,7 +5587,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
             dir.z = 0.0f;
             dir.FUN_140968990();
             float amount = (zone->m_push * dt < zone->m_outer - best) ? zone->m_push * dt : zone->m_outer - best;
-            *velocity = dir.FUN_14097fc90(amount);
+            *velocity = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(dir) * amount));
             changed = true;
         }
         if (0.0f != zone->m_lift)
@@ -5599,7 +5599,7 @@ bool WorldService::FUN_141bc8420(Unk_WsB_Actor* actor, float dt, int* lifted, Ve
                 lift = (top.z + zone->m_baseZ - playerPos.z < 0.0f) ? 0.0f : top.z + zone->m_baseZ - playerPos.z;
                 *lifted = 1;
             }
-            velocity->FUN_140a4e560(DAT_143a08cf8.FUN_14097fc90((zone->m_lift * dt < lift) ? zone->m_lift * dt : lift));
+            velocity->FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8) * ((zone->m_lift * dt < lift) ? zone->m_lift * dt : lift))));
             changed = true;
         }
     }
@@ -5720,10 +5720,10 @@ public:
 // @0x141bcd960
 void WorldService::FUN_141bcd960()
 {
-    POSITION pos = m_9d0.GetHeadPosition();
+    POSITION pos = reinterpret_cast<Unk_Ws1F16*>(&m_9d0)->GetHeadPosition();          // F16: Minimum 0x141c07fc0
     while (pos)
     {
-        ATL::CRBMap<int, int>::CPair* pair = m_9d0.GetNext(pos);
+        ATL::CRBMap<int, int>::CPair* pair = reinterpret_cast<ATL::CRBMap<int, int>::CPair*>(reinterpret_cast<Unk_Ws1F16*>(&m_9d0)->GetNext(pos));
         if (pair->m_value != 0)
         {
             ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116de70(pair->m_key);
@@ -5898,13 +5898,13 @@ int WorldService::FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out)
 MS2_REPLACE_METHOD(0x141BCFFF0, WorldService, FUN_141bcfff0, 539, 0x9545BFC9);
 
 MS2Ptr<UgcBannerObject>* FUN_141c00800(void* map, void* pos);  // m_708.GetValueAt
-void FUN_141bff0f0(void* map, void** pos);              // m_708.GetNext
+// (was) void FUN_141bff0f0(void* map, void** pos);              // m_708.GetNext
 // @0x141bd0220
 egf::Entity* WorldService::FUN_141bd0220(Vector3 pos, float maxDist)
 {
     Unk_WsC_EntityPtr best;
     float bestDist = FLT_MAX;
-    for (void* p = ((void*)((ATL::CRBTree<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, Unk_WsV4b0, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>, ATL::CElementTraits<Unk_WsV4b0>>*)(void*)(&m_708))->GetHeadPosition()); p; FUN_141bff0f0(&m_708, &p))
+    for (void* p = ((void*)((ATL::CRBTree<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, Unk_WsV4b0, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>, ATL::CElementTraits<Unk_WsV4b0>>*)(void*)(&m_708))->GetHeadPosition()); p; reinterpret_cast<Unk_Ws1F7*>(&m_708)->GetNext(reinterpret_cast<POSITION&>(p)))
     {
         MS2Ptr<UgcBannerObject> actor(*FUN_141c00800(&m_708, p));
         if (!actor->GetVisible())
@@ -5962,15 +5962,15 @@ egf::Entity* WorldService::FUN_141bd0560(unsigned key, unsigned prop, float x, f
     if (MS2_WS_PICKREC(&pick) == 0)
         return 0;
     Unk_WsC_TagPtr tags = FUN_141bd0420(key);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags) == (Unk_WsB_EntityList*)0)
+    if (tags == (Unk_WsB_EntityList*)0)
         return 0;
     for (unsigned i = 0; i < reinterpret_cast<ecr::PickService::PickRecord*>(pick.operator->())->GetPickResult()->GetSize(); ++i)
     {
         NiPick::Record* entry = reinterpret_cast<ecr::PickService::PickRecord*>(pick.operator->())->GetPickResult()->GetAt(i);
-        POSITION pos = reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()->GetHeadPosition();
+        POSITION pos = tags.operator->()->GetHeadPosition();
         while (pos)
         {
-            Unk_WsC_EntityPtr ent = reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()->GetNext(pos);
+            Unk_WsC_EntityPtr ent = tags.operator->()->GetNext(pos);
             if (ent)
             {
                 Unk_WsC_MeshVec meshes;
@@ -6002,13 +6002,13 @@ egf::Entity* WorldService::FUN_141bd08f0(unsigned key, unsigned prop, float x, f
         prop != 0xd0e0cedb && prop != 0x912aec5f)
         return 0;
     Unk_WsC_TagPtr tags = FUN_141bd0420(key);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags) == (Unk_WsB_EntityList*)0)
+    if (tags == (Unk_WsB_EntityList*)0)
         return 0;
-    POSITION pos = reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()->GetHeadPosition();
+    POSITION pos = tags.operator->()->GetHeadPosition();
     egf::Entity* found = 0;
     while (pos)
     {
-        Unk_WsC_EntityPtr ent = reinterpret_cast<const Unk_PCEntListPtr&>(tags).operator->()->GetNext(pos);
+        Unk_WsC_EntityPtr ent = tags.operator->()->GetNext(pos);
         if (ent)
         {
             bool flag;
@@ -6147,7 +6147,7 @@ MS2_REPLACE_METHOD(0x141BD1180, WorldService, FindObjectById, 109, 0xE58E3B6C);
 
 // C3: efd::DynamicCast<PC, Unk_WsC_GameObj> 0x140961420 (class 0x6200003)
 class CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>&);     // cast to class 0x6200028
-Unk_WsC_GameObj* FUN_141bdd5e0(Unk_WsC_GameObjPtr* sp);     // cast to class 0x6200074
+// (FUN_141bdd5e0: efd::DynamicCast<CPet, CNpc>(efd::SmartPointer<CNpc>&), class 0x6200074)
 // @0x141bd1200
 Unk_WsC_GameObj* WorldService::FUN_141bd1200(int id)
 {
@@ -6170,14 +6170,14 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1290(int id)
 }
 MS2_REPLACE_METHOD(0x141BD1290, WorldService, FUN_141bd1290, 136, 0xFCF1741A);
 
-bool FUN_140aac780(void* map, int key, Unk_WsC_GameObjPtr* out);   // m_148.Lookup
+//
 // @0x141bd1320
 Unk_WsC_GameObj* WorldService::FUN_141bd1320(int id)
 {
     if (id == 0)
         return 0;
     Unk_WsC_GameObjPtr sp;
-    FUN_140aac780(&m_148, id, &sp);
+    reinterpret_cast<Unk_Ws1F4*>(&m_148)->Lookup(id, reinterpret_cast<efd::SmartPointer<CNpc>&>(sp));
     return sp;
 }
 MS2_REPLACE_METHOD(0x141BD1320, WorldService, FUN_141bd1320, 109, 0x0F121CB8);
@@ -6188,8 +6188,8 @@ Unk_WsC_GameObj* WorldService::FUN_141bd13a0(int id)
     if (id == 0)
         return 0;
     Unk_WsC_GameObjPtr sp;
-    FUN_140aac780(&m_148, id, &sp);
-    return FUN_141bdd5e0(&sp);
+    reinterpret_cast<Unk_Ws1F4*>(&m_148)->Lookup(id, reinterpret_cast<efd::SmartPointer<CNpc>&>(sp));
+    return (Unk_WsC_GameObj*)efd::DynamicCast<CPet, CNpc>(reinterpret_cast<efd::SmartPointer<CNpc>&>(sp));
 }
 MS2_REPLACE_METHOD(0x141BD13A0, WorldService, FUN_141bd13a0, 109, 0x7AC64940);
 
@@ -6309,11 +6309,11 @@ int WorldService::FUN_141bd1a10(Unk_WsC_GameObj* obj)
 MS2_REPLACE_METHOD(0x141BD1A10, WorldService, FUN_141bd1a10, 50, 0xF2F56B97);
 
 // opaque ATL map walk (COMDATs by VA)
-void* FUN_141bfeb30(ATL::CRBMap<unsigned, Unk_WsV0e8>* map);                       // m_0e8.GetHeadPosition
+// (was) void* FUN_141bfeb30(ATL::CRBMap<unsigned, Unk_WsV0e8>* map);                       // m_0e8.GetHeadPosition
 Unk_WsC_GameObjPtr* FUN_141c007a0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void* pos);   // m_0e8.GetValueAt
-void FUN_141bff0b0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void** pos);            // m_0e8.GetNext
+// (was) void FUN_141bff0b0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void** pos);            // m_0e8.GetNext
 Unk_WsC_GameObj* FUN_1417411e0(Unk_WsC_GameObj* p);                                // cast to class 0x6200011
-Unk_WsC_GameObj* FUN_1417411e0_B(Unk_WsA_ActorHandle h);
+// (FUN_1417411e0_B: efd::DynamicCast<CDropItem, GameObject>(GameObject*), the m_0e8 value's actor handle)
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 float FUN_14160c230(const Vector3& v);                                     // squared length
 // @0x141bd1a50
@@ -6326,9 +6326,9 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1a50(Unk_WsC_GameObj* self)
         return 0;
     Unk_WsC_GameObj* best = 0;
     float bestDist = FLT_MAX;
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
-        Unk_WsC_GameObj* mob = FUN_1417411e0_B(FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)));
+        Unk_WsC_GameObj* mob = (Unk_WsC_GameObj*)efd::DynamicCast<CDropItem, GameObject>((GameObject* const&)(GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos));
         if (mob == 0)
             continue;
         Unk_WsC_MobData* data = (Unk_WsC_MobData*)((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_140b12380();
@@ -6365,9 +6365,9 @@ Unk_WsC_GameObj* WorldService::FUN_141bd1d10(int a, int b)
         return 0;
     Unk_WsC_GameObj* best = 0;
     float bestDist = FLT_MAX;
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
-        Unk_WsC_GameObj* mob = FUN_1417411e0_B(FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)));
+        Unk_WsC_GameObj* mob = (Unk_WsC_GameObj*)efd::DynamicCast<CDropItem, GameObject>((GameObject* const&)(GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos));
         if (mob == 0)
             continue;
         if (!((CDropItem*)(Unk_WsC_GameObj*)(mob))->FUN_141190320((GameObject*)(Unk_WsC_GameObj*)(static_cast<Unk_WsC_GameObj*>(FUN_141bd0cc0())), a, b))
@@ -6388,9 +6388,9 @@ void WorldService::FUN_141bd1ed0(std::list<Unk_WsC_GameObj*>* outA, std::list<Un
 {
     if (FUN_141bd0cc0() == 0)
         return;
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
-        Unk_WsC_GameObj* mob = FUN_1417411e0_B(FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)));
+        Unk_WsC_GameObj* mob = (Unk_WsC_GameObj*)efd::DynamicCast<CDropItem, GameObject>((GameObject* const&)(GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos));
         if (mob == 0)
             continue;
         if (skipOwned != 0 && FUN_141bd1290(((CDropItem*)(Unk_WsC_GameObj*)(mob))->GetOwnerObjId()) != 0)
@@ -6417,9 +6417,9 @@ void WorldService::FUN_141bd2030(std::list<Unk_WsC_GameObj*>* out)
     if (FUN_141bd0cc0() != 0)
     {
         out->clear();
-        for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+        for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
-            Unk_WsC_GameObj* mob = FUN_1417411e0_B(FUN_140965780_B(FUN_141c007a0(&m_0e8, pos)));
+            Unk_WsC_GameObj* mob = (Unk_WsC_GameObj*)efd::DynamicCast<CDropItem, GameObject>((GameObject* const&)(GameObject*)*(efd::SmartPointer<GameObject>*)FUN_141c007a0(&m_0e8, pos));
             if (mob != 0 && ((CDropItem*)(Unk_WsC_GameObj*)(mob))->IsMeso())
             {
                 int noOwner = FUN_141bd1290(((CDropItem*)(Unk_WsC_GameObj*)(mob))->GetOwnerObjId()) == 0;
@@ -6555,7 +6555,7 @@ Unk_WsC_GameObj* WorldService::FUN_141bd2bf0(Vector3 /*pos*/, int id)
 {
     for (void* p = (void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetHeadPosition(); p; ((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetNext(reinterpret_cast<POSITION&>(p)))
     {
-        Unk_WsC_GameObj* obj = FUN_141bdd5e0((Unk_WsC_GameObjPtr*)(void*)&((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetValueAt((POSITION)(p)));
+        Unk_WsC_GameObj* obj = (Unk_WsC_GameObj*)efd::DynamicCast<CPet, CNpc>(((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(&m_148))->GetValueAt((POSITION)(p)));
         if (obj == 0)
             continue;
         if (((CPet*)(Unk_WsC_GameObj*)(obj))->GetKind() != id)
@@ -6586,7 +6586,7 @@ Unk_WsC_GameObj* FUN_140965780(Unk_WsC_GameObjPtr* sp);
 // @0x141bd2db0
 void WorldService::FUN_141bd2db0(ATL::CAtlList<Unk_WsC_GameObjPtr>* out, int (*filter)(Unk_WsC_GameObj*))
 {
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         Unk_WsC_GameObj* obj = *(Unk_WsC_GameObjPtr*)FUN_141c007a0(&m_0e8, pos);
         if (obj->GetClassId() == 0x6200016)
@@ -6600,7 +6600,7 @@ MS2_REPLACE_METHOD(0x141BD2DB0, WorldService, FUN_141bd2db0, 226, 0x6077FC6A);
 // @0x141bd2ea0
 void WorldService::FUN_141bd2ea0(void* ctx, ATL::CAtlList<Unk_WsC_GameObjPtr>* out, int a, int b, int (*filter)(void*, Unk_WsC_GameObj*, int, int))
 {
-    for (void* pos = FUN_141bfeb30(&m_0e8); pos; FUN_141bff0b0(&m_0e8, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         Unk_WsC_GameObj* obj = *(Unk_WsC_GameObjPtr*)FUN_141c007a0(&m_0e8, pos);
         if (obj->GetClassId() == 0x6200016)
@@ -6643,9 +6643,9 @@ class Unk_SeqAccess   // C3: member view for the former free stand-ins
 public:
     static float FUN_140a53fa0(class NiControllerSequence*);
 };
-namespace egmAnimation { class AnimationService; }
+#include <egmAnimation/AnimationService.h>   // AnimationService::SetPaused (0x1409fad80)
 egmAnimation::AnimationService* FUN_141b6f910();
-void FUN_1409fad80(void* sys, egf::EntityID id, char flag);
+//
 NiAVObject* FUN_141b6ef70(egf::EntityID id);
 
 
@@ -6736,7 +6736,7 @@ void WorldService::FUN_141bcda90()
                             NiAVObject* scene = FUN_141b6efc0(ent);
                             if (scene != 0)
                                 scene->Update((float)((class CMainSystem*)(void*)(((void*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
-                            FUN_1409fad80(FUN_141b6f910(), ent->GetEntityID(), 1);
+                            FUN_141b6f910()->SetPaused(ent->GetEntityID(), true);
                             efd::utf8string cfgName;
                             ent->GetPropertyValue<efd::utf8string>(0x86cdf438, cfgName);
                             NoticeMessage cfg;
@@ -6870,7 +6870,7 @@ void WorldService::FUN_141bcda90()
     // interactive objects
     {
         Unk_WsC_TagPtr tags = FUN_141bd0420(0x72f49865);
-        if (reinterpret_cast<const Unk_SSGEntListPtr&>(tags).get() != 0)
+        if (tags.get() != 0)
         {
             for (POSITION p = tags->GetHeadPosition(); p; tags->GetNext(p))
             {
@@ -7094,12 +7094,12 @@ void WorldService::FUN_141bd3860() { m_978 = 1; }
 MS2_REPLACE_METHOD(0x141BD3860, WorldService, FUN_141bd3860, 21, 0x8267EDA1);
 
 // opaque container/pointer COMDATs by VA
-void* FUN_141bffee0(void* map);                         // m_350.GetStartPosition
+// (was) void* FUN_141bffee0(void* map);                         // m_350.GetStartPosition
 void* FUN_141c00300(void* map, void* pos);              // m_350.GetValueAt(pos) (a 16-byte pointer)
 // @0x141bd3880
 void WorldService::FUN_141bd3880()
 {
-    for (void* pos = FUN_141bffee0(&m_350); pos; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CPortal> cur(*static_cast<MS2Ptr<CPortal>*>(FUN_141c00300(&m_350, pos)));
         reinterpret_cast<CPortal*>(cur.operator->())->FUN_14169d0e0();
@@ -7107,21 +7107,21 @@ void WorldService::FUN_141bd3880()
 }
 MS2_REPLACE_METHOD(0x141BD3880, WorldService, FUN_141bd3880, 150, 0x7EFBF9A2);
 
-void* FUN_141bfead0(void* map);                         // m_540.GetHeadPosition
+// (was) void* FUN_141bfead0(void* map);                         // m_540.GetHeadPosition
 void* FUN_141c00680(void* map, void* pos);              // m_540.GetValueAt
-void FUN_141bff030(void* map, void** pos);              // m_540.GetNext
-void* FUN_141bfeaf0(void* map);                         // m_570.GetHeadPosition
+// (was) void FUN_141bff030(void* map, void** pos);              // m_540.GetNext
+// (was) void* FUN_141bfeaf0(void* map);                         // m_570.GetHeadPosition
 void* FUN_141c006e0(void* map, void* pos);              // m_570.GetValueAt
-void FUN_141bff070(void* map, void** pos);              // m_570.GetNext
+// (was) void FUN_141bff070(void* map, void** pos);              // m_570.GetNext
 // @0x141bd3920
 void WorldService::FUN_141bd3920()
 {
-    for (void* pos = FUN_141bfead0(&m_540); pos; FUN_141bff030(&m_540, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F1*>(&m_540)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F1*>(&m_540)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<Unk_AkoLiftTarget> sp = *static_cast<MS2Ptr<Unk_AkoLiftTarget>*>(FUN_141c00680(&m_540, pos));
         ((class CLiftableTarget*)(void*)(sp.operator->()))->FUN_1414483e0();
     }
-    for (void* pos = FUN_141bfeaf0(&m_570); pos; FUN_141bff070(&m_570, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F2*>(&m_570)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F2*>(&m_570)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<Unk_WsC_TargetGuide> sp = *static_cast<MS2Ptr<Unk_WsC_TargetGuide>*>(FUN_141c006e0(&m_570, pos));
         ((class CLiftableTarget*)(void*)(sp.operator->()))->FUN_1414483e0();
@@ -7129,14 +7129,14 @@ void WorldService::FUN_141bd3920()
 }
 MS2_REPLACE_METHOD(0x141BD3920, WorldService, FUN_141bd3920, 277, 0x6BE55FDB);
 
-void* FUN_141bfec10(void* map);                         // m_510.GetHeadPosition
+// (was) void* FUN_141bfec10(void* map);                         // m_510.GetHeadPosition
 void* FUN_141c00a40(void* map, void* pos);              // m_510.GetValueAt
-void FUN_141bff270(void* map, void** pos);              // m_510.GetNext
+// (was) void FUN_141bff270(void* map, void** pos);              // m_510.GetNext
 void FUN_140963ff0(Unk_WsP16* self, void* src);         // copy ctor
 // @0x141bd3a40
 void WorldService::FUN_141bd3a40()
 {
-    for (void* pos = FUN_141bfec10(&m_510); pos; FUN_141bff270(&m_510, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<Unk_WsB_Lift> sp = *static_cast<MS2Ptr<Unk_WsB_Lift>*>(FUN_141c00a40(&m_510, pos));
         ((class CLiftableObject*)(void*)(sp.operator->()))->UpdateConditions();
@@ -7292,7 +7292,7 @@ MS2_REPLACE_METHOD(0x141BD4260, WorldService, FUN_141bd4260, 137, 0xAE32EC50);
 
 // opaque COMDATs by VA
 template <class K, class V, class KTraits, class VTraits> CInputStream& operator>>(CInputStream& in, ATL::CAtlMap<K, V, KTraits, VTraits>& map);   // C3 i47: 0x141bdd080, defined in worldservice_2
-void* FUN_141bfffc0(void* map);                         // m_848.GetHeadPosition
+// (was) void* FUN_141bfffc0(void* map);                         // m_848.GetHeadPosition
 void* FUN_141c003e0(void* map, void* pos);              // m_848.GetValueAt
 unsigned __int64 FUN_141bf7d60(void*);                  // operator->
 typedef MS2Ptr<GameObjectEffectNifCtx> Unk_WsD_EffectRef;   // m_848 value
@@ -7301,7 +7301,7 @@ typedef MS2Ptr<GameObjectEffectNifCtx> Unk_WsD_EffectRef;   // m_848 value
 void WorldService::FUN_141bd42f0(void* pMsg)
 {
     *(class CInputStream*)(&static_cast<Unk_WsD_EffectMsg*>(pMsg)->m_stream) >> *reinterpret_cast<ATL::CAtlMap<unsigned, MS2Ptr<GameObjectEffectNifCtx> >*>(&m_848);
-    for (void* pos = FUN_141bfffc0(&m_848); pos; reinterpret_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(&m_848)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(&m_848)->GetStartPosition(); pos; reinterpret_cast<ATL::CAtlMap<unsigned, Unk_WsV848>*>(&m_848)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         Unk_WsD_EffectRef sp(*static_cast<Unk_WsD_EffectRef*>(FUN_141c003e0(&m_848, pos)));
         void* entity = FUN_141bd1200(((GameObjectEffectNifCtx*)FUN_141bf7d60(&sp))->GetGameOID());
@@ -7455,10 +7455,10 @@ int WorldService::FUN_141bd49d0(const std::set<unsigned>& ids, Vector3* pOutPos,
 }
 MS2_REPLACE_METHOD(0x141BD49D0, WorldService, FUN_141bd49d0, 1260, 0xFBE1686F);
 
-void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
+// (was) void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);              // m_678.GetValueAt
 void FUN_140a7b410(Unk_WsP16* self, void* src);         // copy ctor
-void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
+// (was) void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
 void FUN_1409649b0(Unk_WsP16* self);                    // dtor
 void** FUN_140965920(Unk_WsP16* sp);                    // operator->
 void FUN_140963fd0(Unk_WsP16* self, int zero);          // ctor (null)
@@ -7474,7 +7474,7 @@ int WorldService::FUN_141bd4ed0(const std::set<int>& ids, Vector3* pOutPos, floa
         return 0;
     float bestDist = 3.402823466e+38f;
     MS2Ptr<CInteractObject> best(0);
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> sp = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         if (sp->vfunc_7() == 0)
@@ -7510,7 +7510,7 @@ int WorldService::FUN_141bd51a0(const std::set<unsigned>& ids, Vector3* pOutPos,
         return 0;
     float bestDist = 3.402823466e+38f;
     MS2Ptr<Unk_WsB_Lift> best(0);
-    for (void* pos = FUN_141bfec10(&m_510); pos != 0; FUN_141bff270(&m_510, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<Unk_WsB_Lift> sp(*reinterpret_cast<MS2Ptr<Unk_WsB_Lift>*>(FUN_141c00a40(&m_510, pos)));
         if (((class CLiftableObject*)(class Unk_WsB_Lift*)(sp.operator->()))->GetState())
@@ -7543,7 +7543,7 @@ void WorldService::FUN_141bd5460()
 {
     for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<Unk_WsMapV4>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<Unk_WsMapV4>>>*)(void*)(&m_208))->GetStartPosition()); pos; reinterpret_cast<ATL::CAtlMap<unsigned, Unk_WsV208>*>(&m_208)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
-        Unk_WsC_TagPtr sp = *static_cast<Unk_WsC_TagPtr*>(FUN_141c00450(&m_208, pos));
+        Unk_PCEntListPtr sp = *static_cast<const Unk_PCEntListPtr*>(FUN_141c00450(&m_208, pos));
         ((ATL::CAtlList<egf::EntityPtr, Unk_WfEntTraits>*)(void*)(sp.operator->()))->RemoveAll();
     }
 }
@@ -7710,7 +7710,7 @@ void WorldService::FUN_141bd6520()
 {
     Unk_WorldEntityMap::iterator it = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();
     if (((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a18070())
-        m_0a8 = ((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10();
+        m_0a8 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10()));
     else
         m_0a8 = Vector3(0, 0, 0);
     egf::Entity* entity;
@@ -7749,7 +7749,7 @@ void WorldService::FUN_141bd6690()
             if (reinterpret_cast<PCBase*>(MS2_WS_MYPC(m_2d8))->GetCurStateId() == 0x1e)
                 m_0b4 = 8000.0f;
         }
-        m_0a8 = ((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10();
+        m_0a8 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((class CameraMgr*)(void*)(((void*)TSingleton<CameraMgr>::GetInstance())))->FUN_140a17e10()));
         FUN_141bd6170((int)FUN_140bf4fd0((float)m_088.size() / 60.0f), (int)FUN_140bf4fd0((float)m_098.size() / 300.0f));
     }
 }
@@ -7773,9 +7773,9 @@ public:
 Vector3* FUN_141678710(void* player, Vector3* out);   // player's saved position
 unsigned __int64 FUN_141bf7d90(void*);                    // operator->
 class Unk_Ws5TipObj;
-void* FUN_141bfeb30(void* map);                         // m_0e8.GetHeadPosition
+// (was) void* FUN_141bfeb30(void* map);                         // m_0e8.GetHeadPosition
 void* FUN_141c007a0(void* map, void* pos);              // m_0e8.GetValueAt
-void FUN_141bff0b0(void* map, void** pos);              // m_0e8.GetNext
+// (was) void FUN_141bff0b0(void* map, void** pos);              // m_0e8.GetNext
 void* FUN_140965780(void* sp);                          // SmartPointer get
 // C3: m_2d8 == null is efd::SmartPointer<efd::ISystemService>::operator==(T*) 0x140dc1560
 // @0x141bd6810
@@ -7817,7 +7817,7 @@ void WorldService::FUN_141bd6810(char flag)
     float sight = FUN_1403812a0(range);
     if (!closeEnough)
         sight = 38400.0f;
-    for (void* it = FUN_141bfeb30(&m_0e8); it; FUN_141bff0b0(&m_0e8, &it))
+    for (void* it = reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetHeadPosition(); it; reinterpret_cast<Unk_Ws1F5*>(&m_0e8)->GetNext(reinterpret_cast<POSITION&>(it)))
     {
         void* npc = (GameObject*)*(Unk_WsA_ObjPtr*)FUN_141c007a0(&m_0e8, it);
         if (npc == 0)
@@ -8552,9 +8552,9 @@ void WorldService::FUN_141bd9990(const CString& s)
 MS2_REPLACE_METHOD(0x141BD9990, WorldService, FUN_141bd9990, 44, 0x0524DA12);
 
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
-void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
+// (was) void* FUN_141bfebf0(void* map);                         // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);              // m_678.GetValueAt
-void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
+// (was) void FUN_141bff230(void* map, void** pos);              // m_678.GetNext
 void FUN_140a7b410(Unk_WsP16* out, void* src);          // copy a smart pointer
 // count the m_678 objects of kind 6 that are linked to the record with the given id
 // @0x141bd99d0
@@ -8564,7 +8564,7 @@ int WorldService::FUN_141bd99d0(int id)
     if (!record)
         return 0;
     int count = 0;
-    for (void* pos = FUN_141bfebf0(&m_678); pos; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         MS2Ptr<CInteractObject> obj = *static_cast<MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos));
         if (obj->vfunc_5() != 6)
@@ -8745,7 +8745,7 @@ void FUN_14115a960(void* list, void* elem);             // list append
 void WorldService::FUN_141bda490(unsigned key, void* pOutList)
 {
     Unk_WsC_TagPtr holder = FUN_141bd0420(key);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(holder) == (Unk_WsB_EntityList*)0)
+    if (holder == (Unk_WsB_EntityList*)0)
         return;
     ((std::vector<efd::SmartPointer<egf::Entity>, std::allocator<efd::SmartPointer<egf::Entity>>>*)(void*)(pOutList))->clear();
     ((std::vector<efd::SmartPointer<egf::Entity>, std::allocator<efd::SmartPointer<egf::Entity>>>*)(void*)(pOutList))->reserve(reinterpret_cast<unsigned __int64>(FUN_140b285a0(holder.operator->())));
@@ -9018,20 +9018,20 @@ MS2_REPLACE_METHOD(0x141BDB030, WorldService, FUN_141bdb030, 179, 0x208C2F51);
 // typed Entity::SetPropertyValue wrappers (egf::Entity* + property id + value pointer)
 void FUN_140de8bd0(egf::Entity* e, unsigned propId, const efd::AssetID* v);
 void* FUN_141c06a60(void* map, unsigned key);                       // m_350.Lookup
-bool FUN_141c06b80(void* map, unsigned key, Unk_WsE_TagPtr* out);   // m_208.Lookup(key, out)
+bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out);   // m_208.Lookup(key, out) (unit_141bf99b8 defines it)
 // @0x141bc1720
-int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
+int WorldService::FUN_141bc1720(MS2Ptr<CPortal> obj)
 {
-    if (FUN_141c06a60(&m_350, obj->m_id) != 0)
+    if (FUN_141c06a60(&m_350, obj->m_nId) != 0)
         return 0;
 
     efd::SmartPointer<egf::Entity> entity;
-    int type = obj->m_type;
+    int type = obj->m_nType;
     if (type == 3 || type == 5 || type == 4 || type == 6 || type == 7 || type == 10 || type == 0xb || type == 0x10)
     {
         efd::SmartPointer<egf::Entity> created;
         egf::EntityID newId = egf::EntityIDFactory::GetNextID();
-        if (obj->m_type == 4)
+        if (obj->m_nType == 4)
         {
             created = ((Unk_WsE_EntityWorld*)((void*)TSingleton<EntityWorldManager>::GetInstance()))->FUN_1411cedd0(0x7b35ceec, newId, true);
             if (created == 0)
@@ -9046,29 +9046,29 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
         if (created == 0)
             return 0;
 
-        (created.operator->())->SetPropertyValue<int>(0x60f82816, obj->m_id);
-        (created.operator->())->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(obj->m_pos));
-        (created.operator->())->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(obj->m_scale));
-        (created.operator->())->SetPropertyValue<int>(0x14969c28, obj->m_enabled);
-        (created.operator->())->SetPropertyValue<int>(0xa0b6b179, obj->m_visible);
-        (created.operator->())->SetPropertyValue<efd::Point3>(0xfb190620, reinterpret_cast<const efd::Point3&>(obj->m_rot));
-        if (obj->m_type == 4 || obj->m_type == 0xb)
-            (created.operator->())->SetPropertyValue<int>(0x1b8b1161, obj->m_portalTarget);
-        if (!obj->m_model.IsEmpty())
+        (created.operator->())->SetPropertyValue<int>(0x60f82816, obj->m_nId);
+        (created.operator->())->SetPropertyValue<efd::Point3>(0xfd95ca52, reinterpret_cast<const efd::Point3&>(obj->m_pos2c));
+        (created.operator->())->SetPropertyValue<efd::Point3>(0x68c7c29d, reinterpret_cast<const efd::Point3&>(obj->m_pos38));
+        (created.operator->())->SetPropertyValue<int>(0x14969c28, obj->m_unk_28);
+        (created.operator->())->SetPropertyValue<int>(0xa0b6b179, obj->m_unk_24);
+        (created.operator->())->SetPropertyValue<efd::Point3>(0xfb190620, reinterpret_cast<const efd::Point3&>(obj->m_pos44));
+        if (obj->m_nType == 4 || obj->m_nType == 0xb)
+            (created.operator->())->SetPropertyValue<int>(0x1b8b1161, obj->m_unk_150);
+        if (!obj->m_strImage.IsEmpty())
         {
             efd::AssetID asset;
-            FUN_140de0cb0(&asset, (const char*)obj->m_model);
+            FUN_140de0cb0(&asset, (const char*)obj->m_strImage);
             FUN_140de8bd0(created.operator->(), 0x770e5fc6, &asset);
         }
         ((Unk_WsE_EntityWorld*)((void*)TSingleton<EntityWorldManager>::GetInstance()))->FUN_1411cf2d0(created, 0);
-        obj->m_entityId = created->GetEntityID();
+        obj->m_idEntity = created->GetEntityID();
         entity = created;
         m_838.insert(created->GetEntityID());
     }
     else
     {
-        Unk_WsE_TagPtr tags;
-        if (!FUN_141c06b80(&m_208, 0x12cd8b5, &tags))
+        Unk_PCEntListPtr tags;
+        if (!FUN_141c06b80(&m_208, 0x12cd8b5, reinterpret_cast<Unk_WsC_TagPtr*>(&tags)))
             return 0;
         for (POSITION pos = tags->GetHeadPosition(); pos != 0; tags->GetNext(pos))
         {
@@ -9076,10 +9076,10 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
             int candId = 0;
             if ((cand.operator->())->GetPropertyValue<int>(0x60f82816, candId) != 0)
                 return 0;
-            if (candId == obj->m_id)
+            if (candId == obj->m_nId)
             {
-                obj->m_entityId = cand->GetEntityID();
-                reinterpret_cast<CPortal*>(obj.operator->())->FUN_14169b650(cand);
+                obj->m_idEntity = cand->GetEntityID();
+                obj->FUN_14169b650(cand);
                 entity = cand;
                 break;
             }
@@ -9088,26 +9088,26 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
 
     if ((egf::Entity*)entity != 0)
     {
-        bool hidden = obj->m_hidden ? true : false;
+        bool hidden = obj->m_unk_154 ? true : false;
         FUN_14098c6e0((class Unk_CachedEntity*)(entity.operator->()), 0xe084c8de, hidden);
-        (entity.operator->())->SetPropertyValue<int>(0xa162d321, obj->m_mapType);
-        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0a60(m_284, obj->m_mapType);
+        (entity.operator->())->SetPropertyValue<int>(0xa162d321, obj->m_unk_148);
+        TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0a60(m_284, obj->m_unk_148);
     }
 
-    if (obj->m_entityId == g_worldNullHandle)   // the null entity id (0x143af8278)
+    if (obj->m_idEntity == g_worldNullHandle)   // the null entity id (0x143af8278)
         return 0;
 
-    reinterpret_cast<Unk_PortalBox*>(&obj->m_placement)->FUN_14169b080(entity);
-    reinterpret_cast<Unk_Ws1M1*>(&m_350)->SetAt(obj->m_id, reinterpret_cast<const MS2Ptr<CPortal>&>(obj));
-    FUN_141bc3000(obj->m_id, obj->m_enabled);
-    FUN_141bc30a0(obj->m_id, obj->m_visible);
+    reinterpret_cast<Unk_PortalBox*>(&obj->m_box)->FUN_14169b080(entity);
+    reinterpret_cast<Unk_Ws1M1*>(&m_350)->SetAt(obj->m_nId, obj);
+    FUN_141bc3000(obj->m_nId, obj->m_unk_28);
+    FUN_141bc30a0(obj->m_nId, obj->m_unk_24);
 
     MS2Ptr<Unk_WsE_Proxy> proxy(reinterpret_cast<Unk_WsE_Proxy*>(new CProxyGameObject));
-    proxy->m_proxyId = obj->m_proxyId;
-    proxy->m_fieldId = obj->m_id;
+    proxy->m_proxyId = obj->m_unk_14c;
+    proxy->m_fieldId = obj->m_nId;
     proxy->m_owner = obj;
     AddProxyObject(reinterpret_cast<MS2Ptr<CProxyGameObject>&>(proxy));   // registers the proxy (callee releases)
-    reinterpret_cast<CPortal*>(obj.operator->())->FUN_14169d0e0();
+    obj->FUN_14169d0e0();
 
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyAddPortal(obj.get())));
     return 1;
@@ -9121,19 +9121,19 @@ MS2_REPLACE_METHOD(0x141BC1720, WorldService, FUN_141bc1720, 3507, 0x9599C75C);
 // m_3f0 (CRBMap<KeyPtr, ValPtr>)
 void* FUN_1410a7150(struct Unk_SPtr*);   // C3: was FUN_1410a7150
 // m_5e8 (CRBMap<CString, EntRef>)
-void* FUN_141bfebb0(void* map);                                                 // m_5e8.GetHeadPosition
+// (was) void* FUN_141bfebb0(void* map);                                                 // m_5e8.GetHeadPosition
 Unk_WsF_EntRef* FUN_141c00920_F(void* map, void* pos);                            // m_5e8.GetValueAt
 CString* FUN_141bfed20(void* map, void* pos);                                   // m_5e8.GetKeyAt
-void FUN_141bff1b0(void* map, void** pos);                                      // m_5e8.GetNext
+// (was) void FUN_141bff1b0(void* map, void** pos);                                      // m_5e8.GetNext
 // m_420 / m_468 (CAtlMap<u64, ...>)
 class Unk_WsMapV9;   // C3: forward decl for a rewritten call
 // m_4b0 (CRBMap<CString, SensorRef>)
-void* FUN_141bfebd0(void* map);                                                 // m_4b0.GetHeadPosition
+// (was) void* FUN_141bfebd0(void* map);                                                 // m_4b0.GetHeadPosition
 void* FUN_141c00980(void* map, void* pos);                                      // m_4b0.GetValueAt
-void FUN_141bff1f0(void* map, void** pos);                                      // m_4b0.GetNext
+// (was) void FUN_141bff1f0(void* map, void** pos);                                      // m_4b0.GetNext
 // m_118 (CRBMap<u32, GameObjRef>)
 // m_738 (CAtlMap<u32, MoverRef>)
-void* FUN_141bfff50(void* map);                                                 // m_738.GetStartPosition
+// (was) void* FUN_141bfff50(void* map);                                                 // m_738.GetStartPosition
 void* FUN_141c00370(void* map, void* pos);                                      // m_738.GetValueAt
 unsigned __int64 FUN_141bf7c50(unsigned __int64*);                                        // ref->get()
 // handles
@@ -9179,7 +9179,7 @@ void WorldService::FUN_141bc3560()
                 defaultLevel = ((struct Unk_WsF_ItemInfo*)(item->GetItem()->FUN_140527840()))->tagLevel;
         }
 
-        for (void* ep = FUN_141bfebb0(&m_5e8); ep != 0; FUN_141bff1b0(&m_5e8, &ep))
+        for (void* ep = reinterpret_cast<Unk_Ws1F11*>(&m_5e8)->GetHeadPosition(); ep != 0; reinterpret_cast<Unk_Ws1F11*>(&m_5e8)->GetNext(reinterpret_cast<POSITION&>(ep)))
         {
             efd::SmartPointer<egf::Entity> entity(*(efd::SmartPointer<egf::Entity>*)FUN_141c00920_F(&m_5e8, ep));
             MS2Ptr<CBoxCollision> range(0);
@@ -9259,7 +9259,7 @@ void WorldService::FUN_141bc3560()
     }
 
     // Named sensors (m_4b0): enter packet 0x27.
-    for (void* sp = FUN_141bfebd0(&m_4b0); sp != 0; FUN_141bff1f0(&m_4b0, &sp))
+    for (void* sp = reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetHeadPosition(); sp != 0; reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetNext(reinterpret_cast<POSITION&>(sp)))
     {
         Unk_WsF_Sensor* sensor = ((class Unk_WsF_Sensor*)((MS2Ptr<Unk_RideeFieldObj>*)(void*)(FUN_141c00980(&m_4b0, sp)))->get());
         if (!((class CBreakableObject*)(class Unk_WsF_Sensor*)(sensor))->FUN_140addea0())
@@ -9376,7 +9376,7 @@ void WorldService::FUN_141bc3560()
     }
 
     // Movers (m_738): test against every tag range until one accepts.
-    for (void* mp = FUN_141bfff50(&m_738); mp != 0; reinterpret_cast<Unk_Ws1M738*>(&m_738)->GetNext(reinterpret_cast<POSITION&>(mp)))
+    for (void* mp = reinterpret_cast<Unk_Ws1M738*>(&m_738)->GetStartPosition(); mp != 0; reinterpret_cast<Unk_Ws1M738*>(&m_738)->GetNext(reinterpret_cast<POSITION&>(mp)))
     {
         Unk_WsF_Mover* mover = (Unk_WsF_Mover*)FUN_141bf7c50((unsigned __int64*)FUN_141c00370(&m_738, mp));
         if (mover == 0)
@@ -9438,17 +9438,17 @@ Unk_WsG_Ref16* FUN_140884f30(Unk_WsG_Ref16* dst, Unk_WsG_Ref16* src); // copy (a
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 // m_178 timed effects
 // per-map update loops
-void* FUN_141bfebd0(void* map);                                       // m_4b0.GetHeadPosition
+// (was) void* FUN_141bfebd0(void* map);                                       // m_4b0.GetHeadPosition
 Unk_WsV4b0* FUN_141c00980_G(void* map, void* pos);
-void* FUN_141bff1f0_G(void* map, void** pos);
-void* FUN_141bfec10(void* map);                                       // m_510.GetHeadPosition
+// (was) void* FUN_141bff1f0_G(void* map, void** pos);
+// (was) void* FUN_141bfec10(void* map);                                       // m_510.GetHeadPosition
 void* FUN_141c00a40(void* map, void* pos);                           // m_510.GetValueAt (-> Unk_WsV510)
-void FUN_141bff270(void* map, void** pos);
+// (was) void FUN_141bff270(void* map, void** pos);
 Unk_WsV3a0* FUN_141c004c0_G(void* map, void* pos);
-void* FUN_141bfebf0(void* map);                                       // m_678.GetHeadPosition
+// (was) void* FUN_141bfebf0(void* map);                                       // m_678.GetHeadPosition
 void* FUN_141c009e0(void* map, void* pos);                           // m_678.GetValueAt (-> Unk_WsV678)
-void FUN_141bff230(void* map, void** pos);
-void* FUN_141bffee0(void* map);                                       // m_350.GetHeadPosition
+// (was) void FUN_141bff230(void* map, void** pos);
+// (was) void* FUN_141bffee0(void* map);                                       // m_350.GetHeadPosition
 void* FUN_141c00300(void* map, void* pos);                           // m_350.GetValueAt (-> Unk_WsV350)
 // actors: distance bookkeeping
 // m_9a0 element (MS2Ptr<MS2ActorUpdater>, get 0x141bf7db0)
@@ -9488,9 +9488,9 @@ extern int DAT_143ae2b38;
 //
 // MS2Ptr<CProxyGameObject> copied out of m_930
 typedef MS2Ptr<CProxyGameObject> Unk_WsG_RegionRef;
-void* FUN_141bfeb70(void* map);                                       // m_6d8.GetHeadPosition
+// (was) void* FUN_141bfeb70(void* map);                                       // m_6d8.GetHeadPosition
 Unk_WsV6d8* FUN_141c00860(void* map, void* pos);
-void FUN_141bff130(void* map, void** pos);
+// (was) void FUN_141bff130(void* map, void** pos);
 void FUN_14150cce0(float fValue);
 // singletons
 class CUgcManager   // C3: member view for the former free stand-ins
@@ -9532,7 +9532,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 float FUN_141b6fdb0(float fT, int nCurve);                            // easing curve
 void FUN_1418fe1c0(const CString& url);                                    // open the url (ShellExecute)
 void FUN_1418fe280(const CString& path);
@@ -9647,12 +9647,12 @@ efd::AsyncResult WorldService::OnTick()
 
     // ---- per-map update loops ----
     unsigned nowMs = GetTickCountMs2();
-    for (void* pos = FUN_141bfebd0(&m_4b0); pos != 0; FUN_141bff1f0_G(&m_4b0, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F13*>(&m_4b0)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         void* obj = (void*)reinterpret_cast<const MS2Ptr<Unk_WsB_Marker>&>(*FUN_141c00980_G(&m_4b0, pos)).get();
         ((class CBreakableObject*)(void*)(obj))->FUN_140adeaf0(nowMs);
     }
-    for (void* pos = FUN_141bfec10(&m_510); pos != 0; FUN_141bff270(&m_510, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F12*>(&m_510)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         void* obj = (void*)reinterpret_cast<const MS2Ptr<Unk_WsB_Lift>*>(FUN_141c00a40(&m_510, pos))->get();
         ((class CLiftableObject*)(void*)(obj))->FUN_141447c10();
@@ -9662,7 +9662,7 @@ efd::AsyncResult WorldService::OnTick()
         void* obj = (void*)reinterpret_cast<const MS2Ptr<CRegionSkillObject>&>(*FUN_141c004c0_G(&m_3a0, pos)).get();
         ((class CRegionSkillObject*)(void*)(obj))->FUN_1416f6f50();
     }
-    for (void* pos = FUN_141bfebf0(&m_678); pos != 0; FUN_141bff230(&m_678, &pos))
+    for (void* pos = reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F14*>(&m_678)->GetNext(reinterpret_cast<POSITION&>(pos)))
     {
         Unk_WsG_Ticker* obj = (Unk_WsG_Ticker*)(void*)reinterpret_cast<const MS2Ptr<CInteractObject>*>(FUN_141c009e0(&m_678, pos))->operator CInteractObject*();
         obj->Update();
@@ -9686,9 +9686,9 @@ efd::AsyncResult WorldService::OnTick()
         if (target != 0)
             cameraPos = target->GetPosition();
         else
-            cameraPos = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+            cameraPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
     }
-    Vector3 eyePos = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    efd::Point3 eyePos = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     while (actorPos != 0)
     {
         Unk_WsA_ObjPtr actor(*(Unk_WsA_ObjPtr*)&((Unk_WsLobbyTree*)(void*)(&m_0b8))->GetNext(*(__POSITION**)(void**)(&actorPos))->m_value);
@@ -9698,7 +9698,7 @@ efd::AsyncResult WorldService::OnTick()
         else
             ((Unk_WsG_Actor*)actor.operator->())->SetCameraPosition(cameraPos);
         if (DAT_143ae2b38 != 0)
-            ((GameObject*)(void*)actor.operator->())->FUN_14123db60(reinterpret_cast<const efd::Point3&>(eyePos));
+            ((GameObject*)(void*)actor.operator->())->FUN_14123db60(eyePos);
         actor->FUN_14123bb30(dt);
     }
     for (std::vector<Unk_WsV9a0>::iterator it = m_9a0.begin(); it != m_9a0.end(); ++it)
@@ -9776,7 +9776,7 @@ efd::AsyncResult WorldService::OnTick()
         }
         ((class CameraMgr*)(class Unk_WsG_Camera*)(G_Camera()))->FUN_140aece50();
 
-        for (void* pos = FUN_141bfeb70(&m_6d8); pos != 0; FUN_141bff130(&m_6d8, &pos))
+        for (void* pos = reinterpret_cast<Unk_Ws1F8*>(&m_6d8)->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_Ws1F8*>(&m_6d8)->GetNext(reinterpret_cast<POSITION&>(pos)))
         {
             egf::Entity* ent = static_cast<egf::Entity*>(FUN_141c00860(&m_6d8, pos)->p);
             float value = 0.0f;
@@ -9864,7 +9864,7 @@ efd::AsyncResult WorldService::OnTick()
         }
     }
 
-    for (void* pos = FUN_141bffee0(&m_350); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
+    for (void* pos = reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetStartPosition(); pos != 0; reinterpret_cast<Unk_Ws1M1*>(&m_350)->GetNext(reinterpret_cast<POSITION&>(pos)))
         ((class CPortal*)(void*)reinterpret_cast<const MS2Ptr<Unk_AkoPortal>*>(FUN_141c00300(&m_350, pos))->operator->())->FUN_14169bd40();
     TSingleton<BGTransparencyMgr>::GetInstance()->Tick();
     if (((class CFeatureManager*)(class Unk_WsG_Sys166410*)(((class Unk_WsG_Sys166410*)FUN_140166410())))->FUN_14036d570(0x3f) == true)
@@ -9872,10 +9872,10 @@ efd::AsyncResult WorldService::OnTick()
     else
         FUN_141bdb1b0(this);
 
-    Unk_WsG_App* app = ((class Unk_WsG_App*)FUN_140d86260());
+    Unk_WsG_App* app = ((class Unk_WsG_App*)((void*)GetClientPlatform()));
     if (app->IsRunning() == 0)
     {
-        ((class Unk_WsG_App*)FUN_140d86260())->OnQuit();
+        ((class Unk_WsG_App*)((void*)GetClientPlatform()))->OnQuit();
         return efd::AsyncResult_Failure;
     }
 
@@ -10049,7 +10049,7 @@ int WorldService::FUN_141bbc580(int resetFlag, int mapId)
     ((ATL::CRBTree<unsigned __int64, int, ATL::CElementTraits<unsigned __int64>, ATL::CElementTraits<int>>*)(void*)(&m_648))->RemoveAll();
     ((class LayerManager*)(class TextureLayerManager*)(m_spTextureLayerManager.get()))->Clear();
     ((class LayerManager*)(class TextureLayerManager*)((TextureLayerManager*)m_spChaosLightEffectLayerManager.get()))->Clear();
-    ((ATL::CAtlList<Unk_WsPropRef, ATL::CElementTraits<Unk_WsPropRef>>*)(void*)(&m_058))->RemoveAll();
+    ((ATL::CAtlList<efd::SmartPointer<egfPhysX::EntityActorData>, ATL::CElementTraits<efd::SmartPointer<egfPhysX::EntityActorData>>>*)(void*)(&m_058))->RemoveAll();
     ((std::_Tree<std::_Tmap_traits<egf::EntityID, efd::SmartPointer<egf::Entity>, std::less<egf::EntityID>, std::allocator<std::pair<egf::EntityID const, efd::SmartPointer<egf::Entity>>>, 0>>*)(void*)(&m_2e8))->clear();
     ((std::_Tree<std::_Tmap_traits<egf::EntityID, int, std::less<egf::EntityID>, std::allocator<std::pair<egf::EntityID const, int>>, 0>>*)(void*)(&m_900))->clear();
     ((std::list<egf::Entity *, std::allocator<egf::Entity *>>*)(void*)(&m_098))->clear();
@@ -10286,9 +10286,9 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         unsigned modelId = *((unsigned int*)&((ATL::CAtlMap<unsigned int, Unk_WsV208, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV208>>*)(void*)(&m_208))->GetKeyAt((struct __POSITION*)(pos)));
         if (pEntity->GetModel()->ContainsModel(modelId))
         {
-            Unk_WsC_TagPtr tagList = *static_cast<Unk_WsC_TagPtr*>(FUN_141c00450(&m_208, pos));
+            Unk_PCEntListPtr tagList = *static_cast<const Unk_PCEntListPtr*>(FUN_141c00450(&m_208, pos));
             egf::EntityPtr spEntity(pEntity);
-            ((ATL::CAtlList<egf::EntityPtr, Unk_WfEntTraits>*)(void*)(reinterpret_cast<const Unk_PCEntListPtr&>(tagList).operator->()))->AddTail(reinterpret_cast<const egf::EntityPtr&>(spEntity));
+            ((ATL::CAtlList<egf::EntityPtr, Unk_WfEntTraits>*)(void*)(tagList.operator->()))->AddTail(reinterpret_cast<const egf::EntityPtr&>(spEntity));
         }
     }
 
@@ -10450,11 +10450,11 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         Unk_WsC_TagPtr tagList;
         if (FUN_141c06b80(&m_208, 0xd3b04f05, &tagList))
         {
-            for (POSITION pos = reinterpret_cast<const Unk_PCEntListPtr&>(tagList).operator->()->GetHeadPosition(); pos != 0; reinterpret_cast<const Unk_PCEntListPtr&>(tagList).operator->()->GetNext(pos))
+            for (POSITION pos = tagList.operator->()->GetHeadPosition(); pos != 0; tagList.operator->()->GetNext(pos))
             {
-                if (reinterpret_cast<const Unk_PCEntListPtr&>(tagList).operator->()->GetAt(pos)->GetEntityID() == pEntity->GetEntityID())
+                if (tagList.operator->()->GetAt(pos)->GetEntityID() == pEntity->GetEntityID())
                 {
-                    reinterpret_cast<const Unk_PCEntListPtr&>(tagList).operator->()->RemoveAt(pos);
+                    tagList.operator->()->RemoveAt(pos);
                     break;
                 }
             }
@@ -10726,7 +10726,7 @@ void FUN_141bd56b0(WorldService* self)
         reinterpret_cast<egf::Entity*>(ent.operator->())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pos));
         Vector3 rot = DAT_143b01a60;
         reinterpret_cast<egf::Entity*>(ent.operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(rot));
-        Vector3 half = size.FUN_14097fc90(0.5f);
+        efd::Point3 half = reinterpret_cast<const efd::Point3&>(size) * 0.5f;
         NxBounds3 box;
         box.set(-half.x, -half.y, -half.z, half.x, half.y, half.z);
         NxMat34 pose(true);

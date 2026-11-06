@@ -492,7 +492,7 @@ void FUN_140df1e00();
 void FUN_140df1e90(unsigned nBox, unsigned nItemId);
 void FUN_140df1f40(unsigned int, unsigned int);   // C3: was FUN_140df1f40
 void FUN_140df1ff0(unsigned int nId, ATL::CAtlList<unsigned int>* pList);
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 void FUN_141925e70(int a, int b);
 int FUN_14138c930(void* p, int n);
 class CGuideManager   // C3: member view for the former free stand-ins
@@ -826,7 +826,7 @@ void UIUGCCubePaletteDialog::OnLoadComplete()
     FUN_140df1e00();
     FUN_140eeca50();
     FUN_140eefc50(1);
-    ((class Unk_SndMgr*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_SndMgr*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
     ((Unk_ItemEventSystem*)(Unk_ItemEvtMgr*)(((struct Unk_ItemEvtMgr*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
 }
 
@@ -2014,7 +2014,7 @@ void UGCKeyMode1::vfunc_1()
                 void* pCube = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(vAt);
                 if (pCube != 0)
                 {
-                    Unk_NiPoint3 vTop(reinterpret_cast<Vector3*>(&vEnd)->FUN_14097fd50(*reinterpret_cast<Vector3*>(&vUp)));
+                    Unk_NiPoint3 vTop(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((*reinterpret_cast<Vector3*>(&vEnd)))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(*reinterpret_cast<Vector3*>(&vUp))))));
                     Vector3 vCellPt = *reinterpret_cast<Vector3*>(&vEnd);
                     if (pCube == ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b8790(FUN_1408a1430(*reinterpret_cast<NiPoint3*>(&vCellPt))))
                         vTop.z += 150.0f;
@@ -2102,7 +2102,7 @@ void UGCKeyMode2::vfunc_1()
                 void* pCube = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(vAt);
                 if (pCube != 0)
                 {
-                    Unk_NiPoint3 vTop(reinterpret_cast<Vector3*>(&vEnd)->FUN_14097fd50(*reinterpret_cast<Vector3*>(&vUp)));
+                    Unk_NiPoint3 vTop(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((*reinterpret_cast<Vector3*>(&vEnd)))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(*reinterpret_cast<Vector3*>(&vUp))))));
                     Vector3 vCellPt = *reinterpret_cast<Vector3*>(&vEnd);
                     if (pCube == ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b8790(FUN_1408a1430(*reinterpret_cast<NiPoint3*>(&vCellPt))))
                         vTop.z += 150.0f;

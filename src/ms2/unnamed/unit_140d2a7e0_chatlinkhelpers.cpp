@@ -112,7 +112,7 @@ unsigned __int64 FUN_140718370(const CStringW& str);
 bool FUN_14053f8c0(unsigned nUid);
 bool FUN_14053f940(unsigned nUid);
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
-void FUN_1402a9d70(void*, int, float, float, float, int);
+#include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142ca4bc0();                                       // the exe's atexit destructors of the string arrays / marker
 void FUN_142ca4bf0();
 void FUN_142ca4c20();
@@ -146,7 +146,7 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400d24f0
 static char s_marker[0x48];
-static Unk_ChatLinkMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca4c60), Unk_ChatLinkMarker());
+static Unk_ChatLinkMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca4c60), Unk_ChatLinkMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.

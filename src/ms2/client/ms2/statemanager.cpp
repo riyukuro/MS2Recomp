@@ -1535,7 +1535,7 @@ struct Unk_SMDepWorld : efd::ISystemService { static const efd::ClassID CLASS_ID
 struct Unk_SMDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
 struct Unk_SMStageView { void* m_p0; void* m_pTarget; };   // layout of the MS2Ptr<ASStage> handle
 class Unk_140166410* FUN_140166410();
-CReconnectionManagerCli* FUN_140e800e0();
+// (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 void FUN_14151f460(int n);
 class CMainSystem;
 
@@ -1575,8 +1575,8 @@ int CStateService::FUN_1417e25a0(int nScene)
     if (FUN_1417e2610() == nScene)
         return 0;
     FUN_14151f460(1);
-    if (FUN_140e800e0() != 0)
-        FUN_140e800e0()->HideProgress();
+    if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
+        TSingleton<CReconnectionManagerCli>::GetInstance()->HideProgress();
     int nRet = FUN_1417e2830(nScene);
     return nRet;
 }

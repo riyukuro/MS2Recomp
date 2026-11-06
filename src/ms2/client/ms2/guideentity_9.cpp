@@ -89,14 +89,14 @@ struct Unk_GeTreeHead { Unk_GeNode* m_pHead; unsigned __int64 m_nSize; };
 struct Unk_GeIter { Unk_GeNode* m_pNode; };
 
 void* FUN_141395550(Unk_GeTreeHead* pHead);                             // the container proxy
-Unk_GeIter* FUN_141397130(Unk_GeIter* pOut, Unk_GeNode* pNode, void* pProxy);
+// (0x141397130 is the _Tree_iterator<pair<const CGuideManager::Occurrence, int>>(_Nodeptr, const _Mytree*) ctor)
 void* FUN_14139e9f0(void* pMap);                                        // the node allocator
 Unk_GeNode** FUN_14139f960(Unk_GeTreeHead* pHead);                      // the root
 Unk_GeNode** FUN_14139eee0(Unk_GeTreeHead* pHead);                      // the leftmost
 Unk_GeNode** FUN_14139f8e0(Unk_GeTreeHead* pHead);                      // the rightmost
 void FUN_14139eff0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate left
 void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate right
-void FUN_1413a4e30(void* pMap, Unk_GeNode* pNode);                      // frees a node
+typedef std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>> Unk_GeTree; struct Unk_GeTreeAccess : Unk_GeTree { static Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode); };   // protected _Destroy_if_node (was FUN_1413a4e30)
 void* FUN_141398a90(void* pIter);
 void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
 unsigned __int64 FUN_1413a5140(void* pMap);
@@ -123,12 +123,12 @@ const int& FUN_1413a46e0(const int& rKey)                                 // std
 }
 
 // @0x1413a3e00
-Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
+Unk_GeIter* Unk_GeTreeAccess::FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
 {
     Unk_GeTreeHead* pHead = ((struct Unk_GeTreeHead*)&((std::_Tree_comp_alloc<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<int const, int>>, 0>>*)(void*)(pMap))->_Get_data());
     if (FUN_1413a5140(pMap) - 1 <= pHead->m_nSize)
     {
-        FUN_1413a4e30(pMap, pNode);
+        reinterpret_cast<Unk_GeTreeAccess*>(pMap)->_Destroy_if_node(reinterpret_cast<Unk_GeTree::_Nodeptr>(pNode));
         std::_Xlength_error("map/set<T> too long");
     }
     Unk_GeNode* pNew = FUN_1413a3d50(pMap, pNode, FUN_1413a46e0(rKey));
@@ -200,7 +200,7 @@ Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* 
         }
     }
     reinterpret_cast<Unk_GeNode*&>(((std::_Tree_val<std::_Tree_simple_types<long>>*)pHead)->_Root())->m_cColor = 1;
-    FUN_141397130(pOut, pNew, std::addressof(*(std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>*)pHead));
+    reinterpret_cast<std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>>*>(pOut)->std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>>::_Tree_iterator((std::_Tree_node<std::pair<CGuideManager::Occurrence const, int>, void*>*)pNew, std::addressof(*(std::_Tree_val<std::_Tree_simple_types<std::pair<CGuideManager::Occurrence const, int>>>*)pHead));
     return pOut;
 }
 
@@ -780,3 +780,4 @@ void CGuideEntity::ResetConditions(Unk_GcCondList& list)
     for (unsigned i = 0; i < GE_CONDS(list).GetCount(); ++i)
         GE_CONDS(list)[i]->vfunc_4();
 }
+// MS2-PIN: ?FUN_1413a3e00@Unk_GeTreeAccess@@SAPEAUUnk_GeIter@@PEAXPEAU2@_NPEAUUnk_GeNode@@AEBH3@Z 0x1413a3e00 ; _Insert_at stand-in, a static member of a _Tree<map<int,int>> view for the protected _Destroy_if_node

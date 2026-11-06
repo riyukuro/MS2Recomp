@@ -36,7 +36,7 @@
 // MS2-PIN: ??$?8PEAVUIBeautyShopStyleDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIBeautyShopStyleDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x140f09b10 ; prop
 // MS2-PIN: ??$?8PEAVUIBeautyShopStyleDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIBeautyShopStyleDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140f09b80 ; prop
 // MS2-PIN: ??$?8PEAVUIBeautyShopStyleDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIBeautyShopStyleDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140f09bf0 ; prop
-// MS2-PIN: ??$LocalizedMentorFormat@I_J@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBIAEB_J@Z 0x140f09c60 ; unique
+// MS2-PIN: ??$FUN_14028dfa0@I_J@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBIAEB_J@Z 0x140f09c60 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIBeautyShopStyleDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140f0ad60 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIBeautyShopStyleDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140f0ae00 ; prop
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCustomize@@@@QEAAAEAV1@PEAVCustomize@@@Z 0x140f0b370 ; unique
@@ -269,7 +269,7 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42();
     virtual void vfunc_43(int nEvent, int a2, int nDelay);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // Client constants (the style slot counts and the slot extend price).
 class Unk_BSConstI64 { public: char m_pad[0x58]; };
@@ -287,7 +287,7 @@ struct Unk_BSConstants
 };
 MS2_CHECK_OFFSET(Unk_BSConstants, m_extendCount, 0x6518);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_maxExtend, 0x65c8);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 struct Unk_BSEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
@@ -365,8 +365,8 @@ void FUN_14134a120(int, int, unsigned int);   // C3: was FUN_14134a120
 // The server result of a beauty shop request (formatted into string 0x272 for the unknown codes).
 enum Unk_BSResult : unsigned int {};
 
-CStringW LocalizedMentorFormat(const CStringW&, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, LocalizedMentorFormat, CStringW)
+//   (the string-key formatter is wcformat.h FUN_14028dfa0)
+//
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 
 int FUN_140f011f0();
@@ -413,25 +413,25 @@ int FUN_140f01140()
 // @0x140f01180
 __int64 FUN_140f01180()
 {
-    return reinterpret_cast<Common::Constants::Value<__int64>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_extendPrice)->Read();
+    return reinterpret_cast<Common::Constants::Value<__int64>*>(&((struct Unk_BSConstants*)GetClientConstants())->m_extendPrice)->Read();
 }
 
 // @0x140f011b0
 unsigned FUN_140f011b0()
 {
-    return FUN_140f011f0() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_BSConstants*)FUN_1401d3200())->m_maxExtend)->Get();
+    return FUN_140f011f0() + *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_BSConstants*)GetClientConstants())->m_maxExtend)->Get();
 }
 
 // @0x140f011f0
 int FUN_140f011f0()
 {
-    return FUN_140ec2b60(&((struct Unk_BSConstants*)FUN_1401d3200())->m_baseSlots);
+    return FUN_140ec2b60(&((struct Unk_BSConstants*)GetClientConstants())->m_baseSlots);
 }
 
 // @0x140f01220
 int FUN_140f01220()
 {
-    return FUN_140ec2b60(&((struct Unk_BSConstants*)FUN_1401d3200())->m_extendCount);
+    return FUN_140ec2b60(&((struct Unk_BSConstants*)GetClientConstants())->m_extendCount);
 }
 
 // Save the equipped hair into a slot.
@@ -558,7 +558,7 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
         MS2Ptr<ItemColorEx> spRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorBySN(nPalette, nIndex);
         if (spRow.get())
         {
-            CStringW strRgb = LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB);
+            CStringW strRgb = FUN_14028dfa0(L"s_beauty_tooltip_color", nR, nG, nB);
             CStringW strName;
             if (static_cast<unsigned>(spRow->m_n2c) > 0)
             {
@@ -589,7 +589,7 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
         }
     }
     if (strOut.IsEmpty() && bShowRgb == true)
-        strOut = LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB);
+        strOut = FUN_14028dfa0(L"s_beauty_tooltip_color", nR, nG, nB);
     if (strOut.IsEmpty())
         return true;
     if (!tip.ApplyTextTooltip(strOut))
@@ -609,7 +609,7 @@ bool FUN_140f01eb0(ASTooltip& tip, Unk_BSPricePtr spPrice, short nLevel, const C
     {
         if (spPrice->m_level > 0)
         {
-            strText = LocalizedMentorFormat(L"s_beauty_tooltip_price_with_requirelevel", FUN_140f010c0(spPrice->m_id),
+            strText = FUN_14028dfa0(L"s_beauty_tooltip_price_with_requirelevel", FUN_140f010c0(spPrice->m_id),
                                             spPrice->m_level, strPrice);
         }
         else if (spPrice->m_achieve > 0)
@@ -661,7 +661,7 @@ void FUN_140f024e0(ASData* pArgs, int* pnPalette, int* pnType)
     unsigned nB = pArgs->PopUInt();
     const Scaleform::GFx::Value value = pArgs->PopValue();
     AScript obj(value, 2);
-    static_cast<ASObj&>(obj).FUN_1407cbb20("colorTooltip", LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB));
+    static_cast<ASObj&>(obj).FUN_1407cbb20("colorTooltip", FUN_14028dfa0(L"s_beauty_tooltip_color", nR, nG, nB));
 }
 
 bool FUN_140f026f0(MS2Ptr<ItemColorEx> spRow, bool* pbLocked);
@@ -815,7 +815,7 @@ void UIBeautyShopStyleDialog::OnLoadComplete()
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopStyleDialog::FUN_140f05460));
     FUN_140f06e10();
-    ((class Unk_BSPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_BSPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
 }
 
 // @0x140f036a0
@@ -985,7 +985,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             }
             unsigned nCount = FUN_140f01220();
             __int64 nPrice = FUN_140f01180();
-            CStringW strText = LocalizedMentorFormat(L"s_beauty_msg_ask_save_style_extend_in_style_npc", nPrice, nCount);
+            CStringW strText = FUN_14028dfa0(L"s_beauty_msg_ask_save_style_extend_in_style_npc", nPrice, nCount);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 1);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05880));
             spBox->FUN_141a024a0(0);
@@ -1004,7 +1004,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         __int64 nPrice = FUN_140f01180();
         unsigned nCount = FUN_140f01220();
-        CStringW strText = LocalizedMentorFormat(L"s_beauty_msg_ask_save_style_extend", nCount, nPrice);
+        CStringW strText = FUN_14028dfa0(L"s_beauty_msg_ask_save_style_extend", nCount, nPrice);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::SendBeautyMode19));
         spBox->FUN_141a024a0(0);

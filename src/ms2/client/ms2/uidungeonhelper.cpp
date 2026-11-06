@@ -216,7 +216,7 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
     return true;
 }
 MS2_REPLACE_METHOD(0x140E12E40, UIDungeonSearchUnitedReward, Init, 3377, 0x93D914EE);
-// MS2-FUNCTIONAL: the level argument is reloaded through a second movzx in the exe (movzx ecx,word / movzx r8d,cx); source form not found
+// the job level goes to GetReward as an inline vfunc_78 call (exe movzx ecx,word / movzx r8d,cx arg copy)
 // @0x140e13c00
 void UIDungeonSearchUnitedReward::FUN_140e13c00()
 {
@@ -251,8 +251,8 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         if (entry == NULL)
             continue;
         RewardContentsTable::Result rewards;
-        unsigned short nJob = static_cast<PCBase*>(pActor)->vfunc_78();     // slot 78 (+0x270)
-        ((RewardContentsTable*)FUN_140764030())->GetReward(entry->m_rewardID, nJob, rewards);
+        // slot 78 (+0x270), passed inline
+        ((RewardContentsTable*)FUN_140764030())->GetReward(entry->m_rewardID, static_cast<PCBase*>(pActor)->vfunc_78(), rewards);
         if (!rewards.m_items.empty())
             m_slots[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[0])));
         m_slots[i]->FUN_140e12780(rewards.m_nMeso, rewards.m_nExp);

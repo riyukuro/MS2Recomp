@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/dikey.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 
@@ -95,7 +96,7 @@ private:
     MS2Ptr<ASButton> m_spUpperOctave;                                  // +0x220 "m_upperOctave"
     MS2Ptr<ASTextField> m_spFold;                                           // +0x230 "m_foldText"
     MS2Ptr<ASButtonBar>   m_spTab;                                           // +0x240 "m_tab"
-    std::vector<std::pair<int, int> > m_octaveKeys;                         // +0x250 (key, octave code)
+    std::vector<std::pair<Unk_DIKey, int> > m_octaveKeys;                   // +0x250 (key, octave code)
     KeyButtonMap m_keyButtons;                                              // +0x268
     PressedMap m_pressed;                                                   // +0x278
 };

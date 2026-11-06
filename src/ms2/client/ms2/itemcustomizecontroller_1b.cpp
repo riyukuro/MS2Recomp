@@ -298,9 +298,9 @@ void FUN_141414250(bool bOn)
     Unk_FactoryPlayer* pPlayer = ((Unk_FactoryPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
-        efd::list<NiAVObject*> listNodes;
+        std::list<NiAVObject*> listNodes;
         pPlayer->vfunc_44(&listNodes);
-        for (efd::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
+        for (std::list<NiAVObject*>::iterator it = listNodes.begin(); it != listNodes.end(); ++it)
         {
             NiNode* pNode = ((NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(*it)));
             if (pNode == 0)

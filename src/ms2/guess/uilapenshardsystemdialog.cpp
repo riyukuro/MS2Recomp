@@ -2055,7 +2055,7 @@ struct Unk_InventoryArraySetting {
 };
 MS2_CHECK_SIZE(Unk_InventoryArraySetting, 0x80);
 class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_InventoryArraySetting m_quests; };   // +0xa040 embedded, not a pointer
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_LsQuestLog { public: unsigned char m_pad[0x10]; unsigned char m_done[1]; };
 void* FUN_140764020();   // C3: was FUN_140764020
 CStringW FUN_1416e4df0(int nQuest);                                     // the name of a quest
@@ -2073,7 +2073,7 @@ int UILapenshardSystemDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    std::vector<int> quests = reinterpret_cast<Unk_LsGameTables*>(((class Unk_LsGameTables*)FUN_1401d3200()))->m_quests.FUN_140a6aa40();
+    std::vector<int> quests = reinterpret_cast<Unk_LsGameTables*>(((class Unk_LsGameTables*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))->m_quests.FUN_140a6aa40();
     if (quests.size() != 2)
         return 0;
     int nNewbie = quests[0];

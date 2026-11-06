@@ -191,7 +191,7 @@ class Unk_GoDeviceInfo   // C3: gameoption.cpp's device info view
 public:
     CStringW FUN_141245ab0();                       // adapter description
 };
-Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+// (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_141b91ab0();
 // UI front end: slot 23 shows a message dialog.
@@ -206,7 +206,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22();
     virtual void ShowCloseNotice(int nStringId, const char* pszArg);           // MS2: slot 23
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, unsigned int nFlags);   // message box + quit prompt
 
 // ---- engine-adjacent pieces (MS2 additions) ----
@@ -694,7 +694,7 @@ efd::AsyncResult MS2RenderService::OnInit()
             }
             adapterName = FUN_14016a730(name.c_str(), 0);
         }
-        reinterpret_cast<GPUManager*>(FUN_141245b20())->FUN_141375390(adapterName);
+        TSingleton<GPUManager>::GetInstance()->FUN_141375390(adapterName);
     }
     int fullscreenMode = TSingleton<CGameOption>::GetInstance()->FUN_141243f50(0);
     bool bFullscreenFlag = fullscreenMode != 0 ? false : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->GetMode() == 0;
@@ -709,11 +709,11 @@ efd::AsyncResult MS2RenderService::OnInit()
         int mode = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
         FUN_14125e1f0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), mode, 1);
     }
-    bool bBasicDriver = FUN_141245b20()->FUN_141245ab0() == L"Microsoft Basic Display Driver";
+    bool bBasicDriver = reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
-        ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
+        ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
+        message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
         CStringA caption = FUN_14028dc80(0x8d4);
         CStringA text = FUN_14016a600(message, 0);
         NiMessageBox(text, caption, 0);
@@ -723,9 +723,9 @@ efd::AsyncResult MS2RenderService::OnInit()
         width = 0x400;
         height = 0x300;
         if (!CreateRendererSized(bFullscreenFlag, width, height)) {
-            ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
+            ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -735,9 +735,9 @@ efd::AsyncResult MS2RenderService::OnInit()
         width = 0x400;
         height = 0x300;
         if (!((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
-            ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
+            ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -826,7 +826,7 @@ static void Unk_RsResetHook(Unk_RsRendererSize* pRenderer)
 static void Unk_RsDriverErrorHook()
 {
     if (!s_driverErrorShown) {
-        ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x398, "");
+        ((class Unk_RsUI*)((void*)GetClientPlatform()))->ShowCloseNotice(0x398, "");
         s_driverErrorShown = true;
         CStringW message = StringFormat(L"D3DERR_DRIVERINTERNALERROR\n{0}", GetStringCommon(0xb20));
         FUN_141b6fcf0(message, GetStringCommon(0x8d4), 0);

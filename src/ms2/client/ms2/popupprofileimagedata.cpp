@@ -36,7 +36,7 @@ public:
     Unk_PpConst m_expireA;                  // +0xc10 extra delay
     Unk_PpConst m_expireB;                  // +0xc68 extra delay (state 1)
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
@@ -186,7 +186,7 @@ MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, GetTime, 14, 0xA25B27BF)
 int CPopupProfileImageData::IsExpired(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
-    unsigned int nExpire = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expire);
+    unsigned int nExpire = FUN_141697bc0(&((class Unk_PpConstants*)GetClientConstants())->m_expire);
     if (nElapsed >= nExpire)
         return 1;
     return 0;
@@ -199,10 +199,10 @@ int CPopupProfileImageData::FUN_141697260(int nNow)
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nDelay = 0;
     if (TSingleton<CPartyManager>::GetInstance()->IsMemberByCharId(m_nId) == 1)
-        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireB);
+        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)GetClientConstants())->m_expireB);
     else
-        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireA);
-    nDelay += FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expire);
+        nDelay = FUN_141697bc0(&((class Unk_PpConstants*)GetClientConstants())->m_expireA);
+    nDelay += FUN_141697bc0(&((class Unk_PpConstants*)GetClientConstants())->m_expire);
     if (nElapsed >= nDelay)
         return 1;
     return 0;
@@ -269,7 +269,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     else
     {
         int nNow = GetTickCountMs2();
-        if ((int)m_shown.GetCount() >= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PpConstants*)FUN_1401d3200())->m_maxCount)->Get())
+        if ((int)m_shown.GetCount() >= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PpConstants*)GetClientConstants())->m_maxCount)->Get())
             return 0;
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))

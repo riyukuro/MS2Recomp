@@ -128,7 +128,7 @@ public:
     virtual void vfunc_23(int n);                           // 23 0x14165c320
     virtual void vfunc_24(int nFlags);                      // 24 0x141662160 the visibility flags
     virtual void vfunc_31(bool b);                          // 31 0x141652030
-    virtual void vfunc_33(void* a, void* b);                // 33 0x141652080
+    virtual void vfunc_33(void* a, efd::Point3 kHit);       // 33 0x141652080
     virtual void vfunc_34(void* p);                         // 34 0x1416529f0
     virtual void vfunc_35(void* p);                         // 35 0x141652e20
     virtual void vfunc_40(float a, float b, float c, float d);   // 40 0x14165d8d0
@@ -253,7 +253,7 @@ public:
     class Unk_MyPCEmotion* FUN_14165f100();                 // the playing emotion (actionkeyobject.cpp)
     // @0x140967420
     MS2Ptr<CPvPInfo> FUN_140967420() { return m_spInteractMode; }   // COMDAT in actionkeyobject.cpp's range
-    Vector3 FUN_1416767d0();                        // PCBase member: the position (the ride's when riding; actionkeyobject.cpp)
+    // FUN_1416767d0 (the position; the ride's when riding) is PCBase's, returning NiPoint3 (pcbase.h)
     void FUN_141660000(__int64 nValue);
     void FUN_141661ba0(int n);                              // scenestategame packet (state reset flag)
     void FUN_141661dc0(unsigned short nA, int nB);          // scenestategame packet 0xb1

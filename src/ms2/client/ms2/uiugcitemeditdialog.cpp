@@ -298,8 +298,8 @@ void UIUGCItemEditDialog::OnLoadComplete()
     if (((class CFeatureManager*)FUN_140166410())->IsRegionCN())
         nDefaultSize = 0x168;
     obj.FUN_1407cb9c0("defaultSize", nDefaultSize);
-    int nMin = *FUN_1401d3200()->UgcNameLengthMin.Get();
-    int nMax = *FUN_1401d3200()->UgcNameLengthMax.Get();
+    int nMin = *GetClientConstants()->UgcNameLengthMin.Get();
+    int nMax = *GetClientConstants()->UgcNameLengthMax.Get();
     obj.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(CStringW(L"s_ugc_itemedit_input_name"), nMin, nMax));
     obj.FUN_1407cb9c0("ugcNameLengthMax", nMax);
     Scaleform::GFx::Value ret = m_30->Invoke("initData", Scaleform::GFx::Value(obj.FUN_1422bb870()));

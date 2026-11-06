@@ -296,7 +296,7 @@ void CUGCBallObject::FUN_140dee220(CInPacket* pPacket)
         return;
     Vector3 kForce = pPacket->FUN_1407140d0();
     Vector3 kAt = pPacket->FUN_1407140d0();
-    Vector3 kPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())).FUN_140965c40(kAt.FUN_14097fc90(m_fRadius).FUN_140ae9180(100.0f));
+    Vector3 kPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAt) * m_fRadius)).FUN_140ae9180(100.0f));
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     m_pActor->addForceAtPos(FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kForce)), FUN_141b6e0e0(reinterpret_cast<const efd::Point3&>(kPos)), NX_FORCE, true);
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();

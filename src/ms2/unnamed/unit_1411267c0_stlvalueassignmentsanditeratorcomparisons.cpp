@@ -6,8 +6,8 @@
 // MS2-UNIT: unit_1411267c0
 // MS2-RANGE: 0x1411267c0-0x141126bd0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?Assign@Unk_ContA@@QEAAAEAV1@AEBV1@@Z 0x1411267f0
-// MS2-PIN: ?Assign@Unk_ContB@@QEAAAEAV1@AEBV1@@Z 0x1411268a0
+// MS2-PIN: ??4?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAAAEAV01@AEBV01@@Z 0x1411267f0
+// MS2-PIN: ??4?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAAAEAV01@AEBV01@@Z 0x1411268a0
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -24,11 +24,11 @@ public:
     // @0x1411267c0
     Unk_ContA& operator=(const Unk_ContA& o)
     {
-        Assign(o);
+        reinterpret_cast<std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>*>(this)->operator=(reinterpret_cast<const std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>&>(o));   // C3: the real vector copy assignment
         return *this;
     }
-    // @0x1411267f0
-    Unk_ContA& Assign(const Unk_ContA& o);
+    // (0x1411267f0 is std::vector<egf::EntityPtr, efd::CustomAllocator>::operator=, instantiated below)
+    //
     void* m_p0;
     void* m_p1;
     void* m_p2;
@@ -37,23 +37,23 @@ public:
     void* m_p5;
     void* m_p6;
 };
-Unk_ContA* FUN_141117200(const Unk_ContA& o);
-void FUN_141135960(Unk_ContA* pThis, void* pFirst);
-void** FUN_141149110(const Unk_ContA& o);
-void** FUN_141148f90(const Unk_ContA& o);
-void FUN_14114c3a0(Unk_ContA* pThis);
-
-Unk_ContA& Unk_ContA::Assign(const Unk_ContA& o)
-{
-    if (this != (const void*)std::addressof(reinterpret_cast<const std::_Tree_val<std::_Tree_simple_types<std::pair<const int, Unk_CMISMarkRec>>>&>(o)))
-    {
-        if (0)
-            FUN_14114c3a0(this);
-        reinterpret_cast<Unk_CMISEntVec*>(this)->_Copy_alloc(reinterpret_cast<const Unk_CMISEntVec&>(o)._Getal());
-        reinterpret_cast<Unk_CMISEntVec*>(this)->assign(reinterpret_cast<const Unk_CMISEntVec&>(o)._Myfirst(), reinterpret_cast<const Unk_CMISEntVec&>(o)._Mylast());
-    }
-    return *this;
-}
+// @0x1411267f0
+template std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>& std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>::operator=(const std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity>>>&);   // C3: was the Assign stand-in (FUN_ helpers, a dead FUN_ _Tidy call)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 class Unk_ContB
 {
@@ -61,11 +61,11 @@ public:
     // @0x141126870
     Unk_ContB& operator=(const Unk_ContB& o)
     {
-        Assign(o);
+        reinterpret_cast<std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID>>*>(this)->operator=(reinterpret_cast<const std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID>>&>(o));   // C3: the real vector copy assignment
         return *this;
     }
-    // @0x1411268a0
-    Unk_ContB& Assign(const Unk_ContB& o);
+    // (0x1411268a0 is std::vector<egf::EntityID, efd::CustomAllocator>::operator=, instantiated below)
+    //
     void* m_p0;
     void* m_p1;
     void* m_p2;
@@ -74,24 +74,24 @@ public:
     void* m_p5;
     void* m_p6;
 };
-Unk_ContB* FUN_141117210(const Unk_ContB& o);
-void* FUN_141145180(const Unk_ContB& o);
-void FUN_141135990(Unk_ContB* pThis, void* pFirst);
-void** FUN_141149150(const Unk_ContB& o);
-void** FUN_141148fd0(const Unk_ContB& o);
-void FUN_14114c470(Unk_ContB* pThis);
-
-Unk_ContB& Unk_ContB::Assign(const Unk_ContB& o)
-{
-    if (this != (const void*)std::addressof(reinterpret_cast<const std::_Tree_val<std::_Tree_simple_types<std::pair<const int, Unk_Int3>>>&>(o)))
-    {
-        if (0)
-            FUN_14114c470(this);
-        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->_Copy_alloc(*(const Unk_CMISEntityIdVec::allocator_type*)&const_cast<Unk_CMISMapUid&>(reinterpret_cast<const Unk_CMISMapUid&>(o))._Getcomp());
-        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->assign(reinterpret_cast<const Unk_CMISEntityIdVec&>(o)._Myfirst(), reinterpret_cast<const Unk_CMISEntityIdVec&>(o)._Mylast());
-    }
-    return *this;
-}
+// @0x1411268a0
+template std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID>>& std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID>>::operator=(const std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID>>&);   // C3: was the Assign stand-in (FUN_ helpers, a dead FUN_ _Tidy call)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- implicit copy assignments ----
 

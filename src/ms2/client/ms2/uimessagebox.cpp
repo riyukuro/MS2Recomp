@@ -278,7 +278,7 @@ struct Unk_MessageBoxConsts
     Unk_MessageBoxConstSlot m_guideId;                          // +0xd358
 };
 MS2_CHECK_OFFSET(Unk_MessageBoxConsts, m_guideId, 0xd358);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MessageBoxConsts* FUN_1401d3200()
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); C3: was Unk_MessageBoxConsts* FUN_1401d3200()
 
 // Item sound transform (NiTransform: rotate, translate, scale).
 struct Unk_MessageBoxPt3 { float x, y, z; };
@@ -676,7 +676,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         if (spItem->GetRarity() > 3)
             bAsk = 1;
         else if (spItem->HasSkin() != 0 ||
-                 spItem->GetSellPrice() * (int)nCount >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_sellConfirmPrice)->Get())
+                 spItem->GetSellPrice() * (int)nCount >= *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_sellConfirmPrice)->Get())
             bAsk = 1;
     }
     if (bAsk != 0)
@@ -1272,18 +1272,18 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     {
         Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
         if (pDialog)
-            pDialog->OpenBook(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideId)->Get(), 0x22, m_layer);
+            pDialog->OpenBook(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideId)->Get(), 0x22, m_layer);
         return 0;
     }
     else if (nButton == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *reinterpret_cast<Common::Constants::Value<CString>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideUrl)->Get());
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *reinterpret_cast<Common::Constants::Value<CString>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideUrl)->Get());
         FUN_1418fe1c0(strUrl);
         return 0;
     }
     Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
-    if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_guideId)->Get())
+    if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideId)->Get())
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e87);
     return 1;
 }

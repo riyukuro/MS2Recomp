@@ -24,7 +24,7 @@ public:
     Unk_MentorPtr(Unk_MentorPtr&& o) : p(o.p) { o.p = 0; }
     Unk_MentorPtr& operator=(const Unk_MentorPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
     T* get() const { return p; }
-    bool operator==(T* o) const { return p == o; }     // 0x140b733c0 (mentoringmanager.cpp)
+    bool operator==(T* o) const { return p == o; } Unk_MentorPtr& operator=(int) { Release(); return *this; } bool IsNull() const { return p == 0; } operator T*() const { return p; }   // == 0x140b733c0 (mentoringmanager.cpp); =(int), IsNull, T* from the UI mentoring pages
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
     static void AddRefObject(T* value) { CPtred::AddRefPtred(reinterpret_cast<CPtred*>(value)); }

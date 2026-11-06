@@ -136,11 +136,11 @@ class CProxyObject;
 // m_890 (+0x890, 0x38 bytes): proxyobject.cpp's Unk_ProxyMgr (the proxies by entity id). Its ctor 0x1416c3150 and dtor
 // 0x1416c3190 are that unit's: the dtor runs ~CRBMap<EntityID, SmartPointer<CProxyObject>> (0x1416c3b10), which
 // releases every proxy. worldservice_tail.h's Unk_WsProxyMgr is the same layout.
-class Unk_WsProxies
+class Unk_ProxyMgr   // C3: was Unk_WsProxies; the methods are proxyobject.cpp's (0x1416c33c0, 0x1416c3670, 0x1416c3730, 0x1416c37e0)
 {
 public:
-    Unk_WsProxies();                                    // 0x1416c3150
-    ~Unk_WsProxies();                                   // 0x1416c3190
+    Unk_ProxyMgr(); ~Unk_ProxyMgr();                    // 0x1416c3150, 0x1416c3190
+    void FUN_1416c33c0(int bEnable); void FUN_1416c3670(); void FUN_1416c3730(); efd::SmartPointer<egf::Entity> FUN_1416c37e0(efd::SmartPointer<egf::Entity> spEntity);
 
     ATL::CRBMap<egf::EntityID, efd::SmartPointer<CProxyObject> > m_proxies;   // +0x00
     int m_nEnabled;                                     // +0x30
@@ -148,7 +148,7 @@ public:
 // Per-member value stand-ins: every container member of the exe instantiates its own template family (distinct ctor/dtor
 // COMDATs per member, see the VAs in the member comments), so each gets its own type of the proven size. Replace one
 // with the real class when proven (same size only).
-struct Unk_WsV058 { void* p; ~Unk_WsV058(); };          // the prop reference: the node dtor 0x141bf60a0 releases it (0x140ae16b0)
+namespace egfPhysX { class EntityActorData; }   // C3: m_058 element efd::SmartPointer<EntityActorData> (was Unk_WsV058; node dtor 0x141bf60a0, dtor 0x140ae16b0)
 struct Unk_WsV0b8 { void* p; };
 struct Unk_WsV0e8 { void* p; };
 struct Unk_WsV118 { GameObject* p; };                     // an 8-byte intrusive pointer to the world object (player/npc/monster/pet; slot 2 = Release)
@@ -410,7 +410,7 @@ public:
     void FUN_141bc8e00(); // 0x141bc8e00
     void AddVibrator(unsigned __int64 key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0 (key by value, as m_468's SetAt)
     MS2Ptr<class Unk_WsB_Vibrator> FindVibrator(unsigned __int64 key); // 0x141bc8f60 (key by value in r8, as m_468's Lookup)
-    void FUN_141bc9020(CString name, MS2Ptr<class CSkillRecord> shake, CString shakeName, bool flag); // 0x141bc9020
+    void FUN_141bc9020(CString name, MS2Ptr<class CSkillRecord> shake, CString shakeName, unsigned char flag); // 0x141bc9020 (flag: CEntityVibrator nMode)
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
     void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
@@ -590,7 +590,7 @@ public:
     void FUN_141bdb7a0();                               // show the m_ad0 tooltips
     void FUN_141bdb030(CStringA name, CStringW text);   // queue a (name, text) entry in m_a00
     void FUN_141bd7dd0();                               // per-frame callback registered by OnInit (helper D owns the body)
-    int FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj);     // register a field object (returns 0/1); defined in worldservice_1.cpp
+    int FUN_141bc1720(MS2Ptr<class CPortal> obj);           // register a field object (CPortal) (returns 0/1); defined in worldservice_1.cpp
     void FUN_141bc3560();                               // periodic tag-range enter pass (m_3f0/m_420/m_468/m_4b0/m_5e8/m_738/m_118)
 
     int FUN_141bbc580(int resetFlag, int mapId);        // state change into state 6 (field teardown); returns 0 when done, 1 if nothing to do
@@ -602,7 +602,7 @@ public:
     efd::Category m_038;                                // +0x038
     int m_040;                                          // +0x040
     std::set<void*> m_048;                              // +0x048 ctor 0x141bf32d0 / dtor 0x141bf5ed0 TYPE?
-    ATL::CAtlList<Unk_WsV058> m_058;                      // +0x058 0x141bef200 / 0x141bf4960
+    ATL::CAtlList<efd::SmartPointer<egfPhysX::EntityActorData> > m_058;   // +0x058 0x141bef200 / 0x141bf4960 (C3: was CAtlList<Unk_WsV058>)
     std::list<Unk_WsElem> m_088;                        // +0x088 0x141bf2fa0 / 0x141bf5c60 TYPE?
     std::list<Unk_WsElem> m_098;                        // +0x098 same type as m_088
     Vector3 m_0a8;                              // +0x0a8 copy of DAT_143b01a60 (a point constant)
@@ -678,7 +678,7 @@ public:
     Vector3 m_boundsMax;                           // +0x82c (-FLT_MAX x3)
     std::set<egf::EntityID> m_838;                      // +0x838 0x140a15e30 / 0x140a16650 (shared)
     ATL::CAtlMap<unsigned, Unk_WsV848> m_848;            // +0x848 0x141bef440 / 0x141bf49e0
-    Unk_WsProxies m_890;                                // +0x890 (0x38) ctor 0x1416c3150, dtor 0x1416c3190
+    Unk_ProxyMgr m_890;                                 // +0x890 (0x38) ctor 0x1416c3150, dtor 0x1416c3190
     Unk_WsDeletable* m_8c8;                             // +0x8c8 owned, deleted in OnShutdown
     Unk_WsDeletable* m_8d0;                             // +0x8d0 owned, deleted in OnShutdown
     Vector3 m_8d8;                                 // +0x8d8 (0,0,0)

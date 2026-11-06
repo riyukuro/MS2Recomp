@@ -56,12 +56,12 @@ class Unk_ShadowIter { public:                                      // elements 
     virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31();
     virtual void vfunc_32(char flag); };                            // +0x100 (0x141610573 call [rax+0x100])
 
-class CMesh : public efd::MemObject {                               // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
+class CMesh : public NiRefObject {                                  // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
 public:
     CMesh(bool bNormals, bool bColors, unsigned int nUVSets, unsigned int nMaxVerts, unsigned int nMaxTris, unsigned char ucFlags);
     virtual ~CMesh();
-    virtual void vfunc_1();                                         // 0x141d16bf0
-    void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
+    // slot 1 = NiRefObject::DeleteThis (0x141d16bf0)
+    void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 public:
     class NiMesh* GetMesh() const;   // C3: was free FUN_140a0afe0
 public:
@@ -136,7 +136,7 @@ public:
     class NiNode* GetLeastLoadedRoot();
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-void FUN_140a0b330(void* obj, bool b, short flags);
+struct Unk_NiAVObjectSortView : NiAVObject { using NiAVObject::SetSortObject; };   // C3: exposes the protected SetSortObject (0x141611330; its SetBit is 0x140a0b330)
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -210,9 +210,9 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         xf.m_Translate = *(const efd::Point3*)pos;
         xf.m_Translate.z = xf.m_Translate.z + self->m_fZOffset;
         Unk_NiPoint3 p110(*(const Vector3*)&DAT_143a08cd8);
-        Unk_NiPoint3 p148(((const Vector3*)dir)->FUN_140a00e10(*(const Vector3*)&p110));
+        Unk_NiPoint3 p148(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((*(const efd::Point3*)dir).Cross(*(const efd::Point3*)&p110))));
         ((Vector3*)&p148)->FUN_140968990();
-        Unk_NiPoint3 p130(((const Vector3*)&p148)->FUN_140a00e10(*(const Vector3*)dir));
+        Unk_NiPoint3 p130(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((*(const efd::Point3*)&p148).Cross(*(const efd::Point3*)dir))));
         ((Vector3*)&p130)->FUN_140968990();
         Unk_NiPoint3 p100(*(const Vector3*)dir);
         *(NiMatrix3*)&xf.m_Rotate = NiMatrix3(reinterpret_cast<const NiPoint3&>(p130), reinterpret_cast<const NiPoint3&>(p148), reinterpret_cast<const NiPoint3&>(p100));
@@ -419,11 +419,11 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
 
 // @0x1416112d0 (scalar deleting destructor: emitted from the vftable)
 
-// @0x141611330
-void FUN_141611330(void* obj, bool flag) { FUN_140a0b330(obj, !flag, 0x40); }
+// 0x141611330 is NiAVObject::SetSortObject(bool) (NiAVObject.inl: SetBit(!bSort, DISABLE_SORTING)), the COMDAT that
+// the call below emits; pinned at the end of the file
 
 // @0x141611370
-void FUN_141611370(void* obj, bool flag) { FUN_141611330(obj, flag); }
+void FUN_141611370(void* obj, bool flag) { ((Unk_NiAVObjectSortView*)obj)->SetSortObject(flag); }
 
 // @0x1416113a0
 void FUN_1416113a0(void* mat, const Unk_Colc& color)
@@ -431,3 +431,4 @@ void FUN_1416113a0(void* mat, const Unk_Colc& color)
     *(Unk_Colc*)((char*)mat + 0x4c) = color;
     ((NiMaterialProperty*)mat)->SetChanged(true);
 }
+// MS2-PIN: ?SetSortObject@NiAVObject@@IEAAX_N@Z 0x141611330

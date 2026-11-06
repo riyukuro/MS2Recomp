@@ -96,7 +96,7 @@ CStringW FUN_140763e10(int nMoney);                         // a money text
 template <class A> CStringW FormatStringId(int nId, const A& a);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 template <class A, class B, class C, class D, class E> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c, const D& d, const E& e);
@@ -311,7 +311,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             }
             nPassed = spMaid->GetOverDays();
             __int64 nBase = (std::max)(spMaid->m_nExpireTime, GetServerTime());
-            __int64 nExtend = nBase + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_RwConfig*)FUN_1401d3200())->m_nValue)->Get() * 24 * 60 * 60;
+            __int64 nExtend = nBase + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_RwConfig*)GetClientConstants())->m_nValue)->Get() * 24 * 60 * 60;
             CMsTime kEnd(spMaid->m_nExpireTime);
             CMsTime kExtendTime(nExtend);
             strEnd = BlockFormat<int, int, int, int, int>(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());

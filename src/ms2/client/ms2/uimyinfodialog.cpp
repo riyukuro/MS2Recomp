@@ -163,7 +163,7 @@ void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned 
 enum Unk_StatType { };
 typedef ATL::CAtlArray<Unk_StatType, ATL::CDefaultElementTraits<Unk_StatType> > Unk_MiStatArray;   // C3: was FUN_1409eecc0 / FUN_1409eec00
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);               // a copy of the item
 class DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pBind);   // its bag (DragSlotBag cast)
    // the tab bar
@@ -834,7 +834,7 @@ void UIMyInfoDialog::FUN_141a5b080(int nStat)
     int nKey = *(int*)&(*(Unk_MiStatArray*)&aStats)[nStat];
     unsigned nTotal = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey)) + m_250;
     unsigned nRemaining = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
-    if (nRemaining <= m_250 || ((struct Unk_MiConsts*)FUN_1401d3200())->m_aStatCap[nKey] <= nTotal)
+    if (nRemaining <= m_250 || ((struct Unk_MiConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_aStatCap[nKey] <= nTotal)
     {
         FUN_141a5cf30(nStat);
         return;
@@ -1149,7 +1149,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
             FUN_140cff740((*spRow).FUN_1422bb890(), "m_point", nColor);
             if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
             {
-                if (nRemain == 0 || ((struct Unk_MiConsts*)FUN_1401d3200())->m_aStatCap[nKey] <= nSpent + m_250)
+                if (nRemain == 0 || ((struct Unk_MiConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_aStatCap[nKey] <= nSpent + m_250)
                     spPlus->FUN_1422c1fe0(0);
             }
         }

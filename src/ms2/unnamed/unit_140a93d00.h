@@ -9,6 +9,7 @@
 #include <map>
 
 #include "ms2/placeholder/ichromamanager.h"
+#include "ms2/placeholder/dikey.h"
 // the sample helper types (FChromaSDKGuid, FChromaSDKEffectResult, FChromaSDKColors, the device enums): the Razer header
 #include "razer/CSDK_SampleApp/Razer/ChromaSDKPluginTypes.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
@@ -359,7 +360,7 @@ public:
     ChromaLinkEffect m_linkEffect;                          // +0x0f0
     std::vector<RZEFFECTID> m_reservedDeletes;              // +0x110
     int m_keySkills[KEY_SKILL_COUNT];                       // +0x128
-    std::map<int, Keyboard::RZKEY> m_keyboardKeys;          // +0x370 DirectInput key -> key
+    std::map<Unk_DIKey, Keyboard::RZKEY> m_keyboardKeys;       // +0x370 DirectInput key -> key
     std::map<EChromaSDKMouseLED, Mouse::RZLED2> m_mouseLeds;   // +0x380
     bool m_bPaused;                                         // +0x390
     bool m_bKeyLock;                                        // +0x391

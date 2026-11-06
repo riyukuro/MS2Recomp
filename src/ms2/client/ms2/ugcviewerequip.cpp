@@ -553,7 +553,7 @@ void CUgcViewerBanner::vfunc_1()
     static_cast<egf::Entity*>(spEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBanner));
     int bPlanar = 0;
     float fDistance = bPlanar ? FUN_140966ea0(reinterpret_cast<const Vector3&>(kPlayer), kBanner) : FUN_140966f00(reinterpret_cast<const Vector3&>(kPlayer), kBanner);
-    float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
+    float fLimit = GetClientConstants()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
         TSingleton<CUgcManager>::GetInstance()->FUN_14187f1f0();
 }

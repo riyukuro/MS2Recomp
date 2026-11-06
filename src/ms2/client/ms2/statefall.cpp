@@ -48,7 +48,7 @@ public:
     char m_pad[0x48e8];
     Unk_FallScale m_scale;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The actor's buff set: the knock-back direction.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
@@ -152,7 +152,7 @@ void StateFall::vfunc_3(double fTime)
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();
-        efd::Point3 kVel = kDir * (fSpeed * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_FallConsts*)FUN_1401d3200())->m_scale)->Get());
+        efd::Point3 kVel = kDir * (fSpeed * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_FallConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_scale)->Get());
         reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     }
     efd::Point3 kMove = efd::Point3::ZERO;

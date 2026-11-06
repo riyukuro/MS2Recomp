@@ -31,6 +31,27 @@ template <int N> void Unk_BiRev(std::reverse_iterator<typename Unk_BiMap<N>::typ
 {
     --it;
 }
+// These families' exe reverse_iterator::operator-- passes the reverse_iterator itself to the base iterator's ++
+// (mov rcx,[this]), not through the offset-0 member hop of the 19.16 STL body; the base is current at offset 0.
+#define UNK_BI_REV_DEC(N) \
+    template<> _CONSTEXPR17 std::reverse_iterator<Unk_BiMap<N>::type::iterator>& std::reverse_iterator<Unk_BiMap<N>::type::iterator>::operator--() \
+    { \
+        ++*reinterpret_cast<Unk_BiMap<N>::type::iterator*>(this); \
+        return *this; \
+    }
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-constexpr"
+#endif
+UNK_BI_REV_DEC(5)
+UNK_BI_REV_DEC(6)
+UNK_BI_REV_DEC(8)
+UNK_BI_REV_DEC(9)
+UNK_BI_REV_DEC(10)
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#undef UNK_BI_REV_DEC
 void Unk_BiAnchor()
 {
     Unk_BiMap<1>::type::iterator it1;

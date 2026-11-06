@@ -285,7 +285,7 @@ MS2_REPLACE_METHOD(0x14067DC50, CMaid, IsTime40Over, 71, 0xB40A8361);
 int CMaid::IsAffinityLevelAtMax()
 {
     int nMaxLevel = CMaidExpTable::GetInstance()->GetMaxLevel();
-    int nLimit = (std::min)(*FUN_1401d3200()->MaidAffinityMax.Get(), nMaxLevel);
+    int nLimit = (std::min)(*GetClientConstants()->MaidAffinityMax.Get(), nMaxLevel);
     if (nLimit <= m_nOrder)
         return 1;
     return 0;
@@ -316,7 +316,7 @@ void CMaid::AddLevel(int nDelta, int bIgnoreLimit)
 {
     m_nOrder += nDelta;
     int nMaxLevel = CMaidExpTable::GetInstance()->GetMaxLevel();
-    int nLimit = (std::min)(*FUN_1401d3200()->MaidAffinityMax.Get(), nMaxLevel);
+    int nLimit = (std::min)(*GetClientConstants()->MaidAffinityMax.Get(), nMaxLevel);
     if (bIgnoreLimit != 0)
         nLimit = CMaidExpTable::GetInstance()->GetMaxLevel();
     if (nLimit <= m_nOrder)

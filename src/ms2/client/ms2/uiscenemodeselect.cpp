@@ -77,21 +77,21 @@ CString UISceneModeSelect::vfunc_7()
 }
 
 // @0x140e850d0
-void UISceneModeSelect::vfunc_48(int n)
+int UISceneModeSelect::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
     TSingleton<CUIService>::GetInstance()->FUN_141adbe00(1.0f, 0);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 
 // @0x140e85150
-void UISceneModeSelect::vfunc_49(int n)
+int UISceneModeSelect::vfunc_49(int n)
 {
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e22);
-    UISceneEntity::vfunc_49(n);
+    return UISceneEntity::vfunc_49(n);
 }
 
 // @0x140e85190

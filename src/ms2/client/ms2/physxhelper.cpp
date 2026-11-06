@@ -147,7 +147,7 @@ public:
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* pObj);
 };
 extern int DAT_143ae2b30;
-extern const Vector3 g_143b01a60;
+#define g_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)   // C3: was extern const Vector3 g_143b01a60
 #define g_143a08cf8 (*(const Vector3*)&efd::Point3::UNIT_Z)
 
 // The PhysX character kit entry points are DLL imports of the exe (IAT slots 0x142ccec98 / 0x142ccec90).
@@ -454,7 +454,7 @@ int CPhysXHelper::RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, U
     int nDefaultGroups = 0x389;
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = ptFrom;
-    kInfo.m_dir = g_143a08cf8.FUN_1409f7960();
+    reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(g_143a08cf8);
     kInfo.m_maxDist = fLen;
     kInfo.m_dir.FUN_140968990();
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
@@ -476,7 +476,7 @@ int CPhysXHelper::FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float f
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = reinterpret_cast<const Vector3&>(ptFrom);
-    kInfo.m_dir = g_143a08cf8.FUN_1409f7960();
+    reinterpret_cast<efd::Point3&>(kInfo.m_dir) = -reinterpret_cast<const efd::Point3&>(g_143a08cf8);
     kInfo.m_maxDist = fLen;
     kInfo.m_dir.FUN_140968990();
     kInfo.m_groups = 0x389;

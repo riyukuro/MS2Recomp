@@ -240,7 +240,7 @@ class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 int FUN_140eb8cd0(MS2Ptr<ItemHousing> spFurn);
 int FUN_140eb8eb0(MS2Ptr<ItemHousing> spFurn);
 bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsInt
-unsigned int FUN_140889fd0(const void* p);                          // the map key hash
+// (FUN_140889fd0 decl gone: 0x140889fd0 is the real InteriorMap CNode::GetHash, reached through FindNextNode below)
 // ---- housing / furniture / scroll tables ----
 class CMasteryInteriorTable;
 CMasteryInteriorTable* FUN_140933200();
@@ -2160,25 +2160,24 @@ void* FUN_140ebacd0(void* p, unsigned int nFlags)
     return p;
 }
 
-// @0x140ebae70
-Unk_MMapNode* FUN_140ebae70(Unk_MMapRaw* pMap, Unk_MMapNode* pNode)
-{
-    if (pNode == 0)
-        return 0;
-    Unk_MMapNode* pNext;
-    if (pNode->m_pNext != 0) {
-        pNext = pNode->m_pNext;
-    } else {
-        pNext = 0;
-        unsigned int nBin = FUN_140889fd0(pNode) % pMap->m_nBins + 1;
-        while (pNext == 0 && nBin < pMap->m_nBins) {
-            if (pMap->m_ppBins[nBin] != 0)
-                pNext = pMap->m_ppBins[nBin];
-            nBin++;
-        }
-    }
-    return pNext;
-}
+// 0x140ebae70 = UGCCubeCategoryTable::InteriorMap::FindNextNode (private), 0x140ebb030 = its GetNext:
+// the explicit instantiation of the real GetNext below (exe name, MS2-PIN at EOF) emits both, and the
+// CNode::GetHash (0x140889fd0) FindNextNode calls.
+template UGCCubeCategoryTable::InteriorMap::CPair* UGCCubeCategoryTable::InteriorMap::GetNext(POSITION& pos) throw();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @0x140ebaf50
 void* FUN_140ebaf50(void** pArray)
@@ -2217,15 +2216,14 @@ int CMasteryInteriorTable::FUN_140ebb020()
     return m_nMaxGrade;
 }
 
-// @0x140ebb030
-Unk_MMapNode* FUN_140ebb030(Unk_MMapRaw* pMap, Unk_MMapNode** ppPos)
-{
-    do {} while (0);
-    Unk_MMapNode* pOld = *ppPos;
-    Unk_MMapNode* pNext = FUN_140ebae70(pMap, pOld);
-    *ppPos = pNext;
-    return pOld;
-}
+// (0x140ebb030 GetNext: see the explicit instantiation above)
+
+
+
+
+
+
+
 
 // @0x140ebb080
 Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap);
@@ -2340,3 +2338,5 @@ MS2_REPLACE_METHOD_VIA(0x140EAF840, UIMasteryDialog, ICastingEventListener, OnCa
 MS2_REPLACE_METHOD_VIA(0x140EAFA10, UIMasteryDialog, ICastingEventListener, OnCastingCancelled, 52, 0x5127663B);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca81c0-0x142ca82a0 .text$yd
+// MS2-PIN: ?GetNext@?$CAtlMap@W4ECubeCategory@@V?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@V?$CElementTraits@W4ECubeCategory@@@ATL@@V?$CElementTraits@V?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@@4@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140ebb030
+// MS2-PIN: ?FindNextNode@?$CAtlMap@W4ECubeCategory@@V?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@V?$CElementTraits@W4ECubeCategory@@@ATL@@V?$CElementTraits@V?$Unk_CubePtr@VInterior@UGCCubeCategoryTable@@@@@4@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140ebae70

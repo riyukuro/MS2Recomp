@@ -1,0 +1,5 @@
+12,14c
+#include <Nx.h> // MS2: the exe inlines every PhysX NX_INLINE in this kernel (NxMat33::multiply in Execute)
+#undef NX_INLINE
+#define NX_INLINE __forceinline
+.

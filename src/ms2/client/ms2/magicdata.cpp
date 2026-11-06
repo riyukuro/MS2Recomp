@@ -45,7 +45,7 @@
 // MS2-PIN: ?CallDestructors@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@CAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@_K@Z 0x1414696d0 ; prop: callee ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@...
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@SAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@0_K@Z 0x14146a620 ; unique: caller ?GrowBuffer@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV...
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@SAXPEAV?$Unk_SocketPtr@VCMagicData@@@@0_K@Z 0x14146a660 ; unique: caller ?GrowBuffer@?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElemen...
-// MS2-PIN: ??0Unk_MagicValPtr@@QEAA@XZ 0x14146d4a0 ; unique: single byte-identical candidate
+// MS2-PIN: ??0?$MS2Ptr@VUnk_FcArea@@@@QEAA@XZ 0x14146d4a0 ; unique: single byte-identical candidate
 // MS2-PIN: ??0CPair@?$CAtlMap@_KV?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@@@3@@ATL@@IEAA@_K@Z 0x14146d790 ; unique: caller ??0CNode@?$CAtlMap@_KV?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr...
 // hand pins (w114)
 // MS2-PIN: ??0CMagic@@QEAA@XZ 0x14145d120 ; unique: caller ?FUN_141467500@CMagicModel@@QEAAXUUnk_MagicTagPtr@@0UUnk_StreamPoi...
@@ -136,7 +136,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 class Unk_XmlNode;
 CString Unk_ReadString(Unk_XmlNode* pNode, const char* pszName, CString strDefault);
 efd::Point3 FUN_14028f060(CString);   // C3: commonutil.cpp (was Vector3)
-void FUN_140deec40(Vector3*);
+// (0x140deec40 is efd::Point3::UnitizeVector(Point3&))
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_140353fc0
 
@@ -328,7 +328,7 @@ int LoadMagicPath()
             XmlGetAttr((class TiXmlElement*)(pMove), "direction", strDirection);
             if (!strDirection.IsEmpty())
                 *reinterpret_cast<efd::Point3*>(&data->m_ptDirection) = FUN_14028f060(CString(strDirection));
-            FUN_140deec40(&data->m_ptDirection);
+            efd::Point3::UnitizeVector(reinterpret_cast<efd::Point3&>(data->m_ptDirection));
             XmlGetAttr((class TiXmlElement*)(pMove), "dirRotZDegree", data->m_fDirRotZ);
             *reinterpret_cast<efd::Point3*>(&data->m_ptControl[0]) = FUN_14028f060(CString(reinterpret_cast<TiXmlElement*>(pMove)->Attribute("controlValue0")));
             *reinterpret_cast<efd::Point3*>(&data->m_ptControl[1]) = FUN_14028f060(CString(reinterpret_cast<TiXmlElement*>(pMove)->Attribute("controlValue1")));
@@ -525,7 +525,7 @@ struct Unk_MagicTag : public CPtred {
     int m_n8c;                                                      // +0x8c
     char m_setHit[0x20];                                            // +0x90 the hit set (FUN_14101ac20)
     ATL::CAtlArray<Unk_MagicHitRef*> m_arrB0;                       // +0xb0 the hit records (empty: the hit is not played yet)
-};
+}; class Unk_FcTag : public Unk_MagicTag {};   // C3: MS2Ptr<Unk_FcTag> (Unk_MagicTagPtr) reaches the record through this view
 MS2_SOCKETPTR_DIRECT(Unk_MagicTag)
 MS2_CHECK_OFFSET(Unk_MagicTag, m_spSrc, 0x48);
 MS2_CHECK_OFFSET(Unk_MagicTag, m_nSrcLevel, 0x58);
@@ -631,7 +631,7 @@ const float* FUN_1410a71d0(Unk_NullableFloat* p);              // the cull dista
 __int64 FUN_14028d260(float fMs);                                   // float -> int (rounds)
 bool FUN_14028d470(float a, float b);                               // approx equal
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
-void FUN_1410a7400(void* pArray, Vector3* pPoint);          // append a point
+// (0x1410a7400 is ATL::CAtlArray<efd::Point3>::Add(const Point3&))
 // FUN_141467f60 (0x141467f60, defined below) takes both Vector3s by value, as the exe callers pass them
 void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, NiTransform* pOut);
 const CString* FUN_1417590d0(Unk_MagicTag* pTag);                   // the effect name of the skill
@@ -724,8 +724,8 @@ void CMagic::FUN_14145d9d0()
     int nSeedZ = nSeedX * nSeedY * m_spSkill->m_nOwnerId;
     Unk_Random kRandom(nSeedX, nSeedY, nSeedZ);
     Vector3 kRandomPoint = m_data.FUN_14145c030(&kRandom);
-    m_ptPredicted = m_ptStart.FUN_14097fd50(m_ptDirection.FUN_14097fc90(kRandomPoint.y).FUN_14097fc90(m_ptTarget.FUN_140965c40(m_ptStart).FUN_140967ac0()))
-        .FUN_14097fd50(GetAxisZ().FUN_14097fc90(kRandomPoint.z)).FUN_14097fd50(GetAxisX().FUN_14097fc90(kRandomPoint.x));
+    m_ptPredicted = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((reinterpret_cast<const efd::Point3&>(m_ptStart) + reinterpret_cast<const efd::Point3&>(m_ptDirection) * kRandomPoint.y * (m_ptTarget.FUN_140965c40(m_ptStart).FUN_140967ac0()))
+        + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(GetAxisZ())) * kRandomPoint.z) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(GetAxisX())) * kRandomPoint.x));
     int bRandomized;
     if (0.0f < m_fTotalTime && reinterpret_cast<const efd::Point3&>(m_ptStart) != reinterpret_cast<const efd::Point3&>(m_ptPredicted) && (kRandomPoint.x != 0.0f || kRandomPoint.z != 0.0f))
         bRandomized = 1;
@@ -816,7 +816,7 @@ float FUN_14109ace0();                                                      // r
 // ---- callees of the hit-effect spawner (unit-local; names invented) ----
 struct Unk_MagicConstValue { char m_pad00[1]; };
 struct Unk_MagicConstants { char m_pad00[0x13a0]; Unk_MagicConstValue m_hitRange; };      // +0x13a0 effect range
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 struct Unk_MagicHitRef { void* m_pad; Unk_MagicEntity* m_p; };       // 16 byte smart pointer to a hit entity
 typedef ATL::CAtlArray<efd::SmartPointer<GameObject> > Unk_MagicHitArr;   // the hit list
 class MyPC;
@@ -835,7 +835,7 @@ public:
 
 // ---- callees of the beam and cancel logic (unit-local; names invented) ----
 struct Unk_MagicRidee;
-class Unk_MagicCubeService { public: void FUN_1412316a0(Unk_MagicValPtr spVal, Unk_MagicTagPtr spTag); };
+// (C3: the Unk_MagicCubeService view is gone; FUN_1409670b0 returns the CFunctionCubeService, FUN_1412316a0 = SetTagArea)
 class CFunctionCubeService* FUN_1409670b0();   // C3: was FUN_1409670b0
 
 // ---- callees of the projectile start (unit-local; names invented) ----
@@ -849,12 +849,12 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
     if (pInfo == NULL || pRow == NULL)
         return 0;
     int bAttach = 0;
-    Vector3 ptPos = pFrom->vf18_GetPosition().FUN_14097fd50(pFrom->vf37_GetExtent());
+    efd::Point3 ptPos = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pFrom->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pFrom->vf37_GetExtent()));
     Unk_MagicNpc* pNpc = ((class Unk_MagicNpc*)FUN_140a38a00((class Unk_BossObject*)(pFrom)));
     if (pNpc != NULL) {
         if (reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->HasPropertyTag(0x11)) {
             bAttach = 1;
-            ptPos = *pPos;
+            reinterpret_cast<Vector3&>(ptPos) = *pPos;
         }
     }
     Unk_MagicEntity* pTo = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(nTo));
@@ -862,7 +862,7 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
         if (bAttach == 0) {
             float fHeight = (pTo->vf37_GetExtent().z < pFrom->vf37_GetExtent().z) ? pTo->vf37_GetExtent().z : pFrom->vf37_GetExtent().z;
             fHeight *= 1.0f + FUN_14109ace0() * 0.2f;
-            ptPos = pFrom->vf18_GetPosition().FUN_14097fd50(Vector3(0, 0, fHeight));
+            reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pFrom->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, 0, fHeight)))));
             efd::Point3 ptDirTo = ((GameObject*)pTo)->GetForwardDirection();
             if (pRow->m_n38 == 3) {
                 if (pInfo->m_fAim != 0.0f)
@@ -872,37 +872,37 @@ int FUN_14145e1a0(int nFrom, int nTo, Unk_MagicAimInfo* pInfo, const Unk_MagicSk
                 pDir->FUN_140968990();
             } else if (pRow->m_n38 == 4) {
                 if (pInfo->m_fAim != 0.0f)
-                    *pDir = pDir->FUN_1409f7960();
+                    reinterpret_cast<efd::Point3&>(*pDir) = -reinterpret_cast<const efd::Point3&>(*pDir);
                 else
-                    *pDir = reinterpret_cast<Vector3&>(ptDirTo).FUN_1409f7960();
+                    reinterpret_cast<efd::Point3&>(*pDir) = -reinterpret_cast<const efd::Point3&>(ptDirTo);
                 pDir->FUN_140968990();
             } else if (pRow->m_n38 == 2) {
                 Vector3 ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
-                Vector3 ptNorm = ptDiff.FUN_14109adc0(DAT_143a08cf8).FUN_1409f7960();
-                *pDir = ptNorm;
+                efd::Point3 ptNorm = -reinterpret_cast<const efd::Point3&>(ptDiff).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                reinterpret_cast<efd::Point3&>(*pDir) = ptNorm;
             } else if (pRow->m_n38 == 1) {
                 Vector3 ptDiff = pFrom->vf18_GetPosition().FUN_140965c40(pTo->vf18_GetPosition());
-                Vector3 ptScaled = ptDiff.FUN_14109adc0(DAT_143a08cf8);
-                *pDir = ptScaled;
+                efd::Point3 ptScaled = reinterpret_cast<const efd::Point3&>(ptDiff).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+                reinterpret_cast<efd::Point3&>(*pDir) = ptScaled;
             } else {
                 *pDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pTo)->GetForwardDirection()));
                 pDir->FUN_140968990();
             }
             *pDir = *pDir;
-            ptPos = pFrom->vf38_Trace(*pDir, ptPos, 2000.0f);
+            reinterpret_cast<Vector3&>(ptPos) = pFrom->vf38_Trace(*pDir, reinterpret_cast<Vector3&>(ptPos), 2000.0f);
         } else {
             *pDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pTo)->GetForwardDirection()));
             pDir->FUN_140968990();
             float fExtent = pTo->vf37_GetExtent().z;
             fExtent *= 1.0f + FUN_14109ace0() * 0.2f;
-            ptPos = ptPos.FUN_14097fd50(Vector3(0, 0, fExtent));
-            Vector3 ptHit = pFrom->vf38_Trace(*pDir, ptPos, 0.0f);
-            if (reinterpret_cast<const efd::Point3&>(ptHit) == reinterpret_cast<const efd::Point3&>(ptPos))
-                ptHit.FUN_140a4e560(pDir->FUN_14097fc90(100.0f));
-            ptPos = ptHit;
+            reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, 0, fExtent)))));
+            Vector3 ptHit = pFrom->vf38_Trace(*pDir, reinterpret_cast<Vector3&>(ptPos), 0.0f);
+            if (reinterpret_cast<const efd::Point3&>(ptHit) == reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)))
+                ptHit.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>((*pDir)) * 100.0f)));
+            reinterpret_cast<Vector3&>(ptPos) = ptHit;
         }
     }
-    *pPos = ptPos;
+    *pPos = reinterpret_cast<Vector3&>(ptPos);
     return 1;
 }
 
@@ -937,7 +937,7 @@ MS2_REPLACE_METHOD(0x14145E960, CMagic, FUN_14145e960, 746, 0xDD0A920B);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 float FUN_14028d280(unsigned nMs);                                  // ms -> seconds
 float FUN_141403f20(NiPoint3 ptA, NiPoint3 ptB);            // distance
-Vector3 FUN_141b71390(Vector3 ptStart, Vector3 ptControl, Vector3 ptEnd, float fT);   // bezier point
+efd::Point3 FUN_141b71390(Vector3 ptStart, Vector3 ptControl, Vector3 ptEnd, float fT);   // bezier point
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);   // catmull-rom point
 
 // @0x14145ec50
@@ -964,7 +964,7 @@ void CMagic::FUN_14145ec50(unsigned nNow)
                     ptNew = FUN_140a0adf0(m_ptStart, m_ptStart, m_ptPredicted, m_ptTarget, fT / m_data.m_fControlRate);
                 }
             } else {
-                ptNew = FUN_141b71390(m_ptStart, m_ptPredicted, m_ptTarget, fT);
+                ptNew = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_141b71390(m_ptStart, m_ptPredicted, m_ptTarget, fT)));
             }
             m_fRemainTime = m_fTotalTime * (1.0f - fT);
         }
@@ -976,7 +976,7 @@ void CMagic::FUN_14145ec50(unsigned nNow)
             ptNew = m_ptTarget;
         } else {
             m_fRemainTime = m_fRemainTime - fStep;
-            ptNew = m_ptCurrent.FUN_14097fd50(m_ptDirection.FUN_14097fc90(m_data.m_fVelocity).FUN_14097fc90(fStep));
+            ptNew = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCurrent) + reinterpret_cast<const efd::Point3&>(m_ptDirection) * m_data.m_fVelocity * fStep));
         }
     }
     int nType = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
@@ -1007,7 +1007,7 @@ void CMagic::FUN_14145ec50(unsigned nNow)
                     if (pRow->m_n120 != 0) {
                         float fLength = fDelta + 1.0f;
                         if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(m_ptCurrent, ptHit, m_ptDirection, fLength, 0x201) != 0) {
-                            ptNew = ptHit.FUN_140965c40(m_ptDirection.FUN_14097fc90(5.0f));
+                            ptNew = ptHit.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptDirection) * 5.0f)));
                             m_ptTarget = ptNew;
                             m_fRemainTime = 0;
                             m_n1C8 = 1;
@@ -1033,14 +1033,14 @@ void CMagic::FUN_14145f570(unsigned nNow)
         if (reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->FUN_141759090() != 0) {
             Unk_MagicEntity* pTarget = FUN_141464360();
             if (pTarget != NULL) {
-                Vector3 ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
+                efd::Point3 ptAim = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf37_GetExtent()));
                 Unk_MagicEntity* pOwner = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(m_spSkill->m_nOwnerId));
                 if (pOwner != NULL) {
                     float fHeight = pOwner->vf37_GetExtent().z < pTarget->vf37_GetExtent().z ? pOwner->vf37_GetExtent().z : pTarget->vf37_GetExtent().z;
                     fHeight = fHeight * (1.0f + FUN_14109ace0() * 0.2f);
-                    ptAim = pTarget->vf18_GetPosition().FUN_14097fd50(Vector3(0, 0, fHeight));
+                    reinterpret_cast<Vector3&>(ptAim) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0, 0, fHeight)))));
                 }
-                ptEnd = pTarget->vf38_Trace(m_ptDirection, ptAim, 2000.0f);
+                ptEnd = pTarget->vf38_Trace(m_ptDirection, reinterpret_cast<Vector3&>(ptAim), 2000.0f);
             }
         } else {
             FUN_14145e1a0(m_spSkill->m_nCasterId, m_spSkill->m_nOwnerId, reinterpret_cast<Unk_MagicAimInfo*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetMotionData()),
@@ -1257,29 +1257,29 @@ void CMagic::FUN_141462900(unsigned nNow)
     if (m_n280 == 0 && nNow >= nEnd) {
         m_n280 = 1;
         ATL::CAtlArray<Vector3> aPoints;
-        FUN_1410a7400(&aPoints, &m_ptStart);
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
         for (int i = 0; i < (int)((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&m_arr288))->GetCount(); ++i) {
             unsigned* pId = &(*((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&m_arr288)))[i];
             Unk_MagicEntity* pEnt = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1200(*pId));
             if (pEnt != NULL) {
                 Unk_NiPoint3 ptHit(DAT_143b01a60);
                 if (FUN_141467100(pEnt, reinterpret_cast<Vector3*>(&ptHit)) == 0)
-                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pEnt->vf18_GetPosition().FUN_14097fd50(pEnt->vf37_GetExtent())))));
+                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pEnt->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pEnt->vf37_GetExtent()))))))));
                 if (pRow->m_n11c == 2) {
                     float fDist = FUN_140966ea0(m_ptStart, Vector3(reinterpret_cast<const Vector3&>(ptHit)));
-                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptStart.FUN_14097fd50(m_ptDirection.FUN_14097fc90(fDist))))));
+                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptStart) + reinterpret_cast<const efd::Point3&>(m_ptDirection) * fDist))))));
                 }
-                FUN_1410a7400(&aPoints, reinterpret_cast<Vector3*>(&ptHit));
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(reinterpret_cast<Vector3*>(&ptHit)));
             }
         }
         int bSingle = 0;
         Vector3 ptLast = m_ptTarget;
         if (aPoints.GetCount() == 1) {
             if (pRow->m_n11c == 0) {
-                FUN_1410a7400(&aPoints, &m_ptStart);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
                 ptLast = m_ptStart;
             } else {
-                FUN_1410a7400(&aPoints, &m_ptTarget);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptTarget));
             }
             bSingle = 1;
         }
@@ -1289,10 +1289,10 @@ void CMagic::FUN_141462900(unsigned nNow)
         if (bLocal != 0 && !ShouldCullByDistance()) {
             for (int i = 0; i < nSegments; ++i) {
                 if (pRow->m_n11c == 1)
-                    FUN_1410a7400(&m_slots[i].m_ids, &aPoints[i]);
+                    reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[i]));
                 else
-                    FUN_1410a7400(&m_slots[i].m_ids, &aPoints[0]);
-                FUN_1410a7400(&m_slots[i].m_ids, &aPoints[i + 1]);
+                    reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[0]));
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[i + 1]));
                 NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
                 ((Unk_MagicEffectReq&)(kReq)).m_strName = reinterpret_cast<const SkillAttackData*>(pRow)->GetArrowEffect();
                 ((Unk_MagicEffectReq&)(kReq)).m_nObject = nOwnerType;
@@ -1316,36 +1316,36 @@ void CMagic::FUN_141462900(unsigned nNow)
     }
     if (m_n280 != 0 && nNow >= nEnd) {
         ATL::CAtlArray<Vector3> aPoints;
-        FUN_1410a7400(&aPoints, &m_ptStart);
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
         for (int i = 0; i < (int)((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&m_arr288))->GetCount(); ++i) {
             unsigned* pId = &(*((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&m_arr288)))[i];
             Unk_MagicEntity* pEnt = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1200(*pId));
             if (pEnt != NULL) {
                 Unk_NiPoint3 ptHit(DAT_143b01a60);
                 if (FUN_141467100(pEnt, reinterpret_cast<Vector3*>(&ptHit)) == 0)
-                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(pEnt->vf18_GetPosition().FUN_14097fd50(pEnt->vf37_GetExtent())))));
+                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pEnt->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pEnt->vf37_GetExtent()))))))));
                 if (pRow->m_n11c == 2) {
                     float fDist = FUN_140966ea0(m_ptStart, Vector3(reinterpret_cast<const Vector3&>(ptHit)));
-                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(m_ptStart.FUN_14097fd50(m_ptDirection.FUN_14097fc90(fDist))))));
+                    *reinterpret_cast<NiPoint3*>(&ptHit) = static_cast<NiPoint3&&>(*const_cast<NiPoint3*>(reinterpret_cast<const NiPoint3*>(&static_cast<const Unk_NiPoint3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptStart) + reinterpret_cast<const efd::Point3&>(m_ptDirection) * fDist))))));
                 }
-                FUN_1410a7400(&aPoints, reinterpret_cast<Vector3*>(&ptHit));
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(reinterpret_cast<Vector3*>(&ptHit)));
             }
         }
         if (aPoints.GetCount() == 1) {
             if (pRow->m_n11c == 0)
-                FUN_1410a7400(&aPoints, &m_ptStart);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
             else
-                FUN_1410a7400(&aPoints, &m_ptTarget);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&aPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptTarget));
         }
         int nSegments = (int)(aPoints.GetCount() - 1);
         int i;
         for (i = 0; i < nSegments; ++i) {
             ((ATL::CAtlArray<efd::Point3, ATL::CElementTraits<efd::Point3>>*)(void*)(&m_slots[i].m_ids))->RemoveAll();
             if (pRow->m_n11c == 1)
-                FUN_1410a7400(&m_slots[i].m_ids, &aPoints[i]);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[i]));
             else
-                FUN_1410a7400(&m_slots[i].m_ids, &aPoints[0]);
-            FUN_1410a7400(&m_slots[i].m_ids, &aPoints[i + 1]);
+                reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[0]));
+            reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[i].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&aPoints[i + 1]));
         }
         if (!(pRow->m_n11c == 2 ? 1 : 0)) {
             for (; i < 16; ++i) {
@@ -1420,8 +1420,8 @@ void CMagic::FUN_1414609e0()
     }
     m_ptB8 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(m_data.m_ptFireOffset)));
     m_ptStart.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(m_data.m_ptFireOffset))));
-    m_ptTarget = m_ptStart.FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(m_data.m_ptDirection))).FUN_14097fc90(m_data.m_fDistance))
-        .FUN_14097fd50(m_data.m_ptControlEnd);
+    m_ptTarget = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>((reinterpret_cast<const efd::Point3&>(m_ptStart) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(m_data.m_ptDirection))))) * m_data.m_fDistance)
+        + reinterpret_cast<const efd::Point3&>(m_data.m_ptControlEnd)));
     m_ptLast = m_ptStart;
     m_ptCurrent = m_ptStart;
     SetPosition(m_ptStart);
@@ -1437,9 +1437,9 @@ void CMagic::FUN_1414609e0()
                 float fLen = ptDelta.FUN_140968990();
                 if (0.0f < fLen) {
                     Vector3 ptHit;
-                    Vector3 ptFrom = m_ptStart.FUN_14097fd50(ptDelta.FUN_1409f7960().FUN_14097fc90(fLen));
-                    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(ptFrom, ptHit, ptDelta, fLen, 0x201) != 0) {
-                        m_ptStart = ptHit.FUN_140965c40(ptDelta.FUN_14097fc90(5.0f));
+                    efd::Point3 ptFrom = reinterpret_cast<const efd::Point3&>(m_ptStart) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(ptDelta) * fLen))));
+                    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(reinterpret_cast<Vector3&>(ptFrom), ptHit, ptDelta, fLen, 0x201) != 0) {
+                        m_ptStart = ptHit.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDelta) * 5.0f)));
                         m_ptTarget = m_ptStart;
                         SetPosition(m_ptStart);
                         m_n1C8 = 1;
@@ -1467,7 +1467,7 @@ void CMagic::FUN_141461140()
             if (FUN_141467100(pTarget, &ptHit) != 0) {
                 m_ptTarget = ptHit;
             } else if (m_data.m_nTraceTargetOffsetPos != 0) {
-                m_ptTarget = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
+                m_ptTarget = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf37_GetExtent()))));
             } else {
                 PCBase* pActor = efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pTarget));
                 if (pActor != NULL)
@@ -1480,7 +1480,7 @@ void CMagic::FUN_141461140()
             if (FUN_141467100(pTarget, &ptHit) != 0)
                 m_ptTarget = ptHit;
             else
-                m_ptTarget = pTarget->vf18_GetPosition().FUN_14097fd50(pTarget->vf37_GetExtent());
+                m_ptTarget = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pTarget->vf37_GetExtent()))));
         }
         if (m_data.m_fVelocity != 0.0f)
             m_fRemainTime = m_ptTarget.FUN_140965c40(m_ptCurrent).FUN_140967ac0() / m_data.m_fVelocity;
@@ -1498,18 +1498,18 @@ void CMagic::FUN_1414614d0()
     m_ptDirection.FUN_140968990();
     Unk_NiMatrix3 matRotation;
     ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&matRotation))->MakeIdentity();
-    Vector3 ptAxis = m_ptDirection.FUN_1409f7960();
+    efd::Point3 ptAxis = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
     if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143b01a60)))
-        ptAxis = m_spSkill->m_ptDefaultDir;
+        reinterpret_cast<Vector3&>(ptAxis) = m_spSkill->m_ptDefaultDir;
     Vector3 ptRight = DAT_143b01a60;
     if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))) {
         ptRight = DAT_143a08cd8;
-    } else if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(DAT_143a08cf8.FUN_1409f7960())))) {
-        ptRight = DAT_143a08cd8.FUN_1409f7960();
+    } else if (FUN_14028d530(reinterpret_cast<const efd::Point3&>(ptAxis), static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)))) {
+        reinterpret_cast<efd::Point3&>(ptRight) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
     } else {
-        ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
+        reinterpret_cast<efd::Point3&>(ptRight) = reinterpret_cast<const efd::Point3&>(ptAxis).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
     }
-    Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
+    efd::Point3 ptUp = reinterpret_cast<const efd::Point3&>(ptRight).UnitCross(reinterpret_cast<const efd::Point3&>(ptAxis));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(0, reinterpret_cast<const efd::Point3&>(ptRight));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(1, reinterpret_cast<const efd::Point3&>(ptAxis));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(2, reinterpret_cast<const efd::Point3&>(ptUp));
@@ -1526,29 +1526,29 @@ void CMagic::FUN_141461720(int nFlag)
         m_ptDirection.FUN_140968990();
     }
     Unk_NiMatrix3 matRotation;
-    Vector3 ptAxis = m_ptDirection.FUN_1409f7960();
+    efd::Point3 ptAxis = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
     if (m_data.m_nLookAtType == 0) {
-        ptAxis = m_ptDirection.FUN_1409f7960();
+        ptAxis = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
     } else if (m_data.m_nLookAtType == 1) {
-        ptAxis = m_ptDirection.FUN_1409f7960();
+        ptAxis = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
         ptAxis.z = 0;
-        ptAxis.FUN_140968990();
+        ptAxis.Unitize();
     } else if (m_data.m_nLookAtType == 2) {
         Vector3 ptMove = m_ptCurrent.FUN_140965c40(m_ptLast);
         ptMove.FUN_140968990();
-        ptAxis = ptMove.FUN_1409f7960();
+        ptAxis = -reinterpret_cast<const efd::Point3&>(ptMove);
     }
     if (reinterpret_cast<const efd::Point3&>(ptAxis) == reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
-        ptAxis = m_spSkill->m_ptDefaultDir;
+        reinterpret_cast<Vector3&>(ptAxis) = m_spSkill->m_ptDefaultDir;
     Vector3 ptRight = DAT_143b01a60;
     if (reinterpret_cast<const efd::Point3&>(ptAxis) == reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)) {
         ptRight = DAT_143a08cd8;
-    } else if (reinterpret_cast<const efd::Point3&>(ptAxis) == reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(DAT_143a08cf8.FUN_1409f7960()))) {
-        ptRight = DAT_143a08cd8.FUN_1409f7960();
+    } else if (reinterpret_cast<const efd::Point3&>(ptAxis) == static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))) {
+        reinterpret_cast<efd::Point3&>(ptRight) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
     } else {
-        ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
+        reinterpret_cast<efd::Point3&>(ptRight) = reinterpret_cast<const efd::Point3&>(ptAxis).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
     }
-    Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
+    efd::Point3 ptUp = reinterpret_cast<const efd::Point3&>(ptRight).UnitCross(reinterpret_cast<const efd::Point3&>(ptAxis));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(0, reinterpret_cast<const efd::Point3&>(ptRight));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(1, reinterpret_cast<const efd::Point3&>(ptAxis));
     reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(2, reinterpret_cast<const efd::Point3&>(ptUp));
@@ -1611,11 +1611,11 @@ void CMagic::FUN_141462490(unsigned nNow)
         if (nNow >= nDue) {
             m_n1D0 = 1;
             WorldService::GetInstance()->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
-            ((class Unk_MagicCubeService*)FUN_1409670b0())->FUN_1412316a0(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
+            ((CFunctionCubeService*)FUN_1409670b0())->SetTagArea(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
         }
     } else {
         WorldService::GetInstance()->FUN_141bc3470(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
-        ((class Unk_MagicCubeService*)FUN_1409670b0())->FUN_1412316a0(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
+        ((CFunctionCubeService*)FUN_1409670b0())->SetTagArea(Unk_MagicValPtr(m_spVal), Unk_MagicTagPtr(m_spSkill));
     }
 }
 
@@ -1644,22 +1644,22 @@ void CMagic::FUN_141463960()
     if (m_n280 == 0) {
         m_n280 = 1;
         ATL::CAtlArray<Vector3> kPoints;
-        FUN_1410a7400(&kPoints, &m_ptStart);
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&kPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
         Unk_MagicEntity* pCaster = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1200(nCaster));
         if (pCaster != NULL) {
             Vector3 ptEnd(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
             if (FUN_141467100(pCaster, &ptEnd) == 0) {
-                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent())));
+                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf37_GetExtent()))))));
             }
-            FUN_1410a7400(&kPoints, &ptEnd);
+            reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&kPoints)->Add(*reinterpret_cast<const efd::Point3*>(&ptEnd));
         }
         if (kPoints.GetCount() == 1)
             return;
         int nType = ((class Unk_MagicWorld*)WorldService::GetInstance())->FUN_141bd19d0(m_spSkill->m_nOwnerId);
         BOOL bVisible = ((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14161ce60(m_spSkill->m_nOwnerId) == 0;
         if (bVisible && !ShouldCullByDistance()) {
-            FUN_1410a7400(&m_slots[0].m_ids, &kPoints[0]);
-            FUN_1410a7400(&m_slots[0].m_ids, &kPoints[1]);
+            reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[0].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&kPoints[0]));
+            reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[0].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&kPoints[1]));
             NoticeMessage kReq;   // C3: was Unk_MagicEffectReq
             ((Unk_MagicEffectReq&)(kReq)).m_strName = pRow->m_str270;
             ((Unk_MagicEffectReq&)(kReq)).m_nObject = nType;
@@ -1671,20 +1671,20 @@ void CMagic::FUN_141463960()
     }
     if (m_n280 != 0) {
         ATL::CAtlArray<Vector3> kPoints;
-        FUN_1410a7400(&kPoints, &m_ptStart);
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&kPoints)->Add(*reinterpret_cast<const efd::Point3*>(&m_ptStart));
         Unk_MagicEntity* pCaster = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FUN_141bd1200(nCaster));
         if (pCaster != NULL) {
             Vector3 ptEnd(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
             if (FUN_141467100(pCaster, &ptEnd) == 0) {
-                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent())));
+                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf37_GetExtent()))))));
             }
-            FUN_1410a7400(&kPoints, &ptEnd);
+            reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&kPoints)->Add(*reinterpret_cast<const efd::Point3*>(&ptEnd));
         }
         ((ATL::CAtlArray<efd::Point3, ATL::CElementTraits<efd::Point3>>*)(void*)(&m_slots[0].m_ids))->RemoveAll();
         if (kPoints.GetCount() == 1)
             return;
-        FUN_1410a7400(&m_slots[0].m_ids, &kPoints[0]);
-        FUN_1410a7400(&m_slots[0].m_ids, &kPoints[1]);
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[0].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&kPoints[0]));
+        reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_slots[0].m_ids)->Add(*reinterpret_cast<const efd::Point3*>(&kPoints[1]));
     }
 }
 MS2_REPLACE_METHOD(0x141463960, CMagic, FUN_141463960, 1603, 0x7D7DA8EE);
@@ -1713,10 +1713,10 @@ void CMagic::FUN_141464790(void* pHits, int nHits)
                     continue;
                 Unk_MagicNpc* pNpc = ((class Unk_MagicNpc*)FUN_140a38a00((class Unk_BossObject*)(pHit)));
                 if (pNpc != NULL) {
-                    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MagicConstants*)FUN_1401d3200())->m_hitRange)->Read();
+                    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MagicConstants*)GetClientConstants())->m_hitRange)->Read();
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nEffect, reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->m_nHitEffect, nType, reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pNpc->vf18_GetPosition())), fRange);
                 } else {
-                    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MagicConstants*)FUN_1401d3200())->m_hitRange)->Read();
+                    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_MagicConstants*)GetClientConstants())->m_hitRange)->Read();
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nEffect, 1, nType, reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pHit->vf18_GetPosition())), fRange);
                 }
             }
@@ -1846,8 +1846,8 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     packet.Encode8(m_spSkill->m_nTagSub);
     packet.WriteVector3(m_ptStart);
     packet.WriteVector3(pOwner->vf18_GetPosition());
-    Vector3 ptFace = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pOwner)->GetForwardDirection()));
-    packet.WriteVector3(Vector3(0.0f, 0.0f, GameObject::DirectionToYawDegrees(reinterpret_cast<const efd::Point3&>(ptFace))));
+    efd::Point3 ptFace = ((GameObject*)pOwner)->GetForwardDirection();
+    packet.WriteVector3(Vector3(0.0f, 0.0f, GameObject::DirectionToYawDegrees(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptFace)))));
     packet.Encode1(m_spSkill->m_b5c);
     packet.Encode1((unsigned char)nHits);
     packet.Encode4(m_spSkill->m_n8c);
@@ -1973,14 +1973,14 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
     }
     if (!FUN_141464490() && m_n528 == 2) {
         m_n1CC = 1;
-        Vector3 ptSide = m_ptDirection.FUN_1409f7960();
+        efd::Point3 ptSide = -reinterpret_cast<const efd::Point3&>(m_ptDirection);
         float fAngle = FUN_14109ace0() * (FUN_141198810() * 1.5707964f * 0.5f + 0.7853982f);
         Unk_NiMatrix3 matRot;
         reinterpret_cast<efd::Matrix3&>(matRot).MakeZRotation(fAngle);
-        ptSide = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * reinterpret_cast<const efd::Point3&>(ptSide)));
-        ptSide.FUN_140968990();
+        ptSide = static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(matRot) * ptSide);
+        ptSide.Unitize();
         m_data.m_fVelocity = m_data.m_fVelocity * 1.2f;
-        m_ptTarget = m_ptCurrent.FUN_14097fd50(ptSide.FUN_14097fc90(m_data.m_fVelocity).FUN_14097fc90(m_fRemainTime));
+        m_ptTarget = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCurrent) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(ptSide))) * m_data.m_fVelocity * m_fRemainTime));
         m_n26C = 0;
         if (reinterpret_cast<CContentShutdown*>(&((struct Unk_MagicConfig*)FUN_14025e7b0())->m_flags)->Get((CContentShutdown::Content)0x73) == 0) {
             NiTransform kXform;
@@ -2160,12 +2160,12 @@ void FUN_141467f60(Vector3 ptPos, Vector3 ptDirection, NiTransform* pOut)
         Vector3 ptRight = DAT_143b01a60;
         if (reinterpret_cast<const efd::Point3&>(ptAxis) == reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)) {
             ptRight = DAT_143a08cd8;
-        } else if (reinterpret_cast<const efd::Point3&>(ptAxis) == reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(DAT_143a08cf8.FUN_1409f7960()))) {
-            ptRight = DAT_143a08cd8.FUN_1409f7960();
+        } else if (reinterpret_cast<const efd::Point3&>(ptAxis) == static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))) {
+            reinterpret_cast<efd::Point3&>(ptRight) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
         } else {
-            ptRight = ptAxis.FUN_14109adc0(DAT_143a08cf8);
+            reinterpret_cast<efd::Point3&>(ptRight) = reinterpret_cast<const efd::Point3&>(ptAxis).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
         }
-        Vector3 ptUp = ptRight.FUN_14109adc0(ptAxis);
+        efd::Point3 ptUp = reinterpret_cast<const efd::Point3&>(ptRight).UnitCross(reinterpret_cast<const efd::Point3&>(ptAxis));
         reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(0, reinterpret_cast<const efd::Point3&>(ptRight));
         reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(1, reinterpret_cast<const efd::Point3&>(ptAxis));
         reinterpret_cast<efd::Matrix3&>(matRotation).SetCol(2, reinterpret_cast<const efd::Point3&>(ptUp));
@@ -2191,7 +2191,7 @@ void CMagic::SetPosition(Vector3 ptNew)
 {
     m_ptLast = m_ptCurrent;
     m_ptCurrent = ptNew;
-    FUN_1410a7400(&m_arr1A8, &ptNew);
+    reinterpret_cast<ATL::CAtlArray<efd::Point3>*>(&m_arr1A8)->Add(*reinterpret_cast<const efd::Point3*>(&ptNew));
     ((class NiAVObject*)(void*)(m_spScene.operator->()))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(ptNew));
     static_cast<NiAVObject*>(m_spScene.operator->())->Update((float)((class CMainSystem*)(class Unk_MagicTime*)(reinterpret_cast<Unk_MagicTime*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
     UpdateCulling();

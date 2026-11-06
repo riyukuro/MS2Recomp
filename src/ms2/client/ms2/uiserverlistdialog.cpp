@@ -115,7 +115,7 @@ public:
     virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71();
     virtual void vfunc_72();                                    // 72 0x240
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The network, the scenes and the application objects.
 class CNetworkService { public: int ConnectTo(CString, int, int, int, int); void SendRequestQuitAndDisconnect(); };   // networkservice.h's service (its header redeclares FUN_140d86260)
@@ -351,7 +351,7 @@ void UIServerListDialog::OnLoadComplete()
     int nMin = 1;
     m_nChannel = std::max<int>(nMin, nChannel);
     FUN_141ad1d20();
-    if (((class Unk_SlLogin*)FUN_140d86260())->vfunc_1() == 1) {
+    if (((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_1() == 1) {
         UIBannerAdvertisingDialog* pBanner = Unk_UgcGetDialog<UIBannerAdvertisingDialog>(0x4eca);
         if (pBanner != 0)
             pBanner->FUN_141031260();
@@ -367,7 +367,7 @@ void UIServerListDialog::OnLoadComplete()
     }
     if (TSingleton<CGameRankingCli>::GetInstance() != 0)
         TSingleton<CGameRankingCli>::GetInstance()->Clear();
-    ((class Unk_SlLogin*)FUN_140d86260())->vfunc_22(0x2bd, "LoginStep1");
+    ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_22(0x2bd, "LoginStep1");
 }
 
 // @0x141ad1810
@@ -386,7 +386,7 @@ int UIServerListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             return 1;
         } else {
             if (FUN_1406c34c0() == 1)
-                ((class Unk_SlLogin*)FUN_140d86260())->vfunc_72();
+                ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_72();
         }
     }
     return 0;
@@ -581,7 +581,7 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
     if (nScene != 0x620000d)
         return;
     if (FUN_1406c34c0() != 0) {
-        ((class Unk_SlLogin*)FUN_140d86260())->vfunc_20(m_nChannel, 2);
+        ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_20(m_nChannel, 2);
     } else {
         Unk_LoginRequest request;
         request.m_nType = 2;
@@ -648,8 +648,8 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
         if (nChannel != 0)
             FUN_141260ab0((Unk_GsConnect*)pOptions, nChannel);
     }
-    ((class Unk_SlLogin*)FUN_140d86260())->vfunc_7();
-    ((class Unk_SlLogin*)FUN_140d86260())->vfunc_22(0x2c6, "GameLoading");
+    ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_7();
+    ((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_22(0x2c6, "GameLoading");
     return 1;
 }
 

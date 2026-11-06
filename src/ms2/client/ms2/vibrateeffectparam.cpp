@@ -54,7 +54,7 @@ public:
     char m_pad_0000[0x90a0];
     Unk_VibrateScale m_90a0;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // @0x141b72630
 CVibrateEffectParam::CVibrateEffectParam()
@@ -135,7 +135,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
             if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
-                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->Get());
+                FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());
         }
         return pEffect;
     }
@@ -159,7 +159,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {
         if (reinterpret_cast<Unk_PadOption*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
-            FUN_140a58540()->StartRumbleFor(m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)FUN_1401d3200())->m_90a0)->Get());
+            FUN_140a58540()->StartRumbleFor(m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());
     }
     return true;
 }

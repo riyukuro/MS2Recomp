@@ -6,7 +6,7 @@
 // MS2-PIN: ??0CNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@HI@Z 0x141bf3760 ; byte-identical copies elsewhere
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@IEAA@H@Z 0x141bf3f30 ; byte-identical copies elsewhere
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@H@Z 0x141bf3f70 ; byte-identical copies elsewhere
-// MS2-PIN: ??0CNode@?$CAtlList@VUnk_WsPropRef@@V?$CElementTraits@VUnk_WsPropRef@@@ATL@@@ATL@@QEAA@AEBVUnk_WsPropRef@@@Z 0x141bf3610 ; prop
+// MS2-PIN: ??0CNode@?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@QEAA@AEBV?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@Z 0x141bf3610 ; prop; C3: was the Unk_WsV058/Unk_WsPropRef stand-in
 // MS2-PIN: ??0CNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAA@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bf3640 ; prop
 // MS2-PIN: ??0CNode@?$CAtlList@V?$TPtr@VPC@@@@V?$CElementTraits@V?$TPtr@VPC@@@@@ATL@@@ATL@@QEAA@AEBV?$TPtr@VPC@@@@@Z 0x141bf3670 ; prop
 // MS2-PIN: ??0CNode@?$CAtlMap@HV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAA@HI@Z 0x141bf37a0 ; prop
@@ -79,7 +79,7 @@
 // MS2-PIN: ??4?$MS2Ptr@VUIDebugTooltip@@@@QEAAAEAV0@AEBV0@@Z 0x141bf6fe0 ; prop
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ??1?$CAtlList@VUnk_WsPropRef@@V?$CElementTraits@VUnk_WsPropRef@@@ATL@@@ATL@@QEAA@XZ 0x141bf4960 ; m_058
+// MS2-PIN: ??1?$CAtlList@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@ATL@@@ATL@@QEAA@XZ 0x141bf4960 ; m_058; C3: was the Unk_WsV058/Unk_WsPropRef stand-in
 // MS2-PIN: ??1?$CAtlMap@HV?$MS2Ptr@VCPortal@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCPortal@@@@@3@@ATL@@QEAA@XZ 0x141bf4980 ; m_350
 // MS2-PIN: ??1?$CAtlMap@HV?$SmartPointer@VUnk_WsEntity738@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsEntity738@@@efd@@@4@@ATL@@QEAA@XZ 0x141bf49b0 ; m_738
 // MS2-PIN: ??1?$CAtlMap@HV?$MS2Ptr@VUnk_WsEffect848@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsEffect848@@@@@3@@ATL@@QEAA@XZ 0x141bf49e0 ; m_848
@@ -225,14 +225,14 @@ class Unk_WsEntity738 : public efd::IBase {};           // m_738 value (efd ref 
 // The field property kind (FieldProperty::vfunc_3), m_780's key: passed by reference, hashed as a 4-byte enum.
 enum Unk_FieldPropertyType {};
 
-// m_058 element: an add-ref'd 8-byte prop reference (copy 0x141bf10a0, dtor 0x140ae16b0 = physxhelper.cpp's Unk_PhysPropPtr).
-class Unk_WsPropRef
-{
-public:
-    Unk_WsPropRef(const Unk_WsPropRef& o);
-    ~Unk_WsPropRef();
-    void* m_p;
-};
+// m_058 element: efd::SmartPointer<egfPhysX::EntityActorData> (copy 0x141bf10a0, dtor 0x140ae16b0). C3: was the
+// stand-in class Unk_WsPropRef.
+#include "ms2/placeholder/entityactordata.h"
+//
+//
+//
+//
+//
 
 // m_1a8 value: a world object and its entity id (ctor 0x141bf48b0, copy 0x141bf4860, dtor 0x141bf6870).
 struct Unk_WsObjEntry
@@ -377,7 +377,7 @@ template <class V> static void WsDriveVec(std::vector<V>& v, V& e)
     v.clear();
 }
 
-void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Unk_WsPropRef& prop)
+void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, efd::SmartPointer<egfPhysX::EntityActorData>& prop)
 {
     // CAtlMap members: CPair(key) value-initializes the value, ~CNode destroys it
     { ATL::CAtlMap<int, TPtrValue<Unk_WsEntityList> > m; WsDriveAtl(m); m[2] = Unk_GrNewTag(0); }   // m_208
@@ -410,7 +410,7 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     { ATL::CRBMap<unsigned __int64, efd::SmartPointer<GameObject> > m; WsDriveRB(m, efd::SmartPointer<GameObject>()); } // m_0b8
     { ATL::CRBMap<int, int, ATL::CDefaultElementTraits<int> > m; WsDriveRB(m, 2); }                              // m_9d0
     // CAtlList members and elements: CNode(element) copies, ~CNode destroys
-    { ATL::CAtlList<Unk_WsPropRef> l; l.AddTail(prop); l.RemoveAll(); }                                          // m_058
+    { ATL::CAtlList<efd::SmartPointer<egfPhysX::EntityActorData> > l; l.AddTail(prop); l.RemoveAll(); }                                          // m_058
     { ATL::CAtlList<efd::SmartPointer<GameObject> > l; l.AddTail(efd::SmartPointer<GameObject>()); }             // m_178
     { ATL::CAtlList<TPtr<PC> > l; TPtr<PC> v(0); l.AddTail(v); }
     // std containers

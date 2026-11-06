@@ -100,7 +100,7 @@ struct Unk_NpcConstants
     Unk_NpcConstant<unsigned> m_class3or7;                  // +0xaf78
     Unk_NpcConstant<unsigned> m_class4or6;                  // +0xafd0
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_NpcConstants* FUN_1401d3200_1()
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance); C3: was Unk_NpcConstants* FUN_1401d3200_1()
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
 // @0x140a7d630
@@ -249,17 +249,17 @@ int NpcDataCli::GetUnknown12()
 unsigned NpcDataCli::GetClassConstant()
 {
     if (m_nFriendly != 0)
-        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_friendly);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_friendly);
     switch (GetClass())
     {
     case 1:
-        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class1);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_class1);
     case 3:
     case 7:
-        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class3or7);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_class3or7);
     case 4:
     case 6:
-        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(FUN_1401d3200())->m_class4or6);
+        return NpcConstantValue(&reinterpret_cast<Unk_NpcConstants*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_class4or6);
     }
     return 0;
 }

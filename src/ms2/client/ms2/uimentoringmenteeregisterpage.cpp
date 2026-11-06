@@ -22,7 +22,7 @@
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/os.h"
-class Unk_MentorEmptyPacket { public: void FUN_14069a480(class Unk_MentorWriter &); };
+// Unk_MentorEmptyPacket: mentor.h (via uimentoringrewardpage.h)
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The player actor (RTTI unknown): slot 77 returns the character name.
 class Unk_MentorActorV

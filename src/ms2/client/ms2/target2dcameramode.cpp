@@ -53,7 +53,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
@@ -94,8 +94,8 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Vector3 ptEye = m_78.FUN_14097fd50(FUN_141839600());
-            m_c0.m_pos = ptEye;
+            efd::Point3 ptEye = reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141839600()));
+            m_c0.m_pos = reinterpret_cast<Vector3&>(ptEye);
         }
 
         if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) > 5.0f)
@@ -114,7 +114,7 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
             Vector3 ptTarget = m_78;
             Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
-            ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(m_84));
+            ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptDir) * m_84));
             if (m_50 < m_58 || m_50 > m_54)
             {
             }
@@ -236,9 +236,9 @@ void CTarget2DCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
         vfunc_24(pTarget, 1);
-    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
-    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
-    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1b30)->Read();
 }
 MS2_REPLACE_METHOD(0x141838980, CTarget2DCameraMode, vfunc_6, 184, 0x5FFD709D);
 
@@ -289,10 +289,10 @@ void CTarget2DCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 MS2_REPLACE_METHOD(0x141838AB0, CTarget2DCameraMode, vfunc_24, 691, 0x2C89D0CB);
 
 // @0x141838d70
-Vector3 CTarget2DCameraMode::vfunc_26()
+efd::Point3 CTarget2DCameraMode::vfunc_26()
 {
     vfunc_24(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), 1);
-    return m_78.FUN_14097fd50(FUN_141839600());
+    return reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_141839600()));
 }
 MS2_REPLACE_METHOD(0x141838D70, CTarget2DCameraMode, vfunc_26, 112, 0x085F33EE);
 
@@ -351,7 +351,7 @@ void CTarget2DCameraMode::vfunc_21(float f, int n)
     {
         bool bDone = false;
         float fStep = m_98 > m_50 ? -10.0f : 10.0f;
-        Vector3 ptPos = FUN_1409f2540();
+        efd::Point3 ptPos = FUN_1409f2540();
         Vector3 ptRot;
         Vector3 ptCenter = g_143b01a60;
         unsigned int nLoop = 0;
@@ -360,12 +360,12 @@ void CTarget2DCameraMode::vfunc_21(float f, int n)
             m_78 = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60()->vfunc_17();
             m_78.z += vfunc_27();
             ptCenter = m_78;
-            Vector3 ptDir = ptCenter.FUN_140965c40(ptPos);
+            Vector3 ptDir = ptCenter.FUN_140965c40(reinterpret_cast<Vector3&>(ptPos));
             ptDir.FUN_140968990();
-            ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(fStep));
+            reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + reinterpret_cast<const efd::Point3&>(ptDir) * fStep));
             m_6c = FUN_1418398e0(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
             ptPos.z = ptCenter.z;
-            Vector3 ptDist = ptCenter.FUN_140965c40(ptPos);
+            Vector3 ptDist = ptCenter.FUN_140965c40(reinterpret_cast<Vector3&>(ptPos));
             m_50 = ptDist.FUN_140967ac0();
             m_50 = efd::Clamp(m_50, m_58, m_54);
             ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
@@ -374,9 +374,9 @@ void CTarget2DCameraMode::vfunc_21(float f, int n)
             if (FUN_14029d220(m_98 - m_50) <= 1.0f)
             {
                 m_50 = m_98;
-                m_c0.m_pos = ptPos;
-                vfunc_3(ptPos);
-                ptRot = CCameraMode::FUN_140afdd40(ptCenter, ptPos, g_143a08cf8);
+                m_c0.m_pos = reinterpret_cast<Vector3&>(ptPos);
+                vfunc_3(reinterpret_cast<Vector3&>(ptPos));
+                ptRot = CCameraMode::FUN_140afdd40(ptCenter, reinterpret_cast<Vector3&>(ptPos), g_143a08cf8);
                 m_c0.m_rot = ptRot;
                 vfunc_4(ptRot);
                 m_78 = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60()->vfunc_17();
@@ -498,8 +498,8 @@ void CTarget2DCameraMode::FUN_1418399e0(double fTime)
             }
             else
             {
-                m_a8.m_pos = m_a8.m_pos.FUN_14097fd50(FUN_1409ab5c0(fRate, m_c0.m_pos.FUN_140965c40(m_a8.m_pos)));
-                m_a8.m_rot = m_a8.m_rot.FUN_14097fd50(FUN_1409ab5c0(fRate, m_c0.m_rot.FUN_140965c40(m_a8.m_rot)));
+                m_a8.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_a8.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fRate, m_c0.m_pos.FUN_140965c40(m_a8.m_pos))))));
+                m_a8.m_rot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_a8.m_rot) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(fRate, m_c0.m_rot.FUN_140965c40(m_a8.m_rot))))));
             }
         }
     }

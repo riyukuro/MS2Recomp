@@ -81,7 +81,7 @@ void FUN_141275260(int nMsgId, int a2, int a3);
 
 class Unk_ClubConstInt { public: int m_n; };
 class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 
 
@@ -222,7 +222,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             FUN_140d73c60(box);
         }
     } else if (_stricmp("onNameChange", szMethod) == 0) {
-        int nCost = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameChange)->Get();
+        int nCost = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)GetClientConstants())->m_nameChange)->Get();
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetInput(2, L"", nCost, 0, 0);

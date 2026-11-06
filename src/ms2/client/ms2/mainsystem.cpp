@@ -98,7 +98,7 @@ private:
 // Unrecovered helpers.
 class Unk_140d86260 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
                       virtual void vfunc_4(); virtual void vfunc_5(); };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class CSeasonDataTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -559,8 +559,8 @@ efd::AsyncResult CMainSystem::OnTick()
         m_uiFrames = 0;
     }
     m_dLastTime = dNow;
-    if (((class Unk_140d86260*)FUN_140d86260()))
-        ((class Unk_140d86260*)FUN_140d86260())->vfunc_5();
+    if (((class Unk_140d86260*)((void*)GetClientPlatform())))
+        ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_5();
     if (((void*)TSingleton<CSeasonDataTable>::GetInstance()))
         ((class CSeasonDataTable*)(void*)(((void*)TSingleton<CSeasonDataTable>::GetInstance())))->Tick();
     return efd::AsyncResult_Pending;

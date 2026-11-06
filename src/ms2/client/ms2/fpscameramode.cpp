@@ -47,7 +47,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
 class Unk_McApp { public: struct tagRECT FUN_140ad4c30(void); }; class Unk_Cursor : public Unk_McApp {
@@ -88,9 +88,9 @@ void CFPSCameraMode::vfunc_6(int n)
     CCameraMode::vfunc_6(n);
     vfunc_31();
     m_50 = 1.0f;
-    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
-    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
-    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1b30)->Read();
     ShowCursor(FALSE);
     Unk_CameraTargetEntity* pTarget = vfunc_25();
     m_130 = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pTarget)));
@@ -138,8 +138,8 @@ void CFPSCameraMode::vfunc_8(double fTime)
         m_78 = *((struct Vector3 const*)&((class NiAVObject*)(m_138))->GetWorldTranslate());
         m_78.z += vfunc_27();
     }
-    Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
-    m_d8.m_pos = ptEye;
+    efd::Point3 ptEye = reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_14183c370()));
+    m_d8.m_pos = reinterpret_cast<const Vector3&>(ptEye);
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {

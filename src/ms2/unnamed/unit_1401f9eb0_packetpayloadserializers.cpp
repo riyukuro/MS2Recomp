@@ -157,7 +157,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-Unk_SingletonObj1* FUN_1401d3200();
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 template<class T>struct Unk_PayloadConstant {
     T& Get(){
         if(!*reinterpret_cast<bool*>(reinterpret_cast<unsigned char*>(this)+8))reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
@@ -429,7 +429,7 @@ struct Unk_MarkupValid {int valid;};
 void FUN_1401fa7a0(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<unsigned int*>(payload + 4)=Unk_Read32(inputPacket,Unk_140203550<unsigned int>(0,26));
-    int limit=reinterpret_cast<Unk_PayloadConstant<int>*>(reinterpret_cast<unsigned char*>(FUN_1401d3200())+0x8898)->Get();
+    int limit=reinterpret_cast<Unk_PayloadConstant<int>*>(reinterpret_cast<unsigned char*>(GetClientConstants())+0x8898)->Get();
     if(*reinterpret_cast<int*>(payload + 4)==7)limit=512;
     *reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadMarkup(Unk_WideMaximum(limit),reinterpret_cast<Unk_MarkupValid*>(payload)->valid);
     *reinterpret_cast<CStringW*>(payload + 16)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(24));

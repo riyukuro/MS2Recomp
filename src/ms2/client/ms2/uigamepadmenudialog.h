@@ -19,7 +19,7 @@
 #include "ms2/placeholder/ascript.h"
 
 class Unk_GpNode;
-class Unk_GpButton;
+class ASDropdownMenu;
 class NotifyObject;
 class AScript; typedef AScript ASObj;
 
@@ -45,8 +45,8 @@ public:
     int FUN_140c1c770() { return 1; }                   // the menu page kind
     CString FUN_140c1bc10(int nMenu);  // menu name
     CString FUN_140c1bcd0(int nMenu);                   // menu name (the other record flavour)
-    MS2Ptr<Unk_GpButton> FUN_140c1bd90(int nMenu);    // button of a menu
-    MS2Ptr<Unk_GpButton> FUN_140c1be20(const CString& strMenu);     // "m_menus.<name>.m_button"
+    MS2Ptr<ASDropdownMenu> FUN_140c1bd90(int nMenu);    // button of a menu
+    MS2Ptr<ASDropdownMenu> FUN_140c1be20(const CString& strMenu);     // "m_menus.<name>.m_button"
     int FUN_140c1bf90(int nMenu);                       // enable state (1 when unknown)
     void FUN_140c1bfe0(NotifyObject* pObj);             // "NotifyCompleteMyPC": forget the enable states
     void FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst);   // collect the menus that can be shown

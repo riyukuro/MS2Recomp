@@ -227,10 +227,10 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
         float fX = (float)dy * m_fRotStep;
         float fZ = -((float)dz * m_fRotStep);
         Vector3 kDelta(fX, fY, fZ);
-        Vector3 kNewPos = kDelta.FUN_14097fd50(m_kPosBase);
+        efd::Point3 kNewPos = reinterpret_cast<const efd::Point3&>(kDelta) + reinterpret_cast<const efd::Point3&>(m_kPosBase);
         float fLimit = m_kPivot.z;
-        Vector3 kTarget = kDelta.FUN_14097fd50(m_kPivotBase);
-        if (m_kPos.FUN_140965c40(kTarget).FUN_140967ac0() > fLimit)
+        efd::Point3 kTarget = reinterpret_cast<const efd::Point3&>(kDelta) + reinterpret_cast<const efd::Point3&>(m_kPivotBase);
+        if (m_kPos.FUN_140965c40(reinterpret_cast<Vector3&>(kTarget)).FUN_140967ac0() > fLimit)
         {
             if (FUN_14059d930(m_kPos.x - kTarget.x) > fLimit)
             {
@@ -247,9 +247,9 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
                 float fClamp = m_kPos.z - kTarget.z > 0.0f ? -fLimit : fLimit;
                 kTarget.z = m_kPos.z + fClamp;
             }
-            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate()) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
+            reinterpret_cast<Vector3&>(kNewPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(kTarget)) + reinterpret_cast<const efd::Point3&>(m_kPivot))).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate()) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
         }
-        ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(kNewPos));
+        ((class NiAVObject*)(class NiAVObject*)(pNode))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(reinterpret_cast<Vector3&>(kNewPos)));
         if (bUpdate)
             pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
@@ -303,8 +303,8 @@ void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
         if (90.0f < m_kAngle.y && m_kAngle.y < 270.0f)
             fZ = -fZ;
         Vector3 kDelta(fX, fY, fZ);
-        Vector3 kRot = kDelta.FUN_14097fd50(m_kAngle);
-        vfunc_12(kDelta, kRot);
+        efd::Point3 kRot = reinterpret_cast<const efd::Point3&>(kDelta) + reinterpret_cast<const efd::Point3&>(m_kAngle);
+        vfunc_12(kDelta, reinterpret_cast<Vector3&>(kRot));
         vfunc_13(kRot.x, kRot.y, kRot.z, &m_kPivot, &m_kPivotBase, bUpdate);
     }
 }
@@ -364,10 +364,10 @@ void UIAvatarBase::vfunc_16(int n, int bUpdate)
     if (pObj != 0)
     {
         float fStep = (float)n * m_fMoveStep;
-        Vector3 kAngle = Vector3(0.0f, fStep, 0.0f).FUN_14097fd50(m_kAngle);
+        efd::Point3 kAngle = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, fStep, 0.0f))) + reinterpret_cast<const efd::Point3&>(m_kAngle);
         FUN_1418bf270(&kAngle.y);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
-        FUN_1418ba250(&m_kAngleBase, &kAngle);
+        FUN_1418ba250(&m_kAngleBase, reinterpret_cast<Vector3*>(&kAngle));
     }
 }
 
@@ -396,10 +396,10 @@ void UIAvatarBase::vfunc_18(int n, int bUpdate)
     if (pObj != 0)
     {
         float fStep = (float)n * m_fMoveStep;
-        Vector3 kAngle = Vector3(0.0f, 0.0f, fStep).FUN_14097fd50(m_kAngle);
+        efd::Point3 kAngle = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, fStep))) + reinterpret_cast<const efd::Point3&>(m_kAngle);
         FUN_1418bf270(&kAngle.z);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
-        FUN_1418ba250(&m_kAngleBase, &kAngle);
+        FUN_1418ba250(&m_kAngleBase, reinterpret_cast<Vector3*>(&kAngle));
     }
 }
 
@@ -859,7 +859,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
     if (reinterpret_cast<const efd::Point3&>(m_kAngleBase) != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
-        *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(m_kPivot))));
+        *pOut = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPos->FUN_140965c40(m_kPivot))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(m_kPivot)))))));
     else
         *pOut = *pPos;
 }
@@ -876,7 +876,7 @@ public:
 
 
 // The client constants used by the rotation limit.
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 float FUN_1418bffd0(Common::Constants::Value<int>* pValue);                             // the int value as a float
 
 MS2Ptr<CItemData> FUN_1403bb3b0(const MS2Ptr<CItemData>& sp);
@@ -942,8 +942,8 @@ UIAvatarPC::~UIAvatarPC()
 void UIAvatarPC::vfunc_1(IUIAvatarEventListener* pListener)
 {
     UIAvatarBase::vfunc_1(pListener);
-    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(FUN_1401d3200()->UgcshopCharRotateStartDegreeY.Read(),
-                                                                   FUN_1418bffd0(&FUN_1401d3200()->UgcshopCharRotateEndDegreeY)));
+    m_spRotLimit.AssignRaw(new ItemPreviewCommon::CLimitCharRotate(GetClientConstants()->UgcshopCharRotateStartDegreeY.Read(),
+                                                                   FUN_1418bffd0(&GetClientConstants()->UgcshopCharRotateEndDegreeY)));
 }
 
 // @0x1418baab0
@@ -2371,7 +2371,7 @@ void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& k
     *reinterpret_cast<Unk_NiMatrix3*>(reinterpret_cast<char*>(pNode) + 0x50) = *pRot;
     *reinterpret_cast<NiPoint3*>(reinterpret_cast<char*>(pNode) + 0x74) = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(
         reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(
-        reinterpret_cast<const Vector3&>(kPos).FUN_14097fd50(reinterpret_cast<const Vector3&>(kPivot))
+        reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(kPivot)))
             .FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Matrix3&>(*pRot) * reinterpret_cast<const efd::Point3&>(kPivot))))))));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -85,7 +85,7 @@ struct Unk_MrdConfig { void* m_p; };
 struct Unk_MrdValueInt { void* m_p; };
 struct Unk_MrdValueI64 { void* m_p; };
 struct Unk_MrdValueMoney { void* m_p; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MrdConfig* FUN_1401d3200()
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); C3: was Unk_MrdConfig* FUN_1401d3200()
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the limit
 
@@ -190,11 +190,11 @@ class ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* pBind);   // the slot
 class Unk_MrdEquipOut { public: };
 
 // Constant blocks of the config singleton (offsets proven by the callers below).
-#define MrdFeeValue() (((Unk_MrdValueI64*)((char*)FUN_1401d3200() + 0x4710)))
-#define MrdSaleDayValue() (((Unk_MrdValueInt*)((char*)FUN_1401d3200() + 0x4770)))
-#define MrdMinPriceValue() (((Unk_MrdValueMoney*)((char*)FUN_1401d3200() + 0x4608)))
-#define MrdMaxPriceValue() (((Unk_MrdValueMoney*)((char*)FUN_1401d3200() + 0x4660)))
-#define MrdTagLimitValue() (((Unk_MrdValueInt*)((char*)FUN_1401d3200() + 0x9f70)))
+#define MrdFeeValue() (((Unk_MrdValueI64*)((char*)GetClientConstants() + 0x4710)))
+#define MrdSaleDayValue() (((Unk_MrdValueInt*)((char*)GetClientConstants() + 0x4770)))
+#define MrdMinPriceValue() (((Unk_MrdValueMoney*)((char*)GetClientConstants() + 0x4608)))
+#define MrdMaxPriceValue() (((Unk_MrdValueMoney*)((char*)GetClientConstants() + 0x4660)))
+#define MrdTagLimitValue() (((Unk_MrdValueInt*)((char*)GetClientConstants() + 0x9f70)))
 
 // The "initData" call: key, a flag and the two AS objects.
 // @0x14131cc10

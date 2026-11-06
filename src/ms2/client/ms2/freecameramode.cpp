@@ -88,9 +88,9 @@ void CFreeCameraMode::vfunc_8(double fTime)
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
-        Vector3 ptPos = FUN_1409f2540();
+        efd::Point3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
-        vfunc_3(ptPos);
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
@@ -136,7 +136,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     TiXmlElement* pMs2 = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
                     if (pMs2 != 0)
                     {
-                        Vector3 ptDir = FUN_1409f2540().FUN_140965c40(pActor->vfunc_18());
+                        Vector3 ptDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_1409f2540())).FUN_140965c40(pActor->vfunc_18());
                         float fDist = ptDir.FUN_140968990();
                         TiXmlElement* pCamera = new TiXmlElement("camera");
                         ((void*)((class TiXmlNode*)(void*)(pMs2))->LinkEndChild((class TiXmlNode*)(pCamera)));
@@ -155,7 +155,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
     if (reinterpret_cast<const efd::Point3&>(m_78) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
-        ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
+        ptRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptRot) * 3.14159274f)).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
@@ -164,10 +164,10 @@ void CFreeCameraMode::vfunc_8(double fTime)
         Vector3 ptForward;
         reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, *reinterpret_cast<efd::Point3*>(&ptForward));
         ptForward.FUN_140968990();
-        Vector3 ptPos = FUN_1409f2540();
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y))
-                                    .FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
-        vfunc_3(ptPos);
+        efd::Point3 ptPos = FUN_1409f2540();
+        reinterpret_cast<Vector3&>(ptPos) = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(ptPos)) + (reinterpret_cast<const efd::Point3&>(ptRight) * m_78.x + reinterpret_cast<const efd::Point3&>(ptForward) * m_78.y)
+                                    * 1000.0f * ((float)fTime)));
+        vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
 }
 MS2_REPLACE_METHOD(0x1412222c0, CFreeCameraMode, vfunc_8, 2230, 0x3BEA2191);

@@ -402,7 +402,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (spBox.get() != 0)
         {
             spBox->SetButtonLabelIds(0x476, 0, 0);
-            spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(spBox);
         }
     }
@@ -457,7 +457,7 @@ void UIRevivalDialog::FUN_141abbb20()
     }
     if (spField->m_nInfinityMeratRevival == 0)
     {
-        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0, 0, 1) != 0)
+        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_51d8)->Get(), 0, 0, 1) != 0)
         {
             FUN_141275260(0x281, 1, 1);
             return;
@@ -507,8 +507,8 @@ void UIRevivalDialog::FUN_141abc080()
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
         __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(), 0);
-        float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
-            ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
+        float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
+            ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
         nCost = FUN_140632990(nCost, 1.0f - fRate);
         nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
@@ -529,7 +529,7 @@ void UIRevivalDialog::FUN_141abc080()
     }
     if (spField->m_nInfinityMeratRevival == 0)
     {
-        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0, 0, 1) != 0)
+        if (pPc->FUN_1416749a0()->FUN_140970020(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_51d8)->Get(), 0, 0, 1) != 0)
         {
             FUN_141275260(0x281, 1, 1);
             return;
@@ -590,7 +590,7 @@ int UIRevivalDialog::FUN_141abc7f0()
 // @0x141abc930
 bool UIRevivalDialog::FUN_141abc930()
 {
-    if (reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_a278 != 0)
+    if (reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_a278 != 0)
         return false;
     if (DAT_143ab2884 != 0)
     {
@@ -683,9 +683,9 @@ void UIRevivalDialog::FUN_141abccb0()
     if (pPc == 0)
         return;
     __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMerat(pPc->vfunc_78(),
-        pPc->FUN_1416749a0()->GetOverlapCount(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_51d8)->Get(), 0));
-    float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
-        ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
+        pPc->FUN_1416749a0()->GetOverlapCount(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_51d8)->Get(), 0));
+    float fRate = *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42)
+        ? *reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_8cc0)->Get() : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0x42);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
@@ -720,8 +720,8 @@ void UIRevivalDialog::FUN_141abd290()
     int nA = pPc->FUN_141528160();
     int nB = ((CGameRule*)FUN_1401c0d90())->FUN_140477d10(pPc->FUN_141658f30());
     __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
-    float fRate = reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4)
-        ? reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4);
+    float fRate = reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4)
+        ? reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa4);
     nCost = FUN_140632990(nCost, 1.0f - fRate);
     nCost = nCost < 0 ? 0 : nCost;
     if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()) != 0)

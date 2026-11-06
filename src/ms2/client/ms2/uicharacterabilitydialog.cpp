@@ -62,7 +62,7 @@ public:
     char m_pad_6d68[0x6dd0 - 0x6d10 - sizeof(Unk_CaIntSlot)];
     Unk_CaIntSlot m_quest;                              // +0x6dd0 the quest that opens the dialog
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 extern __int64 DAT_143ab2898;                           // the meso of the player
 class CCharacterAbilityManager;
 class CCharacterAbilityTable;
@@ -280,7 +280,7 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
     CMsTime tReset(m_nResetTime);
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan elapsed = tNow - tReset;
-    ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_cooldown)->Get()) * 0x3c));
+    ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_cooldown)->Get()) * 0x3c));
     if (elapsed.GetTotalMinutes() >= cooldown.GetTotalMinutes())
         return ATL::CTimeSpan(0);
     return cooldown - elapsed;
@@ -387,7 +387,7 @@ void UICharacterAbilityDialog::OnLoadComplete()
         return;
     if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
         return;
-    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
         return;
     UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
     if (pMenu)
@@ -433,9 +433,9 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         else
         {
-            ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_cooldown)->Get()) * 0x3c));
+            ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_cooldown)->Get()) * 0x3c));
             __int64 nDays = cooldown.GetDays();
-            CStringW strText = FormatStringId<__int64, __int64>(0xc5b, nDays, *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso)->Get());
+            CStringW strText = FormatStringId<__int64, __int64>(0xc5b, nDays, *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)GetClientConstants())->m_meso)->Get());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"OnMesoReset"));
             if (box.get())
             {
@@ -496,7 +496,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"OnMesoReset", 0) == 0 && nResult == 0)
         {
-            if (DAT_143ab2898 < *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso)->Get())
+            if (DAT_143ab2898 < *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)GetClientConstants())->m_meso)->Get())
             {
                 FUN_141275260(0xc58, 1, 1);
                 return 1;
@@ -519,7 +519,7 @@ void UICharacterAbilityDialog::FUN_140f2b000(NotifyObject* pNotify)
         return;
     if (FUN_1401e0800(p->m_nLevel) == 0)
         return;
-    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
         return;
     FUN_140f2bee0(p->m_nLevel);
     if (m_30 == NULL)
@@ -621,7 +621,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 {
     if (m_30 == NULL)
         return;
-    int nQuest = *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get());
+    int nQuest = *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get());
     MS2Ptr<CQuestData> quest = FUN_14074bc40(nQuest);
     if (quest == 0)
         return;

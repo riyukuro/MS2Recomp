@@ -1031,8 +1031,8 @@ void StateClimb::vfunc_4(StateData* pData)
     StateMoveSkill::vfunc_4(pData);
     m_bAltUp = false;
     m_bAltSide = false;
-    m_fSpeedV = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbSpeedV)->Read();
-    m_fSpeedH = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbSpeedH)->Read();
+    m_fSpeedV = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbSpeedV)->Read();
+    m_fSpeedH = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbSpeedH)->Read();
     m_timerHit.FUN_140868750(100);
     m_timerHang.FUN_140868750(100);
     m_pOwner->FUN_14123cb20(false);
@@ -1585,7 +1585,7 @@ void StateClimb::FUN_1417beb40()
     kTarget.y = kPos.y;
     kTarget.z = kTarget.z - fDist;
     if (FUN_1417b84b0()) {
-        static float s_fShake = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(FUN_1401d3200())->m_climbOverShake)->Read();
+        static float s_fShake = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbOverShake)->Read();
         TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(s_fShake, s_fShake / 60.0f, s_fShake / 3.0f);
     }
     m_pOwner->vfunc_19(kTarget);

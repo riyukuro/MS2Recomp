@@ -275,12 +275,12 @@ public:
 private:
     void* m_buf[6];
 };
-// NoticeMessage::SetCallback with the callback typed as the 3-argument delegate it is.
-class Unk_EqNotice : public NoticeMessage
-{
-public:
-    void FUN_140a531f0(Delegate<void(unsigned, CString, bool)> callback);
-};
+// NoticeMessage::SetCallback (0x140a531f0) takes the callback as Delegate<void(unsigned, CString, bool)>
+// (effectquery.h: Unk_NoticeCallbackPtr is that Delegate), so the set effect notice below calls it directly.
+// The Unk_EqNotice view this file used for that call is gone. The caller still builds the bound-member
+// Delegate in a temp and passes it by address, and the callee destroys it, as before (no ~Delegate here).
+//
+//
 unsigned int FUN_141420a30(unsigned int, class CItem*, class AvatarPC*);   // C3: was FUN_141420a30
 int FUN_141420990(int, class CItem*, class AvatarPC*);   // C3: was FUN_141420990
 void FUN_140a0b2a0(NiAVObject* pObj);                   // detach from the parent
@@ -2049,7 +2049,7 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
     msg.m_strName = spInfo->m_strName;
     msg.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(m_pPC));
     msg.SetActor(m_pPC->FUN_14123c580());
-    static_cast<Unk_EqNotice&>(msg).FUN_140a531f0(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::FUN_1411efcb0));
+    msg.SetCallback(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::FUN_1411efcb0));
     msg.SetMode48(spInfo->m_nGroup);
     spInfo->m_nEffect = ((class CEffectService*)(CEffectService::GetInstance()))->FUN_1411a49c0(*(class Unk_EffectTarget*)&(msg));
     size_t nGroup = spInfo->m_nGroup;
@@ -2472,7 +2472,7 @@ MS2_REPLACE_METHOD(0x1411EF2E0, CEquipment, FUN_1411ef2e0, 1105, 0x2DB48AAF);
 // @0x1411df8e0
 unsigned CEquipmentSlotLayerInfo::FUN_1411df8e0()
 {
-    return FUN_1401d3200()->CodiTabMaxDay.Read();
+    return GetClientConstants()->CodiTabMaxDay.Read();
 }
 MS2_REPLACE_METHOD(0x1411DF8E0, CEquipmentSlotLayerInfo, FUN_1411df8e0, 33, 0xA4709220);
 

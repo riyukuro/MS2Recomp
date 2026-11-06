@@ -186,7 +186,7 @@ CString UISceneGame::GetTypeName()
 MS2_REPLACE_METHOD(0x141ac7350, UISceneGame, GetTypeName, 61, 0x12E28071);
 
 // @0x141ac73a0
-void UISceneGame::vfunc_48(int n)
+int UISceneGame::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     if (FUN_1401d1320(reinterpret_cast<CCacheData*>(TSingleton<CItemDataTable>::GetInstance())) != 0) reinterpret_cast<Unk_GsSettings*>(TSingleton<CItemDataTable>::GetInstance())->Reload();
@@ -202,11 +202,11 @@ void UISceneGame::vfunc_48(int n)
     }
     FUN_1422e7a40(0x620001d);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMode(0x3ed);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 
 // @0x141ac74f0
-void UISceneGame::vfunc_49(int n)
+int UISceneGame::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     TSingleton<CPartyManager>::GetInstance()->FUN_14162a480();
@@ -226,7 +226,7 @@ void UISceneGame::vfunc_49(int n)
     if (pDlg2 != 0) ((UIArcadeMainDialog*)(Unk_GsDlg2*)(pDlg2))->FUN_140ef6920();
     Unk_GsDlg3* pDlg3 = ((class Unk_GsDlg3*)FUN_141815ed0());
     if (pDlg3 != 0) pDlg3->ResetTabs();
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac74f0, UISceneGame, vfunc_49, 298, 0x93FAE665);
 
@@ -417,7 +417,7 @@ CString UISceneGameBeautyShop::GetTypeName()
 MS2_REPLACE_METHOD(0x141ac7fc0, UISceneGameBeautyShop, GetTypeName, 61, 0xBAE50A9C);
 
 // @0x141ac8010
-void UISceneGameBeautyShop::vfunc_48(int n)
+int UISceneGameBeautyShop::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
@@ -434,12 +434,12 @@ void UISceneGameBeautyShop::vfunc_48(int n)
     } else {
         ((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(n);
     }
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac8010, UISceneGameBeautyShop, vfunc_48, 276, 0x6FC9E2EA);
 
 // @0x141ac8130
-void UISceneGameBeautyShop::vfunc_49(int n)
+int UISceneGameBeautyShop::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     FUN_141ac8710();
@@ -460,7 +460,7 @@ void UISceneGameBeautyShop::vfunc_49(int n)
         FUN_140710590(pkt);
         m_b8 = "";
     }
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac8130, UISceneGameBeautyShop, vfunc_49, 344, 0x482C92FF);
 
@@ -567,7 +567,7 @@ void UISceneGameBeautyShop::FUN_141ac87b0()
     param.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
     param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
     param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
-    param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    param.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
     param.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
     param.m_to.m_0 = param.m_from.m_0;
     param.m_to.m_4 = param.m_from.m_4;
@@ -588,7 +588,7 @@ void UISceneGameBeautyShop::FUN_141ac8900()
         param.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
         param.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
         param.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
-        param.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+        param.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
         param.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0) {
             param.m_to = TSingleton<CameraMgr>::GetInstance()->m_homeSetting;
@@ -615,7 +615,7 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
     Vector3 kA;
     Vector3 kB;
     if (((class Unk_GsGround*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d2f10() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140af0210() != 0) {
-        Vector3 kEuler = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290().FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+        Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290())) * 3.1415927f)).FUN_140ae9180(180.0f);
         Unk_GsMatrix3 mX;
         ((efd::Matrix3*)(Unk_GsMatrix3*)&(mX))->FromEulerAnglesXYZ(-90.0f, 0.0f, 0.0f);
         Unk_GsMatrix3 mY;
@@ -624,18 +624,18 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
         kA = FUN_1420834e0(&kA, &mX);
         kA.z = 0.0f;
         kA.FUN_140968990();
-        kB = kA.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
+        reinterpret_cast<efd::Point3&>(kB) = -reinterpret_cast<const efd::Point3&>(kA).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
     } else {
         FUN_141ac9310(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290(), &kA, &kB);
     }
-    kA = kA.FUN_1409f7960();
-    Vector3 kP = pPlayer->vfunc_18().FUN_14097fd50(kA.FUN_14097fc90(350.0f));
+    reinterpret_cast<efd::Point3&>(kA) = -reinterpret_cast<const efd::Point3&>(kA);
+    efd::Point3 kP = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPlayer->vfunc_18())) + reinterpret_cast<const efd::Point3&>(kA) * 350.0f;
     kP.z += 80.0f;
-    Vector3 kQ = pPlayer->vfunc_18().FUN_14097fd50(kB.FUN_14097fc90(-50.0f));
+    efd::Point3 kQ = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPlayer->vfunc_18())) + reinterpret_cast<const efd::Point3&>(kB) * -50.0f;
     kQ.z += 80.0f;
-    *pOut3 = kQ;
-    *pOut1 = kP;
-    *pOut2 = CCameraMode::FUN_140afdd40(*pOut3, kP, DAT_143a08cf8);
+    *pOut3 = reinterpret_cast<Vector3&>(kQ);
+    *pOut1 = reinterpret_cast<Vector3&>(kP);
+    *pOut2 = CCameraMode::FUN_140afdd40(*pOut3, reinterpret_cast<Vector3&>(kP), DAT_143a08cf8);
 }
 MS2_REPLACE_METHOD(0x141ac8b00, UISceneGameBeautyShop, FUN_141ac8b00, 867, 0x333C6E82);
 
@@ -667,10 +667,10 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
         Unk_GsPlayer* pNpc = reinterpret_cast<Unk_GsPlayer*>(WorldService::GetInstance()->FUN_141bd1320(m_b4));
         if (pNpc != 0) {
             Vector3 kHit;
-            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10());
+            Vector3 kDir = pPlayer->vfunc_18().FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10())));
             kDir.FUN_140968990();
             kDir.z = 0.0f;
-            Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(kDir.FUN_14097fc90(100.0f));
+            Vector3 kFrom = pNpc->vfunc_18().FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kDir) * 100.0f)));
             if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kFrom, kHit, (Unk_RayCastInfo*)0, 0.0f, (Vector3*)0, 0) != 0) {
                 kHit.z += 1.0f;
                 pPlayer->vfunc_19(kHit);
@@ -699,13 +699,13 @@ MS2_REPLACE_METHOD(0x141ac9270, UISceneGameBeautyShop, FUN_141ac9270, 93, 0xEF3C
 // @0x141ac9310
 void FUN_141ac9310(Vector3 kRot, Vector3* pDir, Vector3* pOut)
 {
-    kRot = kRot.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+    kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kRot) * 3.1415927f)).FUN_140ae9180(180.0f);
     Unk_GsMatrix3 m;
     ((efd::Matrix3*)(Unk_GsMatrix3*)&(m))->FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
     ((efd::Matrix3*)(Unk_GsMatrix3*)&(m))->GetCol(0, *(efd::Point3*)(Vector3*)&(*pDir));
     pDir->z = 0.0f;
     pDir->FUN_140968990();
-    *pOut = pDir->FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
+    reinterpret_cast<efd::Point3&>(*pOut) = -reinterpret_cast<const efd::Point3&>(*pDir).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -771,7 +771,7 @@ bool UISceneGameCinematicCutScene::vfunc_47()
 MS2_REPLACE_METHOD(0x141ac9510, UISceneGameCinematicCutScene, vfunc_47, 8, 0x41132FCD);
 
 // @0x141ac9520
-void UISceneGameCinematicCutScene::vfunc_48(int n)
+int UISceneGameCinematicCutScene::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
@@ -781,12 +781,12 @@ void UISceneGameCinematicCutScene::vfunc_48(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0xb);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac9520, UISceneGameCinematicCutScene, vfunc_48, 237, 0x608CA992);
 
 // @0x141ac9620
-void UISceneGameCinematicCutScene::vfunc_49(int n)
+int UISceneGameCinematicCutScene::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     FUN_141901390(1, vfunc_65());
@@ -794,7 +794,7 @@ void UISceneGameCinematicCutScene::vfunc_49(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac9620, UISceneGameCinematicCutScene, vfunc_49, 158, 0x0B53EFBE);
 
@@ -846,7 +846,7 @@ CString UISceneGameCinematicTalk::GetTypeName()
 MS2_REPLACE_METHOD(0x141ac9850, UISceneGameCinematicTalk, GetTypeName, 61, 0x17D40321);
 
 // @0x141ac98a0
-void UISceneGameCinematicTalk::vfunc_48(int n)
+int UISceneGameCinematicTalk::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
@@ -859,12 +859,12 @@ void UISceneGameCinematicTalk::vfunc_48(int n)
     m_b0 = FUN_14025e7a0()->FUN_1422afec0(m_28);
     float fScale = FUN_141ac9b00();
     if (FUN_14025e7a0()->FUN_1422aff10(fScale) != 0) ((class Unk_GsTutMgr*)FUN_140b632f0())->vfunc_6();
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac98a0, UISceneGameCinematicTalk, vfunc_48, 253, 0xDD0D19F1);
 
 // @0x141ac99b0
-void UISceneGameCinematicTalk::vfunc_49(int n)
+int UISceneGameCinematicTalk::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
@@ -873,7 +873,7 @@ void UISceneGameCinematicTalk::vfunc_49(int n)
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (((class Unk_GsTalkTarget*)FUN_141482e80())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)FUN_141482e80())->m_48))->FUN_141a251f0(1);
     if (FUN_14025e7a0()->FUN_1422aff10(m_b0) != 0) ((class Unk_GsTutMgr*)FUN_140b632f0())->vfunc_6();
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac99b0, UISceneGameCinematicTalk, vfunc_49, 210, 0xAF714157);
 
@@ -939,7 +939,7 @@ public:
 class Unk_GsHk { public:  };
 class Unk_GsHudInfo { public: char m_pad_00[8]; float m_8; };
 class Unk_GsAppG;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 void FUN_141acc5a0(float fValue);
 int FUN_141acc5f0(int nSceneId);
 int FUN_141acc6c0(int nSceneId);
@@ -1040,7 +1040,7 @@ CString UISceneGamePlay::GetTypeName()
 MS2_REPLACE_METHOD(0x141ac9ed0, UISceneGamePlay, GetTypeName, 61, 0x893C87BE);
 
 // @0x141ac9f20
-void UISceneGamePlay::vfunc_48(int n)
+int UISceneGamePlay::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     FUN_141acc5a0(((class Unk_GsHudInfo*)((class Unk_ChaosSettings*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())->m_8);
@@ -1060,12 +1060,12 @@ void UISceneGamePlay::vfunc_48(int n)
     } else {
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     }
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141ac9f20, UISceneGamePlay, vfunc_48, 415, 0x83342379);
 
 // @0x141aca0d0
-void UISceneGamePlay::vfunc_49(int n)
+int UISceneGamePlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     if (FUN_141acc6c0(n) != 0) {
@@ -1076,7 +1076,7 @@ void UISceneGamePlay::vfunc_49(int n)
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     }
     if (FUN_141acc5f0(n) != 0) FUN_141acc5a0(1.0f);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141aca0d0, UISceneGamePlay, vfunc_49, 189, 0xE218ED84);
 
@@ -1606,7 +1606,7 @@ void UISceneGamePlay::FUN_141acc510(NotifyObject* pNotify)
 {
     NotifyChangeEnableFeature* pChange = dynamic_cast<NotifyChangeEnableFeature*>(pNotify);
     if (pChange == 0) return;
-    reinterpret_cast<Common::Constants*>(FUN_1401d3200())->Load();
+    reinterpret_cast<Common::Constants*>(GetClientConstants())->Load();
     TSingleton<CStringTable>::GetInstance()->FUN_141811960();
     TSingleton<CommonString>::GetInstance()->Reload();
     FUN_1409c51f0();
@@ -1686,7 +1686,7 @@ bool UISceneGameScreenShot::vfunc_47()
 MS2_REPLACE_METHOD(0x141acd280, UISceneGameScreenShot, vfunc_47, 8, 0x41132FCD);
 
 // @0x141acd290
-void UISceneGameScreenShot::vfunc_48(int n)
+int UISceneGameScreenShot::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     m_a8.RemoveAll();
@@ -1719,12 +1719,12 @@ void UISceneGameScreenShot::vfunc_48(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9b30();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbca0(0);
     ShowCursor(TRUE);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141acd290, UISceneGameScreenShot, vfunc_48, 838, 0x4471B5A7);
 
 // @0x141acd5e0
-void UISceneGameScreenShot::vfunc_49(int n)
+int UISceneGameScreenShot::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     for (POSITION pos = m_a8.GetHeadPosition(); pos != 0; m_a8.GetNext(pos)) {
@@ -1740,7 +1740,7 @@ void UISceneGameScreenShot::vfunc_49(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbca0(1);
     ((class MS2*)FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     ShowCursor(FALSE);
-    FUN_1422e7950();
+    return FUN_1422e7950();
 }
 MS2_REPLACE_METHOD(0x141acd5e0, UISceneGameScreenShot, vfunc_49, 329, 0xC3B72AAD);
 

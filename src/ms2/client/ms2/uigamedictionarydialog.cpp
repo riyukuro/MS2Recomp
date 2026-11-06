@@ -79,7 +79,7 @@ public:
     virtual int vfunc_37(void* pRequest);
 #undef DC_V
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 
 // Input state, the movie manager, the player and the text hooks.
@@ -407,7 +407,7 @@ void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
     }
     Unk_BlockList request(0x4f0b);
     request.Add("m_inputSearch", CStringW(strSearch), false);
-    int nResult = ((class Unk_DictPlatform*)FUN_140d86260())->vfunc_37(&request);
+    int nResult = ((class Unk_DictPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request);
     if (nResult == 1)
     {
         m_180 = strSearch;

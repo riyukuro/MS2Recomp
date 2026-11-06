@@ -1157,10 +1157,10 @@ CString FUN_14028ef00(efd::Point3 kPoint)
 }
 
 // @0x14028efb0
-CStringW FUN_14028efb0(const Unk_CommonVec3* pVec)
+CStringW FUN_14028efb0(efd::Point3 kPoint)
 {
     CStringW strOut;
-    strOut.Format(L"%f,%f,%f", (double)pVec->x, (double)pVec->y, (double)pVec->z);
+    strOut.Format(L"%f,%f,%f", (double)kPoint.x, (double)kPoint.y, (double)kPoint.z);
     return strOut;
 }
 
@@ -1392,7 +1392,7 @@ bool FUN_140291340(int nTab, std::string& strOut)
 bool FUN_140292820(const std::string& strLeft, const char* pszRight);   // string equals
 __int64 NextWeekdayStart(int nKind, __int64 nTime);
 const std::string& FUN_14018ef70(const std::string& str);
-class Unk_SingletonObj1* FUN_1401d3200();                                // game config singleton (C3 canonical return type; was void*)
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); game config singleton (C3 canonical return type; was void*)
 
 // Config option entries: set flag at +8, value after the header.
 // C3: the float option entry is Common::Constants::Value<float>; its getter 0x140298f40 is Value<float>::Get(),
@@ -1537,11 +1537,11 @@ CString FUN_140291c10(int nKind)
     switch (nKind)
     {
     case 1:
-        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x8170)->Get();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)GetClientConstants() + 0x8170)->Get();
     case 2:
-        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x81d0)->Get();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)GetClientConstants() + 0x81d0)->Get();
     case 3:
-        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)FUN_1401d3200() + 0x8230)->Get();
+        return *reinterpret_cast<Common::Constants::Value<CString>*>((char*)GetClientConstants() + 0x8230)->Get();
     default:
         return CString("");
     }
@@ -1553,11 +1553,11 @@ float FUN_140291d10(int nKind)
     switch (nKind)
     {
     case 1:
-        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x8068)->Get();
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)GetClientConstants() + 0x8068)->Get();
     case 2:
-        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x80c0)->Get();
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)GetClientConstants() + 0x80c0)->Get();
     case 3:
-        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x8118)->Get();
+        return *reinterpret_cast<Common::Constants::Value<float>*>((char*)GetClientConstants() + 0x8118)->Get();
     default:
         return 0.0f;
     }

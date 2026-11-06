@@ -527,14 +527,14 @@ struct Unk_EdOff28 { char m_pad_00[0x28]; int m_val; };
 void* FUN_140bd4790(void* p);
 Unk_EdListVal* FUN_140bd47e0(void* p);
 Unk_EdNode** FUN_140bd4b60(Unk_EdNode** p);
-void FUN_140bd4c70(Unk_EdListVal* pList);
+// (0x140bd4c70 is the _List_alloc<..UIChatEmoticonTab..> default ctor)
 Unk_EdIter* FUN_140bd4dd0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void* FUN_140bd6850(void* p);
 void* FUN_140bd6960(void* p);
 size_t* FUN_140bd6e60(Unk_EdListVal* pList);
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode);
 void* FUN_140bd69b0(void* p);
-void FUN_140bd4cc0(Unk_EdListVal* pList);
+// (0x140bd4cc0 is the _List_alloc<..MS2Ptr<UIChatEmoticonInfo>..> default ctor)
 Unk_EdIter* FUN_140bd4e50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdNode** FUN_140bd4b50(Unk_EdNode** p);
@@ -549,7 +549,7 @@ void FUN_140bd6f70(Unk_EdRef* pRef, void* pUnused);
 Unk_EdAlc* FUN_140bd6930(Unk_EdAlc* pAlc);
 void FUN_140bd4840(Unk_EdAlc* pAlc, void* pWhere, Unk_EdNode** ppValue);
 void FUN_140bd7140(Unk_EdListVal* pList);
-void FUN_140bd5c10(CPtred* p);
+// (was: void FUN_140bd5c10(CPtred* p); the private MS2Ptr<UIChatEmoticonInfo>::Reference, emitted by the AddRefImpl instantiation below)
 // (0x140bd4bc0 is Unk_EdEmoMap::try_emplace, called in FUN_140bd5710)
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
@@ -578,7 +578,7 @@ void FUN_140bd2f60(Unk_EdAlc* pAlc, Unk_EdNode* pNode) noexcept
 // @0x140bd4d30
 Unk_EdListVal* FUN_140bd4d30(Unk_EdListVal* pList)
 {
-    FUN_140bd4cc0(pList);
+    reinterpret_cast<Unk_EdEmoListAlc*>(pList)->Unk_EdEmoListAlc::_List_alloc();
     return pList;
 }
 
@@ -725,11 +725,11 @@ void FUN_140bd5c30(CPtred* p)
     CPtred::AddRefPtred(p);
 }
 
-// @0x140bd5c50
-void FUN_140bd5c50(Unk_EdRef* pRef, void* pUnused)
-{
-    FUN_140bd5c10(pRef->m_p);
-}
+// 0x140bd5c50 / 0x140bd5c10 are the real private MS2Ptr<UIChatEmoticonInfo>::AddRefImpl / Reference (was FUN_140bd5c50 over FUN_140bd5c10)
+template void MS2Ptr<UIChatEmoticonInfo>::AddRefImpl(void*) const;
+//
+//
+//
 
 // @0x140bd6ee0
 void FUN_140bd6ee0(Unk_EdRef* pRef)
@@ -848,7 +848,7 @@ Unk_EdNode** FUN_140bd4b60(Unk_EdNode** p)
 // @0x140bd4d10
 Unk_EdListVal* FUN_140bd4d10(Unk_EdListVal* pList)
 {
-    FUN_140bd4c70(pList);
+    reinterpret_cast<std::_List_alloc<std::_List_base_types<UIChatEmoticonTab, std::allocator<UIChatEmoticonTab>>>*>(pList)->std::_List_alloc<std::_List_base_types<UIChatEmoticonTab, std::allocator<UIChatEmoticonTab>>>::_List_alloc();
     return pList;
 }
 

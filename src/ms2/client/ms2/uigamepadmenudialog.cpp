@@ -35,7 +35,7 @@
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXMMM_N@Z 0x140c1e2b0 ; unique
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXXZ 0x140c1e360 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_GpButton@@@@AEAAXPEAX@Z 0x140c1e560 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASDropdownMenu@@@@AEAAXPEAX@Z 0x140c1e560 ; merge-bind
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigamepadmenudialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -108,15 +108,15 @@ class CGameMenuTable;
 Unk_GpDb* FUN_140c1d2f0() { return reinterpret_cast<Unk_GpDb*>(TSingleton<CGameMenuTable>::s_instance); }     // 0x140c1d2f0
 class ASDialog : public ASDisplayObject {};
 
-class Unk_GpButton : public AScript
-{
-};
-
-class Unk_GpClip : public ASMovieClip
-{
-public:
-    MS2Ptr<Unk_GpButton> FUN_140bbe700(const CString& strName);     // bind a child of the movie clip
-};
+#include "ms2/placeholder/asdropdownmenu.h"
+//
+//
+//
+// The menu entry's "m_button" child is an ASDropdownMenu (AScript::GetDropdownMenu 0x140bbe700).
+//
+//
+//
+//
 
 // AScript::Invoke(name, n) (inline COMDAT of this unit).
 class Unk_GpAS : public AScript
@@ -340,7 +340,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
 void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 {
     int nId = FUN_140c1d2f0()->FindTopId(nMenu, (EGameMenuSet)FUN_140c1c770());
-    if (MS2Ptr<Unk_GpButton> spButton = FUN_140c1be20(FUN_140c1bcd0(nId)))
+    if (MS2Ptr<ASDropdownMenu> spButton = FUN_140c1be20(FUN_140c1bcd0(nId)))
         spButton->Invoke("setMenuEnable", FUN_140c1bcd0(nMenu), nEnable);
     else
         m_enable.SetAt(reinterpret_cast<const EMenuKey&>(nMenu), nEnable);
@@ -369,21 +369,21 @@ CString UIGamePadMenuDialog::FUN_140c1bcd0(int nMenu)
 }
 
 // @0x140c1bd90
-MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu)
+MS2Ptr<ASDropdownMenu> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu)
 {
     return FUN_140c1be20(FUN_140c1bc10(nMenu));
 }
 
 // @0x140c1be20
-MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
+MS2Ptr<ASDropdownMenu> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
 {
     if (MS2Ptr<ASMovieClip> spMenus = GetChild<ASMovieClip>("m_menus"))
     {
         MS2Ptr<ASMovieClip> spMenu = spMenus->FUN_1409b4560(strMenu);
         if (spMenu)
-            return static_cast<Unk_GpClip*>(spMenu.get())->FUN_140bbe700("m_button");
+            return spMenu->GetDropdownMenu("m_button");
     }
-    return MS2Ptr<Unk_GpButton>(0);
+    return MS2Ptr<ASDropdownMenu>(0);
 }
 
 // @0x140c1bf90

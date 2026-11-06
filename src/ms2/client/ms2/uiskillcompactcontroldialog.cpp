@@ -90,7 +90,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
 // The movie root of the dialog (RTTI .?AVASDialog@@).
 class ASDialog : public ASDisplayObject {};
 
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
@@ -587,7 +587,7 @@ bool UISkillCompactControlDialog::FUN_140fa0820(int nResult, const CMsgBoxData& 
         Unk_BlockList req(0x4ef6);
         req.Add(CString("renameTab"), CStringW(strText), 0);
         req.SetEnabled(1);
-        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&req) == 1)
+        if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&req) == 1)
             return FUN_140fa0a20(CStringW(strText));
     }
     return 1;
@@ -632,7 +632,7 @@ bool UISkillCompactControlDialog::FUN_140fa0d80(int nResult, const CMsgBoxData& 
         Unk_BlockList req(0x4ef6);
         req.Add(CString("AddTab"), CStringW(strText), 0);
         req.SetEnabled(1);
-        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&req) == 1)
+        if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&req) == 1)
             return FUN_140fa0fa0(CStringW(strText));
     }
     return 1;

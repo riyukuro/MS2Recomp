@@ -22,7 +22,7 @@
 #include "ms2/client/ms2/fielddatacli.h"   // Unk_Vec3Cli: the out-of-line colour ctor 0x140a56db0 (was a local Unk_Colc view)
 
 // ---- out-of-unit callees ----
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -87,14 +87,14 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     int idx = 0;
     CAtlArray<COLORREF> arr;
     float col[10];
-    FUN_1414d4110((char*)((void*)FUN_1401d3200()) + 0xb460, arr);
+    FUN_1414d4110((char*)((void*)GetClientConstants()) + 0xb460, arr);
     for (unsigned i = 0; i < 3 && i < arr.GetCount(); ++i) {
         MS2Color c(Unk_ColorValue(*(struct Unk_ConstColor const*)(&arr[i])));
         col[idx++] = c.r;
         col[idx++] = c.g;
         col[idx++] = c.b;
     }
-    float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)FUN_1401d3200()) + 0xb4d0)->Read();
+    float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)GetClientConstants()) + 0xb4d0)->Read();
     for (unsigned j = 0; j < 9; ++j)
         col[j] = col[j] * scale;
     FUN_1409a5770(DAT_143ae53c8, (float const*)(col), 9);

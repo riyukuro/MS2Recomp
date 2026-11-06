@@ -49,7 +49,7 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 
@@ -131,7 +131,7 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     }
     if (nNpcId > 0)
     {
-        if (CTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x69a0)->Get()).get())
+        if (CTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x69a0)->Get()).get())
         {
             ((class Unk_MyPCSurvival*)TSingleton<UITalkManager>::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpcId, 2, 0);
             ((class Unk_MyPCSurvival*)TSingleton<UITalkManager>::GetInstance())->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));

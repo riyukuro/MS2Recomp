@@ -206,7 +206,7 @@ class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: un
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_ThFlags { char m_pad[0x30]; bool m_30; };
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 template <class T> struct Unk_McValue;
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pColor);
 
@@ -284,7 +284,7 @@ TextToHtml::TextToHtml()
 // @0x14183e690
 void FUN_14183e690()
 {
-    char* pBase = ((char*)FUN_1401d3200());
+    char* pBase = ((char*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()));
     if (pBase != 0)
     {
         s_color0 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb528));

@@ -123,7 +123,7 @@ public:
     float FUN_140ad4b40();   // C3: was Unk_CameraManager::FUN_140ad4b40
     float FUN_140af7f00();
     float FUN_140af7ea0();
-    Vector3 FUN_140a17e10();
+    efd::Point3 FUN_140a17e10();
     Vector3 FUN_140af8290();
     class CCameraMode* FUN_140af24f0();
 };
@@ -866,7 +866,7 @@ void CTriggerService::FUN_141863460(float fFade)
         kData.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
         kData.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
         kData.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
-        kData.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+        kData.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
         kData.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
         kData.m_to = kData.m_from;
         kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0()))->FUN_140ad4b30();

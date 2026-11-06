@@ -1203,14 +1203,14 @@ typedef Unk_TailTree<Unk_TailNodeB> Unk_TailTreeB;
 
 Unk_TailAlc* FUN_140932820(Unk_TailAlc* pAlc);
 Unk_TailProxy* FUN_140932780(Unk_TailProxy* pProxy);
-Unk_TailZeroTag& FUN_140162f10(Unk_TailZeroTag& tag);
-void FUN_1403564a0(Unk_TailProxy* pVal);
+// (0x140162f10 is std::forward<std::_Zero_then_variadic_args_t>)
+// (0x1403564a0 is std::_Vector_val<std::_Simple_types<__int64>>::_Vector_val())
 Unk_TailSetNode*& FUN_140932360(Unk_TailSetNode*& pNode);
 Unk_TailPair* FUN_1409323b0(Unk_TailPair* pPair);
 Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pVal, unsigned nFlags);
 Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pVal, unsigned nFlags);
 void FUN_140932b80(Unk_TailSetVal* pVal);
-void FUN_14063e780(Unk_TailRefBox* pBox);
+// (0x14063e780 is the implicit std::map<int, long>::~map)
 // (was FUN_140195700: now ~CAdventureLevelMissionData)
 void FUN_140932b60(Unk_TailAlmVal* pVal);
 // (was FUN_140932640: now the real set member)
@@ -1254,7 +1254,7 @@ Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
 // (was FUN_140935890: now the real _Tree member)
 // (was FUN_140932130: now the real set member)
 // (was FUN_1409340a0: now the real set member)
-Unk_TailPair** FUN_140934be0(std::vector<Unk_TailPair>* pVec);
+// (0x140934be0 is _Vector_alloc<..pair<int, __int64>..>::_Myfirst() const)
 void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
 
@@ -1275,7 +1275,7 @@ Unk_TailPair* FUN_140931680(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 
 // @0x140931720
 Unk_TailOuterPair::Unk_TailOuterPair(bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag)
-    : std::less<unsigned>(std::forward<const std::less<unsigned>&>(cmp)), m_inner(FUN_140162f10(tag))
+    : std::less<unsigned>(std::forward<const std::less<unsigned>&>(cmp)), m_inner(reinterpret_cast<Unk_TailZeroTag&>(std::forward<std::_Zero_then_variadic_args_t>(reinterpret_cast<std::_Zero_then_variadic_args_t&>(tag))))
 {
 }
 
@@ -1283,7 +1283,7 @@ Unk_TailOuterPair::Unk_TailOuterPair(bool, const std::less<unsigned>& cmp, Unk_T
 Unk_TailVecBase* FUN_1409317c0(Unk_TailVecBase* pThis, bool, const Unk_TailAlc& alc)
 {
     std::forward<const std::allocator<__int64>&>(reinterpret_cast<const std::allocator<__int64>&>(alc));   // 0x1409323a0 (ICF)
-    FUN_1403564a0(&pThis->m_val);
+    reinterpret_cast<std::_Vector_val<std::_Simple_types<__int64>>*>(&pThis->m_val)->std::_Vector_val<std::_Simple_types<__int64>>::_Vector_val();
     return pThis;
 }
 
@@ -1682,7 +1682,7 @@ Unk_TailPair* FUN_1409351d0(std::vector<Unk_TailPair>* pThis, size_t n)
 {
     if (!(((std::vector<std::pair<int, __int64>, std::allocator<std::pair<int, __int64>>>*)(void*)(pThis))->size() > n))
         FUN_140935120();
-    return *FUN_140934be0(pThis) + n;
+    return ((const std::vector<Unk_TailPair>*)pThis)->_Myfirst() + n;
 }
 
 // @0x1409354f0
@@ -1795,7 +1795,7 @@ Unk_TailVecVal* FUN_1409347d0(Unk_TailVecVal* pThis)
 // @0x140932b80
 void FUN_140932b80(Unk_TailSetVal* pThis)
 {
-    FUN_14063e780(&pThis->m_ref);
+    reinterpret_cast<std::map<int, long>*>(&pThis->m_ref)->std::map<int, long>::~map();
 }
 
 // @0x140932b60

@@ -68,7 +68,7 @@ void CSoundDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 template<> float* Common::Constants::Value<float>::Set(const float& v);     // defined below (0x1417754b0)
-#define GetConstants() static_cast<Client::Constants*>(FUN_1401d3200())
+#define GetConstants() static_cast<Client::Constants*>(GetClientConstants())
 
 // @0x1417747f0
 BOOL CSoundDlg::OnInitDialog()

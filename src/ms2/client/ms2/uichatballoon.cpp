@@ -115,8 +115,8 @@ void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 UIChatBalloon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
     : TimerEntity(nLayer, clip, nActorId), m_a0(0), m_a8(""), m_b0(L"")
 {
-    m_64 = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&reinterpret_cast<Unk_CbCfg*>(FUN_1401d3200())->m_8a0));
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_CbCfg*>(FUN_1401d3200())->m_270)->Read();
+    m_64 = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&reinterpret_cast<Unk_CbCfg*>(GetClientConstants())->m_8a0));
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_CbCfg*>(GetClientConstants())->m_270)->Read();
 }
 
 // @0x1418fb0b0

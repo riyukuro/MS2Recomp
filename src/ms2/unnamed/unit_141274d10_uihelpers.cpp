@@ -371,7 +371,7 @@ MS2_CHECK_OFFSET(Unk_ClientConsts, m_b2c8, 0xb2c8);
 MS2_CHECK_OFFSET(Unk_ClientConsts, m_b320, 0xb320);
 MS2_CHECK_OFFSET(Unk_ClientConsts, m_b408, 0xb408);
 // clientconstants.h declares FUN_1401d3200 as Common::Constants*; this unit uses its own view of the block
-#define UNK_CLIENT_CONSTS() reinterpret_cast<Unk_ClientConsts*>(FUN_1401d3200())
+#define UNK_CLIENT_CONSTS() reinterpret_cast<Unk_ClientConsts*>(GetClientConstants())
 template<class T> struct Unk_NpcConstant { T* Get(); };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
@@ -633,7 +633,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
-    Vector3 FUN_140a17e10();
+    efd::Point3 FUN_140a17e10();
 };
 // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes) by value. The type has a user ctor (never called here), so it
 // is returned through a hidden pointer and is not a /GS buffer.
@@ -656,7 +656,7 @@ float FUN_1412762d0(const NiPoint3& kPos)
     float fZoom;
     if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() == 0)
         return 0.0f;
-    Vector3 vOrigin = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+    efd::Point3 vOrigin = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     fLength = reinterpret_cast<const Unk_Point2&>(static_cast<const efd::Point2&>(efd::Point2(vOrigin.x, vOrigin.y) - efd::Point2(kPos.x, kPos.y))).FUN_140affe70();
     fBase = -40.0f;
     fRange = 70.0f;

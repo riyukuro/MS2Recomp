@@ -157,7 +157,7 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52c80(const char* szMethod, Sca
 UIWhisperNotifyDialog::UIWhisperNotifyDialog()
     : m_whisperTimes(17, 0.75f, 0.25f, 2.25f, 10), m_systemTimes(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_nCooldown = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->WisperIgnoreTime)->FUN_140ad5c50();
+    m_nCooldown = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->WisperIgnoreTime)->FUN_140ad5c50();
     FUN_141925e70(0, 1);
 }
 
@@ -191,8 +191,8 @@ void UIWhisperNotifyDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        int nA = static_cast<Client::Constants*>(FUN_1401d3200())->WisperDurationTime.Read();
-        int nB = static_cast<Client::Constants*>(FUN_1401d3200())->WisperMaxCount.Read();
+        int nA = static_cast<Client::Constants*>(GetClientConstants())->WisperDurationTime.Read();
+        int nB = static_cast<Client::Constants*>(GetClientConstants())->WisperMaxCount.Read();
         pDialog->Invoke("init", nB, nA);
     }
 }

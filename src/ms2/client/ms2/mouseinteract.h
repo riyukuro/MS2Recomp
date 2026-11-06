@@ -11,13 +11,13 @@
 
 template <class T> class MS2Ptr;
 
-// efd::Point3 in the exe; the declared (never called here) default ctor keeps a Unk_MouseRay local out of /GS.
-struct Unk_Vec3 { Unk_Vec3(); float x, y, z; };
+#include <efd/Point3.h>
+typedef efd::Point3 Unk_Vec3;   // the ray vectors and FindTarget args are efd::Point3 in the exe
 
 // The ray the cursor casts plus the result slots the picker fills in (proven offsets only).
 struct Unk_MouseRay
 {
-    Unk_MouseRay();             // 0x140a78f00 (defined on the Unk_MouseRayInit view in mouseinteract.cpp)
+    Unk_MouseRay();             // 0x140a78f00 (mouseinteract.cpp)
 
     Unk_Vec3 vOrigin;           // +0x00 ray start
     Unk_Vec3 vEnd;              // +0x0c ray end

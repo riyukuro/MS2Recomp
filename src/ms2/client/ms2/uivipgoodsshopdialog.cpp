@@ -79,7 +79,7 @@ template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&)
 
 // The server config constants (the buy limit window in days).
 struct Unk_VgConstUInt;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 CVIPTable* FUN_140fb9980();                                     // CVIPTable::GetInstance
 class WorldService   // C3: member view for the former free stand-ins
@@ -419,8 +419,8 @@ void UIVIPGoodsShopDialog::FUN_140fbbae0(int nGoodsId)
     if (pPlayer == 0)
         return;
     if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() != 0) {
-        unsigned nDays = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)FUN_1401d3200()) + 0x6f40))->Get();
-        __int64 nWindow = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)FUN_1401d3200()) + 0x6f40))->Get() * 60 * 60 * 24;
+        unsigned nDays = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)GetClientConstants()) + 0x6f40))->Get();
+        __int64 nWindow = *reinterpret_cast<Common::Constants::Value<unsigned int>*>((Unk_VgConstUInt*)(((unsigned char*)GetClientConstants()) + 0x6f40))->Get() * 60 * 60 * 24;
         if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() - GetServerTime() > nWindow) {
             CMsTime until(((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() - nWindow);
             int nMinute = until.GetMinute();

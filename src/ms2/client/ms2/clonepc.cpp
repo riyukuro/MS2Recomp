@@ -495,7 +495,7 @@ void ClonePC::FUN_141087790()
 {
     m_kList1300.clear();
     vfunc_44(&m_kList1300);
-    for (efd::list<NiAVObject*>::iterator it = m_kList1300.begin(); it != m_kList1300.end(); ++it)
+    for (std::list<NiAVObject*>::iterator it = m_kList1300.begin(); it != m_kList1300.end(); ++it)
         FUN_141ab6e80(*it);
 }
 // MS2-HOOK-DISABLED (fx1, 2026-10-16): hooking this alone crashes field entry (null-this page fault at 0x14160e608 in the exe's list

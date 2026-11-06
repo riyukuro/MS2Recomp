@@ -54,7 +54,7 @@ public:
     char m_pad_91e9[0x9298 - 0x91e9];
     Unk_AdvCfgLevel m_9298;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_AdvCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
@@ -143,7 +143,7 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
         nGain = 0;
     if (nGain > FUN_140ba6fc0() - FUN_140ba6fa0())
         nGain = FUN_140ba6fc0() - FUN_140ba6fa0();
-    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_140ba4b30(reinterpret_cast<class Unk_ALConstU16*>(&reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_9298)));
+    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_140ba4b30(reinterpret_cast<class Unk_ALConstU16*>(&reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)GetClientConstants()))->m_9298)));
 }
 
 // @0x140ba6fa0
@@ -155,7 +155,7 @@ __int64 UIAdventureLevelExpBar::FUN_140ba6fa0()
 // @0x140ba6fc0
 __int64 UIAdventureLevelExpBar::FUN_140ba6fc0()
 {
-    return reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)FUN_1401d3200()))->m_91e8.FUN_140ba77c0();
+    return reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)GetClientConstants()))->m_91e8.FUN_140ba77c0();
 }
 
 // @0x140ba6ff0

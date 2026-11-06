@@ -138,11 +138,11 @@ public:
     Vector3 m_value;                                        // +0x50
 };
 // C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Unit helpers declared elsewhere.
-void FUN_140194470(void* pDst, void* pSrc);
-Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
+// (0x140194470 is efd::Point3::operator=(const Point3&))
+efd::Point3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
 bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
                    float fRadius, NiPoint3* pHit);                                   // ray / sphere hit
 void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
@@ -196,21 +196,21 @@ void CExpEffectInfo::UpdateOrientation()
     Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
     vDir.FUN_140968990();
     Unk_NiMatrix3 kMat;
-    Vector3 vNeg = vDir.FUN_1409f7960();
+    efd::Point3 vNeg = -reinterpret_cast<const efd::Point3&>(vDir);
     Vector3 vUp = DAT_143b01a60;
     if (reinterpret_cast<const efd::Point3&>(vNeg) == reinterpret_cast<const efd::Point3&>(DAT_143a08cf8))
     {
         vUp = DAT_143a08cd8;
     }
-    else if (reinterpret_cast<const efd::Point3&>(vNeg) == reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(DAT_143a08cf8.FUN_1409f7960())))
+    else if (reinterpret_cast<const efd::Point3&>(vNeg) == static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08cf8)))
     {
-        vUp = DAT_143a08cd8.FUN_1409f7960();
+        reinterpret_cast<efd::Point3&>(vUp) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
     }
     else
     {
-        vUp = vNeg.FUN_14109adc0(DAT_143a08cf8);
+        reinterpret_cast<efd::Point3&>(vUp) = reinterpret_cast<const efd::Point3&>(vNeg).UnitCross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
     }
-    Vector3 vSide = vUp.FUN_14109adc0(vNeg);
+    efd::Point3 vSide = reinterpret_cast<const efd::Point3&>(vUp).UnitCross(reinterpret_cast<const efd::Point3&>(vNeg));
     reinterpret_cast<efd::Matrix3&>(kMat).SetCol(0, reinterpret_cast<const efd::Point3&>(vUp));
     reinterpret_cast<efd::Matrix3&>(kMat).SetCol(1, reinterpret_cast<const efd::Point3&>(vNeg));
     reinterpret_cast<efd::Matrix3&>(kMat).SetCol(2, reinterpret_cast<const efd::Point3&>(vSide));
@@ -227,15 +227,15 @@ void CExpEffectInfo::InitConstants()
 {
     if (s_nConstInit != 0)
         return;
-    DAT_1439f733c = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x21b8))->Read();
-    DAT_1439f7340 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2210))->Read();
-    DAT_1439f7348 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2268))->Read();
-    DAT_1439f7344 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x22c0))->Read();
-    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2318)->FUN_141273d00();
+    DAT_1439f733c = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x21b8))->Read();
+    DAT_1439f7340 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2210))->Read();
+    DAT_1439f7348 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2268))->Read();
+    DAT_1439f7344 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x22c0))->Read();
+    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2318)->FUN_141273d00();
     s_ptSpreadMin = kMin;
-    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2380)->FUN_141273d00();
+    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2380)->FUN_141273d00();
     s_ptSpreadMax = kMax;
-    s_strEffDummy = *reinterpret_cast<Common::Constants::Value<CString>*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->Get();
+    s_strEffDummy = *reinterpret_cast<Common::Constants::Value<CString>*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x23e8)->Get();
     s_nConstInit = 1;
 }
 #endif
@@ -283,8 +283,8 @@ void CExpEffectInfo::UpdateMove(float fElapsed)
         else
         {
             float fT = m_fElapsed / m_fProgress;
-            Vector3 ptNew = FUN_141b71390(m_ptSource, m_ptPos, m_ptTarget, fT);
-            SetPosition(ptNew);
+            efd::Point3 ptNew = FUN_141b71390(m_ptSource, m_ptPos, m_ptTarget, fT);
+            SetPosition(reinterpret_cast<Vector3&>(ptNew));
         }
     }
 }
@@ -319,15 +319,15 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     float fRandY = FUN_1407680d0(&kRandom);
     float fRandZ = FUN_1407680d0(&kRandom);
     // [0] = spread min, [1] = spread max, both scaled by the distance
-    Vector3 aSpread[2] = { s_ptSpreadMin.FUN_14097fc90(fLen), s_ptSpreadMax.FUN_14097fc90(fLen) };
+    efd::Point3 aSpread[2] = { reinterpret_cast<const efd::Point3&>(s_ptSpreadMin) * fLen, reinterpret_cast<const efd::Point3&>(s_ptSpreadMax) * fLen };
     aSpread[0].y = aSpread[0].y / m_fTotal;
     aSpread[1].y = aSpread[1].y / m_fTotal;
-    Vector3 ptRange = aSpread[1].FUN_140965c40(aSpread[0]);
+    Vector3 ptRange = reinterpret_cast<Vector3&>(aSpread[1]).FUN_140965c40(reinterpret_cast<Vector3&>(aSpread[0]));
     Vector3 ptOffset(aSpread[0].x + ptRange.x * fRandX, aSpread[0].y + ptRange.y * fRandY, aSpread[0].z + ptRange.z * fRandZ);
-    FUN_140194470(&m_ptPos, (void*)&static_cast<const Vector3&>(
-                                m_ptSource.FUN_14097fd50(vDir.FUN_14097fc90(ptOffset.y).FUN_14097fc90(fLen))
-                                    .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
-                                    .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x))));
+    reinterpret_cast<efd::Point3&>(m_ptPos) =
+                                reinterpret_cast<const efd::Point3&>(m_ptSource) + reinterpret_cast<const efd::Point3&>(vDir) * ptOffset.y * fLen
+                                    + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(GetAxis2())) * ptOffset.z
+                                    + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(GetAxis0())) * ptOffset.x;
     SetPosition(m_ptSource);
     NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
     pRoot->AttachChild((NiAVObject*)m_spNode.operator NiNode*(), true);
@@ -394,7 +394,7 @@ void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut)
     NiAVObject* pDummy = reinterpret_cast<PCBase*>(pActor)->FUN_141675150(s_strEffDummy);
     if (pDummy != 0)
     {
-        FUN_140194470(pOut, (void*)&pDummy->GetWorldTranslate());
+        *reinterpret_cast<efd::Point3*>(pOut) = static_cast<const efd::Point3&>(pDummy->GetWorldTranslate());
     }
     else
     {

@@ -45,7 +45,7 @@ struct Unk_EmoCfg
     char m_pad_0640[0x2600 - 0x638 - sizeof(Unk_EmoCfgFloat)];
     Unk_EmoCfgFloat m_2600;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_EmoPlayer : public CNpc                                                         // the player-side object of an actor (quest/status)
 {
 };
@@ -157,8 +157,8 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 {
     m_64 = 99999999;
     float fDefault = 400.0f;
-    m_c0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_218)->Get(fDefault);
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_2600)->Read();
+    m_c0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_218)->Get(fDefault);
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_2600)->Read();
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
@@ -216,7 +216,7 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
         *pPos *= ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
         {
-            pPos->y = pPos->y + *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_638)->Get();
+            pPos->y = pPos->y + *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_638)->Get();
         }
         else
         {

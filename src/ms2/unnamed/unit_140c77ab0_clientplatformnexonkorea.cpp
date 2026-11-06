@@ -36,36 +36,36 @@
 // ---- the launch-argument flags (filled by the command-line parser 0x1414b1980 of unit_1414b1230) ----
 // The bitset template of commonfiles\bitset.inl with its proxy reference (operator[] line 152, Test line 404); the
 // class names are invented. Bits: 0 passport given, 1 sid given, 2/3 read and ignored.
-template <int T> class Unk_LaunchBitset
-{
-public:
-    class reference
-    {
-    public:
-        reference(Unk_LaunchBitset* pBits, int nPos) : m_pBits(pBits), m_nPos(nPos) {}
-        operator bool() const { return m_pBits->Test(m_nPos); }
-        Unk_LaunchBitset* m_pBits;
-        int m_nPos;
-    };
-    reference operator[](int pos)
-    {
-        MS2_BITSET_ASSERT(152, UINT(pos) < UINT(T));
-        return reference(this, pos);
-    }
-    bool Test(int pos) const
-    {
-        if (UINT(pos) >= UINT(T)) { MS2_BITSET_ASSERT(404, 0); return false; }
-        return (m_bits[pos / 8] & (1 << (pos % 8))) != 0;
-    }
-    unsigned char m_bits[(T + 7) / 8];
-};
+#include "ms2/placeholder/launchbitset.h"      // Unk_LaunchBitset<4> (was defined here)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- out-of-unit types, functions and globals ----
 extern int DAT_143ac2fd0;                       // the platform failure code (shown by CGameApp::InitInstance)
 extern CStringW g_143ac2fe0;                    // the platform failure message
-struct Unk_CmdBitset;                           // unit_1414b1230.cpp
-extern Unk_CmdBitset g_bits;                    // 0x143ae0901 the launch option bits
-#define g_launchBits (*(Unk_LaunchBitset<4>*)&g_bits)
+//
+extern Unk_LaunchBitset<4> g_bits;               // 0x143ae0901 the launch option bits
+#define g_launchBits g_bits
 extern CString g_strPassport;                   // 0x143ae0910 "/passport:"
 extern CString g_strSid;                        // 0x143ae0918 "/sid:"
 extern CString g_strNexonSn;                    // 0x143ae0920 "/nexonsn:"

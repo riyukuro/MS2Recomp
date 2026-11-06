@@ -112,7 +112,7 @@ public:
 int FUN_140b11e90(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FUN_140b11e90
 
 // The client constants table and its Value<T> accessors.
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_SSGConstValue   // C3: member view for the former free stand-ins
 {
 public:
@@ -201,7 +201,7 @@ void StateSummon::vfunc_4(StateData* pData)
     m_n48 = 0;
     State::vfunc_4(pData);
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x33c0))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x33c0))->FUN_140ad5c50();
     int nLabel = 0;
 
     m_spData.AssignRaw(dynamic_cast<StateSummonData*>(pData));
@@ -218,7 +218,7 @@ void StateSummon::vfunc_4(StateData* pData)
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
-                    nDuration = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7d30)->Get();
+                    nDuration = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)GetClientConstants())) + 0x7d30)->Get();
                 }
                 m_n10 = 0x83;
             }
@@ -424,7 +424,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x35d0))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x35d0))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
@@ -500,7 +500,7 @@ void StateRecall::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x3628))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x3628))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
@@ -712,10 +712,10 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
     void* pManager = ((void*)((class CPet*)(class PCBase*)(pPet))->FUN_140b10360());
     if (pManager != 0)
     {
-        if (pState->m_t48.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7de0)->Get()) != 0)
+        if (pState->m_t48.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)GetClientConstants())) + 0x7de0)->Get()) != 0)
             FUN_1417f94a0(pState, 0x5a);
 
-        if (pState->m_t50.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e90)->Get()) != 0)
+        if (pState->m_t50.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)GetClientConstants())) + 0x7e90)->Get()) != 0)
         {
             int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo()) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
@@ -869,7 +869,7 @@ void StateSummonExpire::vfunc_3(double fTime)
     MS2Ptr<CPetData> spRow = reinterpret_cast<CPet*>(pPet)->GetRow();
     if (spRow == 0)
         return;
-    if (m_t40.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)
+    if (m_t40.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)GetClientConstants())) + 0x7e38)->Get()) != 0)
         ((class CPet*)(class PCBase*)(pPet))->FUN_140b114e0(0x5b);
 }
 

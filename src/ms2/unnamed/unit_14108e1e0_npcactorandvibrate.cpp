@@ -488,12 +488,12 @@ CNpc::CNpc()
     m_spStateMgr->RegisterState(0x17, new StateRegen(this));
     m_spStateMgr->RegisterState(0x23, new StatePuppetNpc(this));
     m_spStateMgr->RegisterState(0x38, new StateSummonPortal(this));
-    m_f164 = FUN_1401d3200()->OffsetNpcHpbar.Read();
-    m_f168 = FUN_1401d3200()->OffsetNpcChatballoon.Read();
-    m_f16c = FUN_1401d3200()->OffsetNpcNametag.Read();
+    m_f164 = GetClientConstants()->OffsetNpcHpbar.Read();
+    m_f168 = GetClientConstants()->OffsetNpcChatballoon.Read();
+    m_f16c = GetClientConstants()->OffsetNpcNametag.Read();
     m_f170 = 0.0f;
     m_f174 = 0.0f;
-    m_f178 = FUN_1401d3200()->OffsetNpcDamagenumber.Read();
+    m_f178 = GetClientConstants()->OffsetNpcDamagenumber.Read();
     m_nDE0 = 0;
     m_nDE4 = 0;
     m_nE60 = 0;
@@ -1381,7 +1381,7 @@ bool CNpc::FUN_141094300()
     if (m_spNpcData->HasPropertyTag(0x1a))
         return true;
     float fDefault = 400.0f;
-    float fRange = reinterpret_cast<Common::Constants::Value<float>*>((char*)FUN_1401d3200() + 0x218)->Get(fDefault) + m_spNpcData->m_capsule.m_fRadius;
+    float fRange = reinterpret_cast<Common::Constants::Value<float>*>((char*)GetClientConstants() + 0x218)->Get(fDefault) + m_spNpcData->m_capsule.m_fRadius;
     if (reinterpret_cast<GameObject*>(this)->FUN_140f4a450() > fRange)
         return false;
     return true;
@@ -1708,7 +1708,7 @@ void CNpc::MakeDeadPhysXActor()
     if (m_spSkillRow.get() != 0) {
         fPushUp = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
         fPushBack = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
-        static float s_fRate = FUN_1401d3200()->NPCRandomDeadPushRate.Read();
+        static float s_fRate = GetClientConstants()->NPCRandomDeadPushRate.Read();
         fPushBack = fPushBack * (1.0f + FUN_14109ace0() * s_fRate);
         fPushUp = fPushUp * (1.0f + FUN_14109ace0() * s_fRate);
         if (FUN_14028d470(fPushBack, 0.0f) && FUN_14028d470(fPushUp, 0.0f))
@@ -1837,10 +1837,10 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
 // A hit: the hit numbers, buff triggers, the boss camera, the hit effect / colour / shake / sound, the knockback record
 // (+0xd70 / +0xd80), the hit direction basis (+0xd88), the death (corpse actor, boss kill effects), the dps meter.
 // @0x141097c40
-void CNpc::vfunc_33(void* a, void* b)
+void CNpc::vfunc_33(void* a, efd::Point3 kHit)
 {
     float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
-    GameObject::vfunc_33(a, const_cast<efd::Point3*>(&static_cast<const efd::Point3&>(efd::Point3(*static_cast<efd::Point3*>(b)))));
+    GameObject::vfunc_33(a, kHit);
     FUN_141671c20(MS2Ptr<CDamageRecord>(static_cast<CDamageRecord*>(a)));
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     int nOwnerRel = WorldService::GetInstance()->FUN_141bd19d0(static_cast<CDamageRecord*>(a)->m_nOwnerId);
@@ -1873,16 +1873,16 @@ void CNpc::vfunc_33(void* a, void* b)
         m_spSkillRow = static_cast<CDamageRecord*>(a)->m_spLevel;
         m_nD80 = static_cast<CDamageRecord*>(a)->GetAttackData()->m_nDirection;
         if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->FUN_14123c580()) {
-            Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
+            Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
             float fVolume = pVolume->Read();
             TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
                 m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         }
     }
-    if (*static_cast<efd::Point3*>(b) == efd::Point3::ZERO) {
+    if (kHit == efd::Point3::ZERO) {
         m_unkD88.MakeIdentity();
     } else {
-        efd::Point3 kRight = static_cast<efd::Point3*>(b)->UnitCross(efd::Point3::UNIT_Z);
+        efd::Point3 kRight = kHit.UnitCross(efd::Point3::UNIT_Z);
         efd::Point3 kForward = -kRight.UnitCross(efd::Point3::UNIT_Z);
         m_unkD88.SetCol(0, kRight);
         m_unkD88.SetCol(1, kForward);
@@ -1928,7 +1928,7 @@ void CNpc::vfunc_34(void* p)
         int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
         if (nMaterial == 0)
             break;
-        Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
+        Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
             nOwnerRel, vfunc_18(), fVolume);
@@ -1976,7 +1976,7 @@ void CNpc::vfunc_35(void* p)
     if (static_cast<CSplashDamageRecord*>(p)->GetTotalDamage() < 0) {
         FUN_141098fb0(1);
         FUN_14166ccb0()->vfunc_6();
-        Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
+        Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
             m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
@@ -2054,16 +2054,16 @@ void CNpc::FUN_141099370(float fTime)
     if (spBalloon.IsNull()) return;
     if (spBalloon->FUN_1418fb6b0())
         return;
-    int nRandom = FUN_140a35ca0(FUN_1401d3200()->MonologueRandom.Get());
+    int nRandom = FUN_140a35ca0(GetClientConstants()->MonologueRandom.Get());
     if (spBalloon->FUN_140f48d40() != 0) {
         m_nDE0 += (int)FUN_14028d260(fTime);
-        if ((unsigned int)m_nDE0 >= (unsigned int)FUN_140a35ca0(FUN_1401d3200()->MonologueShowTime.Get())) {
+        if ((unsigned int)m_nDE0 >= (unsigned int)FUN_140a35ca0(GetClientConstants()->MonologueShowTime.Get())) {
             spBalloon->vfunc_3();
             FUN_141099580();
         }
     } else {
         m_nDE0 += (int)FUN_14028d260(fTime);
-        if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(FUN_1401d3200()->MonologueInterval.Get()) + nRandom)) {
+        if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(GetClientConstants()->MonologueInterval.Get()) + nRandom)) {
             TSingleton<UITalkManager>::GetInstance()->FUN_141b20790(FUN_14123c580(), vfunc_116());
             FUN_141099580();
         }
@@ -2074,7 +2074,7 @@ void CNpc::FUN_141099370(float fTime)
 void CNpc::FUN_141099580()
 {
     m_nDE0 = 0;
-    unsigned int nRandom = FUN_140a35ca0(FUN_1401d3200()->MonologueRandom.Get());
+    unsigned int nRandom = FUN_140a35ca0(GetClientConstants()->MonologueRandom.Get());
     if (nRandom != 0) {
         int nObjectId = FUN_14123c580();
         Unk_Random kRandom(nObjectId * FUN_140768010(nRandom, 0));
@@ -2407,7 +2407,7 @@ void CNpc::vfunc_53(float fTime)
             }
         }
     } else {
-        if (reinterpret_cast<unsigned char&>(FUN_1401d3200()->m_unk8) != 0) {
+        if (reinterpret_cast<unsigned char&>(GetClientConstants()->m_unk8) != 0) {
             Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get();
             if (pTag != 0) {
                 m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());

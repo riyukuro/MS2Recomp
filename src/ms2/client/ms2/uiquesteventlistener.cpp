@@ -116,7 +116,7 @@ struct Unk_QgCfg {
     Unk_QgCfgInt m_40d0;                                                    // max tracked quests (second)
 };
 MS2_CHECK_OFFSET(Unk_QgCfg, m_40d0, 0x40d0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 CQuestNavigator* FUN_140e7c990();
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
@@ -391,8 +391,8 @@ MS2_REPLACE_METHOD(0x141aa9f10, UIQuestGuideDialog, vfunc_43, 72, 0x2D9B0606);
 void UIQuestGuideDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_QgCfg*)FUN_1401d3200())->m_4078)->Get();
-    int nMax2 = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_QgCfg*)FUN_1401d3200())->m_40d0)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_QgCfg*)GetClientConstants())->m_4078)->Get();
+    int nMax2 = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_QgCfg*)GetClientConstants())->m_40d0)->Get();
     m_30->FUN_1409ba0d0("setMaxEntity", nMax, nMax2);
     int nPage = 0;
     m_pageIndex.Lookup(DAT_143ab2828, nPage);

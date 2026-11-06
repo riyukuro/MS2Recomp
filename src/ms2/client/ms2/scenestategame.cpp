@@ -213,14 +213,14 @@ class Unk_SSGWorld : public WorldService
 {
 public:
     // (FUN_141bc5ab0: WorldService::FUN_141bc5ab0(efd::SmartPointer<CSkillMagicControlGuide>), worldservice.h; keeps the skill guide alive)
-    void FUN_141bc9020(CString strName, MS2Ptr<Unk_PCBaseComp_b18> spSkill, CString strBone, unsigned char nFlag);   // 0x75 start a named field skill
+    // (FUN_141bc9020: WorldService::FUN_141bc9020(CString, MS2Ptr<CSkillRecord>, CString, unsigned char), worldservice.h; 0x75 start a named field skill)
     // (FUN_141bd3d70: WorldService::FUN_141bd3d70(Vector3, Vector3), worldservice.h)
     MS2Ptr<class Unk_SSGNamedObj> FUN_141bc5a20(CString strName);   // a named field object (0x73)
-    struct Unk_SSGEntListPtr FUN_141bd0420(unsigned int nModelHash);   // the entities of a model
-    void FUN_141bc9aa0(MS2Ptr<CProxyGameObject> spProxy);   // add a field object proxy
+    // (FUN_141bd0420: WorldService::FUN_141bd0420(unsigned) returning Unk_WsC_TagPtr, worldservice.h; the entities of a model)
+    // (FUN_141bc9aa0: WorldService::AddProxyObject(MS2Ptr<CProxyGameObject>), worldservice.h; add a field object proxy)
     // interact objects (0x63)
     // (add one: WorldService::AddProp 0x141bc5c40)
-    int FUN_141bc1720(MS2Ptr<class CPortal> spPortal);      // register a field object (portal) (0x48)
+    // (FUN_141bc1720: WorldService::FUN_141bc1720(MS2Ptr<CPortal>), worldservice.h; register a field object (portal) (0x48))
 };
 
 // The UI manager (FUN_1403ed2b0).
@@ -260,7 +260,7 @@ public:
     DWORD GetTimeByKind(int nKind);   // 0x1414732f0 (was Unk_ServerClock::FUN_1414732f0)
 };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
-class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
+template<> class TSingleton<class CReconnectionManagerCli> { public: static class CReconnectionManagerCli* GetInstance(); };   // C3: was FUN_140e800e0 (real spec in reconnectionmanagercli.h)
 class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -1309,7 +1309,7 @@ MS2_REPLACE_METHOD(0x14170beb0, CSceneStateGame, OnEnter, 270, 0x562E95A4);
 void CSceneStateGame::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->Reset();
+    ((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->Reset();
     ((class CMyCharacter*)(void*)(((class Unk_SSG931510*)FUN_140931510())))->UnregisterPacketHandler();
     ((class GameEventManagerCli*)(void*)(((void*)TSingleton<GameEventManagerCli>::GetInstance())))->Clear();
     ((class TermTagManagerCli*)(void*)(((void*)TSingleton<TermTagManagerCli>::GetInstance())))->Clear();
@@ -1376,8 +1376,8 @@ void CSceneStateGame::OnUpdate(double fTime)
     }
     TSingleton<CBigDataLogSystem>::GetInstance()->Update();
     reinterpret_cast<Unk_SSGInput*>(TSingleton<CMouseController>::GetInstance())->FUN_140ad1ef0();
-    if (((void*)FUN_140e800e0()) != 0)
-        ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->Tick();
+    if (((void*)TSingleton<CReconnectionManagerCli>::GetInstance()) != 0)
+        ((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->Tick();
     FUN_14173fe20();
 }
 MS2_REPLACE_METHOD(0x14170c0c0, CSceneStateGame, OnUpdate, 1244, 0x2C40A545);
@@ -2163,7 +2163,7 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14170dd60, CSceneStateGame, OnServerEnter, 2707, 0x78081C2A);
 
 // The option kind keying the house option tables (as cubemapinformationservice_tail.h / ugcmapoptions.h).
-enum Unk_CMISKindB { Unk_CMISKindB_None };
+enum Unk_CMISKindB : int { Unk_CMISKindB_None };
 
 // @0x14170e800
 // The two option tables are the CubeMapInformationService efd::map<Unk_CMISKindB, ...>
@@ -5501,7 +5501,7 @@ struct Unk_MagicTag : public CPtred
     int m_nStartTick;                                               // +0x88
     int m_n8c;                                                      // +0x8c
     ATL::CAtlMap<__int64, int> m_mapHit;                            // +0x90
-};
+}; class Unk_FcTag : public Unk_MagicTag {};   // C3: MS2Ptr<Unk_FcTag> (Unk_MagicTagPtr) reaches the record through this view
 MS2_CHECK_OFFSET(Unk_MagicTag, m_spSkill, 0x38);
 MS2_CHECK_OFFSET(Unk_MagicTag, m_spLinked, 0x70);
 MS2_CHECK_OFFSET(Unk_MagicTag, m_mapHit, 0x90);
@@ -5552,7 +5552,7 @@ void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
                 Unk_MagicTagPtr spParent(0);
                 if (mapTags.Lookup(nParent, spParent))
                 {
-                    Unk_MagicTagPtr spTag(new Unk_MagicTag);
+                    Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new Unk_MagicTag));
                     if (reinterpret_cast<SkillTargetRecord*>(spTag.operator->())->FUN_141758d70(nTagId, nTagSub, nOwnerId, nCasterId, nSkillId, nLevel, nSrcLevel, ptDir,
                             n80, n84, nSrcIndex, 0))
                     {
@@ -5563,7 +5563,7 @@ void CSceneStateGame::FUN_14171c1d0(CInPacket& packet)
             }
             else
             {
-                Unk_MagicTagPtr spTag(new Unk_MagicTag);
+                Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new Unk_MagicTag));
                 if (reinterpret_cast<SkillTargetRecord*>(spTag.operator->())->FUN_141758d70(nTagId, nTagSub, nOwnerId, nCasterId, nSkillId, nLevel, nSrcLevel, ptDir,
                         n80, n84, nSrcIndex, 0))
                 {
@@ -5998,11 +5998,11 @@ void CSceneStateGame::FUN_14172a1c0(CInPacket& packet)
         kReq.tick = nCastUid;
         kReq.unknown14 = nMotion;
         kReq.origin = kPos;
-        MS2Ptr<Unk_PCBaseComp_b18> spSkill(static_cast<Unk_PCBaseComp_b18*>(new CSkillRecord()));
+        MS2Ptr<CSkillRecord> spSkill(new CSkillRecord());
         if (!spSkill->Init(kReq))
             return;
         spSkill->m_n94 = n94;
-        ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9020(strName, spSkill, strBone, nFlag);
+        WorldService::GetInstance()->FUN_141bc9020(strName, spSkill, strBone, nFlag);
     }
     if (nMode == 2)
     {
@@ -7155,7 +7155,7 @@ void CSceneStateGame::FUN_14171e9a0(CInPacket& packet)
         int nLevel = static_cast<unsigned short>(packet.ReadInt16());
         int nOwnerId = packet.ReadInt32();
         int nCasterId = packet.ReadInt32();
-        Unk_MagicTagPtr spTag(new Unk_MagicTag());
+        Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new Unk_MagicTag()));
         if (!reinterpret_cast<SkillTargetRecord*>(spTag.operator->())->FUN_141758d70(nTagId, 0, nOwnerId, nCasterId, nSkillId, nLevel, 0, Vector3(0, 0, 0), 0, 0,
                 0, 0))
             return;
@@ -7271,7 +7271,7 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
             spPortal->m_strModel = "urn:gamebryo-scenegraph:" + strModel;
         if (nMapType != 0)
             spPortal->m_nMapType = nMapType;
-        ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc1720(spPortal);
+        WorldService::GetInstance()->FUN_141bc1720(spPortal);
     }
     else if (nMode == 1)
     {
@@ -11357,7 +11357,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         reinterpret_cast<Unk_IntTriple&>(spProxy->m_d0).ReadFrom(static_cast<CInputStream&>(packet));
         if (TSingleton<CUgcManager>::GetInstance()->GetMode() == 1)
             spProxy->m_50 = "";
-        ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
+        WorldService::GetInstance()->AddProxyObject(spProxy);
     }
     else if (nMode == 4)
     {
@@ -11400,7 +11400,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         spProxy->m_7c = packet.ReadInt32();
         spProxy->m_6c = packet.ReadVector3();
         if (spProxy->FUN_1416c2990(nTemplateId))
-            ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
+            WorldService::GetInstance()->AddProxyObject(spProxy);
     }
     else if (nMode == 7)
     {
@@ -11427,7 +11427,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
         spProxy->m_6c = packet.ReadVector3();
         spProxy->m_28 = ((NpcDataTableCli*)FUN_1406d6e90())->Find(spProxy->m_78);
         if (spProxy->m_28.get())
-            ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc9aa0(spProxy);
+            WorldService::GetInstance()->AddProxyObject(spProxy);
     }
     else if (nMode == 10)
     {
@@ -11783,13 +11783,13 @@ class Unk_SSGNamedObj : public CPtred
 {
 };
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_SSGEntList;
-// 16-byte smart pointer to a boxed entity list (TPtredDummy<T>; the same COMDATs as autofindtaxistation's Unk_TaxiPtr).
-struct Unk_SSGEntListPtr
+// 16-byte smart pointer to a boxed entity list (worldservice_1's Unk_WsC_TagPtr, the return of WorldService::FUN_141bd0420; TPtredDummy<T>; the same COMDATs as autofindtaxistation's Unk_TaxiPtr).
+struct Unk_WsC_TagPtr
 {
     Unk_SSGEntList* get() const { return m_p; }
     Unk_SSGEntList* operator->() const { return m_p; }
     bool operator==(Unk_SSGEntList* p) const { return m_p == p; }
-    ~Unk_SSGEntListPtr() { Release(); }
+    ~Unk_WsC_TagPtr() { Release(); }
     void Release()
     {
         if (m_p)
@@ -11874,7 +11874,7 @@ MS2_REPLACE_METHOD(0x141749ed0, Unk_SSGCachedEntity, FUN_141749ed0, 591, 0x17038
 // @0x141739450
 void CSceneStateGame::FUN_141739450(bool bFlag)
 {
-    Unk_SSGEntListPtr taxiStations = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
+    Unk_WsC_TagPtr taxiStations = WorldService::GetInstance()->FUN_141bd0420(0x85359406);
     if (taxiStations == 0)
         return;
     MS2_ASSERT_AT(0x2088, taxiStations->GetCount() <= 1);
@@ -11969,7 +11969,7 @@ void CSceneStateGame::OnLiftable(CInPacket& packet)
                 ((CLiftableObject*)(spObj).operator->())->SetState(nKind);
             }
         }
-        Unk_SSGEntListPtr list = ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bd0420(0x32767dd);
+        Unk_WsC_TagPtr list = WorldService::GetInstance()->FUN_141bd0420(0x32767dd);
         if (list.get() != 0)
         {
             for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos))
@@ -12296,7 +12296,7 @@ void CSceneStateGame::FUN_14172c170(CInPacket& packet)
             {
                 __int64 nTagSub = packet.ReadInt64();
                 unsigned char n84 = packet.ReadUInt8();
-                Unk_MagicTagPtr spTag(new Unk_MagicTag);
+                Unk_MagicTagPtr spTag(reinterpret_cast<Unk_FcTag*>(new Unk_MagicTag));
                 if (reinterpret_cast<SkillTargetRecord*>(spTag.operator->())->FUN_141758d70(spInfo->m_nTagId, nTagSub, pOwner->FUN_14123c580(), 0, spInfo->m_nSkillId,
                         spInfo->m_nLevel, spInfo->m_nSrcLevel, ptDir, 0, n84, spInfo->m_nSrcIndex, 0))
                 {

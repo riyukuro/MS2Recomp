@@ -127,13 +127,13 @@ void JobSystemCli::vfunc_4(unsigned short nLevel)
 }
 
 // @0x140a6dec0
-// MS2-FUNCTIONAL: after each tree lookup the exe spills the level to a temp, releases the tree, zeroes a dead word temp and only then copies the level (frame 0xd8 vs 0xc8); the same shape is open in UISkillBookTreeDialog::GetLevelText
+// Each tree lookup goes through a named level local, then a zeroed unused word local, then the copy (exe frame 0xd8)
 unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
 {
     Unk_JscPlayer* pPlayer = (Unk_JscPlayer*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(m_pOwner);
     if (pPlayer == 0)
         return 0;
-    unsigned short nLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId);
+    unsigned short nTreeLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId); unsigned short nUnused = 0; unsigned short nLevel = nTreeLevel;
     if (nLevel != 0)
         return nLevel;
     if (GetJobData().IsNull())
@@ -141,7 +141,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     int nMain = GetJobData()->GetSubSkillParent(nSkillId);
     if (nMain == 0)
         return 0;
-    return ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain);
+    unsigned short nRet = 0; unsigned short nMainLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain); unsigned short nUnused2 = 0; nRet = nMainLevel; return nRet;
 }
 
 // @0x140a6e0a0

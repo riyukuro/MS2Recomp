@@ -1178,7 +1178,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                         __int64 nValue = spBase->GetValue();
                         float fRate = (float)floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
-                        __int64 nMax = (__int64)(fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
+                        __int64 nMax = (__int64)(fBase + fRate * (float)(*GetClientConstants()->PetMaxLevel.Get() - 1));
                         nValue += fRate * (float)(pItem->FUN_140528c20() - 1);
                         strValue = FUN_140631720(nStat, (int)nValue, false);
                         strBase = FUN_1409e0900(spBase->GetValue());
@@ -1223,7 +1223,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                             int nValue = spBase->GetValue();
                             float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
                             float fBase = (float)nValue;
-                            float fMax = fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
+                            float fMax = fBase + fRate * (float)(*GetClientConstants()->PetMaxLevel.Get() - 1);
                             nValue += fRate * (float)(pItem->FUN_140528c20() - 1);
                             strValue = FUN_140631830(eSpecial, nValue, pItem->FUN_140527840());
                             int nRaw = spBase->GetValue();
@@ -1401,7 +1401,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             strText.Append(strLabel);
             strText.Append(L"gauge:\n\n");
             unsigned nCurLevel = pItem->FUN_140528c20();
-            if (nCurLevel < *FUN_1401d3200()->PetMaxLevel.Get())
+            if (nCurLevel < *GetClientConstants()->PetMaxLevel.Get())
             {
                 FUN_1407cbb20("itemEnchantExpString", strExp);
                 FUN_1407cb9c0("itemEnchantExpPercent", nPercent);
@@ -2726,7 +2726,7 @@ void ASTooltip::FUN_1409d4490(CItem* pItem)
     unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(pItem->FUN_1405282d0(), pItem->GetRarity());
     if (nNeed == 0)
         return;
-    if (pItem->FUN_140528c20() < *FUN_1401d3200()->PetMaxLevel.Get())
+    if (pItem->FUN_140528c20() < *GetClientConstants()->PetMaxLevel.Get())
         return;
     CStringW strText = StringFormat(s_wsPetEvolutionPoint);
     unsigned nPoint = pItem->FUN_140528bd0();
@@ -3079,7 +3079,7 @@ void ASTooltip::FUN_1409d6a40(int nItemId, __int64 nMinutes)
         if (spData->period.usePeriod > 0)
             nSeconds = spData->period.usePeriod * 60;
         else if (spData->IsPCBangItem())
-            nSeconds = *FUN_1401d3200()->PCBangItemDefaultPeriod.Get() * 60;
+            nSeconds = *GetClientConstants()->PCBangItemDefaultPeriod.Get() * 60;
         if (nMinutes > 0)
             nSeconds = nMinutes * 60;
         ATL::CTimeSpan span(nSeconds);
@@ -3179,7 +3179,7 @@ void ASTooltip::FUN_1409d77b0(int nItemId)
     if (sp == 0)
         return;
     int nSeason = sp->GetOpenGachaBoxParam0();
-    ItemGachaBoxTable* pTable = FUN_14052d230();
+    ItemGachaBoxTable* pTable = TSingleton<ItemGachaBoxTable>::GetInstance();
     if (pTable == 0)
         return;
     if (pTable->IsCoinItem(nItemId) == true)
@@ -3327,8 +3327,8 @@ namespace p3hook { MS2_REPLACE_METHOD(0x1409D8570, ASTooltip, FUN_1409d8570, 212
 void ASTooltip::FUN_1409d8650(int nItemId, int nGrade, int nSockets)
 {
     bool bGacha = false;
-    if (FUN_14052d230() != 0)
-        bGacha = FUN_14052d230()->GetBox(nItemId) == 0 ? false : true;
+    if (TSingleton<ItemGachaBoxTable>::GetInstance() != 0)
+        bGacha = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(nItemId) == 0 ? false : true;
     MS2SvrPtr<CIngredientContainer> spIngredients(0);
     if (bGacha)
         spIngredients = reinterpret_cast<CItemBreakIngredientTable*>(FUN_140535300())->GetGachaBox(nItemId);
@@ -5179,7 +5179,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                     {
                         __int64 nValue = spBase->GetValue();
                         float fRate = (float)__imp_floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
-                        __int64 nMax = (__int64)((float)nValue + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
+                        __int64 nMax = (__int64)((float)nValue + fRate * (float)(*GetClientConstants()->PetMaxLevel.Get() - 1));
                         nValue += fRate * (float)(spItem->FUN_140528c20() - 1);
                         strValue = FUN_140631720(nStat, (int)nValue, false);
                         strBase = FUN_1409e0900(spBase->GetValue());
@@ -5222,7 +5222,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                     {
                         int nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
-                        float fMax = (float)nValue + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
+                        float fMax = (float)nValue + fRate * (float)(*GetClientConstants()->PetMaxLevel.Get() - 1);
                         nValue += fRate * (float)(spItem->FUN_140528c20() - 1);
                         strValue = FUN_140631830(eSpecial, nValue, spItem->FUN_140527840());
                         int nRaw = spBase->GetValue();
@@ -5363,7 +5363,7 @@ namespace p5hook { MS2_REPLACE(0x1409E4950, FUN_1409e4950, 2417, 0xFE9700B0); }
 // @0x1409e5320
 CStringW FUN_1409e5320(const int& nSeason)
 {
-    GachaBoxDataPtr spBox = FUN_14052d230()->GetBox(nSeason);
+    GachaBoxDataPtr spBox = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(nSeason);
     if (spBox == 0)
         return L"";
     if ((unsigned)spBox->GetSeason() <= 0)

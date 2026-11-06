@@ -18,51 +18,51 @@
 typedef long long i64;
 
 // ---- the node container reset ---------------------------------------------------------------------------------------------
-// The container and its node allocator are opaque here (the allocator lives in another unit): the reset walks the tree
-// through the children at node+0x18 / +0x20, returns every node to the allocator, then drops the auxiliary buffer and
-// reinstalls the sentinel as the head.
-bool FUN_140a44a40(void* pContainer, void* pNode);   // true when pNode is the container's sentinel (nothing to erase)
-void FUN_140a44760(void* pContainer, void* pNode);   // returns one node to the container's allocator
+// The container is ATL::CRBTree<DWORD, CStringA> (an MFC CString value): 0x1414a6010 is its RemoveAll and 0x1414a6090
+// the private RemovePostOrder it calls (IsNil 0x140a44a40, FreeNode 0x140a44760 live in another unit). Nothing in the
+// sources calls RemoveAll on this tree type, so Unk_DwordStrTreeInst instantiates it; the pins at the end bind the
+// real-name instances to the exe VAs (they were the FUN_1414a6010 / FUN_1414a6090 stand-ins over FUN_ wrappers).
+typedef ATL::CRBTree<DWORD, CStringA> Unk_DwordStrTree;
 
-struct Unk_TreeHead {
-    void* m_pHead;      // +0x00  root, or the sentinel when the container is empty
-    i64   m_nCount;     // +0x08
-    i64   m_field10;    // +0x10
-    void* m_pBuffer;    // +0x18  auxiliary buffer, freed on reset
-    i64   m_field20;    // +0x20
-    void* m_pSentinel;  // +0x28  reinstalled as the head on reset
-};
-MS2_CHECK_SIZE(Unk_TreeHead, 0x30);
-
-struct Unk_TreeNode {
-    char  m_pad_00[0x18];
-    void* m_pLeft;       // +0x18
-    void* m_pRight;      // +0x20
-};
-MS2_CHECK_OFFSET(Unk_TreeNode, m_pLeft, 0x18);
-MS2_CHECK_OFFSET(Unk_TreeNode, m_pRight, 0x20);
-
-// @0x1414a6090
-void FUN_1414a6090(Unk_TreeHead* pTree, Unk_TreeNode* pNode)
+void Unk_DwordStrTreeInst(Unk_DwordStrTree* pTree)
 {
-    if (FUN_140a44a40(pTree, pNode))
-        return;
-    FUN_1414a6090(pTree, (Unk_TreeNode*)pNode->m_pLeft);
-    FUN_1414a6090(pTree, (Unk_TreeNode*)pNode->m_pRight);
-    FUN_140a44760(pTree, pNode);
+    pTree->RemoveAll();
 }
-
-// @0x1414a6010
-void FUN_1414a6010(Unk_TreeHead* pTree)
-{
-    if (!FUN_140a44a40(pTree, pTree->m_pHead))
-        FUN_1414a6090(pTree, (Unk_TreeNode*)pTree->m_pHead);
-    pTree->m_nCount = 0;
-    ((ATL::CAtlPlex*)(void*)(pTree->m_pBuffer))->FreeDataChain();
-    pTree->m_pBuffer = 0;
-    pTree->m_field10 = 0;
-    pTree->m_pHead = pTree->m_pSentinel;
-}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // ---- CGameApp vtable stubs (vftable 0x142f1e140 slots 60/61) --------------------------------------------------------------
 // CGameApp's own flag word at +0x14c is not part of the shared CGameApp view (ms2.h); each stub reads one bit of it.
@@ -155,3 +155,6 @@ void FUN_1414a6230(efd::IBase* (*pfnFactory)())
 {
     g_pfnMS2CreateKFMCache = (egmAnimation::KFMCache* (*)())pfnFactory;
 }
+
+// MS2-PIN: ?RemoveAll@?$CRBTree@KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@K@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAXXZ 0x1414a6010 ; the real tree RemoveAll (was FUN_1414a6010 over the FUN_140a44a40 IsNil wrapper)
+// MS2-PIN: ?RemovePostOrder@?$CRBTree@KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@K@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x1414a6090 ; the real private RemovePostOrder (was FUN_1414a6090 over the FUN_140a44a40 / FUN_140a44760 IsNil / FreeNode wrappers)

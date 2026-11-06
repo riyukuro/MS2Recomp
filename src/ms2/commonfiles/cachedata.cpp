@@ -37,7 +37,7 @@ class CDirWatcher;
 class Unk_SingletonObj;
 class Unk_SingletonObj1;
 namespace Client { class Constants; }
-template <> class TSingleton<Client::Constants> { public: static Client::Constants* s_instance; };   // clientconstants.h's specialization (0x143aac5c8)
+template <> class TSingleton<Client::Constants> { public: static Client::Constants* s_instance; static Client::Constants* GetInstance(); };   // clientconstants.h's specialization (0x143aac5c8)
 class Unk_MailService;
 
 // Singleton base at +0x18 that stores the complete object (see logstring.h).
@@ -140,7 +140,7 @@ class CommonResource;
 CLogString* GetLogString();
 unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
 Unk_SingletonObj* FUN_1401d31f0();
-Unk_SingletonObj1* FUN_1401d3200();
+#define GetClientConstants() (reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))   // C3: was Unk_SingletonObj1* FUN_1401d3200()
 namespace Common { class Constants { public: void Reload(); }; }
 class CLua   // C3: member view for the former free stand-ins
 {
@@ -365,7 +365,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                 else
                     pInfo = 0;
             }
-            ((Common::Constants*)FUN_1401d3200())->Reload();
+            ((Common::Constants*)GetClientConstants())->Reload();
             ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)FUN_1401c0db0())))->Update();
             ((class CommonResource*)(class Unk_SingletonObj*)(FUN_1401d31f0()))->CheckReload();
         }
@@ -467,9 +467,9 @@ Unk_SingletonObj* FUN_1401d31f0()
 }
 
 // @0x1401d3200
-Unk_SingletonObj1* FUN_1401d3200()
+Client::Constants* TSingleton<Client::Constants>::GetInstance()   // C3: was Unk_SingletonObj1* FUN_1401d3200()
 {
-    return reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::s_instance);
+    return TSingleton<Client::Constants>::s_instance;
 }
 
 // @0x1401d3510

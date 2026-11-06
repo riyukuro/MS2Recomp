@@ -278,7 +278,7 @@ bool CReactor::FUN_140b78ef0(const CString& strEffect)
     const NiPoint3& pos = vfunc_18();
     const NiPoint3& rot = vfunc_20();
     NiTransform xf;
-    NiPoint3 niTop(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)))));
+    NiPoint3 niTop(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(pos))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 1.0f))))))));
     xf.m_Translate = static_cast<NiPoint3&&>(niTop);
     ((efd::Matrix3*)&(xf.m_Rotate))->FromEulerAnglesXYZ((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f, (rot.z * 3.1415927f) / 180.0f);
     xf.m_fScale = 1.0f;
@@ -801,11 +801,11 @@ Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode);
 struct Rx_ActorTree : ATL::CRBTree<unsigned, Unk_WsV148> { using ATL::CRBTree<unsigned, Unk_WsV148>::Successor; }; template <class N, class C> N Rx_NodeOf(N (C::*)(N) const);   // access view: Successor (0x140b7e2a0) is protected, CNode private
 
 // @0x140b7c2a0
-// MS2-FUNCTIONAL: std::_Uninitialized_move stand-in; the exe's element has a non-trivial move (the general-tag 0x140b7c370), Unk_Int3 doesn't
+// the 14.16 std::_Uninitialized_move body over the Unk_Int3 helpers; the move goes to the Point3 general-tag overload (0x140b7c370)
 Unk_Int3* FUN_140b7c2a0(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void* pAlloc)
-{
-    for (; pFirst != pLast; ++pFirst, ++pDest)
-        *pDest = *pFirst;
+{   const auto _UFirst = std::_Get_unwrapped(pFirst); const auto _ULast = std::_Get_unwrapped(pLast); const auto _UDest = std::_Get_unwrapped_n(pDest, std::_Idl_distance<Unk_Int3*>(_UFirst, _ULast));
+    std::_Seek_wrapped(pDest, (Unk_Int3*)std::_Uninitialized_move_al_unchecked<efd::Point3*, efd::Point3*, std::allocator<efd::Point3>>((efd::Point3*)_UFirst, (efd::Point3*)_ULast, (efd::Point3*)_UDest, *(std::allocator<efd::Point3>*)pAlloc,
+        static_cast<std::_General_ptr_iterator_tag>(std::_Ptr_move_cat(_UFirst, _UDest)), std::true_type()));
     return pDest;
 }
 

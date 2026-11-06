@@ -120,9 +120,9 @@ bool MS2DecorationMaterial::HandlePositionFragment(Context& kContext, TransformT
     return false;
 }
 MS2_REPLACE_METHOD(0x142774920, MS2DecorationMaterial, HandlePositionFragment, 3742, 0x98AC10AA);
-
-//--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: loop counters get swapped registers (exe 991 bytes); same vertex declaration
+struct Unk_DecoSemTable : NiSemanticAdapterTable { NiFixedString GetByValue(NiUInt32 e) const { if (e < m_kAdapterTable.GetAllocatedSize()) return m_kAdapterTable.GetAt(e).m_kGenericSemantic; return ms_kNullSemanticName; } };
+// The exe copies the generic semantic name from a by-value getter (stock Gamebryo returns NiFixedString by value): with the
+// by-reference header inline, cl hoists the ms_kNullSemanticName lea out of the last loop and swaps the loop registers.
 // @0x1427757c0
 bool MS2DecorationMaterial::SetupPackingRequirements(NiShader* pkShader, NiMaterialDescriptor* pkMaterialDescriptor,
     RenderPassDescriptor*, unsigned int)
@@ -235,7 +235,7 @@ bool MS2DecorationMaterial::SetupPackingRequirements(NiShader* pkShader, NiMater
         while (abUVSetsUsed[uiCounter] == false)
             uiCounter++;
 
-        NiFixedString kGenericSemantic = kTable.GetGenericSemanticName(uiTexCoordEntries + ui);
+        NiFixedString kGenericSemantic = static_cast<const Unk_DecoSemTable&>(kTable).GetByValue(uiTexCoordEntries + ui);
         kTable.SetGenericSemantic(uiTexCoordEntries + ui, kGenericSemantic, (NiUInt8)uiCounter);
         uiCounter++;
     }

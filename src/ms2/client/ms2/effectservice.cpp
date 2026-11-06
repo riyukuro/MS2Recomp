@@ -1333,7 +1333,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
         if (TSingleton<EffectSkipMgr>::GetInstance()->IsOutOfView(&kCheck))
             return 0;
     }
-    float fScale = nKind == 3 ? static_cast<Client::Constants*>(FUN_1401d3200())->VolumeOtherPc.Read() : 1.0f;
+    float fScale = nKind == 3 ? static_cast<Client::Constants*>(GetClientConstants())->VolumeOtherPc.Read() : 1.0f;
     FUN_1401d3700(strCategory);
     MS2Ptr<CSoundEventEffectParam> spParam = FUN_141775980(strName, strCategory, fScale * fVolume, strExtra);
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
@@ -2106,11 +2106,11 @@ int CEffectService::FUN_1411a88e0(int nKind, float fDistance)
             nDrop = 1;
         nLevel = (std::max)(0, m_unk_188 - nDrop);
         if (fDistance != 0.0f) {
-            if (fDistance > *static_cast<Client::Constants*>(FUN_1401d3200())->EffectLODThreeStepDistance.Get())
+            if (fDistance > *static_cast<Client::Constants*>(GetClientConstants())->EffectLODThreeStepDistance.Get())
                 nLevel = (std::max)(0, nLevel - 3);
-            else if (fDistance > *static_cast<Client::Constants*>(FUN_1401d3200())->EffectLODTwoStepDistance.Get())
+            else if (fDistance > *static_cast<Client::Constants*>(GetClientConstants())->EffectLODTwoStepDistance.Get())
                 nLevel = (std::max)(0, nLevel - 2);
-            else if (fDistance > *static_cast<Client::Constants*>(FUN_1401d3200())->EffectLODOneStepDistance.Get())
+            else if (fDistance > *static_cast<Client::Constants*>(GetClientConstants())->EffectLODOneStepDistance.Get())
                 nLevel = (std::max)(0, nLevel - 1);
         }
         break;

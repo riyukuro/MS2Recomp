@@ -22,8 +22,8 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);   // 41
     virtual void vfunc_43();                                    // 43
     virtual bool vfunc_47();                                    // 47
-    virtual void vfunc_48(int n);                               // 48 0x1422e7b20 show
-    virtual void vfunc_49(int n);                               // 49 0x1422e7bd0 hide
+    virtual int vfunc_48(int n);                                // 48 0x1422e7b20 show
+    virtual int vfunc_49(int n);                                // 49 0x1422e7bd0 hide
     virtual void vfunc_50();
     virtual void vfunc_51();
     virtual void vfunc_52();
@@ -60,8 +60,8 @@ public:
     virtual void vfunc_15();                                    // 15 0x140e851c0
     virtual void OnLoadComplete();                              // 22 0x140e85240
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140e85350
-    virtual void vfunc_48(int n);                               // 48 0x140e850d0 show: stop the intro movie
-    virtual void vfunc_49(int n);                               // 49 0x140e85150 hide
+    virtual int vfunc_48(int n);                                // 48 0x140e850d0 show: stop the intro movie
+    virtual int vfunc_49(int n);                                // 49 0x140e85150 hide
     virtual void vfunc_55();                                    // 55 0x140e85190
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   //  IMessageListener 0 0x140e85300
 };

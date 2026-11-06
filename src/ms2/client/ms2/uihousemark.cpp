@@ -116,7 +116,7 @@ MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_1298, 0x1298);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_12f0, 0x12f0);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_4180, 0x4180);
 MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_4390, 0x4390);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_HouseMarkUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -208,7 +208,7 @@ void UIHouseMarkEntity::FUN_14198b100()
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->IsInCubeMode() != 0)
     {
-        if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390)->Get()) < GetTickCountMs2())
+        if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_4390)->Get()) < GetTickCountMs2())
             FUN_14198b320();
     }
     FUN_14198b340();
@@ -277,18 +277,18 @@ void UIHouseMarkEntity::FUN_14198b340()
     float fHeight = FUN_14029d220(fPcZ - fMarkZ);
     if (fMarkZ > fPcZ)
     {
-        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1298)->Read())
+        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_1298)->Read())
             bShow = false;
     }
     else
     {
-        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_12f0)->Read())
+        if (fHeight > reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_12f0)->Read())
             bShow = false;
     }
     if (bShow)
     {
         float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(m_pos), reinterpret_cast<const Vector3&>(ptPc));
-        if (fDistance > (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1240)->Get())
+        if (fDistance > (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_1240)->Get())
             bShow = false;
     }
     if (bShow)
@@ -336,7 +336,7 @@ void UIHouseMarkEntity::FUN_14198b5b0()
         if (spService->FUN_1410c8470(m_nId, WorldService::GetInstance()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
         {
             __int64 nNow = GetServerTime();
-            int nWaitTime = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4180));
+            int nWaitTime = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_4180));
             int nRemain = (int)(nStartTime + nWaitTime - nNow);
             int nProgress = 0;
             if (nWaitTime <= 0)

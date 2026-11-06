@@ -22,15 +22,15 @@
 // MS2-PIN: ??$StringFormat@HHK@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1AEBK@Z 0x140d0bcc0
 // MS2-PIN: ??$?0AEAHAEBH$0A@@?$pair@HH@std@@QEAA@AEAHAEBH@Z 0x140d0b6c0
 // MS2-PIN: ??$?0IH$0A@@?$pair@$$CBIH@std@@QEAA@$$QEAU?$pair@IH@1@@Z 0x140d0b9a0
-// MS2-PIN: ??$?0II$0A@@?$pair@$$CBII@std@@QEAA@$$QEAU?$pair@II@1@@Z 0x140d0ba40
+// MS2-PIN: ??$?0KI$0A@@?$pair@$$CBII@std@@QEAA@$$QEAU?$pair@KI@1@@Z 0x140d0ba40
 // MS2-PIN: ??$construct@U?$pair@$$CBIH@std@@U?$pair@IH@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@1@QEAU?$pair@$$CBIH@1@$$QEAU?$pair@IH@1@@Z 0x140d10ea0
-// MS2-PIN: ??$construct@U?$pair@$$CBII@std@@U?$pair@II@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@1@QEAU?$pair@$$CBII@1@$$QEAU?$pair@II@1@@Z 0x140d10ef0
+// MS2-PIN: ??$construct@U?$pair@$$CBII@std@@U?$pair@KI@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@1@QEAU?$pair@$$CBII@1@$$QEAU?$pair@KI@1@@Z 0x140d10ef0
 // MS2-PIN: ??$make_pair@AEAIAEAH@std@@YA?AU?$pair@IH@0@AEAIAEAH@Z 0x140d117c0
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140d0d020
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140d0cf90
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@2@AEBI@Z 0x140d19cc0
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBII@std@@PEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBII@1@PEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@1@@Z 0x140d0ff10
-// MS2-PIN: ??$emplace@U?$pair@II@std@@@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@II@1@@Z 0x140d11240
+// MS2-PIN: ??$emplace@U?$pair@KI@std@@@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@KI@1@@Z 0x140d11240
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0bbd0
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@IEBAAEBIAEBU?$pair@$$CBII@2@@Z 0x140d17c50
 // MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x140d1ac50
@@ -154,7 +154,7 @@ public:
     virtual void vfunc_52(__int64 nScoreUid, int bRemote);                 // a performance started
     virtual void vfunc_53(__int64 nScoreUid, int bRemote);                 // a performance ended
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The item event dispatcher (slot 3: an item changed).
 class Unk_ImItemEvents
@@ -821,7 +821,7 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
                 CMidiMessage msg;
                 MMLToken* pToken = tokens[i].operator->();
                 msg.ControlChange(nChannel, tokens[i]->m_nPitch, pToken->m_nValue);
-                pTrack->insert(std::make_pair((unsigned)dCursor, msg.m_msg));
+                pTrack->insert(std::make_pair((DWORD)dCursor, msg.m_msg));
             }
             continue;
         }
@@ -830,7 +830,7 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
             CMidiMessage msg;
             MMLToken* pToken = tokens[i].operator->();
             msg.PitchBend(nChannel, tokens[i]->m_nPitch, pToken->m_nValue);
-            pTrack->insert(std::make_pair((unsigned)dCursor, msg.m_msg));
+            pTrack->insert(std::make_pair((DWORD)dCursor, msg.m_msg));
             continue;
         }
         bNoteSeen = true;
@@ -852,13 +852,13 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
                     nNote = nPercussion;
                 CMidiMessage on;
                 on.NoteOn(nChannel, nNote, tokens[i]->m_nValue);
-                pTrack->insert(std::make_pair((unsigned)dCursor, on.m_msg));
+                pTrack->insert(std::make_pair((DWORD)dCursor, on.m_msg));
                 dCursor = dCursor + tokens[i]->m_dTime;
                 if (nPercussion == 0)
                 {
                     CMidiMessage off;
                     off.NoteOff(nChannel, nNote, 0);
-                    pTrack->insert(std::make_pair((unsigned)dCursor - 1, off.m_msg));
+                    pTrack->insert(std::make_pair((DWORD)dCursor - 1, off.m_msg));
                 }
             }
         }
@@ -975,7 +975,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
     {
-        ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
+        ((class Unk_ImPlatform*)((void*)GetClientPlatform()))->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
         m_performing = true;
         m_remote = bRemote;
         if (reinterpret_cast<PCBase*>(pMe)->GetCurStateId() != 0x2f)
@@ -1013,7 +1013,7 @@ void CInstrumentManager::OnPerformEnd(int nOwner)
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe != 0 && reinterpret_cast<GameObject*>(pMe)->FUN_14123c580() == nOwner)
     {
-        ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
+        ((class Unk_ImPlatform*)((void*)GetClientPlatform()))->vfunc_53(m_scoreUid, m_remote == true ? 1 : 0);
         m_performing = false;
         m_scoreUid = 0;
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
@@ -1561,9 +1561,9 @@ unsigned Unk_WmInstrumentMgr::FUN_140d08660(int channel, int program, int percus
 // MS2-PIN: ?FUN_140d08660@Unk_WmInstrumentMgr@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
 // MS2-PIN: ?FUN_140d08660@Unk_MeratSound@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
 
-int& FUN_140d115e0(int& r);  // this unit's identity forward copy for make_pair 0x140d117c0's second argument
-// The pair ctor make_pair 0x140d117c0 calls: the first value through forward<unsigned int&> 0x140162e50, the second
-// through 0x140d115e0 (the toolchain's pair<int,int>(int&, int&) is the shared 0x1404d9610).
+// @0x140d115e0 (identity forward: make_pair 0x140d117c0 and its pair ctor take the second value through it, not the shared forward<int&> 0x140162e40)
+int& FUN_140d115e0(int& r) { return r; }
+// The pair ctor: the first value through forward<unsigned int&> 0x140162e50, the second through 0x140d115e0.
 // @0x140d0b250
 std::pair<int, int>* FUN_140d0b250(std::pair<int, int>* pThis, unsigned int& a, int& b)
 {
@@ -1571,3 +1571,6 @@ std::pair<int, int>* FUN_140d0b250(std::pair<int, int>* pThis, unsigned int& a, 
     pThis->second = FUN_140d115e0(b);
     return pThis;
 }
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@@Z 0x140d17220 ; unique
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@Z 0x140d17250 ; unique
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@2@@Z 0x140d17280 ; unique

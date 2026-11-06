@@ -219,7 +219,7 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlQuery(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_140873ad0
 int FUN_140d01040(CString& strAlign);                                       // text alignment from its name
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pQuest);                                      // the quest id
@@ -235,7 +235,7 @@ CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> spRoom);                         // t
 int FUN_14083fec0(CStringW str, CStringW strFind);                          // the index of a substring (-1)
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // a common string
 CStringW GetStringCommon(int nKey);                                           // a common string by id
-template <class A, class B, class C> CStringW LocalizedMentorFormat(CStringW, const A&, const B&, const C&);   // 0x140f02bd0 for <CStringW, unsigned short, CStringW>
+//   FUN_14028dfa0 <CStringW, unsigned short, CStringW> = 0x140f02bd0 (wcformat.h)
 CStringW FUN_140f48210(int nHour, int nMinute);                             // "hh:mm"
 CStringW FUN_140b8e910(const CMsTime& time);                                // the date text of a time
 __int64 GetServerTime();                                                    // the server time
@@ -473,8 +473,8 @@ int WorldMapManager::LoadWorldMapFiles()
                     }
                 }
             }
-            spTile->m_24 = spTile->m_24 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x3418)->Get();
-            spTile->m_28 = spTile->m_28 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x3470)->Get();
+            spTile->m_24 = spTile->m_24 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x3418)->Get();
+            spTile->m_28 = spTile->m_28 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x3470)->Get();
             CString strImage;
             strImage.Format("%s%08d.png", (const char*)*reinterpret_cast<CString*>(((char*)FUN_1401d31f0()) + 0xd0), spTile->m_34);
             CString strGreyImage;
@@ -1222,7 +1222,7 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
     if ((spNpc.get() ? true : false) && spNpc->GetFriendly() == 0)
     {
         unsigned short nLevel = spNpc->GetLevel();
-        strText = LocalizedMentorFormat<CStringW, unsigned short, CStringW>(CStringW(L"s_worldmap_search_monster"), FUN_1401aa6a0(npc), nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, spNpc->GetRace()));
+        strText = FUN_14028dfa0<CStringW, unsigned short, CStringW>(CStringW(L"s_worldmap_search_monster"), FUN_1401aa6a0(npc), nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, spNpc->GetRace()));
     }
     else
     {

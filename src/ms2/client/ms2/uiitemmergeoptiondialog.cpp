@@ -214,7 +214,7 @@ public:
 
 // The npc talk state is TSingleton<UITalkManager>; the local player's record (FUN_1401d3200).
 class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Common::Constants::Value<int> m_talk; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The inventory.
 extern Unk_Inventory g_143ab2a90;
@@ -289,8 +289,8 @@ CPtred* FUN_1401ba820(CPtred* p);                           // sets the count to
 static CItemMergeOptionProxy* FUN_1419d36b0(void* pUnused);
 static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused);
 static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, const MS2SvrNewTag& tag);
-void* FUN_1405c5c30(Unk_MergeSpecialMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
-void* FUN_1405c5d20(Unk_MergeNormalMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
+// (was) FUN_1405c5c30 = CAtlMap<MergeSpecialOption, CItemMergeOptionVariation>::GetNode, reached through the real Lookup
+// (was) FUN_1405c5d20 = CAtlMap<MergeNormalOption, CItemMergeOptionVariation>::GetNode, reached through the real Lookup
 
 // @0x1419d2890
 MS2Ptr<CItem> UIItemMergeOptionDialog::FindMergeItem(unsigned __int64 nUid)
@@ -715,7 +715,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
         int nSpecial = options[i].second;
         if (nNormal != -1)
         {
-            if (void* pNode = static_cast<Unk_MergeNormalMap&>(m_spProxy->m_normal).Lookup(nNormal))
+            if (void* pNode = m_spProxy->m_normal.Lookup(reinterpret_cast<const MergeNormalOption&>(nNormal)))
             {
                 CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                 CStringW strText;
@@ -743,7 +743,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
         {
             if (nSpecial != 0)
             {
-                if (void* pNode = static_cast<Unk_MergeSpecialMap&>(m_spProxy->m_special).Lookup(nSpecial))
+                if (void* pNode = m_spProxy->m_special.Lookup(reinterpret_cast<const MergeSpecialOption&>(nSpecial)))
                 {
                     CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                     CStringW strText;
@@ -1033,7 +1033,7 @@ void UIItemMergeOptionDialog::RequestResultTalk()
         int nTalkId = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         packet.WriteUInt8(6);
         packet.WriteInt32(nTalkId);
-        packet.WriteInt32(*((class Unk_MergePlayerCfg*)FUN_1401d3200())->m_talk.Get());
+        packet.WriteInt32(*((class Unk_MergePlayerCfg*)GetClientConstants())->m_talk.Get());
         packet.WriteInt16(0xca);
         packet.WriteInt16((short)m_nTalkId);
     }
@@ -1187,27 +1187,27 @@ bool UIItemMergeOptionDialog::OptionLess::operator()(const std::pair<Unk_StatTyp
     return nLeft < nRight;
 }
 
-// @0x1419d7620
-void* Unk_MergeSpecialMap::Lookup(const int& key)
-{
-    unsigned nBin;
-    unsigned nHash;
-    void* pAssoc;
-    void* pPrev;
-    pAssoc = FUN_1405c5c30(this, key, nHash, nBin, pPrev);
-    return pAssoc;
-}
+// 0x1419d7620 = the real CAtlMap<MergeSpecialOption, CItemMergeOptionVariation>::Lookup(key)
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-// @0x1419d7660
-void* Unk_MergeNormalMap::Lookup(const int& key)
-{
-    unsigned nBin;
-    unsigned nHash;
-    void* pAssoc;
-    void* pPrev;
-    pAssoc = FUN_1405c5d20(this, key, nHash, nBin, pPrev);
-    return pAssoc;
-}
+// 0x1419d7660 = the real CAtlMap<MergeNormalOption, CItemMergeOptionVariation>::Lookup(key)
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x1419d7720
 struct Unk_TePtrAccess
@@ -1333,3 +1333,5 @@ static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused)
 // MS2-PIN: ??$swap@W4Unk_StatType@@X@std@@YAXAEAW4Unk_StatType@@0@Z 0x1419d68b0 ; sfk: the stat-type half of the option pair swap
 // MS2-PIN: ??$_Swap_adl@W4Unk_StatType@@@std@@YAXAEAW4Unk_StatType@@0@Z 0x1419d5f70 ; sfk: the stat-type half of the option pair swap
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemMergeOptionDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1419d74b0 ; the CAtlList CNode of the equipment list is a byte-identical look-alike
+// MS2-PIN: ?Lookup@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAVCPair@12@AEBW4MergeSpecialOption@@@Z 0x1419d7620 ; the real map Lookup (was Unk_MergeSpecialMap::Lookup over the FUN_1405c5c30 GetNode wrapper)
+// MS2-PIN: ?Lookup@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAVCPair@12@AEBW4MergeNormalOption@@@Z 0x1419d7660 ; the real map Lookup (was Unk_MergeNormalMap::Lookup over the FUN_1405c5d20 GetNode wrapper)

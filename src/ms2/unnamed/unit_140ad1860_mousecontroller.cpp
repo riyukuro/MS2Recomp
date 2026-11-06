@@ -263,7 +263,7 @@ struct Unk_McConstTable
     Unk_McConstUInt m_pickRange;                                // +0xe668
 };
 MS2_CHECK_OFFSET(Unk_McConstTable, m_pickRange, 0xe668);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The physics helper (singleton) and the camera manager's mode holder.
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -600,7 +600,7 @@ void CMouseController::FUN_140ad2830()
     if (m_tmMove.Check(100) == 0)
         return;
     Unk_RayCastInfo info;
-    info.m_origin = pPc->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, 75.0f));
+    info.m_origin = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pPc->vfunc_18())) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 75.0f)))));
     info.m_dir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(((GameObject*)pPc)->GetForwardDirection()));
     info.m_maxDist = 50.0f;
     info.m_groups = 0x201;
@@ -654,7 +654,7 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         if (sp->vfunc_1(&ray) != 0)
         {
             float fDist = FUN_140966f00(vPos, reinterpret_cast<const Vector3&>(ray.vPick));
-            if (fDist > (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_McConstTable*)FUN_1401d3200())->m_pickRange)->Get())
+            if (fDist > (float)*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_McConstTable*)GetClientConstants())->m_pickRange)->Get())
                 continue;
             *pStrHint = ray.strCursor;
             return sp->vfunc_6();
@@ -883,14 +883,14 @@ Vector3 CMouseController::FUN_140ad3a60(int nX, int nY)
         efd::Point3 vA;   // efd::Point3 locals: the default ctor 0x1402bd040, not Vector3's 0x1405522f0
         efd::Point3 vB;
         pPc->vfunc_67(reinterpret_cast<Vector3*>(&vA), reinterpret_cast<Vector3*>(&vB));
-        Vector3 vNormal = reinterpret_cast<Vector3&>(vA).FUN_140a00e10(reinterpret_cast<Vector3&>(vB));
+        efd::Point3 vNormal = reinterpret_cast<const efd::Point3&>(vA).Cross(reinterpret_cast<const efd::Point3&>(vB));
         Vector3 vPos = pPc->vfunc_18();
-        float fDen = reinterpret_cast<const efd::Point3&>(vNormal).Dot(reinterpret_cast<const efd::Point3&>(vDir));
+        float fDen = vNormal.Dot(reinterpret_cast<const efd::Point3&>(vDir));
         if (fDen != 0.0f)
         {
-            float t = reinterpret_cast<const efd::Point3&>(vNormal).Dot(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vPos.FUN_140965c40(vOrigin)))) / fDen;
-            Vector3 vHit = vOrigin.FUN_14097fd50(FUN_1409ab5c0(t, vDir));
-            return vHit;
+            float t = vNormal.Dot(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vPos.FUN_140965c40(vOrigin)))) / fDen;
+            efd::Point3 vHit = reinterpret_cast<const efd::Point3&>(vOrigin) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, vDir)));
+            return reinterpret_cast<Vector3&>(vHit);
         }
     }
     return DAT_143b01a60;
@@ -989,7 +989,7 @@ void CMouseController::FUN_140ad4000(const Vector3* pPoint)
     vDelta.x = vPos.x - m_vDown.x;
     vDelta.y = vPos.y - m_vDown.y;
     vDelta.z = 0;
-    m_vDir = vPos.FUN_14097fd50(vDelta);
+    m_vDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + reinterpret_cast<const efd::Point3&>(vDelta)));
 }
 MS2_REPLACE_METHOD(0x140AD4000, CMouseController, FUN_140ad4000, 156, 0xDC0D59A1);
 

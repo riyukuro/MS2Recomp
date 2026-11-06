@@ -346,7 +346,7 @@ int FUN_1408a18d0(__int64 charID) {
 }
 MS2_REPLACE(0x1408a18d0, FUN_1408a18d0, 364, 0xAE4C35ED);
 // @0x1408a85a0
-Unk_Int3* FUN_1408a85a0(Unk_Int3* p,int x,int y,int z) { p->x=x; p->y=y; p->z=z; return p; }
+Unk_Int3::Unk_Int3(int nx,int ny,int nz) { x=nx; y=ny; z=nz; }
 
 // @0x1408ad110
 Unk_UGCGroup::Unk_UGCGroup() {
@@ -382,5 +382,5 @@ int Unk_UGCGroup::FUN_1408ad2f0() { return FUN_14053f940(contractPriceItemCode);
 MS2_REPLACE_METHOD(0x1408ad2f0, Unk_UGCGroup, FUN_1408ad2f0, 30, 0x52EB71DE);
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE(0x1408a85a0, FUN_1408a85a0, 60, 0x0DEFBE38);
+MS2_REPLACE_IMPL(0x1408a85a0, static_cast<Unk_Int3* (*)(Unk_Int3*, int, int, int)>([](Unk_Int3* self, int x, int y, int z) -> Unk_Int3* { return ::new (static_cast<void*>(self)) Unk_Int3(x, y, z); }), "Unk_Int3::Unk_Int3", 60, 0x0DEFBE38);
 

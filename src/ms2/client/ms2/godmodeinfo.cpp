@@ -11,7 +11,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <new>
 #include <string.h>
-
+#include <efd/Point3.h>
 #include "ms2/client/ms2/godmodeinfo.h"
 #include "ms2/client/ms2/uidebugtooltip.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -83,7 +83,7 @@ void CGodModeInfo::FUN_141374d10(int n)
 void CGodModeInfo::FUN_141374d40(Vector3 kPos)
 {
     if (m_spTooltip.get() != 0)
-        m_spTooltip->FUN_14191aae0(kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f)));
+        m_spTooltip->FUN_14191aae0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 150.0f))))));
 }
 
 // '-' steps the index down, 'x' steps it up; a change is clamped and pushed.

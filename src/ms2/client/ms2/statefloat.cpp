@@ -78,10 +78,10 @@ void StateFloat::vfunc_3(double fTime)
         return;
     Vector3* pVel = reinterpret_cast<Vector3*>(m_pOwner->FUN_141671920());
     efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
-    Vector3 kSpeed = reinterpret_cast<Vector3&>(kWorld).FUN_14097fc90(pVel->z);
-    Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
-    kStep = FUN_1417c85d0(kStep, fTime);
-    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(kStep, fTime, 0, 0, 1);
+    efd::Point3 kSpeed = kWorld * pVel->z;
+    efd::Point3 kStep = reinterpret_cast<const efd::Point3&>(kSpeed) * ((float)fTime);
+    reinterpret_cast<Vector3&>(kStep) = FUN_1417c85d0(reinterpret_cast<Vector3&>(kStep), fTime);
+    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(reinterpret_cast<Vector3&>(kStep), fTime, 0, 0, 1);
 }
 MS2_REPLACE_METHOD(0x1417C8310, StateFloat, vfunc_3, 410, 0x5EB73EE0);
 

@@ -186,7 +186,7 @@ struct Unk_CameraSetting* FUN_140947880(class CCameraMode*);   // C3: was FUN_14
 void FUN_1412751f0(const CStringW&,int,int); void FUN_1412751b0(const CStringW&,int);
 void FUN_140710590(COutPacket&);
 struct Unk_CommandToggle { void* m_00; bool enabled; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
  void FUN_141a60d40(int);
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_14138d460(void*); void FUN_14138d160(void*,int);class CGuideManager   // C3: member view for the former free stand-ins
@@ -429,7 +429,7 @@ template <> ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >::CAtlList(UINT nB
 template <> ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >::~CAtlList();                 // 0x1409647c0
 void FUN_1409671f0(void*,__int64*);
 void FUN_140a53190(void*,int);
-class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
+template<> class TSingleton<class CReconnectionManagerCli> { public: static class CReconnectionManagerCli* GetInstance(); };   // C3: was FUN_140e800e0 (real spec in reconnectionmanagercli.h)
 class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -956,8 +956,8 @@ int CUserCommandCli::RequestSaleMarket(ItemFunctionArgs&) {
 // @0x1413656a0
 int CUserCommandCli::ToggleStat(ItemFunctionArgs&) {
     if(DAT_143ab2914<50) return 0;
-    ((struct Unk_CommandToggle*)FUN_1401d3200())->enabled=!((struct Unk_CommandToggle*)FUN_1401d3200())->enabled;
-    if(((struct Unk_CommandToggle*)FUN_1401d3200())->enabled) FUN_141a60d40(2); else FUN_141a60d40(1);
+    ((struct Unk_CommandToggle*)GetClientConstants())->enabled=!((struct Unk_CommandToggle*)GetClientConstants())->enabled;
+    if(((struct Unk_CommandToggle*)GetClientConstants())->enabled) FUN_141a60d40(2); else FUN_141a60d40(1);
     return 1;
 }
 // @0x141365720
@@ -1366,7 +1366,7 @@ int CUserCommandCli::ShowEffectAfterimage(ItemFunctionArgs&) {
 int CUserCommandCli::TestDisconnect(ItemFunctionArgs& args) {
     int unused=5;
     int reason=args.FUN_1408d1f60(0,5);
-    ((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->DisconnectAndDelayReconnect(reason);
+    ((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->DisconnectAndDelayReconnect(reason);
     FUN_1412751b0(StringFormat(L"TestDisconnect {0}",reason),20);
     return 1;
 }
@@ -1867,7 +1867,7 @@ int CUserCommandCli::DumpChatLog(ItemFunctionArgs&) {
 // @0x14136bf50
 int CUserCommandCli::SetNoWaitRoomExit(ItemFunctionArgs&) {
     int one=1;
-    ((Common::Constants::Value<int>*)((char*)((struct Unk_CommandToggle*)FUN_1401d3200())+0xcfe0))->Set(one);
+    ((Common::Constants::Value<int>*)((char*)((struct Unk_CommandToggle*)GetClientConstants())+0xcfe0))->Set(one);
     FUN_1412751b0(StringFormat(L"OnNoWaitRoomExit"),20);
     return 1;
 }

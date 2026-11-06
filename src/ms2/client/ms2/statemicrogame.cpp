@@ -621,7 +621,7 @@ bool FUN_140b883c0()
 // @0x140b88470
 bool FUN_140b88470(const Vector3& kA, const Vector3& kB)
 {
-    float fMax = (float)*static_cast<Client::Constants*>(FUN_1401d3200())->MicroGameMaxDistance.Get();
+    float fMax = (float)*static_cast<Client::Constants*>(GetClientConstants())->MicroGameMaxDistance.Get();
     float fDist = kA.FUN_140965c40(kB).FUN_140967ac0();
     if (fDist > fMax)
         return false;

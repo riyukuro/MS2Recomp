@@ -100,7 +100,7 @@ struct Unk_ClientConfig
     Unk_ConfigFloat m_1ad8;
     Unk_ConfigFloat m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_PickEntry;
 // The cursor (FUN_140aadf80).
@@ -182,8 +182,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
-            m_d8.m_pos = ptEye;
+            efd::Point3 ptEye = reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_14183c370()));
+            m_d8.m_pos = reinterpret_cast<Vector3&>(ptEye);
         }
 
         if (-1.0f != m_5c && FUN_14029d220(m_98 - m_50) > 5.0f)
@@ -202,7 +202,7 @@ void CRPGCameraMode::vfunc_8(double fTime)
             Vector3 ptTarget = m_78;
             Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
-            ptPos = ptPos.FUN_14097fd50(ptDir.FUN_14097fc90(m_84));
+            ptPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptPos) + reinterpret_cast<const efd::Point3&>(ptDir) * m_84));
             if (m_50 < m_58 || m_50 > m_54)
             {
             }
@@ -295,7 +295,7 @@ void CRPGCameraMode::vfunc_6(int n)
         m_78 = pTarget->vfunc_17();
         m_78.z += vfunc_27();
         if (n == 0)
-            vfunc_3(m_78.FUN_14097fd50(FUN_14183c370()));
+            vfunc_3(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_14183c370())))));
     }
     m_50 = (m_54 - m_58) * 0.5f + m_58;
     m_c0.m_pos = m_setting.m_c;
@@ -314,9 +314,9 @@ void CRPGCameraMode::vfunc_6(int n)
         vfunc_3(Vector3(fX, fY, fZ));
         vfunc_4(ptRot);
     }
-    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1a80)->Read();
-    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1ad8)->Read();
-    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_1b30)->Read();
+    m_9c = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1a80)->Read();
+    m_a0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1ad8)->Read();
+    m_a4 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_1b30)->Read();
 }
 MS2_REPLACE_METHOD(0x14170a7c0, CRPGCameraMode, vfunc_6, 1104, 0x2FD1127B);
 
@@ -385,7 +385,7 @@ void CRPGCameraMode::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
                 m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }
         }
@@ -413,14 +413,14 @@ Vector3 CRPGCameraMode::FUN_14170b320(Vector3 ptPos)
     Vector3 ptTarget = m_78;
     Vector3 kDir = ptTarget.FUN_140965c40(ptPos);
     kDir.FUN_140968990();
-    Vector3 kRight = kDir.FUN_140a00e10(g_143a08cf8);
-    kRight.FUN_140968990();
-    Vector3 kUp = kRight.FUN_140a00e10(kDir);
+    efd::Point3 kRight = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
+    kRight.Unitize();
+    efd::Point3 kUp = reinterpret_cast<const efd::Point3&>(kRight).Cross(reinterpret_cast<const efd::Point3&>(kDir));
     NiMatrix3 kRot((const efd::Point3&)kDir, (const efd::Point3&)kUp, (const efd::Point3&)kRight);
     float fZ;
     float fY;
     float fX;
     reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(fX, fY, fZ);
-    return Vector3(-fX, -fY, -fZ).FUN_14097fc90(180.0f).FUN_140ae9180(3.14159265f);
+    return reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(-fX, -fY, -fZ))) * 180.0f)).FUN_140ae9180(3.14159265f);
 }
 MS2_REPLACE_METHOD(0x14170b320, CRPGCameraMode, FUN_14170b320, 416, 0xAAC9EF95);

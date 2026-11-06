@@ -113,7 +113,7 @@ struct Unk_ICCConfig
     Unk_ICCConfigFloat m_2ce0;                                  // highlight scale of the hair mesh "HR1:1"
     Unk_ICCConfigFloat m_2d38;                                  // highlight scale of the other meshes
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The app framework (TSingleton<CMainSystem>); its service manager handle sits at +8.
 struct Unk_ICCApp { char m_pad[8]; char m_manager[1]; };
@@ -609,7 +609,7 @@ float CItemCustomizeController::GetHighlightScale(NiAVObject* pNode)
 {
     CString strUnused;
     if (pNode && ((class NiObjectNET*)(class NiAVObject*)(pNode))->GetName() == "HR1:1")
-        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2ce0)->Read();
+        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)GetClientConstants())->m_2ce0)->Read();
     else
-        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)FUN_1401d3200())->m_2d38)->Read();
+        return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_ICCConfig*)GetClientConstants())->m_2d38)->Read();
 }

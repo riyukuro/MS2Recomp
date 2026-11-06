@@ -428,12 +428,9 @@ MS2_CHECK_OFFSET(CNurturingCubeObject, m_obj, 0xf8);
 
 // ---- the service ----
 // Smart-pointer targets seen through the cube service: a magic effect tag (its id at +0x2c) and a collision area.
-class Unk_FcTag : public CPtred
-{
-public:
-    char m_pad_18[0x14];
-    int m_nOwner;                                                 // +0x2c
-};
+// Unk_FcTag is the skill target record (SkillTargetRecord, skillrecord.h); its id is at +0x2c. It is only forward
+// declared here: magicdata.cpp and scenestategame.cpp define it as a view over their local Unk_MagicTag.
+class Unk_FcTag;
 class Unk_FcArea : public CPtred
 {
 public:

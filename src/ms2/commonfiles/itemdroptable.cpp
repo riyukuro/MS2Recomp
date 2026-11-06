@@ -926,7 +926,7 @@ ItemDropContext::ItemDropContext()
 // @0x1402e9220
 int ItemDropContext::GetLevel()
 {
-    static int s_nLevelBoundary = FUN_1401d3200()->ItemDropLevelMaxBoundry.Read();
+    static int s_nLevelBoundary = GetClientConstants()->ItemDropLevelMaxBoundry.Read();
     int nLevel = m_level + s_nLevelBoundary;
     return (std::min)(m_userLevel, nLevel);
 }

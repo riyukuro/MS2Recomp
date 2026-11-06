@@ -346,7 +346,7 @@ void StateCashCall::OnLeave(double fTime)
         nWait = 3000;
         break;
     case 5:
-        nWait = (int)FUN_14028d260(*((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay))->Get());
+        nWait = (int)FUN_14028d260(*((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(GetClientConstants())->CashCallMedicLeaveDelay))->Get());
         if (FUN_1417b8560() != 0)
             FUN_1412751f0(GetStringCommon(0x98), 1, 1);
         break;
@@ -406,7 +406,7 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
     kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
     efd::Matrix3 kMat;
     kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
-    Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
+    Vector3 kDir = FUN_1420834e0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(-reinterpret_cast<const efd::Point3&>(DAT_143a08ce8))), kMat);
     xf.MakeIdentity();
     xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;
@@ -438,17 +438,17 @@ MS2_REPLACE_METHOD(0x141023B50, StateCashCall, GetEffectName, 202, 0x0E80E190);
 // @0x141023c20
 int StateCashCall::GetDuration()
 {
-    int nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallDuration)->FUN_140ad5c50();
+    int nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->FUN_140ad5c50();
     switch (GetCallType()) {
     case 2:
     case 3:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->AirTaxiCashCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiCashCallDuration)->FUN_140ad5c50();
         break;
     case 1:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->AirTaxiMesoCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiMesoCallDuration)->FUN_140ad5c50();
         break;
     case 6:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->BankCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->BankCallDuration)->FUN_140ad5c50();
         break;
     }
     if (FUN_1417b84b0() == 0)

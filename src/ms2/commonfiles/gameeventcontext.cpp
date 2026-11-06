@@ -2669,12 +2669,12 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
 // std::set<unsigned>::_Destroy_if_node(_Nodeptr) written out (emplace path, called from gameevent.cpp's
 // tail 0x1403da280/0x1403de2f0): instantiating it binds _Tree_node<unsigned>::_Freenode0, whose progress/symbols.tsv row
 // 0x1407aa170 (unit_1407a4f20) is a 0x30-byte-node copy (cmptree DIFFER 14018f400/1407acc60); the exe calls 0x14017b7a0.
-void FUN_14017b7a0(std::allocator<std::_Tree_node<unsigned, void*> >& al, std::_Tree_node<unsigned, void*>* p);
+// (0x14017b7a0: progress/symbols.tsv now binds _Tree_node<unsigned>::_Freenode0 there, so it is called directly)
 void Unk_SetUintDestroyIfNode(std::set<unsigned>& s, std::_Tree_node<unsigned, void*>* p)
 {
     std::allocator<std::_Tree_node<unsigned, void*> >& al = s._Getal();
     std::_Default_allocator_traits<std::allocator<std::_Tree_node<unsigned, void*> > >::destroy(al, std::addressof(p->_Myval));
-    FUN_14017b7a0(al, p);
+    std::_Tree_node<unsigned, void*>::_Freenode0(al, p);
 }
 void Unk_GECDriveReleases(void** pp)
 {

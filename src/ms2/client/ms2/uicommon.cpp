@@ -1260,7 +1260,7 @@ struct Unk_UcCfg
 };
 MS2_CHECK_OFFSET(Unk_UcCfg, m_5548, 0x5548);
 MS2_CHECK_OFFSET(Unk_UcCfg, m_d358, 0xd358);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // ---- UI and device singletons ----
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -1289,31 +1289,31 @@ bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
     {
     case 4:
         *pnAmount = DAT_143ab28b0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5338.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_5338.Get();
         return true;
     case 5:
         *pnAmount = DAT_143ab28b8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5390.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_5390.Get();
         return true;
     case 6:
         *pnAmount = DAT_143ab28c0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_53e8.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_53e8.Get();
         return true;
     case 7:
         *pnAmount = DAT_143ab28c8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5440.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_5440.Get();
         return true;
     case 0xc:
         *pnAmount = DAT_143ab28d0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5498.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_5498.Get();
         return true;
     case 0xd:
         *pnAmount = DAT_143ab28d8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_54f0.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_54f0.Get();
         return true;
     case 0xe:
         *pnAmount = DAT_143ab28e0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5548.Get();
+        *pnCap = *((struct Unk_UcCfg*)GetClientConstants())->m_5548.Get();
         return true;
     case 0xf:
         *pnAmount = DAT_143ab28e8;
@@ -1417,7 +1417,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
         UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
         if (pDlg != 0)
         {
-            int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.Get();
+            int nWanted = *((struct Unk_UcCfg*)GetClientConstants())->m_d358.Get();
             ((class UICartoonDialog*)(class UIDialog*)(pDlg))->OpenBook(nWanted, 0x22, 0);
         }
         return false;
@@ -1425,14 +1425,14 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     else if (nKind == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.Get());
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *((struct Unk_UcCfg*)GetClientConstants())->m_d2f8.Get());
         FUN_1418fe1c0(strUrl);
         return false;
     }
     UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
     if (pDlg != 0)
     {
-        int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.Get();
+        int nWanted = *((struct Unk_UcCfg*)GetClientConstants())->m_d358.Get();
         if (pDlg->vfunc_55() == 0)
         {
             if (((class UICartoonDialog*)(class UIDialog*)(pDlg))->GetBookId() == nWanted)

@@ -229,7 +229,7 @@ public:
     char m_pad_47d0[0x6aa8 - 0x47c8 - sizeof(Unk_MmConstSlot)];
     Unk_MmConstSlot m_pcBangLevel;                              // +0x6aa8 the PC bang level needed
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 
 // The notify centre (FUN_140939a10).
@@ -1594,7 +1594,7 @@ __int64 CMeratMarketMan::FUN_140d5a1b0()
 // @0x140d5a1d0
 __int64 CMeratMarketMan::FUN_140d5a1d0()
 {
-    return *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_sellerLimit)->Get();
+    return *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_MmConfig*)GetClientConstants())->m_sellerLimit)->Get();
 }
 
 // A dialog closed.
@@ -1687,7 +1687,7 @@ CStringW CMeratMarketMan::GetPurchaseErrorText(int nError, MS2Ptr<CPendingBuyBas
     case 0xb5:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_limit_job");
     case 0xb6:
-        return FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7));
+        return FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)GetClientConstants())->m_pcBangLevel)->Get(), BlockFormat(0x5a7));
     case 0xb7:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_not_pcbang");
     case 0xb8:
@@ -2893,7 +2893,7 @@ void CMeratMarketMan::OnErrorReply(CInPacket& packet)
     }
         break;
     case 0xb6:
-        FUN_1412751f0(FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7)), 1, 1);
+        FUN_1412751f0(FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)GetClientConstants())->m_pcBangLevel)->Get(), BlockFormat(0x5a7)), 1, 1);
         break;
     case 0xbc:
         break;

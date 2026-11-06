@@ -1,0 +1,17 @@
+115a
+    // MS2: NiPhysXSceneDesc::ClearBackCompatable (0x141f014f0) inlines RemoveAll
+    __forceinline void MS2RemoveAllInl()
+    {
+        for (NiUInt32 ui = 0; ui < m_uiHashSize; ui++)
+        {
+            while (m_ppkHashTable[ui])
+            {
+                NiTMapItem<TKEY, TVAL>* pkSave = m_ppkHashTable[ui];
+                m_ppkHashTable[ui] = m_ppkHashTable[ui]->m_pkNext;
+                ClearValue(pkSave);
+                DeleteItem(pkSave);
+            }
+        }
+        m_kAllocator.m_uiCount = 0;
+    }
+.

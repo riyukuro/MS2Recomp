@@ -92,10 +92,10 @@ void StateSkillMagicControl::vfunc_3(double fTime)
         return;
     efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     reinterpret_cast<Vector3&>(kWorld).FUN_140968990();
-    Vector3 kSpeed = reinterpret_cast<Vector3&>(kWorld).FUN_14097fc90(pTarget->FUN_1410a6790());
-    Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
+    efd::Point3 kSpeed = kWorld * (pTarget->FUN_1410a6790());
+    efd::Point3 kStep = reinterpret_cast<const efd::Point3&>(kSpeed) * ((float)fTime);
     Vector3 kOld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_18();
-    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(kStep, fTime, 0, 0, 1);
+    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(reinterpret_cast<Vector3&>(kStep), fTime, 0, 0, 1);
     float fDist = FUN_140966ea0(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(pTarget->GetOriginPosition())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())));
     if (fDist >= pTarget->FUN_1410a67d0() || pTarget->GetOriginPosition().z != pTarget->vfunc_18().z)
         reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_19(kOld);

@@ -323,7 +323,7 @@ public:
     virtual void vfunc_43(int a1, int a2, int a3);                  // 43 (+0x158)
 #undef INV_P
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The game feature switches.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -737,7 +737,7 @@ void UIInventoryDialog::OnLoadComplete()
     m_19c |= 1;
     m_19c |= 2;
     static_cast<UIStatusEventListener&>(*this).vfunc_oa0_11((void*)DAT_143ab2898);
-    ((class Unk_InvPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_InvPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x141997DD0, UIInventoryDialog, OnLoadComplete, 1103, 0);
 
@@ -894,7 +894,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             return 1;
         }
-        int nNpcId = *FUN_1401d3200()->EnchantTransformScriptID.Get();
+        int nNpcId = *GetClientConstants()->EnchantTransformScriptID.Get();
         int nScriptId = 0xa7dabf;
         if (CTalkScript* pScript = FUN_140856820(nScriptId, nNpcId).get())
         {
@@ -930,7 +930,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             return 1;
         }
-        int nNpcId = *FUN_1401d3200()->MergeSmithScriptID.Get();
+        int nNpcId = *GetClientConstants()->MergeSmithScriptID.Get();
         int nScriptId = 0xa7e618;
         if (CTalkScript* pScript = FUN_140856820(nScriptId, nNpcId).get())
         {
@@ -1269,7 +1269,7 @@ void UIInventoryDialog::OnClickOpenBank()
             return;
         }
         __int64 nNow = GetServerTime();
-        int nCooltime = *FUN_1401d3200()->HomeBankCallCooltime.Get() / 1000;
+        int nCooltime = *GetClientConstants()->HomeBankCallCooltime.Get() / 1000;
         int nElapsed = (int)(nNow - pPc->FUN_141662830());
         if (nElapsed < nCooltime)
         {
@@ -1442,7 +1442,7 @@ void UIInventoryDialog::FUN_14199b800(CStringW strText)
     }
     Unk_BlockList request(0x4e2d);
     request.Add("m_inputSearch", CStringW(strText), false);
-    int nResult = ((class Unk_InvPlatform*)FUN_140d86260())->vfunc_37(&request);
+    int nResult = ((class Unk_InvPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request);
     if (nResult == 1)
     {
         CStringW strFiltered = FUN_1413fa9b0(strText);
@@ -1870,7 +1870,7 @@ MS2_REPLACE_METHOD(0x14199DEB0, UIInventoryDialog, FUN_14199deb0, 991, 0);
 // @0x14199e2a0
 void UIInventoryDialog::RequestExpandSlots()
 {
-    if (!((class Unk_InvPlatform*)FUN_140d86260())->vfunc_40(g_143ab2a90.FUN_140a5d0f0()))
+    if (!((class Unk_InvPlatform*)((void*)GetClientPlatform()))->vfunc_40(g_143ab2a90.FUN_140a5d0f0()))
         reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
     else
         g_143ab2a90.SendRequestItemInventory(m_194);

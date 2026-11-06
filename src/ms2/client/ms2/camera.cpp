@@ -222,7 +222,7 @@ struct Unk_CameraConsts
     Unk_CameraConstValue m_kCameraSpeed2;                               // +0x1ad8
     Unk_CameraConstValue m_kCameraSpeed3;                               // +0x1b30
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 float FUN_1409f25a0(float f);                                           // cos
 float FUN_1409f2310(float f);                                           // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);                       // &p->m_setting
@@ -360,8 +360,8 @@ Unk_CameraSetting Unk_CameraSetting::Scaled(float f) const
     r.m_0 = m_0 * f;
     r.m_4 = m_4 * f;
     r.m_8 = m_8 * f;
-    r.m_c = m_c.FUN_14097fc90(f);
-    r.m_18 = m_18.FUN_14097fc90(f);
+    r.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c) * f));
+    r.m_18 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_18) * f));
     r.m_24 = m_24;
     return r;
 }
@@ -408,8 +408,8 @@ Unk_CameraSetting Unk_CameraSetting::Added(const Unk_CameraSetting& o) const
     r.m_0 = m_0 + o.m_0;
     r.m_4 = m_4 + o.m_4;
     r.m_8 = m_8 + o.m_8;
-    r.m_c = m_c.FUN_14097fd50(o.m_c);
-    r.m_18 = m_18.FUN_14097fd50(o.m_18);
+    r.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c) + reinterpret_cast<const efd::Point3&>(o.m_c)));
+    r.m_18 = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_18) + reinterpret_cast<const efd::Point3&>(o.m_18)));
     r.m_24 = m_24;
     return r;
 }
@@ -719,7 +719,7 @@ bool CVibrateCameraEffect::vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp)
             m_ptDir.FUN_140968990();
             m_bNegative = fWave < 0.0f;
         }
-        ptLook.FUN_140a4e560(m_ptDir.FUN_14097fc90(fWave));
+        ptLook.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptDir) * fWave)));
         return true;
     }
     else
@@ -794,7 +794,7 @@ void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const 
     m_setting.m_4 = m_spMode->FUN_140af7ef0();
     m_setting.m_8 = m_spMode->FUN_140af7e90();
     m_setting.m_18 = m_spMode->FUN_140af8260();
-    m_setting.m_c = m_spMode->FUN_1409f2540();
+    m_setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spMode->FUN_1409f2540()));
     m_setting.m_24 = m_spMode->FUN_140af8140();
     if (!m_spTargetObject)
         m_spTargetObject = EE_NEW GameObject;
@@ -935,7 +935,7 @@ void CameraMgr::FUN_140aeb420(int nMode, const Unk_CameraFlyBy* pFlyBy)
         setting.m_4 = FUN_140af7f00();
         setting.m_8 = FUN_140af7ea0();
         setting.m_18 = FUN_140af8290();
-        setting.m_c = FUN_140a17e10();
+        setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_140a17e10()));
         FUN_140aed720(setting);
         if (pFlyBy)
             FUN_140aed580(pFlyBy, 1, 1.0f);
@@ -1030,7 +1030,7 @@ void CameraMgr::FUN_140aed580(const Unk_CameraFlyBy* pFlyBy, int nKind, float fD
             m_flyBy.m_from.m_4 = m_spMode->FUN_140af7ef0();
             m_flyBy.m_from.m_8 = m_spMode->FUN_140af7e90();
             m_flyBy.m_from.m_18 = m_spMode->FUN_140af8260();
-            m_flyBy.m_from.m_c = m_spMode->FUN_1409f2540();
+            m_flyBy.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spMode->FUN_1409f2540()));
             m_flyBy.m_from.m_24 = m_spMode->FUN_140af8140();
         }
     }
@@ -1124,7 +1124,7 @@ void CameraMgr::FUN_140aec8a0(bool bKeep)
             setting.m_4 = FUN_140af7f00();
             setting.m_8 = FUN_140af7ea0();
             setting.m_18 = FUN_140af8290();
-            setting.m_c = FUN_140a17e10();
+            setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_140a17e10()));
             FUN_140aed720(setting);
             FUN_140aed580(0, 0, 1.0f);
             FUN_140aed750(m_spMapCameraData->m_18, 1);
@@ -1264,7 +1264,7 @@ Unk_CameraFlyBy CameraMgr::MakeFlyBy(float fDuration, const Unk_CameraSetting& t
     flyBy.m_from.m_4 = FUN_140af7f00();
     flyBy.m_from.m_8 = FUN_140af7ea0();
     flyBy.m_from.m_18 = FUN_140af8290();
-    flyBy.m_from.m_c = FUN_140a17e10();
+    flyBy.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_140a17e10()));
     flyBy.m_from.m_24 = FUN_140af81a0();
     return flyBy;
 }
@@ -1687,13 +1687,13 @@ MS2_REPLACE_METHOD(0x140AF1A90, CameraMgr, FUN_140af1a90, 833, 0xCA1747D0);
 void CameraMgr::FUN_140af1de0()
 {
     double fTime = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
-    Vector3 ptLook = FUN_140a17e10();
+    efd::Point3 ptLook = FUN_140a17e10();
     Vector3 ptUp = FUN_140af8290();
     if (!m_effect.m_effects.empty())
     {
-        if ((*m_effect.m_effects.begin())->vfunc_1(fTime, ptLook, ptUp))
+        if ((*m_effect.m_effects.begin())->vfunc_1(fTime, reinterpret_cast<Vector3&>(ptLook), ptUp))
         {
-            m_spMode->vfunc_3(ptLook);
+            m_spMode->vfunc_3(reinterpret_cast<Vector3&>(ptLook));
         }
         else
         {
@@ -1848,9 +1848,9 @@ void CameraMgr::FUN_140aec4c0()
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<const egf::EntityPtr*>(&spEntity)->operator egf::Entity*(), 0);
         }
         float fSpeed = (float)TSingleton<CGameOption>::GetInstance()->FUN_140af7de0()->m_n04 / 100.0f;
-        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed1)->Get() * fSpeed;
-        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed2)->Get() * fSpeed;
-        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)FUN_1401d3200())->m_kCameraSpeed3)->Get() * fSpeed;
+        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_kCameraSpeed1)->Get() * fSpeed;
+        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_kCameraSpeed2)->Get() * fSpeed;
+        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_CameraConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_kCameraSpeed3)->Get() * fSpeed;
         FUN_140aeb880(f1, f2, f3);
     }
 }
@@ -1925,7 +1925,7 @@ void CameraMgr::FUN_140aea7f0()
             setting.m_4 = FUN_140af7f00();
             setting.m_8 = FUN_140af7ea0();
             setting.m_18 = FUN_140af8290();
-            setting.m_c = FUN_140a17e10();
+            setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(FUN_140a17e10()));
             FUN_140aed720(setting);
             if (s_bStudioCamera == 0)
             {
@@ -2009,7 +2009,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
         m_setting.m_4 = m_spMode->FUN_140af7ef0();
         m_setting.m_8 = m_spMode->FUN_140af7e90();
         m_setting.m_18 = m_spMode->FUN_140af8260();
-        m_setting.m_c = m_spMode->FUN_1409f2540();
+        m_setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spMode->FUN_1409f2540()));
         m_setting.m_24 = m_spMode->FUN_140af8140();
         MS2Ptr<CCameraMode> spNext;
         switch (nMode)
@@ -2022,7 +2022,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             break;
         case 5:
             spNext.AssignRaw(new CActionCameraMode((Unk_CameraOwner*)m_pCamera, m_spMode));
-            spNext->vfunc_3(spNext->vfunc_26());
+            spNext->vfunc_3(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(spNext->vfunc_26())));
             break;
         case 4:
             spNext.AssignRaw(new CLockCameraMode((Unk_CameraOwner*)m_pCamera, m_spMode));
@@ -2069,7 +2069,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             m_flyBy.m_to.m_0 = spNext->FUN_140ad4b30();
             m_flyBy.m_to.m_4 = spNext->FUN_140af7ef0();
             m_flyBy.m_to.m_8 = spNext->FUN_140af7e90();
-            m_flyBy.m_to.m_c = spNext->FUN_1409f2540();
+            m_flyBy.m_to.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(spNext->FUN_1409f2540()));
             m_flyBy.m_to.m_24 = spNext->FUN_140af8140();
             if (spNext->vfunc_28())
             {
@@ -2078,15 +2078,15 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
                     Vector3 ptTarget = FUN_140a38d60()->vfunc_17();
                     ptTarget.z += m_spTargetMode->vfunc_27();
                     if (FUN_140af7e30() == 2)
-                        m_flyBy.m_to.m_c = ptTarget.FUN_14097fd50(((CTargetCameraMode*)m_spTargetMode.get())->FUN_14183c370());
+                        m_flyBy.m_to.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptTarget) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CTargetCameraMode*)m_spTargetMode.get())->FUN_14183c370()))));
                     else if (FUN_140af7e30() == 0x11)
-                        m_flyBy.m_to.m_c = ptTarget.FUN_14097fd50(((CHomeCameraMode*)m_spTargetMode.get())->FUN_140b66660());
+                        m_flyBy.m_to.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptTarget) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CHomeCameraMode*)m_spTargetMode.get())->FUN_140b66660()))));
                 }
                 else
-                    m_flyBy.m_to.m_c = spNext->vfunc_26();
+                    m_flyBy.m_to.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(spNext->vfunc_26()));
             }
             else
-                m_flyBy.m_to.m_c = spNext->vfunc_26();
+                m_flyBy.m_to.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(spNext->vfunc_26()));
         }
         if (m_spMode.get())
             m_spMode->vfunc_7();
@@ -2109,7 +2109,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             m_setting.m_4 = m_spMode->FUN_140af7ef0();
             m_setting.m_8 = m_spMode->FUN_140af7e90();
             m_setting.m_18 = m_spMode->FUN_140af8260();
-            m_setting.m_c = m_spMode->FUN_1409f2540();
+            m_setting.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_spMode->FUN_1409f2540()));
             m_setting.m_24 = m_spMode->FUN_140af8140();
             break;
         case 5:
@@ -2347,7 +2347,7 @@ void CameraMgr::FUN_140af1f70()
                 else
                 {
                     NiTransform kCamera = pCamera->GetLocalTransform();
-                    kCamera.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_140a17e10()));
+                    kCamera.m_Translate = FUN_140a17e10();
                     Vector3 ptRot = FUN_140af8290();
                     kCamera.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f,
                         (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);

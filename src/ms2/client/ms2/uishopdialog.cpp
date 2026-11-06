@@ -186,7 +186,7 @@ class Unk_ShopMarket : public CMeratMarketMan { };
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 
 // The gacha box table: the coin item of a gacha shop.
-ItemGachaBoxTable* FUN_14052d230();
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 
 // The dialog offsets of the inventory placement.
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft, efd::Point2 offRight);
@@ -275,7 +275,7 @@ public:
 #undef SHOP_V
     virtual void vfunc_43(int nKind, int nArg, int nDelay);  // MS2: slot 43 (0x158) schedule a request
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // the client config's blocked-action flags (FUN_14025e7b0(), flag set at +8)
 struct Unk_ShopConfig { void* m_0; CContentShutdown m_flags; };
@@ -632,7 +632,7 @@ void UIShopDialog::vfunc_66()
         m_189 = pInv->vfunc_55() == 0 ? 1 : 0;
         if (m_189 == 0)
         {
-            int nLocked = FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId);
+            int nLocked = TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId);
             if (nLocked != 0)
                 return;
             if (m_30.get())
@@ -841,7 +841,7 @@ void UIShopDialog::OnLoadComplete()
                 }
             }
             else if (m_nShopType == 4) {
-                int nCoin = FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId);
+                int nCoin = TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId);
                 strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_title_gacha_shop"), FUN_141425950(nCoin));
             }
             else if (0 < (unsigned)m_nNpcId) {
@@ -863,9 +863,9 @@ void UIShopDialog::OnLoadComplete()
         }
         data.FUN_1407cbb20("notice", strNotice);
         if (m_nShopType == 4) {
-            unsigned nOwned = g_143ab2a90.FUN_140a5f180(FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId), 0);
-            int nCost = FUN_14052d230()->GetPaymentIconTagByShopId(m_nShopId);
-            data.FUN_1409c0d20("gachaUIType", FUN_14052d230()->GetUiByShopId(m_nShopId));
+            unsigned nOwned = g_143ab2a90.FUN_140a5f180(TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId), 0);
+            int nCost = TSingleton<ItemGachaBoxTable>::GetInstance()->GetPaymentIconTagByShopId(m_nShopId);
+            data.FUN_1409c0d20("gachaUIType", TSingleton<ItemGachaBoxTable>::GetInstance()->GetUiByShopId(m_nShopId));
             data.FUN_1407cbb20("coinAmount", FUN_1418fec90(2, nOwned, nCost));
         }
     }
@@ -935,7 +935,7 @@ void UIShopDialog::OnLoadComplete()
         FUN_14134a480(*m_spShop, strName, reinterpret_cast<MS2Ptr<ASButton>*>(&m_spProbInfo));
     }
     m_bReady = 1;
-    ((class Unk_ShopRequestCheck*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_ShopRequestCheck*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
     if (m_spMoney.get() != 0)
         ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangedTokenMoney"), Delegate<void(NotifyObject*)>(this, &UIShopDialog::ChangedTokenMoney));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"), Delegate<void(NotifyObject*)>(this, &UIShopDialog::GameEventChanged));
@@ -1265,10 +1265,10 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         }
     }
     else if (strName == "m_coinInfo") {
-        int nCoin = FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId);
+        int nCoin = TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId);
         CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCoin);
-        int nBox = FUN_14052d230()->GetRandomBoxIdByCoinItem(nCoin);
-        GachaBoxDataPtr spBox = FUN_14052d230()->GetBox(nBox);
+        int nBox = TSingleton<ItemGachaBoxTable>::GetInstance()->GetRandomBoxIdByCoinItem(nCoin);
+        GachaBoxDataPtr spBox = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(nBox);
         if (spBox == 0)
             return;
         ASTooltip tip(1, 2);
@@ -2041,7 +2041,7 @@ void UIShopDialog::Search(CStringW strText)
     {
         Unk_BlockList request(0x4e3b);
         request.Add("m_inputSearch", strText, 0);
-        if (((class Unk_ShopRequestCheck*)FUN_140d86260())->vfunc_37(&request) == 1)
+        if (((class Unk_ShopRequestCheck*)((void*)GetClientPlatform()))->vfunc_37(&request) == 1)
             RefreshItems(strText);
     }
     else
@@ -2123,8 +2123,8 @@ void UIShopDialog::UpdateGachaCoin()
         return;
     if (m_nShopType == 4)
     {
-        unsigned int nAmount = g_143ab2a90.FUN_140a5f180(FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId), 0);
-        int nCost = FUN_14052d230()->GetPaymentIconTagByShopId(m_nShopId);
+        unsigned int nAmount = g_143ab2a90.FUN_140a5f180(TSingleton<ItemGachaBoxTable>::GetInstance()->GetCoinItemIdByShopId(m_nShopId), 0);
+        int nCost = TSingleton<ItemGachaBoxTable>::GetInstance()->GetPaymentIconTagByShopId(m_nShopId);
         m_spShop->Invoke("gachaCoinAmount", FUN_1418fec90(2, nAmount, nCost));
     }
 }
@@ -2371,7 +2371,7 @@ void UIShopDialog::UpdateSerial(__int64 tReset)
         unsigned __int64 nLeft = 0;
         unsigned int nInterval = m_280;
         if (nInterval == 0)
-            nInterval = FUN_1401d3200()->ShopSeedResetTime.Read();
+            nInterval = GetClientConstants()->ShopSeedResetTime.Read();
         __int64 tNow = GetServerTime();
         if (0 < tNow && tReset > tNow)
             nLeft = tReset - tNow;
@@ -3172,7 +3172,7 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
             if (spProduct->m_88 != 0) {
                 bConfirm = true;
             } else {
-                if (spProduct->FUN_140db8180() >= (__int64)*static_cast<Client::Constants*>(FUN_1401d3200())->ShopBuyConfirmPrice.Get())
+                if (spProduct->FUN_140db8180() >= (__int64)*static_cast<Client::Constants*>(GetClientConstants())->ShopBuyConfirmPrice.Get())
                     bConfirm = true;
             }
         }

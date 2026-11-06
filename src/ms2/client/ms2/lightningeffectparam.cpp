@@ -447,12 +447,12 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
     kFlat.z = 0.0f;
     kFlat.FUN_140968990();
     Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));
-    Vector3 kSide = kFlat.FUN_140a00e10(kCamera);
+    efd::Point3 kSide = reinterpret_cast<const efd::Point3&>(kFlat).Cross(reinterpret_cast<const efd::Point3&>(kCamera));
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)
     {
         Vector3 kPoint = m_arrPath[i];
-        m_arrLeft.Add(kPoint.FUN_14097fd50(kSide.FUN_14097fc90(m_fWidth).FUN_14097fc90(0.5f)));
-        m_arrRight.Add(kPoint.FUN_14097fd50(kSide.FUN_14097fc90(m_fWidth).FUN_14097fc90(-0.5f)));
+        m_arrLeft.Add(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPoint) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kSide))) * m_fWidth * 0.5f)));
+        m_arrRight.Add(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPoint) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kSide))) * m_fWidth * (-0.5f))));
     }
 }
 

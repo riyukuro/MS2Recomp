@@ -159,7 +159,7 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1320(int);
     static class WorldService* GetInstance();
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 unsigned FUN_140767ff0();
 
@@ -777,7 +777,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     if (m_timer.FUN_140868c00() != 0)
     {
         m_timer.FUN_1408687f0();
-        static unsigned s_nChance = reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_IdleConsts*)FUN_1401d3200())->m_chance)->Read();
+        static unsigned s_nChance = reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_IdleConsts*)GetClientConstants())->m_chance)->Read();
         if (s_nChance >= FUN_140768010(100, 0))
         {
             unsigned nCount = 0;
@@ -798,7 +798,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     }
     else if (m_timer.FUN_140868ba0() == 0)
     {
-        m_timer.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_IdleConsts*)FUN_1401d3200())->m_delay));
+        m_timer.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_IdleConsts*)GetClientConstants())->m_delay));
     }
 }
 

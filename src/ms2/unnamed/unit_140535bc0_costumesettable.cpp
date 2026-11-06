@@ -100,25 +100,25 @@ CostumeSetTable::CostumeSetTable()
     if (s_mapSlotType.GetCount() == 0)
     {
         int nSlot1 = 6;
-        s_mapSlotType.SetAt(nSlot1, FUN_1401d3200()->TransparencyCP.Read());
+        s_mapSlotType.SetAt(nSlot1, GetClientConstants()->TransparencyCP.Read());
         int nSlot2 = 0xd;
-        s_mapSlotType.SetAt(nSlot2, FUN_1401d3200()->TransparencyEY.Read());
+        s_mapSlotType.SetAt(nSlot2, GetClientConstants()->TransparencyEY.Read());
         int nSlot3 = 8;
-        s_mapSlotType.SetAt(nSlot3, FUN_1401d3200()->TransparencyCL.Read());
+        s_mapSlotType.SetAt(nSlot3, GetClientConstants()->TransparencyCL.Read());
         int nSlot4 = 9;
-        s_mapSlotType.SetAt(nSlot4, FUN_1401d3200()->TransparencyPA.Read());
+        s_mapSlotType.SetAt(nSlot4, GetClientConstants()->TransparencyPA.Read());
         int nSlot5 = 7;
-        s_mapSlotType.SetAt(nSlot5, FUN_1401d3200()->TransparencyMT.Read());
+        s_mapSlotType.SetAt(nSlot5, GetClientConstants()->TransparencyMT.Read());
         int nSlot6 = 0xe;
-        s_mapSlotType.SetAt(nSlot6, FUN_1401d3200()->TransparencyEA.Read());
+        s_mapSlotType.SetAt(nSlot6, GetClientConstants()->TransparencyEA.Read());
         int nSlot7 = 0xc;
-        s_mapSlotType.SetAt(nSlot7, FUN_1401d3200()->TransparencyFH.Read());
+        s_mapSlotType.SetAt(nSlot7, GetClientConstants()->TransparencyFH.Read());
         int nSlot8 = 10;
-        s_mapSlotType.SetAt(nSlot8, FUN_1401d3200()->TransparencyGL.Read());
+        s_mapSlotType.SetAt(nSlot8, GetClientConstants()->TransparencyGL.Read());
         int nSlot9 = 0x10;
-        s_mapSlotType.SetAt(nSlot9, FUN_1401d3200()->TransparencyRI.Read());
+        s_mapSlotType.SetAt(nSlot9, GetClientConstants()->TransparencyRI.Read());
         int nSlot10 = 0xb;
-        s_mapSlotType.SetAt(nSlot10, FUN_1401d3200()->TransparencySH.Read());
+        s_mapSlotType.SetAt(nSlot10, GetClientConstants()->TransparencySH.Read());
     }
     Load();
 }

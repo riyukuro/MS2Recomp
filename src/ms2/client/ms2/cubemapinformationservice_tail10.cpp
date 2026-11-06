@@ -71,7 +71,7 @@
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d88f0 ; sfr36: exe _Construct1 0x1410e03d0 (Cube construct 0x1411188e0)
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d88a0 ; sfr36: exe _Construct1 0x1410e0320 (SIE construct 0x141118860)
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d89e0 ; prop
-// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHU?$Unk_CMISTree@$0BAL@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d8a30 ; prop
+// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d8a30 ; prop; C3: was pair<const int, Unk_CMISTree<267> >
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHVEntityID@egf@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d8ad0 ; prop
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHUUnk_CMISCubeTimer@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1410d8b20 ; prop
 // MS2-PIN: ??$?0AEBK$$Z$$V@?$pair@$$CBKV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBK@1@V?$tuple@$$V@1@@Z 0x1410d8b70 ; prop
@@ -280,7 +280,7 @@ void Unk_CMISDriveTail10()
     Unk_CMISTreePair<int, std::pair<const int, Unk_CMISElem52> >(std::less<int>());
     Unk_CMISPiecewisePair<int, bool>(nKey);
     Unk_CMISPiecewisePair<int, Unk_CubePoint>(nKey);
-    Unk_CMISPiecewisePair<int, Unk_CMISTree<267> >(nKey);
+    Unk_CMISPiecewisePair<int, efd::set<int> >(nKey);       // C3: was Unk_CMISTree<267>
     Unk_CMISPiecewisePair<int, efd::vector<egf::EntityID> >(nKey);       // C3: was Unk_CMISTree<496>
     Unk_CMISPiecewisePair<int, Unk_CMISCubeTimer>(nKey);
     Unk_CMISPiecewisePair<long, MS2Ptr<Cube> >(static_cast<long>(uKey));
@@ -342,3 +342,4 @@ void Unk_CMISDriveTail10()
 // MS2-PIN: ??$?0AEBVEntityID@egf@@$$Z$$V@?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntityActorData@egfPhysX@@@efd@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBVEntityID@egf@@@1@V?$tuple@$$V@1@@Z 0x1410d98a0 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$?0V?$tuple@AEBVEntityID@egf@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAA@AEAV?$tuple@AEBVEntityID@egf@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db230 ; ua12: kept on its exe copy after the Unk_CMISPropPtr retype
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410daff0 ; C3: was pair<const int, Unk_CMISTree<496> >
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410dafa0 ; C3: was pair<const int, Unk_CMISTree<267> >

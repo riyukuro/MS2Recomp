@@ -139,7 +139,7 @@ void CLiftableTarget::CreateEffect()
     if (m_nFx != 0)
         return;
     NiTransform xform;
-    xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
+    xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_vPos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 1.0f)))))));
     xform.m_Rotate.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
     xform.m_fScale = 1.0f;
     NoticeMessage req;

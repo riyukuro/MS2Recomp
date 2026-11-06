@@ -1292,15 +1292,15 @@ void AdditionalCliList::FUN_140973f40(MS2Ptr<AdditionalCli> sp)
     if (!FUN_1409735c0())
         return;
     PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (sp->FUN_14096d2a0() == *FUN_1401d3200()->PCBangAdditionalEffectID.Get())
+    if (sp->FUN_14096d2a0() == *GetClientConstants()->PCBangAdditionalEffectID.Get())
     {
         pLocal->FUN_140978540();
         if (sp->FUN_14096d810())
         {
             if (sp->FUN_14096d810()->HasSA((SAType)1))
-                pLocal->FUN_141658f70((unsigned char)*FUN_1401d3200()->PCBangAdditionalEffectExp.Get());
+                pLocal->FUN_141658f70((unsigned char)*GetClientConstants()->PCBangAdditionalEffectExp.Get());
             if (sp->FUN_14096d810()->HasSA((SAType)2))
-                pLocal->FUN_141658f70((unsigned char)*FUN_1401d3200()->PCBangAdditionalEffectMeso.Get());
+                pLocal->FUN_141658f70((unsigned char)*GetClientConstants()->PCBangAdditionalEffectMeso.Get());
         }
     }
 }
@@ -1311,7 +1311,7 @@ void AdditionalCliList::FUN_140974090(MS2Ptr<AdditionalCli> sp)
     if (!FUN_1409735c0())
         return;
     PC* pLocal = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (sp->FUN_14096d2a0() == *FUN_1401d3200()->PCBangAdditionalEffectID.Get())
+    if (sp->FUN_14096d2a0() == *GetClientConstants()->PCBangAdditionalEffectID.Get())
         pLocal->FUN_140978540();
 }
 

@@ -54,7 +54,7 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class CStateService;
 template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 class CStateService   // C3: member view for the former free stand-ins
@@ -144,7 +144,7 @@ void UIGlobalPortalDialog::vfunc_72()
     PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    unsigned short nLimit = *reinterpret_cast<unsigned short*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)FUN_1401d3200()) + 0xe150)->Get());
+    unsigned short nLimit = *reinterpret_cast<unsigned short*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(((char*)GetClientConstants()) + 0xe150)->Get());
     if (nLimit != 0 && (unsigned short)pPlayer->vfunc_78() < nLimit)
     {
         m_nRetryTime = 0;

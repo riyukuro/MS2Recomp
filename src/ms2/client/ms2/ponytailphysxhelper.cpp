@@ -97,7 +97,7 @@ public:
     class efd::ServiceManager* FUN_140af8310();
 };
 struct Unk_PonyScene;
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The model facts of a part and the model's non-virtual helpers (?\equipmodel.cpp, ?\itemugcmesh.cpp).
 void* FUN_141200a90(class CEquipModel*);   // C3: was FUN_141200a90
@@ -300,7 +300,7 @@ int CPonyTailController::vfunc_3()
             FUN_1416955b0(1, 0, &CPonyTailController::FUN_141694fb0, 0);
         }
     }
-    m_fSensitivity = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2e98)->Read();
+    m_fSensitivity = reinterpret_cast<Common::Constants::Value<float>*>(((char*)GetClientConstants()) + 0x2e98)->Read();
     m_bEnabled = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547130();
     m_bUseButton1 = m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547170();
     return 1;
@@ -519,7 +519,7 @@ Vector3 CPonyTailController::FUN_141695bc0(const Vector3& kOrigin, const Vector3
     Vector3 kPlane = kOrigin;
     kPlane.z = kPoint.z;
     kPlane = kPoint.FUN_140965c40(kPlane);
-    return kPoint.FUN_140965c40(kAxis.FUN_14097fc90(2.0f).FUN_14097fc90(((efd::Point3*)&(kPlane))->Dot(*(class efd::Point3 const*)&(kAxis))));
+    return kPoint.FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAxis) * 2.0f * (((efd::Point3*)&(kPlane))->Dot(*(class efd::Point3 const*)&(kAxis))))));
 }
 
 // Applies the pose of a drag to one part: the look-at (kind 1) or the surface frame (other kinds) of the part's
@@ -532,28 +532,28 @@ static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, CEqui
     Unk_NiMatrix3 mRot;
     if (nKind == 1)
     {
-        Vector3 kTip = kPos.FUN_14097fd50(kDir.FUN_14097fc90(10.0f));
-        Vector3 kEuler = FUN_140a0b080(kPos, kTip, DAT_143a08cf8);
+        efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(kDir) * 10.0f;
+        Vector3 kEuler = FUN_140a0b080(kPos, reinterpret_cast<Vector3&>(kTip), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
-        Vector3 kRad = kEuler.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+        Vector3 kRad = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEuler) * 3.1415927f)).FUN_140ae9180(180.0f);
         ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(kRad.x, kRad.y, kRad.z);
     }
     else
     {
         Vector3 kN = kDir;
         kN.FUN_140968990();
-        Vector3 kUp = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
-        kUp.FUN_140968990();
-        Vector3 kFwd = kN.FUN_140a00e10(kUp);
-        kFwd.FUN_140968990();
-        Unk_NiPoint3 cN(kN), cU(kUp), cF(kFwd);
+        efd::Point3 kUp = -reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+        kUp.Unitize();
+        efd::Point3 kFwd = reinterpret_cast<const efd::Point3&>(kN).Cross(reinterpret_cast<const efd::Point3&>(kUp));
+        kFwd.Unitize();
+        Unk_NiPoint3 cN(kN), cU(reinterpret_cast<Vector3&>(kUp)), cF(reinterpret_cast<Vector3&>(kFwd));
         NiMatrix3 mBasis(reinterpret_cast<const NiPoint3&>(cN), reinterpret_cast<const NiPoint3&>(cU), reinterpret_cast<const NiPoint3&>(cF));
         if (nKind == 2)
         {
             Unk_EfdMatrix3 mTurn;
             ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
             if (pThis->m_spPicker.operator CItemPickingHelper*() && pThis->m_spPicker->GetPickedIndex() == nPickIndex)
-                mTurn.FUN_14107cc40(3.1415927f, kFwd);
+                mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
             mRot = Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(mBasis))));
         }
         else
@@ -648,9 +648,9 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     Vector3 kAnchor = SP(m_kFirst.m_kAnchor);
     Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
     Vector3 kMirror = FUN_141695bc0(kPlayerPos, kHitPt, kRight);
-    Vector3 kTip = kHitPt.FUN_14097fd50(kAnchor.FUN_14097fc90(10.0f));
+    efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kHitPt) + reinterpret_cast<const efd::Point3&>(kAnchor) * 10.0f;
     kPlayerPos = SPV(pPlayer->vfunc_18());
-    Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
+    Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, reinterpret_cast<Vector3&>(kTip), kRight);
     SP(m_kSecond.m_kAnchor) = kMirrorTip.FUN_140965c40(kMirror);
     SP(m_kSecond.m_kAnchor).FUN_140968990();
     ApplyPartPose(this, m_kSecond, spSecond.operator->(), kMirror, SP(m_kSecond.m_kAnchor), 1);
@@ -720,12 +720,12 @@ void CPonyTailController::FUN_141694650()
                                         reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23())),
                                         reinterpret_cast<const Vector3&>(kRight));
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_24(reinterpret_cast<const NiPoint3&>(kMirror));
-        Vector3 kTip = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))
-                                   .FUN_14097fd50(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor).FUN_14097fc90(10.0f));
+        efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))))
+                                   + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor))) * 10.0f;
         static_cast<efd::Point3&>(kPlayerPos) = pPlayer->vfunc_18();   // efd::Point3::operator= (0x140194470)
-        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror)))));
+        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>(FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<Vector3&>(kTip), reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror)))));
         reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_140968990();
-        Vector3 kEuler = FUN_140a0b080(kMirror, kMirror.FUN_14097fd50(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f)), DAT_143a08cf8);
+        Vector3 kEuler = FUN_140a0b080(kMirror, reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kMirror) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor))) * 10.0f)), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_26(reinterpret_cast<const NiPoint3&>(kEuler));
         FUN_1412021a0((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);

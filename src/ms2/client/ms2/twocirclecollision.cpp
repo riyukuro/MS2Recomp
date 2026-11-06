@@ -77,17 +77,17 @@ void CTwoCircleCollision::vfunc_5()
     Vector3 aPts[nPoints];
     for (int i = 0; i < kRingPoints; i++)
     {
-        aPts[i] = m_ptCenter.FUN_14097fd50(
-            Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius,
-                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, 0.0f));
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) +
+            reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius,
+                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, 0.0f)))));
     }
     m_spInner->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spInner, aPts, kRingPoints);
     for (int i = 0; i < kRingPoints; i++)
     {
-        aPts[i] = m_ptCenter.FUN_14097fd50(
-            Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius,
-                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, 0.0f));
+        aPts[i] = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_ptCenter) +
+            reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius,
+                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, 0.0f)))));
     }
     m_spOuter->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spOuter, aPts, kRingPoints);

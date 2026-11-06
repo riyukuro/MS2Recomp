@@ -625,7 +625,7 @@ Unk_FsCell StateFishingFloat::FUN_140ddc3c0(efd::Point3 kPoint)
     kCorner.x = (kPoint.x > 0.0f) ? 75.0f : -75.0f;
     kCorner.y = (kPoint.y > 0.0f) ? 75.0f : -75.0f;
     kCorner.z = 0.0f;
-    return FUN_1408a1430(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kPoint).FUN_14097fd50(kCorner))));
+    return FUN_1408a1430(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kPoint))) + reinterpret_cast<const efd::Point3&>(kCorner))))));
 }
 
 // @0x140ddc4b0
@@ -647,7 +647,7 @@ int StateFishingFloat::FUN_140ddc4b0(efd::Point3 kDir)
     kStart.z = pPC->vfunc_18().z + 150.0f;
     Unk_RayCastInfo kRay;
     kRay.m_origin = reinterpret_cast<Vector3&>(kStart);
-    kRay.m_dir = DAT_143a08cf8.FUN_1409f7960();
+    reinterpret_cast<efd::Point3&>(kRay.m_dir) = -reinterpret_cast<const efd::Point3&>(DAT_143a08cf8);
     kRay.m_maxDist = 0;
     kRay.m_groups = 0x301;
     efd::Point3 kFoot = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 5.0f);

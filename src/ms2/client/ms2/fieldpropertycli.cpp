@@ -41,10 +41,10 @@ namespace egf { class Entity; }
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_FpEntityList;
 struct Unk_WsC_TagPtr {             // 16 byte handle filled by WorldService::FUN_141bd0420 (worldservice_1.cpp defines it)
     ~Unk_WsC_TagPtr();                              // 0x1409f20e0
-    Unk_FpEntityList* operator->() const;           // 0x1409f2190
+    Unk_FpEntityList* operator->() const; bool operator==(Unk_FpEntityList* p) const;   // 0x1409f2190 / 0x1409f2130
     void* m_a; void* m_p;
 };
-struct Unk_SSGEntListPtr { bool operator==(Unk_FpEntityList* p) const; };   // 0x1409f2130 (scenestategame defines it)
+// (operator== 0x1409f2130: Unk_WsC_TagPtr::operator==, worldservice_1.cpp)
 struct Unk_Rec24 { char b[24]; };
 struct Unk_MapIt { void* p; };                   // map iterator scratch
 struct Unk_MapPair { void* a[4]; };              // 32 byte (key, value) pair scratch
@@ -202,7 +202,7 @@ void FieldPropertyWeatherCli::vfunc_5() { TSingleton<CEffectService>::GetInstanc
 void FieldPropertyAmbientLightCli::vfunc_4()
 {
     Unk_WsC_TagPtr h = WorldService::GetInstance()->FUN_141bd0420(0x169ea355);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
+    if (h == 0 || !FUN_140b285a0(h.operator->()))
         return;
     efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));
     if (m_bFlag)
@@ -222,7 +222,7 @@ Unk_Vec3f FieldPropertyAmbientLightCli::FUN_140b27a80() const { return m_color.T
 void FieldPropertyDirectionalLightCli::vfunc_4()
 {
     Unk_WsC_TagPtr h = WorldService::GetInstance()->FUN_141bd0420(0x628f2cf9);
-    if (reinterpret_cast<const Unk_SSGEntListPtr&>(h) == 0 || !FUN_140b285a0(h.operator->()))
+    if (h == 0 || !FUN_140b285a0(h.operator->()))
         return;
     efd::SmartPointer<egf::Entity> ent(*(const efd::SmartPointer<egf::Entity>*)FUN_140b285b0(h.operator->()));
     if (m_bFlag)

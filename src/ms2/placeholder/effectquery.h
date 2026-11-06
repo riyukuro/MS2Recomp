@@ -9,45 +9,36 @@
 #include <efd/SmartPointer.h>
 #include <NiAVObject.h>
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/delegate.h"
 
 class GameObject;
 class NiNode;
 
-// The polymorphic callback owned by NoticeMessage +0x40 (slot 0 = scalar deleting dtor, slot 1 = Clone). Names invented.
-class Unk_NoticeCallback
+// The callback owned by NoticeMessage +0x40 is Delegate<void(unsigned, CString, bool)> (delegate.h): CEquipment passes
+// a bound-member Delegate of that signature to SetCallback (DelegateImpl<pair<CEquipment*, ...>> ctor 0x1411f0240), and
+// CEffectService::FUN_1411a4a00 calls GetCallback() as that Delegate (IsNull 0x1411b80a0, operator() 0x1411b0e30).
+// Its ctor 0x140a53660 and operator= 0x140a53680 are COMDATs of unit_140a52ef0, the dtor 0x1405a8560 one of
+// ?\itemgem.cpp. delegate.h declares ~Delegate / operator= only, so this signature's bodies are specialized here.
+typedef Delegate<void(unsigned, CString, bool)> Unk_NoticeCallbackPtr;
+template <>
+inline Delegate<void(unsigned, CString, bool)>::~Delegate()
 {
-public:
-    virtual ~Unk_NoticeCallback();
-    virtual Unk_NoticeCallback* Clone() const = 0;
-};
-
-// Owning handle of a Unk_NoticeCallback (clone on assignment). Ctor 0x140a53660 and operator= 0x140a53680 are COMDATs
-// of unit_140a52ef0, the dtor 0x1405a8560 one of ?\itemgem.cpp.
-class Unk_NoticeCallbackPtr
+    if (m_pImpl)
+        delete m_pImpl;
+}
+template <>
+inline Delegate<void(unsigned, CString, bool)>& Delegate<void(unsigned, CString, bool)>::operator=(const Delegate& other)
 {
-public:
-    Unk_NoticeCallbackPtr() : m_p(0) {}
-    Unk_NoticeCallbackPtr(const Unk_NoticeCallbackPtr& other);   // not in the exe; declared so a by-value handle is passed by address
-    ~Unk_NoticeCallbackPtr()
-    {
-        if (m_p)
-            delete m_p;
-    }
-    Unk_NoticeCallbackPtr& operator=(const Unk_NoticeCallbackPtr& other)
-    {
-        if (this == &other)
-            return *this;
-        if (m_p)
-            delete m_p;
-        if (other.m_p == 0)
-            m_p = 0;
-        else
-            m_p = other.m_p->Clone();
+    if (this == &other)
         return *this;
-    }
-
-    Unk_NoticeCallback* m_p;
-};
+    if (m_pImpl)
+        delete m_pImpl;
+    if (other.m_pImpl == 0)
+        m_pImpl = 0;
+    else
+        m_pImpl = other.m_pImpl->vfunc_1();
+    return *this;
+}
 
 class NoticeMessage
 {

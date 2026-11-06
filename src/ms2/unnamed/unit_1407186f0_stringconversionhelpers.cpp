@@ -24,14 +24,14 @@ void* FUN_1406c47d0(void* out, int y, int m, int d, int h, int mi, int s);   // 
 void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);   // wide (commonutil.cpp)
 CStringA FUN_14016a600(const wchar_t* s, int nCodePage);
 CStringW FUN_14016a730(const char* s, int nCodePage);
-char FUN_1402c12b0(void* arr, unsigned __int64 n);
+// (FUN_1402c12b0 was the private CAtlArray<DWORD>::GrowBuffer; the real Add below calls it)
 void FUN_140159b70(long hr);
 void* FUN_140159860(unsigned __int64 n, void* p);
 
 // ---- in this unit (declarations for forward use) -------------------------------------------------------------------
 void* FUN_14071a2c0(void* p);
 void* FUN_14071a2e0(void* p);
-unsigned __int64 FUN_14071a340(void* arr, int v);
+// (0x14071a340 is the real CAtlArray<DWORD>::Add, pinned at the end)
 int FUN_140719c00(const CString* s);
 void FUN_140719c30(const CString* s, void* arr, const char* sep);
 void FUN_140719c60(const CString* s, void* arr, const char* sep);
@@ -215,7 +215,7 @@ void FUN_140719c60(const CString* s, void* arr, const char* sep) {
     int pos = 0;
     CString tok = const_cast<CString*>(s)->Tokenize(sep, pos);
     while (!tok.IsEmpty()) {
-        FUN_14071a340(arr, FUN_140719c00(&tok));
+        reinterpret_cast<ATL::CAtlArray<DWORD>*>(arr)->Add(FUN_140719c00(&tok));
         tok = const_cast<CString*>(s)->Tokenize(sep, pos);
     }
 }
@@ -230,21 +230,21 @@ void* FUN_14071a2c0(void* p) { *(__int64*)p = 0; return p; }
 // @0x14071a2e0
 void* FUN_14071a2e0(void* p) { *(__int64*)p = 0; return p; }
 // @0x14071a300 MS2Colors(MS2Colors&&) (inline in clientconstants.h)
-struct Unk_IntAtlArray { int* m_pData; unsigned __int64 m_nSize; unsigned __int64 m_nMaxSize; };
-// CAtlArray<int>::Add
-// @0x14071a340
-unsigned __int64 FUN_14071a340(void* arr, int v) {
-    unsigned __int64 idx = ((Unk_IntAtlArray*)arr)->m_nSize;
-    if (idx >= ((Unk_IntAtlArray*)arr)->m_nMaxSize) {
-        unsigned char bSuccess = FUN_1402c12b0(arr, idx + 1);
-        if (!bSuccess)
-            ATL::AtlThrowImpl(0x8007000e);
-    }
-    int* slot = (int*)::operator new(4, ((Unk_IntAtlArray*)arr)->m_pData + idx);
-    *slot = v;
-    ((Unk_IntAtlArray*)arr)->m_nSize++;
-    return idx;
-}
+// CAtlArray<DWORD>::Add (0x14071a340) is the ATL body now; the Unk_IntAtlArray view and the
+// FUN_14071a340 stand-in over the FUN_1402c12b0 GrowBuffer wrapper are gone.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // MS2-PIN: ?_Move_from@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x14071a3f0 ; sfb: vector<int>::_Move_from
 // MS2-PIN: ?_Swap_all@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAXAEAV12@@Z 0x14071a4d0 ; sfb: _Vector_alloc<int>::_Swap_all
 // @0x14071a520
@@ -253,3 +253,4 @@ CString FUN_14071a520(const CStringA& name) {
     s.Format("%s/%s.tok", "./Data/Resource/PrecomputedTerrain", (const char*)name);
     return s;
 }
+// MS2-PIN: ?Add@?$CAtlArray@KV?$CElementTraits@K@ATL@@@ATL@@QEAA_KK@Z 0x14071a340 ; the real CAtlArray<DWORD>::Add (was the FUN_14071a340 stand-in over the FUN_1402c12b0 GrowBuffer wrapper)

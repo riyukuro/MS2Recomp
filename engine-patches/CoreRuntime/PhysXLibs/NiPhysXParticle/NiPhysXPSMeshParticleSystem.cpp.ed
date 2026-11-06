@@ -1,8 +1,7 @@
-746c
-            // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the pose)
-            if (kPose.isFinite())
-            {
-                // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the pose)
+789a
+
+.
+775c
             if (kPose.isFinite())
             {
                 pkActor->setGlobalPose(kPose);
@@ -14,6 +13,12 @@
                 if (DAT_143afcb90)
                     throw 13;
             }
+.
+746c
+            // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the pose)
+            if (kPose.isFinite())
+            {
+                pkActor->setGlobalPose(kPose);
             }
             else
             {

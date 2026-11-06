@@ -1287,18 +1287,18 @@ NiTexturePtr CItemUgcMeshContainer::FUN_141426e30()
 }
 
 // ---- raw glue of the node-set / material-slot / pick-mask helpers (no source-level owner is recovered for these) ----
-void FUN_1414280a0(void* pPtr, void* pOld);
+// (was: void FUN_1414280a0(void* pPtr, void* pOld);)
 void FUN_141428560(void* pNode);
 void* FUN_141427210(void* pIter);
 void* FUN_1412095f0(void* pSet);
 void** FUN_140553e80(void* pSet);
-void FUN_1405408b0(void* pOut, void* pNode, void* pTree);
-void* FUN_141427160(void* pSet, void* pKey);
-void* FUN_141428500(void* pSet, void* pOut, void* pKey);
-void* FUN_141428280(void* pSet, void* pOut) noexcept;
-void FUN_141428070(void* pPtr);
+// (0x1405408b0 is the _Tree_const_iterator<map<CStringA, CStringA>> (_Nodeptr, const _Mytree*) ctor)
+// (was: void* FUN_141427160(void* pSet, void* pKey);)
+// (was: void* FUN_141428500(void* pSet, void* pOut, void* pKey);)
+// (was: void* FUN_141428280(void* pSet, void* pOut) noexcept;)
+// (was: void FUN_141428070(void* pPtr);)
 bool FUN_1405411b0(void* pIterA, void* pIterB);
-void* FUN_1405541f0(void* pSet, void* pNode);
+// (was: void* FUN_1405541f0(void* pSet, void* pNode);)
 void* FUN_140554040(void* pSet);
 bool FUN_140552a70(void* pLess, void* pKey, void* pNode);
 
@@ -1326,20 +1326,20 @@ void* FUN_1414273e0(void* pDst, int)            // raw reset of the held pointer
     return pDst;
 }
 
-// @0x141427400
-void* FUN_141427400(void* pDst, void* pObj)     // raw smart pointer attach
-{
-    ((Unk_UmPtrView*)pDst)->m_p = pObj;
-    FUN_141428070(pDst);
-    return pDst;
-}
+// 0x141427400 / 0x141428070 are the real MS2Ptr<CItemUgcMesh>(CItemUgcMesh*) ctor and AddRef (the `spMesh(new CItemUgcMesh)` above); the raw twins are gone
+//
+//
+//
+//
+//
+//
 
-// @0x141428070
-void FUN_141428070(void* pPtr)                  // raw AddRef of the held pointer
-{
-    if (((Unk_UmPtrView*)pPtr)->m_p)
-        FUN_1414280a0(pPtr, 0);
-}
+//
+//
+//
+//
+//
+//
 
 struct Unk_UgcRawHead { char* m_p; };
 
@@ -1422,36 +1422,36 @@ bool FUN_141428240(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness
     return ((std::set<efd::SmartPointer<NiAVObject>>*)pSet)->size() == 0;
 }
 
-// @0x141428280
-void* FUN_141428280(void* pSet, void* pOut) noexcept     // raw end iterator (std::set::end, noexcept)
-{
-    void** pHead = (void**)&((Unk_UmStrMapCA*)pSet)->_Get_data();
-    FUN_1405408b0(pOut, *pHead, FUN_141427210(pHead));
-    return pOut;
-}
+// 0x141428280 / 0x1414282e0 / 0x141428500 are the real map<CStringA, CStringA> end / find / lower_bound, instantiated below
+//
+//
+//
+//
+//
+//
 
-// @0x1414282e0
-void* FUN_1414282e0(void* pSet, void** pOut, void* pKey)   // MS2-FUNCTIONAL: raw set find
-{
-    void* itFound;
-    FUN_141428500(pSet, &itFound, pKey);
-    void* itEnd;
-    void* itEnd2;
-    void* itCopy;
-    void** pRes = (void**)(((Unk_UmStrMapCIt*)&itFound)->operator==(*(Unk_UmStrMapCIt*)FUN_141428280(pSet, &itEnd)) ||
-        ((Unk_UmStrMapCA*)pSet)->_Getcomp()(*(CStringA*)pKey, *(CStringA*)FUN_1405541f0(pSet, itFound))
-        ? FUN_141428280(pSet, &itEnd2) : (itCopy = itFound, &itCopy));
-    struct It { void* p; };
-    *(It*)pOut = *(It*)pRes;
-    return pOut;
-}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-// @0x141428500
-void* FUN_141428500(void* pSet, void* pOut, void* pKey) // MS2-FUNCTIONAL: raw lower_bound (iterator(_Lbound(key), _Get_scary()))
-{
-    FUN_1405408b0(pOut, FUN_141427160(pSet, pKey), FUN_141427210(&((Unk_UmStrMapCA*)pSet)->_Get_data()));
-    return pOut;
-}
+typedef std::_Tree<std::_Tmap_traits<CStringA, CStringA, std::less<CStringA>, std::allocator<std::pair<const CStringA, CStringA>>, false>> Unk_UmStrTree;
+template Unk_UmStrTree::iterator Unk_UmStrTree::find(const CStringA&);   // with lower_bound / end; no more _Lbound / _Key stand-ins
+//
+//
+//
+//
 
 // ---- hooks ----
 MS2_REPLACE(0x141422340, FUN_141422340, 650, 0xACEEF5C4);

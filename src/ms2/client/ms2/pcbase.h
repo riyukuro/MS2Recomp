@@ -425,7 +425,7 @@ public:
     void FUN_141676a50(__int64 nUid, int n);                 // 0x141676a50 +0xca8 SetAt
     void FUN_141676ab0(__int64 nUid);                        // 0x141676ab0 +0xca8 RemoveKey
     int FUN_141676b00(__int64 nUid);                         // 0x141676b00 +0xca8 has it
-    void FUN_141678160(const NiPoint3& kPos);                // 0x141678160 m_posBF4 = kPos
+    void FUN_141678160(efd::Point3 kPos);                    // 0x141678160 m_posBF4 = kPos (by value: callers copy into a 16-aligned arg temp)
     unsigned int GetSkillUseDisableMask();                            // 0x141678680 skill-use disable mask (buffs | field)
     int FUN_141678820();                                     // 0x141678820 +0xc68 when the field checks climbing
     int FUN_141679120(int n);                                // 0x141679120 (+0xd00 slot 4)

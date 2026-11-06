@@ -136,13 +136,14 @@ void NiDX9Renderer::SetDeviceLostHeld(bool bHeld)
 3383a
             m_pkD3DDevice9->Present(NULL, NULL, NULL, NULL);    // MS2
 .
-3367a
+3368c
     // MS2: per-frame counters cleared, no frame while the game holds the device lost
     m_uiMS2Unknown_1074 = 0;
     m_uiMS2Unknown_1078 = 0;
-    if (m_bMS2DeviceLostHeld)
-        return false;
+    // (the held check sits in the frame's condition)
 
+
+    if (!m_bMS2DeviceLostHeld && LostDeviceRestore())
 .
 2323a
 // MS2: v2525 (studio, name inferred; exe 0x1427cf790)

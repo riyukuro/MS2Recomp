@@ -34,7 +34,7 @@ public:
     char m_pad_c819[0xc870 - 0xc819];
     Unk_DmgFloatVar m_c870;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/commonfiles/os.h"
@@ -150,8 +150,8 @@ void UIDamageEffect::OnLoadComplete()
 // @0x141910ab0
 void UIDamageEffect::FUN_141910ab0()
 {
-    m_fLowHpPercent = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)FUN_1401d3200())->m_c818)->Read();
-    m_fOption80 = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)FUN_1401d3200())->m_c870)->Read();
+    m_fLowHpPercent = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)GetClientConstants())->m_c818)->Read();
+    m_fOption80 = reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_DmgGlobals*)GetClientConstants())->m_c870)->Read();
 }
 
 // @0x141910b10

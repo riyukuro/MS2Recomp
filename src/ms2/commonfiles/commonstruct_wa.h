@@ -250,7 +250,7 @@ public:
     ~Unk_HistRef();                                // 0x14027e060
     Unk_HistRef& FUN_14027eab0(Unk_HistRef&);      // assign
     bool operator==(CUserChangeableItemHistory*) const;   // 0x14027ed20
-    CUserChangeableItemHistory* operator->() const;       // 0x14027f300
+    CUserChangeableItemHistory* operator->() const { return m_p; }   // 0x14027f300 (ICF: MS2Ptr<CIngredientInfo>::operator T*)
     void* m_unknown; CUserChangeableItemHistory* m_p;
 };
 MS2_CHECK_SIZE(Unk_HistRef, 16);
@@ -293,7 +293,7 @@ class ChangeableProductInfo;
 class Unk_ProdRef {
 public:
     ~Unk_ProdRef();                                // 0x14027e0c0
-    ChangeableProductInfo* operator->() const;     // 0x14027f320
+    ChangeableProductInfo* operator->() const { return m_p; }   // 0x14027f320 (ICF: MS2Ptr<CUserChangeableItemHistory>::operator T*)
     void* m_unknown; ChangeableProductInfo* m_p;
 };
 class ChangeableProductInfo : public CPtred {

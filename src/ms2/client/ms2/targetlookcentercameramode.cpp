@@ -98,8 +98,8 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = g_143b01a60;
         if (m_88 == 0)
         {
-            Vector3 ptEye = m_78.FUN_14097fd50(FUN_14183c370());
-            m_d8.m_pos = ptEye;
+            efd::Point3 ptEye = reinterpret_cast<const efd::Point3&>(m_78) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_14183c370()));
+            m_d8.m_pos = reinterpret_cast<Vector3&>(ptEye);
         }
 
         bool bZoom = false;
@@ -122,7 +122,7 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             Vector3 ptTarget = m_78;
             Vector3 ptDir = ptTarget.FUN_140965c40(ptPos);
             ptDir.FUN_140968990();
-            ptPos.FUN_140a4e560(ptDir.FUN_14097fc90(m_84));
+            ptPos.FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(ptDir) * m_84)));
             float fTargetMove = FUN_140966ea0(ptPrevTarget, m_78);
             float fPosMove = FUN_140966ea0(ptPrevPos, ptPos);
             if (fTargetMove > fPosMove)
@@ -347,7 +347,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
             }
             else
             {
-                m_c0.m_pos = m_c0.m_pos.FUN_14097fd50(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos)));
+                m_c0.m_pos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_c0.m_pos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(t, m_d8.m_pos.FUN_140965c40(m_c0.m_pos))))));
                 if (reinterpret_cast<const efd::Point3&>(m_c0.m_rot) != reinterpret_cast<const efd::Point3&>(m_d8.m_rot))
                     m_c0.m_rot = CCameraMode::FUN_140afdec0(t, m_c0.m_rot, m_d8.m_rot);
             }

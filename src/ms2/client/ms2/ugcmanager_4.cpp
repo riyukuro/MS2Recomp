@@ -329,7 +329,7 @@ public:
     virtual void vfunc_52(); virtual void vfunc_53();
     virtual int vfunc_54(CStringW strPath, CStringW strArg, int nKind, CStringW strUrl);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 void FUN_1410268a0(CString strA, CString strB);
 
@@ -1018,7 +1018,7 @@ int CUgcManager::FUN_1418810c0(const CStringW& strDir, const wchar_t* szFilter)
     D3DXIMAGE_INFO info;
     if (!GetImageFileInfo(strFile, &info))
         return 0;
-    int nLimit = FUN_1401d3200()->UGCImgUploadSizeLimit.Read();
+    int nLimit = GetClientConstants()->UGCImgUploadSizeLimit.Read();
     if ((int)info.Width > nLimit || (int)info.Height > nLimit)
     {
         FUN_140d73aa0(FormatStringId(0x2ea, nLimit, nLimit), 0, 0, L"");
@@ -2540,7 +2540,7 @@ void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    static int s_nCheckTime = FUN_1401d3200()->UgcBannerCheckTime.Read();
+    static int s_nCheckTime = GetClientConstants()->UgcBannerCheckTime.Read();
     Unk_DateParts now;
     FUN_14088dfa0(&now, GetServerTime(), s_nCheckTime);
     CRBMap<int, ReserveBannerInfo> hours(10);
@@ -2795,7 +2795,7 @@ void CUgcManager::RefreshLocalFiles(int nType)
 {
     CAtlArray<MS2Ptr<CUploadFile> > files;
     FUN_14188d380(nType, files);
-    if (files.GetCount() >= *FUN_1401d3200()->UGCImgFileCountCheck.Get())
+    if (files.GetCount() >= *GetClientConstants()->UGCImgFileCountCheck.Get())
         FUN_140d73bc0(0x2e3, 0, 0, L"");
     if (FUN_14188c020(files) == 0)
     {
@@ -3488,8 +3488,8 @@ void CUgcManager::FUN_14188d380(int nType, CAtlArray<MS2Ptr<CUploadFile> >& file
                     D3DXIMAGE_INFO info;
                     if (GetImageFileInfo(strPath, &info) == 0)
                         continue;
-                    if ((int)info.Width > *FUN_1401d3200()->UGCImgUploadSizeLimit.Get()
-                        || (int)info.Height > *FUN_1401d3200()->UGCImgUploadSizeLimit.Get())
+                    if ((int)info.Width > *GetClientConstants()->UGCImgUploadSizeLimit.Get()
+                        || (int)info.Height > *GetClientConstants()->UGCImgUploadSizeLimit.Get())
                         continue;
                     CFileTime tWrite(fd.ftLastWriteTime);
                     CFileTime tCreate(fd.ftCreationTime);
@@ -3878,7 +3878,7 @@ void CUgcManager::FUN_14188fbd0()
         MS2Ptr<CUgcUploadCtrl> spCtrl = GetCurrentUpload();
         if (spCtrl.get() != 0 && !m_str1b0.IsEmpty() && !m_str1b8.IsEmpty())
         {
-            if (((class Unk_UgcPlatform*)FUN_140d86260())->vfunc_54(m_str1b0, L"", spCtrl->m_nKind, m_str1b8) == 1)
+            if (((class Unk_UgcPlatform*)((void*)GetClientPlatform()))->vfunc_54(m_str1b0, L"", spCtrl->m_nKind, m_str1b8) == 1)
                 FUN_141275260(0x465, 1, 1);
         }
     }

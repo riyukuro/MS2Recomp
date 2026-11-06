@@ -74,7 +74,7 @@ class Unk_140166410* FUN_140166410();   // C3: was CFeatureManager*
 class UIWebBrowser : public UIWebBrowserBase { };
 namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
 struct Unk_GachaClient { char m_pad[0xe858]; Common::Constants::Value<CString> m_url; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class CMsgBoxData : public CPtred
 {
 public:
@@ -111,7 +111,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 MS2Ptr<CItemData> FUN_14053f870(int);
 UIWebBrowser* FUN_140c43790(int);
-ItemGachaBoxTable* FUN_14052d230();
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 static bool FUN_140c43260(Unk_GachaDrop a, Unk_GachaDrop b);
 
 // @0x140c43830
@@ -392,7 +392,7 @@ void UIItemGachaBoxDialog::FUN_140c41c30(int itemId)
     if (box->FUN_140527840() == 0)
         return;
     int gachaId = reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
-    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
+    GachaBoxDataPtr gacha = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(gachaId);
     if (gacha == 0)
         return;
     m_boxItemId = itemId;
@@ -427,7 +427,7 @@ void UIItemGachaBoxDialog::OnOpenCoinShop()
     if (data == 0)
         return;
     int gachaId = static_cast<Unk_GachaData*>(data.operator->())->GetOpenGachaBoxParam0();
-    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
+    GachaBoxDataPtr gacha = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(gachaId);
     if (gacha == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::SystemShop), 0);
@@ -442,7 +442,7 @@ void UIItemGachaBoxDialog::FUN_140c42050()
 {
     UIWebBrowser* browser = FUN_140c43790(0x4e6a);
     if (browser != 0) {
-        CString url = *((struct Unk_GachaClient*)FUN_1401d3200())->m_url.Get();
+        CString url = *((struct Unk_GachaClient*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_url.Get();
         if (!url.IsEmpty())
             browser->FUN_14135ec00(url, true);
     }
@@ -507,7 +507,7 @@ GachaBoxDataPtr UIItemGachaBoxDialog::FUN_140c43110()
     if (box == 0)
         return GachaBoxDataPtr(0);
     int gachaId = reinterpret_cast<ItemFunctionArgs*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
-    GachaBoxDataPtr gacha = FUN_14052d230()->GetBox(gachaId);
+    GachaBoxDataPtr gacha = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(gachaId);
     if (gacha == 0)
         return GachaBoxDataPtr(0);
     return gacha;

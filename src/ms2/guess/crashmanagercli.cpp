@@ -57,7 +57,7 @@ public:
 };
 CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_141b6db40(size_t nSize);
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 void FUN_140a43b20();
@@ -124,7 +124,7 @@ void FUN_140a439b0(void*)
 // @0x140a439d0
 void FUN_140a439d0()
 {
-    ((class IClientPlatform*)FUN_140d86260())->vfunc_23(10, "Crash");
+    ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_23(10, "Crash");
     DWORD dwThread = GetCurrentThreadId();
     if (g_dwCrashMainThreadId == dwThread)
     {

@@ -239,8 +239,8 @@ static ATL::CAtlMap<unsigned int, bool> g_mapTaxi;
 struct Unk_Ref { void* m_pObj; void* m_pCtrl; };            // counted handle: object + control block
 struct Unk_NpcData { char m_pad[0x18]; int m_nId; };
 struct Unk_NpcRow { char m_pad[0x50]; CString m_strModel; };
-struct Unk_EntryArray { char m_raw[8]; };
-struct Unk_SpawnGroup { char m_pad[0x28]; Unk_EntryArray m_entries; };
+// (Unk_EntryArray / Unk_SpawnGroup views gone: callers use CRegionSpawnResult::m_aProb through the real
+//  MS2Ptr<CRegionSpawnResult>::operator-> (0x1406d5cb0, the accessor FindSpawnResult calls for pResult->).)
 struct Unk_XmlNodeBuf { char m_raw[0x90]; };
 
 typedef ATL::CAtlArray<void*, ATL::CElementTraits<void*> > Unk_PtrArray;
@@ -293,7 +293,6 @@ TPtr<CFieldSpawnTag> FUN_1403728d0(int nFieldId, int nSpawnPointId);   // the sp
 struct Unk_SpawnMgr { char m_pad[8]; char m_groups[1]; };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void* FUN_14182fd90(Unk_Ref* pRef);
-Unk_SpawnGroup* FUN_1406d5cb0(Unk_Ref* pRef);
 typedef ATL::CAtlArray<MS2Ptr<CRegionSpawnProb> > Unk_ProbArray;   // CRegionSpawnResult::m_aProb
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
 MS2Ptr<CNpcData> FUN_1406cd330(int nId);   // the npc data row
@@ -795,8 +794,8 @@ bool FUN_1418226b0(bool bLog)
                             MS2Ptr<CRegionSpawnResult> group = ((CNpcDataTable*)(void*)((struct Unk_SpawnMgr*)FUN_1406d6e90())->m_groups)->FindSpawnResult(CStringW(region->tag),
                                           region->difficultyMin, region->difficulty);
                             if (FUN_14182fd90((Unk_Ref*)&group) != 0) {
-                                for (unsigned int i = 0; i < ((const Unk_ProbArray*)&FUN_1406d5cb0((Unk_Ref*)&group)->m_entries)->GetCount(); i++) {
-                                    MS2Ptr<CRegionSpawnProb> entry(((const Unk_ProbArray*)&FUN_1406d5cb0((Unk_Ref*)&group)->m_entries)->operator[](i));
+                                for (unsigned int i = 0; i < ((const Unk_ProbArray*)&group->m_aProb)->GetCount(); i++) {
+                                    MS2Ptr<CRegionSpawnProb> entry(((const Unk_ProbArray*)&group->m_aProb)->operator[](i));
                                     if (!(entry->m_pSpawn == 0)) {
                                         int nNpcId = entry->m_pSpawn->m_nNpcId;
                                         MS2Ptr<NpcDataCli> npcRow = ((NpcDataTableCli*)(void*)FUN_1406d6e90())->Find(nNpcId);
@@ -1158,12 +1157,12 @@ FUN_1418301d0(std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<s
     return pIter;
 }
 
-void FUN_140a2c340(Unk_Ref* pRef);   // ~TPtr<CNpcSpawnData> (the member call is 2 bytes longer here)
+// (0x140a2c340 is TPtr<CNpcSpawnData>::~TPtr)
 
 // @0x1418308d0
 Unk_Ref* FUN_1418308d0(Unk_Ref* pRef, unsigned int nFlags)
 {
-    FUN_140a2c340(pRef);
+    reinterpret_cast<TPtr<CNpcSpawnData>*>(pRef)->TPtr<CNpcSpawnData>::~TPtr();
     if (nFlags & 1)
         operator delete(pRef, sizeof(Unk_Ref));
     return pRef;
@@ -1194,3 +1193,4 @@ size_t FUN_1418311c0(Unk_RefArrayA* pArray)
 // fx25: the TPtredDummy<CAtlList<...>> vftables (external now that the namespace is named; RTTI names carry the exe's anonymous hash)
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@6B@ 0x142f82280
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@6B@ 0x142f82290
+// MS2-PIN: ??C?$MS2Ptr@VCRegionSpawnResult@@@@QEBAPEAVCRegionSpawnResult@@XZ 0x1406d5cb0

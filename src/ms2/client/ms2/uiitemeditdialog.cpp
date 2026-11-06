@@ -102,7 +102,7 @@ struct Unk_IEConstants
     Unk_AvTextCfg m_cc50;                       // +0xcc50 the item edit guide
 };
 MS2_CHECK_OFFSET(Unk_IEConstants, m_cc50, 0xcc50);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The player and its equipment.
 struct Unk_EquipItemData : CItemData {};
@@ -244,7 +244,7 @@ void UIItemEditDialog::OnLoadComplete()
     m_1a8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
     if (m_30.get())
     {
-        CString strGuide = ((struct Unk_IEConstants*)FUN_1401d3200())->m_cc50;
+        CString strGuide = ((struct Unk_IEConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_cc50;
         m_30->Invoke("initData", strGuide);
     }
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab",

@@ -39,7 +39,7 @@ public:
     char m_pad_0000[0x6b00];
     Unk_ExpCfg m_6b00;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 struct Unk_ExpCfgData { char m_pad_00[8]; unsigned char m_bShowPoint; };
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
@@ -224,7 +224,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             float fShow = (std::min)(100.0f, fPct);
             if (DAT_143ab28a8 != 0)
                 fShow = (std::max)(0.01f, fShow);
-            unsigned int nUnit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_ExpGlobals*)FUN_1401d3200())->m_6b00)->Get() / 100;
+            unsigned int nUnit = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_ExpGlobals*)GetClientConstants())->m_6b00)->Get() / 100;
             strText += FUN_14028dfa0(CStringW(L"s_tooltip_rest_exp"), nLevel, fShow, nUnit);
             if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);

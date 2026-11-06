@@ -43,7 +43,7 @@ public:
 bool FUN_14028d470(float a, float b);                               // nearly equal
 __int64 FUN_14028d260(float f);                                     // float -> fixed
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
-Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
+efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
 class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141489940(PCBase* p);
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
@@ -136,7 +136,7 @@ bool CMotionController::vfunc_5(double fTime)
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(m_pTarget);
         if (pPc != 0 && FUN_141489940(pPc) == 10)
         {
-            Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
+            Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)).FUN_140ae9180(180.0f);
             Vector3 kAxis = DAT_143a08cd8;
             Unk_EfdMatrix3 mxEuler;
             reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
@@ -153,9 +153,9 @@ bool CMotionController::vfunc_5(double fTime)
         float fRad = (fTiltAngle * 3.1415927f) / 180.0f;
         if (0.0f < fRad)
         {
-            Vector3 kAxis = kDir.FUN_140a00e10(DAT_143a08cf8);
-            kAxis.FUN_140968990();
-            mxTilt.FUN_14107cc40(-fRad, kAxis);
+            efd::Point3 kAxis = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+            kAxis.Unitize();
+            mxTilt.FUN_14107cc40(-fRad, reinterpret_cast<Vector3&>(kAxis));
             kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kDir)));
         }
     }
@@ -191,12 +191,12 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     PCBase* pPc = efd::DynamicCast<PC, PCBase>(pTarget);
     if (pPc != 0 && FUN_141489940(pPc) == 10)
     {
-        Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
-        Vector3 kAxis = DAT_143a08cd8.FUN_1409f7960();
+        Vector3 kEuler = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_pData->m_kDir) * 3.1415927f)).FUN_140ae9180(180.0f);
+        efd::Point3 kAxis = -reinterpret_cast<const efd::Point3&>(DAT_143a08cd8);
         Unk_EfdMatrix3 mxEuler;
         reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-        kAxis = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxEuler) * reinterpret_cast<const efd::Point3&>(kAxis)));
-        kBase = kAxis;
+        kAxis = static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxEuler) * kAxis);
+        kBase = reinterpret_cast<Vector3&>(kAxis);
     }
     else
     {
@@ -218,18 +218,18 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     float fRad = (fAngle * 3.1415927f) / 180.0f;
     if (0.0f < fRad)
     {
-        Vector3 kAxis = kRot.FUN_140a00e10(DAT_143a08cf8);
-        kAxis.FUN_140968990();
-        mxTilt.FUN_14107cc40(-fRad, kAxis);
+        efd::Point3 kAxis = reinterpret_cast<const efd::Point3&>(kRot).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
+        kAxis.Unitize();
+        mxTilt.FUN_14107cc40(-fRad, reinterpret_cast<Vector3&>(kAxis));
         kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kRot)));
     }
     m_kDir = kRot;
     if (!FUN_14028d470(m_pData->m_fSpeedScale, 0))
         fSpeed = m_pData->m_fSpeedScale;
-    m_kEndPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_14097fd50(m_kDir.FUN_14097fc90(fSpeed));
+    m_kEndPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())))) + reinterpret_cast<const efd::Point3&>(m_kDir) * fSpeed));
     m_fCtrlHeight = fCtrlHeight;
     m_fCtrlWeight = fCtrlWeight;
-    m_kCtrlPos = m_kStartPos.FUN_14097fc90(m_fCtrlWeight).FUN_14097fd50(m_kEndPos.FUN_14097fc90(1.0f - m_fCtrlWeight));
+    m_kCtrlPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_kStartPos) * m_fCtrlWeight + reinterpret_cast<const efd::Point3&>(m_kEndPos) * (1.0f - m_fCtrlWeight)));
     m_kCtrlPos.z = m_kCtrlPos.z + m_fCtrlHeight;
     m_kMove = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     m_fSpeedLimit = FUN_141b71550(m_kStartPos, m_kCtrlPos, m_kEndPos);
@@ -260,12 +260,12 @@ bool CArcMotionController::vfunc_5(double fTime)
         fT = 0.0f;
     if (1.0f < fT)
         fT = 1.0f;
-    Vector3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
+    efd::Point3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
     FUN_1414894f0(((void*)GetLogString()), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
-    m_kDir = kPos.FUN_140965c40(m_kMove);
+    m_kDir = reinterpret_cast<Vector3&>(kPos).FUN_140965c40(m_kMove);
     m_kHeading = m_kDir;
     m_kDir.FUN_140968990();
-    m_kMove = kPos;
+    m_kMove = reinterpret_cast<Vector3&>(kPos);
     return true;
 }
 
@@ -315,7 +315,7 @@ bool CLinearMotionController::vfunc_5(double fTime)
     }
     if (m_pTarget->FUN_1416725c0(reinterpret_cast<NiPoint3&>(m_kDir), m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
     {
-        m_kMove = m_kDir.FUN_14097fc90(m_fSpeed);
+        m_kMove = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_kDir) * m_fSpeed));
     }
     else
     {
@@ -395,7 +395,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
     }
     if (m_pTarget->FUN_1416725c0(reinterpret_cast<NiPoint3&>(m_kDir), m_fSpeed * 100.0f, 750.0f, 0.0f) == 0)
     {
-        m_kMove = m_kDir.FUN_14097fc90(m_fSpeed);
+        m_kMove = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_kDir) * m_fSpeed));
     }
     else
     {

@@ -48,7 +48,7 @@ public:
     char m_pad[0x6aa8];
     Unk_BmConstInt m_nRegisterFee;                      // +0x6aa8
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Black market dialog entry points taking a product (the dialog header types them with the page's own entry class).
 
@@ -487,7 +487,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
         break;
     case 37:
-        FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_BmConstants*)FUN_1401d3200())->m_nRegisterFee)->Get(), BlockFormat(0x5a5)), 0, 0,
+        FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_BmConstants*)GetClientConstants())->m_nRegisterFee)->Get(), BlockFormat(0x5a5)), 0, 0,
                       CStringW(L""));
         break;
     case 38:

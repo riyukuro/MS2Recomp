@@ -25,8 +25,8 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);   // 41
     virtual void vfunc_43();                                    // 43
     virtual bool vfunc_47();                                    // 47
-    virtual void vfunc_48(int n);                               // 48 0x1422e7b20 show
-    virtual void vfunc_49(int n);                               // 49 0x1422e7bd0 hide
+    virtual int vfunc_48(int n);                                // 48 0x1422e7b20 show
+    virtual int vfunc_49(int n);                                // 49 0x1422e7bd0 hide
     virtual void vfunc_50();
     virtual void vfunc_51();
     virtual void vfunc_52();
@@ -64,8 +64,8 @@ public:
     virtual int vfunc_13();                                     // 13 0x141acdc70
     virtual int vfunc_14();                                     // 14 0x141acde00
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acde60
-    virtual void vfunc_48(int n);                               // 48 0x141acdaf0
-    virtual void vfunc_49(int n);                               // 49 0x141acdc20
+    virtual int vfunc_48(int n);                                // 48 0x141acdaf0
+    virtual int vfunc_49(int n);                                // 49 0x141acdc20
 };
 MS2_CHECK_SIZE(UISceneLobby, 0xa8);
 
@@ -77,8 +77,8 @@ public:
     virtual CString GetTypeName();                                  //  1 0x141acdfe0 "SceneLobbyCreate"
     virtual void vfunc_12();                                    // 12 0x141ace1b0
     virtual void OnLoadComplete();                              // 22 0x141ace030
-    virtual void vfunc_48(int n);                               // 48 0x141ace0b0
-    virtual void vfunc_49(int n);                               // 49 0x141ace0e0
+    virtual int vfunc_48(int n);                                // 48 0x141ace0b0
+    virtual int vfunc_49(int n);                                // 49 0x141ace0e0
 };
 MS2_CHECK_SIZE(UISceneLobbyCreate, 0xa8);
 
@@ -91,8 +91,8 @@ public:
     virtual CString GetTypeName();                                  //  1 0x141ace2f0 "SceneLobbySelect"
     virtual void vfunc_12();                                    // 12 0x141ace4d0
     virtual void OnLoadInit();                                  // 20 0x141ace520
-    virtual void vfunc_48(int n);                               // 48 0x141ace340
-    virtual void vfunc_49(int n);                               // 49 0x141ace370
+    virtual int vfunc_48(int n);                                // 48 0x141ace340
+    virtual int vfunc_49(int n);                                // 49 0x141ace370
     virtual void vfunc_57();                                    // 57 0x141ace600
     virtual void vfunc_58();                                    // 58 0x141ace470
     virtual int vfunc_62();                                     // 62 0x141ace620
@@ -112,8 +112,8 @@ public:
     virtual ~UISceneLobbyServer();                              //  0 0x141ace780 (??_G 0x141acea70)
     virtual CString GetTypeName();                                  //  1 0x141ace7c0 "SceneLobbyServer"
     virtual void OnLoadInit();                                  // 20 0x141ace8b0
-    virtual void vfunc_48(int n);                               // 48 0x141ace810
-    virtual void vfunc_49(int n);                               // 49 0x141ace840
+    virtual int vfunc_48(int n);                                // 48 0x141ace810
+    virtual int vfunc_49(int n);                                // 49 0x141ace840
     virtual void vfunc_55();                                    // 55 0x141ace970
     virtual void vfunc_60(MS2Ptr<AScript> spBackground);        // 60 0x141ace900
     virtual void vfunc_64();                                    // 64 0x141ace9a0

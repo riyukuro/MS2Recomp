@@ -10,7 +10,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/worldservice_real.h"   // C3: the map payload types for pointer_traits::pointer_to
-
+#include "ms2/placeholder/ms2ptr_impl.h"   // ~MS2Ptr<WsReal::Recad0> for the try_emplace pair dtor
 typedef __int64 i64;
 typedef unsigned __int64 u64;
 
@@ -21,10 +21,10 @@ void* FUN_141beef50(void* pMap, void* pKeyBuf, void* pKey);   // insert, returns
 // 0x141bef010 = std::map<unsigned __int64, Unk_WsV1d8>::try_emplace<>
 // 0x141bef050 = std::map<unsigned __int64, Unk_WsV2e8>::try_emplace<>
 void* FUN_141bef090(void* pMap, void* pKeyBuf, void* pKey);
-void* FUN_141bef0d0(void* pMap, void* pKeyBuf, void* pKey);
-void* FUN_1403b8210(void* pKey);                               // key normalisation
+// 0x141bef0d0 = std::map<unsigned __int64, MS2Ptr<WsReal::Recad0>>::try_emplace<> (WsReal::Mapad0)
+// (0x1403b8210 is std::move<unsigned __int64&>)
 
-void* FUN_141c288b0(void* pMap);
+// (0x141c288b0 = WsReal::Veca18::_Myfirst, pinned in worldservice_9)
 
 // The nine per-type node accessors' callees (payload pointer derived from the node).
 void* FUN_141c2e9f0(void* pNode);
@@ -103,14 +103,14 @@ u64 FUN_141bf7ad0(void* pMap, void* pKey)
 u64 FUN_141bf7b10(void* pMap, void* pKey)
 {
     Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7ed0(FUN_141bef090(pMap, &keybuf, FUN_1403b8210(pKey))) + 8;
+    return (u64)FUN_141bf7ed0(FUN_141bef090(pMap, &keybuf, (void*)&static_cast<const unsigned __int64&>(std::move(*static_cast<unsigned __int64*>(pKey))))) + 8;
 }
 
 // @0x141bf7b50
 u64 FUN_141bf7b50(void* pMap, void* pKey)
 {
-    Unk_InsertPair keybuf;
-    return (u64)FUN_141bf7ed0(FUN_141bef0d0(pMap, &keybuf, pKey)) + 8;
+    // the pair<iterator, bool> scratch is the try_emplace result temp
+    return (u64)FUN_141bf7ed0((void*)&reinterpret_cast<const Unk_InsertPair&>(static_cast<const std::pair<WsReal::Mapad0::iterator, bool>&>(reinterpret_cast<WsReal::Mapad0*>(pMap)->try_emplace(*static_cast<const unsigned __int64*>(pKey))))) + 8;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,7 +126,7 @@ u64 FUN_141bf7b90(void* pMap, u64 i)
 // @0x141bf7bc0
 u64 FUN_141bf7bc0(void* pMap, u64 i)
 {
-    return *(u64*)FUN_141c288b0(pMap) + i * 0x18;
+    return *(u64*)&((WsReal::Veca18*)pMap)->_Myfirst() + i * 0x18;
 }
 
 // @0x141bf7bf0

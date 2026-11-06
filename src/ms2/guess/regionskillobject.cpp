@@ -51,7 +51,7 @@ public:
     char m_pad_00[0x1ce8];
     Unk_RsFloatVar m_fFade;                                     // +0x1ce8
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The effect culler (0x14119f490): is this effect visible at a transform? (the data pointer is passed by value)
 
@@ -217,7 +217,7 @@ void CRegionSkillObject::StopEffects()
 void CRegionSkillObject::FadeOutEffects()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], reinterpret_cast<Common::Constants::Value<float>&>(((class Unk_RsConfig*)FUN_1401d3200())->m_fFade).Read());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], reinterpret_cast<Common::Constants::Value<float>&>(((class Unk_RsConfig*)GetClientConstants())->m_fFade).Read());
 }
 
 // @0x1416f6900

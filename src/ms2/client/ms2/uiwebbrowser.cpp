@@ -77,7 +77,7 @@ class Unk_WbConsts { public:
     Unk_WbInt m_8728;
     Unk_WbBool m_8780;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
 float FUN_14028aed0(float f);
 float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
@@ -125,11 +125,11 @@ void UIWebBrowser::OnLoadInit()
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     m_nSmallSize = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(((MS2Ptr<AScript>*)(&m_30))->operator->()->GetMember("m_textureSize")))->GetUInt();
-    m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8620)->Get();
-    m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_86d0)->Get();
-    m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8678)->Get();
-    m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8728)->Get();
-    m_bResizable = *reinterpret_cast<Common::Constants::Value<bool>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8780)->Get();
+    m_nMinWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)GetClientConstants())->m_8620)->Get();
+    m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)GetClientConstants())->m_86d0)->Get();
+    m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)GetClientConstants())->m_8678)->Get();
+    m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)GetClientConstants())->m_8728)->Get();
+    m_bResizable = *reinterpret_cast<Common::Constants::Value<bool>*>(&((class Unk_WbConsts*)GetClientConstants())->m_8780)->Get();
     if (m_nWidth == 0 && m_nHeight == 0)
     {
         m_nWidth = m_nMaxWidth;

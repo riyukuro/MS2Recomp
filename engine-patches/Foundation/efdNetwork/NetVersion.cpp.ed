@@ -1,0 +1,4 @@
+18,19c
+// MS2: Serialize (0x1428cb000) calls construct out of line
+template<> inline __declspec(noinline) void efd::CustomAllocator<efd::utf8string>::construct(efd::utf8string* p, const efd::utf8string& val) { new ((void*)p) efd::utf8string(val); }
+.

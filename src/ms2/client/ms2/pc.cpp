@@ -657,13 +657,13 @@ PC::PC()
     m_bD40 = true;
     m_colorD98[0] = NiColor(1.0f, 0.925490201f, 0.866666675f);
     m_colorD98[1] = NiColor(0.929411769f, 0.435294122f, 0.341176480f);
-    m_f164 = FUN_1401d3200()->OffsetPcHpbar.Read();
-    m_f168 = FUN_1401d3200()->OffsetPcChatballoon.Read();
-    m_f16c = FUN_1401d3200()->OffsetPcNametag.Read();
+    m_f164 = GetClientConstants()->OffsetPcHpbar.Read();
+    m_f168 = GetClientConstants()->OffsetPcChatballoon.Read();
+    m_f16c = GetClientConstants()->OffsetPcNametag.Read();
     m_f170 = 0.0f;
     m_f174 = 0.0f;
-    m_f178 = FUN_1401d3200()->OffsetPcDamagenumber.Read();
-    m_f17c = FUN_1401d3200()->OffsetPcProfileTag.Read();
+    m_f178 = GetClientConstants()->OffsetPcDamagenumber.Read();
+    m_f17c = GetClientConstants()->OffsetPcProfileTag.Read();
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->RegisterState(1, new StateIdle(this));
     m_spStateMgr->RegisterState(2, new StateWalk(this));
@@ -731,7 +731,7 @@ PC::PC()
     for (size_t i = 0; i < 3; i++)
         m_spGuide1228[i] = 0;
     memset(m_aMastery1150, 0, sizeof(m_aMastery1150));
-    int nTailId = *FUN_1401d3200()->TailEffectDefaultID.Get();
+    int nTailId = *GetClientConstants()->TailEffectDefaultID.Get();
     MS2SvrPtr<TailEffectData> spTail = FUN_140ad0da0()->GetData(nTailId);
     if (spTail)
         m_spTailEffect1270.AssignRaw(new CTailEffectObject(this, spTail));
@@ -875,17 +875,17 @@ void PC::vfunc_12()
         spComp->vfunc_2();
 }
 
-struct PCHitPoint { float x, y, z; };
-// GameObject::vfunc_33 (0x14123cf10) with its parameters typed: the exe forwards the 12-byte hit point by value
-struct GameObjectHitView : GameObject {
-    void FUN_14123cf10(CDamageRecord* pRecord, PCHitPoint pt);
-};
+//
+// GameObject::vfunc_33 (0x14123cf10) takes the 12-byte hit point by value: the exe copies it into an arg temp
+//
+//
+//
 
 // @0x141652080
-void PC::vfunc_33(void* a, void* b)
+void PC::vfunc_33(void* a, efd::Point3 kHit)
 {
 #define pRecord static_cast<CDamageRecord*>(a)
-    static_cast<GameObjectHitView*>(static_cast<GameObject*>(this))->FUN_14123cf10(pRecord, *static_cast<PCHitPoint*>(b));
+    GameObject::vfunc_33(pRecord, kHit);
     vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
     SkillAttackData* pAttack = pRecord->GetAttackData();
     if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
@@ -952,7 +952,7 @@ void PC::vfunc_33(void* a, void* b)
         pState->vfunc_6();
         float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
         AddColorBoost(fX, fY, fZ);
-        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
+        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &GetClientConstants()->VolumeNpcToPc : &GetClientConstants()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
@@ -996,7 +996,7 @@ void PC::vfunc_34(void* p)
         int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
         if (nMaterial == 0)
             break;
-        float fVolume = (nCasterRel == 1 || nCasterRel == 2 ? FUN_1401d3200()->VolumeNpcToMyPc : FUN_1401d3200()->VolumeNpcToPc).Read();
+        float fVolume = (nCasterRel == 1 || nCasterRel == 2 ? GetClientConstants()->VolumeNpcToMyPc : GetClientConstants()->VolumeNpcToPc).Read();
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, 1, nOwnerRel, vfunc_18(), fVolume);
     } while (0);
     FUN_141672020(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
@@ -1075,7 +1075,7 @@ void PC::vfunc_35(void* p)
         pState->vfunc_6();
         float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
         AddColorBoost(fX, fY, fZ);
-        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
+        Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &GetClientConstants()->VolumeNpcToPc : &GetClientConstants()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
@@ -1566,7 +1566,7 @@ MS2Ptr<Unk_PCBaseComp_a78> PC::vfunc_82()
     if ((m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get())
     {
         reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e4c0(0x12);
-        reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorFriendly)));
+        reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorFriendly)));
         m_spA78->vfunc_2();
     }
     return m_spA78;
@@ -2553,7 +2553,7 @@ void PC::FUN_141659790(const CString& strAnim)
 int PC::FUN_14165c1b0(int* pnId, CString* pstrName, float fRange)
 {
     if (FUN_14028d470(fRange, 0))
-        fRange = static_cast<Client::Constants*>(FUN_1401d3200())->FindHoldTargetRange.Get(150.0f);
+        fRange = static_cast<Client::Constants*>(GetClientConstants())->FindHoldTargetRange.Get(150.0f);
     return ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bc9830(pnId, *pstrName, fRange, 0);
 }
 
@@ -4232,7 +4232,7 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
         }
     }
     ItemDropCount kRange;
-    float fDivisor = *FUN_1401d3200()->BothHandGearScorePenaltyDiv.Get();
+    float fDivisor = *GetClientConstants()->BothHandGearScorePenaltyDiv.Get();
     switch (nRings)
     {
     case 0:
@@ -4455,13 +4455,13 @@ void PC::vfunc_53(float f)
         Unk_PCLocalPlayer* pLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal)
         {
-            unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPC));
+            unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorPC));
             if (this == pLocal)
-                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorMyPC));
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorMyPC));
             else if (pLocal->vfunc_122(this))
-                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPCHostile));
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorPCHostile));
             else if (pLocal->FUN_1415278d0((void*)FUN_141656a80()))
-                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorParty));
+                nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorParty));
             reinterpret_cast<UINameTag::Entity*>(pTag)->FUN_141a5e500(nColor);
         }
     }
@@ -4600,8 +4600,8 @@ int PC::vfunc_137()
         FUN_14166ce50(1);
         if (((CPvPInfo*)(FUN_140967420()).operator->())->FUN_140743590() || ((CPvPInfo*)(FUN_140967420()).operator->())->FUN_140743690())
         {
-            float fScale = *FUN_1401d3200()->TimeScalePCScale.Get();
-            ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd92c0(fScale, fScale, *FUN_1401d3200()->TimeScalePCDuration.Get(), 0);
+            float fScale = *GetClientConstants()->TimeScalePCScale.Get();
+            ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd92c0(fScale, fScale, *GetClientConstants()->TimeScalePCDuration.Get(), 0);
         }
         return 1;
     }
@@ -4664,7 +4664,7 @@ void PC::vfunc_23(int n)
 // Collect the scene nodes of the player: the body and every equip model.
 void PC::vfunc_44(void* p)
 {
-    typedef std::list<NiAVObject*, efd::CustomAllocator<NiAVObject*> > NodeList;
+    typedef std::list<NiAVObject*> NodeList;
     static_cast<NodeList*>(p)->clear();
     static_cast<NodeList*>(p)->push_back(FUN_141b6efc0(FUN_14123c410()));
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;

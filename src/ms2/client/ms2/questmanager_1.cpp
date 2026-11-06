@@ -333,7 +333,7 @@ void CQuest::ShowRewards(int reward)
     UIRewardNotify* dialog = FUN_140938cd0(0x4e5d);
     if (dialog) {
         int useBonus = 1;
-        if (m_data->m_level < *FUN_1401d3200()->QuestRewardSAIgnoreLevel.Get()) useBonus = 0;
+        if (m_data->m_level < *GetClientConstants()->QuestRewardSAIgnoreLevel.Get()) useBonus = 0;
         __int64 experience = FUN_140761ba0(id, reward);
         if (experience != 0) {
             float multiplier = 0.0f;

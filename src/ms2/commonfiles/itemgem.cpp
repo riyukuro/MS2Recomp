@@ -33,7 +33,7 @@
 // MS2-PIN: ??0?$CAtlMap@W4Unk_GemSlot@@IV?$CElementTraits@W4Unk_GemSlot@@@ATL@@V?$CElementTraits@I@3@@ATL@@QEAA@IMMMI@Z 0x1405a7ec0
 // MS2-PIN: ??__Es_mapGemSlots@@YAXXZ 0x1400ba010
 // MS2-PIN: memmove_s 0x1405abbe0
-// MS2-PIN: ??1Unk_NoticeCallbackPtr@@QEAA@XZ 0x1405a8560
+// MS2-PIN: ??1?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@QEAA@XZ 0x1405a8560
 // MS2-PIN: ??1NoticeMessage@@QEAA@XZ 0x1405a89e0
 // MS2-PIN: ??1?$MS2Ptr@VCEquipItem@@@@QEAA@XZ 0x1405a85f0
 // MS2-PIN: ?GetStartPosition@?$CAtlMap@W4Unk_GemSlot@@IV?$CElementTraits@W4Unk_GemSlot@@@ATL@@V?$CElementTraits@I@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x1405a99f0
@@ -93,7 +93,7 @@ struct Unk_BannerCfg
     char m_pad_00[0x3050];
     Unk_IdleChance m_slot0, m_slot1, m_slot2, m_slot3, m_slot4, m_slot5, m_slot6, m_slot7, m_slot8, m_slot9;    // +0x3050
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The cast of an actor to ClonePC (class id 0x6200044), NULL when it is none.
 ClonePC* FUN_1405a7e30(PC* pPC);                                    // 0x1405a7e30
@@ -221,16 +221,16 @@ CGemTransparency::CGemTransparency(int nType, int nGemId) : CGemBase(nType, nGem
         m_aHidden[i] = 0;
     if (s_mapGemSlots.GetCount() == 0)
     {
-        s_mapGemSlots.SetAt(Unk_GemSlot_0, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot0)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_1, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot1)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_2, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot2)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_3, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot3)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_4, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot4)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_5, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot5)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_6, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot6)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_7, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot7)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_8, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot8)->Read());
-        s_mapGemSlots.SetAt(Unk_GemSlot_9, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot9)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_0, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot0)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_1, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot1)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_2, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot2)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_3, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot3)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_4, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot4)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_5, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot5)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_6, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot6)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_7, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot7)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_8, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot8)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_9, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_slot9)->Read());
     }
 }
 

@@ -63,7 +63,7 @@ public:
     char m_pad_0[0xe608];
     int m_nReadySeconds;                                           // +0xe608
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 extern __int64 DAT_143ab2828;                                      // my character id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -275,7 +275,7 @@ void PartyVoteReadyCli::vfunc_3()
     TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
-        reinterpret_cast<UIPartyDialog*>(pDialog)->SetDeadline((int)GetTickCountMs2() + ((class Unk_PartyConsts*)FUN_1401d3200())->m_nReadySeconds * 1000);
+        reinterpret_cast<UIPartyDialog*>(pDialog)->SetDeadline((int)GetTickCountMs2() + ((class Unk_PartyConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nReadySeconds * 1000);
 }
 
 // @0x140a8a040

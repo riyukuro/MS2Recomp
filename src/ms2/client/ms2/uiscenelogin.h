@@ -27,8 +27,8 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);   // 41
     virtual void vfunc_43();                                    // 43
     virtual bool vfunc_47();                                    // 47
-    virtual void vfunc_48(int n);                               // 48 0x1422e7b20 show
-    virtual void vfunc_49(int n);                               // 49 0x1422e7bd0 hide
+    virtual int vfunc_48(int n);                                // 48 0x1422e7b20 show
+    virtual int vfunc_49(int n);                                // 49 0x1422e7bd0 hide
     virtual void vfunc_50();
     virtual void vfunc_51();
     virtual void vfunc_52();
@@ -64,8 +64,8 @@ public:
     virtual void vfunc_15();                                    // 15 0x141aceef0 per-frame
     virtual void OnLoadComplete();                              // 22 0x141acf1f0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acf2f0
-    virtual void vfunc_48(int n);                               // 48 0x141acece0 show
-    virtual void vfunc_49(int n);                               // 49 0x141acee00 hide
+    virtual int vfunc_48(int n);                                // 48 0x141acece0 show
+    virtual int vfunc_49(int n);                                // 49 0x141acee00 hide
     virtual void vfunc_55();                                    // 55 0x141aceec0
     virtual void vfunc_60(MS2Ptr<AScript> spBackground);        // 60 0x141acf190 the background is ready
     virtual void vfunc_61(MS2Ptr<AScript> spBackground, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 61 0x141acf0a0

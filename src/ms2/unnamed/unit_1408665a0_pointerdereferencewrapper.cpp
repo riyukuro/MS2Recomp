@@ -4,14 +4,14 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
-
-void** FUN_140864d80(void* node);
+#include <deque>
+class _CTaxiPathInfo; template <class T> class Unk_TaxiPtr;   // 0x140864d80 = _Deque_alloc<..Unk_TaxiPtr<_CTaxiPathInfo>..>::_Mysize() const (taximanager)
 void* FUN_1408665a0(void* node);
 
 // @0x1408665a0
 void* FUN_1408665a0(void* node)
 {
-    return *FUN_140864d80(node);
+    return (void*)((const std::_Deque_alloc<std::_Deque_base_types<Unk_TaxiPtr<_CTaxiPathInfo>, std::allocator<Unk_TaxiPtr<_CTaxiPathInfo>>>>*)node)->_Mysize();
 }
 
 // The argument is the node's first member.

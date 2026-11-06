@@ -293,7 +293,7 @@ struct Unk_FcConstTable
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_range, 0x13f8);
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_eat, 0x93f8);
 MS2_CHECK_OFFSET(Unk_FcConstTable, m_near, 0xdfe0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // UI windows this unit opens (classes of other units; only what is called).
 class Unk_FcUIMgr
@@ -800,7 +800,7 @@ void CFunctionCubeObject::PlayHitSoundAtPosition(int nSound)
 {
     Vector3 vPos;
     m_ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
-    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_range)->Read();
+    float fRange = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_range)->Read();
     TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(nSound, m_n60, 1, reinterpret_cast<NiPoint3&>(vPos), fRange);
 }
 
@@ -934,7 +934,7 @@ void CFunctionCubeObject::FUN_141227950()
             kFlyBy.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
             kFlyBy.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
             kFlyBy.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
-            kFlyBy.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+            kFlyBy.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
             kFlyBy.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
             kFlyBy.m_to.m_0 = kFlyBy.m_from.m_0;
             kFlyBy.m_to.m_4 = kFlyBy.m_from.m_4;
@@ -963,7 +963,7 @@ void CFunctionCubeObject::FUN_141227950()
             kFlyBy.m_from.m_0 = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
             kFlyBy.m_from.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
             kFlyBy.m_from.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
-            kFlyBy.m_from.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
+            kFlyBy.m_from.m_c = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10()));
             kFlyBy.m_from.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
             kFlyBy.m_to.m_0 = kFlyBy.m_from.m_0;
             kFlyBy.m_to.m_4 = kFlyBy.m_from.m_4;
@@ -1494,7 +1494,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             Vector3 vRot = DAT_143b01a60;
             reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
             reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(vRot));
-            vPos = vPos.FUN_14097fd50(reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_vOffset);
+            vPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(vPos) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_vOffset))));
             FUN_140de8bd0(reinterpret_cast<egf::Entity*>(m_entPet.operator->()), 0x12383cea, &kAsset);
             m_entPet->SetPropertyValue<efd::utf8string>(0x3ff293c8, efd::utf8string((LPCSTR)FUN_1409a2360("Idle_A", 0)));
             m_entPet->SetPropertyValue<efd::Point3>(0xfd95ca52, (const efd::Point3&)(vPos));
@@ -1858,7 +1858,7 @@ void CNurturingCubeObject::vfunc_3()
         if (((class MyPC*)(class Unk_FcActor*)(pActor))->IsDailyRecordStale() != 0)
             ((class MyPC*)(class Unk_FcActor*)(pActor))->ResetDailyRecords();
         float fDist = const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))).FUN_140965c40(GetPosition()).FUN_140967ac0();
-        unsigned nNear = fDist < *((Common::Constants::Value<float>*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_near))->Get();
+        unsigned nNear = fDist < *((Common::Constants::Value<float>*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)GetClientConstants())->m_near))->Get();
         if ((unsigned)m_bNear != nNear)
         {
             m_bNear = nNear;
@@ -1932,9 +1932,9 @@ int CNurturingCubeObject::FUN_14122bda0()
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<CubeMapInformationService>&>(spSvc).operator->())->GetCubeByKey(::FUN_14112e110(reinterpret_cast<char*>(this))));
     if (pRow == 0)
         return 0;
-    if (m_obj.m_strQuestTag != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get())
+    if (m_obj.m_strQuestTag != *reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_owner)->Get())
         return 0;
-    if (reinterpret_cast<CGameRule*>(FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_owner)->Get()) == 0)
+    if (reinterpret_cast<CGameRule*>(FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants::Value<CStringW>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_owner)->Get()) == 0)
         return 0;
     if (FUN_14122c340() != 0)
     {
@@ -1954,13 +1954,13 @@ int CNurturingCubeObject::FUN_14122bda0()
             FUN_14122c7b0(1);
             return 0;
         }
-        unsigned nEat = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat)->Get();
+        unsigned nEat = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_eat)->Get();
         if (nEat == 0)
         {
             m_bNotice = 0;
             return 1;
         }
-        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb20() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat)->Get())
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb20() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_eat)->Get())
         {
             m_bNotice = 0;
             return 1;
@@ -1974,7 +1974,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             FUN_14122c7b0(4);
             return 0;
         }
-        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb50() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play)->Get())
+        if (((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb50() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_play)->Get())
         {
             m_bNotice = 0;
             return 1;
@@ -2020,7 +2020,7 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
         {
             if (((class CubeMapInformationService*)(void*)(FUN_1409670e0()))->FUN_1410c3180() == ((class PC*)(class Unk_FcActor*)(pActor))->FUN_141656ad0())
             {
-                unsigned nEat = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_eat)->Get();
+                unsigned nEat = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_eat)->Get();
                 if (nEat == 0)
                 {
                     CStringW str = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_nurturing_eat_success_nocount"), FUN_1401aa6a0(FUN_14122c410()));
@@ -2037,7 +2037,7 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
             {
                 unsigned nDone = ((class MyPC*)(class Unk_FcActor*)(pActor))->FUN_14152eb50();
                 CStringW str = FUN_14028dfa0<CStringW, unsigned int, unsigned int>(CStringW(L"s_msg_nurturing_play_success"), FUN_1401aa6a0(FUN_14122c410()), nDone,
-                    *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_play)->Get());
+                    *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((struct Unk_FcConstTable*)GetClientConstants())->m_play)->Get());
                 FUN_1412751f0(str, 1, 1);
             }
         }

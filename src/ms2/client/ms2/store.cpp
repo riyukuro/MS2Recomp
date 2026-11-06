@@ -49,7 +49,7 @@ struct Unk_AuConfig                                              // the account 
     Unk_GuildConstInt m_44a8, m_4500, m_4558, m_45b0;
 };
 MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 int FUN_1408b6200(int nType);
 struct Unk_SsMap;
 int FUN_14052a7e0(MS2Ptr<CItem> a, MS2Ptr<CItem> b);
@@ -484,7 +484,7 @@ int CStore::CurrentCapacity()
     if (m_id != 0) {
         return Capacity();
     }
-    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_44a8)->Get() + 0x24;
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_44a8)->Get() + 0x24;
 }
 
 // @0x140de2a00
@@ -504,19 +504,19 @@ void CStore::ResetId(__int64 nId, int nType)
 // @0x140de2a80
 __int64 CStore::Value4558()
 {
-    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4558)->Get();
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_4558)->Get();
 }
 
 // @0x140de2ab0
 __int64 CStore::Value45b0()
 {
-    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_45b0)->Get();
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_45b0)->Get();
 }
 
 // @0x140de2ae0
 __int64 CStore::Value4500()
 {
-    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_4500)->Get();
+    return *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_AuConfig*)GetClientConstants())->m_4500)->Get();
 }
 
 // @0x140de2b10

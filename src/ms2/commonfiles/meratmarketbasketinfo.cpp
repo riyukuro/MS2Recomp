@@ -2382,7 +2382,7 @@ MS2_REPLACE(0x1406A50B0, FUN_1406a50b0, 342, 0xAA1BDA17);
 // @0x1406a5210
 __int64 FUN_1406a5210()
 {
-    return *FUN_1401d3200()->UGCShopAdFeeMerat.Get();
+    return *GetClientConstants()->UGCShopAdFeeMerat.Get();
 }
 MS2_REPLACE(0x1406A5210, FUN_1406a5210, 31, 0x68635521);
 
@@ -2411,7 +2411,7 @@ MS2_REPLACE(0x1406A52B0, FUN_1406a52b0, 66, 0x92C790EB);
 // @0x1406a5300
 __int64 FUN_1406a5300(unsigned nItemId)
 {
-    __int64 nPrice = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMinPrice);
+    __int64 nPrice = FUN_1406a6d50(GetClientConstants()->UGCShopSellMinPrice);
     {
         CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nItemId);
         if (spData.get() != 0)
@@ -2451,8 +2451,8 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
     if (spItem == NULL)
         return;
     int nId = spItem->GetItemId();
-    __int64 nMin = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMinPrice);
-    __int64 nMax = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMaxPrice);
+    __int64 nMin = FUN_1406a6d50(GetClientConstants()->UGCShopSellMinPrice);
+    __int64 nMax = FUN_1406a6d50(GetClientConstants()->UGCShopSellMaxPrice);
     if (spItem->HasCubeTextureMesh() || spItem->FUN_14053d900())
     {
         CUGCDesignDataPtr spData = reinterpret_cast<CUGCDesignTable*>(CUGCDesignTable::GetInstance())->GetData(nId);

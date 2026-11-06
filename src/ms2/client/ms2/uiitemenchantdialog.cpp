@@ -195,7 +195,7 @@ struct Unk_ClientConfig
     char m_pad_9830[0x99e0 - 0x9830];
     Unk_EnCfgInt m_99e0;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_GEManagerA;
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class CGameRule   // C3: member view for the former free stand-ins
@@ -568,7 +568,7 @@ void UIItemEnchantDialog::vfunc_85(int nType)
         COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
         pkt.Encode1(6);
         pkt.Encode4(id);
-        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0)->Get());
+        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_69a0)->Get());
         pkt.Encode2((short)nType);
         FUN_140710590(pkt);
     } else {
@@ -748,7 +748,7 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
         int id = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
         pkt.Encode1(6);
         pkt.Encode4(id);
-        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0)->Get());
+        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_69a0)->Get());
         pkt.Encode2(1);
     } else {
         pkt.Encode1(4);
@@ -1674,7 +1674,7 @@ void UIItemEnchantDialog::SetFailStackInfo(ASObj& dest)
     CItemEnchantInfo* info = item->FUN_1405278a0()->GetEnchant();
     if (info == 0)
         return;
-    int limit = *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_9828)->Get();
+    int limit = *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_9828)->Get();
     int cur = info->FUN_14058ccf0();
     int maxStack = (std::min)(cur, limit);
     ASObj obj(2);
@@ -1879,7 +1879,7 @@ int UIItemEnchantDialog::FUN_1419c89b0(unsigned __int64 uid)
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (!item)
         return 0;
-    if (item->GetRequiredLevel() < *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_99e0)->Get())
+    if (item->GetRequiredLevel() < *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)GetClientConstants())->m_99e0)->Get())
         return 0;
     int hasCurrency = 0;
     for (unsigned __int64 i = 0; i < m_ingredients.FUN_14026bee0(); i++) {

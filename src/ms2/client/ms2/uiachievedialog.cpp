@@ -125,7 +125,7 @@ public:
     virtual int vfunc_37(void* pRequest);
 #undef AC_V
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 
 // collected ids: dungeons, fish, pets, quests, items
@@ -792,7 +792,7 @@ void UIAchieveDialog::RequestSearch()
         return;
     Unk_BlockList request(0x4e73);
     request.Add("m_searchInput", CStringW(strSearch), false);
-    if (((class Unk_AcPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
+    if (((class Unk_AcPlatform*)((void*)GetClientPlatform()))->vfunc_37(&request) == 1)
         FUN_1418a8ff0();
 }
 

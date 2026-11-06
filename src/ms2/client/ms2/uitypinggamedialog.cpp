@@ -4,44 +4,44 @@
 // MS2-RANGE: 0x140ee52f0-0x140ee7610 .text$mn
 // MS2-PIN: memmove_s 0x140ee74f0
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0HH$0A@@?$pair@HH@std@@QEAA@$$QEAH0@Z 0x140ee62b0 ; unique
-// MS2-PIN: ??$_Emplace_back@U?$pair@HH@std@@@?$_Uninitialized_backout_al@PEAU?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAX$$QEAU?$pair@HH@1@@Z 0x140ee6410 ; unique
-// MS2-PIN: ??$_Emplace_back_with_unused_capacity@U?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@AEAAX$$QEAU?$pair@HH@1@@Z 0x140ee6470 ; unique
-// MS2-PIN: ??$_Emplace_reallocate@U?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAPEAU?$pair@HH@1@QEAU21@$$QEAU21@@Z 0x140ee6530 ; unique
-// MS2-PIN: ??$_Idl_distance1@PEAU?$pair@HH@std@@PEAU12@@std@@YA_JAEBQEAU?$pair@HH@0@0Urandom_access_iterator_tag@0@@Z 0x140ee6790 ; unique
-// MS2-PIN: ??$_Unfancy@U?$pair@HH@std@@@std@@YAPEAU?$pair@HH@0@PEAU10@@Z 0x140ee6840 ; prop
-// MS2-PIN: ??$_Uninitialized_move@PEAU?$pair@HH@std@@PEAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPEAU?$pair@HH@0@QEAU10@0PEAU10@AEAV?$allocator@U?$pair@HH@std@@@0@@Z 0x140ee6850 ; unique
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAU?$pair@HH@std@@PEAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPEAU?$pair@HH@0@PEAU10@QEAU10@1AEAV?$allocator@U?$pair@HH@std@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140ee6920 ; unique
-// MS2-PIN: ??$construct@U?$pair@HH@std@@U12@@?$_Default_allocator_traits@V?$allocator@U?$pair@HH@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@HH@std@@@1@QEAU?$pair@HH@1@$$QEAU31@@Z 0x140ee69b0 ; unique
-// MS2-PIN: ??$forward@U?$pair@HH@std@@@std@@YA$$QEAU?$pair@HH@0@AEAU10@@Z 0x140ee6a70 ; prop
-// MS2-PIN: ??$make_pair@HH@std@@YA?AU?$pair@HH@0@$$QEAH0@Z 0x140ee6a80 ; unique
-// MS2-PIN: ??$move@AEAU?$pair@HH@std@@@std@@YA$$QEAU?$pair@HH@0@AEAU10@@Z 0x140ee6ad0 ; prop
-// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAU?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAA@PEAU?$pair@HH@1@AEAV?$allocator@U?$pair@HH@std@@@1@@Z 0x140ee6ae0 ; unique
-// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAU?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAA@XZ 0x140ee6bd0 ; unique
-// MS2-PIN: ??A?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAAEAU?$pair@HH@1@_K@Z 0x140ee6c40 ; unique
-// MS2-PIN: ?_Change_array@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@AEAAXQEAU?$pair@HH@2@_K1@Z 0x140ee6d50 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$pair@HH@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@HH@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$pair@HH@std@@@2@XZ 0x140ee6ee0 ; prop
+// MS2-PIN: ??$?0W4Unk_DIKey@@W40@$0A@@?$pair@W4Unk_DIKey@@W41@@std@@QEAA@$$QEAW4Unk_DIKey@@0@Z 0x140ee62b0 ; unique
+// MS2-PIN: ??$_Emplace_back@U?$pair@W4Unk_DIKey@@W41@@std@@@?$_Uninitialized_backout_al@PEAU?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAX$$QEAU?$pair@W4Unk_DIKey@@W41@@1@@Z 0x140ee6410 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@U?$pair@W4Unk_DIKey@@W41@@std@@@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@AEAAX$$QEAU?$pair@W4Unk_DIKey@@W41@@1@@Z 0x140ee6470 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@U?$pair@W4Unk_DIKey@@W41@@std@@@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAPEAU?$pair@W4Unk_DIKey@@W41@@1@QEAU21@$$QEAU21@@Z 0x140ee6530 ; unique
+// MS2-PIN: ??$_Idl_distance1@PEAU?$pair@W4Unk_DIKey@@W41@@std@@PEAU12@@std@@YA_JAEBQEAU?$pair@W4Unk_DIKey@@W41@@0@0Urandom_access_iterator_tag@0@@Z 0x140ee6790 ; unique
+// MS2-PIN: ??$_Unfancy@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@YAPEAU?$pair@W4Unk_DIKey@@W41@@0@PEAU10@@Z 0x140ee6840 ; prop
+// MS2-PIN: ??$_Uninitialized_move@PEAU?$pair@W4Unk_DIKey@@W41@@std@@PEAU12@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@YAPEAU?$pair@W4Unk_DIKey@@W41@@0@QEAU10@0PEAU10@AEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@0@@Z 0x140ee6850 ; unique
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAU?$pair@W4Unk_DIKey@@W41@@std@@PEAU12@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@YAPEAU?$pair@W4Unk_DIKey@@W41@@0@PEAU10@QEAU10@1AEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140ee6920 ; unique
+// MS2-PIN: ??$construct@U?$pair@W4Unk_DIKey@@W41@@std@@U12@@?$_Default_allocator_traits@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@1@QEAU?$pair@W4Unk_DIKey@@W41@@1@$$QEAU31@@Z 0x140ee69b0 ; unique
+// MS2-PIN: ??$forward@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@YA$$QEAU?$pair@W4Unk_DIKey@@W41@@0@AEAU10@@Z 0x140ee6a70 ; prop
+// MS2-PIN: ??$make_pair@W4Unk_DIKey@@W41@@std@@YA?AU?$pair@W4Unk_DIKey@@W41@@0@$$QEAW4Unk_DIKey@@0@Z 0x140ee6a80 ; unique
+// MS2-PIN: ??$move@AEAU?$pair@W4Unk_DIKey@@W41@@std@@@std@@YA$$QEAU?$pair@W4Unk_DIKey@@W41@@0@AEAU10@@Z 0x140ee6ad0 ; prop
+// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAU?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAA@PEAU?$pair@W4Unk_DIKey@@W41@@1@AEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@1@@Z 0x140ee6ae0 ; unique
+// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAU?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAA@XZ 0x140ee6bd0 ; unique
+// MS2-PIN: ??A?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAAEAU?$pair@W4Unk_DIKey@@W41@@1@_K@Z 0x140ee6c40 ; unique
+// MS2-PIN: ?_Change_array@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@AEAAXQEAU?$pair@W4Unk_DIKey@@W41@@2@_K1@Z 0x140ee6d50 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@XZ 0x140ee6ee0 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@I@std@@V?$_Vector_val@U?$_Simple_types@I@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@I@std@@@2@XZ 0x140ee6f00 ; prop
-// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEAAAEAV?$allocator@U?$pair@HH@std@@@2@XZ 0x140ee6f20 ; prop
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@HH@2@XZ 0x140ee7010 ; prop
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEAAAEAPEAU?$pair@HH@2@XZ 0x140ee7030 ; prop
-// MS2-PIN: ?_Reallocate_exactly@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@AEAAX_K@Z 0x140ee70a0 ; unique
-// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAU?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAPEAU?$pair@HH@2@XZ 0x140ee7140 ; unique
-// MS2-PIN: ?capacity@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEBA_KXZ 0x140ee7360 ; prop
-// MS2-PIN: ?deallocate@?$allocator@U?$pair@HH@std@@@std@@QEAAXQEAU?$pair@HH@2@_K@Z 0x140ee73a0 ; unique
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$pair@HH@std@@@std@@@std@@SA_KAEBV?$allocator@U?$pair@HH@std@@@2@@Z 0x140ee73d0 ; unique
-// MS2-PIN: ?push_back@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAX$$QEAU?$pair@HH@2@@Z 0x140ee7430 ; unique
-// MS2-PIN: ?reserve@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAX_K@Z 0x140ee7460 ; unique
-// MS2-PIN: ?size@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEBA_KXZ 0x140ee74b0 ; unique
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEAAAEAV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@XZ 0x140ee6f20 ; prop
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@W4Unk_DIKey@@W41@@2@XZ 0x140ee7010 ; prop
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEAAAEAPEAU?$pair@W4Unk_DIKey@@W41@@2@XZ 0x140ee7030 ; prop
+// MS2-PIN: ?_Reallocate_exactly@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@AEAAX_K@Z 0x140ee70a0 ; unique
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAU?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAPEAU?$pair@W4Unk_DIKey@@W41@@2@XZ 0x140ee7140 ; unique
+// MS2-PIN: ?capacity@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEBA_KXZ 0x140ee7360 ; prop
+// MS2-PIN: ?deallocate@?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@QEAAXQEAU?$pair@W4Unk_DIKey@@W41@@2@_K@Z 0x140ee73a0 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@@std@@SA_KAEBV?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@Z 0x140ee73d0 ; unique
+// MS2-PIN: ?push_back@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAX$$QEAU?$pair@W4Unk_DIKey@@W41@@2@@Z 0x140ee7430 ; unique
+// MS2-PIN: ?reserve@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEAAX_K@Z 0x140ee7460 ; unique
+// MS2-PIN: ?size@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@QEBA_KXZ 0x140ee74b0 ; unique
 // MS2-PINS-END tplpin
 // File name assumed (the class name; the exe has no assert path for it).
 // cf9: tplpin accepted pins; identical residual helper groups are functional.
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ??$_Get_unwrapped@U?$pair@HH@std@@@std@@YAPEAU?$pair@HH@0@QEAU10@@Z 0x140ee6770
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@U?$pair@HH@std@@@std@@@2@XZ 0x140ee6ea0
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEAAAEAPEAU?$pair@HH@2@XZ 0x140ee6ff0
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@AEAAXPEAU?$pair@HH@2@00U?$integral_constant@_N$00@2@@Z 0x140ee7270
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@HH@2@XZ 0x140ee6fd0
+// MS2-PIN: ??$_Get_unwrapped@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@YAPEAU?$pair@W4Unk_DIKey@@W41@@0@QEAU10@@Z 0x140ee6770
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@U?$pair@W4Unk_DIKey@@W41@@std@@@std@@@2@XZ 0x140ee6ea0
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEAAAEAPEAU?$pair@W4Unk_DIKey@@W41@@2@XZ 0x140ee6ff0
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@AEAAXPEAU?$pair@W4Unk_DIKey@@W41@@2@00U?$integral_constant@_N$00@2@@Z 0x140ee7270
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Unk_DIKey@@W41@@std@@V?$allocator@U?$pair@W4Unk_DIKey@@W41@@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@W4Unk_DIKey@@W41@@2@XZ 0x140ee6fd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitypinggamedialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uitypinggamedialog.h"
@@ -94,16 +94,16 @@ UITypingGameDialog::UITypingGameDialog()
     m_answer.clear();
     FUN_141925e70(1, 1);
     m_keys.reserve(10);
-    m_keys.push_back(std::make_pair(0xb, 0x52));
-    m_keys.push_back(std::make_pair(2, 0x4f));
-    m_keys.push_back(std::make_pair(3, 0x50));
-    m_keys.push_back(std::make_pair(4, 0x51));
-    m_keys.push_back(std::make_pair(5, 0x4b));
-    m_keys.push_back(std::make_pair(6, 0x4c));
-    m_keys.push_back(std::make_pair(7, 0x4d));
-    m_keys.push_back(std::make_pair(8, 0x47));
-    m_keys.push_back(std::make_pair(9, 0x48));
-    m_keys.push_back(std::make_pair(10, 0x49));
+    m_keys.push_back(std::make_pair((Unk_DIKey)0xb, (Unk_DIKey)0x52));
+    m_keys.push_back(std::make_pair((Unk_DIKey)2, (Unk_DIKey)0x4f));
+    m_keys.push_back(std::make_pair((Unk_DIKey)3, (Unk_DIKey)0x50));
+    m_keys.push_back(std::make_pair((Unk_DIKey)4, (Unk_DIKey)0x51));
+    m_keys.push_back(std::make_pair((Unk_DIKey)5, (Unk_DIKey)0x4b));
+    m_keys.push_back(std::make_pair((Unk_DIKey)6, (Unk_DIKey)0x4c));
+    m_keys.push_back(std::make_pair((Unk_DIKey)7, (Unk_DIKey)0x4d));
+    m_keys.push_back(std::make_pair((Unk_DIKey)8, (Unk_DIKey)0x47));
+    m_keys.push_back(std::make_pair((Unk_DIKey)9, (Unk_DIKey)0x48));
+    m_keys.push_back(std::make_pair((Unk_DIKey)10, (Unk_DIKey)0x49));
     m_nKeyCount = (unsigned)m_keys.size();
 }
 

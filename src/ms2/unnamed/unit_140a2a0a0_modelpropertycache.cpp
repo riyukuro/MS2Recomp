@@ -58,7 +58,7 @@ struct Unk_FlatFiles : public CFileSystem { };
 void FUN_140399100(CStringA strExt, CStringA strDir, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrFiles, CStringA strPrefix, bool bRecursive);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_14028c2d0(CStringA str, efd::Point3* pOut);
-int FUN_14028d260(float f);
+__int64 FUN_14028d260(float f);   // C3: the definition's __int64 return; the caller below reads it as int through an int(*)(float) cast (the exe keeps eax, no (int) temp)
 CStringA FUN_140188f50(const char* psz, int nCodePage);
 // The exe's CAtlArray<CStringA>::operator[] COMDAT copy used by the int/float property readers (same body as 0x140164930).
 CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, size_t i);
@@ -197,7 +197,7 @@ int Unk_ModelMgr::FUN_140a2aab0(TiXmlElement* pElem, CStringA strModel, const ch
                 if (arrValue.GetCount() > 0)
                     spData->count = atoi(arrValue[0]);
                 if (arrValue.GetCount() > 1)
-                    spData->probability = FUN_14028d260((float)atoi(arrValue[1]));
+                    spData->probability = ((int (*)(float))FUN_14028d260)((float)atoi(arrValue[1]));
                 pOut->Add(spData);
             }
             return 1;

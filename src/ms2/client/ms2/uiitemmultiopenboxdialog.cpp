@@ -28,7 +28,7 @@ struct Unk_McConfig
     char m_pad_00[0xa2e8];
     Unk_McConstVal m_multiOpenMax;                               // +0xa2e8
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The inventory dialog (ui id 0x4e2d): only the flag word this dialog sets on it.
 class Unk_McInventoryDialog : public UIDialog
@@ -133,7 +133,7 @@ void UIItemMultiOpenBoxDialog::vfunc_15()
     if (m_198 != 0 && nNow > (unsigned)m_198)
     {
         m_198 = 0;
-        int nCount = std::min<int>(m_194, *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax)->Get());
+        int nCount = std::min<int>(m_194, *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_McConfig*)GetClientConstants())->m_multiOpenMax)->Get());
         COutPacket packet(static_cast<int>(SendOp::RequestItemBox), 0);
         packet.WriteInt32(m_180);
         packet.WriteInt16(m_184);

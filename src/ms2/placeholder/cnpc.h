@@ -72,7 +72,7 @@ public:
     virtual void vfunc_27(ATL::CAtlArray<MS2Ptr<CBoxCollision> >& kArr) override;   // 0x14108fc70
     virtual void vfunc_28(void* p) override;                // 0x14108fcb0
     virtual void vfunc_32(bool b) override;                 // 0x141090cd0
-    virtual void vfunc_33(void* a, void* b) override;      // 0x141097c40
+    virtual void vfunc_33(void* a, efd::Point3 kHit) override;      // 0x141097c40
     virtual void vfunc_34(void* p) override;                // 0x141098390
     virtual void vfunc_35(void* p) override;                // 0x141098940
     virtual void vfunc_43(float f) override;                // 0x1410945c0

@@ -3,7 +3,7 @@
 // `?\cameramode.cpp` (0x140afd490-0x140afe800). Header name assumed; the vfunc_N names are vftable slot numbers and the
 // member names are invented from their use.
 #pragma once
-
+#include <efd/Point3.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
@@ -46,7 +46,7 @@ public:
 
 // The camera settings block at CCameraMode+0x20 (0x28 bytes). The ctor (0x140ae7ce0), the copy ctor (0x140ae7d90)
 // and the implicit copy assignment (0x140ae7de0) are COMDATs of the camera.cpp obj.
-extern const Vector3 g_143b01a60;       // NiPoint3::ZERO
+#define g_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)   // NiPoint3::ZERO (C3: was extern const Vector3 g_143b01a60)
 struct Unk_CameraSetting
 {
     // 0x140ae7d90 (another obj): the members are default-constructed, then assigned
@@ -160,7 +160,7 @@ public:
     virtual float vfunc_23();                                       // 0x140afd9e0
     virtual void vfunc_24(Unk_CameraTargetEntity* p, int n);                 // 0x140afd9f0
     virtual Unk_CameraTargetEntity* vfunc_25();                                   // 0x140afda10
-    virtual Vector3 vfunc_26();                             // 0x140afda20
+    virtual efd::Point3 vfunc_26();                         // 0x140afda20
     virtual float vfunc_27();                                       // 0x140afda50
     virtual int vfunc_28();                                         // 0x140afda60
     virtual void vfunc_29(float f1, float f2, float f3);            // 0x140afda80
@@ -186,7 +186,7 @@ public:
     bool FUN_140af8140() { return m_pOwner->FUN_140af8160(); }      // owner property 0x2310d55e (set by vfunc_5)
 
     // 0x1409f2540 (inline, another obj)
-    Vector3 FUN_1409f2540() { return m_setting.m_c; }
+    efd::Point3 FUN_1409f2540() { return reinterpret_cast<const efd::Point3&>(m_setting.m_c); }
     // 0x140af8260 (inline, another obj)
     Vector3 FUN_140af8260() { return m_setting.m_18; }
     // 0x140ad4b30 (inline, another obj)

@@ -89,7 +89,7 @@ public:
     virtual void vfunc_53();
     virtual int vfunc_54(CStringW strA, CStringW strB, int nMode, CStringW strPath);   // MS2: slot 54 (+0x1b0)
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 // C3: the house service is CubeMapInformationService (cubemapinformationservice_3.h); FUN_1410c34f0 returns its
 // Unk_CMISFlags3 (3 bools, returned in memory). Was a local stand-in view deriving from it.
 //
@@ -162,7 +162,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("onScreenShot", szMethod) == 0)
     {
-        Unk_UgcShot* pShot = ((class Unk_UgcShot*)FUN_140d86260());
+        Unk_UgcShot* pShot = ((class Unk_UgcShot*)((void*)GetClientPlatform()));
         if (pShot->vfunc_2() == 1)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
@@ -216,7 +216,7 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
     CStringW strPath = TakeScreenshotJpg(0, 1);
     if (nResult == 0 && !strPath.IsEmpty())
     {
-        if (((class Unk_UgcShot*)FUN_140d86260())->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, strPath) == 1)
+        if (((class Unk_UgcShot*)((void*)GetClientPlatform()))->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, strPath) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return true;

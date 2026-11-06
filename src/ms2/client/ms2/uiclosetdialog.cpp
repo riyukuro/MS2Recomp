@@ -198,7 +198,7 @@ public:
     static bool FUN_1412530e0(int*);
     static bool FUN_1412532b0(int);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
@@ -1185,7 +1185,7 @@ bool UIClosetDialog::OnAddConfirmed(int nResult, const CMsgBoxData& box)
     Unk_BlockList blockList(0x4f76);
     blockList.Add(CString("AddTab"), strName, false);
     blockList.SetEnabled(true);
-    if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&blockList) == 0)
+    if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&blockList) == 0)
         return true;
     MS2Ptr<UICloset::CTab> sp(new UICloset::CTab);
     if (sp == 0)
@@ -1224,7 +1224,7 @@ bool UIClosetDialog::OnRenameConfirmed(int nResult, const CMsgBoxData& box)
         Unk_BlockList blockList(0x4f76);
         blockList.Add(CString("renameTab"), strName, false);
         blockList.SetEnabled(true);
-        if (((class IClientPlatform*)FUN_140d86260())->vfunc_37(&blockList) == 0)
+        if (((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_37(&blockList) == 0)
             return true;
         COutPacket packet(static_cast<int>(SendOp::Wardrobe), 0);
         packet.WriteUInt8(6);

@@ -151,7 +151,7 @@ void SkillTargetRecord::FUN_1417591b0()
         if (nState == 0x10) {
             Unk_SrState* pState = reinterpret_cast<Unk_SrState*>(pMe->FUN_14166ccb0());
             if (pState != 0)
-                pState->FUN_1417ecc10(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(this)));   // Unk_MagicTag is this class
+                pState->FUN_1417ecc10(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(this)));   // Unk_MagicTag is this class
         }
     }
 }

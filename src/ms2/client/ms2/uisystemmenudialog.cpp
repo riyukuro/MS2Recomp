@@ -104,7 +104,7 @@ struct Unk_SmConsts
     Unk_SmSlot m_cfe0;
 };
 MS2_CHECK_OFFSET(Unk_SmConsts, m_cfe0, 0xcfe0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
 CNetworkService* FUN_140714f90();
@@ -338,7 +338,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
     if (spBox.get() != 0)
     {
         spBox->SetButtonLabelIds(0x476, 0, 0);
-        spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
+        spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)GetClientConstants())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }

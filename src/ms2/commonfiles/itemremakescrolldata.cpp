@@ -396,8 +396,8 @@ int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 // @0x140616d40
 int FUN_140616d40(int nCount, unsigned nDiscount)
 {
-    nDiscount = nDiscount < (unsigned)FUN_1406198a0(10000, FUN_1401d3200()->IngredientFeeReduceLimit)
-        ? nDiscount : FUN_1406198a0(10000, FUN_1401d3200()->IngredientFeeReduceLimit);
+    nDiscount = nDiscount < (unsigned)FUN_1406198a0(10000, GetClientConstants()->IngredientFeeReduceLimit)
+        ? nDiscount : FUN_1406198a0(10000, GetClientConstants()->IngredientFeeReduceLimit);
     unsigned nRet = FUN_140482050(nCount, nDiscount);
     return nRet < 1 ? 1 : nRet;
 }

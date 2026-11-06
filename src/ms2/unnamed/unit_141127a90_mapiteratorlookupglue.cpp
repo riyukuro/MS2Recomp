@@ -201,7 +201,7 @@ Unk_Cursor* FUN_14111dc20(void*, Unk_Cursor*, void*);
 
 Unk_IterA<15>* FUN_14111dca0(void*, Unk_IterA<15>*, void*);
 Unk_IterA<16>* FUN_14111dce0(void*, Unk_IterA<16>*, void*);
-void* FUN_1404eb810(Unk_Key*);
+// 0x1404eb810 = std::move<std::pair<int, int>&> (FUN_141128090 key)
 Unk_IterA<17>* FUN_14111dd20(void*, Unk_IterA<17>*, void*);
 Unk_IterA<18>* FUN_14111dd60(void*, Unk_IterA<18>*, void*);
 Unk_IterA<19>* FUN_14111dda0(void*, Unk_IterA<19>*, void*);
@@ -542,7 +542,7 @@ char* FUN_141128050(void* pMap, void* key)
 char* FUN_141128090(void* pMap, Unk_Key* pKey)
 {
     Unk_InsPair<Unk_IterA<16>> it;
-    return (FUN_141128700(FUN_14111dce0(pMap, &it.first, FUN_1404eb810(pKey))) + 8);
+    return (FUN_141128700(FUN_14111dce0(pMap, &it.first, &reinterpret_cast<std::pair<int, int>&>(std::move(*reinterpret_cast<std::pair<int, int>*>(pKey))))) + 8);
 }
 
 // @0x1411280d0

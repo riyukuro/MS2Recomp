@@ -55,15 +55,15 @@ void * FUN_14002ac70(void *, unsigned long);
 void FUN_14002b0d0(void *);
 void FUN_14002b0e0(cri02_flaghost *, unsigned char);
 void * FUN_14002b0f0(void *, unsigned long);
-void * FUN_14002b200(void *, unsigned long);
-void FUN_14002d6d0(CriMvReaderThreadConfigView *, unsigned char);
-void FUN_14002d750(CriMvReaderThreadConfigView *, void *);
+//
+//
+//
 unsigned __int64 FUN_14002d7b0(void *, __int64, long);
 void * FUN_14002d840(void *, unsigned long);
 void FUN_14002e1e0(void *, void *);
 void FUN_14002e230(void *);
 void FUN_14002e260(void *, void *, void *);
-void FUN_14002e370(CriMvRequestManagerView *, void *);
+//
 void * FUN_14002e510(void *, unsigned long);
 long FUN_140041220(void *, void *, unsigned long, unsigned long);
 void FUN_140041250(void *);
@@ -235,8 +235,8 @@ void FUN_140029970();
 void FUN_1400299d0();
 void FUN_140029a50();
 void FUN_140029ab0();
-void FUN_14002df50();
-void FUN_14002e050();
+//
+//
 long MPVDEC_DecIpicMb(void*, void*);
 long MPVDEC_DecBpicMb(void*, void*);
 long MPVDEC_DecPpicMb(void*, void*);
@@ -736,22 +736,22 @@ alignas(16) Sd_1431b9080 DAT_1431b9080 = {
     DAT_142443950,
     {0},
 };
-// 0x1431b91b0
-alignas(16) Sd_1431b91b0 DAT_1431b91b0 = {
-    (const void*)&FUN_14002b0f0,
-    DAT_14280ef52,
-    (const void*)&FUN_14002b0d0,
-    DAT_14001d720,
-    (const void*)&FUN_14002b0e0,
-};
-// 0x1431b91d8
-alignas(8) Sd_1431b91d8 DAT_1431b91d8 = {
-    (const void*)&FUN_14002b200,
-    (const void*)&FUN_14002df50,
-    (const void*)&FUN_14002b0d0,
-    DAT_14001d720,
-    (const void*)&FUN_14002b0e0,
-};
+// 0x1431b91b0: ??_7VideoReaderConfig, emitted by sfr_cri_02 (the real ctor 0x14002b070, MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
+// 0x1431b91d8: ??_7VideoReaderConfigSmp, emitted by sfr_cri_02 (the real ctor 0x14002b150, MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
 // 0x1431b93b0
 alignas(16) Sd_1431b93b0 DAT_1431b93b0 = {
     (const void*)&Scaleform::GFx::Video::FUN_14002d9e0,
@@ -774,14 +774,14 @@ alignas(16) Sd_1431b93c0 DAT_1431b93c0 = {
 alignas(16) Sd_1431b9410 DAT_1431b9410 = {
     (const void*)&Scaleform::GFx::Video::FUN_14002dec0,
 };
-// 0x1431b9430
-alignas(16) Sd_1431b9430 DAT_1431b9430 = {
-    (const void*)&FUN_14002e510,
-    (const void*)&FUN_14002e050,
-    (const void*)&FUN_14002d750,
-    (const void*)&FUN_14002e370,
-    (const void*)&FUN_14002d6d0,
-};
+// 0x1431b9430: ??_7VideoReaderConfigThrd, emitted by sfr_cri_02 (the real ctor 0x14002e450, MS2-PIN there)
+//
+//
+//
+//
+//
+//
+//
 // 0x1431b97a0: the CRI error table, {code, text} pairs ending with {0, NULL} (sfr_cri_02c FUN_140038e24)
 alignas(16) CriErrorText DAT_1431b97a0[8] = {
     {0, "<No Error>"},
@@ -3046,12 +3046,12 @@ alignas(16) unsigned char DAT_143ffd550[0x8];                   // 0x143ffd550
 #pragma comment(linker, "/alternatename:?DAT_1431b9028@@3QBQEBXB=?DAT_1431b9028@@3USd_1431b9028@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9028=?DAT_1431b9028@@3USd_1431b9028@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9080=?DAT_1431b9080@@3USd_1431b9080@@A")
-#pragma comment(linker, "/alternatename:DAT_1431b91b0=?DAT_1431b91b0@@3USd_1431b91b0@@A")
-#pragma comment(linker, "/alternatename:DAT_1431b91d8=?DAT_1431b91d8@@3USd_1431b91d8@@A")
+#pragma comment(linker, "/alternatename:DAT_1431b91b0=??_7VideoReaderConfig@Video@GFx@Scaleform@@6B@")
+//
 #pragma comment(linker, "/alternatename:DAT_1431b93b0=?DAT_1431b93b0@@3USd_1431b93b0@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b93c0=?DAT_1431b93c0@@3USd_1431b93c0@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9410=?DAT_1431b9410@@3USd_1431b9410@@A")
-#pragma comment(linker, "/alternatename:DAT_1431b9430=?DAT_1431b9430@@3USd_1431b9430@@A")
+#pragma comment(linker, "/alternatename:DAT_1431b9430=??_7VideoReaderConfigThrd@Video@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:DAT_1431b97a0=?DAT_1431b97a0@@3PAUCriErrorText@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9820=?DAT_1431b9820@@3PAEA")
 #pragma comment(linker, "/alternatename:PTR_FUN_1431b9b10=?DAT_1431b9b10@@3USd_1431b9b10@@A")

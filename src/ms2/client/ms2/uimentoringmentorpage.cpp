@@ -65,29 +65,29 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/placeholder/wcformat.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-// The mentee/mentor record of one user (a CPtred; +0x30 serial number, name at +0x38, a ushort at +0x40 (s_mentoring_user_info arg 1), icon url at +0x48).
-class Unk_MentorEntry : public CPtred
-{
-public:
-    unsigned char m_pad_18[0x18];
-    unsigned __int64 m_30;
-    CStringW m_38;
-    unsigned short m_40;
-    CStringW m_48;
-    int m_50;
-    int m_54;
-    bool m_58;
-};
-// The mentoring state kept by the client (singleton DAT_143abb6d8).
-class Unk_MentorInfo
-{
-public:
-    MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n);
-    // 0x140b71720 / 0x140b71750 are CMentoringManager::GetMenteeCount / GetMentorCount (int)
+#include "ms2/client/ms2/mentoringmanager.h"   // CMentoringManager::GetMentee, CMentor (were local entry / info views)
 //
-};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
-extern Unk_MentorInfo* DAT_143abb6d8;
+//
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
@@ -109,7 +109,7 @@ CString FUN_140719530(unsigned __int64 n);                               // numb
 // FUN_14052b9d0 = FUN_14028dfa0<unsigned short, CStringW> (wcformat.h, instantiated in item.cpp)
 
 // @0x140c70240 (mentee unit)
-class CMentoringManager { public: int FUN_140b71650(); int GetMenteeCount(); };   // C3: member view (mentoringmanager.h)
+//
 
 // ============================================================================
 // ASMentoringMentorPage / UIMentoringMentorPage
@@ -220,13 +220,13 @@ void UIMentoringMentorPage::vfunc_9() { if (m_mentor.get()) m_mentor->Refresh();
 void UIMentoringPage::FUN_140c71ce0()
 {
     int nShown = TSingleton<CMentoringManager>::GetInstance()->GetMenteeCount();
-    FUN_140c71ee0("m_mentee1", reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::GetInstance())->FUN_140b71680(0), nShown ? 1 : 0);
-    FUN_140c71ee0("m_mentee2", reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::GetInstance())->FUN_140b71680(1), nShown ? 1 : 0);
-    FUN_140c71ee0("m_mentee3", reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::GetInstance())->FUN_140b71680(2), nShown ? 1 : 0);
+    FUN_140c71ee0("m_mentee1", TSingleton<CMentoringManager>::GetInstance()->GetMentee(0), nShown ? 1 : 0);
+    FUN_140c71ee0("m_mentee2", TSingleton<CMentoringManager>::GetInstance()->GetMentee(1), nShown ? 1 : 0);
+    FUN_140c71ee0("m_mentee3", TSingleton<CMentoringManager>::GetInstance()->GetMentee(2), nShown ? 1 : 0);
 }
 
 // @0x140c71ee0
-void UIMentoringPage::FUN_140c71ee0(CString strName, MS2Ptr<Unk_MentorEntry> pEntry, int bVisible)
+void UIMentoringPage::FUN_140c71ee0(CString strName, Unk_MentorPtr<CMentor> pEntry, int bVisible)
 {
     {
         MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>(strName);
@@ -235,12 +235,12 @@ void UIMentoringPage::FUN_140c71ee0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
             ASObj obj(2);
             if (pEntry.get() != 0)
             {
-                obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
-                obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
-                obj.FUN_1407cbb20("name", pEntry->m_38);
-                obj.FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
-                obj.FUN_1407cbb20("charName", pEntry->m_38);
-                obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
+                obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->c, FUN_14016a600(pEntry->guild, 0), 1, ""));
+                obj.FUN_1407cbbe0("isOnline", pEntry->online);
+                obj.FUN_1407cbb20("name", pEntry->name);
+                obj.FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->level, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->y)));
+                obj.FUN_1407cbb20("charName", pEntry->name);
+                obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->c));
             }
             else
             {
@@ -294,7 +294,7 @@ template <class A1, class A2, class A3, class A4, class A5, class A6, class A7> 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-class Unk_MentorWriter; class Unk_MentorEmptyPacket { public: void FUN_14069a4e0(Unk_MentorWriter& stream); };   // C3: mentor.cpp
+// Unk_MentorEmptyPacket: mentor.h (via uimentoringrewardpage.h)
 // The register role byte (ctor 0x140c731c0 always stores 8).
 class Unk_MentorRole
 {

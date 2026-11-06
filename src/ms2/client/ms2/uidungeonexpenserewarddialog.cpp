@@ -45,7 +45,7 @@ public:
     virtual void s42();
     virtual void vfunc_43(int a, int b, int c);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // @0x140f3a810
 UIDungeonExpenseRewardDialog::UIDungeonExpenseRewardDialog()
@@ -76,7 +76,7 @@ void UIDungeonExpenseRewardDialog::OnLoadComplete()
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_cancelButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_cancelButton)))
         m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3af10), 0);
     FUN_140f3ad50();
-    ((class Unk_DxHost*)FUN_140d86260())->vfunc_43(2, 0, 1000);
+    ((class Unk_DxHost*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
 }
 
 // @0x140f3ac60

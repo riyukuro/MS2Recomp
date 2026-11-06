@@ -160,7 +160,7 @@ void FUN_140d73bc0(int, int, void*, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 bool FUN_141902530(int, const CMsgBoxData&);
 CNetworkService* FUN_140714f90();
-CReconnectionManagerCli* FUN_140e800e0();
+// (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 void* FUN_140aadf80();
 CSoundService* FUN_140c9cb10();
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
@@ -459,22 +459,22 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         {
             int nCode = (int)wParam;
             bool bHandled = false;
-            if (FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
+            if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0 && FUN_140aadf80() != 0)
             {
-                if (FUN_140e800e0()->ShouldReconnect(nCode))
+                if (TSingleton<CReconnectionManagerCli>::GetInstance()->ShouldReconnect(nCode))
                 {
-                    if (!FUN_140e800e0()->IsReconnecting())
-                        FUN_140e800e0()->BeginReconnect(nCode);
+                    if (!TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting())
+                        TSingleton<CReconnectionManagerCli>::GetInstance()->BeginReconnect(nCode);
                     bHandled = true;
                 }
-                if (FUN_140e800e0()->IsReconnecting() == 1)
+                if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting() == 1)
                 {
-                    int nKey = FUN_140e800e0()->FUN_140aad2b0();
-                    if (FUN_140e800e0()->IsFatalReconnectError(nKey))
+                    int nKey = TSingleton<CReconnectionManagerCli>::GetInstance()->FUN_140aad2b0();
+                    if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsFatalReconnectError(nKey))
                         bHandled = false;
-                    if (FUN_140e800e0()->IsReconnectTimedOut())
+                    if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnectTimedOut())
                     {
-                        FUN_140e800e0()->OnReconnectResult(0xc9);
+                        TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectResult(0xc9);
                         bHandled = false;
                     }
                 }
@@ -557,7 +557,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     }
     else if (uMsg == 0x46b)
     {
-        if (FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
+        if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0 && FUN_140aadf80() != 0)
         {
             bool bFlag = true;
             if (TSingleton<CStateService>::GetInstance() != 0)
@@ -565,14 +565,14 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
                 {
                     bFlag = false;
-                    FUN_140e800e0()->OnReconnectFailed(0xcc);
+                    TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectFailed(0xcc);
                 }
             }
             if (bFlag)
             {
-                bool bBusy = FUN_140e800e0()->AttemptReconnect();
+                bool bBusy = TSingleton<CReconnectionManagerCli>::GetInstance()->AttemptReconnect();
                 if (!bBusy)
-                    FUN_140e800e0()->OnReconnectFailed(200);
+                    TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectFailed(200);
             }
         }
     }
@@ -580,22 +580,22 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         int nCode = (int)wParam;
         bool bHandled = false;
-        if (TSingleton<CStateService>::GetInstance() != 0 && FUN_140e800e0() != 0 && FUN_140aadf80() != 0)
+        if (TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CReconnectionManagerCli>::GetInstance() != 0 && FUN_140aadf80() != 0)
         {
-            if (FUN_140e800e0()->ShouldReconnect(nCode))
+            if (TSingleton<CReconnectionManagerCli>::GetInstance()->ShouldReconnect(nCode))
             {
-                if (!FUN_140e800e0()->IsReconnecting())
-                    FUN_140e800e0()->BeginReconnect(nCode);
+                if (!TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting())
+                    TSingleton<CReconnectionManagerCli>::GetInstance()->BeginReconnect(nCode);
                 bHandled = true;
             }
-            if (FUN_140e800e0()->IsReconnecting() == 1)
+            if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting() == 1)
             {
-                int nKey = FUN_140e800e0()->FUN_140aad2b0();
-                if (FUN_140e800e0()->IsFatalReconnectError(nKey))
+                int nKey = TSingleton<CReconnectionManagerCli>::GetInstance()->FUN_140aad2b0();
+                if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsFatalReconnectError(nKey))
                     bHandled = false;
-                if (FUN_140e800e0()->IsReconnectTimedOut())
+                if (TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnectTimedOut())
                 {
-                    FUN_140e800e0()->OnReconnectResult(0xc9);
+                    TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectResult(0xc9);
                     bHandled = false;
                 }
             }
@@ -606,11 +606,11 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     else if (uMsg == 0x467)
     {
         bool bFlag = false;
-        if (FUN_140e800e0() != 0)
-            bFlag = FUN_140e800e0()->IsReconnecting();
+        if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
+            bFlag = TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting();
         if (bFlag)
         {
-            FUN_140e800e0()->OnReconnectFailed(200);
+            TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectFailed(200);
         }
         else
         {
@@ -633,8 +633,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     else if (uMsg == 0x46a)
     {
         int bFlag = 0;
-        if (FUN_140e800e0() != 0)
-            bFlag = FUN_140e800e0()->IsReconnecting();
+        if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
+            bFlag = TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting();
         if (FUN_140714f90() != 0)
             FUN_140714f90()->Reconnect(bFlag);
     }

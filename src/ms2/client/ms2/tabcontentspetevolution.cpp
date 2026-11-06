@@ -128,7 +128,7 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 // Client configuration: the pet class that may be evolved by points sits at +0x84c0.
 class Unk_PetUIntSlot { public: };
 class Unk_PetConfig { public: unsigned char m_pad[0x84c0]; Unk_PetUIntSlot m_petClass; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // Locale/build switches (debug buttons).
 class Unk_PetLocale;
@@ -460,7 +460,7 @@ void PetEvolutionPetEnchant::vfunc_3()
     {
         ATL::CAtlArray<IdCount> selected;
         m_pOwner->FUN_140acaf20(selected);
-        if ((unsigned)nPetClass == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get() && selected.GetCount() > 0)
+        if ((unsigned)nPetClass == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get() && selected.GetCount() > 0)
             submit->FUN_1422c1fe0(1);
         else if (nNeed > 0 && nPoint >= nNeed)
             submit->FUN_1422c1fe0(1);
@@ -1013,7 +1013,7 @@ void TabContentsPetEvolution::FUN_140acb850()
             continue;
         if (row->m_nType == 0)
             continue;
-        if (((class CItem*)(class CItem*)(item))->FUN_140528c20() != *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+        if (((class CItem*)(class CItem*)(item))->FUN_140528c20() != *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
             continue;
         m_petCards.Add(item->GetItemUid());
     }
@@ -1101,7 +1101,7 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
     {
         FUN_1412752d0(L"s_err_cannot_evolution_consume", 1);
     }
-    else if (nPetClass == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_petClass)->Get())
+    else if (nPetClass == *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_PetConfig*)GetClientConstants())->m_petClass)->Get())
     {
         const unsigned nMax = 0xc;
         if (m_selected.GetCount() >= nMax)

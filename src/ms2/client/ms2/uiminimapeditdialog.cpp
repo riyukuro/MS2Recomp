@@ -390,7 +390,7 @@ void UIMinimapEditDialog::FUN_141a53750()
             ecr::CameraData* pCamera = FUN_1413f9910()->GetActiveCamera(pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
-                reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
+                reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamPos) = CameraMgr::GetInstance()->FUN_140a17e10();
                 reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamRot) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290()));
                 m_spMinimap->m_frustum = pCamera->GetCamera()->GetViewFrustum();
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();

@@ -1188,18 +1188,18 @@ float FUN_141b72600(float fBase, float fExp);
 float FUN_141b725e0(float fValue);
 
 // @0x141b71390
-Vector3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
+efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
 {
     if (reinterpret_cast<const efd::Point3&>(kStart) == reinterpret_cast<const efd::Point3&>(kControl) || reinterpret_cast<const efd::Point3&>(kEnd) == reinterpret_cast<const efd::Point3&>(kControl)) {
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
-        return kStart.FUN_14097fd50(kDelta.FUN_14097fc90(fT));
+        return reinterpret_cast<const efd::Point3&>(kStart) + reinterpret_cast<const efd::Point3&>(kDelta) * fT;
     } else {
         float fInverse = 1.0f - fT;
         float fT2 = FUN_141b72560(fT, 2.0f);
         float fS2 = FUN_141b72560(fInverse, 2.0f);
-        Vector3 kResult = kStart.FUN_14097fc90(fS2);
-        kResult.FUN_140a4e560(FUN_1409ab5c0(2.0f, kControl).FUN_14097fc90(fT).FUN_14097fc90(fInverse));
-        kResult.FUN_140a4e560(kEnd.FUN_14097fc90(fT2));
+        efd::Point3 kResult = reinterpret_cast<const efd::Point3&>(kStart) * fS2;
+        reinterpret_cast<Vector3&>(kResult).FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(FUN_1409ab5c0(2.0f, kControl))) * fT * fInverse)));
+        reinterpret_cast<Vector3&>(kResult).FUN_140a4e560(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEnd) * fT2)));
         return kResult;
     }
 }
@@ -1209,8 +1209,8 @@ float FUN_141b71550(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
 {
     Vector3 kA;
     Vector3 kB;
-    kA = kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)).FUN_14097fd50(kEnd);
-    kA = kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)).FUN_14097fd50(kEnd);
+    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
+    kA = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_140965c40(FUN_1409ab5c0(2.0f, kControl)))) + reinterpret_cast<const efd::Point3&>(kEnd)));
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
     float fAA = (reinterpret_cast<const efd::Point3&>(kA) * reinterpret_cast<const efd::Point3&>(kA));
@@ -1316,12 +1316,12 @@ struct Unk_ClientConfig;
 class Unk_ConstVal;
 int FUN_14025a620(Unk_ConstVal* pVal);
 struct Unk_ClientConfig { char m_pad_00[0x2b28]; char m_kLimit; };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // @0x141b71c00
 int FUN_141b71c00(unsigned short nValue)
 {
-    int nLimit = FUN_14025a620((Unk_ConstVal*)&((struct Unk_ClientConfig*)FUN_1401d3200())->m_kLimit);
+    int nLimit = FUN_14025a620((Unk_ConstVal*)&((struct Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_kLimit);
     return (int)nValue >= nLimit ? 1 : 0;
 }
 MS2_REPLACE(0x141b71c00, FUN_141b71c00, 70, 0x478D9542);

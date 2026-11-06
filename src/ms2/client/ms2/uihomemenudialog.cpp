@@ -182,7 +182,7 @@ public:
     virtual void vfunc_53() = 0;
     virtual int vfunc_54(CStringW strOwner, CStringW strName, int nType, CStringW strUrl) = 0;
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The render service: each of its render contexts is drawn once with the current time (camera.h brings <ecr/RenderService.h>).
 class Unk_ServiceManager;
@@ -441,7 +441,7 @@ void UIHomeMenuDialog::ToggleCraftMode()
 // @0x140c29c70
 void UIHomeMenuDialog::OnScreenshot()
 {
-    if (((class Unk_HmNet*)FUN_140d86260())->vfunc_2() == 1)
+    if (((class Unk_HmNet*)((void*)GetClientPlatform()))->vfunc_2() == 1)
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L"")))
         {
@@ -684,10 +684,10 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 }
 
 // @0x140c2b080
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps a dead movzx of the screenshot flag before the call
+// The exe widens the discarded BeginImage() flag (movzx) before the screenshot call: a ?: on it with empty arms.
 CStringW UIHomeMenuDialog::FUN_140c2b080()
 {
-    return TakeScreenshotJpg(((int)m_screenshot.BeginImage(), 0), 1);
+    return TakeScreenshotJpg((m_screenshot.BeginImage() ? (void)0 : (void)0, 0), 1);
 }
 
 // @0x140c2b0e0
@@ -738,7 +738,7 @@ bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
     CStringW strUrl = FUN_140c2b080();
     if (nResult == 0 && !strUrl.IsEmpty())
     {
-        if (((class Unk_HmNet*)FUN_140d86260())->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
+        if (((class Unk_HmNet*)((void*)GetClientPlatform()))->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return 1;

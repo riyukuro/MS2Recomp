@@ -137,7 +137,7 @@ CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // notice
 void FUN_1412752d0(const CStringW& strKey, int nType);          // notice by string key
 // StringFormat instances of the neighbouring units (key by value in the exe, arguments by reference).
-template <class A, class B, class C> CStringW LocalizedMentorFormat(CStringW, const A&, const B&, const C&);   // C3: was FUN_140e63450
+//   FUN_14028dfa0 <unsigned x3> = 0x140e63450 (wcformat.h)
 CStringW FUN_14183e9c0(CStringW strText, int nRank);          // rank text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -306,7 +306,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
             unsigned nMax = pSocket->GetMaxSlot();
             unsigned nShown = nMax < m_nCount ? nMax : m_nCount;
             unsigned nOpen = pSocket->GetOpenSlotCount();
-            strResult = LocalizedMentorFormat<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
+            strResult = FUN_14028dfa0<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
         }
         ASObj obj(2);
         ((class AScript&)(obj)).FUN_1407cbb20("itemName", CStringW(strName));
@@ -481,7 +481,7 @@ void UIItemSocketScrollDialog::OnClickAction()
         if (pSocket->GetMaxSlot() < nCount)
         {
             unsigned nMax = pSocket->GetMaxSlot();
-            MS2Ptr<CMsgBoxData> box = FUN_140b191a0(LocalizedMentorFormat<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_ask_continue_socket_unlock"), nCount, nMax, nMax),
+            MS2Ptr<CMsgBoxData> box = FUN_140b191a0(FUN_14028dfa0<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_ask_continue_socket_unlock"), nCount, nMax, nMax),
                                                     1, SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f65a40), nTargetUid);
             return;
         }

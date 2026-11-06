@@ -32,7 +32,7 @@ public:
     unsigned char m_pad_0[0xe770];
     std::vector<int> m_e770;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 CStringW GetStringCommon(int nId);                    // string table
 CStringW FUN_140719630(int n);                      // "%d"
@@ -168,19 +168,19 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         do { m_30->FUN_140bbe640("m_btnRemove", m_1f0); if (m_1f0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(76), __FUNCTION__)); } while (0);
 
         m_1b0->ClearItems();
-        m_1b0->SetMenuRowCount((unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size());
+        m_1b0->SetMenuRowCount((unsigned int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size());
         m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRegisterClicked), 0);
         m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRemoveClicked), 0);
-        for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size(); ++i)
+        for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size(); ++i)
         {
-            m_1b0->AddItemLabel(FUN_140719630(((class Unk_PsConfig*)FUN_1401d3200())->m_e770[i]));
+            m_1b0->AddItemLabel(FUN_140719630(((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770[i]));
         }
         CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
             m_1c0->SetTextW(m_190.m_text);
             m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
-            m_1b0->SetSelectedIndex((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size() - 1));
+            m_1b0->SetSelectedIndex((int)(((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size() - 1));
             m_1e0->vfunc_4(1);
             m_1f0->vfunc_4(0);
         }
@@ -299,9 +299,9 @@ int UIPartySearchRegisterDialog::GetSelectedMaxUserCount()
     if (m_1b0 == 0)
         return 10;
     int nRow = m_1b0->GetSelectedIndex();
-    if (nRow < 0 || nRow >= (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size())
+    if (nRow < 0 || nRow >= (int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size())
         return 10;
-    return ((class Unk_PsConfig*)FUN_1401d3200())->m_e770[nRow];
+    return ((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770[nRow];
 }
 
 // @0x1413220d0
@@ -336,9 +336,9 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
 // @0x141322380
 int UIPartySearchRegisterDialog::FindMaxUserCountIndex(int nValue)
 {
-    for (int i = 0; i < (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size(); ++i)
+    for (int i = 0; i < (int)((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size(); ++i)
     {
-        if (((class Unk_PsConfig*)FUN_1401d3200())->m_e770[i] == nValue)
+        if (((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770[i] == nValue)
             return i;
     }
     return -1;

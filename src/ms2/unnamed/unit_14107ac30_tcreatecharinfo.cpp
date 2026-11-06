@@ -116,7 +116,7 @@ extern const efd::Color g_143a09660;                        // the default appea
 Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour value
 bool FUN_1402226b0(int nJob);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void FUN_140deec40(Vector3* p);
+// (0x140deec40 is efd::Point3::UnitizeVector(Point3&))
 bool Unk_IsFinite(const efd::Point3& kPoint);   // bonerotateinterpolator.cpp
 __declspec(noreturn) void FUN_140159b70(long hr);
 void FUN_14107b050(const Vector3& kDir);
@@ -266,10 +266,10 @@ void FUN_14107b050(const Vector3& kDir)
     Vector3 kRight = kDir;
     Vector3 kFlat = kDir;
     kFlat.z = 0;
-    FUN_140deec40(&kFlat);
+    efd::Point3::UnitizeVector(reinterpret_cast<efd::Point3&>(kFlat));
     Unk_NiMatrix3 matRot;
     NiPoint3 kAxis(0, 0, 1.0f);
-    kAxis = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kAxis).FUN_140a00e10(kRight)));
+    kAxis = static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAxis).Cross(reinterpret_cast<const efd::Point3&>(kRight)));
     matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
     *reinterpret_cast<NiPoint3*>(&kRight) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight);
     *reinterpret_cast<NiPoint3*>(&kFlat) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat);

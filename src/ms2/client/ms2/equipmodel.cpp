@@ -1459,9 +1459,9 @@ void WeaponAttachTransformNode::SetBasePosition(const NiPoint3& kPos)
     ((Unk_AttachDummy*)this)->m_kTranslate = m_kBasePos = kPos;
 }
 
-// Out-of-range template glue, kept as plain functions.
-void FUN_141205170(void* a, void* b);
-void FUN_141205570(void* p);
+// The CString -> int red-black map: ATL::CRBMap<CStringA, int>'s ctor (0x141205140) and its tree's CNode dtor (0x141205550).
+// They reach the CRBTree ctor 0x141205170 and the CPair dtor 0x141205570 (protected; were the FUN_ wrappers).
+typedef ATL::CRBMap<CStringA, int> Unk_StrIntMap;
 
 // Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
 // this unit's .CRT$XCU slot.
@@ -1478,18 +1478,18 @@ void* FUN_141204e70(void* p)
     return p;
 }
 
-// @0x141205140
-void* FUN_141205140(void* a, void* b)
+// 0x141205140 / 0x141205550: Unk_StrIntMapInst instantiates the real ctor and (through the dtor's RemoveAll / FreeNode)
+// the CNode dtor; the pins at the end bind them, the CRBTree ctor and the CPair dtor to the exe VAs.
+void Unk_StrIntMapInst()
 {
-    FUN_141205170(a, b);
-    return a;
+    Unk_StrIntMap m;
 }
-
-// @0x141205550
-void FUN_141205550(void* p)
-{
-    FUN_141205570(p);
-}
+//
+//
+//
+//
+//
+//
 
 // @0x141205690
 bool FUN_141205690(void* a, void* b)
@@ -1529,3 +1529,7 @@ MS2_REPLACE_METHOD(0x141207FD0, WeaponAttachTransformNode, SetBasePosition, 60, 
 // MS2-FUNCTIONAL 0x141205000: the exe passes the value through std::forward 0x1410431d0, which this toolchain's insert folds away
 // MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@_N@1@$$QEAV?$SmartPointer@VNiAVObject@@@efd@@@Z 0x141205000
 // MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tset_traits@V?$SmartPointer@VNiAVObject@@@efd@@U?$less@V?$SmartPointer@VNiAVObject@@@efd@@@std@@V?$allocator@V?$SmartPointer@VNiAVObject@@@efd@@@4@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@V?$SmartPointer@VNiAVObject@@@efd@@PEAX@std@@@2@XZ 0x141208de0
+// MS2-PIN: ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@_K@Z 0x141205140 ; the real CRBMap<CStringA,int> ctor (was FUN_141205140)
+// MS2-PIN: ??0?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@IEAA@_K@Z 0x141205170 ; the real CRBTree ctor (was the FUN_141205170 wrapper)
+// MS2-PIN: ??1CNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x141205550 ; the real CNode dtor (was FUN_141205550)
+// MS2-PIN: ??1CPair@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@IEAA@XZ 0x141205570 ; the real CPair dtor (was the FUN_141205570 wrapper)

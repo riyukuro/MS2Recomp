@@ -103,7 +103,7 @@ public:
     bool m_b12fa;                                           // +0x12fa = 0 (gates vfunc_55/56)
     bool m_b12fb;                                           // +0x12fb = 1
     int m_unk_12fc;                                         // +0x12fc = 1
-    efd::list<NiAVObject*> m_kList1300;                     // +0x1300 (ctor 0x141043710, dtor 0x141043950)
+    std::list<NiAVObject*> m_kList1300;                     // +0x1300 (ctor 0x141043710, dtor 0x141043950)
     Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)> m_kEquipFilter;   // +0x1310 (ctor 0x14108ae80, dtor 0x14108b370)
     Unk_CloneTimer m_unk_1318;                              // +0x1318 8-byte timer value (ctor 0x140517b00 zeroes it)
     std::vector<MS2Ptr<AdditionalCli> > m_kClis;            // +0x1320 (ctor 0x14108b300, dtor 0x14108b4c0)

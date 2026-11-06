@@ -89,7 +89,7 @@ struct Unk_NtCfg
     char m_pad_0320[0x848 - 0x2c8 - sizeof(Unk_NtCfgFloat)];
     Unk_NtCfgFloat m_848;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 // The display flags (CGameOption::FUN_140b123b0, viewed as Unk_NtFlags): which tags are shown for whom.
 struct Unk_NtFlags { bool m_0; bool m_1; bool m_2; bool m_3; bool m_4; bool m_5; };
 
@@ -363,7 +363,7 @@ float UINameTag::Entity::vfunc_9()
         bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 && (pPc->FUN_141657730().get() ? true : false)
             && reinterpret_cast<UIHudEntity::Entity*>(pPc->FUN_141657730().operator->())->FUN_140f48d40() != 0;
         if (bSeated)
-            return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)FUN_1401d3200())->m_848)->Read();
+            return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)GetClientConstants())->m_848)->Read();
     }
     if (pActor != 0)
         return pActor->vfunc_89();
@@ -639,7 +639,7 @@ void FUN_141a60d40(int nMode);
 // @0x141a60d40
 void FUN_141a60d40(int nMode)
 {
-    if (((struct Unk_NtCfg*)FUN_1401d3200())->m_8 != 0)
+    if (((struct Unk_NtCfg*)GetClientConstants())->m_8 != 0)
     {
         if (s_nNameTagMode != 2)
             FUN_141a60f40();

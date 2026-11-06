@@ -752,7 +752,7 @@ __int64 CGameRule::GetSuperChatMeratCost()
 {
     Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_290.Get(0, 0);
-    return FUN_140482050(*FUN_1401d3200()->MeratConsumeSuperChat.Get(), rate);
+    return FUN_140482050(*GetClientConstants()->MeratConsumeSuperChat.Get(), rate);
 }
 MS2_REPLACE_METHOD(0x140477180, CGameRule, GetSuperChatMeratCost, 134, 0x71E0501D);
 
@@ -761,7 +761,7 @@ __int64 CGameRule::GetWorldChatMeratCost()
 {
     Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_2b0.Get(0, 0);
-    return FUN_140482050(*FUN_1401d3200()->MeratConsumeWorldChat.Get(), rate);
+    return FUN_140482050(*GetClientConstants()->MeratConsumeWorldChat.Get(), rate);
 }
 MS2_REPLACE_METHOD(0x140477210, CGameRule, GetWorldChatMeratCost, 134, 0xFC61E961);
 
@@ -770,14 +770,14 @@ __int64 CGameRule::GetChannelChatMeratCost()
 {
     Unk_CriticalSectionLock lock(m_260, 1);
     unsigned rate = m_2d0.Get(0, 0);
-    return FUN_140482050(*FUN_1401d3200()->MeratConsumeChannelChat.Get(), rate);
+    return FUN_140482050(*GetClientConstants()->MeratConsumeChannelChat.Get(), rate);
 }
 MS2_REPLACE_METHOD(0x1404772A0, CGameRule, GetChannelChatMeratCost, 134, 0x7E3011DD);
 
 // @0x140477330
 __int64 CGameRule::FUN_140477330()
 {
-    return *FUN_1401d3200()->PetChangeNameMerat.Get();
+    return *GetClientConstants()->PetChangeNameMerat.Get();
 }
 MS2_REPLACE_METHOD(0x140477330, CGameRule, FUN_140477330, 36, 0x9A9A1FEF);
 

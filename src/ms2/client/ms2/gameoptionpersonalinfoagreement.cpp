@@ -124,7 +124,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_4(int n)   // @0x140a45e20
 int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, int nArg)   // @0x140a45e50
 {
     if (_stricmp(pszName, "OnDetail") == 0)
-        ((CPersonalInfoAgreement*)&m_state)->OpenLink(CString(*((Common::Constants::Value<CString>*)((char*)FUN_1401d3200() + 0xe918))->Get()));
+        ((CPersonalInfoAgreement*)&m_state)->OpenLink(CString(*((Common::Constants::Value<CString>*)((char*)GetClientConstants() + 0xe918))->Get()));
     return 0;
 }
 

@@ -25,6 +25,7 @@
     inline void SetParticleSystemFlag(bool bSet) { SetBit(bSet, IS_PARTICLE_SYSTEM); }
     inline bool GetParticleSystemFlag() const { return GetBit(IS_PARTICLE_SYSTEM); }
     bool GetSwitchNodeBit() const { return GetBit(0x0200); }  // MS2: see SetSwitchNodeBit
+    void MS2SetFlag0800() { SetBit(true, 0x0800); }  // MS2: out-of-line COMDAT at 0x14154fda0 (called by CNifEffect::FUN_14154d0d0); meaning of bit 0x800 unknown, name not from the SDK
     // MS2: non-virtual helper for the above (not in the game binary).
     bool MS2HasAnyFlag(unsigned short usMask) const
     {

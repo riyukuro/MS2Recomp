@@ -489,7 +489,7 @@ struct Unk_GoConfig
     Unk_GoCfgValue m_1ad8;
     Unk_GoCfgValue m_1b30;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // View of WorldService: the current field (FUN_141bd30a0 returns its MS2Ptr<Unk_WsPtred298> as the field data).
 class Unk_1403ed2d0 : public WorldService
@@ -511,9 +511,9 @@ void CGameOptionCamera::vfunc_10()
         float fScale = WorldService::GetInstance()->FUN_141bcfc50();
         FUN_140ad4ff0(TSingleton<CameraMgr>::GetInstance(), fScale);
         float fStep = (float)m_state.m_n04 / 100.0f;
-        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1a80)->Get() * fStep;
-        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1ad8)->Get() * fStep;
-        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)FUN_1401d3200())->m_1b30)->Get() * fStep;
+        float f1 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_1a80)->Get() * fStep;
+        float f2 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_1ad8)->Get() * fStep;
+        float f3 = *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_GoConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_1b30)->Get() * fStep;
         TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(f1, f2, f3);
         CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
         if (pMode != 0)
@@ -871,9 +871,9 @@ CStringW Unk_GoDeviceInfo::FUN_141245ab0()
 }
 
 // @0x141245b20
-Unk_GoDeviceInfo* FUN_141245b20()
+GPUManager* TSingleton<GPUManager>::GetInstance()
 {
-    return reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::s_instance);
+    return TSingleton<GPUManager>::s_instance;
 }
 
 // The renderer's display mode list: raw modes (width, height, format) behind a counted pointer array.
@@ -1134,7 +1134,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<ASTextField> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e120(CString("m_devicename"), -1);
         if (static_cast<ASTextField*>(sp) != 0)
-            sp->SetTextW(FUN_141245b20()->FUN_141245ab0());
+            sp->SetTextW(reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0());
     }
     {
         MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
@@ -1955,7 +1955,7 @@ int CGameOption::FUN_1412438f0()
         unsigned __int64 nVideoMem = ((class Unk_GoGpuMgr*)FUN_1409f7c90())->GetVideoMem();
         if (nVideoMem <= 0x800)
             m_nBenchmark = 0;
-        else if (FUN_141245b20()->GetVendor() == 2)
+        else if (reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetVendor() == 2)
         {
             TiXmlDocument doc;
             if (GetFileSystem()->FUN_1403974b0(&doc, "./Data/Xml/Table/benchmarkOption.xml", 0, true, false) != 0)
@@ -1976,7 +1976,7 @@ int CGameOption::FUN_1412438f0()
                 for (std::map<int, unsigned __int64>::iterator it = levels.begin(); it != levels.end(); ++it)
                 {
                     m_nBenchmark = it->first;
-                    if (FUN_141245b20()->GetBandwidth() <= it->second)
+                    if (reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetBandwidth() <= it->second)
                         break;
                 }
             }
@@ -1984,7 +1984,7 @@ int CGameOption::FUN_1412438f0()
         else
         {
             CStringW strNvidia(L"NVIDIA ");
-            CStringW strName = FUN_141245b20()->FUN_141245ab0();
+            CStringW strName = reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->FUN_141245ab0();
             if (strName.Find(strNvidia, 0) != -1)
             {
                 int nLen = strNvidia.GetLength();

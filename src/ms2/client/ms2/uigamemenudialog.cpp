@@ -507,7 +507,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036d570(int);
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -526,7 +526,7 @@ class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void* FUN_1409670e0();
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
@@ -994,7 +994,7 @@ void UIGameMenuDialog::vfunc_o178_1(void* p)
 void UIGameMenuDialog::vfunc_o178_2(void* p)
 {
     FUN_141938ae0(0x4f18, 0);
-    if (((class CQuest*)(void*)(p))->FUN_140bfc580() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_6dd0)->Get()))
+    if (((class CQuest*)(void*)(p))->FUN_140bfc580() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6dd0)->Get()))
         FUN_141938850();
     FUN_14193b360();
     FUN_141938100();
@@ -1176,7 +1176,7 @@ void UIGameMenuDialog::FUN_141937ed0()
 void UIGameMenuDialog::FUN_141938100()
 {
     int bShow = 1;
-    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_8de0)->Get()))
+    if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060() == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8de0)->Get()))
         bShow = 0;
     if (reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3060() != 62000000 && !FUN_1409312f0())
         bShow = 0;
@@ -1277,7 +1277,7 @@ void UIGameMenuDialog::FUN_141938850()
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    const int* pQuest = reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_6dd0)->Get());
+    const int* pQuest = reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6dd0)->Get());
     if (((CQuestManagerCommon*)(Unk_GmQuestState*)&(((class Unk_GmQuestHolder*)FUN_140764020())->state))->FUN_140745590(*pQuest) == 0)
         return;
     int bFound = 0;
@@ -2023,7 +2023,7 @@ void UIGameMenuDialog::FUN_14193c780()
     if (reinterpret_cast<CContentShutdown&>(((class Unk_GmBreakFlags*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x3f)) != 0)
         FUN_141275260(0x2f7, 1, 1);
     else
-        ((class Unk_GmNet*)FUN_140d86260())->vfunc_66();
+        ((class Unk_GmNet*)((void*)GetClientPlatform()))->vfunc_66();
 }
 
 // @0x14193c800
@@ -2074,13 +2074,13 @@ void UIGameMenuDialog::FUN_14193c930()
             FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_mentoring_error_mentor_none_mentor"), strName), 1, 1);
     } else {
         if (((class CMentoringManager*)(void*)(((void*)TSingleton<CMentoringManager>::GetInstance())))->FUN_140b71580() == 4) {
-            if ((unsigned int)pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_8c10)->Get()) {
+            if ((unsigned int)pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8c10)->Get()) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_candidate_level"), 1, 1);
                 return;
             }
         }
         if (((class CMentoringManager*)(void*)(((void*)TSingleton<CMentoringManager>::GetInstance())))->FUN_140b71580() == 1) {
-            if ((unsigned int)pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_8c68)->Get()) {
+            if ((unsigned int)pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8c68)->Get()) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_candidate_level"), 1, 1);
                 return;
             }
@@ -2121,7 +2121,7 @@ void UIGameMenuDialog::FUN_14193cf60()
 // @0x14193d030
 void UIGameMenuDialog::FUN_14193d030()
 {
-    if (((class CQuestManager*)(class Unk_GmQuestHolder*)(((class Unk_GmQuestHolder*)FUN_140764020())))->FUN_1416d09d0(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_8de0)->Get()), 1) == 0)
+    if (((class CQuestManager*)(class Unk_GmQuestHolder*)(((class Unk_GmQuestHolder*)FUN_140764020())))->FUN_1416d09d0(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_8de0)->Get()), 1) == 0)
         return;
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_sky_fortress_goto_map"), nullptr, CStringW(L""))) {
         box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
@@ -2363,7 +2363,7 @@ void UIGameMenuDialog::FUN_14193df10(Scaleform::GFx::Value* pOut)
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    int nQuestDone = ((CQuestManagerCommon*)(Unk_GmQuestState*)&(((class Unk_GmQuestHolder*)FUN_140764020())->state))->FUN_140745590(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_6dd0)->Get()));
+    int nQuestDone = ((CQuestManagerCommon*)(Unk_GmQuestState*)&(((class Unk_GmQuestHolder*)FUN_140764020())->state))->FUN_140745590(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6dd0)->Get()));
     CStringW strText;
     if (FUN_1401e0800(pPc->vfunc_78()) != 0 && nQuestDone != 0)
         strText = GetStringCommonByKey(L"s_tooltip_gamemenu_enable_characterability");
@@ -2447,11 +2447,11 @@ void UIGameMenuDialog::OnPetAttack()
 // @0x14193e940
 int UIGameMenuDialog::FUN_14193e940(int nField)
 {
-    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_61f8)->Get()))
+    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_61f8)->Get()))
         return 1;
-    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_62a8)->Get()))
+    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_62a8)->Get()))
         return 1;
-    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_6358)->Get()))
+    if (nField == *reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)GetClientConstants())->m_6358)->Get()))
         return 1;
     return 0;
 }

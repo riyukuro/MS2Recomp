@@ -10,10 +10,10 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// The pooled allocator New and the pool-constructor helper of the type built here (both live in other units).
-void* FUN_1410dc3b0(void* pTag);
-class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
-void  FUN_141149360(void* pThis);   // the object's base initializer
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"   // SalesInfo, MS2SvrPtr<SalesInfo>
+// C3: FUN_1410dc3b0 is MS2SvrPtr<SalesInfo>::Allocate (unit_1410dbc10); FUN_1401ba820 marks the fresh object.
+//
+// C3: FUN_141149360 (the "base initializer") is MS2SvrPtr<SalesInfo>::Release.
 
 // The object's pointer member at +0x8.
 struct Unk_Obj8 {
@@ -23,14 +23,14 @@ struct Unk_Obj8 {
 MS2_CHECK_OFFSET(Unk_Obj8, m_pField8, 0x8);
 
 // @0x14112fe40
-void* FUN_14112fe40(void*)
-{
-    return ((void*)FUN_1401ba820((class CPtred*)(FUN_1410dc3b0(0))));
-}
+template SalesInfo* MS2SvrPtr<SalesInfo>::Create(void*);   // C3: was FUN_14112fe40
+//
+//
+//
 
 // @0x14112fe10
-void FUN_14112fe10(Unk_Obj8* pThis)
-{
-    FUN_141149360(pThis);
-    pThis->m_pField8 = FUN_14112fe40(0);
-}
+template void MS2SvrPtr<SalesInfo>::Make();   // C3: was FUN_14112fe10 (Release 0x141149360, then m_p = Create(0))
+//
+//
+//
+//

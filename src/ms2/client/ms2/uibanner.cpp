@@ -47,7 +47,7 @@ struct Unk_BannerCfg
     char m_pad_0000[0x320];
     Unk_BannerCfgFloat m_320;
 };
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_BannerUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -76,7 +76,7 @@ UIBanner::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nAct
     : UIHudEntity::Entity(nLayer, clip, nActorId)
 {
     m_60 = 0;
-    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_320)->Read();
+    m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_BannerCfg*)GetClientConstants())->m_320)->Read();
 }
 
 // @0x140ba8310

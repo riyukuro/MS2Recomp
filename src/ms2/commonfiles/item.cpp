@@ -76,8 +76,8 @@ extern __int64 GetServerTime();
 class Unk_140166410* FUN_140166410();
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); int FUN_14036dc40(); };   // C3: unit-local view
 extern MS2Ptr<CItemData> FUN_14053f870(int);
-// @0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance (s_instance is the exe's DAT_143aaf1d0)
-ItemGachaBoxTable* FUN_14052d230();
+// 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance (s_instance is the exe's DAT_143aaf1d0)
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 //
 class Unk_SingletonObj {};
 // The return type of the FUN_14052d220 definition below (TSingleton<CUgcManager>::GetInstance; callers use the real one).
@@ -1794,7 +1794,7 @@ int CItem::FUN_140526190()
 {
     if (FUN_140526160() == 1)
     {
-        GachaBoxDataPtr spBox = FUN_14052d230()->GetBox(FUN_140529640());
+        GachaBoxDataPtr spBox = TSingleton<ItemGachaBoxTable>::GetInstance()->GetBox(FUN_140529640());
         if (spBox == 0)
             return 0;
         MS2Ptr<CItemData> spCoin = FUN_14053f870(spBox->m_nCoinItemID);
@@ -1954,7 +1954,7 @@ Unk_UgcRideeMgr* FUN_14052d220()
 }
 
 // @0x14052d230
-ItemGachaBoxTable* FUN_14052d230()
+ItemGachaBoxTable* TSingleton<ItemGachaBoxTable>::GetInstance()
 {
     return TSingleton<ItemGachaBoxTable>::s_instance;
 }
@@ -2959,11 +2959,11 @@ int CItemBreakIngredientTable::LoadBreakItems()
 // @0x14052e490
 int CItemBreakIngredientTable::LoadGachaBoxes()
 {
-    if (FUN_14052d230() == 0)
+    if (TSingleton<ItemGachaBoxTable>::GetInstance() == 0)
         return 0;
     m_mapGacha.RemoveAll();
     std::vector<GachaBoxDataPtr> boxes;
-    FUN_14052d230()->GetAllBoxes(boxes);
+    TSingleton<ItemGachaBoxTable>::GetInstance()->GetAllBoxes(boxes);
     for (size_t i = 0; i < boxes.size(); i++)
     {
         if (boxes[i] == 0)

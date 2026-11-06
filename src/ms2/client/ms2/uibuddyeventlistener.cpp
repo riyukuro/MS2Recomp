@@ -230,7 +230,7 @@ __int64 FUN_141b71960(const char* sz);
 
 void FUN_140710590(COutPacket& packet);
 namespace Common { class Constants { public: template<class T> class Value { public: T* Get(); }; }; }   // C3: view of clientconstants.h; Value<CString>::Get() is 0x140298f80
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 void FUN_1422dc3b0(UICommunityDialog* pDialog, int nBigList);   // the list mode of the window
 CString FUN_141028a90(CString str, int n);                      // an image path
@@ -661,7 +661,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         void* pBrowser = ((void*)FUN_140c43790(0x4e6a));
         if (pBrowser != 0)
         {
-            CString strUrl = *reinterpret_cast<Common::Constants::Value<CString>*>(reinterpret_cast<char*>(((char*)FUN_1401d3200())) + 0x8838)->Get();
+            CString strUrl = *reinterpret_cast<Common::Constants::Value<CString>*>(reinterpret_cast<char*>(((char*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))) + 0x8838)->Get();
             reinterpret_cast<UIWebBrowserBase*>(pBrowser)->FUN_14135ec00(strUrl, true);
         }
         COutPacket packet(static_cast<int>(SendOp::EventReward), 0);

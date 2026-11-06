@@ -190,7 +190,7 @@ class Unk_ItemPlusInfo : public UnlimitedEnchantInfo {};    // CItemStatus::FUN_
 #include "ms2/commonfiles/itemoption.h"
 // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
-ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 int FUN_1409e6fc0(int nKind);                               // part 5: the item kind shown by the tooltip
 CStringW FUN_1409e5320(const int& nSeason);                 // part 5: the season text
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // 0x14016a730 widen (as commonfiles/packet.h)
@@ -412,7 +412,7 @@ class MyPC;
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemgachaboxtable.h"
 #include "ms2/commonfiles/timeutil.h"
-ItemGachaBoxTable* FUN_14052d230();                                // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
+// (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 
 
 #include "ms2/client/ms2/achievemanager.h"

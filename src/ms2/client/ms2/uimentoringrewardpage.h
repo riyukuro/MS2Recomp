@@ -10,24 +10,24 @@
 #include <vector>
 #include "ms2/client/ms2/uigalleryeventdialog.h"
 class CInPacket;
-template<class T> class Unk_MentorPtr {
-public:
- Unk_MentorPtr():p(0){} Unk_MentorPtr(int):p(0){} Unk_MentorPtr(T* q):p(q){AddRef();}
- Unk_MentorPtr(const Unk_MentorPtr& q):p(q.p){AddRef();} Unk_MentorPtr(Unk_MentorPtr&& q):p(q.p){q.p=0;}
- ~Unk_MentorPtr(){Release();}
- Unk_MentorPtr& operator=(const Unk_MentorPtr& q){q.AddRef();Release();p=q.p;return *this;}
- Unk_MentorPtr& operator=(int){Release();return *this;}
- Unk_MentorPtr& operator=(T* q){Unk_MentorPtr tmp(q);T* old=p;p=tmp.p;tmp.p=old;return *this;}
- bool IsNull()const{return p==0;} bool operator==(T* q)const{return p==q;}
- T* get()const{return p;} T* operator->()const{return p;} operator T*()const{return p;}
-private:
- void AddRef()const{if(p)ReferenceImpl((void*)0);} static void Reference(T* q){CPtred::AddRefPtred(q);}
- void ReferenceImpl(void*)const{Reference(p);} void Release(){if(p){ReleaseImpl((void*)0);p=0;}}
- void ReleaseImpl(void*){if(CPtred::ReleasePtred(p)==0){Reference(p);CPtred::DeletePtred(p);}}
- void* m_0;T* p;
-};
+#include "ms2/commonfiles/mentor.h"   // Unk_MentorPtr, CMentor (was a local copy of the template)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 class UIMentoringDialog;
-class Unk_MentorEntry;
+class CMentor;
 class UIMentoringPage:public CPtred {
 public:
  UIMentoringPage(UIMentoringDialog*);virtual ~UIMentoringPage();
@@ -35,7 +35,7 @@ public:
  virtual void vfunc_4(Scaleform::GFx::Value*,ASData*);virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);
  virtual CString vfunc_6()=0;virtual CStringW vfunc_7();virtual int vfunc_8();virtual void vfunc_9();
  MS2Ptr<AScript> GetScript();UIMentoringDialog* GetOwner();
- void FUN_140c6f190();void FUN_140c71ce0();void FUN_140c6f7a0(CString,MS2Ptr<Unk_MentorEntry>);void FUN_140c71ee0(CString,MS2Ptr<Unk_MentorEntry>,int);
+ void FUN_140c6f190();void FUN_140c71ce0();void FUN_140c6f7a0(CString,Unk_MentorPtr<CMentor>);void FUN_140c71ee0(CString,Unk_MentorPtr<CMentor>,int);
 private:friend class UIMentoringMissionPage;friend class UIMentoringBuffPage;MS2Ptr<AScript> m_script;UIMentoringDialog* m_owner;
 };
 MS2_CHECK_SIZE(UIMentoringPage,0x30);

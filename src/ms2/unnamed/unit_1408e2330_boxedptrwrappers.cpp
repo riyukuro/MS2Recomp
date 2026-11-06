@@ -41,17 +41,17 @@ void FUN_1408e2660(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2690(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e26c0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e26f0(Unk_BoxedPointer* p, void* pUnused);
-void FUN_1408e2720(Unk_BoxedPointer* p, void* pUnused);
+class Unk_RuAux; struct Unk_MS2PtrAccess { static void FUN_1408e2720(Unk_BoxedPointer* p, void* pUnused); };   // MS2Ptr<T> friend (ascript.h): calls the private MS2Ptr<Unk_RuAux>::Reference
 void FUN_1408e2750(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e2780(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e27b0(Unk_BoxedPointer* p, void* pUnused);
 void FUN_1408e27e0(Unk_BoxedPointer* p, void* pUnused);
-class CPtred   // C3: member view for the former free stand-ins
-{
-public:
-    static void AddRefPtred(class CPtred*);
-};
-void FUN_14041d1b0(void* p);   // outside this unit
+// CPtred: the real class (ms2/placeholder/cptred.h, via ascript.h below); its static helpers stay out-of-line COMDATs at /Od
+//
+//
+//
+//
+#include "ms2/placeholder/ascript.h"   // 0x14041d1b0 = MS2Ptr<Unk_RuAux>::Reference (private, gameeventreturnuser.cpp); the exe folded this T's Reference into it
 
 // ---------------------------------------------------------------------------
 // the 29 entries, in address order
@@ -96,7 +96,7 @@ void FUN_1408e23f0(Unk_BoxedPointer* p)
 void FUN_1408e2420(Unk_BoxedPointer* p)
 {
     if (p->m_pValue != 0)
-        FUN_1408e2720(p, 0);
+        Unk_MS2PtrAccess::FUN_1408e2720(p, 0);
 }
 
 // @0x1408e2450
@@ -212,9 +212,9 @@ void FUN_1408e26f0(Unk_BoxedPointer* p, void* pUnused)
 }
 
 // @0x1408e2720
-void FUN_1408e2720(Unk_BoxedPointer* p, void* pUnused)
+void Unk_MS2PtrAccess::FUN_1408e2720(Unk_BoxedPointer* p, void* pUnused)
 {
-    FUN_14041d1b0(p->m_pValue);
+    MS2Ptr<Unk_RuAux>::Reference((Unk_RuAux*)p->m_pValue);
 }
 
 // @0x1408e2750

@@ -108,7 +108,7 @@ public:
     virtual NiPoint3 vfunc_30(GameObject* pTarget);         // 30 0x14123c9f0
     virtual void vfunc_31(bool b);                          // 31 0x14123cad0
     virtual void vfunc_32(bool b);                          // 32 0x14123cb90
-    virtual void vfunc_33(void* a, void* b);                // 33 0x14123cf10
+    virtual void vfunc_33(void* a, efd::Point3 kHit);       // 33 0x14123cf10 (hit point by value)
     virtual void vfunc_34(void* p);                         // 34 0x14123cfb0
     virtual void vfunc_35(void* p);                         // 35 0x14123d040
     virtual int vfunc_36(CString str, efd::Point3* pOut);   // 36 0x14123d0e0 (by-value CString)
@@ -141,8 +141,7 @@ public:
     void SetScaleAC(float f);                            // scale B (+0xa8)
     int FUN_14123c660();                                    // visibility (+0xb0)
     void FUN_14123c5a0(int nId);                            // 0x14123c5a0 m_unk_70 = nId (w17)
-    egf::EntityID FUN_14123c460();                          // 0x14123c460 (definition; same ABI as the out-param view below)
-    egf::EntityID& FUN_14123c460(egf::EntityID& kOut);      // same function: the exe caller passes a reference local (cubemapinformationservice_3)
+    egf::EntityID FUN_14123c460();                          // 0x14123c460
     MS2Ptr<CAnimationManager> GetAnimMgr();              // 0x14123c6f0 copy of m_spAnimMgr (w17)
     CString FUN_14123bbd0();                                // 0x14123bbd0 copy of m_str90 (model path; sb4)
     void FUN_14123bc20(CString str);                        // 0x14123bc20 reload the model from str (by value; sb4)

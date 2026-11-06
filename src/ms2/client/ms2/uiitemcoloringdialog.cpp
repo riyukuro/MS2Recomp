@@ -155,7 +155,7 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42();
     virtual void vfunc_43(int nEvent, int a2, int nDelay);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
@@ -326,7 +326,7 @@ void UIItemColoringDialog::OnLoadComplete()
     m_268.AssignRaw(new Customize(((class GameObject*)(class PCBase*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     FUN_1419afe30();
     m_25c = 1;
-    ((class Unk_IcPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
+    ((class Unk_IcPlatform*)((void*)GetClientPlatform()))->vfunc_43(0xe, 0, 1000);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419addc0));
 }

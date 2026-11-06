@@ -334,7 +334,7 @@ template<class T> T* Constants::Value<T>::Define(const char* key, const T& def)
     bool loaded;
     {
         CString k(key);
-        loaded = FUN_1401d3200()->Lookup(k, &m_value);
+        loaded = GetClientConstants()->Lookup(k, &m_value);
     }
     if (loaded)
         MarkLoaded();
@@ -385,7 +385,7 @@ template<class T> bool Constants::Values<T>::Define(const char* key)
         bool done;
         {
             CString k(name);
-            done = !FUN_1401d3200()->Lookup(k, &value);
+            done = !GetClientConstants()->Lookup(k, &value);
         }
         if (done)
             break;
@@ -421,7 +421,7 @@ template<class T> bool Constants::Values<T>::Define(const char* key, ATL::CAtlAr
         bool done;
         {
             CString k(name);
-            done = !FUN_1401d3200()->Lookup(k, &value);
+            done = !GetClientConstants()->Lookup(k, &value);
         }
         if (done)
             break;
@@ -1266,13 +1266,13 @@ struct Unk_ClientConstantsFloats
 // @0x1402bab30
 void FUN_1402bab30()
 {
-    g_kClientConstantsFloats.m_fNPCColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->NPCColorScale.Read();
-    g_kClientConstantsFloats.m_fNPCDuration = static_cast<Client::Constants*>(FUN_1401d3200())->NPCDuration.Read();
-    g_kClientConstantsFloats.m_fPCColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->PCColorScale.Read();
-    g_kClientConstantsFloats.m_fPCDuration = static_cast<Client::Constants*>(FUN_1401d3200())->PCDuration.Read();
-    g_kClientConstantsFloats.m_fGetEXPColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->GetEXPColorScale.Read();
-    g_kClientConstantsFloats.m_fGetEXPDuration = static_cast<Client::Constants*>(FUN_1401d3200())->GetEXPDuration.Read();
-    g_kClientConstantsFloats.m_fAccumulationRatio = static_cast<Client::Constants*>(FUN_1401d3200())->AccumulationRatio.Read();
+    g_kClientConstantsFloats.m_fNPCColorScale = static_cast<Client::Constants*>(GetClientConstants())->NPCColorScale.Read();
+    g_kClientConstantsFloats.m_fNPCDuration = static_cast<Client::Constants*>(GetClientConstants())->NPCDuration.Read();
+    g_kClientConstantsFloats.m_fPCColorScale = static_cast<Client::Constants*>(GetClientConstants())->PCColorScale.Read();
+    g_kClientConstantsFloats.m_fPCDuration = static_cast<Client::Constants*>(GetClientConstants())->PCDuration.Read();
+    g_kClientConstantsFloats.m_fGetEXPColorScale = static_cast<Client::Constants*>(GetClientConstants())->GetEXPColorScale.Read();
+    g_kClientConstantsFloats.m_fGetEXPDuration = static_cast<Client::Constants*>(GetClientConstants())->GetEXPDuration.Read();
+    g_kClientConstantsFloats.m_fAccumulationRatio = static_cast<Client::Constants*>(GetClientConstants())->AccumulationRatio.Read();
 }
 
 // @0x1402bbae0

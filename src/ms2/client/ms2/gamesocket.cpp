@@ -47,7 +47,7 @@ class CLogString* GetLogString(); void Unk_AdditionalLog(class CLogString*,int,i
 CStringW FUN_14016a730(const char*,int);
 class CStateService; extern int g_socketClosing;
 template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
-class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
+template<> class TSingleton<class CReconnectionManagerCli> { public: static class CReconnectionManagerCli* GetInstance(); };   // C3: was FUN_140e800e0 (real spec in reconnectionmanagercli.h)
 class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 {
 public:
@@ -139,7 +139,7 @@ class Unk_140d86260 { public:
     virtual void vfunc_57();
     virtual void vfunc_58(int,int);
 };
-void* FUN_140d86260();   // C3: was FUN_140d86260
+class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 struct Unk_SPDC {
     Unk_SPDC():zero(0),version(0),locale(0),key(0),flag(0) {}
     void FUN_1407a4420(CInputStream*);
@@ -167,13 +167,13 @@ void CGameSocket::vfunc_1(CSimpleSocket*,int error)
                 for(int i=0;i<50;++i) { Sleep(100); result=recv(m_socket,buffer,0,MSG_PEEK);  /* exe: len 0, flags 2 (peek); a consuming recv ate the server hello and stalled login */ if(result==-1 && (last=WSAGetLastError())==WSAEWOULDBLOCK) continue; break; }
                 if(result==-1) {
                     if(last==WSAECONNRESET || last==WSAECONNABORTED) { PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x46a,0,0); return; }
-                    else { ((class Unk_140d86260*)FUN_140d86260())->vfunc_31(m_host,m_port,error); FUN_141266500(error); return; }
+                    else { ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_31(m_host,m_port,error); FUN_141266500(error); return; }
                 }
             }
             m_state=Unk_SocketState::Connected;
             CString text=Unk_SocketFormat("Socket Connected {0} {1}",m_host,m_port);
             Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(text,0));
-        } else { ((class Unk_140d86260*)FUN_140d86260())->vfunc_31(m_host,m_port,error); FUN_141266500(error); }
+        } else { ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_31(m_host,m_port,error); FUN_141266500(error); }
     }
 }
 MS2_REPLACE_METHOD(0x141264a70, CGameSocket, vfunc_1, 846, 0x028ED379);
@@ -278,7 +278,7 @@ MS2_REPLACE_METHOD(0x141265960, CGameSocket, FUN_141265960, 29, 0x706FDE9B);
 void CGameSocket::SendPacket(COutPacket& packet)
 {
     bool hold; bool defer=false; hold=false;
-    if(((void*)FUN_140e800e0())) { defer=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->IsReconnecting(); hold=((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->GetOption(9)==1; }
+    if(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())) { defer=((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->IsReconnecting(); hold=((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->GetOption(9)==1; }
     if(m_state!=Unk_SocketState::Connected) {
         if(hold) return;
         m_out->PushPendingPacket(packet);
@@ -313,7 +313,7 @@ void CGameSocket::FUN_141265ae0()
                         unsigned key=m_receiveKey;
                         packet->DecryptPayload(((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->GetConnectionState(),&key);
                         ++m_sequence; packet->FUN_14126c7b0(m_sequence);
-                        int result=((class Unk_140d86260*)FUN_140d86260())->vfunc_35(*packet);
+                        int result=((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_35(*packet);
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
                             if(op==1) { Unk_SPDC response; ((class Unk_SPDC&)(response)).FUN_1407a4420((class CInputStream *)(&*packet)); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SetConnectionState(response.key); }
@@ -404,8 +404,8 @@ MS2_REPLACE_METHOD(0x1412672a0, CGameSocket, FUN_1412672a0, 39, 0x0D8742A8);
 void CGameSocket::FUN_1412672d0()
 {
     m_sequence=0; m_out->Reset();
-    if(((void*)FUN_140e800e0())) {
-        void* settings=((void*)((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->GetOptions()); BOOL enabled=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(0)==1 ? TRUE : FALSE;
+    if(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())) {
+        void* settings=((void*)((class CReconnectionManagerCli*)(void*)(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())))->GetOptions()); BOOL enabled=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(0)==1 ? TRUE : FALSE;
         if(enabled) { int value=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(1); m_out->SetLimit(value); }
         m_out->SetCaptureEnabled(enabled);
     }
@@ -427,7 +427,7 @@ void CGameSocket::FUN_141267410(COutPacket& packet)
         Unk_LockGuard guard(m_lock);
         if(guard!=0) {} else {
             (void)((!!(((class COutPacket*)(class COutPacket*)(&packet))->FUN_14020bc40()==FALSE)) || (_wassert(L"oPacket.IsLoopback() == FALSE",_CRT_WIDE(MS2_THIS_FILE),496),0));
-            ((class Unk_140d86260*)FUN_140d86260())->vfunc_34(packet);
+            ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_34(packet);
             unsigned key=m_sendKey; FUN_140710b90(&packet,((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->GetConnectionState(),&key);
             FUN_140710870(&packet,&m_sendQueue,0x9dd,&m_sendKey,0); Unk_RandomStep((int*)(&m_sendKey));
         }
@@ -453,13 +453,13 @@ MS2_REPLACE_METHOD(0x141267630, CGameSocket, GetHost, 68, 0x2A903A72);
 int CGameSocket::GetPort() { return m_port; }
 MS2_REPLACE_METHOD(0x141267680, CGameSocket, GetPort, 17, 0x04BB11AA);
 // @0x1412676a0
-void FUN_1412676a0(int error) { CUIService::GetInstance()->FUN_141adbea0(); FUN_140d73bc0(174,0,0,s_forceLogin); ((class Unk_140d86260*)FUN_140d86260())->vfunc_58(174,error); }
+void FUN_1412676a0(int error) { CUIService::GetInstance()->FUN_141adbea0(); FUN_140d73bc0(174,0,0,s_forceLogin); ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_58(174,error); }
 MS2_REPLACE(0x1412676a0, FUN_1412676a0, 118, 0x5BB614FD);
 // @0x141267720
 void FUN_141267720() { CUIService::GetInstance()->FUN_141adbea0(); FUN_140d73aa0(BlockFormat<int>(527,0),0,0,s_forceLogin); }
 MS2_REPLACE(0x141267720, FUN_141267720, 137, 0xD9DF5AEA);
 // @0x1412677b0
-void FUN_1412677b0() { CUIService::GetInstance()->FUN_141adbea0(); int code=532; if(FUN_1406516b0()==3) code=3178; FUN_140d73aa0(BlockFormat<int>(code,0),0,0,s_gameExit); ((class Unk_140d86260*)FUN_140d86260())->vfunc_58(code,0); }
+void FUN_1412677b0() { CUIService::GetInstance()->FUN_141adbea0(); int code=532; if(FUN_1406516b0()==3) code=3178; FUN_140d73aa0(BlockFormat<int>(code,0),0,0,s_gameExit); ((class Unk_140d86260*)((void*)GetClientPlatform()))->vfunc_58(code,0); }
 MS2_REPLACE(0x1412677b0, FUN_1412677b0, 198, 0xF4854A56);
 // Inline socket and packet helpers instantiated by the client entry points.
 // @0x141268620

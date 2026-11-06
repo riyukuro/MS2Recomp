@@ -105,7 +105,7 @@ public:
 MS2_CHECK_OFFSET(Unk_SiConsts, m_delayBore, 0xa00);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_intervalB, 0x7e90);
 MS2_CHECK_OFFSET(Unk_SiConsts, m_strSoundJob110, 0xe098);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
+// C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_PCBaseComp_aa8 : public CPtred { };     // the pet component
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
@@ -484,7 +484,7 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 // @0x1417ce5b0
 void StateIdle::vfunc_21(int n)
 {
-    m_timerLeave.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)FUN_1401d3200())->m_delayLeave));
+    m_timerLeave.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayLeave));
     vfunc_2(6);
 }
 
@@ -661,7 +661,7 @@ void StateIdle::FUN_1417cef60()
             m_timerBore.FUN_1408687f0();
         }
         if (m_timerBore.FUN_140868ba0() == 0)
-            m_timerBore.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)FUN_1401d3200())->m_delayBore));
+            m_timerBore.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayBore));
     }
     else
     {
@@ -705,11 +705,11 @@ void StateIdle::FUN_1417cf360()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         if (AsPC(pPC)->FUN_141654700() == 0x32)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50)->Get();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)GetClientConstants())->m_strSoundJob50)->Get();
         }
         else if (AsPC(pPC)->FUN_141654700() == 0x6e)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110)->Get();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = *reinterpret_cast<Common::Constants::Value<CString>*>(&((class Unk_SiConsts*)GetClientConstants())->m_strSoundJob110)->Get();
         }
         else
         {
@@ -910,9 +910,9 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet != 0)
     {
-        if (m_timerVoiceA.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA)->Get()) != 0)
+        if (m_timerVoiceA.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)GetClientConstants())->m_intervalA)->Get()) != 0)
             FUN_1417d0540(0x5a);
-        if (m_timerVoiceB.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB)->Get()) != 0)
+        if (m_timerVoiceB.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)GetClientConstants())->m_intervalB)->Get()) != 0)
         {
             int nPetId = FUN_140b11e90((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo())->m_book, pPet);
             if (nPetId != 0)
