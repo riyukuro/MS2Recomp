@@ -861,10 +861,10 @@ inline void ASDropdownMenu::FUN_140f1fe00(const CString& strMember, __int64* pOu
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int a1, bool a2, Scaleform::GFx::Value a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcc70(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcce0(&args[1], a2);
+    FUN_1422bcc70(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

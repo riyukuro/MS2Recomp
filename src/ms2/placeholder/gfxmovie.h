@@ -13,6 +13,7 @@
 #pragma once
 
 #include <afx.h>
+#include <vector>
 #include <NiRefObject.h>
 #include <NiRTTI.h>
 
@@ -32,6 +33,9 @@ class Unk_GFxUIRenderer2D;
 #define MS2_GFX_LOADER Scaleform::GFx::Loader
 #define MS2_GFX_MOVIE Scaleform::GFx::Movie
 #define MS2_GFX_MOVIEDEF Scaleform::GFx::MovieDef
+
+namespace Scaleform { namespace GFx { class Value; } }
+typedef std::vector<Scaleform::GFx::Value> ASArgList;
 
 class GFxMovie : public NiRefObject
 {
@@ -73,7 +77,7 @@ public:
 
     // The rest of ?\gfxmovie.cpp (src/ms2/gfxui/gfxmovie.cpp).
     Scaleform::GFx::Value FUN_1422bd1b0(const char* szMethod);      // call an AS function of the root (no arguments)
-    Scaleform::GFx::Value FUN_1422bd250(const char* szMethod, class ASArgList& args);   // the same with arguments (undefined on failure)
+    Scaleform::GFx::Value FUN_1422bd250(const char* szMethod, ASArgList& args);   // the same with arguments (undefined on failure)
     // FUN_1422bd250 with one string argument (inline COMDAT; the CString by value: the callee destroys it)
     Scaleform::GFx::Value FUN_1422be7f0(const char* szMethod, CString a1);
     float FUN_1422bde30();                                          // m_14 (the viewport scale)

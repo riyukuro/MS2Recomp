@@ -1003,9 +1003,9 @@ inline void CMsgBoxData::FUN_141b2fe80(const wchar_t* psz)
 inline Scaleform::GFx::Value Unk_TeScript::FUN_141b2fee0(const char* szMethod, const AScript& a1, CStringW a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bce40(&args[0], a1);
+    FUN_1422bcea0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

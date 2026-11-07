@@ -4,7 +4,8 @@
 // MS2-UNIT: unit_14092f420
 // MS2-RANGE: 0x1400be590-0x1400be790 .text$di
 // MS2-RANGE: 0x1400bed10-0x1400befb0 .text$di
-// MS2-RANGE: 0x14092f420-0x140935c20 .text$mn
+// MS2-RANGE: 0x14092f420-0x140932b20 .text$mn
+// MS2-RANGE: 0x140932b40-0x140935c20 .text$mn
 // MS2-RANGE: 0x142c9cc70-0x142c9cd70 .text$yd
 // MS2-RANGE: 0x142c9d080-0x142c9d0a0 .text$yd
 // MS2-RANGE: 0x142c9d0c0-0x142c9d1c0 .text$yd

@@ -87,7 +87,7 @@ Scaleform::GFx::Value GFxMovie::FUN_1422bd1b0(const char* szMethod)
 Scaleform::GFx::Value GFxMovie::FUN_1422bd250(const char* szMethod, ASArgList& args)
 {
     Scaleform::GFx::Value vResult;
-    if (!m_60->Invoke(szMethod, &vResult, args.FUN_1409b1f70(0), (unsigned)reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
+    if (!m_60->Invoke(szMethod, &vResult, &args[0], (unsigned)reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
         return Scaleform::GFx::Value();
     return vResult;
 }
@@ -420,8 +420,8 @@ void GFxMovie::FUN_1422be5b0(MS2Ptr<ASMovieClipLoader> spLoader)
 inline Scaleform::GFx::Value GFxMovie::FUN_1422be7f0(const char* szMethod, CString a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bce70(&args[0], a1);
     return FUN_1422bd250(szMethod, args);
 }
 

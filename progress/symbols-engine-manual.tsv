@@ -730,3 +730,17 @@ LocalPcreFree	1428ea360	func	pcre_globals.c static: pcre_free/pcre_stack_free 0x
 ??__E?ms_kNxMat34Identity@PhysXTypes@efdPhysX@@2VNxMat34@@B@@YAXXZ	14012e070	alias	__physxtypes.cpp
 ??__EkSequenceDataFreq@egmAnimationBindings@@YAXXZ	1401577f0	alias	egmanimationbindings_luawrap_release
 ??__ENiAnimationSDMObject@@YAXXZ	1401351b0	alias	__visualtrackerservice.cpp
+# fe38: kCAT_INVALID atexit registrations (12-byte lea rcx,F; jmp atexit) and their ret-0 dtors, tied to the TU whose statics they lead/trail in .text$di (work/fe38/ledger.tsv)
+??__EkCAT_INVALID@efd@@YAXXZ	14012ad40	alias	__scenegraphcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	14012b720	alias	__niffactory.
+??__EkCAT_INVALID@efd@@YAXXZ	14012b740	alias	__inputservice.
+??__EkCAT_INVALID@efd@@YAXXZ	14012ba80	alias	__keyboardmessages.
+??__EkCAT_INVALID@efd@@YAXXZ	14012d760	alias	__assetcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	140131520	alias	__sceneservice.
+??__EkCAT_INVALID@efd@@YAXXZ	140132060	alias	__animationservice.
+??__EkCAT_INVALID@efd@@YAXXZ	1401320d0	alias	__kfmcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	140132ed0	alias	__animationservice.
+??__EkCAT_INVALID@efd@@YAXXZ	1401335b0	alias	__kfmcacheresponse.
+??__EkCAT_INVALID@efd@@YAXXZ	140134d50	alias	__kfmfactoryrequest.
+??__EkCAT_INVALID@efd@@YAXXZ	140134ff0	alias	__visualtrackerservice.
+??__EkCAT_INVALID@efd@@YAXXZ	140131c80	alias	__kfmfactory.

@@ -162,10 +162,10 @@ CStringW FUN_140f5f590(int nPet);
 inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5fe90(const char* szMethod, CStringW strText, int nCount, bool bLock)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)strText);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), nCount);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), bLock);
+    args.resize(3);
+    FUN_1422bcea0(&args[0], (const wchar_t*)strText);
+    FUN_1422bcd10(&args[1], nCount);
+    FUN_1422bcce0(&args[2], bLock);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -173,9 +173,9 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5fe90(const char* szMethod, C
 inline Scaleform::GFx::Value AScript::FUN_140f5ff80(const char* szMethod, CStringW strText, bool bFinal)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)strText);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), bFinal);
+    args.resize(2);
+    FUN_1422bcea0(&args[0], (const wchar_t*)strText);
+    FUN_1422bcce0(&args[1], bFinal);
     return FUN_1422bb8f0(szMethod, args);
 }
 

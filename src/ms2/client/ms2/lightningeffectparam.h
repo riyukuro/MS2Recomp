@@ -73,7 +73,7 @@ public:
     unsigned __int64 m_nSequence;   // +0xc8 last texture index
     unsigned int m_nTick;           // +0xd0 param m_nTextureChangeTick (0 = every update)
     unsigned int m_nLastTick;       // +0xd4
-    ATL::CAtlArray<Vector3>* m_pPoints;    // +0xd8 the target's point list
+    const ATL::CAtlArray<Vector3>* m_pPoints;    // +0xd8 the target's point list
     NiPointer<NiTexturingProperty> m_spTexProp;    // +0xe0
     MS2Ptr<LightningEffectParam> m_spParam;        // +0xe8 (pointer at +0xf0)
 };

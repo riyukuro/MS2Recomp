@@ -93,9 +93,9 @@ MS2_REPLACE(0x140e78380, FUN_140e78380, 235, 0xB1158841);
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2)   // C3: ascript.h's Invoke (was ASDialog::FUN_140e78470)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
+    args.resize(2);
+    FUN_1422bcea0(&args[0], (const wchar_t*)a1);
+    FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

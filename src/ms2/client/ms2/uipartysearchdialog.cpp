@@ -209,10 +209,10 @@ void ASObj::FUN_140f8fa10(const char* szName, unsigned int n)
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, bool a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcc70(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bcce0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

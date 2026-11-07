@@ -91,7 +91,7 @@ void FUN_140059570(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059700(unsigned char const *, unsigned char *, int, int, int);
 void FUN_1400597b0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059810(unsigned char const *, unsigned char *, int, int, int);
-void FUN_140059ac0(unsigned char const *, unsigned char *, int, int, int);
+unsigned char const *FUN_140059ac0(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059b80(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059c10(unsigned char const *, unsigned char *, int, int, int);
 void FUN_140059c40(unsigned char const *, unsigned char *, int, int, int);

@@ -87,9 +87,9 @@ struct Unk_JcInvokeSkill { Scaleform::GFx::Value FUN_1419dc5e0(const char* szMet
 Scaleform::GFx::Value Unk_JcInvokeSkill::FUN_1419dc5e0(const char* szMethod, unsigned __int64 n, ASObj& obj)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce00(args.FUN_1409b1f70(0), n);
-    FUN_1422bce40(args.FUN_1409b1f70(1), obj);
+    args.resize(2);
+    FUN_1422bce00(&args[0], n);
+    FUN_1422bce40(&args[1], obj);
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
 }
 

@@ -541,10 +541,10 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
 Scaleform::GFx::Value Unk_SmScript::FUN_141b151d0(const char* szMethod, const ASArray& arr, int n, CStringW str)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce40(args.FUN_1409b1f70(0), arr);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), n);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), str);
+    args.resize(3);
+    FUN_1422bce40(&args[0], arr);
+    FUN_1422bccb0(&args[1], n);
+    FUN_1422bcea0(&args[2], str);
     return FUN_1422bb8f0(szMethod, args);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

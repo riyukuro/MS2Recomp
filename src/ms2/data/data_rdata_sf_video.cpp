@@ -64,7 +64,6 @@ namespace Scaleform {
 namespace GFx {
 namespace AS2 {
 bool AvmVideoCharacter_OnUnloading(::Scaleform::GFx::AS2::AvmCharacter *);
-::Scaleform::Render::Rect<float> * FUN_140010200(void *, ::Scaleform::Render::Rect<float> *, ::Scaleform::Render::Matrix2x4<float> const *);
 }
 }
 }
@@ -81,11 +80,6 @@ extern Sd_1431b7900 DAT_1431b7900;
 extern Sd_1431b7ba0 DAT_1431b7ba0;
 extern Sd_1431b7c70 DAT_1431b7c70;
 extern Sd_1431b7d50 DAT_1431b7d50;
-void * FUN_140010130(void *);
-int FUN_140010140(void *);
-::Scaleform::GFx::InteractiveObject * FUN_140010180(void *, unsigned __int64);
-::Scaleform::GFx::InteractiveObject * FUN_140010530(::Scaleform::GFx::InteractiveObject *, unsigned int);
-void * FUN_140011610(void *, void **, void *);
 void FUN_140012e10(void *, void *, void *);
 char const * FUN_140012ef0(void *);
 char const * FUN_140012f40(void *);
@@ -566,128 +560,6 @@ struct Sd_1431b4d80 {
     const void* p48;
     unsigned char b50[0x10];
 };
-struct Sd_1431b6060 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-    const void* p48;
-    const void* p50;
-    const void* p58;
-    const void* p60;
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
-    const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
-    const void* pf8;
-    const void* p100;
-    const void* p108;
-    const void* p110;
-    const void* p118;
-    const void* p120;
-    const void* p128;
-    const void* p130;
-    const void* p138;
-    const void* p140;
-    const void* p148;
-    const void* p150;
-    const void* p158;
-    const void* p160;
-    const void* p168;
-    const void* p170;
-    const void* p178;
-    const void* p180;
-    const void* p188;
-    const void* p190;
-    const void* p198;
-    const void* p1a0;
-    const void* p1a8;
-    const void* p1b0;
-    const void* p1b8;
-    const void* p1c0;
-    const void* p1c8;
-    const void* p1d0;
-    const void* p1d8;
-    const void* p1e0;
-    const void* p1e8;
-    const void* p1f0;
-    const void* p1f8;
-    const void* p200;
-    const void* p208;
-    const void* p210;
-    const void* p218;
-    const void* p220;
-    const void* p228;
-    const void* p230;
-    const void* p238;
-    const void* p240;
-    const void* p248;
-    const void* p250;
-    const void* p258;
-    const void* p260;
-    const void* p268;
-    const void* p270;
-    const void* p278;
-    const void* p280;
-    const void* p288;
-    const void* p290;
-    const void* p298;
-    const void* p2a0;
-    const void* p2a8;
-    const void* p2b0;
-    const void* p2b8;
-    const void* p2c0;
-    const void* p2c8;
-    const void* p2d0;
-    const void* p2d8;
-    const void* p2e0;
-    const void* p2e8;
-    const void* p2f0;
-    const void* p2f8;
-    const void* p300;
-    const void* p308;
-    const void* p310;
-    const void* p318;
-    const void* p320;
-    const void* p328;
-    const void* p330;
-    const void* p338;
-    const void* p340;
-    const void* p348;
-    const void* p350;
-    const void* p358;
-    const void* p360;
-    const void* p368;
-    const void* p370;
-    const void* p378;
-    const void* p380;
-    const void* p388;
-    const void* p390;
-};
-struct Sd_1431b63f8 {
-    const void* p0;
-    const void* p8;
-    unsigned char b10[0x8];
-};
 struct Sd_1431b6878 {
     unsigned char ba8[0x1b8];
     const void* p260;
@@ -1132,132 +1004,8 @@ alignas(16) Sd_1431b4d80 DAT_1431b4d80 = {
     {0},
 };
 void* PTR_s_attachVideo_1431b5800 = (void*)"attachVideo";       // 0x1431b5800
-// 0x1431b6060
-alignas(16) Sd_1431b6060 DAT_1431b6060 = {
-    (const void*)&FUN_140010530,
-    (const void*)&FUN_140011610,
-    DAT_1425f2210,
-    DAT_1425f5010,
-    DAT_1425f2140,
-    DAT_1425f4d70,
-    DAT_1425f2600,
-    DAT_1425f56c0,
-    DAT_1425f29a0,
-    DAT_1425f5e70,
-    DAT_1425f7af0,
-    DAT_1425f75c0,
-    DAT_142510d40,
-    DAT_1425f1ca0,
-    DAT_1425265f0,
-    DAT_14250d620,
-    DAT_142528d90,
-    DAT_1425f64c0,
-    DAT_1425f2cd0,
-    DAT_1425f69f0,
-    DAT_1425f2e20,
-    DAT_1425f6f20,
-    DAT_1425f2f70,
-    DAT_1425f6760,
-    DAT_1425f2db0,
-    DAT_1425f6c90,
-    DAT_1425f2f00,
-    DAT_1425f6fe0,
-    DAT_1425f2fe0,
-    DAT_1425f57a0,
-    DAT_1425f2760,
-    DAT_1425f6690,
-    DAT_1425f2d40,
-    DAT_1425f6bc0,
-    DAT_1425f2e90,
-    DAT_1425f40a0,
-    DAT_1425f1d50,
-    DAT_1425f41f0,
-    DAT_1425f1db0,
-    DAT_1425f5530,
-    DAT_1425f25c0,
-    DAT_1425f6130,
-    DAT_1425f2a40,
-    DAT_1425f4460,
-    DAT_1425f1f60,
-    DAT_1425f22e0,
-    DAT_1425f23e0,
-    DAT_142506ef0,
-    DAT_1425084c0,
-    DAT_1425f3de0,
-    DAT_1425f41b0,
-    DAT_1425f1d70,
-    DAT_14252b580,
-    DAT_142510a30,
-    DAT_142504840,
-    (const void*)&::Scaleform::GFx::AS2::FUN_140010200,
-    DAT_14250d6f0,
-    DAT_14251cab0,
-    DAT_14250f760,
-    (const void*)&FUN_140010130,
-    DAT_1425f8550,
-    DAT_142509da0,
-    DAT_14250f850,
-    DAT_1425f8540,
-    DAT_142525c90,
-    DAT_1424eb250,
-    DAT_1425f3980,
-    DAT_1425f8870,
-    DAT_1425f8940,
-    DAT_1425f8880,
-    DAT_1425f2040,
-    DAT_1425f3390,
-    DAT_142515190,
-    DAT_142529f50,
-    DAT_14250ee20,
-    (const void*)&FUN_140010140,
-    DAT_1425f1ae0,
-    DAT_142509990,
-    DAT_1424f74d0,
-    DAT_1425f85e0,
-    DAT_1425f8630,
-    DAT_1425f8760,
-    DAT_1425f86d0,
-    DAT_1425f8690,
-    DAT_1425f88e0,
-    DAT_14251a100,
-    DAT_14251a820,
-    DAT_142509d40,
-    DAT_1425f7fc0,
-    DAT_1425287f0,
-    DAT_14251a3a0,
-    DAT_142518990,
-    DAT_14251ac30,
-    DAT_14251f560,
-    DAT_14251ac20,
-    DAT_14251f550,
-    DAT_142526720,
-    DAT_1424eeca0,
-    DAT_14251f5c0,
-    DAT_14251f5d0,
-    DAT_14251f540,
-    DAT_1425084d0,
-    DAT_14250b360,
-    DAT_142509dc0,
-    DAT_142510d10,
-    DAT_14250b3a0,
-    DAT_1424fe610,
-    DAT_142510e60,
-    DAT_142528800,
-    DAT_14250cc20,
-    DAT_1425f8480,
-    DAT_1425227d0,
-    DAT_14252c9c0,
-    DAT_14252c9d0,
-    DAT_14252c9e0,
-};
-// 0x1431b63f8
-alignas(8) Sd_1431b63f8 DAT_1431b63f8 = {
-    (const void*)&FUN_140010180,
-    DAT_1425f33e0,
-    {
-        0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x00,
-    },
-};
+// 0x1431b6060 is Video02Character's vftable, emitted by sfr_video_02
+// 0x1431b63f8 is Video02Character's vftable, emitted by sfr_video_02
 void* PTR_s_connect_1431b6410 = (void*)"connect";               // 0x1431b6410
 // 0x1431b6878
 alignas(8) Sd_1431b6878 DAT_1431b6878 = {
@@ -1787,8 +1535,6 @@ alignas(16) Sd_1431b7d50 DAT_1431b7d50 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b5300@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B@")
 #pragma comment(linker, "/alternatename:?DAT_1431b5310@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6BObjectInterface@123@@")
 #pragma comment(linker, "/alternatename:?DAT_1431b53c0@@3PEAXEA=??_7?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@6B?$ASRefCountBase@VObject@AS2@GFx@Scaleform@@@123@@")
-#pragma comment(linker, "/alternatename:?PTR_FUN_1431b6060@@3PEAXEA=?DAT_1431b6060@@3USd_1431b6060@@A")
-#pragma comment(linker, "/alternatename:?PTR_LAB_1431b63f8@@3PEAXEA=?DAT_1431b63f8@@3USd_1431b63f8@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b7160@@3PEAXEA=?DAT_1431b7160@@3USd_1431b7160@@A")
 #pragma comment(linker, "/alternatename:?PTR_FUN_1431b71b0@@3PEAXEA=?DAT_1431b71b0@@3USd_1431b71b0@@A")
 #pragma comment(linker, "/alternatename:?PTR_FUN_1431b7260@@3PEAXEA=?DAT_1431b7260@@3USd_1431b7260@@A")

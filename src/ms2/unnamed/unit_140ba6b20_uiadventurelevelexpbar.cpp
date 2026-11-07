@@ -300,11 +300,11 @@ template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString
 Scaleform::GFx::Value Unk_AdvEntity::FUN_140ba79c0(const char* szMethod, float a1, float a2, CStringW a3, bool a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
-    FUN_1422bcce0(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bcd70(&args[0], a1);
+    FUN_1422bcd70(&args[1], a2);
+    FUN_1422bcea0(&args[2], (const wchar_t*)a3);
+    FUN_1422bcce0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -169,11 +169,11 @@ void UITextPreviewDialog::OnDescriptionCheck()
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, unsigned int a2, CStringW a3, CStringW a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), (const wchar_t*)a4);
+    args.resize(4);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
+    FUN_1422bcea0(&args[2], (const wchar_t*)a3);
+    FUN_1422bcea0(&args[3], (const wchar_t*)a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

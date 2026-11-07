@@ -261,9 +261,9 @@ template <> MS2Ptr<ASUIComponent> AScript::FUN_140accfb0<ASUIComponent>(const CS
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -271,8 +271,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcea0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -280,8 +280,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1)
 inline Scaleform::GFx::Value AScript::FUN_140acd1f0(const char* szMethod, AScript a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1.FUN_1422bb890());
+    args.resize(1);
+    FUN_1422bcc70(&args[0], a1.FUN_1422bb890());
     return FUN_1422bb8f0(szMethod, args);
 }
 

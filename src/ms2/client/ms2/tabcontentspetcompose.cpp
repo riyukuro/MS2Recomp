@@ -227,9 +227,9 @@ template <> MS2Ptr<ASUIComponent> AScript::FUN_140accfb0<ASUIComponent>(const CS
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, __int64 a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcdd0(&args[0], a1);
+    FUN_1422bcdd0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

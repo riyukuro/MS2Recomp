@@ -230,12 +230,12 @@ public:
 Scaleform::GFx::Value Unk_SlScript::FUN_141ad3800(const char* szMethod, const ASArray& arr, int a, int b, int c, int d)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bce40(args.FUN_1409b1f70(0), arr);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), b);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), c);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), d);
+    args.resize(5);
+    FUN_1422bce40(&args[0], arr);
+    FUN_1422bccb0(&args[1], a);
+    FUN_1422bccb0(&args[2], b);
+    FUN_1422bccb0(&args[3], c);
+    FUN_1422bccb0(&args[4], d);
     return FUN_1422bb8f0(szMethod, args);
 }
 

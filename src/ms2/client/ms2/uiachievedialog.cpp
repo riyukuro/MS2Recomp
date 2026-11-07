@@ -1394,9 +1394,9 @@ static ATL::CAtlArray<__int64>* AcCollectedIds(CAchieve* pAchieve)
 Scaleform::GFx::Value ASGameEntity::FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), nIndex);
-    FUN_1422bce40(args.FUN_1409b1f70(1), row);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], nIndex);
+    FUN_1422bce40(&args[1], row);
     return FUN_1422bb8f0(szMethod, args);
 }
 

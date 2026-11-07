@@ -133,7 +133,7 @@ private:
 };
 void* FUN_1414d3ff0(void* pQueue);                                  // number of pending nodes
 struct Unk_OlpList;
-void* FUN_1414d4a50(Unk_OlpList* pQueue);                           // current object
+// 0x1414d4a50 = CAtlList<NiAVObject*>::RemoveHead (ms2outlinepreprocessor.cpp)
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
@@ -1379,7 +1379,7 @@ void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
         return;
     Unk_SceneWalker kWalk((NiAVObject*)(pRoot));
     while ((size_t)FUN_1414d3ff0(&kWalk) > 0) {
-        NiAVObject* pCurrent = (NiAVObject*)FUN_1414d4a50((Unk_OlpList*)&kWalk);
+        NiAVObject* pCurrent = reinterpret_cast<ATL::CAtlList<NiAVObject*>*>(&kWalk)->RemoveHead();
         NiObject* pTag = NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(DAT_143ae51b8))));
         if (pTag != NULL && ((NiStringExtraData*)pTag)->GetValue().ContainsNoCase(DAT_143ae50e8.operator const char*()))
             continue;
@@ -1403,7 +1403,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
         return;
     Unk_SceneWalker kWalk((NiAVObject*)(pRoot));
     while ((size_t)FUN_1414d3ff0(&kWalk) > 0) {
-        NiAVObject* pCurrent = (NiAVObject*)FUN_1414d4a50((Unk_OlpList*)&kWalk);
+        NiAVObject* pCurrent = reinterpret_cast<ATL::CAtlList<NiAVObject*>*>(&kWalk)->RemoveHead();
         NiObject* pTag = NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pCurrent))->GetExtraData(DAT_143ae51b8))));
         if (pTag != NULL && ((NiStringExtraData*)pTag)->GetValue().ContainsNoCase(DAT_143ae50e8.operator const char*()))
             continue;

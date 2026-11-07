@@ -281,8 +281,8 @@ typedef MS2Ptr<CItem> ItemPtr;
 inline Scaleform::GFx::Value Unk_PiComp::FUN_140cbe3a0(const char* szMethod, const wchar_t* a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcea0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 MS2_REPLACE_METHOD(0x140cbe3a0, Unk_PiComp, FUN_140cbe3a0, 148, 0x74DC573F);

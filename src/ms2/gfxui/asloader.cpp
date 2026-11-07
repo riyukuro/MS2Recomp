@@ -110,7 +110,7 @@ template <class T> MS2Ptr<T> AScript::FUN_1422e5780(const CString& strName, MS2P
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, ASURLRequest a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1.FUN_1422bb890());
+    args.resize(1);
+    FUN_1422bcc70(&args[0], a1.FUN_1422bb890());
     return FUN_1422bb8f0(szMethod, args);
 }

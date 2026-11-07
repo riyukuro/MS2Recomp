@@ -1407,8 +1407,8 @@ MS2Ptr<ASTextInput> UIGameRankingDialog::FUN_140e35bd0(const CString& strName)
 Scaleform::GFx::Value Unk_RankAS::FUN_140e35c60(const char* szMethod, int n)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), n);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], n);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -194,9 +194,9 @@ inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strNam
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, Scaleform::GFx::Value a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcce0(&args[0], a1);
+    FUN_1422bcc70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

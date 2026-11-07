@@ -541,11 +541,11 @@ void UILoginDialog::OnConnect()
 Scaleform::GFx::Value Unk_LoginRoot::FUN_1419e2c30(const char* szMethod, CString strId, bool bSaveId, bool bFlag, CString strRegion)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)strId);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), bSaveId);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), bFlag);
-    FUN_1422bce70(args.FUN_1409b1f70(3), (const char*)strRegion);
+    args.resize(4);
+    FUN_1422bce70(&args[0], (const char*)strId);
+    FUN_1422bcce0(&args[1], bSaveId);
+    FUN_1422bcce0(&args[2], bFlag);
+    FUN_1422bce70(&args[3], (const char*)strRegion);
     return FUN_1422bb8f0(szMethod, args);
 }
 

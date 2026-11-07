@@ -253,12 +253,12 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
 Scaleform::GFx::Value ASDialog::FUN_14134d4d0(const char* szMethod, int nMode, CString strBagKey, CStringW strName, CStringW strDesc, CStringW strText)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), nMode);
-    FUN_1422bce70(args.FUN_1409b1f70(1), (const char*)strBagKey);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)strName);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), (const wchar_t*)strDesc);
-    FUN_1422bcea0(args.FUN_1409b1f70(4), (const wchar_t*)strText);
+    args.resize(5);
+    FUN_1422bcd10(&args[0], nMode);
+    FUN_1422bce70(&args[1], (const char*)strBagKey);
+    FUN_1422bcea0(&args[2], (const wchar_t*)strName);
+    FUN_1422bcea0(&args[3], (const wchar_t*)strDesc);
+    FUN_1422bcea0(&args[4], (const wchar_t*)strText);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -411,11 +411,11 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
 Scaleform::GFx::Value ASDialog::FUN_14134e200(const char* szMethod, CString strBagKey, CStringW strDesc, CStringW strTitle, int nTime)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)strBagKey);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)strDesc);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)strTitle);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), nTime);
+    args.resize(4);
+    FUN_1422bce70(&args[0], (const char*)strBagKey);
+    FUN_1422bcea0(&args[1], (const wchar_t*)strDesc);
+    FUN_1422bcea0(&args[2], (const wchar_t*)strTitle);
+    FUN_1422bccb0(&args[3], nTime);
     return FUN_1422bb8f0(szMethod, args);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

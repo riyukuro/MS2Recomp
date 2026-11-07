@@ -133,9 +133,9 @@ struct Unk_BannerDay { int m_0; int m_4; int m_nDate; };
 inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36aa0(const char* szMethod, int n, ASArray& arr)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), n);
-    FUN_1422bce40(args.FUN_1409b1f70(1), arr);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], n);
+    FUN_1422bce40(&args[1], arr);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -143,11 +143,11 @@ inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36aa0(const char* szMethod, 
 inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36b60(const char* szMethod, int n, ASArray& arr, int nA, int nB)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), n);
-    FUN_1422bce40(args.FUN_1409b1f70(1), arr);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), nA);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), nB);
+    args.resize(4);
+    FUN_1422bccb0(&args[0], n);
+    FUN_1422bce40(&args[1], arr);
+    FUN_1422bccb0(&args[2], nA);
+    FUN_1422bccb0(&args[3], nB);
     return FUN_1422bb8f0(szMethod, args);
 }
 

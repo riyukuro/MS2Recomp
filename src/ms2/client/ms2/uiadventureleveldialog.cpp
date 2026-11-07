@@ -582,9 +582,9 @@ template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString& 
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int a1, float a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd70(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcd70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -592,8 +592,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const AScript& obj)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce40(args.FUN_1409b1f70(0), obj);
+    args.resize(1);
+    FUN_1422bce40(&args[0], obj);
     return FUN_1422bb8f0(szMethod, args);
 }
 

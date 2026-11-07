@@ -1082,12 +1082,12 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, int a3, int a4, int a5)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
+    args.resize(5);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
+    FUN_1422bccb0(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1095,8 +1095,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcdd0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1104,10 +1104,10 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1)
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcdd0(&args[0], a1);
+    FUN_1422bcdd0(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1115,11 +1115,11 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, _
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3, CString a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bce70(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bcdd0(&args[0], a1);
+    FUN_1422bcdd0(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bce70(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

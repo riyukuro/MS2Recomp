@@ -5455,9 +5455,9 @@ MS2_REPLACE_METHOD(0x140C37F90, UIItemBlueprintCreateDialog, FUN_140c37f90, 224,
 // @0x140c38f00
 Scaleform::GFx::Value AScript::FUN_140c38f00(const char* method, CString kind, CStringW path) {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce70(args.FUN_1409b1f70(0), kind);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), path);
+    args.resize(2);
+    FUN_1422bce70(&args[0], kind);
+    FUN_1422bcea0(&args[1], path);
     return FUN_1422bb8f0(method, args);
 }
 MS2_REPLACE_METHOD(0x140C38F00, AScript, FUN_140c38f00, 253, 0x727A8E79);

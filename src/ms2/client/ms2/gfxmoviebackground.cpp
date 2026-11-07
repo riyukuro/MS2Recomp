@@ -361,18 +361,18 @@ template <class T> T* Unk_BgComPtr<T>::operator->() const { return m_p; }
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcd70(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 // @0x14127c050
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, float a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcd70(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcd70(&args[0], a1);
+    FUN_1422bcd70(&args[1], a2);
+    FUN_1422bcd70(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -522,9 +522,9 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CString a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcea0(&args[0], a1);
+    FUN_1422bce70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

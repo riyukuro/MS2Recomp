@@ -166,10 +166,10 @@ void UIEpProgress::vfunc_41(const Scaleform::GFx::Value& root)
 Scaleform::GFx::Value Unk_EpEntity::FUN_141931d80(const char* szMethod, int a1, int a2, int a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcd10(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
+    FUN_1422bcd10(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

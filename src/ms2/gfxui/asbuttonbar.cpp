@@ -368,9 +368,9 @@ MS2_REPLACE_METHOD(0x1422E42F0, ASButtonBar, FUN_1422e42f0, 82, 0xFFCAAB47);
 Scaleform::GFx::Value AScript::FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcc70(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

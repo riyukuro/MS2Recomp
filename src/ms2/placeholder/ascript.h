@@ -12,6 +12,7 @@
 #pragma once
 
 #include <afx.h>
+#include <vector>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
@@ -88,7 +89,7 @@ private:
 class ASMovieClip;
 class ASTextField;
 class ASArray;
-class ASArgList;                        // the argument list of the Invoke back end (defined by the units using it)
+typedef std::vector<Scaleform::GFx::Value> ASArgList; // the argument list of the Invoke back end (exe: the vector itself)
 
 enum Unk_UgcOpenType : int;             // the upload kind of the UGC image upload dialog (uiugcimageuploaddialog.h)
 enum Unk_MouseCursorType : int;         // the AS cursor type of ASMouseCursor::changeType (asmousecursor.h)

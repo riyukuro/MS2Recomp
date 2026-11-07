@@ -299,10 +299,10 @@ void UIDPSDialog::FUN_141929b70(int bStart)
 Scaleform::GFx::Value ASDialog::FUN_14192a060(const char* szMethod, CString strTime, __int64 nDamage, CString strDps)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce70(args.FUN_1409b1f70(0), strTime);
-    FUN_1422bcdd0(args.FUN_1409b1f70(1), nDamage);
-    FUN_1422bce70(args.FUN_1409b1f70(2), strDps);
+    args.resize(3);
+    FUN_1422bce70(&args[0], strTime);
+    FUN_1422bcdd0(&args[1], nDamage);
+    FUN_1422bce70(&args[2], strDps);
     return FUN_1422bb8f0(szMethod, args);
 }
 

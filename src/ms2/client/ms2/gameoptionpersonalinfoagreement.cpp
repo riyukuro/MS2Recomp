@@ -72,9 +72,9 @@ void FUN_1422bccb0(Scaleform::GFx::Value* v, int n);
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nIndex)   // 0x140a46640
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)name);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), nIndex);
+    args.resize(2);
+    FUN_1422bce70(&args[0], (const char*)name);
+    FUN_1422bccb0(&args[1], nIndex);
     return FUN_1422bb8f0(szMethod, args);
 }
 

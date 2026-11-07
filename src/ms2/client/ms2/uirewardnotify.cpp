@@ -668,8 +668,8 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, MS2Ptr<AScript> a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce40(args.FUN_1409b1f70(0), *a1.get());
+    args.resize(1);
+    FUN_1422bce40(&args[0], *a1.get());
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -845,11 +845,11 @@ void FUN_140710590(COutPacket&);
 inline Scaleform::GFx::Value ASDialog::FUN_141ac65b0(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bce70(args.FUN_1409b1f70(0), strBind);
-    FUN_1422bce00(args.FUN_1409b1f70(1), nSlot);
-    FUN_1422bce70(args.FUN_1409b1f70(2), strName);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), nRarity);
+    args.resize(4);
+    FUN_1422bce70(&args[0], strBind);
+    FUN_1422bce00(&args[1], nSlot);
+    FUN_1422bce70(&args[2], strName);
+    FUN_1422bccb0(&args[3], nRarity);
     return FUN_1422bb8f0(szMethod, args);
 }
 

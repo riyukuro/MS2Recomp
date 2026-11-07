@@ -140,8 +140,8 @@ void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 Scaleform::GFx::Value AScript::FUN_140c1c8c0(const char* szMethod, unsigned __int64 n)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce00(args.FUN_1409b1f70(0), n);
+    args.resize(1);
+    FUN_1422bce00(&args[0], n);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -2042,9 +2042,9 @@ int UIItemEnchantDialog::FUN_1419c9630(CItem* base, CItem* other)
 Scaleform::GFx::Value Unk_EnScript::FUN_1419ca130(const char* name, const AScript& obj, bool b)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), obj);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), b);
+    args.resize(2);
+    FUN_1422bce40(&args[0], obj);
+    FUN_1422bcce0(&args[1], b);
     return FUN_1422bb8f0(name, args);
 }
 
@@ -2052,9 +2052,9 @@ Scaleform::GFx::Value Unk_EnScript::FUN_1419ca130(const char* name, const AScrip
 Scaleform::GFx::Value Unk_EnScript::FUN_1419ca1f0(const char* name, int a, bool b)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), b);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], a);
+    FUN_1422bcce0(&args[1], b);
     return FUN_1422bb8f0(name, args);
 }
 

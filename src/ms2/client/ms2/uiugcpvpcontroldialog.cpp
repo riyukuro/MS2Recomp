@@ -128,13 +128,13 @@ MS2_REPLACE_METHOD(0x140FB5790, UIUGCPVPControlDialog, vfunc_28, 535, 0x1CCC8F50
 Scaleform::GFx::Value Unk_PvpAS::FUN_140fb59b0(const char* szMethod, unsigned char a1, unsigned char a2, unsigned char a3, unsigned char a4, unsigned char a5, unsigned char a6)
 {
     ASArgList args;
-    args.FUN_1409b2800(6);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
-    FUN_1422bccb0(args.FUN_1409b1f70(5), a6);
+    args.resize(6);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
+    FUN_1422bccb0(&args[4], a5);
+    FUN_1422bccb0(&args[5], a6);
     return FUN_1422bb8f0(szMethod, args);
 }
 MS2_REPLACE_METHOD(0x140FB59B0, Unk_PvpAS, FUN_140fb59b0, 369, 0x17A3D8C4);

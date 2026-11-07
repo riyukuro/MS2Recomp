@@ -109,9 +109,9 @@ void UITopLayerNotify::FUN_140fa8970(const CStringW& strText, int nType)
 Scaleform::GFx::Value Unk_TnScript::FUN_140fa8a70(const char* szMethod, CStringW a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
-    FUN_1422bcd40(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcea0(&args[0], (const wchar_t*)a1);
+    FUN_1422bcd40(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

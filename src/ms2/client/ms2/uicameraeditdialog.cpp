@@ -593,8 +593,8 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // set a
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, long a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -857,9 +857,9 @@ int FUN_141277f50();                                                       // th
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcd70(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -867,15 +867,15 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, int
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, CStringW a3, int a4, bool a5, CStringW a6, CStringW a7, int a8)
 {
     ASArgList args;
-    args.FUN_1409b2800(8);
-    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
-    FUN_1422bcce0(args.FUN_1409b1f70(4), a5);
-    FUN_1422bcea0(args.FUN_1409b1f70(5), a6);
-    FUN_1422bcea0(args.FUN_1409b1f70(6), a7);
-    FUN_1422bccb0(args.FUN_1409b1f70(7), a8);
+    args.resize(8);
+    FUN_1422bcd70(&args[0], a1);
+    FUN_1422bcd70(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
+    FUN_1422bcce0(&args[4], a5);
+    FUN_1422bcea0(&args[5], a6);
+    FUN_1422bcea0(&args[6], a7);
+    FUN_1422bccb0(&args[7], a8);
     return FUN_1422bb8f0(szMethod, args);
 }
 

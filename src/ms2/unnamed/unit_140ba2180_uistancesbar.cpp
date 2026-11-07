@@ -151,8 +151,8 @@ void UIStanceBar::FUN_140ba26c0()
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcd10(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -160,8 +160,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned long a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcd40(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcd40(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -169,9 +169,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned long
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned long a1, unsigned long a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd40(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcd40(&args[0], a1);
+    FUN_1422bcd40(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

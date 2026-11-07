@@ -44,9 +44,9 @@ UIRewardNotify* FUN_140938cd0(int uiType);                      // GetDialog<UIR
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW strText, int nTime)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)strText);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), nTime);
+    args.resize(2);
+    FUN_1422bcea0(&args[0], (const wchar_t*)strText);
+    FUN_1422bccb0(&args[1], nTime);
     return FUN_1422bb8f0(szMethod, args);
 }
 

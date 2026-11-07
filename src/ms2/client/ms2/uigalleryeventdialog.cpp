@@ -51,25 +51,25 @@ MS2_CHECK_SIZE(Unk_GalleryAS, 0x40);
 template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<int, int>(const char* method, int a, int b)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), b);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], a);
+    FUN_1422bccb0(&args[1], b);
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
 }
 template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<size_t, int>(const char* method, size_t a, int b)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce00(args.FUN_1409b1f70(0), a);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), b);
+    args.resize(2);
+    FUN_1422bce00(&args[0], a);
+    FUN_1422bccb0(&args[1], b);
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
 }
 template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>(const char* method, const Unk_GalleryAS& a, const Unk_GalleryAS& b)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), reinterpret_cast<const AScript&>(a));
-    FUN_1422bce40(args.FUN_1409b1f70(1), reinterpret_cast<const AScript&>(b));
+    args.resize(2);
+    FUN_1422bce40(&args[0], reinterpret_cast<const AScript&>(a));
+    FUN_1422bce40(&args[1], reinterpret_cast<const AScript&>(b));
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
 }
 void* FUN_1401c0d90();

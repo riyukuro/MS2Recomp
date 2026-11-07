@@ -85,7 +85,7 @@
 // MS2-PIN: ??1?$_Vector_alloc@U?$_Vec_base_types@VPoint3@efd@@V?$CustomAllocator@VPoint3@efd@@@2@@std@@@std@@QEAA@XZ 0x140a0a890 ; unique
 // MS2-PIN: ??4?$SmartPointer@VNiTexturingProperty@@@efd@@QEAAAEAV01@AEBV01@@Z 0x140a0a9e0 ; unique
 // MS2-PIN: ??A?$vector@VPoint3@efd@@V?$CustomAllocator@VPoint3@efd@@@2@@std@@QEAAAEAVPoint3@efd@@_K@Z 0x140a0ab20 ; unique
-// MS2-PIN: ??A?$CAtlArray@VPoint3@efd@@V?$CElementTraits@VPoint3@efd@@@ATL@@@ATL@@QEAAAEAVPoint3@efd@@_K@Z 0x140a0af70 ; unique
+// MS2-PIN: ??A?$CAtlArray@VPoint3@efd@@V?$CElementTraits@VPoint3@efd@@@ATL@@@ATL@@QEBAAEBVPoint3@efd@@_K@Z 0x140a0af70 ; unique (const operator[]; 0x14144dcb0 is the non-const one)
 // MS2-PIN: ?INDEX@NiCommonSemantics@@SAAEBVNiFixedString@@XZ 0x140a0b060 ; unique
 // MS2-PIN: ?POSITION@NiCommonSemantics@@SAAEBVNiFixedString@@XZ 0x140a0b280 ; unique
 // MS2-PIN: ?SetBit@NiWireframeProperty@@AEAAX_NG@Z 0x140a0b3f0 ; prop

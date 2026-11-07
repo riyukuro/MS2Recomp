@@ -44,7 +44,7 @@ static CString s_143aca738("System_Fishing_ActionFail");
 static CString s_143aca6e8("System_Fishing_ActionPopup");
 
 // The AS movie of the float: the Invoke instances (an int argument each) the exe has per translation unit.
-class ASArgList;
+#include "ms2/placeholder/ascript.h"
 class Unk_FishAS
 {
 public:
@@ -253,8 +253,8 @@ void UIFishingFloatDialog::FUN_140f44650(int nSound)
 Scaleform::GFx::Value Unk_FishAS::FUN_140f446c0(const char* szMethod, int a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
 }
 

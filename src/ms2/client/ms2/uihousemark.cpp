@@ -709,13 +709,13 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, CStri
                                              CStringW a5, CStringW a6, CStringW a7)
 {
     ASArgList args;
-    args.FUN_1409b2800(7);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), a4);
-    FUN_1422bcea0(args.FUN_1409b1f70(4), a5);
-    FUN_1422bcea0(args.FUN_1409b1f70(5), a6);
-    FUN_1422bcea0(args.FUN_1409b1f70(6), a7);
+    args.resize(7);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bcea0(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bcea0(&args[3], a4);
+    FUN_1422bcea0(&args[4], a5);
+    FUN_1422bcea0(&args[5], a6);
+    FUN_1422bcea0(&args[6], a7);
     return FUN_1422bb8f0(szMethod, args);
 }

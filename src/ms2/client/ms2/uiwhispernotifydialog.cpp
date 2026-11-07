@@ -136,10 +136,10 @@ CString FUN_141b52ac0(unsigned __int64 nId)
 Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52b40(const char* szMethod, CString a1, CString a2, CStringW a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)a1);
-    FUN_1422bce70(args.FUN_1409b1f70(1), (const char*)a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
+    args.resize(3);
+    FUN_1422bce70(&args[0], (const char*)a1);
+    FUN_1422bce70(&args[1], (const char*)a2);
+    FUN_1422bcea0(&args[2], (const wchar_t*)a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -147,9 +147,9 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52b40(const char* szMethod, CSt
 Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52c80(const char* szMethod, Scaleform::GFx::Value a1, CStringW a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
+    args.resize(2);
+    FUN_1422bcc70(&args[0], a1);
+    FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

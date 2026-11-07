@@ -1045,10 +1045,10 @@ MS2_REPLACE_METHOD(0x140E64E80, UIMicroGameCoupleDance, FUN_140e64e80, 85, 0xF49
 // @0x140e64f60
 inline Scaleform::GFx::Value AScript::Invoke(const char* method, int a, int b, int c, int d) {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), b);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), c);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), d);
+    args.resize(4);
+    FUN_1422bccb0(&args[0], a);
+    FUN_1422bccb0(&args[1], b);
+    FUN_1422bccb0(&args[2], c);
+    FUN_1422bccb0(&args[3], d);
     return FUN_1422bb8f0(method, args);
 }

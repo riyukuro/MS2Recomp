@@ -89,28 +89,28 @@ struct Unk_ArgVec
     std::vector<Scaleform::GFx::Value> v;
 };
 
-// ASArgList is really std::vector<GFx::Value>: the exe rows 0x1409b1e80 (vector()), 0x1409b2800 (resize(size_t))
-// and 0x1409b1f70 (operator[](size_t)) are the vector instantiations these wrappers call, pinned above.
-// The wrappers stay for the ~750 call sites in 119 units that use ASArgList.
-ASArgList::ASArgList()
-{
-    new (this) Unk_ArgVec();
-}
+// ASArgList is the exe's std::vector<GFx::Value> itself (typedef in asdata.h/ascript.h): the call sites name
+// vector() 0x1409b1e80, ~vector() 0x1409b1f20, resize(size_t) 0x1409b2800 and operator[](size_t) 0x1409b1f70
+// directly. This unit instantiates the four, pinned above.
+template std::vector<Scaleform::GFx::Value>::vector() noexcept;
 
-// ASArgList is really std::vector<GFx::Value>: the exe dtor 0x1409b1f20 is ~vector() (pinned above), which calls
-// _Tidy 0x1409b2530 under the noexcept frame. ASArgList::~ASArgList is declared only: its progress/symbols-manual row
-// binds it to 0x1409b1f20, so the call sites resolve to ~vector, as in the exe.
+
+
+
+// ~vector() 0x1409b1f20 calls _Tidy 0x1409b2530 under the noexcept frame.
+
+
 template std::vector<Scaleform::GFx::Value>::~vector();
 
-void ASArgList::FUN_1409b2800(int nCount)
-{
-    ((Unk_ArgVec*)this)->v.resize(nCount);
-}
+template void std::vector<Scaleform::GFx::Value>::resize(size_t);
 
-Scaleform::GFx::Value* ASArgList::FUN_1409b1f70(int nIndex)
-{
-    return &((Unk_ArgVec*)this)->v[nIndex];
-}
+template Scaleform::GFx::Value& std::vector<Scaleform::GFx::Value>::operator[](size_t);
+
+
+
+
+
+
 
 // ---- AScript::Invoke back ends ----
 
@@ -118,8 +118,8 @@ Scaleform::GFx::Value* ASArgList::FUN_1409b1f70(int nIndex)
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Value a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bcc70(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -127,9 +127,9 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Valu
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcc70(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

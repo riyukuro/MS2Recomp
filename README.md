@@ -37,14 +37,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 176,763 | 176,605 (99.9%) | 152 (0.1%) | 100.0% |
-| Runtime & middleware | 24,708 | 23,901 (96.7%) | 689 (2.8%) | 99.5% |
-| Gamebryo engine | 16,755 | 16,688 (99.6%) | 29 (0.2%) | 99.8% |
-| Game framework · egf | 12,892 | 12,878 (99.9%) | 12 (0.1%) | 100.0% |
+| Game · ms2 | 176,763 | 176,610 (99.9%) | 149 (0.1%) | 100.0% |
+| Runtime & middleware | 24,708 | 23,935 (96.9%) | 655 (2.7%) | 99.5% |
+| Gamebryo engine | 16,747 | 16,689 (99.7%) | 27 (0.2%) | 99.8% |
+| Game framework · egf | 12,906 | 12,890 (99.9%) | 12 (0.1%) | 100.0% |
 | Libraries | 6,703 | 6,345 (94.7%) | 22 (0.3%) | 95.0% |
-| Foundation | 13,023 | 13,007 (99.9%) | 4 (0.0%) | 99.9% |
+| Foundation | 13,017 | 13,005 (99.9%) | 4 (0.0%) | 99.9% |
 | Imports | 782 | 780 (99.7%) | 1 (0.1%) | 99.9% |
-| **Total** | **251,626** | 250,204 (99.4%) | 909 (0.4%) | 99.8% |
+| **Total** | **251,626** | 250,254 (99.5%) | 870 (0.3%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
 | Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 72 | | | |
@@ -52,12 +52,12 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Microsoft library code linked from another version of the same library | 1 | | | |
 | Microsoft library code the original never calls, left out of the rebuild's link | 56 | | | |
 | Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
-| Rebuilt identically, but no unit's address range covers it | 1 | | | |
-| *Not done, still to write* | 44 | | | |
+| Exception filters of done functions that the rebuild's compiler folds into a constant (same behaviour) | 4 | | | |
+| *Not done, still to write* | 30 | | | |
 
-Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 513 functions that are neither matched nor equivalent. Counting the 469 that are not missing, 99.9% is done.
+Not counted: 5,866 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 502 functions that are neither matched nor equivalent. Counting the 472 that are not missing, 99.9% is done.
 
-Link aliases: 38 left, down from 19,884 on 2026-10-31. An alias is a `/alternatename` line in `data/fullexe/plain/alias.rsp`. The linker uses it to send a call that the recovered code makes under a placeholder name or signature to the real function. An alias goes away once every caller uses the real declaration; the goal is 0.
+Link aliases: 2,004 left: 27 `/alternatename` lines in `data/fullexe/plain/alias.rsp` and 1,977 `#pragma comment(linker, "/alternatename:...")` lines in 61 source files of the same build. The linker uses an alias to send a call that the recovered code makes under a placeholder name or signature to the real function, or to bind a placeholder data name to the real object. An alias goes away once every user takes the real declaration; the goal is 0. The glue file held 19,884 on 2026-10-31. Part of the drop since then is aliases moved into the sources, not removed, which is why both places are counted.
 <!-- progress:end -->
 
 ## Layout

@@ -13,6 +13,7 @@
 
 #include <afx.h>
 #include <atlcoll.h>
+#include <vector>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
@@ -82,16 +83,7 @@ public:
 MS2_CHECK_SIZE(ASData, 0x48);
 MS2_CHECK_OFFSET(ASData, m_args, 0x18);
 
-class ASArgList
-{
-public:
-    ASArgList();
-    ~ASArgList();
-    void FUN_1409b2800(int nCount);                                      // resize
-    Scaleform::GFx::Value* FUN_1409b1f70(int nIndex);                    // operator[]
-    // C3: FUN_1409b2840 is std::vector<Scaleform::GFx::Value>::size const (the list is that vector)
-
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-};
+// ASArgList is the exe's std::vector<GFx::Value> itself: vector() 0x1409b1e80, ~vector() 0x1409b1f20,
+// resize 0x1409b2800, operator[] 0x1409b1f70.
+typedef std::vector<Scaleform::GFx::Value> ASArgList;
 MS2_CHECK_SIZE(ASArgList, 0x18);

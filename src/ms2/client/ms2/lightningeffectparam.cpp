@@ -61,7 +61,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
-Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
+// 0x140a0af70 = CAtlArray<Point3>::operator[] const (beameffect.cpp); 0x14144dcb0 = the non-const one
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
 class CMainSystem;
@@ -314,8 +314,8 @@ void LightningEffect::Rebuild()
     int nPoints = (int)m_pPoints->GetCount();
     if (nPoints < 2)
         return;
-    Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);
-    Vector3 kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
+    Vector3 kFirst = (*m_pPoints)[0];
+    Vector3 kLast = (*m_pPoints)[nPoints - 1];
     float fDist = (kLast - kFirst).Length();
     int nClass = 2;
     if (!(fDist > 256.0f))

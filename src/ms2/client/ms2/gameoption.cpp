@@ -2166,3 +2166,26 @@ MS2_REPLACE_METHOD(0x14124D890, CGameOptionGraphicDefault, vfunc_14, 106, 0xDC75
 // MS2-PIN: ?FUN_141242570@Unk_SlOptionsHolder@@QEAAXXZ 0x141242570
 // MS2-PIN: ?FUN_141242990@@YAXPEAX@Z 0x141242990
 // MS2-PIN: ?FUN_141242990@Unk_ClUserMgr@@QEAAXXZ 0x141242990
+
+// The 18 Unk_GoMember<T> member ctors CGameOption's ctor calls are only declared (cgameoption.h); each is the
+// exe's "returns p" helper for its state struct, bound here by alternatename.
+#ifndef MS2_HOOK_DLL
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_BattleState@@@@QEAA@XZ=?FUN_14125ca80@@YAPEAUUnk_BattleState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_CameraState@@@@QEAA@XZ=?FUN_14125b400@@YAPEAUUnk_CameraState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_CommunityStateA@@@@QEAA@XZ=?FUN_14125d130@@YAPEAUUnk_CommunityStateA@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_CommunityStateB@@@@QEAA@XZ=?FUN_14125d330@@YAPEAUUnk_CommunityStateB@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GoAutoLoot@@@@QEAA@XZ=?FUN_141260ea0@@YAPEAUUnk_GsAutoLoot@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GoChroma@@@@QEAA@XZ=?FUN_141261670@@YAPEAUUnk_GoChroma@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GoEtc@@@@QEAA@XZ=?FUN_141261750@@YAPEAUUnk_GsEtc@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GpState@@@@QEAA@XZ=?FUN_14125f290@@YAPEAUUnk_GpState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GraphicState2@@@@QEAA@XZ=?FUN_14125ec20@@YAPEAUUnk_GraphicState2@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_GraphicState@@@@QEAA@XZ=?FUN_14125d890@@YAPEAUUnk_GraphicState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_InterfaceFlag@@@@QEAA@XZ=?FUN_14125bc30@@YAPEAUUnk_InterfaceFlag@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_InterfaceState@@@@QEAA@XZ=?FUN_14125b770@@YAPEAUUnk_InterfaceState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_LgState@@@@QEAA@XZ=?FUN_14125f090@@YAPEAUUnk_LgState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_PiAgreeState@@@@QEAA@XZ=??0CPersonalInfoAgreement@@QEAA@XZ")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_SoundFlag@@@@QEAA@XZ=?FUN_141260380@@YAPEAUUnk_SoundFlag@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_SoundState@@@@QEAA@XZ=?FUN_14125f710@@YAPEAUUnk_SoundState@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_StatusFlag@@@@QEAA@XZ=?FUN_14125c880@@YAPEAUUnk_StatusFlag@@PEAU1@@Z")
+#pragma comment(linker, "/alternatename:??0?$Unk_GoMember@UUnk_StatusState@@@@QEAA@XZ=?FUN_14125bda0@@YAPEAUUnk_StatusState@@PEAU1@@Z")
+#endif

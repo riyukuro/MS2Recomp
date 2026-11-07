@@ -327,8 +327,8 @@ MS2Ptr<ASTextField> AScript::FUN_1409b4620(const CString& strName)
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bce70(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

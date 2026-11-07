@@ -2173,18 +2173,18 @@ inline void FUN_141b06ec0(ATL::CAtlArray<MS2Ptr<CNpcShopProductBase> >& list)
 inline Scaleform::GFx::Value AScript::FUN_141b06d40(const char* szMethod, ASDataProvider* a1, bool a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), *a1);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bce40(&args[0], *a1);
+    FUN_1422bcce0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
 inline Scaleform::GFx::Value AScript::FUN_141b06e00(const char* szMethod, unsigned __int64 a1, unsigned int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcdd0(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

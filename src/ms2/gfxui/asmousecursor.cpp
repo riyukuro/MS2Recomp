@@ -127,8 +127,8 @@ MS2_REPLACE_METHOD(0x1422CEF10, ASMouseCursor, FUN_1422cef10, 106, 0x5A62D2A9);
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_MouseCursorType a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

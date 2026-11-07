@@ -2025,11 +2025,11 @@ MS2Ptr<ASEventDispatcher> UIMasteryDialog::FindControl(const CString& strName)
 Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9e40(const char* szMethod, int a1, int a2, CStringW a3, int a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2037,11 +2037,11 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9e40(const char* szMethod, int a1
 Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9f50(const char* szMethod, unsigned int a1, unsigned int a2, CStringW a3, int a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2049,9 +2049,9 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eb9f50(const char* szMethod, unsign
 Scaleform::GFx::Value AScript::FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bce40(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2059,10 +2059,10 @@ Scaleform::GFx::Value AScript::FUN_140eba060(const char* szMethod, const AScript
 Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba120(const char* szMethod, const AScript& a1, unsigned __int64 a2, int a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bce40(&args[0], a1);
+    FUN_1422bcdd0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2070,9 +2070,9 @@ Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba120(const char* szMethod, const 
 Scaleform::GFx::Value Unk_MInvoker::FUN_140eba200(const char* szMethod, int a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2080,9 +2080,9 @@ Scaleform::GFx::Value Unk_MInvoker::FUN_140eba200(const char* szMethod, int a1, 
 Scaleform::GFx::Value Unk_MInvoker::FUN_140eba2c0(const char* szMethod, int a1, bool a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bcce0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -2090,11 +2090,11 @@ Scaleform::GFx::Value Unk_MInvoker::FUN_140eba2c0(const char* szMethod, int a1, 
 Scaleform::GFx::Value Unk_MLevelCtrl::FUN_140eba380(const char* szMethod, unsigned __int64 a1, unsigned int a2, CStringW a3, int a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bcdd0(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

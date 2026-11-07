@@ -1,19 +1,22 @@
-# tools/permanent.py: 704 compiler-limited functions (functional, codegen not reproducible from source)
+# tools/permanent.py: 746 compiler-limited functions (functional, codegen not reproducible from source)
 #va	unit	reason
 140002100	sfr_video_04	builtin registration: keyValue/member slot sharing + GetStringManager scheduling (cl 15-era codegen note); inner-block and FUN_1400020d0 forms tried
 140002240	sfr_video_04	as 140002100
 140002380	sfr_video_04	as 140002100
-140006db0	sfr_video_01	Array operator= copy loop base/index swap (same as 1400085c0)
-1400085c0	sfr_video_01	SetSoundSpatial: inlined Array operator= copy base/index swap [rdx+rcx]; explicit loop/ref/ptr-order variants fail; no SDK video source
-14000a090	sfr_video_01	case-insensitive compare: rax/rcx vs rcx/rdx naming; operand swap, locals, inline resolve tried
+140006db0	sfr_video_01	regalloc only: base/index operand encoding of the Array<Vector> operator= copy loop ([rcx+r8] vs [r8+rcx]); every source operand order and element type gives identical code
+1400085c0	sfr_video_01	regalloc only: base/index operand encoding of the inlined Array<Vector> operator= store in SetSpatialInfo; sf_array.h operand-order variants give identical code
+14000a090	sfr_video_01	regalloc only: exe keeps right->pLower in rax and compares [left+0x10]; 12 source forms (incl. SDK CompareBuiltIn_CaseCheck) leave 3 bytes of register choice
+14000b3b0	sfr_video_01	regalloc only: VC9 home-slot order of rbx/rbp saves vs AllocInfo/newHash locals; SDK setRawCapacity form gives identical code otherwise
+14000b6e0	528	regalloc only: VC9 register permutation in the hash insert (rbx/rsi/rbp/r12 roles, mask kept in r11 vs r12), same length 528 + : SDK HashSetBase::add body, h&=mask in place, SPInt index, mask decl order, mask re-read: 36 best (baseline)
 14000c9f0	sfr_video_01	no SDK src; 4 variants; exe keeps LogScriptError non-tail call and re-reads url node from stack
-14000ed60	sfr_video_02	CtorFunction::Register shape; no Register row exact anywhere (30+ sfr_as2 siblings functional); exe EH r11 frame
+14000ed60	sfr_video_02	regalloc only: home-slot sharing of the arg spills differs, no source form found
 1400105b0	sfr_video_02	exe frame 0x40 larger, Matrix2F identity stored inline at rsp+0x20 vs our memset; 238-line diff, no SDK source; decl reorder worse
 140010b80	sfr_video_02	exe keeps separate cmp [pImage],0 before inline Clear test; 5 test/assign/volatile variants merge or differ
 140011610	sfr_video_02	132 bytes short, 388-line diff, no SDK source (video shape provider)
-1400126f0	sfr_video_02	same as 14000ed60 (Connect Register)
+1400126f0	sfr_video_02	regalloc only: home-slot sharing of the arg spills differs, no source form found
 140013790	sfr_video_02	exe non-tail Pick call; noexcept rejected (C3646), throw()/nothrow/optimize off no change
 1400140e0	sfr_video_02	no SDK src; ctor store schedule: all-volatile stores give exe order but mov rax,rbx stays last (exe mid); struct ctor/barrier no
+140018930	1837	regalloc only: loop loads the pairs base into rax where the exe loads it straight into rdx (the atom argument register); 4 bytes in 2 instruction pairs, same length 10 spellings (inline, by-ref/desc/manager-ref helpers, swapped args, element refs, struct Pair, plain pointer) all 4 or worse; ledger 933fe35bc
 1400190c0	sfr_video_03	rbx/rdi swap only; SDK SPtr::Pick forward and the swapped compare both tried
 140019270	sfr_video_03	inlines 1400190c0, same rbx/rdi swap
 14001a1e0	sfr_video_03	our vc9v tail-calls Pick with jmp, the exe uses call+ret; Pickable form gives the same jmp
@@ -74,7 +77,9 @@
 140057fe0	sfr_cri_06	VC9 /O2 codegen: 1098 byte(s) differ, length 1263/1280 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?parseGsc@@YA_J_J_K@Z]
 1400584e0	sfr_cri_06	VC9 /O2 codegen: 1394 byte(s) differ, length 1567/1577 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?parsePsc@@YA_J_J_K@Z]
 140058c50	sfr_cri_06	VC9 /O2 codegen: 35 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?parseUdsc@@YA_J_J_K@Z]
+1400590c0	163	scheduling/regalloc only: same 163 B and insns; the stride loads are scheduled differently and use other registers (VC9 cl 15) sfr_cri_06 at 0b9c84cc6; int-stride and __int64-stride SSE2 forms tried
 140059170	sfr_cri_06	SSE2 intrinsic residual add already hand-scheduled; remaining is xmm/gpr regalloc
+1400592c0	119	regalloc only: the exe copies dst to r8 and keeps stride in rdx, ours the reverse p/q pointer, if/else tail and constant-loop variants all give our assignment
 1400593f0	sfr_cri_06	VC9 /O2 codegen: 99 byte(s) differ; large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_1400593f0@@YAXPEBEPEAEHHH@Z]
 140059810	sfr_cri_06	VC9 /O2 codegen: 448 byte(s) differ, length 685/681 (obj/exe); large schedule/regalloc diff from the decompile, not a source-shape fix within triage time [?FUN_140059810@@YAXPEBEPEAEHHH@Z]
 140059c40	sfr_cri_06	SSE2 average/compare block: best form (dst-relative loop + and(xor,or) helper) 35 -> 29 diff lines; left are VC9 test/jle before sub+movsxd, a 16-byte loop-align nop and load order c,d,a,b (ours d,a,c,b), which no source order changes
@@ -164,6 +169,7 @@
 14039b180	commonfiles\filesystem.cpp	vendored Crypto++ CTR_Mode<AES>::Encryption is 8 bytes smaller than the exe one: frame 0x10 smaller, code otherwise identical (library version)
 1404f24fc	unit_1404f07a0	compiler adjustor thunk (this-8; jmp) for CValidData<CGuildXmlData> vdtor; needs real class layout (cf. 141bf99b8)
 1406c34b0	unit_1406c3230_atlbytearrayglue	exe byte-patched to mov eax,0; ret (nexon platform compat)
+140b7a650	4423	op-identical /Od frame-slot permutation 2026-11-07: ops identical (odiff only formats); exe gives spActor (MS2Ptr) the lowest slot 0x70 vs ours 0x88, plus rotated Vector3/16-byte groups; renamed spActor 6 ways (a, z, spA, spActorX, pActor, sp): slot map unchanged (79 DIFF); decl order/scope same as billboard
 140bd4c70	uichatemoticondialog	ICF Unk_EdListVal: FUN_140bd4c70 is the ICF-folded _List_alloc ctor; its caller chain 0x140bd5140 -> 0x140bd4d10 has no named row, so which list (Tab / MS2Ptr<Info> / unsigned) it builds is unprovable. merge-only (ICF_FOLD)
 140bd5c10	uichatemoticondialog	ICF SIG:140bd5c10: rhs MS2Ptr<UIChatEmoticonInfo>::Reference is private static; its only caller is the FUN_140bd5c50 stand-in, which is itself MS2Ptr<UIChatEmoticonInfo>::AddRefImpl (symbols row). Needs 0x140bd5c50 retired for the generic ms2ptr_impl.h AddRefImpl instantiation (a naming change), not a C3 retype
 140c78180	unit_140c77ab0_clientplatformnexonkorea	intentional null-safe CNXMan (no Nexon Messenger in rebuild); exe derefs null
@@ -175,6 +181,9 @@
 14139f310	guideentity_5	ICF fold: _Tree_val<long/pair<int,int>/pair<CString,int>/pair<Occurrence,int>>::_Max byte-identical, one exe copy (auto-guess)
 14160dac0	client/ms2/nxman.cpp	exe body patched after link: mov al,1; ret + 67 int3, but .pdata 0x14160dac0 still spans 70 bytes with unwind info (a framed function); a 3-byte leaf has no .pdata, so length/RUNTIME_FUNCTION never match
 1416dbb80	questmanager_2	exe closure ctor ignores its uint arg and copies the capture onto itself; plain, renamed and member-named init-captures all store the arg (3 probes)
+1417187b0	955	op-identical /Od frame-slot permutation 2026-11-07: exe eError 0x50, nState 0x54, nSlot 0x58, ours eError 0x58; eError as int/unsigned/DWORD/long and decl order: no change
+14188c5b0	309	op-identical /Od frame-slot permutation 2026-11-07: discarded ApplyBannerTexture result needs a named int (gives identical ops); exe packs it at 0x24 next to i, ours after strLocal at 0x30 (+8 on 8 temps); 11 forms: loop-body/if-block/function-top decl, for-init pair, unsigned pair, both decl orders, const + use, if(f()){} and (void) (both drop the store)
+14191bd30	800	op-identical /Od frame-slot permutation 2026-11-07: exe dwDirLen 0x58 vs ours 0x88; decl at top, split decl/assign, UINT, int, const (variants A-F): no change
 141ac4e90	uirewardnotify	exe returns this (mov rax,[rsp+8]); slot 15 is declared void in UIDialog and ~300 overrides, so a pointer return would change every override signature
 141bf99b8	unit_141bf99b8	exe is a 9-byte compiler adjustor thunk (sub rcx,0x18; jmp 0x141bfaad0; no .pdata) for the TSingleton<WorldService> base at +0x18 vdtor; only the real WorldService base layout in worldservice.h can emit it, our hand-written forwarder cannot
 141bfb1f0	unit_141bf99b8	ICF-fold family (CAtlMap<int, MS2Ptr<Unk_WsEffect848>, CElementTraits<int>, CElementTraits<MS2Ptr<Unk_WsEffect848>>>::CreateNode): byte-identical CRBTree/CAtlMap instances of many Unk_WsV*/Unk_WsMapV* stand-in key/value types share this VA; owner is chosen by name order. Pinning needs the stand-in family retyped (deferred by coord, #29b follow-up)
@@ -222,6 +231,7 @@
 14207a630	efd::BytesToCommaString	regalloc/spill-slot only (ui/uiGroup/flag-copy slots), ops identical; MS2-invented body
 1420b1100	gb:efd/IMessage	efd::IMessage::DeleteParentClassMap: the exe inlines the whole RefCountedMemObj<map<UInt32,UInt32>> dtor chain (clear + head-node free under a noexcept frame); our cl calls ~_Tree out of line. Tried a TU-local __forceinline ~_Tree specialization (C2908, the PCH already instantiates it) and one in IMessage.h after the namespace: then the implicit ~map wrapper is called out of line instead, and an implicit dtor cannot be specialized or forced inline
 1420cc010	gb:efd/NetMetricsDestination	regalloc: exe saves rbp+r15 (rbp unused, r15=0) around the inlined SystemUniqueIndex::AquireIndex; if/else, continue and inverted-if loop forms all give the same 347-byte obj (exe 360)
+1420e65e0	1845	frame layout only: the exe gives the 3rd LogHelper its own 0x90 slot (rbp+0x60, frame 0x200), cl 19.16 shares it (frame 0x170); the rest is alignment-nop shifts the source matches efd/QOSCompare.cpp; the macro form and a named LogHelper local both give the shared slot
 14214ab80	gb:egf/Scheduler	EH-state: code bytes identical; exe maxState 6 vs ours 8 (two action-less states for utf8string key temps), union holder/raw init/noexcept wrapper all fail, LTCG pruning ()
 1421c1750	gb:egf/WorldFactory _Tree<utf8string,utf8string>::erase(key)	home-slot swap (rbx/erase result) as 142282130; 4 body variants + named result unchanged
 142282130	gb:egmAnimation/AnimationService	functional alias re-keyed to erase(key); 3-byte home-slot swap (rbx/result iterator), cl slot choice; 1414 worse
@@ -238,8 +248,10 @@
 14235c730	lib_cryptopp_code	Integer operator<<, written as the Crypto++ source (Negate, BitCount/BitPrecision, Divide loop, swap). The exe keeps temp1's size and pointer cached in registers across the stream calls (LTCG alias info) and puts stream/base in frame locals; tried noalias ctors, forceinline helpers, empty-struct allocator and local order
 1423729e0	lib_cryptopp_code	temp slot order of the "ThisObject:"+typeid(T).name() strings: the exe builds the base string with the out-of-line basic_string(const char*) ctor before calling name(), puts the operator+ result below the base and gives the base no EH state until after its ctor; tried a named base, base and result as temporaries, append, a forceinline concat helper, union/struct wrappers with and without a real dtor, and the inline literal ctor; the closest shape (helper + union temp) matches the order and code but keeps the two slots swapped
 142372d60	lib_cryptopp_code	temp slot order of the "ThisObject:"+typeid(T).name() strings: the exe builds the base string with the out-of-line basic_string(const char*) ctor before calling name(), puts the operator+ result below the base and gives the base no EH state until after its ctor; tried a named base, base and result as temporaries, append, a forceinline concat helper, union/struct wrappers with and without a real dtor, and the inline literal ctor; the closest shape (helper + union temp) matches the order and code but keeps the two slots swapped
+142372f20	434	temp slot order of the "ThisObject:"+typeid(T).name() strings (same as permanent 1423729e0/142372d60) 2026-11-07: base built inside the concat helper, ctor result used via ref, explicit sequencing: 73-74 lines, base still below result and the ctor return folded to &tmp
 1423772f0	lib_cryptopp_code	Twin of 0x1423770a0 (GenerateRandom for the second group type); same body and same residual frame-pointer / zero-register differences; same variants tried
 1423798d0	lib_cryptopp_code	HMAC(SHA-1) name string: the exe builds "HMAC(" with the out-of-line basic_string(const char*) ctor, keeps working on the ctor return register and starts the string EH state only at the first throwing call; ours keeps a frame pointer and addresses the local directly; tried a named base, struct/union temporaries with a real dtor, and the ctor return used as an rvalue; same family as the AssignHelper "ThisObject:" strings
+14237bef0	631	spill placement only: the exe spills out to a frame local (frame 0x60), cl 19.16 to the param home slot (frame 0x40); the library STL is newer than 14.16, so the toolset is newer the code is the Crypto++ 5.6.2 operator<< body; no newer toolset in the tree
 1423ae960	unnamed/unit_1423ae840_cxsupportid	10006-byte /O2 PC-bang walk, inlining differs; not attempted after 1423b10a0 time-box
 1423b10a0	unnamed/unit_1423ae840_cxsupportid	/O2 regalloc: exe keeps pLocal in r14 (push r14, frame 0x698), no tail-merge of the two free() calls; buffer reuse (value=windowsDir, valueLen=adapterLen, type=fsFlags) + byte loops + cmove ternary get 176 diff lines, 897/985 bytes;
 1423c8a50	sfr_ime_01	stand-in class lacks IMEManagerBase base (base ctor must precede members); needs class restructure + 38-slot vtable
@@ -248,7 +260,7 @@
 1423cb0f0	sfr_ime_01	r10/r11 register swap only
 1423cb760	sfr_ime_01	regalloc constant materialization after inlined Resize(0)
 1423cbe90	sfr_ime_01	and eax vs test ebx device bits; named mask/switch forms tried
-1423cc2d0	sfr_ime_01	r8/r9 register choice only
+1423cc2d0	242	regalloc: the hoisted +0x88 mode sits in r9d vs exe r8d; same length and ops (3 diff lines) for-scoped i, named count local, non-const mode, if-block body, swapped compare operands: all give the same 3 lines or worse
 1423cd0a0	sfr_ime_01	same length/instrs; 3 cl scheduling diffs (true/false lea order, -1 ebx CSE, je size) - see reason
 1423cf670	sfr_ime_01	register allocation only
 1423cfbe0	sfr_ime_01	rsi/rbp register swap
@@ -263,7 +275,7 @@
 1423d4c20	sfr_ime_01	opaque recovered code; register/slot/scheduling diffs (tried: vptr-first, ArrayDataBase field stores, early-return shapes, local order)
 1423d54d0	sfr_ime_01	/O2 store scheduling, all 8-store orders give 12 lines
 1423d5740	sfr_ime_01	addressing-mode selection
-1423d5b00	sfr_ime_01	after PushBack noinline fix (WIP): 4 bytes SIB base/index order on 3 layout reads, canonicalized by cl (byte offset, ptr-to-ptr, accessor, IV width all same/worse)
+1423d5b00	640	regalloc: layout array base in rax vs exe rcx; base/index operand order swapped in 3 [base+idx+disp] accesses; same length and ops (4 diff lines, form in 11d3b5fa7) byte-offset, ptr-add, index-first i[p], u64 and int index, hoisted entries-local forms all give the same or worse diff
 1423d5d80	sfr_ime_01	frame slot order record vs String temps; record/buffer decl moves no effect
 1423d64b0	sfr_ime_01	regalloc: exe keeps r12=0 live whole fn (push rdi/r12, frame 0x390, cookie +0x270); loop/vtable/uninit-local reshapes 382->312 lines, not closable
 1423d6c10	sfr_ime_01	opaque recovered code; register/slot/scheduling diffs (tried: vptr-first, ArrayDataBase field stores, early-return shapes, local order)
@@ -276,7 +288,7 @@
 1423d99f0	sfr_ime_01	by-value Ptr release tail-dup; early-return form grows it
 1423d9ee0	sfr_ime_01	param value kept in r15 + pointer-IV strength reduction of the list walk; volatile/param-shape probes worse (132 vs 112)
 1423da150	sfr_ime_01	rdi/rbx output vs node register swap; String-ref and decl-order variants tried
-1423da320	sfr_ime_01	second load vs hr2 test scheduling
+1423da320	242	scheduling: exe loads second before the hr2 sign test and its failure jump skips the reload; same length (2 diff lines, one moved instruction) tried hoisted copy, _ReadWriteBarrier, hr2>=0&&second; this run kept that form, no source order moves the load
 1423daae0	sfr_ime_01	home-slot choice (rbx at rcx home, local at r8 home)
 1423db0c0	sfr_ime_01	frame 0x118 vs 0x148, r14/r15 vs rsi/r15 prolog regalloc through whole body; 276 lines
 1423de620	sfr_as3_01	exe lea slot + indexed load + [slot] store before FirstFreeRootIndex; next-in-local / ref / double-index forms all drop the lea (indexed store)
@@ -284,6 +296,7 @@
 1423dfa20	sfr_as2_01	RefCountBaseGC::ReleaseInternal: tail-merge layout; SDK 4.2 FreeThis and newer RemoveRoot-inline shapes 35-102 lines vs current 25
 1423e2ff0	scaleform/as3/sfr_as3_01c	cl /O2 stack packing: exe puts the CheckResult and one GetName ASString temp in the rdx home slot (frame 0x70), ours a separate slot (0x80); SDK-shape and coerce-shape variants (5 tried) leave the 39 slot-offset diff lines
 1423e3180	scaleform/as3/sfr_as3_01c	cl /O2 stack packing: exe puts the CheckResult and one GetName ASString temp in the rdx home slot (frame 0x70), ours a separate slot (0x80); SDK-shape and coerce-shape variants (5 tried) leave the 39 slot-offset diff lines
+1423e4e40	769	regalloc 1-byte lea base/index order [r14+r15] vs exe [r15+r14] in the repack loop args[i]; tried const-ref elem, *(data+i), i[data], At(i), f_argc/f_argv declared before args
 1423e5c10	scaleform/as3/sfr_as3_01c	cl /O2 stack packing: exe puts the CheckResult and one GetName ASString temp in the rdx home slot (frame 0x70), ours a separate slot (0x80); SDK-shape and coerce-shape variants (5 tried) leave the 39 slot-offset diff lines
 1423e5da0	scaleform/as3/sfr_as3_01c	cl /O2 stack packing: exe puts the CheckResult and one GetName ASString temp in the rdx home slot (frame 0x70), ours a separate slot (0x80); SDK-shape and coerce-shape variants (5 tried) leave the 39 slot-offset diff lines
 1423e6b60	scaleform/as3/sfr_as3_01c	cl /O2 stack packing: exe puts the CheckResult and one GetName ASString temp in the rdx home slot (frame 0x70), ours a separate slot (0x80); SDK-shape and coerce-shape variants (5 tried) leave the 39 slot-offset diff lines
@@ -291,16 +304,21 @@
 1423ea400	sfr_as3_01c	base/index operand order in lea (rax+rbx vs rbx+rax) throughout; cl tie-break
 1423ef790	sfr_as3_01c	register allocation only: the sealed and final flag bits sit in r13/r12 swapped; accessor, mask and comparison forms of the two flag arguments gave no change or worse
 1423f63b0	sfr_as3_02	rsi/r14 swap + txt/Parse-arg slot swap after SDK port (55 diff lines); branch swap, scope hoists, inline Parse wrapper, last_pos all worse
-1424046c0	sfr_as3_03	inlined FixedSizeHash multiplier/byte pairing tie-break (k4/k7 consts in r13/r10 swapped); same family as 1427466d0
+1423ff4d0	400	regalloc this/result rdi/rsi swapped and rax/rcx in the inlined SparseArray heap load; tried SDK Pickable<Array> r + r.GetPtr() loop, static_cast GetTraits() itr
+1424046c0	468	term-order inlined FixedSizeHash<UPInt> in ValueH.Set adds the byte4/byte7 terms in the other order (r10/r13 swapped), 5 lines; tried SDK size placement, __forceinline SDBM_Hash
+142407340	315	slots ASString temp and Pickable sret swap stack slots (exe temp 0x60 kept in rbx); named uri local 54, vm.GetStringManager 45 vs 42
 1424152b0	sfr_as3_04	the exe je targets a shared block past the function end
 142416000	sfr_as3_04	frame and home-slot layout only; same ops, other stack slots
+142417000	?	scheduling/regalloc: ind loaded into rax vs rcx at entry, self->+0x28/+0x20 loads ordered differently; same length no structural diff ()
 1424174c0	sfr_as3_04	the exe keeps ind and the CheckResult temp in parameter home slots (frame 0x30 vs 0x40); SDK-exact body tried, same diff
 142417560	sfr_as3_04	XMLList::HasProperty: exe shrink-wraps the empty-list test before saving the loop registers and keeps a separate false exit; 7 loop shapes (for/do/continue/&&/goto/explicit size test) do not reproduce it
+1424187f0	?	regalloc only: loop index rsi vs rdi, file r13 vs r12, *pctr rcx vs rax no structural diff lines ()
 142418be0	sfr_as3_04	exe constructs name temp before Value(&cl) but destroys name first; tried SDK AddFixedSlot inline helper, named local, name-by-ref: 28-59 lines
 14241ec80	sfr_as3_04	inlined FixedSizeHash byte-term schedule tie-break (family of 1427466d0)
-1424203b0	sfr_as3_04	inlined FixedSizeHash byte-term schedule tie-break (family of 1427466d0)
+1424203b0	?	scheduling: FixedSizeHash byte-term imul/movabs order same instructions ()
+142420800	2608	regalloc only: r14/r15 swap (zero/index reg vs &ValueH), equal length after Hash::Get SDK form (56cc6d9f5); tried saAtRanged and SDK ReverseArray template, no change
 1424284c0	sfr_as3_04	Date::formatDateTimeString: register allocation only; the exe keeps needTime in r12 and bufferSize in r15, ours swaps them (and the time sink size goes through rax vs rcx); if/ternary/order/paren variants of the utc, year and tail tests do not move it
-14242a3a0	sfr_as3_04	SDK HashSet setRawCapacity instance; add() matches SDK shape, residual rax/rdx rotation in inlined chain insert
+14242a3a0		regalloc only: rax/rdx swapped through the inlined re-add loop of setRawCapacity same length, 31 lines all register encodings (08:53)
 142439400	sfr_as3_06	commutative lea base/index order inside the shared QuickSortSliced template (frame-script Descr instance); same shape as the other ledgered QuickSortSliced instances
 142444050	sfr_as3_06	no-scene branch keeps pcur in rdi (exe rbx); combined if, swapped compare, sprite local, frame local, shared scene local all keep rdi
 142448ba0	sfr_as3_07	same this/pImage register family as 14244ba30 (colorTransform)
@@ -336,12 +354,15 @@
 1424882b0	sfr_as3_11	Matrix::concat: regalloc/operand-hold floor; best form (Prepend of a this-first copy) reaches the exe length, but per product pair the exe keeps the other operand in a register; 25 source variants (operand/addend swaps, statement order, field-ctor locals, declaration order) leave 13 lines
 142499620	sfr_as3_12	URLLoader MakeInstance: register allocation only; the exe holds the new instance in rbx and the result in rdi, ours swaps them; explicit Data(), forceinline ctor, body stores for the byte counters, a const char* literal, and named-temp/alloc-local MakeInstance shapes do not move it
 1424acee0	sfr_as3_13	TextField::InitInstance: register choice of the inlined GetAvmObjImpl; the standalone function is exact
+1424b3bf0	630	regalloc pdoc in rcx + ptext in r10 (exe) vs pdoc r8 + ptext rcx; dropping the ptext local is identical
 1424ca6b0	sfr_as3_15	regalloc: the exe uses one callee-saved register less and re-reads the string node
+1424cc450	?	regalloc: register permutation (rsi/r14, rbp/rsi, r9/r10...), +1 byte from REX no structural diff ()
 1424d6590	sfr_as3_15	regalloc: rbx vs rdi for the bit-array size
+1424d6750	?	regalloc: SPtr temp in rax vs rcx (+mov rcx,rax before Release), rdx vs rcx for [rbp+0x1d0]; loop pad no structural diff ()
 1424d8ec0	sfr_as3_15	cl threads runtime-bit jump past else-if retest + kind in ecx vs edx; nested/separate/helper/SDK-predicate forms 4-36 lines
 1424d93a0	sfr_as3_15	exe stores the vftable right after pRCC and before the reference count; body-assigned pUserDataHolder and GetGCPtr forms keep the vptr store last
 1424dbb30	sfr_as3_15	register choice: the exe keeps file in r15, ours in r14
-1424dd110	sfr_as3_16	SDK ~HashSetBase verbatim (sf_hash.h); rbx/rdi index/table swap only; a fix would be a shared Kernel hash header change
+1424dd110	?	regalloc only: SDK HashSetBase dtor template expansion, loop index/table rbx<->rdi swap, same size
 1424dde10	sfr_as3_16	93 register loop: exe keeps a UInt16 IV and re-indexes pRF each pass, ours strength-reduces; Destruct<Value>(pRF+i), ~Value(), SDK forceinline ReleaseReserved(UInt16 n) helper all 93; plus r15/r12 zero-register naming
 1424de240	sfr_as3_16	the exe tail-calls the Stats observer Release at the end; ours calls and returns. Same code otherwise; inlining the helper body and an if-block form gave no change
 1424e1a98	sfr_as3_16	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
@@ -358,10 +379,10 @@
 1424e54f4	sfr_as3_16	adjustor thunk (same as 1424e1a98 family)
 1424e6f90	sfr_as3_16	106 exe inlines Value(Class*) and the whole DynAttrs HashSet::Set; ours keeps Set out of line even via direct Set (104) or a forceinline helper (103). Untried: inline Value(Class*) overload in as3_value.h (shared header)
 1424e8e20	sfr_as3_16z	register allocation (exe copies the key to a shrink-wrapped rdi for the Ptr, table in rsi); if/else and member-assign Info forms are worse
-1424e9670	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
+1424e9670	200	regalloc only: exe copies name to r10 and builds the flag word in edx/r8d same op stream at 00426e32f after the SDK-form SlotInfo ctor; 15 lines
 1424e9740	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
-1424e9830	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
-1424e9910	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
+1424e9830	?	regalloc+scheduling only: SDK AddSlot body; esi<->edi swap and the inlined SlotInfo flag-word or/store scheduled after the lea
+1424e9910		regalloc only: exe reads the binding word into ecx (ours r8d) same op stream at 00426e32f; 11 lines
 1424e9a50	sfr_as3_16	SlotInfo build scheduling: SDK init-list+SetFlagsFromInt body and all-body-assign ctor forms both worse; header ctor kept
 1424ef210	sfr_as3_17	register naming only (exe kind in r8d, value in r9: 5 REX bytes); SDK CheckObject order, kind local and member ThrowTypeError forms do not move it
 1424f2e90	sfr_as3_17d	cl 19.16 loads the Cxform through rec& with movups in every form (_mm_load_ps, named __m128, __m128* deref, struct assign); exe movaps
@@ -374,66 +395,78 @@
 1424f92f0	sfr_as3_17	Tracer slot-access emit (4.1 tracer, no 4.2 SDK body): reg permutation only (exe t r14/op ebp/si r15); vm-local, callop local, t copy: no gain 35 (11-06)
 142500f90	sfr_as3_17	prolog shape and regalloc differ (exe saves through r11 with a 0x70 frame)
 142501750	sfr_as3_17	register allocation only: the VM pointer and the slot count trade rbp/r14
+1425048d0	612	regalloc only: dest Value* in rdi (pushed) and string node in rbx (home slot) in the exe, swapped in ours same length, jump table and instruction stream at 67d17f494; all 44 differing bytes are rbx/rdi ModRM/REX encodings; tried a named Value& dst, named vs unnamed ASString temps
 142505aa0	sfr_as3_17	FUN_142414ac0 as inline noinline in as3_mnhash.h (callee visible) fixes the rbx keep: 76->47, 0 rows gained in 17/18/19/21; residual = exe reloads key ns->Uri [r8+0x30] in the inlined chain compare (ours GVNs it from the hash); SDK CalcHash(kind, uri) form no effect; reverted (11-06)
 142507a70	sfr_as3_17	key/mask rbx-r11 swap + exe home-slot rdi save (ours sub rsp,8); SDK HashLH::Get->GetAlt->findIndex->findIndexCore forceinline chain over typed nodes, enum key: same shape, no change
 142507be0	sfr_as3_17	body == SDK VM::GetClass; exe computes GetTrimRight min unfolded and re-reads name size; PMin / swapped == / copied view variants no gain (57 -> 57..70)
 142508500	sfr_as3_17	enabled-bit getter: exe zero-extends the shifted byte (movzx eax,cl) before and eax,1; UByte cast, bool, nested casts, named bool temp and mask forms all fold to shr+and
 142509c20	sfr_as3_17	local static Ptr<File>: cl folds the null pObject store (constant init), exe keeps mov [f],0 before atexit; 7 init forms (NULL, =NULL, {}, temp copy) all fold
-14250a250	sfr_as3_18	SizeMask load scheduled before 2nd hash imul in exe; header findIndex == SDK; GetAlt/const/key-copy variants no gain
-14250bf90	sfr_as3_18	register naming only: i/copy in rbx/rdi swapped, identical structure
-14250c860	sfr_as3_18	GetOpCode: fixing the commutative operand order moves the Exceptions address schedule (2 to 23 bytes)
+14250a250	513	scheduling: SizeMask load (mov r,[tab+8]) hoisted above the FixedSizeHash imul chain in the exe; ours after; regnorm diff = that one load + movabs spelling fullcmp regnorm 6 lines; local view lookup with mask read first 118 lines; header SizeMask&hash order no change
+14250bf90	118	regalloc only: loop counter i and its zero-extended copy swap ebx/edi, same instructions 6 loop forms tried 11-07 (do/while, for, UPInt, casts) all worse or equal
+14250c360	1112	regalloc/scheduling sfr_as3_18 GetObjectsUnderPoint: stack-normalized diff is 132 lines, all xmm register choice and mulss/addss order in the inlined SetInverse/Prepend; non-xmm lines differ only in order (lea/mov pairs, nop width)
+14250c860	155	regalloc only: SIB base/index registers swapped in 2 instructions (exe [rax+rdi], ours [rdi+rax]), same length and same instruction stream ref-local variant 11-07 worse (20 regnorm)
+14250cc60	696	scheduling 4c83638fb: same instructions as exe; only the case-1 16+8 byte Value memcpy is load,load,store,store vs exe load,store,load,store (cl alias decision on the local; barrier/struct-copy variants worse)
 14250d630	sfr_as3_18	exe re-reads the node and recomputes the entry index for the morph ratio (no CSE across the two GetReadOnlyData calls); raw two-read, volatile and local EntryRef struct variants all fold to one read
-14250f9a0	sfr_as3_18	register allocation only: this and the class-traits result trade rbp/rsi/r14
+14250f9a0	211	regalloc only: vm/ns/result rotate rsi/rbp/r14, instruction stream identical odiff 11-07: 7 replace hunks all register names
 142510240	sfr_as3_18	92 exe keeps resolved Value flags in a stack copy for its dtor (LTCG: path lookup known not to keep the pointer); body is the SDK form
+142511890	524	regalloc only: 2 unmasked bytes; the dead first IsEnd sum (VArray.Size + FirstOwnSlotNum, only ZF used) goes to r9 where the exe uses r8; every other byte matches variants: operand swap (85), name-node local (88), named Value local (198), CIt member order (18), const_cast GetVT (18)
 1425136f0	sfr_as3_18	register only (presult/numArgs swap r12/r13); SDK retVal-at-top, non-const pargs, retVal&&presult tail, empty dpg guard all same 12
 142515460	sfr_as3_18	SDK else-if chain gives the exe registers but cl tail-duplicates each result=true + epilog; exe merges them (goto-label, ||, p-local forms tried, best 39)
 142515580	sfr_as3_18	same as 142515460 (instance-traits twin); SDK chain 45
-142516720	sfr_as3_18	register rotation only (this/wb/zero rbx/rdi/rsi vs exe rdi/rsi/rbx)
-142519898	sfr_as3_18	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
-1425198a4	sfr_as3_18	adjustor thunk: the exe has a compiler-generated [thunk] (sub rcx,N), a hand-written function emits add rcx,-N and compiler thunks cannot be tag-paired
-14251a500	sfr_as3_18	76 register allocation (this r15/url rsi/event rdi) + frame slot order; SDK const-ref name and evt-> forms tried (76/113)
+142516720	480	scheduling+regalloc: the key/wp=NULL stores before WProxyHash.Get are in the other order and this/wb/zero rotate rbx/rsi/rdi regnorm 18 lines (12 = movabs spelling); 8 decl/key-temp variants keep it or worsen to 70-80
+1425178e0	1414	regalloc only: r12/r15 swapped throughout; register-file blocks keep ind in r12 and from in rsi (exe) vs ind in rsi with from reloaded (ours) SDK const unsigned i locals + BitSet::IsSet form brought 111->102 diff lines; all remaining lines are register names, the from reload, and branch/nop sizes that follow from them
+142518750	565	scheduling afbf4a451: same instructions as exe; params[0] stores vs evt init order and 0x350/3/0x348 load interleave differ (regnorm 18 lines, all reorders)
+142519898	9	compiler adjustor thunk (sub rcx,N; jmp) needs real MI class layout; SFR21_THUNK free fn gives add rcx,-N / folds empty target to ret noinline target tried 11-07, no change
+1425198a4	9	compiler adjustor thunk (sub rcx,N; jmp) needs real MI class layout; SFR21_THUNK free fn gives add rcx,-N / folds empty target to ret noinline target tried 11-07, no change
+14251a500	721	scheduling afbf4a451: same instructions as exe; Value-array stores vs [rcx+8]/0x350 loads ordered differently (all diff hunks are moves)
+14251a8a0	885	scheduling afbf4a451: same instructions as exe; Value-array stores vs [rcx+8]/0x20 loads ordered differently (all diff hunks are moves)
 14251cef0	sfr_as3_18	exe keeps the temp ASString node in rbx across Value::Assign (0x1424e0d40) and hoists the manager load: its SCU sees the Assign body (LTCG alias info); ours must reload the temp slot
 14251ff60	sfr_as3_18	body == SDK FrameCounter::QueueFrameActions; exe dead lea after Flags or + unaligned loop heads not reproduced (SetFirstFrameCalledFlag ternary form tried)
-1425201f0	sfr_as3_18	only diff: inlined weak release (SCU body, zero stores then flags in source) - cl schedules the flags and before the three zero stores, the exe after; ~Value/stack-local variants do not move it
+1425201f0	388	scheduling only: in the inlined Value::ReleaseWeakRef (SDK AS3_Object.cpp body: Release, 3 NULL stores, SetWeakRef(false)+SetKind) cl places the merged 'and [rbx],0xfffffde0' before the three zero stores; the exe places it after. All other bytes match. bytematch 2026-11-07: 1 instr moved (obj +e1 vs exe +f4); the release body is the SDK one already (as3_gc.h ReleaseWeakRefSCU), ValueStack has no PopBack to vary
 142520b20	sfr_as3_18	AvmBitmap::RecreateRenderNode: body is the SDK 4.3 source verbatim; ours 595 B = exe 595 B, 23 bytes differ only because the exe schedules the inlined TreeContainer::GetAt entry-table load one instruction earlier (rcx/rdx swapped); swapping the operands had no effect
 142521150	sfr_as3_18	the name and the traits-pointer temporary take each other's stack slots; named pointer before/after the name, direct Add with temporary or named key all keep or worsen the swap
 142522350	sfr_as3_18	Key hash/compare scheduling in inlined RemoveAlt: exe re-reads pNs->Uri per probe, ns hash first; forceinline SDK RemoveAlt spec no change (69)
 1425273b0	sfr_as3_19	exe keeps the local name ASString memory-resident (spill + reload after AddRef) and holds the CreateEmptyString temp node in rdi across Assign: LTCG cross-TU inline of an ASString accessor; only a volatile &name escape reproduces the slot (36 lines, extra stores)
 142528fb0	sfr_as3_19	switch on PropRef tag: exe falls through to kind-2 (false) block; 14 case-order/default/__assume/if-chain variants all keep kind-3 fallthrough
 14252c8b0	sfr_as3_19	second inlined ResizeNoConstruct: ours hoists the Capacity load above the size branch, the exe loads it per branch; first instance identical
+14252cd80	Sfr31TracerOptRegIncDec	regalloc: State in r14, exe r15 (4 lines); 11 variants tried
+142531bf0	834	operand-order only: two byte stores [rax+rbx-1] vs [rbx+rax-1] placement-new/ptr-arith/per-call shift variants unchanged
 142532bd0	sfr_as3_19	same as 142537710: needs ReadArgs ctor+dtor visible (probe leaves 1 mov), conflicts with 14253c030/14253cd00 wanting opaque ctor; source order of the bodies does not matter
 142533300	scaleform/as3/sfr_as3_19	cl tail-merges the 0x411 and null/undefined ThrowTypeError tails; exe keeps both (kind re-read, below in r14). Helper/return/inline-ptr-test variants all merge
 142533470	sfr_as3_19	inlined ~Value weak-ref path: exe keeps Value Flags in ebx across the heap Free call (and ebx,0xfffffde0), LTCG alias info; same as ReadArgsObject cached-Flags rows
-142533cb0	sfr_as3_19	inlined ReleaseWeakRefSCU of ArgObject: exe keeps Flags in ebx across the WeakProxy free and nulls Bonus by imm; ours re-ANDs memory; plus VM-chain/lea rcx scheduling. Body = SDK ReadArgsObject.
-142535540	sfr_as3_19	twin of 142533cb0, same diff
-142536dd0	sfr_as3_19	same as 142533cb0: exe reads ArgObject Flags once into ebx after PopOpValue and reuses it after PushBack(&ArgObject) and the WeakProxy free (LTCG cross-TU alias info); ours re-reads. Rest is regalloc fallout (rsi/r14 saves)
+142533980	sfr_as3_19	regalloc only (7 diff lines): the exe saves rbx in the rdx home slot (ours the r9 home) and pops the object via r9 (ours r8); likely a different exec_callmethod parameter shape, which the aliased free-function signature cannot follow
+142533cb0	319	regalloc/sched: same calls+blocks; exe schedules lea rcx(args) before the vm chain load, stores w1=0 by imm and holds ArgObject Flags in ebx; ours zeroes rbx and uses ecx
+142535540	319	regalloc/sched: identical body and diff to 0x142533cb0
+142535f40	1169	regalloc: parent traits rdx vs rcx + 2 arg-store order before ExecuteInternalUnsafe; SDK form
+142536dd0	?	scheduling: ReadArgs vm argument load chain rcx vs rdx named VM&/State& variants no change ()
+142536f40	677	regalloc: SDK exec_construct form 674 B; only diff is kind-0xc held in r8d (exe) vs ecx (ours), 2 instrs + encoding
 142537710	sfr_as3_19	needs TR::ReadArgs ctor+dtor bodies visible (probe exact), but 14253c030/14253cd00 in the same unit need the ctor opaque (home-slot shift, lose 2); exe 19 range spans >1 TU, unit split needed
 142537810	sfr_as3_19	register only inside the inlined ReadArgsObject ctor: the exe copies the popped Flags through edx, ours through ecx; the shared ctor is exact in its other users
 142538840	sfr_as3_19	not-found Value traits chain in rcx vs exe rdx (lea rdx late); SDK early-return form, named traits, named Value tried
 142538bc0	sfr_as3_19	twin of 142538840 (same shared forceinline body)
-14253af70	sfr_as3_19	register only: exe builds the opcode in r8 with the index in rdx; ternary, named code/data/index locals and inline setter helpers all give the same 12
+14253af70	?	regalloc only: exe keeps the op_if*_tb code in r8 and the WCode size in rdx (ours rdx/rcx), +2 B REX; SDK SetNewOpCode helper, named code/size locals, Back() struct all unchanged
 14253d160	sfr_as3_19	exe keeps the read-arg Value Flags in ebx/esi across the tracer push call (cmp esi,9 after call, no reload), LTCG alias info; cached-Flags shape
 142540850	sfr_as3_19	param-save vs Flags-load scheduling in inline Value::Pick(ValueStack&); local-ref and named-stack forms identical
 142541ca0	sfr_as3_19	setRawCapacity<DynAttrs> template instance (MS2-PIN): exe copies the 32-bit hash ebx->ecx before the mask; Add/add/functor are SDK verbatim, a named-UPInt functor gives the same code
-142543440	sfr_as3_20	AcquireCandidateList: no AS3 IME source; remaining diff is register rotation (exe this/zero/proot r15/r14/r13)
-142543f90	sfr_as3_20	HandleFocus: no AS3 IME source; exe re-zeroes rdx per loop iteration, saves r14/r15 in prolog, inlines ~Multiname
-14254ce20	sfr_as3_20	VectorMap<Vector_object> loop rotation; same template body is exact for the other 4 instantiations, so no source form moves only this one
+142543440	1439	regalloc this/zero/proot in r15/r14/r13 vs r14/r12/r15 (269 lines)
+142543f90	1551	regalloc prolog r14/r15 saves, rdx re-zero; Multiname ctor/dtor calls misalign (257 lines)
+14254ce20	1363	layout VectorMap<Value> latch: exe cmp/jae exit before the rbx/rdi reloads + jmp top; ours reloads then jb top (7 lines); return-in-loop worse
 14254f400	sfr_as3_20	commutative base/index order inside the shared ArrayDH Pair swap (template body)
 142550840	sfr_as3_20	VectorSort: SetSInt32 inlined by hand; the exe keeps result in r12 (frame 0x110 vs 0x118) and orders ptr-path ReleaseNode differently; VM& cache made 2 of 5 worse
 142551250	sfr_as3_20	VectorSort: SetSInt32 inlined by hand; the exe keeps result in r12 (frame 0x110 vs 0x118) and orders ptr-path ReleaseNode differently; VM& cache made 2 of 5 worse
 142551cb0	sfr_as3_20	VectorSort: SetSInt32 inlined by hand; the exe keeps result in r12 (frame 0x110 vs 0x118) and orders ptr-path ReleaseNode differently; VM& cache made 2 of 5 worse
 1425526f0	sfr_as3_20	VectorSort: SetSInt32 inlined by hand; the exe keeps result in r12 (frame 0x110 vs 0x118) and orders ptr-path ReleaseNode differently; VM& cache made 2 of 5 worse
 142553170	sfr_as3_20	VectorSort: SetSInt32 inlined by hand; the exe keeps result in r12 (frame 0x110 vs 0x118) and orders ptr-path ReleaseNode differently; VM& cache made 2 of 5 worse
-142553bb0	sfr_as3_20	VectorSplice: exe loads VMRef after both AsString temps and calls MakeInstance as member with sret slot reload; helper/Pickable variants fix one half but regress the other (best 20/19/50 vs 21/20/51 baseline); 11-06 >45 min
+142553bb0	730	regalloc splices (also 142554660, and the VM-load order in 142553e90/142554280/142554880): VM load hoisted above AsString calls; named String temps 40+, inline self.VMRef worse
 142553e90	sfr_as3_20	VectorSplice: exe loads VMRef after both AsString temps and calls MakeInstance as member with sret slot reload; helper/Pickable variants fix one half but regress the other (best 20/19/50 vs 21/20/51 baseline); 11-06 >45 min
 142554280	sfr_as3_20	VectorSplice: exe loads VMRef after both AsString temps and calls MakeInstance as member with sret slot reload; helper/Pickable variants fix one half but regress the other (best 20/19/50 vs 21/20/51 baseline); 11-06 >45 min
-142554660	sfr_as3_20	VectorSplice<Vector_object>: VMRef load and MakeInstanceS result read scheduled differently; no-local VMRef, const-ref SPtr, Pickable local and direct GetPtr all worse (20 -> 32..68 diff lines)
+142554660	542	scheduling shared VectorSplice template (5 instantiations); exe orders the two RangeError AsString calls before the owner->vm load, ours hoists it; changing template shifts siblings
 142554880	sfr_as3_20	VectorSplice: exe loads VMRef after both AsString temps and calls MakeInstance as member with sret slot reload; helper/Pickable variants fix one half but regress the other (best 20/19/50 vs 21/20/51 baseline); 11-06 >45 min
 1425599b0	sfr_as3_21	register allocation only in the inlined OfCorrectType loop (index and size in rcx/rax swapped, same compare); the helper is shared with the exact CheckArgTypes
 142563380	sfr_as3_21	Resolve2Vector: exe releases temporaries FIFO (vname before elem name, slot name before Value) yet computes them in source order; only by-value ASString helper params reproduce the order (85->63 bangs), and slots/rsi still differ. No 4.1/4.2 AS3 source.
 1425686b0	sfr_gfx_01i	QuickSortSliced<AutoTabSortFunctor>: commutative addss operand order (which rect corner is loaded and which is added from memory) in the inlined tab-order compare; MSVC picks the order whatever the source order is
 14256c610	sfr_gfx_01i	timebox: 553-line diff, Capture/Release call binding off by structural diff
-14256d630	sfr_gfx_01i	timebox: frame +0x30, extra sign-mask negation (181 bytes longer)
+14256d630	1485	threading: exe branches on the in-loop HasChanges flags, ours setne+test via a 0 register; SDK if/return HasChanges is identical bm 230 lines (chained unwind)
 14256fde0	sfr_gfx_01i	1 byte: [rbx+rax+8] vs [rax+rbx+8] address operand order (d3b586cb2 cut 48->1)
 142570280	sfr_gfx_01i	exe keeps a function-wide zero reg r15 + pointer-IV cmov; frame +0x10
 142570c80	sfr_gfx_01i	parentWorldMat/temp slot swap + mouse x/y load order; SDK value GetWorldMatrix, by-value GetLastPosition, decl reorders no effect
@@ -456,12 +489,13 @@
 1425c48e0	sfr_gfx_04x	home-slot order (rbp save in p home)
 1425d2660	sfr_gfx_04	regalloc: rbx/rdi swapped for the import resource
 1425d8230	sfr_gfx_05	GetTagLoader table via SF_EXE_DATA volatile (DLL LNK2016 workaround); exe indexes off __ImageBase
-1425dd840	sfr_gfx_05c	unused 8-byte frame slot above the /GS cookie (exe push rbx + 0x68 frame); SDK body identical, SDK SetTrackAsMenuFlag ternary no change
-1425de520	sfr_gfx_05c	inlined Prepend float mul schedule (commutative); out-of-line 1425de3b0 exact; m*= form no effect
+1425dd840	378	frame rbx saved in home slot vs exe push rbx + 0x68 frame (/GS ctor)
+1425de520	597	regalloc Button::GetRectBounds inlined Prepend float regs (xmm0/xmm1 swapped, xmm5/xmm6); twin GetBounds 1425dde20 same source matches
 1425deeb0	sfr_gfx_05c	SetInverse xmm scheduling
 1425dfa10	sfr_gfx_05d	StaticTextCharacter ctor: exe keeps -r.x1/-r.y1 unfolded (xorps+addss); PointF(-x,-y) temp 161->98 but y still folds + SetTextPos regalloc breaks; SDK -=TopLeft 170
 1425e0720	sfr_gfx_05d	null font-handle jump threading + loop-exit release tail; SDK continue form and explicit handle test both worse (45/34/47 vs 22)
 1425e1840	sfr_gfx_05d	lea r12+rcx operand order (commutative, same class as 08s2/06c); not tried further
+1425e68e0	sfr_render_02b	regalloc: xmm register numbering only (xmm8/9/11/13 swapped); body is SDK verbatim incl. inline FocalRadialGradient; fabsf/fabs forms unchanged
 1425e9d00	sfr_render_02i	~DrawableImage: regalloc after SDK body
 1425eb390	sfr_render_02i	DrawableImage::Compare: the exe gives the GetSize temp its own stack slot; conversion-operator and local variants gave no change
 1425ee720	sfr_render_02i	PixelDissolve: regalloc after SDK body
@@ -469,14 +503,15 @@
 1425effe0	sfr_render_02i	internalMapAndFlush: regalloc after SDK body
 1425f1450	sfr_gfx_06	index-loop regalloc; K/O/P/Q variants tried
 1425f3430	sfr_gfx_06	Prepend operand order; 8 variants tried
-1425f4800	sfr_gfx_06	CSE: exe recomputes TreeNode entry index for Is3D after M3D copy; SDK form already
+1425f4800	471	cse SetIndirectTransform: exe recomputes the EntryRef page index (imul 0x4924..) for Is3D, ours CSEs it; GetReadOnlyData()->M3D/Is3D and local-pointer forms unchanged/worse
 1425f5a70	sfr_gfx_06	DisplayObject::SetScrollRect: Rectangle copy store order (exe movups [+8] first) and the tail add rdx,0x10 duplicated per branch; field-order stores 56, local SetRect 23, memcpy 114, swapped if 25, GetRenderNode re-call 150 (base 23)
 1425f64c0	sfr_gfx_06	DisplayObjectBase::SetX: the exe keeps the dead copy of the old Tx when it copies the matrix, ours drops it (DSE); rebuilding the matrix through SetMatrix with the new Tx does not compile against our Matrix2x4 view
 1425fa860	sfr_gfx_06c	DisplayList::RemoveFromRenderTree: commutative base+index operand order in the mask-loop address; the loop follows the SDK, and reference-local and postfix forms give the same order
 1425fbe90	sfr_gfx_06d	DisplayObjContainer::AssignRootNode: register only (list sentinel in r9, the exe uses rdx); the SDK break + re-test form is already in place
 1425fc5f0	sfr_gfx_06d	regalloc: child loop i spilled vs exe r12 sub/jns; loop forms tried
-1425feb50	sfr_gfx_06e	this/zero rbx-rdi swap; SDK nested Remove(0,GetSize()) fixes regs but caches pTreeContainer (exe reloads); SDK stores + n local still swapped
+1425feb50	269	regalloc DrawingContext::Clear this rbx / zero rdi swapped
 1426006a0	sfr_gfx_06e	scheduling: the exe sinks the field store past the call setup
+142604370	sfr_render_03	scheduling: identical instruction multiset, exe schedules xmm6 save and a.M[2] load later SDK 4.2 Render_Matrix3x4.cpp body verbatim + 4 variants (row-wise, mask first/last, Constant<> vs BitMask<>, and-operand order) all same instrs, only order differs
 142604460	sfr_render_03	SSE xmm6-8 spill scheduling only
 142604500	sfr_render_03	SSE xmm6-8 spill scheduling only
 14260f270	sfr_render_03b	font-cache lookup: the exe loads the table mask before the hash and ands in the other order, inside the shared hash find helper; changing the helper would move every other user
@@ -486,22 +521,23 @@
 142619270	sfr_gfx_07	register permutation; lb5 oracle functional too
 14261e310	sfr_gfx_07h	LTCG tail duplication of the static-init join block
 14261e460	sfr_gfx_07h	LTCG tail duplication of the static-init join block
-14261e7a0	sfr_gfx_07h	regalloc through body; volatile Value/-1 trick 68->62 but regresses 14261ec70 (62->99)
-14261e940	sfr_gfx_07h	twin of 14261e7a0
-14261ec70	sfr_gfx_07h	regalloc + tail merge; MovieHashAdd volatile variant worse
-14261ee70	sfr_gfx_07h	twin of 14261ec70
+14261e7a0	413	regalloc: hash anded in place in rsi, Value store duplicated per branch bm diff 68 lines; tail-in-branch 104
+14261e940	413	same as 14261e7a0 bm 68
+14261ec70	497	same as 14261e7a0 bm 62
+14261ee70	497	same as 14261e7a0 bm 62
 14261f070	sfr_gfx_07h	Arg as const Ref& fixes length (75->36 lines, 418=418); left: hash/mask and-operand regalloc + rdi shrink-wrap; early-return/in-place hash variants no better
 14261f220	sfr_gfx_07h	same as 14261f070 (68->42 with const Ref& + early return in 07raw.h); regalloc left
 14261f4a0	sfr_gfx_07h	765 vs 782 ctor scheduling, 113 lines
 14261fa90	sfr_gfx_07h	commutative base/index order in the inlined plain-set clear; seven source orders and a separate helper gave no change
 1426204e0	sfr_gfx_07i	scheduling only: the exe masks the string data pointer one store earlier before the hash call; hash local, member stores and reading through the key ref gave no change or worse
 142621c80	sfr_gfx_07i	338 vs 591 bytes; exe inlines helpers
-142622030	sfr_gfx_07i	16 lines; SDK Hash::Find and masked-hash variants worse
-142622160	sfr_gfx_07i	16 lines; same find shape as 142622030
-142622290	sfr_gfx_07i	16 lines; same find shape as 142622030
-142622d00	sfr_gfx_07i	741 vs 844; exe inlines name-hash insert
-142623050	sfr_gfx_07i	707 vs 907 bytes; exe inlines more hash/array helpers; RawNewScope tweaks regress it
-142623560	sfr_gfx_07i	437 vs 603; exe inlines multiname-key find/insert
+142622030	291	hash-term-order same as 1424046c0: exe add order of hash terms differs, source-order insensitive
+142622160	291	hash-term-order same as 1424046c0: exe add order of hash terms differs, source-order insensitive
+142622290	291	hash-term-order same as 1424046c0: exe add order of hash terms differs, source-order insensitive
+1426229f0	665	cl reassociation of the unrolled constant-folded SDBM key-hash sum; same length, same ops, term order only 7 source forms of the hash (FixedSizeHash op(), SDBM_Hash(&key,8), via NodeRef key ptr, const& alias, h*65599 loop, ascending loop, while(n--)) all give the identical 12-line diff
+142622d00	844	scheduling one movabs 0x7fff.. placed before vs after the Ref.pSecond store; same idiom as AddMarker 1426204e0 (tried hoisted ToCStr/GetSize locals there: worse)
+142623050	907	regalloc exe keeps swdHandle/swfOffset in r12/r13 and recomputes the key; ours CSEs key into r14 (UInt32 params would change the mangled name)
+142623560	603	regalloc exe keeps lineTime in r14 and reuses a CSEd idx*0x28 offset (lea rcx,[rbx+0x10]; add rcx,r8); SDK E() form and explicit char* offset form both fold identically
 142623a00	sfr_gfx_07i	the exe keeps key and the iterator in its own 0x48 frame, ours puts key in a parameter home slot; reordered, aligned and wider iterator locals tried
 142624300	sfr_gfx_07j	exe tail-calls String::operator= although &ref escapes; no scoping reproduces
 142624840	sfr_gfx_07j	same rcx/rdx swap as 142624af0 (23 lines; length diff is only align padding)
@@ -511,13 +547,13 @@
 1426251d0	sfr_gfx_07j	same Grow/add family as 142624af0
 1426255e0	sfr_gfx_07j	same Grow/add family as 142624af0
 142628df0	sfr_render_03d	commutative float add in the inlined Matrix2x4::GetYScale: the exe squares M[1][1] into xmm1, ours into xmm0; swapping the source operands gives the same code
-142636cc0	sfr_gfx_07e	exe saves an unused rbx; regalloc shifted by one register
+142636cc0	526	regalloc LoadProcess ctor this in rsi, one more saved reg
 14263acc0	gfx_07g	scheduling: the exe loads the node pointer later into rdi
 14263ae40	sfr_gfx_07g	HashSetBase::RemoveAlt<FontManager::NodePtr>: register only, the key pointer lives in rdi where the exe uses rbx; the body is the SDK template
 14263cb70	sfr_gfx_07g	frame +0x10 / regalloc, SDK-identical body
-142658f20	sfr_gfx_08s1	frame-slot layout + loop-align nop (131 lines, 2063 vs 2067); SDK-verbatim body no change
-14265ac00	sfr_gfx_08s1	scheduling only (12 -> 2 diff lines via ctor-body pAllocator): last stroke-array zero store vs reader pAllocator store
-14265ac70	sfr_gfx_08s1	scheduling only (32 -> 6 via ctor-body pAllocator + rotated guarded loops): stroke-array zero store vs pAllocator
+142658f20	2067	frame ImageCreateInfo local 0x10 higher in our frame + extra loop-align nop; forceinline adopt of pShapeMeshProvider was worse (131->137)
+14265ac00	102	scheduling exe sinks the StrokeStyles tail zero store (movdqa [rsp+0x60]) past lea rcx; all else identical (bm 2 lines)
+14265ac70	380	scheduling same ShapeSwfReader ctor zero-store sink as 14265ac00
 14265b620	sfr_gfx_08s2	commutative lea operand order inside the shared Read helper; changing the helper risks its other users
 14265f0b0	sfr_gfx_08s3	MorphCharacterDef::Read: dead rbound copies movaps vs movdqa (RectF type layout); source = SDK; SetRect/memberwise/RectF() no gain
 14265fbb0	sfr_gfx_08s3	239 diff lines, 2555 vs 2542 bytes; inlining/scheduling
@@ -540,16 +576,20 @@
 142678e50	sfr_render_05f	SSE xmm6 save scheduling only
 142678f10	sfr_render_05f	xmm6+ prolog save scheduling only; source = SDK 4.2 body, same instructions
 142679010	sfr_render_05f	xmm6+ prolog save scheduling only; source = SDK 4.2 body, same instructions
+142682170	sfr_render_05j	scheduling: setup block: exe xor ecx and movaps xmm5 copy placed earlier; SDK form + 4 decl-order variants all give the same 5 lines
 1426860f0	sfr_as3_22	commutative base/index order inside the shared QuickSortSliced swap (template body)
 14268c510	sfr_as3_22	same stream; exe hoists derived vtable+&FunctionInfo, spills this, shrink-wrapped r12 (frame 0x90); 171
 14268c930	sfr_as3_22	same stream; exe hoists derived FunctionDesc vtable, ours base; zero-reg vs imm stores; 173
+142691df0	7293	regalloc/scheduling only (float ops of inlined SegmentLineIntersection/Matrix2x4 math) source line-identical to SDK 4.2 Render_Scale9Grid.cpp Scale9GridTess ctor and Render_Matrix2x4.h; obj=exe length 7293, identical call sequence; all 505 diff lines are reordered independent mulss/addss/subss and xmm6<->xmm7 swaps for x/y; operand-order swap in SegmentLineIntersection byte-identical (no lever)
+142695140	sfr_render_05d	scheduling: same SSE ops, exe schedules cmpneq before the zero copy and lets cmple clobber the constant reg; source reorders produce identical code via runv.sh (all 31 lines)
 1426a4dc0	sfr_render_05c	regalloc: ebx/edi swapped for the edge flags
 1426d6600	sfr_render_07n	lea of the TextMeshProvider this is scheduled before the HMatrix by-value copy in the exe; pointer local, named result and member-pointer call tried (length or block layout changes)
 1426d96b0	sfr_render_07p	regalloc: the exe keeps the count in r14 across the loop, ours reloads it from the stack
 14272fcf0	sfr_d3d9_01e	SDK body 955->435 (dd314f919); left: regalloc fillFlags/edi, fill-record pointer IV, block order
-1427307e0	sfr_d3d9_01e	arg lea register order for FUN_1427359d0 (exe member SetPrimitiveFill); reference params no change
+1427307e0	-	regalloc/scheduling DrawProcessedPrimitive: SetPrimitiveFill arg setup uses rax/r8 swapped and shl r9 scheduled earlier; same instructions, only the register and order differ
 142736240	sfr_d3d9_01e	scheduling only: exe sinks entry Rect/Viewport init stores past phd->pRenderSurface load and hoists Viewport copy loads above ViewRect stores; SDK op=, Rect op=, vp temp, decl order 20-111 lines
-142736610	sfr_d3d9_01e	SetUserUniforms: 1 byte, variants failed
+142736610	615	operand-order SetUserUniforms body identical to SDK Render_Shader.h; one base/index operand swap in the pFDesc GetUniformSize branch
+14273a190	sfr_d3d9_01c	regalloc: inlined evictMeshesInBuffer->Free arg regs (exe rax holds buffer, ours rdx); body is SDK text and the standalone copy 0x14273c0e0 is exact
 142741850	sfr_d3d9_01d	SetStaticShader: variants failed
 142742ed0	scaleform/video/sfr_video_03b	VS2017 ArrayData copy: our cl folds oldSize=0 and drops the exe's newSize test before Reserve; barrier/noinline variants worse
 142742f70	sfr_video_03	VC9 store/add scheduling; struct Head assignment tried, still 9 lines
@@ -621,6 +661,7 @@
 1429234f0	sfr_as2_03	TransformProto::TransformProto CreateConstStringNode flags xor r9d scheduled before PropFlags temp store in exe; 13 shapes (3-arg, Node direct, MovieRoot path, implicit flags, qualified, named PropFlags, Value temps) all keep cl order
 142925be0	sfr_as2_03ae	blocked needs Ptr members at +0x28/30/38 in as2_movieroot.h (134 deps) + ctor 03ag + inline ~ASMovieRootBase (sfr_as3_16, other worker active)
 14292da40	sfr_as2_04	??_G UserDefinedFunctionObject: exe inlines ~UDFO + ~FunctionObject. Matches with inline defs in 04, but cl then emits both inline virtual dtors with 04 vtable -> LNK2005 vs 03 strong defs (0x142926060, 0x1429255a0); inline in 03 drops 0x142926060 (not emitted). Only fix = move ~UDFO def + range 03->04.
+14292e180	sfr_as2_04	Value::Add: LTCG keeps pv1/pv2 type bytes in bl/r14b across ToPrimitive/ToNumber/ConvertToString calls (same root as Compare 142935200); SDK body
 14292ea50	sfr_as2_04s	SDK body; r12/r13 swap addFlags/frame, xor vs mov 0 null, CreateCharacterInstance arg-load schedule (regalloc)
 14292f960	sfr_as2_04j	MovieRoot::AddLoadQueueEntry regalloc only (exe pushes r12, rbx keeps penv-arm node); 8 ternary/spelling shapes no gain
 1429318d0	sfr_as2_04q	AttachMovie at equal length: OperatorNew global context in rcx with rcx=penv after the arg loads (ours rdx, rcx first); pGlobal/name locals, GetSC/GetGC forms and a forceinline helper tried; regalloc
@@ -673,6 +714,7 @@
 14296f770	sfr_as2_06	builtin offset in edx vs our r8d + mem-add; body is SDK-verbatim; SDK GetStringManager/GetBuiltinNodeHolder/OperatorNew forceinline nesting gives no change
 142971ac0	sfr_as2_06b	only the dtor type-byte cmp is scheduled after the PushBack stores; SDK locals/helper variants worse (38 vs 17 bytes)
 142972490	sfr_as2_06	Selection::QueueSetFocus LTCG mod-ref Size cached across out-of-line Value calls
+142976be0	1165	DateCtorFunction::Register: all ctors inlined via tag ctors, 1175 vs 1165; same floor as 14297b190 (CtorFunction Object(psc) regalloc: exe zero in rdi, ObjectInterface vptr in rdx, dil/di stores) + DateObject vptr stores scheduled before pProto cmp 4423b983c; tried virtual vs Object::SetMemberRaw (worse 1184), RegisterBuiltinClass template (1186)
 14297b190	sfr_as2_06s9	StyleSheetCtorFunction::Register: all ctors inlined via tag ctors, 1317 vs 1307; same instructions/order, left: inlined CtorFunction Object(psc) regalloc (exe zero in rdi + ObjectInterface vptr in rdx kept across GcN chain, dil/di zero stores)
 14297ba70	sfr_as2_06s9	TextFormatCtorFunction::Register: all ctors inlined via tag ctors, 1295 vs 1285; same floor as 14297b190 (CtorFunction Object(psc) regalloc: exe zero in rdi, vptrs in rdx/r8)
 14297c6e0	sfr_as2_06s10	RegisterAuxASClasses: gc/name rbx/rdi swap and null ResolvedFunc stored as imm (the +8 bytes are the two imm stores); SDK ClassRegEntry(f) temp, re-read GetBuiltin, bool Has helper, entry-before-lookup tried; regalloc/const-prop

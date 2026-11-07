@@ -217,14 +217,14 @@ MS2_REPLACE_METHOD(0x140F34D50, UIDarkStreamResultDialog, FUN_140f34d50, 1061, 0
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, int a3, int a4, int a5, CString a6, size_t a7)
 {
     ASArgList args;
-    args.FUN_1409b2800(7);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
-    FUN_1422bce70(args.FUN_1409b1f70(5), (const char*)a6);
-    FUN_1422bce00(args.FUN_1409b1f70(6), a7);
+    args.resize(7);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
+    FUN_1422bccb0(&args[4], a5);
+    FUN_1422bce70(&args[5], (const char*)a6);
+    FUN_1422bce00(&args[6], a7);
     return FUN_1422bb8f0(szMethod, args);
 }
 

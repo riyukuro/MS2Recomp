@@ -807,10 +807,10 @@ MS2_REPLACE_METHOD(0x14190B060, UICutSceneCinematic, vfunc_41, 99, 0x17B77628);
 inline Scaleform::GFx::Value AScript::FUN_14190b490(const char* szMethod, unsigned int a1, unsigned int a2, float a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcd70(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcd10(&args[0], a1);
+    FUN_1422bcd10(&args[1], a2);
+    FUN_1422bcd70(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -818,10 +818,10 @@ inline Scaleform::GFx::Value AScript::FUN_14190b490(const char* szMethod, unsign
 inline Scaleform::GFx::Value AScript::FUN_14190b570(const char* szMethod, bool a1, CStringW a2, CStringW a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcce0(&args[0], a1);
+    FUN_1422bcea0(&args[1], a2);
+    FUN_1422bcea0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

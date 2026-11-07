@@ -130,7 +130,7 @@ class Unk_ConfigFloat { public: };                           // Value<float>::ge
 class Unk_ConfigPoint
 {
 public:
-    Vector3 FUN_141273d00() const;                          // copy of the value (0x141273d00)
+    operator Vector3() const;                               // copy of the value (0x141273d00)
     // the value getter 0x141274420 is Common::Constants::Value<efd::Point3>::Get() (defined below)
     virtual void vfunc_0(); virtual void vfunc_1();
     bool m_bInit; char m_flag9, m_flagA, m_flagB; unsigned m_unkC;
@@ -231,10 +231,8 @@ void CExpEffectInfo::InitConstants()
     DAT_1439f7340 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2210))->Read();
     DAT_1439f7348 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2268))->Read();
     DAT_1439f7344 = reinterpret_cast<Common::Constants::Value<float>*>(reinterpret_cast<Unk_ConfigFloat*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x22c0))->Read();
-    Vector3 kMin = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2318)->FUN_141273d00();
-    s_ptSpreadMin = kMin;
-    Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2380)->FUN_141273d00();
-    s_ptSpreadMax = kMax;
+    s_ptSpreadMin = *reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2318);
+    s_ptSpreadMax = *reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x2380);
     s_strEffDummy = *reinterpret_cast<Common::Constants::Value<CString>*>((char*)((struct Unk_ClientConfig*)GetClientConstants()) + 0x23e8)->Get();
     s_nConstInit = 1;
 }
@@ -512,7 +510,7 @@ template<> efd::Point3* Common::Constants::Value<efd::Point3>::Get()
 }
 
 // @0x141273d00
-Vector3 Unk_ConfigPoint::FUN_141273d00() const
+Unk_ConfigPoint::operator Vector3() const
 {
     return reinterpret_cast<const Vector3&>(*reinterpret_cast<Common::Constants::Value<efd::Point3>*>(const_cast<Unk_ConfigPoint*>(this))->Get());
 }

@@ -74,13 +74,13 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, CStringW a2, CStringW a3, CStringW a4, int a5, int a6)
 {
     ASArgList args;
-    args.FUN_1409b2800(6);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), (const wchar_t*)a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
-    FUN_1422bccb0(args.FUN_1409b1f70(5), a6);
+    args.resize(6);
+    FUN_1422bce70(&args[0], (const char*)a1);
+    FUN_1422bcea0(&args[1], (const wchar_t*)a2);
+    FUN_1422bcea0(&args[2], (const wchar_t*)a3);
+    FUN_1422bcea0(&args[3], (const wchar_t*)a4);
+    FUN_1422bccb0(&args[4], a5);
+    FUN_1422bccb0(&args[5], a6);
     return FUN_1422bb8f0(szMethod, args);
 }
 

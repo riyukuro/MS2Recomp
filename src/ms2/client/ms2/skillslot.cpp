@@ -1512,11 +1512,11 @@ SkillSlot* FUN_141761e60(DragSlot* p)
 Scaleform::GFx::Value Unk_SsFn::FUN_141761eb0(unsigned nElement, CString strIcon, int nGray, int nFlag)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), nElement);
-    FUN_1422bce70(args.FUN_1409b1f70(1), (const char*)strIcon);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), nGray);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), nFlag);
+    args.resize(4);
+    FUN_1422bcd10(&args[0], nElement);
+    FUN_1422bce70(&args[1], (const char*)strIcon);
+    FUN_1422bccb0(&args[2], nGray);
+    FUN_1422bccb0(&args[3], nFlag);
     return FUN_1422bb9f0(args);
 }
 
@@ -1524,10 +1524,10 @@ Scaleform::GFx::Value Unk_SsFn::FUN_141761eb0(unsigned nElement, CString strIcon
 Scaleform::GFx::Value Unk_SsFn::FUN_141761fc0(CString strIcon, int nGray, int nFlag)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)strIcon);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), nGray);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), nFlag);
+    args.resize(3);
+    FUN_1422bce70(&args[0], (const char*)strIcon);
+    FUN_1422bccb0(&args[1], nGray);
+    FUN_1422bccb0(&args[2], nFlag);
     return FUN_1422bb9f0(args);
 }
 
@@ -1535,8 +1535,8 @@ Scaleform::GFx::Value Unk_SsFn::FUN_141761fc0(CString strIcon, int nGray, int nF
 Scaleform::GFx::Value Unk_SsFn::FUN_1417620b0(Scaleform::GFx::Value kArg)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), Scaleform::GFx::Value(kArg));
+    args.resize(1);
+    FUN_1422bcc70(&args[0], Scaleform::GFx::Value(kArg));
     return FUN_1422bb9f0(args);
 }
 
@@ -1544,9 +1544,9 @@ Scaleform::GFx::Value Unk_SsFn::FUN_1417620b0(Scaleform::GFx::Value kArg)
 Scaleform::GFx::Value Unk_SsFn::FUN_141762190(bool bShow, int nCount)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), bShow);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), nCount);
+    args.resize(2);
+    FUN_1422bcce0(&args[0], bShow);
+    FUN_1422bccb0(&args[1], nCount);
     return FUN_1422bb9f0(args);
 }
 

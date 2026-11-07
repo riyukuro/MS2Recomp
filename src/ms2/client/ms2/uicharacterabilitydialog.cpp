@@ -147,9 +147,9 @@ template <class A, class B, class C, class D> CStringW FUN_140f2c170(int nString
 Scaleform::GFx::Value AScript::FUN_140f2c5d0(const char* szMethod, int n, ASArray& arr)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), n);
-    FUN_1422bce40(args.FUN_1409b1f70(1), arr);
+    args.resize(2);
+    FUN_1422bcd10(&args[0], n);
+    FUN_1422bce40(&args[1], arr);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -157,9 +157,9 @@ Scaleform::GFx::Value AScript::FUN_140f2c5d0(const char* szMethod, int n, ASArra
 Scaleform::GFx::Value AScript::FUN_140f2c690(const char* szMethod, int n, CStringW str)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), n);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)str);
+    args.resize(2);
+    FUN_1422bcd10(&args[0], n);
+    FUN_1422bcea0(&args[1], (const wchar_t*)str);
     return FUN_1422bb8f0(szMethod, args);
 }
 

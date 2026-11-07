@@ -2,9 +2,9 @@
     MS2ExcludeFromShadows(m_spParticleContainer); // MS2 (exe 0x141e9d720)
 .
 732a
-// MS2: game scene root (exe 0x143afa980); the list at +0x190 holds the shadow generators
-struct Unk_RsSceneRoot;
-extern Unk_RsSceneRoot* DAT_143afa980;
+// MS2: NiShadowManager::ms_pkShadowManager (exe 0x143afa980); the list at +0x190 holds the shadow generators
+// (read through NiPSShadowManagerView, declared above the dtor)
+//
 // MS2: shadow-exclusion hook installed by the game (exe 0x143afbfc8, game: ms2.cpp)
 extern void (*DAT_143afbfc8)(NiAVObject*);
 
@@ -16,11 +16,11 @@ static void MS2ExcludeFromShadows(NiNode* pkNode)
         DAT_143afbfc8(pkNode);
         return;
     }
-    if (!DAT_143afa980)
+    if (!NiPSShadowManagerView::ms_pkShadowManager)
         return;
 
     NiTPointerList<NiShadowGenerator*>& kGenerators =
-        *(NiTPointerList<NiShadowGenerator*>*)((char*)DAT_143afa980 + 0x190);
+        *(NiTPointerList<NiShadowGenerator*>*)((char*)NiPSShadowManagerView::ms_pkShadowManager + 0x190);
     NiTListIterator kPos = kGenerators.GetHeadPos();
     while (kPos)
     {
@@ -39,10 +39,10 @@ static void MS2ExcludeFromShadows(NiNode* pkNode)
     } pkDest->m_spParticleContainer = (NiNode*)m_spParticleContainer->CreateClone(kCloning);  // MS2: clones the container too (exe 0x141e9d900)
 .
 168c
-    } if (!DAT_143afbfc8 && DAT_143afa980) { NiTPointerList<NiShadowGenerator*>& kGenerators = *(NiTPointerList<NiShadowGenerator*>*)((char*)DAT_143afa980 + 0x190); NiTListIterator kPos = kGenerators.GetHeadPos(); while (kPos) { NiShadowGenerator* pkGenerator = kGenerators.GetNext(kPos); pkGenerator->DetachUnaffectedCasterNode(m_spParticleContainer); pkGenerator->DetachUnaffectedReceiverNode(m_spParticleContainer); } } // MS2: undo MS2ExcludeFromShadows (exe 0x141e9d340)
+    } if (!DAT_143afbfc8 && NiPSShadowManagerView::ms_pkShadowManager) { NiTPointerList<NiShadowGenerator*>& kGenerators = *(NiTPointerList<NiShadowGenerator*>*)((char*)NiPSShadowManagerView::ms_pkShadowManager + 0x190); NiTListIterator kPos = kGenerators.GetHeadPos(); while (kPos) { NiShadowGenerator* pkGenerator = kGenerators.GetNext(kPos); pkGenerator->DetachUnaffectedCasterNode(m_spParticleContainer); pkGenerator->DetachUnaffectedReceiverNode(m_spParticleContainer); } } // MS2: undo MS2ExcludeFromShadows (exe 0x141e9d340)
 .
 155c
-struct Unk_RsSceneRoot; extern Unk_RsSceneRoot* DAT_143afa980; extern void (*DAT_143afbfc8)(NiAVObject*); static void MS2ExcludeFromShadows(NiNode* pkNode); // MS2: see MS2ExcludeFromShadows
+struct NiPSShadowManagerView : NiShadowManager { using NiShadowManager::ms_pkShadowManager; }; extern void (*DAT_143afbfc8)(NiAVObject*); static void MS2ExcludeFromShadows(NiNode* pkNode); // MS2: see MS2ExcludeFromShadows
 .
 128a
     MS2ExcludeFromShadows(m_spParticleContainer); // MS2 (exe 0x141e9d039)

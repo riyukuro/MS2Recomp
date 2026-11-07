@@ -307,8 +307,8 @@ bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 Scaleform::GFx::Value ASArray::FUN_140e06cc0(const char* szMethod, double d)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcda0(args.FUN_1409b1f70(0), d);
+    args.resize(1);
+    FUN_1422bcda0(&args[0], d);
     return FUN_1422bb8f0(szMethod, args);
 }
 

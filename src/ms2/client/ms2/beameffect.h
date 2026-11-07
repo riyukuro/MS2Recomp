@@ -54,7 +54,7 @@ public:
     float m_fHalfWidth;             // +0x50 param width / 2
     int m_nQuality;                 // +0x54 param quality (samples per curve segment)
     int m_nUVSets;                  // +0x58 = 1
-    ATL::CAtlArray<Vector3>* m_pPoints;    // +0x60 the target's point list
+    const ATL::CAtlArray<Vector3>* m_pPoints;    // +0x60 the target's point list
     MS2Ptr<CBeamEffectParam> m_spParam;            // +0x68 (pointer at +0x70)
 };
 MS2_CHECK_SIZE(CBeamEffect, 0x78);

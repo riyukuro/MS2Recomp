@@ -66,8 +66,8 @@ extern __int64 DAT_143ab2898;                                   // the money
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_UgcOpenType a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

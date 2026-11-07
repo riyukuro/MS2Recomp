@@ -1443,7 +1443,7 @@ void FUN_1429024e0();
 void FUN_142902880();
 void FUN_142902ae0();
 void FUN_142902f40();
-void FUN_142928a40();
+void FUN_142928a40(); __pragma(comment(linker, "/alternatename:?FUN_142928a40@@YAXXZ=??_G?$RefCountBaseStatImpl@VRefCountImpl@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z")) // RefCountBaseStatImpl<RefCountImpl,2> scalar deleting dtor (SF copy; the ??_7 name is bound to the game copy 0x142dc9d68)
 //
 void FUN_14292bdc0();
 void FUN_14292be50();

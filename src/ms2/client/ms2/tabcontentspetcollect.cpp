@@ -579,9 +579,9 @@ void TabContentsPetCollect::FUN_140caeda0()
 inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf030(const char* szMethod, int a1, AScript a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), Scaleform::GFx::Value(a2.FUN_1422bb890()));
+    args.resize(2);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bcc70(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -589,8 +589,8 @@ inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf030(const char* szMethod, int
 inline Scaleform::GFx::Value AScript::FUN_140caf140(const char* szMethod, ASArray a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), Scaleform::GFx::Value(a1.FUN_1422bb890()));
+    args.resize(1);
+    FUN_1422bcc70(&args[0], Scaleform::GFx::Value(a1.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -598,8 +598,8 @@ inline Scaleform::GFx::Value AScript::FUN_140caf140(const char* szMethod, ASArra
 inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf230(const char* szMethod, int a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -2,6 +2,7 @@
 // MS2-UNIT: commonfiles\userproxy.cpp
 // MS2-RANGE: 0x1400be2c0-0x1400be590 .text$di
 // MS2-RANGE: 0x1408e70b0-0x1408f4e20 .text$mn
+// MS2-RANGE: 0x140932b20-0x140932b40 .text$mn
 // MS2-RANGE: 0x142c9cb10-0x142c9cb90 .text$yd
 // MS2-RANGE: 0x142c9cbb0-0x142c9cc70 .text$yd
 // The intervening 0x142c9cb90 thunk belongs to nxa::DefaultMemoryAllocator (unit_14092cb30).

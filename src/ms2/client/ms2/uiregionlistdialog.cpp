@@ -123,9 +123,9 @@ public:
 Scaleform::GFx::Value Unk_RlScript::FUN_140e813f0(const char* szMethod, const ASArray& arr, int n)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), arr);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), n);
+    args.resize(2);
+    FUN_1422bce40(&args[0], arr);
+    FUN_1422bccb0(&args[1], n);
     return FUN_1422bb8f0(szMethod, args);
 }
 

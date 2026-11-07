@@ -120,8 +120,8 @@ NotifyChatEmoticonSelected::NotifyChatEmoticonSelected(const CStringW& strTarget
 Scaleform::GFx::Value AScript::FUN_140bd2cb0(const char* szMethod, const ASArray& a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bce40(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);

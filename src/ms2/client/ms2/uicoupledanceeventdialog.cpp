@@ -482,7 +482,7 @@ MS2_REPLACE_METHOD(0x140BFE1A0, UICoupleDanceEventDialog, FUN_140bfe1a0, 55, 0xF
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool b)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), b);
+    args.resize(1);
+    FUN_1422bcce0(&args[0], b);
     return FUN_1422bb8f0(szMethod, args);
 }

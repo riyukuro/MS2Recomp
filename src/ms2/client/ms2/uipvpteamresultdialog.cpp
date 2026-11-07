@@ -347,12 +347,12 @@ void UIPvPTeamResultDialog::vfunc_43()
 Scaleform::GFx::Value Unk_PtScript::FUN_141346320(const char* szMethod, bool a1, const char* a2, const char* a3, const char* a4, int a5)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bce70(args.FUN_1409b1f70(2), a3);
-    FUN_1422bce70(args.FUN_1409b1f70(3), a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
+    args.resize(5);
+    FUN_1422bcce0(&args[0], a1);
+    FUN_1422bce70(&args[1], a2);
+    FUN_1422bce70(&args[2], a3);
+    FUN_1422bce70(&args[3], a4);
+    FUN_1422bccb0(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -360,12 +360,12 @@ Scaleform::GFx::Value Unk_PtScript::FUN_141346320(const char* szMethod, bool a1,
 Scaleform::GFx::Value Unk_PtScript::FUN_141346430(const char* szMethod, bool a1, CStringW a2, const wchar_t* a3, CStringW a4, int a5)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bcce0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), (const wchar_t*)a4);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
+    args.resize(5);
+    FUN_1422bcce0(&args[0], a1);
+    FUN_1422bcea0(&args[1], (const wchar_t*)a2);
+    FUN_1422bcea0(&args[2], a3);
+    FUN_1422bcea0(&args[3], (const wchar_t*)a4);
+    FUN_1422bccb0(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
 

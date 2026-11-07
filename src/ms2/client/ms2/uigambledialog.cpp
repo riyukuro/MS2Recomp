@@ -190,12 +190,12 @@ int UIGambleDialog::FUN_141935710()
 inline Scaleform::GFx::Value ASDialog::FUN_141935bc0(const char* szMethod, CString strBind, unsigned int nSlot, CStringW strName, CString strIcon, int nFlag)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bce70(args.FUN_1409b1f70(0), strBind);
-    FUN_1422bcd10(args.FUN_1409b1f70(1), nSlot);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), strName);
-    FUN_1422bce70(args.FUN_1409b1f70(3), strIcon);
-    FUN_1422bccb0(args.FUN_1409b1f70(4), nFlag);
+    args.resize(5);
+    FUN_1422bce70(&args[0], strBind);
+    FUN_1422bcd10(&args[1], nSlot);
+    FUN_1422bcea0(&args[2], strName);
+    FUN_1422bce70(&args[3], strIcon);
+    FUN_1422bccb0(&args[4], nFlag);
     return FUN_1422bb8f0(szMethod, args);
 }
 

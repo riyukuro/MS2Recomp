@@ -329,7 +329,7 @@ MS2_REPLACE(0x1422BB8B0, FUN_1422bb8b0, 57, 0x7765765F);
 Scaleform::GFx::Value AScript::FUN_1422bb8f0(const char* szMethod, ASArgList& args)
 {
     Scaleform::GFx::Value result;
-    if (!m_value.Invoke(szMethod, &result, args.FUN_1409b1f70(0), reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
+    if (!m_value.Invoke(szMethod, &result, &args[0], reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
         return DAT_143b0ae18;
     return result;
 }
@@ -339,7 +339,7 @@ MS2_REPLACE_METHOD(0x1422BB8F0, AScript, FUN_1422bb8f0, 238, 0xA6647238);
 Scaleform::GFx::Value AScript::FUN_1422bb9f0(ASArgList& args)
 {
     Scaleform::GFx::Value result;
-    if (!m_value.InvokeSelf(&result, args.FUN_1409b1f70(0), reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
+    if (!m_value.InvokeSelf(&result, &args[0], reinterpret_cast<const std::vector<Scaleform::GFx::Value>&>(args).size()))
         return DAT_143b0ae18;
     return result;
 }

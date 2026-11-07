@@ -422,10 +422,10 @@ MS2_REPLACE_METHOD(0x141B4D8A0, UIUpperHpBar, FUN_141b4d8a0, 56, 0xE9446796);
 // @0x141b4da00
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod,__int64 a1,CStringW a2,int a3,CStringW a4){
  ASArgList args;
- args.FUN_1409b2800(4);
- FUN_1422bcdd0(args.FUN_1409b1f70(0),a1);
- FUN_1422bcea0(args.FUN_1409b1f70(1),a2);
- FUN_1422bccb0(args.FUN_1409b1f70(2),a3);
- FUN_1422bcea0(args.FUN_1409b1f70(3),a4);
+ args.resize(4);
+ FUN_1422bcdd0(&args[0],a1);
+ FUN_1422bcea0(&args[1],a2);
+ FUN_1422bccb0(&args[2],a3);
+ FUN_1422bcea0(&args[3],a4);
  return FUN_1422bb8f0(szMethod,args);
 }

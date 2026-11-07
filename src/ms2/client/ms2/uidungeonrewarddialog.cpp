@@ -279,8 +279,8 @@ MS2_REPLACE_METHOD(0x140E26660, Unk_RewardMissionPtr, operator==, 55, 0x3A11F2EB
 // @0x140e262c0
 Scaleform::GFx::Value AScript::FUN_140e262c0(const char* method,const char* arg) {
  ASArgList args;
- args.FUN_1409b2800(1);
- FUN_1422bce70(args.FUN_1409b1f70(0),arg);
+ args.resize(1);
+ FUN_1422bce70(&args[0],arg);
  return FUN_1422bb8f0(method,args);
 }
 MS2_REPLACE_METHOD(0x140E262C0, AScript, FUN_140e262c0, 148, 0x7E9B9EE2);

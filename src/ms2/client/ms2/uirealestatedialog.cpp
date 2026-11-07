@@ -713,8 +713,8 @@ UIUGCModelHouseDialog* FUN_141ab59f0(int nClass)
 Scaleform::GFx::Value Unk_ReScript::FUN_141ab5a90(const char* szMethod, int a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bccb0(&args[0], a1);
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
 }
 

@@ -201,10 +201,10 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
 Scaleform::GFx::Value Unk_FtEntity::FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bcea0(&args[0], (const wchar_t*)a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -212,11 +212,11 @@ Scaleform::GFx::Value Unk_FtEntity::FUN_1412c4930(const char* szMethod, CStringW
 Scaleform::GFx::Value Unk_FtEntity::FUN_1412c4a20(const char* szMethod, CStringW a1, int a2, int a3, int a4)
 {
     ASArgList args;
-    args.FUN_1409b2800(4);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    args.resize(4);
+    FUN_1422bcea0(&args[0], (const wchar_t*)a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
+    FUN_1422bccb0(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

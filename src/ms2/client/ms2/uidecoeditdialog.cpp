@@ -293,8 +293,8 @@ void FUN_14191c320(CStringW& strPath)
 Scaleform::GFx::Value Unk_DeScript::FUN_14191c3d0(const char* szMethod, const wchar_t* pszArg)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), pszArg);
+    args.resize(1);
+    FUN_1422bcea0(&args[0], pszArg);
     return FUN_1422bb8f0(szMethod, args);
 }
 

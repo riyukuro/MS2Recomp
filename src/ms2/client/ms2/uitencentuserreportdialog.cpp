@@ -44,8 +44,8 @@ class Unk_ReportScript : public CPtred {
 public:
     template<class T> Scaleform::GFx::Value Invoke(const char* method, T value) {
         ASArgList args;
-        args.FUN_1409b2800(1);
-        FUN_1422bccb0(args.FUN_1409b1f70(0), value);
+        args.resize(1);
+        FUN_1422bccb0(&args[0], value);
         return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
     }
     template<class T> MS2Ptr<T> GetChild(const CString& name) {

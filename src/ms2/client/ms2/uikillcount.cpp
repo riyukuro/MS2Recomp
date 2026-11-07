@@ -191,10 +191,10 @@ void UIKillCount::FUN_1419df6a0()
 Scaleform::GFx::Value Unk_KcScript::FUN_1419df740(const char* szMethod, int a1, int a2, double a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcda0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bccb0(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bcda0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

@@ -376,10 +376,10 @@ MS2_REPLACE_METHOD(0x140ba93d0, UIBanner, FUN_140ba93d0, 153, 0x8291A101);
 Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, bool bFlag)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bcd10(args.FUN_1409b1f70(0), nActorId);
-    FUN_1422bce70(args.FUN_1409b1f70(1), strCache);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), bFlag);
+    args.resize(3);
+    FUN_1422bcd10(&args[0], nActorId);
+    FUN_1422bce70(&args[1], strCache);
+    FUN_1422bcce0(&args[2], bFlag);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -387,9 +387,9 @@ Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9470(const char* szMethod, int nA
 Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), clip);
-    FUN_1422bcce0(args.FUN_1409b1f70(1), bFlag);
+    args.resize(2);
+    FUN_1422bcc70(&args[0], clip);
+    FUN_1422bcce0(&args[1], bFlag);
     return FUN_1422bb8f0(szMethod, args);
 }
 

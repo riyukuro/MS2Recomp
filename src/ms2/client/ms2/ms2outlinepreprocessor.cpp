@@ -65,7 +65,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
-   void FUN_14098da10(void* wl, void* node);
+// 0x14098da10 = CAtlList<NiAVObject*>::FreeNode (alphaanimation.cpp), called by RemoveHead below
 extern char DAT_143ae2b34, DAT_143a09680;
 extern NiFixedString DAT_143ae50e0, DAT_143ae50e8, DAT_143ae50f0, DAT_143ae51b8, DAT_143ae53c8, DAT_143ae5210;
 
@@ -76,7 +76,7 @@ void FUN_1414d39a0(OutlineMap& map);
 // The walk's CAtlList<NiAVObject*> (head, tail, ...).
 struct Unk_OlpNode { Unk_OlpNode* m_pNext; Unk_OlpNode* m_pPrev; void* m_element; };
 struct Unk_OlpList { Unk_OlpNode* m_pHead; Unk_OlpNode* m_pTail; };
-void* FUN_1414d4a50(Unk_OlpList* list);
+typedef ATL::CAtlList<NiAVObject*> Unk_OlpAtlList;   // the walk queue at +0 of Unk_NodeQueue
 bool FUN_1414d4110(void* cfg, CAtlArray<COLORREF>& arr);
 
 // @0x1414d3120
@@ -199,25 +199,25 @@ void FUN_1414d3930(void* obj)
 }
 
 // @0x1414d4a50
-void* FUN_1414d4a50(Unk_OlpList* list)
-{
-    // CAtlList::RemoveHead: ATLENSURE(m_pHead != NULL) spelled out.
-    do {
-        int bOk = !!(list->m_pHead != 0);
-        do {} while (0);
-        if (!bOk)
-            ATL::AtlThrowImpl(0x80004005);
-    } while (0);
-    Unk_OlpNode* pn = list->m_pHead;
-    void* r = pn->m_element;
-    list->m_pHead = pn->m_pNext;
-    if (list->m_pHead != 0)
-        list->m_pHead->m_pPrev = 0;
-    else
-        list->m_pTail = 0;
-    FUN_14098da10(list, pn);
-    return r;
-}
+template NiAVObject* ATL::CAtlList<NiAVObject*, ATL::CElementTraits<NiAVObject*>>::RemoveHead();   // MS2-PIN at the end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @0x1414d3ff0
 void* FUN_1414d3ff0(void* list) { return *(void**)((char*)list + 0x10); }
@@ -232,7 +232,7 @@ void FUN_1414d39a0(OutlineMap& map)
     if (sc == 0) return;
     Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<GameObject*>(sc)->FUN_14123c410()));
     while ((size_t)FUN_1414d3ff0(&wl) > 0) {
-        NiAVObject* node = (NiAVObject*)FUN_1414d4a50((Unk_OlpList*)&wl);
+        NiAVObject* node = reinterpret_cast<Unk_OlpAtlList*>(&wl)->RemoveHead();
         if (node != 0) {
             void* c1 = ((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(node))->GetExtraData(DAT_143ae51b8)))));
             if (c1 != 0) {
@@ -273,3 +273,4 @@ bool FUN_1414d4110(void* cfg, CAtlArray<COLORREF>& arr)
         reinterpret_cast<Common::Constants::Object*>(cfg)->Error("constants has no key");
     return false;
 }
+// MS2-PIN: ?RemoveHead@?$CAtlList@PEAVNiAVObject@@V?$CElementTraits@PEAVNiAVObject@@@ATL@@@ATL@@QEAAPEAVNiAVObject@@XZ 0x1414d4a50 ; unique

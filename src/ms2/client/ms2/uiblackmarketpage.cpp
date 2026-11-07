@@ -188,9 +188,9 @@ void FUN_140f15760(ASObj& out, Unk_BmPtr<CBlackMarketTable::TabInfo> spTab);
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bce70(&args[0], a1);
+    FUN_1422bcc70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -198,8 +198,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, S
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const ASDataProvider& a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bce40(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -207,9 +207,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const ASDataP
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const ASArray& a1, int a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bce40(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1819,10 +1819,10 @@ MS2_REPLACE(0x140F15B80, FUN_140f15b80, 73, 0xA75D82B9);
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const ASArray& a1, int a2, int a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
-    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bce40(&args[0], a1);
+    FUN_1422bccb0(&args[1], a2);
+    FUN_1422bccb0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -1830,9 +1830,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, const ASArray
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2)
 {
     ASArgList args;
-    args.FUN_1409b2800(2);
-    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    args.resize(2);
+    FUN_1422bcc70(&args[0], a1);
+    FUN_1422bcc70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

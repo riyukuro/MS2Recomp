@@ -491,6 +491,7 @@ namespace Instances {
 namespace fl {
 class Array
 {
+public: static void toLocaleStringProto(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void toStringProto(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 };
 }
@@ -1465,7 +1466,6 @@ bool FUN_1424acec0(void *);
 namespace IME {
 void FUN_1423d0f10(void *, char *);
 void FUN_1423d4690(void *);
-int FUN_1423daeb0(__int64 *);
 void * FUN_1423db9d0(::Scaleform::GFx::State *, unsigned int);
 void * FUN_1423c8e10(void *, unsigned int);
 void * FUN_1423c8e70(unsigned __int64 *, unsigned int);
@@ -1576,19 +1576,11 @@ void FUN_1423d53e0(void *, int);
 void * FUN_1423d56b0(void *, unsigned int);
 void FUN_1423d5740(unsigned __int64 *, unsigned char const *);
 void FUN_1423d5910(void *, char const *);
-int FUN_1423d5ae0(void *);
-int FUN_1423d5aec(void *);
 unsigned int FUN_1423d61c0(void *, char const *);
 void FUN_1423d61f0(void *, char const *, char const *);
 unsigned __int64 FUN_1423d64b0(__int64);
-unsigned __int64 FUN_1423d6c10(__int64, int, unsigned short, __int64 *, __int64 *, __int64 *, unsigned __int64);
-unsigned __int64 FUN_1423d70d0(void *, unsigned __int64 const *);
 void FUN_1423d7130(void *);
 void FUN_1423d7140(unsigned __int64 *);
-long FUN_1423d72a0(void *, unsigned __int64 const *, void **);
-long FUN_1423d7344(void *, unsigned __int64 const *, void **);
-int FUN_1423d7350(void *);
-int FUN_1423d735c(void *);
 void FUN_1423d7410(void *);
 bool FUN_1423d7420(unsigned __int64 *, unsigned __int64 *);
 void FUN_1423d76f0(unsigned __int64 *, char const *);
@@ -1603,20 +1595,6 @@ bool FUN_1423d8a10(unsigned __int64 *, unsigned __int64 const *);
 bool FUN_1423d9ee0(void *, void *, int, void *, char const *);
 void FUN_1423da150(void *, void *, ::Scaleform::String const *);
 void const * FUN_1423da240(void *);
-void * FUN_1423da2c0(void *, unsigned int);
-int FUN_1423da420(void *);
-int FUN_1423da42c(void *);
-unsigned __int64 FUN_1423da440(__int64, unsigned __int64, unsigned int *);
-unsigned __int64 FUN_1423da730(void *, int);
-__int64 FUN_1423dad80(void *);
-__int64 FUN_1423dad90(void *);
-__int64 FUN_1423dada0(void *);
-__int64 FUN_1423dadb0(void *);
-__int64 FUN_1423dadc0(void *);
-long FUN_1423dadd0(__int64 *, unsigned __int64 const *, void **);
-long FUN_1423dae98(void *, unsigned __int64 const *, void **);
-int FUN_1423daed8(void *);
-unsigned __int64 FUN_1423db0c0(__int64, unsigned int);
 //
 //
 //
@@ -2018,39 +1996,6 @@ struct Sd_14313b520 {
     const void* p70;
     const void* p78;
 };
-struct Sd_14313b5a0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-};
-struct Sd_14313b5c0 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    unsigned char b20[0xd0];
-};
-struct Sd_14313b920 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    const void* p30;
-    const void* p38;
-    const void* p40;
-};
-struct Sd_14313b968 {
-    const void* p0;
-    const void* p8;
-    const void* p10;
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x30];
-};
 struct Sd_14313b9c8 {
     const void* p0;
     const void* p8;
@@ -2246,14 +2191,6 @@ struct Sd_14313d5b0 {
         const char* p0;
         unsigned long long q8;
     } e[5];
-};
-struct Sd_14313d610 {
-    const void* p0;
-    unsigned char b8[0x10];
-    const void* p18;
-    const void* p20;
-    const void* p28;
-    unsigned char b30[0x10];
 };
 struct Sd_14313d6a0 {
     const void* p0;
@@ -9095,35 +9032,7 @@ alignas(16) Sd_14313b520 DAT_14313b520 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423cb970,
     (const void*)&::Scaleform::GFx::IME::FUN_1423cb920,
 };
-// 0x14313b5a0
-alignas(16) Sd_14313b5a0 DAT_14313b5a0 = {
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d72a0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d5ae0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d7350,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d70d0,
-};
-// 0x14313b5c0
-alignas(16) Sd_14313b5c0 DAT_14313b5c0 = {
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d7344,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d5aec,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d735c,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423d6c10,
-    {
-        0xc5, 0xb6, 0x02, 0x1f, 0x42, 0x78, 0xe6, 0x4e, 0x8a, 0x0b, 0x9a, 0x24, 0x18, 0x3a, 0x95, 0xca,
-        0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x69, 0x6e, 0x67, 0x20, 0x49, 0x4d, 0x45, 0x3a,
-        0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0a, 0x43, 0x6f, 0x75, 0x6c, 0x64, 0x20, 0x6e,
-        0x6f, 0x74, 0x20, 0x66, 0x69, 0x6e, 0x64, 0x20, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x65,
-        0x64, 0x20, 0x49, 0x4d, 0x45, 0x20, 0x69, 0x6e, 0x20, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74,
-        0x65, 0x64, 0x20, 0x49, 0x4d, 0x45, 0x20, 0x6c, 0x69, 0x73, 0x74, 0x21, 0x00, 0x00, 0x00, 0x00,
-        0x0a, 0x2d, 0x2d, 0x3e, 0x20, 0x59, 0x6f, 0x75, 0x20, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-        0x65, 0x64, 0x3a, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x0a, 0x20, 0x46, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x20, 0x69, 0x6e, 0x20, 0x43, 0x4f, 0x4d,
-        0x2c, 0x20, 0x70, 0x65, 0x72, 0x68, 0x61, 0x70, 0x73, 0x20, 0x79, 0x6f, 0x75, 0x20, 0x63, 0x61,
-        0x6c, 0x6c, 0x65, 0x64, 0x20, 0x43, 0x6f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x73,
-        0x74, 0x61, 0x6e, 0x63, 0x65, 0x20, 0x69, 0x6e, 0x20, 0x61, 0x6e, 0x6f, 0x74, 0x68, 0x65, 0x72,
-        0x20, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x2e, 0x2e, 0x2e, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-};
+// 0x14313b5a0 / 0x14313b5c0 are Ime01TsfSink's vftables, emitted by sfr_ime_01 (its DAT_ stores are bound to them there).
 // 0x14313b6b0
 alignas(16) unsigned char DAT_14313b6b0[0x1f8] = {
     0x4c, 0xe7, 0xc6, 0x71, 0x28, 0x0f, 0xd8, 0x11, 0xa8, 0x2a, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
@@ -9183,32 +9092,7 @@ alignas(8) unsigned char DAT_14313b8d8[0x48] = {
     0xc8, 0x35, 0x91, 0x03, 0x06, 0x00, 0x00, 0x00, 0xf0, 0x35, 0x91, 0x03, 0x28, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-// 0x14313b920
-alignas(16) Sd_14313b920 DAT_14313b920 = {
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dadd0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423da420,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423daeb0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dad80,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dadc0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dadb0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dada0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dad90,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423da2c0,
-};
-// 0x14313b968
-alignas(8) Sd_14313b968 DAT_14313b968 = {
-    (const void*)&::Scaleform::GFx::IME::FUN_1423dae98,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423da42c,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423daed8,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423da440,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423db0c0,
-    (const void*)&::Scaleform::GFx::IME::FUN_1423da730,
-    {
-        0x38, 0xa1, 0x1e, 0xea, 0xdf, 0x19, 0xd7, 0x11, 0xa6, 0xd2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
-        0x39, 0xa1, 0x1e, 0xea, 0xdf, 0x19, 0xd7, 0x11, 0xa6, 0xd2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
-        0x4d, 0x61, 0x6b, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00,
-    },
-};
+// 0x14313b920 / 0x14313b968 are Ime01TsfUiSink's vftables, emitted by sfr_ime_01 (its DAT_ stores are bound to them there).
 // 0x14313b9c8
 alignas(8) Sd_14313b9c8 DAT_14313b9c8 = {
     (const void*)&::Scaleform::GFx::IME::FUN_1423dbc80,
@@ -9549,14 +9433,10 @@ alignas(16) Sd_14313d5b0 DAT_14313d5b0 = {
         {"NUMERIC", 0x270060},
     },
 };
-// 0x14313d610
-alignas(16) Sd_14313d610 DAT_14313d610 = {
-    "toLocaleString",
-    {0},
-    (const void*)&::Scaleform::GFx::AS3::Instances::fl::Array::toStringProto,
-    (const void*)&::Scaleform::GFx::AS3::fl::StringCI,
-    "toString",
-    {0},
+// 0x14313d600 Classes::fl::Array prototype methods (type-checked)
+alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d600[2] = {
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::fl::Array::toLocaleStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toLocaleString", 0, 0, 0, 0 },
+    { (::Scaleform::GFx::AS3::TThunkFunc)&::Scaleform::GFx::AS3::Instances::fl::Array::toStringProto, (const ::Scaleform::GFx::AS3::TypeInfo*)&::Scaleform::GFx::AS3::fl::StringCI, "toString", 0, 0, 0, 0 },
 };
 // 0x14313d650
 alignas(16) extern const ::Scaleform::GFx::AS3::ThunkInfo DAT_14313d650[2] = {
@@ -20713,16 +20593,12 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 #pragma comment(linker, "/alternatename:DAT_14313b410=?DAT_14313b410@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b420=?DAT_14313b420@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b520=?DAT_14313b520@@3USd_14313b520@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b5a0=?DAT_14313b5a0@@3USd_14313b5a0@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b5c0=?DAT_14313b5c0@@3USd_14313b5c0@@A")
 #pragma comment(linker, "/alternatename:DAT_14313b6b0=?DAT_14313b6b0@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b8a8=?DAT_14313b8a8@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b8b8=?DAT_14313b8b8@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b8c0=?DAT_14313b8c0@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b8c8=?DAT_14313b8c8@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_14313b8d8=?DAT_14313b8d8@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_14313b920=?DAT_14313b920@@3USd_14313b920@@A")
-#pragma comment(linker, "/alternatename:DAT_14313b968=?DAT_14313b968@@3USd_14313b968@@A")
 #pragma comment(linker, "/alternatename:DAT_14313ba60=?DAT_14313ba60@@3USd_14313ba60@@A")
 #pragma comment(linker, "/alternatename:DAT_14313bc60=?DAT_14313bc60@@3USd_14313bc60@@A")
 //
@@ -20730,7 +20606,6 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 //
 //
 #pragma comment(linker, "/alternatename:?AccessibilityPropertiesCI@fl_accessibility@AS3@GFx@Scaleform@@3UClassInfo@234@B=?DAT_14313c670@@3USd_14313c670@@A")
-#pragma comment(linker, "/alternatename:?DAT_14313d610@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313d610@@3USd_14313d610@@A")
 #pragma comment(linker, "/alternatename:?DAT_14313d6a0@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313d6a0@@3USd_14313d6a0@@A")
 #pragma comment(linker, "/alternatename:?DAT_14313d6e8@@3QBUThunkInfo@AS3@GFx@Scaleform@@B=?DAT_14313d6e8@@3USd_14313d6e8@@A")
 #pragma comment(linker, "/alternatename:?CInfo@GlobalObject@fl@InstanceTraits@AS3@GFx@Scaleform@@2UClassInfo@456@B=?DAT_14313d7b0@@3USd_14313d7b0@@A")

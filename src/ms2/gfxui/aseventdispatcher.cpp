@@ -178,8 +178,8 @@ int ASEventDispatcher::FUN_1422c3d30(ASEvent& ev)
 inline Value AScript::Invoke(const char* szMethod, const ASEvent& a1)
 {
     ASArgList args;
-    args.FUN_1409b2800(1);
-    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
+    args.resize(1);
+    FUN_1422bce40(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -187,10 +187,10 @@ inline Value AScript::Invoke(const char* szMethod, const ASEvent& a1)
 inline Value AScript::FUN_1422c3e40(const char* szMethod, CString a1, Value a2, bool a3)
 {
     ASArgList args;
-    args.FUN_1409b2800(3);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
+    args.resize(3);
+    FUN_1422bce70(&args[0], a1);
+    FUN_1422bcc70(&args[1], a2);
+    FUN_1422bcce0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -198,12 +198,12 @@ inline Value AScript::FUN_1422c3e40(const char* szMethod, CString a1, Value a2, 
 inline Value AScript::Invoke(const char* szMethod, CString a1, Value a2, bool a3, float a4, bool a5)
 {
     ASArgList args;
-    args.FUN_1409b2800(5);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bcd70(args.FUN_1409b1f70(3), a4);
-    FUN_1422bcce0(args.FUN_1409b1f70(4), a5);
+    args.resize(5);
+    FUN_1422bce70(&args[0], a1);
+    FUN_1422bcc70(&args[1], a2);
+    FUN_1422bcce0(&args[2], a3);
+    FUN_1422bcd70(&args[3], a4);
+    FUN_1422bcce0(&args[4], a5);
     return FUN_1422bb8f0(szMethod, args);
 }
 
